@@ -172,11 +172,20 @@ public class CmsSearchField implements Serializable {
     /** A default value for the field in case the content does not provide the value. */
     private String m_defaultValue;
 
+    /** Indicates if this field should be used for generating the excerpt. */
+    private boolean m_excerpt;
+
+    /** Indicates if the content of this field should be indexed. */
+    private boolean m_indexed;
+
     /** The search field mappings. */
     private List<I_CmsSearchFieldMapping> m_mappings;
 
     /** The name of the field. */
     private String m_name;
+
+    /** Indicates if the content of this field should be stored. */
+    private boolean m_stored;
 
     /**
      * Creates a new search field.<p>
@@ -297,27 +306,38 @@ public class CmsSearchField implements Serializable {
     }
 
     /**
-     * Returns <code>true</code> if this fields content is used in the search result excerpt.<p>
-     * 
-     * <b>IMPORTANT:</b> Not supported by Solr
+     * Returns the indexed.<p>
      *
-     * @return <code>true</code> if this fields content is used in the search result excerpt
+     * @return the indexed
      */
-    public boolean isInExcerpt() {
+    public boolean isIndexed() {
 
-        return false;
+        return m_indexed;
     }
 
     /**
-     * Returns <code>true</code> if the content of this field is stored in the index.<p>
+     * Returns <code>true</code> if this fields content is used in the search result excerpt.<p>
+     *
+     * @return <code>true</code> if this fields content is used in the search result excerpt
      * 
-     * <b>IMPORTANT:</b> Not supported by Solr
+     * @see #isStored()
+     */
+    public boolean isInExcerpt() {
+
+        return m_excerpt;
+    }
+
+    /**
+     * Returns <code>true</code> if the content of this field is stored in the Lucene index.<p>
+     *
+     * Please refer to the Lucene documentation about {@link org.apache.lucene.document.Field.Store}
+     * for the concept behind stored and unstored fields.<p>
      *
      * @return <code>true</code> if the content of this field is stored in the Lucene index
      */
     public boolean isStored() {
 
-        return false;
+        return m_stored;
     }
 
     /**
@@ -372,6 +392,26 @@ public class CmsSearchField implements Serializable {
     }
 
     /**
+     * Controls if the content of this field is indexed (and possibly tokenized) in the Lucene index.<p> 
+     *
+     * @param indexed the indexed to set
+     */
+    public void setIndexed(boolean indexed) {
+
+        m_indexed = indexed;
+    }
+
+    /**
+     * Controls if this fields content is used in the search result excerpt.<p>
+     *
+     * @param excerpt if <code>true</code>, then this fields content is used in the search excerpt
+     */
+    public void setInExcerpt(boolean excerpt) {
+
+        m_excerpt = excerpt;
+    }
+
+    /**
      * Sets the name of this field in the Lucene search index.<p>
      *
      * @param fieldName the name to set
@@ -379,6 +419,19 @@ public class CmsSearchField implements Serializable {
     public void setName(String fieldName) {
 
         m_name = fieldName;
+    }
+
+    /**
+     * Controls if the content of this field is stored in the Lucene index.<p>
+     *
+     * Please refer to the Lucene documentation about {@link org.apache.lucene.document.Field.Store}
+     * for the concept behind stored and unstored fields.<p>
+     *
+     * @param stored if <code>true</code>, then the field content is stored
+     */
+    public void setStored(boolean stored) {
+
+        m_stored = stored;
     }
 
     /**

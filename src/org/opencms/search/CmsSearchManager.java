@@ -178,9 +178,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 case I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED:
                 case I_CmsEventListener.EVENT_RESOURCE_MODIFIED:
                     Object change = event.getData().get(I_CmsEventListener.KEY_CHANGE);
-                    if ((change != null)
-                        && (change.equals(new Integer(CmsDriverManager.NOTHING_CHANGED)) || change.equals(new Integer(
-                            CmsDriverManager.CHANGED_PROJECT)))) {
+                    if ((change != null) && change.equals(new Integer(CmsDriverManager.NOTHING_CHANGED))) {
                         // skip lock & unlock
                         return;
                     }
@@ -827,7 +825,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      */
     public static boolean isLuceneIndex(String indexName) {
 
-        return OpenCms.getSearchManager().getIndexGeneral(indexName) != null ? true : false;
+        CmsSearchIndex i = OpenCms.getSearchManager().getIndex(indexName);
+        if (i instanceof CmsSolrIndex) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -1273,23 +1275,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      */
     public CmsSearchIndex getIndex(String indexName) {
 
-        CmsSearchIndex index = getIndexGeneral(indexName);
-        if (index instanceof CmsSearchIndex) {
-            return index;
-        }
-        return null;
-    }
-
-    /**
-     * Returns the search index configured with the given name.<p>
-     * The index must exist, otherwise <code>null</code> is returned.
-     * 
-     * @param indexName then name of the requested search index
-     * 
-     * @return the search index configured with the given name
-     */
-    public CmsSearchIndex getIndexGeneral(String indexName) {
-
         for (CmsSearchIndex index : m_indexes) {
             if (indexName.equalsIgnoreCase(index.getName())) {
                 return index;
@@ -1332,7 +1317,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      */
     public CmsSolrIndex getIndexSolr(String indexName) {
 
-        CmsSearchIndex index = getIndexGeneral(indexName);
+        CmsSearchIndex index = getIndex(indexName);
         if (index instanceof CmsSolrIndex) {
             return (CmsSolrIndex)index;
         }
@@ -1545,7 +1530,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             String[] indexNames = CmsStringUtil.splitAsArray(indexList, '|');
             for (int i = 0; i < indexNames.length; i++) {
                 // check if the index actually exists
-                if (manager.getIndexGeneral(indexNames[i]) != null) {
+                if (manager.getIndex(indexNames[i]) != null) {
                     updateList.add(indexNames[i]);
                 } else {
                     if (LOG.isWarnEnabled()) {
@@ -1620,7 +1605,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     public synchronized void rebuildIndex(String indexName, I_CmsReport report) throws CmsException {
 
         // get the search index by name
-        CmsSearchIndex index = getIndexGeneral(indexName);
+        CmsSearchIndex index = getIndex(indexName);
         // update the index 
         updateIndex(index, report, null);
         // clean up the extraction result cache
@@ -1641,7 +1626,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         while (i.hasNext()) {
             String indexName = i.next();
             // get the search index by name
-            CmsSearchIndex index = getIndexGeneral(indexName);
+            CmsSearchIndex index = getIndex(indexName);
             if (index != null) {
                 // update the index 
                 updateIndex(index, report, null);
@@ -1857,7 +1842,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         while (i.hasNext()) {
             String indexName = i.next();
             // get the search index by name
-            CmsSearchIndex index = getIndexGeneral(indexName);
+            CmsSearchIndex index = getIndex(indexName);
             if (index != null) {
                 // remove the index 
                 removeSearchIndex(index);

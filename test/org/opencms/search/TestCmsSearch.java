@@ -265,10 +265,10 @@ public class TestCmsSearch extends OpenCmsTestCase {
         cmsSearchBean.setQuery("pdf");
 
         echo("With Permission check, with excerpt");
-        OpenCms.getSearchManager().getIndexGeneral(INDEX_OFFLINE).addConfigurationParameter(
+        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(
             CmsSearchIndex.PERMISSIONS,
             CmsStringUtil.TRUE);
-        OpenCms.getSearchManager().getIndexGeneral(INDEX_OFFLINE).addConfigurationParameter(
+        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(
             CmsSearchIndex.EXCERPT,
             CmsStringUtil.TRUE);
 

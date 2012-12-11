@@ -32,7 +32,6 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchIndex;
-import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchIndexSource;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.util.CmsStringUtil;
@@ -247,7 +246,7 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
     protected void initUserObject() {
 
         try {
-            m_index = m_searchManager.getIndexGeneral(getParamIndexName());
+            m_index = m_searchManager.getIndex(getParamIndexName());
             if (m_index == null) {
                 m_index = createDummySearchIndex();
             }

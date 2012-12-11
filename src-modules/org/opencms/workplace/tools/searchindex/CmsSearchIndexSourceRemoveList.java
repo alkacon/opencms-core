@@ -33,9 +33,9 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchDocumentType;
 import org.opencms.search.CmsSearchException;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchIndexSource;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -187,7 +187,7 @@ public class CmsSearchIndexSourceRemoveList extends A_CmsEmbeddedListDialog {
         if (action.equals(LIST_MACTION_REMOVESOURCE)) {
             // execute the delete multiaction
             Iterator<CmsListItem> itItems = getSelectedItems().iterator();
-            CmsSearchIndex idx = searchManager.getIndexGeneral(getParamIndexName());
+            CmsSearchIndex idx = searchManager.getIndex(getParamIndexName());
             while (itItems.hasNext()) {
                 listItem = itItems.next();
                 if (idx.getSourceNames().size() > 1) {
@@ -220,7 +220,7 @@ public class CmsSearchIndexSourceRemoveList extends A_CmsEmbeddedListDialog {
         String action = getParamListAction();
         String indexsourceName = (String)item.get(LIST_COLUMN_NAME);
         if (action.equals(LIST_ACTION_REMOVESOURCE) || action.equals(LIST_ACTION_REMOVESOURCE2)) {
-            CmsSearchIndex idx = searchManager.getIndexGeneral(getParamIndexName());
+            CmsSearchIndex idx = searchManager.getIndex(getParamIndexName());
             // Don't allow removing last index source, config file will become invalid: 
             if (idx.getSourceNames().size() > 1) {
                 idx.removeSourceName((String)item.get(LIST_COLUMN_NAME));
@@ -555,7 +555,7 @@ public class CmsSearchIndexSourceRemoveList extends A_CmsEmbeddedListDialog {
     private List<CmsSearchIndexSource> searchIndexSources() {
 
         CmsSearchManager manager = OpenCms.getSearchManager();
-        CmsSearchIndex index = manager.getIndexGeneral(getParamIndexName());
+        CmsSearchIndex index = manager.getIndex(getParamIndexName());
         List<CmsSearchIndexSource> sources = index.getSources();
         return sources;
     }

@@ -223,7 +223,7 @@ public class CmsSearchIndexList extends A_CmsListDialog {
             List<String> removedItems = new ArrayList<String>();
             while (itItems.hasNext()) {
                 CmsListItem listItem = itItems.next();
-                searchManager.removeSearchIndex(searchManager.getIndexGeneral((String)listItem.get(LIST_COLUMN_NAME)));
+                searchManager.removeSearchIndex(searchManager.getIndex((String)listItem.get(LIST_COLUMN_NAME)));
                 removedItems.add(listItem.getId());
             }
             writeConfiguration(false);
@@ -265,7 +265,7 @@ public class CmsSearchIndexList extends A_CmsListDialog {
 
         String action = getParamListAction();
         if (action.equals(LIST_ACTION_DELETE)) {
-            searchManager.removeSearchIndex(searchManager.getIndexGeneral(index));
+            searchManager.removeSearchIndex(searchManager.getIndex(index));
             writeConfiguration(false);
         } else if (action.equals(LIST_ACTION_REBUILD)) {
             // forward to the rebuild index screen   
@@ -640,7 +640,7 @@ public class CmsSearchIndexList extends A_CmsListDialog {
 
         StringBuffer html = new StringBuffer();
         // search for the corresponding A_CmsSearchIndex: 
-        CmsSearchIndex idx = OpenCms.getSearchManager().getIndexGeneral((String)item.get(LIST_COLUMN_NAME));
+        CmsSearchIndex idx = OpenCms.getSearchManager().getIndex((String)item.get(LIST_COLUMN_NAME));
 
         html.append("<ul>\n");
         // get the index sources (nice API)

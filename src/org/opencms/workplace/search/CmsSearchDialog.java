@@ -297,13 +297,12 @@ public class CmsSearchDialog extends CmsWidgetDialog {
         if (isInitialCall()) {
             // the search form is in the initial state
             // get the configured index
-            index = OpenCms.getSearchManager().getIndexGeneral(
-                getSettings().getUserSettings().getWorkplaceSearchIndexName());
+            index = OpenCms.getSearchManager().getIndex(getSettings().getUserSettings().getWorkplaceSearchIndexName());
         } else {
             // the search form is not in the inital state, the submit button was used already or the 
             // search index was changed already
             // get the selected index in the search dialog
-            index = OpenCms.getSearchManager().getIndexGeneral(getJsp().getRequest().getParameter("indexName.0"));
+            index = OpenCms.getSearchManager().getIndex(getJsp().getRequest().getParameter("indexName.0"));
         }
         return index;
     }

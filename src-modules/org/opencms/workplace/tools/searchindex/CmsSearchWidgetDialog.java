@@ -31,7 +31,6 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.OpenCms;
-import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearch;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchParameters;
@@ -237,7 +236,7 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
      */
     public List<CmsSearchField> getSearchFields() {
 
-        CmsSearchIndex index = OpenCms.getSearchManager().getIndexGeneral(getParamIndexName());
+        CmsSearchIndex index = OpenCms.getSearchManager().getIndex(getParamIndexName());
         List<CmsSearchField> result = new ArrayList<CmsSearchField>();
         Iterator<CmsSearchField> i = index.getFieldConfiguration().getFields().iterator();
         while (i.hasNext()) {
@@ -493,7 +492,7 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
                 m_search = new CmsSearch();
             }
         }
-        m_searchParams.setSearchIndex((CmsSearchIndex)getSearchIndexIndex());
+        m_searchParams.setSearchIndex(getSearchIndexIndex());
     }
 
     /**

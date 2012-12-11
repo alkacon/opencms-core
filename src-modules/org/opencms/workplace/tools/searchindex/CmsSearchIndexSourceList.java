@@ -32,8 +32,8 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.OpenCms;
-import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchDocumentType;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchIndexSource;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
@@ -464,7 +464,7 @@ public class CmsSearchIndexSourceList extends A_CmsEmbeddedListDialog {
     private List<CmsSearchIndexSource> searchIndexSources() {
 
         CmsSearchManager manager = OpenCms.getSearchManager();
-        CmsSearchIndex index = manager.getIndexGeneral(getParamIndexName());
+        CmsSearchIndex index = manager.getIndex(getParamIndexName());
         List<CmsSearchIndexSource> sources = index.getSources();
         return sources;
     }

@@ -79,15 +79,6 @@ public class CmsLuceneField extends CmsSearchField {
     /** The display name set from the configuration. */
     private String m_displayNameForConfiguration;
 
-    /** Indicates if this field should be used for generating the excerpt. */
-    private boolean m_excerpt;
-
-    /** Indicates if the content of this field should be indexed. */
-    private boolean m_indexed;
-
-    /** Indicates if the content of this field should be stored. */
-    private boolean m_stored;
-
     /** Indicates if the content of this field should be tokenized. */
     private boolean m_tokenized;
 
@@ -342,29 +333,6 @@ public class CmsLuceneField extends CmsSearchField {
     }
 
     /**
-     * Returns the indexed.<p>
-     *
-     * @return the indexed
-     */
-    public boolean isIndexed() {
-
-        return m_indexed;
-    }
-
-    /**
-     * Returns <code>true</code> if this fields content is used in the search result excerpt.<p>
-     *
-     * @return <code>true</code> if this fields content is used in the search result excerpt
-     * 
-     * @see #isStored()
-     */
-    @Override
-    public boolean isInExcerpt() {
-
-        return m_excerpt;
-    }
-
-    /**
      * Returns <code>true</code> if this fields content is used in the search result excerpt.<p>
      *
      * A field can only be used in the excerpt if it is stored, see {@link #isStored()}.<p>
@@ -375,23 +343,7 @@ public class CmsLuceneField extends CmsSearchField {
      */
     public boolean isInExcerptAndStored() {
 
-        return m_excerpt && m_stored;
-    }
-
-    /**
-     * Returns <code>true</code> if the content of this field is stored in the Lucene index.<p>
-     *
-     * Please refer to the Lucene documentation about {@link org.apache.lucene.document.Field.Store}
-     * for the concept behind stored and unstored fields.<p>
-     *
-     * @return <code>true</code> if the content of this field is stored in the Lucene index
-     * 
-     * @see #isTokenizedAndIndexed()
-     */
-    @Override
-    public boolean isStored() {
-
-        return m_stored;
+        return isInExcerpt() && isStored();
     }
 
     /**
@@ -422,7 +374,7 @@ public class CmsLuceneField extends CmsSearchField {
      */
     public boolean isTokenizedAndIndexed() {
 
-        return m_tokenized && m_indexed;
+        return m_tokenized && isIndexed();
     }
 
     /**
@@ -518,18 +470,6 @@ public class CmsLuceneField extends CmsSearchField {
     }
 
     /**
-     * Controls if the content of this field is indexed (and possibly tokenized) in the Lucene index.<p> 
-     *
-     * @param indexed the indexed to set
-     * 
-     * @see #setTokenized(boolean)
-     */
-    public void setIndexed(boolean indexed) {
-
-        m_indexed = indexed;
-    }
-
-    /**
      * Controls if the content of this field is indexed (and possibly tokenized) in the Lucene index from a String parameter.<p> 
      * 
      * This sets the values for {@link #isIndexed()} as well as {@link #isTokenizedAndIndexed()}.<p>
@@ -571,16 +511,6 @@ public class CmsLuceneField extends CmsSearchField {
 
     /**
      * Controls if this fields content is used in the search result excerpt.<p>
-     *
-     * @param excerpt if <code>true</code>, then this fields content is used in the search excerpt
-     */
-    public void setInExcerpt(boolean excerpt) {
-
-        m_excerpt = excerpt;
-    }
-
-    /**
-     * Controls if this fields content is used in the search result excerpt.<p>
      * 
      * @param excerpt if <code>"true"</code>, then this fields content is used in the search excerpt
      * 
@@ -589,21 +519,6 @@ public class CmsLuceneField extends CmsSearchField {
     public void setInExcerpt(String excerpt) {
 
         setInExcerpt(Boolean.valueOf(String.valueOf(excerpt)).booleanValue());
-    }
-
-    /**
-     * Controls if the content of this field is stored in the Lucene index.<p>
-     *
-     * Please refer to the Lucene documentation about {@link org.apache.lucene.document.Field.Store}
-     * for the concept behind stored and unstored fields.<p>
-     *
-     * @param stored if <code>true</code>, then the field content is stored
-     * 
-     * @see #setTokenized(boolean)
-     */
-    public void setStored(boolean stored) {
-
-        m_stored = stored;
     }
 
     /**
