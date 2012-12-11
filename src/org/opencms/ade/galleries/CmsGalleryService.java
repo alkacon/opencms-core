@@ -476,6 +476,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                     && (data.getTypes().size() > 1)) {
                     data.setStartTab(GalleryTabId.cms_tab_galleries);
                 }
+                if (!conf.isIncludeFiles()) {
+                    data.setStartTab(GalleryTabId.cms_tab_vfstree);
+                }
                 break;
             case ade:
                 data.setReferenceSitePath(getCmsObject().getRequestContext().getUri());

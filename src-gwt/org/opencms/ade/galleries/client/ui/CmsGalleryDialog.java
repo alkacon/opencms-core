@@ -249,6 +249,9 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
      */
     public void fillResultTab(CmsGallerySearchBean searchObj) {
 
+        if (m_resultsTab == null) {
+            return;
+        }
         List<CmsSearchParamPanel> paramPanels = null;
         if (!searchObj.isEmpty()) {
             enableSearchTab();
