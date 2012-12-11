@@ -144,6 +144,9 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     /** The configured tabs. */
     private GalleryTabId[] m_tabIds;
 
+    /** The tree token for this gallery instance (determines which tree open state to use). */
+    private String m_treeToken;
+
     /** The vfs service. */
     private I_CmsVfsServiceAsync m_vfsService;
 
@@ -181,7 +184,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             m_searchObject.setScope(m_dialogBean.getScope());
         }
         if (m_dialogBean != null) {
-            m_handler.onInitialSearch(m_searchObject, m_dialogBean, this);
+            m_handler.onInitialSearch(m_searchObject, m_dialogBean, this, true);
         }
     }
 
@@ -200,6 +203,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         m_handler.m_galleryDialog.setImageFormatNames(m_configuration.getImageFormatNames());
         m_eventBus = new SimpleEventBus();
         addValueChangeHandler(m_handler);
+        m_treeToken = conf.getTreeToken();
         CmsRpcAction<CmsGalleryDataBean> initAction = new CmsRpcAction<CmsGalleryDataBean>() {
 
             @Override
@@ -216,13 +220,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
                 if ((m_dialogBean.getTypes().size() == 1) && (m_dialogMode != GalleryMode.ade)) {
                     removeTypesTab();
                 }
-                if (m_dialogBean.getStartTab() == GalleryTabId.cms_tab_results) {
-                    initialSearch();
-                } else {
-                    m_searchObject = new CmsGallerySearchBean();
-                    m_searchObject.setIgnoreSearchExclude(m_dialogMode != GalleryMode.ade);
-                    m_searchObject.setLocale(m_dialogBean.getLocale());
-                    m_searchObject.setScope(m_dialogBean.getScope());
+                if (m_dialogBean.getStartTab() != GalleryTabId.cms_tab_results) {
                     List<GalleryTabId> tabs = Arrays.asList(getTabIds());
                     // in case the selected start tab is not present, choose another one
                     if (!tabs.contains(m_dialogBean.getStartTab())) {
@@ -232,8 +230,8 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
                             m_dialogBean.setStartTab(tabs.get(0));
                         }
                     }
-                    m_handler.onInitialSearch(m_searchObject, m_dialogBean, CmsGalleryController.this);
                 }
+                initialSearch();
             }
         };
         initAction.execute();
@@ -715,6 +713,16 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     }
 
     /**
+     * Gets the tree token, which is used to determine which tree state is loaded/saved for the VFS and sitemap tabs.<p>
+     * 
+     * @return the tree token 
+     */
+    public String getTreeToken() {
+
+        return m_treeToken;
+    }
+
+    /**
      * Gets the site selector options.<p>
      * 
      * @return the site selector options 
@@ -835,7 +843,9 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
      * 
      * @param asyncCallback the callback to call with the result  
      */
-    public void loadVfsEntryBean(final String siteRoot, final AsyncCallback<CmsVfsEntryBean> asyncCallback) {
+    public void loadVfsEntryBean(final String siteRoot,
+
+    final AsyncCallback<CmsVfsEntryBean> asyncCallback) {
 
         CmsRpcAction<CmsVfsEntryBean> action = new CmsRpcAction<CmsVfsEntryBean>() {
 
@@ -1026,41 +1036,67 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     }
 
     /**
+     * Saves the tree state for a given tree on the server.<p>
+     * 
+     * @param treeName the tree name 
+     * @param siteRoot the site root 
+     * @param openItemIds the structure ids of opened items 
+     */
+    public void saveTreeState(final String treeName, final String siteRoot, final Set<CmsUUID> openItemIds) {
+
+        CmsRpcAction<Void> treeStateAction = new CmsRpcAction<Void>() {
+
+            @Override
+            public void execute() {
+
+                start(600, false);
+                getGalleryService().saveTreeOpenState(treeName, getTreeToken(), siteRoot, openItemIds, this);
+            }
+
+            @Override
+            protected void onResponse(Void result) {
+
+                stop(false);
+            }
+        };
+        treeStateAction.execute();
+
+    }
+
+    /**
      * Searches for a specific element and opens it's preview if found.<p>
      * 
      * @param path the element path
+     * @param nextAction the next action to execute after the search data for the element has been loaded into the gallery dialog 
      */
-    public void searchElement(String path) {
+    public void searchElement(final String path, final Runnable nextAction) {
 
         m_dialogBean.setCurrentElement(path);
         m_dialogBean.setStartTab(GalleryTabId.cms_tab_results);
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(path)) {
-            CmsRpcAction<CmsGallerySearchBean> searchAction = new CmsRpcAction<CmsGallerySearchBean>() {
+        m_dialogBean.setTreeToken(getTreeToken());
 
-                @Override
-                public void execute() {
+        CmsRpcAction<CmsGallerySearchBean> searchAction = new CmsRpcAction<CmsGallerySearchBean>() {
 
-                    start(200, true);
-                    getGalleryService().getSearch(m_dialogBean, this);
+            @Override
+            public void execute() {
+
+                start(200, true);
+                getGalleryService().getSearch(m_dialogBean, this);
+            }
+
+            @Override
+            protected void onResponse(CmsGallerySearchBean result) {
+
+                stop(false);
+                m_searchObject = result;
+                m_handler.onInitialSearch(result, m_dialogBean, CmsGalleryController.this, false);
+                if (nextAction != null) {
+                    nextAction.run();
                 }
+            }
 
-                @Override
-                protected void onResponse(CmsGallerySearchBean result) {
-
-                    stop(false);
-                    if (!result.isEmpty() && (result.getResults().size() > 0)) {
-                        m_searchObject = result;
-                        m_handler.m_galleryDialog.selectTab(GalleryTabId.cms_tab_results, false);
-                        m_handler.onResultTabSelection(m_searchObject);
-                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_searchObject.getResourcePath())
-                            && CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_searchObject.getResourceType())) {
-                            openPreview(m_searchObject.getResourcePath(), m_searchObject.getResourceType());
-                        }
-                    }
-                }
-            };
-            searchAction.execute();
-        }
+        };
+        searchAction.execute();
     }
 
     /**
@@ -1493,6 +1529,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             public void execute() {
 
                 start(0, true);
+                m_dialogBean.setTreeToken(getTreeToken());
                 getGalleryService().getSearch(m_dialogBean, this);
             }
 
@@ -1501,7 +1538,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
 
                 stop(false);
                 m_searchObject = result;
-                m_handler.onInitialSearch(m_searchObject, m_dialogBean, CmsGalleryController.this);
+                m_handler.onInitialSearch(m_searchObject, m_dialogBean, CmsGalleryController.this, true);
             }
         };
         searchAction.execute();

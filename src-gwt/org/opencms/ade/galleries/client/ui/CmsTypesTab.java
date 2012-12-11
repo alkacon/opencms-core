@@ -128,6 +128,7 @@ public class CmsTypesTab extends A_CmsListTab {
         if (m_types == null) {
             m_types = new HashMap<String, CmsResourceTypeBean>();
         }
+        clearList();
         m_types.clear();
         for (CmsResourceTypeBean typeBean : typeInfos) {
             m_types.put(typeBean.getType(), typeBean);

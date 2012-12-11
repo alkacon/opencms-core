@@ -212,6 +212,9 @@ public interface I_CmsGalleryProviderConstants {
     /** Configuration key. */
     String CONFIG_TAB_IDS = "tabids";
 
+    /** The key for the tree token. */
+    String CONFIG_TREE_TOKEN = "treeToken";
+
     /** Configuration key. */
     String CONFIG_USE_FORMATS = "useformats";
 
@@ -229,6 +232,12 @@ public interface I_CmsGalleryProviderConstants {
 
     /** The folder resource type name. */
     String RESOURCE_TYPE_FOLDER = "folder";
+
+    /** Sitemap tree state session attribute name prefix. */
+    String TREE_SITEMAP = "sitemap";
+
+    /** VFS tree state session attribute name prefix. */
+    String TREE_VFS = "vfs";
 
     /** Path to the host page. */
     String VFS_OPEN_GALLERY_PATH = "/system/modules/org.opencms.ade.galleries/gallery.jsp";

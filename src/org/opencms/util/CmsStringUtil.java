@@ -158,6 +158,26 @@ public final class CmsStringUtil {
     }
 
     /**
+     * Adds leading and trailing slashes to a path.<p>
+     * 
+     * @param path the path to which add the slashes 
+     *   
+     * @return the path with added leading and trailing slashes 
+     */
+    public static String addLeadingAndTrailingSlash(String path) {
+
+        StringBuffer buffer1 = new StringBuffer();
+        if (!path.startsWith("/")) {
+            buffer1.append("/");
+        }
+        buffer1.append(path);
+        if (!path.endsWith("/")) {
+            buffer1.append("/");
+        }
+        return buffer1.toString();
+    }
+
+    /**
      * Returns a string representation for the given array using the given separator.<p>
      * 
      * @param arg the array to transform to a String
@@ -253,6 +273,18 @@ public final class CmsStringUtil {
             }
         }
         return string.toString();
+    }
+
+    /**
+     * Compares paths while ignoring leading / trailing slashes.<p>
+     * 
+     * @param path1 the first path 
+     * @param path2 the second path 
+     * @return true if the paths are equal (ignoring leading or trailing slashes)
+     */
+    public static boolean comparePaths(String path1, String path2) {
+
+        return addLeadingAndTrailingSlash(path1).equals(addLeadingAndTrailingSlash(path2));
     }
 
     /**

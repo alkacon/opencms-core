@@ -85,6 +85,9 @@ public class CmsGalleryDataBean implements IsSerializable {
     /** The start up tab id. */
     private GalleryTabId m_startTab;
 
+    /** A token used to determine which tree state is loaded/saved . */
+    private String m_treeToken;
+
     /** The types to display in the list of available categories. */
     private List<CmsResourceTypeBean> m_types;
 
@@ -214,6 +217,16 @@ public class CmsGalleryDataBean implements IsSerializable {
     public GalleryTabId getStartTab() {
 
         return m_startTab;
+    }
+
+    /**
+     * Gets the tree token, which is used to  determine which tree state is loaded from the session.<p>
+     * 
+     * @return the tree token 
+     */
+    public String getTreeToken() {
+
+        return m_treeToken;
     }
 
     /**
@@ -365,6 +378,16 @@ public class CmsGalleryDataBean implements IsSerializable {
     public void setStartTab(GalleryTabId startTab) {
 
         m_startTab = startTab;
+    }
+
+    /**
+     * Sets the tree token.<p>
+     * 
+     * @param treeToken the new tree token 
+     */
+    public void setTreeToken(String treeToken) {
+
+        m_treeToken = treeToken;
     }
 
     /**

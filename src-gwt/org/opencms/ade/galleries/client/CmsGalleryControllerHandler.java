@@ -29,11 +29,15 @@ package org.opencms.ade.galleries.client;
 
 import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
 import org.opencms.ade.galleries.client.ui.CmsSearchTab.ParamType;
+import org.opencms.ade.galleries.client.ui.CmsSitemapTab;
+import org.opencms.ade.galleries.client.ui.CmsVfsTab;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsGalleryTreeEntry;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
+import org.opencms.ade.galleries.shared.CmsSitemapEntryBean;
+import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.gwt.client.CmsCoreProvider;
@@ -194,43 +198,53 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
      * @param searchObj the current search object
      * @param dialogBean the current dialog data bean
      * @param controller the dialog controller
+     * @param isFirstTime true if this method is called the first time for the gallery dialog instance 
      */
     public void onInitialSearch(
         final CmsGallerySearchBean searchObj,
         final CmsGalleryDataBean dialogBean,
-        final CmsGalleryController controller) {
+        final CmsGalleryController controller,
+        boolean isFirstTime) {
 
         m_mode = dialogBean.getMode();
-        if (m_mode.equals(I_CmsGalleryProviderConstants.GalleryMode.view)) {
-            RootPanel panel = RootPanel.get(I_CmsGalleryProviderConstants.GALLERY_DIALOG_ID);
-            panel.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popup());
-            panel.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupContent());
-            CmsPushButton closeButton = new CmsPushButton();
-            closeButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
-            closeButton.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().closePopup());
-            closeButton.setImageClass(I_CmsLayoutBundle.INSTANCE.dialogCss().closePopupImage());
-            closeButton.addClickHandler(new ClickHandler() {
+        if (isFirstTime) {
+            if (m_mode.equals(I_CmsGalleryProviderConstants.GalleryMode.view)) {
 
-                public void onClick(ClickEvent event) {
+                RootPanel panel = RootPanel.get(I_CmsGalleryProviderConstants.GALLERY_DIALOG_ID);
+                panel.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popup());
+                panel.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupContent());
+                CmsPushButton closeButton = new CmsPushButton();
+                closeButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+                closeButton.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().closePopup());
+                closeButton.setImageClass(I_CmsLayoutBundle.INSTANCE.dialogCss().closePopupImage());
+                closeButton.addClickHandler(new ClickHandler() {
 
-                    String closeLink = getCloseLink() + "?resource=";
-                    Window.Location.assign(CmsCoreProvider.get().link(closeLink));
-                }
-            });
-            panel.add(closeButton);
-            panel.setWidth("660px");
-            panel.getElement().getStyle().setProperty("margin", "20px auto");
-        } else if (m_mode.equals(I_CmsGalleryProviderConstants.GalleryMode.editor)) {
-            RootPanel panel = RootPanel.get(I_CmsGalleryProviderConstants.GALLERY_DIALOG_ID);
-            panel.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popup());
-            panel.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupContent());
-            panel.addStyleName(org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.galleryDialogCss().editorGallery());
+                    public void onClick(ClickEvent event) {
+
+                        String closeLink = getCloseLink() + "?resource=";
+                        Window.Location.assign(CmsCoreProvider.get().link(closeLink));
+                    }
+                });
+                panel.add(closeButton);
+                panel.setWidth("660px");
+                panel.getElement().getStyle().setProperty("margin", "20px auto");
+
+            } else if (m_mode.equals(I_CmsGalleryProviderConstants.GalleryMode.editor)) {
+
+                RootPanel panel = RootPanel.get(I_CmsGalleryProviderConstants.GALLERY_DIALOG_ID);
+                panel.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popup());
+                panel.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupContent());
+                panel.addStyleName(org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.galleryDialogCss().editorGallery());
+
+            }
+
+            if ((dialogBean.getSitemapSiteSelectorOptions() == null)
+                || dialogBean.getSitemapSiteSelectorOptions().isEmpty()) {
+                controller.removeTab(GalleryTabId.cms_tab_sitemap);
+            }
+            m_galleryDialog.fillTabs(controller);
         }
-        if ((dialogBean.getSitemapSiteSelectorOptions() == null)
-            || dialogBean.getSitemapSiteSelectorOptions().isEmpty()) {
-            controller.removeTab(GalleryTabId.cms_tab_sitemap);
-        }
-        m_galleryDialog.fillTabs(controller);
+
         if ((m_galleryDialog.getGalleriesTab() != null) && (dialogBean.getGalleries() != null)) {
             Collections.sort(dialogBean.getGalleries(), new CmsComparatorTitle(true));
             setGalleriesTabContent(dialogBean.getGalleries(), searchObj.getGalleries());
@@ -242,16 +256,34 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
             setCategoriesTabContent(dialogBean.getCategories());
         }
         GalleryTabId startTab = dialogBean.getStartTab();
+
+        // start tab from the search bean may override the start tab from the data bean 
+        GalleryTabId searchTabId = searchObj.getInitialTabId();
+        if ((searchTabId != null) && (m_galleryDialog.getTab(searchTabId) != null)) {
+            startTab = searchTabId;
+        }
+        if (startTab == GalleryTabId.cms_tab_results) {
+            if (!searchObj.isEmpty()) {
+                m_galleryDialog.fillResultTab(searchObj);
+            }
+        }
+        CmsSitemapEntryBean sitemapPreloadData = searchObj.getSitemapPreloadData();
+        if ((sitemapPreloadData != null) && (m_galleryDialog.getSitemapTab() != null)) {
+            onReceiveSitemapPreloadData(sitemapPreloadData);
+        }
+        CmsVfsEntryBean vfsPreloadData = searchObj.getVfsPreloadData();
+        if (m_galleryDialog.getVfsTab() != null) {
+            if (vfsPreloadData != null) {
+                onReceiveVfsPreloadData(vfsPreloadData);
+            } else if ((dialogBean.getVfsRootFolders() != null)) {
+                m_galleryDialog.getVfsTab().fillInitially(dialogBean.getVfsRootFolders());
+            }
+        }
         if (startTab == GalleryTabId.cms_tab_results) {
             if (searchObj.isEmpty()) {
                 // if there are no search parameters set, don't show the result tab
                 startTab = m_mode.getTabs()[0];
-            } else {
-                m_galleryDialog.fillResultTab(searchObj);
             }
-        }
-        if ((dialogBean.getVfsRootFolders() != null) && (m_galleryDialog.getVfsTab() != null)) {
-            m_galleryDialog.getVfsTab().fillInitially(dialogBean.getVfsRootFolders());
         }
         m_galleryDialog.selectTab(startTab, startTab != GalleryTabId.cms_tab_results);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(searchObj.getResourcePath())
@@ -272,6 +304,33 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
                     }
                 });
             }
+        }
+
+    }
+
+    /**
+     * This method is called when preloaded sitemap tree state data is loaded.<p>
+     * 
+     * @param sitemapPreloadData the sitemap preload data 
+     */
+    public void onReceiveSitemapPreloadData(CmsSitemapEntryBean sitemapPreloadData) {
+
+        CmsSitemapTab sitemapTab = m_galleryDialog.getSitemapTab();
+        if (sitemapTab != null) {
+            sitemapTab.onReceiveSitemapPreloadData(sitemapPreloadData);
+        }
+    }
+
+    /**
+     * This method is called when preloaded VFS tree state data is loaded.<p>
+     * 
+     * @param vfsPreloadData the preload data 
+     */
+    public void onReceiveVfsPreloadData(CmsVfsEntryBean vfsPreloadData) {
+
+        CmsVfsTab vfsTab = m_galleryDialog.getVfsTab();
+        if (vfsTab != null) {
+            vfsTab.onReceiveVfsPreloadData(vfsPreloadData);
         }
     }
 
@@ -426,7 +485,24 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
      */
     protected native String getCloseLink() /*-{
 
-                                           return $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::ATTR_CLOSE_LINK];
-                                           }-*/;
+      return $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::ATTR_CLOSE_LINK];
+    }-*/;
+
+    /**
+     * Causes the preloaded tree states to be displayed in the tree tabs.<p>
+     * 
+     * @param result the gallery search bean from which to take the preload data 
+     */
+    protected void showPreloadDataInTabs(CmsGallerySearchBean result) {
+
+        CmsSitemapEntryBean sitemapPreloadData = result.getSitemapPreloadData();
+        if (sitemapPreloadData != null) {
+            onReceiveSitemapPreloadData(sitemapPreloadData);
+        }
+        CmsVfsEntryBean vfsPreloadData = result.getVfsPreloadData();
+        if (vfsPreloadData != null) {
+            onReceiveVfsPreloadData(vfsPreloadData);
+        }
+    }
 
 }

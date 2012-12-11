@@ -127,6 +127,9 @@ public class CmsListItem extends Composite implements I_CmsListItem {
     /** The provisional drag parent. */
     protected Element m_provisionalParent;
 
+    /** Arbitrary data belonging to the list item. */
+    private Object m_data;
+
     /** The drag helper. */
     private Element m_helper;
 
@@ -199,6 +202,17 @@ public class CmsListItem extends Composite implements I_CmsListItem {
     public CmsCheckBox getCheckBox() {
 
         return m_checkbox;
+    }
+
+    /**
+     * Gets the data belonging to the list item.<p>
+     * 
+     * @return the data belonging to the list item 
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T getData() {
+
+        return (T)m_data;
     }
 
     /**
@@ -416,6 +430,16 @@ public class CmsListItem extends Composite implements I_CmsListItem {
 
         CmsDomUtil.ensureMouseOut(getMoveHandle().getElement());
         setVisible(false);
+    }
+
+    /**
+     * Sets the data for this list item.<p>
+     * 
+     * @param data the data to set 
+     */
+    public void setData(Object data) {
+
+        m_data = data;
     }
 
     /**

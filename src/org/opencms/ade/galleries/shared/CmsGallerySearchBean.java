@@ -27,6 +27,7 @@
 
 package org.opencms.ade.galleries.shared;
 
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.util.CmsStringUtil;
 
@@ -84,6 +85,9 @@ public class CmsGallerySearchBean implements IsSerializable {
     /** Flag indicating if the search should include expired or unreleased resources. */
     private boolean m_includeExpired;
 
+    /** The id of a tab which will be set after an initial (CmsGalleryDataBean) search. */
+    private GalleryTabId m_initialTabId;
+
     /** The index of the last search results page. */
     private int m_lastPage;
 
@@ -117,6 +121,9 @@ public class CmsGallerySearchBean implements IsSerializable {
     /** The search scope. */
     private CmsGallerySearchScope m_scope;
 
+    /** The sitemap preload data. */
+    private CmsSitemapEntryBean m_sitemapPreloadData;
+
     /** The sort order of the search result. */
     private String m_sortOrder;
 
@@ -125,6 +132,9 @@ public class CmsGallerySearchBean implements IsSerializable {
 
     /** The list of the resource types ids (resource type name). */
     private List<String> m_types = new ArrayList<String>();
+
+    /** The VFS tree preload data. */
+    private CmsVfsEntryBean m_vfsPreloadData;
 
     /**
      * Empty default constructor. <p>
@@ -327,6 +337,16 @@ public class CmsGallerySearchBean implements IsSerializable {
     }
 
     /**
+     * Gets the initial tab id.<p>
+     * 
+     * @return the initial tab id 
+     */
+    public GalleryTabId getInitialTabId() {
+
+        return m_initialTabId;
+    }
+
+    /**
      * Gets the index of the last search results page.<p> 
      * 
      * @return the index of the last search results page 
@@ -440,6 +460,16 @@ public class CmsGallerySearchBean implements IsSerializable {
     }
 
     /**
+     * Gets the sitemap preload data.<p>
+     * 
+     * @return the sitemap preload data 
+     */
+    public CmsSitemapEntryBean getSitemapPreloadData() {
+
+        return m_sitemapPreloadData;
+    }
+
+    /**
      * Returns the sort order of the search results.<p>
      *
      * @return the sortOrder
@@ -467,6 +497,16 @@ public class CmsGallerySearchBean implements IsSerializable {
     public List<String> getTypes() {
 
         return m_types;
+    }
+
+    /**
+     * Gets the VFS preload data.<p>
+     * 
+     * @return the VFS preload data 
+     */
+    public CmsVfsEntryBean getVfsPreloadData() {
+
+        return m_vfsPreloadData;
     }
 
     /**
@@ -660,6 +700,16 @@ public class CmsGallerySearchBean implements IsSerializable {
     }
 
     /**
+     * Sets the initial tab id.<p>
+     * 
+     * @param initialTabId the initial tab id 
+     */
+    public void setInitialTabId(GalleryTabId initialTabId) {
+
+        m_initialTabId = initialTabId;
+    }
+
+    /**
      * Sets the index of the last search result page.<p>
      *  
      * @param lastPage the index of the last search result page 
@@ -770,6 +820,16 @@ public class CmsGallerySearchBean implements IsSerializable {
     }
 
     /**
+     * Sets the sitemap preload data.<p>
+     * 
+     * @param preloadData the sitemap preload data
+     */
+    public void setSitemapPreloadData(CmsSitemapEntryBean preloadData) {
+
+        m_sitemapPreloadData = preloadData;
+    }
+
+    /**
      * Sets the sortOrder.<p>
      *
      * @param sortOrder the sortOrder to set
@@ -801,5 +861,15 @@ public class CmsGallerySearchBean implements IsSerializable {
         } else {
             m_types = types;
         }
+    }
+
+    /**
+     * Sets the VFS tree preload data.<p>
+     * 
+     * @param preloadData the VFS tree preload data
+     */
+    public void setVfsPreloadData(CmsVfsEntryBean preloadData) {
+
+        m_vfsPreloadData = preloadData;
     }
 }

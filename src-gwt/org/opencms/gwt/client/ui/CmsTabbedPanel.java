@@ -65,56 +65,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @since 8.0.0
  * 
  */
-public class CmsTabbedPanel<E extends Widget> extends Composite {
-
-    /**
-     * Extending the TabLayoutPanel class to allow height adjustments to the tab bar.<p>
-     */
-    protected class TabPanel extends TabLayoutPanel {
-
-        /** The tab content panel. */
-        private DeckLayoutPanel m_contentPanel;
-
-        /** The tab bar. */
-        private FlowPanel m_tabBar;
-
-        /** 
-         * Constructor.<p>
-         * 
-         * @param barHeight the tab bar height
-         * @param barUnit the height unit
-         */
-        public TabPanel(double barHeight, Unit barUnit) {
-
-            super(barHeight, barUnit);
-            LayoutPanel tabLayout = (LayoutPanel)getWidget();
-            // Find the tab bar, which is the first flow panel in the LayoutPanel
-            for (int i = 0; i < tabLayout.getWidgetCount(); ++i) {
-                Widget widget = tabLayout.getWidget(i);
-                if (widget instanceof FlowPanel) {
-                    m_tabBar = (FlowPanel)widget;
-                    break; // tab bar found
-                }
-            }
-
-            for (int i = 0; i < tabLayout.getWidgetCount(); ++i) {
-                Widget widget = tabLayout.getWidget(i);
-                if (widget instanceof DeckLayoutPanel) {
-                    m_contentPanel = (DeckLayoutPanel)widget;
-                    break; // tab bar found
-                }
-            }
-        }
-
-        /**
-         * Checks the tab bar for necessary height adjustments.<p>
-         */
-        protected void checkTabOverflow() {
-
-            int height = m_tabBar.getOffsetHeight();
-            m_contentPanel.getElement().getParentElement().getStyle().setTop(height, Unit.PX);
-        }
-    }
+public class CmsTabbedPanel<E extends Widget> extends Composite implements Iterable<E> {
 
     /** Enumeration with layout keys. */
     public enum CmsTabbedPanelStyle {
@@ -183,14 +134,63 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
         }
     }
 
+    /**
+     * Extending the TabLayoutPanel class to allow height adjustments to the tab bar.<p>
+     */
+    protected class TabPanel extends TabLayoutPanel {
+
+        /** The tab content panel. */
+        private DeckLayoutPanel m_contentPanel;
+
+        /** The tab bar. */
+        private FlowPanel m_tabBar;
+
+        /** 
+         * Constructor.<p>
+         * 
+         * @param barHeight the tab bar height
+         * @param barUnit the height unit
+         */
+        public TabPanel(double barHeight, Unit barUnit) {
+
+            super(barHeight, barUnit);
+            LayoutPanel tabLayout = (LayoutPanel)getWidget();
+            // Find the tab bar, which is the first flow panel in the LayoutPanel
+            for (int i = 0; i < tabLayout.getWidgetCount(); ++i) {
+                Widget widget = tabLayout.getWidget(i);
+                if (widget instanceof FlowPanel) {
+                    m_tabBar = (FlowPanel)widget;
+                    break; // tab bar found
+                }
+            }
+
+            for (int i = 0; i < tabLayout.getWidgetCount(); ++i) {
+                Widget widget = tabLayout.getWidget(i);
+                if (widget instanceof DeckLayoutPanel) {
+                    m_contentPanel = (DeckLayoutPanel)widget;
+                    break; // tab bar found
+                }
+            }
+        }
+
+        /**
+         * Checks the tab bar for necessary height adjustments.<p>
+         */
+        protected void checkTabOverflow() {
+
+            int height = m_tabBar.getOffsetHeight();
+            m_contentPanel.getElement().getParentElement().getStyle().setTop(height, Unit.PX);
+        }
+    }
+
+    /** The TabLayoutPanel widget. */
+    TabPanel m_tabPanel;
+
     /** Stores the indexes and the title of disabled tabs. */
     private Map<Integer, String> m_disabledTabIndexes = new HashMap<Integer, String>();
 
     /** The tab panel style. */
     private CmsTabbedPanelStyle m_panelStyle;
-
-    /** The TabLayoutPanel widget. */
-    TabPanel m_tabPanel;
 
     /** A map from ids to tabs. */
     private Map<String, E> m_tabsById = new HashMap<String, E>();

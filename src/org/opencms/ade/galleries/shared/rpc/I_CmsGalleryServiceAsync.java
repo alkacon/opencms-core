@@ -34,8 +34,10 @@ import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.ade.galleries.shared.CmsSitemapEntryBean;
 import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
+import org.opencms.util.CmsUUID;
 
 import java.util.List;
+import java.util.Set;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -123,6 +125,22 @@ public interface I_CmsGalleryServiceAsync {
      * @param resultCallback the callback for the result 
      * */
     void loadVfsEntryBean(String path, AsyncCallback<CmsVfsEntryBean> resultCallback);
+
+    /**
+     * Saves the tree open state.<p>
+     * 
+     * @param treeName the tree name 
+     * @param treeToken the tree token 
+     * @param siteRoot the site root 
+     * @param openItems the open items 
+     * @param callback the result callback 
+     */
+    void saveTreeOpenState(
+        String treeName,
+        String treeToken,
+        String siteRoot,
+        Set<CmsUUID> openItems,
+        AsyncCallback<Void> callback);
 
     /**
      * Updates the offline indices.<p>

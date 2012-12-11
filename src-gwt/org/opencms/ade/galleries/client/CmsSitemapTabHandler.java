@@ -30,12 +30,16 @@ package org.opencms.ade.galleries.client;
 import org.opencms.ade.galleries.client.ui.CmsSitemapTab;
 import org.opencms.ade.galleries.shared.CmsSiteSelectorOption;
 import org.opencms.ade.galleries.shared.CmsSitemapEntryBean;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Handler class for the sitemap tree tab.<p>
@@ -44,8 +48,8 @@ import java.util.List;
  */
 public class CmsSitemapTabHandler extends A_CmsTabHandler {
 
-    /** The sitemap tab which this handler belongs to. */
-    CmsSitemapTab m_tab;
+    /** The site root used for loading / saving tree state data. */
+    private String m_siteRoot;
 
     /**
      * Creates a new sitemap tab handler.<p>
@@ -133,6 +137,16 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
     }
 
     /**
+     * This method is called when the tree open state changes.<p>
+     * 
+     * @param openItemIds the structure ids of open entries 
+     */
+    public void onChangeTreeState(Set<CmsUUID> openItemIds) {
+
+        m_controller.saveTreeState(I_CmsGalleryProviderConstants.TREE_SITEMAP, m_siteRoot, openItemIds);
+    }
+
+    /**
      * @see org.opencms.ade.galleries.client.A_CmsTabHandler#onSelection()
      */
     @Override
@@ -144,10 +158,11 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
             String siteRoot = m_controller.getPreselectOption(
                 m_controller.getStartSiteRoot(),
                 m_controller.getSitemapSiteSelectorOptions());
-            getTab().setSortSelectBoxValue(siteRoot);
+            getTab().setSortSelectBoxValue(siteRoot, true);
             if (siteRoot == null) {
                 siteRoot = m_controller.getDefaultVfsTabSiteRoot();
             }
+            m_siteRoot = siteRoot;
             getSubEntries(siteRoot, true, new I_CmsSimpleCallback<List<CmsSitemapEntryBean>>() {
 
                 public void execute(List<CmsSitemapEntryBean> result) {
@@ -163,15 +178,18 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
      * @see org.opencms.ade.galleries.client.A_CmsTabHandler#onSort(java.lang.String, java.lang.String)
      */
     @Override
-    public void onSort(String sortParams, String filter) {
+    public void onSort(final String sortParams, String filter) {
 
         m_controller.getSubEntries(sortParams, true, new I_CmsSimpleCallback<List<CmsSitemapEntryBean>>() {
 
             public void execute(List<CmsSitemapEntryBean> entries) {
 
-                m_tab.fillInitially(entries);
+                getTab().fillInitially(entries);
+                setSiteRoot(sortParams);
+                onChangeTreeState(new HashSet<CmsUUID>());
             }
         });
+
     }
 
     /**
@@ -184,16 +202,6 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
     }
 
     /**
-     * Sets the tab for the handler.<p>
-     * 
-     * @param tab the tab for this handler 
-     */
-    public void setTab(CmsSitemapTab tab) {
-
-        m_tab = tab;
-    }
-
-    /**
      * Returns the sitemap tab.<p>
      * 
      * @return the sitemap tab
@@ -203,4 +211,13 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
         return m_controller.m_handler.m_galleryDialog.getSitemapTab();
     }
 
+    /**
+     * Setter for the site root attribute.<p>
+     * 
+     * @param siteRoot the new value for the site root attribute
+     */
+    protected void setSiteRoot(String siteRoot) {
+
+        m_siteRoot = siteRoot;
+    }
 }

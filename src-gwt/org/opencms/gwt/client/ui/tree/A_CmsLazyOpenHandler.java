@@ -67,7 +67,7 @@ public abstract class A_CmsLazyOpenHandler<I extends CmsLazyTreeItem> implements
         @Override
         public void run() {
 
-            m_target.setOpen(true);
+            m_target.setOpen(true, false);
         }
     }
 
@@ -82,7 +82,7 @@ public abstract class A_CmsLazyOpenHandler<I extends CmsLazyTreeItem> implements
         }
         new OpenTimer(target).schedule(500);
         target.onStartLoading();
-        target.setOpen(false);
+        target.setOpen(false, false);
         load(target);
     }
 }

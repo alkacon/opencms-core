@@ -227,7 +227,7 @@ public class CmsTreeItem extends CmsListItem {
      * @return the path level
      */
     protected static native int getPathLevel(String path)/*-{
-        return path.match(/\//g).length - 1;
+      return path.match(/\//g).length - 1;
     }-*/;
 
     /**
@@ -696,11 +696,22 @@ public class CmsTreeItem extends CmsListItem {
      */
     public void setOpen(boolean open) {
 
+        setOpen(open, true);
+    }
+
+    /**
+     * Opens or closes this tree item (i.e. shows or hides its descendants).<p>
+     * 
+     * @param open if <code>true</code>, open the tree item, else close it
+     * @param fireEvents true if the open/close events should be fired 
+     */
+    public void setOpen(boolean open, boolean fireEvents) {
+
         if (m_open == open) {
             return;
         }
         m_open = open;
-        executeOpen();
+        executeOpen(fireEvents);
         CmsDomUtil.resizeAncestor(getParent());
     }
 
@@ -795,8 +806,10 @@ public class CmsTreeItem extends CmsListItem {
 
     /**
      * Executes the open call.<p>
+     * 
+     * @param fireEvents if true, open/close events will be fired 
      */
-    protected void executeOpen() {
+    protected void executeOpen(boolean fireEvents) {
 
         m_styleVar.setValue(m_open ? CSS.listTreeItemOpen() : CSS.listTreeItemClosed());
         setLeafStyle(false);
@@ -804,11 +817,25 @@ public class CmsTreeItem extends CmsListItem {
         if (m_opener.isDown() != m_open) {
             m_opener.setDown(m_open);
         }
-        if (m_open) {
-            fireOpen();
+        if (fireEvents) {
+            if (m_open) {
+                fireOpen();
+            } else {
+                fireClose();
+            }
         }
         // reset the leaf style according to the child count
         setLeafStyle(0 == getChildCount());
+    }
+
+    /**
+     * Fires the close event.<p>
+     */
+    protected void fireClose() {
+
+        if (m_tree != null) {
+            m_tree.fireClose(this);
+        }
     }
 
     /** 

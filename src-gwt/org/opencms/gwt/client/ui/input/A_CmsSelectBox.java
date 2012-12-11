@@ -387,6 +387,17 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
      */
     public void setFormValue(Object value) {
 
+        setFormValue(value, true);
+    }
+
+    /**
+     * Sets the form value of this select box.<p>
+     * 
+     * @param value the new value
+     * @param fireEvents true if change events should be fired  
+     */
+    public void setFormValue(Object value, boolean fireEvents) {
+
         if (value == null) {
             value = "";
         }
@@ -398,7 +409,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
         }
         if (value instanceof String) {
             String strValue = (String)value;
-            onValueSelect(strValue);
+            onValueSelect(strValue, fireEvents);
         }
     }
 
@@ -500,17 +511,30 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
     protected abstract void initOpener();
 
     /**
-     * Internal handler method which is called when a new value is selected.<p>
+     * This method is called when a value is selected.<p>
      * 
-     * @param value the new value
+     * @param value the selected value 
      */
     protected void onValueSelect(String value) {
 
+        onValueSelect(value, true);
+    }
+
+    /**
+     * Internal handler method which is called when a new value is selected.<p>
+     * 
+     * @param value the new value
+     * @param fireEvents true if change events should be fired 
+     */
+    protected void onValueSelect(String value, boolean fireEvents) {
+
         String oldValue = m_selectedValue;
         selectValue(value);
-        if ((oldValue == null) || !oldValue.equals(value)) {
-            // fire value change only if the the value really changed
-            ValueChangeEvent.<String> fire(this, value);
+        if (fireEvents) {
+            if ((oldValue == null) || !oldValue.equals(value)) {
+                // fire value change only if the the value really changed
+                ValueChangeEvent.<String> fire(this, value);
+            }
         }
     }
 

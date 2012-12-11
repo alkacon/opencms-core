@@ -35,8 +35,10 @@ import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.ade.galleries.shared.CmsSitemapEntryBean;
 import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.gwt.CmsRpcException;
+import org.opencms.util.CmsUUID;
 
 import java.util.List;
+import java.util.Set;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 
@@ -147,6 +149,19 @@ public interface I_CmsGalleryService extends RemoteService {
      *  @throws CmsRpcException if something goes wrong 
      * */
     CmsVfsEntryBean loadVfsEntryBean(String path) throws CmsRpcException;
+
+    /**
+     * Saves the tree open state for a tree tab.<p>
+     * 
+     * @param treeName the tree name for which to save the tree state  
+     * @param treeToken the tree token for which to save the tree state 
+     * @param siteRoot the site root 
+     * @param openItems the set of structure ids of open tree items 
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    void saveTreeOpenState(String treeName, String treeToken, String siteRoot, Set<CmsUUID> openItems)
+    throws CmsRpcException;
 
     /**
      * Updates the offline indices.<p>

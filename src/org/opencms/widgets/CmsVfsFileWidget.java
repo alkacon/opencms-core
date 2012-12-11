@@ -40,6 +40,7 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
@@ -51,6 +52,9 @@ import java.util.Locale;
 import java.util.Set;
 
 import org.apache.commons.collections.Factory;
+import org.apache.commons.logging.Log;
+
+import com.google.common.base.Objects;
 
 /**
  * Provides a OpenCms VFS file selection widget, for use on a widget dialog.<p>
@@ -121,6 +125,9 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
 
     /** The default search types macro name. */
     public static final String DEFAULT_SEARCH_TYPES_MACRO = "defaultSearchTypes";
+
+    /** The logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsVfsFileWidget.class);
 
     /** Flag to determine if files should be shown in popup window. */
     private boolean m_includeFiles;
@@ -295,50 +302,7 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
         CmsResource resource,
         Locale contentLocale) {
 
-        JSONObject config = new JSONObject();
-        try {
-            config.put(I_CmsGalleryProviderConstants.CONFIG_START_SITE, m_startSite);
-            String tabIds = null;
-            if (m_includeFiles) {
-                tabIds = GalleryTabId.cms_tab_types.name()
-                    + ","
-                    + GalleryTabId.cms_tab_galleries.name()
-                    + ","
-                    + GalleryTabId.cms_tab_vfstree.name()
-                    + ","
-                    + GalleryTabId.cms_tab_sitemap.name()
-                    + ","
-                    + GalleryTabId.cms_tab_categories.name()
-                    + ","
-                    + GalleryTabId.cms_tab_search.name()
-                    + ","
-                    + GalleryTabId.cms_tab_results.name();
-            } else {
-                tabIds = GalleryTabId.cms_tab_vfstree.name();
-            }
-            config.put(I_CmsGalleryProviderConstants.CONFIG_TAB_IDS, tabIds);
-            config.put(I_CmsGalleryProviderConstants.CONFIG_SHOW_SITE_SELECTOR, m_showSiteSelector);
-            config.put(I_CmsGalleryProviderConstants.CONFIG_REFERENCE_PATH, cms.getSitePath(resource));
-            config.put(I_CmsGalleryProviderConstants.CONFIG_LOCALE, contentLocale.toString());
-            config.put(I_CmsGalleryProviderConstants.CONFIG_GALLERY_MODE, GalleryMode.widget.name());
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_selectableTypes)) {
-                config.put(I_CmsGalleryProviderConstants.CONFIG_RESOURCE_TYPES, m_selectableTypes.trim());
-            }
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_searchTypes)) {
-                CmsMacroResolver resolver = CmsMacroResolver.newInstance();
-                resolver.addDynamicMacro(DEFAULT_SEARCH_TYPES_MACRO, new SearchTypesFactory(cms, resource));
-                String searchTypes = resolver.resolveMacros(m_searchTypes.trim());
-                config.put(I_CmsGalleryProviderConstants.CONFIG_SEARCH_TYPES, searchTypes);
-            } else if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_selectableTypes)) {
-                config.put(I_CmsGalleryProviderConstants.CONFIG_SEARCH_TYPES, getDefaultSearchTypes(cms, resource));
-            }
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_startFolder)) {
-                config.put(I_CmsGalleryProviderConstants.CONFIG_START_FOLDER, m_startFolder);
-            }
-        } catch (JSONException e) {
-            // TODO: Auto-generated catch block
-            e.printStackTrace();
-        }
+        JSONObject config = getJsonConfig(cms, schemaType, messages, resource, contentLocale);
         return config.toString();
     }
 
@@ -580,5 +544,86 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
             }
         }
         super.setConfiguration(configuration);
+    }
+
+    /**
+     * Gets the JSON configuration.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param schemaType the schema type
+     * @param messages the messages 
+     * @param resource the content resource 
+     * @param contentLocale the content locale 
+     * 
+     * @return the JSON configuration object 
+     */
+    protected JSONObject getJsonConfig(
+        CmsObject cms,
+        A_CmsXmlContentValue schemaType,
+        CmsMessages messages,
+        CmsResource resource,
+        Locale contentLocale) {
+
+        JSONObject config = new JSONObject();
+        try {
+            config.put(I_CmsGalleryProviderConstants.CONFIG_START_SITE, m_startSite);
+            String tabIds = null;
+            if (m_includeFiles) {
+                tabIds = GalleryTabId.cms_tab_types.name()
+                    + ","
+                    + GalleryTabId.cms_tab_galleries.name()
+                    + ","
+                    + GalleryTabId.cms_tab_vfstree.name()
+                    + ","
+                    + GalleryTabId.cms_tab_sitemap.name()
+                    + ","
+                    + GalleryTabId.cms_tab_categories.name()
+                    + ","
+                    + GalleryTabId.cms_tab_search.name()
+                    + ","
+                    + GalleryTabId.cms_tab_results.name();
+            } else {
+                tabIds = GalleryTabId.cms_tab_vfstree.name();
+            }
+            config.put(I_CmsGalleryProviderConstants.CONFIG_TAB_IDS, tabIds);
+            config.put(I_CmsGalleryProviderConstants.CONFIG_SHOW_SITE_SELECTOR, m_showSiteSelector);
+            config.put(I_CmsGalleryProviderConstants.CONFIG_REFERENCE_PATH, cms.getSitePath(resource));
+            config.put(I_CmsGalleryProviderConstants.CONFIG_LOCALE, contentLocale.toString());
+            config.put(I_CmsGalleryProviderConstants.CONFIG_GALLERY_MODE, GalleryMode.widget.name());
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_selectableTypes)) {
+                config.put(I_CmsGalleryProviderConstants.CONFIG_RESOURCE_TYPES, m_selectableTypes.trim());
+            }
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_searchTypes)) {
+                CmsMacroResolver resolver = CmsMacroResolver.newInstance();
+                resolver.addDynamicMacro(DEFAULT_SEARCH_TYPES_MACRO, new SearchTypesFactory(cms, resource));
+                String searchTypes = resolver.resolveMacros(m_searchTypes.trim());
+                config.put(I_CmsGalleryProviderConstants.CONFIG_SEARCH_TYPES, searchTypes);
+            } else if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_selectableTypes)) {
+                config.put(I_CmsGalleryProviderConstants.CONFIG_SEARCH_TYPES, getDefaultSearchTypes(cms, resource));
+            }
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_startFolder)) {
+                config.put(I_CmsGalleryProviderConstants.CONFIG_START_FOLDER, m_startFolder);
+            }
+            String treeToken = "" + Objects.hashCode(m_startSite, cms.getRequestContext().getSiteRoot());
+            config.put(I_CmsGalleryProviderConstants.CONFIG_TREE_TOKEN, treeToken);
+        } catch (JSONException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        return config;
+    }
+
+    /**
+     * Computes the tree token, which is used to decide which preloaded tree, if any, to load for the VFS/sitemap tabs.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param value the content value 
+     * @param resource the content resource
+     * @param contentLocale the content locale
+     *  
+     * @return the tree token
+     */
+    protected String getTreeToken(CmsObject cms, A_CmsXmlContentValue value, CmsResource resource, Locale contentLocale) {
+
+        return cms.getRequestContext().getSiteRoot();
     }
 }

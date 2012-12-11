@@ -128,6 +128,17 @@ public interface I_CmsGalleryConfiguration {
      */
     GalleryTabId[] getTabIds();
 
+    /** 
+     * Gets the tree token.<p>
+     * 
+     * The tree token is used to save/load tree opening states for tree tabs in the gallery
+     * dialog. If two widget instances use different tree tokens, opening or closing tree entries
+     * in one will not effect the tree opening state of the other. 
+     * 
+     * @return the tree token 
+     */
+    String getTreeToken();
+
     /**
      * Returns if files are selectable.<p>
      * 

@@ -494,4 +494,24 @@ public final class CmsStringUtil {
         }
         return new String(result);
     }
+    
+    public static boolean comparePaths(String path1, String path2) {
+
+        return addLeadingAndTrailingSlash(path1).equals(addLeadingAndTrailingSlash(path2));
+    }
+    
+    private static String addLeadingAndTrailingSlash(String path) {
+
+        StringBuffer buffer1 = new StringBuffer();
+        if (!path.startsWith("/")) {
+            buffer1.append("/");
+        }
+        buffer1.append(path);
+        if (!path.endsWith("/")) {
+            buffer1.append("/");
+        }
+        return buffer1.toString();
+    }
+
+
 }

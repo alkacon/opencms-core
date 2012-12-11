@@ -82,7 +82,13 @@ public class CmsGalleryPopup extends CmsPopup {
      */
     public void searchElement(String path) {
 
-        center();
-        m_controller.searchElement(path);
+        //center();
+        m_controller.searchElement(path, new Runnable() {
+
+            public void run() {
+
+                center();
+            }
+        });
     }
 }

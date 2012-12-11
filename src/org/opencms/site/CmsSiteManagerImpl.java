@@ -498,7 +498,11 @@ public final class CmsSiteManagerImpl {
      */
     public String getSiteRoot(String rootPath) {
 
-        // most sites will be below the "/sites/" folder, 
+        // add a trailing slash, because the path may be the path of a site root itself 
+        if (!rootPath.endsWith("/")) {
+            rootPath = rootPath + "/";
+        }
+        // most sites will be below the "/sites/" folder,
         CmsSite site = lookupSitesFolder(rootPath);
         if (site != null) {
             return site.getSiteRoot();

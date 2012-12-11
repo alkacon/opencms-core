@@ -39,11 +39,23 @@ import org.opencms.gwt.client.ui.tree.CmsLazyTree;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsIconUtil;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.IdentityHashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
 
 /**
  * The tab widget for selecting sitemap entries.<p>
@@ -52,14 +64,14 @@ import java.util.List;
  */
 public class CmsSitemapTab extends A_CmsListTab {
 
-    /** A map from tree items to the corresponding data beans. */
-    protected IdentityHashMap<CmsLazyTreeItem, CmsSitemapEntryBean> m_entryMap = new IdentityHashMap<CmsLazyTreeItem, CmsSitemapEntryBean>();
-
     /** The tab handler. */
-    private CmsSitemapTabHandler m_handler;
+    CmsSitemapTabHandler m_handler;
 
     /** The initialized flag. */
     private boolean m_initialized;
+
+    /** The list of sitemap tree items. */
+    private List<CmsLazyTreeItem> m_items = new ArrayList<CmsLazyTreeItem>();
 
     /**
      * Constructor.<p>
@@ -109,12 +121,26 @@ public class CmsSitemapTab extends A_CmsListTab {
     }
 
     /**
+     * Method which is called when the sitemap preload data is received.<p>
+     * 
+     * @param sitemapPreloadData the sitemap tree's preloaded root entry 
+     */
+    public void onReceiveSitemapPreloadData(CmsSitemapEntryBean sitemapPreloadData) {
+
+        fillInitially(Collections.singletonList(sitemapPreloadData));
+        String siteRoot = sitemapPreloadData.getSiteRoot();
+        if (siteRoot != null) {
+            selectSite(siteRoot);
+        }
+    }
+
+    /**
      * Clears the contents of the tab and resets the mapping from tree items to VFS beans.<p>
      */
     protected void clear() {
 
         clearList();
-        m_entryMap = new IdentityHashMap<CmsLazyTreeItem, CmsSitemapEntryBean>();
+        m_items.clear();
     }
 
     /**
@@ -135,6 +161,7 @@ public class CmsSitemapTab extends A_CmsListTab {
         }
 
         CmsLazyTreeItem result = new CmsLazyTreeItem(dataValue, true);
+        result.setData(sitemapEntry);
         if (getTabHandler().hasSelectResource()) {
             dataValue.addButton(createSelectResourceButton(
                 m_handler.getSelectPath(sitemapEntry),
@@ -142,16 +169,24 @@ public class CmsSitemapTab extends A_CmsListTab {
                 sitemapEntry.getDisplayName(),
                 sitemapEntry.getType()));
         }
-        m_entryMap.put(result, sitemapEntry);
-        //      m_itemsByPath.put(sitemapEntry.getSitePath(), result);
         result.setLeafStyle(!sitemapEntry.isFolder());
         result.setSmallView(true);
         if (sitemapEntry.hasChildren()) {
             for (CmsSitemapEntryBean child : sitemapEntry.getChildren()) {
                 result.addChild(createItem(child));
             }
+            result.setOpen(true, false);
             result.onFinishLoading();
         }
+        m_items.add(result);
+        final CmsLazyTreeItem constResult = result;
+        dataValue.getLabelWidget().addClickHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent e) {
+
+                constResult.setOpen(true);
+            }
+        });
         return result;
     }
 
@@ -161,29 +196,55 @@ public class CmsSitemapTab extends A_CmsListTab {
     @Override
     protected CmsList<? extends I_CmsListItem> createScrollList() {
 
-        return new CmsLazyTree<CmsLazyTreeItem>(new A_CmsLazyOpenHandler<CmsLazyTreeItem>() {
+        CmsLazyTree<CmsLazyTreeItem> result = new CmsLazyTree<CmsLazyTreeItem>(
+            new A_CmsLazyOpenHandler<CmsLazyTreeItem>() {
 
-            /**
-             * @see org.opencms.gwt.client.ui.tree.I_CmsLazyOpenHandler#load(org.opencms.gwt.client.ui.tree.CmsLazyTreeItem)
-             */
-            public void load(final CmsLazyTreeItem target) {
+                /**
+                 * @see org.opencms.gwt.client.ui.tree.I_CmsLazyOpenHandler#load(org.opencms.gwt.client.ui.tree.CmsLazyTreeItem)
+                 */
+                public void load(final CmsLazyTreeItem target) {
 
-                CmsSitemapEntryBean entry = m_entryMap.get(target);
-                I_CmsSimpleCallback<List<CmsSitemapEntryBean>> callback = new I_CmsSimpleCallback<List<CmsSitemapEntryBean>>() {
+                    CmsSitemapEntryBean entry = target.getData();
+                    I_CmsSimpleCallback<List<CmsSitemapEntryBean>> callback = new I_CmsSimpleCallback<List<CmsSitemapEntryBean>>() {
 
-                    public void execute(List<CmsSitemapEntryBean> result) {
+                        public void execute(List<CmsSitemapEntryBean> loadedEntries) {
 
-                        for (CmsSitemapEntryBean childEntry : result) {
-                            CmsLazyTreeItem item = createItem(childEntry);
-                            target.addChild(item);
+                            for (CmsSitemapEntryBean childEntry : loadedEntries) {
+                                CmsLazyTreeItem item = createItem(childEntry);
+                                target.addChild(item);
+                            }
+                            target.onFinishLoading();
                         }
-                        target.onFinishLoading();
-                    }
-                };
+                    };
 
-                getTabHandler().getSubEntries(entry.getRootPath(), false, callback);
+                    getTabHandler().getSubEntries(entry.getRootPath(), false, callback);
+                }
+            });
+        result.addOpenHandler(new OpenHandler<CmsLazyTreeItem>() {
+
+            public void onOpen(OpenEvent<CmsLazyTreeItem> event) {
+
+                CmsLazyTreeItem target = event.getTarget();
+                CmsSitemapEntryBean entry = target.getData();
+                Set<CmsUUID> openItemIds = getOpenItemIds();
+                openItemIds.add(entry.getStructureId());
+                m_handler.onChangeTreeState(openItemIds);
+            }
+
+        });
+        result.addCloseHandler(new CloseHandler<CmsLazyTreeItem>() {
+
+            public void onClose(CloseEvent<CmsLazyTreeItem> event) {
+
+                CmsLazyTreeItem target = event.getTarget();
+                Set<CmsUUID> openItemIds = getOpenItemIds();
+                CmsSitemapEntryBean entry = target.getData();
+                openItemIds.remove(entry.getStructureId());
+                m_handler.onChangeTreeState(openItemIds);
             }
         });
+        return result;
+
     }
 
     /**
@@ -203,6 +264,43 @@ public class CmsSitemapTab extends A_CmsListTab {
     protected CmsSitemapTabHandler getTabHandler() {
 
         return m_handler;
+    }
+
+    /**
+     * Collects the structure ids belonging to open tree entries.<p>
+     * 
+     * @return the collected set of structure ids 
+     */
+    Set<CmsUUID> getOpenItemIds() {
+
+        Set<CmsUUID> result = new HashSet<CmsUUID>();
+        for (CmsLazyTreeItem item : m_items) {
+            CmsSitemapEntryBean entryBean = item.getData();
+            if (item.isOpen()) {
+                result.add(entryBean.getStructureId());
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Selects a specific site root.<p>
+     * 
+     * @param siteRoot the site root to select 
+     */
+    private void selectSite(String siteRoot) {
+
+        Map<String, String> options = m_sortSelectBox.getItems();
+        String option = null;
+        for (Map.Entry<String, String> entry : options.entrySet()) {
+            if (CmsStringUtil.comparePaths(entry.getKey(), siteRoot)) {
+                option = entry.getKey();
+                break;
+            }
+        }
+        if (option != null) {
+            m_sortSelectBox.setFormValue(option, false);
+        }
     }
 
 }

@@ -42,18 +42,26 @@ import org.opencms.gwt.client.ui.tree.A_CmsLazyOpenHandler;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
 import org.opencms.gwt.shared.CmsIconUtil;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.IdentityHashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -135,9 +143,6 @@ public class CmsVfsTab extends A_CmsListTab {
     /** Text metrics key. */
     private static final String TM_VFS_TAB = "VfsTab";
 
-    /** A map from tree items to the corresponding data beans. */
-    protected IdentityHashMap<CmsLazyTreeItem, CmsVfsEntryBean> m_entryMap = new IdentityHashMap<CmsLazyTreeItem, CmsVfsEntryBean>();
-
     /** The tab handler. */
     protected CmsVfsTabHandler m_tabHandler;
 
@@ -147,8 +152,14 @@ public class CmsVfsTab extends A_CmsListTab {
     /** Flag indicating files are included. */
     private boolean m_includeFiles;
 
+    /** Flag which indicates whether the tab has been initialized. */
+    private boolean m_initialized;
+
     /** A map of tree items indexed by VFS path. */
     private Map<String, CmsLazyTreeItem> m_itemsByPath = new HashMap<String, CmsLazyTreeItem>();
+
+    /** The list of tree items. */
+    private List<CmsLazyTreeItem> m_treeItems = new ArrayList<CmsLazyTreeItem>();
 
     /**
      * Constructor.<p>
@@ -177,6 +188,7 @@ public class CmsVfsTab extends A_CmsListTab {
             CmsLazyTreeItem item = createItem(entry);
             addWidgetToList(item);
         }
+        m_initialized = true;
     }
 
     /**
@@ -194,6 +206,30 @@ public class CmsVfsTab extends A_CmsListTab {
             result.add(panel);
         }
         return result;
+    }
+
+    /**
+     * Checks if the tab is initialized.<p>
+     * 
+     * @return true if the tab is initialized 
+     */
+    public boolean isInitialized() {
+
+        return m_initialized;
+    }
+
+    /**
+     * This method is called when the VFS tree preload data is received.<p>
+     * 
+     * @param vfsPreloadData the VFS tree preload data 
+     */
+    public void onReceiveVfsPreloadData(CmsVfsEntryBean vfsPreloadData) {
+
+        fillInitially(Collections.singletonList(vfsPreloadData));
+        String siteRoot = vfsPreloadData.getSiteRoot();
+        if (siteRoot != null) {
+            selectSite(siteRoot);
+        }
     }
 
     /**
@@ -218,7 +254,7 @@ public class CmsVfsTab extends A_CmsListTab {
 
         clearList();
         m_selectionHandlers.clear();
-        m_entryMap = new IdentityHashMap<CmsLazyTreeItem, CmsVfsEntryBean>();
+        m_treeItems.clear();
     }
 
     /**
@@ -278,12 +314,19 @@ public class CmsVfsTab extends A_CmsListTab {
                 vfsEntry.getDisplayName(),
                 I_CmsGalleryProviderConstants.RESOURCE_TYPE_FOLDER));
         }
-        m_entryMap.put(result, vfsEntry);
+        result.setData(vfsEntry);
         m_itemsByPath.put(vfsEntry.getRootPath(), result);
         result.setLeafStyle(false);
         result.setSmallView(true);
+        m_treeItems.add(result);
+        if (vfsEntry.getChildren() != null) {
+            for (CmsVfsEntryBean child : vfsEntry.getChildren()) {
+                result.addChild(createItem(child));
+            }
+            result.onFinishLoading();
+            result.setOpen(true, false);
+        }
         return result;
-
     }
 
     /**
@@ -292,43 +335,67 @@ public class CmsVfsTab extends A_CmsListTab {
     @Override
     protected CmsList<? extends I_CmsListItem> createScrollList() {
 
-        return new CmsLazyTree<CmsLazyTreeItem>(new A_CmsLazyOpenHandler<CmsLazyTreeItem>() {
+        CmsLazyTree<CmsLazyTreeItem> tree = new CmsLazyTree<CmsLazyTreeItem>(
+            new A_CmsLazyOpenHandler<CmsLazyTreeItem>() {
 
-            /**
-             * @see org.opencms.gwt.client.ui.tree.I_CmsLazyOpenHandler#load(org.opencms.gwt.client.ui.tree.CmsLazyTreeItem)
-             */
-            public void load(final CmsLazyTreeItem target) {
+                /**
+                 * @see org.opencms.gwt.client.ui.tree.I_CmsLazyOpenHandler#load(org.opencms.gwt.client.ui.tree.CmsLazyTreeItem)
+                 */
+                public void load(final CmsLazyTreeItem target) {
 
-                CmsVfsEntryBean entry = m_entryMap.get(target);
-                String path = entry.getRootPath();
-                AsyncCallback<List<CmsVfsEntryBean>> callback = new AsyncCallback<List<CmsVfsEntryBean>>() {
+                    CmsVfsEntryBean entry = target.getData();
+                    String path = entry.getRootPath();
+                    AsyncCallback<List<CmsVfsEntryBean>> callback = new AsyncCallback<List<CmsVfsEntryBean>>() {
 
-                    /**
-                     * @see com.google.gwt.user.client.rpc.AsyncCallback#onFailure(java.lang.Throwable)
-                     */
-                    public void onFailure(Throwable caught) {
+                        /**
+                         * @see com.google.gwt.user.client.rpc.AsyncCallback#onFailure(java.lang.Throwable)
+                         */
+                        public void onFailure(Throwable caught) {
 
-                        // should never be called 
+                            // should never be called 
 
-                    }
-
-                    /**
-                     * @see com.google.gwt.user.client.rpc.AsyncCallback#onSuccess(java.lang.Object)
-                     */
-                    public void onSuccess(List<CmsVfsEntryBean> result) {
-
-                        for (CmsVfsEntryBean childEntry : result) {
-                            CmsLazyTreeItem item = createItem(childEntry);
-                            target.addChild(item);
                         }
-                        target.onFinishLoading();
-                    }
-                };
 
-                m_tabHandler.getSubFolders(path, callback);
+                        /**
+                         * @see com.google.gwt.user.client.rpc.AsyncCallback#onSuccess(java.lang.Object)
+                         */
+                        public void onSuccess(List<CmsVfsEntryBean> result) {
 
+                            for (CmsVfsEntryBean childEntry : result) {
+                                CmsLazyTreeItem item = createItem(childEntry);
+                                target.addChild(item);
+                            }
+                            target.onFinishLoading();
+                        }
+                    };
+
+                    m_tabHandler.getSubFolders(path, callback);
+
+                }
+            });
+        tree.addOpenHandler(new OpenHandler<CmsLazyTreeItem>() {
+
+            public void onOpen(OpenEvent<CmsLazyTreeItem> event) {
+
+                Set<CmsUUID> ids = getOpenElementIds();
+                CmsVfsEntryBean entry = event.getTarget().getData();
+                ids.add(entry.getStructureId());
+                getTabHandler().onChangeTreeState(ids);
             }
+
         });
+        tree.addCloseHandler(new CloseHandler<CmsLazyTreeItem>() {
+
+            public void onClose(CloseEvent<CmsLazyTreeItem> event) {
+
+                Set<CmsUUID> ids = getOpenElementIds();
+                CmsVfsEntryBean entry = event.getTarget().getData();
+                ids.remove(entry.getStructureId());
+                getTabHandler().onChangeTreeState(ids);
+            }
+
+        });
+        return tree;
     }
 
     /**
@@ -357,6 +424,43 @@ public class CmsVfsTab extends A_CmsListTab {
     protected boolean isIncludeFiles() {
 
         return m_includeFiles;
+    }
+
+    /**
+     * Collects the structure ids belonging to open tree entries.<p>
+     * 
+     * @return the structure ids for  the open tree entries 
+     */
+    Set<CmsUUID> getOpenElementIds() {
+
+        Set<CmsUUID> ids = new HashSet<CmsUUID>();
+        for (CmsLazyTreeItem item : m_treeItems) {
+            CmsVfsEntryBean entry = item.getData();
+            if (item.isOpen()) {
+                ids.add(entry.getStructureId());
+            }
+        }
+        return ids;
+    }
+
+    /**
+     * Selects a specific site.<p>
+     * 
+     * @param siteRoot the site root 
+     */
+    private void selectSite(String siteRoot) {
+
+        Map<String, String> options = m_sortSelectBox.getItems();
+        String option = null;
+        for (Map.Entry<String, String> entry : options.entrySet()) {
+            if (CmsStringUtil.comparePaths(entry.getKey(), siteRoot)) {
+                option = entry.getKey();
+                break;
+            }
+        }
+        if (option != null) {
+            m_sortSelectBox.setFormValue(option, false);
+        }
     }
 
 }

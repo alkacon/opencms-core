@@ -81,6 +81,9 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
     /** The tab id's. */
     private GalleryTabId[] m_tabIds;
 
+    /** The tree token. */
+    private String m_treeToken;
+
     /** The use formats flag. */
     private boolean m_useFormats;
 
@@ -115,6 +118,7 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
         m_startSite = configuration.getStartSite();
         m_tabIds = configuration.getTabIds();
         m_useFormats = configuration.isUseFormats();
+        m_treeToken = configuration.getTreeToken();
     }
 
     /**
@@ -219,6 +223,14 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
     public GalleryTabId[] getTabIds() {
 
         return m_tabIds;
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#getTreeToken()
+     */
+    public String getTreeToken() {
+
+        return m_treeToken;
     }
 
     /**

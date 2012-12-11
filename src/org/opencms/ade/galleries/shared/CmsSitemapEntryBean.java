@@ -30,6 +30,7 @@ package org.opencms.ade.galleries.shared;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -37,7 +38,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * A sitemap entry bean.<p>
  */
-public class CmsSitemapEntryBean implements IsSerializable {
+public class CmsSitemapEntryBean implements IsSerializable, I_CmsGalleryTreeEntry<CmsSitemapEntryBean> {
 
     /** The entry children. */
     private List<CmsSitemapEntryBean> m_children;
@@ -56,6 +57,9 @@ public class CmsSitemapEntryBean implements IsSerializable {
 
     /** The site path of this VFS entry. */
     private String m_sitePath;
+
+    /** The site root of the site to which this entry bean belongs. */
+    private String m_siteRoot;
 
     /** The entry id. */
     private CmsUUID m_structureId;
@@ -108,6 +112,17 @@ public class CmsSitemapEntryBean implements IsSerializable {
     }
 
     /**
+     * @see org.opencms.ade.galleries.shared.I_CmsGalleryTreeEntry#addChild(java.lang.Object)
+     */
+    public void addChild(CmsSitemapEntryBean child) {
+
+        if (m_children == null) {
+            m_children = new ArrayList<CmsSitemapEntryBean>();
+        }
+        m_children.add(child);
+    }
+
+    /**
      * Returns the children of this entry or <code>null</code> if not loaded.<p>
      * 
      * @return the children of the entry
@@ -157,6 +172,16 @@ public class CmsSitemapEntryBean implements IsSerializable {
     public String getSitePath() {
 
         return m_sitePath;
+    }
+
+    /**
+     * Gets the site root.<p>
+     * 
+     * @return the site root 
+     */
+    public String getSiteRoot() {
+
+        return m_siteRoot;
     }
 
     /**
@@ -227,6 +252,16 @@ public class CmsSitemapEntryBean implements IsSerializable {
     public void setChildren(List<CmsSitemapEntryBean> children) {
 
         m_children = children;
+    }
+
+    /**
+     * Sets the site root for this bean.<p>
+     * 
+     * @param siteRoot the site root 
+     */
+    public void setSiteRoot(String siteRoot) {
+
+        m_siteRoot = siteRoot;
     }
 
 }

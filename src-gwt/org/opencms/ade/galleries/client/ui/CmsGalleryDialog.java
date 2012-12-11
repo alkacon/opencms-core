@@ -317,7 +317,6 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
                 case cms_tab_sitemap:
                     CmsSitemapTabHandler sitemapTabHandler = new CmsSitemapTabHandler(controller);
                     m_sitemapTab = new CmsSitemapTab(sitemapTabHandler);
-                    sitemapTabHandler.setTab(m_sitemapTab);
                     m_sitemapTab.setTabTextAccessor(getTabTextAccessor(i));
                     m_tabbedPanel.add(m_sitemapTab, "Sitemap");
                     break;
@@ -449,6 +448,23 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     }
 
     /**
+     * Gets the tab with a given tab id, or null if the dialog has no such tab.<p>
+     * 
+     * @param tabId the tab id to look for 
+     * 
+     * @return the tab with the given tab id, or null 
+     */
+    public A_CmsTab getTab(GalleryTabId tabId) {
+
+        for (A_CmsTab tab : m_tabbedPanel) {
+            if (tabId == GalleryTabId.valueOf(tab.getTabId())) {
+                return tab;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Returns the types tab widget.<p>
      * 
      * @return the types widget
@@ -560,13 +576,9 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
      */
     public void selectTab(GalleryTabId tabId, boolean fireEvent) {
 
-        Iterator<A_CmsTab> it = m_tabbedPanel.iterator();
-        while (it.hasNext()) {
-            A_CmsTab tab = it.next();
-            if (tabId == GalleryTabId.valueOf(tab.getTabId())) {
-                m_tabbedPanel.selectTab(tab, fireEvent);
-                break;
-            }
+        A_CmsTab tab = getTab(tabId);
+        if (tab != null) {
+            m_tabbedPanel.selectTab(tab, fireEvent);
         }
     }
 
