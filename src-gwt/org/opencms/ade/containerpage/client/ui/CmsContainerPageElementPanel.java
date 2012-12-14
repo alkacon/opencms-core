@@ -130,6 +130,32 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
      **/
     private boolean m_viewPermission;
 
+    /** 
+     * Indicates if the current user has write permissions on the element resource. 
+     * Without write permissions, the element can not be edited. 
+     **/
+    private boolean m_writePermission;
+
+    /**
+     * Returns if the user has write permission.<p>
+     *
+     * @return <code>true</code> if the user has write permission
+     */
+    public boolean hasWritePermission() {
+
+        return m_writePermission;
+    }
+
+    /**
+     * Sets the user write permission.<p>
+     *
+     * @param writePermission the user write permission to set
+     */
+    public void setWritePermission(boolean writePermission) {
+
+        m_writePermission = writePermission;
+    }
+
     /**
      * Flag which indicates whether the new editor is disabled for this element.<p>
      */
@@ -145,6 +171,7 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
      * @param noEditReason the no edit reason, if empty, editing is allowed
      * @param hasSettings should be true if the element has settings which can be edited 
      * @param hasViewPermission indicates if the current user has view permissions on the element resource
+     * @param hasWritePermission indicates if the current user has write permissions on the element resource
      * @param releasedAndNotExpired <code>true</code> if the element resource is currently released and not expired
      * @param disableNewEditor flag to disable the new editor for this element 
      */
@@ -156,6 +183,7 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
         String noEditReason,
         boolean hasSettings,
         boolean hasViewPermission,
+        boolean hasWritePermission,
         boolean releasedAndNotExpired,
         boolean disableNewEditor) {
 
@@ -167,6 +195,7 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
         m_parent = parent;
         m_disableNewEditor = disableNewEditor;
         setViewPermission(hasViewPermission);
+        setWritePermission(hasWritePermission);
         setReleasedAndNotExpired(releasedAndNotExpired);
         getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElement());
     }

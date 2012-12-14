@@ -444,6 +444,7 @@ public class CmsContainerpageUtil {
             elementData.getNoEditReason(),
             elementData.hasSettings(),
             elementData.hasViewPermission(),
+            elementData.hasWritePermission(),
             elementData.isReleasedAndNotExpired(),
             elementData.isNewEditorDisabled());
         addOptionBar(dragElement);
@@ -481,6 +482,7 @@ public class CmsContainerpageUtil {
             elementData.getNoEditReason(),
             elementData.hasSettings(),
             elementData.hasViewPermission(),
+            elementData.hasWritePermission(),
             elementData.isReleasedAndNotExpired());
         return groupContainer;
     }

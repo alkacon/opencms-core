@@ -376,6 +376,11 @@ public class CmsElementUtil {
         result.setNewEditorDisabled(newEditorDisabled);
         if (!elementBean.isInMemoryOnly()) {
             if (CmsResourceTypeXmlContent.isXmlContent(elementBean.getResource())) {
+                result.setWritePermission(m_cms.hasPermissions(
+                    elementBean.getResource(),
+                    CmsPermissionSet.ACCESS_WRITE,
+                    false,
+                    CmsResourceFilter.IGNORE_EXPIRATION));
                 noEditReason = new CmsResourceUtil(m_cms, elementBean.getResource()).getNoEditReason(wpLocale, true);
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(noEditReason) && elementBean.isInheritedContainer(m_cms)) {
                     String requestUri = m_cms.getRequestContext().getUri();

@@ -221,12 +221,23 @@ div.groupcontainerPlaceholder{
 @sprite .optionBar .cmsState-up .toolbarDelete, .optionBar .cmsState-up-disabled .toolbarDelete, .optionBar .cmsState-down-disabled .toolbarDelete {
     gwt-image: "images.deleteIconDeactivated";
 }
+
 @sprite .optionBar .cmsState-up-hovering .toolbarEdit, .optionBar .cmsState-down-hovering .toolbarEdit, .optionBar .cmsState-down .toolbarEdit {
     gwt-image: "images.editIconActive";
 }
 @sprite .optionBar .cmsState-up .toolbarEdit{
     gwt-image: "images.editIconDeactivated";
 }
+
+
+@sprite .optionBar .cmsState-up-hovering .toolbarEdit.lockedElement, .optionBar .cmsState-down-hovering .toolbarEdit.lockedElement, .optionBar .cmsState-down .toolbarEdit.lockedElement {
+    gwt-image: "images.lockIconActive";
+}
+@sprite .optionBar .cmsState-up .toolbarEdit.lockedElement{
+    gwt-image: "images.lockIconDeactivated";
+}
+
+
 /** show lock icon for deactivated edit button **/
 @sprite .optionBar .cmsState-up-disabled .toolbarEdit, .optionBar .cmsState-down-disabled .toolbarEdit {
 	gwt-image: "images.lockIconDeactivated";

@@ -28,6 +28,7 @@
 package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
+import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.util.CmsStringUtil;
@@ -59,7 +60,16 @@ public class CmsToolbarEditButton extends A_CmsToolbarOptionButton {
 
         CmsElementOptionButton button = super.createOptionForElement(element);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(element.getNoEditReason())) {
-            button.disable(element.getNoEditReason());
+            if (element.hasWritePermission()
+                && !((element instanceof CmsGroupContainerElementPanel) && ((CmsGroupContainerElementPanel)element).isInheritContainer())) {
+                // if the user has write permissions, the lock report dialog will be accessible through this button
+                button.setImageClass(getIconClass()
+                    + " "
+                    + I_CmsLayoutBundle.INSTANCE.containerpageCss().lockedElement());
+                button.setTitle(element.getNoEditReason());
+            } else {
+                button.disable(element.getNoEditReason());
+            }
         }
         return button;
     }
@@ -71,9 +81,33 @@ public class CmsToolbarEditButton extends A_CmsToolbarOptionButton {
     public void onElementClick(ClickEvent event, CmsContainerPageElementPanel element) {
 
         CmsDomUtil.ensureMouseOut(element.getElementOptionBar().getElement());
-        getHandler().openEditorForElement(element, false);
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(element.getNoEditReason())) {
+            openEditor(element);
+        } else {
+            openLockReport(element);
+        }
         event.stopPropagation();
         event.preventDefault();
 
+    }
+
+    /**
+     * Opens the element editor.<p>
+     * 
+     * @param element the element
+     */
+    private void openEditor(CmsContainerPageElementPanel element) {
+
+        getHandler().openEditorForElement(element, false);
+    }
+
+    /**
+     * Opens the lock report for locked elements.<p>
+     * 
+     * @param element the element
+     */
+    private void openLockReport(CmsContainerPageElementPanel element) {
+
+        getHandler().openLockReportForElement(element);
     }
 }

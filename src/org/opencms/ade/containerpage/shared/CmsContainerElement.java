@@ -66,6 +66,11 @@ public class CmsContainerElement implements IsSerializable {
     /** Flag indicating a new element. */
     private boolean m_new;
 
+    /**
+     * Flag which controls whether the new editor is disabled for this element.<p>
+     */
+    private boolean m_newEditorDisabled;
+
     /** The no edit reason. If empty editing is allowed. */
     private String m_noEditReason;
 
@@ -84,10 +89,11 @@ public class CmsContainerElement implements IsSerializable {
      **/
     private boolean m_viewPermission;
 
-    /**
-     * Flag which controls whether the new editor is disabled for this element.<p>
-     */
-    private boolean m_newEditorDisabled;
+    /** 
+     * Indicates if the current user has write permissions on the element resource. 
+     * Without write permissions, the element can not be edited. 
+     **/
+    private boolean m_writePermission;
 
     /**
      * Default constructor.<p>
@@ -165,6 +171,16 @@ public class CmsContainerElement implements IsSerializable {
     public boolean hasViewPermission() {
 
         return m_viewPermission;
+    }
+
+    /**
+     * Returns if the user has write permission.<p>
+     *
+     * @return <code>true</code> if the user has write permission
+     */
+    public boolean hasWritePermission() {
+
+        return m_writePermission;
     }
 
     /**
@@ -315,6 +331,16 @@ public class CmsContainerElement implements IsSerializable {
     public void setViewPermission(boolean viewPermission) {
 
         m_viewPermission = viewPermission;
+    }
+
+    /**
+     * Sets the user write permission.<p>
+     *
+     * @param writePermission the user write permission to set
+     */
+    public void setWritePermission(boolean writePermission) {
+
+        m_writePermission = writePermission;
     }
 
 }

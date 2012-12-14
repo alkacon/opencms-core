@@ -80,6 +80,7 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
      * @param noEditReason the no edit reason, if empty, editing is allowed
      * @param hasSettings should be true if the element has settings which can be edited 
      * @param hasViewPermission indicates if the current user has view permissions on the element resource
+     * @param hasWritePermission indicates if the current user has write permissions on the element resource
      * @param releasedAndNotExpired <code>true</code> if the element resource is currently released and not expired
      */
     public CmsGroupContainerElementPanel(
@@ -91,6 +92,7 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
         String noEditReason,
         boolean hasSettings,
         boolean hasViewPermission,
+        boolean hasWritePermission,
         boolean releasedAndNotExpired) {
 
         super(
@@ -101,6 +103,7 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
             noEditReason,
             hasSettings,
             hasViewPermission,
+            hasWritePermission,
             releasedAndNotExpired,
             true);
         m_resourceType = resourceType;

@@ -42,6 +42,7 @@ import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.CmsFieldSet;
 import org.opencms.gwt.client.ui.CmsListItem;
+import org.opencms.gwt.client.ui.CmsLockReportDialog;
 import org.opencms.gwt.client.ui.CmsModelSelectDialog;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.I_CmsAcceptDeclineCancelHandler;
@@ -351,8 +352,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
                                 public void onFailure(Throwable caught) {
 
-                                    // TODO: Auto-generated method stub
-
+                                    // will not be executed
                                 }
 
                                 public void onSuccess(CmsContainerPageElementPanel result) {
@@ -733,6 +733,22 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
             m_controller.getContentEditorHandler().openDialog(element, inline);
             element.removeHighlighting();
         }
+    }
+
+    /**
+     * Opens the lock report for the given element.<p>
+     * 
+     * @param element the element
+     */
+    public void openLockReportForElement(final CmsContainerPageElementPanel element) {
+
+        CmsLockReportDialog.openDialogForResource(element.getStructureId(), new Command() {
+
+            public void execute() {
+
+                m_controller.reloadElements(new String[] {element.getStructureId().toString()});
+            }
+        });
     }
 
     /**
