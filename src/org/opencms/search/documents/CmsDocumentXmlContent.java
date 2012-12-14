@@ -34,8 +34,8 @@ import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsIndexException;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.extractors.CmsExtractionResult;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 import org.opencms.util.CmsStringUtil;
@@ -112,6 +112,13 @@ public class CmsDocumentXmlContent extends A_CmsVfsDocument {
                         items.put(xpath, extracted);
                         content.append(extracted);
                         content.append('\n');
+                    } else {
+                        // if the plain text value is empty but not the String value put this into the content items map
+                        // this will enable to map a content type "OpenCmsDateTime" for example to a certain index field
+                        String stringValue = value.getStringValue(cms);
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(stringValue)) {
+                            items.put(xpath, stringValue);
+                        }
                     }
                 }
             }
