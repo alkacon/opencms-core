@@ -9,7 +9,7 @@ import java.lang.management.ThreadMXBean;
 /**
  * Utility class for thread analyzing.<p>
  */
-public class TestThreadUtils {
+public final class TestThreadUtils {
 
     /**
      * Hide default constructor.<p>

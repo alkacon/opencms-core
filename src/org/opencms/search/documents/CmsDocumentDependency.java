@@ -138,6 +138,9 @@ public final class CmsDocumentDependency {
     /** The locale of this document container. */
     private Locale m_locale;
 
+    /** Signals whether this document exists with different locale file name extensions.  */
+    private boolean m_localeFileName;
+
     /** The main document in case this document is an attachment. */
     private CmsDocumentDependency m_mainDocument;
 
@@ -192,6 +195,7 @@ public final class CmsDocumentDependency {
             String suffix = matcher.group(2);
             String langString = suffix.substring(0, 2);
             locale = suffix.length() == 5 ? new Locale(langString, suffix.substring(3, 5)) : new Locale(langString);
+            m_localeFileName = true;
         }
         if (locale == null) {
             locale = CmsLocaleManager.getDefaultLocale();
@@ -203,13 +207,13 @@ public final class CmsDocumentDependency {
         }
         setLocale(locale);
 
-        // we must remove file suffixes like ".doc", ".pdf" etc. because attachments can have different types
+        // we must remove file suffixes like "plapla.doc", ".pdf" etc. because attachments can have different types
         int index = rootPath.lastIndexOf('.');
         if (index != -1) {
             // store the suffix for comparison to decide if this is a main document or a variation later
             String suffix = rootPath.substring(index);
             setDocumentSuffix(suffix);
-            if (docName.lastIndexOf(suffix) == (docName.length() - suffix.length())) {
+            if ((docName.lastIndexOf(suffix) == (docName.length() - suffix.length())) && docName.contains(suffix)) {
                 docName = docName.substring(0, docName.length() - suffix.length());
             }
         }
@@ -363,14 +367,16 @@ public final class CmsDocumentDependency {
     }
 
     /**
-     * Removes the dependency object for a published resource from the OpenCms runtime context.<p>
+     * Removes the dependency object for a published resource from the OpenCms
+     * runtime context.<p>
      * 
-     * <b>Please note:</b> This must be used with caution since the information may be required to generate 
-     * documents for several configured indexes. It must be ensured that this is called only when all indexes 
-     * have been updated.<p> 
-     *  
+     * <b>Please note:</b> This must be used with caution since the information
+     * may be required to generate documents for several configured indexes. It
+     * must be ensured that this is called only when all indexes have been
+     * updated.<p>
+     * 
      * @param cms the current OpenCms user context
-     * @param pubRes the published resource info 
+     * @param pubRes the published resource info
      * 
      * @see #storeInContext(CmsObject)
      */
@@ -671,6 +677,16 @@ public final class CmsDocumentDependency {
     }
 
     /**
+     * Returns the locale file name flag.<p>
+     * 
+     * @return the locale file name flag
+     */
+    public boolean hasLocaleFileName() {
+
+        return m_localeFileName;
+    }
+
+    /**
      * Returns true if this document is an attachment, i.e. an attachment number is provided.<p>
      * 
      * @return true if this document is an attachment, otherwise false
@@ -729,9 +745,12 @@ public final class CmsDocumentDependency {
                     if (isAttachment()) {
                         // this document is an attachment
                         if (dep.isAttachment()) {
-                            if (getAttachmentNumber() == dep.getAttachmentNumber()) {
-                                // this must be a language version of this attachment document
+                            if ((getAttachmentNumber() == dep.getAttachmentNumber()) && dep.hasLocaleFileName()) {
+                                // the dependency must be a language version of this attachment document
                                 addVariant(dep);
+                            }
+                            if (getAttachmentNumber() == dep.getAttachmentNumber()) {
+                                dep.setMainDocument(dep);
                             } else {
                                 Integer attNum = new Integer(dep.getAttachmentNumber());
                                 CmsDocumentDependency att = attachments.get(attNum);
@@ -742,7 +761,7 @@ public final class CmsDocumentDependency {
                                 }
                             }
                         } else {
-                            // this is the main document of this attachment
+                            // this is the main document of the dependency
                             setMainDocument(dep);
                         }
                     } else {
@@ -770,7 +789,10 @@ public final class CmsDocumentDependency {
             addDependency(m_mainDocument);
         }
         for (CmsDocumentDependency var : getVariants()) {
-            String mainFileName = getMainDocument().getDocumentName() + getMainDocument().getDocumentSuffix();
+            String mainFileName = getMainDocument().getDocumentName();
+            if (getMainDocument().getDocumentSuffix() != null) {
+                mainFileName += getMainDocument().getDocumentSuffix();
+            }
             if (mainFileName.equals(var.getResource().getRootPath())) {
                 setType(DependencyType.variant);
                 break;

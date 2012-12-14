@@ -37,7 +37,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.search.CmsSearchIndex;
-import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchResource;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.test.OpenCmsTestCase;

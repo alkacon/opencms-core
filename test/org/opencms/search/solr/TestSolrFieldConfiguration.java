@@ -397,6 +397,12 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         filenames.put("search_rabbit_en_003.pdf", Collections.singletonList("en_EN"));
         filenames.put("search_rabbit_en_004.pdf", Collections.singletonList("en_EN"));
 
+        filenames.put("search_rabbit2_0001.pdff", Collections.singletonList("de_DE"));
+        filenames.put("search_rabbit2_0001.pdf", Collections.singletonList("de_DE"));
+
+        filenames.put("tema_00001.html", Collections.singletonList("de_DE"));
+        filenames.put("ar_00001.xml", Collections.singletonList("de_DE"));
+
         // create test folder
         String folderName = "/filenameTest2/";
         CmsObject cms = getCmsObject();
