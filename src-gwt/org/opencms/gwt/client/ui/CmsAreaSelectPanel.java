@@ -280,30 +280,6 @@ HasClickHandlers, HasMouseMoveHandlers, MouseDownHandler, MouseUpHandler, MouseM
     }
 
     /**
-     * Sets the selection area.<p>
-     * 
-     * @param relative <code>true</code> if provided position is relative to the select area, not absolute to the page
-     * @param pos the area position to select
-     */
-    public void setAreaPosition(boolean relative, CmsPositionBean pos) {
-
-        if (pos == null) {
-            return;
-        }
-        m_state = State.SELECTED;
-        showSelect(true);
-        m_currentSelection = new CmsPositionBean();
-        m_firstX = pos.getLeft();
-        m_firstY = pos.getTop();
-        if (!relative) {
-            m_firstX -= getElement().getAbsoluteLeft();
-            m_firstY -= getElement().getAbsoluteTop();
-        }
-        //        setSelectPosition(m_firstX, m_firstY, 0, 0);
-        setSelectPosition(m_firstX, m_firstY, pos.getHeight(), pos.getWidth());
-    }
-
-    /**
      * @see com.google.gwt.user.client.ui.IndexedPanel#getWidget(int)
      */
     public Widget getWidget(int index) {
@@ -595,6 +571,38 @@ HasClickHandlers, HasMouseMoveHandlers, MouseDownHandler, MouseUpHandler, MouseM
     public boolean remove(Widget w) {
 
         return m_panel.remove(w);
+    }
+
+    /**
+     * Resets the select area ratio.<p>
+     */
+    public void resetRatio() {
+
+        m_heightToWidth = 0;
+    }
+
+    /**
+     * Sets the selection area.<p>
+     * 
+     * @param relative <code>true</code> if provided position is relative to the select area, not absolute to the page
+     * @param pos the area position to select
+     */
+    public void setAreaPosition(boolean relative, CmsPositionBean pos) {
+
+        if (pos == null) {
+            return;
+        }
+        m_state = State.SELECTED;
+        showSelect(true);
+        m_currentSelection = new CmsPositionBean();
+        m_firstX = pos.getLeft();
+        m_firstY = pos.getTop();
+        if (!relative) {
+            m_firstX -= getElement().getAbsoluteLeft();
+            m_firstY -= getElement().getAbsoluteTop();
+        }
+        //        setSelectPosition(m_firstX, m_firstY, 0, 0);
+        setSelectPosition(m_firstX, m_firstY, pos.getHeight(), pos.getWidth());
     }
 
     /**

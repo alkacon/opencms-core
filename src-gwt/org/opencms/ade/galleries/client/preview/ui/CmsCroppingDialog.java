@@ -222,6 +222,8 @@ implements ValueChangeHandler<CmsPositionBean>, HasValueChangeHandlers<CmsCroppi
         m_croppingPanel.getElement().getStyle().setWidth(m_displayCropping.getTargetWidth(), Unit.PX);
         if ((targetParam.getTargetHeight() > 0) && (targetParam.getTargetWidth() > 0)) {
             m_croppingPanel.setRatio((1.00 * targetParam.getTargetHeight()) / targetParam.getTargetWidth());
+        } else {
+            m_croppingPanel.resetRatio();
         }
 
         m_heightRatio = (1.00 * m_croppingParam.getOrgHeight()) / m_displayCropping.getTargetHeight();
