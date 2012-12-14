@@ -226,6 +226,9 @@ public final class Messages {
     public static final String GUI_EDITOR_TITLE_0 = "GUI_EDITOR_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_ERROR_ON_SITEMAP_LOAD_0 = "GUI_ERROR_ON_SITEMAP_LOAD_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_FUNCTION_PAGE_TITLE_1 = "GUI_FUNCTION_PAGE_TITLE_1";
 
     /** Message constant for key in the resource bundle. */
@@ -262,9 +265,6 @@ public final class Messages {
     public static final String GUI_HOVERBAR_MERGE_SUB_0 = "GUI_HOVERBAR_MERGE_SUB_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_HOVERBAR_RESOURCE_INFO_0 = "GUI_HOVERBAR_RESOURCE_INFO_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_HOVERBAR_MOVE_0 = "GUI_HOVERBAR_MOVE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -278,6 +278,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HOVERBAR_REMOVE_0 = "GUI_HOVERBAR_REMOVE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HOVERBAR_RESOURCE_INFO_0 = "GUI_HOVERBAR_RESOURCE_INFO_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HOVERBAR_SHOW_0 = "GUI_HOVERBAR_SHOW_0";

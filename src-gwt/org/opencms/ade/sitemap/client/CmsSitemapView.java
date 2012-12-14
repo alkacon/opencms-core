@@ -46,6 +46,7 @@ import org.opencms.ade.sitemap.shared.CmsSitemapInfo;
 import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.CmsPingTimer;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
+import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.CmsInfoHeader;
 import org.opencms.gwt.client.ui.CmsListItemWidget.Background;
 import org.opencms.gwt.client.ui.CmsNotification;
@@ -472,6 +473,11 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         m_treeItems = new HashMap<CmsUUID, CmsSitemapTreeItem>();
         // controller 
         m_controller = new CmsSitemapController();
+        if (m_controller.getData() == null) {
+            CmsErrorDialog dialog = new CmsErrorDialog(Messages.get().key(Messages.GUI_ERROR_ON_SITEMAP_LOAD_0), null);
+            dialog.center();
+            return;
+        }
         m_controller.addChangeHandler(this);
         m_controller.addLoadHandler(this);
 
