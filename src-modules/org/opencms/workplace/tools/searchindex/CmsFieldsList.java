@@ -391,7 +391,7 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
                 defaultValue = "-";
             }
             item.set(LIST_COLUMN_NAME, field.getName());
-            item.set(LIST_COLUMN_DISPLAY, field.getDisplayName());
+            item.set(LIST_COLUMN_DISPLAY, resolveMacros(field.getDisplayName()));
             item.set(LIST_COLUMN_BOOST, new Float(field.getBoost()).toString());
             item.set(LIST_COLUMN_INDEX, field.getIndexed());
             item.set(LIST_COLUMN_EXCERPT_HIDE, Boolean.valueOf(field.isInExcerpt()));
