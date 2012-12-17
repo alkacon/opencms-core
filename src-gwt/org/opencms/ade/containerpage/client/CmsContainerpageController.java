@@ -1110,7 +1110,11 @@ public final class CmsContainerpageController {
         m_containerTypes = new HashSet<String>();
         m_containers = new HashMap<String, CmsContainerJso>();
         if (m_data == null) {
-            m_handler.m_editor.disableEditing("Editing is disabled due to deserialization errors.");
+            m_handler.m_editor.disableEditing(Messages.get().key(Messages.ERR_READING_CONTAINER_PAGE_DATA_0));
+            CmsErrorDialog dialog = new CmsErrorDialog(
+                Messages.get().key(Messages.ERR_READING_CONTAINER_PAGE_DATA_0),
+                null);
+            dialog.center();
             return;
         }
         JsArray<CmsContainerJso> containers = CmsContainerJso.getContainers();
@@ -1154,7 +1158,11 @@ public final class CmsContainerpageController {
                 }
             }
         });
-        checkLockInfo();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_data.getNoEditReason())) {
+            m_handler.m_editor.disableEditing(m_data.getNoEditReason());
+        } else {
+            checkLockInfo();
+        }
     }
 
     /**
@@ -1174,7 +1182,9 @@ public final class CmsContainerpageController {
      */
     public boolean isEditingDisabled() {
 
-        return m_lockStatus == LockStatus.failed;
+        return (m_data == null)
+            || CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_data.getNoEditReason())
+            || (m_lockStatus == LockStatus.failed);
     }
 
     /**
