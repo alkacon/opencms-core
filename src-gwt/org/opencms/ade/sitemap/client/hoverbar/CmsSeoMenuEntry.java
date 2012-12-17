@@ -131,7 +131,8 @@ public class CmsSeoMenuEntry extends A_CmsSitemapMenuEntry {
     @Override
     public void onShow(CmsHoverbarShowEvent event) {
 
-        // nothing to do
+        CmsClientSitemapEntry entry = getHoverbar().getEntry();
+        boolean show = (entry != null) && entry.isEditable();
+        setVisible(show);
     }
-
 }
