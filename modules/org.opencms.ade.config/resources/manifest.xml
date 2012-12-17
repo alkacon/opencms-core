@@ -337,7 +337,7 @@
 							rule="containerpage" />
 						<entry key="GUI_EXPLORER_CONTEXT_LOGOUT_0" 
 							name="org.opencms.gwt.client.ui.contextmenu.CmsLogout"
-							rule="containerpage-no-different-site" />
+							rule="containerpage" />
 					</contextmenu>
 				</editoptions>
 			</explorertype>
