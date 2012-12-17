@@ -36,6 +36,7 @@ import org.opencms.gwt.client.dnd.I_CmsDragHandle;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
+import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.event.shared.HandlerRegistration;
 
@@ -79,6 +80,9 @@ public class CmsHoverbarMoveButton extends CmsPushButton implements I_CmsDragHan
                         CmsHoverbarMoveButton.this.setVisible(false);
                     } else if (controller.isRoot(m_sitePath)) {
                         disable(Messages.get().key(Messages.GUI_DISABLED_ROOT_ITEM_0));
+                        CmsHoverbarMoveButton.this.setVisible(true);
+                    } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(entry.getNoEditReason())) {
+                        disable(entry.getNoEditReason());
                         CmsHoverbarMoveButton.this.setVisible(true);
                     } else if (entry.hasForeignFolderLock()) {
                         disable(Messages.get().key(Messages.GUI_DISABLED_PARENT_LOCK_0));
