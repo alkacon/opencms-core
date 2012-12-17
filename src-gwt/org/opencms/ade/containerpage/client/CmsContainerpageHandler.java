@@ -50,9 +50,7 @@ import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 import org.opencms.gwt.client.ui.I_CmsModelSelectHandler;
 import org.opencms.gwt.client.ui.I_CmsToolbarButton;
 import org.opencms.gwt.client.ui.contextmenu.A_CmsContextMenuItem;
-import org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuEntry;
-import org.opencms.gwt.client.ui.contextmenu.CmsEditProperties;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler;
@@ -1015,25 +1013,6 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.A_CmsToolbarHandler#transformEntries(java.util.List, org.opencms.util.CmsUUID)
-     */
-    @Override
-    public List<I_CmsContextMenuEntry> transformEntries(
-        List<CmsContextMenuEntryBean> menuBeans,
-        final CmsUUID structureId) {
-
-        List<I_CmsContextMenuEntry> entries = super.transformEntries(menuBeans, structureId);
-        List<I_CmsContextMenuEntry> result = new ArrayList<I_CmsContextMenuEntry>();
-
-        for (I_CmsContextMenuEntry entry : entries) {
-            if (shouldShowMenuEntry(entry)) {
-                result.add(entry);
-            }
-        }
-        return result;
-    }
-
-    /**
      * @see org.opencms.gwt.client.ui.A_CmsToolbarHandler#transformSingleEntry(org.opencms.util.CmsUUID, org.opencms.gwt.shared.CmsContextMenuEntryBean)
      */
     @Override
@@ -1293,23 +1272,5 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     private void openGroupEditor(CmsGroupContainerElementPanel groupContainer) {
 
         m_controller.startEditingGroupcontainer(groupContainer, groupContainer.isGroupContainer());
-    }
-
-    /**
-     * Internal method to decide dynamically whether a context menu entry should be shown.<p>
-     * 
-     * @param entry the context menu entry 
-     * @return true if the menu entry should be shown
-     */
-    private boolean shouldShowMenuEntry(I_CmsContextMenuEntry entry) {
-
-        if (m_controller.isEditingDisabled()) {
-            String name = entry.getName();
-            if ((name != null)
-                && (name.equals(CmsAvailabilityDialog.class.getName()) || name.equals(CmsEditProperties.class.getName()))) {
-                return false;
-            }
-        }
-        return true;
     }
 }
