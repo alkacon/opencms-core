@@ -873,12 +873,17 @@ public class CmsSitemapController implements I_CmsSitemapController {
      */
     public String getNoEditReason(CmsClientSitemapEntry entry) {
 
-        String reason = null;
-        if ((entry.getLock() != null) && (entry.getLock().getLockOwner() != null) && !entry.getLock().isOwnedByUser()) {
-            reason = Messages.get().key(Messages.GUI_DISABLED_LOCKED_BY_1, entry.getLock().getLockOwner());
-        }
-        if (entry.hasBlockingLockedChildren()) {
-            reason = Messages.get().key(Messages.GUI_DISABLED_BLOCKING_LOCKED_CHILDREN_0);
+        String reason = entry.getNoEditReason();
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(reason)) {
+            reason = null;
+            if ((entry.getLock() != null)
+                && (entry.getLock().getLockOwner() != null)
+                && !entry.getLock().isOwnedByUser()) {
+                reason = Messages.get().key(Messages.GUI_DISABLED_LOCKED_BY_1, entry.getLock().getLockOwner());
+            }
+            if (entry.hasBlockingLockedChildren()) {
+                reason = Messages.get().key(Messages.GUI_DISABLED_BLOCKING_LOCKED_CHILDREN_0);
+            }
         }
         return reason;
     }

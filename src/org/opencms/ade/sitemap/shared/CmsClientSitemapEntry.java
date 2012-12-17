@@ -138,6 +138,9 @@ public class CmsClientSitemapEntry implements IsSerializable {
     /** True if this entry has been just created, and its name hasn't been directly changed. */
     private boolean m_new;
 
+    /** The no edit reason. */
+    private String m_noEditReason;
+
     /** The properties for the entry itself. */
     private Map<String, CmsClientProperty> m_ownProperties = new HashMap<String, CmsClientProperty>();
 
@@ -328,6 +331,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
+     * Returns the no edit reason.<p>
+     *
+     * @return the no edit reason
+     */
+    public String getNoEditReason() {
+
+        return m_noEditReason;
+    }
+
+    /**
      * Returns the properties for the entry itself.<p>
      * 
      * @return the properties for the entry itself 
@@ -505,7 +518,8 @@ public class CmsClientSitemapEntry implements IsSerializable {
      */
     public boolean isEditable() {
 
-        return !hasForeignFolderLock()
+        return CmsStringUtil.isEmptyOrWhitespaceOnly(m_noEditReason)
+            && !hasForeignFolderLock()
             && !hasBlockingLockedChildren()
             && (((getLock() == null) || (getLock().getLockOwner() == null)) || getLock().isOwnedByUser());
     }
@@ -843,6 +857,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
+     * Sets the no edit reason.<p>
+     *
+     * @param noEditReason the no edit reason to set
+     */
+    public void setNoEditReason(String noEditReason) {
+
+        m_noEditReason = noEditReason;
+    }
+
+    /**
      * Sets the properties for the entry itself.<p>
      * 
      * @param properties the properties for the entry itself 
@@ -1050,6 +1074,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
         setAliases(source.getAliases());
         setRedirectTarget(source.getRedirectTarget());
         setResourceState(source.getResourceState());
+        setNoEditReason(source.getNoEditReason());
     }
 
     /**
