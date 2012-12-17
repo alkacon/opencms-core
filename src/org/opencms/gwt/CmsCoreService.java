@@ -318,7 +318,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             } catch (Throwable e) {
                 error(e);
             }
-            if ((settings == null) || !isEditable(cms, resUtil[0].getResource())) {
+            if ((settings == null) || !hasViewPermissions(cms, resUtil[0].getResource())) {
                 // the user has no access to this resource type
                 // could be configured in the opencms-vfs.xml or in the opencms-modules.xml
                 return Collections.<CmsContextMenuEntryBean> emptyList();
@@ -916,17 +916,17 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
-     * Checks if the current user has write permissions on the given resource.<p>
+     * Checks if the current user has view permissions on the given resource.<p>
      * 
      * @param cms the current cms context
      * @param resource the resource to check
      * 
-     * @return <code>true</code> if the current user has write permissions on the given resource
+     * @return <code>true</code> if the current user has view permissions on the given resource
      */
-    private boolean isEditable(CmsObject cms, CmsResource resource) {
+    private boolean hasViewPermissions(CmsObject cms, CmsResource resource) {
 
         try {
-            return cms.hasPermissions(resource, CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.ALL);
+            return cms.hasPermissions(resource, CmsPermissionSet.ACCESS_VIEW, false, CmsResourceFilter.ALL);
         } catch (CmsException e) {
             return false;
         }
