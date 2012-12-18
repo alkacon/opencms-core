@@ -29,6 +29,7 @@ package org.opencms.workplace.explorer;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.list.A_CmsListExplorerDialog;
 import org.opencms.workplace.list.A_CmsListResourceCollector;
 import org.opencms.workplace.list.CmsListItem;
@@ -67,6 +68,26 @@ public class CmsNewResourceXmlContentModelCollector extends A_CmsListResourceCol
         List<String> names = new ArrayList<String>(1);
         names.add(COLLECTOR_NAME);
         return names;
+    }
+
+    /**
+     * Returns the dummy resource object representing the "none" selection, this has to be treated specially.<p>
+     * 
+     * @see org.opencms.workplace.list.A_CmsListResourceCollector#getResource(org.opencms.file.CmsObject, org.opencms.workplace.list.CmsListItem)
+     */
+    @Override
+    public CmsResource getResource(CmsObject cms, CmsListItem item) {
+
+        // check if the item is the "dummy" item
+        if (item.getId().equals(CmsUUID.getConstantUUID(CmsNewResourceXmlContent.VALUE_NONE + "s").getStringValue())) {
+            for (CmsResource result : m_resources) {
+                if (item.getId().equals(result.getStructureId().getStringValue())) {
+                    return result;
+                }
+            }
+        }
+        // all other items are real resources, use the default implementation
+        return super.getResource(cms, item);
     }
 
     /**
