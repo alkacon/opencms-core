@@ -331,7 +331,9 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
             m_croppingParam.setTargetWidth((value * m_originalWidth) / m_originalHeight);
             m_formatForm.setWidthInput(m_croppingParam.getTargetWidth());
         }
-        if (!m_currentFormat.isHeightEditable() && hasUserFormatRestriction()) {
+        // in case the width and height parameter don't match the current format any longer, switch to user defined format
+        if ((!m_currentFormat.isHeightEditable() || (m_ratioLocked && !m_currentFormat.isWidthEditable()))
+            && hasUserFormatRestriction()) {
             m_formatForm.setFormatSelectValue(m_userFormatKey);
         } else {
             fireValueChangedEvent();
@@ -390,7 +392,9 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
             m_croppingParam.setTargetHeight((value * m_originalHeight) / m_originalWidth);
             m_formatForm.setHeightInput(m_croppingParam.getTargetHeight());
         }
-        if (!m_currentFormat.isWidthEditable() && hasUserFormatRestriction()) {
+        // in case the width and height parameter don't match the current format any longer, switch to user defined format
+        if ((!m_currentFormat.isWidthEditable() || (m_ratioLocked && !m_currentFormat.isHeightEditable()))
+            && hasUserFormatRestriction()) {
             m_formatForm.setFormatSelectValue(m_userFormatKey);
         } else {
             fireValueChangedEvent();
@@ -635,6 +639,9 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
                 width = m_croppingParam.getTargetWidth();
             }
 
+        } else {
+            m_croppingParam.setTargetHeight(height);
+            m_croppingParam.setTargetWidth(width);
         }
         m_formatForm.setHeightInput(height);
         m_formatForm.setWidthInput(width);
