@@ -41,9 +41,7 @@ import org.opencms.workplace.list.A_CmsListResourceCollector;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.I_CmsListResourceCollector;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -84,13 +82,13 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
     public static final String PARAM_SORT = "sort";
 
     /** Resource cache. */
-    protected Map m_srCache = new HashMap();
+    protected Map<String, CmsSearchResult> m_srCache = new HashMap<String, CmsSearchResult>();
 
     /** Cached search bean. */
     private CmsSearch m_searchBean;
 
     /** Cached search results. */
-    private List m_searchResults;
+    private List<CmsSearchResult> m_searchResults;
 
     /**
      * Constructor, creates a new instance.<p>
@@ -111,7 +109,7 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
         String query,
         String sort,
         String fields,
-        List searchRoots,
+        List<String> searchRoots,
         String minCreationDate,
         String maxCreationDate,
         String minLastModificationDate,
@@ -170,34 +168,33 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
     /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getCollectorNames()
      */
-    public List getCollectorNames() {
+    public List<String> getCollectorNames() {
 
-        List names = new ArrayList();
-        names.add(COLLECTOR_NAME);
-        return names;
+        return Arrays.asList(COLLECTOR_NAME);
     }
 
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceCollector#getResources(org.opencms.file.CmsObject, java.util.Map)
      */
-    public List getResources(CmsObject cms, Map params) throws CmsException {
+    @Override
+    public List<CmsResource> getResources(CmsObject cms, Map<String, String> params) throws CmsException {
 
-        List result = getSearchResults(params);
+        List<CmsSearchResult> result = getSearchResults(params);
         int count = getSearchBean(params).getSearchResultCount();
-        Object[] objs = new Object[count];
-        Arrays.fill(objs, new Object());
+        CmsResource[] resources = new CmsResource[count];
         int from = (getSearchBean(params).getSearchPage() - 1) * getSearchBean(params).getMatchesPerPage();
         int siteLen = cms.getRequestContext().getSiteRoot().length();
-        Iterator it = result.iterator();
+
+        Iterator<CmsSearchResult> it = result.iterator();
         while (it.hasNext()) {
-            CmsSearchResult sr = (CmsSearchResult)it.next();
+            CmsSearchResult sr = it.next();
             CmsResource resource = cms.readResource(sr.getPath().substring(siteLen), CmsResourceFilter.ALL);
             m_resCache.put(resource.getStructureId().toString(), resource);
             m_srCache.put(resource.getStructureId().toString(), sr);
-            objs[from] = resource;
+            resources[from] = resource;
             from++;
         }
-        return Arrays.asList(objs);
+        return Arrays.asList(resources);
     }
 
     /**
@@ -209,12 +206,13 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
      */
     public CmsSearchResult getSearchResult(String structureId) {
 
-        return (CmsSearchResult)m_srCache.get(structureId);
+        return m_srCache.get(structureId);
     }
 
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceCollector#setPage(int)
      */
+    @Override
     public void setPage(int page) {
 
         synchronized (this) {
@@ -227,7 +225,8 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceCollector#getInternalResources(org.opencms.file.CmsObject, java.util.Map)
      */
-    protected List getInternalResources(CmsObject cms, Map params) throws CmsException {
+    @Override
+    protected List<CmsResource> getInternalResources(CmsObject cms, Map<String, String> params) throws CmsException {
 
         synchronized (this) {
             if (m_resources == null) {
@@ -240,6 +239,7 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceCollector#setAdditionalColumns(org.opencms.workplace.list.CmsListItem, org.opencms.workplace.explorer.CmsResourceUtil)
      */
+    @Override
     protected void setAdditionalColumns(CmsListItem item, CmsResourceUtil resUtil) {
 
         item.set(CmsSearchResultsList.LIST_COLUMN_SCORE, new Integer(getSearchResult(item.getId()).getScore()));
@@ -252,22 +252,24 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
      * 
      * @return the used search bean
      */
-    private CmsSearch getSearchBean(Map params) {
+    private CmsSearch getSearchBean(Map<String, String> params) {
 
         if (m_searchBean == null) {
             m_searchBean = new CmsSearch();
             m_searchBean.init(getWp().getCms());
             m_searchBean.setParameters(getSearchParameters(params));
-            m_searchBean.setIndex(getWp().getSettings().getUserSettings().getWorkplaceSearchIndexName());
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_searchBean.getIndex())) {
+                m_searchBean.setIndex(getWp().getSettings().getUserSettings().getWorkplaceSearchIndexName());
+            }
             m_searchBean.setMatchesPerPage(getWp().getSettings().getUserSettings().getExplorerFileEntries());
-            m_searchBean.setSearchPage(Integer.parseInt((String)params.get(I_CmsListResourceCollector.PARAM_PAGE)));
+            m_searchBean.setSearchPage(Integer.parseInt(params.get(I_CmsListResourceCollector.PARAM_PAGE)));
             // set search roots
-            List resources = getResourceNamesFromParam(params);
+            List<String> resources = getResourceNamesFromParam(params);
             String[] searchRoots = new String[resources.size()];
             resources.toArray(searchRoots);
             m_searchBean.setSearchRoots(searchRoots);
         } else {
-            int page = Integer.parseInt((String)params.get(I_CmsListResourceCollector.PARAM_PAGE));
+            int page = Integer.parseInt(params.get(I_CmsListResourceCollector.PARAM_PAGE));
             if (m_searchBean.getSearchPage() != page) {
                 m_searchBean.setSearchPage(page);
                 m_searchResults = null;
@@ -283,28 +285,32 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
      * 
      * @return a search parameters object
      */
-    private CmsSearchParameters getSearchParameters(Map params) {
+    private CmsSearchParameters getSearchParameters(Map<String, String> params) {
 
         CmsSearchParameters searchParams = new CmsSearchParameters();
-        searchParams.setQuery((String)params.get(PARAM_QUERY));
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly((String)params.get(PARAM_SORT))) {
-            searchParams.setSortName((String)params.get(PARAM_SORT));
+        searchParams.setQuery(params.get(PARAM_QUERY));
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(params.get(PARAM_SORT))) {
+            searchParams.setSortName(params.get(PARAM_SORT));
         }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly((String)params.get(PARAM_MINCREATIONDATE))) {
-            searchParams.setMinDateCreated(Long.parseLong((String)params.get(PARAM_MINCREATIONDATE)));
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(params.get(PARAM_MINCREATIONDATE))) {
+            searchParams.setMinDateCreated(Long.parseLong(params.get(PARAM_MINCREATIONDATE)));
         }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly((String)params.get(PARAM_MAXCREATIONDATE))) {
-            searchParams.setMaxDateCreated(Long.parseLong((String)params.get(PARAM_MAXCREATIONDATE)));
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(params.get(PARAM_MAXCREATIONDATE))) {
+            searchParams.setMaxDateCreated(Long.parseLong(params.get(PARAM_MAXCREATIONDATE)));
         }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly((String)params.get(PARAM_MINLASTMODIFICATIONDATE))) {
-            searchParams.setMinDateLastModified(Long.parseLong((String)params.get(PARAM_MINLASTMODIFICATIONDATE)));
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(params.get(PARAM_MINLASTMODIFICATIONDATE))) {
+            searchParams.setMinDateLastModified(Long.parseLong(params.get(PARAM_MINLASTMODIFICATIONDATE)));
         }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly((String)params.get(PARAM_MAXLASTMODIFICATIONDATE))) {
-            searchParams.setMaxDateLastModified(Long.parseLong((String)params.get(PARAM_MAXLASTMODIFICATIONDATE)));
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(params.get(PARAM_MAXLASTMODIFICATIONDATE))) {
+            searchParams.setMaxDateLastModified(Long.parseLong(params.get(PARAM_MAXLASTMODIFICATIONDATE)));
         }
-        List fields = CmsStringUtil.splitAsList((String)params.get(PARAM_FIELDS), ',');
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(params.get(PARAM_INDEXNAME))) {
+            searchParams.setIndex(params.get(PARAM_INDEXNAME));
+        }
+
+        List<String> fields = CmsStringUtil.splitAsList(params.get(PARAM_FIELDS), ',');
         searchParams.setFields(fields);
-        searchParams.setSearchPage(Integer.parseInt((String)params.get(I_CmsListResourceCollector.PARAM_PAGE)));
+        searchParams.setSearchPage(Integer.parseInt(params.get(I_CmsListResourceCollector.PARAM_PAGE)));
         return searchParams;
     }
 
@@ -315,11 +321,10 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
      * 
      * @return a list of {@link org.opencms.search.CmsSearchResult} objects
      */
-    private List getSearchResults(Map params) {
+    private List<CmsSearchResult> getSearchResults(Map<String, String> params) {
 
         if (m_searchResults == null) {
             m_searchResults = getSearchBean(params).getSearchResult();
-            m_searchResults = (m_searchResults == null ? Collections.EMPTY_LIST : m_searchResults);
         }
         return m_searchResults;
     }
