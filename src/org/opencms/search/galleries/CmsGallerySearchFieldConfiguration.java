@@ -189,6 +189,11 @@ public class CmsGallerySearchFieldConfiguration extends CmsLuceneFieldConfigurat
             }
 
             if ((value != null) && (field instanceof CmsLuceneField)) {
+                // In order to search and sort case insensitive in the title field
+                // take the lower case value for the un-stored title field.
+                if (field.getName().equals(CmsSearchField.FIELD_TITLE_UNSTORED)) {
+                    value = value.toLowerCase();
+                }
                 // localized content is available for this field
                 Fieldable fieldable = ((CmsLuceneField)field).createField(
                     getLocaleExtendedName(fieldName, locale),
