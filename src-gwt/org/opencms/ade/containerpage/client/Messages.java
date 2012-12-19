@@ -190,6 +190,9 @@ public final class Messages {
     public static final String GUI_PROPERTY_DIALOG_TITLE_0 = "GUI_PROPERTY_DIALOG_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SETTINGS_LEGEND_0 = "GUI_SETTINGS_LEGEND_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_TAB_FAVORITES_DESCRIPTION_0 = "GUI_TAB_FAVORITES_DESCRIPTION_0";
 
     /** Message constant for key in the resource bundle. */
@@ -206,9 +209,6 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TITLE_INHERITED_FROM_1 = "GUI_TITLE_INHERITED_FROM_1";
-
-    /** Message constant for key in the resource bundle. */
-    protected static final String GUI_SETTINGS_LEGEND_0 = "GUI_SETTINGS_LEGEND_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.containerpage.clientmessages";
