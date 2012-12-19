@@ -604,7 +604,8 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_startFolder)) {
                 config.put(I_CmsGalleryProviderConstants.CONFIG_START_FOLDER, m_startFolder);
             }
-            String treeToken = "" + Objects.hashCode(m_startSite, cms.getRequestContext().getSiteRoot());
+            String treeToken = ""
+                + Objects.hashCode(m_startSite, cms.getRequestContext().getSiteRoot(), "" + m_selectableTypes);
             config.put(I_CmsGalleryProviderConstants.CONFIG_TREE_TOKEN, treeToken);
         } catch (JSONException e) {
             LOG.error(e.getLocalizedMessage(), e);
