@@ -290,16 +290,18 @@ public class CmsSitemapTab extends A_CmsListTab {
      */
     private void selectSite(String siteRoot) {
 
-        Map<String, String> options = m_sortSelectBox.getItems();
-        String option = null;
-        for (Map.Entry<String, String> entry : options.entrySet()) {
-            if (CmsStringUtil.comparePaths(entry.getKey(), siteRoot)) {
-                option = entry.getKey();
-                break;
+        if (m_sortSelectBox != null) {
+            Map<String, String> options = m_sortSelectBox.getItems();
+            String option = null;
+            for (Map.Entry<String, String> entry : options.entrySet()) {
+                if (CmsStringUtil.comparePaths(entry.getKey(), siteRoot)) {
+                    option = entry.getKey();
+                    break;
+                }
             }
-        }
-        if (option != null) {
-            m_sortSelectBox.setFormValue(option, false);
+            if (option != null) {
+                m_sortSelectBox.setFormValue(option, false);
+            }
         }
     }
 
