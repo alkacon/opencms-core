@@ -85,11 +85,14 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.AnchorElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
@@ -1162,6 +1165,25 @@ public final class CmsContainerpageController {
             m_handler.m_editor.disableEditing(m_data.getNoEditReason());
         } else {
             checkLockInfo();
+        }
+
+        // initialize the browser history handler
+        History.addValueChangeHandler(new ValueChangeHandler<String>() {
+
+            public void onValueChange(ValueChangeEvent<String> event) {
+
+                String historyToken = event.getValue();
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(historyToken)) {
+                    getContentEditorHandler().openEditorForHistory(historyToken);
+                } else {
+                    getContentEditorHandler().closeContentEditor();
+                }
+            }
+        });
+        // check if there is already a history item available
+        String historyToken = History.getToken();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(historyToken)) {
+            m_contentEditorHandler.openEditorForHistory(historyToken);
         }
     }
 

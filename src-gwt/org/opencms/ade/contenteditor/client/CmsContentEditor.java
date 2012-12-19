@@ -406,6 +406,36 @@ public final class CmsContentEditor extends EditorBase {
     }-*/;
 
     /**
+     * Closes the editor.<p>
+     * May be used from outside the editor module.<p>
+     */
+    public void closeEditor() {
+
+        if (m_saveButton != null) {
+            if (m_saveButton.isEnabled()) {
+                CmsConfirmDialog dialog = new CmsConfirmDialog(org.opencms.gwt.client.Messages.get().key(
+                    org.opencms.gwt.client.Messages.GUI_DIALOG_RESET_TITLE_0), Messages.get().key(
+                    Messages.GUI_CONFIRM_LEAVING_EDITOR_0));
+                dialog.setHandler(new I_CmsConfirmDialogHandler() {
+
+                    public void onClose() {
+
+                        cancelEdit();
+                    }
+
+                    public void onOk() {
+
+                        saveAndExit();
+                    }
+                });
+                dialog.center();
+            } else {
+                cancelEdit();
+            }
+        }
+    }
+
+    /**
      * Returns the currently edited entity.<p>
      * 
      * @return the currently edited entity

@@ -38,6 +38,7 @@ import org.opencms.util.CmsUUID;
 
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.History;
 
 /**
  * The container-page editor implementation of the XML content editor handler.<p>
@@ -45,6 +46,12 @@ import com.google.gwt.user.client.Command;
  * @since 8.0.0
  */
 public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
+
+    /** Content editor hash key whre a return to the opened editor is not possible. */
+    private static final String EDITOR_FOR_NO_RETURN_HASH_KEY = "cE";
+
+    /** Content editor hash key used for history management. */
+    private static final String EDITOR_HASH_KEY = "cE:";
 
     /** The currently edited element's id. */
     private String m_currentElementId;
@@ -63,6 +70,14 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
     public CmsContentEditorHandler(CmsContainerpageHandler handler) {
 
         m_handler = handler;
+    }
+
+    /**
+     * Closes the content editor.<p>
+     */
+    public void closeContentEditor() {
+
+        CmsContentEditor.getInstance().closeEditor();
     }
 
     /**
@@ -116,12 +131,15 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
 
                 public void execute() {
 
+                    addClosedEditorHistoryItem();
                     onClose(element.getSitePath(), false);
                 }
             };
             if (inline && CmsContentEditor.hasEditable(element.getElement())) {
+                addEditingHistoryItem(true);
                 CmsContentEditor.getInstance().openInlineEditor(new CmsUUID(serverId), editorLocale, element, onClose);
             } else {
+                addEditingHistoryItem(false);
                 CmsContentEditor.getInstance().openFormEditor(editorLocale, serverId, null, null, onClose);
             }
         }
@@ -154,6 +172,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                 newLink = URL.decodeQueryString(newLink);
                 newLink = URL.decodeQueryString(newLink);
             }
+            addEditingHistoryItem(isNew);
             CmsContentEditor.getInstance().openFormEditor(
                 CmsCoreProvider.get().getLocale(),
                 CmsContainerpageController.getServerId(getCurrentElementId()),
@@ -163,9 +182,42 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
 
                     public void execute() {
 
+                        addClosedEditorHistoryItem();
                         onClose(editableData.getSitePath(), isNew);
                     }
                 });
+        }
+    }
+
+    /**
+     * Opens the content editor according to the history hash.<p>
+     * 
+     * @param historyHash the history hash
+     */
+    public void openEditorForHistory(String historyHash) {
+
+        m_handler.m_controller.setContentEditing(true);
+        if (historyHash.startsWith(EDITOR_HASH_KEY)) {
+            String id = historyHash.substring(EDITOR_HASH_KEY.length(), historyHash.indexOf(";"));
+            if (id.contains(",")) {
+                String[] ids = id.split(",");
+                m_currentElementId = ids[0];
+                m_dependingElementId = ids[1];
+            } else {
+                m_currentElementId = id;
+            }
+            Command onClose = new Command() {
+
+                public void execute() {
+
+                    addClosedEditorHistoryItem();
+                    onClose(null, false);
+                }
+            };
+            String editorLocale = CmsCoreProvider.get().getLocale();
+            CmsContentEditor.getInstance().openFormEditor(editorLocale, m_currentElementId, null, null, onClose);
+        } else {
+            closeContentEditor();
         }
     }
 
@@ -177,5 +229,31 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
     protected String getCurrentElementId() {
 
         return m_currentElementId;
+    }
+
+    /**
+     * Adds a history item for the closed editor.<p>
+     */
+    void addClosedEditorHistoryItem() {
+
+        History.newItem("", false);
+    }
+
+    /**
+     * Adds a history item for the opened editor.<p>
+     * Use the prihibitReturn flag to deny a return to the opened editor through the browser history. 
+     * Use this feature for inline editing or when opening the editor for new resources.<p> 
+     * 
+     * @param prohibitReturn if <code>true</code> returning to the opened editor through the browser history is denied
+     */
+    private void addEditingHistoryItem(boolean prohibitReturn) {
+
+        if (prohibitReturn) {
+            History.newItem(EDITOR_FOR_NO_RETURN_HASH_KEY, false);
+        } else {
+            History.newItem(EDITOR_HASH_KEY
+                + CmsContainerpageController.getServerId(getCurrentElementId())
+                + (m_dependingElementId != null ? "," + m_dependingElementId + ";" : ";"), false);
+        }
     }
 }
