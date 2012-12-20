@@ -450,6 +450,9 @@ public class CmsVfsTab extends A_CmsListTab {
      */
     private void selectSite(String siteRoot) {
 
+        if (m_sortSelectBox == null) {
+            return;
+        }
         Map<String, String> options = m_sortSelectBox.getItems();
         String option = null;
         for (Map.Entry<String, String> entry : options.entrySet()) {
