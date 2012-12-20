@@ -95,6 +95,9 @@ public class CmsSearchField implements Serializable {
     /** Name of the dynamic property field. */
     public static final String FIELD_DYNAMIC_PROPERTIES = "_prop";
 
+    /** The name of the dynamic field that stores the shortened value of the content field in order to save performance. */
+    public static final String FIELD_EXCERPT = "_excerpt";
+
     /** Name of the field that contains the documents structure id. */
     public static final String FIELD_ID = "id";
 

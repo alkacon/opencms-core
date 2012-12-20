@@ -235,7 +235,7 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
                 List<String> splitedValues = new ArrayList<String>();
                 boolean multi = false;
                 SchemaField f = schema.getField(fieldName);
-                if (f != null) {
+                if ((f != null) && (!field.getName().startsWith(CmsSearchField.FIELD_CONTENT))) {
                     multi = f.multiValued();
                 }
                 FieldType type = schema.getFieldType(fieldName);
@@ -245,18 +245,24 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
                     splitedValues.add(value);
                 }
                 for (String val : splitedValues) {
-                    try {
-                        if (type instanceof DateField) {
-                            val = DateField.formatExternal(new Date(new Long(val).longValue()));
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(val)) {
+                        try {
+                            if (type instanceof DateField) {
+                                val = DateField.formatExternal(new Date(new Long(val).longValue()));
+                            }
+                        } catch (SolrException e) {
+                            LOG.debug(e.getMessage(), e);
+                            throw new RuntimeException(e);
                         }
-                    } catch (SolrException e) {
-                        LOG.debug(e.getMessage(), e);
-                        throw new RuntimeException(e);
-                    }
-                    if (schema.hasExplicitField(fieldName)) {
-                        m_doc.addField(fieldName, val);
-                    } else {
-                        m_doc.addField(fieldName, val, field.getBoost());
+                        if (fieldName.endsWith(CmsSearchField.FIELD_EXCERPT)) {
+                            // TODO: make the length and the area configurable
+                            val = CmsStringUtil.trimToSize(val, 1000, 50, "");
+                        }
+                        if (schema.hasExplicitField(fieldName)) {
+                            m_doc.addField(fieldName, val);
+                        } else {
+                            m_doc.addField(fieldName, val, field.getBoost());
+                        }
                     }
                 }
             } catch (SolrException e) {
