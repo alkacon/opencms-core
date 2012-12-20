@@ -552,9 +552,13 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                         // get search results given resource path
                         result = findResourceInGallery(currentelement, data);
                         sitemapPreloadData = result.getSitemapPreloadData();
+                        vfsPreloadData = result.getVfsPreloadData();
                         if (sitemapPreloadData != null) {
                             startTab = GalleryTabId.cms_tab_sitemap;
+                        } else if (vfsPreloadData != null) {
+                            startTab = GalleryTabId.cms_tab_vfstree;
                         }
+
                     } else {
                         CmsTreeOpenState vfsState = getVfsTreeState(data.getTreeToken());
                         if (vfsState != null) {
@@ -1445,18 +1449,42 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         } else {
             log("could not find selected resource");
         }
-        if ((resource != null) && isSitemapEntry(cms, resource)) {
-            A_CmsTreeTabDataPreloader<CmsSitemapEntryBean> loader = new A_CmsTreeTabDataPreloader<CmsSitemapEntryBean>() {
+        if ((resource != null)) {
+            if (isSitemapEntry(cms, resource)) {
+                A_CmsTreeTabDataPreloader<CmsSitemapEntryBean> loader = new A_CmsTreeTabDataPreloader<CmsSitemapEntryBean>() {
 
-                @Override
-                protected CmsSitemapEntryBean createEntry(CmsObject innerCms, CmsResource innerResource)
-                throws CmsException {
+                    @Override
+                    protected CmsSitemapEntryBean createEntry(CmsObject innerCms, CmsResource innerResource)
+                    throws CmsException {
 
-                    return internalCreateSitemapEntryBean(innerCms, innerResource);
-                }
-            };
-            CmsSitemapEntryBean entryBean = loader.preloadData(cms, Collections.singletonList(resource));
-            initialSearchObj.setSitemapPreloadData(entryBean);
+                        return internalCreateSitemapEntryBean(innerCms, innerResource);
+                    }
+                };
+                CmsSitemapEntryBean entryBean = loader.preloadData(cms, Collections.singletonList(resource));
+                initialSearchObj.setSitemapPreloadData(entryBean);
+            } else if (resource.isFolder()) {
+                A_CmsTreeTabDataPreloader<CmsVfsEntryBean> loader = new A_CmsTreeTabDataPreloader<CmsVfsEntryBean>() {
+
+                    @Override
+                    protected CmsVfsEntryBean createEntry(CmsObject innerCms, CmsResource innerResource)
+                    throws CmsException {
+
+                        String title = innerCms.readPropertyObject(
+                            innerResource,
+                            CmsPropertyDefinition.PROPERTY_TITLE,
+                            false).getValue();
+                        return internalCreateVfsEntryBean(
+                            innerResource.getRootPath(),
+                            innerResource.getStructureId(),
+                            title,
+                            true,
+                            isEditable(innerCms, innerResource),
+                            null);
+                    }
+                };
+                CmsVfsEntryBean entryBean = loader.preloadData(cms, Collections.singletonList(resource));
+                initialSearchObj.setVfsPreloadData(entryBean);
+            }
         }
 
         return initialSearchObj;
