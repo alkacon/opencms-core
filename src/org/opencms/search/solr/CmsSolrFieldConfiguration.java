@@ -154,6 +154,20 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
     }
 
     /**
+     * Adds the additional fields to the configuration, if they are not null.<p>
+     * 
+     * @param additionalFields the additional fields to add
+     */
+    protected void addAdditionalFields(List<CmsSolrField> additionalFields) {
+
+        if (additionalFields != null) {
+            for (CmsSolrField solrField : additionalFields) {
+                m_solrFields.put(solrField.getName(), solrField);
+            }
+        }
+    }
+
+    /**
      * @see org.opencms.search.fields.CmsSearchFieldConfiguration#appendDates(org.opencms.search.I_CmsSearchDocument, org.opencms.file.CmsObject, org.opencms.file.CmsResource, org.opencms.search.extractors.I_CmsExtractionResult, java.util.List, java.util.List)
      */
     @Override
@@ -204,7 +218,7 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
                             // no localized content extracted
                             if (!(CmsResourceTypeXmlContent.isXmlContent(resource) || CmsResourceTypeXmlPage.isXmlPage(resource))) {
                                 // the resource is no XML content nor an XML page
-                                if (getContentLocales(cms, resource).contains(field.getLocale())) {
+                                if (getContentLocales(cms, resource, extractionResult).contains(field.getLocale())) {
                                     // the resource to get the extracted content for has the locale of this field,
                                     // so store the extraction content into this field
                                     mapResult = extractionResult.getContent();
@@ -321,7 +335,7 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
             contentLocales = resourceLocales;
         } else {
             // For all other try to determine the locales, first by file name, then by OpenCms default behavior
-            contentLocales = getContentLocales(cms, resource);
+            contentLocales = getContentLocales(cms, resource, extraction);
         }
         document.addContentLocales(contentLocales);
 
@@ -359,17 +373,24 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
     }
 
     /**
-     * Adds the additional fields to the configuration, if they are not null.<p>
+     * Retrieves the locales for an content, that is whether an XML content nor an XML page.<p>
+     *  
+     * @param cms the current CmsObject
+     * @param resource the resource to get the content locales for
+     * @param extraction the extraction result
      * 
-     * @param additionalFields the additional fields to add
+     * @return the determined locales, or an <code>EMPTY</code> list
      */
-    protected void addAdditionalFields(List<CmsSolrField> additionalFields) {
+    protected List<Locale> getContentLocales(CmsObject cms, CmsResource resource, I_CmsExtractionResult extraction) {
 
-        if (additionalFields != null) {
-            for (CmsSolrField solrField : additionalFields) {
-                m_solrFields.put(solrField.getName(), solrField);
-            }
+        List<Locale> contentLocales = new ArrayList<Locale>();
+        // For all other try to determine the locales, first by file name, then by OpenCms default behavior
+        Locale fileNameLocale = getLocaleFromFileName(resource.getRootPath());
+        contentLocales.add(fileNameLocale);
+        if (fileNameLocale == null) {
+            contentLocales = OpenCms.getLocaleManager().getDefaultLocales(cms, resource);
         }
+        return contentLocales;
     }
 
     /**
@@ -390,7 +411,7 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
         for (Locale locale : OpenCms.getLocaleManager().getAvailableLocales()) {
             solrField = new CmsSolrField(
                 CmsSearchFieldConfiguration.getLocaleExtendedName(CmsSearchField.FIELD_CONTENT, locale),
-                Collections.singletonList(locale.toString() + "_excerpt"),
+                Collections.singletonList(locale.toString() + CmsSearchField.FIELD_EXCERPT),
                 locale,
                 null,
                 CmsSearchField.BOOST_DEFAULT);
@@ -412,26 +433,6 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
                 m_solrFields.put(solrField.getName(), solrField);
             }
         }
-    }
-
-    /**
-     * Retrieves the locales for an content, that is whether an XML content nor an XML page.<p>
-     *  
-     * @param cms the current CmsObject
-     * @param resource the resource to get the content locales for
-     * 
-     * @return the determined locales, or an <code>EMPTY</code> list
-     */
-    private List<Locale> getContentLocales(CmsObject cms, CmsResource resource) {
-
-        List<Locale> contentLocales = new ArrayList<Locale>();
-        // For all other try to determine the locales, first by file name, then by OpenCms default behavior
-        Locale fileNameLocale = getLocaleFromFileName(resource.getRootPath());
-        contentLocales.add(fileNameLocale);
-        if (fileNameLocale == null) {
-            contentLocales = OpenCms.getLocaleManager().getDefaultLocales(cms, resource);
-        }
-        return contentLocales;
     }
 
     /**
