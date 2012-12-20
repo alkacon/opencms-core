@@ -139,7 +139,7 @@ var func_ocms_de_activate = function() {
 	
 	// remove margin-bottom of the last element
 	var last = $('#' + type + ' > :not(:last)');
-	var marginBottom = parseFloat(jQuery.curCSS(last[0], "margin-bottom", true)) || 0;
+	var marginBottom = parseFloat(jQuery.css(last[0], "margin-bottom", true)) || 0;
 	if(!$('#'+ type).hasClass('ocms_de_selected')) {
 		$('#'+ type).addClass('ocms_de_selected');
 		var pointTo={ offset: $('#'+ type).calcOcmsDeOffset(), width:  ($('#'+ type).width() + 2*ocms_de_mbo), height: ($('#'+ type).height() - marginBottom + 2*ocms_de_mbo)};

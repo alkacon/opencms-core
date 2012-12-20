@@ -95,18 +95,7 @@ public class CmsDirectEditDefaultProvider extends A_CmsDirectEditProvider {
      */
     public String getDirectEditIncludes(CmsDirectEditParams params) {
 
-        String closeLink = getLink(params.getLinkForClose());
-        String deleteLink = getLink(params.getLinkForDelete());
-        String titleForNew = m_messages.key(Messages.GUI_EDITOR_TITLE_NEW_0);
-        String skinUri = CmsWorkplace.getSkinUri();
-
-        // resolve macros in include header
-        CmsMacroResolver resolver = CmsMacroResolver.newInstance();
-        resolver.addMacro("closeLink", closeLink);
-        resolver.addMacro("deleteLink", deleteLink);
-        resolver.addMacro("titleForNew", titleForNew);
-        resolver.addMacro("skinUri", skinUri);
-
+        CmsMacroResolver resolver = prepareMacroResolverForIncludes(params);
         return resolver.resolveMacros(m_headerInclude);
     }
 
@@ -126,14 +115,8 @@ public class CmsDirectEditDefaultProvider extends A_CmsDirectEditProvider {
             // the file is not available in the cache
             try {
                 CmsFile file = m_cms.readFile(m_fileName);
-                // get the encoding for the resource
-                CmsProperty p = m_cms.readPropertyObject(file, CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, true);
-                String e = p.getValue();
-                if (e == null) {
-                    e = OpenCms.getSystemInfo().getDefaultEncoding();
-                }
                 // create a String with the right encoding
-                m_headerInclude = CmsEncoder.createString(file.getContents(), e);
+                m_headerInclude = getContentAsString(file);
                 // store this in the cache
                 cache.putCachedObject(CmsDirectEditDefaultProvider.class, m_fileName, m_headerInclude);
 
@@ -387,5 +370,45 @@ public class CmsDirectEditDefaultProvider extends A_CmsDirectEditProvider {
         result.append("</div>\n");
         result.append("<div id=\"").append(editId).append("\" class=\"ocms_de_norm\">");
         return result.toString();
+    }
+
+    /**
+     * Helper method to convert the content of a resource to a string.<p>
+     * 
+     * @param file the file 
+     * @return the file content as a string 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    protected String getContentAsString(CmsFile file) throws CmsException {
+
+        CmsProperty p = m_cms.readPropertyObject(file, CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, true);
+        String e = p.getValue();
+        if (e == null) {
+            e = OpenCms.getSystemInfo().getDefaultEncoding();
+        }
+        return CmsEncoder.createString(file.getContents(), e);
+    }
+
+    /**
+     * Prepares the macro resolver which is used to process the included text file.<p>
+     * 
+     * @param params the direct edit parameters
+     *  
+     * @return the macro resolver 
+     */
+    protected CmsMacroResolver prepareMacroResolverForIncludes(CmsDirectEditParams params) {
+
+        String closeLink = getLink(params.getLinkForClose());
+        String deleteLink = getLink(params.getLinkForDelete());
+        String titleForNew = m_messages.key(Messages.GUI_EDITOR_TITLE_NEW_0);
+        String skinUri = CmsWorkplace.getSkinUri();
+        // resolve macros in include header
+        CmsMacroResolver resolver = CmsMacroResolver.newInstance();
+        resolver.addMacro("closeLink", closeLink);
+        resolver.addMacro("deleteLink", deleteLink);
+        resolver.addMacro("titleForNew", titleForNew);
+        resolver.addMacro("skinUri", skinUri);
+        return resolver;
     }
 }
