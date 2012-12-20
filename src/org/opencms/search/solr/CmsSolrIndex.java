@@ -405,7 +405,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
      * @see org.opencms.search.I_CmsSearchDocument
      * @see org.opencms.search.solr.CmsSolrQuery
      */
-    public synchronized CmsSolrResultList search(CmsObject cms, final CmsSolrQuery query, boolean ignoreMaxRows)
+    public CmsSolrResultList search(CmsObject cms, final CmsSolrQuery query, boolean ignoreMaxRows)
     throws CmsSearchException {
 
         int previousPriority = Thread.currentThread().getPriority();
