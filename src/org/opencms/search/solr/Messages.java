@@ -68,6 +68,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_SOLR_WRITER_CREATE_2 = "LOG_SOLR_WRITER_CREATE_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_LANGUAGE_DETECTION_FAILED_1 = "LOG_LANGUAGE_DETECTION_FAILED_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_SOLR_WRITER_DELETE_ALL_2 = "LOG_SOLR_WRITER_DELETE_ALL_2";
 
     /** Message constant for key in the resource bundle. */

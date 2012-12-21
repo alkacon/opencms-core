@@ -91,6 +91,9 @@ import org.apache.solr.core.CoreContainer;
 import org.apache.solr.core.CoreDescriptor;
 import org.apache.solr.core.SolrCore;
 
+import com.cybozu.labs.langdetect.DetectorFactory;
+import com.cybozu.labs.langdetect.LangDetectException;
+
 /**
  * Implements the general management and configuration of the search and 
  * indexing facilities in OpenCms.<p>
@@ -1454,6 +1457,16 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         m_extractionResultCache = new CmsExtractionResultCache(
             OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(getDirectory()),
             "/extractCache");
+
+        try {
+            DetectorFactory.loadProfile(m_solrConfig.getLanguageProfileFolder());
+        } catch (LangDetectException e) {
+            LOG.error(
+                Messages.get().getBundle().key(
+                    Messages.LOG_LANGUAGE_DETECTION_INIT_FAILED_1,
+                    m_solrConfig.getLanguageProfileFolder()),
+                e);
+        }
 
         initializeIndexes();
         initOfflineIndexes();

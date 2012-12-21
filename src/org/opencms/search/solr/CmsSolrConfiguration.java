@@ -102,6 +102,9 @@ public class CmsSolrConfiguration {
     /** The file name of the Solr configuration. */
     private String m_solrFileName;
 
+    /** The language profile folder for language detection. */
+    private File m_languageProfileFolder;
+
     /**
      * Default constructor.<p>
      */
@@ -140,6 +143,19 @@ public class CmsSolrConfiguration {
     public String getHomeFolderPath() {
 
         return m_homeFolderPath;
+    }
+
+    /**
+     * Returns the language profile folder for language detection.<p>
+     * 
+     * @return the folder that holds the profiles for language detection
+     */
+    public File getLanguageProfileFolder() {
+
+        if (m_languageProfileFolder == null) {
+            m_languageProfileFolder = new File(getHome() + File.separator + "profiles");
+        }
+        return m_languageProfileFolder;
     }
 
     /**
@@ -282,6 +298,16 @@ public class CmsSolrConfiguration {
     public void setHomeFolderPath(String homeFolderPath) {
 
         m_homeFolderPath = homeFolderPath;
+    }
+
+    /**
+     * Sets the folder for language detection profiles.<p>
+     * 
+     * @param folder the folder to use
+     */
+    public void setLanguageProfileFolder(File folder) {
+
+        m_languageProfileFolder = folder;
     }
 
     /**

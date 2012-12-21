@@ -239,8 +239,8 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         filenames.put("rabbit_en.html", Collections.singletonList("en"));
         filenames.put("rabbit_en", Collections.singletonList("en"));
         filenames.put("rabbit_en.", Collections.singletonList("en"));
-        filenames.put("rabbit_enr", Arrays.asList(new String[] {"en", "de"}));
-        filenames.put("rabbit_en.tar.gz", Arrays.asList(new String[] {"en", "de"}));
+        filenames.put("rabbit_enr", Arrays.asList(new String[] {"en"}));
+        filenames.put("rabbit_en.tar.gz", Arrays.asList(new String[] {"en"}));
         filenames.put("rabbit_de_en_GB.html", Collections.singletonList("en_GB"));
         filenames.put("rabbit_de_DE_EN_DE_en.html", Collections.singletonList("en"));
         filenames.put("rabbit_de_DE_EN_en_DE.html", Collections.singletonList("en_DE"));

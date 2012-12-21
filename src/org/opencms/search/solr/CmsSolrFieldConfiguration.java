@@ -61,6 +61,10 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 
+import com.cybozu.labs.langdetect.Detector;
+import com.cybozu.labs.langdetect.DetectorFactory;
+import com.cybozu.labs.langdetect.LangDetectException;
+
 /**
  * The search field implementation for Solr.<p>
  * 
@@ -331,10 +335,10 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
         // append the content locales
         List<Locale> contentLocales = new ArrayList<Locale>();
         if (itemLocales != null) {
-            // XMl content or page
+            // XML content or page
             contentLocales = resourceLocales;
         } else {
-            // For all other try to determine the locales, first by file name, then by OpenCms default behavior
+            // for all other try to determine the locales
             contentLocales = getContentLocales(cms, resource, extraction);
         }
         document.addContentLocales(contentLocales);
@@ -374,23 +378,50 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
 
     /**
      * Retrieves the locales for an content, that is whether an XML content nor an XML page.<p>
+     * 
+     * Uses following strategy:
+     * <ul>
+     * <li>first by file name</li>
+     * <li>then by detection and</li>
+     * <li>otherwise take the first configured default locale for this resource</li>
      *  
      * @param cms the current CmsObject
      * @param resource the resource to get the content locales for
      * @param extraction the extraction result
      * 
-     * @return the determined locales, or an <code>EMPTY</code> list
+     * @return the determined locales for the given resource
      */
     protected List<Locale> getContentLocales(CmsObject cms, CmsResource resource, I_CmsExtractionResult extraction) {
 
-        List<Locale> contentLocales = new ArrayList<Locale>();
-        // For all other try to determine the locales, first by file name, then by OpenCms default behavior
-        Locale fileNameLocale = getLocaleFromFileName(resource.getRootPath());
-        contentLocales.add(fileNameLocale);
-        if (fileNameLocale == null) {
-            contentLocales = OpenCms.getLocaleManager().getDefaultLocales(cms, resource);
+        // try to detect locale by filename
+        Locale detectedLocale = getLocaleFromFileName(resource.getRootPath());
+
+        // try to detect locale by language detector
+        if ((detectedLocale == null) && (extraction != null) && (extraction.getContent() != null)) {
+            try {
+                Detector detector = DetectorFactory.create();
+                detector.append(extraction.getContent());
+                String lang = detector.detect();
+                Locale loc = new Locale(lang);
+                if (OpenCms.getLocaleManager().getAvailableLocales().contains(loc)) {
+                    detectedLocale = loc;
+                }
+            } catch (LangDetectException e) {
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_LANGUAGE_DETECTION_FAILED_1, resource), e);
+            }
         }
-        return contentLocales;
+
+        // take the detected locale or use the first configured default locale for this resource
+        List<Locale> result = new ArrayList<Locale>();
+        if (detectedLocale != null) {
+            // take the found locale
+            result.add(detectedLocale);
+        } else {
+            // take the first configured OpenCms default locale for this resource as fall-back
+            result.add(OpenCms.getLocaleManager().getDefaultLocales(cms, resource).get(0));
+        }
+
+        return result;
     }
 
     /**
