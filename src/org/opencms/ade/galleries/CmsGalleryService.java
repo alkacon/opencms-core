@@ -1709,6 +1709,14 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         if (m_workplaceSettings == null) {
             m_workplaceSettings = (CmsWorkplaceSettings)getRequest().getSession().getAttribute(
                 CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
+            // ensure workplace settings attribute is set
+            if (m_workplaceSettings == null) {
+                // creating any instance of {@link org.opencms.workplace.CmsWorkplaceSettings} and store it
+                m_workplaceSettings = CmsWorkplace.initWorkplaceSettings(getCmsObject(), null, false);
+                getRequest().getSession().setAttribute(
+                    CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS,
+                    m_workplaceSettings);
+            }
         }
         return m_workplaceSettings;
     }
