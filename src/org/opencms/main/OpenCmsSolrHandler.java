@@ -43,6 +43,7 @@ import org.opencms.util.CmsStringUtil;
 import java.io.IOException;
 import java.util.Map;
 
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -56,7 +57,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @since 8.5.0
  */
-public class OpenCmsSolrHandler implements I_CmsRequestHandler {
+public class OpenCmsSolrHandler extends HttpServlet implements I_CmsRequestHandler {
 
     /**
      * A enum storring the handler names implemented by this class.<p>
@@ -88,6 +89,9 @@ public class OpenCmsSolrHandler implements I_CmsRequestHandler {
     /** A constant for the HTTP 'referer'. */
     protected static final String HEADER_REFERER_KEY = "referer";
 
+    /** The UID. */
+    private static final long serialVersionUID = 2460644631508735724L;
+
     /** The CMS object. */
     private CmsObject m_cms;
 
@@ -102,6 +106,29 @@ public class OpenCmsSolrHandler implements I_CmsRequestHandler {
 
     /** The Solr query. */
     private CmsSolrQuery m_query;
+
+    /**
+     * OpenCms servlet main request handling method.<p>
+     * 
+     * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    @Override
+    public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
+
+        handle(req, res, HANDLER_NAMES.SolrSelect.toString());
+    }
+
+    /**
+     * OpenCms servlet POST request handling method, 
+     * will just call {@link #doGet(HttpServletRequest, HttpServletResponse)}.<p>
+     * 
+     * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    @Override
+    public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
+
+        doGet(req, res);
+    }
 
     /**
      * @see org.opencms.main.I_CmsRequestHandler#getHandlerNames()
