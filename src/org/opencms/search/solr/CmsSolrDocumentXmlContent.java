@@ -34,9 +34,8 @@ package org.opencms.search.solr;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsRuntimeException;
-import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsIndexException;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.documents.CmsDocumentXmlContent;
 import org.opencms.search.documents.Messages;
 import org.opencms.search.extractors.CmsExtractionResult;
@@ -185,40 +184,37 @@ public class CmsSolrDocumentXmlContent extends CmsDocumentXmlContent {
      * @param locale the locale
      * 
      * @return the extracted value
+     * @throws CmsException if something goes wrong
      */
-    private String extractValue(CmsObject cms, A_CmsXmlDocument xmlContent, String xpath, Locale locale) {
+    private String extractValue(CmsObject cms, A_CmsXmlDocument xmlContent, String xpath, Locale locale)
+    throws CmsException {
 
         StringBuffer valueExtraction = new StringBuffer();
         List<I_CmsXmlContentValue> values = xmlContent.getValues(xpath, locale);
         Iterator<I_CmsXmlContentValue> it = values.iterator();
         while (it.hasNext()) {
             I_CmsXmlContentValue value = it.next();
-            String extracted = value.getPlainText(cms);
-            if (value.isSimpleType()) {
-                // put the extraction to the content and to the items
-                if (value.getContentDefinition().getContentHandler().isSearchable(value)
-                    && CmsStringUtil.isNotEmptyOrWhitespaceOnly(extracted)) {
-                    // create the content value for the locale by adding all String values in the XML nodes
-                    valueExtraction.append(extracted);
-                    if (it.hasNext()) {
-                        valueExtraction.append('\n');
-                    }
-                }
-                // if the extraction was empty try to take the String value as fall-back
-                if (CmsStringUtil.isEmptyOrWhitespaceOnly(extracted)
-                    && CmsStringUtil.isNotEmptyOrWhitespaceOnly(value.getStringValue(cms))) {
-                    try {
+            try {
+                String extracted = value.getPlainText(cms);
+                if (value.isSimpleType()) {
+                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(extracted)) {
                         extracted = value.getStringValue(cms);
+                    }
+                    // put the extraction to the content and to the items
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(extracted)) {
+                        // create the content value for the locale by adding all String values in the XML nodes
                         valueExtraction.append(extracted);
                         if (it.hasNext()) {
                             valueExtraction.append('\n');
                         }
-                    } catch (CmsRuntimeException re) {
-                        // ignore: is only thrown for those XML content values 
-                        // that don't have a String representation for those we 
-                        // will store a 'null'
                     }
                 }
+            } catch (Exception e) {
+                // it can happen that a (runtime) exception is thrown while extracting the content of a value
+                // e.g. nested contents don't have a String representation
+                throw new CmsException(
+                    Messages.get().container(Messages.ERR_TEXT_EXTRACTION_1, xmlContent.getFile()),
+                    e);
             }
         }
         return valueExtraction.toString();
