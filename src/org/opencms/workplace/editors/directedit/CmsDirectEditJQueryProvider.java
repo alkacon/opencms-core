@@ -120,6 +120,7 @@ public class CmsDirectEditJQueryProvider extends CmsDirectEditDefaultProvider {
         resolver.addMacro(
             "jquery_dimensions",
             readFile("/system/modules/org.opencms.jquery/resources/packed/jquery.dimensions.js"));
+        resolver.addMacro("jquery", readFile("/system/modules/org.opencms.jquery/resources/packed/jquery.js"));
         return resolver;
     }
 

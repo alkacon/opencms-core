@@ -1,7 +1,9 @@
 <link type="text/css" rel="stylesheet" href="%(skinUri)editors/directedit/jq_edit.css" />
-<script type="text/javascript" src="%(skinUri)jquery/packed/jquery.js"></script>
-<script type="text/javascript" src="%(skinUri)jquery/load.js"></script>
 <script type="text/javascript">
+if (window.jQuery) {
+} else {
+	%(jquery)
+}
 if (window.$ && window.$.dimensions) {
 	// ignore, dimensions already included
 } else {
