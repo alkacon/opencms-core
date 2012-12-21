@@ -48,7 +48,6 @@ import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsSessionInfo;
 import org.opencms.main.OpenCms;
-import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.site.CmsSite;
@@ -509,80 +508,75 @@ public abstract class CmsWorkplace {
 
         // save current project
         settings.setProject(cms.getRequestContext().getCurrentProject().getUuid());
+        String currentSite = cms.getRequestContext().getSiteRoot();
+        // keep the current site
+        settings.setSite(currentSite);
 
         // switch to users preferred site      
-        String siteRoot = settings.getUserSettings().getStartSite();
-        if (siteRoot.endsWith("/")) {
-            // remove trailing slash
-            siteRoot = siteRoot.substring(0, siteRoot.length() - 1);
+        String startSiteRoot = getStartSiteRoot(cms, settings);
+
+        cms.getRequestContext().setSiteRoot(startSiteRoot);
+        try {
+            // check start folder: 
+            String startFolder = settings.getUserSettings().getStartFolder();
+            if (!cms.existsResource(startFolder, CmsResourceFilter.IGNORE_EXPIRATION)) {
+                // self - healing: 
+                startFolder = "/";
+                settings.getUserSettings().setStartFolder(startFolder);
+            }
+            settings.setSite(startSiteRoot);
+            settings.setExplorerResource(startFolder, cms);
+        } finally {
+            settings.setSite(currentSite);
+            cms.getRequestContext().setSiteRoot(currentSite);
         }
-        if (CmsStringUtil.isNotEmpty(siteRoot) && (OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot) == null)) {
+        // get the default view from the user settings
+        settings.setViewUri(OpenCms.getLinkManager().substituteLink(cms, settings.getUserSettings().getStartView()));
+        return settings;
+    }
+
+    /**
+     * Returns the start site from the given workplace settings.<p>
+     * 
+     * @param cms the cms context
+     * @param settings the workplace settings
+     * 
+     * @return the start site root
+     */
+    public static String getStartSiteRoot(CmsObject cms, CmsWorkplaceSettings settings) {
+
+        String currentSite = cms.getRequestContext().getSiteRoot();
+        String startSiteRoot = settings.getUserSettings().getStartSite();
+        if (startSiteRoot.endsWith("/")) {
+            // remove trailing slash
+            startSiteRoot = startSiteRoot.substring(0, startSiteRoot.length() - 1);
+        }
+        if (CmsStringUtil.isNotEmpty(startSiteRoot)
+            && (OpenCms.getSiteManager().getSiteForSiteRoot(startSiteRoot) == null)) {
             // this is not the root site and the site is not in the list
-            siteRoot = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartSite();
-            if (siteRoot.endsWith("/")) {
+            startSiteRoot = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartSite();
+            if (startSiteRoot.endsWith("/")) {
                 // remove trailing slash
-                siteRoot = siteRoot.substring(0, siteRoot.length() - 1);
+                startSiteRoot = startSiteRoot.substring(0, startSiteRoot.length() - 1);
             }
         }
         boolean access = false;
-        CmsResource res = null;
 
-        String currentSite = cms.getRequestContext().getSiteRoot();
-        cms.getRequestContext().setSiteRoot(siteRoot);
+        cms.getRequestContext().setSiteRoot(startSiteRoot);
         try {
             // check access to the site
-            res = cms.readResource("/");
-            access = cms.hasPermissions(res, CmsPermissionSet.ACCESS_VIEW, false, CmsResourceFilter.ONLY_VISIBLE);
-        } catch (CmsException e) {
-            // error reading site root, in this case we will use a readable default
-            if (LOG.isInfoEnabled()) {
-                LOG.info(e.getLocalizedMessage(), e);
+            access = cms.existsResource("/", CmsResourceFilter.ONLY_VISIBLE);
+
+            if (!access) {
+                List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(cms, true);
+                if (sites.size() > 0) {
+                    startSiteRoot = sites.get(0).getSiteRoot();
+                }
             }
         } finally {
             cms.getRequestContext().setSiteRoot(currentSite);
         }
-        if ((res == null) || !access) {
-            List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(cms, true);
-            if (sites.size() > 0) {
-                siteRoot = sites.get(0).getSiteRoot();
-                cms.getRequestContext().setSiteRoot(siteRoot);
-            }
-        }
-        // set the current site
-        settings.setSite(siteRoot);
-
-        // set the preferred folder to display
-        // check start folder: 
-        String startFolder = settings.getUserSettings().getStartFolder();
-        if (!cms.existsResource(startFolder, CmsResourceFilter.IGNORE_EXPIRATION)) {
-            // self - healing: 
-            startFolder = "/";
-            settings.getUserSettings().setStartFolder(startFolder);
-        }
-
-        if (OpenCms.getSiteManager().startsWithShared(cms.getRequestContext().getSiteRoot())) {
-
-            // For some reason, the request context of the CmsObject is different from siteRoot 
-            // when the user changes his preferences while in the shared folder. This would lead
-            // to problems because setExplorerResource uses both the site from the settings and
-            // the site from the CmsObject. To prevent this, we temporarily set the CmsObject's site
-            // root to the site root from the settings.
-
-            String contextSiteRoot = cms.getRequestContext().getSiteRoot();
-            try {
-                cms.getRequestContext().setSiteRoot(siteRoot);
-                settings.setExplorerResource(startFolder, cms);
-            } finally {
-                cms.getRequestContext().setSiteRoot(contextSiteRoot);
-            }
-        } else {
-            settings.setExplorerResource(startFolder, cms);
-        }
-
-        // get the default view from the user settings
-        settings.setViewUri(OpenCms.getLinkManager().substituteLink(cms, settings.getUserSettings().getStartView()));
-
-        return settings;
+        return startSiteRoot;
     }
 
     /**

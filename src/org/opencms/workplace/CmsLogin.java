@@ -334,9 +334,16 @@ public class CmsLogin extends CmsJspLoginBean {
                     // the login was successful
                     m_action = ACTION_LOGIN;
 
-                    // set the default project of the user
-                    CmsUserSettings settings = new CmsUserSettings(cms);
-
+                    CmsWorkplaceSettings workplaceSettings = CmsWorkplace.initWorkplaceSettings(cms, null, false);
+                    String startSite = CmsWorkplace.getStartSiteRoot(cms, workplaceSettings);
+                    // switch to the preferred site
+                    workplaceSettings.setSite(startSite);
+                    cms.getRequestContext().setSiteRoot(startSite);
+                    // store the workplace settings
+                    getRequest().getSession().setAttribute(
+                        CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS,
+                        workplaceSettings);
+                    CmsUserSettings settings = workplaceSettings.getUserSettings();
                     // get the direct edit path
                     m_directEditPath = getDirectEditPath(settings);
 
@@ -345,6 +352,7 @@ public class CmsLogin extends CmsJspLoginBean {
                         if (OpenCms.getOrgUnitManager().getAllAccessibleProjects(cms, project.getOuFqn(), false).contains(
                             project)) {
                             // user has access to the project, set this as current project
+                            workplaceSettings.setProject(project.getUuid());
                             cms.getRequestContext().setCurrentProject(project);
                         }
                     } catch (CmsException e) {
