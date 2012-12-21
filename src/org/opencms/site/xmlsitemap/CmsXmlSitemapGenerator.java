@@ -466,7 +466,11 @@ public class CmsXmlSitemapGenerator {
             if (navResource.isFolder()) {
                 try {
                     CmsResource defaultFile = m_guestCms.readDefaultFile(navResource, CmsResourceFilter.DEFAULT_FILES);
-                    result.add(defaultFile);
+                    if (defaultFile != null) {
+                        result.add(defaultFile);
+                    } else {
+                        LOG.warn("Could not get default file for " + navResource.getRootPath());
+                    }
                 } catch (CmsException e) {
                     LOG.warn("Could not get default file for " + navResource.getRootPath());
                 }
