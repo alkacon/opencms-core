@@ -206,7 +206,6 @@ public class CmsSimplePropertyEditorHandler implements I_CmsPropertyEditorHandle
 
                 stop(false);
                 if (getContextMenuHandler() != null) {
-                    getContextMenuHandler().unlockResource(m_propertiesBean.getStructureId());
                     getContextMenuHandler().refreshResource(m_propertiesBean.getStructureId());
                 }
             }

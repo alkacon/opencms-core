@@ -66,9 +66,7 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
 
             public void execute(CmsUUID structureId, I_CmsContextMenuHandler handler, CmsContextMenuEntryBean bean) {
 
-                if (handler.ensureLockOnResource(structureId)) {
-                    editProperties(structureId, handler);
-                }
+                editProperties(structureId, handler);
             }
 
             public A_CmsContextMenuItem getItemWidget(
