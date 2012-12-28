@@ -3704,7 +3704,7 @@ public class OpenCmsTestCase extends TestCase {
             try {
                 propertyFile = getTestDataPath("WEB-INF/config." + m_dbProduct + "/opencms.properties");
                 m_configuration = new CmsParameterConfiguration(propertyFile);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 fail("Error while reading configuration from '" + propertyFile + "'\n" + e.toString());
                 return;
             }
