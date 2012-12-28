@@ -632,7 +632,7 @@
 				</fileset>
 			</classpath>
 
-			<formatter type="plain" />
+			<formatter type="xml" />
 
 			<test name="org.opencms.test.AllTests" />
 		</junit>
@@ -659,7 +659,7 @@
 				</fileset>
 			</classpath>
 
-			<formatter type="plain" />
+			<formatter type="xml" />
 
 			<test name="org.opencms.${test}" />
 		</junit>
