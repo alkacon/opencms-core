@@ -3700,12 +3700,12 @@ public class OpenCmsTestCase extends TestCase {
                     index++;
                 }
             } while (cont);
-
+            String propertyFile = "";
             try {
-                String propertyFile = getTestDataPath("WEB-INF/config." + m_dbProduct + "/opencms.properties");
+                propertyFile = getTestDataPath("WEB-INF/config." + m_dbProduct + "/opencms.properties");
                 m_configuration = new CmsParameterConfiguration(propertyFile);
             } catch (IOException e) {
-                fail(e.toString());
+                fail("Error while reading configuration from '" + propertyFile + "'\n" + e.toString());
                 return;
             }
 
