@@ -64,6 +64,7 @@ import org.opencms.security.I_CmsPrincipal;
 import org.opencms.setup.CmsSetupDb;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsFileUtil;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.io.File;
@@ -712,7 +713,14 @@ public class OpenCmsTestCase extends TestCase {
                 OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
             }
             // set data path 
-            addTestDataPath(OpenCmsTestProperties.getInstance().getTestDataPath());
+            String testDataPath = System.getProperty(OpenCmsTestProperties.PROP_TEST_DATA_PATH);
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(testDataPath)) {
+                addTestDataPath(testDataPath);
+            }
+            testDataPath = OpenCmsTestProperties.getInstance().getTestDataPath();
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(testDataPath)) {
+                addTestDataPath(testDataPath);
+            }
         }
     }
 
@@ -1051,8 +1059,12 @@ public class OpenCmsTestCase extends TestCase {
     protected static synchronized String getSetupDataPath() {
 
         if (m_setupDataPath == null) {
+            String testWebAppPath = System.getProperty(OpenCmsTestProperties.PROP_TEST_WEBAPP_PATH);
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(testWebAppPath)) {
+                testWebAppPath = OpenCmsTestProperties.getInstance().getTestWebappPath();
+            }
             // check if the db setup files are available
-            File setupDataFolder = new File(OpenCmsTestProperties.getInstance().getTestWebappPath());
+            File setupDataFolder = new File(testWebAppPath);
             if (!setupDataFolder.exists()) {
                 fail("DB setup data not available at " + setupDataFolder.getAbsolutePath());
             }
