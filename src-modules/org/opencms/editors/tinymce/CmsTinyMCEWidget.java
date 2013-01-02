@@ -4,6 +4,7 @@ package org.opencms.editors.tinymce;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsException;
@@ -237,7 +238,7 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
                 try {
                     CmsFile file = cms.readFile(getHtmlWidgetOption().getStylesFormatPath());
                     String characterEncoding = OpenCms.getSystemInfo().getDefaultEncoding();
-                    result.put("style_formats", new String(file.getContents(), characterEncoding));
+                    result.put("style_formats", new JSONArray(new String(file.getContents(), characterEncoding)));
                 } catch (CmsException cmsException) {
                     LOG.error("Can not open file:" + getHtmlWidgetOption().getStylesFormatPath(), cmsException);
                 } catch (UnsupportedEncodingException ex) {
