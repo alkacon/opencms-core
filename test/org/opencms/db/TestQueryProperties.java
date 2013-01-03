@@ -29,8 +29,6 @@ package org.opencms.db;
 
 import org.opencms.test.OpenCmsTestCase;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.nio.charset.Charset;
@@ -106,8 +104,7 @@ public class TestQueryProperties extends OpenCmsTestCase {
     public void testQueryPropertiesGeneric() throws Exception {
 
         // generic
-        File queries = new File(ClassLoader.getSystemResource("./org/opencms/db/generic/query.properties").getPath());
-        parseQueryProperties(queries);
+        parseQueryProperties("org/opencms/db/generic/query.properties");
 
     }
 
@@ -119,8 +116,7 @@ public class TestQueryProperties extends OpenCmsTestCase {
     public void testQueryPropertiesMssql() throws Exception {
 
         // mssql
-        File queries = new File(ClassLoader.getSystemResource("./org/opencms/db/mssql/query.properties").getPath());
-        parseQueryProperties(queries);
+        parseQueryProperties("org/opencms/db/mssql/query.properties");
     }
 
     /**
@@ -131,8 +127,7 @@ public class TestQueryProperties extends OpenCmsTestCase {
     public void testQueryPropertiesMysql() throws Exception {
 
         // mysql
-        File queries = new File(ClassLoader.getSystemResource("./org/opencms/db/mysql/query.properties").getPath());
-        parseQueryProperties(queries);
+        parseQueryProperties("org/opencms/db/mysql/query.properties");
     }
 
     /**
@@ -143,8 +138,7 @@ public class TestQueryProperties extends OpenCmsTestCase {
     public void testQueryPropertiesOracle() throws Exception {
 
         // oracle8
-        File queries = new File(ClassLoader.getSystemResource("./org/opencms/db/oracle/query.properties").getPath());
-        parseQueryProperties(queries);
+        parseQueryProperties("org/opencms/db/oracle/query.properties");
     }
 
     /**
@@ -155,10 +149,16 @@ public class TestQueryProperties extends OpenCmsTestCase {
     public void testQueryPropertiesPostgresql() throws Exception {
 
         // postgresql
-        File queries = new File(ClassLoader.getSystemResource("./org/opencms/db/postgresql/query.properties").getPath());
-        parseQueryProperties(queries);
+        parseQueryProperties("org/opencms/db/postgresql/query.properties");
     }
 
+    /**
+     * Parses the key value pair string.<p>
+     * 
+     * @param keyValue the key value pair string
+     * 
+     * @throws ParseException if the key value pair string doesn't match the pattern 'key =value'
+     */
     private void parseKeyValue(String keyValue) throws ParseException {
 
         StringTokenizer tokenizer = new StringTokenizer(keyValue, "=:     ", false);
@@ -170,14 +170,14 @@ public class TestQueryProperties extends OpenCmsTestCase {
     /**
      * Implementation of the checks to perform.<p>
      * 
-     * @param f the query.properties file to parse
+     * @param fileName the property file name
      * 
      * @throws Exception if something goes wrong
      */
-    private void parseQueryProperties(File f) throws Exception {
+    private void parseQueryProperties(String fileName) throws Exception {
 
         LineNumberReader reader = new LineNumberReader(new InputStreamReader(
-            new FileInputStream(f),
+            TestQueryProperties.class.getClassLoader().getResourceAsStream(fileName),
             Charset.forName("ISO-8859-1")));
         String read;
         int len;
@@ -199,7 +199,7 @@ public class TestQueryProperties extends OpenCmsTestCase {
                             parseKeyValue(prefix);
                         } catch (ParseException pe) {
                             throw new ParseException("Bad format in file "
-                                + f.getAbsolutePath()
+                                + fileName
                                 + ", line "
                                 + count
                                 + ": "
@@ -216,9 +216,9 @@ public class TestQueryProperties extends OpenCmsTestCase {
 
             // check 2: invalid attempt to escape a line break, something follows
             if (lastEscape != -1) {
-                if (lastEscape != len - 1) {
+                if (lastEscape != (len - 1)) {
                     throw new ParseException("Bad format in file "
-                        + f.getAbsolutePath()
+                        + fileName
                         + ", line "
                         + count
                         + ": Line termination escape '\\' is followed by further characters.", count);
