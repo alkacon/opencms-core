@@ -55,6 +55,15 @@
 	<!-- comma separated list of files in WEB-INF/ to be updated -->
 	<property name="updater.webinf.files" value="opencms.tld,web.xml,cmsshell.sh,classes/META-INF/persistence.xml,classes/ehcache.xml,classes/repository.properties,sun-jaxws.xml" />
 
+	<path id="opencms.input.libs.all">
+		<fileset dir="${opencms.input.libs.compile}">
+			<include name="**/*.jar" />
+		</fileset>
+		<fileset dir="${opencms.input.libs.runtime}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+	
 	<taskdef resource="net/sf/antcontrib/antlib.xml" loaderref="contrib">
 		<classpath>
 			<pathelement location="${opencms.input.libs.compile}/ant-contrib-1.0b1.jar" />
@@ -73,6 +82,9 @@
 			<pathelement location="${opencms.input.libs.runtime}/jug-lgpl-2.0.0.jar" />
 		</classpath>
 	</taskdef>
+	
+	<taskdef resource="checkstyletask.properties"
+		classpathref="opencms.input.libs.all"/>
 
 	<!-- 
 	  -	Checks if all required libraries are available
@@ -178,15 +190,6 @@
 			</classpath>
 			<!-- compilerarg value="-Xlint:unchecked"/ -->
 		</javac>
-
-		<path id="opencms.input.libs.all">
-			<fileset dir="${opencms.input.libs.compile}">
-				<include name="**/*.jar" />
-			</fileset>
-			<fileset dir="${opencms.input.libs.runtime}">
-				<include name="**/*.jar" />
-			</fileset>
-		</path>
 
 		<taskdef name="openjpac" classname="org.apache.openjpa.ant.PCEnhancerTask" classpathref="opencms.input.libs.all" />
 
@@ -541,6 +544,20 @@
 				</for>
 			</then>
 		</if>
+
+	</target>
+	
+	<target name="checkstyle"
+	        description="Generates a report of code convention violations.">
+
+	  <checkstyle config="${basedir}/Checkstyle_OpenCms.xml"
+	              failureProperty="checkstyle.failure"
+	              failOnViolation="false">
+	    <formatter type="xml" tofile="checkstyle_report.xml"/>
+	    <fileset dir="src" includes="**/*.java"/>
+	  </checkstyle>
+
+<!--	  <style in="checkstyle_report.xml" out="checkstyle_report.html" style="checkstyle.xsl"/> -->
 
 	</target>
 
