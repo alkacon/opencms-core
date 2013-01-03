@@ -172,10 +172,10 @@ public class TestHistory extends OpenCmsTestCase {
         historyResources = cms.readAllAvailableVersions(importFile);
         assertEquals(counter + 2, historyResources.size()); // counter + created + deleted
 
-        for (int i = 0; i < counter + 2; i++) {
+        for (int i = 0; i < (counter + 2); i++) {
             // the list of historical resources contains at index 0 the 
             // resource with the highest version and tag ID
-            int version = counter + 2 - i;
+            int version = (counter + 2) - i;
             String contentStr = "content version " + (version - 1);
 
             // assert that the historical resource has the correct version
@@ -209,7 +209,7 @@ public class TestHistory extends OpenCmsTestCase {
         CmsResource res = cms.createResource(folderName, CmsResourceTypeFolder.getStaticTypeId(), null, null);
         cms.writePropertyObject(folderName, new CmsProperty(
             CmsPropertyDefinition.PROPERTY_TITLE,
-            "title version äöß€ 0",
+            "title version \u00E4\u00F6\u00DF\u20AC 0",
             null));
         cms.unlockResource(folderName);
         OpenCms.getPublishManager().publishResource(cms, folderName);
@@ -221,7 +221,7 @@ public class TestHistory extends OpenCmsTestCase {
             cms.lockResource(folderName);
             cms.writePropertyObject(folderName, new CmsProperty(
                 CmsPropertyDefinition.PROPERTY_TITLE,
-                "title version äöß€ " + i,
+                "title version \u00E4\u00F6\u00DF\u20AC " + i,
                 null));
             // check
             assertHistory(cms, folderName, 1 + i);
@@ -231,8 +231,10 @@ public class TestHistory extends OpenCmsTestCase {
             assertHistory(cms, folderName, 1 + i);
         }
         cms.lockResource(folderName);
-        cms.writePropertyObject(folderName, new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "title version äöß€ "
-            + (counter + 1), null));
+        cms.writePropertyObject(folderName, new CmsProperty(
+            CmsPropertyDefinition.PROPERTY_TITLE,
+            "title version \u00E4\u00F6\u00DF\u20AC " + (counter + 1),
+            null));
         // delete the folder
         cms.deleteResource(folderName, CmsResource.DELETE_PRESERVE_SIBLINGS);
         cms.unlockResource(folderName);
@@ -251,11 +253,11 @@ public class TestHistory extends OpenCmsTestCase {
         historyResources = cms.readAllAvailableVersions(importFolder);
         assertEquals(counter + 2, historyResources.size()); // counter + created + deleted
 
-        for (int i = 0; i < counter + 2; i++) {
+        for (int i = 0; i < (counter + 2); i++) {
             // the list of historical resources contains at index 0 the 
             // folder with the highest version and tag ID
-            int version = counter + 2 - i;
-            String title = "title version äöß€ " + (version - 1);
+            int version = (counter + 2) - i;
+            String title = "title version \u00E4\u00F6\u00DF\u20AC " + (version - 1);
 
             // assert that the historical resource has the correct version
             I_CmsHistoryResource historyResource = (I_CmsHistoryResource)historyResources.get(i);
@@ -476,7 +478,7 @@ public class TestHistory extends OpenCmsTestCase {
         // '0' original file deletion, affects just the given sibling
         // '0' second sibling deletion, affects just the given sibling
         // -3 versions deleted due to history overflow, while deleting original file
-        assertEquals(0 + counter + 1 + counterSibl + 0 + counterSibl2 + 0 + 0 - 3, allFiles.size());
+        assertEquals((0 + counter + 1 + counterSibl + 0 + counterSibl2 + 0 + 0) - 3, allFiles.size());
 
         //Delete historical entries, keep only 3 latest versions. 
         cms.deleteHistoricalVersions(3, 3, -1, new CmsShellReport(cms.getRequestContext().getLocale()));
@@ -986,10 +988,10 @@ public class TestHistory extends OpenCmsTestCase {
         historyResources = cms.readAllAvailableVersions(importFile);
         assertEquals(counter + 2, historyResources.size()); // counter + created + deleted
 
-        for (int i = 0; i < counter + 2; i++) {
+        for (int i = 0; i < (counter + 2); i++) {
             // the list of historical resources contains at index 0 the 
             // resource with the highest version and tag ID
-            int version = counter + 2 - i;
+            int version = (counter + 2) - i;
             String contentStr = "content version " + (version - 1);
 
             // assert that the historical resource has the correct version
@@ -1089,10 +1091,10 @@ public class TestHistory extends OpenCmsTestCase {
         historyResources = cms.readAllAvailableVersions(importFile);
         assertEquals(counter + 2, historyResources.size()); // 1 (created) + counter (modified/moved) + 1 (deleted)
 
-        for (int i = 0; i < counter + 2; i++) {
+        for (int i = 0; i < (counter + 2); i++) {
             // the list of historical resources contains at index 0 the 
             // resource with the highest version and tag ID
-            int version = counter + 2 - i;
+            int version = (counter + 2) - i;
             String contentStr = "content version " + (version - 1);
             String histResName = foldername + (version - 1) + filename + (version - 1) + ext;
 
@@ -1118,10 +1120,10 @@ public class TestHistory extends OpenCmsTestCase {
 
         cms.lockResource(importFile);
 
-        for (int i = 0; i < counter + 2; i++) {
+        for (int i = 0; i < (counter + 2); i++) {
             // the list of historical resources contains at index 0 the 
             // resource with the highest version and tag ID
-            int version = counter + 2 - i;
+            int version = (counter + 2) - i;
             String contentStr = "content version " + (version - 1);
             String histResName = foldername + (version - 1) + filename + (version - 1) + ext;
 

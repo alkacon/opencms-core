@@ -132,7 +132,7 @@ public class TestPropertyFile extends OpenCmsTestCase {
         String resourcename = "/folder1/subfolder11/index.html";
         getCmsObject().lockResource(resourcename);
 
-        String propertyValue = "äöü ÄÖÜ ßßß €€€";
+        String propertyValue = "\u00E4\u00F6\u00FC \u00C4\u00D6\u00DC \u00DF\u00DF\u00DF \u20AC\u20AC\u20AC";
 
         // set a property with a line break
         CmsProperty property = new CmsProperty();
@@ -163,7 +163,7 @@ public class TestPropertyFile extends OpenCmsTestCase {
     public void testWriteUnicodeChars() throws Throwable {
 
         String resourcename = "/folder1/subfolder11/index.html";
-        String propValue = "äöü ÄÖÜ ßßß €€€";
+        String propValue = "\u00E4\u00F6\u00FC \u00C4\u00D6\u00DC \u00DF\u00DF\u00DF \u20AC\u20AC\u20AC";
 
         // create property file with one entry
         StringBuffer content = new StringBuffer();
@@ -171,8 +171,10 @@ public class TestPropertyFile extends OpenCmsTestCase {
         content.append(propValue);
 
         // write the property file to the resource
-        CmsResourceWrapperUtils.writePropertyFile(getCmsObject(), resourcename, content.toString().getBytes(
-            CmsEncoder.ENCODING_UTF_8));
+        CmsResourceWrapperUtils.writePropertyFile(
+            getCmsObject(),
+            resourcename,
+            content.toString().getBytes(CmsEncoder.ENCODING_UTF_8));
 
         // read property
         CmsProperty prop = getCmsObject().readPropertyObject(resourcename, "Description", false);

@@ -526,7 +526,7 @@ public class TestSiblings extends OpenCmsTestCase {
         echo("Tests publish issue with two siblings (one new sibling and one deleted sibling) of the same resource.");
         CmsObject cms = getCmsObject();
 
-        CmsProject offlineProject = cms.getRequestContext().currentProject();
+        CmsProject offlineProject = cms.getRequestContext().getCurrentProject();
         CmsProject onlineProject = cms.readProject(CmsProject.ONLINE_PROJECT_ID);
 
         // step 1: create the basic scenario

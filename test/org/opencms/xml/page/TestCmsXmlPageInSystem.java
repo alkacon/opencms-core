@@ -331,9 +331,15 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
         page.addValue(element, Locale.ENGLISH);
         String text;
 
-        page.setStringValue(cms, element, Locale.ENGLISH, "<a href=\"index.html?bad=äöüÄÖÜß&good=aouAOUS\">link</a>");
+        page.setStringValue(
+            cms,
+            element,
+            Locale.ENGLISH,
+            "<a href=\"index.html?bad=\u00E4\u00F6\u00FC\u00C4\u00D6\u00DC\u00DF&good=aouAOUS\">link</a>");
         text = page.getStringValue(cms, element, Locale.ENGLISH);
-        assertEquals("<a href=\"/data/opencms/index.html?bad=äöüÄÖÜß&amp;good=aouAOUS\">link</a>", text);
+        assertEquals(
+            "<a href=\"/data/opencms/index.html?bad=\u00E4\u00F6\u00FC\u00C4\u00D6\u00DC\u00DF&amp;good=aouAOUS\">link</a>",
+            text);
 
         file.setContents(page.marshal());
         cms.writeFile(file);
@@ -342,7 +348,9 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
         page = CmsXmlPageFactory.unmarshal(cms, file, true);
 
         text = page.getStringValue(cms, element, Locale.ENGLISH);
-        assertEquals("<a href=\"/data/opencms/index.html?bad=äöüÄÖÜß&amp;good=aouAOUS\">link</a>", text);
+        assertEquals(
+            "<a href=\"/data/opencms/index.html?bad=\u00E4\u00F6\u00FC\u00C4\u00D6\u00DC\u00DF&amp;good=aouAOUS\">link</a>",
+            text);
     }
 
     /**

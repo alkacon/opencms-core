@@ -76,8 +76,8 @@ public class TestValidFilename extends TestCase {
 
         // add some of the new valid chars
         assertFalse(checkName("Copy of abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~$"));
-        assertFalse(checkName("Some German umlauts - הצüÄÖÜ‗"));
-        assertFalse(checkName("Some more western European special chars - יטפבאûםל"));
+        assertFalse(checkName("Some German umlauts - \u00E4\u00F6\u00FC\u00C4\u00D6\u00DC\u00DF"));
+        assertFalse(checkName("Some more western European special chars - \u00E9\u00E8\u00F4\u00E1\u00E0\u00FB\u00ED\u00EC"));
 
         assertFalse(checkName("my File"));
         // Window logic invalid chars

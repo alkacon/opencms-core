@@ -65,7 +65,7 @@ public class TestRtfExtraction extends TestCase {
         assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_RAW));
         assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_AUTHOR));
         assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_TITLE));
-        assertEquals("Alkacon Software – The OpenCms experts", items.get(I_CmsExtractionResult.ITEM_TITLE));
+        assertEquals("Alkacon Software \u2013 The OpenCms experts", items.get(I_CmsExtractionResult.ITEM_TITLE));
         assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_COMPANY));
         assertEquals("Alkacon Software", items.get(I_CmsExtractionResult.ITEM_COMPANY));
         String result = extractionResult.getContent();

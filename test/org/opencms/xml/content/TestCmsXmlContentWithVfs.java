@@ -1794,9 +1794,13 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_1L2, content.getBytes(CmsEncoder.ENCODING_UTF_8));
 
         CmsXmlContent xmlcontentDE = CmsXmlContentFactory.createDocument(cms, Locale.GERMAN, content, definition);
-
-        assertEquals("Dies ist etwas Text EINS ‰ˆ¸ƒ÷‹ﬂÄ", xmlcontentDE.getStringValue(cms, "StringOne", Locale.GERMAN));
-        assertEquals("Dies ist etwas Text ZWEI ‰ˆ¸ƒ÷‹ﬂÄ", xmlcontentDE.getStringValue(cms, "StringTwo", Locale.GERMAN));
+        // the unicode represents ‰ˆ¸ƒ÷‹ﬂÄ
+        assertEquals(
+            "Dies ist etwas Text EINS \u00E4\u00F6\u00FC\u00C4\u00D6\u00DC\u00DF\u20AC",
+            xmlcontentDE.getStringValue(cms, "StringOne", Locale.GERMAN));
+        assertEquals(
+            "Dies ist etwas Text ZWEI \u00E4\u00F6\u00FC\u00C4\u00D6\u00DC\u00DF\u20AC",
+            xmlcontentDE.getStringValue(cms, "StringTwo", Locale.GERMAN));
 
         CmsXmlContent xmlcontentEN = CmsXmlContentFactory.createDocument(cms, Locale.ENGLISH, content, definition);
 
