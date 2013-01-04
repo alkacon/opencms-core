@@ -1457,17 +1457,17 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         m_extractionResultCache = new CmsExtractionResultCache(
             OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(getDirectory()),
             "/extractCache");
-
-        try {
-            DetectorFactory.loadProfile(m_solrConfig.getLanguageProfileFolder());
-        } catch (LangDetectException e) {
-            LOG.error(
-                Messages.get().getBundle().key(
-                    Messages.LOG_LANGUAGE_DETECTION_INIT_FAILED_1,
-                    m_solrConfig.getLanguageProfileFolder()),
-                e);
+        if (m_solrConfig != null) {
+            try {
+                DetectorFactory.loadProfile(m_solrConfig.getLanguageProfileFolder());
+            } catch (LangDetectException e) {
+                LOG.error(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_LANGUAGE_DETECTION_INIT_FAILED_1,
+                        m_solrConfig.getLanguageProfileFolder()),
+                    e);
+            }
         }
-
         initializeIndexes();
         initOfflineIndexes();
 
