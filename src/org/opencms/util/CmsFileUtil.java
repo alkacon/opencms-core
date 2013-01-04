@@ -129,7 +129,9 @@ public final class CmsFileUtil {
 
         File inputFile = new File(fromFile);
         File outputFile = new File(toFile);
-
+        if (!outputFile.getParentFile().isDirectory()) {
+            outputFile.getParentFile().mkdirs();
+        }
         FileInputStream in = new FileInputStream(inputFile);
         FileOutputStream out = new FileOutputStream(outputFile);
 
