@@ -55,7 +55,6 @@ import org.opencms.publish.CmsPublishJobBase;
 import org.opencms.publish.CmsPublishJobInfoBean;
 import org.opencms.relations.CmsRelation;
 import org.opencms.report.CmsShellReport;
-import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
@@ -713,14 +712,7 @@ public class OpenCmsTestCase extends TestCase {
                 OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
             }
             // set data path 
-            String testDataPath = System.getProperty(OpenCmsTestProperties.PROP_TEST_DATA_PATH);
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(testDataPath)) {
-                addTestDataPath(testDataPath);
-            }
-            testDataPath = OpenCmsTestProperties.getInstance().getTestDataPath();
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(testDataPath)) {
-                addTestDataPath(testDataPath);
-            }
+            addTestDataPath(OpenCmsTestProperties.getInstance().getTestDataPath());
         }
     }
 
@@ -1064,7 +1056,7 @@ public class OpenCmsTestCase extends TestCase {
                 testWebAppPath = OpenCmsTestProperties.getInstance().getTestWebappPath();
             }
             // check if the db setup files are available
-            File setupDataFolder = new File(testWebAppPath);
+            File setupDataFolder = new File(OpenCmsTestProperties.getInstance().getTestWebappPath());
             if (!setupDataFolder.exists()) {
                 fail("DB setup data not available at " + setupDataFolder.getAbsolutePath());
             }
@@ -1339,6 +1331,7 @@ public class OpenCmsTestCase extends TestCase {
      * 
      * @param newConfig the folder with the configuration files to copy
      */
+    @SuppressWarnings("deprecation")
     private static void copyConfiguration(String newConfig) {
 
         File configDir = new File(getTestDataPath("WEB-INF" + File.separatorChar + CmsSystemInfo.FOLDER_CONFIG_DEFAULT));
@@ -2804,7 +2797,7 @@ public class OpenCmsTestCase extends TestCase {
             }
 
             // test if the property was already in the stored result
-            List storedProperties = storedResource.getProperties();
+            List<CmsProperty> storedProperties = storedResource.getProperties();
             if (storedProperties.contains(property)) {
                 fail("property already found in stored value: " + property);
             }
@@ -2826,7 +2819,7 @@ public class OpenCmsTestCase extends TestCase {
      * @param resourceName the name of the resource to compare
      * @param excludeList a list of CmsProperties to exclude
      */
-    public void assertPropertyNew(CmsObject cms, String resourceName, List excludeList) {
+    public void assertPropertyNew(CmsObject cms, String resourceName, List<CmsProperty> excludeList) {
 
         try {
             // get the stored resource
@@ -2844,10 +2837,10 @@ public class OpenCmsTestCase extends TestCase {
 
             String propertyNoMatches = "";
             String storedFound = "";
-            Iterator i = excludeList.iterator();
-            List storedProperties = storedResource.getProperties();
+            Iterator<CmsProperty> i = excludeList.iterator();
+            List<CmsProperty> storedProperties = storedResource.getProperties();
             while (i.hasNext()) {
-                CmsProperty property = (CmsProperty)i.next();
+                CmsProperty property = i.next();
                 CmsProperty resourceProperty = cms.readPropertyObject(resourceName, property.getName(), false);
                 // test if the property has the same value
                 if (!resourceProperty.isIdentical(property)) {
@@ -2883,7 +2876,7 @@ public class OpenCmsTestCase extends TestCase {
         try {
 
             // create the exclude list
-            List excludeList = new ArrayList();
+            List<CmsProperty> excludeList = new ArrayList<CmsProperty>();
             excludeList.add(property);
 
             // get the stored resource
@@ -2897,7 +2890,7 @@ public class OpenCmsTestCase extends TestCase {
             }
 
             // test if the property was already in the stored result
-            List storedProperties = storedResource.getProperties();
+            List<CmsProperty> storedProperties = storedResource.getProperties();
             if (!storedProperties.contains(property)) {
                 fail("property not found in stored value: " + property);
             }
@@ -2919,7 +2912,7 @@ public class OpenCmsTestCase extends TestCase {
      * @param resourceName the name of the resource to compare
      * @param excludeList a list of CmsProperties to exclude
      */
-    public void assertPropertyRemoved(CmsObject cms, String resourceName, List excludeList) {
+    public void assertPropertyRemoved(CmsObject cms, String resourceName, List<CmsProperty> excludeList) {
 
         try {
             // get the stored resource
@@ -2937,12 +2930,12 @@ public class OpenCmsTestCase extends TestCase {
 
             String propertyNotDeleted = "";
             String storedNotFound = "";
-            Iterator i = excludeList.iterator();
-            List storedProperties = storedResource.getProperties();
-            List resourceProperties = cms.readPropertyObjects(resourceName, false);
+            Iterator<CmsProperty> i = excludeList.iterator();
+            List<CmsProperty> storedProperties = storedResource.getProperties();
+            List<CmsProperty> resourceProperties = cms.readPropertyObjects(resourceName, false);
 
             while (i.hasNext()) {
-                CmsProperty property = (CmsProperty)i.next();
+                CmsProperty property = i.next();
                 // test if the property has the same value
                 if (resourceProperties.contains(property)) {
                     CmsProperty resourceProperty = cms.readPropertyObject(resourceName, property.getName(), false);
@@ -3236,7 +3229,7 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
-     * Gets an precalculate resource state from the storage.<p>
+     * Gets an pre-calculate resource state from the storage.<p>
      * 
      * @param resourceName the name of the resource to get  the state
      * @return precalculated resource state
@@ -3310,10 +3303,10 @@ public class OpenCmsTestCase extends TestCase {
                 }
 
                 // now get all subresources and add them as well
-                List resources = cms.readResources(resourceName, CmsResourceFilter.ALL);
-                Iterator i = resources.iterator();
+                List<CmsResource> resources = cms.readResources(resourceName, CmsResourceFilter.ALL);
+                Iterator<CmsResource> i = resources.iterator();
                 while (i.hasNext()) {
-                    CmsResource res = (CmsResource)i.next();
+                    CmsResource res = i.next();
                     resName = cms.getSitePath(res);
                     m_currentResourceStrorage.add(cms, resName, res);
                 }
@@ -3412,7 +3405,7 @@ public class OpenCmsTestCase extends TestCase {
      * 
      * @throws Exception if something goes wrong
      * 
-     * @see org.opencms.importexport.CmsImportExportManager#importData(CmsObject, I_CmsReport, CmsImportParameters)
+     * @see org.opencms.importexport.CmsImportExportManager#importData(CmsObject, org.opencms.report.I_CmsReport, CmsImportParameters)
      */
     protected void importModuleFromDefault(String importFile) throws Exception {
 
@@ -3472,12 +3465,12 @@ public class OpenCmsTestCase extends TestCase {
         CmsObject cms,
         String resourceName,
         OpenCmsTestResourceStorageEntry storedResource,
-        List excludeList) throws CmsException {
+        List<CmsAccessControlEntry> excludeList) throws CmsException {
 
         String noMatches = "";
-        List resAce = cms.getAccessControlEntries(resourceName);
-        List storedAce = storedResource.getAccessControlEntries();
-        List unmatchedAce;
+        List<CmsAccessControlEntry> resAce = cms.getAccessControlEntries(resourceName);
+        List<CmsAccessControlEntry> storedAce = storedResource.getAccessControlEntries();
+        List<CmsAccessControlEntry> unmatchedAce;
         unmatchedAce = compareAce(resAce, storedAce, excludeList);
         if (unmatchedAce.size() > 0) {
             noMatches += "[ACE missing " + unmatchedAce.toString() + "]\n";
@@ -3503,12 +3496,12 @@ public class OpenCmsTestCase extends TestCase {
         CmsObject cms,
         String resourceName,
         OpenCmsTestResourceStorageEntry storedResource,
-        List excludeList) throws CmsException {
+        List<CmsUUID> excludeList) throws CmsException {
 
         String noMatches = "";
         CmsAccessControlList resList = cms.getAccessControlList(resourceName);
         CmsAccessControlList storedList = storedResource.getAccessControlList();
-        List unmatchedList;
+        List<String> unmatchedList;
         unmatchedList = compareList(resList, storedList, excludeList);
         if (unmatchedList.size() > 0) {
             noMatches += "[ACL differences " + unmatchedList.toString() + "]\n";
@@ -3528,20 +3521,23 @@ public class OpenCmsTestCase extends TestCase {
      * @param exclude the exclude list
      * @return list of non matching access control entires 
      */
-    private List compareAce(List source, List target, List exclude) {
+    private List<CmsAccessControlEntry> compareAce(
+        List<CmsAccessControlEntry> source,
+        List<CmsAccessControlEntry> target,
+        List<CmsAccessControlEntry> exclude) {
 
         boolean isOverwriteAll = false;
-        Iterator itTargets = target.iterator();
+        Iterator<CmsAccessControlEntry> itTargets = target.iterator();
         while (itTargets.hasNext()) {
-            CmsAccessControlEntry ace = (CmsAccessControlEntry)itTargets.next();
+            CmsAccessControlEntry ace = itTargets.next();
             if (ace.isOverwriteAll()) {
                 isOverwriteAll = true;
             }
         }
-        List result = new ArrayList();
-        Iterator i = source.iterator();
+        List<CmsAccessControlEntry> result = new ArrayList<CmsAccessControlEntry>();
+        Iterator<CmsAccessControlEntry> i = source.iterator();
         while (i.hasNext()) {
-            CmsAccessControlEntry ace = (CmsAccessControlEntry)i.next();
+            CmsAccessControlEntry ace = i.next();
             // here would be best to check the path of the overwrite all entry
             // but since we have just the resource id, instead of the structure id
             // we are not able to do that here :(
@@ -3551,9 +3547,9 @@ public class OpenCmsTestCase extends TestCase {
         }
         // finally match the result list with the exclude list
         if (exclude != null) {
-            Iterator l = exclude.iterator();
+            Iterator<CmsAccessControlEntry> l = exclude.iterator();
             while (l.hasNext()) {
-                CmsAccessControlEntry excludeAce = (CmsAccessControlEntry)l.next();
+                CmsAccessControlEntry excludeAce = l.next();
                 if (result.contains(excludeAce)) {
                     result.remove(excludeAce);
                 }
@@ -3569,29 +3565,29 @@ public class OpenCmsTestCase extends TestCase {
      * @param exclude the exclude list
      * @return list of non matching permission sets
      */
-    private List compareList(CmsAccessControlList source, CmsAccessControlList target, List exclude) {
+    private List<String> compareList(CmsAccessControlList source, CmsAccessControlList target, List<CmsUUID> exclude) {
 
         boolean isOverwriteAll = false;
-        Iterator itTargets = target.getPermissionMap().keySet().iterator();
+        Iterator<CmsUUID> itTargets = target.getPermissionMap().keySet().iterator();
         while (itTargets.hasNext()) {
-            CmsUUID principalId = (CmsUUID)itTargets.next();
+            CmsUUID principalId = itTargets.next();
             if (principalId.equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID)) {
                 isOverwriteAll = true;
             }
         }
 
-        HashMap result = new HashMap();
+        HashMap<CmsUUID, String> result = new HashMap<CmsUUID, String>();
 
-        Map destinationMap = target.getPermissionMap();
-        Map sourceMap = source.getPermissionMap();
+        Map<CmsUUID, CmsPermissionSetCustom> destinationMap = target.getPermissionMap();
+        Map<CmsUUID, CmsPermissionSetCustom> sourceMap = source.getPermissionMap();
 
-        Iterator i = sourceMap.entrySet().iterator();
+        Iterator<Map.Entry<CmsUUID, CmsPermissionSetCustom>> i = sourceMap.entrySet().iterator();
         while (i.hasNext()) {
-            Map.Entry entry = (Map.Entry)i.next();
-            CmsUUID key = (CmsUUID)entry.getKey();
-            CmsPermissionSet value = (CmsPermissionSet)entry.getValue();
+            Map.Entry<CmsUUID, CmsPermissionSetCustom> entry = i.next();
+            CmsUUID key = entry.getKey();
+            CmsPermissionSet value = entry.getValue();
             if (destinationMap.containsKey(key)) {
-                CmsPermissionSet destValue = (CmsPermissionSet)destinationMap.get(key);
+                CmsPermissionSet destValue = destinationMap.get(key);
                 if (!destValue.equals(value)) {
                     result.put(key, key + " " + value + " != " + destValue);
                 }
@@ -3605,15 +3601,15 @@ public class OpenCmsTestCase extends TestCase {
 
         // finally match the result list with the exclude list
         if (exclude != null) {
-            Iterator l = exclude.iterator();
+            Iterator<CmsUUID> l = exclude.iterator();
             while (l.hasNext()) {
-                CmsUUID excludeUUID = (CmsUUID)l.next();
+                CmsUUID excludeUUID = l.next();
                 if (result.containsKey(excludeUUID)) {
                     result.remove(excludeUUID);
                 }
             }
         }
-        return new ArrayList(result.values());
+        return new ArrayList<String>(result.values());
     }
 
     /**
@@ -3623,12 +3619,15 @@ public class OpenCmsTestCase extends TestCase {
      * @param exclude the exclude propertydefintion
      * @return String of missing propertydefinitions
      */
-    private String comparePropertydefintions(List source, List target, CmsPropertyDefinition exclude) {
+    private String comparePropertydefintions(
+        List<CmsPropertyDefinition> source,
+        List<CmsPropertyDefinition> target,
+        CmsPropertyDefinition exclude) {
 
         String noMatches = "";
-        Iterator i = source.iterator();
+        Iterator<CmsPropertyDefinition> i = source.iterator();
         while (i.hasNext()) {
-            CmsPropertyDefinition prop = (CmsPropertyDefinition)i.next();
+            CmsPropertyDefinition prop = i.next();
             if ((!target.contains(prop)) && (!prop.getName().equals(exclude.getName()))) {
                 noMatches += "[" + prop + "]";
             }

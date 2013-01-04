@@ -28,6 +28,7 @@
 package org.opencms.i18n;
 
 import org.opencms.gwt.I_CmsClientMessageBundle;
+import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 
@@ -77,9 +78,6 @@ public abstract class TestCmsMessageBundles extends TestCase {
 
     /** The source folder to copy the resource bundles from. */
     private static final String SOURCE_FOLDER_SUFFIX = "/messages/";
-
-    /** The taget folder to copy the resource bundles to. */
-    private static final String TARGET_FOLDER = "bin/";
 
     /** Cache the resource bundle to exclude from additional locales tests. */
     private Map<Locale, List<I_CmsMessageBundle>> m_excludedBundles = new HashMap<Locale, List<I_CmsMessageBundle>>();
@@ -410,7 +408,8 @@ public abstract class TestCmsMessageBundles extends TestCase {
         }
         String source = getMessageBundleSourceName(bundleName, locale);
         String fileName = CmsStringUtil.substitute(bundleName, ".", "/") + "_" + locale.toString() + ".properties";
-        String target = TARGET_FOLDER + fileName;
+        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
+        String target = OpenCmsTestProperties.getInstance().getTestBuildFolder() + "/" + fileName;
         CmsFileUtil.copy(source, target);
         return new CmsMessages(bundleName + "_" + locale.toString(), locale);
     }

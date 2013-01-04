@@ -31,6 +31,7 @@ import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsFileUtil;
+import org.opencms.util.CmsStringUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,13 +51,16 @@ public final class OpenCmsTestProperties {
     /** The log object for this class. */
     public static final Log LOG = CmsLog.getLog(OpenCmsTestProperties.class);
 
-    /** Property / Environmant name for "db.product". */
+    /** Property / Environment name for "db.product". */
     public static final String PROP_DB_PRODUCT = "db.product";
 
-    /** Property / Environmant name for "test.data.path".  */
+    /** Property / Environment name for "test.build.folder". */
+    public static final String PROP_TEST_BUILD_FOLDER = "test.build.folder";
+
+    /** Property / Environment name for "test.data.path".  */
     public static final String PROP_TEST_DATA_PATH = "test.data.path";
 
-    /** Property / Environmant name for "test.webapp.path". */
+    /** Property / Environment name for "test.webapp.path". */
     public static final String PROP_TEST_WEBAPP_PATH = "test.webapp.path";
 
     /** The configuration from <code>opencms.properties</code>. */
@@ -70,6 +74,9 @@ public final class OpenCmsTestProperties {
 
     /** The database to use. */
     private String m_dbProduct;
+
+    /** The path to the build folder of the test classes. */
+    private String m_testBuildFolder;
 
     /** The path to the data test folder. */
     private String m_testDataPath;
@@ -220,9 +227,18 @@ public final class OpenCmsTestProperties {
             // unable to read environment, use only properties from file
             e.printStackTrace(System.out);
         }
-
-        m_testSingleton.m_testDataPath = m_configuration.get(PROP_TEST_DATA_PATH);
-        m_testSingleton.m_testWebappPath = m_configuration.get(PROP_TEST_WEBAPP_PATH);
+        m_testSingleton.m_testWebappPath = System.getProperty(PROP_TEST_WEBAPP_PATH);
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_testSingleton.m_testWebappPath)) {
+            m_testSingleton.m_testWebappPath = m_configuration.get(PROP_TEST_WEBAPP_PATH);
+        }
+        m_testSingleton.m_testDataPath = System.getProperty(PROP_TEST_DATA_PATH);
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_testSingleton.m_testDataPath)) {
+            m_testSingleton.m_testDataPath = m_configuration.get(PROP_TEST_DATA_PATH);
+        }
+        m_testSingleton.m_testBuildFolder = System.getProperty(PROP_TEST_BUILD_FOLDER);
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_testSingleton.m_testBuildFolder)) {
+            m_testSingleton.m_testBuildFolder = m_configuration.get(PROP_TEST_BUILD_FOLDER);
+        }
         m_testSingleton.m_dbProduct = m_configuration.get(PROP_DB_PRODUCT);
     }
 
@@ -249,6 +265,17 @@ public final class OpenCmsTestProperties {
     public String getDbProduct() {
 
         return m_dbProduct;
+    }
+
+    /**
+     * Returns the path to the build folder of the test classes.
+     * 
+     * @return the path to the build folder of the test classes
+     */
+    public String getTestBuildFolder() {
+
+        LOG.info("Using build folder: " + m_testBuildFolder);
+        return m_testBuildFolder;
     }
 
     /**

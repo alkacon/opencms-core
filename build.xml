@@ -633,6 +633,7 @@
 		<junit showoutput="yes" printsummary="yes" fork="yes" haltonfailure="no" haltonerror="no">
 			<sysproperty key="test.data.path" value="${opencms.input}/test/data" />
 			<sysproperty key="test.webapp.path" value="${opencms.input}/webapp" />
+			<sysproperty key="test.build.folder" value="${opencms.output.tests}" />
 			<classpath>
 				<pathelement path="${opencms.output.tests}" />
 				<fileset dir="${opencms.output}/build">
@@ -660,6 +661,9 @@
 	<target name="single-unittest" depends="compile-tests" description="Runs the core Junit test cases">
 
 		<junit showoutput="yes" printsummary="yes" fork="yes" haltonfailure="no" haltonerror="no">
+			<sysproperty key="test.data.path" value="${opencms.input}/test/data" />
+			<sysproperty key="test.webapp.path" value="${opencms.input}/webapp" />
+		    <sysproperty key="test.build.folder" value="${opencms.output.tests}" />
 			<classpath>
 				<pathelement path="${opencms.output.tests}" />
 				<fileset dir="${opencms.output}/build">
