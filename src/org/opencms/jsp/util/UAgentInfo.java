@@ -60,21 +60,23 @@ package org.opencms.jsp.util;
 
 /**
  * The DetectSmartPhone class encapsulates information about
- *   a browser's connection to your web site.
- *   You can use it to find out whether the browser asking for
- *   your site's content is probably running on a mobile device.
- *   The methods were written so you can be as granular as you want.
- *   For example, enquiring whether it's as specific as an iPod Touch or
- *   as general as a smartphone class device.
- *   The object's methods return true, or false.
+ * a browser's connection to your web site.
+ * You can use it to find out whether the browser asking for
+ * your site's content is probably running on a mobile device.
+ * The methods were written so you can be as granular as you want.
+ * For example, enquiring whether it's as specific as an iPod Touch or
+ * as general as a smartphone class device.
+ * The object's methods return true, or false.
+ *   
+ * This class is an exact copy of http://mobileesp.googlecode.com/svn/Java/UAgentInfo.java.
+ * When updating only adjust the package name.
  */
-@SuppressWarnings("javadoc")
-public class CmsUserAgentInfo {
+public class UAgentInfo {
 
     // User-Agent and Accept HTTP request headers
 
-    private String m_userAgent = "";
-    private String m_httpAccept = "";
+    private String userAgent = "";
+    private String httpAccept = "";
 
     // Let's store values for quickly accessing the same info multiple times.
     public boolean isIphone = false;
@@ -188,13 +190,13 @@ public class CmsUserAgentInfo {
      * @param userAgent the User-Agent header
      * @param httpAccept the Accept header
      */
-    public CmsUserAgentInfo(String userAgent, String httpAccept) {
+    public UAgentInfo(String userAgent, String httpAccept) {
 
         if (userAgent != null) {
-            this.m_userAgent = userAgent.toLowerCase();
+            this.userAgent = userAgent.toLowerCase();
         }
         if (httpAccept != null) {
-            this.m_httpAccept = httpAccept.toLowerCase();
+            this.httpAccept = httpAccept.toLowerCase();
         }
 
         //Intialize key stored values.
@@ -207,7 +209,7 @@ public class CmsUserAgentInfo {
      */
     public String getUserAgent() {
 
-        return m_userAgent;
+        return userAgent;
     }
 
     /**
@@ -216,7 +218,7 @@ public class CmsUserAgentInfo {
      */
     public String getHttpAccept() {
 
-        return m_httpAccept;
+        return httpAccept;
     }
 
     /**
@@ -284,7 +286,7 @@ public class CmsUserAgentInfo {
     public boolean detectIphone() {
 
         // The iPad and iPod touch say they're an iPhone! So let's disambiguate.
-        if ((m_userAgent.indexOf(deviceIphone) != -1) && !detectIpad() && !detectIpod()) {
+        if ((userAgent.indexOf(deviceIphone) != -1) && !detectIpad() && !detectIpod()) {
             return true;
         }
         return false;
@@ -296,7 +298,7 @@ public class CmsUserAgentInfo {
      */
     public boolean detectIpod() {
 
-        if (m_userAgent.indexOf(deviceIpod) != -1) {
+        if (userAgent.indexOf(deviceIpod) != -1) {
             return true;
         }
         return false;
@@ -308,7 +310,7 @@ public class CmsUserAgentInfo {
      */
     public boolean detectIpad() {
 
-        if ((m_userAgent.indexOf(deviceIpad) != -1) && detectWebkit()) {
+        if ((userAgent.indexOf(deviceIpad) != -1) && detectWebkit()) {
             return true;
         }
         return false;
@@ -321,7 +323,7 @@ public class CmsUserAgentInfo {
     public boolean detectIphoneOrIpod() {
 
         //We repeat the searches here because some iPods may report themselves as an iPhone, which would be okay.
-        if ((m_userAgent.indexOf(deviceIphone) != -1) || (m_userAgent.indexOf(deviceIpod) != -1)) {
+        if ((userAgent.indexOf(deviceIphone) != -1) || (userAgent.indexOf(deviceIpod) != -1)) {
             return true;
         }
         return false;
@@ -346,11 +348,11 @@ public class CmsUserAgentInfo {
      */
     public boolean detectAndroid() {
 
-        if ((m_userAgent.indexOf(deviceAndroid) != -1) || detectGoogleTV()) {
+        if ((userAgent.indexOf(deviceAndroid) != -1) || detectGoogleTV()) {
             return true;
         }
         //Special check for the HTC Flyer 7" tablet. It should report here.
-        if (m_userAgent.indexOf(deviceHtcFlyer) != -1) {
+        if (userAgent.indexOf(deviceHtcFlyer) != -1) {
             return true;
         }
         return false;
@@ -365,7 +367,7 @@ public class CmsUserAgentInfo {
      */
     public boolean detectAndroidPhone() {
 
-        if (detectAndroid() && (m_userAgent.indexOf(mobile) != -1)) {
+        if (detectAndroid() && (userAgent.indexOf(mobile) != -1)) {
             return true;
         }
         //Special check for Android phones with Opera Mobile. They should report here.
@@ -373,7 +375,7 @@ public class CmsUserAgentInfo {
             return true;
         }
         //Special check for the HTC Flyer 7" tablet. It should report here.
-        if (m_userAgent.indexOf(deviceHtcFlyer) != -1) {
+        if (userAgent.indexOf(deviceHtcFlyer) != -1) {
             return true;
         }
         return false;
@@ -396,12 +398,12 @@ public class CmsUserAgentInfo {
             return false;
         }
         //Special check for the HTC Flyer 7" tablet. It should NOT report here.
-        if (m_userAgent.indexOf(deviceHtcFlyer) != -1) {
+        if (userAgent.indexOf(deviceHtcFlyer) != -1) {
             return false;
         }
 
         //Otherwise, if it's Android and does NOT have 'mobile' in it, Google says it's a tablet.
-        if ((m_userAgent.indexOf(mobile) > -1)) {
+        if ((userAgent.indexOf(mobile) > -1)) {
             return false;
         } else {
             return true;
@@ -427,7 +429,7 @@ public class CmsUserAgentInfo {
      */
     public boolean detectGoogleTV() {
 
-        if (m_userAgent.indexOf(deviceGoogleTV) != -1) {
+        if (userAgent.indexOf(deviceGoogleTV) != -1) {
             return true;
         }
         return false;
@@ -439,7 +441,7 @@ public class CmsUserAgentInfo {
      */
     public boolean detectWebkit() {
 
-        if (m_userAgent.indexOf(engineWebKit) != -1) {
+        if (userAgent.indexOf(engineWebKit) != -1) {
             return true;
         }
         return false;
@@ -452,7 +454,7 @@ public class CmsUserAgentInfo {
     public boolean detectS60OssBrowser() {
 
         //First, test for WebKit, then make sure it's either Symbian or S60.
-        if (detectWebkit() && ((m_userAgent.indexOf(deviceSymbian) != -1) || (m_userAgent.indexOf(deviceS60) != -1))) {
+        if (detectWebkit() && ((userAgent.indexOf(deviceSymbian) != -1) || (userAgent.indexOf(deviceS60) != -1))) {
             return true;
         }
         return false;
@@ -467,11 +469,11 @@ public class CmsUserAgentInfo {
      */
     public boolean detectSymbianOS() {
 
-        if ((m_userAgent.indexOf(deviceSymbian) != -1)
-            || (m_userAgent.indexOf(deviceS60) != -1)
-            || (m_userAgent.indexOf(deviceS70) != -1)
-            || (m_userAgent.indexOf(deviceS80) != -1)
-            || (m_userAgent.indexOf(deviceS90) != -1)) {
+        if ((userAgent.indexOf(deviceSymbian) != -1)
+            || (userAgent.indexOf(deviceS60) != -1)
+            || (userAgent.indexOf(deviceS70) != -1)
+            || (userAgent.indexOf(deviceS80) != -1)
+            || (userAgent.indexOf(deviceS90) != -1)) {
             return true;
         }
         return false;
@@ -484,7 +486,7 @@ public class CmsUserAgentInfo {
      */
     public boolean detectWindowsPhone7() {
 
-        if (m_userAgent.indexOf(deviceWinPhone7) != -1) {
+        if (userAgent.indexOf(deviceWinPhone7) != -1) {
             return true;
         }
         return false;
@@ -505,17 +507,17 @@ public class CmsUserAgentInfo {
         //Most devices use 'Windows CE', but some report 'iemobile'
         //  and some older ones report as 'PIE' for Pocket IE.
         //  We also look for instances of HTC and Windows for many of their WinMo devices.
-        if ((m_userAgent.indexOf(deviceWinMob) != -1)
-            || (m_userAgent.indexOf(deviceWinMob) != -1)
-            || (m_userAgent.indexOf(deviceIeMob) != -1)
-            || (m_userAgent.indexOf(enginePie) != -1)
-            || ((m_userAgent.indexOf(manuHtc) != -1) && (m_userAgent.indexOf(deviceWindows) != -1))
-            || (detectWapWml() && (m_userAgent.indexOf(deviceWindows) != -1))) {
+        if ((userAgent.indexOf(deviceWinMob) != -1)
+            || (userAgent.indexOf(deviceWinMob) != -1)
+            || (userAgent.indexOf(deviceIeMob) != -1)
+            || (userAgent.indexOf(enginePie) != -1)
+            || ((userAgent.indexOf(manuHtc) != -1) && (userAgent.indexOf(deviceWindows) != -1))
+            || (detectWapWml() && (userAgent.indexOf(deviceWindows) != -1))) {
             return true;
         }
 
         //Test for Windows Mobile PPC but not old Macintosh PowerPC.
-        if ((m_userAgent.indexOf(devicePpc) != -1) && !(m_userAgent.indexOf(deviceMacPpc) != -1)) {
+        if ((userAgent.indexOf(devicePpc) != -1) && !(userAgent.indexOf(deviceMacPpc) != -1)) {
             return true;
         }
 
@@ -529,7 +531,7 @@ public class CmsUserAgentInfo {
      */
     public boolean detectBlackBerry() {
 
-        if ((m_userAgent.indexOf(deviceBB) != -1) || (m_httpAccept.indexOf(vndRIM) != -1)) {
+        if ((userAgent.indexOf(deviceBB) != -1) || (httpAccept.indexOf(vndRIM) != -1)) {
             return true;
         }
         return false;
@@ -542,7 +544,7 @@ public class CmsUserAgentInfo {
      */
     public boolean detectBlackBerryTablet() {
 
-        if (m_userAgent.indexOf(deviceBBPlaybook) != -1) {
+        if (userAgent.indexOf(deviceBBPlaybook) != -1) {
             return true;
         }
         return false;
@@ -556,7 +558,7 @@ public class CmsUserAgentInfo {
      */
     public boolean detectBlackBerryWebKit() {
 
-        if (detectBlackBerry() && (m_userAgent.indexOf(engineWebKit) != -1)) {
+        if (detectBlackBerry() && (userAgent.indexOf(engineWebKit) != -1)) {
             return true;
         }
         return false;
@@ -570,9 +572,9 @@ public class CmsUserAgentInfo {
     public boolean detectBlackBerryTouch() {
 
         if (detectBlackBerry()
-            && ((m_userAgent.indexOf(deviceBBStorm) != -1)
-                || (m_userAgent.indexOf(deviceBBTorch) != -1)
-                || (m_userAgent.indexOf(deviceBBBoldTouch) != -1) || (m_userAgent.indexOf(deviceBBCurveTouch) != -1))) {
+            && ((userAgent.indexOf(deviceBBStorm) != -1)
+                || (userAgent.indexOf(deviceBBTorch) != -1)
+                || (userAgent.indexOf(deviceBBBoldTouch) != -1) || (userAgent.indexOf(deviceBBCurveTouch) != -1))) {
             return true;
         }
         return false;
@@ -593,9 +595,9 @@ public class CmsUserAgentInfo {
         }
         if (detectBlackBerry()) {
             if (detectBlackBerryTouch()
-                || (m_userAgent.indexOf(deviceBBBold) != -1)
-                || (m_userAgent.indexOf(deviceBBTour) != -1)
-                || (m_userAgent.indexOf(deviceBBCurve) != -1)) {
+                || (userAgent.indexOf(deviceBBBold) != -1)
+                || (userAgent.indexOf(deviceBBTour) != -1)
+                || (userAgent.indexOf(deviceBBCurve) != -1)) {
                 return true;
             } else {
                 return false;
@@ -632,9 +634,9 @@ public class CmsUserAgentInfo {
     public boolean detectPalmOS() {
 
         //Most devices nowadays report as 'Palm', but some older ones reported as Blazer or Xiino.
-        if ((m_userAgent.indexOf(devicePalm) != -1)
-            || (m_userAgent.indexOf(engineBlazer) != -1)
-            || (m_userAgent.indexOf(engineXiino) != -1)) {
+        if ((userAgent.indexOf(devicePalm) != -1)
+            || (userAgent.indexOf(engineBlazer) != -1)
+            || (userAgent.indexOf(engineXiino) != -1)) {
             //Make sure it's not WebOS first
             if (detectPalmWebOS()) {
                 return false;
@@ -652,7 +654,7 @@ public class CmsUserAgentInfo {
      */
     public boolean detectPalmWebOS() {
 
-        if (m_userAgent.indexOf(deviceWebOS) != -1) {
+        if (userAgent.indexOf(deviceWebOS) != -1) {
             return true;
         }
         return false;
@@ -664,7 +666,7 @@ public class CmsUserAgentInfo {
      */
     public boolean detectWebOSTablet() {
 
-        if ((m_userAgent.indexOf(deviceWebOShp) != -1) && (m_userAgent.indexOf(deviceTablet) != -1)) {
+        if ((userAgent.indexOf(deviceWebOShp) != -1) && (userAgent.indexOf(deviceTablet) != -1)) {
             return true;
         }
         return false;
@@ -677,7 +679,7 @@ public class CmsUserAgentInfo {
      */
     public boolean detectGarminNuvifone() {
 
-        if (m_userAgent.indexOf(deviceNuvifone) != -1) {
+        if (userAgent.indexOf(deviceNuvifone) != -1) {
             return true;
         }
         return false;
@@ -708,7 +710,7 @@ public class CmsUserAgentInfo {
      */
     public boolean detectBrewDevice() {
 
-        if (m_userAgent.indexOf(deviceBrew) != -1) {
+        if (userAgent.indexOf(deviceBrew) != -1) {
             return true;
         }
         return false;
@@ -720,7 +722,7 @@ public class CmsUserAgentInfo {
      */
     public boolean detectDangerHiptop() {
 
-        if ((m_userAgent.indexOf(deviceDanger) != -1) || (m_userAgent.indexOf(deviceHiptop) != -1)) {
+        if ((userAgent.indexOf(deviceDanger) != -1) || (userAgent.indexOf(deviceHiptop) != -1)) {
             return true;
         }
         return false;
@@ -732,8 +734,8 @@ public class CmsUserAgentInfo {
      */
     public boolean detectOperaMobile() {
 
-        if ((m_userAgent.indexOf(engineOpera) != -1)
-            && ((m_userAgent.indexOf(mini) != -1) || (m_userAgent.indexOf(mobi) != -1))) {
+        if ((userAgent.indexOf(engineOpera) != -1)
+            && ((userAgent.indexOf(mini) != -1) || (userAgent.indexOf(mobi) != -1))) {
             return true;
         }
         return false;
@@ -745,8 +747,8 @@ public class CmsUserAgentInfo {
      */
     public boolean detectOperaAndroidPhone() {
 
-        if ((m_userAgent.indexOf(engineOpera) != -1)
-            && ((m_userAgent.indexOf(deviceAndroid) != -1) && (m_userAgent.indexOf(mobi) != -1))) {
+        if ((userAgent.indexOf(engineOpera) != -1)
+            && ((userAgent.indexOf(deviceAndroid) != -1) && (userAgent.indexOf(mobi) != -1))) {
             return true;
         }
         return false;
@@ -758,8 +760,8 @@ public class CmsUserAgentInfo {
      */
     public boolean detectOperaAndroidTablet() {
 
-        if ((m_userAgent.indexOf(engineOpera) != -1)
-            && ((m_userAgent.indexOf(deviceAndroid) != -1) && (m_userAgent.indexOf(deviceTablet) != -1))) {
+        if ((userAgent.indexOf(engineOpera) != -1)
+            && ((userAgent.indexOf(deviceAndroid) != -1) && (userAgent.indexOf(deviceTablet) != -1))) {
             return true;
         }
         return false;
@@ -771,7 +773,7 @@ public class CmsUserAgentInfo {
      */
     public boolean detectWapWml() {
 
-        if ((m_httpAccept.indexOf(vndwap) != -1) || (m_httpAccept.indexOf(wml) != -1)) {
+        if ((httpAccept.indexOf(vndwap) != -1) || (httpAccept.indexOf(wml) != -1)) {
             return true;
         }
         return false;
@@ -784,7 +786,7 @@ public class CmsUserAgentInfo {
      */
     public boolean detectKindle() {
 
-        if ((m_userAgent.indexOf(deviceKindle) != -1) && !detectAndroid()) {
+        if ((userAgent.indexOf(deviceKindle) != -1) && !detectAndroid()) {
             return true;
         }
         return false;
@@ -797,7 +799,7 @@ public class CmsUserAgentInfo {
      */
     public boolean detectAmazonSilk() {
 
-        if (m_userAgent.indexOf(engineSilk) != -1) {
+        if (userAgent.indexOf(engineSilk) != -1) {
             return true;
         }
         return false;
@@ -824,9 +826,9 @@ public class CmsUserAgentInfo {
             return true;
         }
 
-        if ((m_userAgent.indexOf(engineNetfront) != -1)
-            || (m_userAgent.indexOf(engineUpBrowser) != -1)
-            || (m_userAgent.indexOf(engineOpenWeb) != -1)) {
+        if ((userAgent.indexOf(engineNetfront) != -1)
+            || (userAgent.indexOf(engineUpBrowser) != -1)
+            || (userAgent.indexOf(engineOpenWeb) != -1)) {
             return true;
         }
 
@@ -834,11 +836,11 @@ public class CmsUserAgentInfo {
             return true;
         }
 
-        if ((m_userAgent.indexOf(devicePda) != -1) && (m_userAgent.indexOf(disUpdate) < 0)) //no index found
+        if ((userAgent.indexOf(devicePda) != -1) && (userAgent.indexOf(disUpdate) < 0)) //no index found
         {
             return true;
         }
-        if (m_userAgent.indexOf(mobile) != -1) {
+        if (userAgent.indexOf(mobile) != -1) {
             return true;
         }
 
@@ -856,7 +858,7 @@ public class CmsUserAgentInfo {
      */
     public boolean detectSonyPlaystation() {
 
-        if (m_userAgent.indexOf(devicePlaystation) != -1) {
+        if (userAgent.indexOf(devicePlaystation) != -1) {
             return true;
         }
         return false;
@@ -868,9 +870,9 @@ public class CmsUserAgentInfo {
      */
     public boolean detectNintendo() {
 
-        if ((m_userAgent.indexOf(deviceNintendo) != -1)
-            || (m_userAgent.indexOf(deviceWii) != -1)
-            || (m_userAgent.indexOf(deviceNintendoDs) != -1)) {
+        if ((userAgent.indexOf(deviceNintendo) != -1)
+            || (userAgent.indexOf(deviceWii) != -1)
+            || (userAgent.indexOf(deviceNintendoDs) != -1)) {
             return true;
         }
         return false;
@@ -882,7 +884,7 @@ public class CmsUserAgentInfo {
      */
     public boolean detectXbox() {
 
-        if (m_userAgent.indexOf(deviceXbox) != -1) {
+        if (userAgent.indexOf(deviceXbox) != -1) {
             return true;
         }
         return false;
@@ -906,7 +908,7 @@ public class CmsUserAgentInfo {
      */
     public boolean detectMidpCapable() {
 
-        if ((m_userAgent.indexOf(deviceMidp) != -1) || (m_httpAccept.indexOf(deviceMidp) != -1)) {
+        if ((userAgent.indexOf(deviceMidp) != -1) || (httpAccept.indexOf(deviceMidp) != -1)) {
             return true;
         }
         return false;
@@ -918,10 +920,10 @@ public class CmsUserAgentInfo {
      */
     public boolean detectMaemoTablet() {
 
-        if (m_userAgent.indexOf(maemo) != -1) {
+        if (userAgent.indexOf(maemo) != -1) {
             return true;
-        } else if ((m_userAgent.indexOf(linux) != -1)
-            && (m_userAgent.indexOf(deviceTablet) != -1)
+        } else if ((userAgent.indexOf(linux) != -1)
+            && (userAgent.indexOf(deviceTablet) != -1)
             && !detectWebOSTablet()
             && !detectAndroid()) {
             return true;
@@ -935,7 +937,7 @@ public class CmsUserAgentInfo {
      */
     public boolean detectArchos() {
 
-        if (m_userAgent.indexOf(deviceArchos) != -1) {
+        if (userAgent.indexOf(deviceArchos) != -1) {
             return true;
         }
         return false;
@@ -947,8 +949,8 @@ public class CmsUserAgentInfo {
      */
     public boolean detectSonyMylo() {
 
-        if ((m_userAgent.indexOf(manuSony) != -1)
-            && ((m_userAgent.indexOf(qtembedded) != -1) || (m_userAgent.indexOf(mylocom2) != -1))) {
+        if ((userAgent.indexOf(manuSony) != -1)
+            && ((userAgent.indexOf(qtembedded) != -1) || (userAgent.indexOf(mylocom2) != -1))) {
             return true;
         }
         return false;
@@ -970,26 +972,26 @@ public class CmsUserAgentInfo {
         }
 
         //detect older phones from certain manufacturers and operators.
-        if (m_userAgent.indexOf(uplink) != -1) {
+        if (userAgent.indexOf(uplink) != -1) {
             return true;
         }
-        if (m_userAgent.indexOf(manuSonyEricsson) != -1) {
+        if (userAgent.indexOf(manuSonyEricsson) != -1) {
             return true;
         }
-        if (m_userAgent.indexOf(manuericsson) != -1) {
+        if (userAgent.indexOf(manuericsson) != -1) {
             return true;
         }
-        if (m_userAgent.indexOf(manuSamsung1) != -1) {
+        if (userAgent.indexOf(manuSamsung1) != -1) {
             return true;
         }
 
-        if (m_userAgent.indexOf(svcDocomo) != -1) {
+        if (userAgent.indexOf(svcDocomo) != -1) {
             return true;
         }
-        if (m_userAgent.indexOf(svcKddi) != -1) {
+        if (userAgent.indexOf(svcKddi) != -1) {
             return true;
         }
-        if (m_userAgent.indexOf(svcVodafone) != -1) {
+        if (userAgent.indexOf(svcVodafone) != -1) {
             return true;
         }
 
@@ -1060,7 +1062,7 @@ public class CmsUserAgentInfo {
                     || detectS60OssBrowser()
                     || detectBlackBerryHigh()
                     || detectWindowsMobile()
-                    || (m_userAgent.indexOf(engineTelecaQ) != -1)) {
+                    || (userAgent.indexOf(engineTelecaQ) != -1)) {
                     result = true;
                 } // if detectWebkit()
             } //if !detectTierIphone()
@@ -1082,5 +1084,4 @@ public class CmsUserAgentInfo {
         }
         return false;
     }
-
 }

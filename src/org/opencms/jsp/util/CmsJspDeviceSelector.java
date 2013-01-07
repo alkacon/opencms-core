@@ -52,14 +52,14 @@ public class CmsJspDeviceSelector implements I_CmsJspDeviceSelector {
     public static final List<String> TYPES = Arrays.asList(new String[] {C_MOBILE, C_DESKTOP});
 
     /** The user agent info. */
-    private CmsUserAgentInfo m_userAgentInfo;
+    private UAgentInfo m_userAgentInfo;
 
     /**
      * @see org.opencms.jsp.util.I_CmsJspDeviceSelector#getDeviceType(javax.servlet.http.HttpServletRequest)
      */
     public String getDeviceType(HttpServletRequest req) {
 
-        m_userAgentInfo = new CmsUserAgentInfo(
+        m_userAgentInfo = new UAgentInfo(
             req.getHeader(CmsRequestUtil.HEADER_USER_AGENT),
             req.getHeader(CmsRequestUtil.HEADER_ACCEPT));
         if (m_userAgentInfo.detectMobileQuick()) {
@@ -81,7 +81,7 @@ public class CmsJspDeviceSelector implements I_CmsJspDeviceSelector {
      * 
      * @return the information about the user agent
      */
-    public CmsUserAgentInfo getUserAgentInfo() {
+    public UAgentInfo getUserAgentInfo() {
 
         return m_userAgentInfo;
     }
