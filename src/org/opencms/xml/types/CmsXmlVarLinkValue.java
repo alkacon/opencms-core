@@ -36,7 +36,6 @@ import org.opencms.relations.CmsLinkUpdateUtil;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.util.CmsUriSplitter;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.page.CmsXmlPage;
 
@@ -290,10 +289,6 @@ public class CmsXmlVarLinkValue extends A_CmsXmlContentValue {
         if (internal) {
             // link management check for internal links
             link.checkConsistency(cms);
-            if ((link.getStructureId() == null) && (new CmsUriSplitter(value).getProtocol() != null)) {
-                // checking consistency of an absolute link considered internal failed, assume external
-                link = new CmsLink(TYPE_VAR_LINK, CmsRelationType.XML_WEAK, value, false);
-            }
         }
         // update xml node
         CmsLinkUpdateUtil.updateXmlForHtmlValue(link, null, m_element.addElement(CmsXmlPage.NODE_LINK));
