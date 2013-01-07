@@ -83,7 +83,7 @@ public interface I_CmsExtractionResult {
      *
      * @return the exclude flag
      */
-    public boolean isExclude();
+    boolean isExclude();
 
     /** 
      * Adds a mapping field to the extraction result.<p>
