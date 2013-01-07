@@ -129,12 +129,12 @@ public final class AllTests {
      */
     private static void printResultCount(CmsSolrResultList results) {
 
-        System.out.println("——————————–");
+        System.out.println("#################################");
         System.out.println("Found: " + results.getNumFound());
         System.out.println("Start: " + results.getStart());
         System.out.println("Max Score: " + results.getMaxScore());
         System.out.println("Query: " + CmsEncoder.decode(results.getQuery().toString()));
-        System.out.println("——————————–");
+        System.out.println("#################################");
     }
 
     /**
