@@ -96,6 +96,12 @@ public class CmsXmlGroupContainerHandler extends CmsDefaultXmlContentHandler {
 
         List<CmsContainerElementBean> containerElements = loadGroupContainerElements(cms, resource);
         for (CmsContainerElementBean elementBean : containerElements) {
+            if (elementBean.isGroupContainer(cms)) {
+                throw new CmsException(Messages.get().container(
+                    Messages.ERR_ELEMENT_GROUP_REFERENCES_ANOTHER_GROUP_2,
+                    resource.getRootPath(),
+                    elementBean.getResource().getRootPath()));
+            }
             CmsResource elementResource = elementBean.getResource();
             Set<String> elementIncludes = CmsXmlContentDefinition.getContentHandlerForResource(cms, elementResource).getCSSHeadIncludes(
                 cms,
