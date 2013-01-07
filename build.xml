@@ -554,7 +554,9 @@
 	              failureProperty="checkstyle.failure"
 	              failOnViolation="false">
 	    <formatter type="xml" tofile="checkstyle_report.xml"/>
-	    <fileset dir="src" includes="**/*.java"/>
+	  	<!-- excluding org.opencms.jsp.util.UAgentInfo -->
+	    <fileset dir="src" includes="**/*.java" excludes="**/UAgentInfo.java" />
+	  	<fileset dir="src-gwt" includes="**/*.java" excludes="**/super-scr/**/*.java" />
 	  </checkstyle>
 
 <!--	  <style in="checkstyle_report.xml" out="checkstyle_report.html" style="checkstyle.xsl"/> -->
