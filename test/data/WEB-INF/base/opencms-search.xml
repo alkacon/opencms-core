@@ -2,9 +2,6 @@
 <!DOCTYPE opencms SYSTEM "http://www.opencms.org/dtd/6.0/opencms-search.dtd">
 <opencms>
   <search>
-  	<solr enabled="false">
-      <commitWithinMs>-1</commitWithinMs>
-  	</solr>
     <directory>index</directory>
     <timeout>60000</timeout>
     <offlineUpdateFrequency>30000</offlineUpdateFrequency>
@@ -127,26 +124,6 @@
         </resourcetypes>
       </documenttype>
       <documenttype>
-        <name>xmlcontent-solr</name>
-        <class>org.opencms.search.solr.CmsSolrDocumentXmlContent</class>
-        <mimetypes>
-        	<mimetype>text/html</mimetype>
-        </mimetypes>
-        <resourcetypes>
-          <resourcetype>xmlcontent-solr</resourcetype>
-        </resourcetypes>
-      </documenttype>
-      <documenttype>
-        <name>containerpage-solr</name>
-        <class>org.opencms.search.solr.CmsSolrDocumentContainerPage</class>
-        <mimetypes>
-          <mimetype>text/html</mimetype>
-        </mimetypes>
-        <resourcetypes>
-          <resourcetype>containerpage-solr</resourcetype>
-        </resourcetypes>
-      </documenttype>
-      <documenttype>
         <name>msoffice-ole2</name>
         <class>org.opencms.search.documents.CmsDocumentMsOfficeOLE2</class>
         <mimetypes>
@@ -228,17 +205,6 @@
           <source>source1</source>
         </sources>
       </index>
-      <index class="org.opencms.search.solr.CmsSolrIndex">
-        <name>Solr Online</name>
-        <rebuild>auto</rebuild>
-        <project>Online</project>
-        <locale>all</locale>   
-        <configuration>solr_fields</configuration> 
-        <sources>
-          <source>solr_source</source>
-        </sources>
-        <param name="search.solr.postProcessor">org.opencms.search.solr.CmsSolrLinkProcessor</param>   
-      </index>
       <!-- 
 # Excluded for the default test cases in order to speed up testing
 # This is enabled in the special configuration found in the "org.opencms.search.gallery" test package
@@ -307,38 +273,6 @@
           <name>msoffice-ole2</name>
           <name>msoffice-ooxml</name>
           <name>openoffice</name>
-        </documenttypes-indexed>
-      </indexsource>
-      <indexsource>
-        <name>solr_source</name>
-        <indexer class="org.opencms.search.CmsDependencyIndexer"/>
-        <resources>
-          <resource>/sites/default/</resource>
-        </resources>
-        <documenttypes-indexed>
-          <name>xmlcontent-solr</name>
-          <name>containerpage-solr</name>
-          <name>xmlpage</name>
-          <name>text</name>
-          <name>pdf</name>
-          <name>rtf</name>
-          <name>html</name>
-          <name>image</name>
-          <name>generic</name>
-          <name>msoffice-ole2</name>
-          <name>msoffice-ooxml</name>
-          <name>openoffice</name>
-        </documenttypes-indexed>
-      </indexsource>
-      <indexsource>
-        <name>solr_source2</name>
-        <indexer class="org.opencms.search.CmsVfsIndexer"/>
-        <resources>
-          <resource>/sites/default/</resource>
-        </resources>
-        <documenttypes-indexed>
-          <name>xmlcontent-solr</name>
-          <name>containerpage-solr</name>
         </documenttypes-indexed>
       </indexsource>
     </indexsources>
@@ -430,31 +364,6 @@
           </field>
           <field name="container_types" store="true" index="true" analyzer="WhitespaceAnalyzer">
             <mapping type="dynamic" class="org.opencms.search.galleries.CmsGallerySearchFieldMapping">container_types</mapping>
-          </field>
-        </fields>
-      </fieldconfiguration>
-      <fieldconfiguration class="org.opencms.search.solr.CmsSolrFieldConfiguration">
-        <name>solr_fields</name>
-        <description>The Solr search index field configuration with Lucene field migration.</description>
-        <fields>
-          <field name="keywords" store="true" index="true" type="txt">
-            <mapping type="property">Keywords</mapping>
-          </field>
-          <field name="description" store="true" index="true" type="txt">
-            <mapping type="property">Description</mapping>
-          </field>
-          <field name="meta" store="false" index="true" type="txt">
-            <mapping type="property">Title</mapping>
-            <mapping type="property">Keywords</mapping>
-            <mapping type="property">Description</mapping>
-          </field>
-          <field name="special" store="true" index="true" type="txt">
-            <mapping type="item">special</mapping>
-            <mapping type="item">Teaser[1]</mapping>
-            <mapping type="item">Teaser[2]</mapping>
-            <mapping type="item">Teaser[3]</mapping>
-            <mapping type="property">NavText</mapping>
-            <mapping type="property-search">search.special</mapping>
           </field>
         </fields>
       </fieldconfiguration>
