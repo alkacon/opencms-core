@@ -91,7 +91,7 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
             @Override
             protected void setUp() {
 
-                setupOpenCms("simpletest", "/");
+                setupOpenCms("simpletest", "/", "/../org/opencms/search/solr");
                 // disable all lucene indexes
                 for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
                     if (!indexName.equalsIgnoreCase(AllTests.SOLR_ONLINE)) {

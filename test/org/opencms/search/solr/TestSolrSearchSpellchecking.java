@@ -73,7 +73,7 @@ public class TestSolrSearchSpellchecking extends OpenCmsTestCase {
             @Override
             protected void setUp() {
 
-                setupOpenCms("simpletest", "/");
+                setupOpenCms("simpletest", "/", "/../org/opencms/search/solr");
             }
 
             @Override

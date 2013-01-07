@@ -85,7 +85,7 @@ public class TestSolrSearchFulltextSearching extends OpenCmsTestCase {
             @Override
             protected void setUp() {
 
-                setupOpenCms("systemtest", "/");
+                setupOpenCms("systemtest", "/", "/../org/opencms/search/solr");
             }
 
             @Override

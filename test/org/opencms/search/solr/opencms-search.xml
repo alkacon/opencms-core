@@ -2,7 +2,7 @@
 <!DOCTYPE opencms SYSTEM "http://www.opencms.org/dtd/6.0/opencms-search.dtd">
 <opencms>
   <search>
-  	<solr enabled="false">
+  	<solr enabled="true">
       <commitWithinMs>-1</commitWithinMs>
   	</solr>
     <directory>index</directory>

@@ -76,7 +76,7 @@ public class TestSolrSearchPermissionHandling extends OpenCmsTestCase {
             @Override
             protected void setUp() {
 
-                setupOpenCms("solrtest", "/");
+                setupOpenCms("solrtest", "/", "/../org/opencms/search/solr");
             }
 
             @Override
