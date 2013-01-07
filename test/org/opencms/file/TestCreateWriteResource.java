@@ -235,27 +235,30 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
 
         // delete resource and try again
         cms.deleteResource(resourcename, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        // the resource needs to be published first
+        OpenCms.getPublishManager().publishResource(cms, resourcename);
+        OpenCms.getPublishManager().waitWhileRunning();
         cms.createResource(resourcename, CmsResourceTypeFolder.getStaticTypeId(), null, null);
 
         // ensure created resource is a folder
         assertIsFolder(cms, resourcename);
         // project must be current project
         assertProject(cms, resourcename, cms.getRequestContext().getCurrentProject());
-        // state must be "changed"
-        assertState(cms, resourcename, CmsResource.STATE_CHANGED);
+        // state must be "new"
+        assertState(cms, resourcename, CmsResource.STATE_NEW);
         // date last modified 
         assertDateLastModifiedAfter(cms, resourcename, timestamp);
         // the user last modified must be the current user
         assertUserLastModified(cms, resourcename, cms.getRequestContext().getCurrentUser());
         // date created
-        assertDateCreated(cms, resourcename, original.getDateCreated());
-        // the user created must be the original
-        assertUserCreated(cms, resourcename, cms.readUser(original.getUserCreated()));
+        assertDateCreatedAfter(cms, resourcename, timestamp);
+        // the user created must be the current
+        assertUserCreated(cms, resourcename, cms.getRequestContext().getCurrentUser());
 
         // compare id's
         CmsResource created = cms.readResource(resourcename);
-        if (!created.getResourceId().equals(original.getResourceId())) {
-            fail("A created folder that replaced a deleted folder must have the same resource id!");
+        if (created.getResourceId().equals(original.getResourceId())) {
+            fail("A created folder that replaced a deleted folder must not have the same resource id!");
         }
 
         // publish the project
@@ -341,12 +344,15 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
 
         // delete resource and try again
         cms.deleteResource(resourcename, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        // the resource needs to be published first
+        OpenCms.getPublishManager().publishResource(cms, resourcename);
+        OpenCms.getPublishManager().waitWhileRunning();
         cms.createResource(resourcename, CmsResourceTypePlain.getStaticTypeId(), content, null);
 
         // project must be current project
         assertProject(cms, resourcename, cms.getRequestContext().getCurrentProject());
-        // state must be "changed"
-        assertState(cms, resourcename, CmsResource.STATE_CHANGED);
+        // state must be "new"
+        assertState(cms, resourcename, CmsResource.STATE_NEW);
         // date last modified 
         assertDateLastModifiedAfter(cms, resourcename, timestamp);
         // the user last modified must be the current user
@@ -735,7 +741,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         CmsProperty prop2 = new CmsProperty(CmsPropertyDefinition.PROPERTY_DESCRIPTION, "The description", null);
         CmsProperty prop3 = new CmsProperty(CmsPropertyDefinition.PROPERTY_KEYWORDS, "The keywords", null);
 
-        List properties = new ArrayList();
+        List<CmsProperty> properties = new ArrayList<CmsProperty>();
         properties.add(prop1);
 
         String siblingname = "/folder1/test1.html";

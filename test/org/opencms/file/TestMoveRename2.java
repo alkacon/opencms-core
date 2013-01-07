@@ -125,9 +125,9 @@ public class TestMoveRename2 extends OpenCmsTestCase {
         cms.lockResource(src);
         cms.moveResource(src, dest);
 
-        Iterator itResources = cms.readResources(dest, CmsResourceFilter.ALL, true).iterator();
+        Iterator<CmsResource> itResources = cms.readResources(dest, CmsResourceFilter.ALL, true).iterator();
         while (itResources.hasNext()) {
-            CmsResource res = (CmsResource)itResources.next();
+            CmsResource res = itResources.next();
             cms.readResource(res.getRootPath());
         }
     }
@@ -281,7 +281,9 @@ public class TestMoveRename2 extends OpenCmsTestCase {
 
         assertSiblingCount(cms, filename, 2);
         assertState(cms, filename, CmsResource.STATE_DELETED);
-
+        // the resource needs to be published first
+        OpenCms.getPublishManager().publishResource(cms, filename);
+        OpenCms.getPublishManager().waitWhileRunning();
         cms.createResource(filename, CmsResourceTypePlain.getStaticTypeId());
 
         file = cms.readFile(res1);
