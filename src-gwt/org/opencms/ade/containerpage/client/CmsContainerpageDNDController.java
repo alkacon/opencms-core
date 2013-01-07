@@ -436,6 +436,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         if (m_controller.isGroupcontainerEditing()) {
             CmsGroupContainerElementPanel groupContainer = m_controller.getGroupcontainer();
             if ((groupContainer != m_initialDropTarget)
+                && !(elementData.isGroupContainer() || elementData.isInheritContainer())
                 && elementData.getContents().containsKey(groupContainer.getContainerId())) {
                 Element helper = null;
                 Element placeholder = null;

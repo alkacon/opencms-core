@@ -96,7 +96,7 @@ public class CmsXmlGroupContainerHandler extends CmsDefaultXmlContentHandler {
 
         List<CmsContainerElementBean> containerElements = loadGroupContainerElements(cms, resource);
         for (CmsContainerElementBean elementBean : containerElements) {
-            if (elementBean.isGroupContainer(cms)) {
+            if (elementBean.isGroupContainer(cms) || elementBean.isInheritedContainer(cms)) {
                 throw new CmsException(Messages.get().container(
                     Messages.ERR_ELEMENT_GROUP_REFERENCES_ANOTHER_GROUP_2,
                     resource.getRootPath(),
