@@ -34,6 +34,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchParameters;
 import org.opencms.search.fields.CmsLuceneField;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.A_CmsWidget;
 import org.opencms.widgets.CmsCalendarWidget;
@@ -109,31 +110,34 @@ public class CmsSearchDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
+    @Override
     public void actionCommit() {
 
-        List errors = new ArrayList();
+        List<Throwable> errors = new ArrayList<Throwable>();
         try {
-            Map params = new HashMap();
-            params.put(CmsDialog.PARAM_ACTION, A_CmsListDialog.LIST_SELECT_PAGE);
-            params.put(A_CmsListDialog.PARAM_PAGE, "1");
-            params.put(CmsToolDialog.PARAM_ROOT, "explorer");
+            Map<String, String[]> params = new HashMap<String, String[]>();
+            params.put(CmsDialog.PARAM_ACTION, new String[] {A_CmsListDialog.LIST_SELECT_PAGE});
+            params.put(A_CmsListDialog.PARAM_PAGE, new String[] {"1"});
+            params.put(CmsToolDialog.PARAM_ROOT, new String[] {"explorer"});
             if (getSettings().getUserSettings().getWorkplaceSearchViewStyle() == CmsSearchResultStyle.STYLE_EXPLORER) {
                 getSettings().setExplorerPage(1);
-                params.put(A_CmsListExplorerDialog.PARAM_SHOW_EXPLORER, Boolean.TRUE);
+                params.put(A_CmsListExplorerDialog.PARAM_SHOW_EXPLORER, new String[] {Boolean.TRUE.toString()});
             } else {
                 CmsListMetadata metadata = A_CmsListDialog.getMetadata(CmsSearchResultsList.class.getName());
                 boolean withExcerpts = (getSettings().getUserSettings().getWorkplaceSearchViewStyle() == CmsSearchResultStyle.STYLE_LIST_WITH_EXCERPTS);
                 if (metadata == null) {
                     if (!withExcerpts) {
                         // prevent the excerpts to be displayed by default
-                        params.put(CmsDialog.PARAM_ACTION, A_CmsListDialog.LIST_INDEPENDENT_ACTION);
-                        params.put(A_CmsListDialog.PARAM_LIST_ACTION, CmsSearchResultsList.LIST_DETAIL_EXCERPT);
+                        params.put(CmsDialog.PARAM_ACTION, new String[] {A_CmsListDialog.LIST_INDEPENDENT_ACTION});
+                        params.put(
+                            A_CmsListDialog.PARAM_LIST_ACTION,
+                            new String[] {CmsSearchResultsList.LIST_DETAIL_EXCERPT});
                     }
                 } else {
                     // toggle excerpts
                     metadata.getItemDetailDefinition(CmsSearchResultsList.LIST_DETAIL_EXCERPT).setVisible(withExcerpts);
                 }
-                params.put(A_CmsListExplorerDialog.PARAM_SHOW_EXPLORER, Boolean.FALSE);
+                params.put(A_CmsListExplorerDialog.PARAM_SHOW_EXPLORER, new String[] {Boolean.FALSE.toString()});
             }
             getToolManager().jspForwardTool(this, "/search/results", params);
         } catch (Exception e) {
@@ -147,11 +151,11 @@ public class CmsSearchDialog extends CmsWidgetDialog {
      * 
      * @return the list of searchable fields used in the workplace search index
      */
-    public List getFields() {
+    public List<CmsLuceneField> getFields() {
 
         CmsSearchIndex index = getIndex();
-        List result = new ArrayList();
-        Iterator i = index.getFieldConfiguration().getFields().iterator();
+        List<CmsLuceneField> result = new ArrayList<CmsLuceneField>();
+        Iterator<CmsSearchField> i = index.getFieldConfiguration().getFields().iterator();
         while (i.hasNext()) {
             CmsLuceneField field = (CmsLuceneField)i.next();
             if (field.isIndexed() && field.isDisplayed()) {
@@ -170,6 +174,7 @@ public class CmsSearchDialog extends CmsWidgetDialog {
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         // check if the configured search index exists
@@ -210,6 +215,7 @@ public class CmsSearchDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
      */
+    @Override
     protected void defineWidgets() {
 
         initParams();
@@ -230,6 +236,7 @@ public class CmsSearchDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -238,6 +245,7 @@ public class CmsSearchDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -249,6 +257,7 @@ public class CmsSearchDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // set the dialog type
@@ -263,13 +272,13 @@ public class CmsSearchDialog extends CmsWidgetDialog {
      * 
      * @return a list of <code>{@link CmsSelectWidgetOption}</code> objects
      */
-    private List getFieldList() {
+    private List<CmsSelectWidgetOption> getFieldList() {
 
-        List retVal = new ArrayList();
+        List<CmsSelectWidgetOption> retVal = new ArrayList<CmsSelectWidgetOption>();
         try {
-            Iterator i = getFields().iterator();
+            Iterator<CmsLuceneField> i = getFields().iterator();
             while (i.hasNext()) {
-                CmsLuceneField field = (CmsLuceneField)i.next();
+                CmsLuceneField field = i.next();
                 if (isInitialCall()) {
                     // search form is in the initial state
                     retVal.add(new CmsSelectWidgetOption(field.getName(), true, getMacroResolver().resolveMacros(
@@ -312,9 +321,9 @@ public class CmsSearchDialog extends CmsWidgetDialog {
      * 
      * @return the select widget configuration for the sort names
      */
-    private List getSortNamesConf() {
+    private List<CmsSelectWidgetOption> getSortNamesConf() {
 
-        List retVal = new ArrayList();
+        List<CmsSelectWidgetOption> retVal = new ArrayList<CmsSelectWidgetOption>();
         try {
             String[] names = CmsSearchParameters.SORT_NAMES;
             for (int i = 0; i < names.length; i++) {
@@ -332,9 +341,9 @@ public class CmsSearchDialog extends CmsWidgetDialog {
      * 
      * @return the select widget configuration for the index names
      */
-    private List getSortNamesIndex() {
+    private List<CmsSelectWidgetOption> getSortNamesIndex() {
 
-        List retVal = new ArrayList();
+        List<CmsSelectWidgetOption> retVal = new ArrayList<CmsSelectWidgetOption>();
         try {
             List<String> names = OpenCms.getSearchManager().getIndexNames();
             for (int i = 0; i < names.size(); i++) {
@@ -379,15 +388,8 @@ public class CmsSearchDialog extends CmsWidgetDialog {
      */
     private boolean isInitialCall() {
 
-        if (((getJsp().getRequest().getParameter(CmsDialog.PARAM_ACTION) != null) && (getJsp().getRequest().getParameter(
-            CmsDialog.PARAM_ACTION).equals(CmsSearchDialog.PARAM_ACTION_VALUE_FOR_CHANGED_INDEX)))
-            || ((getJsp().getRequest().getParameter("indexName.0")) != null)) {
-            // the form was submitted already
-            // the submit button was pressed or the index was changed
-            return false;
-        } else {
-            // the initial call
-            return true;
-        }
+        // return false in case the form was submitted already or the submit button was pressed or the index was changed
+        return !(((getJsp().getRequest().getParameter(CmsDialog.PARAM_ACTION) != null) && (getJsp().getRequest().getParameter(
+            CmsDialog.PARAM_ACTION).equals(CmsSearchDialog.PARAM_ACTION_VALUE_FOR_CHANGED_INDEX))) || ((getJsp().getRequest().getParameter("indexName.0")) != null));
     }
 }
