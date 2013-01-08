@@ -384,6 +384,7 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
      * <li>first by file name</li>
      * <li>then by detection and</li>
      * <li>otherwise take the first configured default locale for this resource</li>
+     * </ul>
      *  
      * @param cms the current CmsObject
      * @param resource the resource to get the content locales for

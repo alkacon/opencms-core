@@ -40,6 +40,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.util.CmsStringUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -50,6 +51,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 
+import com.cybozu.labs.langdetect.DetectorFactory;
+import com.cybozu.labs.langdetect.LangDetectException;
+
 /**
  * Manages the locales configured for this OpenCms installation.<p>
  * 
@@ -59,6 +63,9 @@ import org.apache.commons.logging.Log;
  * @since 6.0.0 
  */
 public class CmsLocaleManager implements I_CmsEventListener {
+
+    /** The default name of the folder relative to the system configuration folder that holds the language profiles. */
+    public static final String DEFAULT_LANGUAGE_PROFILES_FOLDER_NAME = "languageProfiles";
 
     /** Runtime property name for locale handler. */
     public static final String LOCALE_HANDLER = "class_locale_handler";
@@ -942,6 +949,15 @@ public class CmsLocaleManager implements I_CmsEventListener {
         m_localeHandler.initHandler(cms);
         // set default locale 
         m_defaultLocale = m_defaultLocales.get(0);
+        File profilesFolder = new File(OpenCms.getSystemInfo().getConfigFolder()
+            + DEFAULT_LANGUAGE_PROFILES_FOLDER_NAME);
+        if (profilesFolder.exists()) {
+            try {
+                DetectorFactory.loadProfile(profilesFolder);
+            } catch (LangDetectException e) {
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_INIT_LANG_DETECT_FAILED_1, profilesFolder), e);
+            }
+        }
         // set initialized status
         m_initialized = true;
         if (CmsLog.INIT.isInfoEnabled()) {

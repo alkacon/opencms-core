@@ -38,9 +38,6 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_LANGUAGE_DETECTION_INIT_FAILED_1 = "LOG_LANGUAGE_DETECTION_INIT_FAILED_1";
-
-    /** Message constant for key in the resource bundle. */
     public static final String ERR_ANALYZER_NOT_FOUND_1 = "ERR_ANALYZER_NOT_FOUND_1";
 
     /** Message constant for key in the resource bundle. */
