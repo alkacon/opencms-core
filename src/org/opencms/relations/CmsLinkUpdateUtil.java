@@ -71,10 +71,10 @@ public final class CmsLinkUpdateUtil {
             if (!updateOnly || (element.element(CmsLink.NODE_TARGET) != null)) {
                 String strId = (link.getStructureId() == null ? null : link.getStructureId().toString());
                 // there may still be entities in the target, so we decode it
-                updateNode(element, CmsLink.NODE_TARGET, decodeEntities(link.getTarget()), true);
+                updateNode(element, CmsLink.NODE_TARGET, link.getTarget(), true);
                 updateNode(element, CmsLink.NODE_UUID, strId, false);
                 updateNode(element, CmsLink.NODE_ANCHOR, link.getAnchor(), true);
-                updateNode(element, CmsLink.NODE_QUERY, decodeEntities(link.getQuery()), true);
+                updateNode(element, CmsLink.NODE_QUERY, link.getQuery(), true);
             }
         }
     }

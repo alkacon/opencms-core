@@ -250,6 +250,7 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
                 formatSelectOptions = StringUtils.replace(formatSelectOptions, ";", ",");
                 result.put("theme_advanced_blockformats", formatSelectOptions);
             }
+            result.put("entity_encoding", "raw");
         } catch (JSONException e) {
             LOG.error(e.getLocalizedMessage(), e);
         }
