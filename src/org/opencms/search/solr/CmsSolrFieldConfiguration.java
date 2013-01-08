@@ -61,10 +61,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 
-import com.cybozu.labs.langdetect.Detector;
-import com.cybozu.labs.langdetect.DetectorFactory;
-import com.cybozu.labs.langdetect.LangDetectException;
-
 /**
  * The search field implementation for Solr.<p>
  * 
@@ -396,22 +392,10 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
 
         // try to detect locale by filename
         Locale detectedLocale = getLocaleFromFileName(resource.getRootPath());
-
         // try to detect locale by language detector
         if ((detectedLocale == null) && (extraction != null) && (extraction.getContent() != null)) {
-            try {
-                Detector detector = DetectorFactory.create();
-                detector.append(extraction.getContent());
-                String lang = detector.detect();
-                Locale loc = new Locale(lang);
-                if (OpenCms.getLocaleManager().getAvailableLocales().contains(loc)) {
-                    detectedLocale = loc;
-                }
-            } catch (LangDetectException e) {
-                LOG.debug(Messages.get().getBundle().key(Messages.LOG_LANGUAGE_DETECTION_FAILED_1, resource), e);
-            }
+            detectedLocale = CmsStringUtil.getLocaleFromText(extraction.getContent());
         }
-
         // take the detected locale or use the first configured default locale for this resource
         List<Locale> result = new ArrayList<Locale>();
         if (detectedLocale != null) {
@@ -420,8 +404,8 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
         } else {
             // take the first configured OpenCms default locale for this resource as fall-back
             result.add(OpenCms.getLocaleManager().getDefaultLocales(cms, resource).get(0));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_LANGUAGE_DETECTION_FAILED_1, resource));
         }
-
         return result;
     }
 

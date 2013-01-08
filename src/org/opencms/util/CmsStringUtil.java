@@ -31,6 +31,7 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.I_CmsMessageBundle;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 
 import java.awt.Color;
 import java.nio.charset.Charset;
@@ -42,6 +43,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -50,6 +52,10 @@ import java.util.regex.PatternSyntaxException;
 import org.apache.commons.logging.Log;
 import org.apache.oro.text.perl.MalformedPerl5PatternException;
 import org.apache.oro.text.perl.Perl5Util;
+
+import com.cybozu.labs.langdetect.Detector;
+import com.cybozu.labs.langdetect.DetectorFactory;
+import com.cybozu.labs.langdetect.LangDetectException;
 
 /**
  * Provides String utility functions.<p>
@@ -751,6 +757,35 @@ public final class CmsStringUtil {
             result = defaultValue;
         }
         return result;
+    }
+
+    /**
+     * Returns the locale for the given text based on the language detection library.<p>
+     * 
+     * The result will be <code>null</code> if the detection fails or the detected locale is not configured
+     * in the 'opencms-system.xml' as available locale.<p>
+     * 
+     * @param text the text to retrieve the locale for
+     * 
+     * @return the detected locale for the given text
+     */
+    public static Locale getLocaleFromText(String text) {
+
+        // try to detect locale by language detector
+        if (isNotEmptyOrWhitespaceOnly(text)) {
+            try {
+                Detector detector = DetectorFactory.create();
+                detector.append(text);
+                String lang = detector.detect();
+                Locale loc = new Locale(lang);
+                if (OpenCms.getLocaleManager().getAvailableLocales().contains(loc)) {
+                    return loc;
+                }
+            } catch (LangDetectException e) {
+                LOG.debug(e);
+            }
+        }
+        return null;
     }
 
     /**
