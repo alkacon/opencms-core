@@ -85,6 +85,13 @@ public interface I_CmsSearchDocument {
     void addDateField(String name, long date, boolean analyzed);
 
     /**
+     * Adds the given file size as field to this document.<p>
+     * 
+     * @param length the length
+     */
+    void addFileSizeField(int length);
+
+    /**
      * Puts the given path into this document.<p>
      * 
      * @param rootPath the given path into this document

@@ -171,6 +171,14 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
     }
 
     /**
+     * @see org.opencms.search.I_CmsSearchDocument#addFileSizeField(int)
+     */
+    public void addFileSizeField(int length) {
+
+        m_doc.addField(CmsSearchField.FIELD_SIZE, new Integer(length));
+    }
+
+    /**
      * Adds a multi-valued field.<p>
      * 
      * @param fieldName the field name to put the values in

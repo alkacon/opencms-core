@@ -176,6 +176,14 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
     }
 
     /**
+     * @see org.opencms.search.I_CmsSearchDocument#addFileSizeField(int)
+     */
+    public void addFileSizeField(int length) {
+
+        // a default lucene implementation does not have a field for the file size
+    }
+
+    /**
      * @see org.opencms.search.I_CmsSearchDocument#addPathField(java.lang.String)
      */
     public void addPathField(String rootPath) {

@@ -220,6 +220,7 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
         document = appendContentBlob(document, cms, resource, extraction, properties, propertiesSearched);
         document = appendPath(document, cms, resource, extraction, properties, propertiesSearched);
         document = appendType(document, cms, resource, extraction, properties, propertiesSearched);
+        document = appendFileSize(document, cms, resource, extraction, properties, propertiesSearched);
         document = appendDates(document, cms, resource, extraction, properties, propertiesSearched);
         document = appendLocales(document, cms, resource, extraction, properties, propertiesSearched);
         document = appendProperties(document, cms, resource, extraction, properties, propertiesSearched);
@@ -523,6 +524,31 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
                 properties,
                 propertiesSearched);
         }
+
+        return document;
+    }
+
+    /**
+     * Extends the given document by the "size" field.<p>
+     * 
+     * @param document the document to extend
+     * @param cms the OpenCms context used for building the search index
+     * @param resource the resource that is indexed
+     * @param extractionResult the plain text extraction result from the resource
+     * @param properties the list of all properties directly attached to the resource (not searched)
+     * @param propertiesSearched the list of all searched properties of the resource  
+     * 
+     * @return the document extended by the resource locales
+     */
+    protected I_CmsSearchDocument appendFileSize(
+        I_CmsSearchDocument document,
+        CmsObject cms,
+        CmsResource resource,
+        I_CmsExtractionResult extractionResult,
+        List<CmsProperty> properties,
+        List<CmsProperty> propertiesSearched) {
+
+        document.addFileSizeField(resource.getLength());
 
         return document;
     }

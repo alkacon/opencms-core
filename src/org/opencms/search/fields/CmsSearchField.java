@@ -143,6 +143,9 @@ public class CmsSearchField implements Serializable {
     /** Name of the field that contains the searched property value of 'search.exclude'. */
     public static final String FIELD_SEARCH_EXCLUDE = "search_exclude";
 
+    /** Name of the field that usually contains file size. */
+    public static final String FIELD_SIZE = "size";
+
     /** Name of the field that contains the file name suffix of the resource. */
     public static final String FIELD_SUFFIX = "suffix";
 
