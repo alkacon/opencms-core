@@ -112,22 +112,6 @@ public class CmsDocumentXmlContent extends A_CmsVfsDocument {
                         items.put(xpath, extracted);
                         content.append(extracted);
                         content.append('\n');
-                    } else {
-                        // if the plain text value is empty but not the String value put this into the content items map
-                        // this will enable to map a content type "OpenCmsDateTime" for example to a certain index field
-                        try {
-                            // try to use the string value as fall back
-                            if (CmsStringUtil.isEmptyOrWhitespaceOnly(extracted)) {
-                                if (value.isSimpleType()) {
-                                    extracted = value.getStringValue(cms);
-                                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(extracted)) {
-                                        items.put(xpath, extracted);
-                                    }
-                                }
-                            }
-                        } catch (Exception e) {
-                            // noop
-                        }
                     }
                 }
             }

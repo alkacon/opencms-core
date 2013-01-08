@@ -83,6 +83,15 @@ public abstract class A_CmsXmlValueTextBase extends A_CmsXmlContentValue {
     }
 
     /**
+     * @see org.opencms.xml.types.A_CmsXmlContentValue#getPlainText(org.opencms.file.CmsObject)
+     */
+    @Override
+    public String getPlainText(CmsObject cms) {
+
+        return getStringValue(cms);
+    }
+
+    /**
      * @see org.opencms.xml.types.I_CmsXmlContentValue#getStringValue(CmsObject)
      */
     public String getStringValue(CmsObject cms) throws CmsRuntimeException {
