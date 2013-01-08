@@ -139,7 +139,6 @@ public class CmsSolrDocumentXmlContent extends CmsDocumentXmlContent {
                         // create the content value for the locale by adding all String values in the XML nodes
                         content.append(extracted);
                         content.append('\n');
-                        items.put(xpath, extracted);
                     }
 
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(extracted)) {
