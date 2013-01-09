@@ -1082,6 +1082,57 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
+     * Creates new content elements if required by the model page.<p>
+     * 
+     * @param cms the cms context
+     * @param page the page
+     * @param sitePath the resource site path
+     * 
+     * @throws CmsException when unable to create the content elements
+     */
+    private void createNewContainerElements(CmsObject cms, CmsXmlContainerPage page, String sitePath)
+    throws CmsException {
+
+        CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(cms, cms.addSiteRoot(sitePath));
+        Locale contentLocale = page.getLocales().get(0);
+        CmsObject cloneCms = OpenCms.initCmsObject(cms);
+        cloneCms.getRequestContext().setLocale(contentLocale);
+        CmsContainerPageBean pageBean = page.getContainerPage(cms, contentLocale);
+        boolean needsChanges = false;
+        List<CmsContainerBean> updatedContainers = new ArrayList<CmsContainerBean>();
+        for (CmsContainerBean container : pageBean.getContainers().values()) {
+            List<CmsContainerElementBean> updatedElements = new ArrayList<CmsContainerElementBean>();
+            for (CmsContainerElementBean element : container.getElements()) {
+                if (element.isCreateNew() && !element.isGroupContainer(cms) && !element.isInheritedContainer(cms)) {
+                    needsChanges = true;
+                    String typeName = OpenCms.getResourceManager().getResourceType(element.getResource()).getTypeName();
+                    CmsResourceTypeConfig typeConfig = configData.getResourceType(typeName);
+                    CmsResource newResource = typeConfig.createNewElement(cloneCms, null);
+                    CmsContainerElementBean newBean = new CmsContainerElementBean(
+                        newResource.getStructureId(),
+                        element.getFormatterId(),
+                        element.getIndividualSettings(),
+                        false);
+                    updatedElements.add(newBean);
+                } else {
+                    updatedElements.add(element);
+                }
+            }
+
+            CmsContainerBean updatedContainer = new CmsContainerBean(
+                container.getName(),
+                container.getType(),
+                container.getMaxElements(),
+                updatedElements);
+            updatedContainers.add(updatedContainer);
+        }
+        if (needsChanges) {
+            CmsContainerPageBean updatedPage = new CmsContainerPageBean(contentLocale, updatedContainers);
+            page.writeContainerPage(cms, contentLocale, updatedPage);
+        }
+    }
+
+    /**
      * Creates a new page in navigation.<p>
      *
      * @param entryPoint the site-map entry-point
@@ -1203,6 +1254,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                             functionStructureId,
                             functionFormatter.getStructureId());
                     }
+                    createNewContainerElements(cms, page, entryPath);
                     content = page.marshal();
                 }
                 newRes = cms.createResource(
@@ -1930,7 +1982,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     private boolean hasDefaultFileChanges(CmsSitemapChange change) {
 
         return (change.getDefaultFileId() != null) && !change.isNew();
-        //TODO: optimize this!
     }
 
     /**
@@ -2391,7 +2442,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         clientEntry.setOwnProperties(ownProps);
         clientEntry.setDefaultFileProperties(defaultFileProps);
         clientEntry.setSitePath(entryFolder != null ? cms.getSitePath(entryFolder) : path);
-        //CHECK: assuming that, if entryPage refers to the default file, the lock state of the folder
         clientEntry.setLock(generateClientLock(entryPage));
         clientEntry.setInNavigation(isRoot || navElement.isInNavigation());
         String type = OpenCms.getResourceManager().getResourceType(ownResource).getTypeName();
