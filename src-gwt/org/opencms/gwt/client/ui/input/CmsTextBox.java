@@ -41,8 +41,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
@@ -57,6 +55,8 @@ import com.google.gwt.event.dom.client.HasKeyPressHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
@@ -66,6 +66,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -84,8 +85,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
      * Event handler for this text box.<p>
      */
     private class TextBoxHandler
-    implements MouseOverHandler, MouseOutHandler, FocusHandler, BlurHandler, ValueChangeHandler<String>,
-    KeyPressHandler {
+    implements MouseOverHandler, MouseOutHandler, FocusHandler, BlurHandler, ValueChangeHandler<String>, KeyUpHandler {
 
         /** The current text box value. */
         private String m_currentValue;
@@ -122,23 +122,23 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
         }
 
         /**
-         * @see com.google.gwt.event.dom.client.KeyPressHandler#onKeyPress(com.google.gwt.event.dom.client.KeyPressEvent)
+         * @see com.google.gwt.event.dom.client.KeyUpHandler#onKeyUp(com.google.gwt.event.dom.client.KeyUpEvent)
          */
-        public void onKeyPress(KeyPressEvent event) {
+        public void onKeyUp(KeyUpEvent event) {
 
             int keyCode = event.getNativeEvent().getKeyCode();
+
             if (!isNavigationKey(keyCode)) {
-                setGhostMode(false);
+                if (CmsStringUtil.isEmpty(m_textbox.getValue())) {
+                    if (m_ghostValue != null) {
+                        setGhostMode(true);
+                    }
+                } else {
+                    setGhostMode(false);
+                }
             }
             if (isTriggerChangeOnKeyPress()) {
-                Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
-                    public void execute() {
-
-                        checkForChange(m_inhibitValidationForKeypresses);
-                    }
-                });
-
+                checkForChange(m_inhibitValidationForKeypresses);
             }
         }
 
@@ -165,11 +165,15 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
          */
         public void onValueChange(ValueChangeEvent<String> event) {
 
+            if (m_ghostMode && m_textbox.getValue().equals(m_ghostValue)) {
+                fireValueChangedEvent(false);
+                return;
+            }
             setGhostMode(false);
             if ((m_ghostValue != null) && "".equals(m_textbox.getValue())) {
-                m_ghostMode = true;
+                setGhostMode(true);
                 setGhostStyleEnabled(true, true);
-                m_textbox.setValue(m_ghostValue);
+                setValueInTextBoxDelayed(m_ghostValue);
             }
             if (!event.getValue().equals(m_currentValue)) {
                 m_currentValue = event.getValue();
@@ -238,6 +242,9 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
     /** The text box used internally by this widget. */
     protected TextBox m_textbox = new TextBox();
 
+    /** Flag which controls whether validation should be inhibited when value change events are fired as a consequence of key presses. */
+    boolean m_inhibitValidationForKeypresses;
+
     /** Flag indicating if the text box should be cleared when leaving the ghost mode. */
     private boolean m_clearOnChangeMode;
 
@@ -271,9 +278,6 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
     /** Flag indicating if the value change event should also be fired after key press events. */
     private boolean m_triggerChangeOnKeyPress;
 
-    /** Flag which controls whether validation should be inhibited when value change events are fired as a consequence of key presses. */
-    boolean m_inhibitValidationForKeypresses;
-
     /**
      * Constructs a new instance of this widget.
      */
@@ -289,7 +293,8 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
         m_textbox.addFocusHandler(handler);
         m_textbox.addBlurHandler(handler);
         m_textbox.addValueChangeHandler(handler);
-        m_textbox.addKeyPressHandler(handler);
+        //m_textbox.addKeyPressHandler(handler);
+        m_textbox.addKeyUpHandler(handler);
 
         m_handler = handler;
 
@@ -625,9 +630,9 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
             newValue = "";
         }
         if ("".equals(newValue) && (m_ghostValue != null)) {
-            m_ghostMode = true;
+            setGhostMode(true);
             setGhostStyleEnabled(true, true);
-            m_textbox.setValue(m_ghostValue);
+            setValueInTextBoxDelayed(m_ghostValue);
         } else {
             setGhostMode(false);
             setGhostStyleEnabled(false, true);
@@ -747,6 +752,24 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
     public void setTriggerChangeOnKeyPress(boolean triggerOnKeyPress) {
 
         m_triggerChangeOnKeyPress = triggerOnKeyPress;
+    }
+
+    /**
+     * Sets the value of the text box after a short delay.
+     * 
+     * @param value the value to set 
+     */
+    public void setValueInTextBoxDelayed(final String value) {
+
+        Timer timer = new Timer() {
+
+            @Override
+            public void run() {
+
+                m_textbox.setValue(value);
+            }
+        };
+        timer.schedule(1);
     }
 
     /**
