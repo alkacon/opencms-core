@@ -271,7 +271,12 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                         if (locale == null) {
                             locale = OpenCms.getLocaleManager().getDefaultLocale(cms, paramResource);
                         }
-                        return readContentDefnitionForNew(paramNewLink, resource, null, locale);
+                        CmsUUID modelFileId = null;
+                        String paramModelFile = getRequest().getParameter(CmsNewResourceXmlContent.PARAM_MODELFILE);
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(paramModelFile)) {
+                            modelFileId = cms.readResource(paramModelFile).getStructureId();
+                        }
+                        return readContentDefnitionForNew(paramNewLink, resource, modelFileId, locale);
                     } else {
 
                         CmsFile file = cms.readFile(resource);
