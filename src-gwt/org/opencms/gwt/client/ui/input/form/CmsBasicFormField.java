@@ -54,6 +54,7 @@ public class CmsBasicFormField implements I_CmsFormField {
 
     /** The default value of the form field. */
     private Object m_defaultValue;
+
     /** Description for the form field. */
     private String m_description;
 
@@ -213,7 +214,7 @@ public class CmsBasicFormField implements I_CmsFormField {
             public void onValueChange(ValueChangeEvent<String> event) {
 
                 I_CmsFormWidget widget = getWidget();
-                if (widget instanceof I_CmsHasGhostValue) {
+                if ((widget instanceof I_CmsHasGhostValue) && !CmsStringUtil.isEmptyOrWhitespaceOnly(event.getValue())) {
                     ((I_CmsHasGhostValue)widget).setGhostMode(false);
                 }
                 widget.setFormValueAsString(event.getValue());

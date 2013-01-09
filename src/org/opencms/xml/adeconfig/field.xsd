@@ -31,10 +31,8 @@
 			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
 		        <layouts>
 		           	<layout element="PreferFolder" widget="BooleanWidget" />
-		           	<layout element="Widget" widget="SelectorWidget" configuration="string|select" />
+		           	<layout element="Widget" widget="SelectorWidget" configuration="string|select|extended_multicheck" />
 		        </layouts>
-
-	        
         </xsd:appinfo>
     </xsd:annotation>
 </xsd:schema>

@@ -22,6 +22,11 @@ input.textBox:focus{
 	box-shadow:none;
 }
 
+.multiCheckboxPanel {
+	border: 1px solid value("constants.css.borderColor");
+	overflow:hidden;
+}
+
 
 
 .highTextBoxes .textBox {
@@ -31,6 +36,11 @@ input.textBox:focus{
 input.textboxGhostMode {
 	font-style: oblique;
 	color: value("constants.css.textColorDisabled") /*!important*/;
+}
+
+.weakText * {
+	font-style: oblique !important;
+	color: value("constants.css.textColorDisabled") !important;
 }
 
 .textBoxWidget, .checkBox {}

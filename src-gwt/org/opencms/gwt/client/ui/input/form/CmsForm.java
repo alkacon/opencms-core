@@ -578,7 +578,10 @@ public class CmsForm {
                         CmsExtendedValueChangeEvent extEvent = (CmsExtendedValueChangeEvent)event;
                         inhibitValidation = extEvent.isInhibitValidation();
                     }
-                    defaultHandleValueChange(formField, widget.getFormValueAsString(), inhibitValidation);
+                    if ((event.getValue() instanceof String) || (event.getValue() == null)) {
+                        // only makes sense for strings 
+                        defaultHandleValueChange(formField, (String)(event.getValue()), inhibitValidation);
+                    }
                 }
             });
         }

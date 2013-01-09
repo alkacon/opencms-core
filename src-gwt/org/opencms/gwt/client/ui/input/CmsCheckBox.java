@@ -38,8 +38,6 @@ import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 
 import java.util.Map;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -119,20 +117,11 @@ implements HasClickHandlers, I_CmsFormWidget, I_CmsHasInit, HasHorizontalAlignme
         initWidget(m_root);
         addStyleName(CSS.checkBox());
         addStyleName(CSS.inlineBlock());
-        addClickHandler(new ClickHandler() {
+        m_button.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
 
-            /**
-             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
-             */
-            public void onClick(ClickEvent event) {
+            public void onValueChange(ValueChangeEvent<Boolean> changeEvent) {
 
-                Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
-                    public void execute() {
-
-                        fireValueChangedEvent();
-                    }
-                });
+                ValueChangeEvent.fire(CmsCheckBox.this, changeEvent.getValue());
             }
         });
     }

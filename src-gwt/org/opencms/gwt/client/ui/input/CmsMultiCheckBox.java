@@ -64,16 +64,16 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
     public static final String WIDGET_TYPE = "multicheck";
 
     /** The list of checkboxes. */
-    private List<CmsCheckBox> m_checkboxes = new ArrayList<CmsCheckBox>();
+    protected List<CmsCheckBox> m_checkboxes = new ArrayList<CmsCheckBox>();
 
     /** Error display for this widget. */
-    private CmsErrorWidget m_error = new CmsErrorWidget();
+    protected CmsErrorWidget m_error = new CmsErrorWidget();
 
     /** The select options of the multi check box. */
-    private Map<String, String> m_items = new LinkedHashMap<String, String>();
+    protected Map<String, String> m_items = new LinkedHashMap<String, String>();
 
     /** Panel which contains all the components of the widget. */
-    private Panel m_panel = new FlowPanel();
+    protected Panel m_panel = new FlowPanel();
 
     /**
      * Constructs a new checkbox group from a list of string pairs.<p>
@@ -268,8 +268,26 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
      */
     public void setFormValueAsString(String formValue) {
 
+        if (formValue == null) {
+            formValue = "";
+        }
         List<String> values = CmsStringUtil.splitAsList(formValue, "|");
         setFormValue(values);
+    }
+
+    /**
+     * Enables or disables italics display in the checkbox labels.<p>
+     *  
+     * @param weak true if italics display should be enabled 
+     */
+    public void setTextWeak(boolean weak) {
+
+        String style = I_CmsInputLayoutBundle.INSTANCE.inputCss().weakText();
+        if (weak) {
+            addStyleName(style);
+        } else {
+            removeStyleName(style);
+        }
 
     }
 

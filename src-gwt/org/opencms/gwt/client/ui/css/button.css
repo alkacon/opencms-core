@@ -119,6 +119,7 @@ div.cmsTextButton, div.cmsTransparentButton, div.cmsMenuButton, div.cmsImageButt
     font-weight:bold;
 }
 
+
 /** Specific button styles (text-, transparent-, menu- and image-Button). */
 @sprite div.cmsTextButton {
 	gwt-image:"backgrounds.stateBackground";
