@@ -76,7 +76,6 @@ implements I_CmsFormWidget, I_CmsHasGhostValue, HasValueChangeHandlers<String>, 
             checkbox.getButton().getElement().getStyle().setFontWeight(Style.FontWeight.NORMAL);
         }
         initWidget(m_widget);
-        //m_widget.getElement().getStyle().setBorderColor("black");
         m_widget.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().multiCheckboxPanel());
         m_widget.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
         m_widget.addValueChangeHandler(new ValueChangeHandler<String>() {
@@ -236,7 +235,6 @@ implements I_CmsFormWidget, I_CmsHasGhostValue, HasValueChangeHandlers<String>, 
      */
     public void setGhostValue(String value, boolean isGhostMode) {
 
-        isGhostMode &= !CmsStringUtil.isEmpty(value);
         if (isGhostMode) {
             m_widget.setTextWeak(true);
             m_widget.setFormValueAsString(value);
