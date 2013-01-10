@@ -286,6 +286,9 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     /** Signals whether a animation should be used to show the popup or not. */
     private boolean m_useAnimation = true;
 
+    /** The content width, -1 indicating the value was not set. */
+    private int m_width = -1;
+
     /**
      * Constructor.<p>
      */
@@ -617,6 +620,16 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     }
 
     /**
+     * Returns the dialog content width, -1 if not set.<p>
+     * 
+     * @return the dialog content width
+     */
+    public int getWidth() {
+
+        return m_width;
+    }
+
+    /**
      * Returns <code>true</code> if a caption is set for this popup <code>false</code> otherwise.<p>
      * 
      * @return <code>true</code> if a caption is set for this popup <code>false</code> otherwise
@@ -903,8 +916,10 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
         if (width <= 0) {
             m_containerElement.getStyle().clearWidth();
+            m_width = -1;
         } else {
-            m_containerElement.getStyle().setProperty("width", width + Unit.PX.toString());
+            m_containerElement.getStyle().setWidth(width, Unit.PX);
+            m_width = width;
         }
     }
 

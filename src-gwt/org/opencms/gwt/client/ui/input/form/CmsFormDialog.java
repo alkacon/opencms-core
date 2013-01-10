@@ -38,6 +38,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 
 /**
  * A dialog containing a form.<p>
@@ -46,8 +47,11 @@ import com.google.gwt.event.dom.client.ClickHandler;
  */
 public class CmsFormDialog extends CmsPopup {
 
+    /** The maximum dialog width. */
+    public static final int MAX_DIALOG_WIDTH = 930;
+
     /** The dialog width. */
-    public static final int STANDARD_DIALOG_WIDTH = 600;
+    public static final int STANDARD_DIALOG_WIDTH = 700;
 
     /** The widget containing the form fields. */
     protected CmsForm m_form;
@@ -70,7 +74,11 @@ public class CmsFormDialog extends CmsPopup {
         setGlassEnabled(true);
         setAutoHideEnabled(false);
         setModal(true);
-        setWidth(STANDARD_DIALOG_WIDTH);
+        // check the available width for this dialog
+        int windowWidth = Window.getClientWidth();
+        int dialogWidth = (windowWidth - 100) > STANDARD_DIALOG_WIDTH ? windowWidth - 100 : STANDARD_DIALOG_WIDTH;
+        dialogWidth = dialogWidth > MAX_DIALOG_WIDTH ? MAX_DIALOG_WIDTH : dialogWidth;
+        setWidth(dialogWidth);
         addButton(createCancelButton());
         m_okButton = createOkButton();
         addButton(m_okButton);

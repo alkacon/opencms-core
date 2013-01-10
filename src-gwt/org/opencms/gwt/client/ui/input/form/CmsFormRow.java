@@ -27,10 +27,12 @@
 
 package org.opencms.gwt.client.ui.input.form;
 
+import org.opencms.gwt.client.ui.I_CmsTruncable;
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -46,7 +48,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @since 8.0.0
  */
-public class CmsFormRow extends Composite {
+public class CmsFormRow extends Composite implements I_CmsTruncable {
 
     /** The ui binder interface for this widget. */
     protected interface I_CmsFormRowUiBinder extends UiBinder<Widget, CmsFormRow> {
@@ -58,6 +60,12 @@ public class CmsFormRow extends Composite {
 
     /** The width of the opener. */
     public static final int OPENER_WIDTH = 16;
+
+    /** The default widget container width. */
+    public static final int WIDGET_CONTAINER_WIDTH = 370;
+
+    /** The required right margin. */
+    public static final int WIDGET_MARGIN_RIGHT = 30;
 
     /** The CSS bundle used for this widget. */
     protected static I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
@@ -118,6 +126,16 @@ public class CmsFormRow extends Composite {
     }
 
     /**
+     * Returns the left margin of the widget container as a string.<p>
+     * 
+     * @return the left margin of the widget container as a string 
+     */
+    public static String getWidgetContainerWidth() {
+
+        return WIDGET_CONTAINER_WIDTH + "px";
+    }
+
+    /**
      * Returns the label for the form row.<p>
      * 
      * @return the label for the form row 
@@ -149,6 +167,23 @@ public class CmsFormRow extends Composite {
             m_icon.setTitle(info);
         }
 
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.I_CmsTruncable#truncate(java.lang.String, int)
+     */
+    public void truncate(String textMetricsKey, int clientWidth) {
+
+        if (clientWidth > (WIDGET_CONTAINER_WIDTH + OPENER_WIDTH + LABEL_WIDTH + WIDGET_MARGIN_RIGHT)) {
+            int availableWidth = clientWidth - OPENER_WIDTH - WIDGET_MARGIN_RIGHT;
+            int widgetContainerWidth = (int)Math.round(1.00
+                * availableWidth
+                * ((1.00 + WIDGET_CONTAINER_WIDTH) / (WIDGET_CONTAINER_WIDTH + LABEL_WIDTH)));
+            int labelWidth = availableWidth - widgetContainerWidth;
+            m_label.setWidth(labelWidth + "px");
+            m_widgetContainer.setWidth(widgetContainerWidth + "px");
+            m_widgetContainer.getElement().getStyle().setMarginLeft(labelWidth + OPENER_WIDTH, Unit.PX);
+        }
     }
 
 }

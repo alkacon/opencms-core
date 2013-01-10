@@ -385,6 +385,9 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                     form.addField(field, initialValue);
                 }
                 form.render();
+                if (dialog.getWidth() > 0) {
+                    form.getWidget().truncate("settings_truncation", dialog.getWidth() - 12);
+                }
                 dialog.center();
             }
         });

@@ -45,17 +45,17 @@ import com.google.gwt.user.client.ui.FlowPanel;
  */
 public class CmsInfoBoxFormFieldPanel extends A_CmsFormFieldPanel {
 
+    /** Text metrics key for the info box. */
+    public static String TM_INFOBOX = "infobox_";
+
     /** The list of form fields. */
     protected List<I_CmsFormField> m_fields;
-
-    /** The main panel .*/
-    private FlowPanel m_panel;
 
     /** The inner panel containing the form fields. */
     private FlowPanel m_innerPanel;
 
-    /** Text metrics key for the info box. */
-    public static String TM_INFOBOX = "infobox_";
+    /** The main panel .*/
+    private FlowPanel m_panel;
 
     /**
      * Creates a new instance.<p>
@@ -97,6 +97,17 @@ public class CmsInfoBoxFormFieldPanel extends A_CmsFormFieldPanel {
             CmsFormRow row = createRow(field);
             m_innerPanel.add(row);
         }
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.I_CmsTruncable#truncate(java.lang.String, int)
+     */
+    public void truncate(String textMetricsKey, int clientWidth) {
+
+        clientWidth -= 12;
+        storeTruncation(textMetricsKey, clientWidth);
+        truncatePanel(m_panel, textMetricsKey, clientWidth);
+        truncatePanel(m_innerPanel, textMetricsKey, clientWidth);
     }
 
 }

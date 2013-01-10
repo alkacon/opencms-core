@@ -385,4 +385,19 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
         }
         CmsDomUtil.resizeAncestor(m_simpleTab.getParent());
     }
+
+    /**
+     * @see org.opencms.gwt.client.ui.I_CmsTruncable#truncate(java.lang.String, int)
+     */
+    public void truncate(String textMetricsKey, int clientWidth) {
+
+        clientWidth -= 12;
+        storeTruncation(textMetricsKey, clientWidth);
+        truncatePanel(m_individualTab, textMetricsKey, clientWidth);
+        truncatePanel(m_individualTabWrapper, textMetricsKey, clientWidth);
+        truncatePanel(m_simpleTab, textMetricsKey, clientWidth);
+        truncatePanel(m_simpleTabWrapper, textMetricsKey, clientWidth);
+        truncatePanel(m_sharedTab, textMetricsKey, clientWidth);
+        truncatePanel(m_sharedTabWrapper, textMetricsKey, clientWidth);
+    }
 }

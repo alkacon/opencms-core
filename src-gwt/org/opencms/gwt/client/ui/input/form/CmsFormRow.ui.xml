@@ -7,7 +7,7 @@
 	<ui:style>
 		.additionalIcon {
     		position: absolute;
-    		left: 537px;
+    		right: 2px;
 		}
 	</ui:style>
 	<g:FlowPanel styleName="{inputstyle.inputCss.formRow} {mainStyle.generalCss.clearFix}">

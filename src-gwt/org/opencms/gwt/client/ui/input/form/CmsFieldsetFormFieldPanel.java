@@ -113,4 +113,15 @@ public class CmsFieldsetFormFieldPanel extends A_CmsFormFieldPanel {
             m_fieldsetContents.add(row);
         }
     }
+
+    /**
+     * @see org.opencms.gwt.client.ui.I_CmsTruncable#truncate(java.lang.String, int)
+     */
+    public void truncate(String textMetricsKey, int clientWidth) {
+
+        clientWidth -= 12;
+        storeTruncation(textMetricsKey, clientWidth);
+        truncatePanel(m_panel, textMetricsKey, clientWidth);
+        truncatePanel(m_fieldsetContents, textMetricsKey, clientWidth);
+    }
 }
