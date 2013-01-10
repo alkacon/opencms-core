@@ -39,6 +39,8 @@ import org.opencms.flex.CmsFlexController;
 import org.opencms.flex.CmsFlexRequest;
 import org.opencms.jsp.CmsJspBean;
 import org.opencms.jsp.Messages;
+import org.opencms.loader.CmsTemplateContext;
+import org.opencms.loader.CmsTemplateContextManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
@@ -74,6 +76,51 @@ import com.google.common.collect.MapMaker;
  */
 public final class CmsJspStandardContextBean {
 
+    /**
+     * Bean containing a template name and URI.<p>
+     */
+    public static class TemplateBean {
+
+        /** The template name. */
+        private String m_name;
+
+        /** The template uri. */
+        private String m_uri;
+
+        /**
+         * Creates a new instance.<p>
+         * 
+         * @param name the template name 
+         * @param uri the template uri 
+         */
+        public TemplateBean(String name, String uri) {
+
+            m_uri = uri;
+            m_name = name;
+        }
+
+        /**
+         * Gets the template name.<p>
+         * 
+         * @return the template name 
+         */
+        public String getName() {
+
+            return m_name;
+        }
+
+        /**
+         * Gets the template uri.<p>
+         * 
+         * @return the template URI.
+         */
+        public String getUri() {
+
+            return m_uri;
+        }
+
+    }
+
     /** The attribute name of the cms object.*/
     public static final String ATTRIBUTE_CMS_OBJECT = "__cmsObject";
 
@@ -103,6 +150,9 @@ public final class CmsJspStandardContextBean {
 
     /** The currently displayed container page. */
     private CmsContainerPageBean m_page;
+
+    /** The current request. */
+    private CmsFlexRequest m_request;
 
     /** The VFS content access bean. */
     private CmsJspVfsAccessBean m_vfsBean;
@@ -434,6 +484,25 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
+     * Gets a bean containing information about the current template.<p>
+     * 
+     * @return the template information bean 
+     */
+    public TemplateBean getTemplate() {
+
+        String templateName = null;
+        String templateUri = null;
+        CmsTemplateContext templateContext = getRequestAttribute(CmsTemplateContextManager.ATTR_TEMPLATE_CONTEXT);
+        CmsResource templateResource = getRequestAttribute(CmsTemplateContextManager.ATTR_TEMPLATE_RESOURCE);
+        templateName = getRequestAttribute(CmsTemplateContextManager.ATTR_TEMPLATE_NAME);
+        if (templateContext != null) {
+            templateName = templateContext.getKey();
+        }
+        templateUri = templateResource.getRootPath();
+        return new TemplateBean(templateName, templateUri);
+    }
+
+    /**
      * Returns an initialized VFS access bean.<p>
      * 
      * @return an initialized VFS access bean
@@ -576,6 +645,7 @@ public final class CmsJspStandardContextBean {
 
         CmsResource detailRes = CmsDetailPageResourceHandler.getDetailResource(cmsFlexRequest);
         m_detailContentResource = detailRes;
+        m_request = cmsFlexRequest;
 
     }
 
@@ -600,6 +670,18 @@ public final class CmsJspStandardContextBean {
         CmsResource functionResource = m_cms.readResource(functionRef.getStructureId());
         CmsDynamicFunctionBean result = parser.parseFunctionBean(m_cms, functionResource);
         return result;
+    }
+
+    /**
+     * Convenience method for getting a request attribute without an explicit cast.<p>
+     * 
+     * @param name the attribute name 
+     * @return the request attribute 
+     */
+    @SuppressWarnings("unchecked")
+    private <A> A getRequestAttribute(String name) {
+
+        return (A)(m_request.getAttribute(name));
     }
 
 }

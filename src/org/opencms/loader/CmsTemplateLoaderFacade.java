@@ -42,6 +42,9 @@ import org.opencms.file.CmsResource;
  */
 public class CmsTemplateLoaderFacade {
 
+    /** The selected template context. */
+    private CmsTemplateContext m_context;
+
     /** The resource loader. */
     private I_CmsResourceLoader m_loader;
 
@@ -51,8 +54,8 @@ public class CmsTemplateLoaderFacade {
     /** The template file attached to the resource. */
     private CmsResource m_template;
 
-    /** The selected template context. */
-    private CmsTemplateContext m_context;
+    /** The template name. */
+    private String m_templateName = "";
 
     /**
      * Creates a new template loader facade.<p>
@@ -134,6 +137,16 @@ public class CmsTemplateLoaderFacade {
     }
 
     /**
+     * Gets the template name.<p>
+     * 
+     * @return the template name 
+     */
+    public String getTemplateName() {
+
+        return m_templateName;
+    }
+
+    /**
      * Sets the template context.<p>
      * 
      * @param context the template context 
@@ -141,7 +154,16 @@ public class CmsTemplateLoaderFacade {
     public void setTemplateContext(CmsTemplateContext context) {
 
         m_context = context;
+    }
 
+    /**
+     * Sets the template name.<p>
+     * 
+     * @param templateName the new template name 
+     */
+    public void setTemplateName(String templateName) {
+
+        m_templateName = templateName;
     }
 
 }

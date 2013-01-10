@@ -223,6 +223,10 @@ abstract class A_CmsXmlDocumentLoader implements I_CmsResourceLoader, I_CmsResou
             req,
             resource,
             getTemplatePropertyDefinition());
+        CmsTemplateContext context = loaderFacade.getTemplateContext();
+        req.setAttribute(CmsTemplateContextManager.ATTR_TEMPLATE_CONTEXT, context);
+        req.setAttribute(CmsTemplateContextManager.ATTR_TEMPLATE_NAME, loaderFacade.getTemplateName());
+        req.setAttribute(CmsTemplateContextManager.ATTR_TEMPLATE_RESOURCE, loaderFacade.getTemplate());
         loaderFacade.getLoader().load(cms, loaderFacade.getLoaderStartResource(), req, res);
     }
 

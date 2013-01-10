@@ -31,6 +31,7 @@ import org.opencms.ade.containerpage.Messages;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
+import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -56,17 +57,23 @@ import org.apache.commons.logging.Log;
  */
 public class CmsTemplateContextManager {
 
+    /** The request attribute in which the template context is stored. */
+    public static final String ATTR_TEMPLATE_CONTEXT = "templateContext";
+
+    /** Attribute name which contains the template name for non-dynamically selected templates. */
+    public static final String ATTR_TEMPLATE_NAME = "cmsTemplateName";
+
+    /** Attribute name for the template resource. */
+    public static final String ATTR_TEMPLATE_RESOURCE = "cmsTemplateResource";
+
+    /** The prefix used in the template property to activate dynamic template selection. */
+    public static final String DYNAMIC_TEMPLATE_PREFIX = "dynamic:";
+
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsTemplateContextManager.class);
 
     /** The CMS context. */
     private CmsObject m_cms;
-
-    /** The prefix used in the template property to activate dynamic template selection. */
-    public static final String DYNAMIC_TEMPLATE_PREFIX = "dynamic:";
-
-    /** The request attribute in which the template context is stored. */
-    public static final String ATTR_TEMPLATE_CONTEXT = "templateContext";
 
     /** A cache in which the template context provider instances are stored, with their class name as the key. */
     private Map<String, I_CmsTemplateContextProvider> m_providerInstances = new HashMap<String, I_CmsTemplateContextProvider>();
@@ -79,6 +86,9 @@ public class CmsTemplateContextManager {
     public CmsTemplateContextManager(CmsObject cms) {
 
         m_cms = cms;
+        CmsFlexController.registerUncacheableAttribute(ATTR_TEMPLATE_RESOURCE);
+        CmsFlexController.registerUncacheableAttribute(ATTR_TEMPLATE_CONTEXT);
+        CmsFlexController.registerUncacheableAttribute(ATTR_TEMPLATE_RESOURCE);
     }
 
     /**

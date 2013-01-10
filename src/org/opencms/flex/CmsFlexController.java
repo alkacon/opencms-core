@@ -33,8 +33,10 @@ import org.opencms.file.CmsResource;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsRequestUtil;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.servlet.ServletRequest;
@@ -56,6 +58,9 @@ public class CmsFlexController {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsFlexController.class);
+
+    /** Set of uncacheable attributes. */
+    private static Set<String> uncacheableAttributes = new HashSet<String>();
 
     /** The CmsFlexCache where the result will be cached in, required for the dispatcher. */
     private CmsFlexCache m_cache;
@@ -278,6 +283,16 @@ public class CmsFlexController {
                     req.getHeader(CmsRequestUtil.HEADER_IF_MODIFIED_SINCE)}));
         }
         return false;
+    }
+
+    /**
+     * Tells the flex controller to never cache the given attribute.<p>
+     * 
+     * @param attributeName the attribute which shouldn't be cached 
+     */
+    public static void registerUncacheableAttribute(String attributeName) {
+
+        uncacheableAttributes.add(attributeName);
     }
 
     /**
@@ -611,6 +626,9 @@ public class CmsFlexController {
      */
     public void removeUncacheableAttributes(Map<String, Object> attributeMap) {
 
+        for (String uncacheableAttribute : uncacheableAttributes) {
+            attributeMap.remove(uncacheableAttribute);
+        }
         attributeMap.remove(CmsFlexController.ATTRIBUTE_NAME);
         attributeMap.remove(CmsDetailPageResourceHandler.ATTR_DETAIL_CONTENT_RESOURCE);
     }
