@@ -128,7 +128,7 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
     protected TextBox m_textboxColorValue = new TextBox();
 
     /** THe counter to not set the buttons more then one time. */
-    int m_count = 0;
+    int m_count;
 
     /**
      * Text area widgets for ADE forms.<p>
