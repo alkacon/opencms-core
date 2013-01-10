@@ -142,17 +142,19 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
     public synchronized void initialize() {
 
         m_siteConfigurations.clear();
-        try {
-            List<CmsResource> configFileCandidates = m_cms.readResources(
-                "/",
-                CmsResourceFilter.DEFAULT.addRequireType(m_configType.getTypeId()));
-            for (CmsResource candidate : configFileCandidates) {
-                if (isSitemapConfiguration(candidate.getRootPath(), candidate.getTypeId())) {
-                    update(candidate);
+        if (m_cms.existsResource("/")) {
+            try {
+                List<CmsResource> configFileCandidates = m_cms.readResources(
+                    "/",
+                    CmsResourceFilter.DEFAULT.addRequireType(m_configType.getTypeId()));
+                for (CmsResource candidate : configFileCandidates) {
+                    if (isSitemapConfiguration(candidate.getRootPath(), candidate.getTypeId())) {
+                        update(candidate);
+                    }
                 }
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
             }
-        } catch (Exception e) {
-            LOG.error(e.getLocalizedMessage(), e);
         }
         refreshModuleConfiguration();
         try {
@@ -464,8 +466,12 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
     protected synchronized void refreshModuleConfiguration() {
 
         LOG.info("Refreshing module configuration.");
-        CmsConfigurationReader reader = new CmsConfigurationReader(m_cms);
-        m_moduleConfiguration = reader.readModuleConfigurations();
+        if (m_cms.existsResource("/")) {
+            CmsConfigurationReader reader = new CmsConfigurationReader(m_cms);
+            m_moduleConfiguration = reader.readModuleConfigurations();
+        } else {
+            m_moduleConfiguration = new CmsADEConfigData();
+        }
         m_moduleConfiguration.initialize(m_cms);
     }
 
