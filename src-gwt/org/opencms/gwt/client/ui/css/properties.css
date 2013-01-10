@@ -1,17 +1,9 @@
-.vfsModeSimplePropertiesBox {
-	border: solid 1px value("constants.css.borderColor");
-	background: value("constants.css.backgroundColorDialog");
-	
-	margin-top: 4px;
-	padding-left: 6px;
-	padding-top: 4px;
-}
-
-.navModePropertiesBox {
+.vfsModeSimplePropertiesBox, .navModePropertiesBox {
 	border: solid 1px value("constants.css.borderColor");
 	background: value("constants.css.backgroundColorDialog");
 	margin-top: 4px;
 	padding-left: 6px;
+	padding-right: 6px;
 	padding-top: 4px;
 }
 
