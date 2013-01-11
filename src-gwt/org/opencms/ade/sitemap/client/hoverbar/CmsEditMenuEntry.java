@@ -38,6 +38,7 @@ import org.opencms.gwt.client.property.A_CmsPropertyEditor;
 import org.opencms.gwt.client.property.CmsPropertySubmitHandler;
 import org.opencms.gwt.client.property.CmsVfsModePropertyEditor;
 import org.opencms.gwt.client.property.I_CmsPropertyEditorHandler;
+import org.opencms.gwt.client.property.definition.CmsPropertyDefinitionButton;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.input.form.CmsDialogFormHandler;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
@@ -102,7 +103,20 @@ public class CmsEditMenuEntry extends A_CmsSitemapMenuEntry {
                 handler.setPageInfo(result);
                 A_CmsPropertyEditor editor = createEntryEditor(handler);
                 editor.setPropertyNames(CmsSitemapView.getInstance().getController().getData().getAllPropertyNames());
-                CmsFormDialog dialog = new CmsFormDialog(handler.getDialogTitle(), editor.getForm());
+                final CmsFormDialog dialog = new CmsFormDialog(handler.getDialogTitle(), editor.getForm());
+                CmsPropertyDefinitionButton defButton = new CmsPropertyDefinitionButton() {
+
+                    /**
+                     * @see org.opencms.gwt.client.property.definition.CmsPropertyDefinitionButton#onBeforeEditPropertyDefinition()
+                     */
+                    @Override
+                    public void onBeforeEditPropertyDefinition() {
+
+                        dialog.hide();
+                    }
+
+                };
+                defButton.installOnDialog(dialog);
                 CmsDialogFormHandler formHandler = new CmsDialogFormHandler();
                 formHandler.setDialog(dialog);
                 I_CmsFormSubmitHandler submitHandler = new CmsPropertySubmitHandler(handler);

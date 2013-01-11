@@ -33,24 +33,18 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.property.CmsPropertySubmitHandler;
 import org.opencms.gwt.client.property.CmsSimplePropertyEditorHandler;
 import org.opencms.gwt.client.property.CmsVfsModePropertyEditor;
+import org.opencms.gwt.client.property.definition.CmsPropertyDefinitionButton;
 import org.opencms.gwt.client.property.definition.CmsPropertyDefinitionDialog;
-import org.opencms.gwt.client.property.definition.CmsPropertyDefinitionMessages;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
-import org.opencms.gwt.client.ui.CmsPushButton;
-import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.form.CmsDialogFormHandler;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler;
-import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.property.CmsPropertiesBean;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.Timer;
@@ -87,11 +81,11 @@ public class CmsPropertiesEntryPoint extends A_CmsEntryPoint {
         }
     }
 
-    /** Flag which indicates that the property definition dialog needs to be opened. */
-    protected boolean m_needsPropertyDefinitionDialog;
-
     /** The link to open after editing the properties / property definition is finished. */
     protected String m_closeLink;
+
+    /** Flag which indicates that the property definition dialog needs to be opened. */
+    protected boolean m_needsPropertyDefinitionDialog;
 
     /**
      * @see org.opencms.gwt.client.A_CmsEntryPoint#onModuleLoad()
@@ -132,25 +126,25 @@ public class CmsPropertiesEntryPoint extends A_CmsEntryPoint {
                 editor.setShowResourceProperties(!handler.isFolder());
                 stop(false);
                 final CmsFormDialog dialog = new CmsFormDialog(handler.getDialogTitle(), editor.getForm());
+                CmsPropertyDefinitionButton button = new CmsPropertyDefinitionButton() {
 
-                CmsCoreData.UserInfo userInfo = CmsCoreProvider.get().getUserInfo();
-                if (userInfo.isDeveloper()) {
-                    String style = I_CmsLayoutBundle.INSTANCE.propertiesCss().propertyDefinitionButton();
-                    CmsPushButton button = new CmsPushButton(style);
-                    button.setTitle(CmsPropertyDefinitionMessages.messageDialogCaption());
-                    button.setButtonStyle(ButtonStyle.TRANSPARENT, null);
-                    button.getElement().getStyle().setFloat(Style.Float.LEFT);
-                    dialog.addButton(button);
-                    button.addClickHandler(new ClickHandler() {
+                    /**
+                     * @see org.opencms.gwt.client.property.definition.CmsPropertyDefinitionButton#onBeforeEditPropertyDefinition()
+                     */
+                    @Override
+                    public void onBeforeEditPropertyDefinition() {
 
-                        public void onClick(ClickEvent event) {
+                        m_needsPropertyDefinitionDialog = true;
+                        dialog.hide();
+                    }
 
-                            m_needsPropertyDefinitionDialog = true;
-                            dialog.hide();
-                            editPropertyDefinition();
-                        }
-                    });
-                }
+                    @Override
+                    public void onClosePropertyDefinitionDialog() {
+
+                        closeDelayed();
+                    }
+                };
+                button.installOnDialog(dialog);
                 CmsDialogFormHandler formHandler = new CmsDialogFormHandler();
                 formHandler.setDialog(dialog);
                 I_CmsFormSubmitHandler submitHandler = new CmsPropertySubmitHandler(handler);
@@ -227,7 +221,7 @@ public class CmsPropertiesEntryPoint extends A_CmsEntryPoint {
     /**
      * Returns to the close link after a short delay.<p>
      */
-    private void closeDelayed() {
+    void closeDelayed() {
 
         Timer timer = new Timer() {
 
