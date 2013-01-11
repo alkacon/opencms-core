@@ -61,30 +61,33 @@ public class CmsPropertyDefinitionView extends Composite {
         // empty
     }
 
-    /** The OK button. */
-    @UiField
-    CmsPushButton m_okButton;
+    /** The max allowed property name length. */
+    private static final int MAX_PROPERTY_NAME_LENGTH = 128;
 
-    /** The input field for the property name. */
-    @UiField
-    CmsTextBox m_propertyNameField;
-
-    /** The panel displaying the existing properties.<p> */
-    @UiField
-    Panel m_existingProperties;
+    /** The UiBinder instance for this widget. */
+    private static I_CmsPropertyDefinitionViewUiBinder uiBinder = GWT.create(I_CmsPropertyDefinitionViewUiBinder.class);
 
     /** The Cancel button. */
     @UiField
     CmsPushButton m_cancelButton;
 
-    /** The popup containing this widget. */
-    CmsPopup m_popup;
+    /** The panel displaying the existing properties.<p> */
+    @UiField
+    Panel m_existingProperties;
 
     /** The set of existing properties. */
     Set<String> m_existingPropertyNames = new HashSet<String>();
 
-    /** The UiBinder instance for this widget. */
-    private static I_CmsPropertyDefinitionViewUiBinder uiBinder = GWT.create(I_CmsPropertyDefinitionViewUiBinder.class);
+    /** The OK button. */
+    @UiField
+    CmsPushButton m_okButton;
+
+    /** The popup containing this widget. */
+    CmsPopup m_popup;
+
+    /** The input field for the property name. */
+    @UiField
+    CmsTextBox m_propertyNameField;
 
     /**
      * Creates a new instance.<p>
@@ -109,6 +112,7 @@ public class CmsPropertyDefinitionView extends Composite {
                 }
             }
         });
+        m_propertyNameField.getTextBox().setMaxLength(MAX_PROPERTY_NAME_LENGTH);
     }
 
     /**
