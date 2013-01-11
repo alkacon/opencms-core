@@ -404,7 +404,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
      */
     public Object getFormValue() {
 
-        if (m_textbox.getText().equals(null)) {
+        if (m_textbox.getText() == null) {
             return "";
         }
         return m_textbox.getText();
@@ -629,6 +629,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
         if (newValue == null) {
             newValue = "";
         }
+
         if ("".equals(newValue) && (m_ghostValue != null)) {
             setGhostMode(true);
             setGhostStyleEnabled(true, true);
@@ -636,8 +637,12 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
         } else {
             setGhostMode(false);
             setGhostStyleEnabled(false, true);
-            setFormValue(newValue);
+            // don't set the value if it matches the old one
+            if (!newValue.equals(getFormValueAsString())) {
+                setFormValue(newValue);
+            }
         }
+
     }
 
     /**
