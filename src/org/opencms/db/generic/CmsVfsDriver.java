@@ -1368,24 +1368,26 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet res = null;
-        try {
-            conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, dbc.currentProject(), "C_REWRITE_ALIAS_INSERT_5");
-            for (CmsRewriteAlias alias : rewriteAliases) {
-                stmt.setString(1, alias.getId().toString());
-                stmt.setString(2, alias.getSiteRoot());
-                stmt.setString(3, alias.getPatternString());
-                stmt.setString(4, alias.getReplacementString());
-                stmt.setInt(5, alias.getMode().toInt());
-                stmt.addBatch();
+        if (!rewriteAliases.isEmpty()) {
+            try {
+                conn = m_sqlManager.getConnection(dbc);
+                stmt = m_sqlManager.getPreparedStatement(conn, dbc.currentProject(), "C_REWRITE_ALIAS_INSERT_5");
+                for (CmsRewriteAlias alias : rewriteAliases) {
+                    stmt.setString(1, alias.getId().toString());
+                    stmt.setString(2, alias.getSiteRoot());
+                    stmt.setString(3, alias.getPatternString());
+                    stmt.setString(4, alias.getReplacementString());
+                    stmt.setInt(5, alias.getMode().toInt());
+                    stmt.addBatch();
+                }
+                stmt.executeBatch();
+            } catch (SQLException e) {
+                throw new CmsDbSqlException(Messages.get().container(
+                    Messages.ERR_GENERIC_SQL_1,
+                    CmsDbSqlException.getErrorQuery(stmt)), e);
+            } finally {
+                m_sqlManager.closeAll(dbc, conn, stmt, res);
             }
-            stmt.executeBatch();
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
     }
 
