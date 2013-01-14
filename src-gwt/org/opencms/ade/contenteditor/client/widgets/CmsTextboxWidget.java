@@ -43,8 +43,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -153,9 +153,9 @@ public class CmsTextboxWidget extends Composite implements I_EditWidget {
         // Initialization code
         if (!m_valueChangeHandlerInitialized) {
             m_valueChangeHandlerInitialized = true;
-            addDomHandler(new KeyPressHandler() {
+            addDomHandler(new KeyUpHandler() {
 
-                public void onKeyPress(KeyPressEvent event) {
+                public void onKeyUp(KeyUpEvent event) {
 
                     // schedule the change event, so the key press can take effect
                     Scheduler.get().scheduleDeferred(new ScheduledCommand() {
@@ -166,7 +166,7 @@ public class CmsTextboxWidget extends Composite implements I_EditWidget {
                         }
                     });
                 }
-            }, KeyPressEvent.getType());
+            }, KeyUpEvent.getType());
             addDomHandler(new BlurHandler() {
 
                 public void onBlur(BlurEvent event) {
