@@ -861,6 +861,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         List<CmsResource> ancestors = new ArrayList<CmsResource>();
         CmsResource currentResource = resource;
         String siteRoot = OpenCms.getSiteManager().getSiteRoot(resource.getRootPath());
+        if (CmsStringUtil.isEmpty(siteRoot)) {
+            return false;
+        }
         while (true) {
             CmsResource parent = cms.readParentFolder(currentResource.getStructureId());
             if ((parent == null) || !cms.existsResource(parent.getStructureId(), filter)) {
