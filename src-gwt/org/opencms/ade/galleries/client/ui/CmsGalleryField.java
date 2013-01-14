@@ -564,7 +564,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
      * 
      * @param path the resource path
      */
-    void updateResourceInfo(String path) {
+    void updateResourceInfo(final String path) {
 
         m_resourceInfoPanel.clear();
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(path)) {
@@ -573,17 +573,6 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
                 removeStyleName(I_CmsLayoutBundle.INSTANCE.galleryFieldCss().hasImage());
             }
         } else {
-            if (!path.matches("(/.*)")) {
-                if (!path.startsWith("http")) {
-                    path = "/" + path;
-                }
-            }
-            if (!path.matches("(.*/)")) {
-                if (!path.startsWith("http")) {
-                    path = path + "/";
-                }
-            }
-            final String xPath = path;
             m_resourceInfoPanel.getElement().getStyle().clearDisplay();
             if (m_hasImage) {
                 addStyleName(I_CmsLayoutBundle.INSTANCE.galleryFieldCss().hasImage());
@@ -593,7 +582,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
                 @Override
                 public void execute() {
 
-                    getGalleryService().getInfoForResource(xPath, "en", this);
+                    getGalleryService().getInfoForResource(path, CmsCoreProvider.get().getWpLocale(), this);
                 }
 
                 @Override

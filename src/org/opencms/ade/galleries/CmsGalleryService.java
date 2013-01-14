@@ -295,6 +295,10 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 String siteRoot = OpenCms.getSiteManager().getSiteRoot(linkPath);
                 String oldSite = cms.getRequestContext().getSiteRoot();
                 try {
+                    //                    if ((siteRoot == null) && !cms.existsResource(path)) {
+                    //                        // if no site root was found and the resource does not exist in the current site, assume the root site
+                    //                        siteRoot = "/";
+                    //                    }
                     if (siteRoot != null) {
                         // only switch the site if needed
                         cms.getRequestContext().setSiteRoot(siteRoot);
@@ -322,20 +326,20 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 }
                 notFound = notFound || (path == null);
                 if (!notFound) {
-                    if (CmsResource.isFolder(path)) {
-                        CmsObject rootCms = OpenCms.initCmsObject(cms);
-                        rootCms.getRequestContext().setSiteRoot("");
-                        try {
-                            CmsResource folder = rootCms.readResource(path);
+                    CmsObject rootCms = OpenCms.initCmsObject(cms);
+                    rootCms.getRequestContext().setSiteRoot("");
+                    try {
+                        CmsResource selectedResource = rootCms.readResource(path);
+                        if (selectedResource.isFolder()) {
                             result = new CmsResultItemBean();
                             CmsJspNavElement folderNav = new CmsJspNavBuilder(rootCms).getNavigationForResource(
-                                folder.getRootPath(),
+                                selectedResource.getRootPath(),
                                 CmsResourceFilter.IGNORE_EXPIRATION);
                             CmsResource defaultFileResource = null;
                             if (folderNav.isInNavigation() && !folderNav.isNavigationLevel()) {
                                 try {
                                     defaultFileResource = rootCms.readDefaultFile(
-                                        folder,
+                                        selectedResource,
                                         CmsResourceFilter.ONLY_VISIBLE);
                                 } catch (Exception e) {
                                     log(e.getMessage(), e);
@@ -344,7 +348,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                             if (defaultFileResource != null) {
                                 result.setType(OpenCms.getResourceManager().getResourceType(defaultFileResource).getTypeName());
                             } else {
-                                result.setType(OpenCms.getResourceManager().getResourceType(folder).getTypeName());
+                                result.setType(OpenCms.getResourceManager().getResourceType(selectedResource).getTypeName());
                             }
                             String title = folderNav.getProperty(CmsPropertyDefinition.PROPERTY_NAVTEXT);
                             if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
@@ -357,32 +361,35 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                             }
                             result.setTitle(title);
                             try {
-                                String userName = cms.readUser(folder.getUserLastModified()).getFullName();
+                                String userName = cms.readUser(selectedResource.getUserLastModified()).getFullName();
                                 result.setUserLastModified(userName);
                             } catch (CmsException e) {
                                 log(e.getMessage(), e);
                             }
-                            Date date = new Date(folder.getDateLastModified());
+                            Date date = new Date(selectedResource.getDateLastModified());
                             String formattedDate = CmsDateUtil.getDateTime(
                                 date,
                                 DateFormat.MEDIUM,
                                 getWorkplaceLocale());
                             result.setDateLastModified(formattedDate);
 
-                        } catch (CmsException ex) {
-                            notFound = true;
+                        } else {
+                            CmsGallerySearchResult resultItem = null;
+                            try {
+                                resultItem = CmsGallerySearch.searchByPath(
+                                    cms,
+                                    path,
+                                    CmsLocaleManager.getLocale(locale));
+                            } catch (CmsVfsResourceNotFoundException ex) {
+                                // ignore
+                            }
+                            notFound = resultItem == null;
+                            if (!notFound) {
+                                result = buildSingleSearchResultItem(getCmsObject(), resultItem, null);
+                            }
                         }
-                    } else {
-                        CmsGallerySearchResult resultItem = null;
-                        try {
-                            resultItem = CmsGallerySearch.searchByPath(cms, path, CmsLocaleManager.getLocale(locale));
-                        } catch (CmsVfsResourceNotFoundException ex) {
-                            // ignore
-                        }
-                        notFound = resultItem == null;
-                        if (!notFound) {
-                            result = buildSingleSearchResultItem(getCmsObject(), resultItem, null);
-                        }
+                    } catch (CmsException ex) {
+                        notFound = true;
                     }
                 }
                 if (notFound) {
