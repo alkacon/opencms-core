@@ -471,6 +471,10 @@ public final class CmsRequestContext {
             && ((resourcename.length() == siteRoot.length()) || (resourcename.charAt(siteRoot.length()) == '/'))) {
             resourcename = resourcename.substring(siteRoot.length());
         }
+        if (resourcename.length() == 0) {
+            // input was a site root folder without trailing slash
+            resourcename = "/";
+        }
         return resourcename;
     }
 
