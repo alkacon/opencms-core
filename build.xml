@@ -5,6 +5,7 @@
 	<property file="${basedir}/build-default.properties" /> 
 	<property name="version.number" value="8.5.0.8" />
 	<property name="java.target.version" value="1.5" />
+	<property name="version.usecommitid" value="false" />
 
 	<property name="app.name" value="opencms" />
 	<property name="src.all.comps" value="lib,modules,src-components,src-gwt,src-modules,src-setup,test,webapp" />
@@ -102,17 +103,20 @@
 		<if>
 			<isset property="env.GIT_COMMIT" />
 			<then>
-				<echo message="Git commit id available: ${env.GIT_COMMIT}." />
-				<propertyregex property="revisionshort" input="${env.GIT_COMMIT}" regexp="^(........)" select="\1" casesensitive="false" />
-				<echo message="Shortened id: ${revisionshort}." />
-				<property name="version.revision" value="${version.number}.${revisionshort}" />
+				<if>
+					<istrue value="${version.usecommitid}" />
+					<then>
+						<echo message="Git commit id available: ${env.GIT_COMMIT}." />
+						<propertyregex property="revisionshort" input="${env.GIT_COMMIT}" regexp="^(........)" select="\1" casesensitive="false" />
+						<echo message="Shortened id: ${revisionshort}." />
+						<property name="version.revision" value="${version.number}.${revisionshort}" />
+					</then>
+				</if>
 			</then>
-			<else>
-				<echo message="Git commit id not available." />
-				<property name="version.revision" value="${version.number}" />
-			</else>
 		</if>
-
+		<!-- In case version.revision has not been set we set it now,
+			 as ant properties are immutable we are not going to override any previous setting.  -->
+		<property name="version.revision" value="${version.number}" />
 		<echo message="Building OpenCms ${version.revision}" />
 		<echo message=" " />
 		<echo message="OpenCms input directory is: ${opencms.input}" />
