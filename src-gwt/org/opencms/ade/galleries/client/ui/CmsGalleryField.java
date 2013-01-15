@@ -181,7 +181,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     protected CmsSimpleTextBox m_textbox;
 
     /** The gallery configuration. */
-    private I_CmsGalleryConfiguration m_configuration;
+    I_CmsGalleryConfiguration m_configuration;
 
     /** The gallery service instance. */
     private I_CmsGalleryServiceAsync m_gallerySvc;
@@ -582,7 +582,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
                 @Override
                 public void execute() {
 
-                    getGalleryService().getInfoForResource(path, CmsCoreProvider.get().getWpLocale(), this);
+                    getGalleryService().getInfoForResource(path, m_configuration.getLocale(), this);
                 }
 
                 @Override
