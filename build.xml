@@ -102,9 +102,11 @@
 		<if>
 			<isset property="env.GIT_COMMIT" />
 			<then>
+				<echo message="Git commit id available: ${env.GIT_COMMIT}." />
 				<property name="version.revision" value="${version.number}.${env.GIT_COMMIT}" />
 			</then>
 			<else>
+				<echo message="Git commit id not available." />
 				<property name="version.revision" value="${version.number}" />
 			</else>
 		</if>
