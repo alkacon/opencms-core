@@ -99,13 +99,17 @@
 		<condition property="tomcat.home" value="${env.CATALINA_HOME}">
 			<available file="${env.CATALINA_HOME}" type="dir" />
 		</condition>
+		<if>
+			<isset property="repositoryrevision" />
+			<then>
+				<property name="version.revision" value="${version.number}.${repositoryrevision}" />
+			</then>
+			<else>
+				<property name="version.revision" value="${version.number}" />
+			</else>
+		</if>
 
-		<tstamp>
-			<format property="timestamp" pattern="yyyy.MM.dd-HH.mm" />
-		</tstamp>
-		<property name="version.number" value="${env.USERNAME}_${timestamp}" />
-
-		<echo message="Building OpenCms ${version.number}" />
+		<echo message="Building OpenCms ${version.revision}" />
 		<echo message=" " />
 		<echo message="OpenCms input directory is: ${opencms.input}" />
 		<echo message="OpenCms output directory is: ${opencms.output}" />
@@ -227,20 +231,20 @@
 
 		<copy file="${opencms.input.warfiles}/WEB-INF/setupdata/version.properties" tofile="${opencms.output.classes}/org/opencms/main/version.properties" overwrite="true">
 			<filterset>
-				<filter token="OPENCMS_VERSION_NUMBER" value="${version.number}" />
+				<filter token="OPENCMS_VERSION_NUMBER" value="${version.revision}" />
 				<filter token="OPENCMS_VERSION_NAME" value="${version.name}" />
 			</filterset>
 		</copy>
 
 		<copy file="${opencms.input.warfiles}/setup/versions.txt" tofile="${opencms.output.classes}/versions.txt" overwrite="true">
 			<filterset>
-				<filter token="OPENCMS_VERSION" value="OpenCms ${version.number}" />
+				<filter token="OPENCMS_VERSION" value="OpenCms ${version.revision}" />
 			</filterset>
 		</copy>
 
 		<copy file="${opencms.input.warfiles}/setup/license.html" tofile="${opencms.output.classes}/license.html" overwrite="true">
 			<filterset>
-				<filter token="OPENCMS_VERSION_NUMBER" value="${version.number}" />
+				<filter token="OPENCMS_VERSION_NUMBER" value="${version.revision}" />
 				<filter token="OPENCMS_VERSION_NAME" value="${version.name}" />
 			</filterset>
 		</copy>
@@ -311,7 +315,7 @@
 			<property name="modules.common.selection" value="${modules.var}" />
 		</ant>
 
-		<delete failonerror="no" file="${opencms.output.distfiles}/opencms_upgrade_to_${version.number}.zip" />
+		<delete failonerror="no" file="${opencms.output.distfiles}/opencms_upgrade_to_${version.revision}.zip" />
 		<for list="${updater.jars.remove}" param="jarfile" delimiter="," trim="yes">
 			<sequential>
 				<copy file="${opencms.input.warfiles}/update/empty.jar" tofile="${opencms.output}/build/jars-core/@{jarfile}" />
@@ -367,9 +371,9 @@
 				</if>
 			</sequential>
 		</for>
-		<delete file="${opencms.output.distfiles}/opencms_upgrade_to_${version.number}.zip" failonerror="false" />
+		<delete file="${opencms.output.distfiles}/opencms_upgrade_to_${version.revision}.zip" failonerror="false" />
 		
-		<zip zipfile="${opencms.output.distfiles}/opencms_upgrade_to_${version.number}.zip" update="true">
+		<zip zipfile="${opencms.output.distfiles}/opencms_upgrade_to_${version.revision}.zip" update="true">
 			<zipfileset dir="${opencms.input.webinf}" prefix="WEB-INF" includes="${updater.webinf.files}" />
 			<zipfileset dir="${opencms.input.webinf}/wsdl" prefix="WEB-INF/wsdl" includes="*" />
 			<zipfileset dir="${opencms.input.webinf}/config/languageProfiles" prefix="WEB-INF/config/languageProfiles" includes="*" />
@@ -507,7 +511,7 @@
 		<!-- build distro -->
 		<mkdir dir="${opencms.output.distfiles}" />
 
-		<zip destfile="${opencms.output.distfiles}/opencms_${version.number}.zip">
+		<zip destfile="${opencms.output.distfiles}/opencms_${version.revision}.zip">
 			<zipfileset dir="${opencms.output}/build" includes="${app.name}.war" />
 			<zipfileset dir="${opencms.input}" includes="install.html,license.txt,history.txt" />
 		</zip>
@@ -525,8 +529,8 @@
 
 		<mkdir dir="${opencms.output.distfiles}" />
 
-		<delete file="${opencms.output.distfiles}/${app.name}_${version.number}_src.zip" failonerror="no" />
-		<zip destfile="${opencms.output.distfiles}/${app.name}_${version.number}_src.zip">
+		<delete file="${opencms.output.distfiles}/${app.name}_${version.revision}_src.zip" failonerror="no" />
+		<zip destfile="${opencms.output.distfiles}/${app.name}_${version.revision}_src.zip">
 			<zipfileset dir="${opencms.input}/src" excludes="${excludes}" prefix="src" />
 			<zipfileset dir="${opencms.input}" includes="build.xml,install.html,license.txt,history.txt" />
 		</zip>
@@ -538,7 +542,7 @@
 			<then>
 				<for list="${src.comps}" param="comp" trim="yes">
 					<sequential>
-						<zip destfile="${opencms.output.distfiles}/${app.name}_${version.number}_src.zip" update="true" whenempty="fail">
+						<zip destfile="${opencms.output.distfiles}/${app.name}_${version.revision}_src.zip" update="true" whenempty="fail">
 							<zipfileset dir="${opencms.input}/@{comp}" excludes="${excludes}" prefix="@{comp}" />
 						</zip>
 					</sequential>
