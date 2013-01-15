@@ -100,9 +100,9 @@
 			<available file="${env.CATALINA_HOME}" type="dir" />
 		</condition>
 		<if>
-			<isset property="repositoryrevision" />
+			<isset property="env.GIT_REVISION" />
 			<then>
-				<property name="version.revision" value="${version.number}.${repositoryrevision}" />
+				<property name="version.revision" value="${version.number}.${env.GIT_REVISION}" />
 			</then>
 			<else>
 				<property name="version.revision" value="${version.number}" />
