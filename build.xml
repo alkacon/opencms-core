@@ -103,7 +103,9 @@
 			<isset property="env.GIT_COMMIT" />
 			<then>
 				<echo message="Git commit id available: ${env.GIT_COMMIT}." />
-				<property name="version.revision" value="${version.number}.${env.GIT_COMMIT}" />
+				<propertyregex property="revisionshort" input="${env.GIT_COMMIT}" regexp="^(........)" select="\1" casesensitive="false" />
+				<echo message="Shortened id: ${revisionshort}." />
+				<property name="version.revision" value="${version.number}.${revisionshort}" />
 			</then>
 			<else>
 				<echo message="Git commit id not available." />
