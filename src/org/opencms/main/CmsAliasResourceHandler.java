@@ -74,10 +74,8 @@ public class CmsAliasResourceHandler implements I_CmsResourceInit {
     public CmsResource initResource(CmsResource resource, CmsObject cms, HttpServletRequest req, HttpServletResponse res)
     throws CmsResourceInitException, CmsSecurityException {
 
-        // check if the resource was already found
-        boolean abort = (resource != null);
-        // check if the resource comes from the /system/ folder
-        abort |= cms.getRequestContext().getUri().startsWith(CmsWorkplace.VFS_PATH_SYSTEM);
+        // check if the resource was already found or the path starts with '/system/'
+        boolean abort = (resource != null) || cms.getRequestContext().getUri().startsWith(CmsWorkplace.VFS_PATH_SYSTEM);
         if (abort) {
             // skip in all cases above
             return resource;
