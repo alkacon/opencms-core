@@ -292,7 +292,7 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
     }
 
     /**
-     * Helper method to retrieve the parent folder type.<p>
+     * Helper method to retrieve the parent folder type or <code>null</code> if none available.<p>
      * 
      * @param rootPath the path of a resource 
      * @return the parent folder content type 
@@ -305,9 +305,7 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
             return null;
         }
         String type = m_folderTypes.get(parent);
-        if (type == null) {
-            return null;
-        }
+        // type may be null
         return type;
     }
 
