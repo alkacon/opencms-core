@@ -90,16 +90,7 @@
 	<!-- 
 	  -	Checks if all required libraries are available
 	  -->
-	<target name="init">
-		<!-- this is a comment -->
-
-		<condition property="tomcat.home" value="${env.TOMCAT_HOME}">
-			<available file="${env.TOMCAT_HOME}" type="dir" />
-		</condition>
-
-		<condition property="tomcat.home" value="${env.CATALINA_HOME}">
-			<available file="${env.CATALINA_HOME}" type="dir" />
-		</condition>
+	<target name="initrevision">
 		<if>
 			<isset property="env.GIT_COMMIT" />
 			<then>
@@ -114,6 +105,19 @@
 				</if>
 			</then>
 		</if>
+	</target>
+	
+	<target name="init" depends="initrevision">
+		<!-- this is a comment -->
+
+		<condition property="tomcat.home" value="${env.TOMCAT_HOME}">
+			<available file="${env.TOMCAT_HOME}" type="dir" />
+		</condition>
+
+		<condition property="tomcat.home" value="${env.CATALINA_HOME}">
+			<available file="${env.CATALINA_HOME}" type="dir" />
+		</condition>
+		
 		<!-- In case version.revision has not been set we set it now,
 			 as ant properties are immutable we are not going to override any previous setting.  -->
 		<property name="version.revision" value="${version.number}" />
@@ -127,7 +131,7 @@
 		<echo message="Tomcat home is: ${tomcat.home}" />
 	</target>
 
-	<target name="initmodulenames">
+	<target name="initmodulenames" depends="initrevision">
 		<property file="${opencms.input}/modules/all-modules.properties" />
 		<var name="modules.common.collect" value="${modules.common.all}" />
 		<if>
@@ -526,7 +530,7 @@
 
 	</target>
 
-	<target name="srcdist" description="Creates a source distribution ZIP">
+	<target name="srcdist" depends="initrevision" description="Creates a source distribution ZIP">
 
 		<echo message="Building OpenCms ${app.name} source distribution " />
 		<echo message=" " />
