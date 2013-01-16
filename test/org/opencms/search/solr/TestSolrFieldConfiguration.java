@@ -184,6 +184,9 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         // MAPPING TEST // 
         //////////////////
 
+        fieldValue = res.getField("Description_de");
+        assertEquals(fieldValue, "My Special OpenCms Solr Description");
+
         // test the 'content' mapping
         fieldValue = res.getField("ateaser_en");
         assertEquals(true, fieldValue.contains("OpenCms Alkacon This is the article 1 text"));

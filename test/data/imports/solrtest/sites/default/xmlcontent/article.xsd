@@ -14,6 +14,7 @@
 	<xsd:complexType name="OpenCmsArticle">
 		<xsd:sequence>
 			<xsd:element name="Title" type="OpenCmsString" />
+			<xsd:element name="Description" type="OpenCmsString" />
 			<xsd:element name="Teaser" type="OpenCmsString" maxOccurs="5"/>
 			<xsd:element name="Text" type="OpenCmsHtml" />
 			<xsd:element name="Release" type="OpenCmsDateTime" />			
@@ -43,6 +44,9 @@
 						<mapping type="property">Author</mapping>
 						<mapping type="item">Title</mapping>
 					</solrfield>
+				</searchsetting>
+				<searchsetting element="Description" searchcontent="false">
+					<solrfield targetfield="Description" />
 				</searchsetting>
 				<searchsetting element="Teaser">
 					<solrfield targetfield="ateaser">
