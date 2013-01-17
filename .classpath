@@ -93,7 +93,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/runtime/stringtemplate-3.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/tika-core-1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/tika-parsers-1.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/runtime/wrapper.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/wstx-asl-3.2.7.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/xercesImpl-2.11-0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/xml-apis-2.11-0.jar"/>
