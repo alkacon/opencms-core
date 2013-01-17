@@ -57,6 +57,9 @@ import org.apache.commons.logging.Log;
  */
 public class CmsTemplateContextManager {
 
+    /** A bean containing information about the selected template. */
+    public static final String ATTR_TEMPLATE_BEAN = "ATTR_TEMPLATE_BEAN";
+
     /** The request attribute in which the template context is stored. */
     public static final String ATTR_TEMPLATE_CONTEXT = "templateContext";
 

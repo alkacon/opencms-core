@@ -31,6 +31,7 @@ import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.jsp.util.CmsJspStandardContextBean.TemplateBean;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -225,8 +226,10 @@ abstract class A_CmsXmlDocumentLoader implements I_CmsResourceLoader, I_CmsResou
             getTemplatePropertyDefinition());
         CmsTemplateContext context = loaderFacade.getTemplateContext();
         req.setAttribute(CmsTemplateContextManager.ATTR_TEMPLATE_CONTEXT, context);
-        req.setAttribute(CmsTemplateContextManager.ATTR_TEMPLATE_NAME, loaderFacade.getTemplateName());
-        req.setAttribute(CmsTemplateContextManager.ATTR_TEMPLATE_RESOURCE, loaderFacade.getTemplate());
+        TemplateBean templateBean = new TemplateBean(context != null
+        ? context.getKey()
+        : loaderFacade.getTemplateName(), loaderFacade.getTemplate());
+        req.setAttribute(CmsTemplateContextManager.ATTR_TEMPLATE_BEAN, templateBean);
         loaderFacade.getLoader().load(cms, loaderFacade.getLoaderStartResource(), req, res);
     }
 

@@ -61,7 +61,9 @@ import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsModelResourceInfo;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.jsp.util.CmsJspStandardContextBean.TemplateBean;
 import org.opencms.loader.CmsLoaderException;
+import org.opencms.loader.CmsTemplateContextManager;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
@@ -555,8 +557,10 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         HttpServletRequest request = getRequest();
         try {
             CmsTemplateContextInfo info = OpenCms.getTemplateContextManager().getContextInfoBean(cms, request);
-
             CmsResource containerPage = getContainerpage(cms);
+            TemplateBean templateBean = (TemplateBean)getRequest().getAttribute(
+                CmsTemplateContextManager.ATTR_TEMPLATE_BEAN);
+            CmsADESessionCache.getCache(getRequest(), cms).setTemplateBean(containerPage.getRootPath(), templateBean);
             long lastModified = containerPage.getDateLastModified();
             String cntPageUri = cms.getSitePath(containerPage);
             String editorUri = OpenCms.getWorkplaceManager().getEditorHandler().getEditorUri(
@@ -1283,12 +1287,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     private CmsADESessionCache getSessionCache() {
 
         if (m_sessionCache == null) {
-            m_sessionCache = (CmsADESessionCache)getRequest().getSession().getAttribute(
-                CmsADESessionCache.SESSION_ATTR_ADE_CACHE);
-            if (m_sessionCache == null) {
-                m_sessionCache = new CmsADESessionCache(getCmsObject());
-                getRequest().getSession().setAttribute(CmsADESessionCache.SESSION_ATTR_ADE_CACHE, m_sessionCache);
-            }
+            m_sessionCache = CmsADESessionCache.getCache(getRequest(), getCmsObject());
         }
         return m_sessionCache;
     }

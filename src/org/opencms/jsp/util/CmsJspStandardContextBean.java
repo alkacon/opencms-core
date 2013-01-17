@@ -39,7 +39,6 @@ import org.opencms.flex.CmsFlexController;
 import org.opencms.flex.CmsFlexRequest;
 import org.opencms.jsp.CmsJspBean;
 import org.opencms.jsp.Messages;
-import org.opencms.loader.CmsTemplateContext;
 import org.opencms.loader.CmsTemplateContextManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -84,19 +83,34 @@ public final class CmsJspStandardContextBean {
         /** The template name. */
         private String m_name;
 
-        /** The template uri. */
+        /** The template resource. */
+        private CmsResource m_resource;
+
+        /** The template uri, if no resource is set. */
         private String m_uri;
 
         /**
          * Creates a new instance.<p>
          * 
          * @param name the template name 
+         * @param resource the template resource 
+         */
+        public TemplateBean(String name, CmsResource resource) {
+
+            m_resource = resource;
+            m_name = name;
+        }
+
+        /**
+         * Creates a new instance with an URI instead of a resoure.<p>
+         * 
+         * @param name the template name 
          * @param uri the template uri 
          */
         public TemplateBean(String name, String uri) {
 
-            m_uri = uri;
             m_name = name;
+            m_uri = uri;
         }
 
         /**
@@ -110,13 +124,27 @@ public final class CmsJspStandardContextBean {
         }
 
         /**
+         * Gets the template resource.<p>
+         * 
+         * @return the template resource 
+         */
+        public CmsResource getResource() {
+
+            return m_resource;
+        }
+
+        /**
          * Gets the template uri.<p>
          * 
          * @return the template URI.
          */
         public String getUri() {
 
-            return m_uri;
+            if (m_resource != null) {
+                return m_resource.getRootPath();
+            } else {
+                return m_uri;
+            }
         }
 
     }
@@ -490,16 +518,11 @@ public final class CmsJspStandardContextBean {
      */
     public TemplateBean getTemplate() {
 
-        String templateName = null;
-        String templateUri = null;
-        CmsTemplateContext templateContext = getRequestAttribute(CmsTemplateContextManager.ATTR_TEMPLATE_CONTEXT);
-        CmsResource templateResource = getRequestAttribute(CmsTemplateContextManager.ATTR_TEMPLATE_RESOURCE);
-        templateName = getRequestAttribute(CmsTemplateContextManager.ATTR_TEMPLATE_NAME);
-        if (templateContext != null) {
-            templateName = templateContext.getKey();
+        TemplateBean templateBean = getRequestAttribute(CmsTemplateContextManager.ATTR_TEMPLATE_BEAN);
+        if (templateBean == null) {
+            templateBean = new TemplateBean("", "");
         }
-        templateUri = templateResource.getRootPath();
-        return new TemplateBean(templateName, templateUri);
+        return templateBean;
     }
 
     /**

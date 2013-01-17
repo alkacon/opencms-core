@@ -874,12 +874,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     private CmsADESessionCache getSessionCache() {
 
         if (m_sessionCache == null) {
-            m_sessionCache = (CmsADESessionCache)getRequest().getSession().getAttribute(
-                CmsADESessionCache.SESSION_ATTR_ADE_CACHE);
-            if (m_sessionCache == null) {
-                m_sessionCache = new CmsADESessionCache(getCmsObject());
-                getRequest().getSession().setAttribute(CmsADESessionCache.SESSION_ATTR_ADE_CACHE, m_sessionCache);
-            }
+            m_sessionCache = CmsADESessionCache.getCache(getRequest(), getCmsObject());
         }
         return m_sessionCache;
     }

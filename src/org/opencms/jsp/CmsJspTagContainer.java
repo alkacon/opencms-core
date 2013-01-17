@@ -767,15 +767,7 @@ public class CmsJspTagContainer extends TagSupport {
      */
     private CmsADESessionCache getSessionCache(CmsObject cms) {
 
-        CmsADESessionCache sessionCache = (CmsADESessionCache)((HttpServletRequest)pageContext.getRequest()).getSession().getAttribute(
-            CmsADESessionCache.SESSION_ATTR_ADE_CACHE);
-        if (sessionCache == null) {
-            sessionCache = new CmsADESessionCache(cms);
-            ((HttpServletRequest)pageContext.getRequest()).getSession().setAttribute(
-                CmsADESessionCache.SESSION_ATTR_ADE_CACHE,
-                sessionCache);
-        }
-        return sessionCache;
+        return CmsADESessionCache.getCache((HttpServletRequest)(pageContext.getRequest()), cms);
     }
 
     /**

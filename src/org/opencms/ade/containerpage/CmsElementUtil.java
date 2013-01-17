@@ -43,6 +43,8 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.jsp.CmsJspTagHeadIncludes;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
+import org.opencms.jsp.util.CmsJspStandardContextBean.TemplateBean;
+import org.opencms.loader.CmsTemplateContextManager;
 import org.opencms.loader.CmsTemplateLoaderFacade;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -60,6 +62,7 @@ import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
+import org.opencms.xml.containerpage.CmsADESessionCache;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
@@ -457,9 +460,10 @@ public class CmsElementUtil {
         element.initResource(m_cms);
         CmsTemplateLoaderFacade loaderFacade = new CmsTemplateLoaderFacade(OpenCms.getResourceManager().getLoader(
             formatter), element.getResource(), formatter);
-
         CmsResource loaderRes = loaderFacade.getLoaderStartResource();
-
+        TemplateBean templateBean = CmsADESessionCache.getCache(m_req, m_cms).getTemplateBean(
+            m_cms.addSiteRoot(m_currentPageUri),
+            true);
         String oldUri = m_cms.getRequestContext().getUri();
         try {
             m_cms.getRequestContext().setUri(m_currentPageUri);
@@ -485,6 +489,7 @@ public class CmsElementUtil {
             I_CmsDirectEditProvider eb = new CmsAdvancedDirectEditProvider();
             eb.init(m_cms, CmsDirectEditMode.TRUE, element.getSitePath());
             m_req.setAttribute(I_CmsDirectEditProvider.ATTRIBUTE_DIRECT_EDIT_PROVIDER, eb);
+            m_req.setAttribute(CmsTemplateContextManager.ATTR_TEMPLATE_BEAN, templateBean);
             String encoding = m_res.getCharacterEncoding();
             return (new String(loaderFacade.getLoader().dump(m_cms, loaderRes, null, m_locale, m_req, m_res), encoding)).trim();
         } finally {

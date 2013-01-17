@@ -124,4 +124,13 @@ public class CmsTemplateContext {
 
         return m_templatePath;
     }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+
+        return getKey();
+    }
 }
