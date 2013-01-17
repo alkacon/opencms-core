@@ -30,6 +30,8 @@ package org.opencms.flex;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
+import org.opencms.jsp.util.CmsJspStandardContextBean.TemplateBean;
+import org.opencms.loader.CmsTemplateContextManager;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsCollectionsGenericWrapper;
@@ -59,6 +61,9 @@ public class CmsFlexRequestKey {
     /** The request context this request was made in. */
     private CmsRequestContext m_context;
 
+    /** The current detail view id. */
+    private CmsUUID m_detailViewId;
+
     /** Stores the device this request was made with. */
     private String m_device;
 
@@ -67,9 +72,6 @@ public class CmsFlexRequestKey {
 
     /** The OpenCms resource that this key is used for. */
     private String m_resource;
-
-    /** The current detail view id. */
-    private CmsUUID m_detailViewId;
 
     /**
      * This constructor is used when building a cache key from a request.<p>
@@ -102,7 +104,12 @@ public class CmsFlexRequestKey {
 
         CmsJspStandardContextBean standardContext = CmsJspStandardContextBean.getInstance(req);
         // get the current container element
-        m_containerElement = standardContext.elementCachingHash();
+        String templateContextKey = "";
+        TemplateBean templateBean = (TemplateBean)(req.getAttribute(CmsTemplateContextManager.ATTR_TEMPLATE_BEAN));
+        if (templateBean != null) {
+            templateContextKey = templateBean.getName();
+        }
+        m_containerElement = standardContext.elementCachingHash() + "_tc_" + templateContextKey;
 
         // get the current detail view id
         m_detailViewId = standardContext.getDetailContentId();
