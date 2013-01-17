@@ -34,8 +34,8 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsIndexException;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.documents.Messages;
 import org.opencms.search.extractors.CmsExtractionResult;
@@ -126,18 +126,19 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
 
             List<I_CmsExtractionResult> all = new ArrayList<I_CmsExtractionResult>();
             CmsContainerPageBean containerBean = containerPage.getContainerPage(cms, locale);
-            for (CmsContainerElementBean element : containerBean.getElements()) {
-                // check all elements in this container
-
-                // get the formatter configuration for this element
-                element.initResource(cms);
-                I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(element.getResource());
-                CmsFormatterConfiguration formatters = type.getFormattersForResource(cms, element.getResource());
-
-                if (formatters.isSearchContent(element.getFormatterId())) {
-                    // the content of this element must be included for the container page
+            if (containerBean != null) {
+                for (CmsContainerElementBean element : containerBean.getElements()) {
+                    // check all elements in this container
+                    // get the formatter configuration for this element
                     element.initResource(cms);
-                    all.add(super.extractElementContent(cms, element.getResource(), index));
+                    I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(element.getResource());
+                    CmsFormatterConfiguration formatters = type.getFormattersForResource(cms, element.getResource());
+
+                    if (formatters.isSearchContent(element.getFormatterId())) {
+                        // the content of this element must be included for the container page
+                        element.initResource(cms);
+                        all.add(super.extractElementContent(cms, element.getResource(), index));
+                    }
                 }
             }
             return merge(all);
