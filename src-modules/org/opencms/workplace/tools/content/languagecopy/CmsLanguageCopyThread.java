@@ -61,6 +61,9 @@ public class CmsLanguageCopyThread extends A_CmsReportThread {
     /** The resources to copy. */
     private String[] m_copyresources;
 
+    /** The delete flag. */
+    private boolean m_delete;
+
     /** The special multiplex report. */
     private I_CmsReport m_report;
 
@@ -75,12 +78,14 @@ public class CmsLanguageCopyThread extends A_CmsReportThread {
      * 
      * @param cms the current cms context
      * @param copyResources the resources to copy
+     * @param delete the delete flag
      * @param sourceLanguage the source language
      * @param targetLanguage the target language
      */
     public CmsLanguageCopyThread(
         final CmsObject cms,
         String[] copyResources,
+        boolean delete,
         String sourceLanguage,
         String targetLanguage) {
 
@@ -88,6 +93,7 @@ public class CmsLanguageCopyThread extends A_CmsReportThread {
         m_copyresources = copyResources;
         m_sourceLanguage = sourceLanguage;
         m_targetLanguage = targetLanguage;
+        m_delete = delete;
         initHtmlReport(cms.getRequestContext().getLocale());
         CmsMultiplexReport report = new CmsMultiplexReport();
         Locale locale = cms.getRequestContext().getLocale();
@@ -122,8 +128,7 @@ public class CmsLanguageCopyThread extends A_CmsReportThread {
             I_CmsReport.FORMAT_HEADLINE);
 
         try {
-            this.copyLanguageNodes();
-
+            copyLanguageNodes();
         } catch (Throwable e) {
             report.println(e);
             if (LOG.isErrorEnabled()) {
@@ -213,6 +218,9 @@ public class CmsLanguageCopyThread extends A_CmsReportThread {
                     report.addWarning(container);
                 } else {
                     content.copyLocale(sourceLocale, targetLocale);
+                    if (m_delete) {
+                        content.removeLocale(sourceLocale);
+                    }
                     file.setContents(content.marshal());
                     CmsLock lock = cms.getLock(file);
                     if (lock.isInherited()) {

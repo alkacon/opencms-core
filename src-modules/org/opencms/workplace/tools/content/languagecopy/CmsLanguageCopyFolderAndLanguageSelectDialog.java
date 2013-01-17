@@ -30,6 +30,7 @@ package org.opencms.workplace.tools.content.languagecopy;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.widgets.CmsCheckboxWidget;
 import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.widgets.CmsRadioSelectWidget;
 import org.opencms.widgets.CmsSelectWidgetOption;
@@ -69,6 +70,9 @@ public class CmsLanguageCopyFolderAndLanguageSelectDialog extends CmsWidgetDialo
      */
     public class CmsLanguageCopyFolderAndLanguageSelectDialogSettings {
 
+        /** Signals whether to delete the original language node or not. */
+        private boolean m_delete;
+
         /** Display message. */
         private String m_message;
 
@@ -90,7 +94,6 @@ public class CmsLanguageCopyFolderAndLanguageSelectDialog extends CmsWidgetDialo
          */
         public CmsLanguageCopyFolderAndLanguageSelectDialogSettings() {
 
-            super();
             m_paths.add("/");
         }
 
@@ -119,16 +122,6 @@ public class CmsLanguageCopyFolderAndLanguageSelectDialog extends CmsWidgetDialo
         }
 
         /**
-         * Returns the resources paths in an array.<p>
-         * 
-         * @return the resources paths in an array.
-         */
-        public String[] getResourcesArray() {
-
-            return m_resources;
-        }
-
-        /**
          * @return the sourceLanguage
          */
         public String getSourcelanguage() {
@@ -142,6 +135,26 @@ public class CmsLanguageCopyFolderAndLanguageSelectDialog extends CmsWidgetDialo
         public String getTargetlanguage() {
 
             return m_targetlanguage;
+        }
+
+        /**
+         * Returns the delete.<p>
+         *
+         * @return the delete
+         */
+        public boolean isDelete() {
+
+            return m_delete;
+        }
+
+        /**
+         * Sets the delete.<p>
+         *
+         * @param delete the delete to set
+         */
+        public void setDelete(boolean delete) {
+
+            m_delete = delete;
         }
 
         /**
@@ -173,6 +186,16 @@ public class CmsLanguageCopyFolderAndLanguageSelectDialog extends CmsWidgetDialo
         }
 
         /**
+         * Sets the resources.<p>
+         *
+         * @param resources the resources to set
+         */
+        public void setResources(String[] resources) {
+
+            m_resources = resources;
+        }
+
+        /**
          * @param sourceLanguage
          *            the sourceLanguage to set
          */
@@ -199,6 +222,9 @@ public class CmsLanguageCopyFolderAndLanguageSelectDialog extends CmsWidgetDialo
 
     /** The request parameter for the resources to process from the previous dialog. */
     public static final String PARAM_COPYRESOURCES = "copyresources";
+
+    /** The request parameter signaling whether to delete the original language node or not. */
+    public static final String PARAM_DELETE = "delete";
 
     /** The widget mapped data container. */
     private CmsLanguageCopyFolderAndLanguageSelectDialogSettings m_dialogSettings = new CmsLanguageCopyFolderAndLanguageSelectDialogSettings();
@@ -244,11 +270,13 @@ public class CmsLanguageCopyFolderAndLanguageSelectDialog extends CmsWidgetDialo
 
         Map<String, String[]> params = new HashMap<String, String[]>();
         List<String> paths = m_dialogSettings.getPaths();
-        String sourceLanguage = m_dialogSettings.getSourcelanguage();
-        String targetLanguage = m_dialogSettings.getTargetlanguage();
         params.put(CmsLanguageCopySelectionList.PARAM_PATHS, paths.toArray(new String[paths.size()]));
+        String sourceLanguage = m_dialogSettings.getSourcelanguage();
         params.put(CmsLanguageCopySelectionList.PARAM_SOURCE_LANGUAGE, new String[] {sourceLanguage});
+        String targetLanguage = m_dialogSettings.getTargetlanguage();
         params.put(CmsLanguageCopySelectionList.PARAM_TARGET_LANGUAGE, new String[] {targetLanguage});
+        String toDelete = Boolean.toString(m_dialogSettings.isDelete());
+        params.put(CmsLanguageCopySelectionList.PARAM_DELETE, new String[] {toDelete});
         // set style to display report in correct layout
         params.put(PARAM_STYLE, new String[] {CmsToolDialog.STYLE_NEW});
         // set close link to get back to overview after finishing the import
@@ -278,17 +306,17 @@ public class CmsLanguageCopyFolderAndLanguageSelectDialog extends CmsWidgetDialo
 
         // create export file name block
         result.append(createWidgetBlockStart(null));
-        result.append(createDialogRowsHtml(0, 1));
+        result.append(createDialogRowsHtml(0, 2));
         result.append(createWidgetBlockEnd());
 
         // create source language block
         result.append(createWidgetBlockStart(key(Messages.GUI_LANGUAGECOPY_SELECTLANGUAGE_SOURCE_BLOCK_0)));
-        result.append(createDialogRowsHtml(2, 2));
+        result.append(createDialogRowsHtml(3, 3));
         result.append(createWidgetBlockEnd());
 
         // create target language block
         result.append(createWidgetBlockStart(key(Messages.GUI_LANGUAGECOPY_SELECTLANGUAGE_TARGET_BLOCK_0)));
-        result.append(createDialogRowsHtml(3, 3));
+        result.append(createDialogRowsHtml(4, 4));
         result.append(createWidgetBlockEnd());
 
         // close table
@@ -317,6 +345,14 @@ public class CmsLanguageCopyFolderAndLanguageSelectDialog extends CmsWidgetDialo
         addWidget(new CmsWidgetDialogParameter(m_dialogSettings, "paths", "/", PAGES[0], new CmsVfsFileWidget(
             false,
             getCms().getRequestContext().getSiteRoot()), 1, CmsWidgetDialogParameter.MAX_OCCURENCES));
+        addWidget(new CmsWidgetDialogParameter(
+            m_dialogSettings,
+            "delete",
+            "false",
+            PAGES[0],
+            new CmsCheckboxWidget(),
+            1,
+            1));
         addWidget(new CmsWidgetDialogParameter(
             m_dialogSettings,
             "sourcelanguage",

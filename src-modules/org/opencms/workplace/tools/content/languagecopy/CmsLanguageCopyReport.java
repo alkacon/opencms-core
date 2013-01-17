@@ -47,6 +47,9 @@ public class CmsLanguageCopyReport extends A_CmsListReport {
     /** The resources to copy. */
     private String m_copyresources;
 
+    /** Signals whether to delete the original language node or not. */
+    private String m_paramDelete;
+
     /** The source language. */
     private String m_sourcelanguage;
 
@@ -78,6 +81,16 @@ public class CmsLanguageCopyReport extends A_CmsListReport {
     }
 
     /**
+     * Returns the paramDelete.<p>
+     *
+     * @return the paramDelete
+     */
+    public String getParamDelete() {
+
+        return m_paramDelete;
+    }
+
+    /**
      * @see org.opencms.workplace.list.A_CmsListReport#initializeThread()
      */
     @Override
@@ -85,7 +98,7 @@ public class CmsLanguageCopyReport extends A_CmsListReport {
 
         I_CmsReportThread exportThread = new CmsLanguageCopyThread(getCms(), CmsStringUtil.splitAsArray(
             m_copyresources,
-            ","), m_sourcelanguage, m_targetlanguage);
+            ","), Boolean.valueOf(m_paramDelete).booleanValue(), m_sourcelanguage, m_targetlanguage);
 
         return exportThread;
     }
@@ -98,6 +111,16 @@ public class CmsLanguageCopyReport extends A_CmsListReport {
     public void setParamCopyresources(String resources) {
 
         m_copyresources = resources;
+    }
+
+    /**
+     * Sets the paramDelete.<p>
+     *
+     * @param paramDelete the paramDelete to set
+     */
+    public void setParamDelete(String paramDelete) {
+
+        m_paramDelete = paramDelete;
     }
 
     /**
