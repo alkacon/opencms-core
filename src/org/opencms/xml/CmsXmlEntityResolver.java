@@ -65,11 +65,22 @@ import org.xml.sax.InputSource;
  */
 public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener {
 
-    /** The scheme to identify a file in the OpenCms VFS. */
-    public static final String OPENCMS_SCHEME = "opencms://";
+    /** Maximum size of the content definition cache. */
+    public static final int CONTENT_DEFINITION_CACHE_SIZE = 2048;
 
     /** Scheme for files which should be retrieved from the classpath. */
     public static final String INTERNAL_SCHEME = "internal://";
+
+    /** The scheme to identify a file in the OpenCms VFS. */
+    public static final String OPENCMS_SCHEME = "opencms://";
+
+    /**
+     * A list of string pairs used to translate legacy system ids to a new form. The first component of each pair
+     * is the prefix which should be replaced by the second component of that pair. 
+     */
+    private static final String[][] LEGACY_TRANSLATIONS = {
+        {"opencms://system/modules/org.opencms.ade.config/schemas/", "internal://org/opencms/xml/adeconfig/"},
+        {"opencms://system/modules/org.opencms.ade.containerpage/schemas/", "internal://org/opencms/xml/containerpage/"}};
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsXmlEntityResolver.class);
@@ -85,14 +96,6 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
 
     /** The location of the XML page XML schema. */
     private static final String XMLPAGE_OLD_DTD_LOCATION = "org/opencms/xml/page/xmlpage.dtd";
-
-    /**
-     * A list of string pairs used to translate legacy system ids to a new form. The first component of each pair
-     * is the prefix which should be replaced by the second component of that pair. 
-     */
-    private static final String[][] LEGACY_TRANSLATIONS = {
-        {"opencms://system/modules/org.opencms.ade.config/schemas/", "internal://org/opencms/xml/adeconfig/"},
-        {"opencms://system/modules/org.opencms.ade.containerpage/schemas/", "internal://org/opencms/xml/containerpage/"}};
 
     /** The (old) DTD address of the OpenCms xmlpage (used in 5.3.5). */
     private static final String XMLPAGE_OLD_DTD_SYSTEM_ID_1 = "http://www.opencms.org/dtd/6.0/xmlpage.dtd";
@@ -204,7 +207,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
             Map<String, byte[]> cachePermanent = new HashMap<String, byte[]>(32);
             m_cachePermanent = Collections.synchronizedMap(cachePermanent);
 
-            Map<String, CmsXmlContentDefinition> cacheContentDefinitions = CmsCollectionsGenericWrapper.createLRUMap(512);
+            Map<String, CmsXmlContentDefinition> cacheContentDefinitions = CmsCollectionsGenericWrapper.createLRUMap(CONTENT_DEFINITION_CACHE_SIZE);
             m_cacheContentDefinitions = Collections.synchronizedMap(cacheContentDefinitions);
         }
         if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) {
@@ -227,7 +230,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                     CmsXmlEntityResolver.class.getName() + ".cachePermanent",
                     cachePermanent);
 
-                Map<String, CmsXmlContentDefinition> cacheContentDefinitions = CmsCollectionsGenericWrapper.createLRUMap(64);
+                Map<String, CmsXmlContentDefinition> cacheContentDefinitions = CmsCollectionsGenericWrapper.createLRUMap(CONTENT_DEFINITION_CACHE_SIZE);
                 cacheContentDefinitions.putAll(m_cacheContentDefinitions);
                 m_cacheContentDefinitions = Collections.synchronizedMap(cacheContentDefinitions);
                 // map must be of type "LRUMap" so that memory monitor can access all information
