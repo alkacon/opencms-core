@@ -165,4 +165,25 @@ public class CmsSolrField extends CmsSearchField {
 
         m_targetField = targetField;
     }
+
+    /**
+     * @see org.opencms.search.fields.CmsSearchField#toString()
+     */
+    @Override
+    public String toString() {
+
+        return getName()
+            + "["
+            + " boost:"
+            + getBoost()
+            + " defaultValue:"
+            + getDefaultValue()
+            + " targetField:"
+            + getTargetField()
+            + " locale:"
+            + getLocale()
+            + " copyFields:"
+            + getCopyFields()
+            + " ]";
+    }
 }
