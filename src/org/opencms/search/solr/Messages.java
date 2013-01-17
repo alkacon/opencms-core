@@ -38,6 +38,9 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_LANGUAGE_DETECTION_FAILED_1 = "LOG_LANGUAGE_DETECTION_FAILED_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_SOLR_ERR_CONFIG_XML_NOT_FOUND_1 = "LOG_SOLR_ERR_CONFIG_XML_NOT_FOUND_1";
 
     /** Message constant for key in the resource bundle. */
@@ -59,6 +62,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_SOLR_ERR_SPELL_EXECUTION_FAILD_1 = "LOG_SOLR_ERR_SPELL_EXECUTION_FAILD_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_SOLR_FIELD_NOT_FOUND_1 = "LOG_SOLR_FIELD_NOT_FOUND_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_SOLR_SEARCH_EXECUTED_5 = "LOG_SOLR_SEARCH_EXECUTED_5";
 
     /** Message constant for key in the resource bundle. */
@@ -66,9 +72,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SOLR_WRITER_CREATE_2 = "LOG_SOLR_WRITER_CREATE_2";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_LANGUAGE_DETECTION_FAILED_1 = "LOG_LANGUAGE_DETECTION_FAILED_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SOLR_WRITER_DELETE_ALL_2 = "LOG_SOLR_WRITER_DELETE_ALL_2";

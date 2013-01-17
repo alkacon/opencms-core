@@ -242,9 +242,14 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
             try {
                 List<String> splitedValues = new ArrayList<String>();
                 boolean multi = false;
-                SchemaField f = schema.getField(fieldName);
-                if ((f != null) && (!field.getName().startsWith(CmsSearchField.FIELD_CONTENT))) {
-                    multi = f.multiValued();
+
+                try {
+                    SchemaField f = schema.getField(fieldName);
+                    if ((f != null) && (!field.getName().startsWith(CmsSearchField.FIELD_CONTENT))) {
+                        multi = f.multiValued();
+                    }
+                } catch (SolrException e) {
+                    LOG.warn(Messages.get().getBundle().key(Messages.LOG_SOLR_FIELD_NOT_FOUND_1, field.toString()));
                 }
                 FieldType type = schema.getFieldType(fieldName);
                 if (multi) {
