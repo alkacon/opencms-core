@@ -555,17 +555,8 @@ public final class CmsContentEditor extends EditorBase {
             @Override
             protected void onResponse(final CmsContentDefinition result) {
 
-                registerContentDefinition(result);
-                WidgetRegistry.getInstance().registerExternalWidgets(
-                    result.getExternalWidgetConfigurations(),
-                    new Command() {
-
-                        public void execute() {
-
-                            stop(false);
-                            callback.execute(result);
-                        }
-                    });
+                stop(false);
+                callback.execute(result);
             }
         };
         action.execute();
@@ -847,6 +838,17 @@ public final class CmsContentEditor extends EditorBase {
     }
 
     /**
+     * Adds a content definition to the internal store.<p>
+     * 
+     * @param definition the definition to add
+     */
+    void addContentDefinition(CmsContentDefinition definition) {
+
+        m_definitions.put(definition.getLocale(), definition);
+        m_contentLocales.add(definition.getLocale());
+    }
+
+    /**
      * Cancels the editing process.<p>
      */
     void cancelEdit() {
@@ -921,6 +923,14 @@ public final class CmsContentEditor extends EditorBase {
             if (!m_entityId.equals(targetId)) {
                 if (m_registeredEntities.contains(targetId)) {
                     unregistereEntity(targetId);
+                } else {
+                    loadNewDefinition(targetId, new I_CmsSimpleCallback<CmsContentDefinition>() {
+
+                        public void execute(CmsContentDefinition definition) {
+
+                            addContentDefinition(definition);
+                        }
+                    });
                 }
                 registerClonedEntity(m_entityId, targetId);
                 m_registeredEntities.add(targetId);
@@ -1233,13 +1243,15 @@ public final class CmsContentEditor extends EditorBase {
             // only set the locales when initially setting the content definition
             m_availableLocales.putAll(definition.getAvailableLocales());
             m_contentLocales.addAll(definition.getContentLocales());
+        } else {
+            m_contentLocales.add(definition.getLocale());
         }
         m_title = definition.getTitle();
         m_sitePath = definition.getSitePath();
         m_resourceTypeName = definition.getResourceType();
         m_registeredEntities.add(definition.getEntityId());
         m_tabInfos = definition.getTabInfos();
-        m_definitions.put(definition.getLocale(), definition);
+        addContentDefinition(definition);
         getWidgetService().addConfigurations(definition.getConfigurations());
         addEntityChangeHandler(definition.getEntityId(), new ValueChangeHandler<Entity>() {
 
@@ -1308,21 +1320,43 @@ public final class CmsContentEditor extends EditorBase {
         // if the content does not contain the requested locale yet, a new node will be created 
         final boolean addedNewLocale = !m_contentLocales.contains(locale);
         if (!m_registeredEntities.contains(m_entityId)) {
-            I_CmsSimpleCallback<CmsContentDefinition> callback = new I_CmsSimpleCallback<CmsContentDefinition>() {
-
-                public void execute(CmsContentDefinition contentDefinition) {
-
-                    setContentDefinition(contentDefinition);
-                    renderFormContent();
-                    if (addedNewLocale) {
-                        setChanged();
-                    }
-                }
-            };
             if (addedNewLocale) {
-                loadNewDefinition(m_entityId, callback);
+                loadNewDefinition(m_entityId, new I_CmsSimpleCallback<CmsContentDefinition>() {
+
+                    public void execute(final CmsContentDefinition contentDefinition) {
+
+                        registerContentDefinition(contentDefinition);
+                        CmsNotification.get().sendBlocking(
+                            CmsNotification.Type.NORMAL,
+                            org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_LOADING_0));
+                        WidgetRegistry.getInstance().registerExternalWidgets(
+                            contentDefinition.getExternalWidgetConfigurations(),
+                            new Command() {
+
+                                public void execute() {
+
+                                    setContentDefinition(contentDefinition);
+                                    renderFormContent();
+                                    if (addedNewLocale) {
+                                        setChanged();
+                                    }
+                                    CmsNotification.get().hide();
+                                }
+                            });
+                    }
+                });
             } else {
-                loadDefinition(m_entityId, callback);
+                loadDefinition(m_entityId, new I_CmsSimpleCallback<CmsContentDefinition>() {
+
+                    public void execute(CmsContentDefinition contentDefinition) {
+
+                        setContentDefinition(contentDefinition);
+                        renderFormContent();
+                        if (addedNewLocale) {
+                            setChanged();
+                        }
+                    }
+                });
             }
         } else {
             getWidgetService().addConfigurations(m_definitions.get(locale).getConfigurations());
