@@ -47,6 +47,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.solr.common.params.CommonParams;
+
 /**
  * The OpenCms Solr handler.<p>
  * 
@@ -141,22 +143,23 @@ public class OpenCmsSolrHandler extends HttpServlet implements I_CmsRequestHandl
     /**
      * @see org.opencms.main.I_CmsRequestHandler#handle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.String)
      */
-
     public void handle(HttpServletRequest req, HttpServletResponse res, String name) throws IOException {
 
         m_handlerName = HANDLER_NAMES.valueOf(name);
         if (m_handlerName != null) {
             try {
                 initializeRequest(req, res);
-                switch (m_handlerName) {
-                    case SolrSelect:
-                        m_index.writeResponse(res, m_index.search(m_cms, m_query, true));
-                        break;
-                    case SolrSpell:
-                        res.getWriter().println(m_index.spellCheck(m_cms, m_query.getQuery(), m_params));
-                        break;
-                    default:
-                        break;
+                if ((m_params.get(CommonParams.Q) != null) || (m_params.get(CommonParams.FQ) != null)) {
+                    switch (m_handlerName) {
+                        case SolrSelect:
+                            m_index.writeResponse(res, m_index.search(m_cms, m_query, true));
+                            break;
+                        case SolrSpell:
+                            res.getWriter().println(m_index.spellCheck(m_cms, m_query.getQuery(), m_params));
+                            break;
+                        default:
+                            break;
+                    }
                 }
             } catch (Exception e) {
                 res.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
@@ -194,12 +197,15 @@ public class OpenCmsSolrHandler extends HttpServlet implements I_CmsRequestHandl
     }
 
     /**
-     * @param req
-     * @param res
-     * @throws CmsException
-     * @throws Exception
-     * @throws CmsSearchException
-     * @throws IOException
+     * Initialized the search request and sets the local parameter.<p>
+     * 
+     * @param req the servlet request
+     * @param res the servlet response
+     * 
+     * @throws CmsException if something goes wrong
+     * @throws Exception if something goes wrong
+     * @throws CmsSearchException if something goes wrong
+     * @throws IOException if something goes wrong
      */
     @SuppressWarnings("unchecked")
     protected void initializeRequest(HttpServletRequest req, HttpServletResponse res)
