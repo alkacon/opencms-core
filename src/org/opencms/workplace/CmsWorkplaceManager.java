@@ -224,7 +224,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     /** Indicates if the user management icon should be displayed in the workplace. */
     private boolean m_showUserGroupIcon;
 
-    /** Exclude patterns for synchronization */
+    /** Exclude patterns for synchronization. */
     private ArrayList<Pattern> m_synchronizeExcludePatterns;
 
     /** The temporary file project used by the editors. */
@@ -516,18 +516,16 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     }
 
     /**
-     * Adds a pattern to be excluded in VFS synchronization
+     * Adds a pattern to be excluded in VFS synchronization.<p>
+     * 
      * @param pattern a java regex to applied on the file name
      */
-    public void addSynchronizeExcludePattern(String pattern){
-        try{
+    public void addSynchronizeExcludePattern(String pattern) {
+
+        try {
             m_synchronizeExcludePatterns.add(Pattern.compile(pattern));
-        } catch (PatternSyntaxException e){
-            LOG.error(
-                    Messages.get().getBundle().key(
-                        Messages.LOG_INVALID_SYNCHRONIZE_EXCLUDE_PATTERN_1,
-                        pattern),
-                    e);
+        } catch (PatternSyntaxException e) {
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_INVALID_SYNCHRONIZE_EXCLUDE_PATTERN_1, pattern), e);
         }
     }
 
@@ -1123,9 +1121,12 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     }
 
     /**
-     * Returns Regex patterns that should be excluded from synchronization
+     * Returns Regex patterns that should be excluded from synchronization.<p>
+     * 
+     * @return the exclude patterns
      */
     public ArrayList<Pattern> getSynchronizeExcludePatterns() {
+
         return m_synchronizeExcludePatterns;
     }
 

@@ -261,7 +261,9 @@ public class CmsSynchronize {
 
             // now loop through all resources
             for (int i = 0; i < res.length; i++) {
-                if(isExcluded(res[i])) continue;
+                if (isExcluded(res[i])) {
+                    continue;
+                }
                 // get the relative filename
                 String resname = res[i].getAbsolutePath();
                 resname = resname.substring(m_destinationPathInRfs.length());
@@ -593,14 +595,17 @@ public class CmsSynchronize {
     }
 
     /**
-     * Determine if this file is to be excluded
-     * @param filename the name of the file
-     * @return
+     * Determine if this file is to be excluded.<p>
+     * 
+     * @param file the file to check
+     * 
+     * @return <code>true</code> if the file should be excluded from synchronization
      */
-    private boolean isExcluded(File file){
+    private boolean isExcluded(File file) {
+
         ArrayList<Pattern> excludes = OpenCms.getWorkplaceManager().getSynchronizeExcludePatterns();
-        for(Pattern pattern : excludes){
-            if(pattern.matcher(file.getName()).find()) {
+        for (Pattern pattern : excludes) {
+            if (pattern.matcher(file.getName()).find()) {
                 m_report.print(
                     org.opencms.report.Messages.get().container(
                         org.opencms.report.Messages.RPT_SUCCESSION_1,
@@ -691,7 +696,9 @@ public class CmsSynchronize {
         res = rfsFile.listFiles();
         // now loop through all resources
         for (int i = 0; i < res.length; i++) {
-            if(isExcluded(res[i])) continue;
+            if (isExcluded(res[i])) {
+                continue;
+            }
             // get the corresponding name in the VFS
             String vfsFile = getFilenameInVfs(res[i]);
             // recurse if it is an directory, we must go depth first to delete 
