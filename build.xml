@@ -105,6 +105,9 @@
 				</if>
 			</then>
 		</if>
+		<!-- In case version.revision has not been set we set it now,
+					 as ant properties are immutable we are not going to override any previous setting.  -->
+		<property name="version.revision" value="${version.number}" />
 	</target>
 	
 	<target name="init" depends="initrevision">
@@ -117,10 +120,6 @@
 		<condition property="tomcat.home" value="${env.CATALINA_HOME}">
 			<available file="${env.CATALINA_HOME}" type="dir" />
 		</condition>
-		
-		<!-- In case version.revision has not been set we set it now,
-			 as ant properties are immutable we are not going to override any previous setting.  -->
-		<property name="version.revision" value="${version.number}" />
 		<echo message="Building OpenCms ${version.revision}" />
 		<echo message=" " />
 		<echo message="OpenCms input directory is: ${opencms.input}" />
@@ -485,7 +484,7 @@
 
 	<target name="jboss.update" depends="setup-jar, jboss.copy" description="Recompile changed classes and install in JBoss deploy directory" />
 
-	<target name="bindist" depends="clean, initmodulenames" description="Creates a binary distribution ZIP, including the templateone demopages">
+	<target name="bindist" depends="clean, initrevision, initmodulenames" description="Creates a binary distribution ZIP, including the templateone demopages">
 
 		<!-- read list of all available modules is now done through target 'initmodulenames'-->
 		<!-- remove org.opencms.workplace.demos modules -->
