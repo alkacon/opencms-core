@@ -264,6 +264,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     /** The node name of the file entryoptions node. */
     public static final String N_ENTRYOPTIONS = "entryoptions";
 
+    /** The name of the exclude-pattern node. */
+    public static final String N_EXCLUDEPATTERN = "exclude-pattern";
+
     /** The name of the expand inherited permissions node. */
     public static final String N_EXPANDPERMISSIONSINHERITED = "expand-permissionsinherited";
 
@@ -443,6 +446,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
     /** The node name for the subsitemap creation mode setting. */
     public static final String N_SUBSITEMAP_CREATION_MODE = "subsitemap-creation-mode";
+
+    /** The name of the synchronization node. */
+    public static final String N_SYNCHRONIZATION = "synchronization";
 
     /** The name of the text node. */
     public static final String N_TEXT = "text";
@@ -833,6 +839,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         digester.addObjectCreate("*/" + N_WORKPLACE, CmsWorkplaceManager.class);
         // import/export manager finished
         digester.addSetNext("*/" + N_WORKPLACE, "setWorkplaceManager");
+
+        // add exclude patterns
+        digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_SYNCHRONIZATION + "/" + N_EXCLUDEPATTERN, "addSynchronizeExcludePattern", 0);
 
         digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_USER_LISTS, "setUserListMode", 1);
         digester.addCallParam("*/" + N_WORKPLACE + "/" + N_USER_LISTS, 0, A_MODE);

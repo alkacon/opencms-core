@@ -34,8 +34,19 @@
 	default-preferences,
 	workplace-customfoot?,
 	tool-manager?,
-	user-lists?
+	user-lists?,
+	synchronization?
 	)>
+
+<!--
+# Configuration for the RFS synchronization
+-->
+<!ELEMENT synchronization (exclude-pattern+) >
+
+<!--
+# A string pattern to exclude when synchronizing
+-->
+<!ELEMENT exclude-pattern (#PCDATA) >
 
 <!--
 # The user additional information configuration.
