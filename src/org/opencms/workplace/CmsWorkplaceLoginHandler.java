@@ -71,10 +71,6 @@ public class CmsWorkplaceLoginHandler implements I_CmsResourceInit {
         if (!uri.startsWith(LOGIN_HANDLER)) {
             return resource;
         }
-        // check if the uri has a dot, that is if a page is requested
-        if (uri.indexOf('.') > -1) {
-            return resource;
-        }
         String storedSiteRoot = cms.getRequestContext().getSiteRoot();
         try {
             // we now must switch to the root site to read the resource
