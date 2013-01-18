@@ -2059,9 +2059,9 @@ public final class OpenCmsCore {
             if (t.getCause() != null) {
                 t = t.getCause();
             }
-            LOG.error(t.getLocalizedMessage(), t);
+            LOG.error(t.getLocalizedMessage() + " rendering URL " + req.getRequestURL(), t);
         } else {
-            LOG.error(t.getLocalizedMessage(), t);
+            LOG.error(t.getLocalizedMessage() + " rendering URL " + req.getRequestURL(), t);
         }
 
         if (status < 1) {
