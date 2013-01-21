@@ -37,6 +37,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
@@ -280,6 +281,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
     /** Constant for additional parameter to enable time range checks (default: true). */
     public static final String TIME_RANGE = A_LEGACY_PARAM_PREFIX + ".checkTimeRange";
+
+    /** The document type name for XML contents. */
+    public static final String TYPE_XMLCONTENT = "xmlcontent";
 
     /** The use all locale. */
     public static final String USE_ALL_LOCALE = "all";
@@ -849,10 +853,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             I_CmsDocumentFactory result = OpenCms.getSearchManager().getDocumentFactory(res);
             if (result != null) {
                 // check the path of the resource if it matches with one (or more) of the configured index sources
-                Iterator<CmsSearchIndexSource> i = getSources().iterator();
-                while (i.hasNext()) {
-                    CmsSearchIndexSource source = i.next();
-                    if (source.isIndexing(res.getRootPath(), result.getName())) {
+                for (CmsSearchIndexSource source : getSources()) {
+                    if (source.isIndexing(res.getRootPath(), result.getName())
+                        || (source.isIndexing(res.getRootPath(), TYPE_XMLCONTENT) && CmsResourceTypeXmlContent.isXmlContent(res))) {
                         // we found an index source that indexes the resource
                         return result;
                     }
