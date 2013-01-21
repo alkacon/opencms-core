@@ -347,6 +347,10 @@ function getLinkTarget(){
     return target;
 }
 
+function _triggerChangeEvent(){
+    editor.onChange.dispatch();
+}
+
 /**
  * Inserts or updates a selected image, setting the given path and tag attributes.<p>
  * 
@@ -476,6 +480,8 @@ function setImage(path, attributes){
     }
     editor.selection.collapse(false);
     editor.execCommand("mceRepaint");
+    // the editor may not have triggered the change event yet, force it
+    _triggerChangeEvent();
 }
 
 /**
