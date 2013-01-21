@@ -348,7 +348,7 @@ function getLinkTarget(){
 }
 
 function _triggerChangeEvent(){
-    editor.onChange.dispatch();
+   editor.execCommand("mceAddUndoLevel");
 }
 
 /**
