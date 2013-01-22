@@ -1037,8 +1037,6 @@ public class CmsJspTagContainer extends TagSupport {
             return true;
         }
 
-        Map<String, String> settings = element.getSettings();
-        String contextsAllowed = settings.get(CmsTemplateContextInfo.SETTING);
         try {
             if ((element.getResource() != null)
                 && !OpenCms.getTemplateContextManager().shouldShowType(
@@ -1050,6 +1048,11 @@ public class CmsJspTagContainer extends TagSupport {
             // ignore and log
             LOG.error(e.getLocalizedMessage(), e);
         }
+        Map<String, String> settings = element.getSettings();
+        if (settings == null) {
+            return true;
+        }
+        String contextsAllowed = settings.get(CmsTemplateContextInfo.SETTING);
         if (contextsAllowed == null) {
             return true;
         }
