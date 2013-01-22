@@ -15,6 +15,21 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 8.5.0.9 - January 22, 2013
+* Fixed JavaScript animation issue with Chrome 24.
+* Fixed issue #56 where content tool "Language node copier" was broken.
+* Fixed issue #75 sorting column "display name" in Field configuration.
+* Fixed issue #87 where OU names containing "." would lead to a 404 error on log out.
+* Fixed issue #104 where tinyMCE entity-escaping resulted in broken links.
+* Fixed issue #108 where SEO file JSP had the wrong cache property.
+* Fixed issue #111 where CmsJspLoginBean would always switch to the users default site.
+* Fixed issue #113 where "CreateNew" in model pages was not behaving as expected.
+* Fixed issue #117 where xsd:choice elements with another xsd:choice type as a child caused the XML-content editor to fail.
+* Fixed issue #128 with document dependencies while indexing.
+* Fixed issue #132 with index selection within workplace search. 
+* Fixed issue #135 where upload to gallery was displaying errors.
+- Improved performance due to increased content definition cache size.
+
 OpenCms 8.5.0.7 - December 10, 2012
 * Fixed issue #124 where search excerpt was missing when using wildcards
 * Fixed issue #117 where xsd:choice nesting another xsd:choice caused errors in new content editor
