@@ -4,73 +4,75 @@
 <opencms>
 	<importexport>
 		<importexporthandlers>
-			<importexporthandler class="org.opencms.importexport.CmsVfsImportExportHandler"/>
-			<importexporthandler class="org.opencms.module.CmsModuleImportExportHandler"/>
+			<importexporthandler
+				class="org.opencms.importexport.CmsVfsImportExportHandler" />
+			<importexporthandler
+				class="org.opencms.module.CmsModuleImportExportHandler" />
 		</importexporthandlers>
 		<import>
 			<overwrite>true</overwrite>
 			<convert>true</convert>
 			<importversions>
-				<importversion class="org.opencms.importexport.CmsImportVersion2"/>
-				<importversion class="org.opencms.importexport.CmsImportVersion3"/>
-				<importversion class="org.opencms.importexport.CmsImportVersion4"/>
-				<importversion class="org.opencms.importexport.CmsImportVersion5"/>
-				<importversion class="org.opencms.importexport.CmsImportVersion6"/>
-				<importversion class="org.opencms.importexport.CmsImportVersion7"/>
+				<importversion class="org.opencms.importexport.CmsImportVersion2" />
+				<importversion class="org.opencms.importexport.CmsImportVersion3" />
+				<importversion class="org.opencms.importexport.CmsImportVersion4" />
+				<importversion class="org.opencms.importexport.CmsImportVersion5" />
+				<importversion class="org.opencms.importexport.CmsImportVersion6" />
+				<importversion class="org.opencms.importexport.CmsImportVersion7" />
 			</importversions>
 			<immutables>
-				<resource uri="/system/"/>
-				<resource uri="/system/categories/"/>
-				<resource uri="/system/galleries/"/>
-				<resource uri="/system/galleries/download/"/>
-				<resource uri="/system/galleries/externallinks/"/>
-				<resource uri="/system/galleries/htmlgalleries/"/>
-				<resource uri="/system/galleries/pics/"/>
-				<resource uri="/system/login/"/>
-				<resource uri="/system/modules/"/>
-				<resource uri="/system/shared/"/>
-				<resource uri="/system/workplace/"/>
-				<resource uri="/system/workplace/admin/"/>
-				<resource uri="/system/workplace/help/"/>
-				<resource uri="/system/workplace/locales/"/>
-				<resource uri="/system/workplace/resources/"/>
-				<resource uri="/system/workplace/restypes/"/>
-				<resource uri="/system/workplace/scripts/"/>
-				<resource uri="/system/workplace/templates/"/>
-				<resource uri="/system/workplace/views/"/>
-				<resource uri="/sites/"/>
+				<resource uri="/system/" />
+				<resource uri="/system/categories/" />
+				<resource uri="/system/galleries/" />
+				<resource uri="/system/galleries/download/" />
+				<resource uri="/system/galleries/externallinks/" />
+				<resource uri="/system/galleries/htmlgalleries/" />
+				<resource uri="/system/galleries/pics/" />
+				<resource uri="/system/login/" />
+				<resource uri="/system/modules/" />
+				<resource uri="/system/shared/" />
+				<resource uri="/system/workplace/" />
+				<resource uri="/system/workplace/admin/" />
+				<resource uri="/system/workplace/help/" />
+				<resource uri="/system/workplace/locales/" />
+				<resource uri="/system/workplace/resources/" />
+				<resource uri="/system/workplace/restypes/" />
+				<resource uri="/system/workplace/scripts/" />
+				<resource uri="/system/workplace/templates/" />
+				<resource uri="/system/workplace/views/" />
+				<resource uri="/sites/" />
 			</immutables>
-			<principaltranslations/>
-			<ignoredproperties/>
+			<principaltranslations />
+			<ignoredproperties />
 		</import>
 	</importexport>
 	<staticexport enabled="true">
 		<staticexporthandler>org.opencms.staticexport.CmsOnDemandStaticExportHandler</staticexporthandler>
-		<linksubstitutionhandler>org.opencms.staticexport.CmsDefaultLinkSubstitutionHandler</linksubstitutionhandler>		
+		<linksubstitutionhandler>org.opencms.staticexport.CmsDefaultLinkSubstitutionHandler</linksubstitutionhandler>
 		<exportpath>export</exportpath>
 		<exportworkpath>temp</exportworkpath>
 		<exportbackups>2</exportbackups>
 		<defaultpropertyvalue>false</defaultpropertyvalue>
 		<defaultsuffixes>
-			<suffix key=".jpg"/>
-			<suffix key=".gif"/>
-			<suffix key=".png"/>
-			<suffix key=".doc"/>
-			<suffix key=".xls"/>
-			<suffix key=".ppt"/>
-			<suffix key=".pdf"/>
-			<suffix key=".txt"/>
-			<suffix key=".css"/>
-			<suffix key=".zip"/>
-			<suffix key=".swf"/>
+			<suffix key=".jpg" />
+			<suffix key=".gif" />
+			<suffix key=".png" />
+			<suffix key=".doc" />
+			<suffix key=".xls" />
+			<suffix key=".ppt" />
+			<suffix key=".pdf" />
+			<suffix key=".txt" />
+			<suffix key=".css" />
+			<suffix key=".zip" />
+			<suffix key=".swf" />
 		</defaultsuffixes>
 		<rendersettings>
 			<rfs-prefix>${CONTEXT_NAME}/export</rfs-prefix>
 			<vfs-prefix>${CONTEXT_NAME}${SERVLET_NAME}</vfs-prefix>
-			<userelativelinks>false</userelativelinks>			
+			<userelativelinks>false</userelativelinks>
 			<exporturl>http://127.0.0.1:8080${CONTEXT_NAME}/handle404</exporturl>
 			<plainoptimization>true</plainoptimization>
-			<testresource uri="/system/shared/page.dtd"/>
+			<testresource uri="/system/shared/page.dtd" />
 			<resourcestorender>
 				<regex>/sites/.*</regex>
 				<regex>/system/workplace/commons/style/.*</regex>
@@ -80,29 +82,29 @@
 		</rendersettings>
 	</staticexport>
 	<usercsvexport>
-        <separator>;</separator>
-        <columns>
-        	<column>description</column>
-            <column>lastname</column>
-            <column>firstname</column>
-            <column>email</column>
-            <column>address</column>
-            <column>zipcode</column>
-            <column>city</column>
-            <column>country</column>
-            <column>USERPREFERENCES_workplace-startupsettingssite</column>
-            <column>USERPREFERENCES_workplace-startupsettingslocale</column>
-            <column>password</column>
-        </columns>
+		<separator>;</separator>
+		<columns>
+			<column>description</column>
+			<column>lastname</column>
+			<column>firstname</column>
+			<column>email</column>
+			<column>address</column>
+			<column>zipcode</column>
+			<column>city</column>
+			<column>country</column>
+			<column>USERPREFERENCES_workplace-startupsettingssite</column>
+			<column>USERPREFERENCES_workplace-startupsettingslocale</column>
+			<column>password</column>
+		</columns>
 	</usercsvexport>
 	<repositories>
 		<repository name="standard" class="org.opencms.repository.CmsRepository">
 			<params>
-  				<param name="wrapper">org.opencms.file.wrapper.CmsResourceExtensionWrapperJsp</param>
-  				<param name="wrapper">org.opencms.file.wrapper.CmsResourceExtensionWrapperXmlContent</param>
-  				<param name="wrapper">org.opencms.file.wrapper.CmsResourceExtensionWrapperXmlPage</param>
-  				<param name="wrapper">org.opencms.file.wrapper.CmsResourceWrapperSystemFolder</param>
-  				<param name="wrapper">org.opencms.file.wrapper.CmsResourceWrapperPropertyFile</param>
+				<param name="wrapper">org.opencms.file.wrapper.CmsResourceExtensionWrapperJsp</param>
+				<param name="wrapper">org.opencms.file.wrapper.CmsResourceExtensionWrapperXmlContent</param>
+				<param name="wrapper">org.opencms.file.wrapper.CmsResourceExtensionWrapperXmlPage</param>
+				<param name="wrapper">org.opencms.file.wrapper.CmsResourceWrapperSystemFolder</param>
+				<param name="wrapper">org.opencms.file.wrapper.CmsResourceWrapperPropertyFile</param>
 			</params>
 			<filter type="include">
 				<regex>/</regex>
@@ -136,14 +138,14 @@
 				<regex>/system/modules/[^/]*/resources/.*</regex>
 			</filter>
 		</repository>
-     	<repository name="cmis-offline" class="org.opencms.cmis.CmsCmisRepository">
+		<repository name="cmis-offline" class="org.opencms.cmis.CmsCmisRepository">
 			<params>
 				<param name="project">Offline</param>
 				<param name="description">Offline project CMIS repository</param>
 				<param name="index">Solr Offline</param>
 			</params>
-	 	</repository>
-	    <repository name="cmis-online" class="org.opencms.cmis.CmsCmisRepository">
+		</repository>
+		<repository name="cmis-online" class="org.opencms.cmis.CmsCmisRepository">
 			<params>
 				<param name="project">Online</param>
 				<param name="description">Online project CMIS repository</param>

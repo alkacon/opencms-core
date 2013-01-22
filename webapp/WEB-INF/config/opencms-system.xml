@@ -3,33 +3,36 @@
 
 <opencms>
 	<system>
-	   	<internationalization> 	
-			<localehandler class="org.opencms.i18n.CmsDefaultLocaleHandler"/>	
+		<internationalization>
+			<localehandler class="org.opencms.i18n.CmsDefaultLocaleHandler" />
 			<localesconfigured>
 				<locale>en</locale>
 				<locale>de</locale>
 			</localesconfigured>
 			<localesdefault>
 				<locale>en</locale>
-				<locale>de</locale>		
+				<locale>de</locale>
 			</localesdefault>
-			<timezone>GMT+01:00</timezone>			
+			<timezone>GMT+01:00</timezone>
 		</internationalization>
 		<mail>
 			<mailfrom>nobody@nowhere.com</mailfrom>
-			<mailhost name="my.smtp.server" port="25" protocol="smtp" user="username" password="secure"/>
-			<mailhost name="alternative.smtp.server" port="25"/>
-			<mailhost name="another.alternative.smtp.server" port="25"/>
+			<mailhost name="my.smtp.server" port="25" protocol="smtp"
+				user="username" password="secure" />
+			<mailhost name="alternative.smtp.server" port="25" />
+			<mailhost name="another.alternative.smtp.server" port="25" />
 		</mail>
-		<scheduler />	
-	   	<versionhistory enabled="true" count="10" deleted="4" />
+		<scheduler />
+		<versionhistory enabled="true" count="10" deleted="4" />
 		<resourceinit>
-			<resourceinithandler class="org.opencms.file.history.CmsHistoryResourceHandler" />
+			<resourceinithandler
+				class="org.opencms.file.history.CmsHistoryResourceHandler" />
 			<resourceinithandler class="org.opencms.main.CmsPermalinkResourceHandler" />
 			<resourceinithandler class="org.opencms.workplace.CmsWorkplaceLoginHandler" />
-            <resourceinithandler class="org.opencms.ade.detailpage.CmsDetailPageResourceHandler"/>
-            <resourceinithandler class="org.opencms.main.CmsAliasResourceHandler" />
-        </resourceinit>
+			<resourceinithandler
+				class="org.opencms.ade.detailpage.CmsDetailPageResourceHandler" />
+			<resourceinithandler class="org.opencms.main.CmsAliasResourceHandler" />
+		</resourceinit>
 		<requesthandlers>
 			<requesthandler class="org.opencms.main.OpenCmsSolrHandler" />
 		</requesthandlers>
@@ -43,15 +46,15 @@
 			<workplace-server>http://localhost:8080</workplace-server>
 			<default-uri>/sites/default/</default-uri>
 			<shared-folder>/shared/</shared-folder>
-			<site server="http://localhost:8080" uri="/sites/default/"/>
+			<site server="http://localhost:8080" uri="/sites/default/" />
 		</sites>
 		<runtimeproperties>
 			<param name="compatibility.support.oldlocales">false</param>
 			<param name="compatibility.support.webAppNames">/opencms/opencms/</param>
-		</runtimeproperties>	
+		</runtimeproperties>
 		<runtimeclasses>
 			<runtimeinfo class="@RUNTIME_INFO@" />
-		</runtimeclasses>	
+		</runtimeclasses>
 		<defaultusers>
 			<user-admin>Admin</user-admin>
 			<user-guest>Guest</user-guest>
@@ -60,7 +63,7 @@
 			<group-projectmanagers>Projectmanagers</group-projectmanagers>
 			<group-users>Users</group-users>
 			<group-guests>Guests</group-guests>
-		</defaultusers>	
+		</defaultusers>
 		<defaultcontentencoding>UTF-8</defaultcontentencoding>
 		<memorymonitor class='org.opencms.monitor.CmsMemoryMonitor'>
 			<maxusagepercent>90</maxusagepercent>
@@ -78,7 +81,7 @@
 		</flexcache>
 		<http-authentication>
 			<browser-based>true</browser-based>
-		</http-authentication>	
+		</http-authentication>
 		<resultcache>
 			<keygenerator>org.opencms.db.CmsCacheKey</keygenerator>
 			<size-users>64</size-users>
@@ -91,29 +94,33 @@
 			<size-resourcelists>256</size-resourcelists>
 			<size-properties>1024</size-properties>
 			<size-propertylists>1024</size-propertylists>
-			<size-accesscontrollists>1024</size-accesscontrollists>	
+			<size-accesscontrollists>1024</size-accesscontrollists>
 			<size-permissions>1024</size-permissions>
 		</resultcache>
 		<content-notification>
-            <notification-time>365</notification-time>
-            <notification-project>Offline</notification-project>
-        </content-notification>		
-		<authorizationhandler class="org.opencms.security.CmsDefaultAuthorizationHandler" />
+			<notification-time>365</notification-time>
+			<notification-project>Offline</notification-project>
+		</content-notification>
+		<authorizationhandler
+			class="org.opencms.security.CmsDefaultAuthorizationHandler" />
 		<publishmanager>
 			<history-size>100</history-size>
 			<queue-persistance>true</queue-persistance>
-		    <queue-shutdowntime>1</queue-shutdowntime>
+			<queue-shutdowntime>1</queue-shutdowntime>
 		</publishmanager>
-		<session-storageprovider class="org.opencms.main.CmsDefaultSessionStorageProvider" />
+		<session-storageprovider
+			class="org.opencms.main.CmsDefaultSessionStorageProvider" />
 		<permissionhandler class="org.opencms.security.CmsDefaultPermissionHandler" />
 		<servletcontainer-settings mode="auto" />
-        <ade>
-            <configuration class="org.opencms.xml.containerpage.CmsADEDefaultConfiguration" />
-            <ade-cache>
-                <containerpages offline="1024" online="1024" />
-                <groupcontainers offline="64" online="64" />
-            </ade-cache>
-        </ade>
-        <subscriptionmanager enabled="true" poolname="default" maxvisited="100" />
+		<ade>
+			<configuration
+				class="org.opencms.xml.containerpage.CmsADEDefaultConfiguration" />
+			<ade-cache>
+				<containerpages offline="1024" online="1024" />
+				<groupcontainers offline="64" online="64" />
+			</ade-cache>
+		</ade>
+		<subscriptionmanager enabled="true" poolname="default"
+			maxvisited="100" />
 	</system>
 </opencms>
