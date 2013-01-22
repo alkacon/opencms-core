@@ -77,6 +77,24 @@ public final class AllTests {
     }
 
     /**
+     * Returns the search resource from the result by the given path.<p>
+     * 
+     * @param results the results
+     * @param path signals if to print the counts only
+     * 
+     * @return the search resource or null
+     */
+    public static CmsSearchResource getByPath(CmsSolrResultList results, String path) {
+
+        for (CmsSearchResource r : results) {
+            if (r.getRootPath().equals(path)) {
+                return r;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Prints the results.<p>
      * 
      * @param cms the current cms
@@ -105,18 +123,7 @@ public final class AllTests {
         //$JUnit-BEGIN$
         suite.addTest(TestSolrConfiguration.suite());
         suite.addTest(TestSolrFieldConfiguration.suite());
-        suite.addTest(TestSolrIndexing.suite());
         suite.addTest(TestSolrSearch.suite());
-        // suite.addTest(TestSolrSearchAutoSuggeting.suite());
-        suite.addTest(TestSolrSearchFaceting.suite());
-        suite.addTest(TestSolrSearchFulltextSearching.suite());
-        // suite.addTest(TestSolrSearchHighlighting.suite());
-        // suite.addTest(TestSolrSearchMLTQuerying.suite());
-        // suite.addTest(TestSolrSearchPaging.suite());
-        suite.addTest(TestSolrSearchPermissionHandling.suite());
-        // suite.addTest(TestSolrSearchRanging.suite());
-        // suite.addTest(TestSolrSearchSorting.suite());
-        // suite.addTest(TestSolrSearchSpellchecking.suite());
         suite.addTest(TestCmsSolrCollector.suite());
         //$JUnit-END$
         return suite;

@@ -32,9 +32,15 @@
 package org.opencms.search.solr;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.main.CmsContextInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.search.CmsSearchIndex;
+import org.opencms.search.CmsSearchResource;
+import org.opencms.search.documents.CmsExtractionResultCache;
+import org.opencms.search.documents.I_CmsDocumentFactory;
+import org.opencms.search.extractors.CmsExtractionResult;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsFileUtil;
@@ -78,12 +84,12 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
 
         TestSuite suite = new TestSuite();
         suite.setName(TestSolrConfiguration.class.getName());
-        suite.addTest(new TestSolrConfiguration("testFieldConfiguration"));
-        suite.addTest(new TestSolrConfiguration("testXSDFields"));
-        suite.addTest(new TestSolrConfiguration("testMandantoryFields"));
-        suite.addTest(new TestSolrConfiguration("testDynamicFields"));
-        suite.addTest(new TestSolrConfiguration("testDefaultFields"));
-        suite.addTest(new TestSolrConfiguration("testCmsSolrPostProcessor"));
+        suite.addTest(new TestSolrConfiguration("testPermissionHandling"));
+        suite.addTest(new TestSolrConfiguration("testExtractionResults"));
+        // suite.addTest(new TestSolrConfiguration("testIndexingPerformance"));
+        // suite.addTest(new TestSolrConfiguration("testMultipleIndices"));
+        // suite.addTest(new TestSolrConfiguration("testMultipleLanguages"));
+        suite.addTest(new TestSolrConfiguration("testPostProcessor"));
         suite.addTest(new TestSolrConfiguration("testShutDown"));
 
         TestSetup wrapper = new TestSetup(suite) {
@@ -91,7 +97,7 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
             @Override
             protected void setUp() {
 
-                setupOpenCms("simpletest", "/", "/../org/opencms/search/solr");
+                setupOpenCms("solrtest", "/", "/../org/opencms/search/solr");
                 // disable all lucene indexes
                 for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
                     if (!indexName.equalsIgnoreCase(AllTests.SOLR_ONLINE)) {
@@ -114,56 +120,93 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
     }
 
     /**
+     * @throws Throwable
+     */
+    public void testExtractionResults() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        CmsResource res = cms.createSibling(
+            "/xmlcontent/link_article_0001.html",
+            "/xmlcontent/link2_article_0001.html",
+            null);
+        // publish the project and update the search index
+        OpenCms.getPublishManager().publishProject(cms, new CmsShellReport(cms.getRequestContext().getLocale()));
+        OpenCms.getPublishManager().waitWhileRunning();
+        I_CmsDocumentFactory factory = OpenCms.getSearchManager().getDocumentFactory(
+            CmsSolrDocumentXmlContent.TYPE_XMLCONTENT_SOLR,
+            "text/html");
+        CmsExtractionResultCache cache = factory.getCache();
+        String cacheName = cache.getCacheName(res, Locale.ENGLISH, CmsSolrDocumentXmlContent.TYPE_XMLCONTENT_SOLR);
+        CmsExtractionResult result = cache.getCacheObject(cacheName);
+        assertNotNull(result);
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public void testIndexingPerformance() throws Throwable {
+
+        // TODO: implement
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public void testMultipleIndices() throws Throwable {
+
+        // TODO: implement
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public void testMultipleLanguages() throws Throwable {
+
+        // TODO: implement
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public void testPermissionHandling() throws Throwable {
+
+        echo("Testing search for permission check by comparing result counts");
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
+
+        CmsSolrQuery squery = new CmsSolrQuery(getCmsObject(), null);
+        squery.setSearchRoots("/sites/default/");
+        squery.setRows(new Integer(100));
+        CmsSolrResultList results = index.search(getCmsObject(), squery);
+        AllTests.printResults(getCmsObject(), results, true);
+        assertEquals(53, results.getNumFound());
+
+        CmsObject cms = OpenCms.initCmsObject(getCmsObject(), new CmsContextInfo("test1"));
+        results = index.search(cms, squery);
+        AllTests.printResults(cms, results, false);
+        assertEquals(47, results.getNumFound());
+
+        cms = OpenCms.initCmsObject(getCmsObject(), new CmsContextInfo("test2"));
+        results = index.search(cms, squery);
+        AllTests.printResults(cms, results, true);
+        assertEquals(49, results.getNumFound());
+    }
+
+    /**
      * Tests the CmsSearch with folder names with upper case letters.<p>
      * 
      * @throws Exception in case the test fails
      */
-    public void testCmsSolrPostProcessor() throws Exception {
+    public void testPostProcessor() throws Exception {
 
         CmsObject cms = getCmsObject();
         echo("Testing Solr link processor");
 
         CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
-        // String query = "+text:Alkacon +text:OpenCms +text:Text +parent-folders:/sites/default/types/*";
         String query = "q=+text:>>SearchEgg1<<";
         CmsSolrResultList results = index.search(cms, query);
-        assertEquals(1, results.size());
-        assertEquals("/sites/default/xmlcontent/article_0001.html", results.get(0).getRootPath());
-
-        String link = results.get(0).getDocument().getFieldValueAsString("link");
+        CmsSearchResource res = AllTests.getByPath(results, "/sites/default/xmlcontent/article_0001.html");
+        String link = res.getDocument().getFieldValueAsString("link");
         assertEquals("/data/opencms/xmlcontent/article_0001.html", link);
-    }
-
-    /**
-     * @throws Throwable
-     */
-    public void testDefaultFields() throws Throwable {
-
-        // TODO: implement
-    }
-
-    /**
-     * @throws Throwable
-     */
-    public void testDynamicFields() throws Throwable {
-
-        // TODO: implement
-    }
-
-    /**
-     * @throws Throwable
-     */
-    public void testFieldConfiguration() throws Throwable {
-
-        // TODO: implement
-    }
-
-    /**
-     * @throws Throwable
-     */
-    public void testMandantoryFields() throws Throwable {
-
-        // TODO: implement
     }
 
     /**
@@ -197,13 +240,5 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
         // success ?
         CmsFileUtil.purgeDirectory(new File(index.getPath()));
         assertTrue(!new File(index.getPath()).exists());
-    }
-
-    /**
-     * @throws Throwable
-     */
-    public void testXSDFields() throws Throwable {
-
-        // TODO: implement
     }
 }

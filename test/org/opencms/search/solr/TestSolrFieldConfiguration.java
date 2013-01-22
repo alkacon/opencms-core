@@ -90,8 +90,8 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         suite.setName(TestSolrFieldConfiguration.class.getName());
         suite.addTest(new TestSolrFieldConfiguration("testAppinfoSolrField"));
         suite.addTest(new TestSolrFieldConfiguration("testContentLocalesField"));
-        suite.addTest(new TestSolrFieldConfiguration("testLocaleDependenciesField"));
         suite.addTest(new TestSolrFieldConfiguration("testDependencies"));
+        suite.addTest(new TestSolrFieldConfiguration("testLocaleDependenciesField"));
         suite.addTest(new TestSolrFieldConfiguration("testLuceneMigration"));
 
         TestSetup wrapper = new TestSetup(suite) {

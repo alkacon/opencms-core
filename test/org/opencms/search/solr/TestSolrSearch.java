@@ -30,6 +30,7 @@ package org.opencms.search.solr;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
@@ -57,6 +58,7 @@ import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrQuery.ORDER;
 import org.apache.solr.schema.DateField;
 
@@ -89,17 +91,30 @@ public class TestSolrSearch extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestSolrSearch.class.getName());
 
-        suite.addTest(new TestSolrSearch("testCmsSearchIndexer"));
-        suite.addTest(new TestSolrSearch("testCmsSearchUppercaseFolderName"));
-        suite.addTest(new TestSolrSearch("testCmsSearchDocumentTypes"));
-        suite.addTest(new TestSolrSearch("testCmsSearchXmlContent"));
+        suite.addTest(new TestSolrSearch("testDocumentTypes"));
+        suite.addTest(new TestSolrSearch("testFolderName"));
+        suite.addTest(new TestSolrSearch("testIndexer"));
         suite.addTest(new TestSolrSearch("testIndexGeneration"));
-        suite.addTest(new TestSolrSearch("testSearchIssueWithSpecialFoldernames"));
-        suite.addTest(new TestSolrSearch("testSortSearchResults"));
-        suite.addTest(new TestSolrSearch("testMultipleSearchRoots"));
+        suite.addTest(new TestSolrSearch("testIssueWithSpecialFoldernames"));
         suite.addTest(new TestSolrSearch("testLimitTimeRanges"));
         suite.addTest(new TestSolrSearch("testLimitTimeRangesOptimized"));
+        suite.addTest(new TestSolrSearch("testLocaleRestriction"));
+        suite.addTest(new TestSolrSearch("testMultipleSearchRoots"));
+        suite.addTest(new TestSolrSearch("testQueryDefaults"));
+        suite.addTest(new TestSolrSearch("testQueryParameterStrength"));
+        suite.addTest(new TestSolrSearch("testSortResults"));
+        suite.addTest(new TestSolrSearch("testXmlContent"));
 
+        suite.addTest(new TestSolrSearch("testAdvancedFacetting"));
+        // suite.addTest(new TestSolrSearch("testAdvancedHighlighting"));
+        // suite.addTest(new TestSolrSearch("testAdvancedMoreLikeThis"));
+        // suite.addTest(new TestSolrSearch("testAdvancedPaging"));
+        // suite.addTest(new TestSolrSearch("testAdvancedRangingDates"));
+        // suite.addTest(new TestSolrSearch("testAdvancedRangingNumerics"));
+        // suite.addTest(new TestSolrSearch("testAdvancedSorting"));
+        // suite.addTest(new TestSolrSearch("testAdvancedSpellChecking"));
+        // suite.addTest(new TestSolrSearch("testAdvancedSugesstion"));
+        // suite.addTest(new TestSolrSearch("testAdvancedSynonyms"));
         TestSetup wrapper = new TestSetup(suite) {
 
             @Override
@@ -128,11 +143,125 @@ public class TestSolrSearch extends OpenCmsTestCase {
     }
 
     /**
+     * @throws Throwable if something goes wrong
+     */
+    public void testAdvancedFacetting() throws Throwable {
+
+        echo("Testing facet query count");
+
+        // creating the query: facet=true&facet.field=Title_exact&facet.mincount=1&facet.query=text:OpenCms&rows=0
+        SolrQuery query = new CmsSolrQuery(getCmsObject(), null);
+        // facet=true
+        query.setFacet(true);
+        // facet.field=Title_exact
+        query.addFacetField("Title_exact");
+        // facet.mincount=1
+        query.add("facet.mincount", "1");
+        // facet.query=text:OpenCms
+        query.addFacetQuery("text:OpenCms");
+        // facet.query=Title_prop:OpenCms
+        query.addFacetQuery("Title_prop:OpenCms");
+        // rows=0
+        query.setRows(new Integer(0));
+
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
+        CmsSolrResultList results = index.search(getCmsObject(), query);
+        long facetTextCount = results.getFacetQuery().get("text:OpenCms").intValue();
+        long facetTitleCount = results.getFacetQuery().get("Title_prop:OpenCms").intValue();
+        echo("Found '"
+            + results.getFacetField("Title_exact").getValueCount()
+            + "' facets for the field \"Title_exact\" and '"
+            + facetTextCount
+            + "' of them containing the word: \"OpenCms\" in the field 'text' and '"
+            + facetTitleCount
+            + "' of them containing the word \"OpenCms\" in the field 'Title_prop!'");
+
+        query = new CmsSolrQuery(getCmsObject(), CmsRequestUtil.createParameterMap("q=text:OpenCms"));
+        results = index.search(getCmsObject(), query);
+        long numExpected = results.getNumFound();
+
+        assertEquals(numExpected, facetTextCount);
+        echo("Great Solr works fine!");
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public void testAdvancedHighlighting() throws Throwable {
+
+        // TODO: implement
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public void testAdvancedMoreLikeThis() throws Throwable {
+
+        // TODO: implement
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public void testAdvancedPaging() throws Throwable {
+
+        // TODO: implement
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public void testAdvancedRangingDates() throws Throwable {
+
+        // TODO: implement
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public void testAdvancedRangingNumerics() throws Throwable {
+
+        // TODO: implement
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public void testAdvancedSorting() throws Throwable {
+
+        // TODO: implement
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public void testAdvancedSpellChecking() throws Throwable {
+
+        // TODO: implement
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public void testAdvancedSugesstion() throws Throwable {
+
+        // TODO: implement
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public void testAdvancedSynonyms() throws Throwable {
+
+        // TODO: implement
+    }
+
+    /**
      * Tests searching in various document types.<p>
      * 
      * @throws Throwable if something goes wrong
      */
-    public void testCmsSearchDocumentTypes() throws Throwable {
+    public void testDocumentTypes() throws Throwable {
 
         CmsObject cms = getCmsObject();
         echo("Testing search for various document types");
@@ -152,75 +281,9 @@ public class TestSolrSearch extends OpenCmsTestCase {
      * 
      * @throws Throwable if something goes wrong
      */
-    public void testCmsSearchIndexer() throws Throwable {
+    public void testIndexer() throws Throwable {
 
         OpenCms.getSearchManager().rebuildAllIndexes(new CmsShellReport(Locale.ENGLISH));
-    }
-
-    /**
-     * Tests the CmsSearch with folder names with upper case letters.<p>
-     * 
-     * @throws Exception in case the test fails
-     */
-    public void testCmsSearchUppercaseFolderName() throws Exception {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing search for case sensitive folder names");
-
-        echo("Testing search for case sensitive folder name: /testUPPERCASE/");
-        testCmsSearchUppercaseFolderNameUtil(cms, "/testUPPERCASE/", 1);
-
-        // extension of this test for 7.0.2:
-        // now it is possible to search in restricted folders in a case sensitive way
-        echo("Testing search for case sensitive folder name: /TESTuppercase/");
-        testCmsSearchUppercaseFolderNameUtil(cms, "/TESTuppercase/", 1);
-
-        // let's see if we find 2 results when we don't use a search root
-        echo("Testing search for case sensitive folder names without a site root");
-        testCmsSearchUppercaseFolderNameUtil(cms, null, 2);
-    }
-
-    /**
-     * Test the cms search indexer.<p>
-     * 
-     * @throws Throwable if something goes wrong
-     */
-    public void testCmsSearchXmlContent() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing search for xml contents");
-
-        String query;
-        List<CmsSearchResource> results;
-
-        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
-        // String query = "+text:Alkacon +text:OpenCms +text:Text +parent-folders:/sites/default/types/*";
-        query = "q=+text:\">>SearchEgg1<<\"";
-        results = index.search(cms, query);
-        assertEquals(1, results.size());
-        assertEquals("/sites/default/xmlcontent/article_0001.html", results.get(0).getRootPath());
-
-        query = "q=+text:\">>SearchEgg2<<\"";
-        results = index.search(cms, query);
-        assertEquals(1, results.size());
-        assertEquals("/sites/default/xmlcontent/article_0002.html", results.get(0).getRootPath());
-
-        query = "q=+text:\">>SearchEgg3<<\"";
-        results = index.search(cms, query);
-        assertEquals(1, results.size());
-        assertEquals("/sites/default/xmlcontent/article_0003.html", results.get(0).getRootPath());
-
-        // check (on console) that the file does contain a link to the /xmlcontent/ folder 
-        CmsFile article4 = cms.readFile("/xmlcontent/article_0004.html");
-        CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, article4, true);
-        echo(content.toString());
-
-        // now search for another Query "xmlcontent", this must not be found in article 4 since it is excluded
-        query = "q=+text:\"xmlcontent\"";
-        results = index.search(cms, query);
-        assertEquals(1, results.size());
-        assertEquals("/sites/default/xmlcontent/article_0003.html", (results.get(0)).getRootPath());
-        // assertEquals("/sites/default/xmlcontent/article_0004.html", ((CmsSearchResult)results.get(1)).getPath());
     }
 
     /**
@@ -271,6 +334,43 @@ public class TestSolrSearch extends OpenCmsTestCase {
         assertEquals(0, results.size());
 
         OpenCms.getSearchManager().removeSearchIndex(index);
+    }
+
+    /**
+     * Tests an issue where no results are found in folders that have names
+     * like <code>/basisdienstleistungen_-_zka/</code>.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testIssueWithSpecialFoldernames() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing search issue with special folder name");
+
+        String folderName = "/basisdienstleistungen_-_zka/";
+        cms.copyResource("/types/", folderName);
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
+        OpenCms.getPublishManager().publishProject(cms);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        OpenCms.getSearchManager().getSearchIndexes();
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
+
+        // perform a search on the newly generated index
+        String query;
+        CmsSolrResultList results;
+
+        query = "q=+text:\"Alkacon\" +text:\"OpenCms\" +parent-folders:/sites/default/&sort=path asc";
+        results = index.search(getCmsObject(), query);
+        AllTests.printResults(cms, results, false);
+        assertEquals(8, results.size());
+        assertEquals("/sites/default" + folderName + "text.txt", results.get(0).getRootPath());
+
+        query = "q=+text:Alkacon +text:OpenCms +parent-folders:/sites/default" + folderName;
+        results = index.search(getCmsObject(), query);
+        AllTests.printResults(cms, results, false);
+        assertEquals(1, results.size());
+        assertEquals("/sites/default" + folderName + "text.txt", results.get(0).getRootPath());
     }
 
     /**
@@ -424,6 +524,99 @@ public class TestSolrSearch extends OpenCmsTestCase {
     }
 
     /**
+     * @throws Throwable
+     */
+    public void testLocaleRestriction() throws Throwable {
+
+        CmsObject cms = OpenCms.initCmsObject(getCmsObject());
+
+        // use a folder that only contains GERMAN content @see manifest.xml -> locale poperty
+        String folderName = "/folder1/subfolder12/subsubfolder121/";
+
+        CmsResource master = importTestResource(
+            cms,
+            "org/opencms/search/pdf-test-112.pdf",
+            folderName + "master.pdf",
+            CmsResourceTypeBinary.getStaticTypeId(),
+            Collections.<CmsProperty> emptyList());
+
+        CmsResource de = importTestResource(
+            cms,
+            "org/opencms/search/pdf-test-112.pdf",
+            folderName + "master_de.pdf",
+            CmsResourceTypeBinary.getStaticTypeId(),
+            Collections.<CmsProperty> emptyList());
+
+        CmsResource en = importTestResource(
+            cms,
+            "org/opencms/search/pdf-test-112.pdf",
+            folderName + "master_en.pdf",
+            CmsResourceTypeBinary.getStaticTypeId(),
+            Collections.<CmsProperty> emptyList());
+
+        CmsResource fr = importTestResource(
+            cms,
+            "org/opencms/search/pdf-test-112.pdf",
+            folderName + "master_fr.pdf",
+            CmsResourceTypeBinary.getStaticTypeId(),
+            Collections.<CmsProperty> emptyList());
+
+        // publish the project and update the search index
+        OpenCms.getPublishManager().publishProject(cms, new CmsShellReport(cms.getRequestContext().getLocale()));
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
+
+        cms.getRequestContext().setLocale(Locale.GERMAN);
+        CmsSolrQuery query = new CmsSolrQuery(cms, null);
+        query.setText("Testfile Intranet");
+        CmsSolrResultList result = index.search(cms, query);
+        assertTrue(!result.contains(master));
+        assertTrue(!result.contains(en));
+        assertTrue(result.contains(de));
+        assertTrue(!result.contains(fr));
+
+        query = new CmsSolrQuery();
+        query.setLocales(Collections.singletonList(Locale.GERMAN));
+        query.setText("Testfile Intranet");
+        result = index.search(cms, query);
+        assertTrue(!result.contains(master));
+        assertTrue(!result.contains(en));
+        assertTrue(result.contains(de));
+        assertTrue(!result.contains(fr));
+
+        query = new CmsSolrQuery();
+        query.setLocales(Collections.singletonList(Locale.FRENCH));
+        query.setText("Testfile Intranet");
+        result = index.search(cms, query);
+        assertTrue(!result.contains(master));
+        assertTrue(!result.contains(en));
+        assertTrue(!result.contains(de));
+        assertTrue(result.contains(fr));
+
+        // Locale set to English: should return the master and the master_en
+        query = new CmsSolrQuery();
+        query.setLocales(Collections.singletonList(Locale.ENGLISH));
+        query.setText("Testfile Intranet");
+        result = index.search(cms, query);
+        assertTrue(result.contains(master));
+        assertTrue(result.contains(en));
+        assertTrue(!result.contains(de));
+        assertTrue(!result.contains(fr));
+
+        // Locale not set: Search in all locales should return all 4 docs
+        query = new CmsSolrQuery();
+        List<Locale> l = Collections.emptyList();
+        query.setLocales(l);
+        query.setText("Testfile Intranet");
+        result = index.search(cms, query);
+        assertTrue(result.contains(master));
+        assertTrue(result.contains(en));
+        assertTrue(result.contains(de));
+        assertTrue(result.contains(fr));
+    }
+
+    /**
      * Tests searching with multiple search roots.<p>
      * 
      * @throws Exception if the test fails
@@ -466,40 +659,72 @@ public class TestSolrSearch extends OpenCmsTestCase {
     }
 
     /**
-     * Tests an issue where no results are found in folders that have names
-     * like <code>/basisdienstleistungen_-_zka/</code>.<p>
-     * 
-     * @throws Exception if the test fails
+     * @throws Throwable
      */
-    public void testSearchIssueWithSpecialFoldernames() throws Exception {
+    public void testQueryDefaults() throws Throwable {
 
-        CmsObject cms = getCmsObject();
-        echo("Testing search issue with special folder name");
+        // test default query
+        String defaultQuery = "q=*:*&fl=*,score&qt=edismax&rows=10";
+        CmsSolrQuery query = new CmsSolrQuery();
+        assertEquals(defaultQuery, query.toString());
 
-        String folderName = "/basisdienstleistungen_-_zka/";
-        cms.copyResource("/types/", folderName);
-        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
-        OpenCms.getPublishManager().publishProject(cms);
-        OpenCms.getPublishManager().waitWhileRunning();
+        // test creating default query by String
+        query = new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(defaultQuery));
+        assertEquals(defaultQuery, query.toString());
 
-        OpenCms.getSearchManager().getSearchIndexes();
-        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
+        // test creating default query by String
+        String defaultContextQuery = "q=*:*&fl=*,score&qt=edismax&rows=10&fq=con_locales:en&fq=parent-folders:/sites/default/";
+        query = new CmsSolrQuery(getCmsObject(), null);
+        assertEquals(defaultContextQuery, query.toString());
 
-        // perform a search on the newly generated index
-        String query;
-        CmsSolrResultList results;
+        // test creating default context query by String
+        query = new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(defaultContextQuery));
+        assertEquals(defaultContextQuery, query.toString());
 
-        query = "q=+text:\"Alkacon\" +text:\"OpenCms\" +parent-folders:/sites/default/&sort=path asc";
-        results = index.search(getCmsObject(), query);
-        AllTests.printResults(cms, results, false);
-        assertEquals(8, results.size());
-        assertEquals("/sites/default" + folderName + "text.txt", results.get(0).getRootPath());
+        // test creating default context query by context and String
+        query = new CmsSolrQuery(getCmsObject(), CmsRequestUtil.createParameterMap(defaultContextQuery));
+        assertEquals(defaultContextQuery, query.toString());
+    }
 
-        query = "q=+text:Alkacon +text:OpenCms +parent-folders:/sites/default" + folderName;
-        results = index.search(getCmsObject(), query);
-        AllTests.printResults(cms, results, false);
-        assertEquals(1, results.size());
-        assertEquals("/sites/default" + folderName + "text.txt", results.get(0).getRootPath());
+    /**
+     * @throws Throwable
+     */
+    public void testQueryParameterStrength() throws Throwable {
+
+        String defaultContextQuery = "q=*:*&fl=*,score&qt=edismax&rows=10&fq=con_locales:en&fq=parent-folders:/sites/default/";
+        String modifiedContextQuery = "q=*:*&fl=*,score&qt=edismax&rows=10&fq=con_locales:en&fq=parent-folders:/";
+
+        // members should be stronger than request context
+        CmsSolrQuery query = new CmsSolrQuery(getCmsObject(), null);
+        assertEquals(defaultContextQuery, query.toString());
+        query.setSearchRoots("/");
+        assertEquals(modifiedContextQuery, "q=*:*&fl=*,score&qt=edismax&rows=10&fq=con_locales:en&fq=parent-folders:/");
+        query.setLocales(Locale.GERMAN, Locale.FRENCH, Locale.ENGLISH);
+        query.setLocales(Locale.GERMAN, Locale.FRENCH);
+        assertEquals(
+            "q=*:*&fl=*,score&qt=edismax&rows=10&fq=parent-folders:/&fq=con_locales:(de OR fr)",
+            query.toString());
+
+        // parameters should be stronger than request context
+        query = new CmsSolrQuery(getCmsObject(), CmsRequestUtil.createParameterMap("fq=parent-folders:/"));
+        assertEquals(modifiedContextQuery, query.toString());
+
+        // parameters should be stronger than request context and members
+        query = new CmsSolrQuery(
+            getCmsObject(),
+            CmsRequestUtil.createParameterMap("q=test&fq=parent-folders:/&fq=con_locales:fr&fl=content_fr&rows=50&qt=edismax&fq=type:v8news"));
+        query.setText("test");
+        query.setTextSearchFields("pla");
+        query.setLocales(Locale.GERMAN);
+        query.setFields("pla,plub");
+        query.setRows(new Integer(1000));
+        query.setQueryType("lucene");
+        query.setResourceTypes("article");
+        String ex = "q={!q.op=OR qf=text_en}test&fl=pla,plub&qt=lucene&rows=1000&fq=parent-folders:/&fq=con_locales:de&fq=type:article";
+        assertEquals(ex, query.toString());
+
+        assertEquals("article", CmsSolrQuery.getResourceType(query.getFilterQueries()));
+
     }
 
     /**
@@ -507,7 +732,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
      * 
      * @throws Exception if the test fails
      */
-    public void testSortSearchResults() throws Exception {
+    public void testSortResults() throws Exception {
 
         echo("Testing sorting of search results");
         CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
@@ -574,6 +799,72 @@ public class TestSolrSearch extends OpenCmsTestCase {
     }
 
     /**
+     * Tests the CmsSearch with folder names with upper case letters.<p>
+     * 
+     * @throws Exception in case the test fails
+     */
+    public void testFolderName() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing search for case sensitive folder names");
+
+        echo("Testing search for case sensitive folder name: /testUPPERCASE/");
+        testUppercaseFolderNameUtil(cms, "/testUPPERCASE/", 1);
+
+        // extension of this test for 7.0.2:
+        // now it is possible to search in restricted folders in a case sensitive way
+        echo("Testing search for case sensitive folder name: /TESTuppercase/");
+        testUppercaseFolderNameUtil(cms, "/TESTuppercase/", 1);
+
+        // let's see if we find 2 results when we don't use a search root
+        echo("Testing search for case sensitive folder names without a site root");
+        testUppercaseFolderNameUtil(cms, null, 2);
+    }
+
+    /**
+     * Test the cms search indexer.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testXmlContent() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing search for xml contents");
+
+        String query;
+        List<CmsSearchResource> results;
+
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
+        // String query = "+text:Alkacon +text:OpenCms +text:Text +parent-folders:/sites/default/types/*";
+        query = "q=+text:\">>SearchEgg1<<\"";
+        results = index.search(cms, query);
+        assertEquals(1, results.size());
+        assertEquals("/sites/default/xmlcontent/article_0001.html", results.get(0).getRootPath());
+
+        query = "q=+text:\">>SearchEgg2<<\"";
+        results = index.search(cms, query);
+        assertEquals(1, results.size());
+        assertEquals("/sites/default/xmlcontent/article_0002.html", results.get(0).getRootPath());
+
+        query = "q=+text:\">>SearchEgg3<<\"";
+        results = index.search(cms, query);
+        assertEquals(1, results.size());
+        assertEquals("/sites/default/xmlcontent/article_0003.html", results.get(0).getRootPath());
+
+        // check (on console) that the file does contain a link to the /xmlcontent/ folder 
+        CmsFile article4 = cms.readFile("/xmlcontent/article_0004.html");
+        CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, article4, true);
+        echo(content.toString());
+
+        // now search for another Query "xmlcontent", this must not be found in article 4 since it is excluded
+        query = "q=+text:\"xmlcontent\"";
+        results = index.search(cms, query);
+        assertEquals(1, results.size());
+        assertEquals("/sites/default/xmlcontent/article_0003.html", (results.get(0)).getRootPath());
+        // assertEquals("/sites/default/xmlcontent/article_0004.html", ((CmsSearchResult)results.get(1)).getPath());
+    }
+
+    /**
      * Internal helper for test with same name.<p>
      * 
      * @param cms the current users OpenCms context
@@ -582,7 +873,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
      * 
      * @throws Exception in case the test fails
      */
-    private void testCmsSearchUppercaseFolderNameUtil(CmsObject cms, String folderName, int expected) throws Exception {
+    private void testUppercaseFolderNameUtil(CmsObject cms, String folderName, int expected) throws Exception {
 
         if (folderName != null) {
             // create test folder
