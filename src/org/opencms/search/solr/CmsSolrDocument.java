@@ -254,7 +254,6 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
                 } catch (SolrException e) {
                     LOG.warn(Messages.get().getBundle().key(Messages.LOG_SOLR_FIELD_NOT_FOUND_1, field.toString()));
                 }
-                FieldType type = schema.getFieldType(fieldName);
                 if (multi) {
                     splitedValues = CmsStringUtil.splitAsList(value.toString(), "\n");
                 } else {
@@ -263,6 +262,7 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
                 for (String val : splitedValues) {
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(val)) {
                         try {
+                            FieldType type = schema.getFieldType(fieldName);
                             if (type instanceof DateField) {
                                 val = DateField.formatExternal(new Date(new Long(val).longValue()));
                             }
