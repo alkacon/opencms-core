@@ -31,7 +31,10 @@ import org.opencms.file.CmsProject;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.search.fields.CmsLuceneFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
+import org.opencms.search.solr.CmsSolrFieldConfiguration;
+import org.opencms.search.solr.CmsSolrIndex;
 import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.widgets.CmsInputWidget;
 import org.opencms.widgets.CmsSelectWidget;
@@ -152,13 +155,22 @@ public class CmsEditSearchIndexDialog extends A_CmsEditSearchIndexDialog {
     private List<CmsSelectWidgetOption> getFieldConfigurationWidgetConfiguration() {
 
         List<CmsSelectWidgetOption> result = new ArrayList<CmsSelectWidgetOption>();
-        List<CmsSearchFieldConfiguration> fieldConfigurations = m_searchManager.getFieldConfigurations();
-
-        for (CmsSearchFieldConfiguration config : fieldConfigurations) {
-            CmsSelectWidgetOption option = new CmsSelectWidgetOption(
-                config.getName(),
-                (config.getName()).equals(CmsSearchFieldConfiguration.STR_STANDARD));
-            result.add(option);
+        if (getSearchIndexIndex() instanceof CmsSolrIndex) {
+            List<CmsSolrFieldConfiguration> fieldConfigurations = m_searchManager.getFieldConfigurationsSolr();
+            for (CmsSearchFieldConfiguration config : fieldConfigurations) {
+                CmsSelectWidgetOption option = new CmsSelectWidgetOption(
+                    config.getName(),
+                    (config.getName()).equals(CmsSearchFieldConfiguration.STR_STANDARD));
+                result.add(option);
+            }
+        } else {
+            List<CmsLuceneFieldConfiguration> fieldConfigurations = m_searchManager.getFieldConfigurationsLucene();
+            for (CmsSearchFieldConfiguration config : fieldConfigurations) {
+                CmsSelectWidgetOption option = new CmsSelectWidgetOption(
+                    config.getName(),
+                    (config.getName()).equals(CmsSearchFieldConfiguration.STR_STANDARD));
+                result.add(option);
+            }
         }
         return result;
     }
