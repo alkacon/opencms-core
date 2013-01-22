@@ -1,372 +1,374 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE opencms SYSTEM "http://www.opencms.org/dtd/6.0/opencms-search.dtd">
+
 <opencms>
-  <search>
-    <directory>index</directory>
-    <timeout>60000</timeout>
-    <offlineUpdateFrequency>30000</offlineUpdateFrequency>
-    <forceunlock>onlyfull</forceunlock>
-    <excerpt>1024</excerpt>
-    <extractionCacheMaxAge>672.0</extractionCacheMaxAge>
-    <maxModificationsBeforeCommit>20</maxModificationsBeforeCommit>
-    <highlighter>org.opencms.search.documents.CmsTermHighlighterHtml</highlighter>
-    <documenttypes>
-      <documenttype>
-        <name>generic</name>
-        <class>org.opencms.search.documents.CmsDocumentGeneric</class>
-        <mimetypes/>
-        <resourcetypes>
-          <resourcetype>*</resourcetype>
-        </resourcetypes>
-      </documenttype>
-      <documenttype>
-        <name>html</name>
-        <class>org.opencms.search.documents.CmsDocumentHtml</class>
-        <mimetypes>
-          <mimetype>text/html</mimetype>
-        </mimetypes>
-        <resourcetypes>
-          <resourcetype>plain</resourcetype>
-        </resourcetypes>
-      </documenttype>
-      <documenttype>
-        <name>image</name>
-        <class>org.opencms.search.documents.CmsDocumentGeneric</class>
-        <mimetypes/>
-        <resourcetypes>
-          <resourcetype>image</resourcetype>
-        </resourcetypes>
-      </documenttype>
-      <documenttype>
-        <name>jsp</name>
-        <class>org.opencms.search.documents.CmsDocumentPlainText</class>
-        <mimetypes/>
-        <resourcetypes>
-          <resourcetype>jsp</resourcetype>
-        </resourcetypes>
-      </documenttype>
-      <documenttype>
-        <name>pdf</name>
-        <class>org.opencms.search.documents.CmsDocumentPdf</class>
-        <mimetypes>
-          <mimetype>application/pdf</mimetype>
-        </mimetypes>
-        <resourcetypes>
-          <resourcetype>binary</resourcetype>
-          <resourcetype>plain</resourcetype>
-        </resourcetypes>
-      </documenttype>
-      <documenttype>
-        <name>rtf</name>
-        <class>org.opencms.search.documents.CmsDocumentRtf</class>
-        <mimetypes>
-          <mimetype>text/rtf</mimetype>
-          <mimetype>application/rtf</mimetype>
-        </mimetypes>
-        <resourcetypes>
-          <resourcetype>binary</resourcetype>
-          <resourcetype>plain</resourcetype>
-        </resourcetypes>
-      </documenttype>
-      <documenttype>
-        <name>text</name>
-        <class>org.opencms.search.documents.CmsDocumentPlainText</class>
-        <mimetypes>
-          <mimetype>text/html</mimetype>
-          <mimetype>text/plain</mimetype>
-        </mimetypes>
-        <resourcetypes>
-          <resourcetype>plain</resourcetype>
-        </resourcetypes>
-      </documenttype>
-      <documenttype>
-        <name>xmlcontent</name>
-        <class>org.opencms.search.documents.CmsDocumentXmlContent</class>
-        <mimetypes/>
-        <resourcetypes>
-          <resourcetype>*</resourcetype>
-        </resourcetypes>
-      </documenttype>
-      <documenttype>
-        <name>containerpage</name>
-        <class>org.opencms.search.documents.CmsDocumentContainerPage</class>
-        <mimetypes>
-          <mimetype>text/html</mimetype>
-        </mimetypes>
-        <resourcetypes>
-          <resourcetype>containerpage</resourcetype>
-        </resourcetypes>
-      </documenttype>
-      <documenttype>
-        <name>xmlpage</name>
-        <class>org.opencms.search.documents.CmsDocumentXmlPage</class>
-        <mimetypes>
-          <mimetype>text/html</mimetype>
-        </mimetypes>
-        <resourcetypes>
-          <resourcetype>xmlpage</resourcetype>
-        </resourcetypes>
-      </documenttype>
-      <documenttype>
-        <name>xmlcontent-galleries</name>
-        <class>org.opencms.search.galleries.CmsGalleryDocumentXmlContent</class>
-        <mimetypes/>
-        <resourcetypes>
-          <resourcetype>xmlcontent-galleries</resourcetype>
-        </resourcetypes>
-      </documenttype>
-      <documenttype>
-        <name>xmlpage-galleries</name>
-        <class>org.opencms.search.galleries.CmsGalleryDocumentXmlPage</class>
-        <mimetypes/>
-        <resourcetypes>
-          <resourcetype>xmlpage-galleries</resourcetype>
-        </resourcetypes>
-      </documenttype>
-      <documenttype>
-        <name>msoffice-ole2</name>
-        <class>org.opencms.search.documents.CmsDocumentMsOfficeOLE2</class>
-        <mimetypes>
-          <mimetype>application/vnd.ms-powerpoint</mimetype>
-          <mimetype>application/msword</mimetype>
-          <mimetype>application/vnd.ms-excel</mimetype>
-        </mimetypes>
-        <resourcetypes>
-          <resourcetype>binary</resourcetype>
-          <resourcetype>plain</resourcetype>
-        </resourcetypes>
-      </documenttype>
-      <documenttype>
-        <name>msoffice-ooxml</name>
-        <class>org.opencms.search.documents.CmsDocumentMsOfficeOOXML</class>
-        <mimetypes>
-          <mimetype>application/vnd.openxmlformats-officedocument.wordprocessingml.document</mimetype>
-          <mimetype>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</mimetype>
-          <mimetype>application/vnd.openxmlformats-officedocument.presentationml.presentation</mimetype>
-        </mimetypes>
-        <resourcetypes>
-          <resourcetype>binary</resourcetype>
-          <resourcetype>plain</resourcetype>
-        </resourcetypes>
-      </documenttype>
-      <documenttype>
-        <name>openoffice</name>
-        <class>org.opencms.search.documents.CmsDocumentOpenOffice</class>
-        <mimetypes>
-          <mimetype>application/vnd.oasis.opendocument.text</mimetype>
-          <mimetype>application/vnd.oasis.opendocument.spreadsheet</mimetype>
-        </mimetypes>
-        <resourcetypes>
-          <resourcetype>binary</resourcetype>
-          <resourcetype>plain</resourcetype>
-        </resourcetypes>
-      </documenttype>
-    </documenttypes>
-    <analyzers>
-      <analyzer>
-        <class>org.apache.lucene.analysis.de.GermanAnalyzer</class>
-        <locale>de</locale>
-      </analyzer>
-      <analyzer>
+	<search>
+		<directory>index</directory>
+		<timeout>60000</timeout>
+		<offlineUpdateFrequency>30000</offlineUpdateFrequency>
+		<forceunlock>onlyfull</forceunlock>
+		<excerpt>1024</excerpt>
+		<extractionCacheMaxAge>672.0</extractionCacheMaxAge>
+		<maxModificationsBeforeCommit>20</maxModificationsBeforeCommit>
+		<highlighter>org.opencms.search.documents.CmsTermHighlighterHtml</highlighter>
+		<documenttypes>
+			<documenttype>
+				<name>generic</name>
+				<class>org.opencms.search.documents.CmsDocumentGeneric</class>
+				<mimetypes />
+				<resourcetypes>
+					<resourcetype>*</resourcetype>
+				</resourcetypes>
+			</documenttype>
+			<documenttype>
+				<name>html</name>
+				<class>org.opencms.search.documents.CmsDocumentHtml</class>
+				<mimetypes>
+					<mimetype>text/html</mimetype>
+				</mimetypes>
+				<resourcetypes>
+					<resourcetype>plain</resourcetype>
+				</resourcetypes>
+			</documenttype>
+			<documenttype>
+				<name>image</name>
+				<class>org.opencms.search.documents.CmsDocumentGeneric</class>
+				<mimetypes />
+				<resourcetypes>
+					<resourcetype>image</resourcetype>
+				</resourcetypes>
+			</documenttype>
+			<documenttype>
+				<name>jsp</name>
+				<class>org.opencms.search.documents.CmsDocumentPlainText</class>
+				<mimetypes />
+				<resourcetypes>
+					<resourcetype>jsp</resourcetype>
+				</resourcetypes>
+			</documenttype>
+			<documenttype>
+				<name>pdf</name>
+				<class>org.opencms.search.documents.CmsDocumentPdf</class>
+				<mimetypes>
+					<mimetype>application/pdf</mimetype>
+				</mimetypes>
+				<resourcetypes>
+					<resourcetype>binary</resourcetype>
+					<resourcetype>plain</resourcetype>
+				</resourcetypes>
+			</documenttype>
+			<documenttype>
+				<name>rtf</name>
+				<class>org.opencms.search.documents.CmsDocumentRtf</class>
+				<mimetypes>
+					<mimetype>text/rtf</mimetype>
+					<mimetype>application/rtf</mimetype>
+				</mimetypes>
+				<resourcetypes>
+					<resourcetype>binary</resourcetype>
+					<resourcetype>plain</resourcetype>
+				</resourcetypes>
+			</documenttype>
+			<documenttype>
+				<name>text</name>
+				<class>org.opencms.search.documents.CmsDocumentPlainText</class>
+				<mimetypes>
+					<mimetype>text/html</mimetype>
+					<mimetype>text/plain</mimetype>
+				</mimetypes>
+				<resourcetypes>
+					<resourcetype>plain</resourcetype>
+				</resourcetypes>
+			</documenttype>
+			<documenttype>
+				<name>xmlcontent</name>
+				<class>org.opencms.search.documents.CmsDocumentXmlContent</class>
+				<mimetypes />
+				<resourcetypes>
+					<resourcetype>*</resourcetype>
+				</resourcetypes>
+			</documenttype>
+			<documenttype>
+				<name>containerpage</name>
+				<class>org.opencms.search.documents.CmsDocumentContainerPage</class>
+				<mimetypes>
+					<mimetype>text/html</mimetype>
+				</mimetypes>
+				<resourcetypes>
+					<resourcetype>containerpage</resourcetype>
+				</resourcetypes>
+			</documenttype>
+			<documenttype>
+				<name>xmlpage</name>
+				<class>org.opencms.search.documents.CmsDocumentXmlPage</class>
+				<mimetypes>
+					<mimetype>text/html</mimetype>
+				</mimetypes>
+				<resourcetypes>
+					<resourcetype>xmlpage</resourcetype>
+				</resourcetypes>
+			</documenttype>
+			<documenttype>
+				<name>xmlcontent-galleries</name>
+				<class>org.opencms.search.galleries.CmsGalleryDocumentXmlContent</class>
+				<mimetypes />
+				<resourcetypes>
+					<resourcetype>xmlcontent-galleries</resourcetype>
+				</resourcetypes>
+			</documenttype>
+			<documenttype>
+				<name>xmlpage-galleries</name>
+				<class>org.opencms.search.galleries.CmsGalleryDocumentXmlPage</class>
+				<mimetypes />
+				<resourcetypes>
+					<resourcetype>xmlpage-galleries</resourcetype>
+				</resourcetypes>
+			</documenttype>
+			<documenttype>
+				<name>msoffice-ole2</name>
+				<class>org.opencms.search.documents.CmsDocumentMsOfficeOLE2</class>
+				<mimetypes>
+					<mimetype>application/vnd.ms-powerpoint</mimetype>
+					<mimetype>application/msword</mimetype>
+					<mimetype>application/vnd.ms-excel</mimetype>
+				</mimetypes>
+				<resourcetypes>
+					<resourcetype>binary</resourcetype>
+					<resourcetype>plain</resourcetype>
+				</resourcetypes>
+			</documenttype>
+			<documenttype>
+				<name>msoffice-ooxml</name>
+				<class>org.opencms.search.documents.CmsDocumentMsOfficeOOXML</class>
+				<mimetypes>
+					<mimetype>application/vnd.openxmlformats-officedocument.wordprocessingml.document</mimetype>
+					<mimetype>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</mimetype>
+					<mimetype>application/vnd.openxmlformats-officedocument.presentationml.presentation</mimetype>
+				</mimetypes>
+				<resourcetypes>
+					<resourcetype>binary</resourcetype>
+					<resourcetype>plain</resourcetype>
+				</resourcetypes>
+			</documenttype>
+			<documenttype>
+				<name>openoffice</name>
+				<class>org.opencms.search.documents.CmsDocumentOpenOffice</class>
+				<mimetypes>
+					<mimetype>application/vnd.oasis.opendocument.text</mimetype>
+					<mimetype>application/vnd.oasis.opendocument.spreadsheet</mimetype>
+				</mimetypes>
+				<resourcetypes>
+					<resourcetype>binary</resourcetype>
+					<resourcetype>plain</resourcetype>
+				</resourcetypes>
+			</documenttype>
+		</documenttypes>
+		<analyzers>
+			<analyzer>
+				<class>org.apache.lucene.analysis.de.GermanAnalyzer</class>
+				<locale>de</locale>
+			</analyzer>
+			<analyzer>
 				<class>org.apache.lucene.analysis.standard.StandardAnalyzer</class>
-        <locale>en</locale>
-      </analyzer>
-      <analyzer>
-        <class>org.apache.lucene.analysis.fr.FrenchAnalyzer</class>
-        <locale>fr</locale>
-      </analyzer>
-      <analyzer>
+				<locale>en</locale>
+			</analyzer>
+			<analyzer>
+				<class>org.apache.lucene.analysis.fr.FrenchAnalyzer</class>
+				<locale>fr</locale>
+			</analyzer>
+			<analyzer>
 				<class>org.apache.lucene.analysis.snowball.SnowballAnalyzer</class>
 				<stemmer>Italian</stemmer>
-        <locale>it</locale>
-      </analyzer>
-      <analyzer>
-        <class>org.opencms.search.galleries.CmsGallerySearchAnalyzer</class>
-        <locale>all</locale>
-      </analyzer>
-    </analyzers>
-    <indexes>
-      <index>
-        <name>Online project (VFS)</name>
-        <rebuild>manual</rebuild>
-        <project>Online</project>
-        <locale>en</locale>
-        <sources>
-          <source>source1</source>
-        </sources>
-      </index>
-      <index>
-        <name>Offline project (VFS)</name>
-        <rebuild>manual</rebuild>
-        <project>Offline</project>
-        <locale>en</locale>
-        <configuration>standard</configuration>
-        <sources>
-          <source>source1</source>
-        </sources>
-      </index>
-      <!-- 
-# Excluded for the default test cases in order to speed up testing
-# This is enabled in the special configuration found in the "org.opencms.search.gallery" test package
-<index class="org.opencms.search.galleries.CmsGallerySearchIndex">
-<name>Gallery Index</name>
-<rebuild>offline</rebuild>
-<project>Offline</project>
-<locale>all</locale>   
-<configuration>gallery_fields</configuration> 
-<sources>
-<source>gallery_source</source>
-</sources>   
-</index>
--->
-    </indexes>
-    <indexsources>
-      <indexsource>
-        <name>source1</name>
-        <indexer class="org.opencms.search.CmsVfsIndexer"/>
-        <resources>
-          <resource>/sites/default/</resource>
-        </resources>
-        <documenttypes-indexed>
-          <name>xmlpage</name>
-          <name>xmlcontent</name>
-          <name>containerpage</name>
-          <name>text</name>
-          <name>pdf</name>
-          <name>rtf</name>
-          <name>html</name>
-          <name>image</name>
-          <name>generic</name>
-          <name>msoffice-ole2</name>
-          <name>msoffice-ooxml</name>
-          <name>openoffice</name>
-        </documenttypes-indexed>
-      </indexsource>
-      <indexsource>
-        <name>source2</name>
-        <indexer class="org.opencms.search.CmsVfsIndexer"/>
-        <resources>
-          <resource>/system/workplace/locales/</resource>
-        </resources>
-        <documenttypes-indexed>
-          <name>xmlpage</name>
-        </documenttypes-indexed>
-      </indexsource>
-      <indexsource>
-        <name>gallery_source</name>
-        <indexer class="org.opencms.search.CmsVfsIndexer"/>
-        <resources>
-          <resource>/sites/</resource>
-          <resource>/shared/</resource>
-          <resource>/system/galleries/</resource>
-        </resources>
-        <documenttypes-indexed>
-          <name>xmlpage-galleries</name>
-          <name>xmlcontent-galleries</name>
-          <name>jsp</name>
-          <name>text</name>
-          <name>pdf</name>
-          <name>rtf</name>
-          <name>html</name>
-          <name>image</name>
-          <name>generic</name>
-          <name>msoffice-ole2</name>
-          <name>msoffice-ooxml</name>
-          <name>openoffice</name>
-        </documenttypes-indexed>
-      </indexsource>
-    </indexsources>
-    <fieldconfigurations>
-      <fieldconfiguration class="org.opencms.search.fields.CmsSearchFieldConfigurationOldCategories">
-        <name>standard</name>
-        <description>The standard OpenCms search index field configuration.</description>
-        <fields>
-          <field name="content" store="compress" index="true" excerpt="true">
-            <mapping type="content"/>
-          </field>
-          <field name="title-key" store="true" index="untokenized" boost="0.0">
-            <mapping type="property">Title</mapping>
-          </field>
-          <field name="title" store="false" index="true">
-            <mapping type="property">Title</mapping>
-          </field>
-          <field name="keywords" store="true" index="true">
-            <mapping type="property">Keywords</mapping>
-          </field>
-          <field name="description" store="true" index="true">
-            <mapping type="property">Description</mapping>
-          </field>
-          <field name="meta" store="false" index="true">
-            <mapping type="property">Title</mapping>
-            <mapping type="property">Keywords</mapping>
-            <mapping type="property">Description</mapping>
-          </field>
-          <field name="special" store="true" index="true">
-            <mapping type="item">special</mapping>
-            <mapping type="item">Teaser[1]</mapping>
-            <mapping type="item">Teaser[2]</mapping>
-            <mapping type="item">Teaser[3]</mapping>
-            <mapping type="property">NavText</mapping>
-            <mapping type="property-search">search.special</mapping>
-          </field>
-        </fields>
-      </fieldconfiguration>
-      <fieldconfiguration class="org.opencms.search.galleries.CmsGallerySearchFieldConfiguration">
-        <name>gallery_fields</name>
-        <description>The OpenCms gallery search index field configuration.</description>
-        <fields>
-          <field name="content" store="compress" index="true" excerpt="true">
-            <mapping type="content"/>
-          </field>
-          <field name="title-key" store="true" index="untokenized" boost="0.0">
-            <mapping type="property">Title</mapping>
-          </field>
-          <field name="title" store="false" index="true">
-            <mapping type="property">Title</mapping>
-          </field>
-          <field name="description" store="true" index="true">
-            <mapping type="property">Description</mapping>
-          </field>
-          <field name="meta" store="false" index="true">
-            <mapping type="property">Title</mapping>
-            <mapping type="property">Description</mapping>
-            <mapping type="attribute">name</mapping>
-          </field>
-          <field name="search_exclude" store="true" index="true">
-          	<mapping type="property-search">search.exclude</mapping>
-          </field>
-          <field name="res_dateExpired" store="true" index="untokenized">
-            <mapping type="attribute">dateExpired</mapping>
-          </field>
-          <field name="res_dateReleased" store="true" index="untokenized">
-            <mapping type="attribute">dateReleased</mapping>
-          </field>
-          <field name="res_length" store="true" index="untokenized">
-            <mapping type="attribute">length</mapping>
-          </field>
-          <field name="res_state" store="true" index="untokenized">
-            <mapping type="attribute">state</mapping>
-          </field>
-          <field name="res_structureId" store="true" index="false">
-            <mapping type="attribute">structureId</mapping>
-          </field>
-          <field name="res_userCreated" store="true" index="untokenized">
-            <mapping type="attribute">userCreated</mapping>
-          </field>
-          <field name="res_userLastModified" store="true" index="untokenized">
-            <mapping type="attribute">userLastModified</mapping>
-          </field>
-          <field name="res_locales" store="true" index="true" analyzer="WhitespaceAnalyzer">
-            <mapping type="dynamic" class="org.opencms.search.galleries.CmsGallerySearchFieldMapping">res_locales</mapping>
-          </field>
-          <field name="additional_info" store="true" index="false">
-            <mapping type="dynamic" class="org.opencms.search.galleries.CmsGallerySearchFieldMapping">additional_info</mapping>
-          </field>
-          <field name="container_types" store="true" index="true" analyzer="WhitespaceAnalyzer">
-            <mapping type="dynamic" class="org.opencms.search.galleries.CmsGallerySearchFieldMapping">container_types</mapping>
-          </field>
-        </fields>
-      </fieldconfiguration>
-    </fieldconfigurations>
-  </search>
+				<locale>it</locale>
+			</analyzer>
+			<analyzer>
+				<class>org.opencms.search.galleries.CmsGallerySearchAnalyzer</class>
+				<locale>all</locale>
+			</analyzer>
+		</analyzers>
+		<indexes>
+			<index>
+				<name>Online project (VFS)</name>
+				<rebuild>manual</rebuild>
+				<project>Online</project>
+				<locale>en</locale>
+				<sources>
+					<source>source1</source>
+				</sources>
+			</index>
+			<index>
+				<name>Offline project (VFS)</name>
+				<rebuild>manual</rebuild>
+				<project>Offline</project>
+				<locale>en</locale>
+				<configuration>standard</configuration>
+				<sources>
+					<source>source1</source>
+				</sources>
+			</index>
+			<!-- # Excluded for the default test cases in order to speed up testing
+				# This is enabled in the special configuration found in the "org.opencms.search.gallery"
+				test package <index class="org.opencms.search.galleries.CmsGallerySearchIndex">
+				<name>Gallery Index</name> <rebuild>offline</rebuild> <project>Offline</project>
+				<locale>all</locale> <configuration>gallery_fields</configuration> <sources>
+				<source>gallery_source</source> </sources> </index> -->
+		</indexes>
+		<indexsources>
+			<indexsource>
+				<name>source1</name>
+				<indexer class="org.opencms.search.CmsVfsIndexer" />
+				<resources>
+					<resource>/sites/default/</resource>
+				</resources>
+				<documenttypes-indexed>
+					<name>xmlpage</name>
+					<name>xmlcontent</name>
+					<name>containerpage</name>
+					<name>text</name>
+					<name>pdf</name>
+					<name>rtf</name>
+					<name>html</name>
+					<name>image</name>
+					<name>generic</name>
+					<name>msoffice-ole2</name>
+					<name>msoffice-ooxml</name>
+					<name>openoffice</name>
+				</documenttypes-indexed>
+			</indexsource>
+			<indexsource>
+				<name>source2</name>
+				<indexer class="org.opencms.search.CmsVfsIndexer" />
+				<resources>
+					<resource>/system/workplace/locales/</resource>
+				</resources>
+				<documenttypes-indexed>
+					<name>xmlpage</name>
+				</documenttypes-indexed>
+			</indexsource>
+			<indexsource>
+				<name>gallery_source</name>
+				<indexer class="org.opencms.search.CmsVfsIndexer" />
+				<resources>
+					<resource>/sites/</resource>
+					<resource>/shared/</resource>
+					<resource>/system/galleries/</resource>
+				</resources>
+				<documenttypes-indexed>
+					<name>xmlpage-galleries</name>
+					<name>xmlcontent-galleries</name>
+					<name>jsp</name>
+					<name>text</name>
+					<name>pdf</name>
+					<name>rtf</name>
+					<name>html</name>
+					<name>image</name>
+					<name>generic</name>
+					<name>msoffice-ole2</name>
+					<name>msoffice-ooxml</name>
+					<name>openoffice</name>
+				</documenttypes-indexed>
+			</indexsource>
+		</indexsources>
+		<fieldconfigurations>
+			<fieldconfiguration
+				class="org.opencms.search.fields.CmsSearchFieldConfigurationOldCategories">
+				<name>standard</name>
+				<description>The standard OpenCms search index field configuration.</description>
+				<fields>
+					<field name="content" store="compress" index="true" excerpt="true">
+						<mapping type="content" />
+					</field>
+					<field name="title-key" store="true" index="untokenized"
+						boost="0.0">
+						<mapping type="property">Title</mapping>
+					</field>
+					<field name="title" store="false" index="true">
+						<mapping type="property">Title</mapping>
+					</field>
+					<field name="keywords" store="true" index="true">
+						<mapping type="property">Keywords</mapping>
+					</field>
+					<field name="description" store="true" index="true">
+						<mapping type="property">Description</mapping>
+					</field>
+					<field name="meta" store="false" index="true">
+						<mapping type="property">Title</mapping>
+						<mapping type="property">Keywords</mapping>
+						<mapping type="property">Description</mapping>
+					</field>
+					<field name="special" store="true" index="true">
+						<mapping type="item">special</mapping>
+						<mapping type="item">Teaser[1]</mapping>
+						<mapping type="item">Teaser[2]</mapping>
+						<mapping type="item">Teaser[3]</mapping>
+						<mapping type="property">NavText</mapping>
+						<mapping type="property-search">search.special</mapping>
+					</field>
+				</fields>
+			</fieldconfiguration>
+			<fieldconfiguration
+				class="org.opencms.search.galleries.CmsGallerySearchFieldConfiguration">
+				<name>gallery_fields</name>
+				<description>The OpenCms gallery search index field configuration.</description>
+				<fields>
+					<field name="content" store="compress" index="true" excerpt="true">
+						<mapping type="content" />
+					</field>
+					<field name="title-key" store="true" index="untokenized"
+						boost="0.0">
+						<mapping type="property">Title</mapping>
+					</field>
+					<field name="title" store="false" index="true">
+						<mapping type="property">Title</mapping>
+					</field>
+					<field name="description" store="true" index="true">
+						<mapping type="property">Description</mapping>
+					</field>
+					<field name="meta" store="false" index="true">
+						<mapping type="property">Title</mapping>
+						<mapping type="property">Description</mapping>
+						<mapping type="attribute">name</mapping>
+					</field>
+					<field name="search_exclude" store="true" index="true">
+						<mapping type="property-search">search.exclude</mapping>
+					</field>
+					<field name="res_dateExpired" store="true" index="untokenized">
+						<mapping type="attribute">dateExpired</mapping>
+					</field>
+					<field name="res_dateReleased" store="true" index="untokenized">
+						<mapping type="attribute">dateReleased</mapping>
+					</field>
+					<field name="res_length" store="true" index="untokenized">
+						<mapping type="attribute">length</mapping>
+					</field>
+					<field name="res_state" store="true" index="untokenized">
+						<mapping type="attribute">state</mapping>
+					</field>
+					<field name="res_structureId" store="true" index="false">
+						<mapping type="attribute">structureId</mapping>
+					</field>
+					<field name="res_userCreated" store="true" index="untokenized">
+						<mapping type="attribute">userCreated</mapping>
+					</field>
+					<field name="res_userLastModified" store="true" index="untokenized">
+						<mapping type="attribute">userLastModified</mapping>
+					</field>
+					<field name="res_locales" store="true" index="true"
+						analyzer="WhitespaceAnalyzer">
+						<mapping type="dynamic"
+							class="org.opencms.search.galleries.CmsGallerySearchFieldMapping">res_locales</mapping>
+					</field>
+					<field name="additional_info" store="true" index="false">
+						<mapping type="dynamic"
+							class="org.opencms.search.galleries.CmsGallerySearchFieldMapping">additional_info</mapping>
+					</field>
+					<field name="container_types" store="true" index="true"
+						analyzer="WhitespaceAnalyzer">
+						<mapping type="dynamic"
+							class="org.opencms.search.galleries.CmsGallerySearchFieldMapping">container_types</mapping>
+					</field>
+				</fields>
+			</fieldconfiguration>
+		</fieldconfigurations>
+	</search>
 </opencms>

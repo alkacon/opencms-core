@@ -2,11 +2,11 @@
 <!DOCTYPE opencms SYSTEM "http://www.opencms.org/dtd/6.0/opencms-modules.dtd">
 
 <opencms>
-    <modules>
-    	<module>
-    		<name>org.opencms.configuration.TestModule1</name>
-    		<nicename>OpenCms configuration test module</nicename>
-    		<class>org.opencms.module.TestModuleActionImpl</class>
+	<modules>
+		<module>
+			<name>org.opencms.configuration.TestModule1</name>
+			<nicename>OpenCms configuration test module</nicename>
+			<class>org.opencms.module.TestModuleActionImpl</class>
 			<description><![CDATA[A module to test the OpenCms module configuration]]></description>
 			<version>1.0</version>
 			<authorname>Alexander Kandzior</authorname>
@@ -14,17 +14,18 @@
 			<datecreated>Mon, 12 Jul 2004 10:00:00 GMT</datecreated>
 			<userinstalled>Admin</userinstalled>
 			<dateinstalled>Tue, 13 Jul 2004 11:00:00 GMT</dateinstalled>
-			<dependencies/>
-			<exportpoints/>
+			<dependencies />
+			<exportpoints />
 			<resources>
-				<resource uri="/types/"/>
-			</resources>		
+				<resource uri="/types/" />
+			</resources>
 			<parameters>
 				<param name="param1">value1</param>
 				<param name="param2">value2</param>
 			</parameters>
-            <resourcetypes>
-				<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="article" id="27">
+			<resourcetypes>
+				<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
+					name="article" id="27">
 					<properties>
 						<property>
 							<name>Title</name>
@@ -33,98 +34,134 @@
 						<property>
 							<name>Description</name>
 							<value type="shared"><![CDATA[${currentuser.name}_${resource.site.path}_${resource.root.path}]]></value>
-						</property>				
+						</property>
 						<property>
 							<name>template-elements</name>
 							<value><![CDATA[/system/modules/org.opencms.frontend.templateone.form/pages/form.html]]></value>
-						</property>				
+						</property>
 					</properties>
 					<param name="schema">/sites/default/xmlcontent/article.xsd</param>
 				</type>
-				<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="article1"  id="1237">
-                    <param name="schema">/system/schemas/article1.xsd</param>
-                </type>
-			</resourcetypes>				
-    	</module>
-    	        <module>
-            <name>org.opencms.ade.config</name>
-            <nicename><![CDATA[OpenCms 8 ADE Configuration]]></nicename>
-            <group>OpenCms ADE</group>
-            <class/>
-            <description><![CDATA[Configuration for OpenCms websites]]></description>
-            <version>8.0.3</version>
-            <authorname><![CDATA[Alkacon Software GmbH]]></authorname>
-            <authoremail><![CDATA[sales@alkacon.com]]></authoremail>
-            <datecreated/>
-            <userinstalled/>
-            <dateinstalled/>
-            <dependencies/>
-            <exportpoints>
-                <exportpoint uri="/system/modules/org.opencms.ade.config/classes/" destination="WEB-INF/classes/"/>
-            </exportpoints>
-            <resources>
-                <resource uri="/system/modules/org.opencms.ade.config/"/>
-                <resource uri="/system/workplace/resources/filetypes/containerpage_config.png"/>
-                <resource uri="/system/workplace/resources/filetypes/containerpage_config_big.png"/>
-                <resource uri="/system/workplace/resources/filetypes/configfolder.png"/>
-                <resource uri="/system/workplace/resources/filetypes/configfolder_big.png"/>
-                <resource uri="/system/workplace/resources/filetypes/sitemap_config.png"/>
-                <resource uri="/system/workplace/resources/filetypes/sitemap_config_big.png"/>
-            </resources>
-            <parameters/>
-            <resourcetypes>
-                <type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="configfolder" id="24">
-                    <properties>
-                        <property>
-                            <name>search.exclude</name>
-                            <value><![CDATA[all]]></value>
-                        </property>
-                    </properties>
-                    <copy-resources>
-                        <copy-resource source="/system/modules/org.opencms.ade.config/copyresources/sitemap.config" target="${resource.folder.path}/sitemap_restype.config" type="new"/>
-                        <copy-resource source="/system/modules/org.opencms.ade.config/copyresources/models" target="${resource.folder.path}/models" type="new"/>
-                    </copy-resources>
-                </type>
-                <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="sitemap_config" id="14">
-                    <param name="schema">/system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd</param>
-                </type>
-                <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="module_config" id="28">
-                    <param name="schema">/system/modules/org.opencms.ade.config/schemas/module_config.xsd</param>
-                </type>
-                <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="inheritance_group" id="303">
-                    <param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/inheritance_group.xsd</param>
-                </type>
-                <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="inheritance_config" id="304">
-                    <param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/inheritance_config.xsd</param>
-                </type>
-                
-            </resourcetypes>
-            <explorertypes>
-                <explorertype name="sitemap_config" key="fileicon.sitemap_config" icon="sitemap_config.png" bigicon="sitemap_config_big.png" reference="xmlcontent">
-                    <newresource page="otheroptions" uri="newresource_xmlcontent.jsp?newresourcetype=sitemap_config" order="21" autosetnavigation="false" autosettitle="false" info="desc.sitemap_config"/>
-                    <accesscontrol>
-                        <accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
-                    </accesscontrol>
-                </explorertype>
-                <explorertype name="configfolder" key="fileicon.configfolder" icon="configfolder.png" bigicon="configfolder_big.png" reference="folder">
-                    <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=configfolder" order="491" autosetnavigation="false" autosettitle="false" info="desc.configfolder"/>
-                    <accesscontrol>
-                        <accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c"/>
-                    </accesscontrol>
-                </explorertype>
-                <explorertype name="sitemap_config" key="fileicon.sitemap_config" icon="sitemap_config.png" bigicon="sitemap_config_big.png" reference="xmlcontent">
-                    <newresource page="otheroptions" uri="newresource_xmlcontent.jsp?newresourcetype=sitemap_config" order="21" autosetnavigation="false" autosettitle="false" info="desc.sitemap_config"/>
-                    <accesscontrol>
-                        <accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
-                    </accesscontrol>
-                </explorertype>
-                <explorertype name="module_config" key="fileicon.module_config" icon="sitemap_config.png" bigicon="sitemap_config_big.png" reference="xmlcontent">
-                    <newresource page="otheroptions" uri="newresource_xmlcontent.jsp?newresourcetype=module_config" order="21" autosetnavigation="false" autosettitle="false" info="desc.sitemap_config"/>
-                    <accesscontrol>
-                        <accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
-                    </accesscontrol>
-                </explorertype>
-            </explorertypes>
-        </module>
-    </modules>    
-</opencms>    
+				<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
+					name="article1" id="1237">
+					<param name="schema">/system/schemas/article1.xsd</param>
+				</type>
+			</resourcetypes>
+		</module>
+		<module>
+			<name>org.opencms.ade.config</name>
+			<nicename><![CDATA[OpenCms 8 ADE Configuration]]></nicename>
+			<group>OpenCms ADE</group>
+			<class />
+			<description><![CDATA[Configuration for OpenCms websites]]></description>
+			<version>8.0.3</version>
+			<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
+			<authoremail><![CDATA[sales@alkacon.com]]></authoremail>
+			<datecreated />
+			<userinstalled />
+			<dateinstalled />
+			<dependencies />
+			<exportpoints>
+				<exportpoint uri="/system/modules/org.opencms.ade.config/classes/"
+					destination="WEB-INF/classes/" />
+			</exportpoints>
+			<resources>
+				<resource uri="/system/modules/org.opencms.ade.config/" />
+				<resource
+					uri="/system/workplace/resources/filetypes/containerpage_config.png" />
+				<resource
+					uri="/system/workplace/resources/filetypes/containerpage_config_big.png" />
+				<resource uri="/system/workplace/resources/filetypes/configfolder.png" />
+				<resource
+					uri="/system/workplace/resources/filetypes/configfolder_big.png" />
+				<resource uri="/system/workplace/resources/filetypes/sitemap_config.png" />
+				<resource
+					uri="/system/workplace/resources/filetypes/sitemap_config_big.png" />
+			</resources>
+			<parameters />
+			<resourcetypes>
+				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended"
+					name="configfolder" id="24">
+					<properties>
+						<property>
+							<name>search.exclude</name>
+							<value><![CDATA[all]]></value>
+						</property>
+					</properties>
+					<copy-resources>
+						<copy-resource
+							source="/system/modules/org.opencms.ade.config/copyresources/sitemap.config"
+							target="${resource.folder.path}/sitemap_restype.config" type="new" />
+						<copy-resource
+							source="/system/modules/org.opencms.ade.config/copyresources/models"
+							target="${resource.folder.path}/models" type="new" />
+					</copy-resources>
+				</type>
+				<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
+					name="sitemap_config" id="14">
+					<param name="schema">/system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd</param>
+				</type>
+				<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
+					name="module_config" id="28">
+					<param name="schema">/system/modules/org.opencms.ade.config/schemas/module_config.xsd</param>
+				</type>
+				<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
+					name="inheritance_group" id="303">
+					<param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/inheritance_group.xsd</param>
+				</type>
+				<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
+					name="inheritance_config" id="304">
+					<param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/inheritance_config.xsd</param>
+				</type>
+
+			</resourcetypes>
+			<explorertypes>
+				<explorertype name="sitemap_config" key="fileicon.sitemap_config"
+					icon="sitemap_config.png" bigicon="sitemap_config_big.png"
+					reference="xmlcontent">
+					<newresource page="otheroptions"
+						uri="newresource_xmlcontent.jsp?newresourcetype=sitemap_config"
+						order="21" autosetnavigation="false" autosettitle="false"
+						info="desc.sitemap_config" />
+					<accesscontrol>
+						<accessentry principal="ROLE.WORKPLACE_USER"
+							permissions="+r+v+w+c" />
+					</accesscontrol>
+				</explorertype>
+				<explorertype name="configfolder" key="fileicon.configfolder"
+					icon="configfolder.png" bigicon="configfolder_big.png" reference="folder">
+					<newresource page="extendedfolder"
+						uri="newresource.jsp?newresourcetype=configfolder" order="491"
+						autosetnavigation="false" autosettitle="false" info="desc.configfolder" />
+					<accesscontrol>
+						<accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c" />
+					</accesscontrol>
+				</explorertype>
+				<explorertype name="sitemap_config" key="fileicon.sitemap_config"
+					icon="sitemap_config.png" bigicon="sitemap_config_big.png"
+					reference="xmlcontent">
+					<newresource page="otheroptions"
+						uri="newresource_xmlcontent.jsp?newresourcetype=sitemap_config"
+						order="21" autosetnavigation="false" autosettitle="false"
+						info="desc.sitemap_config" />
+					<accesscontrol>
+						<accessentry principal="ROLE.WORKPLACE_USER"
+							permissions="+r+v+w+c" />
+					</accesscontrol>
+				</explorertype>
+				<explorertype name="module_config" key="fileicon.module_config"
+					icon="sitemap_config.png" bigicon="sitemap_config_big.png"
+					reference="xmlcontent">
+					<newresource page="otheroptions"
+						uri="newresource_xmlcontent.jsp?newresourcetype=module_config"
+						order="21" autosetnavigation="false" autosettitle="false"
+						info="desc.sitemap_config" />
+					<accesscontrol>
+						<accessentry principal="ROLE.WORKPLACE_USER"
+							permissions="+r+v+w+c" />
+					</accesscontrol>
+				</explorertype>
+			</explorertypes>
+		</module>
+	</modules>
+</opencms>
