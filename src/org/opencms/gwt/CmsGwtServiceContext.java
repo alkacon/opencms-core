@@ -31,13 +31,15 @@ import org.opencms.db.CmsDriverManager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsEvent;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsCollectionsGenericWrapper;
+import org.opencms.util.CmsStringUtil;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -177,7 +179,7 @@ public class CmsGwtServiceContext implements I_CmsEventListener {
     protected SerializationPolicy getSerializationPolicy(CmsObject cms, String moduleBaseURL, String strongName) {
 
         if (m_serializationPolicyPath == null) {
-            m_serializationPolicyPath = getSerializationPolicyPath(cms, moduleBaseURL, strongName);
+            m_serializationPolicyPath = getSerializationPolicyPath(moduleBaseURL, strongName);
         }
         return getSerializationPolicy(cms);
     }
@@ -185,13 +187,12 @@ public class CmsGwtServiceContext implements I_CmsEventListener {
     /**
      * Finds the path of the serialization policy file.<p>
      * 
-     * @param cms the current CMS context 
      * @param moduleBaseURL the GWT module's base url
      * @param strongName the strong name of the service 
      * 
      * @return the serialization policy path
      */
-    protected String getSerializationPolicyPath(CmsObject cms, String moduleBaseURL, String strongName) {
+    protected String getSerializationPolicyPath(String moduleBaseURL, String strongName) {
 
         // locate the serialization policy file in OpenCms
         String modulePath = null;
@@ -206,10 +207,7 @@ public class CmsGwtServiceContext implements I_CmsEventListener {
             LOG.error(ex.getLocalizedMessage(), ex);
             return null;
         }
-        String serializationPolicyUrl = SerializationPolicyLoader.getSerializationPolicyFileName(modulePath
-            + strongName);
-        return OpenCms.getLinkManager().getRootPath(cms, serializationPolicyUrl);
-
+        return SerializationPolicyLoader.getSerializationPolicyFileName(modulePath + strongName);
     }
 
     /**
@@ -233,8 +231,22 @@ public class CmsGwtServiceContext implements I_CmsEventListener {
         // Open the RPC resource file and read its contents
         InputStream is;
         try {
-            is = new ByteArrayInputStream(cms.readFile(m_serializationPolicyPath).getContents());
-        } catch (CmsException ex) {
+            // first try reading from the RFS
+            String rfsPath = m_serializationPolicyPath;
+
+            if (rfsPath.startsWith(OpenCms.getSystemInfo().getContextPath())) {
+                rfsPath = rfsPath.substring(OpenCms.getSystemInfo().getContextPath().length());
+            }
+            rfsPath = CmsStringUtil.joinPaths(OpenCms.getSystemInfo().getWebApplicationRfsPath(), rfsPath);
+            File policyFile = new File(rfsPath);
+            if (policyFile.exists() && policyFile.canRead()) {
+                is = new FileInputStream(policyFile);
+            } else {
+                // the file does not exist in the RFS, try the VFS
+                String policyPath = OpenCms.getLinkManager().getRootPath(cms, rfsPath);
+                is = new ByteArrayInputStream(cms.readFile(policyPath).getContents());
+            }
+        } catch (Exception ex) {
             // most likely file not found
             String message = "ERROR: The serialization policy file '"
                 + m_serializationPolicyPath
