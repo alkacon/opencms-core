@@ -50,6 +50,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.dom.client.Style;
@@ -87,6 +89,11 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
 
     /** The elements client id. */
     private String m_clientId;
+
+    /**
+     * Flag which indicates whether the new editor is disabled for this element.<p>
+     */
+    private boolean m_disableNewEditor;
 
     /** The direct edit bar instances. */
     private Map<Element, CmsListCollectorEditor> m_editables;
@@ -135,31 +142,6 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
      * Without write permissions, the element can not be edited. 
      **/
     private boolean m_writePermission;
-
-    /**
-     * Returns if the user has write permission.<p>
-     *
-     * @return <code>true</code> if the user has write permission
-     */
-    public boolean hasWritePermission() {
-
-        return m_writePermission;
-    }
-
-    /**
-     * Sets the user write permission.<p>
-     *
-     * @param writePermission the user write permission to set
-     */
-    public void setWritePermission(boolean writePermission) {
-
-        m_writePermission = writePermission;
-    }
-
-    /**
-     * Flag which indicates whether the new editor is disabled for this element.<p>
-     */
-    private boolean m_disableNewEditor;
 
     /**
      * Constructor.<p>
@@ -370,6 +352,16 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
     public boolean hasViewPermission() {
 
         return m_viewPermission;
+    }
+
+    /**
+     * Returns if the user has write permission.<p>
+     *
+     * @return <code>true</code> if the user has write permission
+     */
+    public boolean hasWritePermission() {
+
+        return m_writePermission;
     }
 
     /**
@@ -621,6 +613,16 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
     }
 
     /**
+     * Sets the user write permission.<p>
+     *
+     * @param writePermission the user write permission to set
+     */
+    public void setWritePermission(boolean writePermission) {
+
+        m_writePermission = writePermission;
+    }
+
+    /**
      * Shows list collector direct edit buttons (old direct edit style), if present.<p>
      */
     public void showEditableListButtons() {
@@ -722,16 +724,21 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
     @Override
     protected void onLoad() {
 
-        if (!m_checkedHeight) {
-            m_checkedHeight = true;
-            if (getOffsetHeight() < NECESSARY_HEIGHT) {
-                m_checkedHeight = true;
-                if (m_parent instanceof CmsContainerPageContainer) {
-                    CmsContainerpageController.get().getHandler().enableShowSmallElements();
-                    //            CmsContainerpageController.get().enableShowSmallElementsButton();
-                    addStyleName(org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle.INSTANCE.containerpageCss().smallElement());
+        if (!hasCheckedHeight() && (getParentTarget() instanceof CmsContainerPageContainer)) {
+            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+                public void execute() {
+
+                    if (!hasCheckedHeight()
+                        && (CmsPositionBean.generatePositionInfo(getElement()).getHeight() < NECESSARY_HEIGHT)
+                        && (CmsPositionBean.getInnerDimensions(getElement()).getHeight() < NECESSARY_HEIGHT)) {
+
+                        CmsContainerpageController.get().getHandler().enableShowSmallElements();
+                        addStyleName(org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle.INSTANCE.containerpageCss().smallElement());
+                    }
+                    setCheckedHeight(true);
                 }
-            }
+            });
         }
         resetOptionbar();
     }
@@ -745,6 +752,26 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
             m_editorClickHandlerRegistration.removeHandler();
             m_editorClickHandlerRegistration = null;
         }
+    }
+
+    /**
+     * Returns if the minimum element height has been checked.<p>
+     * 
+     * @return <code>true</code> if the minimum element height has been checked
+     */
+    boolean hasCheckedHeight() {
+
+        return m_checkedHeight;
+    }
+
+    /**
+     * Sets the checked height flag.<p>
+     * 
+     * @param checked the checked height flag
+     */
+    void setCheckedHeight(boolean checked) {
+
+        m_checkedHeight = checked;
     }
 
     /**
