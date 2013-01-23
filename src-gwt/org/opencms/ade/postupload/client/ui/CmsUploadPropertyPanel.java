@@ -36,6 +36,7 @@ import org.opencms.ade.postupload.shared.CmsPostUploadDialogPanelBean;
 import org.opencms.gwt.client.property.CmsPropertySubmitHandler;
 import org.opencms.gwt.client.property.CmsSimplePropertyEditor;
 import org.opencms.gwt.client.property.I_CmsPropertyEditorHandler;
+import org.opencms.gwt.client.ui.I_CmsTruncable;
 import org.opencms.gwt.client.ui.input.form.A_CmsFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.CmsForm;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormHandler;
@@ -50,7 +51,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 /**
  * Panel for the property dialog.<p>
  */
-public class CmsUploadPropertyPanel extends FlowPanel implements I_CmsFormHandler {
+public class CmsUploadPropertyPanel extends FlowPanel implements I_CmsFormHandler, I_CmsTruncable {
 
     /** The upload property dialog containing this panel. */
     CmsUploadPropertyDialog m_dialog;
@@ -146,6 +147,14 @@ public class CmsUploadPropertyPanel extends FlowPanel implements I_CmsFormHandle
     public void onValidationResult(CmsForm form, boolean ok) {
 
         // do nothing for now 
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.I_CmsTruncable#truncate(java.lang.String, int)
+     */
+    public void truncate(String textMetricsKey, int clientWidth) {
+
+        m_propertyEditor.getForm().getWidget().truncate(textMetricsKey, clientWidth);
     }
 
     /**

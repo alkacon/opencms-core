@@ -174,15 +174,11 @@ public class CmsScrollPanelImpl extends CmsScrollPanel {
 
         super(DOM.createDiv(), DOM.createDiv(), DOM.createDiv());
         setStyleName(I_CmsLayoutBundle.INSTANCE.scrollBarCss().scrollPanel());
-        m_hiddenSize = DOM.createDiv();
-        m_hiddenSize.setClassName(I_CmsLayoutBundle.INSTANCE.scrollBarCss().hiddenSize());
-        getElement().appendChild(m_hiddenSize);
         Element scrollable = getScrollableElement();
         scrollable.getStyle().clearPosition();
         scrollable.setClassName(I_CmsLayoutBundle.INSTANCE.scrollBarCss().scrollable());
         getElement().appendChild(scrollable);
         Element container = getContainerElement();
-
         container.setClassName(I_CmsLayoutBundle.INSTANCE.scrollBarCss().scrollContainer());
         scrollable.appendChild(container);
         m_scrollLayer = DOM.createDiv();
@@ -190,6 +186,8 @@ public class CmsScrollPanelImpl extends CmsScrollPanel {
         m_scrollLayer.setClassName(I_CmsLayoutBundle.INSTANCE.scrollBarCss().scrollbarLayer());
         CmsScrollBar scrollbar = new CmsScrollBar(scrollable, container);
         setVerticalScrollbar(scrollbar, 8);
+        m_hiddenSize = DOM.createDiv();
+        m_hiddenSize.setClassName(I_CmsLayoutBundle.INSTANCE.scrollBarCss().hiddenSize());
 
         /*
          * Listen for scroll events from the root element and the scrollable element
@@ -261,7 +259,10 @@ public class CmsScrollPanelImpl extends CmsScrollPanel {
         if (maxHeight > 0) {
             getScrollableElement().getStyle().setPropertyPx("maxHeight", maxHeight);
         }
+        // appending div to measure panel width, doing it every time anew to avoid rendering bugs in Chrome
+        getElement().appendChild(m_hiddenSize);
         int width = m_hiddenSize.getClientWidth();
+        m_hiddenSize.removeFromParent();
         if (width > 0) {
             getContainerElement().getStyle().setWidth(width, Unit.PX);
             maybeUpdateScrollbars();

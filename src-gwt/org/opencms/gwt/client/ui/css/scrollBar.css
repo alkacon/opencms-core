@@ -49,7 +49,7 @@ div.scrollbarLayer{
 }
 
 div.hiddenSize{
-	height:0px;
+	height:1px;
 	width:auto;
 	display:block;
 }

@@ -142,10 +142,10 @@ public class CmsUploadPropertyDialog {
      */
     public native boolean isExplorerMode() /*-{
 
-      if ($wnd.self.name == 'explorer_files') {
-         return true;
-      }
-      return false;
+        if ($wnd.self.name == 'explorer_files') {
+            return true;
+        }
+        return false;
     }-*/;
 
     /**
@@ -377,11 +377,12 @@ public class CmsUploadPropertyDialog {
         }
         m_uploadPropertyPanel = new CmsUploadPropertyPanel(this, m_dialogData, m_panelData);
         m_dialogContent.setWidget(m_uploadPropertyPanel);
-
+        m_frameDialog.setWidth(600);
         if (!m_frameDialog.isShowing()) {
             m_frameDialog.show();
             m_dialogContent.onResize();
         }
+        m_uploadPropertyPanel.truncate("POST_UPLOAD_DIALOG", 600);
     }
 
     /**
