@@ -1698,7 +1698,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             }
         }
         SolrServer server = new EmbeddedSolrServer(m_coreContainer, index.getName());
-        LOG.info(Messages.get().getBundle().key(Messages.LOG_SOLR_SERVER_CREATED_1, index.getName()));
+        LOG.info(Messages.get().getBundle().key(Messages.INIT_SOLR_SERVER_CREATED_1, index.getName()));
         return server;
     }
 

@@ -212,6 +212,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String INIT_SHUTDOWN_MANAGER_0 = "INIT_SHUTDOWN_MANAGER_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String INIT_SOLR_SERVER_CREATED_1 = "INIT_SOLR_SERVER_CREATED_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String INIT_START_SEARCH_CONFIG_0 = "INIT_START_SEARCH_CONFIG_0";
 
     /** Message constant for key in the resource bundle. */
@@ -396,9 +399,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SOLR_INDEX_DIR_CREATED_2 = "LOG_SOLR_INDEX_DIR_CREATED_2";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_SOLR_SERVER_CREATED_1 = "LOG_SOLR_SERVER_CREATED_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SOLR_SHUTDOWN_SUCCESS_0 = "LOG_SOLR_SHUTDOWN_SUCCESS_0";
