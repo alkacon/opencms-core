@@ -1676,7 +1676,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 if (!dataDir.exists()) {
                     dataDir.mkdirs();
                     LOG.info(Messages.get().getBundle().key(
-                        Messages.LOG_SOLR_INDEX_DIR_CREATED_2,
+                        Messages.INIT_SOLR_INDEX_DIR_CREATED_2,
                         index.getName(),
                         index.getPath()));
                 }
