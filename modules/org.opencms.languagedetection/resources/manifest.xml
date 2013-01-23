@@ -13,7 +13,7 @@
 		<nicename><![CDATA[OpenCms language detection]]></nicename>
 		<class/>
 		<description><![CDATA[This module supports text based language detection.]]></description>
-		<version>1.1</version>
+		<version>8.5.0.9</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
