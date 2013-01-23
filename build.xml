@@ -387,7 +387,6 @@
 		<zip zipfile="${opencms.output.distfiles}/opencms_upgrade_to_${version.revision}.zip" update="true">
 			<zipfileset dir="${opencms.input.webinf}" prefix="WEB-INF" includes="${updater.webinf.files}" />
 			<zipfileset dir="${opencms.input.webinf}/wsdl" prefix="WEB-INF/wsdl" includes="*" />
-			<zipfileset dir="${opencms.input.webinf}/config/languageProfiles" prefix="WEB-INF/config/languageProfiles" includes="*" />
 			<zipfileset dir="${opencms.input.warfiles}" includes="update/**" excludes="update/empty.jar,update/readme.txt" />
 			<zipfileset dir="${opencms.input.warfiles}" includes="update/readme.txt" fullpath="readme.txt" />
 			<zipfileset dir="${opencms.input.libs.runtime}" prefix="WEB-INF/lib" includes="*.jar" />
