@@ -393,7 +393,10 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
         // try to detect locale by filename
         Locale detectedLocale = getLocaleFromFileName(resource.getRootPath());
         // try to detect locale by language detector
-        if ((detectedLocale == null) && (extraction != null) && (extraction.getContent() != null)) {
+        if (getIndex().isLanguageDetection()
+            && (detectedLocale == null)
+            && (extraction != null)
+            && (extraction.getContent() != null)) {
             detectedLocale = CmsStringUtil.getLocaleFromText(extraction.getContent());
         }
         // take the detected locale or use the first configured default locale for this resource
