@@ -184,7 +184,7 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
             result += CONFIGURATION_PARENTSELECTION;
         }
         CmsCategoryService catService = CmsCategoryService.getInstance();
-        List<String> categoriesList = catService.getCategoryRepositories(cms, resource.getRootPath());
+        List<String> categoriesList = catService.getCategoryRepositories(cms, cms.getSitePath(resource));
         Iterator<String> it = categoriesList.iterator();
         String catList = "|CategoryList=";
         int i = 0;
@@ -205,7 +205,7 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
      */
     public List<String> getCssResourceLinks(CmsObject cms) {
 
-        // TODO: Auto-generated method stub
+        // nothing to do
         return null;
     }
 
@@ -361,7 +361,7 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
      */
     public String getInitCall() {
 
-        // TODO: Auto-generated method stub
+        // nothing to do
         return null;
     }
 
@@ -370,7 +370,7 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
      */
     public List<String> getJavaScriptResourceLinks(CmsObject cms) {
 
-        // TODO: Auto-generated method stub
+        // nothing to do
         return null;
     }
 
@@ -387,7 +387,6 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
      */
     public boolean isInternal() {
 
-        // TODO: Auto-generated method stub
         return false;
     }
 
