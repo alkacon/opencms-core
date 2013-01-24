@@ -126,17 +126,16 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
          */
         public void onKeyUp(KeyUpEvent event) {
 
-            int keyCode = event.getNativeEvent().getKeyCode();
-
-            if (!isNavigationKey(keyCode)) {
-                if (CmsStringUtil.isEmpty(m_textbox.getValue())) {
-                    if (m_ghostValue != null) {
-                        setGhostMode(true);
-                    }
-                } else {
+            if (CmsStringUtil.isEmpty(m_textbox.getValue())) {
+                if (m_ghostValue != null) {
+                    setGhostMode(true);
+                }
+            } else {
+                if (m_ghostMode && !m_textbox.getValue().equals(m_ghostValue)) {
                     setGhostMode(false);
                 }
             }
+
             if (isTriggerChangeOnKeyPress()) {
                 checkForChange(m_inhibitValidationForKeypresses);
             }
