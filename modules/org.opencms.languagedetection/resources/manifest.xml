@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<creator>Admin</creator>
+		<opencms_version>8.5.0.9</opencms_version>
+		<createdate>Wed, 23 Jan 2013 14:32:27 GMT</createdate>
+		<infoproject>Offline</infoproject>
+		<export_version>7</export_version>
+	</info>
+	<module>
+		<name>org.opencms.languagedetection</name>
+		<nicename><![CDATA[OpenCms language detection]]></nicename>
+		<class/>
+		<description><![CDATA[This module supports text based language detection.]]></description>
+		<version>8.5.0.9</version>
+		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
+		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
+		<datecreated/>
+		<userinstalled/>
+		<dateinstalled/>
+		<dependencies/>
+		<exportpoints/>
+		<resources>
+			<resource uri="/system/modules/org.opencms.languagedetection/"/>
+		</resources>
+		<parameters/>
+	</module>
+	<files>
+		<file>
+			<destination>system</destination>
+			<type>folder</type>
+			<uuidstructure>4d183e68-64a2-11e2-9457-61faba8fe0ac</uuidstructure>
+			<datelastmodified>Tue, 22 Jan 2013 14:45:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 22 Jan 2013 14:45:01 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>514</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/modules</destination>
+			<type>folder</type>
+			<uuidstructure>50026544-64a2-11e2-9457-61faba8fe0ac</uuidstructure>
+			<datelastmodified>Tue, 22 Jan 2013 14:45:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 22 Jan 2013 14:45:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>514</flags>
+					<permissionset>
+						<allowed>5</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.languagedetection</destination>
+			<type>folder</type>
+			<uuidstructure>7d0643b3-6569-11e2-8d0f-61faba8fe0ac</uuidstructure>
+			<datelastmodified>Wed, 23 Jan 2013 14:30:51 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 23 Jan 2013 14:30:51 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.languagedetection/languageprofiles</destination>
+			<type>folder</type>
+			<uuidstructure>cf2ecf10-654b-11e2-ae98-61faba8fe0ac</uuidstructure>
+			<datelastmodified>Wed, 23 Jan 2013 11:00:09 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 23 Jan 2013 10:58:24 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[contains the profiles for the language detection library]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.languagedetection/languageprofiles/profiles.zip</source>
+			<destination>system/modules/org.opencms.languagedetection/languageprofiles/profiles.zip</destination>
+			<type>binary</type>
+			<uuidstructure>27ba04e9-6544-11e2-a592-61faba8fe0ac</uuidstructure>
+			<uuidresource>27ba04ea-6544-11e2-a592-61faba8fe0ac</uuidresource>
+			<datelastmodified>Wed, 23 Jan 2013 10:59:34 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 23 Jan 2013 10:03:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[language profiles]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+	</files>
+</export>

@@ -56,6 +56,9 @@ import com.cybozu.labs.langdetect.util.LangProfile;
  */
 public final class CmsLanguageUtil {
 
+    /** The default path for language profiles ZIP in the VFS. */
+    public static final String LANGUAGE_PROFILE_ZIP_PATH = "/system/modules/org.opencms.languagedetection/languageprofiles/profiles.zip";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsLanguageUtil.class);
 
@@ -81,71 +84,82 @@ public final class CmsLanguageUtil {
         try {
             file = cms.readFile(path);
         } catch (CmsException e) {
-            LOG.error(e.getMessage(), e);
+            throw new LangDetectException(ErrorCode.FileLoadError, "can't read resource from '" + path + "'");
         }
-
         if (file != null) {
             ZipInputStream zipInput = new ZipInputStream(new ByteArrayInputStream(file.getContents()));
-            List<LangProfile> profiles = new ArrayList<LangProfile>();
-            try {
-                while (true) {
-                    // handle the single entries ...
-                    ZipEntry entry = zipInput.getNextEntry();
-                    if (entry == null) {
-                        break;
-                    }
-                    if (entry.isDirectory() || entry.getName().startsWith(".")) {
-                        // handle files only
-                        continue;
-                    }
-                    ByteArrayInputStream is = null;
-                    try {
-                        byte[] content;
-                        int fileByteSize = Long.valueOf(entry.getSize()).intValue();
-                        if (fileByteSize == -1) {
-                            content = CmsFileUtil.readFully(zipInput, false);
-                        } else {
-                            content = CmsFileUtil.readFully(zipInput, fileByteSize, false);
-                        }
-                        is = new ByteArrayInputStream(content);
-                        LangProfile profile = JSON.decode(is, LangProfile.class);
-                        profiles.add(profile);
-                    } catch (JSONException e) {
-                        throw new LangDetectException(ErrorCode.FormatError, "profile format error in '"
-                            + file.getName()
-                            + "'");
-                    } catch (IOException e) {
-                        throw new LangDetectException(ErrorCode.FileLoadError, "can't open '" + file.getName() + "'");
-                    } finally {
-                        try {
-                            if (is != null) {
-                                is.close();
-                            }
-                        } catch (IOException e) {
-                            // noop
-                        }
-                    }
-                    // close the entry ...
-                    zipInput.closeEntry();
-                }
-            } catch (IOException e) {
-                LOG.error(e.getMessage(), e);
-            } finally {
-                try {
-                    zipInput.close();
-                } catch (IOException e) {
-                    // noop
-                }
-            }
+            loadProfile(zipInput);
+        }
+    }
 
-            if (!profiles.isEmpty()) {
-                DetectorFactory.clear();
-                int count = 0;
-                int langsize = profiles.size();
-                for (LangProfile profile : profiles) {
-                    DetectorFactory.addProfile(profile, count, langsize);
-                    count++;
+    /**
+     * Loads the profile from a ZIP.<p>
+     * 
+     * @param zipInput the ZIP input stream
+     * 
+     * @throws LangDetectException if something goes wrong
+     */
+    private static void loadProfile(ZipInputStream zipInput) throws LangDetectException {
+
+        List<LangProfile> profiles = new ArrayList<LangProfile>();
+        try {
+            while (true) {
+                // handle the single entries ...
+                ZipEntry entry = zipInput.getNextEntry();
+                if (entry == null) {
+                    break;
                 }
+                if (entry.isDirectory() || entry.getName().startsWith(".")) {
+                    // handle files only
+                    continue;
+                }
+                ByteArrayInputStream is = null;
+                try {
+                    byte[] content;
+                    int fileByteSize = Long.valueOf(entry.getSize()).intValue();
+                    if (fileByteSize == -1) {
+                        content = CmsFileUtil.readFully(zipInput, false);
+                    } else {
+                        content = CmsFileUtil.readFully(zipInput, fileByteSize, false);
+                    }
+                    is = new ByteArrayInputStream(content);
+                    LangProfile profile = JSON.decode(is, LangProfile.class);
+                    profiles.add(profile);
+                } catch (JSONException e) {
+                    throw new LangDetectException(ErrorCode.FormatError, "profile format error in '"
+                        + entry.getName()
+                        + "'");
+                } catch (IOException e) {
+                    throw new LangDetectException(ErrorCode.FileLoadError, "can't open '" + entry.getName() + "'");
+                } finally {
+                    try {
+                        if (is != null) {
+                            is.close();
+                        }
+                    } catch (IOException e) {
+                        // noop
+                    }
+                }
+                // close the entry ...
+                zipInput.closeEntry();
+            }
+        } catch (IOException e) {
+            LOG.error(e.getMessage(), e);
+        } finally {
+            try {
+                zipInput.close();
+            } catch (IOException e) {
+                // noop
+            }
+        }
+
+        if (!profiles.isEmpty()) {
+            DetectorFactory.clear();
+            int count = 0;
+            int langsize = profiles.size();
+            for (LangProfile profile : profiles) {
+                DetectorFactory.addProfile(profile, count, langsize);
+                count++;
             }
         }
     }

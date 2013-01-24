@@ -330,6 +330,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /** The index writer to use. */
     private I_CmsIndexWriter m_indexWriter;
 
+    /** Signals whether the language detection. */
+    private boolean m_languageDetection;
+
     /** The locale of this index. */
     private Locale m_locale;
 
@@ -1260,6 +1263,16 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
+     * Returns the languageDetection.<p>
+     *
+     * @return the languageDetection
+     */
+    public boolean isLanguageDetection() {
+
+        return m_languageDetection;
+    }
+
+    /**
      * Returns <code>true</code> if a resource requires read permission to be incuded in the result list.<p>
      * 
      * @return <code>true</code> if a resource requires read permission to be incuded in the result list
@@ -1591,6 +1604,16 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     public void setFieldConfigurationName(String fieldConfigurationName) {
 
         m_fieldConfigurationName = fieldConfigurationName;
+    }
+
+    /**
+     * Sets the languageDetection.<p>
+     *
+     * @param languageDetection the languageDetection to set
+     */
+    public void setLanguageDetection(boolean languageDetection) {
+
+        m_languageDetection = languageDetection;
     }
 
     /**

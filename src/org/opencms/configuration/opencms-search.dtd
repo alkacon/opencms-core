@@ -144,6 +144,7 @@
 	rebuild,
 	project,
 	locale,
+	languagedetection?,
 	configuration?,
 	sources,
 	param*
@@ -159,6 +160,14 @@
 # The project used to index content.
 -->
 <!ELEMENT project (#PCDATA)>
+
+<!--
+# Enables or disables the text based language detection for an index.
+-->
+<!ELEMENT languagedetection EMPTY>
+<!ATTLIST languagedetection
+	enabled (true|false|TRUE|FALSE) #REQUIRED
+>
 
 <!--
 # A list of index content sources in OpenCms of the search index.

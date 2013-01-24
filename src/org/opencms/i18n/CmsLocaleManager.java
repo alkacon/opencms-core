@@ -72,9 +72,6 @@ public class CmsLocaleManager implements I_CmsEventListener {
     /** Request parameter to force locale selection. */
     public static final String PARAMETER_LOCALE = "__locale";
 
-    /** The default path for language profiles ZIP in the VFS. */
-    public static final String PROFILES = "/system/modules/org.opencms.ade.config/languageprofiles/profiles.zip";
-
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsLocaleManager.class);
 
@@ -949,9 +946,11 @@ public class CmsLocaleManager implements I_CmsEventListener {
         // set default locale 
         m_defaultLocale = m_defaultLocales.get(0);
         try {
-            CmsLanguageUtil.loadProfile(cms, PROFILES);
+            CmsLanguageUtil.loadProfile(cms, CmsLanguageUtil.LANGUAGE_PROFILE_ZIP_PATH);
         } catch (LangDetectException e) {
-            LOG.error(Messages.get().getBundle().key(Messages.LOG_INIT_LANG_DETECT_FAILED_1, PROFILES), e);
+            LOG.error(Messages.get().getBundle().key(
+                Messages.INIT_I18N_LANG_DETECT_FAILED_1,
+                CmsLanguageUtil.LANGUAGE_PROFILE_ZIP_PATH));
         }
         // set initialized status
         m_initialized = true;
