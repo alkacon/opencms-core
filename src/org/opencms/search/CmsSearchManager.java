@@ -1675,10 +1675,12 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             if (!dataDir.exists()) {
                 if (!dataDir.exists()) {
                     dataDir.mkdirs();
-                    LOG.info(Messages.get().getBundle().key(
-                        Messages.INIT_SOLR_INDEX_DIR_CREATED_2,
-                        index.getName(),
-                        index.getPath()));
+                    if (CmsLog.INIT.isInfoEnabled()) {
+                        CmsLog.INIT.info(Messages.get().getBundle().key(
+                            Messages.INIT_SOLR_INDEX_DIR_CREATED_2,
+                            index.getName(),
+                            index.getPath()));
+                    }
                 }
             }
 
@@ -1698,7 +1700,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             }
         }
         SolrServer server = new EmbeddedSolrServer(m_coreContainer, index.getName());
-        LOG.info(Messages.get().getBundle().key(Messages.INIT_SOLR_SERVER_CREATED_1, index.getName()));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SOLR_SERVER_CREATED_1, index.getName()));
+        }
         return server;
     }
 
@@ -2119,7 +2123,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 core.closeSearcher();
             }
             m_coreContainer.shutdown();
-            LOG.info(Messages.get().getBundle().key(Messages.LOG_SOLR_SHUTDOWN_SUCCESS_0));
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SOLR_SHUTDOWN_SUCCESS_0));
+            }
         }
 
         Iterator<CmsSearchIndex> i = m_indexes.iterator();
@@ -2741,10 +2747,12 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             // get the core container
             // still no core container: create it
             container = new CoreContainer(m_solrConfig.getHome(), m_solrConfig.getSolrFile());
-            LOG.info(Messages.get().getBundle().key(
-                Messages.LOG_SOLR_CORE_CONTAINER_CREATED_2,
-                m_solrConfig.getHome(),
-                m_solrConfig.getSolrFile().getName()));
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().getBundle().key(
+                    Messages.INIT_SOLR_CORE_CONTAINER_CREATED_2,
+                    m_solrConfig.getHome(),
+                    m_solrConfig.getSolrFile().getName()));
+            }
         } catch (Exception e) {
             LOG.error(
                 Messages.get().container(
