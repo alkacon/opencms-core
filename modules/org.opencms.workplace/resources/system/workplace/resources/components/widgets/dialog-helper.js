@@ -118,6 +118,7 @@ function cmsOpenDialog(title, dialogUrl, fieldId, height, width){
             open: function() {
                _iframeBox.append(_iframe);
                _iframeBox.closest('.galleryDialog').css('overflow', 'visible');
+               _cmsUpdateDialogPosition(_iframeBox);
             },
             resizable: false,
             autoOpen: true,
@@ -215,12 +216,28 @@ function cmsOpenImagePreview(title, context, fieldId){
          });
 	 
 	     _previewImage.load(function() {
-	         _imageBox.dialog( "option", "position", 'center' );
+	         _cmsUpdateDialogPosition(_imageBox);
 	     });
 	}
 }
 
-
+function _cmsUpdateDialogPosition(dialogContent){
+    if ($.browser.msie && navigator.appVersion.match(/MSIE [6-8]./)){
+        var dialogHeight=dialogContent.height();
+        var dialogWidth=dialogContent.width();
+        var top=(document.body.clientHeight-dialogHeight)/2+document.body.scrollTop;
+        if (top<0){
+            top=0;
+        }
+        var left=(document.body.clientWidth-dialogWidth)/2+document.body.scrollLeft;
+        if (left<0){
+            left=0;
+        }
+        dialogContent.parent().css({"top": top+"px", "left": left+"px"});
+    }else{
+        dialogContent.dialog( "option", "position", "center" );
+    }
+}
 
 /**
  * Opens a modal preview dialog.<p>
