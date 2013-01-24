@@ -74,8 +74,8 @@ public class CmsTestLinkSubstitutionHandler extends CmsDefaultLinkSubstitutionHa
             if ((pos > 0) && (newsPath.indexOf(CmsLocaleManager.PARAMETER_LOCALE, pos) >= 0)) {
                 // locale parameter was found
                 String query = newsPath.substring(pos);
-                Map params = CmsRequestUtil.createParameterMap(query);
-                String[] locs = (String[])params.get(CmsLocaleManager.PARAMETER_LOCALE);
+                Map<String, String[]> params = CmsRequestUtil.createParameterMap(query);
+                String[] locs = params.get(CmsLocaleManager.PARAMETER_LOCALE);
                 if ((locs != null) && (locs.length > 0)) {
                     // remove locale from parameters and change URI to target language
                     loc = locs[0];
