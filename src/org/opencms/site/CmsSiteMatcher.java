@@ -99,11 +99,21 @@ public final class CmsSiteMatcher implements Cloneable {
         }
         // remove whitespace
         serverString = serverString.trim();
+
+        // remove fragment and query if present
+        int pos = serverString.indexOf("#");
+        if (pos > 0) {
+            serverString = serverString.substring(0, pos);
+        }
+        pos = serverString.indexOf("?");
+        if (pos > 0) {
+            serverString = serverString.substring(0, pos);
+        }
         // cut trailing "/" 
         if (serverString.endsWith("/")) {
             serverString = serverString.substring(0, serverString.length() - 1);
         }
-        int pos, serverPort;
+        int serverPort;
         String serverProtocol, serverName;
         // check for protocol
         pos = serverString.indexOf("://");
@@ -125,7 +135,11 @@ public final class CmsSiteMatcher implements Cloneable {
                 }
                 serverPort = Integer.valueOf(port).intValue();
             } catch (NumberFormatException e) {
-                serverPort = PORT_HTTP;
+                if (SCHEME_HTTPS.equals(serverProtocol)) {
+                    serverPort = PORT_HTTPS;
+                } else {
+                    serverPort = PORT_HTTP;
+                }
             }
         } else {
             serverName = serverString;
