@@ -56,26 +56,11 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
     /** The extracted individual content items. */
     private Map<String, String> m_contentItems;
 
-    /** The exclude flag. */
-    private boolean m_exclude;
-
     /** The list of mapping fields. */
     private Set<CmsSearchField> m_mappingFields;
 
     /** The serialized version of this object. */
     private byte[] m_serializedVersion;
-
-    /**
-     * Creates a new extraction result.<p>
-     * 
-     * Set the exclude flag to <code>'true'</code> to exclude the whole document.<p>
-     * 
-     * @param exclude the exclude flag 
-     */
-    public CmsExtractionResult(boolean exclude) {
-
-        m_exclude = exclude;
-    }
 
     /**
      * Creates a new extraction result without meta information and without additional fields.<p>
@@ -207,14 +192,6 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
     public Set<CmsSearchField> getMappingFields() {
 
         return m_mappingFields;
-    }
-
-    /**
-     * @see org.opencms.search.extractors.I_CmsExtractionResult#isExclude()
-     */
-    public boolean isExclude() {
-
-        return m_exclude;
     }
 
     /**

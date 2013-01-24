@@ -206,10 +206,6 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
         CmsSearchIndex index,
         I_CmsExtractionResult extraction) throws CmsException {
 
-        if ((extraction != null) && extraction.isExclude()) {
-            return null;
-        }
-
         m_index = index;
 
         I_CmsSearchDocument document = m_index.createEmptyDocument(resource);

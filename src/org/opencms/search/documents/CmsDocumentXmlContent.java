@@ -36,10 +36,12 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsIndexException;
 import org.opencms.search.CmsSearchIndex;
+import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.extractors.CmsExtractionResult;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.A_CmsXmlDocument;
+import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.I_CmsXmlContentHandler;
 import org.opencms.xml.types.I_CmsXmlContentValue;
@@ -75,6 +77,21 @@ public class CmsDocumentXmlContent extends A_CmsVfsDocument {
     }
 
     /**
+     * 
+     * @see org.opencms.search.documents.A_CmsVfsDocument#createDocument(org.opencms.file.CmsObject, org.opencms.file.CmsResource, org.opencms.search.CmsSearchIndex)
+     */
+    @Override
+    public I_CmsSearchDocument createDocument(CmsObject cms, CmsResource resource, CmsSearchIndex index)
+    throws CmsException {
+
+        CmsXmlContentDefinition def = CmsXmlContentDefinition.getContentDefinitionForResource(cms, resource);
+        if (def.getContentHandler().isContainerPageOnly()) {
+            return null;
+        }
+        return super.createDocument(cms, resource, index);
+    }
+
+    /**
      * Returns the raw text content of a given VFS resource of type <code>CmsResourceTypeXmlContent</code>.<p>
      * 
      * All XML nodes from the content for all locales will be stored separately in the item map 
@@ -92,12 +109,7 @@ public class CmsDocumentXmlContent extends A_CmsVfsDocument {
             CmsFile file = readFile(cms, resource);
             A_CmsXmlDocument xmlContent = CmsXmlContentFactory.unmarshal(cms, file);
             I_CmsXmlContentHandler handler = xmlContent.getHandler();
-            if (handler.isContainerPageOnly()) {
-                // if the exclude attribute is set to 'true' in the 'searchsettings'-node of the XSD
-                return new CmsExtractionResult(true);
-            }
             Locale locale = index.getLocaleForResource(cms, resource, xmlContent.getLocales());
-
             List<String> elements = xmlContent.getNames(locale);
             StringBuffer content = new StringBuffer();
             Map<String, String> items = new HashMap<String, String>();
@@ -115,9 +127,7 @@ public class CmsDocumentXmlContent extends A_CmsVfsDocument {
                     }
                 }
             }
-
             return new CmsExtractionResult(content.toString(), items);
-
         } catch (Exception e) {
             throw new CmsIndexException(
                 Messages.get().container(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()),

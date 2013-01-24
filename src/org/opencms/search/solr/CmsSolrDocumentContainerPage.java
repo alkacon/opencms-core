@@ -137,7 +137,7 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
                     if (formatters.isSearchContent(element.getFormatterId())) {
                         // the content of this element must be included for the container page
                         element.initResource(cms);
-                        all.add(super.extractElementContent(cms, element.getResource(), index));
+                        all.add(super.extractContent(cms, element.getResource(), index));
                     }
                 }
             }
