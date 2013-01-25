@@ -3043,6 +3043,57 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+		<file>
+			<destination>system/modules/org.opencms.languagedetection</destination>
+			<type>folder</type>
+			<uuidstructure>7d0643b3-6569-11e2-8d0f-61faba8fe0ac</uuidstructure>
+			<datelastmodified>Wed, 23 Jan 2013 14:30:51 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 23 Jan 2013 14:30:51 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.languagedetection/languageprofiles</destination>
+			<type>folder</type>
+			<uuidstructure>cf2ecf10-654b-11e2-ae98-61faba8fe0ac</uuidstructure>
+			<datelastmodified>Wed, 23 Jan 2013 11:00:09 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 23 Jan 2013 10:58:24 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[contains the profiles for the language detection library]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.languagedetection/languageprofiles/profiles.zip</source>
+			<destination>system/modules/org.opencms.languagedetection/languageprofiles/profiles.zip</destination>
+			<type>binary</type>
+			<uuidstructure>27ba04e9-6544-11e2-a592-61faba8fe0ac</uuidstructure>
+			<uuidresource>27ba04ea-6544-11e2-a592-61faba8fe0ac</uuidresource>
+			<datelastmodified>Wed, 23 Jan 2013 10:59:34 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 23 Jan 2013 10:03:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[language profiles]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
 	</files>
 	<projects>
 		<project>

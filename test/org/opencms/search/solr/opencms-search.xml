@@ -237,7 +237,8 @@
         <sources>
           <source>solr_source</source>
         </sources>
-        <param name="search.solr.postProcessor">org.opencms.search.solr.CmsSolrLinkProcessor</param>   
+        <param name="search.solr.postProcessor">org.opencms.search.solr.CmsSolrLinkProcessor</param>
+        <param name="search.solr.useLanguageDetection">true</param>
       </index>
       <!-- 
 # Excluded for the default test cases in order to speed up testing
