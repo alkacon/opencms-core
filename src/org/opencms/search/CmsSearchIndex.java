@@ -231,6 +231,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /** Constant for additional parameter for index content extraction. */
     public static final String EXTRACT_CONTENT = A_LEGACY_PARAM_PREFIX + ".extractContent";
 
+    /** Constant for additional parameter to enable/disable language detection (default: false). */
+    public static final String LANGUAGEDETECTION = "search.solr.useLanguageDetection";
+
     /** Constant for additional parameter for the Lucene index setting. */
     public static final String LUCENE_AUTO_COMMIT = "lucene.AutoCommit";
 
@@ -604,6 +607,8 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             m_extractContent = Boolean.valueOf(value).booleanValue();
         } else if (BACKUP_REINDEXING.equals(key)) {
             m_backupReindexing = Boolean.valueOf(value).booleanValue();
+        } else if (LANGUAGEDETECTION.equals(key)) {
+            m_languageDetection = Boolean.valueOf(value).booleanValue();
         } else if (PRIORITY.equals(key)) {
             m_priority = Integer.parseInt(value);
             if (m_priority < Thread.MIN_PRIORITY) {
@@ -761,6 +766,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         }
         if (isBackupReindexing()) {
             result.put(BACKUP_REINDEXING, String.valueOf(m_backupReindexing));
+        }
+        if (isLanguageDetection()) {
+            result.put(LANGUAGEDETECTION, String.valueOf(m_languageDetection));
         }
         if (getMaxHits() != MAX_HITS_DEFAULT) {
             result.put(MAX_HITS, String.valueOf(getMaxHits()));

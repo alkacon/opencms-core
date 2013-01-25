@@ -165,7 +165,6 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
     public static final String N_INDEXSOURCES = "indexsources";
 
     /** Node name constant. */
-    public static final String N_LANGUAGEDETECTION = "languagedetection";
 
     /** Node name constant. */
     public static final String N_LOCALE = "locale";
@@ -302,8 +301,6 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
         digester.addCallMethod(xPath + "/" + N_REBUILD, "setRebuildMode", 0);
         digester.addCallMethod(xPath + "/" + N_PROJECT, "setProject", 0);
         digester.addCallMethod(xPath + "/" + N_LOCALE, "setLocaleString", 0);
-        digester.addCallMethod(xPath + "/" + N_LANGUAGEDETECTION, "setLanguageDetection", 1);
-        digester.addCallParam(xPath, 0, A_ENABLED);
         digester.addCallMethod(xPath + "/" + N_CONFIGURATION, "setFieldConfigurationName", 0);
         digester.addCallMethod(xPath + "/" + N_SOURCES + "/" + N_SOURCE, "addSourceName", 0);
         digester.addSetNext(xPath, "addSearchIndex");
@@ -487,9 +484,6 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
             indexElement.addElement(N_PROJECT).addText(searchIndex.getProject());
             // add <locale> element
             indexElement.addElement(N_LOCALE).addText(searchIndex.getLocale().toString());
-            // add <languagedetection> element
-            Element languageDetection = indexElement.addElement(N_LANGUAGEDETECTION);
-            languageDetection.addAttribute(A_ENABLED, String.valueOf(searchIndex.isLanguageDetection()));
             // add <configuration> element
             String fieldConfigurationName = searchIndex.getFieldConfigurationName();
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(fieldConfigurationName)) {
