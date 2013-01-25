@@ -169,7 +169,6 @@
 				<rebuild>manual</rebuild>
 				<project>Online</project>
 				<locale>en</locale>
-				<languagedetection enabled="false"/>			
 				<sources>
 					<source>source1</source>
 				</sources>		
@@ -180,7 +179,6 @@
 				<rebuild>manual</rebuild>
 				<project>Offline</project>
 				<locale>en</locale>
-				<languagedetection enabled="false"/>		
 				<configuration>standard</configuration>	
 				<sources>
 					<source>source1</source>
