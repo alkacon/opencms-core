@@ -74,6 +74,9 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSolrFieldConfiguration.class);
 
+    /** The content locale for the indexed document is stored in order to save performance. */
+    private List<Locale> m_contentLocales;
+
     /** A list of Solr fields. */
     private Map<String, CmsSolrField> m_solrFields = new HashMap<String, CmsSolrField>();
 
@@ -218,7 +221,7 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
                             // no localized content extracted
                             if (!(CmsResourceTypeXmlContent.isXmlContent(resource) || CmsResourceTypeXmlPage.isXmlPage(resource))) {
                                 // the resource is no XML content nor an XML page
-                                if (getContentLocales(cms, resource, extractionResult).contains(field.getLocale())) {
+                                if ((m_contentLocales != null) && m_contentLocales.contains(field.getLocale())) {
                                     // the resource to get the extracted content for has the locale of this field,
                                     // so store the extraction content into this field
                                     mapResult = extractionResult.getContent();
@@ -294,7 +297,6 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
                 properties,
                 propertiesSearched);
         }
-
         return document;
     }
 
@@ -329,15 +331,15 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
         document.addResourceLocales(resourceLocales);
 
         // append the content locales
-        List<Locale> contentLocales = new ArrayList<Locale>();
+        m_contentLocales = new ArrayList<Locale>();
         if (itemLocales != null) {
             // XML content or page
-            contentLocales = resourceLocales;
+            m_contentLocales = resourceLocales;
         } else {
             // for all other try to determine the locales
-            contentLocales = getContentLocales(cms, resource, extraction);
+            m_contentLocales = getContentLocales(cms, resource, extraction);
         }
-        document.addContentLocales(contentLocales);
+        document.addContentLocales(m_contentLocales);
 
         // append document dependencies if configured
         if (hasLocaleDependencies()) {
