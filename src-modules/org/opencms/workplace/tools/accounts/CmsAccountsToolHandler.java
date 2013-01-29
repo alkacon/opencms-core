@@ -55,6 +55,9 @@ import org.apache.commons.logging.Log;
  */
 public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
 
+    /** Path for the unlock tool. */
+    public static final String PATH_UNLOCK = "/accounts/orgunit/users/edit/unlock";
+
     /** Visibility parameter value constant. */
     protected static final String VISIBILITY_ALL = "all";
 
@@ -70,9 +73,6 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
     /** Delete file path constant. */
     private static final String DELETE_FILE = "unit_delete.jsp";
 
-    /** Organizational unit edit file path constant. */
-    private static final String OU_EDIT_FILE = "unit_edit.jsp";
-
     /** Group users file path constant. */
     private static final String GROUP_USERS_FILE = "group_users.jsp";
 
@@ -84,6 +84,9 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
 
     /** New file path constant. */
     private static final String NEW_FILE = "unit_new.jsp";
+
+    /** Organizational unit edit file path constant. */
+    private static final String OU_EDIT_FILE = "unit_edit.jsp";
 
     /** Organizational unit roles file path constant. */
     private static final String OUROLES_FILE = "roles_list.jsp";
@@ -195,6 +198,7 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
             if (OpenCms.getRoleManager().hasRole(wp.getCms(), CmsRole.ROOT_ADMIN)) {
                 return true;
             }
+
             String paramId = CmsRequestUtil.getNotEmptyDecodedParameter(
                 wp.getJsp().getRequest(),
                 A_CmsEditUserDialog.PARAM_USERID);
@@ -208,6 +212,7 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
                 if (OpenCms.getRoleManager().hasRole(wp.getCms(), user.getName(), CmsRole.ROOT_ADMIN)) {
                     return false;
                 }
+
                 // check if the current user is an administrator
                 if (OpenCms.getRoleManager().hasRole(wp.getCms(), CmsRole.ADMINISTRATOR)) {
                     return true;
@@ -333,7 +338,7 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
             return visible;
         } else if (getPath().indexOf("/users/edit/") > -1) {
             // check if the current user is the root administrator
-            if (OpenCms.getRoleManager().hasRole(wp.getCms(), CmsRole.ROOT_ADMIN)) {
+            if (OpenCms.getRoleManager().hasRole(wp.getCms(), CmsRole.ROOT_ADMIN) && !PATH_UNLOCK.equals(getPath())) {
                 return true;
             }
             CmsUUID userId = new CmsUUID(CmsRequestUtil.getNotEmptyDecodedParameter(
@@ -341,6 +346,11 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
                 A_CmsEditUserDialog.PARAM_USERID));
             try {
                 CmsUser user = wp.getCms().readUser(userId);
+                if (PATH_UNLOCK.equals(getPath())) {
+                    return OpenCms.getRoleManager().hasRole(wp.getCms(), CmsRole.ACCOUNT_MANAGER)
+                        && OpenCms.getLoginManager().isUserLocked(user);
+                }
+
                 // check if the user to change is root administrator 
                 if (OpenCms.getRoleManager().hasRole(wp.getCms(), user.getName(), CmsRole.ROOT_ADMIN)) {
                     return false;

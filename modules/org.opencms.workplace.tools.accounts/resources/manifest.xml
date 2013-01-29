@@ -100,6 +100,7 @@
             <resource uri="/system/workplace/resources/tools/accounts/icons/big/role_add.png"/>
             <resource uri="/system/workplace/resources/tools/accounts/icons/big/unit.png"/>
             <resource uri="/system/workplace/resources/tools/accounts/icons/big/unit_add.png"/>
+            <resource uri="/system/workplace/resources/tools/accounts/icons/big/unlock_user.png"/>
             <resource uri="/system/workplace/resources/tools/accounts/icons/big/unit_delete.png"/>
             <resource uri="/system/workplace/resources/tools/accounts/icons/big/unit_delete_disabled.png"/>
             <resource uri="/system/workplace/resources/tools/accounts/icons/big/unit_edit.png"/>
@@ -1664,6 +1665,75 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+		
+		<file>
+			<source>system/workplace/admin/accounts/user_unlock.jsp</source>
+			<destination>system/workplace/admin/accounts/user_unlock.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>5898c26c-560f-4ee5-88d9-b2955aa38155</uuidstructure>
+			<uuidresource>fbb5e384-c323-4e40-b849-ba9249244525</uuidresource>
+			<datelastmodified>Wed, 14 Mar 2007 14:12:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_EDITUSER_UNLOCK_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/accounts/icons/big/unlock_user.png]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_EDITUSER_UNLOCK_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[90]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_EDITUSER_UNLOCK_ADMIN_TOOL_NAME_0}:${key.GUI_EDITUSER_UNLOCK_ADMIN_TOOL_NAVBARNAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Unlock User]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:oufqn=${param.oufqn}&userid=${param.userid}&action=initial|path:/accounts/orgunit/users/edit/unlock]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		<file>
 			<source>system/workplace/admin/accounts/user_groups.jsp</source>
 			<destination>system/workplace/admin/accounts/user_groups.jsp</destination>
@@ -2593,6 +2663,8 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+		
+		
 		<file>
 			<source>system/workplace/resources/tools/accounts/buttons/unit_edit.png</source>
 			<destination>system/workplace/resources/tools/accounts/buttons/unit_edit.png</destination>
@@ -2739,6 +2811,28 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+		
+		<file>
+			<source>system/workplace/resources/tools/accounts/icons/big/unlock_user.png</source>
+			<destination>system/workplace/resources/tools/accounts/icons/big/unlock_user.png</destination>
+			<type>image</type>
+			<uuidstructure>edecfd8e-a84e-4d4d-88e6-df975014861f</uuidstructure>
+			<uuidresource>a8155119-e5e8-41ea-a344-2ad999b66a8b</uuidresource>
+			<datelastmodified>Wed, 07 Feb 2007 11:31:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2007 10:58:40 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:24,h:24]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
 		<file>
 			<source>system/workplace/resources/tools/accounts/icons/big/accounts.png</source>
 			<destination>system/workplace/resources/tools/accounts/icons/big/accounts.png</destination>

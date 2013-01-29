@@ -28,6 +28,7 @@
 package org.opencms.db;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsUser;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAuthentificationException;
 import org.opencms.security.CmsRole;
@@ -36,8 +37,10 @@ import org.opencms.security.CmsUserDisabledException;
 import org.opencms.security.Messages;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Provides functions used to check the validity of a user login.<p>
@@ -249,16 +252,6 @@ public class CmsLoginManager {
     }
 
     /**
-     * Returns if the security option ahould be enabled on the login dialog.<p>
-     * 
-     * @return <code>true</code> if the security option ahould be enabled on the login dialog, otherwise <code>false</code>
-     */
-    public boolean isEnableSecurity() {
-
-        return m_enableSecurity;
-    }
-
-    /**
      * Returns the current login message that is displayed if a user logs in.<p>
      * 
      * if <code>null</code> is returned, no login message has been currently set.<p>
@@ -278,6 +271,35 @@ public class CmsLoginManager {
     public int getMaxBadAttempts() {
 
         return m_maxBadAttempts;
+    }
+
+    /**
+     * Returns if the security option ahould be enabled on the login dialog.<p>
+     * 
+     * @return <code>true</code> if the security option ahould be enabled on the login dialog, otherwise <code>false</code>
+     */
+    public boolean isEnableSecurity() {
+
+        return m_enableSecurity;
+    }
+
+    /**
+     * Checks if a user is locked due to too many failed logins.<p>
+     * 
+     * @param user the user to check 
+     * 
+     * @return true if the user is locked 
+     */
+    public boolean isUserLocked(CmsUser user) {
+
+        Set<String> keysForUser = getKeysForUser(user);
+        for (String key : keysForUser) {
+            CmsUserData data = m_storage.get(key);
+            if ((data != null) && data.isDisabled()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -314,6 +336,24 @@ public class CmsLoginManager {
         m_loginMessage = message;
         if (m_loginMessage != null) {
             m_loginMessage.setFrozen();
+        }
+    }
+
+    /**
+     * Unlocks a user who has exceeded his number of failed login attempts so that he can try to log in again.<p>
+     * This requires the "account manager" role.
+     * 
+     * @param cms the current CMS context 
+     * @param user the user to unlock 
+     * 
+     * @throws CmsRoleViolationException if the permission check fails 
+     */
+    public void unlockUser(CmsObject cms, CmsUser user) throws CmsRoleViolationException {
+
+        OpenCms.getRoleManager().checkRole(cms, CmsRole.ACCOUNT_MANAGER.forOrgUnit(cms.getRequestContext().getOuFqn()));
+        Set<String> keysToRemove = getKeysForUser(user);
+        for (String keyToRemove : keysToRemove) {
+            m_storage.remove(keyToRemove);
         }
     }
 
@@ -361,5 +401,26 @@ public class CmsLoginManager {
         String key = createStorageKey(userName, remoteAddress);
         // just remove the user from the storage
         m_storage.remove(key);
+    }
+
+    /**
+     * Helper method to get all the storage keys that match a user's name.<p>
+     * 
+     * @param user the user for which to get the storage keys 
+     * 
+     * @return the set of storage keys 
+     */
+    private Set<String> getKeysForUser(CmsUser user) {
+
+        Set<String> keysToRemove = new HashSet<String>();
+        for (Map.Entry<String, CmsUserData> entry : m_storage.entrySet()) {
+            String key = entry.getKey();
+            int separatorPos = key.lastIndexOf("_");
+            String prefix = key.substring(0, separatorPos);
+            if (user.getName().equals(prefix)) {
+                keysToRemove.add(key);
+            }
+        }
+        return keysToRemove;
     }
 }
