@@ -178,6 +178,8 @@ public class CmsJspLoginBean extends CmsJspActionElement {
         try {
 
             // login the user and create a new session
+            CmsUser user = getCmsObject().readUser(userName);
+            OpenCms.getSessionManager().checkCreateSessionForUser(user);
             getCmsObject().loginUser(userName, password, getRequestContext().getRemoteAddress());
 
             // make sure we have a new session after login for security reasons

@@ -163,9 +163,6 @@ public final class OpenCmsCore {
     /** The ADE manager instance. */
     private CmsADEManager m_adeManager;
 
-    /** The template context manager. */
-    private CmsTemplateContextManager m_templateContextManager;
-
     /** The manager for page aliases. */
     private CmsAliasManager m_aliasManager;
 
@@ -264,6 +261,9 @@ public final class OpenCmsCore {
 
     /** The system information container for "read only" system settings. */
     private CmsSystemInfo m_systemInfo;
+
+    /** The template context manager. */
+    private CmsTemplateContextManager m_templateContextManager;
 
     /** The thread store. */
     private CmsThreadStore m_threadStore;
@@ -1275,6 +1275,7 @@ public final class OpenCmsCore {
 
             // initialize the session manager
             m_sessionManager.initialize(sessionStorageProvider);
+            m_sessionManager.setUserSessionMode(systemConfiguration.getUserSessionMode(true));
 
             // initialize the subscription manager
             m_subscriptionManager.setSecurityManager(m_securityManager);

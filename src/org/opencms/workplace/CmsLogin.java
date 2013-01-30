@@ -43,6 +43,7 @@ import org.opencms.jsp.CmsJspLoginBean;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsCustomLoginException;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
@@ -383,8 +384,13 @@ public class CmsLogin extends CmsJspLoginBean {
                         }
                     }
                     if (m_message == null) {
-                        // any other error - display default message
-                        m_message = Messages.get().container(Messages.GUI_LOGIN_FAILED_0);
+                        CmsException loginException = getLoginException();
+                        if (loginException instanceof CmsCustomLoginException) {
+                            m_message = loginException.getMessageContainer();
+                        } else {
+                            // any other error - display default message
+                            m_message = Messages.get().container(Messages.GUI_LOGIN_FAILED_0);
+                        }
                     }
                 }
             }

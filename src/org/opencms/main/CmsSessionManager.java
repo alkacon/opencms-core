@@ -27,11 +27,13 @@
 
 package org.opencms.main;
 
+import org.opencms.configuration.CmsSystemConfiguration.UserSessionMode;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsUser;
+import org.opencms.security.CmsCustomLoginException;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsRequestUtil;
@@ -87,6 +89,9 @@ public class CmsSessionManager {
     /** Session storage provider instance. */
     private I_CmsSessionStorageProvider m_sessionStorageProvider;
 
+    /** The user session mode. */
+    private UserSessionMode m_userSessionMode;
+
     /**
      * Creates a new instance of the OpenCms session manager.<p>
      */
@@ -94,6 +99,24 @@ public class CmsSessionManager {
 
         // create a lock object for the session counter
         m_lockSessionCount = new Object();
+    }
+
+    /**
+     * Checks whether a new session can be created for the user, and throws an exception if not.<p>
+     * 
+     * @param user the user to check 
+     * @throws CmsException if no new session for the user can't be created 
+     */
+    public void checkCreateSessionForUser(CmsUser user) throws CmsException {
+
+        if (getUserSessionMode() == UserSessionMode.single) {
+            List<CmsSessionInfo> infos = getSessionInfos(user.getId());
+            if (!infos.isEmpty()) {
+                throw new CmsCustomLoginException(org.opencms.security.Messages.get().container(
+                    org.opencms.security.Messages.ERR_ALREADY_LOGGED_IN_0));
+            }
+        }
+
     }
 
     /**
@@ -253,6 +276,33 @@ public class CmsSessionManager {
             return Collections.emptyList();
         }
         return m_sessionStorageProvider.getAllOfUser(userId);
+    }
+
+    /**
+     * Gets the user session mode.<p>
+     * 
+     * @return the user session mode 
+     */
+    public UserSessionMode getUserSessionMode() {
+
+        return m_userSessionMode;
+    }
+
+    /**
+     * Kills all sessions for the given user.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param user the user for whom the sessions should be killed 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public void killSession(CmsObject cms, CmsUser user) throws CmsException {
+
+        OpenCms.getRoleManager().checkRole(cms, CmsRole.ACCOUNT_MANAGER);
+        List<CmsSessionInfo> infos = getSessionInfos(user.getId());
+        for (CmsSessionInfo info : infos) {
+            m_sessionStorageProvider.remove(info.getSessionId());
+        }
     }
 
     /**
@@ -448,7 +498,18 @@ public class CmsSessionManager {
      */
     protected void addSessionInfo(CmsSessionInfo sessionInfo) {
 
-        m_sessionStorageProvider.put(sessionInfo);
+        if (getUserSessionMode() == UserSessionMode.standard) {
+            m_sessionStorageProvider.put(sessionInfo);
+        } else if (getUserSessionMode() == UserSessionMode.single) {
+            CmsUUID userId = sessionInfo.getUserId();
+            List<CmsSessionInfo> infos = getSessionInfos(userId);
+            if (infos.isEmpty()
+                || ((infos.size() == 1) && infos.get(0).getSessionId().equals(sessionInfo.getSessionId()))) {
+                m_sessionStorageProvider.put(sessionInfo);
+            } else {
+                throw new RuntimeException("Can't create another session for the same user.");
+            }
+        }
     }
 
     /**
@@ -535,6 +596,16 @@ public class CmsSessionManager {
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_SESSION_DESTROYED_1, event.getSession().getId()));
         }
+    }
+
+    /**
+     * Sets the user session mode.<p>
+     * 
+     * @param userSessionMode the user session mode 
+     */
+    protected void setUserSessionMode(UserSessionMode userSessionMode) {
+
+        m_userSessionMode = userSessionMode;
     }
 
     /**

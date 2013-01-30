@@ -38,6 +38,9 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_ALREADY_LOGGED_IN_0 = "ERR_ALREADY_LOGGED_IN_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_BAD_GROUPNAME_EMPTY_0 = "ERR_BAD_GROUPNAME_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */
@@ -120,7 +123,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UNSUPPORTED_AUTHENTICATION_MECHANISM_1 = "ERR_UNSUPPORTED_AUTHENTICATION_MECHANISM_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UNSUPPORTED_PASSWORD_ENCODING_1 = "ERR_UNSUPPORTED_PASSWORD_ENCODING_1";
 
@@ -204,7 +207,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_AUTHENTICATE_PROPERTY_2 = "LOG_AUTHENTICATE_PROPERTY_2";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_INIT_CONFIG_CALLED_1 = "LOG_INIT_CONFIG_CALLED_1";
 

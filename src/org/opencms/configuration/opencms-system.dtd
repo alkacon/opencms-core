@@ -38,7 +38,8 @@
 	ade?,
 	sitemap?,
 	subscriptionmanager?,
-	workflow?
+	workflow?,
+	user-session-mode?
 	)>
 
 <!--
@@ -627,5 +628,14 @@ Each job can have an optional list of parameters.
 <!ELEMENT subscriptionmanager EMPTY>
 <!ATTLIST subscriptionmanager enabled (true|false|TRUE|FALSE) "false" poolname CDATA #REQUIRED maxvisited CDATA #IMPLIED>
 
+
 <!ELEMENT workflow (parameters)>
 <!ATTLIST workflow class CDATA #REQUIRED>
+
+
+<!ELEMENT user-session-mode (#PCDATA)>
+
+
+
+
+

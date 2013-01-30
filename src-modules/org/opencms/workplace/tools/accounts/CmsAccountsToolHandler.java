@@ -55,6 +55,9 @@ import org.apache.commons.logging.Log;
  */
 public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
 
+    /** Path for the kill session tool. */
+    public static final String PATH_KILL_SESSIONS = "/accounts/orgunit/users/edit/kill_sessions";
+
     /** Path for the unlock tool. */
     public static final String PATH_UNLOCK = "/accounts/orgunit/users/edit/unlock";
 
@@ -340,6 +343,10 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
             // check if the current user is the root administrator
             if (OpenCms.getRoleManager().hasRole(wp.getCms(), CmsRole.ROOT_ADMIN) && !PATH_UNLOCK.equals(getPath())) {
                 return true;
+            }
+
+            if (PATH_KILL_SESSIONS.equals(getPath())) {
+                return OpenCms.getRoleManager().hasRole(wp.getCms(), CmsRole.ACCOUNT_MANAGER);
             }
             CmsUUID userId = new CmsUUID(CmsRequestUtil.getNotEmptyDecodedParameter(
                 wp.getJsp().getRequest(),

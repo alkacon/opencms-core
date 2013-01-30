@@ -52,6 +52,14 @@ public abstract class A_CmsAuthorizationHandler implements I_CmsAuthorizationHan
     protected Map<String, String> m_parameters;
 
     /**
+     * @see org.opencms.security.I_CmsAuthorizationHandler#setParameters(java.util.Map)
+     */
+    public void setParameters(Map<String, String> parameters) {
+
+        m_parameters = parameters;
+    }
+
+    /**
      * Initializes a new cms object from the session data of the request.<p>
      * 
      * If no session data is found, <code>null</code> is returned.<p>
@@ -95,13 +103,5 @@ public abstract class A_CmsAuthorizationHandler implements I_CmsAuthorizationHan
         }
         // return the updated cms object
         return cms;
-    }
-
-    /**
-     * @see org.opencms.security.I_CmsAuthorizationHandler#setParameters(java.util.Map)
-     */
-    public void setParameters(Map<String, String> parameters) {
-
-        m_parameters = parameters;
     }
 }

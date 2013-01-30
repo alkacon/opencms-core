@@ -87,6 +87,14 @@ import org.dom4j.Element;
  */
 public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
+    /** Enum for the user session mode. */
+    public enum UserSessionMode {
+        /** Only a single session per user is allowed. */
+        single,
+        /** Any number of sessions for a user are allowed. */
+        standard
+    }
+
     /** The attribute name for the deleted node. */
     public static final String A_DELETED = "deleted";
 
@@ -119,6 +127,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The name of the DTD for this configuration. */
     public static final String CONFIGURATION_DTD_NAME = "opencms-system.dtd";
+
+    /** The default user session mode. */
+    public static final UserSessionMode DEFAULT_USER_SESSION_MODE = UserSessionMode.standard;
 
     /** The name of the default XML file for this configuration. */
     public static final String DEFAULT_XML_FILE_NAME = "opencms-system.xml";
@@ -408,9 +419,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The size of the memory monitor's cache for ACLS. */
     public static final String N_SIZE_ACLS = "size-accesscontrollists";
 
-    /** The node name for the workflow configuration. */
-    public static final String N_WORKFLOW = "workflow";
-
     /** The size of the memory monitor's cache for offline container pages. */
     public static final String N_SIZE_CONTAINERPAGE_OFFLINE = "size-containerpage-offline";
 
@@ -492,11 +500,17 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The node name for the warning-interval node. */
     public static final String N_WARNING_INTERVAL = "warning-interval";
 
+    /** The node name for the workflow configuration. */
+    public static final String N_WORKFLOW = "workflow";
+
     /** The node name for the workplace-server node. */
     public static final String N_WORKPLACE_SERVER = "workplace-server";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSystemConfiguration.class);
+
+    /** Node name for the user session mode. */
+    private static final String N_USER_SESSION_MODE = "user-session-mode";
 
     /** The ADE cache settings. */
     private CmsADECacheSettings m_adeCacheSettings;
@@ -568,9 +582,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The configured publish manager. */
     private CmsPublishManager m_publishManager;
 
-    /** The configured workflow manager. */
-    private I_CmsWorkflowManager m_workflowManager;
-
     /** A list of instantiated request handler classes. */
     private List<I_CmsRequestHandler> m_requestHandlers;
 
@@ -598,8 +609,14 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The temporary file project id. */
     private int m_tempFileProjectId;
 
+    /** The user session mode. */
+    private UserSessionMode m_userSessionMode;
+
     /** The configured validation handler. */
     private String m_validationHandler;
+
+    /** The configured workflow manager. */
+    private I_CmsWorkflowManager m_workflowManager;
 
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
@@ -1151,6 +1168,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam(workflowXpath + "/" + N_PARAMETERS + "/" + N_PARAM, 1);
         digester.addSetNext(workflowXpath + "/" + N_PARAMETERS, "setParameters");
         digester.addSetNext(workflowXpath, "setWorkflowManager");
+
+        String userSessionPath = "*/" + N_SYSTEM + "/" + N_USER_SESSION_MODE;
+        digester.addCallMethod(userSessionPath, "setUserSessionMode", 0);
+
     }
 
     /**
@@ -1575,6 +1596,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
                 paramElem.addText(entry.getValue());
             }
         }
+        if (m_userSessionMode != null) {
+            Element userSessionElem = systemElement.addElement(N_USER_SESSION_MODE);
+            userSessionElem.setText(m_userSessionMode.toString());
+        }
         // return the system node
         return systemElement;
     }
@@ -1952,6 +1977,24 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     public int getTempFileProjectId() {
 
         return m_tempFileProjectId;
+    }
+
+    /**
+     * Gets the user session mode.<p>
+     * 
+     * @param useDefault if true, and no user session mode was configured, this will return the default value 
+     * 
+     * @return the user session mode 
+     */
+    public UserSessionMode getUserSessionMode(boolean useDefault) {
+
+        if (m_userSessionMode != null) {
+            return m_userSessionMode;
+        } else if (useDefault) {
+            return null;
+        } else {
+            return DEFAULT_USER_SESSION_MODE;
+        }
     }
 
     /**
@@ -2439,6 +2482,19 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
                 Messages.INIT_TEMPFILE_PROJECT_ID_1,
                 new Integer(m_tempFileProjectId)));
         }
+    }
+
+    /**
+     * Sets the user session mode.<p>
+     * 
+     * @param userSessionMode the user session mode 
+     */
+    public void setUserSessionMode(String userSessionMode) {
+
+        if ((userSessionMode == null) || (m_userSessionMode != null)) {
+            throw new IllegalStateException("Can't set user session mode to " + userSessionMode);
+        }
+        m_userSessionMode = UserSessionMode.valueOf(userSessionMode);
     }
 
     /**

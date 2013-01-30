@@ -54,6 +54,8 @@
             <resource uri="/system/workplace/admin/accounts/unit_parent.jsp"/>
             <resource uri="/system/workplace/admin/accounts/user_addinfo.jsp"/>
             <resource uri="/system/workplace/admin/accounts/user_allinfo.jsp"/>
+            <resource uri="/system/workplace/admin/accounts/user_unlock.jsp"/>
+            <resource uri="/system/workplace/admin/accounts/user_kill_sessions.jsp"/>
             <resource uri="/system/workplace/admin/accounts/user_assign.jsp"/>
             <resource uri="/system/workplace/admin/accounts/user_delete.jsp"/>
             <resource uri="/system/workplace/admin/accounts/user_edit.jsp"/>
@@ -101,6 +103,7 @@
             <resource uri="/system/workplace/resources/tools/accounts/icons/big/unit.png"/>
             <resource uri="/system/workplace/resources/tools/accounts/icons/big/unit_add.png"/>
             <resource uri="/system/workplace/resources/tools/accounts/icons/big/unlock_user.png"/>
+            <resource uri="/system/workplace/resources/tools/accounts/icons/big/user_kill_sessions.png"/>
             <resource uri="/system/workplace/resources/tools/accounts/icons/big/unit_delete.png"/>
             <resource uri="/system/workplace/resources/tools/accounts/icons/big/unit_delete_disabled.png"/>
             <resource uri="/system/workplace/resources/tools/accounts/icons/big/unit_edit.png"/>
@@ -1719,6 +1722,62 @@
 			<accesscontrol/>
 		</file>
 		
+		<!--  kill sessions -->
+		<file>
+			<source>system/workplace/admin/accounts/user_kill_sessions.jsp</source>
+			<destination>system/workplace/admin/accounts/user_kill_sessions.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>4dd7dee9-dc2d-4e5f-ae86-9aa78c90e21d</uuidstructure>
+			<uuidresource>1d7eea9d-b797-41d9-9439-e7b67e721c5c</uuidresource>
+			<datelastmodified>Wed, 14 Mar 2007 14:12:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_EDITUSER_KILLSESSIONS_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/accounts/icons/big/user_kill_sessions.png]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_EDITUSER_KILLSESSIONS_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[100]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_EDITUSER_KILLSESSIONS_ADMIN_TOOL_NAME_0}:${key.GUI_EDITUSER_KILLSESSIONS_ADMIN_TOOL_NAVBARNAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Kill sessions]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:oufqn=${param.oufqn}&userid=${param.userid}&action=initial|path:/accounts/orgunit/users/edit/kill_sessions]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
+		
+		
 		
 		
 		
@@ -2832,6 +2891,30 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+		
+				<file>
+			<source>system/workplace/resources/tools/accounts/icons/big/user_kill_sessions.png</source>
+			<destination>system/workplace/resources/tools/accounts/icons/big/user_kill_sessions.png</destination>
+			<type>image</type>
+			<uuidstructure>a64d1f51-9e5d-423a-83f8-199e7c192431</uuidstructure>
+			<uuidresource>201d0285-02ac-47c3-8e08-28352413b7dc</uuidresource>
+			<datelastmodified>Wed, 07 Feb 2007 11:31:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2007 10:58:40 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:24,h:24]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
+		
+		
 		
 		<file>
 			<source>system/workplace/resources/tools/accounts/icons/big/accounts.png</source>
