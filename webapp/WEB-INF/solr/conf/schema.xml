@@ -224,7 +224,7 @@
  </types>
 
  <fields>
-   <field name="id"                  type="uuid"         indexed="true"  stored="true"  default="NEW" /> <!-- Unique indetifier. -->
+   <field name="id"                  type="uuid"         indexed="true"  stored="true"  default="NEW" /> <!-- Unique identifier. -->
    <field name="path"                type="string"       indexed="true"  stored="true"  required="true" />
    <field name="path_hierarchy"      type="text_path"    indexed="true"  stored="false" required="true" /><!-- is copied -->
    <field name="parent-folders"      type="string"       indexed="true"  stored="false" required="true" multiValued="true" />
