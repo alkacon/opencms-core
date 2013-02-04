@@ -45,6 +45,7 @@ import org.opencms.file.CmsUser;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
@@ -151,6 +152,12 @@ public class CmsADEManager {
 
     /** The name of the module configuration file type. */
     public static final String MODULE_CONFIG_TYPE = "module_config";
+
+    /** Node name for the nav level link value. */
+    public static final String N_LINK = "Link";
+
+    /** Node name for the nav level type value. */
+    public static final String N_TYPE = "Type";
 
     /** The path to the sitemap editor JSP. */
     public static final String PATH_SITEMAP_EDITOR_JSP = "/system/modules/org.opencms.ade.sitemap/pages/sitemap.jsp";
@@ -594,8 +601,22 @@ public class CmsADEManager {
 
         CmsFile file = cms.readFile(htmlRedirect);
         CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
+
+        // find out the locale to use for reading values from the redirect
+        List<Locale> candidates = new ArrayList<Locale>();
+        candidates.add(currentContext.getLocale());
+        candidates.add(CmsLocaleManager.getDefaultLocale());
+        candidates.add(Locale.ENGLISH);
+        candidates.addAll(content.getLocales());
         Locale contentLocale = currentContext.getLocale();
-        String typeValue = content.getValue("Type", contentLocale).getStringValue(cms);
+        for (Locale candidateLocale : candidates) {
+            if (content.hasLocale(candidateLocale)) {
+                contentLocale = candidateLocale;
+                break;
+            }
+        }
+
+        String typeValue = content.getValue(N_TYPE, contentLocale).getStringValue(cms);
         String lnkUri = "";
         String errorCode = "";
         if ("sublevel".equals(typeValue)) {
@@ -610,7 +631,7 @@ public class CmsADEManager {
                 errorCode = HttpServletResponse.SC_NOT_FOUND + "";
             }
         } else {
-            String linkValue = content.getValue("Link", contentLocale).getStringValue(cms);
+            String linkValue = content.getValue(N_LINK, contentLocale).getStringValue(cms);
             lnkUri = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, linkValue);
             errorCode = typeValue;
         }
