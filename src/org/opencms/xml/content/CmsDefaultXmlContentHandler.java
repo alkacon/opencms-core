@@ -130,6 +130,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** Constant for the "configuration" appinfo attribute name. */
     public static final String APPINFO_ATTR_CONFIGURATION = "configuration";
 
+    /** The exclude from index attribute. */
+    public static final String APPINFO_ATTR_CONTAINER_PAGE_ONLY = "containerPageOnly";
+
     /** Constant for the "copyfields" appinfo attribute name. */
     public static final String APPINFO_ATTR_COPY_FIELDS = "copyfields";
 
@@ -144,9 +147,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** Constant for the "error" appinfo attribute name. */
     public static final String APPINFO_ATTR_ERROR = "error";
-
-    /** The exclude from index attribute. */
-    public static final String APPINFO_ATTR_CONTAINER_PAGE_ONLY = "containerPageOnly";
 
     /** Constant for the "invalidate" appinfo attribute name. */
     public static final String APPINFO_ATTR_INVALIDATE = "invalidate";
@@ -694,26 +694,34 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      */
     public CmsRelationType getRelationType(String xpath) {
 
-        if (xpath == null) {
-            return CmsRelationType.XML_WEAK;
-        }
+        return getRelationType(xpath, CmsRelationType.XML_WEAK);
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getRelationType(java.lang.String, org.opencms.relations.CmsRelationType)
+     */
+    public CmsRelationType getRelationType(String xpath, CmsRelationType defaultType) {
+
         CmsRelationType relationType = null;
-        // look up the default from the configured mappings
-        relationType = m_relations.get(xpath);
-        if (relationType == null) {
-            // no value found, try default xpath
-            String path = CmsXmlUtils.removeAllXpathIndices(xpath);
-            // look up the default value again without indexes
-            relationType = m_relations.get(path);
+        if (xpath != null) {
+
+            // look up the default from the configured mappings
+            relationType = m_relations.get(xpath);
+            if (relationType == null) {
+                // no value found, try default xpath
+                String path = CmsXmlUtils.removeAllXpathIndices(xpath);
+                // look up the default value again without indexes
+                relationType = m_relations.get(path);
+            }
+            if (relationType == null) {
+                // no value found, try the last simple type path
+                String path = CmsXmlUtils.getLastXpathElement(xpath);
+                // look up the default value again for the last simple type
+                relationType = m_relations.get(path);
+            }
         }
         if (relationType == null) {
-            // no value found, try the last simple type path
-            String path = CmsXmlUtils.getLastXpathElement(xpath);
-            // look up the default value again for the last simple type
-            relationType = m_relations.get(path);
-        }
-        if (relationType == null) {
-            return CmsRelationType.XML_WEAK;
+            relationType = defaultType;
         }
         return relationType;
     }

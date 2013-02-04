@@ -253,6 +253,16 @@ public interface I_CmsXmlContentHandler {
     CmsRelationType getRelationType(String path);
 
     /**
+     * Returns the relation type for the given path.<p>
+     * 
+     * @param xpath the path to get the relation type for
+     * @param defaultType the default type if none is set
+     * 
+     * @return the relation type for the given path
+     */
+    CmsRelationType getRelationType(String xpath, CmsRelationType defaultType);
+
+    /**
      * Returns all configured Search fields for this XML content.<p>
      * 
      * @return the Search fields for this XMl content

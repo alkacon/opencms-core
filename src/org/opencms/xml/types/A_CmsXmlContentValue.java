@@ -571,12 +571,12 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
      */
     protected CmsRelationType getRelationType(String path) {
 
-        CmsRelationType result;
+        CmsRelationType result = getContentDefinition().getContentHandler().getRelationType(path);
         I_CmsXmlDocument document = getDocument();
         if (document != null) {
-            result = document.getContentDefinition().getContentHandler().getRelationType(getPath());
+            // the relations set in the main content definition override relations set in the nested definition
+            result = document.getContentDefinition().getContentHandler().getRelationType(getPath(), result);
         } else {
-            result = CmsRelationType.XML_WEAK;
             LOG.warn("Missing document while evaluating relation type for " + path);
         }
         return result;
