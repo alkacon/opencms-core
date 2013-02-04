@@ -65,6 +65,10 @@ public class CmsPingTimer {
      */
     public static void start() {
 
+        if (!CmsCoreProvider.get().isKeepAlive()) {
+            return;
+        }
+
         if (INSTANCE == null) {
             m_keepRunning = true;
             INSTANCE = new CmsPingTimer();

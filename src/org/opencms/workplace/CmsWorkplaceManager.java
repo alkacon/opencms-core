@@ -197,6 +197,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     /** The configured group translation class name. */
     private String m_groupTranslationClass;
 
+    /** Keep-alive flag. */
+    private Boolean m_keepAlive;
+
     /** Contains all folders that should be labeled if siblings exist. */
     private List<String> m_labelSiteFolders;
 
@@ -1391,6 +1394,36 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     }
 
     /**
+     * Returns true if "keep alive" mode is active.
+     * 
+     * @return true if the session should be kept alive 
+     */
+    public boolean isKeepAlive() {
+
+        return isKeepAlive(true).booleanValue();
+    }
+
+    /**
+     * Returns true if the session should be kept alive.<p>
+     * 
+     * @param useDefault if true, the default value will be returned if the "keep alive" setting is not explicitly configured
+     *  
+     * @return True if the "keep alive" mode is active
+     */
+    public Boolean isKeepAlive(boolean useDefault) {
+
+        if (m_keepAlive != null) {
+            return m_keepAlive;
+        }
+        if (useDefault) {
+            return Boolean.TRUE;
+        } else {
+            return null;
+        }
+
+    }
+
+    /**
      * Returns if XML content is automatically corrected when opened with the editor.<p>
      * 
      * @return <code>true</code> if XML content is automatically corrected when opened with the editor, otherwise <code>false</code>
@@ -1760,6 +1793,16 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
 
         I_CmsGroupNameTranslation translation = getGroupNameTranslation();
         return translation.translateGroupName(groupName, keepOu);
+    }
+
+    /** 
+     * Sets the "keep alive" mode.<p>
+     * 
+     * @param keepAlive the keep-alive mode 
+     */
+    public void setKeepAlive(String keepAlive) {
+
+        m_keepAlive = Boolean.valueOf(keepAlive);
     }
 
     /**

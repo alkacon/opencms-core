@@ -327,6 +327,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     /** The subname of the rfsfilesettings/isLogfile node. */
     public static final String N_ISLOGFILE = "isLogfile";
 
+    /** Name of the "keep alive" setting node. */
+    public static final String N_KEEP_ALIVE = "keep-alive";
+
     /** The node name of the key node. */
     public static final String N_KEY = "key";
 
@@ -840,8 +843,14 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         // import/export manager finished
         digester.addSetNext("*/" + N_WORKPLACE, "setWorkplaceManager");
 
+        String path = "*/" + N_WORKPLACE + "/" + N_KEEP_ALIVE;
+        digester.addCallMethod(path, "setKeepAlive", 0);
+
         // add exclude patterns
-        digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_SYNCHRONIZATION + "/" + N_EXCLUDEPATTERN, "addSynchronizeExcludePattern", 0);
+        digester.addCallMethod(
+            "*/" + N_WORKPLACE + "/" + N_SYNCHRONIZATION + "/" + N_EXCLUDEPATTERN,
+            "addSynchronizeExcludePattern",
+            0);
 
         digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_USER_LISTS, "setUserListMode", 1);
         digester.addCallParam("*/" + N_WORKPLACE + "/" + N_USER_LISTS, 0, A_MODE);
@@ -1446,6 +1455,11 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
             Element userListsElem = workplaceElement.addElement(N_USER_LISTS);
             userListsElem.addAttribute(A_MODE, userListsMode);
         }
+
+        Boolean keepAlive = m_workplaceManager.isKeepAlive(false);
+        if (keepAlive != null) {
+            workplaceElement.addElement(N_KEEP_ALIVE).setText(keepAlive.toString());
+        }
         // return the configured node
         return workplaceElement;
     }
@@ -1837,4 +1851,5 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WORKPLACE_INIT_0));
         }
     }
+
 }

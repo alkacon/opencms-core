@@ -18,7 +18,9 @@
 <title>OpenCms Workplace Foot Frame</title>
 <script type="text/javascript"> 
 function doReloadFoot() {
+   <%if (OpenCms.getWorkplaceManager().isKeepAlive()) {%>
 	document.location.href="<%= cms.link("top_foot.jsp?wpFrame=foot") %>";
+   <%}%>
 }
 </script>
 <style type="text/css">

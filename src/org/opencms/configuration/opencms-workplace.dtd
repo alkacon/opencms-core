@@ -35,7 +35,8 @@
 	workplace-customfoot?,
 	tool-manager?,
 	user-lists?,
-	synchronization?
+	synchronization?,
+	keep-alive?
 	)>
 
 <!--
@@ -843,6 +844,8 @@
 
 <!ELEMENT user-lists EMPTY>
 <!ATTLIST user-lists mode CDATA #REQUIRED>
+
+<!ELEMENT keep-alive (#PCDATA)>
 
 <!--
 # Include the explorer types DTD.

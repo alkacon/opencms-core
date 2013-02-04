@@ -58,11 +58,11 @@ public class CmsCoreData implements IsSerializable {
      */
     public static class UserInfo implements IsSerializable {
 
-        /** True if the user is a template developer. */
-        private boolean m_isDeveloper;
-
         /** True if the user is an administrator. */
         private boolean m_isAdmin;
+
+        /** True if the user is a template developer. */
+        private boolean m_isDeveloper;
 
         /** 
          * Creates a new instance.<p>
@@ -105,9 +105,6 @@ public class CmsCoreData implements IsSerializable {
         }
     }
 
-    /** A bean with information about the current user. */
-    protected UserInfo m_userInfo;
-
     /** Name of the used js variable. */
     public static final String DICT_NAME = "org_opencms_gwt";
 
@@ -122,6 +119,9 @@ public class CmsCoreData implements IsSerializable {
 
     /** The time sent from the server when loading the data. */
     protected long m_serverTime;
+
+    /** A bean with information about the current user. */
+    protected UserInfo m_userInfo;
 
     /** The XML content editor back-link URL. */
     private String m_contentEditorBacklinkUrl;
@@ -143,6 +143,9 @@ public class CmsCoreData implements IsSerializable {
 
     /** The show editor help flag. */
     private boolean m_isShowEditorHelp;
+
+    /** Keep-alive setting. */
+    private boolean m_keepAlive;
 
     /** The current request locale. */
     private String m_locale;
@@ -204,7 +207,8 @@ public class CmsCoreData implements IsSerializable {
             clone.isToolbarVisible(),
             clone.getDefaultWorkplaceLink(),
             clone.getGwtBuildIds(),
-            clone.getUserInfo());
+            clone.getUserInfo(),
+            clone.isKeepAlive());
     }
 
     /**
@@ -228,6 +232,7 @@ public class CmsCoreData implements IsSerializable {
      * @param defaultWorkplaceLink the default link to use for opening the workplace  
      * @param gwtBuildIds the map of GWT build ids 
      * @param userInfo information about the current user 
+     * @param isKeepAlive the keep-alive mode 
      */
     public CmsCoreData(
         String contentEditorUrl,
@@ -247,7 +252,8 @@ public class CmsCoreData implements IsSerializable {
         boolean toolbarVisible,
         String defaultWorkplaceLink,
         Map<String, String> gwtBuildIds,
-        UserInfo userInfo) {
+        UserInfo userInfo,
+        boolean isKeepAlive) {
 
         m_contentEditorUrl = contentEditorUrl;
         m_contentEditorBacklinkUrl = contentEditorBacklinkUrl;
@@ -267,6 +273,7 @@ public class CmsCoreData implements IsSerializable {
         m_defaultWorkplaceLink = defaultWorkplaceLink;
         m_gwtBuildIds = gwtBuildIds;
         m_userInfo = userInfo;
+        m_keepAlive = isKeepAlive;
     }
 
     /**
@@ -427,6 +434,16 @@ public class CmsCoreData implements IsSerializable {
     public String getWpLocale() {
 
         return m_wpLocale;
+    }
+
+    /**
+     * Returns true if the session should be kept alive even without user actions.<p>
+     * 
+     * @return true if keep-alive mode is active 
+     */
+    public boolean isKeepAlive() {
+
+        return m_keepAlive;
     }
 
     /**
