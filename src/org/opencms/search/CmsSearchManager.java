@@ -30,6 +30,7 @@ package org.opencms.search;
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsPublishedResource;
+import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -190,6 +191,18 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 case I_CmsEventListener.EVENT_RESOURCES_AND_PROPERTIES_MODIFIED:
                 case I_CmsEventListener.EVENT_RESOURCE_MOVED:
                 case I_CmsEventListener.EVENT_RESOURCE_DELETED:
+                    List<CmsResource> eventResources = (List<CmsResource>)event.getData().get(
+                        I_CmsEventListener.KEY_RESOURCES);
+                    List<CmsResource> resourcesToDelete = new ArrayList<CmsResource>(eventResources);
+                    for (CmsResource res : resourcesToDelete) {
+                        if (res.getState().isNew()) {
+                            // if the resource is new and a delete action was performed
+                            // --> set the state of the resource to deleted
+                            res.setState(CmsResourceState.STATE_DELETED);
+                        }
+                    }
+                    reIndexResources(resourcesToDelete);
+                    break;
                 case I_CmsEventListener.EVENT_RESOURCE_COPIED:
                 case I_CmsEventListener.EVENT_RESOURCES_MODIFIED:
                     // a list of resources has been modified - offline indexes require (re)indexing

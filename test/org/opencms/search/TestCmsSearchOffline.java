@@ -216,6 +216,26 @@ public class TestCmsSearchOffline extends OpenCmsTestCase {
         assertEquals("/sites/default/test/test.txt", (results.get(0)).getPath());
 
         echo("Delete Test - end");
+        echo("Delete New Test - start");
+
+        OpenCms.getSearchManager().getIndex(INDEX_SPECIAL).setCheckPermissions(false);
+        String fileName222 = "/test/test222.txt";
+        String text222 = "Alkacon OpenCms is so great!";
+        cms.createResource(fileName222, CmsResourceTypePlain.getStaticTypeId(), text222.getBytes(), null);
+        // wait for the offline index
+        waitForUpdate();
+        cmsSearchBean.setQuery("+\"Alkacon OpenCms is so great!\"");
+        results = cmsSearchBean.getSearchResult();
+        assertEquals(1, results.size());
+        cms.deleteResource(fileName222, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        waitForUpdate();
+        cmsSearchBean.setQuery("+\"Alkacon OpenCms is so great!\"");
+        results = cmsSearchBean.getSearchResult();
+        assertEquals(0, results.size());
+        OpenCms.getSearchManager().getIndex(INDEX_SPECIAL).setCheckPermissions(true);
+
+        echo("Delete New Test - end");
+        echo("Move Test - start");
 
         // move a resource
         String moveFileName = "/test/test_moved.txt";
@@ -230,5 +250,7 @@ public class TestCmsSearchOffline extends OpenCmsTestCase {
         TestCmsSearch.printResults(results, cms);
         assertEquals(7, results.size());
         assertEquals("/sites/default/test/test_moved.txt", (results.get(0)).getPath());
+
+        echo("Move Test - end");
     }
 }
