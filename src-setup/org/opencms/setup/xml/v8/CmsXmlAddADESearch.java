@@ -276,6 +276,27 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
         return "Add the ADE containerpage and gallery search nodes";
     }
 
+    /** 
+     * Creates an xpath for an index source.<p>
+     * 
+     * @param name the name of the index source 
+     * 
+     * @return the xpath for the index source 
+     */
+    protected String buildXpathForIndexSource(String name) {
+
+        StringBuffer xp = new StringBuffer(256);
+        xp.append(getCommonPath());
+        xp.append("/");
+        xp.append(CmsSearchConfiguration.N_INDEXSOURCES);
+        xp.append("/");
+        xp.append(CmsSearchConfiguration.N_INDEXSOURCE);
+        xp.append("[");
+        xp.append(I_CmsXmlConfiguration.N_NAME);
+        xp.append("='" + name + "']");
+        return xp.toString();
+    }
+
     /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#executeUpdate(org.dom4j.Document, java.lang.String, boolean)
      */
@@ -348,31 +369,6 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
         xp.append(I_CmsXmlConfiguration.N_NAME);
         xp.append("[text()='" + doctype + "']");
         return xp.toString();
-    }
-
-    /**
-     * Creates an action which adds an indexed type to an index source.<p>
-     *  
-     * @param type the type which should be indexed
-     *  
-     * @return the update action 
-     */
-    private CmsXmlUpdateAction createIndexedTypeAction(final String type) {
-
-        return new CmsXmlUpdateAction() {
-
-            @Override
-            public boolean executeUpdate(Document doc, String xpath, boolean forReal) {
-
-                Node node = doc.selectSingleNode(xpath);
-                if (node != null) {
-                    return false;
-                }
-                CmsSetupXmlHelper.setValue(doc, xpath + "/text()", type);
-                return true;
-
-            }
-        };
     }
 
     /**
@@ -922,9 +918,23 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
 
         // use dummy check [1=1] to make the xpaths unique 
         m_actions.put("/opencms/search/indexsources[1=1]", new CmsAddGalleryModuleIndexSourceAction());
-        m_actions.put(
-            buildXpathForIndexedDocumentType("source1", "containerpage"),
-            createIndexedTypeAction("containerpage"));
+        m_actions.put(buildXpathForIndexedDocumentType("source1", "containerpage"), new CmsXmlUpdateAction() {
+
+            @Override
+            public boolean executeUpdate(Document doc, String xpath, boolean forReal) {
+
+                Node node = doc.selectSingleNode(xpath);
+                if (doc.selectSingleNode(buildXpathForIndexSource("source1")) == null) {
+                    return false;
+                }
+                if (node != null) {
+                    return false;
+                }
+                CmsSetupXmlHelper.setValue(doc, xpath + "/text()", "containerpage");
+                return true;
+
+            }
+        });
 
         m_actions.put("/opencms/search/indexsource[2=2]", new CmsXmlUpdateAction() {
 
