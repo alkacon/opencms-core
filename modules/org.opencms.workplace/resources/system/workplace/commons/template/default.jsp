@@ -1,4 +1,4 @@
-<%@page taglibs="c,cms,fmt" buffer="none" session="false" import="org.opencms.main.*,org.opencms.file.*,org.opencms.jsp.*,org.opencms.jsp.util.*,org.opencms.ade.galleries.*" %>
+<%@page taglibs="c,cms,fmt" buffer="none" session="false" import="org.opencms.main.*,org.opencms.file.*,org.opencms.jsp.*,org.opencms.jsp.util.*,org.opencms.ade.galleries.*,org.opencms.file.types.CmsResourceTypeXmlContainerPage" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %><%
 
 	CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
@@ -6,6 +6,7 @@
 	CmsJspStandardContextBean standardContext = CmsJspStandardContextBean.getInstance(request);
 	pageContext.setAttribute("standardContext", standardContext);
 	pageContext.setAttribute("navlist", cms.getNavigation().getNavigationForFolder());
+	pageContext.setAttribute("isContainerPage", CmsResourceTypeXmlContainerPage.isContainerPage(cmsObj.readResource(cms.getRequestContext().getUri())));
 %>
 <cms:template element="head">
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
@@ -92,7 +93,7 @@
 		<c:when test="${!empty preview}">
 			<%=CmsPreviewService.getPreviewContent(request, response, cmsObj, cmsObj.readResource(cms.getRequestContext().getUri()),cms.getRequestContext().getLocale())%>
 		</c:when>
-		<c:when test="${!empty xml}">
+		<c:when test="${!empty xml && !isContainerPage}">
 			<c:forEach items="${xml.names}" var="element">
 				<cms:template ifexists="${element}">
 					<cms:include element="${element}" editable="true"/>
