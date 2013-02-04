@@ -118,22 +118,27 @@ public abstract class A_CmsEntryPoint implements EntryPoint {
      * an error message if this is the case.<p>
      * 
      * @param moduleName the name of the module for which the check should be performed 
+     * 
+     * @return <code>true</code> if the build id matches the client built id
      */
-    protected void checkBuildId(String moduleName) {
+    protected boolean checkBuildId(String moduleName) {
 
         Map<String, String> buildIds = CmsCoreProvider.get().getGwtBuildIds();
         String serverBuildId = buildIds.get(moduleName);
         String config = org.opencms.gwt.client.I_CmsConfigBundle.INSTANCE.gwtProperties().getText();
         Map<String, String> configProperties = CmsCollectionUtil.parseProperties(config);
         String clientBuildId = configProperties.get(CmsCoreData.KEY_GWT_BUILDID);
+        boolean result = true;
         if ((serverBuildId != null) && (clientBuildId != null)) {
             if (!clientBuildId.equals(serverBuildId)) {
                 String title = Messages.get().key(Messages.GUI_BUILD_ID_MESSAGE_TITLE_0);
                 String content = Messages.get().key(Messages.GUI_BUILD_ID_MESSAGE_CONTENT_0);
                 CmsAlertDialog alert = new CmsAlertDialog(title, content);
                 alert.center();
+                result = false;
             }
         }
+        return result;
     }
 
     /**
