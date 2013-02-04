@@ -61,11 +61,11 @@ public abstract class A_CmsPublishGroupHelper<RESOURCE, GROUP> {
         young
     }
 
-    /** The log instance for this class. */
-    private static final Log LOG = CmsLog.getLog(A_CmsPublishGroupHelper.class);
-
     /** The gap between session groups. */
     protected static final int GROUP_SESSIONS_GAP = 8 * 60 * 60 * 1000;
+
+    /** The log instance for this class. */
+    private static final Log LOG = CmsLog.getLog(A_CmsPublishGroupHelper.class);
 
     /** The current locale. */
     private Locale m_locale;
@@ -140,15 +140,19 @@ public abstract class A_CmsPublishGroupHelper<RESOURCE, GROUP> {
      */
     public int getDayDifference(long first, long second) {
 
-        if (first < second) {
-            throw new IllegalArgumentException();
-        }
         Calendar firstDay = getStartOfDay(first);
         Calendar secondDay = getStartOfDay(second);
         int result = 0;
-        while (firstDay.after(secondDay)) {
-            firstDay.add(Calendar.DAY_OF_MONTH, -1);
-            result += 1;
+        if (first >= second) {
+            while (firstDay.after(secondDay)) {
+                firstDay.add(Calendar.DAY_OF_MONTH, -1);
+                result += 1;
+            }
+        } else {
+            while (secondDay.after(firstDay)) {
+                secondDay.add(Calendar.DAY_OF_MONTH, -1);
+                result -= 1;
+            }
         }
         return result;
     }
