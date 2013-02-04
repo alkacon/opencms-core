@@ -319,6 +319,17 @@ public class CmsXmlUpdateContextMenuEntries extends A_CmsXmlWorkplace {
             GwtMenuEntry.INFO,
             GwtMenuEntry.CATEGORIES,
             GwtMenuEntry.SHOWWORKPLACE,
+            GwtMenuEntry.LOGOUT),
+        new GwtEntryList(
+            "xmlpage",
+            GwtMenuEntry.LOCKREPORT,
+            GwtMenuEntry.DELETE,
+            GwtMenuEntry.UNDOCHANGES,
+            GwtMenuEntry.AVAILABILITY,
+            GwtMenuEntry.PROPERTIES,
+            GwtMenuEntry.INFO,
+            GwtMenuEntry.CATEGORIES,
+            GwtMenuEntry.SHOWWORKPLACE,
             GwtMenuEntry.LOGOUT)};
 
     /**
