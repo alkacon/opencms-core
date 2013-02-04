@@ -170,9 +170,7 @@ public class CmsXmlCategoryValue extends A_CmsXmlContentValue {
                     setStringValue(cms, uri);
                 }
             }
-            CmsLinkUpdateUtil.updateType(
-                linkElement,
-                getContentDefinition().getContentHandler().getRelationType(getPath()));
+            CmsLinkUpdateUtil.updateType(linkElement, getRelationType(getPath()));
             CmsLink link = new CmsLink(linkElement);
             link.checkConsistency(cms);
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(link.getTarget())) {
@@ -308,7 +306,7 @@ public class CmsXmlCategoryValue extends A_CmsXmlContentValue {
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(path)) {
                 continue;
             }
-            CmsRelationType type = getContentDefinition().getContentHandler().getRelationType(getPath());
+            CmsRelationType type = getRelationType(getPath());
             CmsLink link = new CmsLink(TYPE_VFS_LINK, type, path, true);
             // link management check
             link.checkConsistency(cms);

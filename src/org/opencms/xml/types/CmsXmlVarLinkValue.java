@@ -145,9 +145,7 @@ public class CmsXmlVarLinkValue extends A_CmsXmlContentValue {
             if (linkElement == null) {
                 setStringValue(cms, m_element.getText());
             } else {
-                CmsLinkUpdateUtil.updateType(
-                    linkElement,
-                    getContentDefinition().getContentHandler().getRelationType(getPath()));
+                CmsLinkUpdateUtil.updateType(linkElement, getRelationType(getPath()));
                 CmsLink link = new CmsLink(linkElement);
                 if (link.isInternal()) {
                     // link management check
@@ -278,7 +276,7 @@ public class CmsXmlVarLinkValue extends A_CmsXmlContentValue {
         boolean internal = (path != null);
         CmsRelationType type;
         if (internal) {
-            type = getContentDefinition().getContentHandler().getRelationType(getPath());
+            type = getRelationType(getPath());
         } else {
             // use original value for external links
             path = value;

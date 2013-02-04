@@ -31,6 +31,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.relations.CmsRelationType;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.I_CmsWidgetParameter;
@@ -559,6 +560,26 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
     public boolean validateValue(String value) {
 
         return true;
+    }
+
+    /**
+     * Returns the relation type for the given path.<p>
+     * 
+     * @param path the element path
+     * 
+     * @return the relation type
+     */
+    protected CmsRelationType getRelationType(String path) {
+
+        CmsRelationType result;
+        I_CmsXmlDocument document = getDocument();
+        if (document != null) {
+            result = document.getContentDefinition().getContentHandler().getRelationType(getPath());
+        } else {
+            result = CmsRelationType.XML_WEAK;
+            LOG.warn("Missing document while evaluating relation type for " + path);
+        }
+        return result;
     }
 
     /**

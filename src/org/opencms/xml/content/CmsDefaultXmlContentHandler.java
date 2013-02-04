@@ -702,7 +702,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         relationType = m_relations.get(xpath);
         if (relationType == null) {
             // no value found, try default xpath
-            String path = CmsXmlUtils.removeXpathIndex(xpath);
+            String path = CmsXmlUtils.removeAllXpathIndices(xpath);
             // look up the default value again without indexes
             relationType = m_relations.get(path);
         }

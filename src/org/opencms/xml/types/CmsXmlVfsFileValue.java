@@ -168,7 +168,7 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
                 return null;
             }
         }
-        CmsLinkUpdateUtil.updateType(linkElement, getContentDefinition().getContentHandler().getRelationType(getPath()));
+        CmsLinkUpdateUtil.updateType(linkElement, getRelationType(getPath()));
         CmsLink link = new CmsLink(linkElement);
         link.checkConsistency(cms);
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(link.getTarget())) {
@@ -243,7 +243,7 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
      */
     public void setIdValue(CmsObject cms, CmsUUID id) {
 
-        CmsRelationType type = getContentDefinition().getContentHandler().getRelationType(getPath());
+        CmsRelationType type = getRelationType(getPath());
         CmsLink link = new CmsLink(TYPE_VFS_LINK, type, id, "@", true);
         // link management check
         link.checkConsistency(cms);
@@ -303,7 +303,7 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(path)) {
             return;
         }
-        CmsRelationType type = getContentDefinition().getContentHandler().getRelationType(getPath());
+        CmsRelationType type = getRelationType(getPath());
         CmsLink link = new CmsLink(TYPE_VFS_LINK, type, path, true);
         // link management check
         link.checkConsistency(cms);
