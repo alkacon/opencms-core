@@ -32,11 +32,11 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResource.CmsResourceCopyMode;
+import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.I_CmsResource;
-import org.opencms.file.CmsResource.CmsResourceCopyMode;
-import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
@@ -379,7 +379,7 @@ public class CmsObjectWrapper {
             CmsResource res = iter2.next();
 
             // correct the length of the content if an UTF-8 marker would be added later
-            if (needUtf8Marker(res)) {
+            if (needUtf8Marker(res) && !startsWithUtf8Marker(res)) {
                 CmsWrappedResource wrap = new CmsWrappedResource(res);
                 wrap.setLength(res.getLength() + CmsResourceWrapperUtils.UTF8_MARKER.length);
 
@@ -626,7 +626,7 @@ public class CmsObjectWrapper {
         }
 
         // correct the length of the content if an UTF-8 marker would be added later
-        if (needUtf8Marker(res)) {
+        if (needUtf8Marker(res) && !startsWithUtf8Marker(res)) {
             CmsWrappedResource wrap = new CmsWrappedResource(res);
             wrap.setLength(res.getLength() + CmsResourceWrapperUtils.UTF8_MARKER.length);
 
@@ -869,41 +869,49 @@ public class CmsObjectWrapper {
 
         // if the encoding of the resource is not UTF-8 return false
         String encoding = CmsLocaleManager.getResourceEncoding(m_cms, res);
-        if (!CmsEncoder.ENCODING_UTF_8.equals(encoding)) {
-            return false;
-        }
-
-        try {
-            I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(res.getTypeId());
-
-            boolean typeMatch = false;
-            if (resType instanceof CmsResourceTypeJsp) {
-                typeMatch = true;
-            } else if (resType instanceof CmsResourceTypePlain) {
-                typeMatch = true;
-            } else if (resType instanceof CmsResourceTypeXmlContent) {
-                typeMatch = true;
-            } else if (resType instanceof CmsResourceTypeXmlPage) {
-                typeMatch = true;
+        boolean result = false;
+        if (CmsEncoder.ENCODING_UTF_8.equals(encoding)) {
+            try {
+                I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(res.getTypeId());
+                if (resType instanceof CmsResourceTypeJsp) {
+                    result = true;
+                } else if (resType instanceof CmsResourceTypePlain) {
+                    result = true;
+                } else if (resType instanceof CmsResourceTypeXmlContent) {
+                    result = true;
+                } else if (resType instanceof CmsResourceTypeXmlPage) {
+                    result = true;
+                }
+            } catch (CmsLoaderException e) {
+                LOG.debug(e);
             }
-            if (typeMatch && res.isFile()) {
+        }
+        return result;
+    }
+
+    /**
+     * Checks if the file content already contains the UTF8 marker.<p>
+     * 
+     * @param res the resource to check
+     * 
+     * @return <code>true</code> if the file content already contains the UTF8 marker
+     */
+    private boolean startsWithUtf8Marker(CmsResource res) {
+
+        boolean result = false;
+        try {
+            if (res.isFile()) {
                 CmsFile file = m_cms.readFile(res);
                 if ((file.getContents().length >= 3)
                     && (file.getContents()[0] == CmsResourceWrapperUtils.UTF8_MARKER[0])
                     && (file.getContents()[1] == CmsResourceWrapperUtils.UTF8_MARKER[1])
                     && (file.getContents()[2] == CmsResourceWrapperUtils.UTF8_MARKER[2])) {
-                    typeMatch = false;
+                    result = true;
                 }
             }
-
-            return typeMatch;
-        } catch (CmsLoaderException e) {
-            // noop
         } catch (CmsException e) {
-            // file always exists and accessible by this session
+            LOG.debug(e);
         }
-
-        return false;
+        return result;
     }
-
 }
