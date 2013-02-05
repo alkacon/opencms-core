@@ -1,6 +1,6 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
-    <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
 
+    <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
  
     <xsd:element name="DetailPages" type="OpenCmsDetailPages" />
     
@@ -12,15 +12,19 @@
     
     <xsd:complexType name="OpenCmsDetailPage">
         <xsd:sequence>    
-            <xsd:element name="Type" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
-            <xsd:element name="Page" type="OpenCmsVfsFile" minOccurs="1" maxOccurs="1" />
+            <xsd:element name="Type" type="OpenCmsString" />
+            <xsd:element name="Page" type="OpenCmsVfsFile" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>
     
     <xsd:annotation>
         <xsd:appinfo>
-			<resourcebundle name="org.opencms.xml.sitemap.messages"/>
+			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
+			<layouts>
+				<layout element="Type" widget="org.opencms.widgets.CmsTypeComboWidget" /> 
+			</layouts>
         </xsd:appinfo>
     </xsd:annotation>
+
 </xsd:schema>
