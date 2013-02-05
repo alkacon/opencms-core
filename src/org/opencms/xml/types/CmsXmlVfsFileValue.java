@@ -274,6 +274,9 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
                     cms.getRequestContext().setSiteRoot(siteRoot);
                     // remove the site root, because the link manager call will append it anyway
                     path = cms.getRequestContext().removeSiteRoot(value);
+                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(path)) {
+                        path = "/";
+                    }
                 }
                 // remove parameters, if not the link manager call might fail
                 String query = "";
