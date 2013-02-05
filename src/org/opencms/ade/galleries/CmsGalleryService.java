@@ -558,8 +558,10 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                         }
                         // get search results given resource path
                         result = findResourceInGallery(currentelement, data);
-                        sitemapPreloadData = result.getSitemapPreloadData();
-                        vfsPreloadData = result.getVfsPreloadData();
+                        if (result != null) {
+                            sitemapPreloadData = result.getSitemapPreloadData();
+                            vfsPreloadData = result.getVfsPreloadData();
+                        }
                         if (sitemapPreloadData != null) {
                             startTab = GalleryTabId.cms_tab_sitemap;
                         } else if (vfsPreloadData != null) {
