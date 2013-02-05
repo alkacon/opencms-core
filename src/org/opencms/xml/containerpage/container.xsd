@@ -2,7 +2,6 @@
 	
 	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
 	<xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.containerpage/schemas/container_element.xsd"/>
-	<xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.containerpage/schemas/container_attribute.xsd" />
 		
 	<xsd:element name="AlkaconContainers" type="OpenCmsAlkaconContainers"/>
 	
@@ -29,5 +28,6 @@
 				<rule element="Type" regex=".+" type="error" message="%(key.err.type.notempty)" />
 			</validationrules>
 		</xsd:appinfo>
-	</xsd:annotation>  
+	</xsd:annotation> 
+
 </xsd:schema>
