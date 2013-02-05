@@ -61,6 +61,9 @@ public class CmsExplorerTypeAccess {
     /** Principal key name for the default permission settings. */
     public static final String PRINCIPAL_DEFAULT = "DEFAULT";
 
+    /** The listener used to flush cached access settings. */
+    protected static CmsExplorerTypeAccessFlushListener flushListener;
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsExplorerTypeAccess.class);
 
@@ -79,6 +82,12 @@ public class CmsExplorerTypeAccess {
     public CmsExplorerTypeAccess() {
 
         m_accessControl = new HashMap<String, String>();
+        flushListener.add(this);
+    }
+
+    static {
+        flushListener = new CmsExplorerTypeAccessFlushListener();
+        flushListener.install();
     }
 
     /** 
@@ -280,6 +289,16 @@ public class CmsExplorerTypeAccess {
     public boolean isEmpty() {
 
         return m_accessControl.isEmpty();
+    }
+
+    /**
+     * Flushes the permission cache.<p>
+     */
+    protected void flushCache() {
+
+        if (m_permissionsCache != null) {
+            m_permissionsCache.clear();
+        }
     }
 
     /**
