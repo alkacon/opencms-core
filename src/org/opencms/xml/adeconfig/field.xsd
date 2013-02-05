@@ -32,6 +32,7 @@
 		        <layouts>
 		           	<layout element="PreferFolder" widget="BooleanWidget" />
 		           	<layout element="Widget" widget="SelectorWidget" configuration="string:%(key.label.string)|select:%(key.label.select)|extended_multicheck:%(key.label.multicheck)" />
+		           	<layout element="RuleType" widget="SelectorWidget" configuration="error:%(key.label.error)|warning:%(key.label.warning)" />
 		        </layouts>
         </xsd:appinfo>
     </xsd:annotation>
