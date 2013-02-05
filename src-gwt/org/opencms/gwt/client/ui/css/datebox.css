@@ -3,7 +3,7 @@
 table.gwt-DatePicker {
 	border-bottom: value("constants.css.borderColor") 1px solid;
 }
-table.gwt-DatePicker table.datePickerMonthSelector td, table.gwt-DatePicker table.datePickerDays td{
+table.gwt-DatePicker table.datePickerMonthSelector td, table.gwt-DatePicker table.datePickerDays td div{
 	text-align: center;
 }
 table.gwt-DatePicker table.datePickerMonthSelector { /*the month selector widget*/
@@ -27,34 +27,34 @@ table.gwt-DatePicker table.datePickerMonthSelector td.datePickerMonth { /*the mo
 	font-weight: bold;
 }
 .datePickerDays { /*the portion of the picker that shows the days*/}
-table.gwt-DatePicker table.datePickerDays td{ /* the cell for a day */
+table.gwt-DatePicker table.datePickerDays td div, table.gwt-DatePicker table.datePickerDays td.datePickerWeekendLabel, table.gwt-DatePicker table.datePickerDays td.datePickerWeekdayLabel{ /* the cell for a day */
 	padding: 4px;
 	font-size: value("constants.css.dateboxDayFontSize");
 }
 .datePickerWeekdayLabel { /*the label over weekdays*/ }
-.datePickerWeekendLabel { /*the label over weekends*/
+table.gwt-DatePicker table.datePickerDays td.datePickerWeekendLabel { /*the label over weekends*/
 	background: value("constants.css.dateboxWeekendBg");
 }
-table.datePickerDays td.datePickerDay { /*a single day*/ 
+table.datePickerDays td div.datePickerDay { /*a single day*/ 
 	cursor: pointer;
 }
-table.datePickerDays td.datePickerDayIsToday { /*today's date*/
+table.datePickerDays td div.datePickerDayIsToday { /*today's date*/
 	color: value("constants.css.dateboxTodayColor");
 }
-table.datePickerDays td.datePickerDayIsWeekend { /*a weekend day*/
+table.datePickerDays td div.datePickerDayIsWeekend { /*a weekend day*/
 	background: value("constants.css.dateboxWeekendBg");
 }
-table.datePickerDays td.datePickerDayIsFiller { /*a day in another month*/
+table.datePickerDays td div.datePickerDayIsFiller { /*a day in another month*/
 	color: value("constants.css.dateboxAnotherMonthBg");
 }
-table.datePickerDays td.datePickerDayIsValue { /*the selected day*/
+table.datePickerDays td div.datePickerDayIsValue { /*the selected day*/
 	background: value("constants.css.dateboxSelectedDayBg");
 }
 .datePickerDayIsDisabled { /*a disabled day*/ }
-table.datePickerDays td.datePickerDayIsHighlighted { /*the currently highlighted day*/ 
+table.datePickerDays td div.datePickerDayIsHighlighted { /*the currently highlighted day*/ 
 	background: value("constants.css.dateboxHoveredDayBg");
 }
-table.datePickerDays td.datePickerDayIsValueAndHighlighted { /*the highlighted day if it is also selected*/ }
+table.datePickerDays td div.datePickerDayIsValueAndHighlighted { /*the highlighted day if it is also selected*/ }
 
 .dateTime { /* Align the time panel */
 	padding: 6px;
