@@ -20,7 +20,7 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<resourcebundle name="org.opencms.xml.sitemap.messages"/>
+			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
 			<handler class="org.opencms.xml.sitemap.CmsXmlSitemapHandler" />
 			<properties>
                 <!-- don't change the template property -->

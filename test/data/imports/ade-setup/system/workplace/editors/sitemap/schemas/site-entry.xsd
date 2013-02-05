@@ -26,7 +26,7 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<resourcebundle name="org.opencms.xml.sitemap.messages"/>
+			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
 			<validationrules>
 				<rule element="Id" regex="[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}" type="error" message="%(key.err.id.invalid)" />
 				<rule element="Name" regex=".+" type="error" message="%(key.err.name.notempty)" />
