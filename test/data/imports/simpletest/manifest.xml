@@ -188,10 +188,6 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>config.containerpage</name>
-					<value><![CDATA[/_config/restype.config]]></value>
-				</property>
-				<property>
 					<name>template</name>
 					<value><![CDATA[/_config/template.jsp]]></value>
 				</property>

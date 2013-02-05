@@ -33,10 +33,6 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>config.containerpage</name>
-					<value><![CDATA[/_config/restype.config]]></value>
-				</property>
-				<property>
 					<name>template</name>
 					<value><![CDATA[/_config/template.jsp]]></value>
 				</property>
@@ -107,56 +103,6 @@
 					<value><![CDATA[false]]></value>
 				</property>
 			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>sites/default/_config/restype.config</source>
-			<destination>sites/default/_config/restype.config</destination>
-			<type>containerpage_config</type>
-			<uuidstructure>8074bb9a-d622-11df-bd93-edac56888092</uuidstructure>
-			<uuidresource>8074bb9b-d622-11df-bd93-edac56888092</uuidresource>
-			<datelastmodified>Wed, 13 Oct 2010 09:07:49 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 12 Oct 2010 17:02:31 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Resource Type Configuration]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>sites/default/_config/sitemap_restype.config</source>
-			<destination>sites/default/_config/sitemap_restype.config</destination>
-			<type>sitemap_config</type>
-			<uuidstructure>1e5587e8-d788-11df-bdc1-edac56888092</uuidstructure>
-			<uuidresource>1e5587e9-d788-11df-bdc1-edac56888092</uuidresource>
-			<datelastmodified>Thu, 14 Oct 2010 11:43:57 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 14 Oct 2010 11:42:26 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>sites/default/_config/sitemap_restype.config_exportname</source>
-			<destination>sites/default/_config/sitemap_restype.config_exportname</destination>
-			<type>sitemap_config</type>
-			<uuidstructure>2c5758aa-d788-11df-bdc1-edac56888092</uuidstructure>
-			<uuidresource>2c5758ab-d788-11df-bdc1-edac56888092</uuidresource>
-			<datelastmodified>Thu, 14 Oct 2010 11:45:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 14 Oct 2010 11:42:50 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>

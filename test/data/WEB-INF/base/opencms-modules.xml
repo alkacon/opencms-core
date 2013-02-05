@@ -67,10 +67,6 @@
 			</exportpoints>
 			<resources>
 				<resource uri="/system/modules/org.opencms.ade.config/" />
-				<resource
-					uri="/system/workplace/resources/filetypes/containerpage_config.png" />
-				<resource
-					uri="/system/workplace/resources/filetypes/containerpage_config_big.png" />
 				<resource uri="/system/workplace/resources/filetypes/configfolder.png" />
 				<resource
 					uri="/system/workplace/resources/filetypes/configfolder_big.png" />
