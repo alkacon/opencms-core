@@ -311,7 +311,7 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
 
         m_popup.add(m_dateTimePanel);
         m_popup.setWidth(0);
-        m_popup.setModal(false);
+        m_popup.setModal(true);
         m_popup.removePadding();
         m_popup.setBackgroundColor(I_CmsLayoutBundle.INSTANCE.constants().css().backgroundColorDialog());
         m_popup.addDialogClose(new Command() {
