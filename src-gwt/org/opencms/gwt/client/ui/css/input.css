@@ -191,7 +191,7 @@ background-color: transparent;
 	border-radius: value("constants.css.borderRadius");
 }
 
-.error {
+div.error, .error {
 	text-align: left;
 	border: 1px solid value("constants.css.borderColorHighlight");
 	background-color: value("constants.css.backgroundColorInfo");
