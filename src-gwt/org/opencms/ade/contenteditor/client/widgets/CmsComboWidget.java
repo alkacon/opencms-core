@@ -360,7 +360,9 @@ public class CmsComboWidget extends Composite implements I_EditWidget {
                     //if there are no more parameters set.
                     else {
                         //create substring e.g.:"option='XvalueX".
-                        sub = labels[i].substring(labels[i].indexOf(KEY_OPTION), labels[i].indexOf(KEY_SUFFIX_SHORT));
+                        sub = labels[i].substring(
+                            labels[i].indexOf(KEY_OPTION),
+                            labels[i].lastIndexOf(KEY_SUFFIX_SHORT));
                     }
                     //transfer the extracted value to the option array.
                     options[i] = sub.replace(KEY_OPTION, KEY_EMPTY);
@@ -395,7 +397,7 @@ public class CmsComboWidget extends Composite implements I_EditWidget {
 
                 }
                 //copy value and option to the Map.
-                values.put(options[i], value[i]);
+                values.put(value[i], value[i]);
             } catch (Exception e) {
                 e.printStackTrace();
             }
