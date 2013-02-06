@@ -19,55 +19,71 @@ OpenCms 8.5.1 - February 6, 2013
 ! Added configuration option that allows to index XML contents only when they occur on a container page.
 ! Added text based language detection capabilities.
 ! Added editor selector feature, to detect whether the old or new XML content editor should be used.
-! Added file name translation rules, issue #68, #70.
+! Added file name translation rules, see issue #68 and pull #70.
+! Added ability to exclude file names from VFS sync, see pull #86
 ! Improved Solr field configuration for indexing nested contents with multiple occurrence.
 ! Improved file selector widget to show resource information.
 ! Improved image gallery widget to show image thumb nail.
-* Fixed JavaScript animation issue with Chrome 24.
+* Fixed issue #20 where browsing download gallery with custom resource types shows up empty.
+* Fixed issue #37 where a "white page" appears after clicking on the advanced button of the property dialog.
+* Fixed issue #44 where unable to save property values for old xmlpage contents.
 * Fixed issue #56 where content tool "Language node copier" was broken.
-* Fixed issue #75 sorting column "display name" in Field configuration.
+* Fixed issue #64 where CmsResource has an incorrect resource state after de-serialization.
+* Fixed issue #73 where HTTP error 409 was returned when importing XML content using WebDAV servlet.
+* Fixed issue #75 where sorting column "display name" of the field configuration is incorrect.
+* Fixed issue #77 where CmsXmlBooleanValue#getPlainText should return a sensible value.
+* Fixed issue #83 where Acacia Editor has a problem with comments and javascript.
+* Fixed issue #84 where saving + exit in the content editor is possible even a validation rule is invalid.
 * Fixed issue #87 where OU names containing "." would lead to a 404 error on log out.
+* Fixed issue #88, #119 where the selector widget has problems with the default value.
+* Fixed issue #89 where help bubbles where shown, with no text configured.
+* Fixed issue #90 where too many tabs ar displayed in the content editor.
+* Fixed issue #92 where clicking on a link in the inline editor causes an error.
+* Fixed issue #93 where file select widget does not find any container pages that are not in the default site.
+* Fixed issue #95, #96, #97 where FireFox changed user agent string.
+* Fixed issue #98 where new editor doesn't work for expired resources.
+* Fixed issue #99 where displaying XSD choice options at the bottom of the editor window are cropped.
+* Fixed issue #102 where renamed resources are remaining within gallery dialog.
 * Fixed issue #104 where tinyMCE entity-escaping resulted in broken links.
+* Fixed issue #105 where the category widget still displays the full category width.
+* Fixed issue #106 where gallery dialogs within rich text editor widgets show up with an empty list.
+* Fixed issue #107 where CMIS only finds default locale XML content
 * Fixed issue #108 where SEO file JSP had the wrong cache property.
+* Fixed issue #110 where the TinyMCE toolbar overflows unexpectedly in Chrome browser.
 * Fixed issue #111 where CmsJspLoginBean would always switch to the users default site.
+* Fixed issue #112 where CmsJspContentAccessValueWrapper#getIsEmptyOrWhitespaceOnly performs wrong test.
 * Fixed issue #113 where "CreateNew" in model pages was not behaving as expected.
-* Fixed issue #117 where xsd:choice elements with another xsd:choice type as a child caused the XML-content editor to fail.
-* Fixed issue #128 with document dependencies while indexing.
-* Fixed issue #132 with index selection within workplace search. 
-* Fixed issue #135 where upload to gallery was displaying errors.
-* Fixed issue #124 where search excerpt was missing when using wildcards.
-* Fixed issue #117 where xsd:choice nesting another xsd:choice caused errors in new content editor.
-* Fixed start gallery issue when opening the file selector dialog.
+* Fixed issue #115 where no error message is diplayed when the password field is blank.
 * Fixed issue #116 where the upload did not work from gallery folder tab.
-* Fixed radio select widget default value handling.
-* Fixed view permission handling in galleries dialog.
-* Fixed HTML widget initialization issue when handling choice options.
-* Fixed in-line editor issue for string widget, now preventing line breaks of being added.
-* Fixed Chrome TinyMCE toolbar overflow issue.
+* Fixed issue #117 where xsd:choice nesting another xsd:choice caused errors in new content editor.
+* Fixed issue #121 where sort order "by title" in galleries is wrong.
+* Fixed issue #123 where the content editor creates a new default locale node even a none-default locale already exists.
+* Fixed issue #124 where search excerpt was missing when using wildcards.
+* Fixed issue #126 where newly added xsd:choice elements don't show choices.
+* Fixed issue #127 where the image gallery widget doesn't open correctly using Internet Explorer.
+* Fixed issue #128 where an exception is thrown when indexing dependent documents.
+* Fixed issue #131 where a NPE is thrown when using custom widgets in the content editor.
+* Fixed issue #132 where index selection in the workplace search has no effect.
+* Fixed issue #135 where upload to gallery was displaying errors.
+* Fixed issue #136 where using custom styles for TinyMCE Editor with "style_formats" causes problems.
+* Fixed issue #139 where image URLs treated wrongly as external when they contain scale parameters and workplace server is HTTPS.
+* Fixed issue #141 where JavaScript animations are flickering in Chrome 24.
+* Fixed issue #142 where TinyMCE toolbar was positioned inside the text area.
+* Fixed issue where fall-back locale was not used.
+* Fixed issue where file selector widget does ignore the start gallery.
+* Fixed issue where file selector widget text overflows unexpectedly.
+* Fixed issue where radio select widget does handle the default value wrongly.
+* Fixed issue where HTML widget initialization fails for choice options.
+* Fixed issue where string widget of the in-line editor added unwanted line breaks.
 * Fixed issue where writing search configuration failed when Solr index configured.
 * Fixed issue where 'Publish with related resources' would not work as expected.
-* Fixed issue with entities in editor labels.
-* Fixed text overflow issue in file selector widget.
-* Fixed issue #89 where help bubbles where shown, with no text configured.
-* Fixed issue #90 displaying many tabs in the new content editor.
-* Fixed issue #92 fixed link click handling in inline editor.
-* Fixed issue #98 using new editor with expired resources.
-* Fixed issue #99 when displaying XSD choice options at the bottom of the editor window.
-* Fixed issue #102 renaming resources within gallery dialog.
-* Fixed issue #106 fixing issue with gallery dialogs within rich text editor widgets.
-* Fixed issue #64 CmsResource Serialization Bug - Bad Resource State of Deserialization .
-* Fixed issue #77 Make CmsXmlBooleanValue return sensible values for getPlainText.
-* Fixed issue #83 Acacia Editor Problem with Comments and Javascript.
-* Fixed issue #84 Validation rules and saving + exit.
-* Fixed issue #88 XML-Content-Editor:No preselection in selector widget .
-* Fixed issue #93 Gallery issue with non default site.
-* Fixed issue #95, #96, #97 FireFox changed user agent string.
-* Fixed issue where fall-back locale was not used.
+* Fixed issue where view permission handling was wrong in gallery dialogs.
 - Improved performance due to increased content definition cache size..
 - Improved locale handling when opening the new content editor.
 - Improved file selector widget.
 - Improved Solr field mappings defined within XML content definitions.
-- New content editor performance improvements.
+- Improved new content editor performance.
+- HSQLDB upgrade to 2.2.8 (see pull #57)
 
 OpenCms 8.5.0 - September 24, 2012
 ! Added new inline content editor allows to edit content "in place" on the web page.
