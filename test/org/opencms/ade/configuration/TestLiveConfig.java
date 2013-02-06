@@ -336,6 +336,42 @@ public class TestLiveConfig extends OpenCmsTestCase {
     }
 
     /**
+     * Tests that sitmeap folder types override module folder types.<p>
+     * @throws Exception
+     */
+    public void testSitemapFolderTypesOverrideModuleFolderTypes() throws Exception {
+
+        CmsObject cms = rootCms();
+        String filename = "/system/modules/org.opencms.ade.config/.config";
+        try {
+            String data = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
+                + "<SitemapConfigurationsV2 xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"opencms://system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd\">\r\n"
+                + "  <SitemapConfigurationV2 language=\"en\">\r\n"
+                + "      <ResourceType>\r\n"
+                + "      <TypeName><![CDATA[m]]></TypeName>\r\n"
+                + "      <Disabled>false</Disabled>\r\n"
+                + "      <Folder>\r\n"
+                + "        <Name><![CDATA[a1]]></Name>\r\n"
+                + "      </Folder>\r\n"
+                + "      <NamePattern><![CDATA[asdf]]></NamePattern>\r\n"
+                + "    </ResourceType>\r\n"
+                + "  </SitemapConfigurationV2>\r\n"
+                + "</SitemapConfigurationsV2>\r\n";
+            cms.createResource(
+                filename,
+                OpenCms.getADEManager().getModuleConfigurationType().getTypeId(),
+                data.getBytes(),
+                Collections.<CmsProperty> emptyList());
+            String parentFolderType = OpenCms.getADEManager().getOfflineCache().getParentFolderType(
+                "/sites/default/.content/a1/foo");
+            assertEquals("a", parentFolderType);
+        } finally {
+            cms.lockResource(filename);
+            cms.deleteResource(filename, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        }
+    }
+
+    /**
      * Helper method to compare attributes of configured resource types with a list of expected values.<p>
      * 
      * @param cms the CMS context 

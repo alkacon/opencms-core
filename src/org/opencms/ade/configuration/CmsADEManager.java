@@ -904,6 +904,26 @@ public class CmsADEManager {
     }
 
     /** 
+     * Gets the offline cache.<p>
+     * 
+     * @return the offline configuration cache 
+     */
+    protected CmsConfigurationCache getOfflineCache() {
+
+        return m_offlineCache;
+    }
+
+    /**
+     * Gets the online cache.<p>
+     * 
+     * @return the online configuration cache 
+     */
+    protected CmsConfigurationCache getOnlineCache() {
+
+        return m_onlineCache;
+    }
+
+    /** 
      * Gets the root path for a given resource structure id.<p>
      * 
      * @param structureId the structure id 

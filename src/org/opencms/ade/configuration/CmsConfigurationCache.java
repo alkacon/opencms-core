@@ -352,13 +352,15 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
 
         LOG.info("Computing folder types for detail pages...");
         m_folderTypes.clear();
+        // do this first, since folder types from modules should be overwritten by folder types from sitemaps 
+        if (m_moduleConfiguration != null) {
+            Map<String, String> folderTypes = m_moduleConfiguration.getFolderTypes();
+            m_folderTypes.putAll(folderTypes);
+        }
+
         List<CmsADEConfigData> configDataObjects = new ArrayList<CmsADEConfigData>(m_siteConfigurations.values());
         for (CmsADEConfigData configData : configDataObjects) {
             Map<String, String> folderTypes = configData.getFolderTypes();
-            m_folderTypes.putAll(folderTypes);
-        }
-        if (m_moduleConfiguration != null) {
-            Map<String, String> folderTypes = m_moduleConfiguration.getFolderTypes();
             m_folderTypes.putAll(folderTypes);
         }
     }
