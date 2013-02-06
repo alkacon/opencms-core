@@ -14,8 +14,8 @@
 		<group>OpenCms Editors</group>
 		<class />
 		<description><![CDATA[<p>Provides an OpenCms GWT framework.</p>
-<p><i>(c) 2012 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>8.5.0.6</version>
+<p><i>&copy; 2013 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+		<version>8.5.1</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated />
