@@ -160,15 +160,6 @@ public class CmsXmlBooleanValue extends A_CmsXmlValueTextBase {
     }
 
     /**
-     * @see org.opencms.xml.types.A_CmsXmlContentValue#getPlainText(org.opencms.file.CmsObject)
-     */
-    @Override
-    public String getPlainText(CmsObject cms) {
-
-        return String.valueOf(getBooleanValue());
-    }
-
-    /**
      * @see org.opencms.xml.types.I_CmsXmlSchemaType#getSchemaDefinition()
      */
     public String getSchemaDefinition() {
