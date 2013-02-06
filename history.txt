@@ -16,22 +16,23 @@ Legend:
 - General comment
 
 OpenCms 8.5.1 - February 6, 2013
-! Added configuration option that allows to index XML contents only when they occur on a container page.
-! Added text based language detection capabilities.
-! Added editor selector feature, to detect whether the old or new XML content editor should be used.
-! Added file name translation rules, see issue #68 and pull #70.
-! Added ability to exclude file names from VFS sync, see pull #86
-! Improved Solr field configuration for indexing nested contents with multiple occurrence.
 ! Improved file selector widget to show resource information.
 ! Improved image gallery widget to show image thumb nail.
+! Integrated the ADE properties dialog into the workplace.
+! Added editor selector feature, to detect whether the old or new XML content editor should be used.
+! Added text based language detection capabilities.
+! Improved Solr field configuration for indexing nested contents with multiple occurrence.
+! Added configuration option that allows to index XML contents only when they occur on container pages.
+! Added ability to exclude file names from VFS sync, see pull #86, provided by Daniel Latzer.
 * Fixed issue #20 where browsing download gallery with custom resource types shows up empty.
 * Fixed issue #37 where a "white page" appears after clicking on the advanced button of the property dialog.
 * Fixed issue #44 where unable to save property values for old xmlpage contents.
 * Fixed issue #56 where content tool "Language node copier" was broken.
 * Fixed issue #64 where CmsResource has an incorrect resource state after de-serialization.
+* Fixed issue #68, #70 where file name translation rules were missing, provided by Christian Steinert.
 * Fixed issue #73 where HTTP error 409 was returned when importing XML content using WebDAV servlet.
 * Fixed issue #75 where sorting column "display name" of the field configuration is incorrect.
-* Fixed issue #77 where CmsXmlBooleanValue#getPlainText should return a sensible value.
+* Fixed issue #77 where CmsXmlBooleanValue#getPlainText should return a sensible value, provided by Wolfgang Illmeyer.
 * Fixed issue #83 where Acacia Editor has a problem with comments and javascript.
 * Fixed issue #84 where saving + exit in the content editor is possible even a validation rule is invalid.
 * Fixed issue #87 where OU names containing "." would lead to a 404 error on log out.
@@ -53,7 +54,7 @@ OpenCms 8.5.1 - February 6, 2013
 * Fixed issue #111 where CmsJspLoginBean would always switch to the users default site.
 * Fixed issue #112 where CmsJspContentAccessValueWrapper#getIsEmptyOrWhitespaceOnly performs wrong test.
 * Fixed issue #113 where "CreateNew" in model pages was not behaving as expected.
-* Fixed issue #115 where no error message is diplayed when the password field is blank.
+* Fixed issue #115 where no error message is displayed when the password field is blank, provided by Yuta Aoki.
 * Fixed issue #116 where the upload did not work from gallery folder tab.
 * Fixed issue #117 where xsd:choice nesting another xsd:choice caused errors in new content editor.
 * Fixed issue #121 where sort order "by title" in galleries is wrong.
@@ -65,10 +66,11 @@ OpenCms 8.5.1 - February 6, 2013
 * Fixed issue #131 where a NPE is thrown when using custom widgets in the content editor.
 * Fixed issue #132 where index selection in the workplace search has no effect.
 * Fixed issue #135 where upload to gallery was displaying errors.
-* Fixed issue #136 where using custom styles for TinyMCE Editor with "style_formats" causes problems.
+* Fixed issue #136 where using custom styles for TinyMCE Editor with "style_formats" causes problems, provided by David Landreman.
 * Fixed issue #139 where image URLs treated wrongly as external when they contain scale parameters and workplace server is HTTPS.
 * Fixed issue #141 where JavaScript animations are flickering in Chrome 24.
 * Fixed issue #142 where TinyMCE toolbar was positioned inside the text area.
+* Fixed issue #144 where database schema for HSQLDB should be improved, provided by Georgi Naplatanov.
 * Fixed issue where fall-back locale was not used.
 * Fixed issue where file selector widget does ignore the start gallery.
 * Fixed issue where file selector widget text overflows unexpectedly.
@@ -83,7 +85,7 @@ OpenCms 8.5.1 - February 6, 2013
 - Improved file selector widget.
 - Improved Solr field mappings defined within XML content definitions.
 - Improved new content editor performance.
-- HSQLDB upgrade to 2.2.8 (see pull #57)
+- Improved JPA persistence context and updated HSQLDB to version 2.2.8 within pull #57, provided by Georgi Naplatanov.
 
 OpenCms 8.5.0 - September 24, 2012
 ! Added new inline content editor allows to edit content "in place" on the web page.
