@@ -21,10 +21,10 @@ OpenCms 8.5.1 - February 7, 2013
 ! Integrated the ADE properties dialog into the workplace.
 ! Added content editor selector, to detect whether the old or new XML content editor should be used.
 ! Added text based language detection utilities.
-! Improved Solr field configuration for indexing nested contents with multiple occurrence.
+! Improved Solr field configuration for indexing nested contents with multiple occurrences.
 ! Added configuration option that allows to index contents only when they occur on container pages.
 ! Added ability to exclude file names from VFS sync with pull request #86, provided by Daniel Latzer.
-* Fixed issue #20 where browsing download gallery with custom resource types showed up empty.
+* Fixed issue #20 where browsing a download gallery with custom resource types showed up empty.
 * Fixed issue #37 where a "white page" appeared after clicking on the advanced button of the property dialog.
 * Fixed issue #44 where it was not possible to save property values for old xmlpage contents.
 * Fixed issue #56 where content tool "Language node copier" was broken.
@@ -32,25 +32,25 @@ OpenCms 8.5.1 - February 7, 2013
 * Fixed issue #68, #70 where file name translation rules were missing, provided by Christian Steinert.
 * Fixed issue #73 where HTTP error 409 was returned when importing contents using WebDAV servlet.
 * Fixed issue #75 where sorting column "display name" of the field configuration was incorrect.
-* Fixed issue #77 where XML content elements of the type should return sensible values, provided by Wolfgang Illmeyer.
+* Fixed issue #77 where XML content boolean data types should return plain text values, provided by Wolfgang Illmeyer.
 * Fixed issue #83 where the new content editor had a problem with comments and JavaScript.
-* Fixed issue #84 where saving + exit in the new content editor was possible even a validation rule was invalid.
+* Fixed issue #84 where saving + exit in the new content editor was possible even if a validation rule was invalid.
 * Fixed issue #87 where OU names containing "." would lead to a 404 error on log out.
 * Fixed issue #88, #119 where the selector widget had problems with the default value.
-* Fixed issue #89 where help bubbles were shown, with no text configured.
+* Fixed issue #89 where help bubbles were shown with no text configured.
 * Fixed issue #90 where too many tabs were displayed in the new content editor.
 * Fixed issue #92 where clicking on a link in the inline editor caused an error.
-* Fixed issue #93 where file select widget did not find any container pages that were part of the default site.
+* Fixed issue #93 where file selector widget did not find any container pages that were part of the default site.
 * Fixed issue #95, #96, #97 where FireFox changed user agent string.
 * Fixed issue #98 where new content editor did not work for expired resources.
 * Fixed issue #99 where displaying XSD choice options at the bottom of the editor window were cropped.
 * Fixed issue #102 where renamed resources were remaining within gallery dialogs.
-* Fixed issue #104 where tinyMCE entity-escaping resulted in broken links.
-* Fixed issue #105 where the category widget showed all categories even a pre-selection was configured.
+* Fixed issue #104 where TinyMCE entity-escaping resulted in broken links.
+* Fixed issue #105 where the category widget showed all categories even if a pre-selection was configured.
 * Fixed issue #106 where gallery dialogs popped up empty when opening them with the gallery buttons of the rich text editor.
-* Fixed issue #107 where CMIS only found default locale of XML contents.
+* Fixed issue #107 where CMIS only found the default locale of XML contents.
 * Fixed issue #108 where SEO file JSP had the wrong cache property.
-* Fixed issue #110 where the TinyMCE toolbar overflowed unexpectedly in Chrome browser.
+* Fixed issue #110 where the TinyMCE toolbar overflowed unexpectedly in Chrome browsers.
 * Fixed issue #111 where the login bean always switched to the users default site.
 * Fixed issue #112 where the content access bean performed wrong empty check for nested element types.
 * Fixed issue #113 where "CreateNew" in model pages was not behaving as expected.
@@ -58,7 +58,7 @@ OpenCms 8.5.1 - February 7, 2013
 * Fixed issue #116 where the upload did not work from gallery folder tab.
 * Fixed issue #117 where xsd:choice nesting another xsd:choice caused errors in new content editor.
 * Fixed issue #121 where the gallery items were sorted incorrect.
-* Fixed issue #123 where the new content editor created a new default locale node even a none-default locale already exists.
+* Fixed issue #123 where the new content editor created a new default locale node even when a none-default locale already exists.
 * Fixed issue #124 where search excerpt was missing when using wildcards.
 * Fixed issue #126 where newly added xsd:choice elements did not show choices.
 * Fixed issue #127 where the image gallery widget did not open correctly using Internet Explorer.
@@ -70,7 +70,7 @@ OpenCms 8.5.1 - February 7, 2013
 * Fixed issue #139 where image URLs treated wrongly as external when they contain scale parameters and workplace server was HTTPS.
 * Fixed issue #141 where JavaScript animations were flickering in Chrome 24.
 * Fixed issue #142 where TinyMCE toolbar was positioned inside the text area.
-* Fixed issue #144 where database schema for HSQLDB should be improved, provided by Georgi Naplatanov.
+* Fixed issue #144 where database schema for HSQLDB was improved, provided by Georgi Naplatanov.
 * Fixed issue where fall-back locale was not used.
 * Fixed issue where file selector widget did ignore the start gallery.
 * Fixed issue where file selector widget text overflowed unexpectedly.
