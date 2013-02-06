@@ -15,7 +15,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 8.5.1 - February 6, 2013
+OpenCms 8.5.1 - February 7, 2013
 ! Improved file selector widget to show resource information.
 ! Improved image gallery widget to show image thumb nails.
 ! Integrated the ADE properties dialog into the workplace.
@@ -33,7 +33,7 @@ OpenCms 8.5.1 - February 6, 2013
 * Fixed issue #73 where HTTP error 409 was returned when importing contents using WebDAV servlet.
 * Fixed issue #75 where sorting column "display name" of the field configuration was incorrect.
 * Fixed issue #77 where XML content elements of the type should return sensible values, provided by Wolfgang Illmeyer.
-* Fixed issue #83 where the new content editor had a problem with comments and javascript.
+* Fixed issue #83 where the new content editor had a problem with comments and JavaScript.
 * Fixed issue #84 where saving + exit in the new content editor was possible even a validation rule was invalid.
 * Fixed issue #87 where OU names containing "." would lead to a 404 error on log out.
 * Fixed issue #88, #119 where the selector widget had problems with the default value.
