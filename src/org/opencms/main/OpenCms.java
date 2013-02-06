@@ -50,6 +50,7 @@ import org.opencms.security.CmsOrgUnitManager;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleManager;
 import org.opencms.security.I_CmsAuthorizationHandler;
+import org.opencms.security.I_CmsCredentialsResolver;
 import org.opencms.security.I_CmsPasswordHandler;
 import org.opencms.security.I_CmsValidationHandler;
 import org.opencms.site.CmsSiteManagerImpl;
@@ -195,6 +196,16 @@ public final class OpenCms {
     public static I_CmsAuthorizationHandler getAuthorizationHandler() {
 
         return OpenCmsCore.getInstance().getAuthorizationHandler();
+    }
+
+    /**
+     * Gets the credentials resolver instance.<p>
+     * 
+     * @return the credentials resolver 
+     */
+    public static I_CmsCredentialsResolver getCredentialsResolver() {
+
+        return OpenCmsCore.getInstance().getCredentialsResolver();
     }
 
     /**

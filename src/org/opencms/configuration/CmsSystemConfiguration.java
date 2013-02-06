@@ -52,9 +52,11 @@ import org.opencms.publish.CmsPublishManager;
 import org.opencms.scheduler.CmsScheduleManager;
 import org.opencms.scheduler.CmsScheduledJobInfo;
 import org.opencms.security.CmsDefaultAuthorizationHandler;
+import org.opencms.security.CmsDefaultCredentialsResolver;
 import org.opencms.security.CmsDefaultValidationHandler;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.I_CmsAuthorizationHandler;
+import org.opencms.security.I_CmsCredentialsResolver;
 import org.opencms.security.I_CmsPasswordHandler;
 import org.opencms.security.I_CmsValidationHandler;
 import org.opencms.site.CmsSite;
@@ -509,6 +511,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSystemConfiguration.class);
 
+    /** Node name for the credentials resolver setting. */
+    private static final String N_CREDENTIALS_RESOLVER = "credentials-resolver";
+
     /** Node name for the user session mode. */
     private static final String N_USER_SESSION_MODE = "user-session-mode";
 
@@ -535,6 +540,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The list of jobs for the scheduler. */
     private List<CmsScheduledJobInfo> m_configuredJobs;
+
+    /** The credentials resolver instance. */
+    private I_CmsCredentialsResolver m_credentialsResolver;
+
+    /** The configured credentials resolver class name. */
+    private String m_credentialsResolverClass;
 
     /** The default content encoding. */
     private String m_defaultContentEncoding;
@@ -1172,6 +1183,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         String userSessionPath = "*/" + N_SYSTEM + "/" + N_USER_SESSION_MODE;
         digester.addCallMethod(userSessionPath, "setUserSessionMode", 0);
 
+        String credentialsResolverPath = "*/" + N_SYSTEM + "/" + N_CREDENTIALS_RESOLVER;
+        digester.addCallMethod(credentialsResolverPath, "setCredentialsResolver", 0);
     }
 
     /**
@@ -1600,6 +1613,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             Element userSessionElem = systemElement.addElement(N_USER_SESSION_MODE);
             userSessionElem.setText(m_userSessionMode.toString());
         }
+
+        if (m_credentialsResolverClass != null) {
+            systemElement.addElement(N_CREDENTIALS_RESOLVER).setText(m_credentialsResolverClass);
+        }
         // return the system node
         return systemElement;
     }
@@ -1692,6 +1709,29 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     public CmsMemoryMonitorConfiguration getCmsMemoryMonitorConfiguration() {
 
         return m_cmsMemoryMonitorConfiguration;
+    }
+
+    /**
+     * Gets the credentials resolver.<p>
+     * 
+     * @return the credentials resolver 
+     */
+    public I_CmsCredentialsResolver getCredentialsResolver() {
+
+        if (m_credentialsResolver == null) {
+            m_credentialsResolver = new CmsDefaultCredentialsResolver();
+        }
+        return m_credentialsResolver;
+    }
+
+    /**
+     * Gets the configured credentials resolver class name (null if no class is explicity configured).<p>
+     * 
+     * @return the name of the configured credentials resolver class 
+     */
+    public String getCredentialsResolverClass() {
+
+        return m_credentialsResolverClass;
     }
 
     /**
@@ -2176,6 +2216,22 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     public void setCmsMemoryMonitorConfiguration(CmsMemoryMonitorConfiguration cmsMemoryMonitorConfiguration) {
 
         m_cmsMemoryMonitorConfiguration = cmsMemoryMonitorConfiguration;
+    }
+
+    /**
+     * Sets the credentials resolver class.<p>
+     * 
+     * @param className the name of the credentials resolver class 
+     * 
+     * @throws Exception if something goes wrong  
+     */
+    public void setCredentialsResolver(String className) throws Exception {
+
+        String originalClassName = className;
+        className = className.trim();
+        Class<?> resolverClass = Class.forName(className);
+        m_credentialsResolver = (I_CmsCredentialsResolver)(resolverClass.newInstance());
+        m_credentialsResolverClass = originalClassName;
     }
 
     /**

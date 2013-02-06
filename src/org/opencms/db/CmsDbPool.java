@@ -29,6 +29,8 @@ package org.opencms.db;
 
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
+import org.opencms.security.I_CmsCredentialsResolver;
 import org.opencms.util.CmsStringUtil;
 
 import java.sql.Connection;
@@ -197,10 +199,11 @@ public final class CmsDbPool {
             + KEY_TIME_BETWEEN_EVICTION_RUNS, 3600000);
         String testQuery = config.get(KEY_DATABASE_POOL + '.' + key + '.' + KEY_TEST_QUERY);
         String username = config.get(KEY_DATABASE_POOL + '.' + key + '.' + KEY_USERNAME);
+        username = OpenCms.getCredentialsResolver().resolveCredential(I_CmsCredentialsResolver.DB_USER, username);
         String password = config.get(KEY_DATABASE_POOL + '.' + key + '.' + KEY_PASSWORD);
+        password = OpenCms.getCredentialsResolver().resolveCredential(I_CmsCredentialsResolver.DB_PASSWORD, password);
         String poolUrl = config.get(KEY_DATABASE_POOL + '.' + key + '.' + KEY_POOL_URL);
-        String whenExhaustedActionValue = config.get(
-            KEY_DATABASE_POOL + '.' + key + '.' + KEY_WHEN_EXHAUSTED_ACTION).trim();
+        String whenExhaustedActionValue = config.get(KEY_DATABASE_POOL + '.' + key + '.' + KEY_WHEN_EXHAUSTED_ACTION).trim();
         byte whenExhaustedAction = 0;
         boolean testOnBorrow = Boolean.valueOf(
             config.getString(KEY_DATABASE_POOL + '.' + key + '.' + KEY_TEST_ON_BORROW, "false").trim()).booleanValue();

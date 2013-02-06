@@ -39,7 +39,8 @@
 	sitemap?,
 	subscriptionmanager?,
 	workflow?,
-	user-session-mode?
+	user-session-mode?,
+	credentials-resolver?
 	)>
 
 <!--
@@ -634,6 +635,7 @@ Each job can have an optional list of parameters.
 
 
 <!ELEMENT user-session-mode (#PCDATA)>
+<!ELEMENT credentials-resolver (#PCDATA)>
 
 
 

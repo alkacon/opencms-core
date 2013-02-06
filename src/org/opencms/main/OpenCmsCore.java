@@ -84,6 +84,7 @@ import org.opencms.security.CmsRoleManager;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsAuthorizationHandler;
+import org.opencms.security.I_CmsCredentialsResolver;
 import org.opencms.security.I_CmsPasswordHandler;
 import org.opencms.security.I_CmsValidationHandler;
 import org.opencms.site.CmsSite;
@@ -171,6 +172,9 @@ public final class OpenCmsCore {
 
     /** The configuration manager that contains the information from the XML configuration. */
     private CmsConfigurationManager m_configurationManager;
+
+    /** The object used for resolving database user credentials. */
+    private I_CmsCredentialsResolver m_credentialsResolver;
 
     /** List of configured directory default file names. */
     private List<String> m_defaultFiles;
@@ -415,6 +419,16 @@ public final class OpenCmsCore {
     protected CmsConfigurationManager getConfigurationManager() {
 
         return m_configurationManager;
+    }
+
+    /** 
+     * Gets the configured credentials resolver instance.<p>
+     * 
+     * @return the credentials resolver 
+     */
+    protected I_CmsCredentialsResolver getCredentialsResolver() {
+
+        return m_credentialsResolver;
     }
 
     /**
@@ -1196,6 +1210,9 @@ public final class OpenCmsCore {
 
         // initialize the publish engine
         m_publishEngine = new CmsPublishEngine(systemConfiguration.getRuntimeInfoFactory());
+
+        // Credentials resolver - needs to be set before the driver manager is initialized 
+        m_credentialsResolver = systemConfiguration.getCredentialsResolver();
 
         // init the OpenCms security manager
         m_securityManager = CmsSecurityManager.newInstance(
