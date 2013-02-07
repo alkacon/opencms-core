@@ -19,7 +19,9 @@
     <datecreated/>
     <userinstalled/>
     <dateinstalled/>
-    <dependencies/>
+    <dependencies>
+      <dependency name="org.opencms.ade.config" version="8.5.0"/>
+    </dependencies>
     <exportpoints>
       <exportpoint uri="/system/modules/org.opencms.ade.postupload/resources/" destination="resources/ade/"/>
     </exportpoints>

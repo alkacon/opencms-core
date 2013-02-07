@@ -20,7 +20,7 @@
     <userinstalled/>
     <dateinstalled/>
     <dependencies>
-      <dependency name="org.opencms.gwt" version="8.5.0"/>
+      <dependency name="org.opencms.ade.config" version="8.5.0"/>
     </dependencies>
     <exportpoints>
       <exportpoint uri="/system/modules/org.opencms.ade.upload/resources/" destination="resources/ade/"/>

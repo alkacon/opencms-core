@@ -22,7 +22,6 @@
     <dateinstalled/>
     <dependencies>
       <dependency name="org.opencms.ade.config" version="8.5.0"/>
-      <dependency name="org.opencms.ade.upload" version="8.5.0"/>
     </dependencies>
     <exportpoints>
       <exportpoint uri="/system/modules/org.opencms.ade.galleries/resources/" destination="resources/ade/"/>

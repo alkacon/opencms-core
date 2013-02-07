@@ -22,6 +22,7 @@
 		<userinstalled />
 		<dateinstalled />
 		<dependencies>
+			<dependency name="org.opencms.gwt" version="8.5.0"/>
 			<dependency name="org.opencms.workplace" version="8.5.0"/>
 			<dependency name="org.opencms.workplace.categories" version="8.5.0"/>
 		</dependencies>
