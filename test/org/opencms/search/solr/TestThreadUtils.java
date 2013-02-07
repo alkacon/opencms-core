@@ -90,6 +90,29 @@ public final class TestThreadUtils {
     }
 
     /**
+     * Returns a list of all threads belonging to one thread group.<p>
+     * 
+     * @param group the group to get the threads for
+     * 
+     * @return an array of threads for the given group
+     */
+    public static Thread[] getGroupThreads(final ThreadGroup group) {
+
+        if (group == null) {
+            throw new NullPointerException("Null thread group");
+        }
+        int nAlloc = group.activeCount();
+        int n = 0;
+        Thread[] threads;
+        do {
+            nAlloc *= 2;
+            threads = new Thread[nAlloc];
+            n = group.enumerate(threads);
+        } while (n == nAlloc);
+        return java.util.Arrays.copyOf(threads, n);
+    }
+
+    /**
      * Returns the thread that is locking the thread identified by the given id.<p>
      * 
      * @param identity the thread id to get the locking thread for
