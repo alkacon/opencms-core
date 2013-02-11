@@ -215,6 +215,9 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         fieldValue = res.getField("test_text_en");
         assertEquals(true, fieldValue.contains("Alkacon Software German"));
 
+        fieldValue = res.getField("explicit_title");
+        assertEquals(true, fieldValue.contains("Sample article 1  (>>SearchEgg1<<)"));
+
         // Test locale restricted field
         fieldValue = res.getField("aauthor_de");
         assertEquals(true, fieldValue.equals("Alkacon Software German"));

@@ -258,6 +258,7 @@
    <!-- For test cases only -->
    <field name="test_text_en"             type="text_en"      indexed="true"  stored="true" />
    <field name="test_text_de"             type="text_de"      indexed="true"  stored="true" />
+   <field name="explicit_title"           type="string"       indexed="true"  stored="true" />
 
    <dynamicField name="*_exact"      type="string"       indexed="true"  stored="true"/>
    <dynamicField name="*_prop"       type="text_general" indexed="true"  stored="true"/>

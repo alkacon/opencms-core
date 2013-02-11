@@ -44,6 +44,7 @@
 						<mapping type="property">Author</mapping>
 						<mapping type="item">Title</mapping>
 					</solrfield>
+					<solrfield targetfield="explicit_title" locale="none"/>
 				</searchsetting>
 				<searchsetting element="Description" searchcontent="false">
 					<solrfield targetfield="Description" />
