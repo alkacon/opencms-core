@@ -1,0 +1,51 @@
+<project name="ant-tests" default="dist" basedir=".">
+    <description>
+        simple example build file
+    </description>
+
+  <property name="opencms-components.input.src" location="src" />
+  <property name="opencms-components.output.classes" location="build" />
+  <property name="opencms-components.dist"  location="dist" />
+  <property name="opencms-components.libs.compile" location="lib" />
+  <property name="java.target.version" value="1.5" />
+
+
+  <target name="init">
+    <tstamp/>
+    <mkdir dir="${opencms-components.output.classes}"/>
+  </target>
+
+  <target name="compile" depends="init"
+        description="compile the source " >
+    <javac 
+        srcdir="${opencms-components.input.src}"
+        destdir="${opencms-components.output.classes}" 
+        debug="on" 
+        optimize="on" 
+        deprecation="on" 
+        source="1.5" 
+        target="${java.target.version}">
+
+        <classpath>
+            <fileset dir="${opencms-components.input.libs.compile}">
+                <include name="**/*.jar" />
+            </fileset>
+        </classpath>
+    </javac>
+
+  </target>
+
+  <target name="dist" depends="compile"
+        description="generate the distribution" >
+    <mkdir dir="${opencms-components.dist}/lib"/>
+
+    <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
+    <jar jarfile="${opencms-components.dist}/lib/${project.name}-${DSTAMP}.jar" basedir="${opencms-components.output.classes}"/>
+  </target>
+
+  <target name="clean"
+        description="clean up" >
+    <delete dir="${opencms-components.output.classes}"/>
+    <delete dir="${opencms-components.dist}"/>
+  </target>
+</project>
