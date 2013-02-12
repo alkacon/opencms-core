@@ -38,10 +38,10 @@
 
   <target name="dist" depends="compile"
         description="generate the distribution" >
-    <mkdir dir="${opencms-components.dist}/lib"/>
+    <mkdir dir="${opencms-components.dist}"/>
 
     <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
-    <jar jarfile="${opencms-components.dist}/lib/${project.name}-${DSTAMP}.jar" basedir="${opencms-components.output.classes}"/>
+    <jar jarfile="${opencms-components.dist}/${ant.project.name}-${DSTAMP}.jar" basedir="${opencms-components.output.classes}"/>
   </target>
 
   <target name="clean"
