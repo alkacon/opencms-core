@@ -6,7 +6,7 @@
   <property name="opencms-components.input.src" location="src" />
   <property name="opencms-components.output.classes" location="build" />
   <property name="opencms-components.dist"  location="dist" />
-  <property name="opencms-components.libs.compile" location="lib" />
+  <property name="opencms-components.input.libs.compile" location="lib" />
   <property name="java.target.version" value="1.5" />
 
 
@@ -24,7 +24,8 @@
         optimize="on" 
         deprecation="on" 
         source="1.5" 
-        target="${java.target.version}">
+        target="${java.target.version}"
+        includeantruntime="false">
 
         <classpath>
             <fileset dir="${opencms-components.input.libs.compile}">
