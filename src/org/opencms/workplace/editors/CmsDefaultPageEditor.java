@@ -317,7 +317,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      */
     public String buildSelectElementLanguage(String attributes) {
 
-        return buildSelectElementLanguage(attributes, getParamTempfile(), getElementLocale());
+        return buildSelectElementLanguage(attributes, getParamResource(), getElementLocale());
     }
 
     /**
