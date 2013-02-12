@@ -20,6 +20,9 @@ IMPORTANT: Alkacon OCEE versions less than 3 will not work with OpenCms 8.
 
 IMPORTANT: The updater is only compatible with the database engines MySQL, 
            Oracle and PostgreSQL.
+           
+IMPORTANT: This version of OpenCms requires at least Java 6 because of library 
+           dependencies.
 
 Follow the following steps to update from OpenCms 7.x and 8.x to OpenCms 8.5.1:
 
