@@ -92,7 +92,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_ENCODING_NOT_FOUND_1 = "LOG_ENCODING_NOT_FOUND_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String INIT_I18N_LANG_DETECT_FAILED_1 = "INIT_I18N_LANG_DETECT_FAILED_1";
+    public static final String INIT_I18N_LANG_DETECT_FAILED_0 = "INIT_I18N_LANG_DETECT_FAILED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_LOCALE_MANAGER_FLUSH_CACHE_1 = "LOG_LOCALE_MANAGER_FLUSH_CACHE_1";

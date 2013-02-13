@@ -50,7 +50,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 
-import com.cybozu.labs.langdetect.CmsLanguageUtil;
+import com.cybozu.labs.langdetect.DetectorFactory;
 import com.cybozu.labs.langdetect.LangDetectException;
 
 /**
@@ -946,11 +946,9 @@ public class CmsLocaleManager implements I_CmsEventListener {
         // set default locale 
         m_defaultLocale = m_defaultLocales.get(0);
         try {
-            CmsLanguageUtil.loadProfile(cms, CmsLanguageUtil.LANGUAGE_PROFILE_ZIP_PATH);
+            DetectorFactory.loadProfiles();
         } catch (LangDetectException e) {
-            LOG.error(Messages.get().getBundle().key(
-                Messages.INIT_I18N_LANG_DETECT_FAILED_1,
-                CmsLanguageUtil.LANGUAGE_PROFILE_ZIP_PATH));
+            LOG.error(Messages.get().getBundle().key(Messages.INIT_I18N_LANG_DETECT_FAILED_0), e);
         }
         // set initialized status
         m_initialized = true;

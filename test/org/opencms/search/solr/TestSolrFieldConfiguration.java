@@ -63,8 +63,6 @@ import junit.framework.TestSuite;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.common.SolrInputDocument;
 
-import com.cybozu.labs.langdetect.CmsLanguageUtil;
-
 /**
  * Tests the Solr field mapping.<p>
  * 
@@ -124,8 +122,6 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
     public void testLanguageDetection() throws Throwable {
 
         CmsObject cms = OpenCms.initCmsObject(getCmsObject());
-        // initialize the language detection factory
-        CmsLanguageUtil.loadProfile(cms, CmsLanguageUtil.LANGUAGE_PROFILE_ZIP_PATH);
         // use a folder that only contains GERMAN content @see manifest.xml -> locale poperty
         String folderName = "/folder1/subfolder12/subsubfolder121/";
 
