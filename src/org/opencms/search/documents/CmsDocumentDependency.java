@@ -184,8 +184,13 @@ public final class CmsDocumentDependency {
         Matcher matcher = DOC_PATTERN_NUMBER.matcher(docName);
         if (matcher.find()) {
             docName = matcher.group(1);
-            Integer partNumber = new Integer(Integer.parseInt(matcher.group(2)));
-            setAttachmentNumber(partNumber);
+            try {
+                Integer partNumber = new Integer(Integer.parseInt(matcher.group(2)));
+                setAttachmentNumber(partNumber);
+            } catch (NumberFormatException e) {
+                // if the pattern matches we must have found a valid number
+                // but it seems to be bigger than Integer.MAX_VALUE
+            }
         }
 
         Locale locale = null;
