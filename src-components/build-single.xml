@@ -5,6 +5,7 @@
 <!-- Inherited ... -->
   <property name="opencms.input" location="${basedir}/.." />
   <property name="opencms.input.libs.compile" location="${opencms.input}/lib/compile" />
+  <property name="opencms.input.libs.runtime" location="${opencms.input}/lib/runtime" />
   <property name="opencms.output" location="${opencms.input}/../BuildCms" />
   <property name="opencms.build" location="${opencms.output}/build" />
   <property name="java.target.version" value="1.5" />
@@ -67,6 +68,9 @@
             <fileset dir="${opencms.input.libs.compile}">
                 <include name="**/*.jar" />
             </fileset>
+            <fileset dir="${opencms.input.libs.runtime}">
+                <include name="**/*.jar" />
+            </fileset>
         </classpath>
     </javac>
 
@@ -100,4 +104,5 @@
   <target name="use-task" depends="define-task">
     <anttesttask />
   </target>
+
 </project>
