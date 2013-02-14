@@ -39,6 +39,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -608,6 +610,8 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      * Method overload from the standard HttpServletRequest API.<p>
      *
      * @see javax.servlet.http.HttpServletResponse#sendRedirect(java.lang.String)
+     * 
+     * @throws IllegalArgumentException In case of a malformed location string
      */
     @Override
     public void sendRedirect(String location) throws IOException {
@@ -639,6 +643,20 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
                         location));
                 }
             }
+            
+            try {
+                // Checking for possible illegal characters (for example, XSS exploits) before sending the redirect
+                // The constructor is key here. That method will throw an URISyntaxException if the URL
+                // format is not according to standards (e.g. contains illegal characters, like spaces, < or >, etc).
+                new URI(location);
+            } catch (URISyntaxException e) {
+                // Deliberately NOT passing the original exception, since the URISyntaxException contains the full path,
+                // which may include the XSS attempt
+                LOG.error(Messages.get().getBundle().key(
+                    Messages.ERR_FLEXRESPONSE_URI_SYNTAX_EXCEPTION_0), e);
+                throw new IllegalArgumentException("Illegal or malformed characters found in path");
+            }
+            
             // use top response for redirect
             HttpServletResponse topRes = m_controller.getTopResponse();
             // add all headers found to make sure cookies can be set before redirect
