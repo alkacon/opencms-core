@@ -17,6 +17,8 @@
   <property name="component.output.jars"  location="${opencms.build}/jars-components" />
 
   <property name="component.jardesc" location="ant-opencms.jardesc" />
+  <property name="jar.includes" value="**/*.properties,**/*.html" />
+
 
   <target name="init">
     <fail unless="component.jardesc">No jardesc specified</fail>
@@ -48,6 +50,7 @@
     <echo message="Component input: ${component.input}" />
     <echo message="Component output classes: ${component.output.classes}" />
     <echo message="Component output jar: ${component.output.jars}/${component.output.jarname}" />
+    <echo message="Component in-jar included files: ${jar.includes}" />
   </target>
 
   <target name="compile" depends="init"
@@ -73,6 +76,12 @@
             </fileset>
         </classpath>
     </javac>
+    <copy todir="${component.output.classes}" includeEmptyDirs="false">
+      <fileset dir="${component.input}">
+        <patternset includes="${component.input.includes}" excludes="**/*.java" />
+        <include name="${jar.includes}" />
+      </fileset>
+    </copy>
 
   </target>
 
