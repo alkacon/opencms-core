@@ -9,6 +9,7 @@
 	<property name="opencms.input.libs.compile" location="${opencms.input}/lib/compile" />
 	<property name="opencms.build" location="${opencms.output}/build" />
 	<property name="opencms.output.jars" location="${opencms.build}/jars-core" />
+	<property name="opencms.output.jars-components" location="${opencms.output}/build/jars-components" />
 	<property name="opencms.gwt.forcerebuild" value="false" />
 	<property name="java.target.version" value="1.5" />
 
@@ -60,7 +61,7 @@
 
 	<taskdef resource="org/opencms/util/ant/taskdefs.properties" loaderref="opencms">
 		<classpath>
-			<pathelement location="${opencms.input.libs.compile}/ant-opencms-1.2.jar" />
+			<pathelement location="${opencms.output.jars-components}/ant-opencms.jar" />
 			<pathelement location="${opencms.input.libs.runtime}/commons-digester-1.8.jar" />
 			<pathelement location="${opencms.input.libs.runtime}/commons-logging-1.1.1.jar" />
 			<pathelement location="${opencms.input.libs.runtime}/commons-collections-3.2.1.jar" />
@@ -420,6 +421,7 @@
 						</fileset>
 						<fileset dir="${opencms.input.libs.runtime}" />
 						<fileset dir="${opencms.input.libs.compile}" />
+						<pathelement location="${opencms.output.jars-components}/gwt-opencms.jar" />
 					</sourcefiles>
 					<targetfiles path="${module.gwt.output}/${module.gwt.bootstrap}.nocache.js" />
 					<sequential>
@@ -467,6 +469,7 @@
 								<pathelement path="${opencms.input}/src" />
 								<pathelement path="${opencms.input}/src-gwt" />
 								<pathelement path="${opencms.input.gwt}" />
+								<pathelement path="${opencms.output.jars-components}/gwt-opencms.jar" />
 							</classpath>
 						</java>
 						<delete dir="${module.gwt.output}/../WEB-INF" failonerror="false" />

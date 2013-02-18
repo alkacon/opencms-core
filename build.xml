@@ -18,6 +18,7 @@
 	<property name="opencms.output.classes" location="${opencms.output}/build/classes-core" />
 	<property name="opencms.output.tests" location="${opencms.output}/build/test" />
 	<property name="opencms.output.jars" location="${opencms.output}/build/jars-core" />
+	<property name="opencms.output.jars-components" location="${opencms.output}/build/jars-components" />
 	<property name="opencms.output.warfiles" location="${opencms.output}/build/${app.name}" />
 	<property name="opencms.output.distfiles" location="${opencms.output}/zip" />
 	
@@ -71,26 +72,31 @@
 		</classpath>
 	</taskdef>
 
-	<taskdef resource="org/opencms/util/ant/taskdefs.properties" loaderref="opencms">
-		<classpath>
-			<pathelement location="${opencms.input.libs.compile}/ant-opencms-1.2.jar" />
-			<pathelement location="${opencms.input.libs.runtime}/commons-digester-1.8.jar" />
-			<pathelement location="${opencms.input.libs.runtime}/commons-logging-1.1.1.jar" />
-			<pathelement location="${opencms.input.libs.runtime}/commons-collections-3.2.1.jar" />
-			<pathelement location="${opencms.input.libs.runtime}/commons-beanutils-1.8.3.jar" />
-			<pathelement location="${opencms.input.libs.runtime}/dom4j-1.6.1.jar" />
-			<pathelement location="${opencms.input.libs.runtime}/jaxen-1.1.1.jar" />
-			<pathelement location="${opencms.input.libs.runtime}/jug-lgpl-2.0.0.jar" />
-		</classpath>
-	</taskdef>
-	
 	<taskdef resource="checkstyletask.properties"
 		classpathref="opencms.input.libs.all"/>
+
+	<target name="init-components" description="Builds the OpenCms components">
+		<!-- build ant-opencms.jar -->
+		<ant dir="${opencms.input}/src-components" />
+
+		<taskdef resource="org/opencms/util/ant/taskdefs.properties" loaderref="opencms">
+			<classpath>
+				<pathelement location="${opencms.output.jars-components}/ant-opencms.jar" />
+				<pathelement location="${opencms.input.libs.runtime}/commons-digester-1.8.jar" />
+				<pathelement location="${opencms.input.libs.runtime}/commons-logging-1.1.1.jar" />
+				<pathelement location="${opencms.input.libs.runtime}/commons-collections-3.2.1.jar" />
+				<pathelement location="${opencms.input.libs.runtime}/commons-beanutils-1.8.3.jar" />
+				<pathelement location="${opencms.input.libs.runtime}/dom4j-1.6.1.jar" />
+				<pathelement location="${opencms.input.libs.runtime}/jaxen-1.1.1.jar" />
+				<pathelement location="${opencms.input.libs.runtime}/jug-lgpl-2.0.0.jar" />
+			</classpath>
+		</taskdef>
+	</target>
 
 	<!-- 
 	  -	Checks if all required libraries are available
 	  -->
-	<target name="initrevision">
+	<target name="initrevision" depends="init-components">
 		<if>
 			<isset property="env.GIT_COMMIT" />
 			<then>
@@ -191,6 +197,7 @@
 
 		<javac srcdir="${opencms.input}/src" destdir="${opencms.output.classes}" debug="on" optimize="on" deprecation="on" source="1.5" target="${java.target.version}">
 			<classpath>
+				<pathelement location="${opencms.output.jars-components}/gwt-opencms.jar" />
 				<fileset dir="${opencms.input.libs.compile}">
 					<include name="**/*.jar" />
 					<exclude name="**/gwt-user*.jar" />
