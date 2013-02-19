@@ -137,6 +137,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SESSIONS_LIST_MACTION_EMAIL_NAME_0 = "GUI_SESSIONS_LIST_MACTION_EMAIL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SESSIONS_LIST_MACTION_KILL_HELP_0 = "GUI_SESSIONS_LIST_MACTION_KILL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SESSIONS_LIST_MACTION_KILL_NAME_0 = "GUI_SESSIONS_LIST_MACTION_KILL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SESSIONS_LIST_MACTION_MESSAGE_CONF_0 = "GUI_SESSIONS_LIST_MACTION_MESSAGE_CONF_0";
 
     /** Message constant for key in the resource bundle. */

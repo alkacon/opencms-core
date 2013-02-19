@@ -28,11 +28,14 @@
 package org.opencms.workplace.tools.workplace.broadcast;
 
 import org.opencms.file.CmsUser;
+import org.opencms.i18n.I_CmsMessageBundle;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.CmsSessionInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.list.A_CmsListDialog;
@@ -115,6 +118,9 @@ public class CmsSessionsList extends A_CmsListDialog {
     /** list action id constant. */
     public static final String LIST_MACTION_EMAIL = "me";
 
+    /** list multi action id. */
+    public static final String LIST_MACTION_KILL_SESSION = "LIST_MACTION_KILL_SESSION";
+
     /** list action id constant. */
     public static final String LIST_MACTION_MESSAGE = "mm";
 
@@ -168,6 +174,15 @@ public class CmsSessionsList extends A_CmsListDialog {
             // execute the send email multiaction
             // forward to the edit email screen
             getToolManager().jspForwardTool(this, "/workplace/broadcast/email", params);
+        } else if (getParamListAction().equals(LIST_MACTION_KILL_SESSION)) {
+            List<String> selectedItems = CmsStringUtil.splitAsList(getParamSelItems(), "|");
+            for (String selectedItem : selectedItems) {
+                try {
+                    OpenCms.getSessionManager().killSession(getCms(), new CmsUUID(selectedItem));
+                } catch (CmsException e) {
+                    throw new CmsRuntimeException(e.getMessageContainer(), e);
+                }
+            }
         } else {
             throwListUnsupportedActionException();
         }
@@ -446,6 +461,13 @@ public class CmsSessionsList extends A_CmsListDialog {
             Messages.GUI_SESSIONS_LIST_MACTION_EMAIL_CONF_0));
         emailMultiAction.setIconPath(PATH_BUTTONS + "multi_send_email.png");
         metadata.addMultiAction(emailMultiAction);
+
+        CmsListMultiAction killMultiAction = new CmsListMultiAction(LIST_MACTION_KILL_SESSION);
+        I_CmsMessageBundle m = Messages.get();
+        killMultiAction.setName(m.container(Messages.GUI_SESSIONS_LIST_MACTION_KILL_NAME_0));
+        killMultiAction.setHelpText(m.container(Messages.GUI_SESSIONS_LIST_MACTION_KILL_HELP_0));
+        killMultiAction.setIconPath("list/delete.png");
+        metadata.addMultiAction(killMultiAction);
     }
 
 }

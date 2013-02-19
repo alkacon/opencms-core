@@ -306,6 +306,21 @@ public class CmsSessionManager {
     }
 
     /**
+     * Destroys a session given the session id. Only allowed for users which have the "account manager" role.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param sessionid the session id
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public void killSession(CmsObject cms, CmsUUID sessionid) throws CmsException {
+
+        OpenCms.getRoleManager().checkRole(cms, CmsRole.ACCOUNT_MANAGER);
+        m_sessionStorageProvider.remove(sessionid);
+
+    }
+
+    /**
      * Sends a broadcast to all sessions of all currently authenticated users.<p>
      * 
      * @param cms the OpenCms user context of the user sending the broadcast
