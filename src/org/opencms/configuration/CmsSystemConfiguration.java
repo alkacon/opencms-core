@@ -2031,9 +2031,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         if (m_userSessionMode != null) {
             return m_userSessionMode;
         } else if (useDefault) {
-            return null;
-        } else {
             return DEFAULT_USER_SESSION_MODE;
+        } else {
+            return null;
         }
     }
 
