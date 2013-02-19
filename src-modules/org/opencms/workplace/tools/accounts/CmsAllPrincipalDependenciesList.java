@@ -46,7 +46,7 @@ import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListCsvExportIAction;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListMetadata;
-import org.opencms.workplace.list.CmsListMetadata.CsvItemFormatter;
+import org.opencms.workplace.list.CmsListMetadata.I_CsvItemFormatter;
 import org.opencms.workplace.list.CmsListOrderEnum;
 import org.opencms.workplace.list.CmsListSearchAction;
 
@@ -426,7 +426,7 @@ public class CmsAllPrincipalDependenciesList extends A_CmsListDialog {
                 searchAction.addColumn(col);
             }
         }
-        metadata.setCsvItemFormatter(new CsvItemFormatter() {
+        metadata.setCsvItemFormatter(new I_CsvItemFormatter() {
 
             public String csvHeader() {
 

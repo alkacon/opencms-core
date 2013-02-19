@@ -43,6 +43,27 @@ import java.util.TreeSet;
  */
 public class CmsListMetadata {
 
+    /** 
+     * Interface used for formatting list data in text form.<p>
+     */
+    public interface I_CsvItemFormatter {
+
+        /** 
+         * Generates the CSV header. 
+         * 
+         * @return the CSV header line  
+         **/
+        String csvHeader();
+
+        /** 
+         * Generates a CSV line. 
+         * 
+         * @param item the list item to format 
+         * @return the formatted text line for the list item 
+         * */
+        String csvItem(CmsListItem item);
+    }
+
     /** the html id for the input element of the search bar. */
     public static final String SEARCH_BAR_INPUT_ID = "listSearchFilter";
 
@@ -50,6 +71,9 @@ public class CmsListMetadata {
     private CmsIdentifiableObjectContainer<CmsListColumnDefinition> m_columns = new CmsIdentifiableObjectContainer<CmsListColumnDefinition>(
         true,
         false);
+
+    /** The CSV item formatter. **/
+    private I_CsvItemFormatter m_csvItemFormatter;
 
     /** Container for of independent actions. */
     private CmsIdentifiableObjectContainer<I_CmsListAction> m_indepActions = new CmsIdentifiableObjectContainer<I_CmsListAction>(
@@ -209,18 +233,22 @@ public class CmsListMetadata {
      */
     public String csvHeader() {
 
-        StringBuffer csv = new StringBuffer(1024);
-        Iterator<CmsListColumnDefinition> itCols = m_columns.elementList().iterator();
-        while (itCols.hasNext()) {
-            CmsListColumnDefinition col = itCols.next();
-            if (!col.isVisible()) {
-                continue;
+        if (m_csvItemFormatter != null) {
+            return m_csvItemFormatter.csvHeader();
+        } else {
+            StringBuffer csv = new StringBuffer(1024);
+            Iterator<CmsListColumnDefinition> itCols = m_columns.elementList().iterator();
+            while (itCols.hasNext()) {
+                CmsListColumnDefinition col = itCols.next();
+                if (!col.isVisible()) {
+                    continue;
+                }
+                csv.append(col.csvHeader());
+                csv.append("\t");
             }
-            csv.append(col.csvHeader());
-            csv.append("\t");
+            csv.append("\n\n");
+            return csv.toString();
         }
-        csv.append("\n\n");
-        return csv.toString();
     }
 
     /**
@@ -232,18 +260,22 @@ public class CmsListMetadata {
      */
     public String csvItem(CmsListItem item) {
 
-        StringBuffer csv = new StringBuffer(1024);
-        Iterator<CmsListColumnDefinition> itCols = m_columns.elementList().iterator();
-        while (itCols.hasNext()) {
-            CmsListColumnDefinition col = itCols.next();
-            if (!col.isVisible()) {
-                continue;
+        if (m_csvItemFormatter != null) {
+            return m_csvItemFormatter.csvItem(item);
+        } else {
+            StringBuffer csv = new StringBuffer(1024);
+            Iterator<CmsListColumnDefinition> itCols = m_columns.elementList().iterator();
+            while (itCols.hasNext()) {
+                CmsListColumnDefinition col = itCols.next();
+                if (!col.isVisible()) {
+                    continue;
+                }
+                csv.append(col.csvCell(item));
+                csv.append("\t");
             }
-            csv.append(col.csvCell(item));
-            csv.append("\t");
+            csv.append("\n");
+            return csv.toString();
         }
-        csv.append("\n");
-        return csv.toString();
     }
 
     /**
@@ -724,6 +756,16 @@ public class CmsListMetadata {
     public boolean isVolatile() {
 
         return m_volatile;
+    }
+
+    /**
+     * Sets the CSV item formatter to use.<p>
+     * 
+     * @param formatter the CSV item formatter 
+     */
+    public void setCsvItemFormatter(I_CsvItemFormatter formatter) {
+
+        m_csvItemFormatter = formatter;
     }
 
     /**
