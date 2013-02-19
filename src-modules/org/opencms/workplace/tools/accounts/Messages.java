@@ -1094,6 +1094,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_PARENTORGUNIT_ADMIN_TOOL_NAME_0 = "GUI_PARENTORGUNIT_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PERMISSION_COLUMN_OVERWRITE_0 = "GUI_PERMISSION_COLUMN_OVERWRITE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_ROLE_OVERVIEW_LABEL_IDENTIFICATION_BLOCK_0 = "GUI_ROLE_OVERVIEW_LABEL_IDENTIFICATION_BLOCK_0";
 
     /** Message constant for key in the resource bundle. */

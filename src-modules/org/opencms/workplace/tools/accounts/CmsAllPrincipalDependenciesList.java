@@ -222,10 +222,14 @@ public class CmsAllPrincipalDependenciesList extends A_CmsListDialog {
         private String getAceString(CmsAccessControlEntry ace) {
 
             String result = ace.getPermissions().getPermissionString()
-                + ace.getResponsibleString()
+                + (ace.isResponsible() ? ace.getResponsibleString() : "")
                 + ace.getInheritingString();
             if ((ace.getFlags() & CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE) != 0) {
-                result = result + " (overwrite)";
+                result = result
+                    + " ("
+                    + Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms)).key(
+                        Messages.GUI_PERMISSION_COLUMN_OVERWRITE_0)
+                    + ")";
             }
             return result;
 
