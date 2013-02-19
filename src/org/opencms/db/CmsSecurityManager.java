@@ -1906,6 +1906,29 @@ public final class CmsSecurityManager {
     }
 
     /**
+     * Gets all access control entries.<p>
+     *  
+     * @param context the current request context 
+     * @return the list of all access control entries
+     *  
+     * @throws CmsException if something goes wrong 
+     */
+    public List<CmsAccessControlEntry> getAllAccessControlEntries(CmsRequestContext context) throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        List<CmsAccessControlEntry> result = null;
+        try {
+            result = m_driverManager.getAllAccessControlEntries(dbc);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_GET_ACL_ENTRIES_1, "<all resources>"), e);
+        } finally {
+            dbc.clear();
+        }
+        return result;
+
+    }
+
+    /**
      * Returns all projects which are owned by the current user or which are
      * accessible for the group of the user.<p>
      *

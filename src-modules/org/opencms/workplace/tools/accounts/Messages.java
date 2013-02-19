@@ -182,6 +182,21 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_ADMINORGUNITS_LIST_NAME_0 = "GUI_ADMINORGUNITS_LIST_NAME_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALL_PRINCIPAL_DEPENDENCIES_LIST_0 = "GUI_ALL_PRINCIPAL_DEPENDENCIES_LIST_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALLDEP_LIST_COL_CREDENTIALS_0 = "GUI_ALLDEP_LIST_COL_CREDENTIALS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALLDEP_LIST_COL_PATH_0 = "GUI_ALLDEP_LIST_COL_PATH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALLDEP_LIST_COL_PERMISSIONS_0 = "GUI_ALLDEP_LIST_COL_PERMISSIONS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALLDEP_LIST_COL_USER_0 = "GUI_ALLDEP_LIST_COL_USER_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_ALLGROUPS_ADMIN_TOOL_GROUP_0 = "GUI_ALLGROUPS_ADMIN_TOOL_GROUP_0";
 
     /** Message constant for key in the resource bundle. */
@@ -207,6 +222,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ASSIGNUSER_ADMIN_TOOL_NAME_0 = "GUI_ASSIGNUSER_ADMIN_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CREDENTIAL_DIRECT_0 = "GUI_CREDENTIAL_DIRECT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CREDENTIAL_GROUP_1 = "GUI_CREDENTIAL_GROUP_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CREDENTIAL_ROLE_1 = "GUI_CREDENTIAL_ROLE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DELETEORGUNIT_ADMIN_TOOL_GROUP_0 = "GUI_DELETEORGUNIT_ADMIN_TOOL_GROUP_0";
@@ -260,7 +284,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_EDITGROUP_OVERVIEW_ADMIN_TOOL_NAVBARNAME_0 = "GUI_EDITGROUP_OVERVIEW_ADMIN_TOOL_NAVBARNAME_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_EDITGROUP_USERS_ADMIN_TOOL_GROUP_0 = "GUI_EDITGROUP_USERS_ADMIN_TOOL_GROUP_0";
+    public static final String GUI_EDITGROUP_PERMISSIONS_ADMIN_TOOL_GROUP_0 = "GUI_EDITGROUP_PERMISSIONS_ADMIN_TOOL_GROUP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITGROUP_PERMISSIONS_ADMIN_TOOL_HELP_0 = "GUI_EDITGROUP_PERMISSIONS_ADMIN_TOOL_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITGROUP_PERMISSIONS_ADMIN_TOOL_NAME_0 = "GUI_EDITGROUP_PERMISSIONS_ADMIN_TOOL_NAME_0";
@@ -269,10 +296,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_EDITGROUP_PERMISSIONS_ADMIN_TOOL_NAVBARNAME_0 = "GUI_EDITGROUP_PERMISSIONS_ADMIN_TOOL_NAVBARNAME_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_EDITGROUP_PERMISSIONS_ADMIN_TOOL_HELP_0 = "GUI_EDITGROUP_PERMISSIONS_ADMIN_TOOL_HELP_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_EDITGROUP_PERMISSIONS_ADMIN_TOOL_GROUP_0 = "GUI_EDITGROUP_PERMISSIONS_ADMIN_TOOL_GROUP_0";
+    public static final String GUI_EDITGROUP_USERS_ADMIN_TOOL_GROUP_0 = "GUI_EDITGROUP_USERS_ADMIN_TOOL_GROUP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITGROUP_USERS_ADMIN_TOOL_HELP_0 = "GUI_EDITGROUP_USERS_ADMIN_TOOL_HELP_0";
@@ -341,6 +365,18 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_EDITUSER_OVERVIEW_ADMIN_TOOL_NAVBARNAME_0 = "GUI_EDITUSER_OVERVIEW_ADMIN_TOOL_NAVBARNAME_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITUSER_PEMMISIONS_ADMIN_TOOL_GROUP_0 = "GUI_EDITUSER_PEMMISIONS_ADMIN_TOOL_GROUP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITUSER_PEMMISIONS_ADMIN_TOOL_HELP_0 = "GUI_EDITUSER_PEMMISIONS_ADMIN_TOOL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITUSER_PEMMISIONS_ADMIN_TOOL_NAME_0 = "GUI_EDITUSER_PEMMISIONS_ADMIN_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITUSER_PEMMISIONS_ADMIN_TOOL_NAVBARNAME_0 = "GUI_EDITUSER_PEMMISIONS_ADMIN_TOOL_NAVBARNAME_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITUSER_SWITCH_ADMIN_TOOL_GROUP_0 = "GUI_EDITUSER_SWITCH_ADMIN_TOOL_GROUP_0";
 
     /** Message constant for key in the resource bundle. */
@@ -351,18 +387,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITUSER_SWITCH_ADMIN_TOOL_NAVBARNAME_0 = "GUI_EDITUSER_SWITCH_ADMIN_TOOL_NAVBARNAME_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_EDITUSER_PEMMISIONS_ADMIN_TOOL_NAME_0 = "GUI_EDITUSER_PEMMISIONS_ADMIN_TOOL_NAME_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_EDITUSER_PEMMISIONS_ADMIN_TOOL_NAVBARNAME_0 = "GUI_EDITUSER_PEMMISIONS_ADMIN_TOOL_NAVBARNAME_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_EDITUSER_PEMMISIONS_ADMIN_TOOL_HELP_0 = "GUI_EDITUSER_PEMMISIONS_ADMIN_TOOL_HELP_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_EDITUSER_PEMMISIONS_ADMIN_TOOL_GROUP_0 = "GUI_EDITUSER_PEMMISIONS_ADMIN_TOOL_GROUP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPORTCSV_ADMIN_TOOL_GROUP_0 = "GUI_EXPORTCSV_ADMIN_TOOL_GROUP_0";

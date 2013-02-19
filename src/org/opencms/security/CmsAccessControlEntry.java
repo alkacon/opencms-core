@@ -58,9 +58,6 @@ public class CmsAccessControlEntry {
     /** Flag to indicate the principal type group. */
     public static final int ACCESS_FLAGS_GROUP = 32;
 
-    /** Flag to indicate the principal type role. */
-    public static final int ACCESS_FLAGS_ROLE = 512;
-
     /** Flag to indicate that an access control entry should be inherited. */
     public static final int ACCESS_FLAGS_INHERIT = 2;
 
@@ -75,6 +72,9 @@ public class CmsAccessControlEntry {
 
     /** Flag to indicate that the principal is responsible for the resource. */
     public static final int ACCESS_FLAGS_RESPONSIBLE = 64;
+
+    /** Flag to indicate the principal type role. */
+    public static final int ACCESS_FLAGS_ROLE = 512;
 
     /** Flag to indicate the principal type user. */
     public static final int ACCESS_FLAGS_USER = 16;
@@ -142,17 +142,20 @@ public class CmsAccessControlEntry {
         }
     };
 
+    /** The used id for ace's that apply to all other principals. */
+    public static final CmsUUID PRINCIPAL_ALL_OTHERS_ID;
+
     /** The used name for ace's that apply to all other principals. */
     public static final String PRINCIPAL_ALL_OTHERS_NAME = "ALL_OTHERS";
 
-    /** The used id for ace's that apply to all other principals. */
-    public static final CmsUUID PRINCIPAL_ALL_OTHERS_ID = CmsUUID.getConstantUUID(PRINCIPAL_ALL_OTHERS_NAME.toLowerCase());
+    /** The used id for ace's that overwrites all inherited permissions. */
+    public static final CmsUUID PRINCIPAL_OVERWRITE_ALL_ID;
 
     /** The used name for ace's that overwrites all inherited permissions. */
     public static final String PRINCIPAL_OVERWRITE_ALL_NAME = "OVERWRITE_ALL";
 
-    /** The used id for ace's that overwrites all inherited permissions. */
-    public static final CmsUUID PRINCIPAL_OVERWRITE_ALL_ID = CmsUUID.getConstantUUID(PRINCIPAL_OVERWRITE_ALL_NAME.toLowerCase());
+    /** UUID which is used to read all access control entries, should never be written to the database. */
+    public static final CmsUUID PRINCIPAL_READALL_ID;
 
     /** Flags of this access control entry. */
     private int m_flags;
@@ -274,6 +277,12 @@ public class CmsAccessControlEntry {
         }
 
         m_permissions = new CmsPermissionSetCustom(permissionString.toString());
+    }
+
+    static {
+        PRINCIPAL_ALL_OTHERS_ID = CmsUUID.getConstantUUID(PRINCIPAL_ALL_OTHERS_NAME.toLowerCase());
+        PRINCIPAL_OVERWRITE_ALL_ID = CmsUUID.getConstantUUID(PRINCIPAL_OVERWRITE_ALL_NAME.toLowerCase());
+        PRINCIPAL_READALL_ID = CmsUUID.getConstantUUID("principal-read-all");
     }
 
     /**

@@ -129,6 +129,9 @@ public class CmsUserDriver implements I_CmsUserDriver {
     private static final String ATTRIBUTE_USERADDINFO_VALUE_UPDATE = "update";
 
     /** Query key. */
+    private static final String C_ACCESS_READ_ENTRIES_0 = "C_ACCESS_READ_ENTRIES_0";
+
+    /** Query key. */
     private static final String C_ACCESS_READ_ENTRIES_1 = "C_ACCESS_READ_ENTRIES_1";
 
     /** Query key. */
@@ -552,9 +555,13 @@ public class CmsUserDriver implements I_CmsUserDriver {
                 }
                 dbc.getRequestContext().setCurrentProject(setupProject);
                 try {
-                    createOrganizationalUnit(dbc, "", CmsMacroResolver.localizedKeyMacro(
-                        Messages.GUI_ORGUNIT_ROOT_DESCRIPTION_0,
-                        null), 0, null, "/");
+                    createOrganizationalUnit(
+                        dbc,
+                        "",
+                        CmsMacroResolver.localizedKeyMacro(Messages.GUI_ORGUNIT_ROOT_DESCRIPTION_0, null),
+                        0,
+                        null,
+                        "/");
                 } finally {
                     dbc.getRequestContext().setCurrentProject(onlineProject);
                 }
@@ -696,9 +703,9 @@ public class CmsUserDriver implements I_CmsUserDriver {
             if (organizationalUnit.getProjectId() != null) {
                 try {
                     // maintain the default project synchronized
-                    m_driverManager.deleteProject(dbc, m_driverManager.readProject(
+                    m_driverManager.deleteProject(
                         dbc,
-                        organizationalUnit.getProjectId()));
+                        m_driverManager.readProject(dbc, organizationalUnit.getProjectId()));
                 } catch (CmsDbEntryNotFoundException e) {
                     // ignore
                 }
@@ -1121,14 +1128,16 @@ public class CmsUserDriver implements I_CmsUserDriver {
         List<CmsAccessControlEntry> aceList = new ArrayList<CmsAccessControlEntry>();
 
         try {
-            Query q = m_sqlManager.createQuery(dbc, project, C_ACCESS_READ_ENTRIES_1);
-
-            String resId = resource.toString();
-            q.setParameter(1, resId);
-
+            Query q;
+            if (resource.equals(CmsAccessControlEntry.PRINCIPAL_READALL_ID)) {
+                q = m_sqlManager.createQuery(dbc, project, C_ACCESS_READ_ENTRIES_0);
+            } else {
+                q = m_sqlManager.createQuery(dbc, project, C_ACCESS_READ_ENTRIES_1);
+                String resId = resource.toString();
+                q.setParameter(1, resId);
+            }
             @SuppressWarnings("unchecked")
             List<I_CmsDAOAccessControl> res = q.getResultList();
-
             // create new CmsAccessControlEntry and add to list
             for (I_CmsDAOAccessControl ac : res) {
                 CmsAccessControlEntry ace = internalCreateAce(ac);
@@ -2089,8 +2098,9 @@ public class CmsUserDriver implements I_CmsUserDriver {
         String groupDescription = (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ouDescription)
         ? CmsMacroResolver.localizedKeyMacro(
             Messages.GUI_DEFAULTGROUP_OU_USERS_DESCRIPTION_1,
-            new String[] {ouDescription})
-        : CmsMacroResolver.localizedKeyMacro(Messages.GUI_DEFAULTGROUP_ROOT_USERS_DESCRIPTION_0, null));
+            new String[] {ouDescription}) : CmsMacroResolver.localizedKeyMacro(
+            Messages.GUI_DEFAULTGROUP_ROOT_USERS_DESCRIPTION_0,
+            null));
         createGroup(dbc, CmsUUID.getConstantUUID(usersGroup), usersGroup, groupDescription, I_CmsPrincipal.FLAG_ENABLED
             | I_CmsPrincipal.FLAG_GROUP_PROJECT_USER
             | CmsRole.WORKPLACE_USER.getVirtualGroupFlags(), parentGroup);

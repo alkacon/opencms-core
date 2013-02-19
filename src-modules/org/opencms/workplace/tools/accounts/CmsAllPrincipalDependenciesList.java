@@ -309,7 +309,7 @@ public class CmsAllPrincipalDependenciesList extends A_CmsListDialog {
         super(
             jsp,
             listId,
-            Messages.get().container(Messages.GUI_GROUP_DEPENDENCIES_LIST_NAME_0),
+            Messages.get().container(Messages.GUI_ALL_PRINCIPAL_DEPENDENCIES_LIST_0),
             LIST_COLUMN_USER,
             CmsListOrderEnum.ORDER_ASCENDING,
             LIST_COLUMN_USER);

@@ -199,11 +199,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
     /** Value to indicate a content change. */
     public static final int CHANGED_CONTENT = 16;
 
-    /** Value to indicate a project change. */
-    public static final int CHANGED_PROJECT = 32;
-
     /** Value to indicate a change in the lastmodified settings of a resource. */
     public static final int CHANGED_LASTMODIFIED = 4;
+
+    /** Value to indicate a project change. */
+    public static final int CHANGED_PROJECT = 32;
 
     /** Value to indicate a change in the resource data. */
     public static final int CHANGED_RESOURCE = 8;
@@ -3512,6 +3512,25 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         CmsMessageContainer message = Messages.get().container(Messages.ERR_UNKNOWN_POOL_URL_1, dbPoolUrl);
         throw new CmsDbException(message);
+    }
+
+    /**
+     * Reads all access control entries.<p>
+     * 
+     * @param dbc the current database context
+     * @return all access control entries for the current project (offline/online)
+     *  
+     * @throws CmsException if something goes wrong  
+     */
+    public List<CmsAccessControlEntry> getAllAccessControlEntries(CmsDbContext dbc) throws CmsException {
+
+        I_CmsUserDriver userDriver = getUserDriver(dbc);
+        List<CmsAccessControlEntry> ace = userDriver.readAccessControlEntries(
+            dbc,
+            dbc.currentProject(),
+            CmsAccessControlEntry.PRINCIPAL_READALL_ID,
+            false);
+        return ace;
     }
 
     /**

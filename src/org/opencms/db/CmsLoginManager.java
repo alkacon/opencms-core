@@ -139,6 +139,9 @@ public class CmsLoginManager {
     /** Default setting for the security option. */
     public static final boolean ENABLE_SECURITY_DEFAULT = false;
 
+    /** Separator used for storage keys. */
+    public static final String KEY_SEPARATOR = "_";
+
     /** Default for bad login attempts. */
     public static final int MAX_BAD_ATTEMPTS_DEFAULT = 3;
 
@@ -191,7 +194,7 @@ public class CmsLoginManager {
 
         StringBuffer result = new StringBuffer();
         result.append(userName);
-        result.append('_');
+        result.append(KEY_SEPARATOR);
         result.append(remoteAddress);
         return result.toString();
     }
@@ -415,7 +418,7 @@ public class CmsLoginManager {
         Set<String> keysToRemove = new HashSet<String>();
         for (Map.Entry<String, CmsUserData> entry : m_storage.entrySet()) {
             String key = entry.getKey();
-            int separatorPos = key.lastIndexOf("_");
+            int separatorPos = key.lastIndexOf(KEY_SEPARATOR);
             String prefix = key.substring(0, separatorPos);
             if (user.getName().equals(prefix)) {
                 keysToRemove.add(key);

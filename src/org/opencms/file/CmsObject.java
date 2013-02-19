@@ -1161,6 +1161,18 @@ public final class CmsObject {
     }
 
     /**
+     * Gets all access control entries for the current project.<p>
+     * 
+     * @return the list of all access control entries
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public List<CmsAccessControlEntry> getAllAccessControlEntries() throws CmsException {
+
+        return m_securityManager.getAllAccessControlEntries(m_context);
+    }
+
+    /**
      * Returns a list with all projects from history.<p>
      *
      * @return list of <code>{@link CmsHistoryProject}</code> objects 
@@ -3146,6 +3158,40 @@ public final class CmsObject {
 
         CmsResource resource = readResource(resourcename, filter);
         return readSiblings(resource, filter);
+    }
+
+    /**
+     * Reads all resources with the given resource id.<p>
+     * 
+     * @param resourceId the resource id for which we want the siblings 
+     * @param filter the resource filter used to read the resources 
+     * @return the siblings which share the given resource id 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public List<CmsResource> readSiblingsForResourceId(CmsUUID resourceId, CmsResourceFilter filter)
+    throws CmsException {
+
+        CmsResource pseudoResource = new CmsResource(
+            null,
+            resourceId,
+            null,
+            0,
+            false,
+            0,
+            null,
+            null,
+            0,
+            null,
+            0,
+            null,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0);
+        return readSiblings(pseudoResource, filter);
     }
 
     /**

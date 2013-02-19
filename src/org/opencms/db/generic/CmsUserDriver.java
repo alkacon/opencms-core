@@ -1064,10 +1064,13 @@ public class CmsUserDriver implements I_CmsUserDriver {
 
         try {
             conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_READ_ENTRIES_1");
-
-            String resId = resource.toString();
-            stmt.setString(1, resId);
+            if (resource.equals(CmsAccessControlEntry.PRINCIPAL_READALL_ID)) {
+                stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_READ_ENTRIES_0");
+            } else {
+                stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_READ_ENTRIES_1");
+                String resId = resource.toString();
+                stmt.setString(1, resId);
+            }
 
             res = stmt.executeQuery();
 
