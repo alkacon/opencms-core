@@ -55,8 +55,10 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -135,6 +137,7 @@ public class CmsAllPrincipalDependenciesList extends A_CmsListDialog {
                         }
                     }
                 }
+                Set<CmsUUID> processedRoles = new HashSet<CmsUUID>();
                 List<CmsRole> roles = OpenCms.getRoleManager().getRolesOfUser(
                     m_cms,
                     user.getName(),
@@ -143,6 +146,12 @@ public class CmsAllPrincipalDependenciesList extends A_CmsListDialog {
                     false,
                     true);
                 for (CmsRole role : roles) {
+                    // only generate one entry for each role, independent of the number of OUs 
+                    if (processedRoles.contains(role.getId())) {
+                        continue;
+                    } else {
+                        processedRoles.add(role.getId());
+                    }
                     for (CmsAccessControlEntry ace : getAces(role.getId())) {
                         for (CmsResource resource : getResources(ace.getResource())) {
                             String credentials = Messages.get().getBundle(locale).key(
