@@ -675,29 +675,40 @@
 		<if>
 			<isset property="module.gwt" />
 			<then>
-				<syncmanifest xmlfile="${module.input.res}/manifest.xml" base="${module.input.res}/" directory="${module.gwt.output}" />
+				<syncmanifest
+					srcmanifestfile="${module.input.res}/manifest.xml"
+					dstmanifestfile="${module.input.res}/manifest.synched.xml"
+					base="${module.input.res}/"
+					directory="${module.gwt.output}" />
 				<echo message="Setting build id in manifest: ${gwt.buildid}" />
-				<xslt in="${module.input.res}/manifest.xml" out="${module.input.res}/manifest.transformed.xml" style="${basedir}/add-buildid.xsl">
+				<xslt in="${module.input.res}/manifest.synched.xml" out="${module.input.res}/manifest.buildid-set.xml" style="${basedir}/add-buildid.xsl">
 					<param name="gwt.buildid" expression="${gwt.buildid}" />
 				</xslt>
-				<copy file="${module.input.res}/manifest.transformed.xml" tofile="${module.input.res}/manifest.xml" overwrite="true" />
-				<delete file="${module.input.res}/manifest.transformed.xml" />
+				
+				<zipfileset id="manifest.zipid" dir="${module.input.res}" includes="manifest.buildid-set.xml" fullpath="manifest.xml" />
 			</then>
+			<else>
+				<zipfileset id="manifest.zipid" dir="${module.input.res}" prefix="" includes="manifest.xml" />
+			</else>
 		</if>
 		<if>
 			<available file="${module.output.jar}" />
 			<then>
 				<zip destfile="${module.output.zip}/${module.name}_${module.version}.zip">
 					<zipfileset dir="${module.output.jar}" prefix="system/modules/${module.name}/lib/" includes="${module.name}.jar" />
-					<zipfileset dir="${module.input.res}" prefix="" excludes="${zip.excludes}" />
+					<zipfileset dir="${module.input.res}" prefix="" excludes="${zip.excludes},manifest*.xml" />
+					<zipfileset refid="manifest.zipid" />
 				</zip>
 			</then>
 			<else>
 				<zip destfile="${module.output.zip}/${module.name}_${module.version}.zip">
-					<zipfileset dir="${module.input.res}" prefix="" excludes="${zip.excludes}" />
+					<zipfileset dir="${module.input.res}" prefix="" excludes="${zip.excludes},manifest*.xml" />
+					<zipfileset refid="manifest.zipid" />
 				</zip>
 			</else>
 		</if>
+		<delete file="${module.input.res}/manifest.synched.xml" failonerror="false" />
+		<delete file="${module.input.res}/manifest.buildid-set.xml" failonerror="false" />
 	</target>
 
 	<target name="tomcat.copy" depends="dist" description="Copies module resources to Tomcat directory">

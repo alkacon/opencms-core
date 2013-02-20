@@ -24,7 +24,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-
 package org.opencms.util.ant;
 
 import java.io.BufferedInputStream;
@@ -32,9 +31,11 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
 
 import org.dom4j.Document;
@@ -48,14 +49,24 @@ import org.xml.sax.InputSource;
  */
 public class CmsAntTaskSyncManifest extends Task {
 
-    /** base directory. */
+    /**
+     * Base directory (for example,
+     * <tt>modules/org.opencms.ade.containerpage/resources</tt>)
+     */
     private String m_base; // required
-
-    /** source directory. */
+    /**
+     * Source directory (for example,
+     * <tt>modules/org.opencms.ade.containerpage/resources/system/modules/org.opencms.ade.containerpage/resources/containerpage</tt>)
+     */
     private String m_directory; // required
-
-    /** absolute path to the xml file. */
-    private String m_xmlFile; // required
+    /**
+     * Absolute path to the manifest file.
+     */
+    private String m_dstManifestFile; // required
+    /**
+     * Absolute path to the manifest file.
+     */
+    private String m_srcManifestFile; // required
 
     /**
      * Default constructor.<p>
@@ -73,9 +84,11 @@ public class CmsAntTaskSyncManifest extends Task {
     public static void main(String[] args) {
 
         CmsAntTaskSyncManifest task = new CmsAntTaskSyncManifest();
-        task.setBase("C:\\dev\\workspace\\OpenCms\\modules\\org.opencms.ade\\resources");
-        task.setDirectory("C:\\dev\\workspace\\OpenCms\\modules\\org.opencms.ade\\resources\\system\\modules\\org.opencms.ade\\sitemap");
-        task.setXmlFile("C:\\dev\\workspace\\OpenCms\\modules\\org.opencms.ade\\resources\\manifest.xml");
+        final String BASE_PATH = "../modules/org.opencms.ade.test/resources";
+        task.setBase(BASE_PATH);
+        task.setDirectory(BASE_PATH + "system/modules/org.opencms.ade.test/resources/test");
+        task.setSrcManifestFile(BASE_PATH + "manifest.xml");
+        task.setDstManifestFile(BASE_PATH + "manifest.synched.xml");
         task.execute();
     }
 
@@ -96,7 +109,8 @@ public class CmsAntTaskSyncManifest extends Task {
         try {
             // read xml
             Document doc;
-            BufferedInputStream in = new BufferedInputStream(new FileInputStream(getXmlFile()));
+            log("Reading manifest: " + getSrcManifestFile(), Project.MSG_VERBOSE);
+            BufferedInputStream in = new BufferedInputStream(new FileInputStream(getSrcManifestFile()));
             try {
                 doc = CmsXmlUtils.unmarshalHelper(new InputSource(in), null);
             } finally {
@@ -105,7 +119,11 @@ public class CmsAntTaskSyncManifest extends Task {
 
             // get directory content
             String directory = getDirectory();
+            log("Dir to synch: " + directory, Project.MSG_VERBOSE);
+            
             String[] files = new File(directory).list();
+            // XXX: If empty directory, a nice null pointer exception is thrown
+            log("Files found to sync: " + Arrays.toString(files), Project.MSG_VERBOSE);
             for (int i = 0; i < files.length; i++) {
                 File file = new File(directory, files[i]);
                 if (!file.isDirectory()) {
@@ -133,6 +151,7 @@ public class CmsAntTaskSyncManifest extends Task {
                 String path = xmlFile.getText();
                 File file = new File(getBase() + "/" + path);
                 if (!file.exists()) {
+                    log("Removing old entry for non-existing file '" + path + "'", Project.MSG_DEBUG);
                     CmsSetupXmlHelper.setValue(doc, getFileXpath(path), null);
                 }
             }
@@ -147,15 +166,18 @@ public class CmsAntTaskSyncManifest extends Task {
                 String xpath = getFileXpath(destination);
                 if (CmsSetupXmlHelper.getValue(doc, xpath) != null) {
                     // entry already present
+                    log("Skipping existing entry '" + xpath + "'", Project.MSG_DEBUG);
                     continue;
                 }
                 // create entry
                 String prevDest = prefix + (i == 0 ? "" : '/' + files[i - 1]);
+                log("Adding new entry for file '" + destination + "'", Project.MSG_DEBUG);
                 createEntry(doc, prevDest, destination);
             }
 
             // write xml
-            BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(getXmlFile()));
+            log("Writing manifest: " + getDstManifestFile(), Project.MSG_VERBOSE);
+            BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(getDstManifestFile()));
             try {
                 CmsXmlUtils.marshal(doc, out, "UTF-8");
             } finally {
@@ -168,8 +190,9 @@ public class CmsAntTaskSyncManifest extends Task {
 
     /**
      * Returns the required base path.<p>
-     * 
-     * @return the required base path
+     * <p/>
+     * @return for example,
+     *         <tt>modules/org.opencms.ade.containerpage/resources</tt>
      */
     public String getBase() {
 
@@ -178,8 +201,9 @@ public class CmsAntTaskSyncManifest extends Task {
 
     /**
      * Returns the required directory path.<p>
-     * 
-     * @return the required directory path
+     * <p/>
+     * @return for example,
+     *         <tt>modules/org.opencms.ade.containerpage/resources/system/modules/org.opencms.ade.containerpage/resources/containerpage</tt>
      */
     public String getDirectory() {
 
@@ -187,13 +211,19 @@ public class CmsAntTaskSyncManifest extends Task {
     }
 
     /**
-     * Returns the xmlFile absolute path.<p>
-     * 
-     * @return the xmlFile absolute path
+     * @return absolute path to the source manifest file
      */
-    public String getXmlFile() {
+    public String getSrcManifestFile() {
 
-        return m_xmlFile;
+        return m_srcManifestFile;
+    }
+
+    /**
+     * @return absolute path where the synched manifest will be written
+     */
+    public String getDstManifestFile() {
+
+        return m_dstManifestFile;
     }
 
     /**
@@ -217,13 +247,20 @@ public class CmsAntTaskSyncManifest extends Task {
     }
 
     /**
-     * Sets the xmlFile absolute path.<p>
-     * 
-     * @param xmlFile the xmlFile absolute path to set
+     * @param srcManifestFile absolute path to the source manifest file
      */
-    public void setXmlFile(String xmlFile) {
+    public void setSrcManifestFile(String srcManifestFile) {
 
-        m_xmlFile = xmlFile;
+        m_srcManifestFile = srcManifestFile;
+    }
+
+    /**
+     * @param dstManifestFile absolute path where the synched manifest will be
+     *                        written
+     */
+    public void setDstManifestFile(String dstManifestFile) {
+
+        m_dstManifestFile = dstManifestFile;
     }
 
     /**
@@ -231,7 +268,7 @@ public class CmsAntTaskSyncManifest extends Task {
      * 
      * The node will be created just after the given previous destination path.<p>
      * 
-     * @param doc the xml document to modify
+     * @param doc         the xml document to modify
      * @param destination the destination path
      */
     private void createEntry(Document doc, String prevDest, String destination) {
