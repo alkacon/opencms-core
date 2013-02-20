@@ -26,8 +26,8 @@
 
 	<property name="opencms.input.warfiles" location="${opencms.input}/webapp" />
 	<property name="opencms.input.webinf" location="${opencms.input.warfiles}/WEB-INF" />
-	<property name="opencms.input.libs.runtime" location="${basedir}/lib/runtime" />
-	<property name="opencms.input.libs.compile" location="${basedir}/lib/compile" />
+	<property name="opencms.input.libs.runtime" location="${opencms.input}/lib/runtime" />
+	<property name="opencms.input.libs.compile" location="${opencms.input}/lib/compile" />
 	<property name="opencms.input.libs.db.base" location="${opencms.input.warfiles}/setup/database" />
 
 	<property name="opencms.input.defaultconfiguration" location="${opencms.input.warfiles}/WEB-INF/config/opencms.properties" />
