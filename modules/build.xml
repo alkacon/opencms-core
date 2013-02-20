@@ -30,21 +30,24 @@
 	  </classpath>
 	</taskdef>
 	
-	<taskdef resource="org/opencms/util/ant/taskdefs.properties" loaderref="opencms">
-		<classpath>
-			<pathelement location="${opencms.output.jars-components}/ant-opencms.jar" />
-			<pathelement location="${opencms.output.jars-components}/gwt-opencms.jar" />
-			<pathelement location="${opencms.input.libs.runtime}/commons-digester-1.8.jar" />
-			<pathelement location="${opencms.input.libs.runtime}/commons-logging-1.1.1.jar" />
-			<pathelement location="${opencms.input.libs.runtime}/commons-collections-3.2.1.jar" />
-			<pathelement location="${opencms.input.libs.runtime}/commons-beanutils-1.8.3.jar" />
-			<pathelement location="${opencms.input.libs.runtime}/gwt-dev-2.2.0.jar" />
-			<pathelement location="${opencms.input.libs.runtime}/gwt-user-2.2.0.jar" />
-			<pathelement location="${opencms.input.libs.runtime}/dom4j-1.6.1.jar" />
-			<pathelement location="${opencms.input.libs.runtime}/jaxen-1.1.1.jar" />
-			<pathelement location="${opencms.input.libs.runtime}/jug-lgpl-2.0.0.jar" />
-		</classpath>
-	</taskdef>
+	<target name="init-opencmstasks">
+		<ant antfile="${opencms.input}/build.xml" dir="${opencms.input}" inheritall="false" target="init-components"/>
+		<taskdef resource="org/opencms/util/ant/taskdefs.properties" loaderref="opencms">
+			<classpath>
+				<pathelement location="${opencms.output.jars-components}/ant-opencms.jar" />
+				<pathelement location="${opencms.output.jars-components}/gwt-opencms.jar" />
+				<pathelement location="${opencms.input.libs.runtime}/commons-digester-1.8.jar" />
+				<pathelement location="${opencms.input.libs.runtime}/commons-logging-1.1.1.jar" />
+				<pathelement location="${opencms.input.libs.runtime}/commons-collections-3.2.1.jar" />
+				<pathelement location="${opencms.input.libs.runtime}/commons-beanutils-1.8.3.jar" />
+				<pathelement location="${opencms.input.libs.runtime}/gwt-dev-2.2.0.jar" />
+				<pathelement location="${opencms.input.libs.runtime}/gwt-user-2.2.0.jar" />
+				<pathelement location="${opencms.input.libs.runtime}/dom4j-1.6.1.jar" />
+				<pathelement location="${opencms.input.libs.runtime}/jaxen-1.1.1.jar" />
+				<pathelement location="${opencms.input.libs.runtime}/jug-lgpl-2.0.0.jar" />
+			</classpath>
+		</taskdef>
+	</target>
 	
 	<target name="initmodulenames">
 		<property file="${basedir}/all-modules.properties" />
@@ -68,7 +71,7 @@
 	<!-- 
 	  -	initializes the selection mode
 	  -->
-    <target name="init" depends="initmodulenames">
+    <target name="init" depends="initmodulenames, init-opencmstasks">
     	<echo message="all: ${basedir}"/>
     	<if>
     		<not><isset property="modules.common.all" /></not>

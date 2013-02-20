@@ -75,9 +75,13 @@
 	<taskdef resource="checkstyletask.properties"
 		classpathref="opencms.input.libs.all"/>
 
-	<target name="init-components" description="Builds the OpenCms components">
-		<!-- build ant-opencms.jar -->
-		<ant dir="${opencms.input}/src-components" />
+	<target name="init-components">
+		<uptodate property="componentsUpToDate" targetfile="${opencms.output.jars-components}/ant-opencms.jar">
+			<srcfiles dir="${opencms.input}/src-components" includes="**/*.java" excludes="${build.excludes},${excludes}" />
+			<srcfiles dir="${opencms.input}/src-components" includes="**/*.properties,**/*.txt,**/*.xml,**/*.xsd,**/*.dtd,**/*.sql" excludes="${excludes}" />
+		</uptodate>
+
+		<antcall target="compile-components" />
 
 		<taskdef resource="org/opencms/util/ant/taskdefs.properties" loaderref="opencms">
 			<classpath>
@@ -91,6 +95,11 @@
 				<pathelement location="${opencms.input.libs.runtime}/jug-lgpl-2.0.0.jar" />
 			</classpath>
 		</taskdef>
+	</target>
+
+	<target name="compile-components" unless="componentsUpToDate" description="Builds the OpenCms components">
+		<!-- build ant-opencms.jar -->
+		<ant dir="${opencms.input}/src-components" />
 	</target>
 
 	<!-- 
