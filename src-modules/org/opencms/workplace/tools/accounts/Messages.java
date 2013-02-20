@@ -206,6 +206,15 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_ALLGROUPS_ADMIN_TOOL_NAME_0 = "GUI_ALLGROUPS_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALLPERMISSIONS_TOOL_GROUP_0 = "GUI_ALLPERMISSIONS_TOOL_GROUP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALLPERMISSIONS_TOOL_HELP_0 = "GUI_ALLPERMISSIONS_TOOL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALLPERMISSIONS_TOOL_NAME_0 = "GUI_ALLPERMISSIONS_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_ALLUSERS_ADMIN_TOOL_GROUP_0 = "GUI_ALLUSERS_ADMIN_TOOL_GROUP_0";
 
     /** Message constant for key in the resource bundle. */
@@ -353,6 +362,18 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_EDITUSER_GROUPS_ADMIN_TOOL_NAVBARNAME_0 = "GUI_EDITUSER_GROUPS_ADMIN_TOOL_NAVBARNAME_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITUSER_KILLSESSIONS_ADMIN_TOOL_GROUP_0 = "GUI_EDITUSER_KILLSESSIONS_ADMIN_TOOL_GROUP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITUSER_KILLSESSIONS_ADMIN_TOOL_HELP_0 = "GUI_EDITUSER_KILLSESSIONS_ADMIN_TOOL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITUSER_KILLSESSIONS_ADMIN_TOOL_NAME_0 = "GUI_EDITUSER_KILLSESSIONS_ADMIN_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITUSER_KILLSESSIONS_ADMIN_TOOL_NAVBARNAME_0 = "GUI_EDITUSER_KILLSESSIONS_ADMIN_TOOL_NAVBARNAME_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITUSER_OVERVIEW_ADMIN_TOOL_GROUP_0 = "GUI_EDITUSER_OVERVIEW_ADMIN_TOOL_GROUP_0";
 
     /** Message constant for key in the resource bundle. */
@@ -387,6 +408,18 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITUSER_SWITCH_ADMIN_TOOL_NAVBARNAME_0 = "GUI_EDITUSER_SWITCH_ADMIN_TOOL_NAVBARNAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITUSER_UNLOCK_ADMIN_TOOL_GROUP_0 = "GUI_EDITUSER_UNLOCK_ADMIN_TOOL_GROUP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITUSER_UNLOCK_ADMIN_TOOL_HELP_0 = "GUI_EDITUSER_UNLOCK_ADMIN_TOOL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITUSER_UNLOCK_ADMIN_TOOL_NAME_0 = "GUI_EDITUSER_UNLOCK_ADMIN_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITUSER_UNLOCK_ADMIN_TOOL_NAVBARNAME_0 = "GUI_EDITUSER_UNLOCK_ADMIN_TOOL_NAVBARNAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPORTCSV_ADMIN_TOOL_GROUP_0 = "GUI_EXPORTCSV_ADMIN_TOOL_GROUP_0";
