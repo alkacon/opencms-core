@@ -46,7 +46,7 @@ import org.xml.sax.InputSource;
  * 
  * @since 8.0.0
  */
-public class CmsAntTaskEnsureDirManifest extends Task {
+public class CmsAntTaskSyncManifest extends Task {
 
     /** base directory. */
     private String m_base; // required
@@ -60,7 +60,7 @@ public class CmsAntTaskEnsureDirManifest extends Task {
     /**
      * Default constructor.<p>
      */
-    public CmsAntTaskEnsureDirManifest() {
+    public CmsAntTaskSyncManifest() {
 
         super();
     }
@@ -72,7 +72,7 @@ public class CmsAntTaskEnsureDirManifest extends Task {
      */
     public static void main(String[] args) {
 
-        CmsAntTaskEnsureDirManifest task = new CmsAntTaskEnsureDirManifest();
+        CmsAntTaskSyncManifest task = new CmsAntTaskSyncManifest();
         task.setBase("C:\\dev\\workspace\\OpenCms\\modules\\org.opencms.ade\\resources");
         task.setDirectory("C:\\dev\\workspace\\OpenCms\\modules\\org.opencms.ade\\resources\\system\\modules\\org.opencms.ade\\sitemap");
         task.setXmlFile("C:\\dev\\workspace\\OpenCms\\modules\\org.opencms.ade\\resources\\manifest.xml");

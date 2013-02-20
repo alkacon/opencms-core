@@ -673,7 +673,7 @@
 		<if>
 			<isset property="module.gwt" />
 			<then>
-				<ensuredirmanifest xmlfile="${module.input.res}/manifest.xml" base="${module.input.res}/" directory="${module.gwt.output}" />
+				<syncmanifest xmlfile="${module.input.res}/manifest.xml" base="${module.input.res}/" directory="${module.gwt.output}" />
 				<echo message="Setting build id in manifest: ${gwt.buildid}" />
 				<xslt in="${module.input.res}/manifest.xml" out="${module.input.res}/manifest.transformed.xml" style="${basedir}/add-buildid.xsl">
 					<param name="gwt.buildid" expression="${gwt.buildid}" />
