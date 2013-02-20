@@ -5,3 +5,12 @@
 /test/data/WEB-INF/config
 Thumbs.db
 /xbuild.properties
+/modules/org.opencms.ade.containerpage/resources/system/modules/org.opencms.ade.containerpage/resources/containerpage
+/modules/org.opencms.ade.editprovider/resources/system/modules/org.opencms.ade.editprovider/resources/editprovider
+/modules/org.opencms.ade.galleries/resources/system/modules/org.opencms.ade.galleries/resources/galleries
+/modules/org.opencms.ade.sitemap/resources/system/modules/org.opencms.ade.sitemap/resources/sitemap
+/modules/org.opencms.ade.upload/resources/system/modules/org.opencms.ade.upload/resources/upload
+/modules/org.opencms.ade.contenteditor/resources/system/modules/org.opencms.ade.contenteditor/resources/contenteditor
+/modules/org.opencms.ade.postupload/resources/system/modules/org.opencms.ade.postupload/resources/postupload
+/modules/org.opencms.ade.properties/resources/system/modules/org.opencms.ade.properties/resources/properties
+/modules/org.opencms.ade.publish/resources/system/modules/org.opencms.ade.publish/resources/publish
