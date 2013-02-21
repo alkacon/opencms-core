@@ -572,7 +572,12 @@ public final class CmsSiteManagerImpl {
             CmsSite site = i.next();
             if (site != null) {
                 try {
-                    cms.readResource(site.getSiteRoot());
+                    CmsResource siteRes = cms.readResource(site.getSiteRoot());
+                    // during server startup the digester can not access properties, so set the title afterwards 
+                    String title = cms.readPropertyObject(siteRes, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
+                    if ((title != null) && !title.isEmpty()) {
+                        site.setTitle(title);
+                    }
                 } catch (Throwable t) {
                     if (CmsLog.INIT.isWarnEnabled()) {
                         CmsLog.INIT.warn(Messages.get().getBundle().key(Messages.INIT_NO_ROOT_FOLDER_1, site));
