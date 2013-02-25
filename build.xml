@@ -312,7 +312,7 @@
 
 		<mkdir dir="${opencms.output.jars}" />
 
-		<jar jarfile="${opencms.output.jars}/opencms.jar" basedir="${opencms.output.classes}" includes="org/opencms/**">
+		<jar jarfile="${opencms.output.jars}/opencms.jar" basedir="${opencms.output.classes}" includes="org/opencms/**,com/**">
 			<metainf dir="${opencms.input.warfiles}/WEB-INF" includes="opencms.tld" />
 		</jar>
 
