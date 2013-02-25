@@ -76,7 +76,13 @@
 		classpathref="opencms.input.libs.all"/>
 
 	<target name="init-components">
-		<uptodate property="componentsUpToDate" targetfile="${opencms.output.jars-components}/ant-opencms.jar">
+		<timestampselector property="mostRecentComponent">
+			<path>
+				<fileset dir="${opencms.output.jars-components}" />
+			</path>
+		</timestampselector>
+		<echo level="verbose">Most recent component: ${mostRecentComponent}</echo>
+		<uptodate property="componentsUpToDate" targetfile="mostRecentComponent">
 			<srcfiles dir="${opencms.input}/src-components" includes="**/*.java" excludes="${build.excludes},${excludes}" />
 			<srcfiles dir="${opencms.input}/src-components" includes="**/*.properties,**/*.txt,**/*.xml,**/*.xsd,**/*.dtd,**/*.sql" excludes="${excludes}" />
 		</uptodate>
