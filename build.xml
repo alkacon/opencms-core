@@ -76,6 +76,7 @@
 		classpathref="opencms.input.libs.all"/>
 
 	<target name="init-components">
+		<mkdir dir="${opencms.output.jars-components}" />
 		<timestampselector property="mostRecentComponent">
 			<path>
 				<fileset dir="${opencms.output.jars-components}" />
