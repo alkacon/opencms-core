@@ -65,6 +65,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_HEADER_IFMODIFIEDSINCE_FORMAT_3 = "ERR_HEADER_IFMODIFIEDSINCE_FORMAT_3";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_FLEXRESPONSE_URI_SYNTAX_EXCEPTION_0 = "ERR_FLEXRESPONSE_URI_SYNTAX_EXCEPTION_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String INIT_FLEXCACHE_CREATED_2 = "INIT_FLEXCACHE_CREATED_2";
 
     /** Static instance member. */

@@ -725,8 +725,14 @@ public final class CmsRequestUtil {
         jsp.getRequest().setAttribute(
             CmsRequestUtil.ATTRIBUTE_ERRORCODE,
             new Integer(HttpServletResponse.SC_MOVED_PERMANENTLY));
-        jsp.getResponse().setHeader(HEADER_LOCATION, newTarget);
         jsp.getResponse().setHeader(HEADER_CONNECTION, "close");
+        try {
+            jsp.getResponse().sendRedirect(newTarget);
+        } catch (IOException e) {
+            LOG.error(Messages.get().getBundle().key(Messages.ERR_IOERROR_0), e);
+            // In case of an IOException, we send the redirect ourselves
+            jsp.getResponse().setHeader(HEADER_LOCATION, newTarget);
+        }
     }
 
     /**
