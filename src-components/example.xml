@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="OpenCms Common Component" default="use-task" basedir="."
+      xmlns:opencms="antlib:org.opencms.util.ant">
+
+<!-- Inherited ... -->
+  <property name="opencms.input" location="${basedir}/.." />
+  <property name="opencms.input.libs.compile" location="${opencms.input}/lib/compile" />
+  <property name="opencms.input.libs.runtime" location="${opencms.input}/lib/runtime" />
+  <property name="opencms.output" location="${opencms.input}/../BuildCms" />
+  <property name="opencms.build" location="${opencms.output}/build" />
+  <property name="java.target.version" value="1.5" />
+<!-- ... Inherited -->
+
+  <!-- Example target: define the task -->
+  <target name="define-task">
+    <taskdef resource="org/opencms/util/ant/taskdefs.properties" loaderref="opencms" uri="antlib:org.opencms.util.ant">
+      <classpath>
+        <pathelement location="${opencms.build}/jars-components/ant-opencms.jar" />
+        <pathelement location="${opencms.input.libs.compile}/gwt-dev-2.5.0.jar" />
+        <pathelement location="${opencms.input.libs.compile}/gwt-user-2.5.0.jar" />
+        <pathelement location="${opencms.input.libs.runtime}/commons-digester-1.8.jar" />
+        <pathelement location="${opencms.input.libs.runtime}/commons-logging-1.1.1.jar" />
+        <pathelement location="${opencms.input.libs.runtime}/commons-collections-3.2.1.jar" />
+        <pathelement location="${opencms.input.libs.runtime}/commons-beanutils-1.8.3.jar" />
+        <pathelement location="${opencms.input.libs.runtime}/dom4j-1.6.1.jar" />
+        <pathelement location="${opencms.input.libs.runtime}/jaxen-1.1.1.jar" />
+        <pathelement location="${opencms.input.libs.runtime}/jug-lgpl-2.0.0.jar" />
+      </classpath>
+    </taskdef>
+  </target>
+
+  <!-- Example target: use the task -->
+  <target name="use-task" depends="define-task">
+    <opencms:selectionprompt
+      property="selection"
+      defaultvalue="op2,op4"
+      allvalues="op1,op2,op3,op4,op5,op6"
+      prompt="Please select options:"
+      title="Example"
+      columns="2" />
+    <echo message="Selection: ${selection}" />
+  </target>
+
+</project>
