@@ -216,6 +216,8 @@ public class CmsXmlContainerPage extends CmsXmlContent {
     public byte[] createContainerPageXml(CmsObject cms, Locale locale, CmsContainerPageBean cntPage)
     throws CmsException {
 
+        // make sure all links are validated 
+        checkLinkConcistency(cms, locale);
         writeContainerPage(cms, locale, cntPage);
         return marshal();
 
@@ -326,6 +328,23 @@ public class CmsXmlContainerPage extends CmsXmlContent {
         }
 
         return new CmsContainerPageBean(locale, containers);
+    }
+
+    /**
+     * Checks the link consistency for a given locale and reinitializes the document afterwards.<p>
+     * 
+     * @param cms the cms context
+     * @param locale the locale
+     */
+    protected void checkLinkConcistency(CmsObject cms, Locale locale) {
+
+        for (I_CmsXmlContentValue contentValue : getValues(locale)) {
+            if (contentValue instanceof CmsXmlVfsFileValue) {
+                CmsLink link = ((CmsXmlVfsFileValue)contentValue).getLink(cms);
+                link.checkConsistency(cms);
+            }
+        }
+        initDocument();
     }
 
     /**
@@ -487,12 +506,6 @@ public class CmsXmlContainerPage extends CmsXmlContent {
             Element cntElement = parent.addElement(XmlNode.Containers.name());
             cntElement.addElement(XmlNode.Name.name()).addCDATA(container.getName());
             cntElement.addElement(XmlNode.Type.name()).addCDATA(container.getType());
-
-            //            for (Map.Entry<String, String> entry : container.getAttributes().entrySet()) {
-            //                Element attrElement = cntElement.addElement(XmlNode.Attribute.name());
-            //                attrElement.addElement(XmlNode.Key.name()).addCDATA(entry.getKey());
-            //                attrElement.addElement(XmlNode.Value.name()).addCDATA(entry.getValue());
-            //            }
 
             // the elements
             for (CmsContainerElementBean element : container.getElements()) {
