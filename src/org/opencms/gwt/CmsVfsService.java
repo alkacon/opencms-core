@@ -370,7 +370,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     public void forceUnlock(CmsUUID structureId) throws CmsRpcException {
 
         try {
-            CmsResource resource = getCmsObject().readResource(structureId);
+            CmsResource resource = getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
             // get the current lock
             CmsLock currentLock = getCmsObject().getLock(resource);
             // check if the resource is locked at all
@@ -519,7 +519,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         CmsLockReportInfo result = null;
         CmsObject cms = getCmsObject();
         try {
-            CmsResource resource = cms.readResource(structureId);
+            CmsResource resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
             List<CmsListInfoBean> lockedInfos = new ArrayList<CmsListInfoBean>();
             List<CmsResource> lockedResources = cms.getBlockingLockedResources(resource);
             if (lockedResources != null) {
@@ -569,7 +569,9 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
         CmsPreviewInfo result = null;
         try {
-            result = getPreviewInfo(getCmsObject().readResource(structureId), CmsLocaleManager.getLocale(locale));
+            result = getPreviewInfo(
+                getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION),
+                CmsLocaleManager.getLocale(locale));
         } catch (Exception e) {
             error(e);
         }
@@ -584,7 +586,9 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
         CmsPreviewInfo result = null;
         try {
-            result = getPreviewInfo(getCmsObject().readResource(sitePath), CmsLocaleManager.getLocale(locale));
+            result = getPreviewInfo(
+                getCmsObject().readResource(sitePath, CmsResourceFilter.IGNORE_EXPIRATION),
+                CmsLocaleManager.getLocale(locale));
         } catch (Exception e) {
             error(e);
         }
@@ -598,7 +602,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
         try {
             CmsObject cms = getCmsObject();
-            CmsResource resource = cms.readResource(structureId);
+            CmsResource resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
             CmsListInfoBean listInfo = getPageInfo(resource);
             String sitePath = cms.getSitePath(resource);
             return new CmsRenameInfoBean(sitePath, structureId, listInfo);
@@ -617,7 +621,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             CmsObject cms = getCmsObject();
             Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
             cms.getRequestContext().setLocale(locale);
-            CmsResource resource = cms.readResource(structureId);
+            CmsResource resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
             String localizedTitle = null;
             if (!CmsStringUtil.isEmptyOrWhitespaceOnly(contentLocale)) {
                 Locale realLocale = CmsLocaleManager.getLocale(contentLocale);
@@ -702,7 +706,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
         try {
             CmsObject cms = getCmsObject();
-            CmsResource resource = cms.readResource(structureId);
+            CmsResource resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
             CmsListInfoBean listInfo = getPageInfo(resource);
             CmsRestoreInfoBean result = new CmsRestoreInfoBean();
             result.setListInfoBean(listInfo);
@@ -710,7 +714,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             CmsObject onlineCms = OpenCms.initCmsObject(cms);
             CmsProject onlineProject = cms.readProject(CmsProject.ONLINE_PROJECT_NAME);
             onlineCms.getRequestContext().setCurrentProject(onlineProject);
-            CmsResource onlineResource = onlineCms.readResource(structureId);
+            CmsResource onlineResource = onlineCms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
             result.setOnlinePath(onlineResource.getRootPath());
             result.setOfflinePath(resource.getRootPath());
 
@@ -725,7 +729,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             CmsObject onlineRootCms = OpenCms.initCmsObject(onlineCms);
             onlineRootCms.getRequestContext().setSiteRoot("");
             String parent = CmsResource.getParentFolder(onlineResource.getRootPath());
-            boolean canUndoMove = offlineRootCms.existsResource(parent);
+            boolean canUndoMove = offlineRootCms.existsResource(parent, CmsResourceFilter.IGNORE_EXPIRATION);
 
             result.setCanUndoMove(canUndoMove);
 
@@ -744,7 +748,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         try {
             CmsObject cms = getCmsObject();
             List<CmsResource> roots = new ArrayList<CmsResource>();
-            roots.add(cms.readResource("/"));
+            roots.add(cms.readResource("/", CmsResourceFilter.IGNORE_EXPIRATION));
             return makeEntryBeans(roots, true);
         } catch (CmsException e) {
             error(e);
@@ -851,9 +855,9 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
         try {
             CmsObject cms = getCmsObject();
-            CmsResource currentPage = cms.readResource(currentPageId);
+            CmsResource currentPage = cms.readResource(currentPageId, CmsResourceFilter.IGNORE_EXPIRATION);
             String path = prepareFileNameForEditor(cms, currentPage, pathWithMacros);
-            CmsResource resource = cms.readResource(path);
+            CmsResource resource = cms.readResource(path, CmsResourceFilter.IGNORE_EXPIRATION);
             ensureLock(resource);
             CmsPrepareEditResponse result = new CmsPrepareEditResponse();
             result.setRootPath(resource.getRootPath());
@@ -897,14 +901,14 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         } catch (CmsIllegalArgumentException e) {
             return e.getLocalizedMessage(locale);
         }
-        CmsResource resource = cms.readResource(structureId);
+        CmsResource resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
         String oldSitePath = cms.getSitePath(resource);
         String parentPath = CmsResource.getParentFolder(oldSitePath);
         String newSitePath = CmsStringUtil.joinPaths(parentPath, newName);
         try {
             ensureLock(resource);
             cms.moveResource(oldSitePath, newSitePath);
-            resource = cms.readResource(structureId);
+            resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
         } catch (CmsException e) {
             return e.getLocalizedMessage(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
         }
@@ -983,13 +987,13 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
         try {
             CmsObject cms = getCmsObject();
-            CmsResource resource = cms.readResource(structureId);
+            CmsResource resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
             ensureLock(resource);
             CmsResourceUndoMode mode = undoMove ? CmsResource.UNDO_MOVE_CONTENT : CmsResource.UNDO_CONTENT;
             String path = cms.getSitePath(resource);
             cms.undoChanges(path, mode);
             try {
-                resource = cms.readResource(structureId);
+                resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
                 path = cms.getSitePath(resource);
                 cms.unlockResource(path);
             } catch (CmsException e) {
