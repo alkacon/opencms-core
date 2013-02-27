@@ -1208,7 +1208,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         bean.setType(sResult.getResourceType());
         // structured id
         bean.setClientId(sResult.getStructureId());
-        CmsResource resultResource = cms.readResource(new CmsUUID(sResult.getStructureId()));
+        CmsResource resultResource = cms.readResource(
+            new CmsUUID(sResult.getStructureId()),
+            CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
         CmsVfsService.addLockInfo(cms, resultResource, bean);
         String permalink = CmsStringUtil.joinPaths(
             OpenCms.getSystemInfo().getOpenCmsContext(),
