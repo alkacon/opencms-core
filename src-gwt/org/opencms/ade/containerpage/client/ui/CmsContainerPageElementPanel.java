@@ -801,9 +801,12 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
 
             NodeList<Element> frames = getElement().getElementsByTagName(CmsDomUtil.Tag.iframe.name());
             for (int i = 0; i < frames.getLength(); i++) {
-
-                if (((frames.getItem(i).getAbsoluteTop() - elementTop) < 25)
-                    && ((frames.getItem(i).getAbsoluteRight() - getElement().getAbsoluteRight()) < optionWidth)) {
+                int frameTop = frames.getItem(i).getAbsoluteTop();
+                int frameHeight = frames.getItem(i).getOffsetHeight();
+                int frameRight = frames.getItem(i).getAbsoluteRight();
+                if (((frameTop - elementTop) < 25)
+                    && (((frameTop + frameHeight) - elementTop) > 0)
+                    && ((frameRight - getElement().getAbsoluteRight()) < optionWidth)) {
                     return true;
                 }
 
