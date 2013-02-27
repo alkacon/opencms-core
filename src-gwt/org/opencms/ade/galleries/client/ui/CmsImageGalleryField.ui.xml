@@ -56,16 +56,22 @@
 	.descriptionField{
 		margin-left: 170px;
 	}
+	div.clear{
+		clear: both;
+		height: 1px;
+		overflow: hidden;
+	}
 	
 </ui:style>
-<g:FlowPanel>
-<g:SimplePanel ui:field="m_imageField"  styleName="{style.imagePriview}" addStyleNames="{main.globalWidgetCss.textAreaBoxPanel}"/>
-<g:FlowPanel styleName="{style.galleryField}" addStyleNames="{main.globalWidgetCss.textAreaBoxPanel}">
-	<cmi:CmsSimpleTextBox ui:field="m_textbox" />
-	<cms:CmsPushButton ui:field="m_opener" addStyleNames="{style.opener}"/>
-	<g:Label ui:field="m_fader" styleName="{layout.inputCss.vfsInputBoxFaider}" addStyleNames="{style.faider}" />
-</g:FlowPanel>
-<cmi:CmsSelectBox ui:field="m_formatSelection" styleName="{style.formats}"/>
-<cmi:CmsTextArea  ui:field="m_descriptionArea" addStyleNames="{style.descriptionField}"/>
-</g:FlowPanel>
+<g:HTMLPanel>
+	<g:SimplePanel ui:field="m_imageField"  styleName="{style.imagePriview}" addStyleNames="{main.globalWidgetCss.textAreaBoxPanel}"/>
+	<g:FlowPanel styleName="{style.galleryField}" addStyleNames="{main.globalWidgetCss.textAreaBoxPanel}">
+		<cmi:CmsSimpleTextBox ui:field="m_textbox" />
+		<cms:CmsPushButton ui:field="m_opener" addStyleNames="{style.opener}"/>
+		<g:Label ui:field="m_fader" styleName="{layout.inputCss.vfsInputBoxFaider}" addStyleNames="{style.faider}" />
+	</g:FlowPanel>
+	<cmi:CmsSelectBox ui:field="m_formatSelection" styleName="{style.formats}"/>
+	<cmi:CmsTextArea  ui:field="m_descriptionArea" addStyleNames="{style.descriptionField}"/>
+	<div class="{style.clear}" />
+</g:HTMLPanel>
 </ui:UiBinder>
