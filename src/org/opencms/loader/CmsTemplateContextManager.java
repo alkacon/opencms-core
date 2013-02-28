@@ -70,7 +70,10 @@ public class CmsTemplateContextManager {
     public static final String ATTR_TEMPLATE_RESOURCE = "cmsTemplateResource";
 
     /** The prefix used in the template property to activate dynamic template selection. */
-    public static final String DYNAMIC_TEMPLATE_PREFIX = "dynamic:";
+    public static final String DYNAMIC_TEMPLATE_PREFIX = "provider=";
+
+    /** Legacy prefix for property providers. */
+    private static final String DYNAMIC_TEMPLATE_LEGACY_PREFIX = "dynamic:";
 
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsTemplateContextManager.class);
@@ -92,6 +95,39 @@ public class CmsTemplateContextManager {
         CmsFlexController.registerUncacheableAttribute(ATTR_TEMPLATE_RESOURCE);
         CmsFlexController.registerUncacheableAttribute(ATTR_TEMPLATE_CONTEXT);
         CmsFlexController.registerUncacheableAttribute(ATTR_TEMPLATE_RESOURCE);
+    }
+
+    /**
+     * Checks if the property value starts with the prefix which marks a dynamic template provider.<p>
+     * 
+     * @param propertyValue the property value to check 
+     * @return true if the value has the format of a dynamic template provider 
+     */
+    public static boolean hasPropertyPrefix(String propertyValue) {
+
+        return (propertyValue != null)
+            && (propertyValue.startsWith(DYNAMIC_TEMPLATE_PREFIX) || propertyValue.startsWith(DYNAMIC_TEMPLATE_LEGACY_PREFIX));
+    }
+
+    /**
+     * Removes the prefix which marks a property value as a dynamic template provider.<p>
+     * 
+     * @param propertyValue the value from which to remove the prefix 
+     * 
+     * @return the string with the prefix removed 
+     */
+    public static String removePropertyPrefix(String propertyValue) {
+
+        if (propertyValue == null) {
+            return null;
+        }
+        if (propertyValue.startsWith(DYNAMIC_TEMPLATE_PREFIX)) {
+            return propertyValue.substring(DYNAMIC_TEMPLATE_PREFIX.length());
+        }
+        if (propertyValue.startsWith(DYNAMIC_TEMPLATE_LEGACY_PREFIX)) {
+            return propertyValue.substring(DYNAMIC_TEMPLATE_LEGACY_PREFIX.length());
+        }
+        return propertyValue;
     }
 
     /**
@@ -186,8 +222,8 @@ public class CmsTemplateContextManager {
             CmsProperty property = CmsProperty.get(propertyName, properties);
             if ((property != null) && !property.isNullProperty()) {
                 String propertyValue = property.getValue();
-                if (propertyValue.startsWith(DYNAMIC_TEMPLATE_PREFIX)) {
-                    return getTemplateContextProvider(propertyValue.substring(DYNAMIC_TEMPLATE_PREFIX.length()));
+                if (CmsTemplateContextManager.hasPropertyPrefix(propertyValue)) {
+                    return getTemplateContextProvider(removePropertyPrefix(propertyValue));
                 }
             }
             return null;
@@ -206,9 +242,7 @@ public class CmsTemplateContextManager {
     public I_CmsTemplateContextProvider getTemplateContextProvider(String providerName) {
 
         providerName = providerName.trim();
-        if (providerName.startsWith(DYNAMIC_TEMPLATE_PREFIX)) {
-            providerName = providerName.substring(DYNAMIC_TEMPLATE_PREFIX.length());
-        }
+        providerName = removePropertyPrefix(providerName);
         I_CmsTemplateContextProvider result = m_providerInstances.get(providerName);
         if (result == null) {
             try {

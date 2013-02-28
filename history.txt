@@ -15,6 +15,10 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 9.0.0 - ???????
+! Implemented dynamic template provider feature.
+
+
 OpenCms 8.5.1 - February 7, 2013
 ! Improved file selector widget to show resource information.
 ! Improved image gallery widget to show image thumb nails.
