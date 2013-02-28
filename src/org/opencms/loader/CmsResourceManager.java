@@ -1028,7 +1028,7 @@ public class CmsResourceManager {
             }
             templateName = namedTemplate.getName();
         } else {
-            if ((request != null) && templateProp.startsWith(CmsTemplateContextManager.DYNAMIC_TEMPLATE_PREFIX)) {
+            if ((request != null) && CmsTemplateContextManager.hasPropertyPrefix(templateProp)) {
                 templateContext = OpenCms.getTemplateContextManager().getTemplateContext(
                     templateProp,
                     cms,
