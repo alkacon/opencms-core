@@ -791,6 +791,9 @@ public final class CmsContentEditor extends EditorBase {
         }
         m_cancelButton = null;
         m_localeSelect = null;
+        m_localeLabel = null;
+        m_deleteLocaleButton = null;
+        m_copyLocaleButton = null;
         m_openFormButton = null;
         m_saveButton = null;
         m_entityId = null;
