@@ -142,6 +142,15 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         if (valuePath.contains("/")) {
             result += "/" + valuePath.substring(0, valuePath.lastIndexOf("/"));
         }
+        if (contentValue.isChoiceOption()) {
+            result += "/"
+                + Type.CHOICE_ATTRIBUTE_NAME
+                + "_"
+                + contentValue.getName()
+                + "["
+                + contentValue.getXmlIndex()
+                + "]";
+        }
         return result;
     }
 

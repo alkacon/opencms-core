@@ -37,9 +37,6 @@ import org.opencms.i18n.I_CmsMessageBundle;
  */
 public final class Messages extends A_CmsMessageBundle {
 
-    /** Name of the used resource bundle. */
-    private static final String BUNDLE_NAME = "org.opencms.flex.messages";
-
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ADD_COOKIE_0 = "ERR_ADD_COOKIE_0";
 
@@ -62,13 +59,22 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_FLEXREQUESTDISPATCHER_VFS_ACCESS_EXCEPTION_0 = "ERR_FLEXREQUESTDISPATCHER_VFS_ACCESS_EXCEPTION_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_FLEXRESPONSE_URI_SYNTAX_EXCEPTION_0 = "ERR_FLEXRESPONSE_URI_SYNTAX_EXCEPTION_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_HEADER_IFMODIFIEDSINCE_FORMAT_3 = "ERR_HEADER_IFMODIFIEDSINCE_FORMAT_3";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_FLEXCACHE_CREATED_2 = "INIT_FLEXCACHE_CREATED_2";
 
-    /** Static instance member. */
-    private static final I_CmsMessageBundle INSTANCE = new Messages();
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_FLEXCACHE_DEVICE_SELECTOR_FAILURE_1 = "INIT_FLEXCACHE_DEVICE_SELECTOR_FAILURE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_FLEXCACHE_DEVICE_SELECTOR_SUCCESS_1 = "INIT_FLEXCACHE_DEVICE_SELECTOR_SUCCESS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_CLASS_INIT_FAILURE_1 = "LOG_CLASS_INIT_FAILURE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_FLEXCACHE_ADD_ENTRY_1 = "LOG_FLEXCACHE_ADD_ENTRY_1";
@@ -253,14 +259,11 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String LOG_FLEXRESPONSE_TOPRESPONSE_SENDREDIRECT_1 = "LOG_FLEXRESPONSE_TOPRESPONSE_SENDREDIRECT_1";
 
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_CLASS_INIT_FAILURE_1 = "LOG_CLASS_INIT_FAILURE_1";
+    /** Name of the used resource bundle. */
+    private static final String BUNDLE_NAME = "org.opencms.flex.messages";
 
-    /** Message constant for key in the resource bundle. */
-    public static final String INIT_FLEXCACHE_DEVICE_SELECTOR_FAILURE_1 = "INIT_FLEXCACHE_DEVICE_SELECTOR_FAILURE_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String INIT_FLEXCACHE_DEVICE_SELECTOR_SUCCESS_1 = "INIT_FLEXCACHE_DEVICE_SELECTOR_SUCCESS_1";
+    /** Static instance member. */
+    private static final I_CmsMessageBundle INSTANCE = new Messages();
 
     /**
      * Hides the public constructor for this utility class.<p>

@@ -100,10 +100,8 @@
 	<classpathentry exported="true" kind="lib" path="lib/compile/acacia-client.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/compile/ant-contrib-1.0b1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/compile/ant.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/compile/ant-opencms-1.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/compile/dumbster-1.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/compile/geranium-client.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/compile/gwt-opencms-1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/compile/jsp-api.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/compile/junit-3-8-1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/compile/validation-api-1.0.0.GA-sources.jar"/>

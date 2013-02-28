@@ -641,19 +641,19 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     public CmsMessages getMessages(Locale locale) {
 
         CmsMessages result = null;
-        if ((m_messageBundleNames != null) && !m_messageBundleNames.isEmpty()) {
+        if ((m_messageBundleNames == null) || m_messageBundleNames.isEmpty()) {
+            return new CmsMessages(Messages.get().getBundleName(), locale);
+        } else {
             // a message bundle was initialized
-            if (m_messageBundleNames.size() == 1) {
-                // single message bundle
-                result = new CmsMessages(m_messageBundleNames.get(0), locale);
-            } else {
-                // multiple message bundle
-                CmsMultiMessages multiMessages = new CmsMultiMessages(locale);
-                for (String messageBundleName : m_messageBundleNames) {
-                    multiMessages.addMessages(new CmsMessages(messageBundleName, locale));
-                }
-                result = multiMessages;
+            CmsMultiMessages multiMessages = new CmsMultiMessages(locale);
+            for (String messageBundleName : m_messageBundleNames) {
+                multiMessages.addMessages(new CmsMessages(messageBundleName, locale));
             }
+            if (!m_messageBundleNames.contains(Messages.get().getBundleName())) {
+                multiMessages.addMessages(new CmsMessages(Messages.get().getBundleName(), locale));
+            }
+            result = multiMessages;
+
         }
         return result;
     }

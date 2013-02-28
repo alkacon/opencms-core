@@ -9,6 +9,7 @@
 	<property name="opencms.input.libs.compile" location="${opencms.input}/lib/compile" />
 	<property name="opencms.build" location="${opencms.output}/build" />
 	<property name="opencms.output.jars" location="${opencms.build}/jars-core" />
+	<property name="opencms.output.jars-components" location="${opencms.output}/build/jars-components" />
 	<property name="opencms.gwt.forcerebuild" value="false" />
 	<property name="java.target.version" value="1.5" />
 
@@ -57,20 +58,6 @@
 		</sequential>
 	</macrodef>
 	
-
-	<taskdef resource="org/opencms/util/ant/taskdefs.properties" loaderref="opencms">
-		<classpath>
-			<pathelement location="${opencms.input.libs.compile}/ant-opencms-1.2.jar" />
-			<pathelement location="${opencms.input.libs.runtime}/commons-digester-1.8.jar" />
-			<pathelement location="${opencms.input.libs.runtime}/commons-logging-1.1.1.jar" />
-			<pathelement location="${opencms.input.libs.runtime}/commons-collections-3.2.1.jar" />
-			<pathelement location="${opencms.input.libs.runtime}/commons-beanutils-1.8.3.jar" />
-			<pathelement location="${opencms.input.libs.runtime}/dom4j-1.6.1.jar" />
-			<pathelement location="${opencms.input.libs.runtime}/jaxen-1.1.1.jar" />
-			<pathelement location="${opencms.input.libs.runtime}/jug-lgpl-2.0.0.jar" />
-		</classpath>
-	</taskdef>
-
 	<property name="module.output.classes" location="${opencms.build}/classes-${module.name}" />
 	<property name="module.output.jar" location="${opencms.build}/jars-${module.name}" />
 	<property name="module.output.zip" location="${opencms.output}/zip" />
@@ -124,10 +111,23 @@
 		</if>
 	</target>
 
-
-
+	<target name="init-opencmstasks">
+		<taskdef resource="org/opencms/util/ant/taskdefs.properties" loaderref="opencms">
+			<classpath>
+				<pathelement location="${opencms.output.jars-components}/ant-opencms.jar" />
+				<pathelement location="${opencms.input.libs.runtime}/commons-digester-1.8.jar" />
+				<pathelement location="${opencms.input.libs.runtime}/commons-logging-1.1.1.jar" />
+				<pathelement location="${opencms.input.libs.runtime}/commons-collections-3.2.1.jar" />
+				<pathelement location="${opencms.input.libs.runtime}/commons-beanutils-1.8.3.jar" />
+				<pathelement location="${opencms.input.libs.runtime}/dom4j-1.6.1.jar" />
+				<pathelement location="${opencms.input.libs.runtime}/jaxen-1.1.1.jar" />
+				<pathelement location="${opencms.input.libs.runtime}/jug-lgpl-2.0.0.jar" />
+			</classpath>
+		</taskdef>
+	</target>
 
 	<target name="init" depends="initlocation" description="Checks if all required libraries are available">
+
 		<property name="version.revision" value="${version.number}" />
 		<if>
 			<not>
@@ -420,6 +420,7 @@
 						</fileset>
 						<fileset dir="${opencms.input.libs.runtime}" />
 						<fileset dir="${opencms.input.libs.compile}" />
+						<pathelement location="${opencms.output.jars-components}/gwt-opencms.jar" />
 					</sourcefiles>
 					<targetfiles path="${module.gwt.output}/${module.gwt.bootstrap}.nocache.js" />
 					<sequential>
@@ -467,6 +468,7 @@
 								<pathelement path="${opencms.input}/src" />
 								<pathelement path="${opencms.input}/src-gwt" />
 								<pathelement path="${opencms.input.gwt}" />
+								<pathelement path="${opencms.output.jars-components}/gwt-opencms.jar" />
 							</classpath>
 						</java>
 						<delete dir="${module.gwt.output}/../WEB-INF" failonerror="false" />
@@ -477,7 +479,7 @@
 		</if>
 	</target>
 
-	<target name="compile" depends="compile-classes, compile-gwt, concat-scripts" description="Compiles ${module.name} module classes and GWT classes" />
+	<target name="compile" depends="compile-classes, compile-gwt, concat-scripts, init-opencmstasks" description="Compiles ${module.name} module classes and GWT classes" />
 
 	<target name="compile-classes" depends="init, builddeps, get-dependency-paths" description="Compiles ${module.name} module classes">
 		<if>
@@ -673,29 +675,40 @@
 		<if>
 			<isset property="module.gwt" />
 			<then>
-				<ensuredirmanifest xmlfile="${module.input.res}/manifest.xml" base="${module.input.res}/" directory="${module.gwt.output}" />
+				<syncmanifest
+					srcmanifestfile="${module.input.res}/manifest.xml"
+					dstmanifestfile="${module.input.res}/manifest.synched.xml"
+					base="${module.input.res}/"
+					directory="${module.gwt.output}" />
 				<echo message="Setting build id in manifest: ${gwt.buildid}" />
-				<xslt in="${module.input.res}/manifest.xml" out="${module.input.res}/manifest.transformed.xml" style="${basedir}/add-buildid.xsl">
+				<xslt in="${module.input.res}/manifest.synched.xml" out="${module.input.res}/manifest.buildid-set.xml" style="${basedir}/add-buildid.xsl">
 					<param name="gwt.buildid" expression="${gwt.buildid}" />
 				</xslt>
-				<copy file="${module.input.res}/manifest.transformed.xml" tofile="${module.input.res}/manifest.xml" overwrite="true" />
-				<delete file="${module.input.res}/manifest.transformed.xml" />
+				
+				<zipfileset id="manifest.zipid" dir="${module.input.res}" includes="manifest.buildid-set.xml" fullpath="manifest.xml" />
 			</then>
+			<else>
+				<zipfileset id="manifest.zipid" dir="${module.input.res}" prefix="" includes="manifest.xml" />
+			</else>
 		</if>
 		<if>
 			<available file="${module.output.jar}" />
 			<then>
 				<zip destfile="${module.output.zip}/${module.name}_${module.version}.zip">
 					<zipfileset dir="${module.output.jar}" prefix="system/modules/${module.name}/lib/" includes="${module.name}.jar" />
-					<zipfileset dir="${module.input.res}" prefix="" excludes="${zip.excludes}" />
+					<zipfileset dir="${module.input.res}" prefix="" excludes="${zip.excludes},manifest*.xml" />
+					<zipfileset refid="manifest.zipid" />
 				</zip>
 			</then>
 			<else>
 				<zip destfile="${module.output.zip}/${module.name}_${module.version}.zip">
-					<zipfileset dir="${module.input.res}" prefix="" excludes="${zip.excludes}" />
+					<zipfileset dir="${module.input.res}" prefix="" excludes="${zip.excludes},manifest*.xml" />
+					<zipfileset refid="manifest.zipid" />
 				</zip>
 			</else>
 		</if>
+		<delete file="${module.input.res}/manifest.synched.xml" failonerror="false" />
+		<delete file="${module.input.res}/manifest.buildid-set.xml" failonerror="false" />
 	</target>
 
 	<target name="tomcat.copy" depends="dist" description="Copies module resources to Tomcat directory">
