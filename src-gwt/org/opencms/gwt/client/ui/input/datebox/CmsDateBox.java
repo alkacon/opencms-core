@@ -836,7 +836,7 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
         if (!isValidTime()) {
             m_time.setErrorMessageWidth((m_popup.getOffsetWidth() - 32) + Unit.PX.toString());
             m_time.setErrorMessage(Messages.get().key(Messages.ERR_DATEBOX_INVALID_TIME_FORMAT_0));
-        } else if (isValidTime()) {
+        } else {
             m_time.setErrorMessage(null);
         }
         updateCloseBehavior();
