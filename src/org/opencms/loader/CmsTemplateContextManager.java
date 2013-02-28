@@ -70,7 +70,7 @@ public class CmsTemplateContextManager {
     public static final String ATTR_TEMPLATE_RESOURCE = "cmsTemplateResource";
 
     /** The prefix used in the template property to activate dynamic template selection. */
-    public static final String DYNAMIC_TEMPLATE_PREFIX = "dynamic:";
+    public static final String DYNAMIC_TEMPLATE_PREFIX = "provider=";
 
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsTemplateContextManager.class);
