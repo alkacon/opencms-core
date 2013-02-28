@@ -98,7 +98,6 @@ public final class CmsDateConverter {
     }
 
     /**
-<<<<<<< OURS
      * Formats the provided date to a date only representation.<p>
      * 
      * @param date the date to format
@@ -117,8 +116,6 @@ public final class CmsDateConverter {
     }
 
     /**
-=======
->>>>>>> THEIRS
      * Merges a given Date object with a given time String.<p>
      * 
      * Returns a <code>null</code> if the given time format coudn't be parsed.<p>
@@ -136,9 +133,9 @@ public final class CmsDateConverter {
         Date result;
         try {
             result = Z_TIME_FORMAT.parse(time);
-            result.setDate(date.getDate());
-            result.setMonth(date.getMonth());
             result.setYear(date.getYear());
+            result.setMonth(date.getMonth());
+            result.setDate(date.getDate());
         } catch (Exception e) {
             result = null;
         }
