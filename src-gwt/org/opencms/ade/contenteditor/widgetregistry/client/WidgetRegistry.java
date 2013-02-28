@@ -108,7 +108,10 @@ public final class WidgetRegistry {
                 for (String javaScriptResource : widgetConfiguration.getJavaScriptResourceLinks()) {
                     CmsDomUtil.ensureJavaScriptIncluded(javaScriptResource);
                 }
-                initCalls.add(widgetConfiguration.getInitCall());
+                String initCall = widgetConfiguration.getInitCall();
+                if (initCall != null) {
+                    initCalls.add(initCall);
+                }
             }
         }
         if (initCalls.isEmpty()) {
@@ -136,7 +139,12 @@ public final class WidgetRegistry {
                         callback.execute();
                         return false;
                     } else {
-                        return m_repeats < 100;
+                        if (m_repeats < 100) {
+                            return true;
+                        } else {
+                            showInitCallError(initCalls);
+                            return false;
+                        }
                     }
 
                 }
@@ -156,6 +164,34 @@ public final class WidgetRegistry {
     }
 
     /**
+     * Logs an error.<p>
+     * 
+     * @param error the error to log 
+     */
+    protected native void showError(String error) /*-{
+      if ($wnd.console) {
+         $wnd.console.log(error);
+      }
+      throw error;
+    }-*/;
+
+    /** 
+     * Logs an error for missing init calls.<p>
+     * 
+     * @param initCalls the set of missing init calls 
+     */
+    protected void showInitCallError(Set<String> initCalls) {
+
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("init call(s) not found: ");
+        for (String init : initCalls) {
+            buffer.append(init);
+            buffer.append(" ");
+        }
+        showError(buffer.toString());
+    }
+
+    /**
      * Tries to initializes a widget with the given initialization call. Returns false if the init method was not available within the window context yet.<p>
      * 
      * @param initCall the initialization function name
@@ -163,27 +199,27 @@ public final class WidgetRegistry {
      * @return <code>true</code> if the initialization function was available and has been executed
      */
     protected native boolean tryInitCall(String initCall)/*-{
-        try {
-            if ($wnd[initCall]) {
-                $wnd[initCall]();
-                return true;
-            }
-        } catch (error) {
-            throw "Failed excuting " + initCall
-                    + " to initialize editing widget. \n" + error
-        }
-        return false;
+      try {
+         if ($wnd[initCall]) {
+            $wnd[initCall]();
+            return true;
+         }
+      } catch (error) {
+         throw "Failed excuting " + initCall
+               + " to initialize editing widget. \n" + error
+      }
+      return false;
     }-*/;
 
     /**
      * Exports the widget registration.<p>
      */
     private native void exportWidgetRegistration() /*-{
-        var self = this;
-        $wnd[@org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry::REGISTER_WIDGET_FACTORY_FUNCTION] = function(
-                factory) {
-            self.@org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry::registerWrapper(Lorg/opencms/ade/contenteditor/widgetregistry/client/WidgetFactoryWrapper;)(factory);
-        }
+      var self = this;
+      $wnd[@org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry::REGISTER_WIDGET_FACTORY_FUNCTION] = function(
+            factory) {
+         self.@org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry::registerWrapper(Lorg/opencms/ade/contenteditor/widgetregistry/client/WidgetFactoryWrapper;)(factory);
+      }
     }-*/;
 
     /**

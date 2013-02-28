@@ -90,6 +90,34 @@ public class CmsContentEditorActionElement extends CmsGwtActionElement {
     }
 
     /**
+     * Adds link and script tags to the buffer if required for external widgets.<p>
+     * 
+     * @param sb the string buffer to append the tags to
+     * @param definition the content definition
+     */
+    private void addExternalResourceTags(StringBuffer sb, CmsContentDefinition definition) {
+
+        Set<String> includedScripts = new HashSet<String>();
+        Set<String> includedStyles = new HashSet<String>();
+        for (CmsExternalWidgetConfiguration configuration : definition.getExternalWidgetConfigurations()) {
+            for (String css : configuration.getCssResourceLinks()) {
+                // avoid including the same resource twice
+                if (!includedStyles.contains(css)) {
+                    sb.append("<link type=\"text/css\" rel=\"stylesheet\" href=\"").append(css).append("\"></link>");
+                    includedStyles.add(css);
+                }
+            }
+            for (String script : configuration.getJavaScriptResourceLinks()) {
+                // avoid including the same resource twice
+                if (!includedScripts.contains(script)) {
+                    sb.append("<script type=\"text/javascript\" src=\"").append(script).append("\"></script>");
+                    includedScripts.add(script);
+                }
+            }
+        }
+    }
+
+    /**
      * Returns the prefetch data include.<p>
      * 
      * @return the prefetch data include
@@ -125,33 +153,5 @@ public class CmsContentEditorActionElement extends CmsGwtActionElement {
                 "" + (System.currentTimeMillis() - timer)));
         }
         return sb.toString();
-    }
-
-    /**
-     * Adds link and script tags to the buffer if required for external widgets.<p>
-     * 
-     * @param sb the string buffer to append the tags to
-     * @param definition the content definition
-     */
-    private void addExternalResourceTags(StringBuffer sb, CmsContentDefinition definition) {
-
-        Set<String> includedScripts = new HashSet<String>();
-        Set<String> includedStyles = new HashSet<String>();
-        for (CmsExternalWidgetConfiguration configuration : definition.getExternalWidgetConfigurations()) {
-            for (String css : configuration.getCssResourceLinks()) {
-                // avoid including the same resource twice
-                if (!includedStyles.contains(css)) {
-                    sb.append("<link type=\"text/css\" rel=\"stylesheet\" href=\"").append(css).append("\"></link>");
-                    includedStyles.add(css);
-                }
-            }
-            for (String script : configuration.getJavaScriptResourceLinks()) {
-                // avoid including the same resource twice
-                if (!includedScripts.contains(script)) {
-                    sb.append("<script type=\"text/javascript\" src=\"").append(script).append("\"></script>");
-                    includedScripts.add(script);
-                }
-            }
-        }
     }
 }

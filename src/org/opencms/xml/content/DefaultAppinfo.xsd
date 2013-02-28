@@ -23,6 +23,7 @@
 			<xsd:element name="formatters" type="OpenCmsDefaultAppinfoFormatters" minOccurs="0" />
 			<xsd:element name="headincludes" type="OpenCmsDefaultAppinfoHeadIncludes" minOccurs="0" />
 			<xsd:element name="settings" type="OpenCmsDefaultAppinfoSettings" minOccurs="0" />
+			<xsd:element name="defaultwidget" type="OpenCmsDefaultAppinfoDefaultWidget" minOccurs="0" />
 		</xsd:all>
 	</xsd:complexType>
 	

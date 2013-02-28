@@ -50,14 +50,6 @@ public class CmsExternalWidgetConfiguration implements IsSerializable {
     private String m_widgetName;
 
     /**
-     * Constructor, for serialization only.<p>
-     */
-    protected CmsExternalWidgetConfiguration() {
-
-        // nothing to do
-    }
-
-    /**
      * @param widgetName the widget name
      * @param initCall the java script initialization call
      * @param javaScriptResourceLinks the java script resource links
@@ -73,6 +65,14 @@ public class CmsExternalWidgetConfiguration implements IsSerializable {
         m_initCall = initCall;
         m_javaScriptResourceLinks = javaScriptResourceLinks;
         m_cssResourceLinks = cssResourceLinks;
+    }
+
+    /**
+     * Constructor, for serialization only.<p>
+     */
+    protected CmsExternalWidgetConfiguration() {
+
+        // nothing to do
     }
 
     /**

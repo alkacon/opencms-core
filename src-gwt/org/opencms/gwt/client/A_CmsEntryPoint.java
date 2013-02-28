@@ -41,6 +41,8 @@ import org.opencms.gwt.shared.CmsCoreData;
 
 import java.util.Map;
 
+import org.timepedia.exporter.client.ExporterUtil;
+
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.UmbrellaException;
@@ -103,6 +105,7 @@ public abstract class A_CmsEntryPoint implements EntryPoint {
         bundle.globalWidgetCss().ensureInjected();
         bundle.categoryDialogCss().ensureInjected();
         bundle.colorSelectorCss().ensureInjected();
+        ExporterUtil.exportAll();
 
         I_CmsInputLayoutBundle.INSTANCE.inputCss().ensureInjected();
 

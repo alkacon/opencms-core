@@ -4,11 +4,13 @@
 	<inherits name="com.google.gwt.i18n.I18N"/>
     <inherits name="com.google.gwt.json.JSON" />
 	<inherits name="com.google.common.collect.Collect" />
+	
 		
  	<extend-property name="locale" values="en,de"/>
 	<set-property-fallback name="locale" value="en"/>
 	<set-property name="locale" value="en,de"/>
 	<collapse-property name="locale" values="*" />
+	
 
 	<define-property name="fileapi.support" values="formdata,fileapi,no" />
 	<property-provider name="fileapi.support"><![CDATA[

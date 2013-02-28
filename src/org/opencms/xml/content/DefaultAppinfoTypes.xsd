@@ -265,4 +265,10 @@
 			<xsd:pattern value="string|vfslist" />
 		</xsd:restriction>
 	</xsd:simpleType>
+	
+	
+	<xsd:complexType name="OpenCmsDefaultAppinfoDefaultWidget">
+		<xsd:attribute name="widget" type="xsd:string" use="required" />
+		<xsd:attribute name="configuration" type="xsd:string" use="required" />
+	</xsd:complexType>
 </xsd:schema>

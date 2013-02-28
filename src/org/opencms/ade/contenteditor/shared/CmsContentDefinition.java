@@ -54,6 +54,9 @@ public class CmsContentDefinition extends ContentDefinition {
     /** The available locales. */
     private Map<String, String> m_availableLocales;
 
+    /** A map from attribute names to complex widget configurations. */
+    private Map<String, CmsComplexWidgetData> m_complexWidgetData;
+
     /** The content locales. */
     private List<String> m_contentLocales;
 
@@ -90,6 +93,7 @@ public class CmsContentDefinition extends ContentDefinition {
      * @param entity the entity
      * @param configurations the attribute configurations
      * @param externalWidgetConfigurations the external widget configurations
+     * @param complexWidgetData the complex widget configurations 
      * @param types the types
      * @param tabInfos the tab information
      * @param locale the content locale
@@ -104,6 +108,7 @@ public class CmsContentDefinition extends ContentDefinition {
         Entity entity,
         Map<String, AttributeConfiguration> configurations,
         Collection<CmsExternalWidgetConfiguration> externalWidgetConfigurations,
+        Map<String, CmsComplexWidgetData> complexWidgetData,
         Map<String, I_Type> types,
         List<TabInfo> tabInfos,
         String locale,
@@ -117,6 +122,7 @@ public class CmsContentDefinition extends ContentDefinition {
         super(entity, configurations, types, tabInfos, locale);
         m_contentLocales = contentLocales;
         m_availableLocales = availableLocales;
+        m_complexWidgetData = complexWidgetData;
         m_title = title;
         m_sitePath = sitePath;
         m_resourceType = resourceType;
@@ -245,6 +251,16 @@ public class CmsContentDefinition extends ContentDefinition {
     public Map<String, String> getAvailableLocales() {
 
         return m_availableLocales;
+    }
+
+    /** 
+     * Gets the complex widget configurations.<p>
+     * 
+     * @return the complex widget configurations 
+     */
+    public Map<String, CmsComplexWidgetData> getComplexWidgetData() {
+
+        return m_complexWidgetData;
     }
 
     /**

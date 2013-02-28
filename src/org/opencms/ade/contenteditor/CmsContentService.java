@@ -852,6 +852,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             entity,
             visitor.getAttributeConfigurations(),
             visitor.getWidgetConfigurations(),
+            visitor.getComplexWidgetData(),
             visitor.getTypes(),
             visitor.getTabInfos(),
             locale.toString(),

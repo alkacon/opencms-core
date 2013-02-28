@@ -36,6 +36,7 @@ import org.opencms.main.CmsException;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsDefaultSet;
+import org.opencms.widgets.I_CmsComplexWidget;
 import org.opencms.widgets.I_CmsWidget;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
@@ -96,6 +97,15 @@ public interface I_CmsXmlContentHandler {
      * @return the list of allowed template context names 
      */
     CmsDefaultSet<String> getAllowedTemplates();
+
+    /** 
+     * Gets the complex widget for the given schema type.<p>
+     * 
+     * @param value the schema type for which we want the complex widget
+     * 
+     * @return the complex widget instance for the schema type 
+     */
+    I_CmsComplexWidget getComplexWidget(I_CmsXmlSchemaType value);
 
     /**
      * Returns the configuration String value for the widget used to edit the given XML content schema type.<p> 
@@ -158,6 +168,27 @@ public interface I_CmsXmlContentHandler {
      * @see org.opencms.xml.types.I_CmsXmlSchemaType#getDefault(Locale)
      */
     String getDefault(CmsObject cms, I_CmsXmlContentValue value, Locale locale);
+
+    /** 
+     * Gets the default complex widget to be used for this type.<p>
+     * 
+     * @return the default complex widget for this type  
+     */
+    I_CmsComplexWidget getDefaultComplexWidget();
+
+    /** 
+     * Gets the default complex widget class name configured for this type.<p>
+     * 
+     * @return the default complex widget class name 
+     */
+    String getDefaultComplexWidgetClass();
+
+    /**
+     * Gets the default complex widget configuration string configured for this type.<p>
+     * 
+     * @return the default complex widget configuration string 
+     */
+    String getDefaultComplexWidgetConfiguration();
 
     /**
      * Returns the container page element formatter configuration for a given resource.<p>

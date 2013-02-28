@@ -32,6 +32,7 @@ import com.alkacon.acacia.shared.TabInfo;
 import com.alkacon.acacia.shared.Type;
 import com.alkacon.vie.shared.I_Type;
 
+import org.opencms.ade.contenteditor.shared.CmsComplexWidgetData;
 import org.opencms.ade.contenteditor.shared.CmsExternalWidgetConfiguration;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -40,6 +41,7 @@ import org.opencms.i18n.CmsMultiMessages;
 import org.opencms.main.OpenCms;
 import org.opencms.widgets.A_CmsWidget;
 import org.opencms.widgets.I_CmsADEWidget;
+import org.opencms.widgets.I_CmsComplexWidget;
 import org.opencms.widgets.I_CmsWidget;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.content.CmsXmlContentTab;
@@ -67,6 +69,9 @@ public class CmsContentTypeVisitor {
     /** The CMS context used for this visitor. */
     private CmsObject m_cms;
 
+    /** Map from attribute names to complex widget configurations. */
+    private Map<String, CmsComplexWidgetData> m_complexWidgets = new HashMap<String, CmsComplexWidgetData>();
+
     /** The content handler. */
     private I_CmsXmlContentHandler m_contentHandler;
 
@@ -79,9 +84,6 @@ public class CmsContentTypeVisitor {
     /** The messages. */
     private CmsMultiMessages m_messages;
 
-    /** The widgets encountered by this visitor. */
-    private List<I_CmsWidget> m_widgets = new ArrayList<I_CmsWidget>();
-
     /** The registered types. */
     private Map<String, I_Type> m_registeredTypes;
 
@@ -90,6 +92,9 @@ public class CmsContentTypeVisitor {
 
     /** The widget configurations. */
     private Map<String, CmsExternalWidgetConfiguration> m_widgetConfigurations;
+
+    /** The widgets encountered by this visitor. */
+    private List<I_CmsWidget> m_widgets = new ArrayList<I_CmsWidget>();
 
     /**
      * Constructor.<p>
@@ -123,6 +128,16 @@ public class CmsContentTypeVisitor {
     public List<I_CmsWidget> getCollectedWidgets() {
 
         return Collections.unmodifiableList(m_widgets);
+    }
+
+    /** 
+     * Gets the map of complex widget configurations.<p>
+     * 
+     * @return a map from attribute names to complex widget configurations 
+     */
+    public Map<String, CmsComplexWidgetData> getComplexWidgetData() {
+
+        return m_complexWidgets;
     }
 
     /**
@@ -298,12 +313,11 @@ public class CmsContentTypeVisitor {
         String widgetConfig = null;
         CmsObject cms = getCmsObject();
         try {
-
-            I_CmsWidget widget = schemaType.getContentDefinition().getContentHandler().getWidget(schemaType);
+            I_CmsXmlContentHandler contentHandler = schemaType.getContentDefinition().getContentHandler();
+            I_CmsWidget widget = contentHandler.getWidget(schemaType);
             if (widget != null) {
                 widgetName = widget.getClass().getName();
                 long timer = 0;
-
                 if (widget instanceof I_CmsADEWidget) {
                     if (!checkWidgetsOnly) {
                         if (CmsContentService.LOG.isDebugEnabled()) {
@@ -329,6 +343,14 @@ public class CmsContentTypeVisitor {
                     }
                 }
                 m_widgets.add(widget);
+            } else if (contentHandler.getComplexWidget(schemaType) != null) {
+                I_CmsComplexWidget complexWidget = contentHandler.getComplexWidget(schemaType);
+                CmsComplexWidgetData widgetData = complexWidget.getWidgetData(m_cms);
+                CmsExternalWidgetConfiguration externalConfig = widgetData.getExternalWidgetConfiguration();
+                if (externalConfig != null) {
+                    m_widgetConfigurations.put(complexWidget.getName(), externalConfig);
+                }
+                m_complexWidgets.put(CmsContentService.getAttributeName(schemaType), widgetData);
             }
         } catch (Exception e) {
             // may happen if no widget was set for the value

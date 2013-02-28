@@ -70,6 +70,7 @@ import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsCategoryWidget;
 import org.opencms.widgets.CmsDisplayWidget;
+import org.opencms.widgets.I_CmsComplexWidget;
 import org.opencms.widgets.I_CmsWidget;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.editors.CmsXmlContentWidgetVisitor;
@@ -381,6 +382,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** The attribute name for the "prefer folder" option for properties. */
     private static final String APPINFO_ATTR_PREFERFOLDER = "PreferFolder";
 
+    /** The node name for the default complex widget configuration. */
+    private static final Object APPINFO_DEFAULTWIDGET = "defaultwidget";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDefaultXmlContentHandler.class);
 
@@ -389,6 +393,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** The set of allowed templates. */
     protected CmsDefaultSet<String> m_allowedTemplates = new CmsDefaultSet<String>();
+
+    /** A map from attribute name to complex widgets. */
+    protected Map<String, I_CmsComplexWidget> m_complexWidgets = new HashMap<String, I_CmsComplexWidget>();
 
     /** The configuration values for the element widgets (as defined in the annotations). */
     protected Map<String, String> m_configurationValues;
@@ -462,6 +469,15 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** The container page only flag, indicating if this XML content should be indexed on container pages only. */
     private boolean m_containerPageOnly;
 
+    /** The default complex widget class name. */
+    private String m_defaultWidget;
+
+    /** The default complex widget configuration. */
+    private String m_defaultWidgetConfig;
+
+    /** The default complex widget for this type. */
+    private I_CmsComplexWidget m_defaultWidgetInstance;
+
     /**
      * Creates a new instance of the default XML content handler.<p>  
      */
@@ -507,6 +523,28 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
         return m_allowedTemplates;
 
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getComplexWidget(org.opencms.xml.types.I_CmsXmlSchemaType)
+     */
+    public I_CmsComplexWidget getComplexWidget(I_CmsXmlSchemaType value) {
+
+        I_CmsComplexWidget result = m_complexWidgets.get(value.getName());
+        if (result == null) {
+            if (value instanceof CmsXmlNestedContentDefinition) {
+                I_CmsXmlContentHandler contentHandler = ((CmsXmlNestedContentDefinition)value).getNestedContentDefinition().getContentHandler();
+                if (contentHandler.getDefaultComplexWidget() != null) {
+                    return contentHandler.getDefaultComplexWidget().configure(
+                        contentHandler.getDefaultComplexWidgetConfiguration());
+                }
+            }
+            return null;
+        } else {
+            String configuration = getConfiguration(value);
+            result = result.configure(configuration);
+            return result;
+        }
     }
 
     /**
@@ -591,6 +629,30 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         }
 
         return getDefault(cms, value.getDocument() != null ? value.getDocument().getFile() : null, value, path, locale);
+    }
+
+    /** 
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getDefaultComplexWidget()
+     */
+    public I_CmsComplexWidget getDefaultComplexWidget() {
+
+        return m_defaultWidgetInstance;
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getDefaultComplexWidgetClass()
+     */
+    public String getDefaultComplexWidgetClass() {
+
+        return m_defaultWidget;
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getDefaultComplexWidgetConfiguration()
+     */
+    public String getDefaultComplexWidgetConfiguration() {
+
+        return m_defaultWidgetConfig;
     }
 
     /**
@@ -839,6 +901,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                     initSettings(element, contentDefinition);
                 } else if (nodeName.equals(APPINFO_TEMPLATES)) {
                     initTemplates(element, contentDefinition);
+                } else if (nodeName.equals(APPINFO_DEFAULTWIDGET)) {
+                    initDefaultWidget(element);
                 }
             }
         }
@@ -1648,7 +1712,12 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 // java class name given, try to create new instance of the class and cast to widget
                 try {
                     Class<?> specialWidgetClass = Class.forName(widgetClassOrAlias);
-                    widget = (I_CmsWidget)specialWidgetClass.newInstance();
+                    if (I_CmsComplexWidget.class.isAssignableFrom(specialWidgetClass)) {
+                        m_complexWidgets.put(elementName, (I_CmsComplexWidget)(specialWidgetClass.newInstance()));
+                        return;
+                    } else {
+                        widget = (I_CmsWidget)specialWidgetClass.newInstance();
+                    }
                 } catch (Exception e) {
                     throw new CmsXmlException(Messages.get().container(
                         Messages.ERR_XMLCONTENT_INVALID_CUSTOM_CLASS_3,
@@ -1833,6 +1902,22 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 // add a default value mapping for the element
                 addDefault(contentDefinition, elementName, defaultValue);
             }
+        }
+    }
+
+    /** 
+     * Initializes the default complex widget.<p>
+     * 
+     * @param element the element in which the default complex widget is configured 
+     */
+    protected void initDefaultWidget(Element element) {
+
+        m_defaultWidget = element.attributeValue("widget");
+        m_defaultWidgetConfig = element.attributeValue("config");
+        try {
+            m_defaultWidgetInstance = (I_CmsComplexWidget)(Class.forName(m_defaultWidget).newInstance());
+        } catch (Exception e) {
+            LOG.error(e);
         }
     }
 
