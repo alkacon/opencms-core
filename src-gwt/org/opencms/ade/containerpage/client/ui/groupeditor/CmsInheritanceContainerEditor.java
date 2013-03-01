@@ -48,6 +48,7 @@ import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Tag;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -333,6 +334,7 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
             }
         }
         getController().addToRecentList(getGroupContainerWidget().getId(), null);
+        getController().unlockResource(new CmsUUID(CmsContainerpageController.getServerId(m_elementData.getClientId())));
         closeDialog(true);
         getController().setPageChanged();
     }
@@ -350,6 +352,7 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
         if (getBackUpElements().size() == 0) {
             getGroupContainerWidget().addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().emptyGroupContainer());
         }
+        getController().unlockResource(new CmsUUID(CmsContainerpageController.getServerId(m_elementData.getClientId())));
         closeDialog(false);
     }
 

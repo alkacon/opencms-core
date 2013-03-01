@@ -43,6 +43,7 @@ import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
+import org.opencms.util.CmsUUID;
 
 import java.util.HashSet;
 import java.util.List;
@@ -233,6 +234,8 @@ public final class CmsGroupContainerEditor extends A_CmsGroupEditor {
         }
         getController().addToRecentList(m_groupContainerBean.getClientId(), null);
         closeDialog(true);
+        getController().unlockResource(
+            new CmsUUID(CmsContainerpageController.getServerId(m_groupContainerBean.getClientId())));
         getController().setPageChanged();
     }
 
@@ -249,6 +252,8 @@ public final class CmsGroupContainerEditor extends A_CmsGroupEditor {
         if (getBackUpElements().size() == 0) {
             getGroupContainerWidget().addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().emptyGroupContainer());
         }
+        getController().unlockResource(
+            new CmsUUID(CmsContainerpageController.getServerId(m_groupContainerBean.getClientId())));
         closeDialog(false);
     }
 
