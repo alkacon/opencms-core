@@ -1630,7 +1630,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
         contentHandler = definition.getContentHandler();
         assertSame(definition.getContentHandler().getClass().getName(), TestXmlContentHandler.class.getName());
-        assertNull(contentHandler.getMessages(Locale.ENGLISH));
+        // the messages will always contain the org.opencms.xml.content.messages bundle
+        assertNotNull(contentHandler.getMessages(Locale.ENGLISH));
 
         // unmarshal content definition
         content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-definition-8.xsd", CmsEncoder.ENCODING_UTF_8);
@@ -1672,7 +1673,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertSame(definition.getContentHandler().getClass().getName(), CmsDefaultXmlContentHandler.class.getName());
 
         CmsMessages messagesEN = contentHandler.getMessages(Locale.ENGLISH);
-        assertNotNull(messagesEN.getResourceBundle());
+        assertNotNull(messagesEN);
 
         assertEquals("The author is", messagesEN.key("label.author"));
         assertEquals(
@@ -1680,7 +1681,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
             messagesEN.key("editor.xmlcontent.validation.warning", "Arg0", "Arg1"));
 
         CmsMessages messagesDE = contentHandler.getMessages(Locale.GERMAN);
-        assertNotNull(messagesDE.getResourceBundle());
+        assertNotNull(messagesDE);
 
         assertEquals("Der Autor ist", messagesDE.key("label.author"));
         assertEquals(
@@ -1689,7 +1690,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
         // get a Locale / language variation and see if this works
         CmsMessages messagesDEde = contentHandler.getMessages(Locale.GERMANY);
-        assertNotNull(messagesDEde.getResourceBundle());
+        assertNotNull(messagesDEde);
 
         // from DE locale (properties)
         assertEquals("Der Autor ist", messagesDEde.key("label.author"));
@@ -1710,7 +1711,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertSame(definition.getContentHandler().getClass().getName(), CmsDefaultXmlContentHandler.class.getName());
 
         messagesEN = contentHandler.getMessages(Locale.ENGLISH);
-        assertNotNull(messagesEN.getResourceBundle());
+        assertNotNull(messagesEN);
 
         assertEquals("The author is NOW", messagesEN.key("label.author"));
         assertEquals(
@@ -1718,7 +1719,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
             messagesEN.key("editor.xmlcontent.validation.warning", "Arg0", "Arg1"));
 
         messagesDE = contentHandler.getMessages(Locale.GERMAN);
-        assertNotNull(messagesDE.getResourceBundle());
+        assertNotNull(messagesDE);
 
         assertEquals("Der Autor ist JETZT", messagesDE.key("label.author"));
         assertEquals(
@@ -1727,7 +1728,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
         // get a Locale / language variation and see if this works
         messagesDEde = contentHandler.getMessages(Locale.GERMANY);
-        assertNotNull(messagesDEde.getResourceBundle());
+        assertNotNull(messagesDEde);
 
         // from DE_de locale
         assertEquals("Der Autor ist JETZT", messagesDEde.key("label.author"));
@@ -1748,7 +1749,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
         // get a Locale / language variation and see if this works
         messagesDEde = article.getHandler().getMessages(Locale.GERMANY);
-        assertNotNull(messagesDEde.getResourceBundle());
+        assertNotNull(messagesDEde);
         assertEquals("Lokalisierung im XML Schema", messagesDEde.key("from.xml"));
 
         // fire a clear cache event
@@ -1756,7 +1757,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
         // the messages that where just injected must not be null because the permanent cache is NOT cleared
         messagesEN = contentHandler.getMessages(Locale.ENGLISH);
-        assertNotNull(messagesEN.getResourceBundle());
+        assertNotNull(messagesEN);
         assertEquals("The author is NOW", messagesEN.key("label.author"));
 
         // if a content is unmarshalled, the content definition will be re-read after clear cache, 
