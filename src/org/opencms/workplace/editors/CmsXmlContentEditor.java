@@ -43,6 +43,7 @@ import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.search.CmsSearchManager;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -593,6 +594,8 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 commitTempFile();
                 // set the modified parameter
                 setParamModified(Boolean.TRUE.toString());
+                // update the offline search indices
+                OpenCms.getSearchManager().updateOfflineIndexes(2 * CmsSearchManager.DEFAULT_OFFLINE_UPDATE_FREQNENCY);
             }
         } catch (CmsException e) {
             showErrorPage(e);
