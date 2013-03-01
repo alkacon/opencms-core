@@ -1980,6 +1980,18 @@ public final class CmsContainerpageController {
         m_groupEditor = null;
     }
 
+    /**
+     * Unlocks the given resource.<p>
+     * 
+     * @param structureId the structure id of the resource to unlock
+     * 
+     * @return <code>true</code> if the resource was unlocked successfully
+     */
+    public boolean unlockResource(CmsUUID structureId) {
+
+        return CmsCoreProvider.get().unlock(structureId);
+    }
+
     /** 
      * Adds the given element data to the element cache.<p>
      * 
@@ -2305,7 +2317,7 @@ public final class CmsContainerpageController {
      */
     protected void unlockContainerpage() {
 
-        if (CmsCoreProvider.get().unlock(CmsCoreProvider.get().getStructureId())) {
+        if (unlockResource(CmsCoreProvider.get().getStructureId())) {
             CmsDebugLog.getInstance().printLine(Messages.get().key(Messages.GUI_NOTIFICATION_PAGE_UNLOCKED_0));
         } else {
             // ignore
