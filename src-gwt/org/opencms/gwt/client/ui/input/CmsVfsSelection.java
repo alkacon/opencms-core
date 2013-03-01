@@ -161,8 +161,8 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
     /** The widget type identifier for this widget. */
     private static final String WIDGET_TYPE = "vfsselection";
 
-    /** The faid panel. */
-    protected Panel m_faidpanel = new SimplePanel();
+    /** The fade panel. */
+    protected Panel m_fadePanel = new SimplePanel();
 
     /** The old value. */
     protected String m_oldValue = "";
@@ -235,13 +235,13 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
         creatFaider();
         initWidget(m_panel);
         m_panel.add(m_textBoxContainer);
-        m_faidpanel.setStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().vfsInputBoxFaider());
-        m_faidpanel.getElement().getStyle().setRight(21, Unit.PX);
-        m_faidpanel.getElement().getStyle().setCursor(Cursor.TEXT);
-        m_faidpanel.getElement().getStyle().setBottom(7, Unit.PX);
+        m_fadePanel.setStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().vfsInputBoxFaider());
+        m_fadePanel.getElement().getStyle().setRight(21, Unit.PX);
+        m_fadePanel.getElement().getStyle().setCursor(Cursor.TEXT);
+        m_fadePanel.getElement().getStyle().setBottom(7, Unit.PX);
 
         m_textBoxContainer.add(m_textBox);
-        m_faidpanel.addDomHandler(new ClickHandler() {
+        m_fadePanel.addDomHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
 
@@ -255,7 +255,7 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
 
             public void onMouseUp(MouseUpEvent event) {
 
-                m_textBoxContainer.remove(m_faidpanel);
+                m_textBoxContainer.remove(m_fadePanel);
                 setTitle("");
                 if (m_popup == null) {
                     open();
@@ -273,7 +273,7 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
             public void onBlur(BlurEvent event) {
 
                 if ((m_textBox.getValue().length() * 6.88) > m_textBox.getOffsetWidth()) {
-                    m_textBoxContainer.add(m_faidpanel);
+                    m_textBoxContainer.add(m_fadePanel);
                     setTitle(m_textBox.getValue());
                 }
             }
@@ -635,7 +635,7 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
     private void creatFaider() {
 
         if ((m_textBox.getValue().length() * 6.88) > m_textBox.getOffsetWidth()) {
-            m_textBoxContainer.add(m_faidpanel);
+            m_textBoxContainer.add(m_fadePanel);
         }
     }
 }
