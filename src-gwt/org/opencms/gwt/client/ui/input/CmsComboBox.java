@@ -75,7 +75,7 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
     /** The widget displayed in the opener. */
     protected CmsSimpleTextBox m_openerWidget;
 
-    /** The faidpanel of this input box. */
+    /** The fade panel of this input box. */
     Panel m_fadePanel;
 
     /** A map from select options to their label texts. */
