@@ -54,6 +54,7 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.search.CmsSearchManager;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
@@ -347,6 +348,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     return validationResult;
                 }
                 writeContent(cms, file, content, getFileEncoding(cms, file));
+                // update offline indices
+                OpenCms.getSearchManager().updateOfflineIndexes(2 * CmsSearchManager.DEFAULT_OFFLINE_UPDATE_FREQNENCY);
                 if (clearOnSuccess) {
                     tryUnlock(resource);
                 }
