@@ -52,6 +52,7 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.HasResizeHandlers;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
@@ -75,8 +76,8 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     /** The default rows set. */
     int m_defaultRows;
 
-    /** The faid panel. */
-    Panel m_faidpanel = new SimplePanel();
+    /** The fade panel. */
+    Panel m_fadePanel = new SimplePanel();
 
     /** The root panel containing the other components of this widget. */
     Panel m_panel = new FlowPanel();
@@ -90,6 +91,9 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     /** The error display for this widget. */
     private CmsErrorWidget m_error = new CmsErrorWidget();
 
+    /** The previous value. */
+    private String m_previousValue;
+
     /**
      * Text area widgets for ADE forms.<p>
      */
@@ -100,16 +104,15 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         m_panel.add(m_textAreaContainer);
         m_textAreaContainer.setResizable(true);
         m_textAreaContainer.getElement().getStyle().setHeight(m_textArea.getOffsetHeight(), Unit.PX);
-        m_faidpanel.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().inputTextAreaFaider());
+        m_fadePanel.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().inputTextAreaFaider());
         m_textAreaContainer.add(m_textArea);
-        m_faidpanel.addDomHandler(new ClickHandler() {
+        m_fadePanel.addDomHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
 
                 m_textArea.setFocus(true);
             }
         }, ClickEvent.getType());
-        // TODO: add pastehandler!
 
         m_textArea.addKeyUpHandler(new KeyUpHandler() {
 
@@ -136,8 +139,17 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
 
                 m_textArea.setVisibleLines(height);
                 m_textAreaContainer.onResize();
+                fireValueChangedEvent(false);
             }
 
+        });
+
+        m_textArea.addValueChangeHandler(new ValueChangeHandler<String>() {
+
+            public void onValueChange(ValueChangeEvent<String> event) {
+
+                fireValueChangedEvent(false);
+            }
         });
 
         m_panel.add(m_error);
@@ -147,7 +159,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
 
             public void onFocus(FocusEvent event) {
 
-                m_panel.remove(m_faidpanel);
+                m_panel.remove(m_fadePanel);
                 m_panel.getElement().setTitle("");
 
             }
@@ -172,7 +184,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
                 }
                 int height = occurences + 1;
                 if (m_defaultRows < height) {
-                    m_panel.add(m_faidpanel);
+                    m_panel.add(m_fadePanel);
                     m_panel.getElement().setTitle(string);
                 }
                 m_textAreaContainer.scrollToTop();
@@ -212,7 +224,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
      */
     public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
 
-        return m_textArea.addValueChangeHandler(handler);
+        return addHandler(handler, ValueChangeEvent.getType());
     }
 
     /**
@@ -331,8 +343,8 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
             value = "";
         }
         if (value instanceof String) {
-            String strValue = (String)value;
-            m_textArea.setText(strValue);
+            m_previousValue = (String)value;
+            m_textArea.setText(m_previousValue);
         }
 
     }
@@ -397,6 +409,19 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         m_textArea.setText(text);
     }
 
+    /** 
+     * Helper method for firing a 'value changed' event.<p>
+     * 
+     * @param force if <true, some additional information will be added to the event to ask event handlers to not perform any validation directly
+     */
+    protected void fireValueChangedEvent(boolean force) {
+
+        if (force || !getFormValueAsString().equals(m_previousValue)) {
+            m_previousValue = getFormValueAsString();
+            ValueChangeEvent.fire(this, m_previousValue);
+        }
+    }
+
     /**
      * @see com.google.gwt.user.client.ui.Composite#onAttach()
      */
@@ -425,10 +450,10 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
                 int height = occurences + 1;
                 if (m_defaultRows > height) {
                     height = m_defaultRows;
-                    m_panel.remove(m_faidpanel);
+                    m_panel.remove(m_fadePanel);
                     m_panel.getElement().setTitle("");
                 }
-                m_panel.add(m_faidpanel);
+                m_panel.add(m_fadePanel);
                 m_panel.getElement().setTitle(string);
                 m_textArea.setVisibleLines(height);
                 m_textAreaContainer.onResize();
