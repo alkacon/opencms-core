@@ -15,6 +15,12 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 8.5.1.1 - March 4, 2013
+! Improved offline indexing to index content changes immediately.
+* Fixed head includes for inheritance group elements.
+* Fixed issue with information dialog for expired resources.
+* Fixed issue with inline editing for nested xsd:choice elements.
+
 OpenCms 8.5.1 - February 7, 2013
 ! Improved file selector widget to show resource information.
 ! Improved image gallery widget to show image thumb nails.

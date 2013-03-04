@@ -12,7 +12,7 @@
 	<property name="opencms.output.jars-components"		location="${opencms.output}/build/jars-components" />
     <property name="opencms.output.distfiles"           location="${opencms.output}/zip" />    
     <property name="excludes"                  			value="**/CVS/*,**/.cvsignore,**/.nbattrs,**/.project,**/.classpath" />
-    <property name="java.target.version"                value="1.5" />
+    <property name="java.target.version"                value="1.6" />
 	<property name="enhance"                            value="0" />
 	
 	
