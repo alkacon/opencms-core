@@ -28,11 +28,7 @@
 package org.opencms.jsp;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
-import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.ade.containerpage.CmsContainerpageService;
-import org.opencms.ade.containerpage.inherited.CmsInheritanceReference;
-import org.opencms.ade.containerpage.inherited.CmsInheritanceReferenceParser;
-import org.opencms.ade.containerpage.inherited.CmsInheritedContainerState;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -64,6 +60,7 @@ import org.opencms.xml.containerpage.CmsXmlContainerPage;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.containerpage.CmsXmlGroupContainer;
 import org.opencms.xml.containerpage.CmsXmlGroupContainerFactory;
+import org.opencms.xml.containerpage.CmsXmlInheritGroupContainerHandler;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -708,23 +705,7 @@ public class CmsJspTagContainer extends TagSupport {
     private List<CmsContainerElementBean> getInheritedContainerElements(CmsObject cms, CmsContainerElementBean element) {
 
         CmsResource resource = element.getResource();
-        CmsInheritanceReferenceParser parser = new CmsInheritanceReferenceParser(cms);
-        try {
-            parser.parse(resource);
-            CmsInheritanceReference ref = parser.getReference(cms.getRequestContext().getLocale());
-            if (ref != null) {
-                String name = ref.getName();
-                CmsADEManager adeManager = OpenCms.getADEManager();
-                CmsInheritedContainerState result = adeManager.getInheritedContainerState(
-                    cms,
-                    cms.getRequestContext().getRootUri(),
-                    name);
-                return result.getElements(false);
-            }
-        } catch (CmsException e) {
-            LOG.error(e.getLocalizedMessage(), e);
-        }
-        return Collections.emptyList();
+        return CmsXmlInheritGroupContainerHandler.loadInheritContainerElements(cms, resource);
     }
 
     /**
