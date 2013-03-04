@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -27,14 +27,19 @@
 
 package org.opencms.xml.containerpage;
 
+import org.opencms.ade.configuration.CmsADEManager;
+import org.opencms.ade.containerpage.inherited.CmsInheritanceReference;
+import org.opencms.ade.containerpage.inherited.CmsInheritanceReferenceParser;
+import org.opencms.ade.containerpage.inherited.CmsInheritedContainerState;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.content.CmsDefaultXmlContentHandler;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -42,48 +47,48 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 
 /**
- * The XML content handler class for group containers.
+ * The XML content handler class for inheritance groups.
  */
-public class CmsXmlGroupContainerHandler extends CmsDefaultXmlContentHandler {
+public class CmsXmlInheritGroupContainerHandler extends CmsDefaultXmlContentHandler {
 
-    /** The log instance for this class. */
-    protected static final Log LOG = CmsLog.getLog(CmsXmlGroupContainerHandler.class);
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsXmlInheritGroupContainerHandler.class);
 
     /**
-     * Default constructor.<p>
-     * 
+     * Constructor.<p>
      */
-    public CmsXmlGroupContainerHandler() {
+    public CmsXmlInheritGroupContainerHandler() {
 
         super();
     }
 
     /**
-     * Helper method to load and prepare the elements of a group container.<p>
+     * Returns the elements of the given inheritance group for the request context URI.<p>
      * 
-     * @param cms the current CMS context 
-     * @param resource the group container resource 
+     * @param cms the current cms context
+     * @param resource the inheritance group resource
      * 
-     * @return the elements which have been read from the group container
-     *  
-     * @throws CmsException if something goes wrong 
+     * @return the elements
      */
-    protected static List<CmsContainerElementBean> loadGroupContainerElements(CmsObject cms, CmsResource resource)
-    throws CmsException {
+    public static List<CmsContainerElementBean> loadInheritContainerElements(CmsObject cms, CmsResource resource) {
 
-        CmsXmlGroupContainer xmlGroupContainer = CmsXmlGroupContainerFactory.unmarshal(cms, resource);
-        CmsGroupContainerBean groupContainer = xmlGroupContainer.getGroupContainer(
-            cms,
-            cms.getRequestContext().getLocale());
-        List<CmsContainerElementBean> elemBeans = groupContainer.getElements();
-        List<CmsContainerElementBean> result = new ArrayList<CmsContainerElementBean>();
-        for (CmsContainerElementBean elementBean : elemBeans) {
-            if (!elementBean.isInMemoryOnly()) {
-                elementBean.initResource(cms);
-                result.add(elementBean);
+        CmsInheritanceReferenceParser parser = new CmsInheritanceReferenceParser(cms);
+        try {
+            parser.parse(resource);
+            CmsInheritanceReference ref = parser.getReference(cms.getRequestContext().getLocale());
+            if (ref != null) {
+                String name = ref.getName();
+                CmsADEManager adeManager = OpenCms.getADEManager();
+                CmsInheritedContainerState result = adeManager.getInheritedContainerState(
+                    cms,
+                    cms.getRequestContext().getRootUri(),
+                    name);
+                return result.getElements(false);
             }
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
         }
-        return result;
+        return Collections.emptyList();
     }
 
     /**
@@ -94,7 +99,7 @@ public class CmsXmlGroupContainerHandler extends CmsDefaultXmlContentHandler {
 
         Set<String> result = new LinkedHashSet<String>();
 
-        List<CmsContainerElementBean> containerElements = loadGroupContainerElements(cms, resource);
+        List<CmsContainerElementBean> containerElements = loadInheritContainerElements(cms, resource);
         for (CmsContainerElementBean elementBean : containerElements) {
             if (elementBean.isGroupContainer(cms) || elementBean.isInheritedContainer(cms)) {
                 throw new CmsException(Messages.get().container(
@@ -118,7 +123,7 @@ public class CmsXmlGroupContainerHandler extends CmsDefaultXmlContentHandler {
     public Set<String> getJSHeadIncludes(CmsObject cms, CmsResource resource) throws CmsException {
 
         Set<String> result = new LinkedHashSet<String>();
-        List<CmsContainerElementBean> containerElements = loadGroupContainerElements(cms, resource);
+        List<CmsContainerElementBean> containerElements = loadInheritContainerElements(cms, resource);
         for (CmsContainerElementBean elementBean : containerElements) {
             if (elementBean.isGroupContainer(cms) || elementBean.isInheritedContainer(cms)) {
                 throw new CmsException(Messages.get().container(

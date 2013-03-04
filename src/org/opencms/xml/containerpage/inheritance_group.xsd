@@ -22,6 +22,7 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
+			<handler class="org.opencms.xml.containerpage.CmsXmlInheritGroupContainerHandler"/>
 			<mappings>
 				<mapping element="Title" mapto="property:Title" />
 				<mapping element="Description" mapto="property:Description" />
