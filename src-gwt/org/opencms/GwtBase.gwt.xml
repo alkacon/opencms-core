@@ -4,7 +4,9 @@
 	<inherits name="com.google.gwt.i18n.I18N"/>
     <inherits name="com.google.gwt.json.JSON" />
 	<inherits name="com.google.common.collect.Collect" />
-	
+
+	<inherits name="org.timepedia.exporter.Exporter" />
+  	<set-property name="export" value="yes" />
 		
  	<extend-property name="locale" values="en,de"/>
 	<set-property-fallback name="locale" value="en"/>
