@@ -144,11 +144,11 @@ public class CmsPublish {
     /** The current cms context. */
     protected final CmsObject m_cms;
 
-    /** The current user workplace locale. */
-    protected final Locale m_workplaceLocale;
-
     /** The options. */
     protected final CmsPublishOptions m_options;
+
+    /** The current user workplace locale. */
+    protected final Locale m_workplaceLocale;
 
     /** The user's resource publish list. */
     private ResourcesAndRelated m_resourceList;
@@ -487,6 +487,7 @@ public class CmsPublish {
             CmsResourceTypePlain.getStaticTypeName(),
             CmsResourceState.STATE_UNCHANGED,
             0,
+            null,
             false,
             null,
             null);
@@ -934,7 +935,6 @@ public class CmsPublish {
         List<CmsPublishResource> related) {
 
         CmsResourceUtil resUtil = new CmsResourceUtil(m_cms, resource);
-
         CmsPublishResource pubResource = new CmsPublishResource(
             resource.getStructureId(),
             resUtil.getFullPath(),
@@ -942,6 +942,7 @@ public class CmsPublish {
             resUtil.getResourceTypeName(),
             resource.getState(),
             resource.getDateLastModified(),
+            resUtil.getUserLastModified(),
             removable,
             info,
             related);

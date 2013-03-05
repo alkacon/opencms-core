@@ -190,6 +190,11 @@ public class CmsPublishGroupPanel extends Composite {
         if (stateName != null) {
             info.addAdditionalInfo(stateLabel, stateName, CmsResourceStateUtil.getStateStyle(resourceBean.getState()));
         }
+        if (resourceBean.getUserLastModified() != null) {
+            String userLabel = org.opencms.ade.publish.client.Messages.get().key(
+                org.opencms.ade.publish.client.Messages.GUI_LABEL_USER_LAST_MODIFIED_0);
+            info.addAdditionalInfo(userLabel, resourceBean.getUserLastModified());
+        }
         CmsListItemWidget itemWidget = new CmsListItemWidget(info);
         for (int i = 0; i < NUM_BUTTON_SLOTS; i++) {
             SimplePanel panel = new SimplePanel();
