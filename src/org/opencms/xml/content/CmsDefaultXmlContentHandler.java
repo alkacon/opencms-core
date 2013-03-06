@@ -1912,8 +1912,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      */
     protected void initDefaultWidget(Element element) {
 
-        m_defaultWidget = element.attributeValue("widget");
-        m_defaultWidgetConfig = element.attributeValue("config");
+        m_defaultWidget = element.attributeValue(APPINFO_ATTR_WIDGET);
+        m_defaultWidgetConfig = element.attributeValue(APPINFO_ATTR_CONFIGURATION);
         try {
             m_defaultWidgetInstance = (I_CmsComplexWidget)(Class.forName(m_defaultWidget).newInstance());
         } catch (Exception e) {
