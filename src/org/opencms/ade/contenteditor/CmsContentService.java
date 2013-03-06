@@ -55,6 +55,8 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchManager;
+import org.opencms.search.galleries.CmsGallerySearch;
+import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
@@ -847,6 +849,12 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             availableLocales.put(availableLocale.toString(), availableLocale.getDisplayName(workplaceLocale));
         }
         String title = cms.readPropertyObject(file, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
+        try {
+            CmsGallerySearchResult searchResult = CmsGallerySearch.searchById(cms, file.getStructureId(), locale);
+            title = searchResult.getTitle();
+        } catch (CmsException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+        }
         String typeName = OpenCms.getResourceManager().getResourceType(file.getTypeId()).getTypeName();
         return new CmsContentDefinition(
             entity,
