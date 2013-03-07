@@ -68,7 +68,7 @@ goto end
 rem Guess OPENCMS_LIB if not defined
 if not "%OPENCMS_LIB%" == "" goto gotLib
 set OPENCMS_LIB=%OPENCMS_HOME%\lib
-:gotHome
+:gotLib
 if exist "%OPENCMS_LIB%\opencms.jar" goto okLib
 echo The OPENCMS_LIB environment variable is not defined correctly
 echo This environment variable is needed to run this program
