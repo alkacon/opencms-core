@@ -404,6 +404,12 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
 
         Set<String> references = getReferencingStrongLinks(cms, resource);
         super.undoChanges(cms, securityManager, resource, mode);
+        if (m_jspLoader != null) {
+            // we need to remove the JSP explicitly because undoing the changes also
+            // resets the last modification date, so the automatic mechanism for updating 
+            // JSPs based on modification dates doesn't work.
+            m_jspLoader.removeOfflineJspFromRepository(resource);
+        }
         removeReferencingFromCache(references);
     }
 
