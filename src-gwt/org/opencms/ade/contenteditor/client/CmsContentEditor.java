@@ -29,6 +29,7 @@ package org.opencms.ade.contenteditor.client;
 
 import com.alkacon.acacia.client.EditorBase;
 import com.alkacon.acacia.client.HighlightingHandler;
+import com.alkacon.acacia.client.I_EntityRenderer;
 import com.alkacon.acacia.client.I_InlineFormParent;
 import com.alkacon.acacia.client.ValidationContext;
 import com.alkacon.acacia.client.css.I_LayoutBundle;
@@ -223,6 +224,9 @@ public final class CmsContentEditor extends EditorBase {
         String serviceUrl = CmsCoreProvider.get().link("org.opencms.ade.contenteditor.CmsContentService.gwt");
         ((ServiceDefTarget)m_service).setServiceEntryPoint(serviceUrl);
         getWidgetService().setWidgetFactories(WidgetRegistry.getInstance().getWidgetFactories());
+        for (I_EntityRenderer renderer : WidgetRegistry.getInstance().getRenderers()) {
+            getWidgetService().addRenderer(renderer);
+        }
         // set the acacia editor message bundle
         setDictionary(Messages.get().getDictionary());
         I_CmsLayoutBundle.INSTANCE.editorCss().ensureInjected();

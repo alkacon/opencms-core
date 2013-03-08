@@ -27,11 +27,13 @@
 
 package org.opencms.ade.contenteditor.widgetregistry.client;
 
+import com.alkacon.acacia.client.I_EntityRenderer;
 import com.alkacon.acacia.client.I_WidgetFactory;
 
 import org.opencms.ade.contenteditor.shared.CmsExternalWidgetConfiguration;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -53,6 +55,9 @@ public final class WidgetRegistry {
 
     /** The widget registry instance. */
     private static WidgetRegistry INSTANCE;
+
+    /** Map of registered renderers by name. */
+    private Map<String, I_EntityRenderer> m_renderers = new HashMap<String, I_EntityRenderer>();
 
     /** The widget registry. */
     private Map<String, I_WidgetFactory> m_widgetRegistry;
@@ -77,6 +82,26 @@ public final class WidgetRegistry {
             INSTANCE = new WidgetRegistry();
         }
         return INSTANCE;
+    }
+
+    /**
+     * Adds a renderer which should be used by the Acacia editor.<p>
+     * 
+     * @param renderer the renderer to add 
+     */
+    public void addRenderer(I_EntityRenderer renderer) {
+
+        m_renderers.put(renderer.getName(), renderer);
+    }
+
+    /** 
+     * Returns the registered renderers.<p>
+     * 
+     * @return the renderers 
+     */
+    public Collection<I_EntityRenderer> getRenderers() {
+
+        return m_renderers.values();
     }
 
     /**
