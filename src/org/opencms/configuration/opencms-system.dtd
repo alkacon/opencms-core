@@ -256,6 +256,8 @@ Each job can have an optional list of parameters.
 # site:          a site
 #     server:    the server address used for the site
 #     uri:       the absolute VFS path used for the site
+#     title:     optional display title
+#     position:  optional position for display order
 # secure:        an optional secure server for the site:
 #     server:    the server address used for this site
 #     exclusive: if set to true, secure resources will only be available using the given secure url
@@ -272,20 +274,21 @@ Each job can have an optional list of parameters.
 <!ELEMENT default-uri (#PCDATA)>
 <!ELEMENT shared-folder (#PCDATA)>
 <!ELEMENT site (secure?, alias*)>
-
-<!ATTLIST site 
+<!ATTLIST site
 	server CDATA #REQUIRED
-	uri CDATA #REQUIRED>
-<!ELEMENT secure EMPTY>	
+	uri CDATA #REQUIRED
+	title CDATA #IMPLIED
+	position CDATA #IMPLIED>
+<!ELEMENT secure EMPTY>
 <!ATTLIST secure
 	server CDATA #REQUIRED
 	exclusive (true|false|TRUE|FALSE) "false"
 	error (true|false|TRUE|FALSE) "false">
-<!ELEMENT alias EMPTY>	
+<!ELEMENT alias EMPTY>
 <!ATTLIST alias
 	server CDATA #REQUIRED
-	offset CDATA #IMPLIED>	
-	
+	offset CDATA #IMPLIED>
+
 <!--
 # Optional configuration that controls some additional information as key/value param pairs
 # Parameters and values are stored as OpenCms runtime properties.

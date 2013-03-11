@@ -28,6 +28,7 @@
 package org.opencms.site;
 
 import org.opencms.configuration.CmsConfigurationException;
+import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
@@ -93,17 +94,11 @@ public final class CmsSiteManagerImpl {
     /** Indicates if the configuration is finalized (frozen). */
     private boolean m_frozen;
 
-    /** List to access the time offsets. */
-    private List<CmsSiteMatcher> m_matchers;
-
     /** The shared folder name. */
     private String m_sharedFolder;
 
     /** Maps site matchers to sites. */
     private Map<CmsSiteMatcher, CmsSite> m_siteMatcherSites;
-
-    /** The set of all configured site root paths (as String). */
-    private Set<String> m_siteRoots;
 
     /** Maps site roots to sites. */
     private Map<String, CmsSite> m_siteRootSites;
@@ -123,7 +118,6 @@ public final class CmsSiteManagerImpl {
         m_siteMatcherSites = new HashMap<CmsSiteMatcher, CmsSite>();
         m_siteRootSites = new HashMap<String, CmsSite>();
         m_aliases = new ArrayList<CmsSiteMatcher>();
-        m_matchers = new ArrayList<CmsSiteMatcher>();
         m_additionalSiteRoots = new ArrayList<String>();
 
         if (CmsLog.INIT.isInfoEnabled()) {
@@ -150,6 +144,49 @@ public final class CmsSiteManagerImpl {
     }
 
     /**
+     * Adds a site.<p>
+     * 
+     * @param cms the CMS object
+     * @param site the site to add
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void addSite(CmsObject cms, CmsSite site) throws CmsException {
+
+        // check permissions
+        if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) {
+            // simple unit tests will have runlevel 1 and no CmsObject
+            OpenCms.getRoleManager().checkRole(cms, CmsRole.DATABASE_MANAGER);
+        }
+
+        // un-freeze
+        m_frozen = false;
+
+        // set the aliases first
+        // NOT they are reseted by #addSite method after the site was added successful
+        m_aliases = site.getAliases();
+
+        String secureUrl = null;
+        if (site.hasSecureServer() && !new CmsSiteMatcher(site.getSecureUrl()).equals(CmsSiteMatcher.DEFAULT_MATCHER)) {
+            secureUrl = site.getSecureUrl();
+        }
+
+        // add the site
+        addSite(
+            site.getUrl(),
+            site.getSiteRoot(),
+            site.getTitle(),
+            Float.toString(site.getPosition()),
+            secureUrl,
+            Boolean.toString(site.isExclusiveUrl()),
+            Boolean.toString(site.isExclusiveError()));
+
+        // re-initialize, will freeze the state when finished
+        initialize(cms);
+        OpenCms.writeConfiguration(CmsSystemConfiguration.class);
+    }
+
+    /**
      * Adds a new CmsSite to the list of configured sites, 
      * this is only allowed during configuration.<p>
      * 
@@ -158,6 +195,8 @@ public final class CmsSiteManagerImpl {
      * 
      * @param server the Server
      * @param uri the VFS path
+     * @param title the display title for this site
+     * @param position the display order for this site
      * @param secureServer a secure server, can be <code>null</code>
      * @param exclusive if set to <code>true</code>, secure resources will only be available using the configured secure url
      * @param error if exclusive, and set to <code>true</code> will generate a 404 error, 
@@ -165,14 +204,31 @@ public final class CmsSiteManagerImpl {
      * 
      * @throws CmsConfigurationException if the site contains a server name, that is already assigned
      */
-    public void addSite(String server, String uri, String secureServer, String exclusive, String error)
-    throws CmsConfigurationException {
+    public void addSite(
+        String server,
+        String uri,
+        String title,
+        String position,
+        String secureServer,
+        String exclusive,
+        String error) throws CmsConfigurationException {
 
         if (m_frozen) {
             throw new CmsRuntimeException(Messages.get().container(Messages.ERR_CONFIG_FROZEN_0));
         }
         CmsSiteMatcher matcher = new CmsSiteMatcher(server);
         CmsSite site = new CmsSite(uri, matcher);
+        site.setTitle(title);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(position)) {
+            float pos = Float.MAX_VALUE;
+            try {
+                pos = Float.parseFloat(position);
+            } catch (Throwable e) {
+                // m_position will have Float.MAX_VALUE, so this site will appear last
+            }
+            site.setPosition(pos);
+        }
+
         addServer(matcher, site);
         if (CmsStringUtil.isNotEmpty(secureServer)) {
             matcher = new CmsSiteMatcher(secureServer);
@@ -191,6 +247,7 @@ public final class CmsSiteManagerImpl {
             addServer(matcher, site);
         }
         m_aliases = new ArrayList<CmsSiteMatcher>();
+        m_siteRootSites = new HashMap<String, CmsSite>(m_siteRootSites);
         m_siteRootSites.put(site.getSiteRoot(), site);
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SITE_ROOT_ADDED_1, site.toString()));
@@ -294,14 +351,27 @@ public final class CmsSiteManagerImpl {
                                 CmsPermissionSet.ACCESS_VIEW,
                                 false,
                                 CmsResourceFilter.ONLY_VISIBLE)) {
-                            String title = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
+                            String title = null;
+                            CmsSite si = m_siteRootSites.get(folder);
+                            if ((si != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(si.getTitle())) {
+                                title = si.getTitle();
+                            }
                             if (title == null) {
-                                title = folder;
+                                title = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
+                                if (title == null) {
+                                    title = folder;
+                                }
+                                if ((shared != null) && folder.equals(shared)) {
+                                    title = SHARED_FOLDER_TITLE;
+                                }
                             }
-                            if ((shared != null) && folder.equals(shared)) {
-                                title = SHARED_FOLDER_TITLE;
+                            String position = null;
+                            if ((si != null) && (si.getPosition() != Float.MAX_VALUE)) {
+                                position = Float.toString(si.getPosition());
                             }
-                            String position = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_NAVPOS, false).getValue();
+                            if (position == null) {
+                                position = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_NAVPOS, false).getValue();
+                            }
                             result.add(new CmsSite(
                                 folder,
                                 res.getStructureId(),
@@ -518,7 +588,7 @@ public final class CmsSiteManagerImpl {
      */
     public Set<String> getSiteRoots() {
 
-        return m_siteRoots;
+        return m_siteRootSites.keySet();
     }
 
     /**
@@ -566,17 +636,21 @@ public final class CmsSiteManagerImpl {
                 new Integer((m_siteMatcherSites.size() + ((m_defaultUri != null) ? 1 : 0)))));
         }
 
-        // check the presence of sites in VFS
-        Iterator<CmsSite> i = m_siteMatcherSites.values().iterator();
-        while (i.hasNext()) {
-            CmsSite site = i.next();
-            if (site != null) {
+        CmsObject clone;
+        try {
+            clone = OpenCms.initCmsObject(cms);
+            clone.getRequestContext().setSiteRoot("");
+
+            // check the presence of sites in VFS
+            for (CmsSite site : m_siteMatcherSites.values()) {
                 try {
-                    CmsResource siteRes = cms.readResource(site.getSiteRoot());
-                    // during server startup the digester can not access properties, so set the title afterwards 
-                    String title = cms.readPropertyObject(siteRes, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
-                    if ((title != null) && !title.isEmpty()) {
-                        site.setTitle(title);
+                    CmsResource siteRes = clone.readResource(site.getSiteRoot());
+                    // during server startup the digester can not access properties, so set the title afterwards
+                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(site.getTitle())) {
+                        String title = clone.readPropertyObject(siteRes, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(title)) {
+                            site.setTitle(title);
+                        }
                     }
                 } catch (Throwable t) {
                     if (CmsLog.INIT.isWarnEnabled()) {
@@ -584,58 +658,61 @@ public final class CmsSiteManagerImpl {
                     }
                 }
             }
-        }
 
-        // check the presence of the default site in VFS
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_defaultUri)) {
-            m_defaultSite = null;
-        } else {
-            m_defaultSite = new CmsSite(m_defaultUri, CmsSiteMatcher.DEFAULT_MATCHER);
-            try {
-                cms.readResource(m_defaultSite.getSiteRoot());
-            } catch (Throwable t) {
-                if (CmsLog.INIT.isWarnEnabled()) {
-                    CmsLog.INIT.warn(Messages.get().getBundle().key(
-                        Messages.INIT_NO_ROOT_FOLDER_DEFAULT_SITE_1,
-                        m_defaultSite));
+            // check the presence of the default site in VFS
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_defaultUri)) {
+                m_defaultSite = null;
+            } else {
+                m_defaultSite = new CmsSite(m_defaultUri, CmsSiteMatcher.DEFAULT_MATCHER);
+                try {
+                    clone.readResource(m_defaultSite.getSiteRoot());
+                } catch (Throwable t) {
+                    if (CmsLog.INIT.isWarnEnabled()) {
+                        CmsLog.INIT.warn(Messages.get().getBundle().key(
+                            Messages.INIT_NO_ROOT_FOLDER_DEFAULT_SITE_1,
+                            m_defaultSite));
+                    }
                 }
             }
-        }
-        if (m_defaultSite == null) {
-            m_defaultSite = new CmsSite("/", CmsSiteMatcher.DEFAULT_MATCHER);
-        }
-        if (CmsLog.INIT.isInfoEnabled()) {
-            if (m_defaultSite != null) {
-                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DEFAULT_SITE_ROOT_1, m_defaultSite));
-            } else {
-                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DEFAULT_SITE_ROOT_0));
+            if (m_defaultSite == null) {
+                m_defaultSite = new CmsSite("/", CmsSiteMatcher.DEFAULT_MATCHER);
             }
-        }
-        m_workplaceSiteMatcher = new CmsSiteMatcher(m_workplaceServer);
-        if (CmsLog.INIT.isInfoEnabled()) {
-            if (m_workplaceSiteMatcher != null) {
-                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WORKPLACE_SITE_1, m_workplaceSiteMatcher));
-            } else {
-                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WORKPLACE_SITE_0));
+            if (CmsLog.INIT.isInfoEnabled()) {
+                if (m_defaultSite != null) {
+                    CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DEFAULT_SITE_ROOT_1, m_defaultSite));
+                } else {
+                    CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DEFAULT_SITE_ROOT_0));
+                }
             }
+            m_workplaceSiteMatcher = new CmsSiteMatcher(m_workplaceServer);
+            if (CmsLog.INIT.isInfoEnabled()) {
+                if (m_workplaceSiteMatcher != null) {
+                    CmsLog.INIT.info(Messages.get().getBundle().key(
+                        Messages.INIT_WORKPLACE_SITE_1,
+                        m_workplaceSiteMatcher));
+                } else {
+                    CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WORKPLACE_SITE_0));
+                }
+            }
+
+            // set site lists to unmodifiable 
+            m_siteMatcherSites = Collections.unmodifiableMap(m_siteMatcherSites);
+
+            // store additional site roots to optimize lookups later
+            for (String root : m_siteRootSites.keySet()) {
+                if (!root.startsWith(SITES_FOLDER)) {
+                    m_additionalSiteRoots.add(root);
+                }
+            }
+
+            // initialization is done, set the frozen flag to true 
+            m_frozen = true;
+
+        } catch (CmsException e) {
+            // TODO: Auto-generated catch block
+            e.printStackTrace();
         }
 
-        // set site lists to unmodifiable 
-        m_siteMatcherSites = Collections.unmodifiableMap(m_siteMatcherSites);
-        m_matchers = Collections.unmodifiableList(m_matchers);
-        m_siteRoots = Collections.unmodifiableSet(m_siteRootSites.keySet());
-
-        // store additional site roots to optimize lookups later
-        Iterator<String> j = m_siteRoots.iterator();
-        while (j.hasNext()) {
-            String root = j.next();
-            if (!root.startsWith(SITES_FOLDER)) {
-                m_additionalSiteRoots.add(root);
-            }
-        }
-
-        // initialization is done, set the frozen flag to true 
-        m_frozen = true;
     }
 
     /**
@@ -772,6 +849,49 @@ public final class CmsSiteManagerImpl {
     }
 
     /**
+     * Removed a site.<p>
+     * 
+     * @param cms the cms object
+     * @param site the site to remove
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void removeSite(CmsObject cms, CmsSite site) throws CmsException {
+
+        // check permissions
+        if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) {
+            // simple unit tests will have runlevel 1 and no CmsObject
+            OpenCms.getRoleManager().checkRole(cms, CmsRole.DATABASE_MANAGER);
+        }
+
+        // un-freeze
+        m_frozen = false;
+
+        // create a new map containing all existing sites without the one to remove
+        Map<CmsSiteMatcher, CmsSite> siteMatcherSites = new HashMap<CmsSiteMatcher, CmsSite>();
+        for (Map.Entry<CmsSiteMatcher, CmsSite> entry : m_siteMatcherSites.entrySet()) {
+            // iterate over the existing sites
+            boolean isSite = site.getUrl().equals(entry.getKey().getUrl());
+            boolean isSecure = site.hasSecureServer() ? site.getSecureUrl().equals(entry.getKey().getUrl()) : false;
+            boolean isAlias = site.getAliases().contains(entry.getKey());
+            if (!(isSite || isSecure || isAlias)) {
+                // entry not the site itself nor an alias of the site nor the secure URL of the site, so add it
+                siteMatcherSites.put(entry.getKey(), entry.getValue());
+            }
+        }
+        m_siteMatcherSites = Collections.unmodifiableMap(siteMatcherSites);
+
+        // remove the site from the map holding the site roots as keys and the sites as values
+        Map<String, CmsSite> siteRootSites = new HashMap<String, CmsSite>(m_siteRootSites);
+        siteRootSites.remove(site.getSiteRoot());
+        m_siteRootSites = Collections.unmodifiableMap(siteRootSites);
+
+        // re-initialize, will freeze the state when finished
+        initialize(cms);
+        OpenCms.writeConfiguration(CmsSystemConfiguration.class);
+    }
+
+    /**
      * Sets the default URI, this is only allowed during configuration.<p>
      * 
      * If this method is called after the configuration is finished, 
@@ -829,6 +949,28 @@ public final class CmsSiteManagerImpl {
     }
 
     /**
+     * Updates an existing site.<p>
+     * 
+     * @param cms the CMS object
+     * @param oldSite the site to remove if not <code>null</code>
+     * @param newSite the site to add if not <code>null</code>
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void updateSite(CmsObject cms, CmsSite oldSite, CmsSite newSite) throws CmsException {
+
+        if (oldSite != null) {
+            // remove the old site
+            removeSite(cms, oldSite);
+        }
+
+        if (newSite != null) {
+            // add the new site
+            addSite(cms, newSite);
+        }
+    }
+
+    /**
      * Adds a new Site matcher object to the map of server names.
      * 
      * @param matcher the SiteMatcher of the server
@@ -843,8 +985,9 @@ public final class CmsSiteManagerImpl {
                 Messages.ERR_DUPLICATE_SERVER_NAME_1,
                 matcher.getUrl()));
         }
-        m_matchers.add(matcher);
-        m_siteMatcherSites.put(matcher, site);
+        Map<CmsSiteMatcher, CmsSite> sites = new HashMap<CmsSiteMatcher, CmsSite>(m_siteMatcherSites);
+        sites.put(matcher, site);
+        m_siteMatcherSites = Collections.unmodifiableMap(sites);
     }
 
     /**
@@ -858,11 +1001,12 @@ public final class CmsSiteManagerImpl {
 
         CmsSiteMatcher matcher = new CmsSiteMatcher(req.getScheme(), req.getServerName(), req.getServerPort());
         // this is needed to get the right configured time offset
-        int index = m_matchers.indexOf(matcher);
+        List<CmsSiteMatcher> allMatechers = new ArrayList<CmsSiteMatcher>(m_siteMatcherSites.keySet());
+        int index = allMatechers.indexOf(matcher);
         if (index < 0) {
             return matcher;
         }
-        return m_matchers.get(index);
+        return allMatechers.get(index);
     }
 
     /**

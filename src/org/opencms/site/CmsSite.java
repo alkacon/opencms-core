@@ -52,7 +52,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     private static final Log LOG = CmsLog.getLog(CmsSite.class);
 
     /** The aliases for this site, a vector of CmsSiteMatcher Objects. */
-    private List<CmsSiteMatcher> m_aliases;
+    private List<CmsSiteMatcher> m_aliases = new ArrayList<CmsSiteMatcher>();
 
     /** If exclusive, and set to true will generate a 404 error, if set to false will redirect to secure url. */
     private boolean m_exclusiveError;
@@ -125,7 +125,47 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
         } catch (Throwable e) {
             // m_position will have Float.MAX_VALUE, so this site will appear last
         }
-        m_aliases = new ArrayList<CmsSiteMatcher>();
+    }
+
+    /**
+     * Constructs a new site object.<p>
+     * 
+     * @param siteRoot root directory of this site in the OpenCms VFS
+     * @param siteRootUUID UUID of this site's root directory in the OpenCms VFS
+     * @param title display name of this site
+     * @param siteMatcher the site matcher for this site
+     * @param position the sorting position
+     * @param secureSite the secure site
+     * @param exclusiveUrl the exclusive flag
+     * @param exclusiveError the exclusive error flag
+     * @param aliases the aliases
+     */
+    public CmsSite(
+        String siteRoot,
+        CmsUUID siteRootUUID,
+        String title,
+        CmsSiteMatcher siteMatcher,
+        String position,
+        CmsSiteMatcher secureSite,
+        boolean exclusiveUrl,
+        boolean exclusiveError,
+        List<CmsSiteMatcher> aliases) {
+
+        setSiteRoot(siteRoot);
+        setSiteRootUUID(siteRootUUID);
+        setTitle(title);
+        setSiteMatcher(siteMatcher);
+        // init the position value
+        m_position = Float.MAX_VALUE;
+        try {
+            m_position = Float.parseFloat(position);
+        } catch (Throwable e) {
+            // m_position will have Float.MAX_VALUE, so this site will appear last
+        }
+        setSecureServer(secureSite);
+        setExclusiveUrl(exclusiveUrl);
+        setExclusiveError(exclusiveError);
+        setAliases(aliases);
     }
 
     /**
@@ -445,6 +485,16 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     protected void setAliases(List<CmsSiteMatcher> aliases) {
 
         m_aliases = aliases;
+    }
+
+    /**
+     * Sets the display title of this site.<p>
+     * 
+     * @param position the display title of this site
+     */
+    protected void setPosition(float position) {
+
+        m_position = position;
     }
 
     /**
