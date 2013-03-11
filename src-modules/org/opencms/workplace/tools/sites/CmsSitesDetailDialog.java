@@ -177,7 +177,7 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
     protected void defineWidgets() {
 
         initSite();
-        setKeyPrefix(CmsSitesEditProvider.KEY_PREFIX);
+        setKeyPrefix(CmsSitesEditService.KEY_PREFIX_SITES);
         if (DIALOG_EDIT.equals(getParamEditAction())) {
             addWidget(new CmsWidgetDialogParameter(m_site, "siteRoot", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_site, "server", PAGES[0], new CmsInputWidget()));

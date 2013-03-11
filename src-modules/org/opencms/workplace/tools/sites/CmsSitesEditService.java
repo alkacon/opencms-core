@@ -38,14 +38,17 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * The provider for the actions available to manage sites. Also servers as utility class.<p>
+ * The provider for the actions available to manage sites. Also serves as utility class.<p>
  * 
  * @since 9.0.0
  */
-public class CmsSitesEditProvider extends CmsJspActionElement {
+public class CmsSitesEditService extends CmsJspActionElement {
 
     /** The message key prefix to be used for widget labels. */
-    public static final String KEY_PREFIX = "sites";
+    public static final String KEY_PREFIX_SITES = "sites";
+
+    /** The message key prefix to be used for widget labels. */
+    public static final String KEY_PREFIX_SETTINGS = "settings";
 
     /**
      * Public constructor with JSP variables.<p>
@@ -54,7 +57,7 @@ public class CmsSitesEditProvider extends CmsJspActionElement {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsSitesEditProvider(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsSitesEditService(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         super(context, req, res);
     }

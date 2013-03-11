@@ -44,6 +44,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_DUPLICATE_SERVER_NAME_1 = "ERR_DUPLICATE_SERVER_NAME_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_INVALID_PATH_FOR_SHARED_FOLDER_1 = "ERR_INVALID_PATH_FOR_SHARED_FOLDER_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SITE_NOT_CONFIGURED_1 = "ERR_SITE_NOT_CONFIGURED_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String INIT_DEFAULT_SITE_ROOT_0 = "INIT_DEFAULT_SITE_ROOT_0";
 
     /** Message constant for key in the resource bundle. */

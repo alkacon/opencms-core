@@ -40,6 +40,7 @@ import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -351,12 +352,18 @@ public final class CmsSiteManagerImpl {
                                 CmsPermissionSet.ACCESS_VIEW,
                                 false,
                                 CmsResourceFilter.ONLY_VISIBLE)) {
+
+                            // get the title and the position from the system configuration first
+                            CmsSite configuredSite = m_siteRootSites.get(CmsFileUtil.removeTrailingSeparator(folder));
+
+                            // get the title
                             String title = null;
-                            CmsSite si = m_siteRootSites.get(folder);
-                            if ((si != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(si.getTitle())) {
-                                title = si.getTitle();
+                            if ((configuredSite != null)
+                                && CmsStringUtil.isNotEmptyOrWhitespaceOnly(configuredSite.getTitle())) {
+                                title = configuredSite.getTitle();
                             }
                             if (title == null) {
+                                // not found, use the 'Title' property
                                 title = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
                                 if (title == null) {
                                     title = folder;
@@ -365,13 +372,18 @@ public final class CmsSiteManagerImpl {
                                     title = SHARED_FOLDER_TITLE;
                                 }
                             }
+
+                            // get the position
                             String position = null;
-                            if ((si != null) && (si.getPosition() != Float.MAX_VALUE)) {
-                                position = Float.toString(si.getPosition());
+                            if ((configuredSite != null) && (configuredSite.getPosition() != Float.MAX_VALUE)) {
+                                position = Float.toString(configuredSite.getPosition());
                             }
                             if (position == null) {
+                                // not found, use the 'NavPos' property
                                 position = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_NAVPOS, false).getValue();
                             }
+
+                            // add the site to the result
                             result.add(new CmsSite(
                                 folder,
                                 res.getStructureId(),
@@ -707,12 +719,9 @@ public final class CmsSiteManagerImpl {
 
             // initialization is done, set the frozen flag to true 
             m_frozen = true;
-
         } catch (CmsException e) {
-            // TODO: Auto-generated catch block
-            e.printStackTrace();
+            LOG.warn(e);
         }
-
     }
 
     /**
@@ -946,6 +955,46 @@ public final class CmsSiteManagerImpl {
     public boolean startsWithShared(String path) {
 
         return (m_sharedFolder != null) && CmsStringUtil.joinPaths(path, "/").startsWith(m_sharedFolder);
+    }
+
+    /**
+     * Updates the general settings.<p>
+     * 
+     * @param cms the cms to use
+     * @param defaulrUri the default URI
+     * @param workplaceServer the workplace server URL
+     * @param sharedFolder the shared folder URI
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void updateGeneralSettings(CmsObject cms, String defaulrUri, String workplaceServer, String sharedFolder)
+    throws CmsException {
+
+        CmsObject clone = OpenCms.initCmsObject(cms);
+        clone.getRequestContext().setSiteRoot("");
+
+        // set the wp server
+        CmsSiteMatcher matcher = new CmsSiteMatcher(workplaceServer);
+        if (!OpenCms.getSiteManager().isMatching(matcher)) {
+            throw new CmsException(Messages.get().container(Messages.ERR_SITE_NOT_CONFIGURED_1, workplaceServer));
+        }
+
+        // set the shared folder
+        if ((sharedFolder == null)
+            || sharedFolder.equals("")
+            || sharedFolder.equals("/")
+            || !sharedFolder.startsWith("/")
+            || !sharedFolder.endsWith("/")
+            || sharedFolder.startsWith("/sites/")) {
+            throw new CmsException(
+                Messages.get().container(Messages.ERR_INVALID_PATH_FOR_SHARED_FOLDER_1, sharedFolder));
+        }
+
+        m_frozen = false;
+        setDefaultUri(clone.readResource(defaulrUri).getRootPath());
+        setWorkplaceServer(workplaceServer);
+        setSharedFolder(clone.readResource(sharedFolder).getRootPath());
+        m_frozen = true;
     }
 
     /**

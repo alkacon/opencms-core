@@ -53,13 +53,28 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SITES_DETAIL_HIDE_ALIASES_NAME_0 = "GUI_SITES_DETAIL_HIDE_ALIASES_NAME_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITES_DETAIL_HIDE_SECURE_HELP_0 = "GUI_SITES_DETAIL_HIDE_SECURE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITES_DETAIL_HIDE_SECURE_NAME_0 = "GUI_SITES_DETAIL_HIDE_SECURE_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITES_DETAIL_LABEL_ALIASES_0 = "GUI_SITES_DETAIL_LABEL_ALIASES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITES_DETAIL_LABEL_SECURE_0 = "GUI_SITES_DETAIL_LABEL_SECURE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SITES_DETAIL_SHOW_ALIASES_HELP_0 = "GUI_SITES_DETAIL_SHOW_ALIASES_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITES_DETAIL_SHOW_ALIASES_NAME_0 = "GUI_SITES_DETAIL_SHOW_ALIASES_NAME_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_SITES_DETAIL_LABEL_ALIASES_0 = "GUI_SITES_DETAIL_LABEL_ALIASES_0";
+    public static final String GUI_SITES_DETAIL_SHOW_SECURE_HELP_0 = "GUI_SITES_DETAIL_SHOW_SECURE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITES_DETAIL_SHOW_SECURE_NAME_0 = "GUI_SITES_DETAIL_SHOW_SECURE_NAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITES_LIST_ACTION_EDIT_HELP_0 = "GUI_SITES_LIST_ACTION_EDIT_HELP_0";
@@ -111,21 +126,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_SITES_DETAIL_LABEL_SECURE_0 = "GUI_SITES_DETAIL_LABEL_SECURE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_SITES_DETAIL_SHOW_SECURE_NAME_0 = "GUI_SITES_DETAIL_SHOW_SECURE_NAME_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_SITES_DETAIL_SHOW_SECURE_HELP_0 = "GUI_SITES_DETAIL_SHOW_SECURE_HELP_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_SITES_DETAIL_HIDE_SECURE_NAME_0 = "GUI_SITES_DETAIL_HIDE_SECURE_NAME_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_SITES_DETAIL_HIDE_SECURE_HELP_0 = "GUI_SITES_DETAIL_HIDE_SECURE_HELP_0";
 
     /**
      * Hides the public constructor for this utility class.<p>

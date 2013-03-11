@@ -49,7 +49,7 @@ public class CmsSitesToolHandler extends A_CmsToolHandler {
      */
     public boolean isEnabled(CmsObject cms) {
 
-        return OpenCms.getRoleManager().hasRole(cms, CmsRole.DATABASE_MANAGER);
+        return OpenCms.getRoleManager().hasRole(cms, CmsRole.ADMINISTRATOR);
 
     }
 
@@ -58,6 +58,6 @@ public class CmsSitesToolHandler extends A_CmsToolHandler {
      */
     public boolean isVisible(CmsObject cms) {
 
-        return OpenCms.getRoleManager().hasRole(cms, CmsRole.DATABASE_MANAGER);
+        return OpenCms.getRoleManager().hasRole(cms, CmsRole.ADMINISTRATOR);
     }
 }
