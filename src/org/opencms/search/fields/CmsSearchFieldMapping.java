@@ -38,10 +38,14 @@ import org.opencms.main.CmsRuntimeException;
 import org.opencms.search.Messages;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.CmsXmlUtils;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import org.apache.lucene.document.DateTools;
 
@@ -110,6 +114,36 @@ public class CmsSearchFieldMapping implements I_CmsSearchFieldMapping {
     }
 
     /**
+     * Returns a list of values for the given XPath if according content items can be found.<p>
+     * 
+     * @param contentItems the content items to search in
+     * @param xpath the complete XPath the XPath to use as key
+     * 
+     * @return a list of element values found in the content items for the given XPath
+     */
+    private static List<String> getMultiValuesForXPath(Map<String, String> contentItems, String xpath) {
+
+        List<String> items = new ArrayList<String>();
+        // loop over the content items
+        for (Map.Entry<String, String> entry : contentItems.entrySet()) {
+            // reduce the original key by removing the XPath indexes
+            String key = CmsXmlUtils.removeXpath(entry.getKey());
+            if (!key.equals(entry.getKey())) {
+                // there have been indexes within the path
+                // now append the original locale extension, because this info has gone by removing the XPath
+                Locale locale = CmsStringUtil.getLocaleForName(entry.getKey());
+                key = CmsSearchFieldConfiguration.getLocaleExtendedName(key, locale);
+            }
+            if (key.equals(xpath)) {
+                // reduced XPath found inside the content items, 
+                // add the value of the current item to the results
+                items.add(entry.getValue());
+            }
+        }
+        return items;
+    }
+
+    /**
      * Two mappings are equal if the type and the parameter is equal.<p>
      * 
      * @see java.lang.Object#equals(java.lang.Object)
@@ -174,6 +208,13 @@ public class CmsSearchFieldMapping implements I_CmsSearchFieldMapping {
             case 3: // item
                 if ((extractionResult != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParam())) {
                     content = extractionResult.getContentItems().get(getParam());
+                    if (content == null) {
+                        // if the content can't be found for the given parameter within the content items
+                        // the parameter can be an XPath of a nested element, so try to retrieve multiple
+                        // values for the given XPath from the content items.
+                        List<String> items = getMultiValuesForXPath(extractionResult.getContentItems(), getParam());
+                        content = items.isEmpty() ? null : CmsStringUtil.listAsString(items, "\n");
+                    }
                 }
                 break;
             case 5: // attribute

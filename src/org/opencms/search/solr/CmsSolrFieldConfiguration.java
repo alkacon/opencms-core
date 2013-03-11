@@ -56,8 +56,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 
@@ -67,9 +65,6 @@ import org.apache.commons.logging.Log;
  * @since 8.5.0
  */
 public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
-
-    /** Pattern to determine the document locale. */
-    private static final Pattern LOCALE_SUFFIX_PATTERN = Pattern.compile("_([a-z]{2}(?:_[A-Z]{2})?)(?:\\.[^\\.]*)?$");
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSolrFieldConfiguration.class);
@@ -86,54 +81,6 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
     public CmsSolrFieldConfiguration() {
 
         super();
-    }
-
-    /** 
-     * Returns the locale for the given root path of a resource, including optional country code.<p>
-     * 
-     * 
-     * @param rootPath the root path to get the locale for
-     * 
-     * @return the locale, or <code>null</code>
-     * 
-     * @see #getLocaleSuffix(String)
-     */
-    public static Locale getLocaleFromFileName(String rootPath) {
-
-        String suffix = getLocaleSuffix(CmsResource.getName(rootPath));
-        if (suffix != null) {
-            String laguageString = suffix.substring(0, 2);
-            return suffix.length() == 5 ? new Locale(laguageString, suffix.substring(3, 5)) : new Locale(laguageString);
-        }
-        return null;
-    }
-
-    /**
-     * Returns the locale suffix for a given resource name.<p>
-     * 
-     * <b>Examples:</b>
-     * 
-     * <ul>
-     * <li><code>/sites/default/rabbit_en_EN.html -> Locale[en_EN]</code>
-     * <li><code>/sites/default/rabbit_en_EN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-> Locale[en_EN]</code>
-     * <li><code>/sites/default/rabbit_en.html&nbsp;&nbsp;&nbsp;&nbsp;-> Locale[en]</code>
-     * <li><code>/sites/default/rabbit_en&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-> Locale[en]</code>
-     * <li><code>/sites/default/rabbit_en.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-> Locale[en]</code>
-     * <li><code>/sites/default/rabbit_enr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-> null</code>
-     * <li><code>/sites/default/rabbit_en.tar.gz&nbsp;&nbsp;-> null</code>
-     * </ul>
-     * 
-     * @param resourcename the resource name to get the locale suffix for
-     * 
-     * @return the locale suffix if found, <code>null</code> otherwise
-     */
-    public static String getLocaleSuffix(String resourcename) {
-
-        Matcher matcher = LOCALE_SUFFIX_PATTERN.matcher(resourcename);
-        if (matcher.find()) {
-            return matcher.group(1);
-        }
-        return null;
     }
 
     /**
@@ -393,13 +340,13 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
     protected List<Locale> getContentLocales(CmsObject cms, CmsResource resource, I_CmsExtractionResult extraction) {
 
         // try to detect locale by filename
-        Locale detectedLocale = getLocaleFromFileName(resource.getRootPath());
+        Locale detectedLocale = CmsStringUtil.getLocaleForName(resource.getRootPath());
         // try to detect locale by language detector
         if (getIndex().isLanguageDetection()
             && (detectedLocale == null)
             && (extraction != null)
             && (extraction.getContent() != null)) {
-            detectedLocale = CmsStringUtil.getLocaleFromText(extraction.getContent());
+            detectedLocale = CmsStringUtil.getLocaleForText(extraction.getContent());
         }
         // take the detected locale or use the first configured default locale for this resource
         List<Locale> result = new ArrayList<Locale>();

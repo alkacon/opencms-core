@@ -44,7 +44,6 @@ import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.A_CmsXmlDocument;
-import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
@@ -120,9 +119,7 @@ public class CmsSolrDocumentXmlContent extends CmsDocumentXmlContent {
                         // CmsDefaultXmlContentHandler.initSearchSettings(Element, CmsXmlContentDefinition)
                         // later during index process the values are retrieved in:
                         // CmsSearchFieldMapping#getStringValue(CmsObject, CmsResource, I_CmsExtractionResult, List, List)
-                        items.put(
-                            CmsSearchFieldConfiguration.getLocaleExtendedName(CmsXmlUtils.removeXpath(xpath), locale),
-                            extracted);
+                        items.put(CmsSearchFieldConfiguration.getLocaleExtendedName(xpath, locale), extracted);
                     }
                 }
                 if (content.length() > 0) {

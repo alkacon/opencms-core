@@ -54,7 +54,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 
@@ -80,12 +79,6 @@ public final class CmsDocumentDependency {
         /** A variant dependency. */
         variant
     }
-
-    /** Pattern to determine the document locale. */
-    public static final Pattern DOC_PATTERN_LOCALE = Pattern.compile("(.*)_([a-z]{2}(?:_[A-Z]{2})?)($|[$|\\.|_])");
-
-    /** Pattern to determine the document attachment number. */
-    public static final Pattern DOC_PATTERN_NUMBER = Pattern.compile("(.*)_(\\d+)(\\.[^\\.^\\n]*)?$");
 
     /** Prefix for context attributes. */
     private static final String ATTR_DOC_DEPENDENCY = "CmsDocumentDependency.";
@@ -181,20 +174,19 @@ public final class CmsDocumentDependency {
         String docName = CmsResource.getName(rootPath);
 
         // check if an attachment number is present
-        Matcher matcher = DOC_PATTERN_NUMBER.matcher(docName);
+        Matcher matcher = CmsStringUtil.PATTERN_NUMBER_SUFFIX.matcher(docName);
         if (matcher.find()) {
             docName = matcher.group(1);
             try {
                 Integer partNumber = new Integer(Integer.parseInt(matcher.group(2)));
                 setAttachmentNumber(partNumber);
             } catch (NumberFormatException e) {
-                // if the pattern matches we must have found a valid number
-                // but it seems to be bigger than Integer.MAX_VALUE
+                // ignore, can happen if the second group of the matcher is larger than Integer.MAX_VALUE
             }
         }
 
         Locale locale = null;
-        matcher = DOC_PATTERN_LOCALE.matcher(docName);
+        matcher = CmsStringUtil.PATTERN_LOCALE_SUFFIX.matcher(docName);
         if (matcher.find()) {
             docName = matcher.group(1);
             String suffix = matcher.group(2);
