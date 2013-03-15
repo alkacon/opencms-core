@@ -204,6 +204,15 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         // resolve possible relative URI
         target = CmsLinkManager.getAbsoluteUri(target, controller.getCurrentRequest().getElementUri());
 
+        try {
+            // check if the target actually exists in the OpenCms VFS
+            controller.getCmsObject().readResource(target);
+        } catch (CmsException e) {
+            // store exception in controller and discontinue
+            controller.setThrowable(e, target);
+            throw new JspException(e);
+        }
+
         // include direct edit "start" element (if enabled)
         boolean directEditOpen = editable
             && CmsJspTagEditable.startDirectEdit(context, new CmsDirectEditParams(target, element));
