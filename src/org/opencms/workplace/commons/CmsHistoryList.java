@@ -28,6 +28,7 @@
 package org.opencms.workplace.commons;
 
 import org.opencms.db.CmsDbEntryNotFoundException;
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
@@ -87,7 +88,7 @@ public class CmsHistoryList extends A_CmsListDialog {
     /** 
      * Wrapper class for the version which is either an integer or the string "offline".<p>
      */
-    public static class CmsVersionWrapper implements Comparable {
+    public static class CmsVersionWrapper implements Comparable<Object> {
 
         /** the version. */
         private Integer m_version;
@@ -121,7 +122,7 @@ public class CmsHistoryList extends A_CmsListDialog {
                 if (v2.intValue() < 0) {
                     v2 = new Integer(-1 * v2.intValue());
                 }
-                return ((Comparable)v1).compareTo(v2);
+                return v1.compareTo(v2);
             }
             return 0;
         }
@@ -129,6 +130,7 @@ public class CmsHistoryList extends A_CmsListDialog {
         /**
          * @see java.lang.Object#equals(java.lang.Object)
          */
+        @Override
         public boolean equals(Object obj) {
 
             if (this == obj) {
@@ -154,6 +156,7 @@ public class CmsHistoryList extends A_CmsListDialog {
         /**
          * @see java.lang.Object#hashCode()
          */
+        @Override
         public int hashCode() {
 
             return getVersion().hashCode();
@@ -163,6 +166,7 @@ public class CmsHistoryList extends A_CmsListDialog {
          * 
          * @see java.lang.Object#toString()
          */
+        @Override
         public String toString() {
 
             return m_version.toString();
@@ -217,6 +221,9 @@ public class CmsHistoryList extends A_CmsListDialog {
 
     /** list column id constant. */
     public static final String LIST_COLUMN_VERSION = "cv";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_VERSION_ENABLE = "cve";
 
     /** List column export. */
     public static final String LIST_COLUMN_VIEW = "cp";
@@ -360,11 +367,12 @@ public class CmsHistoryList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() throws IOException, ServletException {
 
         if (getParamListAction().equals(LIST_MACTION_COMPARE)) {
-            CmsListItem item1 = (CmsListItem)getSelectedItems().get(0);
-            CmsListItem item2 = (CmsListItem)getSelectedItems().get(1);
+            CmsListItem item1 = getSelectedItems().get(0);
+            CmsListItem item2 = getSelectedItems().get(1);
             Map params = new HashMap();
             if (((Comparable)item2.get(LIST_COLUMN_VERSION)).compareTo(item1.get(LIST_COLUMN_VERSION)) > 0) {
                 params.put(PARAM_VERSION_1, item1.get(LIST_COLUMN_VERSION));
@@ -388,13 +396,14 @@ public class CmsHistoryList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws IOException, ServletException {
 
         if (getParamListAction().equals(LIST_ACTION_RESTORE)) {
             try {
                 performRestoreOperation();
-                Map params = new HashMap();
-                params.put(PARAM_ACTION, DIALOG_INITIAL);
+                Map<String, String[]> params = new HashMap<String, String[]>();
+                params.put(PARAM_ACTION, new String[] {DIALOG_INITIAL});
                 getToolManager().jspForwardPage(this, "/system/workplace/views/explorer/explorer_files.jsp", params);
             } catch (CmsException e) {
                 LOG.error(e.getMessage(), e);
@@ -407,6 +416,7 @@ public class CmsHistoryList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtmlStart()
      */
+    @Override
     protected String defaultActionHtmlStart() {
 
         return getList().listJs() + dialogContentStart(getParamTitle());
@@ -415,14 +425,15 @@ public class CmsHistoryList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // get content
-        List items = getList().getAllContent();
-        Iterator itItems = items.iterator();
+        List<CmsListItem> items = getList().getAllContent();
+        Iterator<CmsListItem> itItems = items.iterator();
         CmsListItem item;
         while (itItems.hasNext()) {
-            item = (CmsListItem)itItems.next();
+            item = itItems.next();
             if (detailId.equals(GUI_LIST_HISTORY_DETAIL_PROJECT_0)) {
                 fillDetailProject(item, detailId);
             }
@@ -432,14 +443,32 @@ public class CmsHistoryList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
-    protected List getListItems() throws CmsException {
+    @Override
+    protected List<CmsListItem> getListItems() throws CmsException {
 
-        List result = new ArrayList();
+        List<CmsListItem> result = new ArrayList<CmsListItem>();
 
-        List historicalVersions = getCms().readAllAvailableVersions(getParamResource());
-        Iterator itVersions = historicalVersions.iterator();
+        List<I_CmsHistoryResource> historicalVersions = getCms().readAllAvailableVersions(getParamResource());
+        Iterator<I_CmsHistoryResource> itVersions = historicalVersions.iterator();
         while (itVersions.hasNext()) {
-            I_CmsHistoryResource histRes = (I_CmsHistoryResource)itVersions.next();
+            I_CmsHistoryResource histRes = itVersions.next();
+
+            // determine if the item actions should be enabled
+            // true, if the history file resource has its content
+            // false, if the history resource has no content, so no history dialog action can be performed
+            boolean isEnabled = true;
+            CmsResource resource = (CmsResource)getCms().readResource(
+                getCms().readResource(histRes.getStructureId(), CmsResourceFilter.IGNORE_EXPIRATION).getStructureId(),
+                histRes.getVersion());
+            // not for folder
+            if (resource.isFile()) {
+                CmsFile file = getCms().readFile(resource);
+                byte[] content = file.getContents();
+                // disable item actions, if the file has no content
+                if (content.length < 1) {
+                    isEnabled = false;
+                }
+            }
 
             // the publish tag for the history project            
             int publishTag = histRes.getPublishTag();
@@ -481,6 +510,8 @@ public class CmsHistoryList extends A_CmsListDialog {
             item.set(LIST_COLUMN_PUBLISH_TAG, new Integer(publishTag));
             // invisible structure id           
             item.set(LIST_COLUMN_STRUCTURE_ID, histRes.getStructureId().toString());
+            // invisible version flag: true if history version has content and actions should be enabled, false otherwise
+            item.set(LIST_COLUMN_VERSION_ENABLE, new Boolean(isEnabled));
 
             result.add(item);
         }
@@ -519,6 +550,8 @@ public class CmsHistoryList extends A_CmsListDialog {
                 item.set(LIST_COLUMN_RESOURCE_PATH, getCms().getSitePath(onlineResource));
                 // invisible structure id           
                 item.set(LIST_COLUMN_STRUCTURE_ID, onlineResource.getStructureId().toString());
+                // invisible version flag: true 
+                item.set(LIST_COLUMN_VERSION_ENABLE, new Boolean(true));
 
                 result.add(item);
             } catch (CmsVfsResourceNotFoundException e) {
@@ -559,6 +592,8 @@ public class CmsHistoryList extends A_CmsListDialog {
             item.set(LIST_COLUMN_RESOURCE_PATH, getCms().getSitePath(offlineResource));
             // invisible structure id           
             item.set(LIST_COLUMN_STRUCTURE_ID, offlineResource.getStructureId().toString());
+            // invisible version flag: true 
+            item.set(LIST_COLUMN_VERSION_ENABLE, new Boolean(true));
 
             result.add(item);
         }
@@ -579,7 +614,7 @@ public class CmsHistoryList extends A_CmsListDialog {
     protected void performRestoreOperation() throws CmsException {
 
         CmsUUID structureId = new CmsUUID((String)getSelectedItem().get(LIST_COLUMN_STRUCTURE_ID));
-        int version = Integer.parseInt(((CmsListItem)getSelectedItems().get(0)).getId());
+        int version = Integer.parseInt(getSelectedItems().get(0).getId());
         if (version == CmsHistoryResourceHandler.PROJECT_OFFLINE_VERSION) {
             // it is not possible to restore the offline version
             return;
@@ -592,6 +627,7 @@ public class CmsHistoryList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         CmsListColumnDefinition previewCol = new CmsListColumnDefinition(LIST_COLUMN_VIEW);
@@ -600,6 +636,12 @@ public class CmsHistoryList extends A_CmsListDialog {
         previewCol.setVisible(false);
         previewCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         previewCol.setSorteable(false);
+
+        // create invisible coloumn for the version flag
+        CmsListColumnDefinition enableItemCol = new CmsListColumnDefinition(LIST_COLUMN_VERSION_ENABLE);
+        enableItemCol.setSorteable(false);
+        enableItemCol.setVisible(false);
+        metadata.addColumn(enableItemCol);
 
         // create column for icon
         CmsListColumnDefinition restoreCol = new CmsListColumnDefinition(LIST_COLUMN_RESTORE);
@@ -610,11 +652,36 @@ public class CmsHistoryList extends A_CmsListDialog {
         restoreCol.setSorteable(false);
 
         // add icon action
-        CmsListDirectAction restoreAction = new CmsListDirectAction(LIST_ACTION_RESTORE);
+        CmsListDirectAction restoreAction = new CmsListDirectAction(LIST_ACTION_RESTORE) {
+
+            /**
+             * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getIconPath()
+             */
+            @Override
+            public String getIconPath() {
+
+                Boolean isEnabled = (Boolean)getItem().get(LIST_COLUMN_VERSION_ENABLE);
+                if (isEnabled.booleanValue()) {
+                    return "tools/ex_history/buttons/restore.png";
+                }
+                return "buttons/publish_in.png";
+            }
+
+            /**
+             * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#isEnabled()
+             */
+            @Override
+            public boolean isEnabled() {
+
+                Boolean isEnabled = (Boolean)getItem().get(LIST_COLUMN_VERSION_ENABLE);
+                if (isEnabled.booleanValue()) {
+                    return true;
+                }
+                return false;
+            }
+        };
         restoreAction.setName(Messages.get().container(Messages.GUI_HISTORY_RESTORE_VERSION_0));
-        restoreAction.setIconPath("tools/ex_history/buttons/restore.png");
         restoreAction.setConfirmationMessage(Messages.get().container(Messages.GUI_HISTORY_CONFIRMATION_0));
-        restoreAction.setEnabled(true);
 
         restoreCol.addDirectAction(restoreAction);
         // add it to the list definition
@@ -636,6 +703,7 @@ public class CmsHistoryList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.list.CmsListResourceIconAction#defButtonHtml(CmsObject, java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean, java.lang.String, java.lang.String, java.lang.String, boolean)
              */
+            @Override
             public String defButtonHtml(
                 CmsObject cms,
                 String id,
@@ -673,9 +741,34 @@ public class CmsHistoryList extends A_CmsListDialog {
                     singleHelp);
             }
 
+            /** 
+             * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getIconPath()
+             */
+            @Override
+            public String getIconPath() {
+
+                Boolean isEnabled = (Boolean)getItem().get(LIST_COLUMN_VERSION_ENABLE);
+                if (!isEnabled.booleanValue()) {
+                    return "filetypes/plain.gif";
+                }
+                return super.getIconPath();
+
+            }
+
+            /** 
+             * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#isEnabled()
+             */
+            @Override
+            public boolean isEnabled() {
+
+                Boolean isEnabled = (Boolean)getItem().get(LIST_COLUMN_VERSION_ENABLE);
+                if (isEnabled.booleanValue()) {
+                    return true;
+                }
+                return false;
+            }
         };
         fileAction.setName(Messages.get().container(Messages.GUI_HISTORY_PREVIEW_0));
-        fileAction.setEnabled(true);
         iconCol.addDirectAction(fileAction);
         // add it to the list definition
         metadata.addColumn(iconCol);
@@ -788,6 +881,7 @@ public class CmsHistoryList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // add index source details
@@ -809,6 +903,7 @@ public class CmsHistoryList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // add compare action
