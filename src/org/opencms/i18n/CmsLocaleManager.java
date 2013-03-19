@@ -40,6 +40,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.util.CmsStringUtil;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -48,10 +49,10 @@ import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 
 import com.cybozu.labs.langdetect.DetectorFactory;
-import com.cybozu.labs.langdetect.LangDetectException;
 
 /**
  * Manages the locales configured for this OpenCms installation.<p>
@@ -946,8 +947,8 @@ public class CmsLocaleManager implements I_CmsEventListener {
         // set default locale 
         m_defaultLocale = m_defaultLocales.get(0);
         try {
-            DetectorFactory.loadProfiles();
-        } catch (LangDetectException e) {
+            DetectorFactory.loadProfile(loadProfiles(getAvailableLocales()));
+        } catch (Exception e) {
             LOG.error(Messages.get().getBundle().key(Messages.INIT_I18N_LANG_DETECT_FAILED_0), e);
         }
         // set initialized status
@@ -1061,5 +1062,30 @@ public class CmsLocaleManager implements I_CmsEventListener {
         } else {
             return result;
         }
+    }
+
+    /**
+     * Load the profiles from the classpath.<p>
+     * 
+     * @param locales the locales to initialize.<p>
+     * 
+     * @return a list of profiles
+     * 
+     * @throws Exception if something goes wrong
+     */
+    private List<String> loadProfiles(List<Locale> locales) throws Exception {
+
+        List<String> profiles = new ArrayList<String>();
+        for (Locale locale : locales) {
+            String lang = locale.getLanguage();
+            String profileFile = "profiles" + "/" + lang;
+            InputStream is = getClass().getClassLoader().getResourceAsStream(profileFile);
+            String profile = IOUtils.toString(is, "UTF-8");
+            if ((profile != null) && (profile.length() > 0)) {
+                profiles.add(profile);
+            }
+            is.close();
+        }
+        return profiles;
     }
 }

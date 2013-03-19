@@ -57,7 +57,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/runtime/jstl-1.1.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/jtidy-8-svn-2006-05-21b.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/jug-lgpl-2.0.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/runtime/langdetect.jar"/>
+	<classpathentry kind="lib" path="lib/runtime/langdetect-1.1-20120112.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/log4j-1.2.15.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-analyzers-3.6.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-core-3.6.1.jar"/>
