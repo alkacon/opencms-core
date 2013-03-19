@@ -168,7 +168,7 @@ public final class CmsSiteManagerImpl {
         m_aliases = site.getAliases();
 
         String secureUrl = null;
-        if (site.hasSecureServer() && !new CmsSiteMatcher(site.getSecureUrl()).equals(CmsSiteMatcher.DEFAULT_MATCHER)) {
+        if (site.hasSecureServer()) {
             secureUrl = site.getSecureUrl();
         }
 
