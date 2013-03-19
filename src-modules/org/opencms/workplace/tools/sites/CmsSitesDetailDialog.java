@@ -36,6 +36,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
+import org.opencms.site.CmsSiteMatcher;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.widgets.CmsInputWidget;
@@ -44,6 +45,7 @@ import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -68,6 +70,9 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
 
     /** The sites parameter. */
     private String m_paramSites;
+
+    /** The site's title parameter. */
+    private String m_paramSitetitle;
 
     /** The dialog object. */
     private CmsSiteDialogObject m_site;
@@ -151,6 +156,16 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
     }
 
     /**
+     * Returns the paramSitetitle.<p>
+     *
+     * @return the paramSitetitle
+     */
+    public String getParamSitetitle() {
+
+        return m_paramSitetitle;
+    }
+
+    /**
      * Sets the paramEditAction.<p>
      *
      * @param paramEditAction the paramEditAction to set
@@ -171,6 +186,52 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
     }
 
     /**
+     * Sets the paramSitetitle.<p>
+     *
+     * @param paramSitetitle the paramSitetitle to set
+     */
+    public void setParamSitetitle(String paramSitetitle) {
+
+        m_paramSitetitle = paramSitetitle;
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWidgetDialog#createDialogHtml(java.lang.String)
+     */
+    @Override
+    protected String createDialogHtml(String dialog) {
+
+        StringBuffer result = new StringBuffer(1024);
+        result.append(createWidgetTableStart());
+        String title = m_site.getTitle();
+        int count = 2;
+        // site info
+        result.append(dialogBlockStart(Messages.get().getBundle().key(Messages.GUI_DETAIL_SITE_INFO_1, title)));
+        result.append(createWidgetTableStart());
+        result.append(createDialogRowsHtml(0, count));
+        result.append(createWidgetTableEnd());
+        result.append(dialogBlockEnd());
+        if (m_site.getSecureUrl() != null) {
+            // secure site
+            result.append(dialogBlockStart(Messages.get().getBundle().key(Messages.GUI_DETAIL_SITE_SECURE_1, title)));
+            result.append(createWidgetTableStart());
+            result.append(createDialogRowsHtml(++count, count));
+            result.append(createWidgetTableEnd());
+            result.append(dialogBlockEnd());
+        }
+        if (!m_site.getAliases().isEmpty()) {
+            // aliases
+            result.append(dialogBlockStart(Messages.get().getBundle().key(Messages.GUI_DETAIL_SITE_ALIASES_1, title)));
+            result.append(createWidgetTableStart());
+            result.append(createDialogRowsHtml(++count, (count + m_site.getAliases().size()) - 1));
+            result.append(createWidgetTableEnd());
+            result.append(dialogBlockEnd());
+        }
+        result.append(createWidgetTableEnd());
+        return result.toString();
+    }
+
+    /**
      * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
      */
     @Override
@@ -179,19 +240,34 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
         initSite();
         setKeyPrefix(CmsSitesEditService.KEY_PREFIX_SITES);
         if (DIALOG_EDIT.equals(getParamEditAction())) {
-            addWidget(new CmsWidgetDialogParameter(m_site, "siteRoot", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_site, "server", PAGES[0], new CmsInputWidget()));
             addWidget(new CmsWidgetDialogParameter(m_site, "title", PAGES[0], new CmsInputWidget()));
-        } else {
             addWidget(new CmsWidgetDialogParameter(m_site, "siteRoot", PAGES[0], new CmsDisplayWidget()));
+        } else {
             addWidget(new CmsWidgetDialogParameter(m_site, "server", PAGES[0], new CmsDisplayWidget()));
-            CmsWidgetDialogParameter title = new CmsWidgetDialogParameter(
-                m_site,
-                "title",
+            CmsWidgetDialogParameter t = new CmsWidgetDialogParameter(m_site, "title", PAGES[0], new CmsDisplayWidget());
+            t.setStringValue(getCms(), resolveMacros(m_site.getTitle()));
+            addWidget(t);
+            addWidget(new CmsWidgetDialogParameter(m_site, "siteRoot", PAGES[0], new CmsDisplayWidget()));
+        }
+
+        if (m_site.hasSecureServer()) {
+            addWidget(new CmsWidgetDialogParameter(m_site, "secureUrl", PAGES[0], new CmsDisplayWidget()));
+        }
+
+        int count = 0;
+        for (CmsSiteMatcher siteMatcher : m_site.getAliases()) {
+            CmsWidgetDialogParameter alias = new CmsWidgetDialogParameter(
+                siteMatcher.getUrl(),
+                siteMatcher.getUrl(),
+                "Alias " + (count + 1),
+                new CmsDisplayWidget(),
                 PAGES[0],
-                new CmsDisplayWidget());
-            title.setStringValue(getCms(), resolveMacros(m_site.getTitle()));
-            addWidget(title);
+                1,
+                1,
+                count);
+            addWidget(alias);
+            count++;
         }
     }
 
@@ -235,7 +311,11 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
             // create a new site
             m_site = (CmsSiteDialogObject)o;
         } else {
-            new CmsSiteDialogObject();
+            try {
+                getToolManager().jspForwardTool(this, "/sites", new HashMap<String, String[]>());
+            } catch (Exception e) {
+                // noop
+            }
         }
 
         setDialogObject(m_site);

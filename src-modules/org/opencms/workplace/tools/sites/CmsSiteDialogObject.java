@@ -336,7 +336,7 @@ public class CmsSiteDialogObject {
      *
      * @return the secureServer
      */
-    public boolean isSecureServer() {
+    public boolean hasSecureServer() {
 
         return m_secureServer;
     }

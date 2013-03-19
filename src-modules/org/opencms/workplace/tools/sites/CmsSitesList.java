@@ -164,6 +164,8 @@ public class CmsSitesList extends A_CmsListDialog {
         listSave();
     }
 
+    private static final String PARAM_SITE_TITLE = "sitetitle";
+
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
@@ -174,11 +176,13 @@ public class CmsSitesList extends A_CmsListDialog {
         Map<String, String[]> params = new HashMap<String, String[]>();
         params.put(PARAM_SITES, new String[] {site});
         if (getParamListAction().equals(LIST_ACTION_EDIT)) {
-            // forward to the edit site dialog  
+            // forward to the edit site dialog
+            params.put(PARAM_SITE_TITLE, new String[] {OpenCms.getSiteManager().getSiteForSiteRoot(site).getTitle()});
             params.put(PARAM_ACTION, new String[] {DIALOG_INITIAL});
             params.put(PARAM_EDIT_ACTION, new String[] {CmsSitesDetailDialog.DIALOG_EDIT});
             getToolManager().jspForwardTool(this, "/sites/detail/edit", params);
         } else if (getParamListAction().equals(LIST_ACTION_DEFAULT)) {
+            params.put(PARAM_SITE_TITLE, new String[] {OpenCms.getSiteManager().getSiteForSiteRoot(site).getTitle()});
             params.put(PARAM_ACTION, new String[] {DIALOG_INITIAL});
             getToolManager().jspForwardTool(this, "/sites/detail", params);
         } else if (getParamListAction().equals(LIST_ACTION_REMOVE)) {
