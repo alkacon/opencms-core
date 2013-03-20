@@ -348,11 +348,7 @@ public class TestConfig extends OpenCmsTestCase {
 
         String typename = "plain";
         String baseDirectory = "/sites/default";
-        String contentDirectory = baseDirectory + "/.content";
-
         String baseDirectory2 = "/sites/default/foo";
-
-        CmsFolderOrName folder = new CmsFolderOrName(contentDirectory, typename);
         CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig(typename, false, null, "file_%(number)", null);
 
         CmsTestConfigData config1 = new CmsTestConfigData(
@@ -546,8 +542,9 @@ public class TestConfig extends OpenCmsTestCase {
     }
 
     /**
-     * Tests the 'Disable all' option for properties
-     * @throws Exception
+     * Tests the 'Disable all' option for properties.<p>
+     * 
+     * @throws Exception if something goes wrong
      */
     public void testDiscardInheritedProperties() throws Exception {
 
@@ -1208,7 +1205,7 @@ public class TestConfig extends OpenCmsTestCase {
     }
 
     /**
-     * Helper method for getting a CMS context in the root site
+     * Helper method for getting a CMS context in the root site.<p>
      *  
      * @return a CMS context in the root site
      *   
