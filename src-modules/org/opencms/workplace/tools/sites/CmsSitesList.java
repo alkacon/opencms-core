@@ -107,11 +107,13 @@ public class CmsSitesList extends A_CmsListDialog {
     /** Id for the list of sites. */
     private static final String LIST_SITES_ID = "sites";
 
-    /** A parameter name for a comma separated list of site paths. */
-    private static final String PARAM_SITES = "sites";
-
     /** A parameter name for the edit action. */
     private static final String PARAM_EDIT_ACTION = "editaction";
+
+    private static final String PARAM_SITE_TITLE = "sitetitle";
+
+    /** A parameter name for a comma separated list of site paths. */
+    private static final String PARAM_SITES = "sites";
 
     /** Path to the module reports. */
     private static final String PATH_REPORTS = "/system/workplace/admin/sites/reports/";
@@ -163,8 +165,6 @@ public class CmsSitesList extends A_CmsListDialog {
         }
         listSave();
     }
-
-    private static final String PARAM_SITE_TITLE = "sitetitle";
 
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()

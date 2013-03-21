@@ -505,14 +505,23 @@ public class CmsSiteDialogObject {
      */
     public CmsSite toCmsSite() {
 
+        m_siteRoot = m_siteRoot.endsWith("/") ? m_siteRoot.substring(0, m_siteRoot.length() - 1) : m_siteRoot;
+        CmsSiteMatcher matcher = CmsStringUtil.isNotEmpty(m_secureUrl) ? new CmsSiteMatcher(m_secureUrl) : null;
         CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(m_siteRoot);
+        CmsUUID uuid = new CmsUUID();
         if ((site != null) && (site.getSiteMatcher() != null)) {
-            return new CmsSite(getSiteRoot(), (CmsUUID)site.getSiteRootUUID().clone(), getTitle(), new CmsSiteMatcher(
-                m_server), String.valueOf(m_position), CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_secureUrl)
-            ? new CmsSiteMatcher(m_secureUrl)
-            : null, m_exclusiveUrl, m_exclusiveError, m_aliases);
+            uuid = (CmsUUID)site.getSiteRootUUID().clone();
         }
-        return null;
+        return new CmsSite(
+            m_siteRoot,
+            uuid,
+            m_title,
+            new CmsSiteMatcher(m_server),
+            String.valueOf(m_position),
+            matcher,
+            m_exclusiveUrl,
+            m_exclusiveError,
+            m_aliases);
     }
 
     /**

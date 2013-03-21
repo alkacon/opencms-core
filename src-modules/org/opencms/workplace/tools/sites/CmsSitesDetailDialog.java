@@ -32,6 +32,7 @@
 package org.opencms.workplace.tools.sites;
 
 import org.opencms.configuration.CmsSystemConfiguration;
+import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
@@ -124,21 +125,23 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
                 aliases.add(new CmsSiteMatcher(ali));
             }
             m_site.setAliases(aliases);
-            OpenCms.getSiteManager().updateSite(getCms(), m_site.getOriginalSite(), m_site.toCmsSite());
-        } catch (CmsException e) {
-            addCommitError(e);
-        }
-
-        if (!hasCommitErrors()) {
-
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_site.getServer())) {
+                throw new CmsException(Messages.get().container(Messages.ERR_EMPTY_SERVER_URL_0));
+            }
+            CmsSite site = m_site.toCmsSite();
+            CmsObject cms = OpenCms.initCmsObject(getCms());
+            cms.getRequestContext().setSiteRoot("");
+            cms.readResource(site.getSiteRoot());
+            OpenCms.getSiteManager().updateSite(getCms(), m_site.getOriginalSite(), site);
             // write the system configuration
             OpenCms.writeConfiguration(CmsSystemConfiguration.class);
-
             // refresh the list of sites
             Map<?, ?> objects = (Map<?, ?>)getSettings().getListObject();
             if (objects != null) {
                 objects.remove(CmsSitesList.class.getName());
             }
+        } catch (Exception e) {
+            addCommitError(e);
         }
     }
 
@@ -241,6 +244,10 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
 
         StringBuffer result = new StringBuffer(1024);
         result.append(createWidgetTableStart());
+
+        // show error header once if there were validation errors
+        result.append(createWidgetErrorHeader());
+
         String title = m_site.getTitle();
         int count = 3;
         // site info
@@ -289,7 +296,7 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
             // new site
             addWidget(new CmsWidgetDialogParameter(m_site, "siteRoot", PAGES[0], new CmsVfsFileWidget(
                 false,
-                "/sites/",
+                "/sites",
                 false,
                 false)));
             addWidget(new CmsWidgetDialogParameter(m_site, "title", PAGES[0], new CmsInputWidget()));
