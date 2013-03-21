@@ -222,6 +222,10 @@ public final class CmsSiteManagerImpl {
             throw new CmsRuntimeException(Messages.get().container(Messages.ERR_SITE_ALREADY_CONFIGURED_1, uri));
         }
 
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(server)) {
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_EMPTY_SERVER_URL_0));
+        }
+
         CmsSiteMatcher matcher = new CmsSiteMatcher(server);
         CmsSite site = new CmsSite(uri, matcher);
         site.setTitle(title);

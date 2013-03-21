@@ -35,7 +35,6 @@ import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteMatcher;
@@ -125,9 +124,6 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
                 aliases.add(new CmsSiteMatcher(ali));
             }
             m_site.setAliases(aliases);
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_site.getServer())) {
-                throw new CmsException(Messages.get().container(Messages.ERR_EMPTY_SERVER_URL_0));
-            }
             CmsSite site = m_site.toCmsSite();
             CmsObject cms = OpenCms.initCmsObject(getCms());
             cms.getRequestContext().setSiteRoot("");
