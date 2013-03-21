@@ -118,6 +118,11 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
     public void actionCommit() {
 
         try {
+            List<CmsSiteMatcher> aliases = new ArrayList<CmsSiteMatcher>();
+            for (String ali : m_aliases) {
+                aliases.add(new CmsSiteMatcher(ali));
+            }
+            m_site.setAliases(aliases);
             OpenCms.getSiteManager().updateSite(getCms(), m_site.getOriginalSite(), m_site.toCmsSite());
         } catch (CmsException e) {
             addCommitError(e);
@@ -134,101 +139,6 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
                 objects.remove(CmsSitesList.class.getName());
             }
         }
-    }
-
-    /**
-     * Build select options for the position.<p>
-     * 
-     * @param currSite the current selected site 
-     * 
-     * @return the select options
-     */
-    public List<CmsSelectWidgetOption> createNavigationSelectOptions(CmsSiteDialogObject currSite) {
-
-        List<CmsSite> sites = new ArrayList<CmsSite>();
-        for (CmsSite site : OpenCms.getSiteManager().getAvailableSites(getCms(), true)) {
-            if (site.getSiteMatcher() != null) {
-                sites.add(site);
-            }
-        }
-
-        float maxValue = 0;
-        float nextPos = 0;
-
-        // calculate value for the first navigation position
-        float firstValue = 1;
-        if (sites.size() > 0) {
-            try {
-                maxValue = sites.get(0).getPosition();
-            } catch (Exception e) {
-                // should usually never happen
-            }
-        }
-
-        if (maxValue != 0) {
-            firstValue = maxValue / 2;
-        }
-
-        List<String> options = new ArrayList<String>(sites.size() + 1);
-        List<String> values = new ArrayList<String>(sites.size() + 1);
-
-        // add the first entry: before first element
-        options.add(getMessages().key(org.opencms.workplace.commons.Messages.GUI_CHNAV_POS_FIRST_0));
-        values.add(firstValue + "");
-
-        // show all present navigation elements in box
-        for (int i = 0; i < sites.size(); i++) {
-            String navText = sites.get(i).getTitle();
-            float navPos = sites.get(i).getPosition();
-            String siteRoot = sites.get(i).getSiteRoot();
-            // get position of next nav element
-            nextPos = navPos + 2;
-            if ((i + 1) < sites.size()) {
-                nextPos = sites.get(i + 1).getPosition();
-            }
-            // calculate new position of current nav element
-            float newPos;
-            if ((nextPos - navPos) > 1) {
-                newPos = navPos + 1;
-            } else {
-                newPos = (navPos + nextPos) / 2;
-            }
-            // check new maxValue of positions and increase it
-            if (navPos > maxValue) {
-                maxValue = navPos;
-            }
-            // if the element is the current file, mark it in select box
-            if ((currSite != null) && currSite.getSiteRoot() != null &&  currSite.getSiteRoot().equals(siteRoot)) {
-                options.add(CmsEncoder.escapeHtml(getMessages().key(
-                    org.opencms.workplace.commons.Messages.GUI_CHNAV_POS_CURRENT_1,
-                    new Object[] {sites.get(i).getSiteRoot()})));
-                values.add("-1");
-            } else {
-                options.add(CmsEncoder.escapeHtml(navText + " [" + sites.get(i).getSiteRoot() + "/]"));
-                values.add(newPos + "");
-            }
-        }
-
-        // add the entry: at the last position
-        options.add(getMessages().key(org.opencms.workplace.commons.Messages.GUI_CHNAV_POS_LAST_0));
-        values.add((maxValue + 1) + "");
-
-        // add the entry: no change
-        options.add(getMessages().key(org.opencms.workplace.commons.Messages.GUI_CHNAV_NO_CHANGE_0));
-        if ((currSite != null) && (currSite.getPosition() == Float.MAX_VALUE)) {
-            // current resource has no valid position, use "last position"
-            values.add((maxValue + 1) + "");
-        } else {
-            // current resource has valid position, use "-1" for no change
-            values.add("-1");
-        }
-        List<CmsSelectWidgetOption> result = new ArrayList<CmsSelectWidgetOption>();
-        for (int i = 0; i < values.size(); i++) {
-            String val = values.get(i);
-            String opt = options.get(i);
-            result.add(new CmsSelectWidgetOption(val, false, opt));
-        }
-        return result;
     }
 
     /**
@@ -446,6 +356,101 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
         super.initWorkplaceRequestValues(settings, request);
         // save the current state of the site (may be changed because of the widget values)
         setDialogObject(m_site);
+    }
+
+    /**
+     * Build select options for the position.<p>
+     * 
+     * @param currSite the current selected site 
+     * 
+     * @return the select options
+     */
+    private List<CmsSelectWidgetOption> createNavigationSelectOptions(CmsSiteDialogObject currSite) {
+
+        List<CmsSite> sites = new ArrayList<CmsSite>();
+        for (CmsSite site : OpenCms.getSiteManager().getAvailableSites(getCms(), true)) {
+            if (site.getSiteMatcher() != null) {
+                sites.add(site);
+            }
+        }
+
+        float maxValue = 0;
+        float nextPos = 0;
+
+        // calculate value for the first navigation position
+        float firstValue = 1;
+        if (sites.size() > 0) {
+            try {
+                maxValue = sites.get(0).getPosition();
+            } catch (Exception e) {
+                // should usually never happen
+            }
+        }
+
+        if (maxValue != 0) {
+            firstValue = maxValue / 2;
+        }
+
+        List<String> options = new ArrayList<String>(sites.size() + 1);
+        List<String> values = new ArrayList<String>(sites.size() + 1);
+
+        // add the first entry: before first element
+        options.add(getMessages().key(org.opencms.workplace.commons.Messages.GUI_CHNAV_POS_FIRST_0));
+        values.add(firstValue + "");
+
+        // show all present navigation elements in box
+        for (int i = 0; i < sites.size(); i++) {
+            String navText = sites.get(i).getTitle();
+            float navPos = sites.get(i).getPosition();
+            String siteRoot = sites.get(i).getSiteRoot();
+            // get position of next nav element
+            nextPos = navPos + 2;
+            if ((i + 1) < sites.size()) {
+                nextPos = sites.get(i + 1).getPosition();
+            }
+            // calculate new position of current nav element
+            float newPos;
+            if ((nextPos - navPos) > 1) {
+                newPos = navPos + 1;
+            } else {
+                newPos = (navPos + nextPos) / 2;
+            }
+            // check new maxValue of positions and increase it
+            if (navPos > maxValue) {
+                maxValue = navPos;
+            }
+            // if the element is the current file, mark it in select box
+            if ((currSite != null) && (currSite.getSiteRoot() != null) && currSite.getSiteRoot().equals(siteRoot)) {
+                options.add(CmsEncoder.escapeHtml(getMessages().key(
+                    org.opencms.workplace.commons.Messages.GUI_CHNAV_POS_CURRENT_1,
+                    new Object[] {sites.get(i).getSiteRoot()})));
+                values.add("-1");
+            } else {
+                options.add(CmsEncoder.escapeHtml(navText + " [" + sites.get(i).getSiteRoot() + "/]"));
+                values.add(newPos + "");
+            }
+        }
+
+        // add the entry: at the last position
+        options.add(getMessages().key(org.opencms.workplace.commons.Messages.GUI_CHNAV_POS_LAST_0));
+        values.add((maxValue + 1) + "");
+
+        // add the entry: no change
+        options.add(getMessages().key(org.opencms.workplace.commons.Messages.GUI_CHNAV_NO_CHANGE_0));
+        if ((currSite != null) && (currSite.getPosition() == Float.MAX_VALUE)) {
+            // current resource has no valid position, use "last position"
+            values.add((maxValue + 1) + "");
+        } else {
+            // current resource has valid position, use "-1" for no change
+            values.add("-1");
+        }
+        List<CmsSelectWidgetOption> result = new ArrayList<CmsSelectWidgetOption>();
+        for (int i = 0; i < values.size(); i++) {
+            String val = values.get(i);
+            String opt = options.get(i);
+            result.add(new CmsSelectWidgetOption(val, false, opt));
+        }
+        return result;
     }
 
     /**
