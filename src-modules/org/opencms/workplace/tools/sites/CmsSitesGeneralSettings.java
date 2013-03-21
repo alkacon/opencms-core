@@ -192,7 +192,7 @@ public class CmsSitesGeneralSettings extends CmsWidgetDialog {
     @Override
     protected void defineWidgets() {
 
-        setKeyPrefix(CmsSitesEditService.KEY_PREFIX_SITES);
+        setKeyPrefix(CmsSiteDialogObject.KEY_PREFIX_SITES);
         setDialogObject(this);
         // initialize members
         m_workplaceServer = OpenCms.getSiteManager().getWorkplaceServer();

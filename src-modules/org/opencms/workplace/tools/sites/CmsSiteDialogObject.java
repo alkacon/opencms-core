@@ -44,17 +44,24 @@ import java.util.List;
  */
 public class CmsSiteDialogObject {
 
+    /** The message key prefix to be used for widget labels. */
+    public static final String KEY_PREFIX_SITES = "sites";
+
     private List<CmsSiteMatcher> m_aliases = new ArrayList<CmsSiteMatcher>();
 
+    /** The exclusive flag. */
     private boolean m_exclusiveError;
 
+    /** The exclusive URL. */
     private boolean m_exclusiveUrl;
 
     /** The port (e.g. 8080) which is required to access this site. */
     private int m_port;
 
+    /** The secure server. */
     private boolean m_secureServer;
 
+    /** The secure URL. */
     private String m_secureUrl;
 
     /** The servers URL. */
