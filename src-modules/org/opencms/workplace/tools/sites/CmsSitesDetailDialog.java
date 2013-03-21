@@ -198,7 +198,7 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
                 maxValue = navPos;
             }
             // if the element is the current file, mark it in select box
-            if ((currSite != null) && (currSite.getSiteRoot() != null) && currSite.getSiteRoot().equals(siteRoot)) {
+            if ((currSite != null) && currSite.getSiteRoot() != null &&  currSite.getSiteRoot().equals(siteRoot)) {
                 options.add(CmsEncoder.escapeHtml(getMessages().key(
                     org.opencms.workplace.commons.Messages.GUI_CHNAV_POS_CURRENT_1,
                     new Object[] {sites.get(i).getSiteRoot()})));
