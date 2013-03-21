@@ -38,6 +38,9 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_EMPTY_SERVER_URL_0 = "ERR_EMPTY_SERVER_URL_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SITES_ADMIN_TOOL_GROUP_0 = "GUI_SITES_ADMIN_TOOL_GROUP_0";
 
     /** Message constant for key in the resource bundle. */
