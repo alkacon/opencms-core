@@ -641,6 +641,30 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/tools/sites/icons/big/global.png</source>
+			<destination>system/workplace/resources/tools/sites/icons/big/global.png</destination>
+			<type>image</type>
+			<uuidstructure>ec0a4dfe-920b-11e2-aaa0-d723659840f0</uuidstructure>
+			<uuidresource>ec0a4dff-920b-11e2-aaa0-d723659840f0</uuidresource>
+			<datelastmodified>Thu, 21 Mar 2013 09:44:27 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 21 Mar 2013 09:44:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[global]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/tools/sites/icons/big/site_edit.png</source>
 			<destination>system/workplace/resources/tools/sites/icons/big/site_edit.png</destination>
 			<type>image</type>
