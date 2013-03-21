@@ -443,7 +443,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:sites=%(param.sites)&action=initial]]></value>
+					<value><![CDATA[params:sites=%(param.sites)&editaction=new&action=initial]]></value>
 				</property>
 				<property>
 					<name>admintoolhandler-class</name>
