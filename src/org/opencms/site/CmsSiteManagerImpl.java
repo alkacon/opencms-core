@@ -217,6 +217,11 @@ public final class CmsSiteManagerImpl {
         if (m_frozen) {
             throw new CmsRuntimeException(Messages.get().container(Messages.ERR_CONFIG_FROZEN_0));
         }
+
+        if (getSiteRoots().contains(uri)) {
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_SITE_ALREADY_CONFIGURED_1, uri));
+        }
+
         CmsSiteMatcher matcher = new CmsSiteMatcher(server);
         CmsSite site = new CmsSite(uri, matcher);
         site.setTitle(title);

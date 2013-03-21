@@ -47,6 +47,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_INVALID_PATH_FOR_SHARED_FOLDER_1 = "ERR_INVALID_PATH_FOR_SHARED_FOLDER_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_SITE_ALREADY_CONFIGURED_1 = "ERR_SITE_ALREADY_CONFIGURED_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_SITE_NOT_CONFIGURED_1 = "ERR_SITE_NOT_CONFIGURED_1";
 
     /** Message constant for key in the resource bundle. */
