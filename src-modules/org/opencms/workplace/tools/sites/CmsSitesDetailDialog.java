@@ -206,14 +206,14 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
         String title = m_site.getTitle();
         int count = 2;
         // site info
-        result.append(dialogBlockStart(Messages.get().getBundle().key(Messages.GUI_DETAIL_SITE_INFO_1, title)));
+        result.append(dialogBlockStart(Messages.get().getBundle().key(Messages.GUI_SITES_DETAIL_INFO_1, title)));
         result.append(createWidgetTableStart());
         result.append(createDialogRowsHtml(0, count));
         result.append(createWidgetTableEnd());
         result.append(dialogBlockEnd());
         if (m_site.getSecureUrl() != null) {
             // secure site
-            result.append(dialogBlockStart(Messages.get().getBundle().key(Messages.GUI_DETAIL_SITE_SECURE_1, title)));
+            result.append(dialogBlockStart(Messages.get().getBundle().key(Messages.GUI_SITES_DETAIL_SECURE_1, title)));
             result.append(createWidgetTableStart());
             result.append(createDialogRowsHtml(++count, count));
             result.append(createWidgetTableEnd());
@@ -221,7 +221,7 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
         }
         if (!m_site.getAliases().isEmpty()) {
             // aliases
-            result.append(dialogBlockStart(Messages.get().getBundle().key(Messages.GUI_DETAIL_SITE_ALIASES_1, title)));
+            result.append(dialogBlockStart(Messages.get().getBundle().key(Messages.GUI_SITES_DETAIL_ALIASES_1, title)));
             result.append(createWidgetTableStart());
             result.append(createDialogRowsHtml(++count, (count + m_site.getAliases().size()) - 1));
             result.append(createWidgetTableEnd());
@@ -260,7 +260,7 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
             CmsWidgetDialogParameter alias = new CmsWidgetDialogParameter(
                 siteMatcher.getUrl(),
                 siteMatcher.getUrl(),
-                "Alias " + (count + 1),
+                Messages.get().getBundle().key(Messages.GUI_SITES_DETAIL_LABEL_ALIAS_0) + (count + 1),
                 new CmsDisplayWidget(),
                 PAGES[0],
                 1,
@@ -291,6 +291,9 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
         setDialogObject(m_site);
     }
 
+    /**
+     * Initializes the dialog site object.<p>
+     */
     private void initSite() {
 
         Object o = null;

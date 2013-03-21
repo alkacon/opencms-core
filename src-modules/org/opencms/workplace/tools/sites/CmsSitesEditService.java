@@ -47,9 +47,6 @@ public class CmsSitesEditService extends CmsJspActionElement {
     /** The message key prefix to be used for widget labels. */
     public static final String KEY_PREFIX_SITES = "sites";
 
-    /** The message key prefix to be used for widget labels. */
-    public static final String KEY_PREFIX_SETTINGS = "settings";
-
     /**
      * Public constructor with JSP variables.<p>
      * 

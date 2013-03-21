@@ -38,15 +38,6 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_DETAIL_SITE_ALIASES_1 = "GUI_DETAIL_SITE_ALIASES_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DETAIL_SITE_INFO_1 = "GUI_DETAIL_SITE_INFO_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DETAIL_SITE_SECURE_1 = "GUI_DETAIL_SITE_SECURE_1";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_SITES_ADMIN_TOOL_GROUP_0 = "GUI_SITES_ADMIN_TOOL_GROUP_0";
 
     /** Message constant for key in the resource bundle. */
@@ -54,6 +45,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITES_ADMIN_TOOL_NAME_0 = "GUI_SITES_ADMIN_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITES_DETAIL_ALIASES_1 = "GUI_SITES_DETAIL_ALIASES_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITES_DETAIL_HIDE_ALIASES_HELP_0 = "GUI_SITES_DETAIL_HIDE_ALIASES_HELP_0";
@@ -68,10 +62,19 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SITES_DETAIL_HIDE_SECURE_NAME_0 = "GUI_SITES_DETAIL_HIDE_SECURE_NAME_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITES_DETAIL_INFO_1 = "GUI_SITES_DETAIL_INFO_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITES_DETAIL_LABEL_ALIAS_0 = "GUI_SITES_DETAIL_LABEL_ALIAS_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SITES_DETAIL_LABEL_ALIASES_0 = "GUI_SITES_DETAIL_LABEL_ALIASES_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITES_DETAIL_LABEL_SECURE_0 = "GUI_SITES_DETAIL_LABEL_SECURE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITES_DETAIL_SECURE_1 = "GUI_SITES_DETAIL_SECURE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITES_DETAIL_SHOW_ALIASES_HELP_0 = "GUI_SITES_DETAIL_SHOW_ALIASES_HELP_0";
@@ -84,6 +87,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITES_DETAIL_SHOW_SECURE_NAME_0 = "GUI_SITES_DETAIL_SHOW_SECURE_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITES_GENERAL_SETTINGS_0 = "GUI_SITES_GENERAL_SETTINGS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITES_LIST_ACTION_EDIT_HELP_0 = "GUI_SITES_LIST_ACTION_EDIT_HELP_0";

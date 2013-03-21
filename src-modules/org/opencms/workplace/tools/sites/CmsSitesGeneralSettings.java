@@ -170,12 +170,29 @@ public class CmsSitesGeneralSettings extends CmsWidgetDialog {
     }
 
     /**
+     * @see org.opencms.workplace.CmsWidgetDialog#createDialogHtml(java.lang.String)
+     */
+    @Override
+    protected String createDialogHtml(String dialog) {
+
+        StringBuffer result = new StringBuffer(1024);
+        result.append(createWidgetTableStart());
+        result.append(dialogBlockStart(Messages.get().getBundle().key(Messages.GUI_SITES_GENERAL_SETTINGS_0)));
+        result.append(createWidgetTableStart());
+        result.append(createDialogRowsHtml(0, 2));
+        result.append(createWidgetTableEnd());
+        result.append(dialogBlockEnd());
+        result.append(createWidgetTableEnd());
+        return result.toString();
+    }
+
+    /**
      * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
      */
     @Override
     protected void defineWidgets() {
 
-        setKeyPrefix(CmsSitesEditService.KEY_PREFIX_SETTINGS);
+        setKeyPrefix(CmsSitesEditService.KEY_PREFIX_SITES);
         setDialogObject(this);
         // initialize members
         m_workplaceServer = OpenCms.getSiteManager().getWorkplaceServer();
@@ -221,7 +238,7 @@ public class CmsSitesGeneralSettings extends CmsWidgetDialog {
         addWidget(new CmsWidgetDialogParameter(this, "defaultUri", PAGES[0], new CmsSelectWidget(defaultUriOptions)));
         addWidget(new CmsWidgetDialogParameter(this, "sharedFolder", PAGES[0], new CmsVfsFileWidget(
             false,
-            "/",
+            "",
             false,
             false)));
     }
