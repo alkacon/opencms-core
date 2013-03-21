@@ -39,6 +39,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteMatcher;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.widgets.CmsCheckboxWidget;
 import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.widgets.CmsInputWidget;
 import org.opencms.widgets.CmsSelectWidget;
@@ -252,9 +253,10 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
             // secure site
             result.append(dialogBlockStart(Messages.get().getBundle().key(Messages.GUI_SITES_DETAIL_SECURE_1, title)));
             result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(++count, count));
+            result.append(createDialogRowsHtml(++count, count + 2));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
+            count += 2;
         }
         if (!m_site.getAliases().isEmpty()) {
             // aliases
@@ -293,12 +295,21 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
             addWidget(new CmsWidgetDialogParameter(m_site, "title", PAGES[0], new CmsInputWidget()));
             addWidget(new CmsWidgetDialogParameter(m_site, "position", PAGES[0], sel));
             addWidget(new CmsWidgetDialogParameter(m_site, "server", PAGES[0], new CmsInputWidget()));
+            m_site.setSecureUrl("");
+            addWidget(new CmsWidgetDialogParameter(m_site, "secureUrl", PAGES[0], new CmsInputWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_site, "exclusiveUrl", PAGES[0], new CmsCheckboxWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_site, "exclusiveError", PAGES[0], new CmsCheckboxWidget()));
         } else if (DIALOG_EDIT.equals(getParamEditAction())) {
             // edit site
             addWidget(new CmsWidgetDialogParameter(m_site, "siteRoot", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_site, "title", PAGES[0], new CmsInputWidget()));
             addWidget(new CmsWidgetDialogParameter(m_site, "position", PAGES[0], sel));
             addWidget(new CmsWidgetDialogParameter(m_site, "server", PAGES[0], new CmsInputWidget()));
+            if (m_site.hasSecureServer()) {
+                addWidget(new CmsWidgetDialogParameter(m_site, "secureUrl", PAGES[0], new CmsInputWidget()));
+                addWidget(new CmsWidgetDialogParameter(m_site, "exclusiveUrl", PAGES[0], new CmsCheckboxWidget()));
+                addWidget(new CmsWidgetDialogParameter(m_site, "exclusiveError", PAGES[0], new CmsCheckboxWidget()));
+            }
         } else {
             // display site
             addWidget(new CmsWidgetDialogParameter(m_site, "siteRoot", PAGES[0], new CmsDisplayWidget()));
@@ -307,13 +318,10 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
             addWidget(t);
             addWidget(new CmsWidgetDialogParameter(m_site, "position", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_site, "server", PAGES[0], new CmsDisplayWidget()));
-        }
-
-        if (m_site.hasSecureServer()) {
-            if (DIALOG_EDIT.equals(getParamEditAction()) || DIALOG_NEW.equals(getParamEditAction())) {
-                addWidget(new CmsWidgetDialogParameter(m_site, "secureUrl", PAGES[0], new CmsInputWidget()));
-            } else {
+            if (m_site.hasSecureServer()) {
                 addWidget(new CmsWidgetDialogParameter(m_site, "secureUrl", PAGES[0], new CmsDisplayWidget()));
+                addWidget(new CmsWidgetDialogParameter(m_site, "exclusiveUrl", PAGES[0], new CmsDisplayWidget()));
+                addWidget(new CmsWidgetDialogParameter(m_site, "exclusiveError", PAGES[0], new CmsDisplayWidget()));
             }
         }
 
@@ -325,7 +333,7 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
                 CmsWidgetDialogParameter alias = new CmsWidgetDialogParameter(
                     siteMatcher.getUrl(),
                     siteMatcher.getUrl(),
-                    Messages.get().getBundle().key(Messages.GUI_SITES_DETAIL_LABEL_ALIAS_0) + (count + 1),
+                    Messages.get().getBundle().key(Messages.GUI_SITES_DETAIL_LABEL_ALIAS_0) + " [" + (count + 1) + "]",
                     new CmsDisplayWidget(),
                     PAGES[0],
                     1,

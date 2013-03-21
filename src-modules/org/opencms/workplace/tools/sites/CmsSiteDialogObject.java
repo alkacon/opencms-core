@@ -34,6 +34,7 @@ package org.opencms.workplace.tools.sites;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteMatcher;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -115,6 +116,8 @@ public class CmsSiteDialogObject {
             m_secureServer = site.hasSecureServer();
             if (site.hasSecureServer()) {
                 m_secureUrl = site.getSecureUrl();
+                m_exclusiveUrl = site.isExclusiveUrl();
+                m_exclusiveError = site.isExclusiveError();
             }
             for (CmsSiteMatcher aMatcher : site.getAliases()) {
                 m_aliases.add((CmsSiteMatcher)aMatcher.clone());
@@ -504,16 +507,10 @@ public class CmsSiteDialogObject {
 
         CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(m_siteRoot);
         if ((site != null) && (site.getSiteMatcher() != null)) {
-            return new CmsSite(
-                getSiteRoot(),
-                (CmsUUID)site.getSiteRootUUID().clone(),
-                getTitle(),
-                new CmsSiteMatcher(m_server),
-                String.valueOf(m_position),
-                new CmsSiteMatcher(m_secureUrl),
-                m_exclusiveUrl,
-                m_exclusiveError,
-                m_aliases);
+            return new CmsSite(getSiteRoot(), (CmsUUID)site.getSiteRootUUID().clone(), getTitle(), new CmsSiteMatcher(
+                m_server), String.valueOf(m_position), CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_secureUrl)
+            ? new CmsSiteMatcher(m_secureUrl)
+            : null, m_exclusiveUrl, m_exclusiveError, m_aliases);
         }
         return null;
     }
