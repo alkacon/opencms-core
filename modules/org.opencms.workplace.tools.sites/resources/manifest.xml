@@ -267,7 +267,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:sites=%(param.sites)&action=initial|path:/sites/detail/apache]]></value>
+					<value><![CDATA[params:sites=%(param.sites)&action=initial|path:/sites/apache]]></value>
 				</property>
 				<property>
 					<name>admintoolhandler-class</name>
