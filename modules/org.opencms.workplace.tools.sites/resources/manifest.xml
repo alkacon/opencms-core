@@ -475,7 +475,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/sites/icons/big/sites.png]]></value>
+					<value><![CDATA[tools/sites/icons/big/global.png]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
