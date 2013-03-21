@@ -55,8 +55,13 @@ public class CmsSiteDialogObject {
     /** The exclusive URL. */
     private boolean m_exclusiveUrl;
 
+    private CmsSite m_originalSite;
+
     /** The port (e.g. 8080) which is required to access this site. */
     private int m_port;
+
+    /** The position. */
+    private float m_position;
 
     /** The secure server. */
     private boolean m_secureServer;
@@ -81,18 +86,6 @@ public class CmsSiteDialogObject {
 
     /** The title of this site. */
     private String m_title;
-
-    private CmsSite m_originalSite;
-
-    /**
-     * Returns the originalSite.<p>
-     *
-     * @return the originalSite
-     */
-    public CmsSite getOriginalSite() {
-
-        return m_originalSite;
-    }
 
     /**
      * Default constructor.<p>
@@ -126,24 +119,26 @@ public class CmsSiteDialogObject {
             for (CmsSiteMatcher aMatcher : site.getAliases()) {
                 m_aliases.add((CmsSiteMatcher)aMatcher.clone());
             }
+            m_position = site.getPosition();
         }
     }
 
     /**
      * Constructor using fields.<p>
      * 
-     * @param aliases
-     * @param exclusiveError
-     * @param exclusiveUrl
-     * @param port
-     * @param secureServer
-     * @param secureUrl
-     * @param server
-     * @param serverName
-     * @param serverProtocol
-     * @param siteRoot
-     * @param timeOffset
-     * @param title
+     * @param aliases the aliases
+     * @param exclusiveError the exclusive flag
+     * @param exclusiveUrl the exclusive URL
+     * @param port the port
+     * @param secureServer the secure server address
+     * @param secureUrl the secure URL
+     * @param server the server address
+     * @param serverName the servers name
+     * @param serverProtocol the servers protocoll
+     * @param siteRoot the site root
+     * @param timeOffset the offset
+     * @param title the title
+     * @param position the position
      */
     public CmsSiteDialogObject(
         List<CmsSiteMatcher> aliases,
@@ -157,7 +152,8 @@ public class CmsSiteDialogObject {
         String serverProtocol,
         String siteRoot,
         long timeOffset,
-        String title) {
+        String title,
+        float position) {
 
         super();
         m_aliases = aliases;
@@ -172,6 +168,7 @@ public class CmsSiteDialogObject {
         m_siteRoot = siteRoot;
         m_timeOffset = timeOffset;
         m_title = title;
+        m_position = position;
     }
 
     /**
@@ -225,6 +222,16 @@ public class CmsSiteDialogObject {
     }
 
     /**
+     * Returns the originalSite.<p>
+     *
+     * @return the originalSite
+     */
+    public CmsSite getOriginalSite() {
+
+        return m_originalSite;
+    }
+
+    /**
      * Returns the port.<p>
      *
      * @return the port
@@ -232,6 +239,16 @@ public class CmsSiteDialogObject {
     public int getPort() {
 
         return m_port;
+    }
+
+    /**
+     * Returns the position.<p>
+     *
+     * @return the position
+     */
+    public float getPosition() {
+
+        return m_position;
     }
 
     /**
@@ -319,6 +336,16 @@ public class CmsSiteDialogObject {
     }
 
     /**
+     * Returns the secureServer.<p>
+     *
+     * @return the secureServer
+     */
+    public boolean hasSecureServer() {
+
+        return m_secureServer;
+    }
+
+    /**
      * Returns the exclusiveError.<p>
      *
      * @return the exclusiveError
@@ -336,16 +363,6 @@ public class CmsSiteDialogObject {
     public boolean isExclusiveUrl() {
 
         return m_exclusiveUrl;
-    }
-
-    /**
-     * Returns the secureServer.<p>
-     *
-     * @return the secureServer
-     */
-    public boolean hasSecureServer() {
-
-        return m_secureServer;
     }
 
     /**
@@ -386,6 +403,16 @@ public class CmsSiteDialogObject {
     public void setPort(int port) {
 
         m_port = port;
+    }
+
+    /**
+     * Sets the position.<p>
+     *
+     * @param position the position to set
+     */
+    public void setPosition(float position) {
+
+        m_position = position;
     }
 
     /**
@@ -482,7 +509,7 @@ public class CmsSiteDialogObject {
                 (CmsUUID)site.getSiteRootUUID().clone(),
                 getTitle(),
                 new CmsSiteMatcher(m_server),
-                String.valueOf(site.getPosition()),
+                String.valueOf(m_position),
                 new CmsSiteMatcher(m_secureUrl),
                 m_exclusiveUrl,
                 m_exclusiveError,

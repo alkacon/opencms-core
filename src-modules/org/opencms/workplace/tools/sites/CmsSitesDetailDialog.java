@@ -32,6 +32,7 @@
 package org.opencms.workplace.tools.sites;
 
 import org.opencms.configuration.CmsSystemConfiguration;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
@@ -40,12 +41,17 @@ import org.opencms.site.CmsSiteMatcher;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.widgets.CmsInputWidget;
+import org.opencms.widgets.CmsSelectWidget;
+import org.opencms.widgets.CmsSelectWidgetOption;
+import org.opencms.widgets.CmsVfsFileWidget;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -64,6 +70,12 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
 
     /** The dialog action for editing a site. */
     protected static final String DIALOG_EDIT = "edit";
+
+    /** Dialog new action parameter value. */
+    private static final String DIALOG_NEW = "new";
+
+    /** The aliases for the current selected site. */
+    private List<String> m_aliases;
 
     /** The edit action to perform. */
     private String m_paramEditAction;
@@ -125,6 +137,111 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
     }
 
     /**
+     * Build select options for the position.<p>
+     * 
+     * @param currSite the current selected site 
+     * 
+     * @return the select options
+     */
+    public List<CmsSelectWidgetOption> createNavigationSelectOptions(CmsSiteDialogObject currSite) {
+
+        List<CmsSite> sites = new ArrayList<CmsSite>();
+        for (CmsSite site : OpenCms.getSiteManager().getAvailableSites(getCms(), true)) {
+            if (site.getSiteMatcher() != null) {
+                sites.add(site);
+            }
+        }
+
+        float maxValue = 0;
+        float nextPos = 0;
+
+        // calculate value for the first navigation position
+        float firstValue = 1;
+        if (sites.size() > 0) {
+            try {
+                maxValue = sites.get(0).getPosition();
+            } catch (Exception e) {
+                // should usually never happen
+            }
+        }
+
+        if (maxValue != 0) {
+            firstValue = maxValue / 2;
+        }
+
+        List<String> options = new ArrayList<String>(sites.size() + 1);
+        List<String> values = new ArrayList<String>(sites.size() + 1);
+
+        // add the first entry: before first element
+        options.add(getMessages().key(org.opencms.workplace.commons.Messages.GUI_CHNAV_POS_FIRST_0));
+        values.add(firstValue + "");
+
+        // show all present navigation elements in box
+        for (int i = 0; i < sites.size(); i++) {
+            String navText = sites.get(i).getTitle();
+            float navPos = sites.get(i).getPosition();
+            String siteRoot = sites.get(i).getSiteRoot();
+            // get position of next nav element
+            nextPos = navPos + 2;
+            if ((i + 1) < sites.size()) {
+                nextPos = sites.get(i + 1).getPosition();
+            }
+            // calculate new position of current nav element
+            float newPos;
+            if ((nextPos - navPos) > 1) {
+                newPos = navPos + 1;
+            } else {
+                newPos = (navPos + nextPos) / 2;
+            }
+            // check new maxValue of positions and increase it
+            if (navPos > maxValue) {
+                maxValue = navPos;
+            }
+            // if the element is the current file, mark it in select box
+            if ((currSite != null) && (currSite.getSiteRoot() != null) && currSite.getSiteRoot().equals(siteRoot)) {
+                options.add(CmsEncoder.escapeHtml(getMessages().key(
+                    org.opencms.workplace.commons.Messages.GUI_CHNAV_POS_CURRENT_1,
+                    new Object[] {sites.get(i).getSiteRoot()})));
+                values.add("-1");
+            } else {
+                options.add(CmsEncoder.escapeHtml(navText + " [" + sites.get(i).getSiteRoot() + "/]"));
+                values.add(newPos + "");
+            }
+        }
+
+        // add the entry: at the last position
+        options.add(getMessages().key(org.opencms.workplace.commons.Messages.GUI_CHNAV_POS_LAST_0));
+        values.add((maxValue + 1) + "");
+
+        // add the entry: no change
+        options.add(getMessages().key(org.opencms.workplace.commons.Messages.GUI_CHNAV_NO_CHANGE_0));
+        if ((currSite != null) && (currSite.getPosition() == Float.MAX_VALUE)) {
+            // current resource has no valid position, use "last position"
+            values.add((maxValue + 1) + "");
+        } else {
+            // current resource has valid position, use "-1" for no change
+            values.add("-1");
+        }
+        List<CmsSelectWidgetOption> result = new ArrayList<CmsSelectWidgetOption>();
+        for (int i = 0; i < values.size(); i++) {
+            String val = values.get(i);
+            String opt = options.get(i);
+            result.add(new CmsSelectWidgetOption(val, false, opt));
+        }
+        return result;
+    }
+
+    /**
+     * Returns the aliases.<p>
+     *
+     * @return the aliases
+     */
+    public List<String> getAliases() {
+
+        return m_aliases;
+    }
+
+    /**
      * @see org.opencms.workplace.CmsDialog#getCancelAction()
      */
     @Override
@@ -166,6 +283,16 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
     }
 
     /**
+     * Sets the aliases.<p>
+     *
+     * @param aliases the aliases to set
+     */
+    public void setAliases(List<String> aliases) {
+
+        m_aliases = aliases;
+    }
+
+    /**
      * Sets the paramEditAction.<p>
      *
      * @param paramEditAction the paramEditAction to set
@@ -204,7 +331,7 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
         StringBuffer result = new StringBuffer(1024);
         result.append(createWidgetTableStart());
         String title = m_site.getTitle();
-        int count = 2;
+        int count = 3;
         // site info
         result.append(dialogBlockStart(Messages.get().getBundle().key(Messages.GUI_SITES_DETAIL_INFO_1, title)));
         result.append(createWidgetTableStart());
@@ -223,7 +350,11 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
             // aliases
             result.append(dialogBlockStart(Messages.get().getBundle().key(Messages.GUI_SITES_DETAIL_ALIASES_1, title)));
             result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(++count, (count + m_site.getAliases().size()) - 1));
+            if (DIALOG_EDIT.equals(getParamEditAction()) || DIALOG_NEW.equals(getParamEditAction())) {
+                result.append(createDialogRowsHtml(++count, count));
+            } else {
+                result.append(createDialogRowsHtml(++count, (count + m_site.getAliases().size()) - 1));
+            }
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
         }
@@ -239,35 +370,61 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
 
         initSite();
         setKeyPrefix(CmsSiteDialogObject.KEY_PREFIX_SITES);
-        if (DIALOG_EDIT.equals(getParamEditAction())) {
-            addWidget(new CmsWidgetDialogParameter(m_site, "server", PAGES[0], new CmsInputWidget()));
+
+        CmsSelectWidget sel = new CmsSelectWidget(createNavigationSelectOptions(m_site));
+
+        if (DIALOG_NEW.equals(getParamEditAction())) {
+            // new site
+            addWidget(new CmsWidgetDialogParameter(m_site, "siteRoot", PAGES[0], new CmsVfsFileWidget(
+                false,
+                "/sites/",
+                false,
+                false)));
             addWidget(new CmsWidgetDialogParameter(m_site, "title", PAGES[0], new CmsInputWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_site, "position", PAGES[0], sel));
+            addWidget(new CmsWidgetDialogParameter(m_site, "server", PAGES[0], new CmsInputWidget()));
+        } else if (DIALOG_EDIT.equals(getParamEditAction())) {
+            // edit site
             addWidget(new CmsWidgetDialogParameter(m_site, "siteRoot", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_site, "title", PAGES[0], new CmsInputWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_site, "position", PAGES[0], sel));
+            addWidget(new CmsWidgetDialogParameter(m_site, "server", PAGES[0], new CmsInputWidget()));
         } else {
-            addWidget(new CmsWidgetDialogParameter(m_site, "server", PAGES[0], new CmsDisplayWidget()));
+            // display site
+            addWidget(new CmsWidgetDialogParameter(m_site, "siteRoot", PAGES[0], new CmsDisplayWidget()));
             CmsWidgetDialogParameter t = new CmsWidgetDialogParameter(m_site, "title", PAGES[0], new CmsDisplayWidget());
             t.setStringValue(getCms(), resolveMacros(m_site.getTitle()));
             addWidget(t);
-            addWidget(new CmsWidgetDialogParameter(m_site, "siteRoot", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_site, "position", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_site, "server", PAGES[0], new CmsDisplayWidget()));
         }
 
         if (m_site.hasSecureServer()) {
-            addWidget(new CmsWidgetDialogParameter(m_site, "secureUrl", PAGES[0], new CmsDisplayWidget()));
+            if (DIALOG_EDIT.equals(getParamEditAction()) || DIALOG_NEW.equals(getParamEditAction())) {
+                addWidget(new CmsWidgetDialogParameter(m_site, "secureUrl", PAGES[0], new CmsInputWidget()));
+            } else {
+                addWidget(new CmsWidgetDialogParameter(m_site, "secureUrl", PAGES[0], new CmsDisplayWidget()));
+            }
         }
 
-        int count = 0;
-        for (CmsSiteMatcher siteMatcher : m_site.getAliases()) {
-            CmsWidgetDialogParameter alias = new CmsWidgetDialogParameter(
-                siteMatcher.getUrl(),
-                siteMatcher.getUrl(),
-                Messages.get().getBundle().key(Messages.GUI_SITES_DETAIL_LABEL_ALIAS_0) + (count + 1),
-                new CmsDisplayWidget(),
-                PAGES[0],
-                1,
-                1,
-                count);
-            addWidget(alias);
-            count++;
+        if (DIALOG_EDIT.equals(getParamEditAction()) || DIALOG_NEW.equals(getParamEditAction())) {
+            addWidget(new CmsWidgetDialogParameter(this, "aliases", PAGES[0], new CmsInputWidget()));
+        } else {
+            int count = 0;
+            for (CmsSiteMatcher siteMatcher : m_site.getAliases()) {
+                CmsWidgetDialogParameter alias = new CmsWidgetDialogParameter(
+                    siteMatcher.getUrl(),
+                    siteMatcher.getUrl(),
+                    Messages.get().getBundle().key(Messages.GUI_SITES_DETAIL_LABEL_ALIAS_0) + (count + 1),
+                    new CmsDisplayWidget(),
+                    PAGES[0],
+                    1,
+                    1,
+                    count);
+                addWidget(alias);
+                count++;
+            }
+            addWidget(new CmsWidgetDialogParameter(this, "aliases", PAGES[0], new CmsDisplayWidget()));
         }
     }
 
@@ -313,11 +470,20 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
         } else if (o instanceof CmsSiteDialogObject) {
             // create a new site
             m_site = (CmsSiteDialogObject)o;
+        } else if (DIALOG_NEW.equals(getParamEditAction())) {
+            m_site = new CmsSiteDialogObject();
         } else {
             try {
                 getToolManager().jspForwardTool(this, "/sites", new HashMap<String, String[]>());
             } catch (Exception e) {
                 // noop
+            }
+        }
+
+        m_aliases = new ArrayList<String>();
+        for (CmsSiteMatcher siteMatcher : m_site.getAliases()) {
+            if ((siteMatcher != null) && (siteMatcher.getUrl() != null)) {
+                m_aliases.add(siteMatcher.getUrl());
             }
         }
 
