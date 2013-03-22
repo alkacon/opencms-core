@@ -246,13 +246,14 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
 
         String title = m_site.getTitle();
         int count = 3;
+
         // site info
         result.append(dialogBlockStart(Messages.get().getBundle().key(Messages.GUI_SITES_DETAIL_INFO_1, title)));
         result.append(createWidgetTableStart());
         result.append(createDialogRowsHtml(0, count));
         result.append(createWidgetTableEnd());
         result.append(dialogBlockEnd());
-        if (m_site.getSecureUrl() != null) {
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_site.getSecureUrl())) {
             // secure site
             result.append(dialogBlockStart(Messages.get().getBundle().key(Messages.GUI_SITES_DETAIL_SECURE_1, title)));
             result.append(createWidgetTableStart());
@@ -261,18 +262,22 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
             result.append(dialogBlockEnd());
             count += 2;
         }
-        if (!m_site.getAliases().isEmpty()) {
-            // aliases
+
+        // site aliases
+        if ((DIALOG_EDIT.equals(getParamEditAction()) || DIALOG_NEW.equals(getParamEditAction()))
+            || !m_site.getAliases().isEmpty()) {
             result.append(dialogBlockStart(Messages.get().getBundle().key(Messages.GUI_SITES_DETAIL_ALIASES_1, title)));
             result.append(createWidgetTableStart());
             if (DIALOG_EDIT.equals(getParamEditAction()) || DIALOG_NEW.equals(getParamEditAction())) {
                 result.append(createDialogRowsHtml(++count, count));
-            } else {
+            } else if (!m_site.getAliases().isEmpty()) {
                 result.append(createDialogRowsHtml(++count, (count + m_site.getAliases().size()) - 1));
             }
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
         }
+
+        // close the beginning table
         result.append(createWidgetTableEnd());
         return result.toString();
     }
@@ -286,33 +291,26 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
         initSite();
         setKeyPrefix(CmsSiteDialogObject.KEY_PREFIX_SITES);
 
-        CmsSelectWidget sel = new CmsSelectWidget(createNavigationSelectOptions(m_site));
-
-        if (DIALOG_NEW.equals(getParamEditAction())) {
-            // new site
+        if (DIALOG_NEW.equals(getParamEditAction()) || DIALOG_EDIT.equals(getParamEditAction())) {
+            // edit or new
+            // site info
             addWidget(new CmsWidgetDialogParameter(m_site, "siteRoot", PAGES[0], new CmsVfsFileWidget(
                 false,
                 "/sites",
                 false,
                 false)));
             addWidget(new CmsWidgetDialogParameter(m_site, "title", PAGES[0], new CmsInputWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_site, "position", PAGES[0], sel));
+            addWidget(new CmsWidgetDialogParameter(m_site, "position", PAGES[0], new CmsSelectWidget(
+                createNavOpts(m_site))));
             addWidget(new CmsWidgetDialogParameter(m_site, "server", PAGES[0], new CmsInputWidget()));
-            m_site.setSecureUrl("");
+
+            // secure site
             addWidget(new CmsWidgetDialogParameter(m_site, "secureUrl", PAGES[0], new CmsInputWidget()));
             addWidget(new CmsWidgetDialogParameter(m_site, "exclusiveUrl", PAGES[0], new CmsCheckboxWidget()));
             addWidget(new CmsWidgetDialogParameter(m_site, "exclusiveError", PAGES[0], new CmsCheckboxWidget()));
-        } else if (DIALOG_EDIT.equals(getParamEditAction())) {
-            // edit site
-            addWidget(new CmsWidgetDialogParameter(m_site, "siteRoot", PAGES[0], new CmsDisplayWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_site, "title", PAGES[0], new CmsInputWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_site, "position", PAGES[0], sel));
-            addWidget(new CmsWidgetDialogParameter(m_site, "server", PAGES[0], new CmsInputWidget()));
-            if (m_site.hasSecureServer()) {
-                addWidget(new CmsWidgetDialogParameter(m_site, "secureUrl", PAGES[0], new CmsInputWidget()));
-                addWidget(new CmsWidgetDialogParameter(m_site, "exclusiveUrl", PAGES[0], new CmsCheckboxWidget()));
-                addWidget(new CmsWidgetDialogParameter(m_site, "exclusiveError", PAGES[0], new CmsCheckboxWidget()));
-            }
+
+            // site aliases
+            addWidget(new CmsWidgetDialogParameter(this, "aliases", PAGES[0], new CmsInputWidget()));
         } else {
             // display site
             addWidget(new CmsWidgetDialogParameter(m_site, "siteRoot", PAGES[0], new CmsDisplayWidget()));
@@ -326,11 +324,6 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
                 addWidget(new CmsWidgetDialogParameter(m_site, "exclusiveUrl", PAGES[0], new CmsDisplayWidget()));
                 addWidget(new CmsWidgetDialogParameter(m_site, "exclusiveError", PAGES[0], new CmsDisplayWidget()));
             }
-        }
-
-        if (DIALOG_EDIT.equals(getParamEditAction()) || DIALOG_NEW.equals(getParamEditAction())) {
-            addWidget(new CmsWidgetDialogParameter(this, "aliases", PAGES[0], new CmsInputWidget()));
-        } else {
             int count = 0;
             for (CmsSiteMatcher siteMatcher : m_site.getAliases()) {
                 CmsWidgetDialogParameter alias = new CmsWidgetDialogParameter(
@@ -376,7 +369,7 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
      * 
      * @return the select options
      */
-    private List<CmsSelectWidgetOption> createNavigationSelectOptions(CmsSiteDialogObject currSite) {
+    private List<CmsSelectWidgetOption> createNavOpts(CmsSiteDialogObject currSite) {
 
         List<CmsSite> sites = new ArrayList<CmsSite>();
         for (CmsSite site : OpenCms.getSiteManager().getAvailableSites(getCms(), true)) {
@@ -501,6 +494,9 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
             if ((siteMatcher != null) && (siteMatcher.getUrl() != null)) {
                 m_aliases.add(siteMatcher.getUrl());
             }
+        }
+        if (!m_site.hasSecureServer()) {
+            m_site.setSecureUrl("");
         }
 
         setDialogObject(m_site);
