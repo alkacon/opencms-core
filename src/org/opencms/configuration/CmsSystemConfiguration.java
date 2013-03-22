@@ -103,6 +103,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The "error" attribute. */
     public static final String A_ERROR = "error";
 
+    /** The "errorPage" attribute. */
+    public static final String A_ERROR_PAGE = "errorPage";
+
     /** The "exclusive" attribute. */
     public static final String A_EXCLUSIVE = "exclusive";
 
@@ -948,14 +951,15 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_SITES, "setSiteManager");
 
         // add site configuration rule
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, "addSite", 7);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, "addSite", 8);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, 0, A_SERVER);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, 1, A_URI);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, 2, A_TITLE);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, 3, A_POSITION);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 4, A_SERVER);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 5, A_EXCLUSIVE);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 6, A_ERROR);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, 4, A_ERROR_PAGE);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 5, A_SERVER);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 6, A_EXCLUSIVE);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 7, A_ERROR);
 
         // add an alias to the currently configured site
         digester.addCallMethod(
@@ -1365,6 +1369,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             siteElement.addAttribute(A_URI, site.getSiteRoot().concat("/"));
             siteElement.addAttribute(A_TITLE, site.getTitle());
             siteElement.addAttribute(A_POSITION, Float.toString(site.getPosition()));
+            siteElement.addAttribute(A_ERROR_PAGE, site.getErrorPage());
             // create <secure server=""/> subnode            
             if (site.hasSecureServer()) {
                 Element secureElem = siteElement.addElement(N_SECURE);

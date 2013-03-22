@@ -259,6 +259,7 @@ Each job can have an optional list of parameters.
 #     uri:          the absolute VFS path used for the site
 #     title:        optional display title
 #     position:     optional position for display order
+#     errorPage:    absolute URI to an error page used for this site (optional)
 # secure:           an optional secure server for the site:
 #     server:       the server address used for this site
 #     exclusive:    if set to true, secure resources will only be available using the given secure url
@@ -279,7 +280,8 @@ Each job can have an optional list of parameters.
 	server CDATA #REQUIRED
 	uri CDATA #REQUIRED
 	title CDATA #IMPLIED
-	position CDATA #IMPLIED>
+	position CDATA #IMPLIED
+	errorPage CDATA #IMPLIED>
 <!ELEMENT secure EMPTY>
 <!ATTLIST secure
 	server CDATA #REQUIRED

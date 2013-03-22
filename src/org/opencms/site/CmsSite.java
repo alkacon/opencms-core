@@ -54,6 +54,9 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     /** The aliases for this site, a vector of CmsSiteMatcher Objects. */
     private List<CmsSiteMatcher> m_aliases = new ArrayList<CmsSiteMatcher>();
 
+    /** The URI to use as error page for this site. */
+    private String m_errorPage;
+
     /** If exclusive, and set to true will generate a 404 error, if set to false will redirect to secure url. */
     private boolean m_exclusiveError;
 
@@ -230,6 +233,16 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     }
 
     /**
+     * Returns the errorPage.<p>
+     *
+     * @return the errorPage
+     */
+    public String getErrorPage() {
+
+        return m_errorPage;
+    }
+
+    /**
      * Returns the sorting position.<p>
      *
      * @return the sorting position
@@ -237,6 +250,16 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     public float getPosition() {
 
         return m_position;
+    }
+
+    /**
+     * Returns the secureServer.<p>
+     *
+     * @return the secureServer
+     */
+    public CmsSiteMatcher getSecureServer() {
+
+        return m_secureServer;
     }
 
     /**
@@ -432,6 +455,16 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     }
 
     /**
+     * Sets the errorPage.<p>
+     *
+     * @param errorPage the errorPage to set
+     */
+    public void setErrorPage(String errorPage) {
+
+        m_errorPage = errorPage;
+    }
+
+    /**
      * Sets the exclusive error flag.<p>
      * 
      * @param error the exclusive error flag
@@ -551,4 +584,5 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
 
         m_title = name;
     }
+
 }

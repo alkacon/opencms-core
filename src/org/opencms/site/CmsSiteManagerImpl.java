@@ -178,6 +178,7 @@ public final class CmsSiteManagerImpl {
             site.getSiteRoot(),
             site.getTitle(),
             Float.toString(site.getPosition()),
+            site.getErrorPage(),
             secureUrl,
             Boolean.toString(site.isExclusiveUrl()),
             Boolean.toString(site.isExclusiveError()));
@@ -198,6 +199,7 @@ public final class CmsSiteManagerImpl {
      * @param uri the VFS path
      * @param title the display title for this site
      * @param position the display order for this site
+     * @param errorPage the URI to use as error page for this site
      * @param secureServer a secure server, can be <code>null</code>
      * @param exclusive if set to <code>true</code>, secure resources will only be available using the configured secure url
      * @param error if exclusive, and set to <code>true</code> will generate a 404 error, 
@@ -210,6 +212,7 @@ public final class CmsSiteManagerImpl {
         String uri,
         String title,
         String position,
+        String errorPage,
         String secureServer,
         String exclusive,
         String error) throws CmsConfigurationException {
@@ -226,9 +229,12 @@ public final class CmsSiteManagerImpl {
             throw new CmsRuntimeException(Messages.get().container(Messages.ERR_EMPTY_SERVER_URL_0));
         }
 
+        // create a new site object
         CmsSiteMatcher matcher = new CmsSiteMatcher(server);
         CmsSite site = new CmsSite(uri, matcher);
+        // set the title
         site.setTitle(title);
+        // set the position
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(position)) {
             float pos = Float.MAX_VALUE;
             try {
@@ -238,7 +244,10 @@ public final class CmsSiteManagerImpl {
             }
             site.setPosition(pos);
         }
+        // set the error page
+        site.setErrorPage(errorPage);
 
+        // add the server(s)
         addServer(matcher, site);
         if (CmsStringUtil.isNotEmpty(secureServer)) {
             matcher = new CmsSiteMatcher(secureServer);
