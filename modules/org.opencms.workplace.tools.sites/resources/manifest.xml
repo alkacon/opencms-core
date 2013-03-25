@@ -386,6 +386,58 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/admin/sites/favicon.jsp</source>
+			<destination>system/workplace/admin/sites/favicon.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>b8f6a74d-9308-11e2-a16a-d723659840f0</uuidstructure>
+			<uuidresource>b8f6a74e-9308-11e2-a16a-d723659840f0</uuidresource>
+			<datelastmodified>Mon, 25 Mar 2013 08:53:50 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 22 Mar 2013 15:54:04 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[%(key.GUI_FAV_SITE_ADMIN_TOOL_HELP_0)]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/sites/icons/big/fav.png]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[%(key.GUI_SITE_ADMIN_TOOL_GROUP_0)]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[5]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[%(key.GUI_FAV_SITE_ADMIN_TOOL_NAME_0)]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Upload favicon]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:sites=%(param.sites)&editaction=fav&action=initial|path:/sites/detail/fav]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.sites.CmsSitesToolHandler]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/admin/sites/index.jsp</source>
 			<destination>system/workplace/admin/sites/index.jsp</destination>
 			<type>jsp</type>
@@ -631,6 +683,30 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[apache]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/sites/icons/big/fav.png</source>
+			<destination>system/workplace/resources/tools/sites/icons/big/fav.png</destination>
+			<type>image</type>
+			<uuidstructure>c022f009-9309-11e2-a16a-d723659840f0</uuidstructure>
+			<uuidresource>c022f00a-9309-11e2-a16a-d723659840f0</uuidresource>
+			<datelastmodified>Fri, 22 Mar 2013 16:01:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 22 Mar 2013 16:01:26 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[fav]]></value>
 				</property>
 				<property type="shared">
 					<name>image.size</name>

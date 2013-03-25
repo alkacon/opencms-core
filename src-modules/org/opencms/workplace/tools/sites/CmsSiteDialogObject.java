@@ -48,7 +48,11 @@ public class CmsSiteDialogObject {
     /** The message key prefix to be used for widget labels. */
     public static final String KEY_PREFIX_SITES = "sites";
 
+    /** The aliases. */
     private List<CmsSiteMatcher> m_aliases = new ArrayList<CmsSiteMatcher>();
+
+    /** The URI used as error page. */
+    private String m_errorPage;
 
     /** The exclusive flag. */
     private boolean m_exclusiveError;
@@ -73,7 +77,7 @@ public class CmsSiteDialogObject {
     /** The servers URL. */
     private String m_server;
 
-    /** The hostname (e.g. localhost) which is required to access this site. */
+    /** The host name (e.g. localhost) which is required to access this site. */
     private String m_serverName;
 
     /** The servers protocol (e.g. "http", "https") which is required to access this site. */
@@ -222,6 +226,16 @@ public class CmsSiteDialogObject {
     public List<CmsSiteMatcher> getAliases() {
 
         return m_aliases;
+    }
+
+    /**
+     * Returns the errorPage.<p>
+     *
+     * @return the errorPage
+     */
+    public String getErrorPage() {
+
+        return m_errorPage;
     }
 
     /**
@@ -376,6 +390,16 @@ public class CmsSiteDialogObject {
     public void setAliases(List<CmsSiteMatcher> aliases) {
 
         m_aliases = aliases;
+    }
+
+    /**
+     * Sets the errorPage.<p>
+     *
+     * @param errorPage the errorPage to set
+     */
+    public void setErrorPage(String errorPage) {
+
+        m_errorPage = errorPage;
     }
 
     /**

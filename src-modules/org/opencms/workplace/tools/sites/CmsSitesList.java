@@ -66,6 +66,12 @@ import javax.servlet.jsp.PageContext;
  */
 public class CmsSitesList extends A_CmsListDialog {
 
+    /** A parameter name for the title of the site. */
+    protected static final String PARAM_SITE_TITLE = "sitetitle";
+
+    /** A parameter name for a comma separated list of site paths. */
+    protected static final String PARAM_SITES = "sites";
+
     /** List default action for editing a site. */
     private static final String LIST_ACTION_DEFAULT = "da";
 
@@ -99,6 +105,7 @@ public class CmsSitesList extends A_CmsListDialog {
     /** Path to the edit icon. */
     private static final String LIST_ICON_EDIT = "tools/sites/icons/small/site_edit.png";
 
+    /** The path of the remove icon. */
     private static final String LIST_ICON_REMOVE = "tools/sites/icons/small/site_remove.png";
 
     /** Identifier for the remove multi action. */
@@ -109,11 +116,6 @@ public class CmsSitesList extends A_CmsListDialog {
 
     /** A parameter name for the edit action. */
     private static final String PARAM_EDIT_ACTION = "editaction";
-
-    private static final String PARAM_SITE_TITLE = "sitetitle";
-
-    /** A parameter name for a comma separated list of site paths. */
-    private static final String PARAM_SITES = "sites";
 
     /** Path to the module reports. */
     private static final String PATH_REPORTS = "/system/workplace/admin/sites/reports/";

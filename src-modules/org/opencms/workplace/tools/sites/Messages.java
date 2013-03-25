@@ -38,6 +38,9 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_INVALID_FAVICON_FILE_1 = "ERR_INVALID_FAVICON_FILE_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_DETAIL_SITE_ADMIN_TOOL_HELP_0 = "GUI_DETAIL_SITE_ADMIN_TOOL_HELP_0";
 
     /** Message constant for key in the resource bundle. */
@@ -120,6 +123,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITES_GENERAL_SETTINGS_0 = "GUI_SITES_GENERAL_SETTINGS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITES_IMPORT_FAV_0 = "GUI_SITES_IMPORT_FAV_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITES_IMPORT_FAV_BLOCK_0 = "GUI_SITES_IMPORT_FAV_BLOCK_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITES_LIST_ACTION_EDIT_HELP_0 = "GUI_SITES_LIST_ACTION_EDIT_HELP_0";

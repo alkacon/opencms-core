@@ -245,7 +245,7 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
         result.append(createWidgetErrorHeader());
 
         String title = m_site.getTitle();
-        int count = 3;
+        int count = 4;
 
         // site info
         result.append(dialogBlockStart(Messages.get().getBundle().key(Messages.GUI_SITES_DETAIL_INFO_1, title)));
@@ -303,6 +303,11 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
             addWidget(new CmsWidgetDialogParameter(m_site, "position", PAGES[0], new CmsSelectWidget(
                 createNavOpts(m_site))));
             addWidget(new CmsWidgetDialogParameter(m_site, "server", PAGES[0], new CmsInputWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_site, "errorPage", PAGES[0], new CmsVfsFileWidget(
+                true,
+                "",
+                true,
+                false)));
 
             // secure site
             addWidget(new CmsWidgetDialogParameter(m_site, "secureUrl", PAGES[0], new CmsInputWidget()));
@@ -319,6 +324,8 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
             addWidget(t);
             addWidget(new CmsWidgetDialogParameter(m_site, "position", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_site, "server", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_site, "errorPage", PAGES[0], new CmsDisplayWidget()));
+
             if (m_site.hasSecureServer()) {
                 addWidget(new CmsWidgetDialogParameter(m_site, "secureUrl", PAGES[0], new CmsDisplayWidget()));
                 addWidget(new CmsWidgetDialogParameter(m_site, "exclusiveUrl", PAGES[0], new CmsDisplayWidget()));
@@ -498,7 +505,6 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
         if (!m_site.hasSecureServer()) {
             m_site.setSecureUrl("");
         }
-
         setDialogObject(m_site);
     }
 }
