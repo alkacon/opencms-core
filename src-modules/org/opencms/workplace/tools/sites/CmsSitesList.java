@@ -31,10 +31,14 @@
 
 package org.opencms.workplace.tools.sites;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteMatcher;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
@@ -66,11 +70,17 @@ import javax.servlet.jsp.PageContext;
  */
 public class CmsSitesList extends A_CmsListDialog {
 
+    /** The path of the fav icon. */
+    protected static final String LIST_ICON_FAVICON = "tools/sites/icons/small/default-favicon.png";
+
     /** A parameter name for the title of the site. */
     protected static final String PARAM_SITE_TITLE = "sitetitle";
 
     /** A parameter name for a comma separated list of site paths. */
     protected static final String PARAM_SITES = "sites";
+
+    /** The favorite upload dialog. */
+    private static final String DIALOG_FAV = "fav";
 
     /** List default action for editing a site. */
     private static final String LIST_ACTION_DEFAULT = "da";
@@ -78,11 +88,17 @@ public class CmsSitesList extends A_CmsListDialog {
     /** List action for editing a site. */
     private static final String LIST_ACTION_EDIT = "ea";
 
+    /** List action for uploading a favicon. */
+    private static final String LIST_ACTION_FAVICON = "fa";
+
     /** List action for removing a site. */
     private static final String LIST_ACTION_REMOVE = "ra";
 
     /** List column id for editing a site. */
     private static final String LIST_COLUMN_EDIT = "ce";
+
+    /** List column id for the favicon. */
+    private static final String LIST_COLUMN_FAVICON = "fav";
 
     /** List column id for the site path. */
     private static final String LIST_COLUMN_PATH = "cp";
@@ -119,6 +135,9 @@ public class CmsSitesList extends A_CmsListDialog {
 
     /** Path to the module reports. */
     private static final String PATH_REPORTS = "/system/workplace/admin/sites/reports/";
+
+    /** Holds - keys: site roots and values: favicon links. */
+    protected Map<String, String> m_icons = new HashMap<String, String>();
 
     /**
      * Public constructor.<p>
@@ -177,21 +196,22 @@ public class CmsSitesList extends A_CmsListDialog {
         String site = getSelectedItem().getId();
         Map<String, String[]> params = new HashMap<String, String[]>();
         params.put(PARAM_SITES, new String[] {site});
+        params.put(PARAM_ACTION, new String[] {DIALOG_INITIAL});
+        params.put(PARAM_SITE_TITLE, new String[] {OpenCms.getSiteManager().getSiteForSiteRoot(site).getTitle()});
         if (getParamListAction().equals(LIST_ACTION_EDIT)) {
             // forward to the edit site dialog
-            params.put(PARAM_SITE_TITLE, new String[] {OpenCms.getSiteManager().getSiteForSiteRoot(site).getTitle()});
-            params.put(PARAM_ACTION, new String[] {DIALOG_INITIAL});
             params.put(PARAM_EDIT_ACTION, new String[] {CmsSitesDetailDialog.DIALOG_EDIT});
             getToolManager().jspForwardTool(this, "/sites/detail/edit", params);
         } else if (getParamListAction().equals(LIST_ACTION_DEFAULT)) {
-            params.put(PARAM_SITE_TITLE, new String[] {OpenCms.getSiteManager().getSiteForSiteRoot(site).getTitle()});
-            params.put(PARAM_ACTION, new String[] {DIALOG_INITIAL});
             getToolManager().jspForwardTool(this, "/sites/detail", params);
         } else if (getParamListAction().equals(LIST_ACTION_REMOVE)) {
             // forward to the remove site dialog
-            params.put(PARAM_ACTION, new String[] {DIALOG_INITIAL});
             params.put(PARAM_STYLE, new String[] {CmsToolDialog.STYLE_NEW});
             getToolManager().jspForwardPage(this, PATH_REPORTS + "remove.jsp", params);
+        } else if (getParamListAction().equals(LIST_ACTION_FAVICON)) {
+            // forward to the upload favorite page
+            params.put(PARAM_EDIT_ACTION, new String[] {DIALOG_FAV});
+            getToolManager().jspForwardTool(this, "/sites/detail/fav", params);
         }
         listSave();
     }
@@ -233,12 +253,29 @@ public class CmsSitesList extends A_CmsListDialog {
 
         List<CmsListItem> result = new ArrayList<CmsListItem>();
         List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(getCms(), true);
+
+        CmsObject cms = null;
+        try {
+            cms = OpenCms.initCmsObject(getCms());
+            cms.getRequestContext().setSiteRoot("");
+        } catch (CmsException e) {
+            // noop
+        }
+
         for (CmsSite site : sites) {
             if (site.getSiteMatcher() != null) {
                 CmsListItem item = getList().newItem(site.getSiteRoot());
                 item.set(LIST_COLUMN_PATH, site.getSiteRoot());
                 item.set(LIST_COLUMN_SERVER, site.getUrl() != null ? site.getUrl() : "-");
                 item.set(LIST_COLUMN_TITLE, site.getTitle() != null ? site.getTitle() : "-");
+                if (cms != null) {
+                    try {
+                        CmsResource res = cms.readResource(site.getSiteRoot() + "/" + CmsSitesFaviconUpload.ICON_NAME);
+                        m_icons.put(site.getSiteRoot(), getJsp().link(res.getRootPath()));
+                    } catch (CmsException e) {
+                        // noop
+                    }
+                }
                 result.add(item);
             }
         }
@@ -280,6 +317,36 @@ public class CmsSitesList extends A_CmsListDialog {
         removeAction.setIconPath(LIST_ICON_REMOVE);
         removeCol.addDirectAction(removeAction);
         metadata.addColumn(removeCol);
+
+        // create favicon column
+        CmsListColumnDefinition favCol = new CmsListColumnDefinition(LIST_COLUMN_FAVICON);
+        favCol.setName(Messages.get().container(Messages.GUI_SITES_LIST_COLUMN_FAVICON_NAME_0));
+        favCol.setHelpText(Messages.get().container(Messages.GUI_SITES_LIST_COLUMN_FAVICON_HELP_0));
+        favCol.setWidth("20");
+        favCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
+        favCol.setSorteable(false);
+        // add fav icon action
+        CmsListDirectAction faviconAction = new CmsListDirectAction(LIST_ACTION_FAVICON) {
+
+            /**
+             * @see org.opencms.workplace.list.A_CmsListAction#buttonHtml()
+             */
+            @Override
+            public String buttonHtml() {
+
+                String button = super.buttonHtml();
+                String iconP = m_icons.get(getItem().getId());
+                if (iconP != null) {
+                    button = button.replaceAll(CmsWorkplace.getSkinUri() + getIconPath(), iconP);
+                }
+                return button;
+            }
+        };
+        faviconAction.setName(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_FAVICON_NAME_0));
+        faviconAction.setHelpText(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_FAVICON_HELP_0));
+        faviconAction.setIconPath(LIST_ICON_FAVICON);
+        favCol.addDirectAction(faviconAction);
+        metadata.addColumn(favCol);
 
         // create server column
         CmsListColumnDefinition serverCol = new CmsListColumnDefinition(LIST_COLUMN_SERVER);

@@ -58,11 +58,11 @@ import org.apache.commons.logging.Log;
  */
 public class CmsSitesFaviconUpload extends A_CmsImportFromHttp {
 
+    /** The name for the favicon. */
+    public static final String ICON_NAME = "favicon.ico";
+
     /** The URI for this dialog. */
     private static final String DIALOG_URI = PATH_WORKPLACE + "admin/sites/favicon.jsp";
-
-    /** The name for the favicon. */
-    private static final String FILE_NAME_FAV_ICON = "favicon.ico";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSitesFaviconUpload.class);
@@ -107,7 +107,7 @@ public class CmsSitesFaviconUpload extends A_CmsImportFromHttp {
 
             // copy the file to the server
             copyFileToServer(OpenCms.getSystemInfo().getPackagesRfsPath());
-            if ((getParamImportfile() == null) || !getParamImportfile().equals(FILE_NAME_FAV_ICON)) {
+            if ((getParamImportfile() == null) || !getParamImportfile().equals(ICON_NAME)) {
                 // file null or name not valid
                 throw new CmsException(Messages.get().container(
                     Messages.ERR_INVALID_FAVICON_FILE_1,
@@ -123,7 +123,7 @@ public class CmsSitesFaviconUpload extends A_CmsImportFromHttp {
             f.close();
 
             // check the existence of favicon
-            String favCreatePath = site + "/" + FILE_NAME_FAV_ICON;
+            String favCreatePath = site + "/" + ICON_NAME;
             int imageResId = CmsResourceTypeImage.getStaticTypeId();
             if (cms.existsResource(favCreatePath)) {
                 // replace the existing favicon
