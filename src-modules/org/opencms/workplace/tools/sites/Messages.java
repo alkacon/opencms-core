@@ -56,6 +56,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_EDIT_SITE_ADMIN_TOOL_NAME_0 = "GUI_EDIT_SITE_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_FAV_SITE_ADMIN_TOOL_HELP_0 = "GUI_FAV_SITE_ADMIN_TOOL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FAV_SITE_ADMIN_TOOL_NAME_0 = "GUI_FAV_SITE_ADMIN_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_NEW_SITE_ADMIN_TOOL_HELP_0 = "GUI_NEW_SITE_ADMIN_TOOL_HELP_0";
 
     /** Message constant for key in the resource bundle. */
