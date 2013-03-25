@@ -103,10 +103,10 @@ public class CmsSitesList extends A_CmsListDialog {
     private static final String LIST_DETAIL_SECURE = "sd";
 
     /** Path to the edit icon. */
-    private static final String LIST_ICON_EDIT = "tools/sites/icons/small/site_edit.png";
+    private static final String LIST_ICON_EDIT = "tools/sites/icons/small/site-edit.png";
 
     /** The path of the remove icon. */
-    private static final String LIST_ICON_REMOVE = "tools/sites/icons/small/site_remove.png";
+    private static final String LIST_ICON_REMOVE = "tools/sites/icons/small/site-remove.png";
 
     /** Identifier for the remove multi action. */
     private static final String LIST_MACTION_REMOVE = "rma";

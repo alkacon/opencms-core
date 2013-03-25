@@ -351,7 +351,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/sites/icons/big/site_edit.png]]></value>
+					<value><![CDATA[tools/sites/icons/big/site-edit.png]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -403,7 +403,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/sites/icons/big/fav.png]]></value>
+					<value><![CDATA[tools/sites/icons/big/favicon.png]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -475,7 +475,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/sites/icons/big/site_new.png]]></value>
+					<value><![CDATA[tools/sites/icons/big/site-new.png]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -693,8 +693,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/sites/icons/big/fav.png</source>
-			<destination>system/workplace/resources/tools/sites/icons/big/fav.png</destination>
+			<source>system/workplace/resources/tools/sites/icons/big/favicon.png</source>
+			<destination>system/workplace/resources/tools/sites/icons/big/favicon.png</destination>
 			<type>image</type>
 			<uuidstructure>c022f009-9309-11e2-a16a-d723659840f0</uuidstructure>
 			<uuidresource>c022f00a-9309-11e2-a16a-d723659840f0</uuidresource>
@@ -741,8 +741,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/sites/icons/big/site_edit.png</source>
-			<destination>system/workplace/resources/tools/sites/icons/big/site_edit.png</destination>
+			<source>system/workplace/resources/tools/sites/icons/big/site-edit.png</source>
+			<destination>system/workplace/resources/tools/sites/icons/big/site-edit.png</destination>
 			<type>image</type>
 			<uuidstructure>ca0f8c2d-7b76-11e2-ba12-13f7e154c8f7</uuidstructure>
 			<uuidresource>ca0f8c2e-7b76-11e2-ba12-13f7e154c8f7</uuidresource>
@@ -765,8 +765,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/sites/icons/big/site_new.png</source>
-			<destination>system/workplace/resources/tools/sites/icons/big/site_new.png</destination>
+			<source>system/workplace/resources/tools/sites/icons/big/site-new.png</source>
+			<destination>system/workplace/resources/tools/sites/icons/big/site-new.png</destination>
 			<type>image</type>
 			<uuidstructure>92176b41-7b73-11e2-ba12-13f7e154c8f7</uuidstructure>
 			<uuidresource>92176b42-7b73-11e2-ba12-13f7e154c8f7</uuidresource>
@@ -826,8 +826,32 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/sites/icons/small/site_edit.png</source>
-			<destination>system/workplace/resources/tools/sites/icons/small/site_edit.png</destination>
+			<source>system/workplace/resources/tools/sites/icons/small/default-favicon.png</source>
+			<destination>system/workplace/resources/tools/sites/icons/small/default-favicon.png</destination>
+			<type>image</type>
+			<uuidstructure>4d2d9dcc-9530-11e2-851b-d723659840f0</uuidstructure>
+			<uuidresource>4d2d9dcd-9530-11e2-851b-d723659840f0</uuidresource>
+			<datelastmodified>Mon, 25 Mar 2013 09:43:03 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 25 Mar 2013 09:42:26 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Default favicon]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/sites/icons/small/site-edit.png</source>
+			<destination>system/workplace/resources/tools/sites/icons/small/site-edit.png</destination>
 			<type>image</type>
 			<uuidstructure>b6952d22-7b61-11e2-b370-13f7e154c8f7</uuidstructure>
 			<uuidresource>b6952d23-7b61-11e2-b370-13f7e154c8f7</uuidresource>
@@ -850,8 +874,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/sites/icons/small/site_remove.png</source>
-			<destination>system/workplace/resources/tools/sites/icons/small/site_remove.png</destination>
+			<source>system/workplace/resources/tools/sites/icons/small/site-remove.png</source>
+			<destination>system/workplace/resources/tools/sites/icons/small/site-remove.png</destination>
 			<type>image</type>
 			<uuidstructure>561738d5-7b62-11e2-b370-13f7e154c8f7</uuidstructure>
 			<uuidresource>561738d6-7b62-11e2-b370-13f7e154c8f7</uuidresource>
