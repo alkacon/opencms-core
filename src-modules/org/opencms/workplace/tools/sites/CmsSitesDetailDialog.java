@@ -508,7 +508,7 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
         if (CmsStringUtil.isEmpty(getParamAction()) || CmsDialog.DIALOG_INITIAL.equals(getParamAction())) {
             // this is the initial dialog call
             if (CmsStringUtil.isNotEmpty(m_paramSites)) {
-                // edit an existing module, get it from manager
+                // edit an existing site, get it from manager
                 o = OpenCms.getSiteManager().getSiteForSiteRoot(m_paramSites);
             }
         } else {

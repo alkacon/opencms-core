@@ -35,6 +35,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
+import org.opencms.util.CmsStringUtil;
 
 /**
  * Removes a site from the configuration.<p>
@@ -44,7 +45,7 @@ import org.opencms.report.A_CmsReportThread;
 public class CmsSitesRemoveThread extends A_CmsReportThread {
 
     /** The sites to remove. */
-    private String[] m_sites;
+    private String m_sites;
 
     /**
      * Public constructor.<p>
@@ -52,7 +53,7 @@ public class CmsSitesRemoveThread extends A_CmsReportThread {
      * @param cms the cms object
      * @param sites the name of the thread
      */
-    protected CmsSitesRemoveThread(CmsObject cms, String[] sites) {
+    protected CmsSitesRemoveThread(CmsObject cms, String sites) {
 
         super(cms, "site-remove-thread");
         m_sites = sites;
@@ -74,11 +75,14 @@ public class CmsSitesRemoveThread extends A_CmsReportThread {
     @Override
     public void run() {
 
-        for (String sitePath : m_sites) {
-            try {
-                OpenCms.getSiteManager().removeSite(getCms(), OpenCms.getSiteManager().getSiteForSiteRoot(sitePath));
-            } catch (CmsException e) {
-                getReport().addError(e);
+        if (m_sites != null) {
+            for (String sitePath : CmsStringUtil.splitAsList(m_sites, ",")) {
+                try {
+                    OpenCms.getSiteManager().removeSite(getCms(), OpenCms.getSiteManager().getSiteForSiteRoot(sitePath));
+                    getReport().print(Messages.get().container(Messages.RPT_REMOVED_SITE_SUCCESSFUL_1, sitePath));
+                } catch (CmsException e) {
+                    getReport().addError(e);
+                }
             }
         }
     }

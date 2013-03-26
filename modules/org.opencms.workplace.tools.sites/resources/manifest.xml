@@ -587,8 +587,36 @@
 			<flags>0</flags>
 			<properties>
 				<property>
+					<name>Description</name>
+					<value><![CDATA[%(key.GUI_REMOVE_SITE_ADMIN_TOOL_HELP_0)]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/sites/icons/big/site-new.png]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[%(key.GUI_SITE_ADMIN_TOOL_GROUP_0)]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[%(key.GUI_REMOVE_SITE_ADMIN_TOOL_NAME_0)]]></value>
+				</property>
+				<property>
 					<name>Title</name>
-					<value><![CDATA[Report for removing sites from configuration]]></value>
+					<value><![CDATA[Remove site]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:sites=%(param.sites)&editaction=remove&action=initial]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.sites.CmsSitesToolHandler]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>

@@ -47,7 +47,7 @@ import javax.servlet.jsp.PageContext;
 public class CmsSitesListRemoveReport extends A_CmsListReport {
 
     /** The paths of the sites to remove. */
-    private String[] m_paramSites;
+    private String m_paramSites;
 
     /**
      * Public constructor with JSP action element.<p>
@@ -76,7 +76,7 @@ public class CmsSitesListRemoveReport extends A_CmsListReport {
      * 
      * @return the paths of the sites to remove
      */
-    public String[] getParamSites() {
+    public String getParamSites() {
 
         return m_paramSites;
     }
@@ -96,7 +96,7 @@ public class CmsSitesListRemoveReport extends A_CmsListReport {
      * 
      * @param paramSites the paths of the sites to remove
      */
-    public void setParamModule(String[] paramSites) {
+    public void setParamSites(String paramSites) {
 
         m_paramSites = paramSites;
     }

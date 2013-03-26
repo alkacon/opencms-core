@@ -68,6 +68,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_NEW_SITE_ADMIN_TOOL_NAME_0 = "GUI_NEW_SITE_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_REMOVE_SITE_ADMIN_TOOL_HELP_0 = "GUI_REMOVE_SITE_ADMIN_TOOL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_REMOVE_SITE_ADMIN_TOOL_NAME_0 = "GUI_REMOVE_SITE_ADMIN_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SITE_ADMIN_TOOL_GROUP_0 = "GUI_SITE_ADMIN_TOOL_GROUP_0";
 
     /** Message constant for key in the resource bundle. */
@@ -210,6 +216,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_REMOVED_SITE_SUCCESSFUL_1 = "RPT_REMOVED_SITE_SUCCESSFUL_1";
 
     /**
      * Hides the public constructor for this utility class.<p>
