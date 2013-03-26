@@ -55,6 +55,8 @@ import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuEntry;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler;
+import org.opencms.gwt.client.ui.css.I_CmsInputCss;
+import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsMultiCheckBox;
@@ -1118,12 +1120,14 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         final boolean isActive = smallElementsHandler.areSmallElementsEditable();
         CmsContextMenuEntryBean entryBean = new CmsContextMenuEntryBean();
         String baseMessage = Messages.get().key(Messages.GUI_EDIT_SMALL_ELEMENTS_0);
-        String msgEdit = "[ ] " + baseMessage;
-        String msgDisable = "[X] " + baseMessage;
+        String msgEdit = baseMessage;
+        String msgDisable = baseMessage;
         String label = isActive ? msgDisable : msgEdit;
         entryBean.setLabel(label);
         entryBean.setActive(smallElementsHandler.hasSmallElements());
         entryBean.setVisible(true);
+        I_CmsInputCss inputCss = I_CmsInputLayoutBundle.INSTANCE.inputCss();
+        entryBean.setIconClass(isActive ? inputCss.checkBoxImageChecked() : inputCss.checkBoxImageUnchecked());
         I_CmsContextMenuCommand command = new I_CmsContextMenuCommand() {
 
             public void execute(CmsUUID structureId, I_CmsContextMenuHandler handler, CmsContextMenuEntryBean bean) {

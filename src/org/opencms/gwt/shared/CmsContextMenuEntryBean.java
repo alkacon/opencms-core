@@ -41,6 +41,9 @@ public class CmsContextMenuEntryBean implements IsSerializable {
     /** Signals if the menu entry is active. */
     private boolean m_active;
 
+    /** The CSS class for the icon. */
+    private String m_iconClass;
+
     /** Stores the JSP path for the JSP that is called by the command. */
     private String m_jspPath;
 
@@ -103,6 +106,16 @@ public class CmsContextMenuEntryBean implements IsSerializable {
         m_reason = reason;
         m_separator = separator;
         m_subMenu = subMenu;
+    }
+
+    /** 
+     * Gets the CSS class used to display an item.<p>
+     * 
+     * @return the CSS class for the icon 
+     */
+    public String getIconClass() {
+
+        return m_iconClass;
     }
 
     /**
@@ -213,6 +226,16 @@ public class CmsContextMenuEntryBean implements IsSerializable {
     public void setActive(boolean active) {
 
         m_active = active;
+    }
+
+    /** 
+     * Sets CSS class to display an icon.<p>
+     * 
+     * @param iconClass the CSS class for the icon 
+     */
+    public void setIconClass(String iconClass) {
+
+        m_iconClass = iconClass;
     }
 
     /**

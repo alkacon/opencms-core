@@ -47,11 +47,11 @@ import com.google.gwt.user.client.ui.HTML;
  */
 public final class CmsContextMenuItem extends A_CmsContextMenuItem {
 
-    /** The panel containing the menu item text and optional the arrow and or a image in front of the text. */
-    private HTML m_panel;
-
     /** The command for this menu item. */
     private I_CmsContextMenuEntry m_entry;
+
+    /** The panel containing the menu item text and optional the arrow and or a image in front of the text. */
+    private HTML m_panel;
 
     /**
      * Constructs a context menu item.<p>
@@ -112,6 +112,13 @@ public final class CmsContextMenuItem extends A_CmsContextMenuItem {
                 + I_CmsImageBundle.INSTANCE.style().triangleRight());
             html.append("\"></div>");
         }
+        String iconClass = m_entry.getIconClass();
+        if (iconClass == null) {
+            iconClass = "";
+        }
+        String iconHtml = "<div class='" + iconClass + "'></div>";
+
+        html.append("<div class='" + I_CmsLayoutBundle.INSTANCE.contextmenuCss().iconBox() + "'>" + iconHtml + "</div>");
         // add the text to the item
         html.append("<div class=\"");
         html.append(I_CmsLayoutBundle.INSTANCE.contextmenuCss().label());

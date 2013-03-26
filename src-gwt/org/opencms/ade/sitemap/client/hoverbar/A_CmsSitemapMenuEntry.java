@@ -75,6 +75,14 @@ public abstract class A_CmsSitemapMenuEntry implements I_CmsContextMenuEntry, I_
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#getIconClass()
+     */
+    public String getIconClass() {
+
+        return null;
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#getJspPath()
      */
     public String getJspPath() {
