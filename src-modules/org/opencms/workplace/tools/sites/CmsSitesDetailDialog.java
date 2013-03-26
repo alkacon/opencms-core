@@ -244,7 +244,8 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
         // show error header once if there were validation errors
         result.append(createWidgetErrorHeader());
 
-        String title = m_site.getTitle();
+        String title = m_site.getTitle() != null ? m_site.getTitle() : Messages.get().getBundle().key(
+            Messages.GUI_SITES_NEW_SITE_TITLE_0);
         int count = 4;
 
         // site info

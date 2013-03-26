@@ -194,6 +194,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SITES_LIST_NAME_0 = "GUI_SITES_LIST_NAME_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITES_NEW_SITE_TITLE_0 = "GUI_SITES_NEW_SITE_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SITES_SETTINGS_ADMIN_TOOL_HELP_0 = "GUI_SITES_SETTINGS_ADMIN_TOOL_HELP_0";
 
     /** Message constant for key in the resource bundle. */
