@@ -79,7 +79,7 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
     private List<String> m_aliases;
 
     /** The edit action to perform. */
-    private String m_paramEditAction;
+    private String m_paramEditaction;
 
     /** The sites parameter. */
     private String m_paramSites;
@@ -167,9 +167,9 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
      *
      * @return the paramEditAction
      */
-    public String getParamEditAction() {
+    public String getParamEditaction() {
 
-        return m_paramEditAction;
+        return m_paramEditaction;
     }
 
     /**
@@ -205,11 +205,11 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
     /**
      * Sets the paramEditAction.<p>
      *
-     * @param paramEditAction the paramEditAction to set
+     * @param paramEditaction the paramEditAction to set
      */
-    public void setParamEditAction(String paramEditAction) {
+    public void setParamEditaction(String paramEditaction) {
 
-        m_paramEditAction = paramEditAction;
+        m_paramEditaction = paramEditaction;
     }
 
     /**
@@ -253,7 +253,7 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
         result.append(createDialogRowsHtml(0, count));
         result.append(createWidgetTableEnd());
         result.append(dialogBlockEnd());
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_site.getSecureUrl())) {
+        if ((getParamEditaction() != null) || CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_site.getSecureUrl())) {
             // secure site
             result.append(dialogBlockStart(Messages.get().getBundle().key(Messages.GUI_SITES_DETAIL_SECURE_1, title)));
             result.append(createWidgetTableStart());
@@ -264,11 +264,11 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
         }
 
         // site aliases
-        if ((DIALOG_EDIT.equals(getParamEditAction()) || DIALOG_NEW.equals(getParamEditAction()))
+        if ((DIALOG_EDIT.equals(getParamEditaction()) || DIALOG_NEW.equals(getParamEditaction()))
             || !m_site.getAliases().isEmpty()) {
             result.append(dialogBlockStart(Messages.get().getBundle().key(Messages.GUI_SITES_DETAIL_ALIASES_1, title)));
             result.append(createWidgetTableStart());
-            if (DIALOG_EDIT.equals(getParamEditAction()) || DIALOG_NEW.equals(getParamEditAction())) {
+            if (DIALOG_EDIT.equals(getParamEditaction()) || DIALOG_NEW.equals(getParamEditaction())) {
                 result.append(createDialogRowsHtml(++count, count));
             } else if (!m_site.getAliases().isEmpty()) {
                 result.append(createDialogRowsHtml(++count, (count + m_site.getAliases().size()) - 1));
@@ -291,7 +291,7 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
         initSite();
         setKeyPrefix(CmsSiteDialogObject.KEY_PREFIX_SITES);
 
-        if (DIALOG_NEW.equals(getParamEditAction()) || DIALOG_EDIT.equals(getParamEditAction())) {
+        if (DIALOG_NEW.equals(getParamEditaction()) || DIALOG_EDIT.equals(getParamEditaction())) {
             // edit or new
             // site info
             addWidget(new CmsWidgetDialogParameter(m_site, "siteRoot", PAGES[0], new CmsVfsFileWidget(
@@ -486,7 +486,7 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
         } else if (o instanceof CmsSiteDialogObject) {
             // create a new site
             m_site = (CmsSiteDialogObject)o;
-        } else if (DIALOG_NEW.equals(getParamEditAction())) {
+        } else if (DIALOG_NEW.equals(getParamEditaction())) {
             m_site = new CmsSiteDialogObject();
         } else {
             try {
