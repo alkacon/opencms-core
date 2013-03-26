@@ -73,6 +73,9 @@ public class CmsSitesList extends A_CmsListDialog {
     /** The path of the fav icon. */
     protected static final String LIST_ICON_FAVICON = "tools/sites/icons/small/default-favicon.png";
 
+    /** Holds - keys: site roots and values: favicon links. */
+    protected static Map<String, String> m_icons = new HashMap<String, String>();
+
     /** A parameter name for the title of the site. */
     protected static final String PARAM_SITE_TITLE = "sitetitle";
 
@@ -135,9 +138,6 @@ public class CmsSitesList extends A_CmsListDialog {
 
     /** Path to the module reports. */
     private static final String PATH_REPORTS = "/system/workplace/admin/sites/reports/";
-
-    /** Holds - keys: site roots and values: favicon links. */
-    protected Map<String, String> m_icons = new HashMap<String, String>();
 
     /**
      * Public constructor.<p>
@@ -261,6 +261,9 @@ public class CmsSitesList extends A_CmsListDialog {
         } catch (CmsException e) {
             // noop
         }
+
+        // clear the icons
+        m_icons.clear();
 
         for (CmsSite site : sites) {
             if (site.getSiteMatcher() != null) {
