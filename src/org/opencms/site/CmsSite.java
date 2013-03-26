@@ -138,6 +138,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
      * @param title display name of this site
      * @param siteMatcher the site matcher for this site
      * @param position the sorting position
+     * @param errorPage the optional error page for this site
      * @param secureSite the secure site
      * @param exclusiveUrl the exclusive flag
      * @param exclusiveError the exclusive error flag
@@ -149,6 +150,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
         String title,
         CmsSiteMatcher siteMatcher,
         String position,
+        String errorPage,
         CmsSiteMatcher secureSite,
         boolean exclusiveUrl,
         boolean exclusiveError,
@@ -169,6 +171,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
         setExclusiveUrl(exclusiveUrl);
         setExclusiveError(exclusiveError);
         setAliases(aliases);
+        setErrorPage(errorPage);
     }
 
     /**

@@ -127,55 +127,8 @@ public class CmsSiteDialogObject {
                 m_aliases.add((CmsSiteMatcher)aMatcher.clone());
             }
             m_position = site.getPosition();
+            m_errorPage = site.getErrorPage();
         }
-    }
-
-    /**
-     * Constructor using fields.<p>
-     * 
-     * @param aliases the aliases
-     * @param exclusiveError the exclusive flag
-     * @param exclusiveUrl the exclusive URL
-     * @param port the port
-     * @param secureServer the secure server address
-     * @param secureUrl the secure URL
-     * @param server the server address
-     * @param serverName the servers name
-     * @param serverProtocol the servers protocoll
-     * @param siteRoot the site root
-     * @param timeOffset the offset
-     * @param title the title
-     * @param position the position
-     */
-    public CmsSiteDialogObject(
-        List<CmsSiteMatcher> aliases,
-        boolean exclusiveError,
-        boolean exclusiveUrl,
-        int port,
-        boolean secureServer,
-        String secureUrl,
-        String server,
-        String serverName,
-        String serverProtocol,
-        String siteRoot,
-        long timeOffset,
-        String title,
-        float position) {
-
-        super();
-        m_aliases = aliases;
-        m_exclusiveError = exclusiveError;
-        m_exclusiveUrl = exclusiveUrl;
-        m_port = port;
-        m_secureServer = secureServer;
-        m_secureUrl = secureUrl;
-        m_server = server;
-        m_serverName = serverName;
-        m_serverProtocol = serverProtocol;
-        m_siteRoot = siteRoot;
-        m_timeOffset = timeOffset;
-        m_title = title;
-        m_position = position;
     }
 
     /**
@@ -542,6 +495,7 @@ public class CmsSiteDialogObject {
             m_title,
             new CmsSiteMatcher(m_server),
             String.valueOf(m_position),
+            m_errorPage,
             matcher,
             m_exclusiveUrl,
             m_exclusiveError,
