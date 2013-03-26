@@ -31,6 +31,7 @@ import org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
 import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElementPanel;
 import org.opencms.ade.containerpage.client.ui.CmsRemovedElementDeletionDialog;
+import org.opencms.ade.containerpage.client.ui.CmsSmallElementsHandler;
 import org.opencms.ade.containerpage.client.ui.I_CmsDropContainer;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.client.ui.groupeditor.A_CmsGroupEditor;
@@ -436,6 +437,9 @@ public final class CmsContainerpageController {
     /** Flag if the container-page has changed. */
     private boolean m_pageChanged;
 
+    /** Handler for small elements. */
+    private CmsSmallElementsHandler m_smallElementsHandler;
+
     /** The drag targets within this page. */
     private Map<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> m_targetContainers;
 
@@ -454,6 +458,8 @@ public final class CmsContainerpageController {
                 "Deserialization of page data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
                 e));
         }
+        m_smallElementsHandler = new CmsSmallElementsHandler(getContainerpageService());
+        m_smallElementsHandler.setEditSmallElements(m_data.isEditSmallElementsInitially(), false);
     }
 
     /**
@@ -1038,6 +1044,16 @@ public final class CmsContainerpageController {
     public CmsContainerElement getSerializedElement(String data) throws SerializationException {
 
         return (CmsContainerElement)CmsRpcPrefetcher.getSerializedObjectFromString(getContainerpageService(), data);
+    }
+
+    /** 
+     * Gets the handler for small elements.<p>
+     * 
+     * @return the small elements handler 
+     */
+    public CmsSmallElementsHandler getSmallElementsHandler() {
+
+        return m_smallElementsHandler;
     }
 
     /**

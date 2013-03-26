@@ -29,7 +29,6 @@ package org.opencms.ade.containerpage.client;
 
 import org.opencms.ade.containerpage.client.ui.CmsAddToFavoritesButton;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
-import org.opencms.ade.containerpage.client.ui.CmsSelectionButtonMenu;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarClipboardMenu;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarEditButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarGalleryMenu;
@@ -41,7 +40,6 @@ import org.opencms.ade.containerpage.client.ui.CmsToolbarResetButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarSaveButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarSelectionButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarSettingsButton;
-import org.opencms.ade.containerpage.client.ui.CmsToolbarShowSmallElementsButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarSitemapButton;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.A_CmsEntryPoint;
@@ -51,11 +49,8 @@ import org.opencms.gwt.client.dnd.CmsCompositeDNDController;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
-import org.opencms.gwt.client.ui.CmsToggleButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
 import org.opencms.gwt.client.ui.CmsToolbarContextButton;
-import org.opencms.gwt.client.ui.I_CmsButton;
-import org.opencms.gwt.client.ui.I_CmsButton.ButtonColor;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsButton.Size;
 import org.opencms.gwt.client.ui.I_CmsToolbarButton;
@@ -99,9 +94,6 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
     /** The Z index manager. */
     private static final I_CmsContainerZIndexManager Z_INDEX_MANAGER = GWT.create(I_CmsContainerZIndexManager.class);
-
-    /** The selection button menu. */
-    protected CmsSelectionButtonMenu m_selectionButtonMenu;
 
     /** Style to toggle toolbar visibility. */
     protected CmsStyleVariable m_toolbarVisibility;
@@ -147,9 +139,6 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
     /** Selection button. */
     private CmsToolbarSelectionButton m_selection;
-
-    /** The button for changing the display mode for small elements. */
-    private CmsToolbarShowSmallElementsButton m_showSmall;
 
     /** Sitemap button. */
     private CmsToolbarSitemapButton m_sitemap;
@@ -318,16 +307,6 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     }
 
     /**
-     * Gets the selection button menu.<p>
-     * 
-     * @return the selection button menu
-     */
-    public CmsSelectionButtonMenu getSelectionButtonMenu() {
-
-        return m_selectionButtonMenu;
-    }
-
-    /**
      * Returns the tool-bar widget.<p>
      * 
      * @return the tool-bar widget
@@ -457,26 +436,6 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
         });
 
-        m_selectionButtonMenu = new CmsSelectionButtonMenu(m_selection, true, m_selection.getElement());
-        m_selectionButtonMenu.setWidth(40);
-        m_selectionButtonMenu.setHeight(40);
-        final CmsToggleButton showSmall = new CmsToggleButton(I_CmsButton.ButtonData.SHOWSMALL);
-        showSmall.setButtonStyle(ButtonStyle.IMAGE, ButtonColor.GRAY);
-        showSmall.addClickHandler(new ClickHandler() {
-
-            public void onClick(ClickEvent e) {
-
-                if (showSmall.isDown()) {
-                    containerpageHandler.setEnlargeSmallElements(true);
-                } else {
-                    containerpageHandler.setEnlargeSmallElements(false);
-                }
-            }
-        });
-        m_selectionButtonMenu.addToPanel(showSmall);
-        // the selection button menu isn't activated by default, this happens only when its
-        // activate() method is called.
-
         RootPanel.get().addStyleName(
             org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().hideButtonShowSmallElements());
 
@@ -510,9 +469,6 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
         // export open stack trace dialog function
         exportStacktraceDialogMethod();
-        m_smallElementsStyle = new CmsStyleVariable(RootPanel.get());
-        setEnlargeSmallElements(false);
-
     }
 
     /**
@@ -524,19 +480,6 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         for (CmsContainerPageElementPanel elemWidget : elemWidgets) {
             CmsContainerpageController.get().getContainerpageUtil().addOptionBar(elemWidget);
         }
-    }
-
-    /**
-     * Sets the mode for displaying small elements.<p>
-     * 
-     * @param visible if true, small elements will be enlarged and their edit buttons shown; if false, the edit buttons will be hidden
-     */
-    public void setEnlargeSmallElements(boolean visible) {
-
-        String newClass = visible
-        ? I_CmsLayoutBundle.INSTANCE.containerpageCss().enlargeSmallElements()
-        : I_CmsLayoutBundle.INSTANCE.containerpageCss().ignoreSmallElements();
-        m_smallElementsStyle.setValue(newClass);
     }
 
     /**
@@ -581,18 +524,18 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
      * Exports the openMessageDialog method to the page context.<p>
      */
     private native void exportStacktraceDialogMethod() /*-{
-        $wnd.__openStacktraceDialog = function(event) {
-            event = (event) ? event : ((window.event) ? window.event : "");
-            var elem = (event.target) ? event.target : event.srcElement;
-            if (elem != null) {
-                var children = elem.getElementsByTagName("span");
-                if (children.length > 0) {
-                    var title = children[0].getAttribute("title");
-                    var content = children[0].innerHTML;
-                    @org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
-                }
+      $wnd.__openStacktraceDialog = function(event) {
+         event = (event) ? event : ((window.event) ? window.event : "");
+         var elem = (event.target) ? event.target : event.srcElement;
+         if (elem != null) {
+            var children = elem.getElementsByTagName("span");
+            if (children.length > 0) {
+               var title = children[0].getAttribute("title");
+               var content = children[0].innerHTML;
+               @org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
             }
-        }
+         }
+      }
     }-*/;
 
 }

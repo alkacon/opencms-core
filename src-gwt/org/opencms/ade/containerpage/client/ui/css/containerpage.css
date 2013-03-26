@@ -284,7 +284,7 @@ div.groupcontainerPlaceholder{
 }
 
 
-@eval enlargedMinHeight org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel.getNecessaryHeight();
+@eval enlargedMinHeight org.opencms.ade.containerpage.client.ui.CmsSmallElementsHandler.getNecessaryHeight();
 
 .enlargeSmallElements .smallElement {
 	min-height: enlargedMinHeight; 

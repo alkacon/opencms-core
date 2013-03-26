@@ -29,6 +29,7 @@ package org.opencms.ade.containerpage.client;
 
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
 import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElementPanel;
+import org.opencms.ade.containerpage.client.ui.CmsSmallElementsHandler;
 import org.opencms.ade.containerpage.client.ui.groupeditor.CmsInheritanceContainerEditor;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
@@ -421,28 +422,11 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     }
 
     /**
-     * Enables the 'show small elements' button.<p>
-     */
-    public void enableShowSmallElements() {
-
-        m_editor.getSelectionButtonMenu().activate();
-    }
-
-    /**
      * Enables the toolbar buttons.<p>
      */
     public void enableToolbarButtons() {
 
         m_editor.enableToolbarButtons(m_controller.hasPageChanged());
-    }
-
-    /**
-     * Enlarges small elements on the page.<p>
-     */
-    public void enlargeSmallElements() {
-
-        m_editor.setEnlargeSmallElements(true);
-
     }
 
     /**
@@ -913,16 +897,6 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     }
 
     /**
-     * Sets the display mode for small elements.<p>
-     * 
-     * @param enabled if true, small elements will be enlarged and editable
-     */
-    public void setEnlargeSmallElements(boolean enabled) {
-
-        m_editor.setEnlargeSmallElements(enabled);
-    }
-
-    /**
      * Shows resource information for a given element.<p>
      * 
      * @param element the element for which to show the information 
@@ -1023,6 +997,8 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
         if (menuEntryBean.getName().equals("templatecontexts")) {
             return createTemplateContextSelectionMenuEntry(structureId);
+        } else if (menuEntryBean.getName().equals("editsmallelements")) {
+            return createToggleEditSmallElementsMenuEntry();
         } else {
             return super.transformSingleEntry(structureId, menuEntryBean);
         }
@@ -1128,6 +1104,49 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         } else {
             return null;
         }
+    }
+
+    /** 
+     * Creates the context menu entry for enabling or disabling editing of small elements.<p>
+     * 
+     * @return the created context menu entry 
+     */
+    protected I_CmsContextMenuEntry createToggleEditSmallElementsMenuEntry() {
+
+        final CmsContainerpageController controller = CmsContainerpageController.get();
+        final CmsSmallElementsHandler smallElementsHandler = controller.getSmallElementsHandler();
+        final boolean isActive = smallElementsHandler.areSmallElementsEditable();
+        CmsContextMenuEntryBean entryBean = new CmsContextMenuEntryBean();
+        String baseMessage = Messages.get().key(Messages.GUI_EDIT_SMALL_ELEMENTS_0);
+        String msgEdit = "[ ] " + baseMessage;
+        String msgDisable = "[X] " + baseMessage;
+        String label = isActive ? msgDisable : msgEdit;
+        entryBean.setLabel(label);
+        entryBean.setActive(smallElementsHandler.hasSmallElements());
+        entryBean.setVisible(true);
+        I_CmsContextMenuCommand command = new I_CmsContextMenuCommand() {
+
+            public void execute(CmsUUID structureId, I_CmsContextMenuHandler handler, CmsContextMenuEntryBean bean) {
+
+                smallElementsHandler.setEditSmallElements(!isActive, true);
+            }
+
+            public A_CmsContextMenuItem getItemWidget(
+                CmsUUID structureId,
+                I_CmsContextMenuHandler handler,
+                CmsContextMenuEntryBean bean) {
+
+                return null;
+            }
+
+            public boolean hasItemWidget() {
+
+                return false;
+            }
+        };
+        CmsContextMenuEntry entry = new CmsContextMenuEntry(this, null, command);
+        entry.setBean(entryBean);
+        return entry;
     }
 
     /**

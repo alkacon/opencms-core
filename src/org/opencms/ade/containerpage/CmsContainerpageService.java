@@ -560,7 +560,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             CmsResource containerPage = getContainerpage(cms);
             TemplateBean templateBean = (TemplateBean)getRequest().getAttribute(
                 CmsTemplateContextManager.ATTR_TEMPLATE_BEAN);
-            CmsADESessionCache.getCache(getRequest(), cms).setTemplateBean(containerPage.getRootPath(), templateBean);
+            CmsADESessionCache sessionCache = CmsADESessionCache.getCache(getRequest(), cms);
+            sessionCache.setTemplateBean(containerPage.getRootPath(), templateBean);
             long lastModified = containerPage.getDateLastModified();
             String cntPageUri = cms.getSitePath(containerPage);
             String editorUri = OpenCms.getWorkplaceManager().getEditorHandler().getEditorUri(
@@ -581,7 +582,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 getLockInfo(containerPage),
                 cms.getRequestContext().getLocale().toString(),
                 useClassicEditor,
-                info);
+                info,
+                sessionCache.isEditSmallElements());
         } catch (Throwable e) {
             error(e);
         }
@@ -726,6 +728,14 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         } catch (Throwable e) {
             error(e);
         }
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#setEditSmallElements(boolean)
+     */
+    public void setEditSmallElements(boolean editSmallElements) {
+
+        getSessionCache().setEditSmallElements(editSmallElements);
     }
 
     /**

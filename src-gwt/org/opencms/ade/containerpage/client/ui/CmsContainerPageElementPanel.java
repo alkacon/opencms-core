@@ -75,9 +75,6 @@ import com.google.gwt.user.client.ui.RootPanel;
 public class CmsContainerPageElementPanel extends AbsolutePanel
 implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
 
-    /** The height necessary for a container page element. */
-    public static int NECESSARY_HEIGHT = 24;
-
     /** Highlighting border for this element. */
     protected CmsHighlightingBorder m_highlighting;
 
@@ -180,16 +177,6 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
         setWritePermission(hasWritePermission);
         setReleasedAndNotExpired(releasedAndNotExpired);
         getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElement());
-    }
-
-    /**
-     * Returns the necessary height as a CSS height string in pixels.<p>
-     * 
-     * @return the necessary height as a CSS string 
-     */
-    public static String getNecessaryHeight() {
-
-        return NECESSARY_HEIGHT + "px !important";
     }
 
     /**
@@ -729,12 +716,9 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
 
                 public void execute() {
 
-                    if (!hasCheckedHeight()
-                        && (CmsPositionBean.generatePositionInfo(getElement()).getHeight() < NECESSARY_HEIGHT)
-                        && (CmsPositionBean.getInnerDimensions(getElement()).getHeight() < NECESSARY_HEIGHT)) {
-
-                        CmsContainerpageController.get().getHandler().enableShowSmallElements();
-                        addStyleName(org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle.INSTANCE.containerpageCss().smallElement());
+                    CmsContainerPageElementPanel thisElement = CmsContainerPageElementPanel.this;
+                    if (!hasCheckedHeight() && CmsSmallElementsHandler.isSmall(thisElement)) {
+                        CmsContainerpageController.get().getSmallElementsHandler().prepareSmallElement(thisElement);
                     }
                     setCheckedHeight(true);
                 }
@@ -819,28 +803,28 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
      * Resets the node inserted handler.<p>
      */
     private native void resetNodeInsertedHandler()/*-{
-        var $this = this;
-        var element = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::getElement()();
-        var handler = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::m_nodeInsertHandler;
-        if (handler == null) {
-            handler = function(event) {
-                $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::checkForEditableChanges()();
-            };
-            $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::m_nodeInsertHandler = handler;
-        } else {
-            if (element.removeEventLister) {
-                element.removeEventListener("DOMNodeInserted", handler);
-            } else if (element.detachEvent) {
-                // IE specific
-                element.detachEvent("onDOMNodeInserted", handler);
-            }
-        }
-        if (element.addEventListener) {
-            element.addEventListener("DOMNodeInserted", handler, false);
-        } else if (element.attachEvent) {
+      var $this = this;
+      var element = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::getElement()();
+      var handler = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::m_nodeInsertHandler;
+      if (handler == null) {
+         handler = function(event) {
+            $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::checkForEditableChanges()();
+         };
+         $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::m_nodeInsertHandler = handler;
+      } else {
+         if (element.removeEventLister) {
+            element.removeEventListener("DOMNodeInserted", handler);
+         } else if (element.detachEvent) {
             // IE specific
-            element.attachEvent("onDOMNodeInserted", handler);
-        }
+            element.detachEvent("onDOMNodeInserted", handler);
+         }
+      }
+      if (element.addEventListener) {
+         element.addEventListener("DOMNodeInserted", handler, false);
+      } else if (element.attachEvent) {
+         // IE specific
+         element.attachEvent("onDOMNodeInserted", handler);
+      }
     }-*/;
 
     /**

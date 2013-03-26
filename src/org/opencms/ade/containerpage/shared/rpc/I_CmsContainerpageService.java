@@ -308,6 +308,15 @@ public interface I_CmsContainerpageService extends RemoteService {
      */
     void saveRecentList(List<String> clientIds) throws CmsRpcException;
 
+    /** 
+     * Enables or disables editing for small elements on page load.<p>
+     * 
+     * @param editSmallElements the defautl setting for the small element editability
+     *  
+     * @throws CmsRpcException if something goes wrong 
+     */
+    void setEditSmallElements(boolean editSmallElements) throws CmsRpcException;
+
     /**
      * Saves the container-page in a synchronized RPC call.<p>
      * 
