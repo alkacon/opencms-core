@@ -38,6 +38,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteMatcher;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
@@ -179,7 +180,7 @@ public class CmsSitesList extends A_CmsListDialog {
                 selectedSites.add(item.getId());
             }
             Map<String, String[]> params = new HashMap<String, String[]>();
-            params.put(PARAM_SITES, selectedSites.toArray(new String[selectedSites.size()]));
+            params.put(PARAM_SITES, new String[] {CmsStringUtil.listAsString(selectedSites, ",")});
             params.put(PARAM_ACTION, new String[] {DIALOG_INITIAL});
             params.put(PARAM_STYLE, new String[] {CmsToolDialog.STYLE_NEW});
             getToolManager().jspForwardPage(this, PATH_REPORTS + "remove.jsp", params);

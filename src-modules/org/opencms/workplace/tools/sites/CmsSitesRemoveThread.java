@@ -79,7 +79,7 @@ public class CmsSitesRemoveThread extends A_CmsReportThread {
             for (String sitePath : CmsStringUtil.splitAsList(m_sites, ",")) {
                 try {
                     OpenCms.getSiteManager().removeSite(getCms(), OpenCms.getSiteManager().getSiteForSiteRoot(sitePath));
-                    getReport().print(Messages.get().container(Messages.RPT_REMOVED_SITE_SUCCESSFUL_1, sitePath));
+                    getReport().println(Messages.get().container(Messages.RPT_REMOVED_SITE_SUCCESSFUL_1, sitePath));
                 } catch (CmsException e) {
                     getReport().addError(e);
                 }
