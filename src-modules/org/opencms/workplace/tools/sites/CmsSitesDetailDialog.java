@@ -297,12 +297,20 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
         if (DIALOG_NEW.equals(getParamEditaction()) || DIALOG_EDIT.equals(getParamEditaction())) {
             // edit or new
             // site info
+            addWidget(new CmsWidgetDialogParameter(m_site, "title", PAGES[0], new CmsInputWidget()));
             addWidget(new CmsWidgetDialogParameter(m_site, "siteRoot", PAGES[0], new CmsVfsFileWidget(
                 false,
                 "/sites",
                 false,
                 false)));
-            addWidget(new CmsWidgetDialogParameter(m_site, "title", PAGES[0], new CmsInputWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_site, "server", PAGES[0], new CmsInputWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_site, "errorPage", PAGES[0], new CmsVfsFileWidget(
+                true,
+                "",
+                true,
+                false)));
+            addWidget(new CmsWidgetDialogParameter(m_site, "position", PAGES[0], new CmsSelectWidget(
+                createNavOpts(m_site))));
 
             if (m_site.getFavicon() != null) {
                 try {
@@ -317,15 +325,6 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
                     // noop
                 }
             }
-
-            addWidget(new CmsWidgetDialogParameter(m_site, "position", PAGES[0], new CmsSelectWidget(
-                createNavOpts(m_site))));
-            addWidget(new CmsWidgetDialogParameter(m_site, "server", PAGES[0], new CmsInputWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_site, "errorPage", PAGES[0], new CmsVfsFileWidget(
-                true,
-                "",
-                true,
-                false)));
 
             // secure site
             addWidget(new CmsWidgetDialogParameter(m_site, "secureUrl", PAGES[0], new CmsInputWidget()));
@@ -336,8 +335,17 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
             addWidget(new CmsWidgetDialogParameter(this, "aliases", PAGES[0], new CmsInputWidget()));
         } else {
             // display site
-            addWidget(new CmsWidgetDialogParameter(m_site, "siteRoot", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_site, "title", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_site, "siteRoot", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_site, "server", PAGES[0], new CmsDisplayWidget()));
+            CmsWidgetDialogParameter errorPage;
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_site.getErrorPage())) {
+                errorPage = new CmsWidgetDialogParameter(m_site, "errorPage", PAGES[0], new CmsDisplayWidget(
+                    Messages.get().container(Messages.GUI_SITES_ERROR_PAGE_NOT_AVAILABLE_0).key()));
+            } else {
+                errorPage = new CmsWidgetDialogParameter(m_site, "errorPage", PAGES[0], new CmsDisplayWidget());
+            }
+            addWidget(errorPage);
 
             if (m_site.getFavicon() != null) {
                 try {
@@ -352,9 +360,6 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
                     // noop
                 }
             }
-
-            addWidget(new CmsWidgetDialogParameter(m_site, "server", PAGES[0], new CmsDisplayWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_site, "errorPage", PAGES[0], new CmsDisplayWidget()));
 
             if (m_site.hasSecureServer()) {
                 addWidget(new CmsWidgetDialogParameter(m_site, "secureUrl", PAGES[0], new CmsDisplayWidget()));

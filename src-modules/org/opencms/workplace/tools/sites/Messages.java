@@ -128,6 +128,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SITES_DETAIL_SHOW_SECURE_NAME_0 = "GUI_SITES_DETAIL_SHOW_SECURE_NAME_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITES_ERROR_PAGE_NOT_AVAILABLE_0 = "GUI_SITES_ERROR_PAGE_NOT_AVAILABLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SITES_GENERAL_SETTINGS_0 = "GUI_SITES_GENERAL_SETTINGS_0";
 
     /** Message constant for key in the resource bundle. */
