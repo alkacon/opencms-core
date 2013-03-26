@@ -512,13 +512,14 @@ public class CmsSiteDialogObject {
         if ((site != null) && (site.getSiteMatcher() != null)) {
             uuid = (CmsUUID)site.getSiteRootUUID().clone();
         }
+        String errorPage = CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_errorPage) ? m_errorPage : null;
         return new CmsSite(
             m_siteRoot,
             uuid,
             m_title,
             new CmsSiteMatcher(m_server),
             String.valueOf(m_position),
-            m_errorPage,
+            errorPage,
             matcher,
             m_exclusiveUrl,
             m_exclusiveError,
