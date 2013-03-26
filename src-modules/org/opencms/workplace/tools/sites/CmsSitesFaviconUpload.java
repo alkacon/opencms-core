@@ -127,7 +127,9 @@ public class CmsSitesFaviconUpload extends A_CmsImportFromHttp {
             int imageResId = CmsResourceTypeImage.getStaticTypeId();
             if (cms.existsResource(favCreatePath)) {
                 // replace the existing favicon
+                cms.lockResource(favCreatePath);
                 cms.replaceResource(favCreatePath, imageResId, content, new ArrayList<CmsProperty>());
+                cms.unlockResource(favCreatePath);
             } else {
                 // create the new favicon
                 cms.createResource(favCreatePath, imageResId, content, new ArrayList<CmsProperty>());
