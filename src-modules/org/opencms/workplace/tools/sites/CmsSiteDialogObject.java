@@ -60,6 +60,9 @@ public class CmsSiteDialogObject {
     /** The exclusive URL. */
     private boolean m_exclusiveUrl;
 
+    /** The favicon. */
+    private String m_favicon;
+
     private CmsSite m_originalSite;
 
     /** The port (e.g. 8080) which is required to access this site. */
@@ -189,6 +192,16 @@ public class CmsSiteDialogObject {
     public String getErrorPage() {
 
         return m_errorPage;
+    }
+
+    /**
+     * Returns the favicon.<p>
+     *
+     * @return the favicon
+     */
+    public String getFavicon() {
+
+        return m_favicon;
     }
 
     /**
@@ -373,6 +386,16 @@ public class CmsSiteDialogObject {
     public void setExclusiveUrl(boolean exclusiveUrl) {
 
         m_exclusiveUrl = exclusiveUrl;
+    }
+
+    /**
+     * Sets the favicon.<p>
+     *
+     * @param favicon the favicon to set
+     */
+    public void setFavicon(String favicon) {
+
+        m_favicon = favicon;
     }
 
     /**
