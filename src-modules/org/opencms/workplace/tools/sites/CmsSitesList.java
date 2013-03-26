@@ -318,6 +318,7 @@ public class CmsSitesList extends A_CmsListDialog {
         removeAction.setName(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_REMOVE_NAME_0));
         removeAction.setHelpText(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_REMOVE_HELP_0));
         removeAction.setIconPath(LIST_ICON_REMOVE);
+        removeAction.setConfirmationMessage(Messages.get().container(Messages.GUI_SITES_LIST_MACTION_REMOVE_CONF_0));
         removeCol.addDirectAction(removeAction);
         metadata.addColumn(removeCol);
 
@@ -417,12 +418,12 @@ public class CmsSitesList extends A_CmsListDialog {
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // add the remove multiple sites action
-        CmsListMultiAction deleteModules = new CmsListMultiAction(LIST_MACTION_REMOVE);
-        deleteModules.setName(Messages.get().container(Messages.GUI_SITES_LIST_MACTION_REMOVE_NAME_0));
-        deleteModules.setConfirmationMessage(Messages.get().container(Messages.GUI_SITES_LIST_MACTION_REMOVE_CONF_0));
-        deleteModules.setIconPath(ICON_MULTI_DELETE);
-        deleteModules.setEnabled(true);
-        deleteModules.setHelpText(Messages.get().container(Messages.GUI_SITES_LIST_MACTION_REMOVE_HELP_0));
-        metadata.addMultiAction(deleteModules);
+        CmsListMultiAction removeSites = new CmsListMultiAction(LIST_MACTION_REMOVE);
+        removeSites.setName(Messages.get().container(Messages.GUI_SITES_LIST_MACTION_REMOVE_NAME_0));
+        removeSites.setConfirmationMessage(Messages.get().container(Messages.GUI_SITES_LIST_MACTION_REMOVE_CONF_0));
+        removeSites.setIconPath(ICON_MULTI_DELETE);
+        removeSites.setEnabled(true);
+        removeSites.setHelpText(Messages.get().container(Messages.GUI_SITES_LIST_MACTION_REMOVE_HELP_0));
+        metadata.addMultiAction(removeSites);
     }
 }
