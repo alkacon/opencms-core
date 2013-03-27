@@ -15,4 +15,7 @@
 		<agent>^Mozilla/5\.0 \(.*\).*Chrome.*$</agent>
 		<agent>^Mozilla/5\.0 \(.*\).* Version/.* Safari.*$</agent>
 	</useragents>
+	<params>
+		<param name="paste_text">true</param>
+	</params>
 </editor>

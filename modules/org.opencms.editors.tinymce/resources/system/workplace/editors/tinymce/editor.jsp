@@ -759,6 +759,9 @@ tinyMCE.init({
     theme_advanced_toolbar_align : "left",
     theme_advanced_statusbar_location : "bottom",
     theme_advanced_resizing : false,
+    paste_text_sticky: true,
+    paste_text_sticky_default: <%=""+Boolean.valueOf(OpenCms.getWorkplaceManager().getWorkplaceEditorManager().getEditorConfiguration("tinymce").getParameters().get("paste_text"))%>,
+    
     cmsGalleryEnhancedOptions : <%= options.showElement("gallery.enhancedoptions", displayOptions)%>,
     cmsGalleryUseThickbox : <%= options.showElement("gallery.usethickbox", displayOptions)%>,
     language : "<%= wp.getLocale().getLanguage() %>",

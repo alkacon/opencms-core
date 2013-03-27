@@ -60,6 +60,9 @@ public class CmsWorkplaceEditorConfiguration {
     /** Name of the root document node. */
     public static final String DOCUMENT_NODE = "editor";
 
+    /** Name of the name attribute. */
+    protected static final String A_NAME = "name";
+
     /** Name of the single user agent node. */
     protected static final String N_AGENT = "agent";
 
@@ -74,6 +77,12 @@ public class CmsWorkplaceEditorConfiguration {
 
     /** Name of the resource type subnode name. */
     protected static final String N_NAME = "name";
+
+    /** Name of the param node. */
+    protected static final String N_PARAM = "param";
+
+    /** Name of the params node. */
+    protected static final String N_PARAMS = "params";
 
     /** Name of the resource type subnode ranking. */
     protected static final String N_RANKING = "ranking";
@@ -102,6 +111,12 @@ public class CmsWorkplaceEditorConfiguration {
     /** The editor URI. */
     private String m_editorUri;
 
+    /** The name of the configuration (usually the name of the folder under /system/workplace/editors). */
+    private String m_name;
+
+    /** Additional parameters for the editor. */
+    private Map<String, String> m_parameters = new HashMap<String, String>();
+
     /** The resource types. */
     private Map<String, String[]> m_resTypes;
 
@@ -119,12 +134,15 @@ public class CmsWorkplaceEditorConfiguration {
      * 
      * @param xmlData the XML data String containing the information about the editor
      * @param editorUri the editor workplace URI
+     * @param name the editor configuration name 
      */
-    public CmsWorkplaceEditorConfiguration(byte[] xmlData, String editorUri) {
+    public CmsWorkplaceEditorConfiguration(byte[] xmlData, String editorUri, String name) {
 
         setValidConfiguration(true);
         try {
+            m_name = name;
             initialize(CmsXmlUtils.unmarshalHelper(xmlData, null), editorUri);
+
         } catch (CmsXmlException e) {
             // xml String could not be parsed
             logConfigurationError(Messages.get().getBundle().key(Messages.ERR_XML_PARSE_0), e);
@@ -175,6 +193,26 @@ public class CmsWorkplaceEditorConfiguration {
         } else {
             return resourceTypeParams[1];
         }
+    }
+
+    /** 
+     * Gets the name of the editor configuration (usually the folder name under /system/workplace/editors).<p>
+     * 
+     * @return the name of the editor configuration 
+     */
+    public String getName() {
+
+        return m_name;
+    }
+
+    /** 
+     * Gets the map of additional editor parameters.<p>
+     * 
+     * @return the editor parameter map 
+     */
+    public Map<String, String> getParameters() {
+
+        return m_parameters;
     }
 
     /**
@@ -293,6 +331,8 @@ public class CmsWorkplaceEditorConfiguration {
     @SuppressWarnings("unchecked")
     private void initialize(Document document, String editorUri) {
 
+        m_parameters.clear();
+
         // get the root element of the configuration
         Element rootElement = document.getRootElement();
 
@@ -388,6 +428,17 @@ public class CmsWorkplaceEditorConfiguration {
         }
         setBrowserPattern(pattern);
         setUserAgentsRegEx(userAgents);
+
+        Element paramsElement = (Element)(document.getRootElement().selectSingleNode(N_PARAMS));
+        if (paramsElement != null) {
+            List<?> params = paramsElement.selectNodes(N_PARAM);
+            for (Object paramObj : params) {
+                Element paramElement = (Element)paramObj;
+                String name = paramElement.attributeValue(A_NAME);
+                String value = paramElement.getText();
+                m_parameters.put(name, value);
+            }
+        }
     }
 
     /**

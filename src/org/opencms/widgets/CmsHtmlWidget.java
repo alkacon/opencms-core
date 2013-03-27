@@ -39,6 +39,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.editors.CmsEditorDisplayOptions;
+import org.opencms.workplace.editors.CmsWorkplaceEditorConfiguration;
 import org.opencms.workplace.editors.I_CmsEditorCssHandler;
 import org.opencms.xml.types.A_CmsXmlContentValue;
 
@@ -224,6 +225,7 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
 
         JSONObject result = new JSONObject();
 
+        CmsHtmlWidgetOption widgetOptions = getHtmlWidgetOption();
         CmsEditorDisplayOptions options = OpenCms.getWorkplaceManager().getEditorDisplayOptions();
         Properties displayOptions = options.getDisplayOptions(cms);
         try {
@@ -233,11 +235,11 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
             if (options.showElement("gallery.usethickbox", displayOptions)) {
                 result.put("cmsGalleryUseThickbox", true);
             }
-            result.put("fullpage", getHtmlWidgetOption().isFullPage());
-            List<String> toolbarItems = getHtmlWidgetOption().getButtonBarShownItems();
+            result.put("fullpage", widgetOptions.isFullPage());
+            List<String> toolbarItems = widgetOptions.getButtonBarShownItems();
             result.put("toolbar_items", toolbarItems);
             result.put("language", OpenCms.getWorkplaceManager().getWorkplaceLocale(cms).getLanguage());
-            String editorHeight = getHtmlWidgetOption().getEditorHeight();
+            String editorHeight = widgetOptions.getEditorHeight();
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(editorHeight)) {
                 editorHeight = editorHeight.replaceAll("px", "");
                 result.put("height", editorHeight);
@@ -245,10 +247,10 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
             // set CSS style sheet for current editor widget if configured
             boolean cssConfigured = false;
             String cssPath = "";
-            if (getHtmlWidgetOption().useCss()) {
-                cssPath = getHtmlWidgetOption().getCssPath();
+            if (widgetOptions.useCss()) {
+                cssPath = widgetOptions.getCssPath();
                 // set the CSS path to null (the created configuration String passed to JS will not include this path then)
-                getHtmlWidgetOption().setCssPath(null);
+                widgetOptions.setCssPath(null);
                 cssConfigured = true;
             } else if (OpenCms.getWorkplaceManager().getEditorCssHandlers().size() > 0) {
                 Iterator<I_CmsEditorCssHandler> i = OpenCms.getWorkplaceManager().getEditorCssHandlers().iterator();
@@ -272,23 +274,31 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
                 result.put("content_css", OpenCms.getLinkManager().substituteLink(cms, cssPath));
             }
 
-            if (getHtmlWidgetOption().showStylesFormat()) {
+            if (widgetOptions.showStylesFormat()) {
                 try {
-                    CmsFile file = cms.readFile(getHtmlWidgetOption().getStylesFormatPath());
+                    CmsFile file = cms.readFile(widgetOptions.getStylesFormatPath());
                     String characterEncoding = OpenCms.getSystemInfo().getDefaultEncoding();
                     result.put("style_formats", new String(file.getContents(), characterEncoding));
                 } catch (CmsException cmsException) {
-                    LOG.error("Can not open file:" + getHtmlWidgetOption().getStylesFormatPath(), cmsException);
+                    LOG.error("Can not open file:" + widgetOptions.getStylesFormatPath(), cmsException);
                 } catch (UnsupportedEncodingException ex) {
                     LOG.error(ex);
                 }
             }
-            String formatSelectOptions = getHtmlWidgetOption().getFormatSelectOptions();
+            String formatSelectOptions = widgetOptions.getFormatSelectOptions();
             if (!CmsStringUtil.isEmpty(formatSelectOptions)
-                && !getHtmlWidgetOption().isButtonHidden(CmsHtmlWidgetOption.OPTION_FORMATSELECT)) {
+                && !widgetOptions.isButtonHidden(CmsHtmlWidgetOption.OPTION_FORMATSELECT)) {
                 formatSelectOptions = StringUtils.replace(formatSelectOptions, ";", ",");
                 result.put("block_formats", formatSelectOptions);
             }
+            CmsWorkplaceEditorConfiguration editorConfig = OpenCms.getWorkplaceManager().getWorkplaceEditorManager().getEditorConfiguration(
+                "tinymce");
+            Boolean pasteText = Boolean.valueOf(editorConfig.getParameters().get("paste_text"));
+            JSONObject directOptions = new JSONObject();
+            directOptions.put("paste_text_sticky_default", pasteText);
+            directOptions.put("paste_text_sticky", Boolean.TRUE);
+            result.put("tinyMceOptions", directOptions);
+
         } catch (JSONException e) {
             LOG.error(e.getLocalizedMessage(), e);
         }

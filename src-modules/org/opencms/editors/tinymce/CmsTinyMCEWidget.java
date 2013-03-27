@@ -17,6 +17,7 @@ import org.opencms.widgets.I_CmsWidgetDialog;
 import org.opencms.widgets.I_CmsWidgetParameter;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.editors.CmsEditorDisplayOptions;
+import org.opencms.workplace.editors.CmsWorkplaceEditorConfiguration;
 import org.opencms.workplace.editors.I_CmsEditorCssHandler;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
@@ -191,6 +192,12 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
             if (options.showElement("gallery.usethickbox", displayOptions)) {
                 result.put("cmsGalleryUseThickbox", true);
             }
+            result.put("paste_text_sticky", Boolean.TRUE);
+            CmsWorkplaceEditorConfiguration editorConfig = OpenCms.getWorkplaceManager().getWorkplaceEditorManager().getEditorConfiguration(
+                "tinymce");
+            Boolean pasteText = Boolean.valueOf(editorConfig.getParameters().get("paste_text"));
+            result.put("paste_text_sticky_default", pasteText);
+
             result.put("fullpage", getHtmlWidgetOption().isFullPage());
             result.merge(getToolbarJson(), true, false);
 
