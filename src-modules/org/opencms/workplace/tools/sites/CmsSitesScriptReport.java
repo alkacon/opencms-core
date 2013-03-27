@@ -33,45 +33,47 @@ package org.opencms.workplace.tools.sites;
 
 import org.opencms.file.CmsObject;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
 import org.opencms.report.I_CmsReportThread;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.list.A_CmsListReport;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.InputStreamReader;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Provides a report for removing sites.<p> 
+ * The apache action report.<p>
  * 
- * @since 9.0.0 
+ * @since 9.0.0
  */
-public class CmsSitesRemoveReport extends A_CmsListReport {
+public class CmsSitesScriptReport extends A_CmsListReport {
 
     /**
-     * Removes a site from the configuration.<p>
+     * Executes a script file.<p>
      * 
      * @since 9.0.0
      */
-    private class CmsSitesRemoveThread extends A_CmsReportThread {
+    private class CmsSitesActionThread extends A_CmsReportThread {
 
-        /** The sites to remove. */
-        private String m_sites;
+        /** The script file to execute. */
+        private String m_script;
 
         /**
          * Public constructor.<p>
          * 
          * @param cms the cms object
-         * @param sites the name of the thread
+         * @param script the script to execute
          */
-        protected CmsSitesRemoveThread(CmsObject cms, String sites) {
+        protected CmsSitesActionThread(CmsObject cms, String script) {
 
-            super(cms, "site-remove-thread");
-            m_sites = sites;
+            super(cms, "sites-apache-action");
+            m_script = script;
             initHtmlReport(cms.getRequestContext().getLocale());
         }
 
@@ -90,32 +92,37 @@ public class CmsSitesRemoveReport extends A_CmsListReport {
         @Override
         public void run() {
 
-            if (m_sites != null) {
-                for (String sitePath : CmsStringUtil.splitAsList(m_sites, ",")) {
-                    try {
-                        OpenCms.getSiteManager().removeSite(
-                            getCms(),
-                            OpenCms.getSiteManager().getSiteForSiteRoot(sitePath));
+            try {
+
+                File script = new File(m_script);
+                ProcessBuilder pb = new ProcessBuilder(script.getAbsolutePath());
+                pb.directory(new File(script.getParent()));
+                Process pr = pb.start();
+                pr.waitFor();
+                BufferedReader buf = new BufferedReader(new InputStreamReader(pr.getInputStream()));
+                while (buf.ready()) {
+                    String line = buf.readLine();
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(line)) {
                         getReport().println(
-                            Messages.get().container(Messages.RPT_REMOVED_SITE_SUCCESSFUL_1, sitePath),
+                            Messages.get().container(Messages.RPT_OUTPUT_CONSOLE_1, buf.readLine()),
                             I_CmsReport.FORMAT_OK);
-                    } catch (CmsException e) {
-                        getReport().println(e);
                     }
                 }
+            } catch (Exception e) {
+                getReport().println(e);
             }
         }
     }
 
-    /** The paths of the sites to remove. */
-    private String m_paramSites;
+    /** The paths of the script file to execute. */
+    private String m_paramScript;
 
     /**
      * Public constructor with JSP action element.<p>
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsSitesRemoveReport(CmsJspActionElement jsp) {
+    public CmsSitesScriptReport(CmsJspActionElement jsp) {
 
         super(jsp);
     }
@@ -127,19 +134,29 @@ public class CmsSitesRemoveReport extends A_CmsListReport {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsSitesRemoveReport(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsSitesScriptReport(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
     }
 
     /**
-     * Returns the paths of the sites to remove.<p>
-     * 
-     * @return the paths of the sites to remove
+     * Returns the Script.<p>
+     *
+     * @return the Script
      */
-    public String getParamSites() {
+    public String getParamScript() {
 
-        return m_paramSites;
+        return m_paramScript;
+    }
+
+    /**
+     * Sets the Script.<p>
+     *
+     * @param paramScript the Script to set
+     */
+    public void setParamScript(String paramScript) {
+
+        m_paramScript = paramScript;
     }
 
     /** 
@@ -149,16 +166,7 @@ public class CmsSitesRemoveReport extends A_CmsListReport {
     @Override
     public I_CmsReportThread initializeThread() {
 
-        return new CmsSitesRemoveThread(getCms(), m_paramSites);
+        return new CmsSitesActionThread(getCms(), m_paramScript);
     }
 
-    /** 
-     * Sets the sites parameter.<p>
-     * 
-     * @param paramSites the paths of the sites to remove
-     */
-    public void setParamSites(String paramSites) {
-
-        m_paramSites = paramSites;
-    }
 }

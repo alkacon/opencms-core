@@ -34,14 +34,24 @@ package org.opencms.workplace.tools.sites;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
-import org.opencms.widgets.CmsCheckboxWidget;
+import org.opencms.site.CmsSite;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsInputWidget;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
+
+import org.apache.commons.io.FileUtils;
 
 /**
  * A dialog that allows to write the sites configured in OpenCms
@@ -54,17 +64,11 @@ public class CmsSitesApacheVhost extends CmsWidgetDialog {
     /** The module name constant. */
     public static final String MODULE_NAME = "org.opencms.workplace.tools.sites";
 
-    /** Module parameter constant for the Apache action. */
-    public static final String MODULE_PARAM_APACHE_ACTION = "apache-action";
+    /** Module parameter constant for the console action. */
+    public static final String MODULE_PARAM_CONSOLE_SCRIPT = "console-script";
 
-    /** Module parameter constant for the show preview flag. */
-    public static final String MODULE_PARAM_SHOW_PREVIEW = "show-preview";
-
-    /** Module parameter constant for the sites available directory. */
-    public static final String MODULE_PARAM_SITES_AVAILABLE = "sites-available";
-
-    /** Module parameter constant for the sites enabled directory. */
-    public static final String MODULE_PARAM_SITES_ENABLED = "sites-enabled";
+    /** Module parameter constant for the target path. */
+    public static final String MODULE_PARAM_TARGET_PATH = "target-path";
 
     /** Module parameter constant for the virtual host configuration template file. */
     public static final String MODULE_PARAM_VHOST_SOURCE = "vhost-source";
@@ -73,33 +77,24 @@ public class CmsSitesApacheVhost extends CmsWidgetDialog {
     public static final String[] PAGES = {"page1"};
 
     /** The default parameter value. */
-    private static final String DEFAULT_APACHE_ACTION = "reload";
+    private static final String DEFAULT_CONSOLE_SCRIPT = "/etc/apache2/reload.sh";
 
     /** The default parameter value. */
-    private static final String DEFAULT_SHOW_PREVIEW = Boolean.TRUE.toString();
+    private static final String DEFAULT_TARGET_PATH = "/etc/apache2/sites-enabled/";
 
     /** The default parameter value. */
-    private static final String DEFAULT_SITES_AVAILABLE = "/etc/apache2/sites-available/";
+    private static final String DEFAULT_VHOST_SOURCE = "/etc/apache2/sites-available/vhost.template";
 
-    /** The default parameter value. */
-    private static final String DEFAULT_SITES_ENABLED = "/etc/apache2/sites-enabled/";
+    /** The script parameter name. */
+    private static final String PARAM_SCRIPT = "script";
 
-    /** The default parameter value. */
-    private static final String DEFAULT_VHOST_SOURCE = "vhost.template";
+    /** The script to be executed after updating the virtual host configurations, e.g. "/etc/apache2/reload.sh". */
+    private String m_consolescript;
 
-    /** The Apache action to be performed after updating the virtual host configurations, e.g. reload. */
-    private String m_apacheaction;
+    /** The target path to store the virtual host files. */
+    private String m_targetpath;
 
-    /** A flag indicating if a preview of the generated virtual host configuration should be shown before writing. */
-    private boolean m_showpreview;
-
-    /** The path to the sites-available folder on the RFS. */
-    private String m_sitesavailable;
-
-    /** The path to the sites-enabled folder on the RFS. */
-    private String m_sitesenabled;
-
-    /** The source file used as template for creating a virtual host configuration. */
+    /** The source file used as template for creating a virtual host configuration files. */
     private String m_vhostsource;
 
     /**
@@ -128,39 +123,47 @@ public class CmsSitesApacheVhost extends CmsWidgetDialog {
      * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
     @Override
-    public void actionCommit() {
+    public void actionCommit() throws IOException, ServletException {
 
-        // TODO: Auto-generated method stub
+        String template = FileUtils.readFileToString(new File(m_vhostsource));
+        List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(getCms(), true);
+        for (CmsSite site : sites) {
+            if (site.getSiteMatcher() != null) {
+                String serverName = site.getSiteMatcher().getServerName();
+                String vhostconf = template.replaceAll("SERVER_NAME_PLACE_HOLDER", serverName);
+                m_targetpath = m_targetpath.endsWith(File.separator) ? m_targetpath : m_targetpath + File.separator;
+                File newFile = new File(m_targetpath + serverName);
+                if (!newFile.exists()) {
+                    newFile.createNewFile();
+                }
+                FileUtils.writeStringToFile(newFile, vhostconf);
+            }
+        }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_consolescript)) {
+            Map<String, String[]> params = new HashMap<String, String[]>();
+            params.put(PARAM_SCRIPT, new String[] {m_consolescript});
+            getToolManager().jspForwardPage(this, CmsSitesList.PATH_REPORTS + "console.jsp", params);
+        }
     }
 
     /**
-     * Returns the action.<p>
+     * Returns the console script.<p>
      *
-     * @return the action
+     * @return the console script
      */
-    public String getApacheaction() {
+    public String getConsolescript() {
 
-        return m_apacheaction;
+        return m_consolescript;
     }
 
     /**
-     * Returns the sites available.<p>
+     * Returns the target path.<p>
      *
-     * @return the sites available
+     * @return the target path
      */
-    public String getSitesavailable() {
+    public String getTargetpath() {
 
-        return m_sitesavailable;
-    }
-
-    /**
-     * Returns the sites enabled.<p>
-     *
-     * @return the sites enabled
-     */
-    public String getSitesenabled() {
-
-        return m_sitesenabled;
+        return m_targetpath;
     }
 
     /**
@@ -174,59 +177,29 @@ public class CmsSitesApacheVhost extends CmsWidgetDialog {
     }
 
     /**
-     * Returns the show preview.<p>
+     * Sets the console script.<p>
      *
-     * @return the show preview
+     * @param consolescript the console script to set
      */
-    public boolean isShowpreview() {
+    public void setConsolescript(String consolescript) {
 
-        return m_showpreview;
+        m_consolescript = consolescript;
     }
 
     /**
-     * Sets the action.<p>
+     * Sets the target path.<p>
      *
-     * @param apacheaction the action to set
+     * @param targetpath the target path to set
      */
-    public void setApacheaction(String apacheaction) {
+    public void setTargetpath(String targetpath) {
 
-        m_apacheaction = apacheaction;
+        m_targetpath = targetpath;
     }
 
     /**
-     * Sets the show preview.<p>
+     * Sets the vhost source.<p>
      *
-     * @param showpreview the show preview to set
-     */
-    public void setShowpreview(boolean showpreview) {
-
-        m_showpreview = showpreview;
-    }
-
-    /**
-     * Sets the sites available.<p>
-     *
-     * @param sitesavailable the sites available to set
-     */
-    public void setSitesavailable(String sitesavailable) {
-
-        m_sitesavailable = sitesavailable;
-    }
-
-    /**
-     * Sets the sites enabled.<p>
-     *
-     * @param sitesenabled the sites enabled to set
-     */
-    public void setSitesenabled(String sitesenabled) {
-
-        m_sitesenabled = sitesenabled;
-    }
-
-    /**
-     * Sets the virtual host source.<p>
-     *
-     * @param vhostsource the virtual host source to set
+     * @param vhostsource the vhost source to set
      */
     public void setVhostsource(String vhostsource) {
 
@@ -244,7 +217,7 @@ public class CmsSitesApacheVhost extends CmsWidgetDialog {
         result.append(createWidgetErrorHeader());
         result.append(dialogBlockStart(Messages.get().getBundle().key(Messages.GUI_SITES_APACHE_TITLE_0)));
         result.append(createWidgetTableStart());
-        result.append(createDialogRowsHtml(0, 4));
+        result.append(createDialogRowsHtml(0, 2));
         result.append(createWidgetTableEnd());
         result.append(dialogBlockEnd());
         result.append(createWidgetTableEnd());
@@ -260,10 +233,8 @@ public class CmsSitesApacheVhost extends CmsWidgetDialog {
         initMembers();
         setKeyPrefix(CmsSitesList.KEY_PREFIX_SITES);
         addWidget(new CmsWidgetDialogParameter(this, "vhostsource", PAGES[0], new CmsInputWidget()));
-        addWidget(new CmsWidgetDialogParameter(this, "sitesavailable", PAGES[0], new CmsInputWidget()));
-        addWidget(new CmsWidgetDialogParameter(this, "sitesenabled", PAGES[0], new CmsInputWidget()));
-        addWidget(new CmsWidgetDialogParameter(this, "apacheaction", PAGES[0], new CmsInputWidget()));
-        addWidget(new CmsWidgetDialogParameter(this, "showpreview", PAGES[0], new CmsCheckboxWidget()));
+        addWidget(new CmsWidgetDialogParameter(this, "targetpath", PAGES[0], new CmsInputWidget()));
+        addWidget(new CmsWidgetDialogParameter(this, "consolescript", PAGES[0], new CmsInputWidget()));
     }
 
     /**
@@ -281,12 +252,9 @@ public class CmsSitesApacheVhost extends CmsWidgetDialog {
     private void initMembers() {
 
         CmsModule module = OpenCms.getModuleManager().getModule(MODULE_NAME);
-        m_apacheaction = module.getParameter(MODULE_PARAM_APACHE_ACTION, DEFAULT_APACHE_ACTION);
-        m_showpreview = Boolean.valueOf(module.getParameter(MODULE_PARAM_SHOW_PREVIEW, DEFAULT_SHOW_PREVIEW)).booleanValue();
-        m_sitesavailable = module.getParameter(MODULE_PARAM_SITES_AVAILABLE, DEFAULT_SITES_AVAILABLE);
-        m_sitesenabled = module.getParameter(MODULE_PARAM_SITES_ENABLED, DEFAULT_SITES_ENABLED);
-        m_vhostsource = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
-            module.getParameter(MODULE_PARAM_VHOST_SOURCE, DEFAULT_VHOST_SOURCE));
+        m_consolescript = module.getParameter(MODULE_PARAM_CONSOLE_SCRIPT, DEFAULT_CONSOLE_SCRIPT);
+        m_targetpath = module.getParameter(MODULE_PARAM_TARGET_PATH, DEFAULT_TARGET_PATH);
+        m_vhostsource = module.getParameter(MODULE_PARAM_VHOST_SOURCE, DEFAULT_VHOST_SOURCE);
         setDialogObject(this);
     }
 }

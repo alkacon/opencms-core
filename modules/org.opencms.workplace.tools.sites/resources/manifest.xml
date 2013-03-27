@@ -31,11 +31,9 @@
 			<resource uri="/system/workplace/admin/sites/"/>
 		</resources>
 		<parameters>
-			<param name="apache-action">/etc/init.d/apache2 reload</param>
-			<param name="show-preview">true</param>
-			<param name="sites-available">/etc/apache2/sites-available/</param>
-			<param name="sites-enabled">/etc/apache2/sites-enabled/</param>
-			<param name="vhost-source">vhost.template</param>
+			<param name="console-script">/etc/apache2/reload.sh</param>
+			<param name="target-path">/etc/apache2/sites-enabled/</param>
+			<param name="vhost-source">/etc/apache2/sites-available/vhost.template</param>
 		</parameters>
 	</module>
 	<files>
@@ -585,6 +583,38 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/admin/sites/reports/console.jsp</source>
+			<destination>system/workplace/admin/sites/reports/console.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>bdbe5d02-96e6-11e2-8cf9-d723659840f0</uuidstructure>
+			<uuidresource>bdbe5d03-96e6-11e2-8cf9-d723659840f0</uuidresource>
+			<datelastmodified>Wed, 27 Mar 2013 14:02:22 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 27 Mar 2013 14:00:54 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Console Script]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:script=%(param.script)&action=initial]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.sites.CmsSitesToolHandler]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/admin/sites/reports/remove.jsp</source>
 			<destination>system/workplace/admin/sites/reports/remove.jsp</destination>
 			<type>jsp</type>
@@ -596,26 +626,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>Description</name>
-					<value><![CDATA[%(key.GUI_REMOVE_SITE_ADMIN_TOOL_HELP_0)]]></value>
-				</property>
-				<property>
-					<name>NavImage</name>
-					<value><![CDATA[tools/sites/icons/big/site-new.png]]></value>
-				</property>
-				<property>
-					<name>NavInfo</name>
-					<value><![CDATA[%(key.GUI_SITE_ADMIN_TOOL_GROUP_0)]]></value>
-				</property>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[1]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[%(key.GUI_REMOVE_SITE_ADMIN_TOOL_NAME_0)]]></value>
-				</property>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Remove site]]></value>

@@ -92,6 +92,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SITES_ADMIN_TOOL_NAME_0 = "GUI_SITES_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITES_APACHE_TITLE_0 = "GUI_SITES_APACHE_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SITES_DETAIL_ALIASES_1 = "GUI_SITES_DETAIL_ALIASES_1";
 
     /** Message constant for key in the resource bundle. */
@@ -211,17 +214,17 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITES_SETTINGS_ADMIN_TOOL_NAME_0 = "GUI_SITES_SETTINGS_ADMIN_TOOL_NAME_0";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_OUTPUT_CONSOLE_1 = "RPT_OUTPUT_CONSOLE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_REMOVED_SITE_SUCCESSFUL_1 = "RPT_REMOVED_SITE_SUCCESSFUL_1";
+
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.tools.sites.messages";
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_REMOVED_SITE_SUCCESSFUL_1 = "RPT_REMOVED_SITE_SUCCESSFUL_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_SITES_APACHE_TITLE_0 = "GUI_SITES_APACHE_TITLE_0";
 
     /**
      * Hides the public constructor for this utility class.<p>

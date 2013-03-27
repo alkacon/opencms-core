@@ -86,6 +86,9 @@ public class CmsSitesList extends A_CmsListDialog {
     /** A parameter name for a comma separated list of site paths. */
     protected static final String PARAM_SITES = "sites";
 
+    /** Path to the reports. */
+    protected static final String PATH_REPORTS = "/system/workplace/admin/sites/reports/";
+
     /** The favorite upload dialog. */
     private static final String DIALOG_FAV = "fav";
 
@@ -139,9 +142,6 @@ public class CmsSitesList extends A_CmsListDialog {
 
     /** A parameter name for the edit action. */
     private static final String PARAM_EDIT_ACTION = "editaction";
-
-    /** Path to the reports. */
-    private static final String PATH_REPORTS = "/system/workplace/admin/sites/reports/";
 
     /**
      * Public constructor.<p>
@@ -256,7 +256,6 @@ public class CmsSitesList extends A_CmsListDialog {
     protected List<CmsListItem> getListItems() {
 
         List<CmsListItem> result = new ArrayList<CmsListItem>();
-        List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(getCms(), true);
 
         CmsObject cms = null;
         try {
@@ -269,6 +268,7 @@ public class CmsSitesList extends A_CmsListDialog {
         // clear the icons
         m_icons.clear();
 
+        List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(getCms(), true);
         for (CmsSite site : sites) {
             if (site.getSiteMatcher() != null) {
                 CmsListItem item = getList().newItem(site.getSiteRoot());
