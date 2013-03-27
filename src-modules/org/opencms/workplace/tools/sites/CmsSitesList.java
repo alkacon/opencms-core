@@ -137,7 +137,7 @@ public class CmsSitesList extends A_CmsListDialog {
     /** A parameter name for the edit action. */
     private static final String PARAM_EDIT_ACTION = "editaction";
 
-    /** Path to the module reports. */
+    /** Path to the reports. */
     private static final String PATH_REPORTS = "/system/workplace/admin/sites/reports/";
 
     /**

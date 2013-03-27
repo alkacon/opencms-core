@@ -42,6 +42,8 @@ import java.util.List;
 
 /**
  * Dialog object for a single site.<p>
+ * 
+ * @since 9.0.0
  */
 public class CmsSiteDialogObject {
 

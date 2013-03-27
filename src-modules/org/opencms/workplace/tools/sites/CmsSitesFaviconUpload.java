@@ -55,6 +55,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Uploads and stores a favicon.<p>
+ * 
+ * @since 9.0.0
  */
 public class CmsSitesFaviconUpload extends A_CmsImportFromHttp {
 
