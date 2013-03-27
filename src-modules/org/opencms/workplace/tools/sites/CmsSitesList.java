@@ -71,6 +71,9 @@ import javax.servlet.jsp.PageContext;
  */
 public class CmsSitesList extends A_CmsListDialog {
 
+    /** The message key prefix to be used for widget labels. */
+    public static final String KEY_PREFIX_SITES = "sites";
+
     /** The path of the fav icon. */
     protected static final String LIST_ICON_FAVICON = "tools/sites/icons/small/default-favicon.png";
 
@@ -201,7 +204,7 @@ public class CmsSitesList extends A_CmsListDialog {
         params.put(PARAM_SITE_TITLE, new String[] {OpenCms.getSiteManager().getSiteForSiteRoot(site).getTitle()});
         if (getParamListAction().equals(LIST_ACTION_EDIT)) {
             // forward to the edit site dialog
-            params.put(PARAM_EDIT_ACTION, new String[] {CmsSitesDetailDialog.DIALOG_EDIT});
+            params.put(PARAM_EDIT_ACTION, new String[] {CmsSiteDialog.DIALOG_EDIT});
             getToolManager().jspForwardTool(this, "/sites/detail/edit", params);
         } else if (getParamListAction().equals(LIST_ACTION_DEFAULT)) {
             getToolManager().jspForwardTool(this, "/sites/detail", params);
@@ -274,7 +277,7 @@ public class CmsSitesList extends A_CmsListDialog {
                 item.set(LIST_COLUMN_TITLE, site.getTitle() != null ? site.getTitle() : "-");
                 if (cms != null) {
                     try {
-                        CmsResource res = cms.readResource(site.getSiteRoot() + "/" + CmsSitesFaviconUpload.ICON_NAME);
+                        CmsResource res = cms.readResource(site.getSiteRoot() + "/" + CmsSiteFaviconUpload.ICON_NAME);
                         m_icons.put(site.getSiteRoot(), getJsp().link(res.getRootPath()));
                     } catch (CmsException e) {
                         // noop

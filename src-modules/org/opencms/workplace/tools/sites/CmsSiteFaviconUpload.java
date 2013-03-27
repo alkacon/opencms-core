@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  * 
  * @since 9.0.0
  */
-public class CmsSitesFaviconUpload extends A_CmsImportFromHttp {
+public class CmsSiteFaviconUpload extends A_CmsImportFromHttp {
 
     /** The name for the favicon. */
     public static final String ICON_NAME = "favicon.ico";
@@ -67,7 +67,7 @@ public class CmsSitesFaviconUpload extends A_CmsImportFromHttp {
     private static final String DIALOG_URI = PATH_WORKPLACE + "admin/sites/favicon.jsp";
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsSitesFaviconUpload.class);
+    private static final Log LOG = CmsLog.getLog(CmsSiteFaviconUpload.class);
 
     /** The sites parameter. */
     private String m_paramSites;
@@ -77,7 +77,7 @@ public class CmsSitesFaviconUpload extends A_CmsImportFromHttp {
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsSitesFaviconUpload(CmsJspActionElement jsp) {
+    public CmsSiteFaviconUpload(CmsJspActionElement jsp) {
 
         super(jsp);
     }
@@ -89,7 +89,7 @@ public class CmsSitesFaviconUpload extends A_CmsImportFromHttp {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsSitesFaviconUpload(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsSiteFaviconUpload(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
     }

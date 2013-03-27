@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @since 9.0.0
  */
-public class CmsSitesGeneralSettings extends CmsWidgetDialog {
+public class CmsSitesGlobalSettings extends CmsWidgetDialog {
 
     /** Defines which pages are valid for this dialog. */
     public static final String[] PAGES = {"page1"};
@@ -73,7 +73,7 @@ public class CmsSitesGeneralSettings extends CmsWidgetDialog {
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsSitesGeneralSettings(CmsJspActionElement jsp) {
+    public CmsSitesGlobalSettings(CmsJspActionElement jsp) {
 
         super(jsp);
 
@@ -86,7 +86,7 @@ public class CmsSitesGeneralSettings extends CmsWidgetDialog {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsSitesGeneralSettings(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsSitesGlobalSettings(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
     }
@@ -192,7 +192,7 @@ public class CmsSitesGeneralSettings extends CmsWidgetDialog {
     @Override
     protected void defineWidgets() {
 
-        setKeyPrefix(CmsSiteDialogObject.KEY_PREFIX_SITES);
+        setKeyPrefix(CmsSitesList.KEY_PREFIX_SITES);
         setDialogObject(this);
         // initialize members
         m_workplaceServer = OpenCms.getSiteManager().getWorkplaceServer();

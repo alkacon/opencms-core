@@ -31,8 +31,13 @@
 
 package org.opencms.workplace.tools.sites;
 
+import org.opencms.file.CmsObject;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
+import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReportThread;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.list.A_CmsListReport;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,7 +49,60 @@ import javax.servlet.jsp.PageContext;
  * 
  * @since 9.0.0 
  */
-public class CmsSitesListRemoveReport extends A_CmsListReport {
+public class CmsSitesRemoveReport extends A_CmsListReport {
+
+    /**
+     * Removes a site from the configuration.<p>
+     * 
+     * @since 9.0.0
+     */
+    private class CmsSitesRemoveThread extends A_CmsReportThread {
+
+        /** The sites to remove. */
+        private String m_sites;
+
+        /**
+         * Public constructor.<p>
+         * 
+         * @param cms the cms object
+         * @param sites the name of the thread
+         */
+        protected CmsSitesRemoveThread(CmsObject cms, String sites) {
+
+            super(cms, "site-remove-thread");
+            m_sites = sites;
+            initHtmlReport(cms.getRequestContext().getLocale());
+        }
+
+        /**
+         * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
+         */
+        @Override
+        public String getReportUpdate() {
+
+            return getReport().getReportUpdate();
+        }
+
+        /**
+         * @see java.lang.Thread#run()
+         */
+        @Override
+        public void run() {
+
+            if (m_sites != null) {
+                for (String sitePath : CmsStringUtil.splitAsList(m_sites, ",")) {
+                    try {
+                        OpenCms.getSiteManager().removeSite(
+                            getCms(),
+                            OpenCms.getSiteManager().getSiteForSiteRoot(sitePath));
+                        getReport().println(Messages.get().container(Messages.RPT_REMOVED_SITE_SUCCESSFUL_1, sitePath));
+                    } catch (CmsException e) {
+                        getReport().addError(e);
+                    }
+                }
+            }
+        }
+    }
 
     /** The paths of the sites to remove. */
     private String m_paramSites;
@@ -54,7 +112,7 @@ public class CmsSitesListRemoveReport extends A_CmsListReport {
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsSitesListRemoveReport(CmsJspActionElement jsp) {
+    public CmsSitesRemoveReport(CmsJspActionElement jsp) {
 
         super(jsp);
     }
@@ -66,7 +124,7 @@ public class CmsSitesListRemoveReport extends A_CmsListReport {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsSitesListRemoveReport(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsSitesRemoveReport(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
     }

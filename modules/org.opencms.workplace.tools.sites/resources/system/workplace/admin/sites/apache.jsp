@@ -1,1 +1,1 @@
-<% new org.opencms.workplace.tools.sites.CmsSitesWriteApacheVhost(pageContext, request, response).displayDialog(); %>
+<%new org.opencms.workplace.tools.sites.CmsSitesApacheVhost(pageContext, request, response).displayDialog();%>

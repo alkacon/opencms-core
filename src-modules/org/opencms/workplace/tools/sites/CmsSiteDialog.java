@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @since 9.0.0
  */
-public class CmsSitesDetailDialog extends CmsWidgetDialog {
+public class CmsSiteDialog extends CmsWidgetDialog {
 
     /** Defines which pages are valid for this dialog. */
     public static final String[] PAGES = {"page1"};
@@ -95,7 +95,7 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsSitesDetailDialog(CmsJspActionElement jsp) {
+    public CmsSiteDialog(CmsJspActionElement jsp) {
 
         super(jsp);
     }
@@ -107,7 +107,7 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsSitesDetailDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsSiteDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
     }
@@ -292,7 +292,7 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
     protected void defineWidgets() {
 
         initSite();
-        setKeyPrefix(CmsSiteDialogObject.KEY_PREFIX_SITES);
+        setKeyPrefix(CmsSitesList.KEY_PREFIX_SITES);
 
         if (DIALOG_NEW.equals(getParamEditaction()) || DIALOG_EDIT.equals(getParamEditaction())) {
             // edit or new
@@ -543,7 +543,7 @@ public class CmsSitesDetailDialog extends CmsWidgetDialog {
         try {
             CmsObject clone = OpenCms.initCmsObject(getCms());
             clone.getRequestContext().setSiteRoot("");
-            String iconPath = m_site.getSiteRoot() + "/" + CmsSitesFaviconUpload.ICON_NAME;
+            String iconPath = m_site.getSiteRoot() + "/" + CmsSiteFaviconUpload.ICON_NAME;
             if (clone.existsResource(iconPath)) {
                 m_site.setFavicon(iconPath);
             }

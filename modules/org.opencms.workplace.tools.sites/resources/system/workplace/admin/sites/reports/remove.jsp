@@ -1,1 +1,1 @@
-<% new org.opencms.workplace.tools.sites.CmsSitesListRemoveReport(pageContext, request, response).displayReport(); %>
+<%new org.opencms.workplace.tools.sites.CmsSitesRemoveReport(pageContext, request, response).displayReport();%>

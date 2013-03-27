@@ -47,9 +47,6 @@ import java.util.List;
  */
 public class CmsSiteDialogObject {
 
-    /** The message key prefix to be used for widget labels. */
-    public static final String KEY_PREFIX_SITES = "sites";
-
     /** The aliases. */
     private List<CmsSiteMatcher> m_aliases = new ArrayList<CmsSiteMatcher>();
 

@@ -1,1 +1,1 @@
-<% new org.opencms.workplace.tools.sites.CmsSitesGeneralSettings(pageContext, request, response).displayDialog(); %>
+<%new org.opencms.workplace.tools.sites.CmsSitesGlobalSettings(pageContext, request, response).displayDialog();%>

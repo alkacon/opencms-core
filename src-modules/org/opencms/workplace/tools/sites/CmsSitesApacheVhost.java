@@ -49,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @since 9.0.0
  */
-public class CmsSitesWriteApacheVhost extends CmsWidgetDialog {
+public class CmsSitesApacheVhost extends CmsWidgetDialog {
 
     /** The module name constant. */
     public static final String MODULE_NAME = "org.opencms.workplace.tools.sites";
@@ -107,7 +107,7 @@ public class CmsSitesWriteApacheVhost extends CmsWidgetDialog {
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsSitesWriteApacheVhost(CmsJspActionElement jsp) {
+    public CmsSitesApacheVhost(CmsJspActionElement jsp) {
 
         super(jsp);
     }
@@ -119,7 +119,7 @@ public class CmsSitesWriteApacheVhost extends CmsWidgetDialog {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsSitesWriteApacheVhost(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsSitesApacheVhost(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
     }
@@ -258,7 +258,7 @@ public class CmsSitesWriteApacheVhost extends CmsWidgetDialog {
     protected void defineWidgets() {
 
         initMembers();
-        setKeyPrefix(CmsSiteDialogObject.KEY_PREFIX_SITES);
+        setKeyPrefix(CmsSitesList.KEY_PREFIX_SITES);
         addWidget(new CmsWidgetDialogParameter(this, "vhostsource", PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(this, "sitesavailable", PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(this, "sitesenabled", PAGES[0], new CmsInputWidget()));
