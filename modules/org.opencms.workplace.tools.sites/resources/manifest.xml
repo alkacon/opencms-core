@@ -10,7 +10,7 @@
 	</info>
 	<module>
 		<name>org.opencms.workplace.tools.sites</name>
-		<nicename><![CDATA[OpenCms 9 Site configuration tools]]></nicename>
+		<nicename><![CDATA[OpenCms 9 Site Management tools]]></nicename>
 		<group>OpenCms Workplace</group>
 		<class/>
 		<description><![CDATA[<p>This module contains the OpenCms administration tools for managing multiple sites served by OpenCms.</p>
@@ -30,7 +30,13 @@
 			<resource uri="/system/workplace/resources/tools/sites/icons/"/>
 			<resource uri="/system/workplace/admin/sites/"/>
 		</resources>
-		<parameters/>
+		<parameters>
+			<param name="apache-action">/etc/init.d/apache2 reload</param>
+			<param name="show-preview">true</param>
+			<param name="sites-available">/etc/apache2/sites-available/</param>
+			<param name="sites-enabled">/etc/apache2/sites-enabled/</param>
+			<param name="vhost-source">vhost.template</param>
+		</parameters>
 	</module>
 	<files>
 		<file>

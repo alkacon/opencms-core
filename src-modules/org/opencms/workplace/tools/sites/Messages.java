@@ -220,6 +220,9 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String RPT_REMOVED_SITE_SUCCESSFUL_1 = "RPT_REMOVED_SITE_SUCCESSFUL_1";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITES_APACHE_TITLE_0 = "GUI_SITES_APACHE_TITLE_0";
+
     /**
      * Hides the public constructor for this utility class.<p>
      */
