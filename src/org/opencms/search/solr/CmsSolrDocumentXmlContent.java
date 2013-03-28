@@ -49,7 +49,6 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -159,34 +158,24 @@ public class CmsSolrDocumentXmlContent extends CmsDocumentXmlContent {
     private String extractValue(CmsObject cms, A_CmsXmlDocument xmlContent, String xpath, Locale locale)
     throws CmsException {
 
-        StringBuffer valueExtraction = new StringBuffer();
-        List<I_CmsXmlContentValue> values = xmlContent.getValues(xpath, locale);
-        Iterator<I_CmsXmlContentValue> it = values.iterator();
-        while (it.hasNext()) {
-            I_CmsXmlContentValue value = it.next();
-            try {
-                String extracted = value.getPlainText(cms);
-                if (value.isSimpleType()) {
-                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(extracted)) {
-                        extracted = value.getStringValue(cms);
-                    }
-                    // put the extraction to the content and to the items
-                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(extracted)) {
-                        // create the content value for the locale by adding all String values in the XML nodes
-                        valueExtraction.append(extracted);
-                        if (it.hasNext()) {
-                            valueExtraction.append('\n');
-                        }
-                    }
+        I_CmsXmlContentValue value = xmlContent.getValue(xpath, locale);
+        try {
+            String extracted = value.getPlainText(cms);
+            if (value.isSimpleType()) {
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(extracted)) {
+                    extracted = value.getStringValue(cms);
                 }
-            } catch (Exception e) {
-                // it can happen that a (runtime) exception is thrown while extracting the content of a value
-                // e.g. nested contents don't have a String representation
-                throw new CmsException(
-                    Messages.get().container(Messages.ERR_TEXT_EXTRACTION_1, xmlContent.getFile()),
-                    e);
+                // put the extraction to the content and to the items
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(extracted)) {
+                    // create the content value for the locale by adding all String values in the XML nodes
+                    return extracted;
+                }
             }
+        } catch (Exception e) {
+            // it can happen that a (runtime) exception is thrown while extracting the content of a value
+            // e.g. nested contents don't have a String representation
+            throw new CmsException(Messages.get().container(Messages.ERR_TEXT_EXTRACTION_1, xmlContent.getFile()), e);
         }
-        return valueExtraction.toString();
+        return null;
     }
 }
