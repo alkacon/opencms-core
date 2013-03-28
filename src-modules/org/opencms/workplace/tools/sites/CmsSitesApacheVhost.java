@@ -39,6 +39,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsInputWidget;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
+import org.opencms.workplace.tools.CmsToolDialog;
 
 import java.io.File;
 import java.io.IOException;
@@ -142,6 +143,7 @@ public class CmsSitesApacheVhost extends CmsWidgetDialog {
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_consolescript)) {
             Map<String, String[]> params = new HashMap<String, String[]>();
             params.put(PARAM_SCRIPT, new String[] {m_consolescript});
+            params.put(PARAM_STYLE, new String[] {CmsToolDialog.STYLE_NEW});
             getToolManager().jspForwardPage(this, CmsSitesList.PATH_REPORTS + "console.jsp", params);
         }
     }
