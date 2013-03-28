@@ -52,6 +52,7 @@ import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
@@ -726,6 +727,17 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
         Panel iconWidget = new SimplePanel();
         m_iconPanel.setWidget(iconWidget);
         iconWidget.addStyleName(iconClasses + " " + m_fixedIconClasses);
+    }
+
+    /**
+     * Sets the cursor for the icon.<p>
+     * 
+     * @param cursor the cursor for the icon
+     */
+    public void setIconCursor(Cursor cursor) {
+
+        m_iconPanel.getElement().getStyle().setCursor(cursor);
+
     }
 
     /**

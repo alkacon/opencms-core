@@ -27,11 +27,20 @@
 
 package org.opencms.gwt.client.ui.resourceinfo;
 
+import org.opencms.ade.containerpage.client.Messages;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsPopup;
+import org.opencms.gwt.client.ui.CmsScrollPanel;
+import org.opencms.gwt.client.ui.CmsTabbedPanel;
+import org.opencms.gwt.client.util.CmsMessages;
 import org.opencms.gwt.shared.CmsResourceStatusBean;
 import org.opencms.util.CmsUUID;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Dialog for displaying resource information.<p>
@@ -43,14 +52,38 @@ public class CmsResourceInfoDialog extends CmsPopup {
      * 
      * @param statusBean the resource information to bean 
      */
-    public CmsResourceInfoDialog(CmsResourceStatusBean statusBean) {
+    public CmsResourceInfoDialog(final CmsResourceStatusBean statusBean) {
 
-        super(CmsResourceInfoMessages.messageDialogTitle());
+        super();
         setModal(true);
         setGlassEnabled(true);
         addDialogClose(null);
         setWidth(520);
-        setMainContent(new CmsResourceInfoView(statusBean));
+        int height = 400;
+        setHeight(height);
+        removePadding();
+
+        CmsMessages messages = Messages.get();
+        CmsScrollPanel panel = GWT.create(CmsScrollPanel.class);
+        panel.getElement().getStyle().setProperty("maxHeight", height + "px");
+        CmsResourceInfoView infoView = new CmsResourceInfoView(statusBean);
+        panel.add(infoView);
+        CmsTabbedPanel<Widget> tabPanel = new CmsTabbedPanel<Widget>();
+        tabPanel.add(panel, messages.key(Messages.GUI_RESOURCE_INFO_TAB_ATTRIBUTES_0));
+
+        final CmsResourceUsageView usage = new CmsResourceUsageView(statusBean);
+        tabPanel.add(usage, messages.key(Messages.GUI_RESOURCE_INFO_TAB_USAGE_0));
+        tabPanel.addSelectionHandler(new SelectionHandler<Integer>() {
+
+            public void onSelection(SelectionEvent<Integer> event) {
+
+                if (1 == event.getSelectedItem().intValue()) {
+                    usage.onSelect();
+                }
+
+            }
+        });
+        setMainContent(tabPanel);
     }
 
     /**

@@ -692,6 +692,21 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
                 }
                 result.setLocales(localeStrings);
             }
+
+            List<CmsRelation> relations = cms.readRelations(CmsRelationFilter.relationsToStructureId(resource.getStructureId()));
+            for (CmsRelation relation : relations) {
+                CmsResource source = relation.getSource(cms, CmsResourceFilter.IGNORE_EXPIRATION);
+                CmsListInfoBean sourceBean = getPageInfo(source);
+                String link = null;
+                try {
+                    link = OpenCms.getLinkManager().substituteLink(cms, source);
+                } catch (Exception e) {
+                    LOG.warn(e.getLocalizedMessage(), e);
+                }
+                sourceBean.setLink(link);
+                result.getRelationSources().add(sourceBean);
+            }
+
             return result;
         } catch (Throwable e) {
             error(e);

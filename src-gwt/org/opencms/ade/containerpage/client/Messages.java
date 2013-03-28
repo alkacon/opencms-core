@@ -97,6 +97,12 @@ public final class Messages {
     public static final String GUI_CLIPBOARD_ITEM_CAN_NOT_BE_EDITED_0 = "GUI_CLIPBOARD_ITEM_CAN_NOT_BE_EDITED_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CONFIRM_CUT_ELEMENT_0 = "GUI_CONFIRM_CUT_ELEMENT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CONFIRM_CUT_ELEMENT_TITLE_0 = "GUI_CONFIRM_CUT_ELEMENT_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_LEAVE_NOT_SAVED_0 = "GUI_DIALOG_LEAVE_NOT_SAVED_0";
 
     /** Message constant for key in the resource bundle. */
@@ -193,6 +199,12 @@ public final class Messages {
     public static final String GUI_PROPERTY_DIALOG_TITLE_0 = "GUI_PROPERTY_DIALOG_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCE_INFO_TAB_ATTRIBUTES_0 = "GUI_RESOURCE_INFO_TAB_ATTRIBUTES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCE_INFO_TAB_USAGE_0 = "GUI_RESOURCE_INFO_TAB_USAGE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SETTINGS_LEGEND_0 = "GUI_SETTINGS_LEGEND_0";
 
     /** Message constant for key in the resource bundle. */
@@ -212,6 +224,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TITLE_INHERITED_FROM_1 = "GUI_TITLE_INHERITED_FROM_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USAGE_EMPTY_0 = "GUI_USAGE_EMPTY_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.containerpage.clientmessages";
