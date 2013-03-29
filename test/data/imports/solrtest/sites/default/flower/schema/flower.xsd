@@ -1,0 +1,44 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+	<xsd:include schemaLocation="opencms://sites/default/flower/schema/nested/description.xsd"/>
+		
+	<xsd:element name="V8Flowers" type="OpenCmsV8Flowers"/>
+	
+	<xsd:complexType name="OpenCmsV8Flowers">
+		<xsd:sequence>
+			<xsd:element name="V8Flower" type="OpenCmsV8Flower" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsV8Flower">
+		<xsd:sequence>
+			<xsd:element name="Name" type="OpenCmsString" />
+			<xsd:element name="Description" type="OpenCmsV8FlowerDescription" maxOccurs="5" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<mappings>
+				<mapping element="Name" mapto="property:Title" />
+				<mapping element="Name" mapto="urlName" />
+			</mappings>
+			<validationrules/>
+			<searchsettings>
+				<searchsetting element="Description/Headline" searchcontent="true">
+					<solrfield targetfield="mteaser" locale="none" />
+				</searchsetting>
+				<searchsetting element="Description/Text" searchcontent="true">
+					<solrfield targetfield="desc" />
+				</searchsetting>
+			</searchsettings>
+			<formatters>
+				<formatter minwidth="400" uri="/system/modules/com.alkacon.opencms.v8.flower/formatters/detail.jsp" searchcontent="true" />
+				<formatter minwidth="150" maxwidth="250" uri="/system/modules/com.alkacon.opencms.v8.flower/formatters/side.jsp" searchcontent="true" />
+			</formatters>
+		</xsd:appinfo>
+
+	</xsd:annotation>  
+</xsd:schema>

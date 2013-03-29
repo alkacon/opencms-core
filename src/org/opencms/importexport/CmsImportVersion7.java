@@ -27,6 +27,25 @@
 
 package org.opencms.importexport;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.zip.ZipFile;
+
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.digester.Digester;
+import org.apache.commons.logging.Log;
+import org.dom4j.Document;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.db.CmsDbEntryNotFoundException;
@@ -65,27 +84,6 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlErrorHandler;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.zip.ZipFile;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.digester.Digester;
-import org.apache.commons.logging.Log;
-
-import org.dom4j.Document;
 import org.xml.sax.SAXException;
 
 /**
@@ -2275,6 +2273,7 @@ public class CmsImportVersion7 implements I_CmsImport {
                     I_CmsReport.FORMAT_ERROR);
                 if (LOG.isWarnEnabled()) {
                     LOG.warn(Messages.get().getBundle().key(Messages.LOG_IMPORTEXPORT_REWRITING_1, resName));
+                    LOG.warn(e.getMessage(), e);
                 }
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(e.getLocalizedMessage(), e);

@@ -1,0 +1,29 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+
+	<xsd:element name="V8FlowerDescriptions" type="OpenCmsV8FlowerDescriptions"/>
+	
+	<xsd:complexType name="OpenCmsV8FlowerDescriptions">
+		<xsd:sequence>
+			<xsd:element name="V8FlowerDescription" type="OpenCmsV8FlowerDescription" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsV8FlowerDescription">
+		<xsd:sequence>
+			<xsd:element name="Headline" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="Text" type="OpenCmsHtml" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="com.alkacon.opencms.v8.flower.workplace"/>
+			<layouts>
+				<layout element="Text" widget="HtmlWidget" configuration="height:400px,link,anchor,source,downloadgallery"/>
+			</layouts>
+		</xsd:appinfo>
+	</xsd:annotation>  
+</xsd:schema>
