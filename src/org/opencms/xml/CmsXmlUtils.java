@@ -40,6 +40,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 
@@ -73,6 +74,26 @@ public final class CmsXmlUtils {
     private CmsXmlUtils() {
 
         // noop
+    }
+
+    /**
+     * Returns the XPath beginning with the given {@link Locale#toString}.<p>
+     * 
+     * @param xpath the XPath to add the locale prefix
+     * @param locale the locale to use as prefix
+     * 
+     * @return the XPath beginning with the given locale
+     */
+    public static String addLocalePrefixToXpath(String xpath, Locale locale) {
+        
+        if (locale != null) {
+            StringBuffer res = new StringBuffer(32);
+            res.append(locale.toString());
+            res.append("/");
+            res.append(xpath);
+            return res.toString();
+        }
+        return xpath; 
     }
 
     /**

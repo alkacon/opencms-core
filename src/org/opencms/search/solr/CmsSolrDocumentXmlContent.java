@@ -31,9 +31,11 @@
 
 package org.opencms.search.solr;
 
+import org.apache.commons.logging.Log;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.search.CmsIndexException;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.documents.CmsDocumentXmlContent;
@@ -44,6 +46,7 @@ import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.A_CmsXmlDocument;
+import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
@@ -60,6 +63,9 @@ import java.util.Set;
  * @since 8.5.0 
  */
 public class CmsSolrDocumentXmlContent extends CmsDocumentXmlContent {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSolrDocumentXmlContent.class);
 
     /** The solr document type name for xml-contents. */
     public static final String TYPE_XMLCONTENT_SOLR = "xmlcontent-solr";
@@ -82,100 +88,85 @@ public class CmsSolrDocumentXmlContent extends CmsDocumentXmlContent {
     throws CmsException {
 
         logContentExtraction(resource, index);
+
         try {
-            // unmarshall the content
+            // un-marshal the content
             A_CmsXmlDocument xmlContent = CmsXmlContentFactory.unmarshal(cms, readFile(cms, resource));
+            
+            // initialize some variables
             Map<String, String> items = new HashMap<String, String>();
             StringBuffer locales = new StringBuffer();
-            Locale resLocale = index.getLocaleForResource(cms, resource, xmlContent.getLocales());
+            Locale resourceLocale = index.getLocaleForResource(cms, resource, xmlContent.getLocales());
             String defaultContent = null;
-
+            StringBuffer textContent = new StringBuffer();
+            
             // loop over the locales
             for (Locale locale : xmlContent.getLocales()) {
 
-                // store the extracted locales
+                // store the locales of the content as space separated field
                 locales.append(locale.toString());
                 locales.append(' ');
-                StringBuffer content = new StringBuffer();
 
                 // loop over the available element paths
                 List<String> paths = xmlContent.getNames(locale);
                 for (String xpath : paths) {
 
-                    String extracted = extractValue(cms, xmlContent, xpath, locale);
+                    // try to get the value extraction
+                    String extracted = null;
                     I_CmsXmlContentValue value = xmlContent.getValue(xpath, locale);
+                    try {
+                        extracted = value.getPlainText(cms);
+                        if (CmsStringUtil.isEmptyOrWhitespaceOnly(extracted) && value.isSimpleType()) {
+                            // no text value for simple type, so take the string value as item
+                            extracted = value.getStringValue(cms);
+                        }
+                    } catch (Exception e) {
+                        // it can happen that a exception is thrown while extracting a single value
+                        LOG.warn(Messages.get().container(Messages.LOG_VALUE_EXTRACTION_2, xpath, resource), e);
+                    }
 
                     // put the extraction to the content and to the items
                     if (value.getContentDefinition().getContentHandler().isSearchable(value)
                         && CmsStringUtil.isNotEmptyOrWhitespaceOnly(extracted)) {
-                        // create the content value for the locale by adding all String values in the XML nodes
-                        content.append(extracted);
-                        content.append('\n');
+                        // value is search-able and the extraction is not empty, so added to the textual content
+                        textContent.append(extracted);
+                        textContent.append('\n');
                     }
 
+                    // add the extracted content to the items
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(extracted)) {
-                        // The key must be the local extended parameter value of the Solr field mapping defined in:
-                        // CmsDefaultXmlContentHandler.initSearchSettings(Element, CmsXmlContentDefinition)
-                        // later during index process the values are retrieved in:
-                        // CmsSearchFieldMapping#getStringValue(CmsObject, CmsResource, I_CmsExtractionResult, List, List)
-                        items.put(CmsSearchFieldConfiguration.getLocaleExtendedName(xpath, locale), extracted);
+                        /**
+                         * The key must be the local extended parameter value of the Solr field mapping defined in:
+                         * CmsDefaultXmlContentHandler.initSearchSettings(Element, CmsXmlContentDefinition)
+                         * later during index process the values are retrieved in:
+                         * CmsSearchFieldMapping#getStringValue(CmsObject, CmsResource, I_CmsExtractionResult, List, List)
+                         */
+                        items.put(CmsXmlUtils.addLocalePrefixToXpath(xpath, locale), extracted);
                     }
                 }
-                if (content.length() > 0) {
-                    // add the extracted content with a localized key into the extraction result
-                    String contentKey = CmsSearchFieldConfiguration.getLocaleExtendedName(
-                        CmsSearchField.FIELD_CONTENT,
-                        locale);
-                    items.put(contentKey, content.toString());
-                    if (resLocale.equals(locale)) {
-                        defaultContent = content.toString();
+                
+                // handle the textual content
+                if (textContent.length() > 0) {
+                    // add the textual content with a localized key to the items
+                    String key = CmsSearchFieldConfiguration.getLocaleExtendedName(CmsSearchField.FIELD_CONTENT, locale);
+                    items.put(key, textContent.toString());
+                    // use the default locale of this resource as general text content for the extraction result
+                    if (resourceLocale.equals(locale)) {
+                        defaultContent = textContent.toString();
                     }
                 }
-                // add the locales that have been indexed for this document as item
-                items.put(CmsSearchField.FIELD_RESOURCE_LOCALES, locales.toString());
             }
+
+            // add the locales that have been indexed for this document as item
+            items.put(CmsSearchField.FIELD_RESOURCE_LOCALES, locales.toString().trim());
+
             // get all search fields configured in the XSD of this XML content
             Set<CmsSearchField> fields = new HashSet<CmsSearchField>(xmlContent.getHandler().getSearchFields());
             return new CmsExtractionResult(defaultContent, items, fields);
-        } catch (Exception e) {
-            throw new CmsIndexException(
-                Messages.get().container(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()),
-                e);
-        }
-    }
 
-    /**
-     * Extracts the content of a given XML content value.<p>
-     * 
-     * @param cms the CMS object
-     * @param xmlContent the XML content
-     * @param xpath the xPath of the content
-     * @param locale the locale
-     * 
-     * @return the extracted value
-     * @throws CmsException if something goes wrong
-     */
-    private String extractValue(CmsObject cms, A_CmsXmlDocument xmlContent, String xpath, Locale locale)
-    throws CmsException {
-
-        I_CmsXmlContentValue value = xmlContent.getValue(xpath, locale);
-        try {
-            String extracted = value.getPlainText(cms);
-            if (value.isSimpleType()) {
-                if (CmsStringUtil.isEmptyOrWhitespaceOnly(extracted)) {
-                    extracted = value.getStringValue(cms);
-                }
-                // put the extraction to the content and to the items
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(extracted)) {
-                    // create the content value for the locale by adding all String values in the XML nodes
-                    return extracted;
-                }
-            }
         } catch (Exception e) {
-            // it can happen that a (runtime) exception is thrown while extracting the content of a value
-            // e.g. nested contents don't have a String representation
-            throw new CmsException(Messages.get().container(Messages.ERR_TEXT_EXTRACTION_1, xmlContent.getFile()), e);
+            // throw an index exception, if anything went wrong during extraction for this content
+            throw new CmsIndexException(Messages.get().container(Messages.ERR_TEXT_EXTRACTION_1, resource), e);
         }
-        return null;
     }
 }

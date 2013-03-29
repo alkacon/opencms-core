@@ -41,10 +41,8 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlUtils;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import org.apache.lucene.document.DateTools;
@@ -114,36 +112,6 @@ public class CmsSearchFieldMapping implements I_CmsSearchFieldMapping {
     }
 
     /**
-     * Returns a list of values for the given XPath if according content items can be found.<p>
-     * 
-     * @param contentItems the content items to search in
-     * @param xpath the complete XPath the XPath to use as key
-     * 
-     * @return a list of element values found in the content items for the given XPath
-     */
-    private static List<String> getMultiValuesForXPath(Map<String, String> contentItems, String xpath) {
-
-        List<String> items = new ArrayList<String>();
-        // loop over the content items
-        for (Map.Entry<String, String> entry : contentItems.entrySet()) {
-            // reduce the original key by removing the XPath indexes
-            String key = CmsXmlUtils.removeXpath(entry.getKey());
-            if (!key.equals(entry.getKey())) {
-                // there have been indexes within the path
-                // now append the original locale extension, because this info has gone by removing the XPath
-                Locale locale = CmsStringUtil.getLocaleForName(entry.getKey());
-                key = CmsSearchFieldConfiguration.getLocaleExtendedName(key, locale);
-            }
-            if (key.equals(xpath)) {
-                // reduced XPath found inside the content items, 
-                // add the value of the current item to the results
-                items.add(entry.getValue());
-            }
-        }
-        return items;
-    }
-
-    /**
      * Two mappings are equal if the type and the parameter is equal.<p>
      * 
      * @see java.lang.Object#equals(java.lang.Object)
@@ -205,16 +173,9 @@ public class CmsSearchFieldMapping implements I_CmsSearchFieldMapping {
                     content = CmsProperty.get(getParam(), propertiesSearched).getValue();
                 }
                 break;
-            case 3: // item
+            case 3: // item (retrieve value for the given XPath from the content items)
                 if ((extractionResult != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParam())) {
-                    content = extractionResult.getContentItems().get(getParam());
-                    if (content == null) {
-                        // if the content can't be found for the given parameter within the content items
-                        // the parameter can be an XPath of a nested element, so try to retrieve multiple
-                        // values for the given XPath from the content items.
-                        List<String> items = getMultiValuesForXPath(extractionResult.getContentItems(), getParam());
-                        content = items.isEmpty() ? null : CmsStringUtil.listAsString(items, "\n");
-                    }
+                    content = getValueForXPath(extractionResult.getContentItems(), getParam());
                 }
                 break;
             case 5: // attribute
@@ -397,4 +358,40 @@ public class CmsSearchFieldMapping implements I_CmsSearchFieldMapping {
         setType(mappingType);
     }
 
+    /**
+     * Returns a "\n" separated String of values for the given XPath if according content items can be found.<p>
+     * 
+     * @param contentItems the content items to search in
+     * @param xpath the complete XPath the XPath to use as key
+     * 
+     * @return a "\n" separated String of element values found in the content items for the given XPath
+     */
+    private String getValueForXPath(Map<String, String> contentItems, String xpath) {
+
+        String content = contentItems.get(getParam());
+        if (content != null) {
+            // exact parameter found
+            return content;
+        }
+        
+        // try a multiple value mapping
+        StringBuffer result = new StringBuffer();
+        // loop over the content items
+        boolean first = true;
+        for (Map.Entry<String, String> entry : contentItems.entrySet()) {
+            // reduce the original key by removing the XPath indexes
+            String key = CmsXmlUtils.removeXpath(entry.getKey());
+            if (key.equals(xpath)) {
+                // value found in content items
+                if (first) {
+                    result.append(entry.getValue());
+                    first = false;
+                } else {
+                    result.append("\n");
+                    result.append(entry.getValue());
+                }
+            }
+        }
+        return !first ? result.toString() : null;
+    }
 }
