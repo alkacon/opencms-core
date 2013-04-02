@@ -175,7 +175,7 @@ public class CmsSearchFieldMapping implements I_CmsSearchFieldMapping {
                 break;
             case 3: // item (retrieve value for the given XPath from the content items)
                 if ((extractionResult != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParam())) {
-                    content = getValueForXPath(extractionResult.getContentItems(), getParam());
+                    content = getContentItemForXPath(extractionResult.getContentItems(), getParam());
                 }
                 break;
             case 5: // attribute
@@ -361,37 +361,24 @@ public class CmsSearchFieldMapping implements I_CmsSearchFieldMapping {
     /**
      * Returns a "\n" separated String of values for the given XPath if according content items can be found.<p>
      * 
-     * @param contentItems the content items to search in
-     * @param xpath the complete XPath the XPath to use as key
+     * @param contentItems the content items to get the value from
+     * @param xpath the short XPath parameter to get the value for
      * 
      * @return a "\n" separated String of element values found in the content items for the given XPath
      */
-    private String getValueForXPath(Map<String, String> contentItems, String xpath) {
+    private String getContentItemForXPath(Map<String, String> contentItems, String xpath) {
 
-        String content = contentItems.get(getParam());
-        if (content != null) {
-            // exact parameter found
-            return content;
-        }
-        
-        // try a multiple value mapping
-        StringBuffer result = new StringBuffer();
-        // loop over the content items
-        boolean first = true;
-        for (Map.Entry<String, String> entry : contentItems.entrySet()) {
-            // reduce the original key by removing the XPath indexes
-            String key = CmsXmlUtils.removeXpath(entry.getKey());
-            if (key.equals(xpath)) {
-                // value found in content items
-                if (first) {
+        if (contentItems.get(xpath) != null) { // content item found for XPath
+            return contentItems.get(xpath);
+        } else { // try a multiple value mapping
+            StringBuffer result = new StringBuffer();
+            for (Map.Entry<String, String> entry : contentItems.entrySet()) {
+                if (CmsXmlUtils.removeXpath(entry.getKey()).equals(xpath)) { // the removed path refers an item
                     result.append(entry.getValue());
-                    first = false;
-                } else {
                     result.append("\n");
-                    result.append(entry.getValue());
                 }
             }
+            return result.length() > 1 ? result.toString().substring(0, result.length() - 1) : null;
         }
-        return !first ? result.toString() : null;
     }
 }

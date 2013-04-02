@@ -87,7 +87,6 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -790,10 +789,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /**
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#getSearchFields()
      */
-    public Collection<CmsSearchField> getSearchFields() {
+    public Set<CmsSearchField> getSearchFields() {
 
-        Set<CmsSearchField> searchFields = new HashSet<CmsSearchField>(m_searchFields.values());
-        return Collections.unmodifiableCollection(searchFields);
+        return Collections.unmodifiableSet(new HashSet<CmsSearchField>(m_searchFields.values()));
     }
 
     /**
@@ -1622,7 +1620,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         if (field instanceof CmsSolrField) {
             locale = ((CmsSolrField)field).getLocale();
         }
-        m_searchFields.put(CmsXmlUtils.addLocalePrefixToXpath(field.getName(), locale), field);
+        m_searchFields.put(CmsXmlUtils.concatXpath(locale != null ? locale.toString() : null, field.getName()), field);
     }
 
     /**
@@ -2307,7 +2305,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
                     // if no mapping was defined yet, create a mapping for the element itself 
                     if ((field.getMappings() == null) || field.getMappings().isEmpty()) {
-                        String param = CmsXmlUtils.addLocalePrefixToXpath(elementName, locale);
+                        String param = CmsXmlUtils.concatXpath(locale.toString(), elementName);
                         CmsSearchFieldMapping map = new CmsSearchFieldMapping(CmsSearchFieldMappingType.ITEM, param);
                         field.addMapping(map);
                     }
@@ -3005,7 +3003,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             case 0: // content
             case 3: // item
                 // localized
-                String param = CmsXmlUtils.addLocalePrefixToXpath(element.getStringValue(), locale);
+                String param = CmsXmlUtils.concatXpath(locale.toString(), element.getStringValue());
                 fieldMapping = new CmsSearchFieldMapping(type, param);
                 break;
             case 1: // property

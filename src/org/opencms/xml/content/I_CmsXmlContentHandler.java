@@ -45,7 +45,6 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -298,7 +297,7 @@ public interface I_CmsXmlContentHandler {
      * 
      * @return the Search fields for this XMl content
      */
-    Collection<CmsSearchField> getSearchFields();
+    Set<CmsSearchField> getSearchFields();
 
     /**
      * Returns the element settings defined for the container page formatters.<p>
