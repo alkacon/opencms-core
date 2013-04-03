@@ -645,6 +645,18 @@ public final class Messages {
     /** Static instance member. */
     private static CmsMessages INSTANCE;
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCE_INFO_TAB_ATTRIBUTES_0 = "GUI_RESOURCE_INFO_TAB_ATTRIBUTES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCE_INFO_TAB_USAGE_0 = "GUI_RESOURCE_INFO_TAB_USAGE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BUTTON_ELEMENT_EDIT_0 = "GUI_BUTTON_ELEMENT_EDIT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USAGE_EMPTY_0 = "GUI_USAGE_EMPTY_0";
+
     /**
      * Hides the public constructor for this utility class.<p> 
      */

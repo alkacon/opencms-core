@@ -27,33 +27,70 @@
 
 package org.opencms.gwt.client.ui.resourceinfo;
 
-import org.opencms.ade.containerpage.client.Messages;
+import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.CmsEditableData;
 import org.opencms.gwt.client.CmsGwtConstants;
+import org.opencms.gwt.client.ui.CmsFieldSet;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.client.ui.CmsPopup;
+import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.CmsSimpleListItem;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
+import org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog;
+import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuButton;
+import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler;
+import org.opencms.gwt.client.ui.contextmenu.CmsLogout;
+import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
+import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
-import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsResourceStatusBean;
+import org.opencms.gwt.shared.CmsResourceStatusRelationBean;
+import org.opencms.util.CmsUUID;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.FormElement;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /** 
  * Widget which shows which contents refer to a resource.<p> 
  */
 public class CmsResourceUsageView extends Composite {
 
+    /** Set of context menu actions which we do not want to appear in the context menu for the relation source items. */
+    protected static Set<String> m_filteredActions = new HashSet<String>();
+
     /** The panel containing the resource boxes. */
-    CmsList<CmsListItem> m_panel = new CmsList<CmsListItem>();
+    protected CmsList<CmsListItem> m_list = new CmsList<CmsListItem>();
+
+    /** Main panel. */
+    protected FlowPanel m_panel = new FlowPanel();
+
+    /** The popup which contains this widget. */
+    protected CmsPopup m_popup;
+
+    /** Container which is used to display the main resource information box. */
+    SimplePanel m_infoBox = new SimplePanel();
+
+    /** The edit button. */
+    private CmsPushButton m_editButton;
 
     /** True if the resource boxes have already been created. */
     private boolean m_filled;
@@ -64,7 +101,7 @@ public class CmsResourceUsageView extends Composite {
         @Override
         public void run() {
 
-            CmsDomUtil.resizeAncestor(m_panel);
+            CmsDomUtil.resizeAncestor(m_list);
         }
     };
 
@@ -78,45 +115,27 @@ public class CmsResourceUsageView extends Composite {
      */
     public CmsResourceUsageView(CmsResourceStatusBean status) {
 
-        CmsScrollPanel scroller = GWT.create(CmsScrollPanel.class);
-        m_panel.setWidth("487px");
-        scroller.setWidth("507px");
-        scroller.add(m_panel);
+        initWidget(m_panel);
+        m_panel.getElement().getStyle().setOverflow(Style.Overflow.HIDDEN);
         m_statusBean = status;
-        initWidget(scroller);
+        CmsListItemWidget infoWidget = new CmsListItemWidget(status.getListInfo());
+        CmsListItem infoItem = new CmsListItem(infoWidget);
+        m_panel.add(infoItem);
+        CmsFieldSet fieldset = new CmsFieldSet();
+        CmsScrollPanel scrollPanel = GWT.create(CmsScrollPanel.class);
+        scrollPanel.add(m_list);
+        fieldset.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
+        scrollPanel.getElement().getStyle().setHeight(280, Style.Unit.PX);
+        fieldset.setLegend(org.opencms.gwt.client.Messages.get().key(
+            org.opencms.gwt.client.Messages.GUI_RESOURCE_INFO_TAB_USAGE_0));
+        fieldset.add(scrollPanel);
+        m_panel.add(fieldset);
     }
 
-    /**
-     * Creates and renders the resource boxes for the related resources.<p>
-     */
-    public void fill() {
-
-        m_panel.clear();
-        if (m_statusBean.getRelationSources().isEmpty()) {
-            CmsSimpleListItem item = new CmsSimpleListItem();
-            item.add(new Label(Messages.get().key(Messages.GUI_USAGE_EMPTY_0)));
-            m_panel.add(item);
-        } else {
-            for (CmsListInfoBean sourceBean : m_statusBean.getRelationSources()) {
-                CmsListItemWidget itemWidget = new CmsListItemWidget(sourceBean);
-                CmsListItem item = new CmsListItem(itemWidget);
-                if (CmsGwtConstants.TYPE_CONTAINERPAGE.equals(sourceBean.getResourceType())) {
-                    if (sourceBean.getLink() != null) {
-                        final String link = sourceBean.getLink();
-                        itemWidget.setIconCursor(Cursor.POINTER);
-                        itemWidget.addIconClickHandler(new ClickHandler() {
-
-                            public void onClick(ClickEvent e) {
-
-                                Window.open(link, "_blank", "");
-                            }
-                        });
-                    }
-                }
-                m_panel.add(item);
-            }
-        }
-
+    static {
+        m_filteredActions.add(CmsGwtConstants.ACTION_TEMPLATECONTEXTS);
+        m_filteredActions.add(CmsGwtConstants.ACTION_EDITSMALLELEMENTS);
+        m_filteredActions.add(CmsLogout.class.getName());
     }
 
     /**
@@ -130,5 +149,111 @@ public class CmsResourceUsageView extends Composite {
             m_filled = true;
         }
         m_resizeTimer.schedule(1);
+    }
+
+    /**
+     * Sets the popup which contains this widget.<p>
+     * 
+     * @param popup the popup 
+     */
+    public void setPopup(CmsPopup popup) {
+
+        m_popup = popup;
+    }
+
+    /**
+     * Creates and renders the resource boxes for the related resources.<p>
+     */
+    protected void fill() {
+
+        m_list.clear();
+        if (m_statusBean.getRelationSources().isEmpty()) {
+            CmsSimpleListItem item = new CmsSimpleListItem();
+            item.add(new Label(org.opencms.gwt.client.Messages.get().key(
+                org.opencms.gwt.client.Messages.GUI_USAGE_EMPTY_0)));
+            m_list.add(item);
+        } else {
+            for (CmsResourceStatusRelationBean relationBean : m_statusBean.getRelationSources()) {
+                CmsListItemWidget itemWidget = new CmsListItemWidget(relationBean.getInfoBean());
+                CmsListItem item = new CmsListItem(itemWidget);
+                CmsContextMenuButton button = new CmsContextMenuButton(
+                    relationBean.getStructureId(),
+                    new CmsContextMenuHandler() {
+
+                        @Override
+                        public void refreshResource(CmsUUID structureId) {
+
+                            Window.Location.reload();
+                        }
+
+                        @Override
+                        protected I_CmsContextMenuEntry transformSingleEntry(
+                            CmsContextMenuEntryBean entryBean,
+                            CmsUUID structureId) {
+
+                            if (m_filteredActions.contains(entryBean.getName())) {
+                                return null;
+                            } else {
+                                return super.transformSingleEntry(entryBean, structureId);
+                            }
+                        }
+
+                    });
+                item.getListItemWidget().addButton(button);
+                final boolean isContainerpage = CmsGwtConstants.TYPE_CONTAINERPAGE.equals(relationBean.getInfoBean().getResourceType());
+                final boolean isXmlContent = relationBean.isXmlContent();
+                final boolean isEditable = isXmlContent || isContainerpage;
+                if (isEditable) {
+                    final CmsResourceStatusRelationBean currentRelationBean = relationBean;
+
+                    m_editButton = new CmsPushButton();
+                    m_editButton.setImageClass(I_CmsImageBundle.INSTANCE.style().editIcon());
+                    m_editButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+                    m_editButton.setTitle(org.opencms.gwt.client.Messages.get().key(
+                        org.opencms.gwt.client.Messages.GUI_BUTTON_ELEMENT_EDIT_0));
+                    m_editButton.setEnabled(true);
+                    item.getListItemWidget().addButton(m_editButton);
+                    m_editButton.addClickHandler(new ClickHandler() {
+
+                        public void onClick(ClickEvent event) {
+
+                            if (isContainerpage) {
+                                Window.open(currentRelationBean.getLink(), "_blank", "");
+                            } else {
+                                CmsEditableData editableData = new CmsEditableData();
+                                editableData.setElementLanguage(CmsCoreProvider.get().getLocale());
+                                editableData.setStructureId(currentRelationBean.getStructureId());
+                                editableData.setSitePath(currentRelationBean.getSitePath());
+                                CmsDomUtil.ensureMouseOut((Widget)event.getSource());
+                                FormElement form = CmsContentEditorDialog.generateForm(editableData, false, "_blank");
+                                RootPanel.get().getElement().appendChild(form);
+                                form.submit();
+                                if (m_popup != null) {
+                                    m_popup.hide();
+                                }
+
+                            }
+                        }
+                    });
+                }
+
+                if (isContainerpage) {
+                    if (relationBean.getLink() != null) {
+                        final String link = relationBean.getLink();
+                        itemWidget.setIconCursor(Cursor.POINTER);
+                        itemWidget.addIconClickHandler(new ClickHandler() {
+
+                            public void onClick(ClickEvent e) {
+
+                                Window.open(link, "_blank", "");
+                            }
+                        });
+                    }
+                }
+                m_list.add(item);
+            }
+
+        }
+
     }
 }

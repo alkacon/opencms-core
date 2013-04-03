@@ -27,7 +27,6 @@
 
 package org.opencms.gwt.client.ui.resourceinfo;
 
-import org.opencms.ade.containerpage.client.Messages;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsPopup;
@@ -63,16 +62,17 @@ public class CmsResourceInfoDialog extends CmsPopup {
         setHeight(height);
         removePadding();
 
-        CmsMessages messages = Messages.get();
+        CmsMessages messages = org.opencms.gwt.client.Messages.get();
         CmsScrollPanel panel = GWT.create(CmsScrollPanel.class);
         panel.getElement().getStyle().setProperty("maxHeight", height + "px");
         CmsResourceInfoView infoView = new CmsResourceInfoView(statusBean);
         panel.add(infoView);
         CmsTabbedPanel<Widget> tabPanel = new CmsTabbedPanel<Widget>();
-        tabPanel.add(panel, messages.key(Messages.GUI_RESOURCE_INFO_TAB_ATTRIBUTES_0));
+        tabPanel.add(panel, messages.key(org.opencms.gwt.client.Messages.GUI_RESOURCE_INFO_TAB_ATTRIBUTES_0));
 
         final CmsResourceUsageView usage = new CmsResourceUsageView(statusBean);
-        tabPanel.add(usage, messages.key(Messages.GUI_RESOURCE_INFO_TAB_USAGE_0));
+        usage.setPopup(this);
+        tabPanel.add(usage, messages.key(org.opencms.gwt.client.Messages.GUI_RESOURCE_INFO_TAB_USAGE_0));
         tabPanel.addSelectionHandler(new SelectionHandler<Integer>() {
 
             public void onSelection(SelectionEvent<Integer> event) {

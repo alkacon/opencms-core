@@ -96,7 +96,7 @@ public class CmsMenuListItem extends CmsListItem {
         m_editButton = new CmsPushButton();
         m_editButton.setImageClass(I_CmsImageBundle.INSTANCE.style().editIcon());
         m_editButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
-        m_editButton.setTitle(Messages.get().key(Messages.GUI_BUTTON_ELEMENT_EDIT_0));
+        m_editButton.setTitle(Messages.get().key(org.opencms.gwt.client.Messages.GUI_BUTTON_ELEMENT_EDIT_0));
         m_editButton.setEnabled(false);
         getListItemWidget().addButton(m_editButton);
     }

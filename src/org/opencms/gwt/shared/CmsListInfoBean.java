@@ -75,9 +75,6 @@ public class CmsListInfoBean implements IsSerializable {
     /** The additional info. */
     private List<CmsAdditionalInfoBean> m_additionalInfo;
 
-    /** A link to the resource (possibly null). */
-    private String m_link;
-
     /** The lock icon. */
     private LockIcon m_lockIcon;
 
@@ -155,16 +152,6 @@ public class CmsListInfoBean implements IsSerializable {
             m_additionalInfo = new ArrayList<CmsAdditionalInfoBean>();
         }
         return m_additionalInfo;
-    }
-
-    /**
-     * Gets the link for the list info bean (may be null).<p>
-     * 
-     * @return the link 
-     */
-    public String getLink() {
-
-        return m_link;
     }
 
     /**
@@ -257,16 +244,6 @@ public class CmsListInfoBean implements IsSerializable {
     public void setAdditionalInfo(List<CmsAdditionalInfoBean> additionalInfo) {
 
         m_additionalInfo = additionalInfo;
-    }
-
-    /**
-     * Sets the link.<p>
-     * 
-     * @param link the link 
-     */
-    public void setLink(String link) {
-
-        m_link = link;
     }
 
     /**

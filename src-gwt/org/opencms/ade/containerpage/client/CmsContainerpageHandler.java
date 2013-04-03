@@ -35,6 +35,7 @@ import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.publish.client.CmsPublishDialog;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.CmsGwtConstants;
 import org.opencms.gwt.client.dnd.I_CmsDNDController;
 import org.opencms.gwt.client.ui.A_CmsToolbarHandler;
 import org.opencms.gwt.client.ui.A_CmsToolbarMenu;
@@ -997,9 +998,9 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     @Override
     public I_CmsContextMenuEntry transformSingleEntry(CmsUUID structureId, CmsContextMenuEntryBean menuEntryBean) {
 
-        if (menuEntryBean.getName().equals("templatecontexts")) {
+        if (menuEntryBean.getName().equals(CmsGwtConstants.ACTION_TEMPLATECONTEXTS)) {
             return createTemplateContextSelectionMenuEntry(structureId);
-        } else if (menuEntryBean.getName().equals("editsmallelements")) {
+        } else if (menuEntryBean.getName().equals(CmsGwtConstants.ACTION_EDITSMALLELEMENTS)) {
             return createToggleEditSmallElementsMenuEntry();
         } else {
             return super.transformSingleEntry(structureId, menuEntryBean);

@@ -73,8 +73,8 @@ public class CmsResourceStatusBean implements IsSerializable {
     /** Permissions. */
     private String m_permissions;
 
-    /** List info beans for resources which have relations towards the resource. */
-    private List<CmsListInfoBean> m_relationSources = new ArrayList<CmsListInfoBean>();
+    /** List of beans representing resources which have relations toward this resource. */
+    private ArrayList<CmsResourceStatusRelationBean> m_relationSources = new ArrayList<CmsResourceStatusRelationBean>();
 
     /** Resource type. */
     private String m_resourceType;
@@ -196,7 +196,7 @@ public class CmsResourceStatusBean implements IsSerializable {
      * 
      * @return the relation source list info bean 
      */
-    public List<CmsListInfoBean> getRelationSources() {
+    public ArrayList<CmsResourceStatusRelationBean> getRelationSources() {
 
         return m_relationSources;
     }

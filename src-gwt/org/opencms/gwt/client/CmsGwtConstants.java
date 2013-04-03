@@ -32,6 +32,12 @@ package org.opencms.gwt.client;
  */
 public final class CmsGwtConstants {
 
+    /** Context menu action id. */
+    public static final String ACTION_EDITSMALLELEMENTS = "editsmallelements";
+
+    /** Context menu action id. */
+    public static final String ACTION_TEMPLATECONTEXTS = "templatecontexts";
+
     /** Type name for container pages. */
     public static final String TYPE_CONTAINERPAGE = "containerpage";
 
