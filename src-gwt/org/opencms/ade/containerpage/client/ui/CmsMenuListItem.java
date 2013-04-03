@@ -54,11 +54,11 @@ public class CmsMenuListItem extends CmsListItem {
     /** The element edit button. */
     protected CmsPushButton m_editButton;
 
-    /** The element delete button. */
-    private CmsPushButton m_removeButton;
-
     /** The edit click handler registration. */
     private HandlerRegistration m_editHandlerRegistration;
+
+    /** The element delete button. */
+    private CmsPushButton m_removeButton;
 
     /**
      * Constructor.<p>
@@ -96,7 +96,8 @@ public class CmsMenuListItem extends CmsListItem {
         m_editButton = new CmsPushButton();
         m_editButton.setImageClass(I_CmsImageBundle.INSTANCE.style().editIcon());
         m_editButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
-        m_editButton.setTitle(Messages.get().key(org.opencms.gwt.client.Messages.GUI_BUTTON_ELEMENT_EDIT_0));
+        m_editButton.setTitle(org.opencms.gwt.client.Messages.get().key(
+            org.opencms.gwt.client.Messages.GUI_BUTTON_ELEMENT_EDIT_0));
         m_editButton.setEnabled(false);
         getListItemWidget().addButton(m_editButton);
     }
@@ -107,20 +108,6 @@ public class CmsMenuListItem extends CmsListItem {
     public void deleteElement() {
 
         removeFromParent();
-    }
-
-    /**
-     * Enables the edit button with the given click handler.<p>
-     * 
-     * @param editClickHandler the edit click handler
-     */
-    public void enableEdit(ClickHandler editClickHandler) {
-
-        if (m_editHandlerRegistration != null) {
-            m_editHandlerRegistration.removeHandler();
-        }
-        m_editHandlerRegistration = m_editButton.addClickHandler(editClickHandler);
-        m_editButton.enable();
     }
 
     /**
@@ -135,6 +122,20 @@ public class CmsMenuListItem extends CmsListItem {
         if (locked) {
             m_editButton.setImageClass(I_CmsImageBundle.INSTANCE.style().lockIcon());
         }
+    }
+
+    /**
+     * Enables the edit button with the given click handler.<p>
+     * 
+     * @param editClickHandler the edit click handler
+     */
+    public void enableEdit(ClickHandler editClickHandler) {
+
+        if (m_editHandlerRegistration != null) {
+            m_editHandlerRegistration.removeHandler();
+        }
+        m_editHandlerRegistration = m_editButton.addClickHandler(editClickHandler);
+        m_editButton.enable();
     }
 
     /**
