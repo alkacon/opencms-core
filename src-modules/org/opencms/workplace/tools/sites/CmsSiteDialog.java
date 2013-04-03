@@ -37,7 +37,6 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
-import org.opencms.site.CmsSiteMatcher;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsCheckboxWidget;
 import org.opencms.widgets.CmsDisplayWidget;
@@ -74,9 +73,6 @@ public class CmsSiteDialog extends CmsWidgetDialog {
 
     /** Dialog new action parameter value. */
     private static final String DIALOG_NEW = "new";
-
-    /** The aliases for the current selected site. */
-    private List<String> m_aliases;
 
     /** The edit action to perform. */
     private String m_paramEditaction;
@@ -119,11 +115,6 @@ public class CmsSiteDialog extends CmsWidgetDialog {
     public void actionCommit() {
 
         try {
-            List<CmsSiteMatcher> aliases = new ArrayList<CmsSiteMatcher>();
-            for (String ali : m_aliases) {
-                aliases.add(new CmsSiteMatcher(ali));
-            }
-            m_site.setAliases(aliases);
             CmsSite site = m_site.toCmsSite();
             CmsObject cms = OpenCms.initCmsObject(getCms());
             cms.getRequestContext().setSiteRoot("");
@@ -139,16 +130,6 @@ public class CmsSiteDialog extends CmsWidgetDialog {
         } catch (Exception e) {
             addCommitError(e);
         }
-    }
-
-    /**
-     * Returns the aliases.<p>
-     *
-     * @return the aliases
-     */
-    public List<String> getAliases() {
-
-        return m_aliases;
     }
 
     /**
@@ -190,16 +171,6 @@ public class CmsSiteDialog extends CmsWidgetDialog {
     public String getParamSitetitle() {
 
         return m_paramSitetitle;
-    }
-
-    /**
-     * Sets the aliases.<p>
-     *
-     * @param aliases the aliases to set
-     */
-    public void setAliases(List<String> aliases) {
-
-        m_aliases = aliases;
     }
 
     /**
@@ -332,7 +303,7 @@ public class CmsSiteDialog extends CmsWidgetDialog {
             addWidget(new CmsWidgetDialogParameter(m_site, "exclusiveError", PAGES[0], new CmsCheckboxWidget()));
 
             // site aliases
-            addWidget(new CmsWidgetDialogParameter(this, "aliases", PAGES[0], new CmsInputWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_site, "aliases", PAGES[0], new CmsInputWidget()));
         } else {
             // display site
             addWidget(new CmsWidgetDialogParameter(m_site, "title", PAGES[0], new CmsDisplayWidget()));
@@ -367,10 +338,10 @@ public class CmsSiteDialog extends CmsWidgetDialog {
                 addWidget(new CmsWidgetDialogParameter(m_site, "exclusiveError", PAGES[0], new CmsDisplayWidget()));
             }
             int count = 0;
-            for (CmsSiteMatcher siteMatcher : m_site.getAliases()) {
+            for (String aliasUrl : m_site.getAliases()) {
                 CmsWidgetDialogParameter alias = new CmsWidgetDialogParameter(
-                    siteMatcher.getUrl(),
-                    siteMatcher.getUrl(),
+                    aliasUrl,
+                    aliasUrl,
                     Messages.get().getBundle().key(Messages.GUI_SITES_DETAIL_LABEL_ALIAS_0) + " [" + (count + 1) + "]",
                     new CmsDisplayWidget(),
                     PAGES[0],
@@ -380,7 +351,7 @@ public class CmsSiteDialog extends CmsWidgetDialog {
                 addWidget(alias);
                 count++;
             }
-            addWidget(new CmsWidgetDialogParameter(this, "aliases", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_site, "aliases", PAGES[0], new CmsDisplayWidget()));
         }
     }
 
@@ -531,12 +502,6 @@ public class CmsSiteDialog extends CmsWidgetDialog {
             }
         }
 
-        m_aliases = new ArrayList<String>();
-        for (CmsSiteMatcher siteMatcher : m_site.getAliases()) {
-            if ((siteMatcher != null) && (siteMatcher.getUrl() != null)) {
-                m_aliases.add(siteMatcher.getUrl());
-            }
-        }
         if (!m_site.hasSecureServer()) {
             m_site.setSecureUrl("");
         }
