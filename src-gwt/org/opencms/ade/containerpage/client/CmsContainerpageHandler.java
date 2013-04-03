@@ -1054,8 +1054,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                     I_CmsContextMenuHandler handler,
                     CmsContextMenuEntryBean bean) {
 
-                    // TODO: Auto-generated method stub
-
+                    // do nothing 
                 }
 
                 public A_CmsContextMenuItem getItemWidget(
@@ -1264,7 +1263,10 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
             }
         });
         CmsContextMenuEntryBean bean = new CmsContextMenuEntryBean();
-        bean.setLabel((Objects.equal(value, currentContext) ? "*" : "") + label);
+        bean.setLabel(label);
+        boolean isActive = Objects.equal(value, currentContext);
+        I_CmsInputCss inputCss = I_CmsInputLayoutBundle.INSTANCE.inputCss();
+        bean.setIconClass(isActive ? inputCss.checkBoxImageChecked() : "");
         bean.setActive(true);
         bean.setVisible(true);
         menuEntry.setBean(bean);
