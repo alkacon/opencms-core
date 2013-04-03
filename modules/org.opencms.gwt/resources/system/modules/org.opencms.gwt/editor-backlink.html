@@ -4,7 +4,11 @@
     </head>
     <body>
 	    <script type='text/javascript'>
-	    	top.cms_ade_closeEditorDialog();
+	    	if (top && top.cms_ade_closeEditorDialog) {
+	    		top.cms_ade_closeEditorDialog();
+	    	} else { 
+	    	   window.close(); 
+	    	}
 	    </script>
 	</body>
 </html>
