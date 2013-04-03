@@ -696,9 +696,16 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             }
 
             List<CmsRelation> relations = cms.readRelations(CmsRelationFilter.relationsToStructureId(resource.getStructureId()));
+            Map<CmsUUID, CmsResource> relationSources = new HashMap<CmsUUID, CmsResource>();
+
+            // find all distinct relation sources 
             for (CmsRelation relation : relations) {
+                CmsResource source = relation.getSource(cms, CmsResourceFilter.IGNORE_EXPIRATION);
+                relationSources.put(source.getStructureId(), source);
+            }
+
+            for (CmsResource source : relationSources.values()) {
                 try {
-                    CmsResource source = relation.getSource(cms, CmsResourceFilter.IGNORE_EXPIRATION);
                     CmsListInfoBean sourceBean = getPageInfo(source);
                     String link = null;
                     try {
