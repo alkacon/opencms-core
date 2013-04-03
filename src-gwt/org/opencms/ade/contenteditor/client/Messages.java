@@ -166,6 +166,12 @@ public final class Messages {
     public static final String GUI_VIEW_MOVE_0 = "GUI_VIEW_MOVE_0"; //Acacia message: Move
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_VIEW_MOVE_DOWN_0 = "GUI_VIEW_MOVE_DOWN_0"; //Acacia message: Move down
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_VIEW_MOVE_UP_0 = "GUI_VIEW_MOVE_UP_0"; //Acacia message: Move up
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_WARN_INVALID_XML_STRUCTURE_0 = "GUI_WARN_INVALID_XML_STRUCTURE_0";
 
     /** Message constant for key in the resource bundle. */
