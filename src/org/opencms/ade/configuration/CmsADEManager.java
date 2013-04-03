@@ -58,6 +58,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.util.CmsRequestUtil;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.containerpage.CmsADECache;
@@ -167,6 +168,9 @@ public class CmsADEManager {
 
     /** User additional info key constant. */
     protected static final String ADDINFO_ADE_RECENT_LIST = "ADE_RECENT_LIST";
+
+    /** User additional info key constant. */
+    protected static final String ADDINFO_ADE_SHOW_EDITOR_HELP = "ADE_SHOW_EDITOR_HELP";
 
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsADEManager.class);
@@ -973,6 +977,34 @@ public class CmsADEManager {
             result = cache.getModuleConfiguration();
         }
         return result;
+    }
+
+    /**
+     * Returns the show editor help flag.<p>
+     *
+     * @param cms the cms context
+     * 
+     * @return the show editor help flag
+     */
+    public boolean isShowEditorHelp(CmsObject cms) {
+
+        CmsUser user = cms.getRequestContext().getCurrentUser();
+        String showHelp = (String)user.getAdditionalInfo(ADDINFO_ADE_SHOW_EDITOR_HELP);
+        return CmsStringUtil.isEmptyOrWhitespaceOnly(showHelp) || Boolean.parseBoolean(showHelp);
+    }
+
+    /**
+     * Sets the show editor help flag.<p>
+     * 
+     * @param cms the cms context
+     * @param showHelp the show help flag
+     * @throws CmsException if writing the user info fails
+     */
+    public void setShowEditorHelp(CmsObject cms, boolean showHelp) throws CmsException {
+
+        CmsUser user = cms.getRequestContext().getCurrentUser();
+        user.setAdditionalInfo(ADDINFO_ADE_SHOW_EDITOR_HELP, String.valueOf(showHelp));
+        cms.writeUser(user);
     }
 
     /**

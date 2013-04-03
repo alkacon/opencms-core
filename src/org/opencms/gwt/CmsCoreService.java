@@ -504,7 +504,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         CmsObject cms = getCmsObject();
         String navigationUri = cms.getRequestContext().getUri();
         boolean toolbarVisible = getSessionCache().isToolbarVisible();
-        boolean isShowHelp = getSessionCache().isShowEditorHelp();
+        boolean isShowHelp = OpenCms.getADEManager().isShowEditorHelp(cms);
 
         CmsUUID structureId = null;
 
@@ -613,8 +613,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     public void setShowEditorHelp(boolean visible) throws CmsRpcException {
 
         try {
-            ensureSession();
-            getSessionCache().setShowEditorHelp(visible);
+            OpenCms.getADEManager().setShowEditorHelp(getCmsObject(), visible);
         } catch (Throwable e) {
             error(e);
         }
