@@ -59,6 +59,38 @@ public interface I_CmsIconBundle extends ClientBundle {
 
     /**
      * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/icons/arrowDownIconActive.png")
+    ImageResource arrowDownIconActive();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/icons/arrowDownIconDeactivated.png")
+    ImageResource arrowDownIconDeactivated();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/icons/arrowUpIconActive.png")
+    ImageResource arrowUpIconActive();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/icons/arrowUpIconDeactivated.png")
+    ImageResource arrowUpIconDeactivated();
+
+    /**
+     * Access method.<p>
      *
      * @return the image resource
      */

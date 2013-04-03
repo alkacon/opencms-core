@@ -61,7 +61,26 @@
     display: inline-block;
     vertical-align: middle;
 }
-
+@sprite .cmsState-down .arrowDownIcon, .cmsState-up-hovering .arrowDownIcon, .cmsState-down-hovering .arrowDownIcon{
+    gwt-image: "icons.arrowDownIconActive";
+    display: inline-block;
+    vertical-align: middle;
+}
+@sprite .cmsState-up .arrowDownIcon, .cmsState-up-disabled .arrowDownIcon, .cmsState-down-disabled .arrowDownIcon{
+    gwt-image: "icons.arrowDownIconDeactivated";
+    display: inline-block;
+    vertical-align: middle;
+}
+@sprite .cmsState-down .arrowUpIcon, .cmsState-up-hovering .arrowUpIcon, .cmsState-down-hovering .arrowUpIcon{
+    gwt-image: "icons.arrowUpIconActive";
+    display: inline-block;
+    vertical-align: middle;
+}
+@sprite .cmsState-up .arrowUpIcon, .cmsState-up-disabled .arrowUpIcon, .cmsState-down-disabled .arrowUpIcon{
+    gwt-image: "icons.arrowUpIconDeactivated";
+    display: inline-block;
+    vertical-align: middle;
+}
 @sprite .cmsState-down .popupIcon, .cmsState-up-hovering .popupIcon, .cmsState-down-hovering .popupIcon{
     gwt-image: "icons.popupIconActive";
     display: block;

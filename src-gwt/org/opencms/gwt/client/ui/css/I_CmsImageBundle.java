@@ -49,6 +49,20 @@ public interface I_CmsImageBundle extends ClientBundle {
     @Shared
     interface I_CmsImageStyle extends I_CmsOpenerHoverCss {
 
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String arrowDownIcon();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String arrowUpIcon();
+
         /**
          * Access method.<p>
          *
