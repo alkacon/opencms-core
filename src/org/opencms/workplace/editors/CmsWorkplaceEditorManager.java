@@ -129,7 +129,7 @@ public class CmsWorkplaceEditorManager {
             // get the file contents
             byte[] xmlData = configFile.getContents();
             CmsWorkplaceEditorConfiguration editorConfig = new CmsWorkplaceEditorConfiguration(xmlData, folderName
-                + EDITOR_FILENAME);
+                + EDITOR_FILENAME, currentFolder.getName());
             if (editorConfig.isValidConfiguration()) {
                 m_editorConfigurations.add(editorConfig);
             }
@@ -218,6 +218,23 @@ public class CmsWorkplaceEditorManager {
             }
         }
         return configurableEditors;
+    }
+
+    /**
+     * Gets the editor configuration with the given name.<p>
+     * 
+     * @param name the name of the editor configuration
+     *  
+     * @return the editor configuration 
+     */
+    public CmsWorkplaceEditorConfiguration getEditorConfiguration(String name) {
+
+        for (CmsWorkplaceEditorConfiguration config : m_editorConfigurations) {
+            if (name.equals(config.getName())) {
+                return config;
+            }
+        }
+        return null;
     }
 
     /**

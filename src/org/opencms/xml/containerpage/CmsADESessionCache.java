@@ -54,6 +54,9 @@ public final class CmsADESessionCache {
     /** The container elements. */
     private Map<String, CmsContainerElementBean> m_containerElements;
 
+    /** Flag which controls whether small elements should be shown. */
+    private boolean m_isEditSmallElements;
+
     /** The ADE recent list. */
     private List<CmsContainerElementBean> m_recentLists;
 
@@ -140,6 +143,17 @@ public final class CmsADESessionCache {
         return new TemplateBean("", "");
     }
 
+    /** 
+     * Returns true if, in this session, a newly opened container page editor window should display edit points for 
+     * small elements initially.<p>
+     * 
+     * @return true if small elements should be editable initially 
+     */
+    public boolean isEditSmallElements() {
+
+        return m_isEditSmallElements;
+    }
+
     /**
      * Returns the tool-bar visibility.<p>
      *
@@ -173,6 +187,16 @@ public final class CmsADESessionCache {
         for (CmsContainerElementBean element : m_recentLists) {
             setCacheContainerElement(element.editorHash(), element);
         }
+    }
+
+    /** 
+     * Sets the default initial setting for small element editability in this session.<p>
+     * 
+     * @param editSmallElements true if small elements should be initially editable 
+     */
+    public void setEditSmallElements(boolean editSmallElements) {
+
+        m_isEditSmallElements = editSmallElements;
     }
 
     /**

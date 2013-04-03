@@ -29,11 +29,13 @@ package org.opencms.ade.containerpage.client;
 
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
 import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElementPanel;
+import org.opencms.ade.containerpage.client.ui.CmsSmallElementsHandler;
 import org.opencms.ade.containerpage.client.ui.groupeditor.CmsInheritanceContainerEditor;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.publish.client.CmsPublishDialog;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.CmsGwtConstants;
 import org.opencms.gwt.client.dnd.I_CmsDNDController;
 import org.opencms.gwt.client.ui.A_CmsToolbarHandler;
 import org.opencms.gwt.client.ui.A_CmsToolbarMenu;
@@ -54,6 +56,8 @@ import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuEntry;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler;
+import org.opencms.gwt.client.ui.css.I_CmsInputCss;
+import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsMultiCheckBox;
@@ -421,28 +425,11 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     }
 
     /**
-     * Enables the 'show small elements' button.<p>
-     */
-    public void enableShowSmallElements() {
-
-        m_editor.getSelectionButtonMenu().activate();
-    }
-
-    /**
      * Enables the toolbar buttons.<p>
      */
     public void enableToolbarButtons() {
 
         m_editor.enableToolbarButtons(m_controller.hasPageChanged());
-    }
-
-    /**
-     * Enlarges small elements on the page.<p>
-     */
-    public void enlargeSmallElements() {
-
-        m_editor.setEnlargeSmallElements(true);
-
     }
 
     /**
@@ -913,16 +900,6 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     }
 
     /**
-     * Sets the display mode for small elements.<p>
-     * 
-     * @param enabled if true, small elements will be enlarged and editable
-     */
-    public void setEnlargeSmallElements(boolean enabled) {
-
-        m_editor.setEnlargeSmallElements(enabled);
-    }
-
-    /**
      * Shows resource information for a given element.<p>
      * 
      * @param element the element for which to show the information 
@@ -1021,8 +998,10 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     @Override
     public I_CmsContextMenuEntry transformSingleEntry(CmsUUID structureId, CmsContextMenuEntryBean menuEntryBean) {
 
-        if (menuEntryBean.getName().equals("templatecontexts")) {
+        if (menuEntryBean.getName().equals(CmsGwtConstants.ACTION_TEMPLATECONTEXTS)) {
             return createTemplateContextSelectionMenuEntry(structureId);
+        } else if (menuEntryBean.getName().equals(CmsGwtConstants.ACTION_EDITSMALLELEMENTS)) {
+            return createToggleEditSmallElementsMenuEntry();
         } else {
             return super.transformSingleEntry(structureId, menuEntryBean);
         }
@@ -1075,8 +1054,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                     I_CmsContextMenuHandler handler,
                     CmsContextMenuEntryBean bean) {
 
-                    // TODO: Auto-generated method stub
-
+                    // do nothing 
                 }
 
                 public A_CmsContextMenuItem getItemWidget(
@@ -1128,6 +1106,51 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         } else {
             return null;
         }
+    }
+
+    /** 
+     * Creates the context menu entry for enabling or disabling editing of small elements.<p>
+     * 
+     * @return the created context menu entry 
+     */
+    protected I_CmsContextMenuEntry createToggleEditSmallElementsMenuEntry() {
+
+        final CmsContainerpageController controller = CmsContainerpageController.get();
+        final CmsSmallElementsHandler smallElementsHandler = controller.getSmallElementsHandler();
+        final boolean isActive = smallElementsHandler.areSmallElementsEditable();
+        CmsContextMenuEntryBean entryBean = new CmsContextMenuEntryBean();
+        String baseMessage = Messages.get().key(Messages.GUI_EDIT_SMALL_ELEMENTS_0);
+        String msgEdit = baseMessage;
+        String msgDisable = baseMessage;
+        String label = isActive ? msgDisable : msgEdit;
+        entryBean.setLabel(label);
+        entryBean.setActive(smallElementsHandler.hasSmallElements());
+        entryBean.setVisible(true);
+        I_CmsInputCss inputCss = I_CmsInputLayoutBundle.INSTANCE.inputCss();
+        entryBean.setIconClass(isActive ? inputCss.checkBoxImageChecked() : inputCss.checkBoxImageUnchecked());
+        I_CmsContextMenuCommand command = new I_CmsContextMenuCommand() {
+
+            public void execute(CmsUUID structureId, I_CmsContextMenuHandler handler, CmsContextMenuEntryBean bean) {
+
+                smallElementsHandler.setEditSmallElements(!isActive, true);
+            }
+
+            public A_CmsContextMenuItem getItemWidget(
+                CmsUUID structureId,
+                I_CmsContextMenuHandler handler,
+                CmsContextMenuEntryBean bean) {
+
+                return null;
+            }
+
+            public boolean hasItemWidget() {
+
+                return false;
+            }
+        };
+        CmsContextMenuEntry entry = new CmsContextMenuEntry(this, null, command);
+        entry.setBean(entryBean);
+        return entry;
     }
 
     /**
@@ -1240,7 +1263,10 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
             }
         });
         CmsContextMenuEntryBean bean = new CmsContextMenuEntryBean();
-        bean.setLabel((Objects.equal(value, currentContext) ? "*" : "") + label);
+        bean.setLabel(label);
+        boolean isActive = Objects.equal(value, currentContext);
+        I_CmsInputCss inputCss = I_CmsInputLayoutBundle.INSTANCE.inputCss();
+        bean.setIconClass(isActive ? inputCss.checkBoxImageChecked() : "");
         bean.setActive(true);
         bean.setVisible(true);
         menuEntry.setBean(bean);

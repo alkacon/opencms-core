@@ -37,6 +37,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResource.CmsResourceUndoMode;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypePlain;
@@ -57,6 +58,7 @@ import org.opencms.gwt.shared.CmsPrincipalBean;
 import org.opencms.gwt.shared.CmsRenameInfoBean;
 import org.opencms.gwt.shared.CmsReplaceInfo;
 import org.opencms.gwt.shared.CmsResourceStatusBean;
+import org.opencms.gwt.shared.CmsResourceStatusRelationBean;
 import org.opencms.gwt.shared.CmsRestoreInfoBean;
 import org.opencms.gwt.shared.CmsVfsEntryBean;
 import org.opencms.gwt.shared.alias.CmsAliasBean;
@@ -691,6 +693,40 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
                     localeStrings.add(l.toString());
                 }
                 result.setLocales(localeStrings);
+            }
+
+            List<CmsRelation> relations = cms.readRelations(CmsRelationFilter.relationsToStructureId(resource.getStructureId()));
+            Map<CmsUUID, CmsResource> relationSources = new HashMap<CmsUUID, CmsResource>();
+
+            // find all distinct relation sources 
+            for (CmsRelation relation : relations) {
+                CmsResource source = relation.getSource(cms, CmsResourceFilter.IGNORE_EXPIRATION);
+                relationSources.put(source.getStructureId(), source);
+            }
+
+            for (CmsResource source : relationSources.values()) {
+                try {
+                    CmsListInfoBean sourceBean = getPageInfo(source);
+                    String link = null;
+                    try {
+                        link = OpenCms.getLinkManager().substituteLink(cms, source);
+                    } catch (Exception e) {
+                        LOG.warn(e.getLocalizedMessage(), e);
+                    }
+                    CmsResourceStatusRelationBean relationBean = new CmsResourceStatusRelationBean(
+                        sourceBean,
+                        link,
+                        source.getStructureId());
+                    if (CmsResourceTypeXmlContent.isXmlContent(source)) {
+                        relationBean.setIsXmlContent(true);
+                    }
+                    String sitePath = cms.getSitePath(source);
+                    relationBean.setSitePath(sitePath);
+                    result.getRelationSources().add(relationBean);
+                } catch (CmsVfsResourceNotFoundException notfound) {
+                    LOG.error(notfound.getLocalizedMessage(), notfound);
+                    continue;
+                }
             }
             return result;
         } catch (Throwable e) {

@@ -73,9 +73,6 @@ public final class Messages {
     public static final String GUI_BUTTON_EDITFAVORITES_TEXT_0 = "GUI_BUTTON_EDITFAVORITES_TEXT_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_BUTTON_ELEMENT_EDIT_0 = "GUI_BUTTON_ELEMENT_EDIT_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_BUTTON_REMOVE_TEXT_0 = "GUI_BUTTON_REMOVE_TEXT_0";
 
     /** Message constant for key in the resource bundle. */
@@ -122,6 +119,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_SAVE_QUESTION_0 = "GUI_DIALOG_SAVE_QUESTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDIT_SMALL_ELEMENTS_0 = "GUI_EDIT_SMALL_ELEMENTS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_GROUPCONTAINER_CAPTION_0 = "GUI_GROUPCONTAINER_CAPTION_0";

@@ -48,7 +48,7 @@ import java.util.List;
 public class CmsSiteDialogObject {
 
     /** The aliases. */
-    private List<CmsSiteMatcher> m_aliases = new ArrayList<CmsSiteMatcher>();
+    private List<String> m_aliases = new ArrayList<String>();
 
     /** The URI used as error page. */
     private String m_errorPage;
@@ -126,7 +126,9 @@ public class CmsSiteDialogObject {
                 m_exclusiveError = site.isExclusiveError();
             }
             for (CmsSiteMatcher aMatcher : site.getAliases()) {
-                m_aliases.add((CmsSiteMatcher)aMatcher.clone());
+                if ((aMatcher != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(aMatcher.getUrl())) {
+                    m_aliases.add(aMatcher.getUrl());
+                }
             }
             m_position = site.getPosition();
             m_errorPage = site.getErrorPage();
@@ -178,7 +180,7 @@ public class CmsSiteDialogObject {
      *
      * @return the aliases
      */
-    public List<CmsSiteMatcher> getAliases() {
+    public List<String> getAliases() {
 
         return m_aliases;
     }
@@ -348,11 +350,21 @@ public class CmsSiteDialogObject {
     }
 
     /**
+     * Returns the secureServer.<p>
+     *
+     * @return the secureServer
+     */
+    public boolean isSecureServer() {
+
+        return m_secureServer;
+    }
+
+    /**
      * Sets the aliases.<p>
      *
      * @param aliases the aliases to set
      */
-    public void setAliases(List<CmsSiteMatcher> aliases) {
+    public void setAliases(List<String> aliases) {
 
         m_aliases = aliases;
     }
@@ -512,6 +524,10 @@ public class CmsSiteDialogObject {
             uuid = (CmsUUID)site.getSiteRootUUID().clone();
         }
         String errorPage = CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_errorPage) ? m_errorPage : null;
+        List<CmsSiteMatcher> aliases = new ArrayList<CmsSiteMatcher>();
+        for (String alias : m_aliases) {
+            aliases.add(new CmsSiteMatcher(alias));
+        }
         return new CmsSite(
             m_siteRoot,
             uuid,
@@ -522,7 +538,7 @@ public class CmsSiteDialogObject {
             matcher,
             m_exclusiveUrl,
             m_exclusiveError,
-            m_aliases);
+            aliases);
     }
 
     /**

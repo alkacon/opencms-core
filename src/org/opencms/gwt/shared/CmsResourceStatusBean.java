@@ -29,6 +29,7 @@ package org.opencms.gwt.shared;
 
 import org.opencms.db.CmsResourceState;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -71,6 +72,9 @@ public class CmsResourceStatusBean implements IsSerializable {
 
     /** Permissions. */
     private String m_permissions;
+
+    /** List of beans representing resources which have relations toward this resource. */
+    private ArrayList<CmsResourceStatusRelationBean> m_relationSources = new ArrayList<CmsResourceStatusRelationBean>();
 
     /** Resource type. */
     private String m_resourceType;
@@ -185,6 +189,16 @@ public class CmsResourceStatusBean implements IsSerializable {
     public String getPermissions() {
 
         return m_permissions;
+    }
+
+    /**
+     * Gets the list info beans for the source resources of relations pointing to this resource.<p>
+     * 
+     * @return the relation source list info bean 
+     */
+    public ArrayList<CmsResourceStatusRelationBean> getRelationSources() {
+
+        return m_relationSources;
     }
 
     /**

@@ -124,6 +124,9 @@ import com.google.common.collect.Sets;
  */
 public class CmsContainerpageService extends CmsGwtService implements I_CmsContainerpageService {
 
+    /** Additional info key for storing the "edit small elements" setting on the user. */
+    public static final String ADDINFO_EDIT_SMALL_ELEMENTS = "EDIT_SMALL_ELEMENTS";
+
     /** Static reference to the log. */
     private static final Log LOG = CmsLog.getLog(CmsContainerpageService.class);
 
@@ -560,7 +563,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             CmsResource containerPage = getContainerpage(cms);
             TemplateBean templateBean = (TemplateBean)getRequest().getAttribute(
                 CmsTemplateContextManager.ATTR_TEMPLATE_BEAN);
-            CmsADESessionCache.getCache(getRequest(), cms).setTemplateBean(containerPage.getRootPath(), templateBean);
+            CmsADESessionCache sessionCache = CmsADESessionCache.getCache(getRequest(), cms);
+            sessionCache.setTemplateBean(containerPage.getRootPath(), templateBean);
             long lastModified = containerPage.getDateLastModified();
             String cntPageUri = cms.getSitePath(containerPage);
             String editorUri = OpenCms.getWorkplaceManager().getEditorHandler().getEditorUri(
@@ -581,7 +585,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 getLockInfo(containerPage),
                 cms.getRequestContext().getLocale().toString(),
                 useClassicEditor,
-                info);
+                info,
+                isEditSmallElements(request, cms));
         } catch (Throwable e) {
             error(e);
         }
@@ -725,6 +730,21 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             OpenCms.getADEManager().saveRecentList(getCmsObject(), getCachedElements(clientIds));
         } catch (Throwable e) {
             error(e);
+        }
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#setEditSmallElements(boolean)
+     */
+    public void setEditSmallElements(boolean editSmallElements) throws CmsRpcException {
+
+        try {
+            CmsObject cms = getCmsObject();
+            CmsUser user = cms.getRequestContext().getCurrentUser();
+            user.getAdditionalInfo().put(ADDINFO_EDIT_SMALL_ELEMENTS, "" + editSmallElements);
+            cms.writeUser(user);
+        } catch (Throwable t) {
+            error(t);
         }
     }
 
@@ -1353,6 +1373,24 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         element.setSitePath(cms.getSitePath(groupContainerFile));
         element.setResourceType(CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME);
         return CmsPair.create(element, deletionCandidateStatuses);
+    }
+
+    /** 
+     * Checks if small elements in a container page should be initially editable.<p>
+     * 
+     * @param request the current request 
+     * @param cms the current CMS context 
+     * @return true if small elements should be initially editable 
+     */
+    private boolean isEditSmallElements(HttpServletRequest request, CmsObject cms) {
+
+        CmsUser user = cms.getRequestContext().getCurrentUser();
+        String editSmallElementsStr = (String)(user.getAdditionalInfo().get(ADDINFO_EDIT_SMALL_ELEMENTS));
+        if (editSmallElementsStr == null) {
+            return true;
+        } else {
+            return Boolean.valueOf(editSmallElementsStr).booleanValue();
+        }
     }
 
     /**

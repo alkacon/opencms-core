@@ -36,6 +36,7 @@ import org.opencms.ade.sitemap.client.ui.CmsCreatableListItem.NewEntryType;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapLayoutBundle;
 import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.CmsGwtConstants;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
@@ -269,7 +270,7 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
             });
             widget.addButtonToFront(button);
         }
-        widget.setIcon(CmsIconUtil.getResourceIconClasses("containerpage", false));
+        widget.setIcon(CmsIconUtil.getResourceIconClasses(CmsGwtConstants.TYPE_CONTAINERPAGE, false));
         CmsCreatableListItem listItem = new CmsCreatableListItem(widget, typeInfo, NewEntryType.regular);
         listItem.initMoveHandle(CmsSitemapView.getInstance().getTree().getDnDHandler(), true);
         return listItem;

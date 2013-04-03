@@ -37,6 +37,11 @@ import java.util.List;
 public interface I_CmsContextMenuEntry {
 
     /**
+     * Executes the context menu action.<p>
+     */
+    void execute();
+
+    /**
      * Generates the context menu item.<p>
      * 
      * @return the context menu item
@@ -44,9 +49,11 @@ public interface I_CmsContextMenuEntry {
     A_CmsContextMenuItem generateMenuItem();
 
     /**
-     * Executes the context menu action.<p>
+     * Returns a CSS class which should be used to display an icon, or null if no icon is required.<p>
+     * 
+     * @return the CSS class for the icon 
      */
-    void execute();
+    String getIconClass();
 
     /**
      * Returns the JSP path for the command generation.<p>

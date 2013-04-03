@@ -56,6 +56,9 @@ public final class CmsCntPageData implements IsSerializable {
     /** The detail structure id, if available. */
     private CmsUUID m_detailId;
 
+    /** Flag which determines whether small elements should be editable initially. */
+    private boolean m_editSmallElementsInitially;
+
     /** The date at which the container page was last modified. */
     private long m_lastModified;
 
@@ -80,11 +83,11 @@ public final class CmsCntPageData implements IsSerializable {
     /** The current site path. */
     private String m_sitePath;
 
-    /** Flag indicating to use the classic XmlContent editor. */
-    private boolean m_useClassicEditor;
-
     /** The template context information. */
     private CmsTemplateContextInfo m_templateContextInfo;
+
+    /** Flag indicating to use the classic XmlContent editor. */
+    private boolean m_useClassicEditor;
 
     /**
      * Constructor.<p>
@@ -101,6 +104,7 @@ public final class CmsCntPageData implements IsSerializable {
      * @param locale the content locale
      * @param useClassicEditor <code>true</code> to use the classic XmlContent editor
      * @param contextInfo the template context information 
+     * @param showSmallElementsInitially flag which controls whether small elements should be shown initially 
      */
     public CmsCntPageData(
         String cntPageUri,
@@ -114,7 +118,8 @@ public final class CmsCntPageData implements IsSerializable {
         String lockInfo,
         String locale,
         boolean useClassicEditor,
-        CmsTemplateContextInfo contextInfo) {
+        CmsTemplateContextInfo contextInfo,
+        boolean showSmallElementsInitially) {
 
         m_cntPageUri = cntPageUri;
         m_noEditReason = noEditReason;
@@ -128,6 +133,7 @@ public final class CmsCntPageData implements IsSerializable {
         m_detailId = detailId;
         m_useClassicEditor = useClassicEditor;
         m_templateContextInfo = contextInfo;
+        m_editSmallElementsInitially = showSmallElementsInitially;
     }
 
     /**
@@ -266,6 +272,16 @@ public final class CmsCntPageData implements IsSerializable {
     public CmsTemplateContextInfo getTemplateContextInfo() {
 
         return m_templateContextInfo;
+    }
+
+    /** 
+     * Returns true if small elements should be editable initially.<p>
+     * 
+     * @return true if small elements should be editable initially
+     */
+    public boolean isEditSmallElementsInitially() {
+
+        return m_editSmallElementsInitially;
     }
 
     /**

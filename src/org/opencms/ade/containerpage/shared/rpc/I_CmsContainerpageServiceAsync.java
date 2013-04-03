@@ -279,6 +279,15 @@ public interface I_CmsContainerpageServiceAsync {
      */
     void saveRecentList(List<String> clientIds, AsyncCallback<Void> callback);
 
+    /** 
+     * Saves the default value for small element editability on page load.<p>
+     * 
+     * @param editSmallElements the default value 
+     * 
+     * @param callback the callback for the response 
+     */
+    void setEditSmallElements(boolean editSmallElements, AsyncCallback<Void> callback);
+
     /**
      * Generates request builder to make a synchronized RPC call saving the container-page.<p>
      * 

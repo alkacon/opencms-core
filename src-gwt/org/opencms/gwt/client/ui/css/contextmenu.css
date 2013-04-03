@@ -42,7 +42,17 @@ div.cmsMenuBar { /* the outer menu bar */
 	text-align: left;
 }
 .cmsMenuBar .cmsMenuItem .label{
-	margin: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	margin-top: 0px; 
+	
+	margin-left: 16px; 
+}
+
+.cmsMenuItem .iconBox { 
+	float: left;
+	width: 24px; 
+	padding-top: 4px;
 }
 
 .cmsMenuBar .cmsMenuItem .html-face {
@@ -92,3 +102,7 @@ div.menuInfoLabel {
 	border-top-left-radius: 8px;
 	border-top-right-radius: 8px;
 }
+
+
+
+
