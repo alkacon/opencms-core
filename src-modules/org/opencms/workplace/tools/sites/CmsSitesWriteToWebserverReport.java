@@ -43,13 +43,13 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * The apache action report.<p>
+ * The write to web server report.<p>
  * 
  * @since 9.0.0
  */
-public class CmsSitesScriptReport extends A_CmsListReport {
+public class CmsSitesWriteToWebserverReport extends A_CmsListReport {
 
-    /** The script to be executed after updating the virtual host configurations, e.g. "/etc/apache2/reload.sh". */
+    /** The script to be executed after updating the virtual host configurations. */
     private String m_paramConsolescript;
 
     /** The target path to store the virtual host files. */
@@ -66,7 +66,7 @@ public class CmsSitesScriptReport extends A_CmsListReport {
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsSitesScriptReport(CmsJspActionElement jsp) {
+    public CmsSitesWriteToWebserverReport(CmsJspActionElement jsp) {
 
         super(jsp);
     }
@@ -78,7 +78,7 @@ public class CmsSitesScriptReport extends A_CmsListReport {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsSitesScriptReport(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsSitesWriteToWebserverReport(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
     }
@@ -131,7 +131,7 @@ public class CmsSitesScriptReport extends A_CmsListReport {
     public I_CmsReportThread initializeThread() {
 
         setParamCloseLink(CmsToolManager.linkForToolPath(getJsp(), "/sites/", new HashMap<String, String[]>()));
-        return new CmsSitesCreateVhostsThread(
+        return new CmsSitesWriteToWebserverThread(
             getCms(),
             getParamTargetpath(),
             getParamVhostsource(),

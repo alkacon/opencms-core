@@ -235,8 +235,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/sites/apache.jsp</source>
-			<destination>system/workplace/admin/sites/apache.jsp</destination>
+			<source>system/workplace/admin/sites/webserver.jsp</source>
+			<destination>system/workplace/admin/sites/webserver.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>8157855a-7cfe-11e2-a884-13f7e154c8f7</uuidstructure>
 			<uuidresource>8157855b-7cfe-11e2-a884-13f7e154c8f7</uuidresource>
@@ -248,11 +248,11 @@
 			<properties>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[%(key.GUI_SITE_APACHE_ADMIN_TOOL_HELP_0)]]></value>
+					<value><![CDATA[%(key.GUI_SITE_WEBSERVER_ADMIN_TOOL_HELP_0)]]></value>
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/sites/icons/big/apache.png]]></value>
+					<value><![CDATA[tools/sites/icons/big/webserver.png]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -264,15 +264,15 @@
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[%(key.GUI_SITE_APACHE_ADMIN_TOOL_NAME_0)]]></value>
+					<value><![CDATA[%(key.GUI_SITE_WEBSERVER_ADMIN_TOOL_NAME_0)]]></value>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Apache configuration]]></value>
+					<value><![CDATA[Webserver configuration]]></value>
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:sites=%(param.sites)&action=initial|path:/sites/apache]]></value>
+					<value><![CDATA[params:sites=%(param.sites)&action=initial|path:/sites/webserver]]></value>
 				</property>
 				<property>
 					<name>admintoolhandler-class</name>
@@ -718,8 +718,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/sites/icons/big/apache.png</source>
-			<destination>system/workplace/resources/tools/sites/icons/big/apache.png</destination>
+			<source>system/workplace/resources/tools/sites/icons/big/webserver.png</source>
+			<destination>system/workplace/resources/tools/sites/icons/big/webserver.png</destination>
 			<type>image</type>
 			<uuidstructure>e9216204-7cff-11e2-a884-13f7e154c8f7</uuidstructure>
 			<uuidresource>e9216205-7cff-11e2-a884-13f7e154c8f7</uuidresource>
@@ -731,7 +731,7 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[apache]]></value>
+					<value><![CDATA[webserver]]></value>
 				</property>
 				<property type="shared">
 					<name>image.size</name>

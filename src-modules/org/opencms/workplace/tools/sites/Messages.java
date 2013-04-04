@@ -77,10 +77,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SITE_ADMIN_TOOL_GROUP_0 = "GUI_SITE_ADMIN_TOOL_GROUP_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_SITE_APACHE_ADMIN_TOOL_HELP_0 = "GUI_SITE_APACHE_ADMIN_TOOL_HELP_0";
+    public static final String GUI_SITE_WEBSERVER_ADMIN_TOOL_HELP_0 = "GUI_SITE_WEBSERVER_ADMIN_TOOL_HELP_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_SITE_APACHE_ADMIN_TOOL_NAME_0 = "GUI_SITE_APACHE_ADMIN_TOOL_NAME_0";
+    public static final String GUI_SITE_WEBSERVER_ADMIN_TOOL_NAME_0 = "GUI_SITE_WEBSERVER_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITES_ADMIN_TOOL_GROUP_0 = "GUI_SITES_ADMIN_TOOL_GROUP_0";
@@ -92,7 +92,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SITES_ADMIN_TOOL_NAME_0 = "GUI_SITES_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_SITES_APACHE_TITLE_0 = "GUI_SITES_APACHE_TITLE_0";
+    public static final String GUI_SITES_WEBSERVER_TITLE_0 = "GUI_SITES_WEBSERVER_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITES_DETAIL_ALIASES_1 = "GUI_SITES_DETAIL_ALIASES_1";

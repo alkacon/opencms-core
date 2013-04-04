@@ -49,11 +49,11 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * A dialog that allows to write the sites configured in OpenCms
- * into a Apache virtual host configuration file, using a template.<p>
+ * into a web server configuration file, using a template.<p>
  * 
  * @since 9.0.0
  */
-public class CmsSitesApacheVhost extends CmsWidgetDialog {
+public class CmsSitesWriteToWebserver extends CmsWidgetDialog {
 
     /** The module name constant. */
     public static final String MODULE_NAME = "org.opencms.workplace.tools.sites";
@@ -85,7 +85,7 @@ public class CmsSitesApacheVhost extends CmsWidgetDialog {
     /** The default parameter value. */
     private static final String DEFAULT_VHOST_SOURCE = "/etc/apache2/sites-available/vhost.template";
 
-    /** The script to be executed after updating the virtual host configurations, e.g. "/etc/apache2/reload.sh". */
+    /** The script to be executed after updating the web server configurations. */
     private String m_consolescript;
 
     /** The target path to store the virtual host files. */
@@ -102,7 +102,7 @@ public class CmsSitesApacheVhost extends CmsWidgetDialog {
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsSitesApacheVhost(CmsJspActionElement jsp) {
+    public CmsSitesWriteToWebserver(CmsJspActionElement jsp) {
 
         super(jsp);
     }
@@ -114,7 +114,7 @@ public class CmsSitesApacheVhost extends CmsWidgetDialog {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsSitesApacheVhost(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsSitesWriteToWebserver(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
     }
@@ -224,7 +224,7 @@ public class CmsSitesApacheVhost extends CmsWidgetDialog {
         StringBuffer result = new StringBuffer(1024);
         result.append(createWidgetTableStart());
         result.append(createWidgetErrorHeader());
-        result.append(dialogBlockStart(Messages.get().getBundle().key(Messages.GUI_SITES_APACHE_TITLE_0)));
+        result.append(dialogBlockStart(Messages.get().getBundle().key(Messages.GUI_SITES_WEBSERVER_TITLE_0)));
         result.append(createWidgetTableStart());
         result.append(createDialogRowsHtml(0, 3));
         result.append(createWidgetTableEnd());
