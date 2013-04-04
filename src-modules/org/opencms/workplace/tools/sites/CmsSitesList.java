@@ -131,9 +131,6 @@ public class CmsSitesList extends A_CmsListDialog {
     /** Path to the edit icon. */
     private static final String LIST_ICON_EDIT = "tools/sites/icons/small/site-edit.png";
 
-    /** The path of the remove icon. */
-    private static final String LIST_ICON_REMOVE = "tools/sites/icons/small/site-remove.png";
-
     /** Identifier for the remove multi action. */
     private static final String LIST_MACTION_REMOVE = "rma";
 
@@ -321,7 +318,7 @@ public class CmsSitesList extends A_CmsListDialog {
         CmsListDirectAction removeAction = new CmsListDirectAction(LIST_ACTION_REMOVE);
         removeAction.setName(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_REMOVE_NAME_0));
         removeAction.setHelpText(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_REMOVE_HELP_0));
-        removeAction.setIconPath(LIST_ICON_REMOVE);
+        removeAction.setIconPath(ICON_DELETE);
         removeAction.setConfirmationMessage(Messages.get().container(Messages.GUI_SITES_LIST_MACTION_REMOVE_CONF_0));
         removeCol.addDirectAction(removeAction);
         metadata.addColumn(removeCol);

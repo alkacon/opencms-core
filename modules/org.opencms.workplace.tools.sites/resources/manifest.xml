@@ -923,30 +923,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/sites/icons/small/site-remove.png</source>
-			<destination>system/workplace/resources/tools/sites/icons/small/site-remove.png</destination>
-			<type>image</type>
-			<uuidstructure>561738d5-7b62-11e2-b370-13f7e154c8f7</uuidstructure>
-			<uuidresource>561738d6-7b62-11e2-b370-13f7e154c8f7</uuidresource>
-			<datelastmodified>Wed, 20 Feb 2013 13:35:05 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 20 Feb 2013 13:35:05 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[site_remove]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:20,h:20]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>system/workplace/resources/tools/sites/icons/small/sites.png</source>
 			<destination>system/workplace/resources/tools/sites/icons/small/sites.png</destination>
 			<type>image</type>
