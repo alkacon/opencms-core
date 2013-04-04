@@ -31,30 +31,16 @@
 
 package org.opencms.workplace.tools.sites;
 
-import org.opencms.file.CmsObject;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.OpenCms;
-import org.opencms.report.A_CmsReportThread;
-import org.opencms.report.I_CmsReport;
 import org.opencms.report.I_CmsReportThread;
-import org.opencms.site.CmsSite;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.list.A_CmsListReport;
 import org.opencms.workplace.tools.CmsToolManager;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.HashMap;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
-
-import org.apache.commons.io.FileUtils;
 
 /**
  * The apache action report.<p>
@@ -62,157 +48,6 @@ import org.apache.commons.io.FileUtils;
  * @since 9.0.0
  */
 public class CmsSitesScriptReport extends A_CmsListReport {
-
-    /**
-     * Executes a script file.<p>
-     * 
-     * @since 9.0.0
-     */
-    private class CmsSitesActionThread extends A_CmsReportThread {
-
-        /** Constant for the "http" port. */
-        private static final int PORT_HTTP = 80;
-
-        /** Constant for the "https" port. */
-        private static final int PORT_HTTPS = 443;
-
-        /** The placeholder string searched and replaced with the server's name in the virtual host template file. */
-        private static final String SERVER_NAME_PLACE_HOLDER = "SERVER_NAME_PLACE_HOLDER";
-
-        /** The target path. */
-        private String m_targetPath;
-
-        /**
-         * Public constructor.<p>
-         * 
-         * @param cms the cms object
-         */
-        protected CmsSitesActionThread(CmsObject cms) {
-
-            super(cms, "sites-apache-action");
-            m_targetPath = getParamTargetpath().endsWith(File.separator) ? getParamTargetpath() : getParamTargetpath()
-                + File.separator;
-            setParamCloseLink(CmsToolManager.linkForToolPath(getJsp(), "/sites/", new HashMap<String, String[]>()));
-            initHtmlReport(cms.getRequestContext().getLocale());
-        }
-
-        /**
-         * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
-         */
-        @Override
-        public String getReportUpdate() {
-
-            return getReport().getReportUpdate();
-        }
-
-        /**
-         * @see java.lang.Thread#run()
-         */
-        @Override
-        public void run() {
-
-            try {
-                deleteAllOpenCmsVhosts();
-                createAllOpenCmsVhosts();
-                executeScript();
-            } catch (Exception e) {
-                getReport().println(e);
-            }
-        }
-
-        /**
-         * Creates the new virtual host configuration files from the given template file.<p>
-         * 
-         * @throws IOException if something goes wrong
-         */
-        private void createAllOpenCmsVhosts() throws IOException {
-
-            String template = FileUtils.readFileToString(new File(getParamVhostsource()));
-            List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(getCms(), true);
-            for (CmsSite site : sites) {
-                if (site.getSiteMatcher() != null) {
-                    getReport().println(
-                        Messages.get().container(Messages.RPT_CREATING_VHOST_FOR_SITE_1, site),
-                        I_CmsReport.FORMAT_OK);
-                    String filename = generateVhostFilename(site);
-                    File newFile = new File(filename);
-                    if (!newFile.exists()) {
-                        newFile.createNewFile();
-                    }
-                    String conf = template.replaceAll(SERVER_NAME_PLACE_HOLDER, site.getSiteMatcher().getServerName());
-                    FileUtils.writeStringToFile(newFile, conf);
-                }
-            }
-        }
-
-        /**
-         * Deletes all OpenCms generated virtual host configuration files.<p>
-         */
-        private void deleteAllOpenCmsVhosts() {
-
-            File file = new File(m_targetPath);
-            if (file.exists() && file.isDirectory()) {
-                File[] vhostFiles = file.listFiles(new FilenameFilter() {
-
-                    /**
-                     * @see java.io.FilenameFilter#accept(java.io.File, java.lang.String)
-                     */
-                    public boolean accept(File dir, String name) {
-
-                        if (name.startsWith(getParamVhostprefix())) {
-                            return true;
-                        }
-                        return false;
-                    }
-                });
-                for (File f : vhostFiles) {
-                    getReport().println(
-                        Messages.get().container(Messages.RPT_DELETING_FILE_1, f),
-                        I_CmsReport.FORMAT_OK);
-                    f.delete();
-                }
-            }
-        }
-
-        /**
-         * Executes the console script.<p>
-         * 
-         * @throws IOException if something goes wrong
-         * @throws InterruptedException if something goes wrong
-         */
-        private void executeScript() throws IOException, InterruptedException {
-
-            File script = new File(getParamConsolescript());
-            ProcessBuilder pb = new ProcessBuilder(script.getAbsolutePath());
-            pb.directory(new File(script.getParent()));
-            Process pr = pb.start();
-            pr.waitFor();
-            BufferedReader buf = new BufferedReader(new InputStreamReader(pr.getInputStream()));
-            while (buf.ready()) {
-                String line = buf.readLine();
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(line)) {
-                    getReport().println(
-                        Messages.get().container(Messages.RPT_OUTPUT_CONSOLE_1, buf.readLine()),
-                        I_CmsReport.FORMAT_OK);
-                }
-            }
-        }
-
-        /**
-         * Generates the file name for the virtual host configuration of the given site.<p>
-         * 
-         * @param site the site to get the virtual host configuration file name for 
-         * 
-         * @return the file name for the virtual host configuration of the given site
-         */
-        private String generateVhostFilename(CmsSite site) {
-
-            int port = site.getSiteMatcher().getServerPort();
-            String serverName = site.getSiteMatcher().getServerName();
-            String portPart = ((port != PORT_HTTP) && (port != PORT_HTTPS)) ? "_" + port : "";
-            return m_targetPath + getParamVhostprefix() + "_" + serverName + portPart;
-        }
-    }
 
     /** The script to be executed after updating the virtual host configurations, e.g. "/etc/apache2/reload.sh". */
     private String m_paramConsolescript;
@@ -295,7 +130,13 @@ public class CmsSitesScriptReport extends A_CmsListReport {
     @Override
     public I_CmsReportThread initializeThread() {
 
-        return new CmsSitesActionThread(getCms());
+        setParamCloseLink(CmsToolManager.linkForToolPath(getJsp(), "/sites/", new HashMap<String, String[]>()));
+        return new CmsSitesCreateVhostsThread(
+            getCms(),
+            getParamTargetpath(),
+            getParamVhostsource(),
+            getParamConsolescript(),
+            getParamVhostprefix());
     }
 
     /**
