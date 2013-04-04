@@ -210,7 +210,7 @@ public class CmsSitesWriteToWebserver extends CmsWidgetDialog {
      *
      * @param webserverscript the web server script to set
      */
-    public void setWebservercript(String webserverscript) {
+    public void setWebserverscript(String webserverscript) {
 
         m_webserverscript = webserverscript;
     }
