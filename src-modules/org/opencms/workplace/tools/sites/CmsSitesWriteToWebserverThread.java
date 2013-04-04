@@ -135,10 +135,10 @@ public class CmsSitesWriteToWebserverThread extends A_CmsReportThread {
         List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(getCms(), true);
         for (CmsSite site : sites) {
             if (site.getSiteMatcher() != null) {
-                getReport().println(
-                    Messages.get().container(Messages.RPT_CREATING_CONFIG_FOR_SITE_1, site),
-                    I_CmsReport.FORMAT_OK);
                 String filename = generateWebserverConfigFilename(site);
+                getReport().println(
+                    Messages.get().container(Messages.RPT_CREATING_CONFIG_FOR_SITE_2, filename, site),
+                    I_CmsReport.FORMAT_OK);
                 File newFile = new File(filename);
                 if (!newFile.exists()) {
                     newFile.createNewFile();

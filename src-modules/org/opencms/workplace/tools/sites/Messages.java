@@ -215,7 +215,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SITES_WEBSERVER_TITLE_0 = "GUI_SITES_WEBSERVER_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String RPT_CREATING_CONFIG_FOR_SITE_1 = "RPT_CREATING_CONFIG_FOR_SITE_1";
+    public static final String RPT_CREATING_CONFIG_FOR_SITE_2 = "RPT_CREATING_CONFIG_FOR_SITE_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_DELETING_FILE_1 = "RPT_DELETING_FILE_1";
