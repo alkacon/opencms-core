@@ -60,7 +60,7 @@ public class CmsSitesWriteToWebserverThread extends A_CmsReportThread {
     /** Constant for the "https" port. */
     private static final int PORT_HTTPS = 443;
 
-    /** The placeholder string searched and replaced with the server's name in the virtual host template file. */
+    /** The placeholder string searched and replaced with the server's name in the web server's template file. */
     private static final String SERVER_NAME_PLACE_HOLDER = "SERVER_NAME_PLACE_HOLDER";
 
     /** The file path. */
@@ -116,8 +116,8 @@ public class CmsSitesWriteToWebserverThread extends A_CmsReportThread {
     public void run() {
 
         try {
-            deleteAllOpenCmsVhosts(m_filePrefix);
-            createAllOpenCmsVhosts();
+            deleteAllWebserverConfigs(m_filePrefix);
+            createAllWebserverConfigs();
             executeScript();
         } catch (Exception e) {
             getReport().println(e);
@@ -125,20 +125,20 @@ public class CmsSitesWriteToWebserverThread extends A_CmsReportThread {
     }
 
     /**
-     * Creates the new virtual host configuration files from the given template file.<p>
+     * Creates the new web server configuration files from the given template file.<p>
      * 
      * @throws IOException if something goes wrong
      */
-    private void createAllOpenCmsVhosts() throws IOException {
+    private void createAllWebserverConfigs() throws IOException {
 
         String template = FileUtils.readFileToString(new File(m_templatePath));
         List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(getCms(), true);
         for (CmsSite site : sites) {
             if (site.getSiteMatcher() != null) {
                 getReport().println(
-                    Messages.get().container(Messages.RPT_CREATING_VHOST_FOR_SITE_1, site),
+                    Messages.get().container(Messages.RPT_CREATING_CONFIG_FOR_SITE_1, site),
                     I_CmsReport.FORMAT_OK);
-                String filename = generateVhostFilename(site);
+                String filename = generateWebserverConfigFilename(site);
                 File newFile = new File(filename);
                 if (!newFile.exists()) {
                     newFile.createNewFile();
@@ -150,13 +150,13 @@ public class CmsSitesWriteToWebserverThread extends A_CmsReportThread {
     }
 
     /**
-     * Deletes all OpenCms generated virtual host configuration files.<p>
+     * Deletes all web server's configuration files with the given prefix.<p>
      */
-    private void deleteAllOpenCmsVhosts(final String prefix) {
+    private void deleteAllWebserverConfigs(final String prefix) {
 
         File file = new File(m_targetPath);
         if (file.exists() && file.isDirectory()) {
-            File[] vhostFiles = file.listFiles(new FilenameFilter() {
+            File[] configFiles = file.listFiles(new FilenameFilter() {
 
                 /**
                  * @see java.io.FilenameFilter#accept(java.io.File, java.lang.String)
@@ -169,7 +169,7 @@ public class CmsSitesWriteToWebserverThread extends A_CmsReportThread {
                     return false;
                 }
             });
-            for (File f : vhostFiles) {
+            for (File f : configFiles) {
                 getReport().println(Messages.get().container(Messages.RPT_DELETING_FILE_1, f), I_CmsReport.FORMAT_OK);
                 f.delete();
             }
@@ -201,13 +201,13 @@ public class CmsSitesWriteToWebserverThread extends A_CmsReportThread {
     }
 
     /**
-     * Generates the file name for the virtual host configuration of the given site.<p>
+     * Generates the web server configuration filename for the given site.<p>
      * 
-     * @param site the site to get the virtual host configuration file name for 
+     * @param site the site to get the web server configuration filename for 
      * 
-     * @return the file name for the virtual host configuration of the given site
+     * @return the web server configuration filename
      */
-    private String generateVhostFilename(CmsSite site) {
+    private String generateWebserverConfigFilename(CmsSite site) {
 
         int port = site.getSiteMatcher().getServerPort();
         String serverName = site.getSiteMatcher().getServerName();

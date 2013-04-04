@@ -92,9 +92,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SITES_ADMIN_TOOL_NAME_0 = "GUI_SITES_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_SITES_WEBSERVER_TITLE_0 = "GUI_SITES_WEBSERVER_TITLE_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_SITES_DETAIL_ALIASES_1 = "GUI_SITES_DETAIL_ALIASES_1";
 
     /** Message constant for key in the resource bundle. */
@@ -215,7 +212,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SITES_SETTINGS_ADMIN_TOOL_NAME_0 = "GUI_SITES_SETTINGS_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String RPT_CREATING_VHOST_FOR_SITE_1 = "RPT_CREATING_VHOST_FOR_SITE_1";
+    public static final String GUI_SITES_WEBSERVER_TITLE_0 = "GUI_SITES_WEBSERVER_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_CREATING_CONFIG_FOR_SITE_1 = "RPT_CREATING_CONFIG_FOR_SITE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_DELETING_FILE_1 = "RPT_DELETING_FILE_1";

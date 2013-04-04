@@ -61,41 +61,41 @@ public class CmsSitesWriteToWebserver extends CmsWidgetDialog {
     /** Defines which pages are valid for this dialog. */
     public static final String[] PAGES = {"page1"};
 
-    /** Module parameter constant for the web server script. */
-    public static final String PARAM_WEBSERVER_SCRIPT = "webserverscript";
+    /** Module parameter constant for the web server configuration template file. */
+    public static final String PARAM_CONFIG_TEMPLATE = "configtemplate";
+
+    /** A module parameter name for the prefix used for web server configuration files. */
+    public static final String PARAM_FILENAME_PREFIX = "filenameprefix";
 
     /** Module parameter constant for the target path. */
     public static final String PARAM_TARGET_PATH = "targetpath";
 
-    /** A module parameter name for the prefix used for virtual host configuration files. */
-    public static final String PARAM_VHOST_PREFIX = "vhostprefix";
-
-    /** Module parameter constant for the virtual host configuration template file. */
-    public static final String PARAM_VHOST_SOURCE = "vhostsource";
+    /** Module parameter constant for the web server script. */
+    public static final String PARAM_WEBSERVER_SCRIPT = "webserverscript";
 
     /** The default parameter value. */
-    private static final String DEFAULT_WEBSERVER_SCRIPT = "/etc/apache2/reload.sh";
+    private static final String DEFAULT_CONFIG_TEMPLATE = "/etc/apache2/sites-available/config.template";
+
+    /** The default prefix used for created web server configuration files, created by this tool. */
+    private static final String DEFAULT_FILENAME_PREFIX = "opencms";
 
     /** The default parameter value. */
     private static final String DEFAULT_TARGET_PATH = "/etc/apache2/sites-enabled/";
 
-    /** The default prefix used for created virtual host configuration files, created by this tool. */
-    private static final String DEFAULT_VHOST_PREFIX = "opencms";
-
     /** The default parameter value. */
-    private static final String DEFAULT_VHOST_SOURCE = "/etc/apache2/sites-available/vhost.template";
+    private static final String DEFAULT_WEBSERVER_SCRIPT = "/etc/apache2/reload.sh";
+
+    /** The source file used as template for creating a web server configuration files. */
+    private String m_configtemplate;
+
+    /** The prefix used for created web server configuration files, created by this tool. */
+    private String m_filenameprefix;
+
+    /** The target path to store the web server files. */
+    private String m_targetpath;
 
     /** The script to be executed after updating the web server configurations. */
     private String m_webserverscript;
-
-    /** The target path to store the virtual host files. */
-    private String m_targetpath;
-
-    /** The prefix used for created virtual host configuration files, created by this tool. */
-    private String m_vhostprefix;
-
-    /** The source file used as template for creating a virtual host configuration files. */
-    private String m_vhostsource;
 
     /**
      * Public constructor with JSP action element.<p>
@@ -128,21 +128,31 @@ public class CmsSitesWriteToWebserver extends CmsWidgetDialog {
         Map<String, String[]> params = new HashMap<String, String[]>();
         params.put(PARAM_WEBSERVER_SCRIPT, new String[] {m_webserverscript});
         params.put(PARAM_TARGET_PATH, new String[] {m_targetpath});
-        params.put(PARAM_VHOST_PREFIX, new String[] {m_vhostprefix});
-        params.put(PARAM_VHOST_SOURCE, new String[] {m_vhostsource});
+        params.put(PARAM_FILENAME_PREFIX, new String[] {m_filenameprefix});
+        params.put(PARAM_CONFIG_TEMPLATE, new String[] {m_configtemplate});
         params.put(PARAM_ACTION, new String[] {DIALOG_INITIAL});
         params.put(PARAM_STYLE, new String[] {CmsToolDialog.STYLE_NEW});
         getToolManager().jspForwardPage(this, CmsSitesList.PATH_REPORTS + "webserver.jsp", params);
     }
 
     /**
-     * Returns the web server script.<p>
+     * Returns the configuration file source.<p>
      *
-     * @return the web server script
+     * @return the configuration file source
      */
-    public String getWebserverscript() {
+    public String getConfigtemplate() {
 
-        return m_webserverscript;
+        return m_configtemplate;
+    }
+
+    /**
+     * Returns the file name prefix.<p>
+     *
+     * @return the file name prefix
+     */
+    public String getFilenameprefix() {
+
+        return m_filenameprefix;
     }
 
     /**
@@ -156,33 +166,33 @@ public class CmsSitesWriteToWebserver extends CmsWidgetDialog {
     }
 
     /**
-     * Returns the virtual host prefix.<p>
+     * Returns the web server script.<p>
      *
-     * @return the virtual host prefix
+     * @return the web server script
      */
-    public String getVhostprefix() {
+    public String getWebserverscript() {
 
-        return m_vhostprefix;
+        return m_webserverscript;
     }
 
     /**
-     * Returns the virtual host source.<p>
+     * Sets the configuration template.<p>
      *
-     * @return the virtual host source
+     * @param configtemplate the configuration file source to set
      */
-    public String getVhostsource() {
+    public void setConfigtemplate(String configtemplate) {
 
-        return m_vhostsource;
+        m_configtemplate = configtemplate;
     }
 
     /**
-     * Sets the web server script.<p>
+     * Sets the file name prefix.<p>
      *
-     * @param webserverscript the web server script to set
+     * @param filenameprefix the file name prefix to set
      */
-    public void setWebservercript(String webserverscript) {
+    public void setFilenameprefix(String filenameprefix) {
 
-        m_webserverscript = webserverscript;
+        m_filenameprefix = filenameprefix;
     }
 
     /**
@@ -196,23 +206,13 @@ public class CmsSitesWriteToWebserver extends CmsWidgetDialog {
     }
 
     /**
-     * Sets the virtual host prefix.<p>
+     * Sets the web server script.<p>
      *
-     * @param vhostprefix the virtual host prefix to set
+     * @param webserverscript the web server script to set
      */
-    public void setVhostprefix(String vhostprefix) {
+    public void setWebservercript(String webserverscript) {
 
-        m_vhostprefix = vhostprefix;
-    }
-
-    /**
-     * Sets the virtual host source.<p>
-     *
-     * @param vhostsource the vhost source to set
-     */
-    public void setVhostsource(String vhostsource) {
-
-        m_vhostsource = vhostsource;
+        m_webserverscript = webserverscript;
     }
 
     /**
@@ -241,10 +241,10 @@ public class CmsSitesWriteToWebserver extends CmsWidgetDialog {
 
         initMembers(OpenCms.getModuleManager().getModule(MODULE_NAME).getParameters());
         setKeyPrefix(CmsSitesList.KEY_PREFIX_SITES);
-        addWidget(new CmsWidgetDialogParameter(this, "vhostsource", PAGES[0], new CmsInputWidget()));
-        addWidget(new CmsWidgetDialogParameter(this, "vhostprefix", PAGES[0], new CmsInputWidget()));
-        addWidget(new CmsWidgetDialogParameter(this, "targetpath", PAGES[0], new CmsInputWidget()));
-        addWidget(new CmsWidgetDialogParameter(this, "webserverscript", PAGES[0], new CmsInputWidget()));
+        addWidget(new CmsWidgetDialogParameter(this, PARAM_CONFIG_TEMPLATE, PAGES[0], new CmsInputWidget()));
+        addWidget(new CmsWidgetDialogParameter(this, PARAM_FILENAME_PREFIX, PAGES[0], new CmsInputWidget()));
+        addWidget(new CmsWidgetDialogParameter(this, PARAM_TARGET_PATH, PAGES[0], new CmsInputWidget()));
+        addWidget(new CmsWidgetDialogParameter(this, PARAM_WEBSERVER_SCRIPT, PAGES[0], new CmsInputWidget()));
     }
 
     /**
@@ -265,8 +265,8 @@ public class CmsSitesWriteToWebserver extends CmsWidgetDialog {
 
         m_webserverscript = getParameter(params, PARAM_WEBSERVER_SCRIPT, DEFAULT_WEBSERVER_SCRIPT);
         m_targetpath = getParameter(params, PARAM_TARGET_PATH, DEFAULT_TARGET_PATH);
-        m_vhostsource = getParameter(params, PARAM_VHOST_SOURCE, DEFAULT_VHOST_SOURCE);
-        m_vhostprefix = getParameter(params, PARAM_VHOST_PREFIX, DEFAULT_VHOST_PREFIX);
+        m_configtemplate = getParameter(params, PARAM_CONFIG_TEMPLATE, DEFAULT_CONFIG_TEMPLATE);
+        m_filenameprefix = getParameter(params, PARAM_FILENAME_PREFIX, DEFAULT_FILENAME_PREFIX);
         setDialogObject(this);
     }
 

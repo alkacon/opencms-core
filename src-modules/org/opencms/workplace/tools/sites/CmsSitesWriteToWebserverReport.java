@@ -49,17 +49,17 @@ import javax.servlet.jsp.PageContext;
  */
 public class CmsSitesWriteToWebserverReport extends A_CmsListReport {
 
-    /** The script to be executed after updating the web server configurations. */
-    private String m_paramWebserverscript;
+    /** The source file used as template for creating a web server's configuration files. */
+    private String m_paramConfigtemplate;
 
-    /** The target path to store the virtual host files. */
+    /** The prefix used for created web server's configuration files, created by this tool. */
+    private String m_paramFilenameprefix;
+
+    /** The target path to store the web server's configuration files. */
     private String m_paramTargetpath;
 
-    /** The prefix used for created virtual host configuration files, created by this tool. */
-    private String m_paramVhostprefix;
-
-    /** The source file used as template for creating a virtual host configuration files. */
-    private String m_paramVhostsource;
+    /** The script to be executed after updating the web server configurations. */
+    private String m_paramWebserverscript;
 
     /**
      * Public constructor with JSP action element.<p>
@@ -84,13 +84,23 @@ public class CmsSitesWriteToWebserverReport extends A_CmsListReport {
     }
 
     /**
-     * Returns the web server script parameter.<p>
+     * Returns the configuration template parameter.<p>
      *
-     * @return the web server script parameter
+     * @return the configuration template parameter
      */
-    public String getParamWebserverscript() {
+    public String getParamConfigtemplate() {
 
-        return m_paramWebserverscript;
+        return m_paramConfigtemplate;
+    }
+
+    /**
+     * Returns the file name prefix parameter.<p>
+     *
+     * @return the file name prefix parameter
+     */
+    public String getParamFilenameprefix() {
+
+        return m_paramFilenameprefix;
     }
 
     /**
@@ -104,23 +114,13 @@ public class CmsSitesWriteToWebserverReport extends A_CmsListReport {
     }
 
     /**
-     * Returns the paramVhostprefix.<p>
+     * Returns the web server script parameter.<p>
      *
-     * @return the paramVhostprefix
+     * @return the web server script parameter
      */
-    public String getParamVhostprefix() {
+    public String getParamWebserverscript() {
 
-        return m_paramVhostprefix;
-    }
-
-    /**
-     * Returns the paramVhostsource.<p>
-     *
-     * @return the paramVhostsource
-     */
-    public String getParamVhostsource() {
-
-        return m_paramVhostsource;
+        return m_paramWebserverscript;
     }
 
     /** 
@@ -134,19 +134,29 @@ public class CmsSitesWriteToWebserverReport extends A_CmsListReport {
         return new CmsSitesWriteToWebserverThread(
             getCms(),
             getParamTargetpath(),
-            getParamVhostsource(),
+            getParamConfigtemplate(),
             getParamWebserverscript(),
-            getParamVhostprefix());
+            getParamFilenameprefix());
     }
 
     /**
-     * Sets the web server script parameter.<p>
+     * Sets the configuration template parameter.<p>
      *
-     * @param paramWebserverscript the web server script parameter to set
+     * @param paramConfigtemplate the configuration template parameter to set
      */
-    public void setParamWebserverscript(String paramWebserverscript) {
+    public void setParamConfigtemplate(String paramConfigtemplate) {
 
-        m_paramWebserverscript = paramWebserverscript;
+        m_paramConfigtemplate = paramConfigtemplate;
+    }
+
+    /**
+     * Sets the file name prefix parameter.<p>
+     *
+     * @param paramFilenameprefix the file name prefix parameter to set
+     */
+    public void setParamFilenameprefix(String paramFilenameprefix) {
+
+        m_paramFilenameprefix = paramFilenameprefix;
     }
 
     /**
@@ -160,23 +170,13 @@ public class CmsSitesWriteToWebserverReport extends A_CmsListReport {
     }
 
     /**
-     * Sets the paramVhostprefix.<p>
+     * Sets the web server script parameter.<p>
      *
-     * @param paramVhostprefix the paramVhostprefix to set
+     * @param paramWebserverscript the web server script parameter to set
      */
-    public void setParamVhostprefix(String paramVhostprefix) {
+    public void setParamWebserverscript(String paramWebserverscript) {
 
-        m_paramVhostprefix = paramVhostprefix;
-    }
-
-    /**
-     * Sets the paramVhostsource.<p>
-     *
-     * @param paramVhostsource the paramVhostsource to set
-     */
-    public void setParamVhostsource(String paramVhostsource) {
-
-        m_paramVhostsource = paramVhostsource;
+        m_paramWebserverscript = paramWebserverscript;
     }
 
 }

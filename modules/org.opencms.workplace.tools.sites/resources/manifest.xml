@@ -31,10 +31,10 @@
 			<resource uri="/system/workplace/admin/sites/"/>
 		</resources>
 		<parameters>
-			<param name="webserver-script">/etc/apache2/reload.sh</param>
-			<param name="target-path">/etc/apache2/sites-enabled/</param>
-			<param name="vhost-prfix">opencms</param>
-			<param name="vhost-source">/etc/apache2/sites-available/vhost.template</param>
+			<param name="webserverscript">/etc/apache2/reload.sh</param>
+			<param name="targetpath">/etc/apache2/sites-enabled/</param>
+			<param name="filenameprefix">opencms</param>
+			<param name="configtemplate">/etc/apache2/sites-available/webserver.template</param>
 		</parameters>
 	</module>
 	<files>
