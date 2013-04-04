@@ -61,8 +61,8 @@ public class CmsSitesWriteToWebserver extends CmsWidgetDialog {
     /** Defines which pages are valid for this dialog. */
     public static final String[] PAGES = {"page1"};
 
-    /** Module parameter constant for the console action. */
-    public static final String PARAM_CONSOLE_SCRIPT = "consolescript";
+    /** Module parameter constant for the web server script. */
+    public static final String PARAM_WEBSERVER_SCRIPT = "webserverscript";
 
     /** Module parameter constant for the target path. */
     public static final String PARAM_TARGET_PATH = "targetpath";
@@ -74,7 +74,7 @@ public class CmsSitesWriteToWebserver extends CmsWidgetDialog {
     public static final String PARAM_VHOST_SOURCE = "vhostsource";
 
     /** The default parameter value. */
-    private static final String DEFAULT_CONSOLE_SCRIPT = "/etc/apache2/reload.sh";
+    private static final String DEFAULT_WEBSERVER_SCRIPT = "/etc/apache2/reload.sh";
 
     /** The default parameter value. */
     private static final String DEFAULT_TARGET_PATH = "/etc/apache2/sites-enabled/";
@@ -86,7 +86,7 @@ public class CmsSitesWriteToWebserver extends CmsWidgetDialog {
     private static final String DEFAULT_VHOST_SOURCE = "/etc/apache2/sites-available/vhost.template";
 
     /** The script to be executed after updating the web server configurations. */
-    private String m_consolescript;
+    private String m_webserverscript;
 
     /** The target path to store the virtual host files. */
     private String m_targetpath;
@@ -126,23 +126,23 @@ public class CmsSitesWriteToWebserver extends CmsWidgetDialog {
     public void actionCommit() throws IOException, ServletException {
 
         Map<String, String[]> params = new HashMap<String, String[]>();
-        params.put(PARAM_CONSOLE_SCRIPT, new String[] {m_consolescript});
+        params.put(PARAM_WEBSERVER_SCRIPT, new String[] {m_webserverscript});
         params.put(PARAM_TARGET_PATH, new String[] {m_targetpath});
         params.put(PARAM_VHOST_PREFIX, new String[] {m_vhostprefix});
         params.put(PARAM_VHOST_SOURCE, new String[] {m_vhostsource});
         params.put(PARAM_ACTION, new String[] {DIALOG_INITIAL});
         params.put(PARAM_STYLE, new String[] {CmsToolDialog.STYLE_NEW});
-        getToolManager().jspForwardPage(this, CmsSitesList.PATH_REPORTS + "console.jsp", params);
+        getToolManager().jspForwardPage(this, CmsSitesList.PATH_REPORTS + "webserver.jsp", params);
     }
 
     /**
-     * Returns the console script.<p>
+     * Returns the web server script.<p>
      *
-     * @return the console script
+     * @return the web server script
      */
-    public String getConsolescript() {
+    public String getWebserverscript() {
 
-        return m_consolescript;
+        return m_webserverscript;
     }
 
     /**
@@ -176,13 +176,13 @@ public class CmsSitesWriteToWebserver extends CmsWidgetDialog {
     }
 
     /**
-     * Sets the console script.<p>
+     * Sets the web server script.<p>
      *
-     * @param consolescript the console script to set
+     * @param webserverscript the web server script to set
      */
-    public void setConsolescript(String consolescript) {
+    public void setWebservercript(String webserverscript) {
 
-        m_consolescript = consolescript;
+        m_webserverscript = webserverscript;
     }
 
     /**
@@ -244,7 +244,7 @@ public class CmsSitesWriteToWebserver extends CmsWidgetDialog {
         addWidget(new CmsWidgetDialogParameter(this, "vhostsource", PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(this, "vhostprefix", PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(this, "targetpath", PAGES[0], new CmsInputWidget()));
-        addWidget(new CmsWidgetDialogParameter(this, "consolescript", PAGES[0], new CmsInputWidget()));
+        addWidget(new CmsWidgetDialogParameter(this, "webserverscript", PAGES[0], new CmsInputWidget()));
     }
 
     /**
@@ -263,7 +263,7 @@ public class CmsSitesWriteToWebserver extends CmsWidgetDialog {
      */
     protected void initMembers(Map<String, String> params) {
 
-        m_consolescript = getParameter(params, PARAM_CONSOLE_SCRIPT, DEFAULT_CONSOLE_SCRIPT);
+        m_webserverscript = getParameter(params, PARAM_WEBSERVER_SCRIPT, DEFAULT_WEBSERVER_SCRIPT);
         m_targetpath = getParameter(params, PARAM_TARGET_PATH, DEFAULT_TARGET_PATH);
         m_vhostsource = getParameter(params, PARAM_VHOST_SOURCE, DEFAULT_VHOST_SOURCE);
         m_vhostprefix = getParameter(params, PARAM_VHOST_PREFIX, DEFAULT_VHOST_PREFIX);

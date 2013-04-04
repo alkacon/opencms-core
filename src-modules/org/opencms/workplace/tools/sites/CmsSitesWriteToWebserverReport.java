@@ -49,8 +49,8 @@ import javax.servlet.jsp.PageContext;
  */
 public class CmsSitesWriteToWebserverReport extends A_CmsListReport {
 
-    /** The script to be executed after updating the virtual host configurations. */
-    private String m_paramConsolescript;
+    /** The script to be executed after updating the web server configurations. */
+    private String m_paramWebserverscript;
 
     /** The target path to store the virtual host files. */
     private String m_paramTargetpath;
@@ -84,13 +84,13 @@ public class CmsSitesWriteToWebserverReport extends A_CmsListReport {
     }
 
     /**
-     * Returns the paramConsolescript.<p>
+     * Returns the web server script parameter.<p>
      *
-     * @return the paramConsolescript
+     * @return the web server script parameter
      */
-    public String getParamConsolescript() {
+    public String getParamWebserverscript() {
 
-        return m_paramConsolescript;
+        return m_paramWebserverscript;
     }
 
     /**
@@ -135,18 +135,18 @@ public class CmsSitesWriteToWebserverReport extends A_CmsListReport {
             getCms(),
             getParamTargetpath(),
             getParamVhostsource(),
-            getParamConsolescript(),
+            getParamWebserverscript(),
             getParamVhostprefix());
     }
 
     /**
-     * Sets the paramConsolescript.<p>
+     * Sets the web server script parameter.<p>
      *
-     * @param paramConsolescript the paramConsolescript to set
+     * @param paramWebserverscript the web server script parameter to set
      */
-    public void setParamConsolescript(String paramConsolescript) {
+    public void setParamWebserverscript(String paramWebserverscript) {
 
-        m_paramConsolescript = paramConsolescript;
+        m_paramWebserverscript = paramWebserverscript;
     }
 
     /**

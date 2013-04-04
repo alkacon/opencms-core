@@ -31,7 +31,7 @@
 			<resource uri="/system/workplace/admin/sites/"/>
 		</resources>
 		<parameters>
-			<param name="console-script">/etc/apache2/reload.sh</param>
+			<param name="webserver-script">/etc/apache2/reload.sh</param>
 			<param name="target-path">/etc/apache2/sites-enabled/</param>
 			<param name="vhost-prfix">opencms</param>
 			<param name="vhost-source">/etc/apache2/sites-available/vhost.template</param>
@@ -584,8 +584,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/sites/reports/console.jsp</source>
-			<destination>system/workplace/admin/sites/reports/console.jsp</destination>
+			<source>system/workplace/admin/sites/reports/webserver.jsp</source>
+			<destination>system/workplace/admin/sites/reports/webserver.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>bdbe5d02-96e6-11e2-8cf9-d723659840f0</uuidstructure>
 			<uuidresource>bdbe5d03-96e6-11e2-8cf9-d723659840f0</uuidresource>
@@ -597,7 +597,7 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Console Script]]></value>
+					<value><![CDATA[Web server Script]]></value>
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>

@@ -177,7 +177,7 @@ public class CmsSitesWriteToWebserverThread extends A_CmsReportThread {
     }
 
     /**
-     * Executes the console script.<p>
+     * Executes the webserver script.<p>
      * 
      * @throws IOException if something goes wrong
      * @throws InterruptedException if something goes wrong
@@ -194,7 +194,7 @@ public class CmsSitesWriteToWebserverThread extends A_CmsReportThread {
             String line = buf.readLine();
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(line)) {
                 getReport().println(
-                    Messages.get().container(Messages.RPT_OUTPUT_CONSOLE_1, buf.readLine()),
+                    Messages.get().container(Messages.RPT_OUTPUT_WEBSERVER_1, buf.readLine()),
                     I_CmsReport.FORMAT_OK);
             }
         }

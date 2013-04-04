@@ -221,7 +221,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_DELETING_FILE_1 = "RPT_DELETING_FILE_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String RPT_OUTPUT_CONSOLE_1 = "RPT_OUTPUT_CONSOLE_1";
+    public static final String RPT_OUTPUT_WEBSERVER_1 = "RPT_OUTPUT_WEBSERVER_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_REMOVED_SITE_SUCCESSFUL_1 = "RPT_REMOVED_SITE_SUCCESSFUL_1";
