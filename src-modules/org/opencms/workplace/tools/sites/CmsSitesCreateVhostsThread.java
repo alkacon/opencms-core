@@ -84,7 +84,7 @@ public class CmsSitesCreateVhostsThread extends A_CmsReportThread {
      * @param scriptPath the script path
      * @param filePrefix the filename prefix
      */
-    protected CmsSitesCreateVhostsThread(
+    public CmsSitesCreateVhostsThread(
         CmsObject cms,
         String targetPath,
         String templatePath,
