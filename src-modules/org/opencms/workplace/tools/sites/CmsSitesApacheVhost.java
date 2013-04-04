@@ -33,7 +33,6 @@ package org.opencms.workplace.tools.sites;
 
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
-import org.opencms.module.CmsModule;
 import org.opencms.widgets.CmsInputWidget;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
@@ -62,18 +61,6 @@ public class CmsSitesApacheVhost extends CmsWidgetDialog {
     /** Defines which pages are valid for this dialog. */
     public static final String[] PAGES = {"page1"};
 
-    /** The default parameter value. */
-    private static final String DEFAULT_CONSOLE_SCRIPT = "/etc/apache2/reload.sh";
-
-    /** The default parameter value. */
-    private static final String DEFAULT_TARGET_PATH = "/etc/apache2/sites-enabled/";
-
-    /** The default prefix used for created virtual host configuration files, created by this tool. */
-    private static final String DEFAULT_VHOST_PREFIX = "opencms";
-
-    /** The default parameter value. */
-    private static final String DEFAULT_VHOST_SOURCE = "/etc/apache2/sites-available/vhost.template";
-
     /** Module parameter constant for the console action. */
     public static final String PARAM_CONSOLE_SCRIPT = "consolescript";
 
@@ -85,6 +72,18 @@ public class CmsSitesApacheVhost extends CmsWidgetDialog {
 
     /** Module parameter constant for the virtual host configuration template file. */
     public static final String PARAM_VHOST_SOURCE = "vhostsource";
+
+    /** The default parameter value. */
+    private static final String DEFAULT_CONSOLE_SCRIPT = "/etc/apache2/reload.sh";
+
+    /** The default parameter value. */
+    private static final String DEFAULT_TARGET_PATH = "/etc/apache2/sites-enabled/";
+
+    /** The default prefix used for created virtual host configuration files, created by this tool. */
+    private static final String DEFAULT_VHOST_PREFIX = "opencms";
+
+    /** The default parameter value. */
+    private static final String DEFAULT_VHOST_SOURCE = "/etc/apache2/sites-available/vhost.template";
 
     /** The script to be executed after updating the virtual host configurations, e.g. "/etc/apache2/reload.sh". */
     private String m_consolescript;
@@ -240,7 +239,7 @@ public class CmsSitesApacheVhost extends CmsWidgetDialog {
     @Override
     protected void defineWidgets() {
 
-        initMembers();
+        initMembers(OpenCms.getModuleManager().getModule(MODULE_NAME).getParameters());
         setKeyPrefix(CmsSitesList.KEY_PREFIX_SITES);
         addWidget(new CmsWidgetDialogParameter(this, "vhostsource", PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(this, "vhostprefix", PAGES[0], new CmsInputWidget()));
@@ -259,14 +258,31 @@ public class CmsSitesApacheVhost extends CmsWidgetDialog {
 
     /**
      * Initializes the values of the members.<p>
+     * 
+     * @param params the parameter map to get a value from
      */
-    private void initMembers() {
+    protected void initMembers(Map<String, String> params) {
 
-        CmsModule module = OpenCms.getModuleManager().getModule(MODULE_NAME);
-        m_consolescript = module.getParameter(PARAM_CONSOLE_SCRIPT, DEFAULT_CONSOLE_SCRIPT);
-        m_targetpath = module.getParameter(PARAM_TARGET_PATH, DEFAULT_TARGET_PATH);
-        m_vhostsource = module.getParameter(PARAM_VHOST_SOURCE, DEFAULT_VHOST_SOURCE);
-        m_vhostprefix = module.getParameter(PARAM_VHOST_PREFIX, DEFAULT_VHOST_PREFIX);
+        m_consolescript = getParameter(params, PARAM_CONSOLE_SCRIPT, DEFAULT_CONSOLE_SCRIPT);
+        m_targetpath = getParameter(params, PARAM_TARGET_PATH, DEFAULT_TARGET_PATH);
+        m_vhostsource = getParameter(params, PARAM_VHOST_SOURCE, DEFAULT_VHOST_SOURCE);
+        m_vhostprefix = getParameter(params, PARAM_VHOST_PREFIX, DEFAULT_VHOST_PREFIX);
         setDialogObject(this);
+    }
+
+    /**
+     * Returns a parameter value from the module parameters,
+     * or a given default value in case the parameter is not set.<p>
+     * 
+     * @param params the parameter map to get a value from
+     * @param key the parameter to return the value for
+     * @param defaultValue the default value in case there is no value stored for this key
+     * 
+     * @return the parameter value from the module parameters
+     */
+    private String getParameter(Map<String, String> params, String key, String defaultValue) {
+
+        String value = params.get(key);
+        return (value != null) ? value : defaultValue;
     }
 }
