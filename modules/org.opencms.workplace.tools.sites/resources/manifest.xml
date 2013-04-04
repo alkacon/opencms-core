@@ -33,6 +33,7 @@
 		<parameters>
 			<param name="console-script">/etc/apache2/reload.sh</param>
 			<param name="target-path">/etc/apache2/sites-enabled/</param>
+			<param name="vhost-prfix">opencms</param>
 			<param name="vhost-source">/etc/apache2/sites-available/vhost.template</param>
 		</parameters>
 	</module>

@@ -34,25 +34,19 @@ package org.opencms.workplace.tools.sites;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
-import org.opencms.site.CmsSite;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsInputWidget;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 import org.opencms.workplace.tools.CmsToolDialog;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
-
-import org.apache.commons.io.FileUtils;
 
 /**
  * A dialog that allows to write the sites configured in OpenCms
@@ -65,15 +59,6 @@ public class CmsSitesApacheVhost extends CmsWidgetDialog {
     /** The module name constant. */
     public static final String MODULE_NAME = "org.opencms.workplace.tools.sites";
 
-    /** Module parameter constant for the console action. */
-    public static final String MODULE_PARAM_CONSOLE_SCRIPT = "console-script";
-
-    /** Module parameter constant for the target path. */
-    public static final String MODULE_PARAM_TARGET_PATH = "target-path";
-
-    /** Module parameter constant for the virtual host configuration template file. */
-    public static final String MODULE_PARAM_VHOST_SOURCE = "vhost-source";
-
     /** Defines which pages are valid for this dialog. */
     public static final String[] PAGES = {"page1"};
 
@@ -83,17 +68,32 @@ public class CmsSitesApacheVhost extends CmsWidgetDialog {
     /** The default parameter value. */
     private static final String DEFAULT_TARGET_PATH = "/etc/apache2/sites-enabled/";
 
+    /** The default prefix used for created virtual host configuration files, created by this tool. */
+    private static final String DEFAULT_VHOST_PREFIX = "opencms";
+
     /** The default parameter value. */
     private static final String DEFAULT_VHOST_SOURCE = "/etc/apache2/sites-available/vhost.template";
 
-    /** The script parameter name. */
-    private static final String PARAM_SCRIPT = "script";
+    /** Module parameter constant for the console action. */
+    public static final String PARAM_CONSOLE_SCRIPT = "consolescript";
+
+    /** Module parameter constant for the target path. */
+    public static final String PARAM_TARGET_PATH = "targetpath";
+
+    /** A module parameter name for the prefix used for virtual host configuration files. */
+    public static final String PARAM_VHOST_PREFIX = "vhostprefix";
+
+    /** Module parameter constant for the virtual host configuration template file. */
+    public static final String PARAM_VHOST_SOURCE = "vhostsource";
 
     /** The script to be executed after updating the virtual host configurations, e.g. "/etc/apache2/reload.sh". */
     private String m_consolescript;
 
     /** The target path to store the virtual host files. */
     private String m_targetpath;
+
+    /** The prefix used for created virtual host configuration files, created by this tool. */
+    private String m_vhostprefix;
 
     /** The source file used as template for creating a virtual host configuration files. */
     private String m_vhostsource;
@@ -126,26 +126,14 @@ public class CmsSitesApacheVhost extends CmsWidgetDialog {
     @Override
     public void actionCommit() throws IOException, ServletException {
 
-        String template = FileUtils.readFileToString(new File(m_vhostsource));
-        List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(getCms(), true);
-        for (CmsSite site : sites) {
-            if (site.getSiteMatcher() != null) {
-                String serverName = site.getSiteMatcher().getServerName();
-                String vhostconf = template.replaceAll("SERVER_NAME_PLACE_HOLDER", serverName);
-                m_targetpath = m_targetpath.endsWith(File.separator) ? m_targetpath : m_targetpath + File.separator;
-                File newFile = new File(m_targetpath + serverName);
-                if (!newFile.exists()) {
-                    newFile.createNewFile();
-                }
-                FileUtils.writeStringToFile(newFile, vhostconf);
-            }
-        }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_consolescript)) {
-            Map<String, String[]> params = new HashMap<String, String[]>();
-            params.put(PARAM_SCRIPT, new String[] {m_consolescript});
-            params.put(PARAM_STYLE, new String[] {CmsToolDialog.STYLE_NEW});
-            getToolManager().jspForwardPage(this, CmsSitesList.PATH_REPORTS + "console.jsp", params);
-        }
+        Map<String, String[]> params = new HashMap<String, String[]>();
+        params.put(PARAM_CONSOLE_SCRIPT, new String[] {m_consolescript});
+        params.put(PARAM_TARGET_PATH, new String[] {m_targetpath});
+        params.put(PARAM_VHOST_PREFIX, new String[] {m_vhostprefix});
+        params.put(PARAM_VHOST_SOURCE, new String[] {m_vhostsource});
+        params.put(PARAM_ACTION, new String[] {DIALOG_INITIAL});
+        params.put(PARAM_STYLE, new String[] {CmsToolDialog.STYLE_NEW});
+        getToolManager().jspForwardPage(this, CmsSitesList.PATH_REPORTS + "console.jsp", params);
     }
 
     /**
@@ -169,9 +157,19 @@ public class CmsSitesApacheVhost extends CmsWidgetDialog {
     }
 
     /**
-     * Returns the vhost source.<p>
+     * Returns the virtual host prefix.<p>
      *
-     * @return the vhost source
+     * @return the virtual host prefix
+     */
+    public String getVhostprefix() {
+
+        return m_vhostprefix;
+    }
+
+    /**
+     * Returns the virtual host source.<p>
+     *
+     * @return the virtual host source
      */
     public String getVhostsource() {
 
@@ -199,7 +197,17 @@ public class CmsSitesApacheVhost extends CmsWidgetDialog {
     }
 
     /**
-     * Sets the vhost source.<p>
+     * Sets the virtual host prefix.<p>
+     *
+     * @param vhostprefix the virtual host prefix to set
+     */
+    public void setVhostprefix(String vhostprefix) {
+
+        m_vhostprefix = vhostprefix;
+    }
+
+    /**
+     * Sets the virtual host source.<p>
      *
      * @param vhostsource the vhost source to set
      */
@@ -219,7 +227,7 @@ public class CmsSitesApacheVhost extends CmsWidgetDialog {
         result.append(createWidgetErrorHeader());
         result.append(dialogBlockStart(Messages.get().getBundle().key(Messages.GUI_SITES_APACHE_TITLE_0)));
         result.append(createWidgetTableStart());
-        result.append(createDialogRowsHtml(0, 2));
+        result.append(createDialogRowsHtml(0, 3));
         result.append(createWidgetTableEnd());
         result.append(dialogBlockEnd());
         result.append(createWidgetTableEnd());
@@ -235,6 +243,7 @@ public class CmsSitesApacheVhost extends CmsWidgetDialog {
         initMembers();
         setKeyPrefix(CmsSitesList.KEY_PREFIX_SITES);
         addWidget(new CmsWidgetDialogParameter(this, "vhostsource", PAGES[0], new CmsInputWidget()));
+        addWidget(new CmsWidgetDialogParameter(this, "vhostprefix", PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(this, "targetpath", PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(this, "consolescript", PAGES[0], new CmsInputWidget()));
     }
@@ -254,9 +263,10 @@ public class CmsSitesApacheVhost extends CmsWidgetDialog {
     private void initMembers() {
 
         CmsModule module = OpenCms.getModuleManager().getModule(MODULE_NAME);
-        m_consolescript = module.getParameter(MODULE_PARAM_CONSOLE_SCRIPT, DEFAULT_CONSOLE_SCRIPT);
-        m_targetpath = module.getParameter(MODULE_PARAM_TARGET_PATH, DEFAULT_TARGET_PATH);
-        m_vhostsource = module.getParameter(MODULE_PARAM_VHOST_SOURCE, DEFAULT_VHOST_SOURCE);
+        m_consolescript = module.getParameter(PARAM_CONSOLE_SCRIPT, DEFAULT_CONSOLE_SCRIPT);
+        m_targetpath = module.getParameter(PARAM_TARGET_PATH, DEFAULT_TARGET_PATH);
+        m_vhostsource = module.getParameter(PARAM_VHOST_SOURCE, DEFAULT_VHOST_SOURCE);
+        m_vhostprefix = module.getParameter(PARAM_VHOST_PREFIX, DEFAULT_VHOST_PREFIX);
         setDialogObject(this);
     }
 }
