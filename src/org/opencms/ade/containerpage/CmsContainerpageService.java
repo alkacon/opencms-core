@@ -72,6 +72,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
+import org.opencms.relations.CmsRelationType;
 import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.security.CmsPermissionSet;
@@ -481,16 +482,16 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getRemovedElementStatus(java.lang.String)
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getRemovedElementStatus(java.lang.String, org.opencms.util.CmsUUID)
      */
-    public CmsRemovedElementStatus getRemovedElementStatus(String id) throws CmsRpcException {
+    public CmsRemovedElementStatus getRemovedElementStatus(String id, CmsUUID containerpageId) throws CmsRpcException {
 
         if ((id == null) || !id.matches(CmsUUID.UUID_REGEX + ".*$")) {
             return new CmsRemovedElementStatus(null, null, false);
         }
         try {
             CmsUUID structureId = convertToServerId(id);
-            return internalGetRemovedElementStatus(structureId);
+            return internalGetRemovedElementStatus(structureId, containerpageId);
         } catch (CmsException e) {
             error(e);
             return null;
@@ -523,14 +524,15 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     /**
      * Internal helper method to get the status of a removed element.<p>
      * 
-     * @param structureId the structure id of the removed element 
+     * @param structureId the structure id of the removed element
+     * @param containerpageId the id of the page to exclude from the relation check, or null if no page should be excluded  
      * 
      * @return the status of the removed element
      *   
      * @throws CmsException 
      * @throws CmsLoaderException
      */
-    public CmsRemovedElementStatus internalGetRemovedElementStatus(CmsUUID structureId)
+    public CmsRemovedElementStatus internalGetRemovedElementStatus(CmsUUID structureId, CmsUUID containerpageId)
     throws CmsException, CmsLoaderException {
 
         CmsObject cms = getCmsObject();
@@ -543,6 +545,17 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         boolean isSystemResource = elementResource.getRootPath().startsWith(CmsResource.VFS_FOLDER_SYSTEM + "/");
         CmsRelationFilter relationFilter = CmsRelationFilter.relationsToStructureId(structureId);
         List<CmsRelation> relationsToElement = cms.readRelations(relationFilter);
+        Iterator<CmsRelation> iter = relationsToElement.iterator();
+
+        // ignore XML_STRONG (i.e. container element) relations from the container page, this must be checked on the client side.
+        while (iter.hasNext()) {
+            CmsRelation relation = iter.next();
+            if ((containerpageId != null)
+                && containerpageId.equals(relation.getSourceId())
+                && relation.getType().equals(CmsRelationType.XML_STRONG)) {
+                iter.remove();
+            }
+        }
         boolean hasNoRelations = relationsToElement.isEmpty();
         boolean deletionCandidate = hasNoRelations && hasWritePermissions && !isSystemResource;
         CmsListInfoBean elementInfo = CmsVfsService.getPageInfo(cms, elementResource);
@@ -1363,7 +1376,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         Set<CmsUUID> removedElementIds = Sets.difference(oldElementIds, newElementIds);
         List<CmsRemovedElementStatus> deletionCandidateStatuses = new ArrayList<CmsRemovedElementStatus>();
         for (CmsUUID removedId : removedElementIds) {
-            CmsRemovedElementStatus status = internalGetRemovedElementStatus(removedId);
+            CmsRemovedElementStatus status = internalGetRemovedElementStatus(removedId, null);
             if (status.isDeletionCandidate()) {
                 deletionCandidateStatuses.add(status);
             }

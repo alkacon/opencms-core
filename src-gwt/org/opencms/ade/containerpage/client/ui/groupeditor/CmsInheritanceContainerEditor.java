@@ -28,6 +28,7 @@
 package org.opencms.ade.containerpage.client.ui.groupeditor;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageController;
+import org.opencms.ade.containerpage.client.CmsContainerpageController.ElementRemoveMode;
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
 import org.opencms.ade.containerpage.client.CmsContainerpageUtil;
 import org.opencms.ade.containerpage.client.Messages;
@@ -197,7 +198,7 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
     public void removeElement(CmsContainerPageElementPanel elementWidget) {
 
         if (elementWidget.getInheritanceInfo().isNew()) {
-            getHandler().removeElement(elementWidget, true);
+            getHandler().removeElement(elementWidget, ElementRemoveMode.saveAndCheckReferences);
         } else {
             elementWidget.getInheritanceInfo().setVisible(false);
             elementWidget.addStyleName(HIDDEN_ELEMENT_CLASS);

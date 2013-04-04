@@ -28,8 +28,10 @@
 package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageController;
+import org.opencms.ade.containerpage.client.CmsContainerpageController.ElementRemoveMode;
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
 import org.opencms.gwt.client.ui.I_CmsButton;
+import org.opencms.gwt.client.util.CmsDomUtil;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 
@@ -40,7 +42,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
  */
 public class CmsToolbarRemoveButton extends A_CmsToolbarOptionButton {
 
-    /**
+    /** 
      * Constructor.<p>
      * 
      * @param handler the container-page handler
@@ -66,6 +68,7 @@ public class CmsToolbarRemoveButton extends A_CmsToolbarOptionButton {
     @Override
     public void onElementClick(ClickEvent event, CmsContainerPageElementPanel element) {
 
-        getHandler().removeElement(element, true);
+        CmsDomUtil.ensureMouseOut(element.getElementOptionBar().getElement());
+        getHandler().removeElement(element, ElementRemoveMode.confirmRemove);
     }
 }

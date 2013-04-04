@@ -27,6 +27,7 @@
 
 package org.opencms.ade.containerpage.client;
 
+import org.opencms.ade.containerpage.client.ui.CmsConfirmRemoveDialog;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
 import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElementPanel;
@@ -109,6 +110,190 @@ import com.google.gwt.user.client.ui.Widget;
  * @since 8.0.0
  */
 public final class CmsContainerpageController {
+
+    /** 
+     * Enum which is used to control how elements are removed from the page.<p>
+     */
+    public enum ElementRemoveMode {
+        /** Reference checks are performed and the user is asked for confirmation whether they really want to remove the element before the page is saved. */
+        confirmRemove,
+
+        /** Reference checks are only performed after the page or group has been saved. */
+        saveAndCheckReferences,
+
+        /** Element is just removed, no checks are performed. */
+        silent;
+    }
+
+    /**
+     * Visitor interface used to process the current container content on the page.<p>
+     */
+    public static interface I_PageContentVisitor {
+
+        /** 
+         * This method is called before a container is processed.<p>
+         * 
+         * If the method returns false, the container will be skipped.<p>
+         * 
+         * @param name the container name 
+         * @param container the container data object
+         *  
+         * @return true if the container should be processed, true if it should be skipped 
+         */
+        boolean beginContainer(String name, CmsContainerJso container);
+
+        /**
+         * This method is called after all elements of a container have been processed.<p>
+         */
+        void endContainer();
+
+        /** 
+         * This method is called for each element of a container.<p>
+         * 
+         * @param element the container element 
+         */
+        void handleElement(CmsContainerPageElementPanel element);
+    }
+
+    /**
+     * This visitor implementation checks whether there are other elements in the current page
+     * which correspond to the same VFS resource as a given container element.
+     */
+    public static class ReferenceCheckVisitor implements I_PageContentVisitor {
+
+        /** The element for which we want to check whether there are other references to the same resource. */
+        private CmsContainerPageElementPanel m_elementPanel;
+
+        /** True if other references have been found. */
+        private boolean m_hasReferences;
+
+        /** The structure id of the element. */
+        private String m_structureId;
+
+        /**
+         * Creates a new instance.<p>
+         * 
+         * @param elementPanel the element for which we want to check if there are other references 
+         */
+        public ReferenceCheckVisitor(CmsContainerPageElementPanel elementPanel) {
+
+            m_elementPanel = elementPanel;
+            m_structureId = getServerId(elementPanel.getId());
+        }
+
+        /**
+         * @see org.opencms.ade.containerpage.client.CmsContainerpageController.I_PageContentVisitor#beginContainer(java.lang.String, org.opencms.ade.containerpage.client.CmsContainerJso)
+         */
+        public boolean beginContainer(String name, CmsContainerJso container) {
+
+            return !container.isDetailView();
+        }
+
+        /**
+         * @see org.opencms.ade.containerpage.client.CmsContainerpageController.I_PageContentVisitor#endContainer()
+         */
+        public void endContainer() {
+
+            // do nothing 
+        }
+
+        /**
+         * @see org.opencms.ade.containerpage.client.CmsContainerpageController.I_PageContentVisitor#handleElement(org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel)
+         */
+        public void handleElement(CmsContainerPageElementPanel element) {
+
+            if (element != m_elementPanel) {
+                String id = getServerId(element.getId());
+                if (m_structureId.equals(id)) {
+                    m_hasReferences = true;
+                }
+            }
+        }
+
+        /**
+         * Checks if other references have been found.<p>
+         * 
+         * @return true if other references have been found 
+         */
+        public boolean hasReferences() {
+
+            return m_hasReferences;
+        }
+
+    }
+
+    /** 
+     * Visitor implementation which is used to gather the container contents for saving.<p>
+     */
+    protected class SaveDataVisitor implements I_PageContentVisitor {
+
+        /** The current container name. */
+        protected String m_containerName;
+
+        /** The contaienr which is currently being processed. */
+        protected CmsContainerJso m_currentContainer;
+
+        /** The list of collected containers. */
+        protected List<CmsContainer> m_resultContainers = new ArrayList<CmsContainer>();
+
+        /** The list of elements of the currently processed container which have already been processed. */
+        List<CmsContainerElement> m_currentElements;
+
+        /**
+         * @see org.opencms.ade.containerpage.client.CmsContainerpageController.I_PageContentVisitor#beginContainer(java.lang.String, org.opencms.ade.containerpage.client.CmsContainerJso)
+         */
+        public boolean beginContainer(String name, CmsContainerJso container) {
+
+            if (container.isDetailView()) {
+                m_currentContainer = null;
+                return false;
+
+            } else {
+                m_currentContainer = container;
+                m_containerName = name;
+                m_currentElements = new ArrayList<CmsContainerElement>();
+                return true;
+            }
+        }
+
+        /**
+         * @see org.opencms.ade.containerpage.client.CmsContainerpageController.I_PageContentVisitor#endContainer()
+         */
+        public void endContainer() {
+
+            m_resultContainers.add(new CmsContainer(
+                m_containerName,
+                m_currentContainer.getType(),
+                m_currentContainer.getWidth(),
+                m_currentContainer.getMaxElements(),
+                m_currentElements));
+        }
+
+        /**
+         * Gets the list of collected containers.<p>
+         * 
+         * @return the list of containers 
+         */
+        public List<CmsContainer> getContainers() {
+
+            return m_resultContainers;
+        }
+
+        /**
+         * @see org.opencms.ade.containerpage.client.CmsContainerpageController.I_PageContentVisitor#handleElement(org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel)
+         */
+        public void handleElement(CmsContainerPageElementPanel elementWidget) {
+
+            CmsContainerElement element = new CmsContainerElement();
+            element.setClientId(elementWidget.getId());
+            element.setResourceType(elementWidget.getNewType());
+            element.setNew(elementWidget.isNew());
+            element.setSitePath(elementWidget.getSitePath());
+            element.setNewEditorDisabled(elementWidget.isNewEditorDisabled());
+            m_currentElements.add(element);
+        }
+
+    }
 
     /**
      * A type which indicates the locking status of the currently edited container page.<p>
@@ -1069,9 +1254,82 @@ public final class CmsContainerpageController {
             if (CmsInheritanceContainerEditor.getInstance() != null) {
                 CmsInheritanceContainerEditor.getInstance().removeElement(element);
             } else {
-                removeElement(element, false);
+                removeElement(element, ElementRemoveMode.silent);
             }
         }
+    }
+
+    /** 
+     * Asks the user for confirmation before removing a container page element.<p>
+     * 
+     * @param element the element for which the user should confirm the removal 
+     */
+    public void handleConfirmRemove(final CmsContainerPageElementPanel element) {
+
+        if (element.isNew()) {
+            element.removeFromParent();
+            setPageChanged();
+            return;
+        }
+        checkElementReferences(element, new AsyncCallback<Boolean>() {
+
+            public void onFailure(Throwable caught) {
+
+                // ignore, will never be executed 
+
+            }
+
+            public void onSuccess(Boolean hasOtherReferences) {
+
+                boolean showDeleteCheckbox = !hasOtherReferences.booleanValue();
+                CmsConfirmRemoveDialog removeDialog = new CmsConfirmRemoveDialog(
+                    showDeleteCheckbox,
+                    new AsyncCallback<Boolean>() {
+
+                        public void onFailure(Throwable caught) {
+
+                            element.removeHighlighting();
+                        }
+
+                        public void onSuccess(Boolean shouldDeleteResource) {
+
+                            Runnable[] nextActions = new Runnable[] {};
+
+                            if (shouldDeleteResource.booleanValue()) {
+                                final CmsRpcAction<Void> deleteAction = new CmsRpcAction<Void>() {
+
+                                    @Override
+                                    public void execute() {
+
+                                        start(200, true);
+
+                                        CmsUUID id = new CmsUUID(getServerId(element.getId()));
+                                        CmsCoreProvider.getVfsService().deleteResource(id, this);
+                                    }
+
+                                    @Override
+                                    public void onResponse(Void result) {
+
+                                        stop(true);
+                                    }
+                                };
+                                nextActions = new Runnable[] {null};
+                                nextActions[0] = new Runnable() {
+
+                                    public void run() {
+
+                                        deleteAction.execute();
+                                    }
+                                };
+                            }
+                            element.removeFromParent();
+                            setPageChanged(nextActions);
+                        }
+                    });
+                removeDialog.center();
+            }
+
+        });
     }
 
     /**
@@ -1512,37 +1770,44 @@ public final class CmsContainerpageController {
      * Removes the given container element from its parent container.<p>
      * 
      * @param dragElement the element to remove
-     * @param checkReferences if the references to the removed element should be checked 
+     * @param removeMode the remove mode  
      */
     public void removeElement(
         org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel dragElement,
-        boolean checkReferences) {
+        ElementRemoveMode removeMode) {
 
-        dragElement.removeFromParent();
         if (isGroupcontainerEditing()) {
+            dragElement.removeFromParent();
             if (!getGroupcontainer().iterator().hasNext()) {
                 // group-container is empty, mark it
                 getGroupcontainer().addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().emptyGroupContainer());
             }
             getGroupcontainer().refreshHighlighting();
         } else {
-            // only set changed if not editing a group container
             final String id = dragElement.getId();
             if (id != null) {
                 addToRecentList(id, null);
             }
-            if (checkReferences) {
-                Runnable checkReferencesAction = new Runnable() {
+            switch (removeMode) {
+                case saveAndCheckReferences:
+                    dragElement.removeFromParent();
+                    Runnable checkReferencesAction = new Runnable() {
 
-                    public void run() {
+                        public void run() {
 
-                        checkReferencesToRemovedElement(id);
-                    }
-                };
-
-                setPageChanged(checkReferencesAction);
-            } else {
-                setPageChanged();
+                            checkReferencesToRemovedElement(id);
+                        }
+                    };
+                    setPageChanged(checkReferencesAction);
+                    break;
+                case confirmRemove:
+                    handleConfirmRemove(dragElement);
+                    break;
+                case silent:
+                default:
+                    dragElement.removeFromParent();
+                    setPageChanged();
+                    break;
             }
         }
     }
@@ -2046,7 +2311,7 @@ public final class CmsContainerpageController {
                 public void execute() {
 
                     start(200, true);
-                    getContainerpageService().getRemovedElementStatus(id, this);
+                    getContainerpageService().getRemovedElementStatus(id, null, this);
                 }
 
                 @Override
@@ -2123,46 +2388,16 @@ public final class CmsContainerpageController {
     }
 
     /**
-     * Returns the current containers and their elements.<p>
+     * Gets the page content for purposes of saving.<p>
      * 
-     * @return the list of containers
+     * @return the page content 
      */
     protected List<CmsContainer> getPageContent() {
 
-        List<CmsContainer> containers = new ArrayList<CmsContainer>();
-        for (Entry<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> entry : m_targetContainers.entrySet()) {
+        SaveDataVisitor visitor = new SaveDataVisitor();
+        processPageContent(visitor);
+        return visitor.getContainers();
 
-            CmsContainerJso cnt = m_containers.get(entry.getKey());
-            // only consider containers that are not marked as detail view
-            if (!cnt.isDetailView()) {
-                List<CmsContainerElement> elements = new ArrayList<CmsContainerElement>();
-                Iterator<Widget> elIt = entry.getValue().iterator();
-                while (elIt.hasNext()) {
-                    try {
-                        CmsContainerPageElementPanel elementWidget = (CmsContainerPageElementPanel)elIt.next();
-                        CmsContainerElement element = new CmsContainerElement();
-                        element.setClientId(elementWidget.getId());
-                        element.setResourceType(elementWidget.getNewType());
-                        element.setNew(elementWidget.isNew());
-                        element.setSitePath(elementWidget.getSitePath());
-                        element.setNewEditorDisabled(elementWidget.isNewEditorDisabled());
-                        elements.add(element);
-                    } catch (ClassCastException e) {
-                        // no proper container element, skip it (this should never happen!)
-                        CmsDebugLog.getInstance().printLine(
-                            "WARNING: there is an inappropriate element within a container");
-                    }
-                }
-                containers.add(new CmsContainer(
-                    entry.getKey(),
-                    cnt.getType(),
-                    cnt.getWidth(),
-                    cnt.getMaxElements(),
-                    elements));
-            }
-
-        }
-        return containers;
     }
 
     /**
@@ -2239,6 +2474,33 @@ public final class CmsContainerpageController {
             nativeEvent.preventDefault();
             nativeEvent.stopPropagation();
             m_handler.leavePage(Window.Location.getHref());
+        }
+    }
+
+    /** 
+     * Iterates over all the container contents and calls a visitor object with the visited containers/elements as parameters.
+     * 
+     * @param visitor the visitor which the container elements should be passed to 
+     */
+    protected void processPageContent(I_PageContentVisitor visitor) {
+
+        for (Entry<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> entry : m_targetContainers.entrySet()) {
+
+            CmsContainerJso cnt = m_containers.get(entry.getKey());
+            if (visitor.beginContainer(entry.getKey(), cnt)) {
+                Iterator<Widget> elIt = entry.getValue().iterator();
+                while (elIt.hasNext()) {
+                    try {
+                        CmsContainerPageElementPanel elementWidget = (CmsContainerPageElementPanel)elIt.next();
+                        visitor.handleElement(elementWidget);
+                    } catch (ClassCastException e) {
+                        // no proper container element, skip it (this should never happen!)
+                        CmsDebugLog.getInstance().printLine(
+                            "WARNING: there is an inappropriate element within a container");
+                    }
+                }
+                visitor.endContainer();
+            }
         }
     }
 
@@ -2337,6 +2599,47 @@ public final class CmsContainerpageController {
             CmsDebugLog.getInstance().printLine(Messages.get().key(Messages.GUI_NOTIFICATION_PAGE_UNLOCKED_0));
         } else {
             // ignore
+        }
+    }
+
+    /**
+     * Checks whether there are other references to a given container page element.<p>
+     * 
+     * @param element the element to check 
+     * @param callback the callback which will be called with the result of the check (true if there are other references)
+     */
+    private void checkElementReferences(
+        final CmsContainerPageElementPanel element,
+        final AsyncCallback<Boolean> callback) {
+
+        ReferenceCheckVisitor visitor = new ReferenceCheckVisitor(element);
+        processPageContent(visitor);
+        if (visitor.hasReferences()) {
+            // Don't need to ask the server because we already know we have other references in the same page 
+            callback.onSuccess(Boolean.TRUE);
+        } else {
+            CmsRpcAction<CmsRemovedElementStatus> getStatusAction = new CmsRpcAction<CmsRemovedElementStatus>() {
+
+                @Override
+                public void execute() {
+
+                    start(200, true);
+                    getContainerpageService().getRemovedElementStatus(
+                        element.getId(),
+                        CmsCoreProvider.get().getStructureId(),
+                        this);
+                }
+
+                @Override
+                public void onResponse(final CmsRemovedElementStatus status) {
+
+                    stop(false);
+                    callback.onSuccess(Boolean.valueOf(!status.isDeletionCandidate()));
+                }
+
+            };
+            getStatusAction.execute();
+
         }
     }
 
@@ -2452,4 +2755,5 @@ public final class CmsContainerpageController {
         }
         return result;
     }
+
 }

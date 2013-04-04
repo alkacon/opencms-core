@@ -27,6 +27,7 @@
 
 package org.opencms.ade.containerpage.client;
 
+import org.opencms.ade.containerpage.client.CmsContainerpageController.ElementRemoveMode;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
 import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElementPanel;
 import org.opencms.ade.containerpage.client.ui.CmsSmallElementsHandler;
@@ -818,12 +819,12 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
      * Removes the given container-page element.<p>
      * 
      * @param element the element
-     * @param checkReferences if true, references to the removed element will be checked 
+     * @param removeMode the element remove mode  
      * 
      */
-    public void removeElement(CmsContainerPageElementPanel element, boolean checkReferences) {
+    public void removeElement(CmsContainerPageElementPanel element, ElementRemoveMode removeMode) {
 
-        m_controller.removeElement(element, checkReferences);
+        m_controller.removeElement(element, removeMode);
     }
 
     /**
