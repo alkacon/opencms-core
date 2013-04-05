@@ -218,7 +218,7 @@ public class CmsSiteDialog extends CmsWidgetDialog {
         String title = m_site.getTitle() != null ? m_site.getTitle() : Messages.get().getBundle().key(
             Messages.GUI_SITES_NEW_SITE_TITLE_0);
 
-        int count = getParamEditaction() == null ? 3 : 4;
+        int count = getParamEditaction() == null ? 4 : 5;
         count = m_site.getFavicon() != null ? ++count : count;
 
         // site info
@@ -282,6 +282,7 @@ public class CmsSiteDialog extends CmsWidgetDialog {
                 false)));
             addWidget(new CmsWidgetDialogParameter(m_site, "position", PAGES[0], new CmsSelectWidget(
                 createNavOpts(m_site))));
+            addWidget(new CmsWidgetDialogParameter(m_site, "webserver", PAGES[0], new CmsCheckboxWidget()));
 
             if (m_site.getFavicon() != null) {
                 try {
@@ -317,6 +318,7 @@ public class CmsSiteDialog extends CmsWidgetDialog {
                 errorPage = new CmsWidgetDialogParameter(m_site, "errorPage", PAGES[0], new CmsDisplayWidget());
             }
             addWidget(errorPage);
+            addWidget(new CmsWidgetDialogParameter(m_site, "webserver", PAGES[0], new CmsDisplayWidget()));
 
             if (m_site.getFavicon() != null) {
                 try {
