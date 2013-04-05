@@ -36,6 +36,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
 import org.opencms.site.CmsSite;
+import org.opencms.site.CmsSiteMatcher;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.BufferedReader;
@@ -43,6 +44,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -62,6 +64,9 @@ public class CmsSitesWebserverThread extends A_CmsReportThread {
 
     /** The placeholder string searched and replaced with the server's name in the web server's template file. */
     private static final String SERVER_NAME_PLACE_HOLDER = "SERVER_NAME_PLACE_HOLDER";
+
+    /** The placeholder string searched and replaced with aliases in the web server's template file. */
+    private static final String ALIASES_PLACE_HOLDER = "ALIASES_PLACE_HOLDER";
 
     /** The file path. */
     private String m_filePrefix;
@@ -144,6 +149,19 @@ public class CmsSitesWebserverThread extends A_CmsReportThread {
                     newFile.createNewFile();
                 }
                 String conf = template.replaceAll(SERVER_NAME_PLACE_HOLDER, site.getSiteMatcher().getServerName());
+
+                if ((site.getAliases() != null) && !site.getAliases().isEmpty()) {
+                    StringBuffer buf = new StringBuffer();
+                    Iterator<CmsSiteMatcher> iter = site.getAliases().iterator();
+                    while (iter.hasNext()) {
+                        CmsSiteMatcher alias = iter.next();
+                        buf.append(alias.getServerName());
+                        if (iter.hasNext()) {
+                            buf.append(",");
+                        }
+                    }
+                    conf = template.replaceAll(ALIASES_PLACE_HOLDER, buf.toString());
+                }
                 FileUtils.writeStringToFile(newFile, conf);
             }
         }
