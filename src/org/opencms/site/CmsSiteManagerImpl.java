@@ -404,14 +404,26 @@ public final class CmsSiteManagerImpl {
                                 // not found, use the 'NavPos' property
                                 position = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_NAVPOS, false).getValue();
                             }
-
-                            // add the site to the result
-                            result.add(new CmsSite(
-                                folder,
-                                res.getStructureId(),
-                                title,
-                                siteServers.get(folder),
-                                position));
+                            if (configuredSite != null) {
+                                float pos = Float.MAX_VALUE;
+                                try {
+                                    pos = Float.parseFloat(position);
+                                } catch (Throwable e) {
+                                    // m_position will have Float.MAX_VALUE, so this site will appear last
+                                }
+                                CmsSite clone = (CmsSite)configuredSite.clone();
+                                clone.setPosition(pos);
+                                clone.setTitle(title);
+                                result.add(clone);
+                            } else {
+                                // add the site to the result
+                                result.add(new CmsSite(
+                                    folder,
+                                    res.getStructureId(),
+                                    title,
+                                    siteServers.get(folder),
+                                    position));
+                            }
                         }
                     } catch (CmsException e) {
                         // user probably has no read access to the folder, ignore and continue iterating            
