@@ -109,33 +109,38 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
         I_CmsResourceCollector collector = OpenCms.getResourceManager().getContentCollector(collectorName);
         String newFileName = "";
         // one resource serves as a "template" for the new resource
-        CmsFile templateFile = cms.readFile(templateFileName, CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsResource templateResource = cms.readResource(templateFileName, CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsXmlContent newContent = null;
+        int typeId;
         CmsObject cloneCms = OpenCms.initCmsObject(cms);
         cloneCms.getRequestContext().setRequestTime(CmsResource.DATE_RELEASED_EXPIRED_IGNORE);
-        CmsXmlContent template = CmsXmlContentFactory.unmarshal(cloneCms, templateFile);
-
-        // now create a new XML content based on the templates content definition            
-        CmsXmlContent newContent = CmsXmlContentFactory.createDocument(
-            cms,
-            locale,
-            template.getEncoding(),
-            template.getContentDefinition());
-
+        // the reference resource may be a folder in case of creating for an empty collector list
+        if (!templateResource.isFolder()) {
+            typeId = templateResource.getTypeId();
+            CmsFile templateFile = cms.readFile(templateResource);
+            CmsXmlContent template = CmsXmlContentFactory.unmarshal(cloneCms, templateFile);
+            // now create a new XML content based on the templates content definition            
+            newContent = CmsXmlContentFactory.createDocument(
+                cms,
+                locale,
+                template.getEncoding(),
+                template.getContentDefinition());
+        } else {
+            typeId = new CmsCollectorData(param).getType();
+        }
         // IMPORTANT: calculation of the name MUST be done here so the file name is ensured to be valid
         newFileName = collector.getCreateLink(cms, collectorName, param);
-
         boolean useModelFile = false;
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(modelFile)) {
             cms.getRequestContext().setAttribute(CmsRequestContext.ATTRIBUTE_MODEL, modelFile);
             useModelFile = true;
         }
         // now create the resource, fill it with the marshalled XML and write it back to the VFS
-        cms.createResource(newFileName, templateFile.getTypeId());
+        cms.createResource(newFileName, typeId);
         // re-read the created resource
         CmsFile newFile = cms.readFile(newFileName, CmsResourceFilter.ALL);
-        if (!useModelFile) {
+        if (!useModelFile && (newContent != null)) {
             newFile.setContents(newContent.marshal());
-
             // write the file with the updated content
             cloneCms.writeFile(newFile);
         }

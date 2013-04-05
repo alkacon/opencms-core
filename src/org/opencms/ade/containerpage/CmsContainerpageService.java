@@ -1013,7 +1013,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         Iterator<String> it = clientIds.iterator();
         while (it.hasNext()) {
             String elemId = it.next();
-            if (ids.contains(elemId)) {
+            if ((elemId == null) || ids.contains(elemId)) {
                 continue;
             }
             CmsContainerElementBean element = getCachedElement(elemId);

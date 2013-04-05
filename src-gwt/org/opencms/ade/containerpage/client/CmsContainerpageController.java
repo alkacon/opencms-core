@@ -1445,8 +1445,10 @@ public final class CmsContainerpageController {
         for (int i = 0; i < ids.length; i++) {
             related.addAll(getRelatedElementIds(ids[i]));
         }
-        ReloadElementAction action = new ReloadElementAction(related);
-        action.execute();
+        if (!related.isEmpty()) {
+            ReloadElementAction action = new ReloadElementAction(related);
+            action.execute();
+        }
     }
 
     /**
@@ -2432,22 +2434,24 @@ public final class CmsContainerpageController {
     private Set<String> getRelatedElementIds(String id) {
 
         Set<String> result = new HashSet<String>();
-        result.add(id);
-        String serverId = getServerId(id);
+        if (id != null) {
+            result.add(id);
+            String serverId = getServerId(id);
 
-        Iterator<String> it = m_elements.keySet().iterator();
-        while (it.hasNext()) {
-            String elId = it.next();
-            if (elId.startsWith(serverId)) {
-                result.add(elId);
+            Iterator<String> it = m_elements.keySet().iterator();
+            while (it.hasNext()) {
+                String elId = it.next();
+                if (elId.startsWith(serverId)) {
+                    result.add(elId);
+                }
             }
-        }
 
-        Iterator<org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel> itEl = getAllDragElements().iterator();
-        while (itEl.hasNext()) {
-            org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel element = itEl.next();
-            if (element.getId().startsWith(serverId)) {
-                result.add(element.getId());
+            Iterator<org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel> itEl = getAllDragElements().iterator();
+            while (itEl.hasNext()) {
+                org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel element = itEl.next();
+                if (element.getId().startsWith(serverId)) {
+                    result.add(element.getId());
+                }
             }
         }
         return result;

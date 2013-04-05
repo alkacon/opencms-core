@@ -69,6 +69,16 @@ public interface I_CmsDirectEditProvider extends I_CmsConfigurationParameterHand
     void init(CmsObject cms, CmsDirectEditMode mode, String fileName);
 
     /**
+     * Inserts the direct edit HTML for empty lists in the provided JSP page context.<p>
+     * 
+     * @param context the JSP page context to insert the HTML to
+     * @param params the parameters for the direct edit call
+     * 
+     * @throws JspException in case something goes wrong
+     */
+    void insertDirectEditEmptyList(PageContext context, CmsDirectEditParams params) throws JspException;
+
+    /**
      * Inserts the "end direct edit" HTML in the provided JSP page context.<p>
      * 
      * @param context the JSP page context to insert the HTML to

@@ -33,17 +33,18 @@ import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.editors.Messages;
 
 import java.io.IOException;
 import java.util.Random;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
@@ -132,7 +133,8 @@ public abstract class A_CmsDirectEditProvider implements I_CmsDirectEditProvider
             }
             // read the target resource
             CmsResource resource = m_cms.readResource(resourceName, CmsResourceFilter.ALL);
-            if (!OpenCms.getResourceManager().getResourceType(resource.getTypeId()).isDirectEditable()) {
+            if (!OpenCms.getResourceManager().getResourceType(resource.getTypeId()).isDirectEditable()
+                && !resource.isFolder()) {
                 // don't show direct edit button for non-editable resources 
                 return CmsDirectEditResourceInfo.INACTIVE;
             }
@@ -158,7 +160,11 @@ public abstract class A_CmsDirectEditProvider implements I_CmsDirectEditProvider
         } catch (Exception e) {
             // all exceptions: don't mix up the result HTML, always return INACTIVE mode 
             if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().getBundle().key(Messages.LOG_CALC_EDIT_MODE_FAILED_1, resourceName), e);
+                LOG.warn(
+                    org.opencms.workplace.editors.Messages.get().getBundle().key(
+                        org.opencms.workplace.editors.Messages.LOG_CALC_EDIT_MODE_FAILED_1,
+                        resourceName),
+                    e);
             }
         }
         // otherwise the resource is not direct editable
@@ -197,6 +203,24 @@ public abstract class A_CmsDirectEditProvider implements I_CmsDirectEditProvider
             // suppress the compiler warning, this is never true
             throw new CmsConfigurationException(null);
         }
+    }
+
+    /**
+     * @see org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider#insertDirectEditEmptyList(javax.servlet.jsp.PageContext, org.opencms.workplace.editors.directedit.CmsDirectEditParams)
+     */
+    public void insertDirectEditEmptyList(PageContext context, CmsDirectEditParams params) throws JspException {
+
+        insertDirectEditStart(context, params);
+        ServletRequest req = context.getRequest();
+        CmsFlexController controller = CmsFlexController.getController(req);
+        CmsObject cms = controller.getCmsObject();
+        print(
+            context,
+            "<div style=\"minHeight:24px\">"
+                + Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).key(
+                    Messages.GUI_CLICK_TO_ADD_ELEMENT_TO_EMPTY_LIST_0)
+                + "</div>");
+        insertDirectEditEnd(context);
     }
 
     /**

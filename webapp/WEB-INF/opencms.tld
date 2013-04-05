@@ -180,6 +180,10 @@
             <rtexprvalue>true</rtexprvalue>            
         </attribute>    
         <attribute>
+            <name>editEmpty</name>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>
+        <attribute>
             <name>pageIndex</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute> 
@@ -511,6 +515,10 @@
             <name>mode</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>    
+        <attribute>
+            <name>editEmpty</name>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>
     </tag>
     
     <tag>

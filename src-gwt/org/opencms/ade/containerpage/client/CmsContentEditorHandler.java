@@ -91,7 +91,9 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
         } else {
             m_handler.reloadElements(m_currentElementId);
         }
-        m_handler.addToRecent(m_currentElementId);
+        if (m_currentElementId != null) {
+            m_handler.addToRecent(m_currentElementId);
+        }
         m_handler.enableToolbarButtons();
         m_handler.activateSelection();
         m_handler.m_controller.setContentEditing(false);
@@ -156,7 +158,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
 
         m_handler.disableToolbarButtons();
         m_handler.deactivateCurrentButton();
-        if (editableData.getStructureId() != null) {
+        if ((editableData.getStructureId() != null) && !isNew) {
             m_currentElementId = editableData.getStructureId().toString();
         } else {
             m_currentElementId = null;
@@ -175,7 +177,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
             addEditingHistoryItem(isNew);
             CmsContentEditor.getInstance().openFormEditor(
                 CmsCoreProvider.get().getLocale(),
-                CmsContainerpageController.getServerId(getCurrentElementId()),
+                editableData.getStructureId().toString(),
                 newLink,
                 null,
                 new Command() {

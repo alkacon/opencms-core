@@ -302,9 +302,9 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
             parent.getOffsetWidth() - ((m_position.getLeft() + m_position.getWidth()) - parent.getAbsoluteLeft()),
             Unit.PX);
         int top = m_position.getTop() - parent.getAbsoluteTop();
-        if (top < 25) {
-            // if top is <25 the buttons might overlap with the option bar, so increase to 25
-            top = 25;
+        if (m_position.getHeight() < 24) {
+            // if the highlighted area has a lesser height than the buttons, center vertically
+            top -= (24 - m_position.getHeight()) / 2;
         }
         style.setTop(top, Unit.PX);
     }

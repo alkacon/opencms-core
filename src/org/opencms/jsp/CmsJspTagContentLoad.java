@@ -93,6 +93,9 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
     /** Indicates if the last element was direct editable. */
     private boolean m_directEditOpen;
 
+    /** The edit empty tag attribute. */
+    private boolean m_editEmpty;
+
     /** Indicates if this is the first content iteration loop. */
     private boolean m_isFirstLoop;
 
@@ -283,8 +286,17 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
     @Override
     public boolean hasMoreResources() throws JspException {
 
+        // check if there are more files to iterate
+        boolean hasMoreContent = m_collectorResult.size() > 0;
         if (m_isFirstLoop) {
             m_isFirstLoop = false;
+            if (!hasMoreContent && m_editEmpty && (m_directEditLinkForNew != null)) {
+                try {
+                    CmsJspTagEditable.insertEditEmpty(pageContext, this, m_directEditMode);
+                } catch (CmsException e) {
+                    throw new JspException(e);
+                }
+            }
         } else {
             if (m_directEditOpen) {
                 // last element was direct editable, close it
@@ -298,8 +310,6 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
             return false;
         }
 
-        // check if there are more files to iterate
-        boolean hasMoreContent = m_collectorResult.size() > 0;
         if (hasMoreContent) {
             // there are more results available...
             try {
@@ -342,9 +352,20 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
         } else {
             // no more results in the collector, reset locale (just to make sure...)
             m_locale = null;
+            m_editEmpty = false;
         }
 
         return hasMoreContent;
+    }
+
+    /**
+     * Returns the edit empty attribute.<p>
+     *
+     * @return the edit empty attribute
+     */
+    public boolean isEditEmpty() {
+
+        return m_editEmpty;
     }
 
     /**
@@ -372,6 +393,16 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
     public void setEditable(String mode) {
 
         m_directEditMode = CmsDirectEditMode.valueOf(mode);
+    }
+
+    /**
+     * Sets the edit empty attribute.<p>
+     *
+     * @param editEmpty the edit empty attribute to set
+     */
+    public void setEditEmpty(boolean editEmpty) {
+
+        m_editEmpty = editEmpty;
     }
 
     /**
