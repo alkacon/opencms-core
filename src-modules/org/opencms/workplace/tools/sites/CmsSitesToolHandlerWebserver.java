@@ -42,14 +42,20 @@ import org.opencms.workplace.tools.A_CmsToolHandler;
  * 
  * @since 9.0.0 
  */
-public class CmsSitesToolHandler extends A_CmsToolHandler {
+public class CmsSitesToolHandlerWebserver extends A_CmsToolHandler {
+
+    private static final String PARAM_ENABLED = "enableconfig";
+
+    private static final String MODULE_NAME = "org.opencms.workplace.tools.sites";
 
     /**
      * @see org.opencms.workplace.tools.I_CmsToolHandler#isEnabled(org.opencms.file.CmsObject)
      */
     public boolean isEnabled(CmsObject cms) {
 
-        return OpenCms.getRoleManager().hasRole(cms, CmsRole.ROOT_ADMIN);
+        boolean isEnabled = Boolean.valueOf(
+            OpenCms.getModuleManager().getModule(MODULE_NAME).getParameter(PARAM_ENABLED, Boolean.TRUE.toString())).booleanValue();
+        return isEnabled && OpenCms.getRoleManager().hasRole(cms, CmsRole.ROOT_ADMIN);
     }
 
     /**
@@ -57,6 +63,6 @@ public class CmsSitesToolHandler extends A_CmsToolHandler {
      */
     public boolean isVisible(CmsObject cms) {
 
-        return OpenCms.getRoleManager().hasRole(cms, CmsRole.ROOT_ADMIN);
+        return isEnabled(cms);
     }
 }

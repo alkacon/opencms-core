@@ -47,7 +47,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
 
 /**
  * The RPC service interface used by the container-page editor.<p>
- * 
+ *  
  * @since 8.0.0
  */
 public interface I_CmsContainerpageService extends RemoteService {
@@ -224,12 +224,13 @@ public interface I_CmsContainerpageService extends RemoteService {
      * Gets the status of a removed element.<p>
      * 
      * @param id the client id of the removed element 
+     * @param containerpageId the id of the page which should be excluded from the relation check, or null if no page should be excluded 
      *  
      * @return the status of the removed element 
      * 
      * @throws CmsRpcException
      */
-    CmsRemovedElementStatus getRemovedElementStatus(String id) throws CmsRpcException;
+    CmsRemovedElementStatus getRemovedElementStatus(String id, CmsUUID containerpageId) throws CmsRpcException;
 
     /**
      * Returns the initialization data.<p>

@@ -57,6 +57,7 @@ import org.opencms.widgets.I_CmsWidgetParameter;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.commons.CmsResourceInfoDialog;
+import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsMultiListDialog;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.I_CmsXmlDocument;
@@ -95,7 +96,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
         private StringBuffer m_buffer;
 
         /** The locales of the xml content. */
-        private List m_locales;
+        private List<String> m_locales;
 
         /**
          * Creates a new CmsXmlContentTextExtractor.<p>
@@ -105,7 +106,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
         CmsXmlContentTextExtractor(StringBuffer stringBuffer) {
 
             m_buffer = stringBuffer;
-            m_locales = new ArrayList();
+            m_locales = new ArrayList<String>();
         }
 
         /**
@@ -270,6 +271,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
 
         CmsResourceInfoDialog fileInfo = new CmsResourceInfoDialog(getJsp()) {
 
+            @Override
             protected String defaultActionHtmlEnd() {
 
                 return "";
@@ -282,7 +284,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
 
         CmsPropertyComparisonList propertyDiff = new CmsPropertyComparisonList(getJsp());
         CmsAttributeComparisonList attributeDiff = new CmsAttributeComparisonList(getJsp());
-        List lists = new ArrayList();
+        List<A_CmsListDialog> lists = new ArrayList<A_CmsListDialog>();
         lists.add(attributeDiff);
         I_CmsResourceType resourceType = OpenCms.getResourceManager().getResourceType(propertyDiff.getResourceType());
 
@@ -290,7 +292,15 @@ public class CmsResourceComparisonDialog extends CmsDialog {
 
             // display attributes, properties and compared elements
             CmsElementComparisonList contentDiff = new CmsElementComparisonList(getJsp());
-            lists.add(contentDiff);
+
+            // get the content of the resource1 and resource2
+            byte[] content1 = readFile(getCms(), propertyDiff.getResource1().getStructureId(), getParamVersion1()).getContents();
+            byte[] content2 = readFile(getCms(), propertyDiff.getResource2().getStructureId(), getParamVersion2()).getContents();
+
+            // display the content comparison only if both files has contents
+            if ((content1.length > 0) && (content2.length > 0)) {
+                lists.add(contentDiff);
+            }
             lists.add(propertyDiff);
             CmsMultiListDialog threeLists = new CmsMultiListDialog(lists);
             // perform the active list actions
@@ -310,6 +320,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
                 /**
                  * @see org.opencms.workplace.list.CmsMultiListDialog#defaultActionHtmlEnd()
                  */
+                @Override
                 public String defaultActionHtmlEnd() {
 
                     return "";
@@ -334,6 +345,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
                 /**
                  * @see org.opencms.workplace.list.CmsMultiListDialog#defaultActionHtmlEnd()
                  */
+                @Override
                 public String defaultActionHtmlEnd() {
 
                     return "";
@@ -368,16 +380,19 @@ public class CmsResourceComparisonDialog extends CmsDialog {
             String copySource = null;
 
             I_CmsTextExtractor textExtractor = null;
-            if (path1.endsWith(".pdf") && path2.endsWith(".pdf")) {
-                textExtractor = CmsExtractorPdf.getExtractor();
-            } else if (path1.endsWith(".doc") && path2.endsWith(".doc")) {
-                textExtractor = CmsExtractorMsOfficeOLE2.getExtractor();
-            } else if (path1.endsWith(".xls") && path2.endsWith(".xls")) {
-                textExtractor = CmsExtractorMsOfficeOLE2.getExtractor();
-            } else if (path1.endsWith(".rtf") && path2.endsWith(".rtf")) {
-                textExtractor = CmsExtractorRtf.getExtractor();
-            } else if (path1.endsWith(".ppt") && path2.endsWith(".ppt")) {
-                textExtractor = CmsExtractorMsOfficeOLE2.getExtractor();
+            // only if both files have contents
+            if ((content1.length > 0) && (content2.length > 0)) {
+                if (path1.endsWith(".pdf") && path2.endsWith(".pdf")) {
+                    textExtractor = CmsExtractorPdf.getExtractor();
+                } else if (path1.endsWith(".doc") && path2.endsWith(".doc")) {
+                    textExtractor = CmsExtractorMsOfficeOLE2.getExtractor();
+                } else if (path1.endsWith(".xls") && path2.endsWith(".xls")) {
+                    textExtractor = CmsExtractorMsOfficeOLE2.getExtractor();
+                } else if (path1.endsWith(".rtf") && path2.endsWith(".rtf")) {
+                    textExtractor = CmsExtractorRtf.getExtractor();
+                } else if (path1.endsWith(".ppt") && path2.endsWith(".ppt")) {
+                    textExtractor = CmsExtractorMsOfficeOLE2.getExtractor();
+                }
             }
             if (textExtractor != null) {
                 try {
@@ -432,9 +447,9 @@ public class CmsResourceComparisonDialog extends CmsDialog {
      * @param attributes a list of compared attributes to be converted to a string
      * @return a string respresentation of the attribute list
      */
-    public String[] getAttributesAsString(List attributes) {
+    public String[] getAttributesAsString(List<?> attributes) {
 
-        Iterator i = attributes.iterator();
+        Iterator<?> i = attributes.iterator();
         StringBuffer res1 = new StringBuffer(512);
         StringBuffer res2 = new StringBuffer(512);
         while (i.hasNext()) {
@@ -531,9 +546,9 @@ public class CmsResourceComparisonDialog extends CmsDialog {
      * @param properties a list of compared properties to be converted to a string
      * @return a string respresentation of the attribute list
      */
-    public String[] getPropertiesAsString(List properties) {
+    public String[] getPropertiesAsString(List<?> properties) {
 
-        Iterator i = properties.iterator();
+        Iterator<?> i = properties.iterator();
         StringBuffer res1 = new StringBuffer(512);
         StringBuffer res2 = new StringBuffer(512);
         while (i.hasNext()) {
@@ -627,6 +642,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         super.initWorkplaceRequestValues(settings, request);
@@ -646,12 +662,12 @@ public class CmsResourceComparisonDialog extends CmsDialog {
                 m_differenceDialog = new CmsDifferenceDialog(getJsp());
             }
             if (CmsResourceComparisonDialog.COMPARE_ATTRIBUTES.equals(getParamCompare())) {
-                List comparedAttributes = CmsResourceComparison.compareAttributes(getCms(), resource1, resource2);
+                List<?> comparedAttributes = CmsResourceComparison.compareAttributes(getCms(), resource1, resource2);
                 String[] attributeStrings = getAttributesAsString(comparedAttributes);
                 m_differenceDialog.setOriginalSource(attributeStrings[0]);
                 m_differenceDialog.setCopySource(attributeStrings[1]);
             } else if (CmsResourceComparisonDialog.COMPARE_PROPERTIES.equals(getParamCompare())) {
-                List comparedProperties = CmsResourceComparison.compareProperties(
+                List<?> comparedProperties = CmsResourceComparison.compareProperties(
                     getCms(),
                     resource1,
                     getParamVersion1(),
@@ -682,8 +698,8 @@ public class CmsResourceComparisonDialog extends CmsDialog {
 
         StringBuffer result = new StringBuffer();
         if (xmlDoc instanceof CmsXmlPage) {
-            List locales = xmlDoc.getLocales();
-            Iterator i = locales.iterator();
+            List<?> locales = xmlDoc.getLocales();
+            Iterator<?> i = locales.iterator();
             boolean firstIter = true;
             while (i.hasNext()) {
                 if (!firstIter) {
@@ -691,8 +707,8 @@ public class CmsResourceComparisonDialog extends CmsDialog {
                 }
                 Locale locale = (Locale)i.next();
                 result.append("\n\n[").append(locale.toString()).append(']');
-                List elements = xmlDoc.getValues(locale);
-                Iterator j = elements.iterator();
+                List<?> elements = xmlDoc.getValues(locale);
+                Iterator<?> j = elements.iterator();
                 while (j.hasNext()) {
                     I_CmsXmlContentValue value = (I_CmsXmlContentValue)j.next();
                     result.append("\n\n[");

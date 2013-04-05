@@ -41,6 +41,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_INVALID_FAVICON_FILE_1 = "ERR_INVALID_FAVICON_FILE_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_SITES_WEBSERVER_1 = "ERR_SITES_WEBSERVER_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_DETAIL_SITE_ADMIN_TOOL_HELP_0 = "GUI_DETAIL_SITE_ADMIN_TOOL_HELP_0";
 
     /** Message constant for key in the resource bundle. */
@@ -77,10 +80,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SITE_ADMIN_TOOL_GROUP_0 = "GUI_SITE_ADMIN_TOOL_GROUP_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_SITE_APACHE_ADMIN_TOOL_HELP_0 = "GUI_SITE_APACHE_ADMIN_TOOL_HELP_0";
+    public static final String GUI_SITE_WEBSERVER_ADMIN_TOOL_HELP_0 = "GUI_SITE_WEBSERVER_ADMIN_TOOL_HELP_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_SITE_APACHE_ADMIN_TOOL_NAME_0 = "GUI_SITE_APACHE_ADMIN_TOOL_NAME_0";
+    public static final String GUI_SITE_WEBSERVER_ADMIN_TOOL_NAME_0 = "GUI_SITE_WEBSERVER_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITES_ADMIN_TOOL_GROUP_0 = "GUI_SITES_ADMIN_TOOL_GROUP_0";
@@ -90,9 +93,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITES_ADMIN_TOOL_NAME_0 = "GUI_SITES_ADMIN_TOOL_NAME_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_SITES_APACHE_TITLE_0 = "GUI_SITES_APACHE_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITES_DETAIL_ALIASES_1 = "GUI_SITES_DETAIL_ALIASES_1";
@@ -149,6 +149,24 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SITES_IMPORT_FAV_BLOCK_0 = "GUI_SITES_IMPORT_FAV_BLOCK_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITES_LIST_ACTION_ACTIVATE_CONF_0 = "GUI_SITES_LIST_ACTION_ACTIVATE_CONF_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITES_LIST_ACTION_ACTIVATE_HELP_0 = "GUI_SITES_LIST_ACTION_ACTIVATE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITES_LIST_ACTION_ACTIVATE_NAME_0 = "GUI_SITES_LIST_ACTION_ACTIVATE_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITES_LIST_ACTION_DEACTIVATE_CONF_0 = "GUI_SITES_LIST_ACTION_DEACTIVATE_CONF_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITES_LIST_ACTION_DEACTIVATE_HELP_0 = "GUI_SITES_LIST_ACTION_DEACTIVATE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITES_LIST_ACTION_DEACTIVATE_NAME_0 = "GUI_SITES_LIST_ACTION_DEACTIVATE_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SITES_LIST_ACTION_EDIT_HELP_0 = "GUI_SITES_LIST_ACTION_EDIT_HELP_0";
 
     /** Message constant for key in the resource bundle. */
@@ -165,6 +183,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITES_LIST_ACTION_REMOVE_NAME_0 = "GUI_SITES_LIST_ACTION_REMOVE_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITES_LIST_COLUMN_ACTIVE_0 = "GUI_SITES_LIST_COLUMN_ACTIVE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITES_LIST_COLUMN_ACTIVE_HELP_0 = "GUI_SITES_LIST_COLUMN_ACTIVE_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITES_LIST_COLUMN_EDIT_HELP_0 = "GUI_SITES_LIST_COLUMN_EDIT_HELP_0";
@@ -215,7 +239,16 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SITES_SETTINGS_ADMIN_TOOL_NAME_0 = "GUI_SITES_SETTINGS_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String RPT_OUTPUT_CONSOLE_1 = "RPT_OUTPUT_CONSOLE_1";
+    public static final String GUI_SITES_WEBSERVER_TITLE_0 = "GUI_SITES_WEBSERVER_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_CREATING_CONFIG_FOR_SITE_2 = "RPT_CREATING_CONFIG_FOR_SITE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DELETING_FILE_1 = "RPT_DELETING_FILE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_OUTPUT_WEBSERVER_1 = "RPT_OUTPUT_WEBSERVER_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_REMOVED_SITE_SUCCESSFUL_1 = "RPT_REMOVED_SITE_SUCCESSFUL_1";

@@ -24,6 +24,9 @@
 		<dependencies/>
 		<exportpoints>
 			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/lib/" destination="WEB-INF/lib/"/>
+			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/sampleFiles/vhost.template" destination="export/system/"/>
+			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/sampleFiles/script.sh" destination="export/system/"/>
+			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/sampleFiles/script.bat" destination="export/system/"/>
 		</exportpoints>
 		<resources>
 			<resource uri="/system/modules/org.opencms.workplace.tools.sites/"/>
@@ -31,19 +34,21 @@
 			<resource uri="/system/workplace/admin/sites/"/>
 		</resources>
 		<parameters>
-			<param name="console-script">/etc/apache2/reload.sh</param>
-			<param name="target-path">/etc/apache2/sites-enabled/</param>
-			<param name="vhost-source">/etc/apache2/sites-available/vhost.template</param>
+			<param name="configtemplate">/etc/apache2/sites-available/webserver.template</param>
+			<param name="filenameprefix">opencms</param>
+			<param name="targetpath">/etc/apache2/sites-enabled/</param>
+			<param name="webserverscript">/etc/apache2/reload.sh</param>
+			<param name="enableconfig">true</param>
 		</parameters>
 	</module>
 	<files>
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>628fa992-71ce-11e2-aff1-13f7e154c8f7</uuidstructure>
-			<datelastmodified>Fri, 08 Feb 2013 09:03:20 GMT</datelastmodified>
+			<uuidstructure>622b08c0-9b81-11e2-93b7-c1221e6a3a06</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 08 Feb 2013 09:03:20 GMT</datecreated>
+			<datecreated>Tue, 02 Apr 2013 10:37:57 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -62,10 +67,10 @@
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
-			<uuidstructure>6518296e-71ce-11e2-aff1-13f7e154c8f7</uuidstructure>
-			<datelastmodified>Fri, 08 Feb 2013 09:03:24 GMT</datelastmodified>
+			<uuidstructure>658c5c6c-9b81-11e2-93b7-c1221e6a3a06</uuidstructure>
+			<datelastmodified>Tue, 02 Apr 2013 10:38:03 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 08 Feb 2013 09:03:24 GMT</datecreated>
+			<datecreated>Tue, 02 Apr 2013 10:38:03 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -119,6 +124,144 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.tools.sites/sampleFiles</destination>
+			<type>folder</type>
+			<uuidstructure>d22e7e52-9de5-11e2-8c36-c1221e6a3a06</uuidstructure>
+			<datelastmodified>Fri, 05 Apr 2013 11:42:33 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 05 Apr 2013 11:41:57 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Example Apache virtual host file and script file]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.tools.sites/sampleFiles/script.bat</source>
+			<destination>system/modules/org.opencms.workplace.tools.sites/sampleFiles/script.bat</destination>
+			<type>plain</type>
+			<uuidstructure>0617fbb5-9de6-11e2-8c36-c1221e6a3a06</uuidstructure>
+			<uuidresource>0617fbb6-9de6-11e2-8c36-c1221e6a3a06</uuidresource>
+			<datelastmodified>Fri, 05 Apr 2013 11:44:02 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 05 Apr 2013 11:43:24 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Windows batch file, restarting Apache web server service]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.tools.sites/sampleFiles/script.sh</source>
+			<destination>system/modules/org.opencms.workplace.tools.sites/sampleFiles/script.sh</destination>
+			<type>plain</type>
+			<uuidstructure>225e7298-9de6-11e2-8c36-c1221e6a3a06</uuidstructure>
+			<uuidresource>225e7299-9de6-11e2-8c36-c1221e6a3a06</uuidresource>
+			<datelastmodified>Fri, 05 Apr 2013 11:44:47 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 05 Apr 2013 11:44:11 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Linux shell script file, reloading Apache web server]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.tools.sites/sampleFiles/tomcat.sh</source>
+			<destination>system/modules/org.opencms.workplace.tools.sites/sampleFiles/tomcat.sh</destination>
+			<type>plain</type>
+			<uuidstructure>1927ee45-9dfd-11e2-aabc-c1221e6a3a06</uuidstructure>
+			<uuidresource>1927ee46-9dfd-11e2-aabc-c1221e6a3a06</uuidresource>
+			<datelastmodified>Fri, 05 Apr 2013 14:29:46 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 05 Apr 2013 14:28:34 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[/etc/init.d/tomcat]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.tools.sites/sampleFiles/vhost.template</source>
+			<destination>system/modules/org.opencms.workplace.tools.sites/sampleFiles/vhost.template</destination>
+			<type>plain</type>
+			<uuidstructure>419886fb-9de6-11e2-8c36-c1221e6a3a06</uuidstructure>
+			<uuidresource>419886fc-9de6-11e2-8c36-c1221e6a3a06</uuidresource>
+			<datelastmodified>Fri, 05 Apr 2013 11:45:49 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 05 Apr 2013 11:45:04 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Apache virtual host configuration example file]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.tools.sites/sampleFiles/worker.conf</source>
+			<destination>system/modules/org.opencms.workplace.tools.sites/sampleFiles/worker.conf</destination>
+			<type>plain</type>
+			<uuidstructure>d65ca058-9dfc-11e2-aabc-c1221e6a3a06</uuidstructure>
+			<uuidresource>d65ca059-9dfc-11e2-aabc-c1221e6a3a06</uuidresource>
+			<datelastmodified>Fri, 05 Apr 2013 14:27:13 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 05 Apr 2013 14:26:42 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[mod_jk worker.conf]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.tools.sites/sampleFiles/workers.properties</source>
+			<destination>system/modules/org.opencms.workplace.tools.sites/sampleFiles/workers.properties</destination>
+			<type>plain</type>
+			<uuidstructure>f7def70b-9dfc-11e2-aabc-c1221e6a3a06</uuidstructure>
+			<uuidresource>f7def70c-9dfc-11e2-aabc-c1221e6a3a06</uuidresource>
+			<datelastmodified>Fri, 05 Apr 2013 14:28:02 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 05 Apr 2013 14:27:39 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[mod_jk workers.properties]]></value>
+				</property>
+			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -228,58 +371,6 @@
 				<property>
 					<name>default-file</name>
 					<value><![CDATA[index.jsp]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/admin/sites/apache.jsp</source>
-			<destination>system/workplace/admin/sites/apache.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>8157855a-7cfe-11e2-a884-13f7e154c8f7</uuidstructure>
-			<uuidresource>8157855b-7cfe-11e2-a884-13f7e154c8f7</uuidresource>
-			<datelastmodified>Fri, 22 Feb 2013 14:48:21 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 22 Feb 2013 14:45:30 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Description</name>
-					<value><![CDATA[%(key.GUI_SITE_APACHE_ADMIN_TOOL_HELP_0)]]></value>
-				</property>
-				<property>
-					<name>NavImage</name>
-					<value><![CDATA[tools/sites/icons/big/apache.png]]></value>
-				</property>
-				<property>
-					<name>NavInfo</name>
-					<value><![CDATA[%(key.GUI_SITE_ADMIN_TOOL_GROUP_0)]]></value>
-				</property>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[3]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[%(key.GUI_SITE_APACHE_ADMIN_TOOL_NAME_0)]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Apache configuration]]></value>
-				</property>
-				<property>
-					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:sites=%(param.sites)&action=initial|path:/sites/apache]]></value>
-				</property>
-				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.sites.CmsSitesToolHandler]]></value>
-				</property>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -453,13 +544,13 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Site Management Overview]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -570,6 +661,58 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/admin/sites/webserver.jsp</source>
+			<destination>system/workplace/admin/sites/webserver.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>8157855a-7cfe-11e2-a884-13f7e154c8f7</uuidstructure>
+			<uuidresource>8157855b-7cfe-11e2-a884-13f7e154c8f7</uuidresource>
+			<datelastmodified>Fri, 22 Feb 2013 14:48:21 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 22 Feb 2013 14:45:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[%(key.GUI_SITE_WEBSERVER_ADMIN_TOOL_HELP_0)]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/sites/icons/big/webserver.png]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[%(key.GUI_SITE_ADMIN_TOOL_GROUP_0)]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[%(key.GUI_SITE_WEBSERVER_ADMIN_TOOL_NAME_0)]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Webserver configuration]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:sites=%(param.sites)&action=initial|path:/sites/webserver]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.sites.CmsSitesToolHandlerWebserver]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/admin/sites/reports</destination>
 			<type>folder</type>
 			<uuidstructure>30fd3bf6-7b6d-11e2-ba12-13f7e154c8f7</uuidstructure>
@@ -579,38 +722,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/admin/sites/reports/console.jsp</source>
-			<destination>system/workplace/admin/sites/reports/console.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>bdbe5d02-96e6-11e2-8cf9-d723659840f0</uuidstructure>
-			<uuidresource>bdbe5d03-96e6-11e2-8cf9-d723659840f0</uuidresource>
-			<datelastmodified>Wed, 27 Mar 2013 14:02:22 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 27 Mar 2013 14:00:54 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Console Script]]></value>
-				</property>
-				<property>
-					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:script=%(param.script)&action=initial]]></value>
-				</property>
-				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.sites.CmsSitesToolHandler]]></value>
-				</property>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -633,6 +744,38 @@
 				<property>
 					<name>admintoolhandler-args</name>
 					<value><![CDATA[params:sites=%(param.sites)&editaction=remove&action=initial]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.sites.CmsSitesToolHandler]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/sites/reports/webserver.jsp</source>
+			<destination>system/workplace/admin/sites/reports/webserver.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>bdbe5d02-96e6-11e2-8cf9-d723659840f0</uuidstructure>
+			<uuidresource>bdbe5d03-96e6-11e2-8cf9-d723659840f0</uuidresource>
+			<datelastmodified>Wed, 27 Mar 2013 14:02:22 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 27 Mar 2013 14:00:54 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Web server Script]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:script=%(param.script)&action=initial]]></value>
 				</property>
 				<property>
 					<name>admintoolhandler-class</name>
@@ -713,30 +856,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/tools/sites/icons/big/apache.png</source>
-			<destination>system/workplace/resources/tools/sites/icons/big/apache.png</destination>
-			<type>image</type>
-			<uuidstructure>e9216204-7cff-11e2-a884-13f7e154c8f7</uuidstructure>
-			<uuidresource>e9216205-7cff-11e2-a884-13f7e154c8f7</uuidresource>
-			<datelastmodified>Fri, 22 Feb 2013 14:55:34 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 22 Feb 2013 14:55:34 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[apache]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:32,h:32]]></value>
-				</property>
-			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -861,6 +980,30 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/tools/sites/icons/big/webserver.png</source>
+			<destination>system/workplace/resources/tools/sites/icons/big/webserver.png</destination>
+			<type>image</type>
+			<uuidstructure>e9216204-7cff-11e2-a884-13f7e154c8f7</uuidstructure>
+			<uuidresource>e9216205-7cff-11e2-a884-13f7e154c8f7</uuidresource>
+			<datelastmodified>Fri, 22 Feb 2013 14:55:34 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 22 Feb 2013 14:55:34 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[webserver]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/resources/tools/sites/icons/small</destination>
 			<type>folder</type>
 			<uuidstructure>daa51cf9-7b45-11e2-8bad-13f7e154c8f7</uuidstructure>
@@ -888,54 +1031,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Default favicon]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:16,h:16]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/tools/sites/icons/small/site-edit.png</source>
-			<destination>system/workplace/resources/tools/sites/icons/small/site-edit.png</destination>
-			<type>image</type>
-			<uuidstructure>b6952d22-7b61-11e2-b370-13f7e154c8f7</uuidstructure>
-			<uuidresource>b6952d23-7b61-11e2-b370-13f7e154c8f7</uuidresource>
-			<datelastmodified>Wed, 20 Feb 2013 13:30:37 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 20 Feb 2013 13:30:37 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[sites_edit]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:20,h:20]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/tools/sites/icons/small/site-remove.png</source>
-			<destination>system/workplace/resources/tools/sites/icons/small/site-remove.png</destination>
-			<type>image</type>
-			<uuidstructure>561738d5-7b62-11e2-b370-13f7e154c8f7</uuidstructure>
-			<uuidresource>561738d6-7b62-11e2-b370-13f7e154c8f7</uuidresource>
-			<datelastmodified>Wed, 20 Feb 2013 13:35:05 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 20 Feb 2013 13:35:05 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[site_remove]]></value>
 				</property>
 				<property type="shared">
 					<name>image.size</name>

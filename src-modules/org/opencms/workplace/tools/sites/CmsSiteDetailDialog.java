@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @since 9.0.0
  */
-public class CmsSiteDialog extends CmsWidgetDialog {
+public class CmsSiteDetailDialog extends CmsWidgetDialog {
 
     /** Defines which pages are valid for this dialog. */
     public static final String[] PAGES = {"page1"};
@@ -84,14 +84,14 @@ public class CmsSiteDialog extends CmsWidgetDialog {
     private String m_paramSitetitle;
 
     /** The dialog object. */
-    private CmsSiteDialogObject m_site;
+    private CmsSiteBean m_site;
 
     /**
      * Public constructor with JSP action element.<p>
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsSiteDialog(CmsJspActionElement jsp) {
+    public CmsSiteDetailDialog(CmsJspActionElement jsp) {
 
         super(jsp);
     }
@@ -103,7 +103,7 @@ public class CmsSiteDialog extends CmsWidgetDialog {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsSiteDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsSiteDetailDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
     }
@@ -125,7 +125,7 @@ public class CmsSiteDialog extends CmsWidgetDialog {
             // refresh the list of sites
             Map<?, ?> objects = (Map<?, ?>)getSettings().getListObject();
             if (objects != null) {
-                objects.remove(CmsSitesList.class.getName());
+                objects.remove(CmsSitesOverviewList.class.getName());
             }
         } catch (Exception e) {
             addCommitError(e);
@@ -218,7 +218,7 @@ public class CmsSiteDialog extends CmsWidgetDialog {
         String title = m_site.getTitle() != null ? m_site.getTitle() : Messages.get().getBundle().key(
             Messages.GUI_SITES_NEW_SITE_TITLE_0);
 
-        int count = getParamEditaction() == null ? 3 : 4;
+        int count = getParamEditaction() == null ? 4 : 5;
         count = m_site.getFavicon() != null ? ++count : count;
 
         // site info
@@ -263,7 +263,7 @@ public class CmsSiteDialog extends CmsWidgetDialog {
     protected void defineWidgets() {
 
         initSite();
-        setKeyPrefix(CmsSitesList.KEY_PREFIX_SITES);
+        setKeyPrefix(CmsSitesOverviewList.KEY_PREFIX_SITES);
 
         if (DIALOG_NEW.equals(getParamEditaction()) || DIALOG_EDIT.equals(getParamEditaction())) {
             // edit or new
@@ -282,6 +282,7 @@ public class CmsSiteDialog extends CmsWidgetDialog {
                 false)));
             addWidget(new CmsWidgetDialogParameter(m_site, "position", PAGES[0], new CmsSelectWidget(
                 createNavOpts(m_site))));
+            addWidget(new CmsWidgetDialogParameter(m_site, "webserver", PAGES[0], new CmsCheckboxWidget()));
 
             if (m_site.getFavicon() != null) {
                 try {
@@ -317,6 +318,7 @@ public class CmsSiteDialog extends CmsWidgetDialog {
                 errorPage = new CmsWidgetDialogParameter(m_site, "errorPage", PAGES[0], new CmsDisplayWidget());
             }
             addWidget(errorPage);
+            addWidget(new CmsWidgetDialogParameter(m_site, "webserver", PAGES[0], new CmsDisplayWidget()));
 
             if (m_site.getFavicon() != null) {
                 try {
@@ -382,7 +384,7 @@ public class CmsSiteDialog extends CmsWidgetDialog {
      * 
      * @return the select options
      */
-    private List<CmsSelectWidgetOption> createNavOpts(CmsSiteDialogObject currSite) {
+    private List<CmsSelectWidgetOption> createNavOpts(CmsSiteBean currSite) {
 
         List<CmsSite> sites = new ArrayList<CmsSite>();
         for (CmsSite site : OpenCms.getSiteManager().getAvailableSites(getCms(), true)) {
@@ -488,12 +490,12 @@ public class CmsSiteDialog extends CmsWidgetDialog {
         }
         if (o instanceof CmsSite) {
             // reuse site stored in session
-            m_site = new CmsSiteDialogObject((CmsSite)o);
-        } else if (o instanceof CmsSiteDialogObject) {
+            m_site = new CmsSiteBean((CmsSite)o);
+        } else if (o instanceof CmsSiteBean) {
             // create a new site
-            m_site = (CmsSiteDialogObject)o;
+            m_site = (CmsSiteBean)o;
         } else if (DIALOG_NEW.equals(getParamEditaction())) {
-            m_site = new CmsSiteDialogObject();
+            m_site = new CmsSiteBean();
         } else {
             try {
                 getToolManager().jspForwardTool(this, "/sites", new HashMap<String, String[]>());
@@ -508,7 +510,7 @@ public class CmsSiteDialog extends CmsWidgetDialog {
         try {
             CmsObject clone = OpenCms.initCmsObject(getCms());
             clone.getRequestContext().setSiteRoot("");
-            String iconPath = m_site.getSiteRoot() + "/" + CmsSiteFaviconUpload.ICON_NAME;
+            String iconPath = m_site.getSiteRoot() + "/" + CmsSiteFaviconDialog.ICON_NAME;
             if (clone.existsResource(iconPath)) {
                 m_site.setFavicon(iconPath);
             }

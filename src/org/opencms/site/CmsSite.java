@@ -81,6 +81,9 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     /** Display title of this site. */
     private String m_title;
 
+    /** Indicates whether this site should be considered when writing the web server configuration. */
+    private boolean m_webserver = true;
+
     /**
      * Constructs a new site object without title and id information,
      * this is to be used for lookup purposes only.<p>
@@ -142,6 +145,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
      * @param secureSite the secure site
      * @param exclusiveUrl the exclusive flag
      * @param exclusiveError the exclusive error flag
+     * @param webserver indicates whether to write the web server configuration for this site or not
      * @param aliases the aliases
      */
     public CmsSite(
@@ -154,6 +158,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
         CmsSiteMatcher secureSite,
         boolean exclusiveUrl,
         boolean exclusiveError,
+        boolean webserver,
         List<CmsSiteMatcher> aliases) {
 
         setSiteRoot(siteRoot);
@@ -167,11 +172,12 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
         } catch (Throwable e) {
             // m_position will have Float.MAX_VALUE, so this site will appear last
         }
+        setErrorPage(errorPage);
         setSecureServer(secureSite);
         setExclusiveUrl(exclusiveUrl);
         setExclusiveError(exclusiveError);
+        setWebserver(webserver);
         setAliases(aliases);
-        setErrorPage(errorPage);
     }
 
     /**
@@ -187,7 +193,13 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
             (CmsUUID)getSiteRootUUID().clone(),
             getTitle(),
             (CmsSiteMatcher)getSiteMatcher().clone(),
-            String.valueOf(getPosition()));
+            String.valueOf(getPosition()),
+            getErrorPage(),
+            getSecureServer(),
+            isExclusiveUrl(),
+            isExclusiveError(),
+            isWebserver(),
+            getAliases());
     }
 
     /**
@@ -458,6 +470,16 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     }
 
     /**
+     * Returns the web server.<p>
+     *
+     * @return the web server
+     */
+    public boolean isWebserver() {
+
+        return m_webserver;
+    }
+
+    /**
      * Sets the errorPage.<p>
      *
      * @param errorPage the errorPage to set
@@ -485,6 +507,16 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     public void setExclusiveUrl(boolean exclusive) {
 
         m_exclusiveUrl = exclusive;
+    }
+
+    /**
+     * Sets the web server.<p>
+     *
+     * @param webserver the web server to set
+     */
+    public void setWebserver(boolean webserver) {
+
+        m_webserver = webserver;
     }
 
     /**

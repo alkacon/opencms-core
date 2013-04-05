@@ -548,7 +548,8 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             defaultWorkplaceLink,
             gwtBuildIds,
             userInfo,
-            OpenCms.getWorkplaceManager().isKeepAlive());
+            OpenCms.getWorkplaceManager().isKeepAlive(),
+            OpenCms.getADEManager().getParameters(getCmsObject()));
         return data;
     }
 

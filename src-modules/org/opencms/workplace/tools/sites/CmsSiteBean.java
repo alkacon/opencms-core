@@ -45,7 +45,7 @@ import java.util.List;
  * 
  * @since 9.0.0
  */
-public class CmsSiteDialogObject {
+public class CmsSiteBean {
 
     /** The aliases. */
     private List<String> m_aliases = new ArrayList<String>();
@@ -94,10 +94,13 @@ public class CmsSiteDialogObject {
     /** The title of this site. */
     private String m_title;
 
+    /** Indicates whether this site should be considered when writing the web server configuration. */
+    private boolean m_webserver = true;
+
     /**
      * Default constructor.<p>
      */
-    public CmsSiteDialogObject() {
+    public CmsSiteBean() {
 
         // noop
     }
@@ -107,7 +110,7 @@ public class CmsSiteDialogObject {
      * 
      * @param site the site
      */
-    public CmsSiteDialogObject(CmsSite site) {
+    public CmsSiteBean(CmsSite site) {
 
         m_siteRoot = site.getSiteRoot();
         if (site.getSiteMatcher() != null) {
@@ -132,6 +135,7 @@ public class CmsSiteDialogObject {
             }
             m_position = site.getPosition();
             m_errorPage = site.getErrorPage();
+            m_webserver = site.isWebserver();
         }
     }
 
@@ -150,7 +154,7 @@ public class CmsSiteDialogObject {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        CmsSiteDialogObject other = (CmsSiteDialogObject)obj;
+        CmsSiteBean other = (CmsSiteBean)obj;
         if (m_server == null) {
             if (other.m_server != null) {
                 return false;
@@ -360,6 +364,16 @@ public class CmsSiteDialogObject {
     }
 
     /**
+     * Returns the web server.<p>
+     *
+     * @return the web server
+     */
+    public boolean isWebserver() {
+
+        return m_webserver;
+    }
+
+    /**
      * Sets the aliases.<p>
      *
      * @param aliases the aliases to set
@@ -510,6 +524,16 @@ public class CmsSiteDialogObject {
     }
 
     /**
+     * Sets the web server.<p>
+     *
+     * @param webserver the web server to set
+     */
+    public void setWebserver(boolean webserver) {
+
+        m_webserver = webserver;
+    }
+
+    /**
      * Creates a new site object based on the members.<p>
      * 
      * @return a new site object based on the members
@@ -538,6 +562,7 @@ public class CmsSiteDialogObject {
             matcher,
             m_exclusiveUrl,
             m_exclusiveError,
+            m_webserver,
             aliases);
     }
 

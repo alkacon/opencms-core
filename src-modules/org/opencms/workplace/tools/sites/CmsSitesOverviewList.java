@@ -31,10 +31,12 @@
 
 package org.opencms.workplace.tools.sites;
 
+import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteMatcher;
@@ -46,6 +48,7 @@ import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListDefaultAction;
 import org.opencms.workplace.list.CmsListDirectAction;
 import org.opencms.workplace.list.CmsListItem;
+import org.opencms.workplace.list.CmsListItemActionIconComparator;
 import org.opencms.workplace.list.CmsListItemDetails;
 import org.opencms.workplace.list.CmsListItemDetailsFormatter;
 import org.opencms.workplace.list.CmsListMetadata;
@@ -69,10 +72,13 @@ import javax.servlet.jsp.PageContext;
  * 
  * @since 9.0.0 
  */
-public class CmsSitesList extends A_CmsListDialog {
+public class CmsSitesOverviewList extends A_CmsListDialog {
 
     /** The message key prefix to be used for widget labels. */
     public static final String KEY_PREFIX_SITES = "sites";
+
+    /** List column id. */
+    protected static final String LIST_COLUMN_ACTIVE = "wsi";
 
     /** The path of the fav icon. */
     protected static final String LIST_ICON_FAVICON = "tools/sites/icons/small/default-favicon.png";
@@ -92,6 +98,12 @@ public class CmsSitesList extends A_CmsListDialog {
     /** The favorite upload dialog. */
     private static final String DIALOG_FAV = "fav";
 
+    /** List action id. */
+    private static final String LIST_ACTION_ACTIVATE = "wsa";
+
+    /** List action id. */
+    private static final String LIST_ACTION_DEACTIVATE = "wsd";
+
     /** List default action for editing a site. */
     private static final String LIST_ACTION_DEFAULT = "da";
 
@@ -103,6 +115,9 @@ public class CmsSitesList extends A_CmsListDialog {
 
     /** List action for removing a site. */
     private static final String LIST_ACTION_REMOVE = "ra";
+
+    /** List column id. */
+    private static final String LIST_COLUMN_ACTIVATE = "wsc";
 
     /** List column id for editing a site. */
     private static final String LIST_COLUMN_EDIT = "ce";
@@ -129,10 +144,7 @@ public class CmsSitesList extends A_CmsListDialog {
     private static final String LIST_DETAIL_SECURE = "sd";
 
     /** Path to the edit icon. */
-    private static final String LIST_ICON_EDIT = "tools/sites/icons/small/site-edit.png";
-
-    /** The path of the remove icon. */
-    private static final String LIST_ICON_REMOVE = "tools/sites/icons/small/site-remove.png";
+    private static final String LIST_ICON_EDIT = "tools/sites/icons/small/sites.png";
 
     /** Identifier for the remove multi action. */
     private static final String LIST_MACTION_REMOVE = "rma";
@@ -148,7 +160,7 @@ public class CmsSitesList extends A_CmsListDialog {
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsSitesList(CmsJspActionElement jsp) {
+    public CmsSitesOverviewList(CmsJspActionElement jsp) {
 
         super(
             jsp,
@@ -166,7 +178,7 @@ public class CmsSitesList extends A_CmsListDialog {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsSitesList(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsSitesOverviewList(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
     }
@@ -197,17 +209,33 @@ public class CmsSitesList extends A_CmsListDialog {
     @Override
     public void executeListSingleActions() throws IOException, ServletException {
 
-        String site = getSelectedItem().getId();
+        String siteId = getSelectedItem().getId();
         Map<String, String[]> params = new HashMap<String, String[]>();
-        params.put(PARAM_SITES, new String[] {site});
+        CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(siteId);
+        params.put(PARAM_SITES, new String[] {siteId});
         params.put(PARAM_ACTION, new String[] {DIALOG_INITIAL});
-        params.put(PARAM_SITE_TITLE, new String[] {OpenCms.getSiteManager().getSiteForSiteRoot(site).getTitle()});
+        params.put(PARAM_SITE_TITLE, new String[] {site.getTitle()});
         if (getParamListAction().equals(LIST_ACTION_EDIT)) {
             // forward to the edit site dialog
-            params.put(PARAM_EDIT_ACTION, new String[] {CmsSiteDialog.DIALOG_EDIT});
+            params.put(PARAM_EDIT_ACTION, new String[] {CmsSiteDetailDialog.DIALOG_EDIT});
             getToolManager().jspForwardTool(this, "/sites/detail/edit", params);
         } else if (getParamListAction().equals(LIST_ACTION_DEFAULT)) {
             getToolManager().jspForwardTool(this, "/sites/detail", params);
+        } else if (getParamListAction().equals(LIST_ACTION_ACTIVATE)
+            || getParamListAction().equals(LIST_ACTION_DEACTIVATE)) {
+            if (getParamListAction().equals(LIST_ACTION_ACTIVATE)) {
+                site.setWebserver(true);
+            } else {
+                site.setWebserver(false);
+            }
+            try {
+                // update the XML configuration
+                OpenCms.getSiteManager().updateSite(getCms(), site, site);
+                OpenCms.writeConfiguration(CmsSystemConfiguration.class);
+            } catch (CmsException e) {
+                // should never happen
+                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_SITES_WEBSERVER_1, site), e);
+            }
         } else if (getParamListAction().equals(LIST_ACTION_REMOVE)) {
             // forward to the remove site dialog
             params.put(PARAM_STYLE, new String[] {CmsToolDialog.STYLE_NEW});
@@ -277,12 +305,13 @@ public class CmsSitesList extends A_CmsListDialog {
                 item.set(LIST_COLUMN_TITLE, site.getTitle() != null ? site.getTitle() : "-");
                 if (cms != null) {
                     try {
-                        CmsResource res = cms.readResource(site.getSiteRoot() + "/" + CmsSiteFaviconUpload.ICON_NAME);
+                        CmsResource res = cms.readResource(site.getSiteRoot() + "/" + CmsSiteFaviconDialog.ICON_NAME);
                         m_icons.put(site.getSiteRoot(), getJsp().link(res.getRootPath()));
                     } catch (CmsException e) {
                         // noop
                     }
                 }
+                item.set(LIST_COLUMN_ACTIVE, Boolean.valueOf(site.isWebserver()));
                 result.add(item);
             }
         }
@@ -310,6 +339,54 @@ public class CmsSitesList extends A_CmsListDialog {
         editCol.addDirectAction(editAction);
         metadata.addColumn(editCol);
 
+        // create web server column
+        CmsListColumnDefinition activateCol = new CmsListColumnDefinition(LIST_COLUMN_ACTIVATE);
+        activateCol.setName(Messages.get().container(Messages.GUI_SITES_LIST_COLUMN_ACTIVE_0));
+        activateCol.setHelpText(Messages.get().container(Messages.GUI_SITES_LIST_COLUMN_ACTIVE_HELP_0));
+        activateCol.setWidth("20");
+        activateCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
+        activateCol.setListItemComparator(new CmsListItemActionIconComparator());
+        CmsListDirectAction jobActAction = new CmsListDirectAction(LIST_ACTION_ACTIVATE) {
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
+             */
+            @Override
+            public boolean isVisible() {
+
+                if (getItem() != null) {
+                    return !((Boolean)getItem().get(LIST_COLUMN_ACTIVE)).booleanValue();
+                }
+                return super.isVisible();
+            }
+        };
+        jobActAction.setName(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_ACTIVATE_NAME_0));
+        jobActAction.setConfirmationMessage(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_ACTIVATE_CONF_0));
+        jobActAction.setIconPath(ICON_INACTIVE);
+        jobActAction.setHelpText(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_ACTIVATE_HELP_0));
+        activateCol.addDirectAction(jobActAction);
+        // direct action: deactivate job
+        CmsListDirectAction jobDeactAction = new CmsListDirectAction(LIST_ACTION_DEACTIVATE) {
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
+             */
+            @Override
+            public boolean isVisible() {
+
+                if (getItem() != null) {
+                    return ((Boolean)getItem().get(LIST_COLUMN_ACTIVE)).booleanValue();
+                }
+                return super.isVisible();
+            }
+        };
+        jobDeactAction.setName(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_DEACTIVATE_NAME_0));
+        jobDeactAction.setConfirmationMessage(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_DEACTIVATE_CONF_0));
+        jobDeactAction.setIconPath(ICON_ACTIVE);
+        jobDeactAction.setHelpText(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_DEACTIVATE_HELP_0));
+        activateCol.addDirectAction(jobDeactAction);
+        metadata.addColumn(activateCol);
+
         // create remove column
         CmsListColumnDefinition removeCol = new CmsListColumnDefinition(LIST_COLUMN_REMOVE);
         removeCol.setName(Messages.get().container(Messages.GUI_SITES_LIST_COLUMN_REMOVE_NAME_0));
@@ -321,7 +398,7 @@ public class CmsSitesList extends A_CmsListDialog {
         CmsListDirectAction removeAction = new CmsListDirectAction(LIST_ACTION_REMOVE);
         removeAction.setName(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_REMOVE_NAME_0));
         removeAction.setHelpText(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_REMOVE_HELP_0));
-        removeAction.setIconPath(LIST_ICON_REMOVE);
+        removeAction.setIconPath(ICON_DELETE);
         removeAction.setConfirmationMessage(Messages.get().container(Messages.GUI_SITES_LIST_MACTION_REMOVE_CONF_0));
         removeCol.addDirectAction(removeAction);
         metadata.addColumn(removeCol);
@@ -380,6 +457,11 @@ public class CmsSitesList extends A_CmsListDialog {
         pathCol.setName(Messages.get().container(Messages.GUI_SITES_LIST_COLUMN_PATH_NAME_0));
         pathCol.setWidth("33%");
         metadata.addColumn(pathCol);
+
+        // add column for activation information
+        CmsListColumnDefinition actInfoCol = new CmsListColumnDefinition(LIST_COLUMN_ACTIVE);
+        actInfoCol.setVisible(false);
+        metadata.addColumn(actInfoCol);
     }
 
     /**

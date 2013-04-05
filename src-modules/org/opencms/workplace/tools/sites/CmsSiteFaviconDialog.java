@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  * 
  * @since 9.0.0
  */
-public class CmsSiteFaviconUpload extends A_CmsImportFromHttp {
+public class CmsSiteFaviconDialog extends A_CmsImportFromHttp {
 
     /** The name for the favicon. */
     public static final String ICON_NAME = "favicon.ico";
@@ -67,7 +67,7 @@ public class CmsSiteFaviconUpload extends A_CmsImportFromHttp {
     private static final String DIALOG_URI = PATH_WORKPLACE + "admin/sites/favicon.jsp";
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsSiteFaviconUpload.class);
+    private static final Log LOG = CmsLog.getLog(CmsSiteFaviconDialog.class);
 
     /** The sites parameter. */
     private String m_paramSites;
@@ -77,7 +77,7 @@ public class CmsSiteFaviconUpload extends A_CmsImportFromHttp {
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsSiteFaviconUpload(CmsJspActionElement jsp) {
+    public CmsSiteFaviconDialog(CmsJspActionElement jsp) {
 
         super(jsp);
     }
@@ -89,7 +89,7 @@ public class CmsSiteFaviconUpload extends A_CmsImportFromHttp {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsSiteFaviconUpload(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsSiteFaviconDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
     }
@@ -140,8 +140,8 @@ public class CmsSiteFaviconUpload extends A_CmsImportFromHttp {
             // set the dialog parameters
             String title = OpenCms.getSiteManager().getSiteForSiteRoot(site).getTitle();
             Map<String, String[]> params = new HashMap<String, String[]>();
-            params.put(CmsSitesList.PARAM_SITES, new String[] {getParamSites()});
-            params.put(CmsSitesList.PARAM_SITE_TITLE, new String[] {title});
+            params.put(CmsSitesOverviewList.PARAM_SITES, new String[] {getParamSites()});
+            params.put(CmsSitesOverviewList.PARAM_SITE_TITLE, new String[] {title});
             params.put(PARAM_ACTION, new String[] {DIALOG_INITIAL});
 
             // forward the request
