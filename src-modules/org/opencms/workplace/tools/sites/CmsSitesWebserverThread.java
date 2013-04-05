@@ -44,7 +44,8 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -56,6 +57,9 @@ import org.apache.commons.io.FileUtils;
  */
 public class CmsSitesWebserverThread extends A_CmsReportThread {
 
+    /** The placeholder string searched and replaced with aliases in the web server's template file. */
+    private static final String ALIASES_PLACE_HOLDER = "ALIASES_PLACE_HOLDER";
+
     /** Constant for the "http" port. */
     private static final int PORT_HTTP = 80;
 
@@ -64,9 +68,6 @@ public class CmsSitesWebserverThread extends A_CmsReportThread {
 
     /** The placeholder string searched and replaced with the server's name in the web server's template file. */
     private static final String SERVER_NAME_PLACE_HOLDER = "SERVER_NAME_PLACE_HOLDER";
-
-    /** The placeholder string searched and replaced with aliases in the web server's template file. */
-    private static final String ALIASES_PLACE_HOLDER = "ALIASES_PLACE_HOLDER";
 
     /** The file path. */
     private String m_filePrefix;
@@ -79,6 +80,9 @@ public class CmsSitesWebserverThread extends A_CmsReportThread {
 
     /** The template path. */
     private String m_templatePath;
+
+    /** The files that have been written. */
+    private List<String> m_writtenFiles = new ArrayList<String>();
 
     /**
      * Public constructor.<p>
@@ -152,17 +156,18 @@ public class CmsSitesWebserverThread extends A_CmsReportThread {
 
                 if ((site.getAliases() != null) && !site.getAliases().isEmpty()) {
                     StringBuffer buf = new StringBuffer();
-                    Iterator<CmsSiteMatcher> iter = site.getAliases().iterator();
-                    while (iter.hasNext()) {
-                        CmsSiteMatcher alias = iter.next();
+                    buf.append("ServerAlias");
+                    for (CmsSiteMatcher alias : site.getAliases()) {
+                        buf.append(" ");
                         buf.append(alias.getServerName());
-                        if (iter.hasNext()) {
-                            buf.append(",");
-                        }
                     }
                     conf = template.replaceAll(ALIASES_PLACE_HOLDER, buf.toString());
+                } else {
+                    // remove the placeholder
+                    conf = template.replaceAll(ALIASES_PLACE_HOLDER, "");
                 }
                 FileUtils.writeStringToFile(newFile, conf);
+                m_writtenFiles.add(newFile.getAbsolutePath());
             }
         }
     }
@@ -203,7 +208,10 @@ public class CmsSitesWebserverThread extends A_CmsReportThread {
     private void executeScript() throws IOException, InterruptedException {
 
         File script = new File(m_scriptPath);
-        ProcessBuilder pb = new ProcessBuilder(script.getAbsolutePath());
+        List<String> params = new LinkedList<String>();
+        params.add(script.getAbsolutePath());
+        params.addAll(m_writtenFiles);
+        ProcessBuilder pb = new ProcessBuilder(params.toArray(new String[params.size()]));
         pb.directory(new File(script.getParent()));
         Process pr = pb.start();
         pr.waitFor();
