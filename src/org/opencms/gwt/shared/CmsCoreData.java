@@ -123,6 +123,9 @@ public class CmsCoreData implements IsSerializable {
     /** A bean with information about the current user. */
     protected UserInfo m_userInfo;
 
+    /** ADE parameters. */
+    private Map<String, String> m_adeParameters;
+
     /** The XML content editor back-link URL. */
     private String m_contentEditorBacklinkUrl;
 
@@ -208,7 +211,8 @@ public class CmsCoreData implements IsSerializable {
             clone.getDefaultWorkplaceLink(),
             clone.getGwtBuildIds(),
             clone.getUserInfo(),
-            clone.isKeepAlive());
+            clone.isKeepAlive(),
+            clone.m_adeParameters);
     }
 
     /**
@@ -233,6 +237,7 @@ public class CmsCoreData implements IsSerializable {
      * @param gwtBuildIds the map of GWT build ids 
      * @param userInfo information about the current user 
      * @param isKeepAlive the keep-alive mode 
+     * @param adeParameters the map of ADE configuration parameters 
      */
     public CmsCoreData(
         String contentEditorUrl,
@@ -253,7 +258,8 @@ public class CmsCoreData implements IsSerializable {
         String defaultWorkplaceLink,
         Map<String, String> gwtBuildIds,
         UserInfo userInfo,
-        boolean isKeepAlive) {
+        boolean isKeepAlive,
+        Map<String, String> adeParameters) {
 
         m_contentEditorUrl = contentEditorUrl;
         m_contentEditorBacklinkUrl = contentEditorBacklinkUrl;
@@ -274,6 +280,17 @@ public class CmsCoreData implements IsSerializable {
         m_gwtBuildIds = gwtBuildIds;
         m_userInfo = userInfo;
         m_keepAlive = isKeepAlive;
+        m_adeParameters = adeParameters;
+    }
+
+    /** 
+     * Gets the map of ADE configuration parameters.<p>
+     * 
+     * @return the ADE configuration parameters 
+     */
+    public Map<String, String> getAdeParameters() {
+
+        return m_adeParameters;
     }
 
     /**

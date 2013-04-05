@@ -208,6 +208,9 @@ public class CmsADEManager {
     /** The online inherited container configuration cache. */
     private CmsContainerConfigurationCache m_onlineContainerConfigurationCache;
 
+    /** ADE parameters. */
+    private Map<String, String> m_parameters;
+
     /**
      * Creates a new ADE manager.<p>
      *
@@ -224,7 +227,7 @@ public class CmsADEManager {
         }
         m_onlineCms = adminCms;
         m_cache = new CmsADECache(memoryMonitor, cacheSettings);
-
+        m_parameters = new LinkedHashMap<String, String>(systemConfiguration.getAdeParameters());
         // further initialization is done by the initialize() method. We don't do that in the constructor,
         // because during the setup the configuration resource types don't exist yet.
     }
@@ -503,6 +506,25 @@ public class CmsADEManager {
     }
 
     /**
+     * Gets ADE parameters.<p>
+     * 
+     * @param cms the current CMS context 
+     * @return the ADE parameters for the current user 
+     */
+    public Map<String, String> getParameters(CmsObject cms) {
+
+        Map<String, String> result = new LinkedHashMap<String, String>(m_parameters);
+        if (cms != null) {
+            String userParamsStr = (String)(cms.getRequestContext().getCurrentUser().getAdditionalInfo().get("ADE_PARAMS"));
+            if (userParamsStr != null) {
+                Map<String, String> userParams = CmsStringUtil.splitAsMap(userParamsStr, "|", ":");
+                result.putAll(userParams);
+            }
+        }
+        return result;
+    }
+
+    /**
      * Returns the favorite list, or creates it if not available.<p>
      *
      * @param cms the cms context
@@ -706,6 +728,20 @@ public class CmsADEManager {
     }
 
     /**
+     * Returns the show editor help flag.<p>
+     *
+     * @param cms the cms context
+     * 
+     * @return the show editor help flag
+     */
+    public boolean isShowEditorHelp(CmsObject cms) {
+
+        CmsUser user = cms.getRequestContext().getCurrentUser();
+        String showHelp = (String)user.getAdditionalInfo(ADDINFO_ADE_SHOW_EDITOR_HELP);
+        return CmsStringUtil.isEmptyOrWhitespaceOnly(showHelp) || Boolean.parseBoolean(showHelp);
+    }
+
+    /**
      * Looks up the configuration data for a given sitemap path.<p>
      *
      * @param cms the current CMS context  
@@ -833,6 +869,20 @@ public class CmsADEManager {
     public void saveRecentList(CmsObject cms, List<CmsContainerElementBean> recentList) throws CmsException {
 
         saveElementList(cms, recentList, ADDINFO_ADE_RECENT_LIST);
+    }
+
+    /**
+     * Sets the show editor help flag.<p>
+     * 
+     * @param cms the cms context
+     * @param showHelp the show help flag
+     * @throws CmsException if writing the user info fails
+     */
+    public void setShowEditorHelp(CmsObject cms, boolean showHelp) throws CmsException {
+
+        CmsUser user = cms.getRequestContext().getCurrentUser();
+        user.setAdditionalInfo(ADDINFO_ADE_SHOW_EDITOR_HELP, String.valueOf(showHelp));
+        cms.writeUser(user);
     }
 
     /**
@@ -977,34 +1027,6 @@ public class CmsADEManager {
             result = cache.getModuleConfiguration();
         }
         return result;
-    }
-
-    /**
-     * Returns the show editor help flag.<p>
-     *
-     * @param cms the cms context
-     * 
-     * @return the show editor help flag
-     */
-    public boolean isShowEditorHelp(CmsObject cms) {
-
-        CmsUser user = cms.getRequestContext().getCurrentUser();
-        String showHelp = (String)user.getAdditionalInfo(ADDINFO_ADE_SHOW_EDITOR_HELP);
-        return CmsStringUtil.isEmptyOrWhitespaceOnly(showHelp) || Boolean.parseBoolean(showHelp);
-    }
-
-    /**
-     * Sets the show editor help flag.<p>
-     * 
-     * @param cms the cms context
-     * @param showHelp the show help flag
-     * @throws CmsException if writing the user info fails
-     */
-    public void setShowEditorHelp(CmsObject cms, boolean showHelp) throws CmsException {
-
-        CmsUser user = cms.getRequestContext().getCurrentUser();
-        user.setAdditionalInfo(ADDINFO_ADE_SHOW_EDITOR_HELP, String.valueOf(showHelp));
-        cms.writeUser(user);
     }
 
     /**

@@ -532,6 +532,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The ADE configuration. */
     private String m_adeConfiguration;
 
+    /** The ADE configuration parameters. */
+    private Map<String, String> m_adeParameters = new LinkedHashMap<String, String>();
+
     /** The authorization handler. */
     private String m_authorizationHandler;
 
@@ -637,6 +640,17 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The configured workflow manager. */
     private I_CmsWorkflowManager m_workflowManager;
+
+    /** 
+     * Adds an ADE configuration parameter.<p>
+     * 
+     * @param name the parameter name 
+     * @param value the parameter value 
+     */
+    public void addAdeParameter(String name, String value) {
+
+        m_adeParameters.put(name, value);
+    }
 
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
@@ -1173,6 +1187,11 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         // set the settings
         digester.addSetNext(adeCachePath, "setAdeCacheSettings");
 
+        String adeParamPath = "*/" + N_SYSTEM + "/" + N_ADE + "/" + N_PARAMETERS + "/" + N_PARAM;
+        digester.addCallMethod(adeParamPath, "addAdeParameter", 2);
+        digester.addCallParam(adeParamPath, 0, I_CmsXmlConfiguration.A_NAME);
+        digester.addCallParam(adeParamPath, 1);
+
         // add rule for subscription manager settings
         digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_SUBSCRIPTIONMANAGER, CmsSubscriptionManager.class);
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SUBSCRIPTIONMANAGER, "setEnabled", 1);
@@ -1585,10 +1604,20 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         }
 
         // ADE settings
-        if ((getAdeConfiguration() != null) || (getAdeCacheSettings() != null)) {
+        if ((getAdeConfiguration() != null) || (getAdeCacheSettings() != null) || !m_adeParameters.isEmpty()) {
             Element adeElem = systemElement.addElement(N_ADE);
             if (getAdeConfiguration() != null) {
                 adeElem.addElement(N_CONFIGURATION).addAttribute(A_CLASS, getAdeConfiguration());
+            }
+            if (!m_adeParameters.isEmpty()) {
+                Element paramsElement = adeElem.addElement(N_PARAMETERS);
+                for (Map.Entry<String, String> entry : m_adeParameters.entrySet()) {
+                    String name = entry.getKey();
+                    String value = entry.getValue();
+                    Element paramElement = paramsElement.addElement(N_PARAM);
+                    paramElement.addAttribute(N_NAME, name);
+                    paramElement.setText(value);
+                }
             }
             if (getAdeCacheSettings() != null) {
                 Element cacheElem = adeElem.addElement(N_ADE_CACHE);
@@ -1654,6 +1683,16 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     public String getAdeConfiguration() {
 
         return m_adeConfiguration;
+    }
+
+    /**
+     * Gets the ADE configuration parameters.<p>
+     * 
+     * @return the ADE configuration parameters 
+     */
+    public Map<String, String> getAdeParameters() {
+
+        return m_adeParameters;
     }
 
     /**
