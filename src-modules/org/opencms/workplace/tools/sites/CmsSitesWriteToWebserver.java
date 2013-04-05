@@ -242,9 +242,9 @@ public class CmsSitesWriteToWebserver extends CmsWidgetDialog {
         initMembers(OpenCms.getModuleManager().getModule(MODULE_NAME).getParameters());
         setKeyPrefix(CmsSitesList.KEY_PREFIX_SITES);
         addWidget(new CmsWidgetDialogParameter(this, PARAM_CONFIG_TEMPLATE, PAGES[0], new CmsInputWidget()));
-        addWidget(new CmsWidgetDialogParameter(this, PARAM_FILENAME_PREFIX, PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(this, PARAM_TARGET_PATH, PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(this, PARAM_WEBSERVER_SCRIPT, PAGES[0], new CmsInputWidget()));
+        addWidget(new CmsWidgetDialogParameter(this, PARAM_FILENAME_PREFIX, PAGES[0], new CmsInputWidget()));
     }
 
     /**
