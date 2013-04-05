@@ -45,7 +45,7 @@ import java.util.List;
  * 
  * @since 9.0.0
  */
-public class CmsSiteDialogObject {
+public class CmsSiteBean {
 
     /** The aliases. */
     private List<String> m_aliases = new ArrayList<String>();
@@ -100,7 +100,7 @@ public class CmsSiteDialogObject {
     /**
      * Default constructor.<p>
      */
-    public CmsSiteDialogObject() {
+    public CmsSiteBean() {
 
         // noop
     }
@@ -110,7 +110,7 @@ public class CmsSiteDialogObject {
      * 
      * @param site the site
      */
-    public CmsSiteDialogObject(CmsSite site) {
+    public CmsSiteBean(CmsSite site) {
 
         m_siteRoot = site.getSiteRoot();
         if (site.getSiteMatcher() != null) {
@@ -154,7 +154,7 @@ public class CmsSiteDialogObject {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        CmsSiteDialogObject other = (CmsSiteDialogObject)obj;
+        CmsSiteBean other = (CmsSiteBean)obj;
         if (m_server == null) {
             if (other.m_server != null) {
                 return false;

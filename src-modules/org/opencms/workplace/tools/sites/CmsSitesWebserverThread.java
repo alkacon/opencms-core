@@ -52,7 +52,7 @@ import org.apache.commons.io.FileUtils;
  * 
  * @since 9.0.0
  */
-public class CmsSitesWriteToWebserverThread extends A_CmsReportThread {
+public class CmsSitesWebserverThread extends A_CmsReportThread {
 
     /** Constant for the "http" port. */
     private static final int PORT_HTTP = 80;
@@ -84,7 +84,7 @@ public class CmsSitesWriteToWebserverThread extends A_CmsReportThread {
      * @param scriptPath the script path
      * @param filePrefix the filename prefix
      */
-    public CmsSitesWriteToWebserverThread(
+    public CmsSitesWebserverThread(
         CmsObject cms,
         String targetPath,
         String templatePath,

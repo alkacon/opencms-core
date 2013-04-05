@@ -1,1 +1,1 @@
-<%new org.opencms.workplace.tools.sites.CmsSitesWriteToWebserverReport(pageContext, request, response).displayReport();%>
+<%new org.opencms.workplace.tools.sites.CmsSitesWebserverReport(pageContext, request, response).displayReport();%>

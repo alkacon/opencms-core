@@ -72,7 +72,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @since 9.0.0 
  */
-public class CmsSitesList extends A_CmsListDialog {
+public class CmsSitesOverviewList extends A_CmsListDialog {
 
     /** The message key prefix to be used for widget labels. */
     public static final String KEY_PREFIX_SITES = "sites";
@@ -160,7 +160,7 @@ public class CmsSitesList extends A_CmsListDialog {
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsSitesList(CmsJspActionElement jsp) {
+    public CmsSitesOverviewList(CmsJspActionElement jsp) {
 
         super(
             jsp,
@@ -178,7 +178,7 @@ public class CmsSitesList extends A_CmsListDialog {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsSitesList(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsSitesOverviewList(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
     }
@@ -217,7 +217,7 @@ public class CmsSitesList extends A_CmsListDialog {
         params.put(PARAM_SITE_TITLE, new String[] {site.getTitle()});
         if (getParamListAction().equals(LIST_ACTION_EDIT)) {
             // forward to the edit site dialog
-            params.put(PARAM_EDIT_ACTION, new String[] {CmsSiteDialog.DIALOG_EDIT});
+            params.put(PARAM_EDIT_ACTION, new String[] {CmsSiteDetailDialog.DIALOG_EDIT});
             getToolManager().jspForwardTool(this, "/sites/detail/edit", params);
         } else if (getParamListAction().equals(LIST_ACTION_DEFAULT)) {
             getToolManager().jspForwardTool(this, "/sites/detail", params);
@@ -305,7 +305,7 @@ public class CmsSitesList extends A_CmsListDialog {
                 item.set(LIST_COLUMN_TITLE, site.getTitle() != null ? site.getTitle() : "-");
                 if (cms != null) {
                     try {
-                        CmsResource res = cms.readResource(site.getSiteRoot() + "/" + CmsSiteFaviconUpload.ICON_NAME);
+                        CmsResource res = cms.readResource(site.getSiteRoot() + "/" + CmsSiteFaviconDialog.ICON_NAME);
                         m_icons.put(site.getSiteRoot(), getJsp().link(res.getRootPath()));
                     } catch (CmsException e) {
                         // noop

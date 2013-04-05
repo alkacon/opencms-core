@@ -53,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @since 9.0.0
  */
-public class CmsSitesWriteToWebserver extends CmsWidgetDialog {
+public class CmsSitesWebserverDialog extends CmsWidgetDialog {
 
     /** The module name constant. */
     public static final String MODULE_NAME = "org.opencms.workplace.tools.sites";
@@ -102,7 +102,7 @@ public class CmsSitesWriteToWebserver extends CmsWidgetDialog {
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsSitesWriteToWebserver(CmsJspActionElement jsp) {
+    public CmsSitesWebserverDialog(CmsJspActionElement jsp) {
 
         super(jsp);
     }
@@ -114,7 +114,7 @@ public class CmsSitesWriteToWebserver extends CmsWidgetDialog {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsSitesWriteToWebserver(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsSitesWebserverDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
     }
@@ -132,7 +132,7 @@ public class CmsSitesWriteToWebserver extends CmsWidgetDialog {
         params.put(PARAM_CONFIG_TEMPLATE, new String[] {m_configtemplate});
         params.put(PARAM_ACTION, new String[] {DIALOG_INITIAL});
         params.put(PARAM_STYLE, new String[] {CmsToolDialog.STYLE_NEW});
-        getToolManager().jspForwardPage(this, CmsSitesList.PATH_REPORTS + "webserver.jsp", params);
+        getToolManager().jspForwardPage(this, CmsSitesOverviewList.PATH_REPORTS + "webserver.jsp", params);
     }
 
     /**
@@ -240,7 +240,7 @@ public class CmsSitesWriteToWebserver extends CmsWidgetDialog {
     protected void defineWidgets() {
 
         initMembers(OpenCms.getModuleManager().getModule(MODULE_NAME).getParameters());
-        setKeyPrefix(CmsSitesList.KEY_PREFIX_SITES);
+        setKeyPrefix(CmsSitesOverviewList.KEY_PREFIX_SITES);
         addWidget(new CmsWidgetDialogParameter(this, PARAM_CONFIG_TEMPLATE, PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(this, PARAM_TARGET_PATH, PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(this, PARAM_WEBSERVER_SCRIPT, PAGES[0], new CmsInputWidget()));

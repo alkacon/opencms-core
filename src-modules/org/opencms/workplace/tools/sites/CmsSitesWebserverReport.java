@@ -47,7 +47,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @since 9.0.0
  */
-public class CmsSitesWriteToWebserverReport extends A_CmsListReport {
+public class CmsSitesWebserverReport extends A_CmsListReport {
 
     /** The source file used as template for creating a web server's configuration files. */
     private String m_paramConfigtemplate;
@@ -66,7 +66,7 @@ public class CmsSitesWriteToWebserverReport extends A_CmsListReport {
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsSitesWriteToWebserverReport(CmsJspActionElement jsp) {
+    public CmsSitesWebserverReport(CmsJspActionElement jsp) {
 
         super(jsp);
     }
@@ -78,7 +78,7 @@ public class CmsSitesWriteToWebserverReport extends A_CmsListReport {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsSitesWriteToWebserverReport(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsSitesWebserverReport(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
     }
@@ -131,7 +131,7 @@ public class CmsSitesWriteToWebserverReport extends A_CmsListReport {
     public I_CmsReportThread initializeThread() {
 
         setParamCloseLink(CmsToolManager.linkForToolPath(getJsp(), "/sites/", new HashMap<String, String[]>()));
-        return new CmsSitesWriteToWebserverThread(
+        return new CmsSitesWebserverThread(
             getCms(),
             getParamTargetpath(),
             getParamConfigtemplate(),

@@ -1,1 +1,1 @@
-<%new org.opencms.workplace.tools.sites.CmsSiteFaviconUpload(pageContext, request, response).displayDialog();%> 
+<%new org.opencms.workplace.tools.sites.CmsSiteFaviconDialog(pageContext, request, response).displayDialog();%> 
