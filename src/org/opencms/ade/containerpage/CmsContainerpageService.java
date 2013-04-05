@@ -301,6 +301,31 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#copyElement(org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
+     */
+    public CmsUUID copyElement(CmsUUID pageId, CmsUUID originalElementId) throws CmsRpcException {
+
+        try {
+            CmsObject cms = getCmsObject();
+            CmsResource page = cms.readResource(pageId, CmsResourceFilter.IGNORE_EXPIRATION);
+            CmsResource element = cms.readResource(originalElementId, CmsResourceFilter.IGNORE_EXPIRATION);
+            CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, page.getRootPath());
+            String typeName = OpenCms.getResourceManager().getResourceType(element.getTypeId()).getTypeName();
+            CmsResourceTypeConfig typeConfig = config.getResourceType(typeName);
+            if (typeConfig == null) {
+                LOG.error("copyElement: Type not configured in ADE configuration: " + typeName);
+                return originalElementId;
+            } else {
+                CmsResource newResource = typeConfig.createNewElement(cms, element);
+                return newResource.getStructureId();
+            }
+        } catch (Throwable e) {
+            error(e);
+            return null; // will never be reached 
+        }
+    }
+
+    /**
      * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#createNewElement(org.opencms.util.CmsUUID, java.lang.String, java.lang.String, org.opencms.util.CmsUUID, java.lang.String)
      */
     public CmsContainerElement createNewElement(

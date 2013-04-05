@@ -54,6 +54,9 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
     /** The image dimensions. */
     private String m_dimension;
 
+    /** Flag which indicates whether the resource for this result is a copy model. */
+    private boolean m_isCopyModel;
+
     /** A flag which indicates whether this result item corresponds to a preset value in the editor.<p> */
     private boolean m_isPreset;
 
@@ -183,6 +186,16 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
         return m_viewLink;
     }
 
+    /** 
+     * Returns true if the result resource is a copy model.<p>
+     * 
+     * @return true if the resource is a copy model 
+     */
+    public boolean isCopyModel() {
+
+        return m_isCopyModel;
+    }
+
     /**
      * Returns if the represented resource is editable by the current user.<p>
      * 
@@ -255,6 +268,16 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
         m_dimension = dimension;
     }
 
+    /** 
+     * Sets the "copy model" status of this result bean.<p>
+     * 
+     * @param isCopyModel true if this result should be marked as a copy model 
+     */
+    public void setIsCopyModel(boolean isCopyModel) {
+
+        m_isCopyModel = isCopyModel;
+    }
+
     /**
      * Sets the reason this resource may not be edited.<p>
      *
@@ -324,4 +347,5 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
 
         m_viewLink = viewLink;
     }
+
 }

@@ -35,12 +35,12 @@ import org.opencms.ade.galleries.client.CmsSearchTabHandler;
 import org.opencms.ade.galleries.client.CmsSitemapTabHandler;
 import org.opencms.ade.galleries.client.CmsTypesTabHandler;
 import org.opencms.ade.galleries.client.CmsVfsTabHandler;
+import org.opencms.ade.galleries.client.I_CmsGalleryHandler;
 import org.opencms.ade.galleries.client.I_CmsGalleryWidgetHandler;
 import org.opencms.ade.galleries.client.Messages;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
-import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
@@ -56,8 +56,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style.Unit;
@@ -116,6 +114,9 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     /** The galleries tab. */
     private CmsGalleriesTab m_galleriesTab;
 
+    /** The gallery handler. */
+    private I_CmsGalleryHandler m_galleryHandler;
+
     /** The image format names. */
     private String m_imageFormatNames;
 
@@ -127,9 +128,6 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
 
     /** The command which should be executed when this widget is attached to the DOM. */
     private Command m_onAttachCommand;
-
-    /** Filter for determining which search results are draggable. */
-    private Predicate<CmsResultItemBean> m_resultDndFilter = Predicates.alwaysTrue();
 
     /** The results tab. */
     private CmsResultsTab m_resultsTab;
@@ -156,27 +154,24 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     private I_CmsGalleryWidgetHandler m_widgetHandler;
 
     /**
-     * The constructor.<p> 
+     * The constructor.<p>
      * 
-     * @param dndHandler the reference to the dnd manager
-     * @param autoHideParent the auto-hide parent to this dialog if present
+     * @param galleryHandler the gallery handler 
      */
-    public CmsGalleryDialog(CmsDNDHandler dndHandler, I_CmsAutoHider autoHideParent) {
+    public CmsGalleryDialog(I_CmsGalleryHandler galleryHandler) {
 
-        this(CmsTabbedPanelStyle.buttonTabs);
-        m_dndHandler = dndHandler;
-        m_autoHideParent = autoHideParent;
+        this(galleryHandler, CmsTabbedPanelStyle.buttonTabs);
     }
 
     /**
      * The default constructor for the gallery dialog.<p>
-     *  
+     * 
+     * @param galleryHandler the gallery handler   
      * @param style the style for the panel
      */
-    public CmsGalleryDialog(CmsTabbedPanelStyle style) {
+    public CmsGalleryDialog(I_CmsGalleryHandler galleryHandler, CmsTabbedPanelStyle style) {
 
         initCss();
-
         m_isInitialSearch = false;
         // parent widget
         m_parentPanel = new FlowPanel();
@@ -205,6 +200,10 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
         initWidget(m_parentPanel);
         ensureNotifications();
         addResizeHandler(this);
+        m_dndHandler = galleryHandler.getDndHandler();
+        m_autoHideParent = galleryHandler.getAutoHideParent();
+        m_galleryHandler = galleryHandler;
+
     }
 
     /**
@@ -324,7 +323,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
                     m_resultsTab = new CmsResultsTab(
                         new CmsResultsTabHandler(controller),
                         m_dndHandler,
-                        m_resultDndFilter);
+                        m_galleryHandler);
                     m_resultsTab.setTabTextAccessor(getTabTextAccessor(i));
                     m_tabbedPanel.addWithLeftMargin(m_resultsTab, Messages.get().key(Messages.GUI_TAB_TITLE_RESULTS_0));
                     disableSearchTab();
@@ -637,16 +636,6 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     public void setOnAttachCommand(Command onAttachCommand) {
 
         m_onAttachCommand = onAttachCommand;
-    }
-
-    /**
-     * Sets the filter which determines which search results are draggable.<p>
-     * 
-     * @param resultDndFilter the result filter 
-     */
-    public void setResultDndFilter(Predicate<CmsResultItemBean> resultDndFilter) {
-
-        m_resultDndFilter = resultDndFilter;
     }
 
     /**

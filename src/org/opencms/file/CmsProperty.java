@@ -416,6 +416,22 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
     }
 
     /**
+     * Stores a collection of properties in a map, with the property names as keys.<p>
+     * 
+     * @param properties the properties to store in the map 
+     * 
+     * @return the map with the property names as keys and the property objects as values 
+     */
+    public static Map<String, CmsProperty> toObjectMap(Iterable<CmsProperty> properties) {
+
+        Map<String, CmsProperty> result = new HashMap<String, CmsProperty>();
+        for (CmsProperty property : properties) {
+            result.put(property.getName(), property);
+        }
+        return result;
+    }
+
+    /**
      * Checks if the property definition for this property will be 
      * created implicitly on any write operation if doesn't already exist.<p>
      * 

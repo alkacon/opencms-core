@@ -29,16 +29,20 @@ package org.opencms.ade.galleries.client.ui;
 
 import org.opencms.ade.galleries.client.CmsGalleryController;
 import org.opencms.ade.galleries.client.CmsGalleryControllerHandler;
+import org.opencms.ade.galleries.client.I_CmsGalleryHandler;
 import org.opencms.ade.galleries.client.I_CmsGalleryWidgetHandler;
+import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration;
+import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsPopup;
+import org.opencms.gwt.client.ui.I_CmsAutoHider;
 
 import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * The gallery dialog popup.<p>
  */
-public class CmsGalleryPopup extends CmsPopup {
+public class CmsGalleryPopup extends CmsPopup implements I_CmsGalleryHandler {
 
     /** The main panel. */
     private SimplePanel m_container;
@@ -55,7 +59,7 @@ public class CmsGalleryPopup extends CmsPopup {
     public CmsGalleryPopup(I_CmsGalleryWidgetHandler handler, I_CmsGalleryConfiguration conf) {
 
         this();
-        CmsGalleryDialog galleryDialog = new CmsGalleryDialog(null, this);
+        CmsGalleryDialog galleryDialog = new CmsGalleryDialog(this);
         m_controller = new CmsGalleryController(new CmsGalleryControllerHandler(galleryDialog), conf);
         galleryDialog.setWidgetHandler(handler);
         m_container.setWidget(galleryDialog);
@@ -73,6 +77,39 @@ public class CmsGalleryPopup extends CmsPopup {
         m_container = new SimplePanel();
         setMainContent(m_container);
         addDialogClose(null);
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.I_CmsGalleryHandler#filterDnd(org.opencms.ade.galleries.shared.CmsResultItemBean)
+     */
+    public boolean filterDnd(CmsResultItemBean resultBean) {
+
+        return true;
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.I_CmsGalleryHandler#getAutoHideParent()
+     */
+    public I_CmsAutoHider getAutoHideParent() {
+
+        return this;
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.I_CmsGalleryHandler#getDndHandler()
+     */
+    public CmsDNDHandler getDndHandler() {
+
+        return null;
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.I_CmsGalleryHandler#processResultItem(org.opencms.ade.galleries.client.ui.CmsResultListItem)
+     */
+    public void processResultItem(CmsResultListItem item) {
+
+        // do nothing
+
     }
 
     /**

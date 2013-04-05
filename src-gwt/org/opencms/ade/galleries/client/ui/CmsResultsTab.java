@@ -29,6 +29,7 @@ package org.opencms.ade.galleries.client.ui;
 
 import org.opencms.ade.galleries.client.CmsResultContextMenuHandler;
 import org.opencms.ade.galleries.client.CmsResultsTabHandler;
+import org.opencms.ade.galleries.client.I_CmsGalleryHandler;
 import org.opencms.ade.galleries.client.Messages;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
@@ -53,7 +54,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
-import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -250,6 +250,9 @@ public class CmsResultsTab extends A_CmsListTab {
     /** The result list item which corresponds to a preset value in the editor. */
     protected CmsResultListItem m_preset;
 
+    /** The gallery handler. */
+    I_CmsGalleryHandler m_galleryHandler;
+
     /** The context menu handler. */
     private CmsContextMenuHandler m_contextMenuHandler;
 
@@ -261,9 +264,6 @@ public class CmsResultsTab extends A_CmsListTab {
 
     /** The panel showing the search parameters. */
     private FlowPanel m_params;
-
-    /** The filter for determining whether search results are draggable. */
-    private Predicate<CmsResultItemBean> m_resultDndFilter;
 
     /** The reference to the handler of this tab. */
     private CmsResultsTabHandler m_tabHandler;
@@ -279,20 +279,17 @@ public class CmsResultsTab extends A_CmsListTab {
      * 
      * @param tabHandler the tab handler 
      * @param dndHandler the dnd manager
-     * @param resultDndFilter the filter for determining which search results are draggable  
+     * @param galleryHandler the gallery handler   
      **/
-    public CmsResultsTab(
-        CmsResultsTabHandler tabHandler,
-        CmsDNDHandler dndHandler,
-        Predicate<CmsResultItemBean> resultDndFilter) {
+    public CmsResultsTab(CmsResultsTabHandler tabHandler, CmsDNDHandler dndHandler, I_CmsGalleryHandler galleryHandler) {
 
         super(GalleryTabId.cms_tab_results);
+        m_galleryHandler = galleryHandler;
         m_contextMenuHandler = new CmsResultContextMenuHandler(tabHandler);
         m_types = new HashSet<String>();
         m_hasMoreResults = false;
         m_dndHandler = dndHandler;
         m_tabHandler = tabHandler;
-        m_resultDndFilter = resultDndFilter;
         m_scrollList.truncate(TM_RESULT_TAB, CmsGalleryDialog.DIALOG_WIDTH);
         m_params = new FlowPanel();
         m_params.setStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().tabParamsPanel());
@@ -479,10 +476,8 @@ public class CmsResultsTab extends A_CmsListTab {
         m_types.add(resultItem.getType());
         boolean hasPreview = m_tabHandler.hasPreview(resultItem.getType());
         CmsDNDHandler dndHandler = m_dndHandler;
-        if (m_resultDndFilter != null) {
-            if (!m_resultDndFilter.apply(resultItem)) {
-                dndHandler = null;
-            }
+        if (!m_galleryHandler.filterDnd(resultItem)) {
+            dndHandler = null;
         }
         CmsResultListItem listItem = new CmsResultListItem(resultItem, hasPreview, dndHandler);
         if (resultItem.isPreset()) {
@@ -504,6 +499,7 @@ public class CmsResultsTab extends A_CmsListTab {
             // this affects both tiled and non-tiled result lists. 
             listItem.addDoubleClickHandler(selectHandler);
         }
+        m_galleryHandler.processResultItem(listItem);
         if (front) {
             addWidgetToFrontOfList(listItem);
         } else {

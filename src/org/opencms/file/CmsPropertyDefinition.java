@@ -122,6 +122,9 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
     /** Property for the description. */
     public static final String PROPERTY_DESCRIPTION = "Description";
 
+    /** The name of the property which controls whether an element will be used as a copy model by the container page editor. */
+    public static final String PROPERTY_ELEMENT_MODEL = "element.model";
+
     /** Property for the resource title. */
     public static final String PROPERTY_ENABLE_NOTIFICATION = "enable-notification";
 

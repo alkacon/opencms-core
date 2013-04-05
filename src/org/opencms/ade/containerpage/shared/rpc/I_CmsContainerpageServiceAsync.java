@@ -95,6 +95,15 @@ public interface I_CmsContainerpageServiceAsync {
     void checkNewWidgetsAvailable(CmsUUID structureId, AsyncCallback<Boolean> resultCallback);
 
     /**
+     * Creates  a new element with a given model element and returns the copy'S structure id.<p>
+     * 
+     * @param pageId the container page id 
+     * @param originalElementId the model element id
+     * @param resultCallback the callback for the result  
+     */
+    void copyElement(CmsUUID pageId, CmsUUID originalElementId, AsyncCallback<CmsUUID> resultCallback);
+
+    /**
      * Creates a new element of the given type and returns the new element data containing structure id and site path.<p>
      * 
      * @param pageStructureId the container page structure id 

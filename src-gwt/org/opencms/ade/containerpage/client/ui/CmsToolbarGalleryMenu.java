@@ -31,9 +31,14 @@ import org.opencms.ade.containerpage.client.CmsContainerpageController;
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.client.CmsGalleryFactory;
+import org.opencms.ade.galleries.client.I_CmsGalleryHandler;
+import org.opencms.ade.galleries.client.ui.CmsResultListItem;
 import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.A_CmsToolbarMenu;
+import org.opencms.gwt.client.ui.CmsListItemWidget.Background;
+import org.opencms.gwt.client.ui.CmsPopup;
+import org.opencms.gwt.client.ui.I_CmsAutoHider;
 import org.opencms.gwt.client.ui.I_CmsButton;
 
 import com.google.common.base.Predicate;
@@ -85,7 +90,37 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu<CmsContainerpageHand
             if (CmsContainerpageController.get().getData().getTemplateContextInfo().getCurrentContext() != null) {
                 resultDndFilter = new CmsTemplateContextResultDndFilter();
             }
-            tabsContainer.add(CmsGalleryFactory.createDialog(m_dragHandler, m_popup, resultDndFilter));
+            final Predicate<CmsResultItemBean> finalDndFilter = resultDndFilter;
+            //tabsContainer.add(CmsGalleryFactory.createDialog(m_dragHandler, m_popup, resultDndFilter));
+            tabsContainer.add(CmsGalleryFactory.createDialog(new I_CmsGalleryHandler() {
+
+                public boolean filterDnd(CmsResultItemBean resultBean) {
+
+                    if (finalDndFilter != null) {
+                        return finalDndFilter.apply(resultBean);
+                    } else {
+                        return true;
+                    }
+                }
+
+                public I_CmsAutoHider getAutoHideParent() {
+
+                    return getPopup();
+                }
+
+                public CmsDNDHandler getDndHandler() {
+
+                    return getDragHandler();
+                }
+
+                public void processResultItem(CmsResultListItem item) {
+
+                    if (item.getResult().isCopyModel()) {
+                        item.getListItemWidget().setBackground(Background.YELLOW);
+                    }
+                }
+
+            }));
             m_contentPanel.add(tabsContainer);
             m_initialized = true;
         }
@@ -97,6 +132,25 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu<CmsContainerpageHand
     public void onToolbarDeactivate() {
 
         Document.get().getBody().removeClassName(I_CmsButton.ButtonData.ADD.getIconClass());
+    }
+
+    /**
+     * Gets the drag handler.<p>
+     * 
+     * @return the drag handler 
+     */
+    protected CmsDNDHandler getDragHandler() {
+
+        return m_dragHandler;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.CmsMenuButton#getPopup()
+     */
+    @Override
+    protected CmsPopup getPopup() {
+
+        return super.getPopup();
     }
 
 }

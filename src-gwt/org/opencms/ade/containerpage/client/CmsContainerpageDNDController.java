@@ -34,6 +34,7 @@ import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElementPanel;
 import org.opencms.ade.containerpage.client.ui.I_CmsDropContainer;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
+import org.opencms.ade.galleries.client.ui.CmsResultListItem;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
 import org.opencms.gwt.client.dnd.I_CmsDNDController;
@@ -62,6 +63,7 @@ import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -152,6 +154,9 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     /** The container page controller. */
     protected CmsContainerpageController m_controller;
 
+    /** The id of the dragged element. */
+    protected String m_draggableId;
+
     /** Map of current drag info beans. */
     private Map<I_CmsDropTarget, DragInfo> m_dragInfos;
 
@@ -216,6 +221,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     public boolean onDragStart(I_CmsDraggable draggable, I_CmsDropTarget target, final CmsDNDHandler handler) {
 
         installDragOverlay();
+        m_draggableId = draggable.getId();
         m_isNew = false;
         m_originalIndex = -1;
         m_initialDropTarget = target;
@@ -249,7 +255,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             CmsDebugLog.getInstance().printLine("draggable has no id, canceling drop");
             return false;
         }
-        I_CmsSimpleCallback<CmsContainerElementData> callback = new I_CmsSimpleCallback<CmsContainerElementData>() {
+        final I_CmsSimpleCallback<CmsContainerElementData> callback = new I_CmsSimpleCallback<CmsContainerElementData>() {
 
             /**
              * Execute on success.<p>
@@ -267,7 +273,26 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             m_isNew = true;
             m_controller.getNewElement(clientId, callback);
         } else {
-            m_controller.getElement(clientId, callback);
+            if (isCopyModel(draggable)) {
+                m_controller.copyElement(draggable.getId(), new AsyncCallback<CmsUUID>() {
+
+                    public void onFailure(Throwable caught) {
+
+                        // will never be called 
+                    }
+
+                    public void onSuccess(CmsUUID result) {
+
+                        String idString = result.toString();
+                        m_draggableId = idString;
+
+                        m_controller.getElement(idString, callback);
+                    }
+                });
+            } else {
+                m_controller.getElement(clientId, callback);
+            }
+
         }
         if (target instanceof CmsContainerPageContainer) {
             String id = ((CmsContainerPageContainer)target).getContainerId();
@@ -293,13 +318,13 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                     if (m_isNew) {
                         // for new content elements dragged from the gallery menu, the given id contains the resource type name
                         containerElement = m_controller.getContainerpageUtil().createElement(
-                            m_controller.getCachedElement(draggable.getId()),
+                            m_controller.getCachedElement(m_draggableId),
                             container);
-                        containerElement.setNewType(draggable.getId());
+                        containerElement.setNewType(m_draggableId);
                     } else {
-                        CmsContainerElementData elementData = m_controller.getCachedElement(draggable.getId());
+                        CmsContainerElementData elementData = m_controller.getCachedElement(m_draggableId);
                         containerElement = m_controller.getContainerpageUtil().createElement(elementData, container);
-                        m_controller.addToRecentList(draggable.getId(), null);
+                        m_controller.addToRecentList(m_draggableId, null);
                     }
                     handler.getPlaceholder().getStyle().setDisplay(Display.NONE);
                     if (container.getPlaceholderIndex() >= container.getWidgetCount()) {
@@ -320,7 +345,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                         I_CmsLayoutBundle.INSTANCE.containerpageCss().emptyGroupContainer());
                 }
             } else if (target instanceof CmsList<?>) {
-                m_controller.addToFavoriteList(draggable.getId());
+                m_controller.addToFavoriteList(m_draggableId);
             }
         } else if ((target instanceof I_CmsDropContainer)
             && (draggable instanceof CmsContainerPageElementPanel)
@@ -334,7 +359,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             } else {
                 container.insert((CmsContainerPageElementPanel)draggable, container.getPlaceholderIndex());
             }
-            m_controller.addToRecentList(draggable.getId(), null);
+            m_controller.addToRecentList(m_draggableId, null);
             // changes are only relevant to the container page if not group-container editing
             changedContainerpage = !m_controller.isGroupcontainerEditing();
         } else if (draggable instanceof CmsContainerPageElementPanel) {
@@ -555,6 +580,21 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             return true;
         }
         return false;
+    }
+
+    /** 
+     * Checks if the draggable item is a copy model.<p>
+     * 
+     * @param draggable the draggable item 
+     * 
+     * @return true if the item is a copy model 
+     */
+    private boolean isCopyModel(I_CmsDraggable draggable) {
+
+        if (!(draggable instanceof CmsResultListItem)) {
+            return false;
+        }
+        return ((CmsResultListItem)draggable).getResult().isCopyModel();
     }
 
     /**

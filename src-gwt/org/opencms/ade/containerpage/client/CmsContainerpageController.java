@@ -810,6 +810,37 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Copies an element and asynchronously returns the structure id of the copy.<p>
+     * 
+     * @param id the element id 
+     * @param asyncCallback the callback for the result 
+     */
+    public void copyElement(final String id, final AsyncCallback<CmsUUID> asyncCallback) {
+
+        CmsRpcAction<CmsUUID> action = new CmsRpcAction<CmsUUID>() {
+
+            @Override
+            public void execute() {
+
+                start(200, false);
+                getContainerpageService().copyElement(CmsCoreProvider.get().getStructureId(), new CmsUUID(id), this);
+            }
+
+            @Override
+            protected void onResponse(CmsUUID result) {
+
+                stop(false);
+                asyncCallback.onSuccess(result);
+            }
+
+        };
+        action.execute();
+
+        // TODO: Auto-generated method stub
+
+    }
+
+    /**
      * Creates a new resource for crag container elements with the status new and opens the content editor.<p>
      * 
      * @param element the container element

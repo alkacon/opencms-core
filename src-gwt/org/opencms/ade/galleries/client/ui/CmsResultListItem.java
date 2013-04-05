@@ -58,6 +58,9 @@ public class CmsResultListItem extends CmsListItem {
     /** The resource type name of the resource. */
     private String m_resourceType;
 
+    /** The search result bean. */
+    private CmsResultItemBean m_result;
+
     /** The select button. */
     private CmsPushButton m_selectButton;
 
@@ -73,6 +76,7 @@ public class CmsResultListItem extends CmsListItem {
      */
     public CmsResultListItem(CmsResultItemBean resultItem, boolean hasPreview, CmsDNDHandler dndHandler) {
 
+        m_result = resultItem;
         resultItem.addAdditionalInfo(Messages.get().key(Messages.GUI_PREVIEW_LABEL_PATH_0), resultItem.getPath());
         CmsResultItemWidget resultItemWidget = new CmsResultItemWidget(resultItem);
         resultItemWidget.setUnselectable();
@@ -192,6 +196,16 @@ public class CmsResultListItem extends CmsListItem {
     public String getResourceType() {
 
         return m_resourceType;
+    }
+
+    /** 
+     * Gets the search result bean.<p>
+     * 
+     * @return the search result bean 
+     */
+    public CmsResultItemBean getResult() {
+
+        return m_result;
     }
 
     /**

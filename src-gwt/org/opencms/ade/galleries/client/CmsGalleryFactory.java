@@ -29,9 +29,11 @@ package org.opencms.ade.galleries.client;
 
 import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
 import org.opencms.ade.galleries.client.ui.CmsGalleryPopup;
+import org.opencms.ade.galleries.client.ui.CmsResultListItem;
 import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
+import org.opencms.gwt.client.ui.CmsListItemWidget.Background;
 import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabbedPanelStyle;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
 
@@ -59,7 +61,30 @@ public final class CmsGalleryFactory {
      */
     public static CmsGalleryDialog createDialog() {
 
-        CmsGalleryDialog galleryDialog = new CmsGalleryDialog(CmsTabbedPanelStyle.buttonTabs);
+        CmsGalleryDialog galleryDialog = new CmsGalleryDialog(new I_CmsGalleryHandler() {
+
+            public boolean filterDnd(CmsResultItemBean resultBean) {
+
+                // TODO: Auto-generated method stub
+                return true;
+            }
+
+            public I_CmsAutoHider getAutoHideParent() {
+
+                return null;
+            }
+
+            public CmsDNDHandler getDndHandler() {
+
+                return null;
+            }
+
+            public void processResultItem(CmsResultListItem item) {
+
+                // do nothing
+            }
+
+        }, CmsTabbedPanelStyle.buttonTabs);
         new CmsGalleryController(new CmsGalleryControllerHandler(galleryDialog));
         return galleryDialog;
     }
@@ -74,14 +99,54 @@ public final class CmsGalleryFactory {
      * @return gallery dialog
      */
     public static CmsGalleryDialog createDialog(
-        CmsDNDHandler dndHandler,
-        I_CmsAutoHider autoHideParent,
-        Predicate<CmsResultItemBean> resultDndFilter) {
+        final CmsDNDHandler dndHandler,
+        final I_CmsAutoHider autoHideParent,
+        final Predicate<CmsResultItemBean> resultDndFilter) {
 
-        CmsGalleryDialog galleryDialog = new CmsGalleryDialog(dndHandler, autoHideParent);
-        galleryDialog.setResultDndFilter(resultDndFilter);
+        CmsGalleryDialog galleryDialog = new CmsGalleryDialog(new I_CmsGalleryHandler() {
+
+            public boolean filterDnd(CmsResultItemBean resultBean) {
+
+                if (resultDndFilter != null) {
+                    return resultDndFilter.apply(resultBean);
+                } else {
+                    return true;
+                }
+            }
+
+            public I_CmsAutoHider getAutoHideParent() {
+
+                return autoHideParent;
+            }
+
+            public CmsDNDHandler getDndHandler() {
+
+                return dndHandler;
+            }
+
+            public void processResultItem(CmsResultListItem item) {
+
+                if (item.getResult().isCopyModel()) {
+                    item.getListItemWidget().setBackground(Background.YELLOW);
+                }
+            }
+        });
         new CmsGalleryController(new CmsGalleryControllerHandler(galleryDialog));
         return galleryDialog;
+    }
+
+    /**
+     * Creates a new gallery dialog.<p>
+     * 
+     * @param galleryHandler the gallery handler 
+     * 
+     * @return the gallery dialog instance 
+     */
+    public static CmsGalleryDialog createDialog(I_CmsGalleryHandler galleryHandler) {
+
+        CmsGalleryDialog result = new CmsGalleryDialog(galleryHandler);
+        new CmsGalleryController(new CmsGalleryControllerHandler(result));
+        return result;
     }
 
     /**

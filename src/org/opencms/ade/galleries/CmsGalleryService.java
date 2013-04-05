@@ -51,6 +51,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypePointer;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtService;
@@ -1259,6 +1260,19 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                     dimensions);
             }
         }
+
+        if (type instanceof CmsResourceTypeXmlContent) {
+            CmsProperty elementModelProperty = cms.readPropertyObject(
+                resultResource,
+                CmsPropertyDefinition.PROPERTY_ELEMENT_MODEL,
+                true);
+            if (!elementModelProperty.isNullProperty()) {
+                if (Boolean.valueOf(elementModelProperty.getValue()).booleanValue()) {
+                    bean.setIsCopyModel(true);
+                }
+            }
+        }
+
         bean.addAdditionalInfo(
             Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_SIZE_0),
             (sResult.getLength() / 1000) + " kb");
