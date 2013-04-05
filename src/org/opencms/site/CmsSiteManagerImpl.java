@@ -179,6 +179,7 @@ public final class CmsSiteManagerImpl {
             site.getTitle(),
             Float.toString(site.getPosition()),
             site.getErrorPage(),
+            Boolean.toString(site.isWebserver()),
             secureUrl,
             Boolean.toString(site.isExclusiveUrl()),
             Boolean.toString(site.isExclusiveError()));
@@ -200,6 +201,7 @@ public final class CmsSiteManagerImpl {
      * @param title the display title for this site
      * @param position the display order for this site
      * @param errorPage the URI to use as error page for this site
+     * @param webserver indicates whether to write the web server configuration for this site or not
      * @param secureServer a secure server, can be <code>null</code>
      * @param exclusive if set to <code>true</code>, secure resources will only be available using the configured secure url
      * @param error if exclusive, and set to <code>true</code> will generate a 404 error, 
@@ -213,6 +215,7 @@ public final class CmsSiteManagerImpl {
         String title,
         String position,
         String errorPage,
+        String webserver,
         String secureServer,
         String exclusive,
         String error) throws CmsConfigurationException {
@@ -246,6 +249,7 @@ public final class CmsSiteManagerImpl {
         }
         // set the error page
         site.setErrorPage(errorPage);
+        site.setWebserver(Boolean.valueOf(webserver).booleanValue());
 
         // add the server(s)
         addServer(matcher, site);

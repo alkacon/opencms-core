@@ -260,6 +260,7 @@ Each job can have an optional list of parameters.
 #     title:        optional display title
 #     position:     optional position for display order
 #     errorPage:    absolute URI to an error page used for this site (optional)
+#     webserver:    if set to true, a web-server configuration can be generated for this site
 # secure:           an optional secure server for the site:
 #     server:       the server address used for this site
 #     exclusive:    if set to true, secure resources will only be available using the given secure url
@@ -281,7 +282,8 @@ Each job can have an optional list of parameters.
 	uri CDATA #REQUIRED
 	title CDATA #IMPLIED
 	position CDATA #IMPLIED
-	errorPage CDATA #IMPLIED>
+	errorPage CDATA #IMPLIED
+	webserver (true|false|TRUE|FALSE) "true">
 <!ELEMENT secure EMPTY>
 <!ATTLIST secure
 	server CDATA #REQUIRED

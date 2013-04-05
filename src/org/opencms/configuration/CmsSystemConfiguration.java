@@ -136,6 +136,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The "title" attribute. */
     public static final String A_TITLE = "title";
 
+    /** The "webserver" attribute. */
+    public static final String A_WEBSERVER = "webserver";
+
     /** The name of the DTD for this configuration. */
     public static final String CONFIGURATION_DTD_NAME = "opencms-system.dtd";
 
@@ -965,15 +968,16 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_SITES, "setSiteManager");
 
         // add site configuration rule
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, "addSite", 8);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, "addSite", 9);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, 0, A_SERVER);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, 1, A_URI);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, 2, A_TITLE);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, 3, A_POSITION);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, 4, A_ERROR_PAGE);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 5, A_SERVER);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 6, A_EXCLUSIVE);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 7, A_ERROR);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, 5, A_WEBSERVER);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 6, A_SERVER);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 7, A_EXCLUSIVE);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 8, A_ERROR);
 
         // add an alias to the currently configured site
         digester.addCallMethod(
@@ -1389,12 +1393,13 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             siteElement.addAttribute(A_TITLE, site.getTitle());
             siteElement.addAttribute(A_POSITION, Float.toString(site.getPosition()));
             siteElement.addAttribute(A_ERROR_PAGE, site.getErrorPage());
+            siteElement.addAttribute(A_WEBSERVER, String.valueOf(site.isWebserver()));
             // create <secure server=""/> subnode            
             if (site.hasSecureServer()) {
                 Element secureElem = siteElement.addElement(N_SECURE);
                 secureElem.addAttribute(A_SERVER, site.getSecureUrl());
-                secureElem.addAttribute(A_EXCLUSIVE, "" + site.isExclusiveUrl());
-                secureElem.addAttribute(A_ERROR, "" + site.isExclusiveError());
+                secureElem.addAttribute(A_EXCLUSIVE, String.valueOf(site.isExclusiveUrl()));
+                secureElem.addAttribute(A_ERROR, String.valueOf(site.isExclusiveError()));
             }
             // create <alias server=""/> subnode(s)            
             Iterator<CmsSiteMatcher> aliasIterator = site.getAliases().iterator();
