@@ -36,6 +36,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.widgets.CmsSelectWidget;
 import org.opencms.widgets.CmsSelectWidgetOption;
 import org.opencms.widgets.CmsVfsFileWidget;
@@ -210,17 +211,14 @@ public class CmsSitesGlobalSettings extends CmsWidgetDialog {
         for (CmsSite site : sites) {
             if (!((site.getSiteRoot() == null) || site.getSiteRoot().equals("") || site.getSiteRoot().equals("/"))) {
                 // is not null and not the root site => potential option
-                if (site.getSiteRoot().startsWith(OpenCms.getSiteManager().getDefaultUri())) {
+                if (site.getSiteRoot().startsWith(
+                    CmsFileUtil.removeTrailingSeparator(OpenCms.getSiteManager().getDefaultUri()))) {
                     // is the current default site use as default option
                     CmsSelectWidgetOption option = new CmsSelectWidgetOption(
                         site.getSiteRoot() + "/",
                         true,
                         site.getTitle());
                     defaultUriOptions.add(option);
-                } else if (site.getSiteRoot().equals(OpenCms.getSiteManager().getWorkplaceServer())) {
-                    // is the current wp server use as default option
-                    CmsSelectWidgetOption option = new CmsSelectWidgetOption(site.getUrl() + "/", true, site.getTitle());
-                    wpServerOptions.add(option);
                 } else {
                     // no default, create a option
                     CmsSelectWidgetOption option = new CmsSelectWidgetOption(
@@ -228,8 +226,16 @@ public class CmsSitesGlobalSettings extends CmsWidgetDialog {
                         false,
                         site.getTitle());
                     defaultUriOptions.add(option);
-                    option = new CmsSelectWidgetOption(site.getUrl() + "/", false, site.getTitle());
+                }
+                if (site.getUrl().equals(OpenCms.getSiteManager().getWorkplaceServer())) {
+                    // is the current wp server use as default option
+                    CmsSelectWidgetOption option = new CmsSelectWidgetOption(site.getUrl(), true, site.getTitle());
                     wpServerOptions.add(option);
+                } else {
+                    // no default, create a option
+                    CmsSelectWidgetOption option = new CmsSelectWidgetOption(site.getUrl(), false, site.getTitle());
+                    wpServerOptions.add(option);
+
                 }
             }
         }
