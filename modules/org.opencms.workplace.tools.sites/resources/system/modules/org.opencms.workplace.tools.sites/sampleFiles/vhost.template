@@ -1,12 +1,12 @@
 <VirtualHost *:80>
-  ServerName SERVER_NAME_PLACE_HOLDER
-  ALIASES_PLACE_HOLDER
-  ServerAdmin webmaster@SERVER_NAME_PLACE_HOLDER
-  DocumentRoot "/usr/local/tomcat6/webapps/ROOT"
-  ErrorLog /var/log/apache2/error_SERVER_NAME_PLACE_HOLDER.log
+  ServerName $SERVER_NAME_WITH_PORT$
+  $ALIAS_DIRECTIVE$ $SERVER_ALIASES$
+  ServerAdmin webmaster@$SERVER_NAME_WITH_PORT$
+  DocumentRoot "$DOCUMENT_ROOT$"
+  ErrorLog /var/log/apache2/error_$SERVER_NAME_WITH_PORT$.log
 
   # Allow accessing the document root directory
-  <Directory "/usr/local/tomcat6/webapps/ROOT">
+  <Directory "$DOCUMENT_ROOT$">
     Options FollowSymlinks
     AllowOverride All
     Order allow,deny
@@ -14,12 +14,12 @@
   </Directory>
 
   # If the requested URI is located in the resources folder, do not forward the request
-  SetEnvIfNoCase Request_URI ^/resources/.*$ no-jk
+  SetEnvIfNoCase Request_URI ^/resources/.*\$ no-jk
 
   # If the requested URI is static content do not forward the request
-  SetEnvIfNoCase Request_URI ^/export/.*$ no-jk
+  SetEnvIfNoCase Request_URI ^/export/.*\$ no-jk
   RewriteEngine On
-  RewriteLog /var/log/apache2/rewrite_SERVER_NAME_PLACE_HOLDER.log
+  RewriteLog /var/log/apache2/rewrite_$SERVER_NAME_WITH_PORT$.log
   RewriteLogLevel 1
 
   # Deny access to php files
@@ -29,18 +29,40 @@
   # If the requested URI is NOT located in the resources folder.
   # Prepend an /opencms to everything that does not already starts with it
   # and force the result to be handled by the next URI-handler ([PT]) (JkMount in this case)
-  RewriteCond %{REQUEST_URI} !^/resources/.*$
-  RewriteCond %{REQUEST_URI} !^/export/.*$
-  RewriteCond %{REQUEST_URI} !^/webdav.*$
-  RewriteRule !^/opencms/(.*)$ /opencms%{REQUEST_URI} [PT]
-  
+  RewriteCond %{REQUEST_URI} !^/resources/.*\$
+  RewriteCond %{REQUEST_URI} !^/export/.*\$
+  RewriteCond %{REQUEST_URI} !^/webdav.*\$
+  RewriteRule !^$SERVLET_PATH$/(.*)\$ $SERVLET_PATH$%{REQUEST_URI} [PT]
+
   # These are the settings for static export. If the requested resource is not already
   # statically exported create a new request to the opencms404 handler. This has to be
   # a new request, because the current would not get through mod_jk because of the "no-jk".
-  RewriteCond %{REQUEST_URI} ^/export/.*$
+  RewriteCond %{REQUEST_URI} ^/export/.*\$
   RewriteCond "%{DOCUMENT_ROOT}%{REQUEST_FILENAME}" !-f
   RewriteCond "%{DOCUMENT_ROOT}%{REQUEST_FILENAME}/index_export.html" !-f
-  RewriteRule .* /opencms/handle404?exporturi=%{REQUEST_URI}&%{QUERY_STRING} [P]
-  
+  RewriteRule .* $SERVER_URL$$SERVLET_PATH$/handle404?exporturi=%{REQUEST_URI}&%{QUERY_STRING} [P]
+
   JkMount /* ocms
 </VirtualHost>
+
+########################
+### Available Macros ###
+########################
+# DOCUMENT_ROOT               e.g. /usr/local/tomcat/webapps/ROOT
+# WEBAPP_NAME                 e.g. ROOT
+# SERVLET_PATH                e.g. /opencms
+# DEFAULT_ENCODING            e.g. UTF-8
+# SERVER_PROTOCOL             e.g. http
+# SERVER_NAME                 e.g. www.example.tld
+# SERVER_PORT                 e.g. 80
+# SERVER_NAME_WITH_PORT       e.g. www.example.tld:1234 (only when port is not 80 or 443)
+# ALIAS_DIRECTIVE             e.g. ServerAlias
+# SERVER_ALIASES              e.g. *.example.tld example.com
+# SERVER_URL                  e.g. http://www.example.tld
+# SECURE_URL                  e.g. https://www.example.tld
+# SECURE_SERVER_NAME          e.g. example.tld
+# SECURE_SERVER_PORT          e.g. 443
+# SECURE_SERVER_PROTOCOL      e.g. https
+# SITE_TITLE                  e.g. Default site
+# ERROR_PAGE                  e.g. /sites/default/error.html
+########################

@@ -50,6 +50,8 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 
+import org.antlr.stringtemplate.StringTemplate;
+
 /**
  * Executes a script file.<p>
  * 
@@ -57,17 +59,11 @@ import org.apache.commons.io.FileUtils;
  */
 public class CmsSitesWebserverThread extends A_CmsReportThread {
 
-    /** The placeholder string searched and replaced with aliases in the web server's template file. */
-    private static final String ALIASES_PLACE_HOLDER = "ALIASES_PLACE_HOLDER";
-
     /** Constant for the "http" port. */
     private static final int PORT_HTTP = 80;
 
     /** Constant for the "https" port. */
     private static final int PORT_HTTPS = 443;
-
-    /** The placeholder string searched and replaced with the server's name in the web server's template file. */
-    private static final String SERVER_NAME_PLACE_HOLDER = "SERVER_NAME_PLACE_HOLDER";
 
     /** The file path. */
     private String m_filePrefix;
@@ -140,11 +136,14 @@ public class CmsSitesWebserverThread extends A_CmsReportThread {
      */
     private void createAllWebserverConfigs() throws IOException {
 
-        String template = FileUtils.readFileToString(new File(m_templatePath));
+        StringTemplate config = new StringTemplate(FileUtils.readFileToString(new File(m_templatePath)));
         List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(getCms(), true);
         for (CmsSite site : sites) {
             if ((site.getSiteMatcher() != null) && site.isWebserver()) {
-                String filename = generateWebserverConfigFilename(site);
+                String filename = m_targetPath
+                    + m_filePrefix
+                    + "_"
+                    + generateWebserverConfigName(site.getSiteMatcher(), "_");
                 getReport().println(
                     Messages.get().container(Messages.RPT_CREATING_CONFIG_FOR_SITE_2, filename, site),
                     I_CmsReport.FORMAT_OK);
@@ -152,21 +151,45 @@ public class CmsSitesWebserverThread extends A_CmsReportThread {
                 if (!newFile.exists()) {
                     newFile.createNewFile();
                 }
-                String conf = template.replaceAll(SERVER_NAME_PLACE_HOLDER, site.getSiteMatcher().getServerName());
 
-                if ((site.getAliases() != null) && !site.getAliases().isEmpty()) {
-                    StringBuffer buf = new StringBuffer();
-                    buf.append("ServerAlias");
-                    for (CmsSiteMatcher alias : site.getAliases()) {
-                        buf.append(" ");
-                        buf.append(alias.getServerName());
-                    }
-                    conf = template.replaceAll(ALIASES_PLACE_HOLDER, buf.toString());
-                } else {
-                    // remove the placeholder
-                    conf = template.replaceAll(ALIASES_PLACE_HOLDER, "");
+                // system info
+                config.setAttribute("DOCUMENT_ROOT", OpenCms.getSystemInfo().getWebApplicationRfsPath());
+                config.setAttribute("WEBAPP_NAME", OpenCms.getSystemInfo().getWebApplicationName());
+                config.setAttribute("SERVLET_PATH", OpenCms.getSystemInfo().getServletPath());
+                config.setAttribute("DEFAULT_ENCODING", OpenCms.getSystemInfo().getDefaultEncoding());
+
+                // site info
+                config.setAttribute("SERVER_URL", site.getUrl());
+                config.setAttribute("SERVER_PROTOCOL", site.getSiteMatcher().getServerProtocol());
+                config.setAttribute("SERVER_NAME", site.getSiteMatcher().getServerName());
+                config.setAttribute("SERVER_PORT", site.getSiteMatcher().getServerPort());
+                config.setAttribute("SERVER_NAME_WITH_PORT", generateWebserverConfigName(site.getSiteMatcher(), ":"));
+                config.setAttribute("SITE_TITLE", site.getTitle());
+                if (site.getErrorPage() != null) {
+                    config.setAttribute("ERROR_PAGE", site.getErrorPage());
                 }
-                FileUtils.writeStringToFile(newFile, conf);
+
+                // alias info
+                if ((site.getAliases() != null) && !site.getAliases().isEmpty()) {
+                    config.setAttribute("ALIAS_DIRECTIVE", "ServerAlias");
+                    for (CmsSiteMatcher alias : site.getAliases()) {
+                        config.setAttribute("SERVER_ALIASES", generateWebserverConfigName(alias, ":") + " ");
+                    }
+                }
+
+                // secure info
+                if (site.hasSecureServer()) {
+                    if (site.getSecureUrl() != null) {
+                        config.setAttribute("SECURE_URL", site.getSecureUrl());
+                    }
+                    if (site.getSecureServer() != null) {
+                        config.setAttribute("SECURE_SERVER_NAME", site.getSecureServer().getServerName());
+                        config.setAttribute("SECURE_SERVER_PORT", site.getSecureServer().getServerPort());
+                        config.setAttribute("SECURE_SERVER_PROTOCOL", site.getSecureServer().getServerProtocol());
+                    }
+                }
+
+                FileUtils.writeStringToFile(newFile, config.toString());
                 m_writtenFiles.add(newFile.getAbsolutePath());
             }
         }
@@ -233,11 +256,11 @@ public class CmsSitesWebserverThread extends A_CmsReportThread {
      * 
      * @return the web server configuration filename
      */
-    private String generateWebserverConfigFilename(CmsSite site) {
+    private String generateWebserverConfigName(CmsSiteMatcher macther, String separator) {
 
-        int port = site.getSiteMatcher().getServerPort();
-        String serverName = site.getSiteMatcher().getServerName();
-        String portPart = ((port != PORT_HTTP) && (port != PORT_HTTPS)) ? "_" + port : "";
-        return m_targetPath + m_filePrefix + "_" + serverName + portPart;
+        int port = macther.getServerPort();
+        String serverName = macther.getServerName();
+        String portPart = ((port != PORT_HTTP) && (port != PORT_HTTPS)) ? separator + port : "";
+        return serverName + portPart;
     }
 }
