@@ -134,7 +134,7 @@ public class CmsSitesWriteToWebserverThread extends A_CmsReportThread {
         String template = FileUtils.readFileToString(new File(m_templatePath));
         List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(getCms(), true);
         for (CmsSite site : sites) {
-            if (site.getSiteMatcher() != null) {
+            if ((site.getSiteMatcher() != null) && site.isWebserver()) {
                 String filename = generateWebserverConfigFilename(site);
                 getReport().println(
                     Messages.get().container(Messages.RPT_CREATING_CONFIG_FOR_SITE_2, filename, site),
