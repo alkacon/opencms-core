@@ -899,30 +899,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/sites/icons/small/site-edit.png</source>
-			<destination>system/workplace/resources/tools/sites/icons/small/site-edit.png</destination>
-			<type>image</type>
-			<uuidstructure>b6952d22-7b61-11e2-b370-13f7e154c8f7</uuidstructure>
-			<uuidresource>b6952d23-7b61-11e2-b370-13f7e154c8f7</uuidresource>
-			<datelastmodified>Wed, 20 Feb 2013 13:30:37 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 20 Feb 2013 13:30:37 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[sites_edit]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:20,h:20]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>system/workplace/resources/tools/sites/icons/small/sites.png</source>
 			<destination>system/workplace/resources/tools/sites/icons/small/sites.png</destination>
 			<type>image</type>
