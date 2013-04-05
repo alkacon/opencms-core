@@ -38,6 +38,7 @@
 			<param name="filenameprefix">opencms</param>
 			<param name="targetpath">/etc/apache2/sites-enabled/</param>
 			<param name="webserverscript">/etc/apache2/reload.sh</param>
+			<param name="enableconfig">true</param>
 		</parameters>
 	</module>
 	<files>
@@ -701,7 +702,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.sites.CmsSitesToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.sites.CmsSitesToolHandlerWebserver]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
