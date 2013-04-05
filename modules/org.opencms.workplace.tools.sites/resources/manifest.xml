@@ -124,6 +124,84 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>system/modules/org.opencms.workplace.tools.sites/sampleFiles</destination>
+			<type>folder</type>
+			<uuidstructure>d22e7e52-9de5-11e2-8c36-c1221e6a3a06</uuidstructure>
+			<datelastmodified>Fri, 05 Apr 2013 11:42:33 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 05 Apr 2013 11:41:57 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Example Apache virtual host file and script file]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.tools.sites/sampleFiles/script.bat</source>
+			<destination>system/modules/org.opencms.workplace.tools.sites/sampleFiles/script.bat</destination>
+			<type>plain</type>
+			<uuidstructure>0617fbb5-9de6-11e2-8c36-c1221e6a3a06</uuidstructure>
+			<uuidresource>0617fbb6-9de6-11e2-8c36-c1221e6a3a06</uuidresource>
+			<datelastmodified>Fri, 05 Apr 2013 11:44:02 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 05 Apr 2013 11:43:24 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Windows batch file, restarting Apache web server service]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.tools.sites/sampleFiles/script.sh</source>
+			<destination>system/modules/org.opencms.workplace.tools.sites/sampleFiles/script.sh</destination>
+			<type>plain</type>
+			<uuidstructure>225e7298-9de6-11e2-8c36-c1221e6a3a06</uuidstructure>
+			<uuidresource>225e7299-9de6-11e2-8c36-c1221e6a3a06</uuidresource>
+			<datelastmodified>Fri, 05 Apr 2013 11:44:47 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 05 Apr 2013 11:44:11 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Linux shell script file, reloading Apache web server]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.tools.sites/sampleFiles/vhost.template</source>
+			<destination>system/modules/org.opencms.workplace.tools.sites/sampleFiles/vhost.template</destination>
+			<type>plain</type>
+			<uuidstructure>419886fb-9de6-11e2-8c36-c1221e6a3a06</uuidstructure>
+			<uuidresource>419886fc-9de6-11e2-8c36-c1221e6a3a06</uuidresource>
+			<datelastmodified>Fri, 05 Apr 2013 11:45:49 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 05 Apr 2013 11:45:04 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Apache virtual host configuration example file]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace</destination>
 			<type>folder</type>
 			<uuidstructure>825afce2-11b7-11db-91cd-fdbae480bac9</uuidstructure>

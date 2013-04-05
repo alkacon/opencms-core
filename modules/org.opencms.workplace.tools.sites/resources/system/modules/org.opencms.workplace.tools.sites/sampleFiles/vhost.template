@@ -1,0 +1,46 @@
+<VirtualHost *:80>
+  ServerName SERVER_NAME_PLACE_HOLDER
+  ALIASES_PLACE_HOLDER
+  ServerAdmin webmaster@SERVER_NAME_PLACE_HOLDER
+  DocumentRoot "/usr/local/tomcat6/webapps/ROOT"
+  ErrorLog /var/log/apache2/error_SERVER_NAME_PLACE_HOLDER.log
+
+  # Allow accessing the document root directory
+  <Directory "/usr/local/tomcat6/webapps/ROOT">
+    Options FollowSymlinks
+    AllowOverride All
+    Order allow,deny
+    Allow from all
+  </Directory>
+
+  # If the requested URI is located in the resources folder, do not forward the request
+  SetEnvIfNoCase Request_URI ^/resources/.*$ no-jk
+
+  # If the requested URI is static content do not forward the request
+  SetEnvIfNoCase Request_URI ^/export/.*$ no-jk
+  RewriteEngine On
+  RewriteLog /var/log/apache2/rewrite_SERVER_NAME_PLACE_HOLDER.log
+  RewriteLogLevel 1
+
+  # Deny access to php files
+  RewriteCond %{REQUEST_FILENAME} (.+)\.php(.*)
+  RewriteRule (.*) / [F]
+
+  # If the requested URI is NOT located in the resources folder.
+  # Prepend an /opencms to everything that does not already starts with it
+  # and force the result to be handled by the next URI-handler ([PT]) (JkMount in this case)
+  RewriteCond %{REQUEST_URI} !^/resources/.*$
+  RewriteCond %{REQUEST_URI} !^/export/.*$
+  RewriteCond %{REQUEST_URI} !^/webdav.*$
+  RewriteRule !^/opencms/(.*)$ /opencms%{REQUEST_URI} [PT]
+  
+  # These are the settings for static export. If the requested resource is not already
+  # statically exported create a new request to the opencms404 handler. This has to be
+  # a new request, because the current would not get through mod_jk because of the "no-jk".
+  RewriteCond %{REQUEST_URI} ^/export/.*$
+  RewriteCond "%{DOCUMENT_ROOT}%{REQUEST_FILENAME}" !-f
+  RewriteCond "%{DOCUMENT_ROOT}%{REQUEST_FILENAME}/index_export.html" !-f
+  RewriteRule .* /opencms/handle404?exporturi=%{REQUEST_URI}&%{QUERY_STRING} [P]
+  
+  JkMount /* ocms
+</VirtualHost>
