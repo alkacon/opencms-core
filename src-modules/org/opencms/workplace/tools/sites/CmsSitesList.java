@@ -341,8 +341,8 @@ public class CmsSitesList extends A_CmsListDialog {
 
         // create web server column
         CmsListColumnDefinition activateCol = new CmsListColumnDefinition(LIST_COLUMN_ACTIVATE);
-        activateCol.setName(Messages.get().container(Messages.GUI_SITES_LIST_COL_ACTIVE_0));
-        activateCol.setHelpText(Messages.get().container(Messages.GUI_SITES_LIST_COL_ACTIVE_HELP_0));
+        activateCol.setName(Messages.get().container(Messages.GUI_SITES_LIST_COLUMN_ACTIVE_0));
+        activateCol.setHelpText(Messages.get().container(Messages.GUI_SITES_LIST_COLUMN_ACTIVE_HELP_0));
         activateCol.setWidth("20");
         activateCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         activateCol.setListItemComparator(new CmsListItemActionIconComparator());

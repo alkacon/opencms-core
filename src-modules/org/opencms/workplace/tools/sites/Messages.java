@@ -185,10 +185,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SITES_LIST_ACTION_REMOVE_NAME_0 = "GUI_SITES_LIST_ACTION_REMOVE_NAME_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_SITES_LIST_COL_ACTIVE_0 = "GUI_SITES_LIST_COL_ACTIVE_0";
+    public static final String GUI_SITES_LIST_COLUMN_ACTIVE_0 = "GUI_SITES_LIST_COLUMN_ACTIVE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_SITES_LIST_COL_ACTIVE_HELP_0 = "GUI_SITES_LIST_COL_ACTIVE_HELP_0";
+    public static final String GUI_SITES_LIST_COLUMN_ACTIVE_HELP_0 = "GUI_SITES_LIST_COLUMN_ACTIVE_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITES_LIST_COLUMN_EDIT_HELP_0 = "GUI_SITES_LIST_COLUMN_EDIT_HELP_0";
