@@ -69,6 +69,10 @@ public class CmsToolbarRemoveButton extends A_CmsToolbarOptionButton {
     public void onElementClick(ClickEvent event, CmsContainerPageElementPanel element) {
 
         CmsDomUtil.ensureMouseOut(element.getElementOptionBar().getElement());
-        getHandler().removeElement(element, ElementRemoveMode.confirmRemove);
+        getHandler().removeElement(
+            element,
+            CmsContainerpageController.isConfirmRemove()
+            ? ElementRemoveMode.confirmRemove
+            : ElementRemoveMode.saveAndCheckReferences);
     }
 }

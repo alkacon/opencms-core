@@ -155,6 +155,8 @@ public class CmsConfirmRemoveDialog extends CmsPopup {
         m_removeCallback = removeCallback;
         if (deleteCheckbox) {
             m_checkBox = new CmsCheckBox(I_MessageStrings.CHECKBOX_TEXT);
+            m_checkBox.setChecked(true);
+            m_deleteContent = true;
             m_checkBox.addValueChangeHandler(m_onCheckboxChange);
         }
         m_cancelButton.addClickHandler(m_onClickCancel);

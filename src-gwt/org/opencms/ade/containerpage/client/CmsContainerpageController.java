@@ -562,6 +562,9 @@ public final class CmsContainerpageController {
     /** The client side id/setting-hash seperator. */
     public static final String CLIENT_ID_SEPERATOR = "#";
 
+    /** Parameter name. */
+    public static final String PARAM_REMOVEMODE = "removemode";
+
     /** Instance of the data provider. */
     private static CmsContainerpageController INSTANCE;
 
@@ -686,6 +689,18 @@ public final class CmsContainerpageController {
             serverId = clientId.substring(0, clientId.indexOf(CLIENT_ID_SEPERATOR));
         }
         return serverId;
+    }
+
+    /** 
+     * Checks whether element removal should be confirmed.<p>
+     * 
+     * @return true if element removal should be confirmed 
+     */
+    public static boolean isConfirmRemove() {
+
+        Map<String, String> params = CmsCoreProvider.get().getAdeParameters();
+        String removeMode = params.get(PARAM_REMOVEMODE);
+        return (removeMode == null) || removeMode.equals("confirm");
     }
 
     /**
