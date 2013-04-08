@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.tools.sites;
 
+import org.opencms.db.CmsExportPoint;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
 import org.opencms.widgets.CmsInputWidget;
@@ -47,6 +48,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.lang.SystemUtils;
+
 /**
  * A dialog that allows to write the sites configured in OpenCms
  * into a web server configuration file, using a template.<p>
@@ -55,8 +58,20 @@ import javax.servlet.jsp.PageContext;
  */
 public class CmsSitesWebserverDialog extends CmsWidgetDialog {
 
+    /** Linux script name. */
+    public static final String DEFAULT_NAME_LINUX_SCRIPT = "script.sh";
+
+    /** Default web server configuration template file. */
+    public static final String DEFAULT_NAME_WEBSERVER_CONFIG = "vhost.template";
+
+    /** Windows script name. */
+    public static final String DEFAULT_NAME_WINDOWS_SCRIPT = "script.bat";
+
     /** The module name constant. */
     public static final String MODULE_NAME = "org.opencms.workplace.tools.sites";
+
+    /** Module path. */
+    public static final String MODULE_PATH = "/system/modules/" + MODULE_NAME + "/";
 
     /** Defines which pages are valid for this dialog. */
     public static final String[] PAGES = {"page1"};
@@ -73,17 +88,35 @@ public class CmsSitesWebserverDialog extends CmsWidgetDialog {
     /** Module parameter constant for the web server script. */
     public static final String PARAM_WEBSERVER_SCRIPT = "webserverscript";
 
+    /** The working directory for this tool. */
+    public static final String PATH_WEBSERVER_EXPORT = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebApplication(
+        "export/webserver/");
+
+    /** Sample files folder name. */
+    public static final String SAMPLE_FILES = "sampleFiles/";
+
     /** The default parameter value. */
-    private static final String DEFAULT_CONFIG_TEMPLATE = "/etc/apache2/sites-available/config.template";
+    private static final String DEFAULT_PARAM_CONFIG_TEMPLATE = "/path/to/webserver/config.template";
 
     /** The default prefix used for created web server configuration files, created by this tool. */
-    private static final String DEFAULT_FILENAME_PREFIX = "opencms";
+    private static final String DEFAULT_PARAM_FILENAME_PREFIX = "opencms";
 
     /** The default parameter value. */
-    private static final String DEFAULT_TARGET_PATH = "/etc/apache2/sites-enabled/";
+    private static final String DEFAULT_PARAM_TARGET_PATH = "/path/to/config/target/";
 
     /** The default parameter value. */
-    private static final String DEFAULT_WEBSERVER_SCRIPT = "/etc/apache2/reload.sh";
+    private static final String DEFAULT_PARAM_WEBSERVER_SCRIPT = "/path/to/webserver/script.sh";
+
+    /** The default export point URI of the web server script (LINUX). */
+    private static final String DEFAULT_PATH_SCRIPT_LINUX = MODULE_PATH + SAMPLE_FILES + DEFAULT_NAME_LINUX_SCRIPT;
+
+    /** The default export point URI of the web server script (LINUX). */
+    private static final String DEFAULT_PATH_SCRIPT_WIDNOWS = MODULE_PATH + SAMPLE_FILES + DEFAULT_NAME_WINDOWS_SCRIPT;
+
+    /** The default export point URI of the web server template. */
+    private static final String DEFAULT_PATH_TEMPLATE = MODULE_PATH + SAMPLE_FILES + DEFAULT_NAME_WEBSERVER_CONFIG;
+
+    private static final String PATH_WEBSERVER_CONFIG = PATH_WEBSERVER_EXPORT + "config";
 
     /** The source file used as template for creating a web server configuration files. */
     private String m_configtemplate;
@@ -263,10 +296,30 @@ public class CmsSitesWebserverDialog extends CmsWidgetDialog {
      */
     protected void initMembers(Map<String, String> params) {
 
-        m_webserverscript = getParameter(params, PARAM_WEBSERVER_SCRIPT, DEFAULT_WEBSERVER_SCRIPT);
-        m_targetpath = getParameter(params, PARAM_TARGET_PATH, DEFAULT_TARGET_PATH);
-        m_configtemplate = getParameter(params, PARAM_CONFIG_TEMPLATE, DEFAULT_CONFIG_TEMPLATE);
-        m_filenameprefix = getParameter(params, PARAM_FILENAME_PREFIX, DEFAULT_FILENAME_PREFIX);
+        m_webserverscript = getParameter(params, PARAM_WEBSERVER_SCRIPT, DEFAULT_PARAM_WEBSERVER_SCRIPT);
+        m_targetpath = getParameter(params, PARAM_TARGET_PATH, DEFAULT_PARAM_TARGET_PATH);
+        m_configtemplate = getParameter(params, PARAM_CONFIG_TEMPLATE, DEFAULT_PARAM_CONFIG_TEMPLATE);
+        m_filenameprefix = getParameter(params, PARAM_FILENAME_PREFIX, DEFAULT_PARAM_FILENAME_PREFIX);
+
+        if (m_webserverscript.equals(DEFAULT_PARAM_WEBSERVER_SCRIPT)
+            || m_configtemplate.equals(DEFAULT_PARAM_CONFIG_TEMPLATE)) {
+            for (CmsExportPoint point : OpenCms.getModuleManager().getModule(MODULE_NAME).getExportPoints()) {
+                if (point.getUri().equals(DEFAULT_PATH_TEMPLATE)) {
+                    m_configtemplate = point.getDestinationPath();
+                }
+                if (point.getUri().equals(DEFAULT_PATH_SCRIPT_WIDNOWS) && SystemUtils.IS_OS_WINDOWS) {
+                    // only take the windows script if the OS is a windows
+                    m_webserverscript = point.getDestinationPath();
+                } else if (point.getUri().equals(DEFAULT_PATH_SCRIPT_LINUX)) {
+                    m_webserverscript = point.getDestinationPath();
+                }
+            }
+        }
+
+        if (m_targetpath.equals(DEFAULT_PARAM_TARGET_PATH)) {
+            m_targetpath = PATH_WEBSERVER_CONFIG;
+        }
+
         setDialogObject(this);
     }
 
