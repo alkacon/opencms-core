@@ -149,6 +149,7 @@ public class CmsSitesWebserverThread extends A_CmsReportThread {
                     I_CmsReport.FORMAT_OK);
                 File newFile = new File(filename);
                 if (!newFile.exists()) {
+                    newFile.getParentFile().mkdirs();
                     newFile.createNewFile();
                 }
 
@@ -157,6 +158,7 @@ public class CmsSitesWebserverThread extends A_CmsReportThread {
                 config.setAttribute("WEBAPP_NAME", OpenCms.getSystemInfo().getWebApplicationName());
                 config.setAttribute("SERVLET_PATH", OpenCms.getSystemInfo().getServletPath());
                 config.setAttribute("DEFAULT_ENCODING", OpenCms.getSystemInfo().getDefaultEncoding());
+                config.setAttribute("CONFIG_FILENAME", generateWebserverConfigName(site.getSiteMatcher(), "_"));
 
                 // site info
                 config.setAttribute("SERVER_URL", site.getUrl());

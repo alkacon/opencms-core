@@ -3,7 +3,7 @@
   $ALIAS_DIRECTIVE$ $SERVER_ALIASES$
   ServerAdmin webmaster@$SERVER_NAME_WITH_PORT$
   DocumentRoot "$DOCUMENT_ROOT$"
-  ErrorLog /var/log/apache2/error_$SERVER_NAME_WITH_PORT$.log
+  ErrorLog /var/log/apache2/error_$CONFIG_FILENAME$.log
 
   # Allow accessing the document root directory
   <Directory "$DOCUMENT_ROOT$">
@@ -13,13 +13,20 @@
     Allow from all
   </Directory>
 
+  # Deny accessing the webserver configuration templates directory
+  <Directory "$DOCUMENT_ROOT$/export/webserver/">
+    AllowOverride None
+    Order Deny,Allow
+    Deny from All
+  </Directory>
+
   # If the requested URI is located in the resources folder, do not forward the request
   SetEnvIfNoCase Request_URI ^/resources/.*\$ no-jk
 
   # If the requested URI is static content do not forward the request
   SetEnvIfNoCase Request_URI ^/export/.*\$ no-jk
   RewriteEngine On
-  RewriteLog /var/log/apache2/rewrite_$SERVER_NAME_WITH_PORT$.log
+  RewriteLog /var/log/apache2/rewrite_$CONFIG_FILENAME$.log
   RewriteLogLevel 1
 
   # Deny access to php files
@@ -52,6 +59,7 @@
 # WEBAPP_NAME                 e.g. ROOT
 # SERVLET_PATH                e.g. /opencms
 # DEFAULT_ENCODING            e.g. UTF-8
+# CONFIG_FILENAME             e.g. example.tld_1234
 # SERVER_PROTOCOL             e.g. http
 # SERVER_NAME                 e.g. www.example.tld
 # SERVER_PORT                 e.g. 80
