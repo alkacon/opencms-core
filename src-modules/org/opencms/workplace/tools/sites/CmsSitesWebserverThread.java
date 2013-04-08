@@ -136,10 +136,10 @@ public class CmsSitesWebserverThread extends A_CmsReportThread {
      */
     private void createAllWebserverConfigs() throws IOException {
 
-        StringTemplate config = new StringTemplate(FileUtils.readFileToString(new File(m_templatePath)));
         List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(getCms(), true);
         for (CmsSite site : sites) {
             if ((site.getSiteMatcher() != null) && site.isWebserver()) {
+                StringTemplate config = new StringTemplate(FileUtils.readFileToString(new File(m_templatePath)));
                 String filename = m_targetPath
                     + m_filePrefix
                     + "_"
