@@ -65,6 +65,7 @@ import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
+import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.gwt.shared.rpc.I_CmsCoreServiceAsync;
 import org.opencms.util.CmsDefaultSet;
@@ -1317,7 +1318,7 @@ public final class CmsContainerpageController {
             setPageChanged();
             return;
         }
-        checkElementReferences(element, new AsyncCallback<Boolean>() {
+        checkElementReferences(element, new AsyncCallback<CmsRemovedElementStatus>() {
 
             public void onFailure(Throwable caught) {
 
@@ -1325,10 +1326,11 @@ public final class CmsContainerpageController {
 
             }
 
-            public void onSuccess(Boolean hasOtherReferences) {
+            public void onSuccess(CmsRemovedElementStatus status) {
 
-                boolean showDeleteCheckbox = !hasOtherReferences.booleanValue();
+                boolean showDeleteCheckbox = status.isDeletionCandidate();
                 CmsConfirmRemoveDialog removeDialog = new CmsConfirmRemoveDialog(
+                    status.getElementInfo(),
                     showDeleteCheckbox,
                     new AsyncCallback<Boolean>() {
 
@@ -2658,13 +2660,28 @@ public final class CmsContainerpageController {
      */
     private void checkElementReferences(
         final CmsContainerPageElementPanel element,
-        final AsyncCallback<Boolean> callback) {
+        final AsyncCallback<CmsRemovedElementStatus> callback) {
 
         ReferenceCheckVisitor visitor = new ReferenceCheckVisitor(element);
         processPageContent(visitor);
         if (visitor.hasReferences()) {
-            // Don't need to ask the server because we already know we have other references in the same page 
-            callback.onSuccess(Boolean.TRUE);
+            // Don't need to ask the server because we already know we have other references in the same page
+            CmsRpcAction<CmsListInfoBean> infoAction = new CmsRpcAction<CmsListInfoBean>() {
+
+                @Override
+                public void execute() {
+
+                    start(200, true);
+                }
+
+                @Override
+                protected void onResponse(CmsListInfoBean result) {
+
+                    stop(false);
+                    callback.onSuccess(new CmsRemovedElementStatus(null, result, false));
+                }
+            };
+            infoAction.execute();
         } else {
             CmsRpcAction<CmsRemovedElementStatus> getStatusAction = new CmsRpcAction<CmsRemovedElementStatus>() {
 
@@ -2682,7 +2699,7 @@ public final class CmsContainerpageController {
                 public void onResponse(final CmsRemovedElementStatus status) {
 
                     stop(false);
-                    callback.onSuccess(Boolean.valueOf(!status.isDeletionCandidate()));
+                    callback.onSuccess(status);
                 }
 
             };

@@ -94,6 +94,9 @@ public final class Messages {
     public static final String GUI_CLIPBOARD_ITEM_CAN_NOT_BE_EDITED_0 = "GUI_CLIPBOARD_ITEM_CAN_NOT_BE_EDITED_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CONFIRM_REMOVAL_CAN_DELETE_0 = "GUI_CONFIRM_REMOVAL_CAN_DELETE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CONFIRM_REMOVAL_CAPTION_0 = "GUI_CONFIRM_REMOVAL_CAPTION_0";
 
     /** Message constant for key in the resource bundle. */
