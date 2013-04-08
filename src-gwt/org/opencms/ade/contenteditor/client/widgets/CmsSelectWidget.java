@@ -145,7 +145,7 @@ public class CmsSelectWidget extends Composite implements I_EditWidget {
         m_selectBox.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxPanel());
         m_selectBox.setPopupResize(false);
         // add some styles to parts of the selectbox.
-        m_selectBox.getOpener().setStyleName(
+        m_selectBox.getOpener().addStyleName(
             org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxSelected());
         m_selectBox.getSelectorPopup().addStyleName(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().selectBoxPopup());
         m_selectBox.addValueChangeHandler(new ValueChangeHandler<String>() {
