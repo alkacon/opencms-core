@@ -101,7 +101,7 @@ public class CmsTextboxWidget extends Composite implements I_EditWidget {
                 m_textbox.setCursorPos(m_textbox.getText().length());
             }
         }, ClickEvent.getType());
-        m_fadePanel.setStyleName(CSS.inputTextBoxFader());
+        m_fadePanel.setStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().fader());
         m_textbox.addFocusHandler(new FocusHandler() {
 
             public void onFocus(FocusEvent event) {
@@ -133,6 +133,7 @@ public class CmsTextboxWidget extends Composite implements I_EditWidget {
             }
         });
         initWidget(m_mainPanel);
+        addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().inputField());
     }
 
     /**

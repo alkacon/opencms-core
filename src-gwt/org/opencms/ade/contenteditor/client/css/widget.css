@@ -376,7 +376,18 @@ div.colorPicker{
 	
 .emptyValue{}
 
-.inputField{}
+div.inputField{
+	margin-right: 12px;
+	position: relative;
+}
+
+div.inputField > div{
+	height: 18px;
+    width: 40px;
+    position: absolute;
+    bottom: 1px;
+    right: -7px;
+}
 
 .hasError{}
 

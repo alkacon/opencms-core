@@ -33,7 +33,6 @@ import com.alkacon.acacia.client.widgets.I_EditWidget;
 import com.alkacon.acacia.client.widgets.I_FormEditWidget;
 import com.alkacon.acacia.client.widgets.StringWidget;
 
-import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry;
 import org.opencms.gwt.client.I_CmsHasInit;
 
@@ -60,10 +59,7 @@ public class CmsStringWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
      */
     public I_FormEditWidget createFormWidget(String configuration) {
 
-        CmsTextboxWidget stringWidget = new CmsTextboxWidget(configuration);
-        stringWidget.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().inputField());
-
-        return new FormWidgetWrapper(stringWidget);
+        return new FormWidgetWrapper(new CmsTextboxWidget(configuration));
     }
 
     /**

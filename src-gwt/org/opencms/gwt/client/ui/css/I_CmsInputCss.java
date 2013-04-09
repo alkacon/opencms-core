@@ -131,6 +131,13 @@ public interface I_CmsInputCss extends I_CmsGlobalWidgetCss {
      * 
      * @return the css class
      */
+    String fader();
+
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
     String formDescriptionLabel();
 
     /**
@@ -216,13 +223,6 @@ public interface I_CmsInputCss extends I_CmsGlobalWidgetCss {
      * @return the css class
      */
     String inputTextAreaFader();
-
-    /**
-     * Css class reader.<p>
-     * 
-     * @return the css class
-     */
-    String inputTextBoxFader();
 
     /**
      * Css class reader.<p>

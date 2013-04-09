@@ -352,51 +352,51 @@ div.categoryItem{
 	div.dataValue{
 		background-color: value("constants.css.gradientFormDialogColor");
 	}
-	div.inputTextAreafader, div.inputBoxfader, div.inputTextBoxfader, div.vfsInputBoxfader {
+	div.inputTextAreaFader, div.inputBoxFader, div.fader, div.vfsInputBoxFader {
 		filter: literal("progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#ffffff',GradientType=1 );");
 	}
 } @elif user.agent gecko gecko1_8 {
 	div.dataValue{
 		background-image: literal("-moz-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
 	}
-	div.inputTextAreafader, div.inputBoxfader, div.inputTextBoxfader, div.vfsInputBoxfader  {
+	div.inputTextAreaFader, div.inputBoxFader, div.fader, div.vfsInputBoxFader  {
 		background: literal("-moz-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%)");
 	}
 } @elif user.agent safari {
 	div.dataValue{
 		background-image: literal("-webkit-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
 	}
-	div.inputTextAreafader, div.inputBoxfader, div.inputTextBoxfader, div.vfsInputBoxfader  {
+	div.inputTextAreaFader, div.inputBoxFader, div.fader, div.vfsInputBoxFader  {
 		background: literal("-webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(255,255,255,1)))");
 	}
 } @elif user.agent opera {
 	div.dataValue{
 		background-image: literal("-o-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
 	}
-	div.inputTextAreafader, div.inputBoxfader, div.inputTextBoxfader, div.vfsInputBoxfader {
+	div.inputTextAreaFader, div.inputBoxFader, div.fader, div.vfsInputBoxFader {
 		background: literal("-o-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%)");
 	}
 } @elif user.agent ie9 {
 	div.dataValue{
 		background-image: value("constants.css.gradientFormDialogIE9");
 	}
-	div.inputTextAreafader, div.inputBoxfader, div.inputTextBoxfader, div.vfsInputBoxfader  {
+	div.inputTextAreaFader, div.inputBoxFader, div.fader, div.vfsInputBoxFader  {
 		background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIwIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+); 
 	}
 } @else {
 	div.dataValue{
 		background-image: literal("linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
 	}
-	div.inputTextAreafader, div.inputBoxfader, div.inputTextBoxfader, div.vfsInputBoxfader  {
+	div.inputTextAreaFader, div.inputBoxFader, div.fader, div.vfsInputBoxFader  {
 		background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
 	}
 }
-div.inputTextAreafader, div.inputBoxfader, div.inputTextBoxfader, div.vfsInputBoxfader{
+div.inputTextAreaFader, div.inputBoxFader, div.fader, div.vfsInputBoxFader{
 	cursor: pointer;
     overflow: hidden;
 }
 
-div.inputBoxfader{   	
+div.inputBoxFader{   	
 	display: inline-block;
     height: 17px;
     width: 40px;
@@ -404,14 +404,14 @@ div.inputBoxfader{
     top: 1px;
     right: 15px;
 }
-div.vfsInputBoxfader{   	
+div.vfsInputBoxFader{   	
 	display: inline-block;
 	height: 17px;
     width: 40px;
     position: absolute;
     right: 15px;
 }
-div.inputTextAreafader{
+div.inputTextAreaFader{
 	border-radius: 0 0 0 3px;
     display: block;
     height: 18px;
@@ -421,14 +421,6 @@ div.inputTextAreafader{
     position: relative;
     top: -19px;
     width: 98.2%;
-}
-div.inputTextBoxfader{   	
-	display: inline-block;
-    height: 14px;
-    width: 40px;
-    position: absolute;
-    bottom: 9px;
-    right: 6px;
 }
 
 input.comboBoxOpener:disabled{
