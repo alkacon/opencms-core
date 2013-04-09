@@ -37,6 +37,7 @@
 			<param name="configtemplate">/path/to/webserver/config.template</param>
 			<param name="enableconfig">true</param>
 			<param name="filenameprefix">opencms</param>
+			<param name="loggingdir">/path/to/logging/folder/</param>
 			<param name="targetpath">/path/to/config/target/</param>
 			<param name="webserverscript">/path/to/webserver/script.sh</param>
 		</parameters>
@@ -140,6 +141,26 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Example Apache virtual host file and script file]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.tools.sites/templates/available-macros.txt</source>
+			<destination>system/modules/org.opencms.workplace.tools.sites/templates/available-macros.txt</destination>
+			<type>plain</type>
+			<uuidstructure>36c95753-a101-11e2-842a-c1221e6a3a06</uuidstructure>
+			<uuidresource>36c95754-a101-11e2-842a-c1221e6a3a06</uuidresource>
+			<datelastmodified>Tue, 09 Apr 2013 10:35:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 09 Apr 2013 10:35:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[A list of available macros]]></value>
 				</property>
 			</properties>
 			<relations/>

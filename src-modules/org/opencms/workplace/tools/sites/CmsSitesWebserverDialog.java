@@ -82,6 +82,9 @@ public class CmsSitesWebserverDialog extends CmsWidgetDialog {
     /** A module parameter name for the prefix used for web server configuration files. */
     public static final String PARAM_FILENAME_PREFIX = "filenameprefix";
 
+    /** The parameter name for the logging directory. */
+    public static final String PARAM_LOGGING_DIR = "loggingdir";
+
     /** Module parameter constant for the target path. */
     public static final String PARAM_TARGET_PATH = "targetpath";
 
@@ -101,11 +104,17 @@ public class CmsSitesWebserverDialog extends CmsWidgetDialog {
     /** The default prefix used for created web server configuration files, created by this tool. */
     private static final String DEFAULT_PARAM_FILENAME_PREFIX = "opencms";
 
+    /** The default value for the logging directory parameter. */
+    private static final String DEFAULT_PARAM_LOGGING_DIR = "/path/to/logging/folder/";
+
     /** The default parameter value. */
     private static final String DEFAULT_PARAM_TARGET_PATH = "/path/to/config/target/";
 
     /** The default parameter value. */
     private static final String DEFAULT_PARAM_WEBSERVER_SCRIPT = "/path/to/webserver/script.sh";
+
+    /** The default path for apache2 log files on a Unix system. */
+    private static final String DEFAULT_PATH_LOG_LINUX = "/var/log/apache2/";
 
     /** The default export point URI of the web server script (LINUX). */
     private static final String DEFAULT_PATH_SCRIPT_LINUX = MODULE_PATH + TEMPLATE_FILES + DEFAULT_NAME_LINUX_SCRIPT;
@@ -125,6 +134,9 @@ public class CmsSitesWebserverDialog extends CmsWidgetDialog {
 
     /** The prefix used for created web server configuration files, created by this tool. */
     private String m_filenameprefix;
+
+    /** The logging directory. */
+    private String m_loggingdir;
 
     /** The target path to store the web server files. */
     private String m_targetpath;
@@ -165,6 +177,7 @@ public class CmsSitesWebserverDialog extends CmsWidgetDialog {
         params.put(PARAM_TARGET_PATH, new String[] {m_targetpath});
         params.put(PARAM_FILENAME_PREFIX, new String[] {m_filenameprefix});
         params.put(PARAM_CONFIG_TEMPLATE, new String[] {m_configtemplate});
+        params.put(PARAM_LOGGING_DIR, new String[] {m_loggingdir});
         params.put(PARAM_ACTION, new String[] {DIALOG_INITIAL});
         params.put(PARAM_STYLE, new String[] {CmsToolDialog.STYLE_NEW});
         getToolManager().jspForwardPage(this, CmsSitesOverviewList.PATH_REPORTS + "webserver.jsp", params);
@@ -188,6 +201,16 @@ public class CmsSitesWebserverDialog extends CmsWidgetDialog {
     public String getFilenameprefix() {
 
         return m_filenameprefix;
+    }
+
+    /**
+     * Returns the loggingdir.<p>
+     *
+     * @return the loggingdir
+     */
+    public String getLoggingdir() {
+
+        return m_loggingdir;
     }
 
     /**
@@ -231,6 +254,16 @@ public class CmsSitesWebserverDialog extends CmsWidgetDialog {
     }
 
     /**
+     * Sets the loggingdir.<p>
+     *
+     * @param loggingdir the loggingdir to set
+     */
+    public void setLoggingdir(String loggingdir) {
+
+        m_loggingdir = loggingdir;
+    }
+
+    /**
      * Sets the target path.<p>
      *
      * @param targetpath the target path to set
@@ -261,7 +294,7 @@ public class CmsSitesWebserverDialog extends CmsWidgetDialog {
         result.append(createWidgetErrorHeader());
         result.append(dialogBlockStart(Messages.get().getBundle().key(Messages.GUI_SITES_WEBSERVER_TITLE_0)));
         result.append(createWidgetTableStart());
-        result.append(createDialogRowsHtml(0, 3));
+        result.append(createDialogRowsHtml(0, 4));
         result.append(createWidgetTableEnd());
         result.append(dialogBlockEnd());
         result.append(createWidgetTableEnd());
@@ -279,6 +312,7 @@ public class CmsSitesWebserverDialog extends CmsWidgetDialog {
         addWidget(new CmsWidgetDialogParameter(this, PARAM_CONFIG_TEMPLATE, PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(this, PARAM_TARGET_PATH, PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(this, PARAM_WEBSERVER_SCRIPT, PAGES[0], new CmsInputWidget()));
+        addWidget(new CmsWidgetDialogParameter(this, PARAM_LOGGING_DIR, PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(this, PARAM_FILENAME_PREFIX, PAGES[0], new CmsInputWidget()));
     }
 
@@ -302,6 +336,7 @@ public class CmsSitesWebserverDialog extends CmsWidgetDialog {
         m_targetpath = getParameter(params, PARAM_TARGET_PATH, DEFAULT_PARAM_TARGET_PATH);
         m_configtemplate = getParameter(params, PARAM_CONFIG_TEMPLATE, DEFAULT_PARAM_CONFIG_TEMPLATE);
         m_filenameprefix = getParameter(params, PARAM_FILENAME_PREFIX, DEFAULT_PARAM_FILENAME_PREFIX);
+        m_loggingdir = getParameter(params, PARAM_LOGGING_DIR, DEFAULT_PARAM_LOGGING_DIR);
 
         if (m_webserverscript.equals(DEFAULT_PARAM_WEBSERVER_SCRIPT)
             || m_configtemplate.equals(DEFAULT_PARAM_CONFIG_TEMPLATE)) {
@@ -320,6 +355,10 @@ public class CmsSitesWebserverDialog extends CmsWidgetDialog {
 
         if (m_targetpath.equals(DEFAULT_PARAM_TARGET_PATH)) {
             m_targetpath = PATH_WEBSERVER_CONFIG;
+        }
+
+        if (m_loggingdir.equals(DEFAULT_PARAM_LOGGING_DIR)) {
+            m_loggingdir = SystemUtils.IS_OS_WINDOWS ? "" : DEFAULT_PATH_LOG_LINUX;
         }
 
         setDialogObject(this);

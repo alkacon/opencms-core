@@ -77,6 +77,9 @@ public class CmsSitesWebserverThread extends A_CmsReportThread {
     /** The template path. */
     private String m_templatePath;
 
+    /** The logging directory. */
+    private String m_loggingDir;
+
     /** The files that have been written. */
     private List<String> m_writtenFiles = new ArrayList<String>();
 
@@ -88,13 +91,15 @@ public class CmsSitesWebserverThread extends A_CmsReportThread {
      * @param templatePath the template path
      * @param scriptPath the script path
      * @param filePrefix the filename prefix
+     * @param loggingDir the logging directory
      */
     public CmsSitesWebserverThread(
         CmsObject cms,
         String targetPath,
         String templatePath,
         String scriptPath,
-        String filePrefix) {
+        String filePrefix,
+        String loggingDir) {
 
         super(cms, "write-to-webserver");
 
@@ -102,6 +107,7 @@ public class CmsSitesWebserverThread extends A_CmsReportThread {
         m_templatePath = templatePath;
         m_scriptPath = scriptPath;
         m_filePrefix = filePrefix;
+        m_loggingDir = loggingDir;
         initHtmlReport(cms.getRequestContext().getLocale());
     }
 
@@ -161,6 +167,7 @@ public class CmsSitesWebserverThread extends A_CmsReportThread {
                 config.setAttribute("SERVLET_PATH", OpenCms.getSystemInfo().getServletPath());
                 config.setAttribute("DEFAULT_ENCODING", OpenCms.getSystemInfo().getDefaultEncoding());
                 config.setAttribute("CONFIG_FILENAME", generateWebserverConfigName(site.getSiteMatcher(), "_"));
+                config.setAttribute("LOGGING_DIRECTORY", m_loggingDir);
 
                 // site info
                 config.setAttribute("SERVER_URL", site.getUrl());

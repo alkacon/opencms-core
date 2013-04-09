@@ -55,6 +55,9 @@ public class CmsSitesWebserverReport extends A_CmsListReport {
     /** The prefix used for created web server's configuration files, created by this tool. */
     private String m_paramFilenameprefix;
 
+    /** The directory used for log files created by the web server. */
+    private String m_paramLoggingdir;
+
     /** The target path to store the web server's configuration files. */
     private String m_paramTargetpath;
 
@@ -104,6 +107,16 @@ public class CmsSitesWebserverReport extends A_CmsListReport {
     }
 
     /**
+     * Returns the paramLoggingdir.<p>
+     *
+     * @return the paramLoggingdir
+     */
+    public String getParamLoggingdir() {
+
+        return m_paramLoggingdir;
+    }
+
+    /**
      * Returns the paramTargetpath.<p>
      *
      * @return the paramTargetpath
@@ -124,7 +137,6 @@ public class CmsSitesWebserverReport extends A_CmsListReport {
     }
 
     /** 
-     * 
      * @see org.opencms.workplace.list.A_CmsListReport#initializeThread()
      */
     @Override
@@ -136,7 +148,8 @@ public class CmsSitesWebserverReport extends A_CmsListReport {
             getParamTargetpath(),
             getParamConfigtemplate(),
             getParamWebserverscript(),
-            getParamFilenameprefix());
+            getParamFilenameprefix(),
+            getParamLoggingdir());
     }
 
     /**
@@ -157,6 +170,16 @@ public class CmsSitesWebserverReport extends A_CmsListReport {
     public void setParamFilenameprefix(String paramFilenameprefix) {
 
         m_paramFilenameprefix = paramFilenameprefix;
+    }
+
+    /**
+     * Sets the paramLoggingdir.<p>
+     *
+     * @param paramLoggingdir the paramLoggingdir to set
+     */
+    public void setParamLoggingdir(String paramLoggingdir) {
+
+        m_paramLoggingdir = paramLoggingdir;
     }
 
     /**
