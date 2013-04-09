@@ -194,6 +194,7 @@ public class CmsSitesWebserverThread extends A_CmsReportThread {
                         config.setAttribute("SECURE_URL", site.getSecureUrl());
                     }
                     if (site.getSecureServer() != null) {
+                        config.setAttribute("SECURE_SRV_WITH_PORT", site.getSecureServer(), ":");
                         config.setAttribute("SECURE_SERVER_NAME", site.getSecureServer().getServerName());
                         config.setAttribute("SECURE_SERVER_PORT", site.getSecureServer().getServerPort());
                         config.setAttribute("SECURE_SERVER_PROTOCOL", site.getSecureServer().getServerProtocol());
