@@ -208,21 +208,21 @@ public interface I_CmsInputCss extends I_CmsGlobalWidgetCss {
      * 
      * @return the css class
      */
-    String inputBoxFaider();
+    String inputBoxFader();
 
     /**
      * Css class reader.<p>
      * 
      * @return the css class
      */
-    String inputTextAreaFaider();
+    String inputTextAreaFader();
 
     /**
      * Css class reader.<p>
      * 
      * @return the css class
      */
-    String inputTextBoxFaider();
+    String inputTextBoxFader();
 
     /**
      * Css class reader.<p>
@@ -442,7 +442,7 @@ public interface I_CmsInputCss extends I_CmsGlobalWidgetCss {
      * 
      * @return the css class
      */
-    String vfsInputBoxFaider();
+    String vfsInputBoxFader();
 
     /**
      * Css class reader.<p>

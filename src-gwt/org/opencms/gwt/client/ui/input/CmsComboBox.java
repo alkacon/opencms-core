@@ -500,7 +500,7 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
 
             }
         }, ClickEvent.getType());
-        m_fadePanel.setStyleName(CSS.inputBoxFaider());
+        m_fadePanel.setStyleName(CSS.inputBoxFader());
         m_mainPanel.add(m_openerWidget);
         m_opener.add(m_mainPanel);
 

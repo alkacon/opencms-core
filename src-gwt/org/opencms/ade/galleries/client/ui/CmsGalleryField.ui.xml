@@ -14,7 +14,7 @@
 			<input:CmsSimpleTextBox ui:field="m_textbox" />
 		</div>
 		<cms:CmsPushButton ui:field="m_opener" addStyleNames="{gallery.galleryFieldCss.opener}"/>
-		<g:Label ui:field="m_fader" styleName="{input.inputCss.vfsInputBoxFaider}" addStyleNames="{gallery.galleryFieldCss.fader}" />
+		<g:Label ui:field="m_fader" styleName="{input.inputCss.vfsInputBoxFader}" addStyleNames="{gallery.galleryFieldCss.fader}" />
 	</div>
 	<g:FlowPanel ui:field="m_resourceInfoPanel" styleName="{gallery.galleryFieldCss.resourceInfo}" />
 </g:HTMLPanel>

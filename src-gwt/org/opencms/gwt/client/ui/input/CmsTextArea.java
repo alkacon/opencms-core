@@ -104,7 +104,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         m_panel.add(m_textAreaContainer);
         m_textAreaContainer.setResizable(true);
         m_textAreaContainer.getElement().getStyle().setHeight(m_textArea.getOffsetHeight(), Unit.PX);
-        m_fadePanel.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().inputTextAreaFaider());
+        m_fadePanel.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().inputTextAreaFader());
         m_textAreaContainer.add(m_textArea);
         m_fadePanel.addDomHandler(new ClickHandler() {
 
