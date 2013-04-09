@@ -56,14 +56,14 @@ import org.apache.commons.logging.Log;
  */
 public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget implements I_CmsADEWidget {
 
-    /** The widget configuration. */
-    private CmsGalleryWidgetConfiguration m_widgetConfiguration;
-
     /** The gallery JSP path. */
     protected static final String PATH_GALLERY_JSP = "/system/modules/org.opencms.ade.galleries/gallery.jsp";
 
     /** The static log object for this class. */
     private static final Log LOG = CmsLog.getLog(A_CmsAdeGalleryWidget.class);
+
+    /** The widget configuration. */
+    private CmsGalleryWidgetConfiguration m_widgetConfiguration;
 
     /**
      * Constructor.<p>
@@ -211,6 +211,15 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget implements I_Cms
     public String getWidgetName() {
 
         return A_CmsAdeGalleryWidget.class.getName();
+    }
+
+    /**
+     * @see org.opencms.widgets.A_CmsWidget#isCompactViewEnabled()
+     */
+    @Override
+    public boolean isCompactViewEnabled() {
+
+        return false;
     }
 
     /**

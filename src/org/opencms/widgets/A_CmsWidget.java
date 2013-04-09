@@ -46,11 +46,11 @@ public abstract class A_CmsWidget implements I_CmsWidget {
     /** Inner class to generate the I_CmsWidgetDialog. */
     public class CmsDummyWidgetDialog implements I_CmsWidgetDialog {
 
-        /** The massage of this widget. */
-        private CmsMessages m_message;
-
         /** The locale of this widget. */
         private Locale m_locale;
+
+        /** The massage of this widget. */
+        private CmsMessages m_message;
 
         /** Constructor.<p> 
          * @param locale the locale of the dialog
@@ -376,6 +376,14 @@ public abstract class A_CmsWidget implements I_CmsWidget {
     public int hashCode() {
 
         return getClass().getName().hashCode();
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsWidget#isCompactViewEnabled()
+     */
+    public boolean isCompactViewEnabled() {
+
+        return true;
     }
 
     /**

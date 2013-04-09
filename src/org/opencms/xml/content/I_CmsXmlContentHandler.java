@@ -371,6 +371,15 @@ public interface I_CmsXmlContentHandler {
     boolean isAcaciaEditorDisabled();
 
     /**
+     * Returns if the widget for this type should be displayed in compact view.<p> 
+     * 
+     * @param type the value to check the view mode for
+     * 
+     * @return <code>true</code> if the widget for this type should be displayed in compact view
+     */
+    boolean isCompactView(I_CmsXmlSchemaType type);
+
+    /**
      * Returns <code>true</code> if the XML content should be indexed when it is dropped in a container page,
      * and returns <code>false</code> if this XML content should be indexed as 'stand-alone' document.<p>
      *

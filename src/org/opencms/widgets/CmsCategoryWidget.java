@@ -73,10 +73,10 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
     public static final String CONFIGURATION_PROPERTY = "property";
 
     /** Configuration parameter to set the 'selection type' parameter. */
-    private static final String CONFIGURATION_SELECTIONTYPE = "selectiontype";
+    private static final String CONFIGURATION_PARENTSELECTION = "parentSelection";
 
     /** Configuration parameter to set the 'selection type' parameter. */
-    private static final String CONFIGURATION_PARENTSELECTION = "parentSelection";
+    private static final String CONFIGURATION_SELECTIONTYPE = "selectiontype";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsCategoryWidget.class);
@@ -87,14 +87,14 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
     /** The 'only leaf' flag. */
     private String m_onlyLeafs;
 
+    /** The value if the parents should be selected with the children. */
+    private boolean m_parentSelection;
+
     /** The property to read the starting category from. */
     private String m_property;
 
     /** The selection type parsed from configuration string. */
     private String m_selectiontype = "single";
-
-    /** The value if the parents should be selected with the children. */
-    private boolean m_parentSelection;
 
     /**
      * Creates a new category widget.<p>
@@ -380,6 +380,15 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
     public String getWidgetName() {
 
         return CmsCategoryWidget.class.getName();
+    }
+
+    /**
+     * @see org.opencms.widgets.A_CmsWidget#isCompactViewEnabled()
+     */
+    @Override
+    public boolean isCompactViewEnabled() {
+
+        return false;
     }
 
     /**

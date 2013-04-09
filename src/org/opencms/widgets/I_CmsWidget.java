@@ -141,6 +141,13 @@ public interface I_CmsWidget {
     String getWidgetStringValue(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param);
 
     /**
+     * Returns if the widget is compact view enabled.<p>
+     * 
+     * @return <code>true</code> if the widget is compact view enabled
+     */
+    boolean isCompactViewEnabled();
+
+    /**
      * Creates a duplicate of this widget instance.<p>
      * 
      * @return a duplicate of this widget instance

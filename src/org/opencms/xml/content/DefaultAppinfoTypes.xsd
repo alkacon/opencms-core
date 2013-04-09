@@ -87,6 +87,7 @@
 		<xsd:attribute name="element" type="xsd:string" use="required" />
 		<xsd:attribute name="widget" type="xsd:string" use="required" />
 		<xsd:attribute name="configuration" type="xsd:string" use="optional" />
+		<xsd:attribute name="displaycompact" type="xsd:boolean" use="optional" />
 	</xsd:complexType>
 
 	<xsd:complexType name="OpenCmsDefaultAppinfoValidationrules">

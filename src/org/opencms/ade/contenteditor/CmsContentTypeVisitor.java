@@ -311,12 +311,17 @@ public class CmsContentTypeVisitor {
         AttributeConfiguration result = null;
         String widgetName = null;
         String widgetConfig = null;
+        boolean compactView = false;
         CmsObject cms = getCmsObject();
         try {
             I_CmsXmlContentHandler contentHandler = schemaType.getContentDefinition().getContentHandler();
+            // currently the compact view mode is restricted to complex types or single value types
+            compactView = contentHandler.isCompactView(schemaType)
+                && (!schemaType.isSimpleType() || (schemaType.getMaxOccurs() == 1));
             I_CmsWidget widget = contentHandler.getWidget(schemaType);
             if (widget != null) {
                 widgetName = widget.getClass().getName();
+                compactView = compactView && widget.isCompactViewEnabled();
                 long timer = 0;
                 if (widget instanceof I_CmsADEWidget) {
                     if (!checkWidgetsOnly) {
@@ -361,7 +366,8 @@ public class CmsContentTypeVisitor {
             getHelp(schemaType),
             widgetName,
             widgetConfig,
-            readDefaultValue(schemaType, path));
+            readDefaultValue(schemaType, path),
+            compactView);
         return result;
     }
 
