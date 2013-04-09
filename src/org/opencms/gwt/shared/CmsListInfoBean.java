@@ -61,6 +61,8 @@ public class CmsListInfoBean implements IsSerializable {
      * Enum for the type of page icon which should be displayed.<p>
      */
     public enum StateIcon {
+        /** copy page icon. */
+        copy,
         /** export page icon. */
         export,
         /** secure page icon. */

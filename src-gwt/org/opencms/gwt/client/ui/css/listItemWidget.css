@@ -88,6 +88,10 @@ li div.itemContainer.cmsHovering{
 	gwt-image: "gwtImages.lockUserImage";
 }
 
+@sprite .copyModel {
+	gwt-image: "gwtImages.addImage"; 
+}
+
 @sprite .lockSharedOpen{
 	gwt-image: "gwtImages.lockSharedImage";
 }

@@ -49,6 +49,13 @@ public interface I_CmsImageBundle extends ClientBundle {
     @Shared
     interface I_CmsImageStyle extends I_CmsOpenerHoverCss {
 
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS class name
+         */
+        String addIcon();
+
         /** 
          * Access method.<p>
          * 
@@ -62,13 +69,6 @@ public interface I_CmsImageBundle extends ClientBundle {
          * @return the CSS class name
          */
         String arrowUpIcon();
-
-        /**
-         * Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String addIcon();
 
         /** Access method.<p>
         *
@@ -256,6 +256,14 @@ public interface I_CmsImageBundle extends ClientBundle {
     I_CmsImageBundle INSTANCE = GWT.create(I_CmsImageBundle.class);
 
     /**
+     * Access method.<p>
+     *
+     * @return the image resource
+     */
+    @Source("images/addImage.png")
+    ImageResource addImage();
+
+    /**
      * Image resource accessor.<p>
      *
      * @return an image resource
@@ -270,22 +278,6 @@ public interface I_CmsImageBundle extends ClientBundle {
      */
     @Source("images/arrowRightImage.png")
     ImageResource arrowRightImage();
-
-    /** 
-     * Returns the edit cursor icon resource.<p>
-     * 
-     * @return the edit cursor icon
-     */
-    @Source("images/editCursor.gif")
-    DataResource editCursorGif();
-
-    /** 
-     * Returns the edit cursor icon resource.<p>
-     * 
-     * @return the edit cursor icon
-     */
-    @Source("images/editCursor.ico")
-    DataResource editCursorIco();
 
     /**
      * Accessor for the big icon resource bundle.<p>
@@ -349,6 +341,22 @@ public interface I_CmsImageBundle extends ClientBundle {
      */
     @Source("images/icons/downloadGallery.png")
     ImageResource downloadGalleryIcon();
+
+    /** 
+     * Returns the edit cursor icon resource.<p>
+     * 
+     * @return the edit cursor icon
+     */
+    @Source("images/editCursor.gif")
+    DataResource editCursorGif();
+
+    /** 
+     * Returns the edit cursor icon resource.<p>
+     * 
+     * @return the edit cursor icon
+     */
+    @Source("images/editCursor.ico")
+    DataResource editCursorIco();
 
     /**
      * Image resource accessor.<p>

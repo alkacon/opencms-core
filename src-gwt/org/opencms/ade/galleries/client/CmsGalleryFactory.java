@@ -33,11 +33,8 @@ import org.opencms.ade.galleries.client.ui.CmsResultListItem;
 import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
-import org.opencms.gwt.client.ui.CmsListItemWidget.Background;
 import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabbedPanelStyle;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
-
-import com.google.common.base.Predicate;
 
 /**
  * Factory class to create gallery dialog with or without parameter.<p>
@@ -85,52 +82,6 @@ public final class CmsGalleryFactory {
             }
 
         }, CmsTabbedPanelStyle.buttonTabs);
-        new CmsGalleryController(new CmsGalleryControllerHandler(galleryDialog));
-        return galleryDialog;
-    }
-
-    /**
-     * Returns a gallery dialog object with drag and drop handler.<p>
-     * 
-     * @param dndHandler the reference to the drag and drop handler
-     * @param autoHideParent the auto-hide parent to this dialog if present
-     * @param resultDndFilter the filter for determining whether search results are draggable 
-     * 
-     * @return gallery dialog
-     */
-    public static CmsGalleryDialog createDialog(
-        final CmsDNDHandler dndHandler,
-        final I_CmsAutoHider autoHideParent,
-        final Predicate<CmsResultItemBean> resultDndFilter) {
-
-        CmsGalleryDialog galleryDialog = new CmsGalleryDialog(new I_CmsGalleryHandler() {
-
-            public boolean filterDnd(CmsResultItemBean resultBean) {
-
-                if (resultDndFilter != null) {
-                    return resultDndFilter.apply(resultBean);
-                } else {
-                    return true;
-                }
-            }
-
-            public I_CmsAutoHider getAutoHideParent() {
-
-                return autoHideParent;
-            }
-
-            public CmsDNDHandler getDndHandler() {
-
-                return dndHandler;
-            }
-
-            public void processResultItem(CmsResultListItem item) {
-
-                if (item.getResult().isCopyModel()) {
-                    item.getListItemWidget().setBackground(Background.YELLOW);
-                }
-            }
-        });
         new CmsGalleryController(new CmsGalleryControllerHandler(galleryDialog));
         return galleryDialog;
     }

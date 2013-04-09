@@ -548,6 +548,16 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
         return m_title.getText();
     }
 
+    /** 
+     * Gets the title widget.<p>
+     * 
+     * @return the title widget
+     */
+    public CmsLabel getTitleWidget() {
+
+        return m_title;
+    }
+
     /**
      * Returns if additional info items are present.<p>
      * 
@@ -810,18 +820,19 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
         }
         String iconTitle = null;
+        I_CmsListItemWidgetCss listItemWidgetCss = I_CmsLayoutBundle.INSTANCE.listItemWidgetCss();
+        String styleStateIcon = I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().stateIcon();
         switch (icon) {
             case export:
-                m_stateIcon.setStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().stateIcon()
-                    + " "
-                    + I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().export());
+                m_stateIcon.setStyleName(styleStateIcon + " " + listItemWidgetCss.export());
                 iconTitle = Messages.get().key(Messages.GUI_ICON_TITLE_EXPORT_0);
                 break;
             case secure:
-                m_stateIcon.setStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().stateIcon()
-                    + " "
-                    + I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().secure());
+                m_stateIcon.setStyleName(styleStateIcon + " " + listItemWidgetCss.secure());
                 iconTitle = Messages.get().key(Messages.GUI_ICON_TITLE_SECURE_0);
+                break;
+            case copy:
+                m_stateIcon.setStyleName(listItemWidgetCss.stateIcon() + " " + listItemWidgetCss.copyModel());
                 break;
             default:
                 m_stateIcon.setStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().stateIcon());
@@ -829,7 +840,6 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
         }
         m_stateIcon.setTitle(concatIconTitles(m_iconTitle, iconTitle));
         m_stateIcon.getElement().getStyle().setCursor(Style.Cursor.POINTER);
-
     }
 
     /**

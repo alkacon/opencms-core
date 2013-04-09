@@ -106,6 +106,9 @@ public final class Messages {
     public static final String GUI_CONFIRM_REMOVAL_TEXT_0 = "GUI_CONFIRM_REMOVAL_TEXT_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPY_MODEL_TITLE_WRAPPER_1 = "GUI_COPY_MODEL_TITLE_WRAPPER_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_LEAVE_NOT_SAVED_0 = "GUI_DIALOG_LEAVE_NOT_SAVED_0";
 
     /** Message constant for key in the resource bundle. */

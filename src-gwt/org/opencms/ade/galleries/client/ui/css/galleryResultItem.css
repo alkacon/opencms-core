@@ -3,7 +3,7 @@
 .itemAdditional, .inlineEditable, .open, .itemActive, .itemRed, .itemBlue, .itemYellow, .disabledItem, .itemTitle, .cms_type_icon,
 .itemAdditionalTitle, .itemAdditionalValue, .dragging,
 .cmsState, .cmsState-up, .cmsState-up-hovering, .cmsState-up-disabled, .cmsState-down, .cmsState-down-hovering,
-.cmsState-down-disabled, .export, .hidden, .secure, .redirect, .normal, .lockSharedOpen, .lockSharedClosed, .stateIcon, .lockOpen, .lockClosed, .titleInput{}
+.cmsState-down-disabled, .export, .hidden, .secure, .redirect, .normal, .lockSharedOpen, .lockSharedClosed, .stateIcon, .lockOpen, .lockClosed, .titleInput, .copyModel {}
 
 
 @sprite li.expired div.itemContent{
