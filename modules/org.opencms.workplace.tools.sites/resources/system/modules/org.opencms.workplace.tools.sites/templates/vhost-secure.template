@@ -1,8 +1,7 @@
-<VirtualHost *:80>
+<VirtualHost *:443>
 
   DocumentRoot "$DOCUMENT_ROOT$"
-  ServerName $SERVER_NAME_WITH_PORT$
-  $ALIAS_DIRECTIVE$ $SERVER_ALIASES$
+  ServerName $SECURE_SERVER_NAME$
   ServerAdmin webmaster@$SERVER_NAME_WITH_PORT$
 
   # Allow accessing the document root directory
@@ -22,9 +21,9 @@
 
   # Logging
   LogFormat "%h %l %u %t \"%r\" %>s %b" common
-  CustomLog $LOGGING_DIRECTORY$access_$CONFIG_FILENAME$.log common
-  ErrorLog $LOGGING_DIRECTORY$error_$CONFIG_FILENAME$.log
-  RewriteLog $LOGGING_DIRECTORY$rewrite_$CONFIG_FILENAME$.log
+  CustomLog $LOGGING_DIRECTORY$access_secure_$CONFIG_FILENAME$.log common
+  ErrorLog $LOGGING_DIRECTORY$error_secure_$CONFIG_FILENAME$.log
+  RewriteLog $LOGGING_DIRECTORY$rewrite_secure_$CONFIG_FILENAME$.log
   RewriteLogLevel 1
 
   # Do not forward the request if the requested URI is located in the resources folder or is static content

@@ -24,9 +24,10 @@
 		<dependencies/>
 		<exportpoints>
 			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/lib/" destination="WEB-INF/lib/"/>
-			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/templates/vhost.template" destination="export/webserver/resources/vhost.template"/>
-			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/templates/script.sh" destination="export/webserver/resources/script.sh"/>
-			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/templates/script.bat" destination="export/webserver/resources/script.bat"/>
+			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/templates/vhost.template" destination="resources/webserver/resources/vhost.template"/>
+			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/templates/vhost-secure.template" destination="resources/webserver/resources/vhost-secure.template"/>
+			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/templates/script.sh" destination="resources/webserver/resources/script.sh"/>
+			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/templates/script.bat" destination="resources/webserver/resources/script.bat"/>
 		</exportpoints>
 		<resources>
 			<resource uri="/system/modules/org.opencms.workplace.tools.sites/"/>
@@ -35,6 +36,7 @@
 		</resources>
 		<parameters>
 			<param name="configtemplate">/path/to/webserver/config.template</param>
+			<param name="securetemplate">/path/to/webserver/secure-config.template</param>
 			<param name="enableconfig">true</param>
 			<param name="filenameprefix">opencms</param>
 			<param name="loggingdir">/path/to/logging/folder/</param>
@@ -221,6 +223,26 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[/etc/init.d/tomcat]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.tools.sites/templates/vhost-secure.template</source>
+			<destination>system/modules/org.opencms.workplace.tools.sites/templates/vhost-secure.template</destination>
+			<type>plain</type>
+			<uuidstructure>229f334e-a115-11e2-b3ae-c1221e6a3a06</uuidstructure>
+			<uuidresource>229f334f-a115-11e2-b3ae-c1221e6a3a06</uuidresource>
+			<datelastmodified>Tue, 09 Apr 2013 12:58:53 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 09 Apr 2013 12:58:12 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[An Apache virtual host template file for secure sites]]></value>
 				</property>
 			</properties>
 			<relations/>

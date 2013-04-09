@@ -85,6 +85,9 @@ public class CmsSitesWebserverDialog extends CmsWidgetDialog {
     /** The parameter name for the logging directory. */
     public static final String PARAM_LOGGING_DIR = "loggingdir";
 
+    /** The parameter name of the template file for secure sites. */
+    public static final String PARAM_SECURE_TEMPLATE = "securetemplate";
+
     /** Module parameter constant for the target path. */
     public static final String PARAM_TARGET_PATH = "targetpath";
 
@@ -93,10 +96,13 @@ public class CmsSitesWebserverDialog extends CmsWidgetDialog {
 
     /** The working directory for this tool. */
     public static final String PATH_WEBSERVER_EXPORT = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebApplication(
-        "export/webserver/");
+        "resources/webserver/");
 
     /** Sample files folder name. */
     public static final String TEMPLATE_FILES = "templates/";
+
+    /** */
+    private static final String DEFAULT_NAME_WEBSERVER_SECURE = "vhost-secure.template";
 
     /** The default parameter value. */
     private static final String DEFAULT_PARAM_CONFIG_TEMPLATE = "/path/to/webserver/config.template";
@@ -106,6 +112,9 @@ public class CmsSitesWebserverDialog extends CmsWidgetDialog {
 
     /** The default value for the logging directory parameter. */
     private static final String DEFAULT_PARAM_LOGGING_DIR = "/path/to/logging/folder/";
+
+    /** The default parameter value. */
+    private static final String DEFAULT_PARAM_SECURE_TEMPLATE = "/path/to/webserver/secure-config.template";
 
     /** The default parameter value. */
     private static final String DEFAULT_PARAM_TARGET_PATH = "/path/to/config/target/";
@@ -125,8 +134,14 @@ public class CmsSitesWebserverDialog extends CmsWidgetDialog {
         + DEFAULT_NAME_WINDOWS_SCRIPT;
 
     /** The default export point URI of the web server template. */
+    private static final String DEFAULT_PATH_SECURE_TEMPLATE = MODULE_PATH
+        + TEMPLATE_FILES
+        + DEFAULT_NAME_WEBSERVER_SECURE;
+
+    /** The default export point URI of the web server template. */
     private static final String DEFAULT_PATH_TEMPLATE = MODULE_PATH + TEMPLATE_FILES + DEFAULT_NAME_WEBSERVER_CONFIG;
 
+    /** The default target path for generated web server configuration files. */
     private static final String PATH_WEBSERVER_CONFIG = PATH_WEBSERVER_EXPORT + "config";
 
     /** The source file used as template for creating a web server configuration files. */
@@ -137,6 +152,9 @@ public class CmsSitesWebserverDialog extends CmsWidgetDialog {
 
     /** The logging directory. */
     private String m_loggingdir;
+
+    /** The template file for secure sites. */
+    private String m_securetemplate;
 
     /** The target path to store the web server files. */
     private String m_targetpath;
@@ -178,6 +196,7 @@ public class CmsSitesWebserverDialog extends CmsWidgetDialog {
         params.put(PARAM_FILENAME_PREFIX, new String[] {m_filenameprefix});
         params.put(PARAM_CONFIG_TEMPLATE, new String[] {m_configtemplate});
         params.put(PARAM_LOGGING_DIR, new String[] {m_loggingdir});
+        params.put(PARAM_SECURE_TEMPLATE, new String[] {m_securetemplate});
         params.put(PARAM_ACTION, new String[] {DIALOG_INITIAL});
         params.put(PARAM_STYLE, new String[] {CmsToolDialog.STYLE_NEW});
         getToolManager().jspForwardPage(this, CmsSitesOverviewList.PATH_REPORTS + "webserver.jsp", params);
@@ -211,6 +230,16 @@ public class CmsSitesWebserverDialog extends CmsWidgetDialog {
     public String getLoggingdir() {
 
         return m_loggingdir;
+    }
+
+    /**
+     * Returns the securetemplate.<p>
+     *
+     * @return the securetemplate
+     */
+    public String getSecuretemplate() {
+
+        return m_securetemplate;
     }
 
     /**
@@ -264,6 +293,16 @@ public class CmsSitesWebserverDialog extends CmsWidgetDialog {
     }
 
     /**
+     * Sets the securetemplate.<p>
+     *
+     * @param securetemplate the securetemplate to set
+     */
+    public void setSecuretemplate(String securetemplate) {
+
+        m_securetemplate = securetemplate;
+    }
+
+    /**
      * Sets the target path.<p>
      *
      * @param targetpath the target path to set
@@ -294,7 +333,7 @@ public class CmsSitesWebserverDialog extends CmsWidgetDialog {
         result.append(createWidgetErrorHeader());
         result.append(dialogBlockStart(Messages.get().getBundle().key(Messages.GUI_SITES_WEBSERVER_TITLE_0)));
         result.append(createWidgetTableStart());
-        result.append(createDialogRowsHtml(0, 4));
+        result.append(createDialogRowsHtml(0, 5));
         result.append(createWidgetTableEnd());
         result.append(dialogBlockEnd());
         result.append(createWidgetTableEnd());
@@ -310,6 +349,7 @@ public class CmsSitesWebserverDialog extends CmsWidgetDialog {
         initMembers(OpenCms.getModuleManager().getModule(MODULE_NAME).getParameters());
         setKeyPrefix(CmsSitesOverviewList.KEY_PREFIX_SITES);
         addWidget(new CmsWidgetDialogParameter(this, PARAM_CONFIG_TEMPLATE, PAGES[0], new CmsInputWidget()));
+        addWidget(new CmsWidgetDialogParameter(this, PARAM_SECURE_TEMPLATE, PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(this, PARAM_TARGET_PATH, PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(this, PARAM_WEBSERVER_SCRIPT, PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(this, PARAM_LOGGING_DIR, PAGES[0], new CmsInputWidget()));
@@ -339,10 +379,14 @@ public class CmsSitesWebserverDialog extends CmsWidgetDialog {
         m_loggingdir = getParameter(params, PARAM_LOGGING_DIR, DEFAULT_PARAM_LOGGING_DIR);
 
         if (m_webserverscript.equals(DEFAULT_PARAM_WEBSERVER_SCRIPT)
-            || m_configtemplate.equals(DEFAULT_PARAM_CONFIG_TEMPLATE)) {
+            || m_configtemplate.equals(DEFAULT_PARAM_CONFIG_TEMPLATE)
+            || m_securetemplate.equals(DEFAULT_PARAM_SECURE_TEMPLATE)) {
             for (CmsExportPoint point : OpenCms.getModuleManager().getModule(MODULE_NAME).getExportPoints()) {
                 if (point.getUri().equals(DEFAULT_PATH_TEMPLATE)) {
                     m_configtemplate = point.getDestinationPath();
+                }
+                if (point.getUri().equals(DEFAULT_PATH_SECURE_TEMPLATE)) {
+                    m_securetemplate = point.getDestinationPath();
                 }
                 if (point.getUri().equals(DEFAULT_PATH_SCRIPT_WIDNOWS) && SystemUtils.IS_OS_WINDOWS) {
                     // only take the windows script if the OS is a windows

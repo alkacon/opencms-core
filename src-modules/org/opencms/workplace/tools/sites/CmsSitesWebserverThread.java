@@ -68,17 +68,20 @@ public class CmsSitesWebserverThread extends A_CmsReportThread {
     /** The file path. */
     private String m_filePrefix;
 
+    /** The logging directory. */
+    private String m_loggingDir;
+
     /** The script path. */
     private String m_scriptPath;
+
+    /** The template to be used for secure site configurations. */
+    private String m_secureTemplate;
 
     /** The target path. */
     private String m_targetPath;
 
     /** The template path. */
     private String m_templatePath;
-
-    /** The logging directory. */
-    private String m_loggingDir;
 
     /** The files that have been written. */
     private List<String> m_writtenFiles = new ArrayList<String>();
@@ -92,6 +95,7 @@ public class CmsSitesWebserverThread extends A_CmsReportThread {
      * @param scriptPath the script path
      * @param filePrefix the filename prefix
      * @param loggingDir the logging directory
+     * @param secureTemplate the secure template
      */
     public CmsSitesWebserverThread(
         CmsObject cms,
@@ -99,7 +103,8 @@ public class CmsSitesWebserverThread extends A_CmsReportThread {
         String templatePath,
         String scriptPath,
         String filePrefix,
-        String loggingDir) {
+        String loggingDir,
+        String secureTemplate) {
 
         super(cms, "write-to-webserver");
 
@@ -108,6 +113,7 @@ public class CmsSitesWebserverThread extends A_CmsReportThread {
         m_scriptPath = scriptPath;
         m_filePrefix = filePrefix;
         m_loggingDir = loggingDir;
+        m_secureTemplate = secureTemplate;
         initHtmlReport(cms.getRequestContext().getLocale());
     }
 
@@ -145,7 +151,7 @@ public class CmsSitesWebserverThread extends A_CmsReportThread {
         List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(getCms(), true);
         for (CmsSite site : sites) {
             if ((site.getSiteMatcher() != null) && site.isWebserver()) {
-                StringTemplate config = new StringTemplate(FileUtils.readFileToString(new File(m_templatePath)));
+
                 String filename = m_targetPath
                     + m_filePrefix
                     + "_"
@@ -159,52 +165,69 @@ public class CmsSitesWebserverThread extends A_CmsReportThread {
                     newFile.createNewFile();
                 }
 
-                // system info
-                String webappPath = OpenCms.getSystemInfo().getWebApplicationRfsPath();
-                config.setAttribute("DOCUMENT_ROOT", webappPath.substring(0, webappPath.length() - 1));
-                config.setAttribute("WEBAPP_NAME", OpenCms.getSystemInfo().getWebApplicationName());
-                config.setAttribute("CONTEXT_PATH", OpenCms.getSystemInfo().getContextPath());
-                config.setAttribute("SERVLET_PATH", OpenCms.getSystemInfo().getServletPath());
-                config.setAttribute("DEFAULT_ENCODING", OpenCms.getSystemInfo().getDefaultEncoding());
-                config.setAttribute("CONFIG_FILENAME", generateWebserverConfigName(site.getSiteMatcher(), "_"));
-                config.setAttribute("LOGGING_DIRECTORY", m_loggingDir);
-
-                // site info
-                config.setAttribute("SERVER_URL", site.getUrl());
-                config.setAttribute("SERVER_PROTOCOL", site.getSiteMatcher().getServerProtocol());
-                config.setAttribute("SERVER_NAME", site.getSiteMatcher().getServerName());
-                config.setAttribute("SERVER_PORT", site.getSiteMatcher().getServerPort());
-                config.setAttribute("SERVER_NAME_WITH_PORT", generateWebserverConfigName(site.getSiteMatcher(), ":"));
-                config.setAttribute("SITE_TITLE", site.getTitle());
-                if (site.getErrorPage() != null) {
-                    config.setAttribute("ERROR_PAGE", site.getErrorPage());
-                }
-
-                // alias info
-                if ((site.getAliases() != null) && !site.getAliases().isEmpty()) {
-                    config.setAttribute("ALIAS_DIRECTIVE", "ServerAlias");
-                    for (CmsSiteMatcher alias : site.getAliases()) {
-                        config.setAttribute("SERVER_ALIASES", generateWebserverConfigName(alias, ":") + " ");
-                    }
-                }
-
-                // secure info
+                String content = createConfigForSite(site, FileUtils.readFileToString(new File(m_templatePath)));
                 if (site.hasSecureServer()) {
-                    if (site.getSecureUrl() != null) {
-                        config.setAttribute("SECURE_URL", site.getSecureUrl());
-                    }
-                    if (site.getSecureServer() != null) {
-                        config.setAttribute("SECURE_SRV_WITH_PORT", site.getSecureServer(), ":");
-                        config.setAttribute("SECURE_SERVER_NAME", site.getSecureServer().getServerName());
-                        config.setAttribute("SECURE_SERVER_PORT", site.getSecureServer().getServerPort());
-                        config.setAttribute("SECURE_SERVER_PROTOCOL", site.getSecureServer().getServerProtocol());
-                    }
+                    content += createConfigForSite(site, FileUtils.readFileToString(new File(m_secureTemplate)));
                 }
 
-                FileUtils.writeStringToFile(newFile, config.toString());
+                FileUtils.writeStringToFile(newFile, content);
                 m_writtenFiles.add(newFile.getAbsolutePath());
             }
         }
+    }
+
+    /**
+     * Performs the template handling and returns the content.<p>
+     * 
+     * @param site the site
+     * @param templateContent the configuration template content
+     */
+    private String createConfigForSite(CmsSite site, String templateContent) {
+
+        StringTemplate config = new StringTemplate(templateContent);
+
+        // system info
+        String webappPath = OpenCms.getSystemInfo().getWebApplicationRfsPath();
+        config.setAttribute("DOCUMENT_ROOT", webappPath.substring(0, webappPath.length() - 1));
+        config.setAttribute("WEBAPP_NAME", OpenCms.getSystemInfo().getWebApplicationName());
+        config.setAttribute("CONTEXT_PATH", OpenCms.getSystemInfo().getContextPath());
+        config.setAttribute("SERVLET_PATH", OpenCms.getSystemInfo().getServletPath());
+        config.setAttribute("DEFAULT_ENCODING", OpenCms.getSystemInfo().getDefaultEncoding());
+        config.setAttribute("CONFIG_FILENAME", generateWebserverConfigName(site.getSiteMatcher(), "_"));
+        config.setAttribute("LOGGING_DIRECTORY", m_loggingDir);
+
+        // site info
+        config.setAttribute("SERVER_URL", site.getUrl());
+        config.setAttribute("SERVER_PROTOCOL", site.getSiteMatcher().getServerProtocol());
+        config.setAttribute("SERVER_NAME", site.getSiteMatcher().getServerName());
+        config.setAttribute("SERVER_PORT", site.getSiteMatcher().getServerPort());
+        config.setAttribute("SERVER_NAME_WITH_PORT", generateWebserverConfigName(site.getSiteMatcher(), ":"));
+        config.setAttribute("SITE_TITLE", site.getTitle());
+        if (site.getErrorPage() != null) {
+            config.setAttribute("ERROR_PAGE", site.getErrorPage());
+        }
+
+        // alias info
+        if ((site.getAliases() != null) && !site.getAliases().isEmpty()) {
+            config.setAttribute("ALIAS_DIRECTIVE", "ServerAlias");
+            for (CmsSiteMatcher alias : site.getAliases()) {
+                config.setAttribute("SERVER_ALIASES", generateWebserverConfigName(alias, ":") + " ");
+            }
+        }
+
+        // secure info
+        if (site.hasSecureServer()) {
+            if (site.getSecureUrl() != null) {
+                config.setAttribute("SECURE_URL", site.getSecureUrl());
+            }
+            if (site.getSecureServer() != null) {
+                config.setAttribute("SECURE_SRV_WITH_PORT", generateWebserverConfigName(site.getSecureServer(), ":"));
+                config.setAttribute("SECURE_SERVER_NAME", site.getSecureServer().getServerName());
+                config.setAttribute("SECURE_SERVER_PORT", site.getSecureServer().getServerPort());
+                config.setAttribute("SECURE_SERVER_PROTOCOL", site.getSecureServer().getServerProtocol());
+            }
+        }
+        return config.toString();
     }
 
     /**

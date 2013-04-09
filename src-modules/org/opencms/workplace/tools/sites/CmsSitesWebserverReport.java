@@ -58,6 +58,9 @@ public class CmsSitesWebserverReport extends A_CmsListReport {
     /** The directory used for log files created by the web server. */
     private String m_paramLoggingdir;
 
+    /** The source file used as template for creating a web server's configuration files. */
+    private String m_paramSecuretemplate;
+
     /** The target path to store the web server's configuration files. */
     private String m_paramTargetpath;
 
@@ -117,6 +120,16 @@ public class CmsSitesWebserverReport extends A_CmsListReport {
     }
 
     /**
+     * Returns the paramSecuretemplate.<p>
+     *
+     * @return the paramSecuretemplate
+     */
+    public String getParamSecuretemplate() {
+
+        return m_paramSecuretemplate;
+    }
+
+    /**
      * Returns the paramTargetpath.<p>
      *
      * @return the paramTargetpath
@@ -149,7 +162,8 @@ public class CmsSitesWebserverReport extends A_CmsListReport {
             getParamConfigtemplate(),
             getParamWebserverscript(),
             getParamFilenameprefix(),
-            getParamLoggingdir());
+            getParamLoggingdir(),
+            getParamSecuretemplate());
     }
 
     /**
@@ -180,6 +194,16 @@ public class CmsSitesWebserverReport extends A_CmsListReport {
     public void setParamLoggingdir(String paramLoggingdir) {
 
         m_paramLoggingdir = paramLoggingdir;
+    }
+
+    /**
+     * Sets the paramSecuretemplate.<p>
+     *
+     * @param paramSecuretemplate the paramSecuretemplate to set
+     */
+    public void setParamSecuretemplate(String paramSecuretemplate) {
+
+        m_paramSecuretemplate = paramSecuretemplate;
     }
 
     /**
