@@ -154,8 +154,10 @@ public class CmsSitesWebserverThread extends A_CmsReportThread {
                 }
 
                 // system info
-                config.setAttribute("DOCUMENT_ROOT", OpenCms.getSystemInfo().getWebApplicationRfsPath());
+                String webappPath = OpenCms.getSystemInfo().getWebApplicationRfsPath();
+                config.setAttribute("DOCUMENT_ROOT", webappPath.substring(0, webappPath.length() - 1));
                 config.setAttribute("WEBAPP_NAME", OpenCms.getSystemInfo().getWebApplicationName());
+                config.setAttribute("CONTEXT_PATH", OpenCms.getSystemInfo().getContextPath());
                 config.setAttribute("SERVLET_PATH", OpenCms.getSystemInfo().getServletPath());
                 config.setAttribute("DEFAULT_ENCODING", OpenCms.getSystemInfo().getDefaultEncoding());
                 config.setAttribute("CONFIG_FILENAME", generateWebserverConfigName(site.getSiteMatcher(), "_"));

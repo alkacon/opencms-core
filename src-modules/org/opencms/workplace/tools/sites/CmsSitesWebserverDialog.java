@@ -93,7 +93,7 @@ public class CmsSitesWebserverDialog extends CmsWidgetDialog {
         "export/webserver/");
 
     /** Sample files folder name. */
-    public static final String SAMPLE_FILES = "sampleFiles/";
+    public static final String TEMPLATE_FILES = "templates/";
 
     /** The default parameter value. */
     private static final String DEFAULT_PARAM_CONFIG_TEMPLATE = "/path/to/webserver/config.template";
@@ -108,13 +108,15 @@ public class CmsSitesWebserverDialog extends CmsWidgetDialog {
     private static final String DEFAULT_PARAM_WEBSERVER_SCRIPT = "/path/to/webserver/script.sh";
 
     /** The default export point URI of the web server script (LINUX). */
-    private static final String DEFAULT_PATH_SCRIPT_LINUX = MODULE_PATH + SAMPLE_FILES + DEFAULT_NAME_LINUX_SCRIPT;
+    private static final String DEFAULT_PATH_SCRIPT_LINUX = MODULE_PATH + TEMPLATE_FILES + DEFAULT_NAME_LINUX_SCRIPT;
 
     /** The default export point URI of the web server script (LINUX). */
-    private static final String DEFAULT_PATH_SCRIPT_WIDNOWS = MODULE_PATH + SAMPLE_FILES + DEFAULT_NAME_WINDOWS_SCRIPT;
+    private static final String DEFAULT_PATH_SCRIPT_WIDNOWS = MODULE_PATH
+        + TEMPLATE_FILES
+        + DEFAULT_NAME_WINDOWS_SCRIPT;
 
     /** The default export point URI of the web server template. */
-    private static final String DEFAULT_PATH_TEMPLATE = MODULE_PATH + SAMPLE_FILES + DEFAULT_NAME_WEBSERVER_CONFIG;
+    private static final String DEFAULT_PATH_TEMPLATE = MODULE_PATH + TEMPLATE_FILES + DEFAULT_NAME_WEBSERVER_CONFIG;
 
     private static final String PATH_WEBSERVER_CONFIG = PATH_WEBSERVER_EXPORT + "config";
 

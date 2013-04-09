@@ -1,0 +1,84 @@
+<VirtualHost *:80>
+
+  ServerName $SERVER_NAME_WITH_PORT$
+  $ALIAS_DIRECTIVE$ $SERVER_ALIASES$
+  ServerAdmin webmaster@$SERVER_NAME_WITH_PORT$
+  DocumentRoot "$DOCUMENT_ROOT$"
+  ErrorLog logs/error_$CONFIG_FILENAME$.log
+
+  # Allow accessing the document root directory
+  <Directory $DOCUMENT_ROOT$>
+    Options FollowSymlinks
+    AllowOverride All
+    Order allow,deny
+    Allow from all
+  </Directory>
+
+  # Deny accessing the webserver configuration templates directory
+  <Directory "$DOCUMENT_ROOT$/export/webserver/">
+    AllowOverride None
+    Order Deny,Allow
+    Deny from All
+  </Directory>
+
+  # If the requested URI is located in the resources folder, do not forward the request
+  SetEnvIfNoCase Request_URI ^/$CONTEXT_PATH$/resources/.*\$ no-jk
+  # If the requested URI is static content do not forward the request
+  SetEnvIfNoCase Request_URI ^/export/.*\$ no-jk
+
+  RewriteEngine On
+  RewriteLog logs/rewrite_$CONFIG_FILENAME$.log
+  RewriteLogLevel 1
+
+  # Deny access to php files
+  RewriteCond %{REQUEST_FILENAME} (.+)\.php(.*)
+  RewriteRule (.*) / [F]
+
+  # If the requested URI is NOT located in the resources folder.
+  # Prepend an /$CONTEXT_PATH$$SERVLET_PATH$ to everything that does not already starts with it
+  # and force the result to be handled by the next URI-handler ([PT]) (JkMount in this case)
+  RewriteCond %{REQUEST_URI} !^/$CONTEXT_PATH$/resources/.*\$
+  RewriteCond %{REQUEST_URI} !^/export/.*
+  RewriteRule !^/$CONTEXT_PATH$$SERVLET_PATH$/(.*)\$ /$CONTEXT_PATH$$SERVLET_PATH$%{REQUEST_URI} [PT]
+  
+  # These are the settings for static export. If the requested resource is not already
+  # statically exported create a new request to the opencms404 handler. This has to be
+  # a new request, because the current would net get through mod_jk because of the "no-jk" var.
+  RewriteCond %{REQUEST_URI} ^/export/.*\$
+  RewriteCond "%{DOCUMENT_ROOT}%{REQUEST_FILENAME}" !-f
+  RewriteCond "%{DOCUMENT_ROOT}%{REQUEST_FILENAME}/index_export.html" !-f
+  RewriteRule .* /$CONTEXT_PATH$$SERVLET_PATH$/handle404?exporturi=%{REQUEST_URI}&%{QUERY_STRING} [P]
+
+  # If the request starts with /$CONTEXT_PATH$/resources, delete the /$CONTEXT_PATH$/ prefix
+  RewriteCond %{REQUEST_URI} ^/$CONTEXT_PATH$/resources/.*\$
+  RewriteRule ^/$CONTEXT_PATH$/(.*)\$ /\$1
+
+  JkMount /* ocms
+
+</VirtualHost>
+
+########################
+### Available Macros ###
+########################
+# CONFIG_FILENAME         $CONFIG_FILENAME$        Filename of this file beginning with the configured prefix flowwed by the server and the server port if existent e.g. "opencms_www.example.tld" or "ocms_localhost_8080".
+# WEBAPP_NAME             $WEBAPP_NAME$            Web application name, e.g. "opencms" or "ROOT" (no leading or trailing "/").
+# DOCUMENT_ROOT           $DOCUMENT_ROOT$          Absolute path to the web application e.g. "/usr/local/tomcat/webapps/ROOT".
+# CONTEXT_PATH            $CONTEXT_PATH$           Web application context path, e.g. "" (empty String) if the web application is the default web application (usually "ROOT"), or "/opencms" if the web application is called "opencms".
+# SERVLET_PATH            $SERVLET_PATH$           Servlet path of OpenCms, e.g. "/opencms".
+# DEFAULT_ENCODING        $DEFAULT_ENCODING$       Default character encoding used by OpenCms.
+#
+# SERVER_URL              $SERVER_URL$             Server URL e.g. "http://www.example.tld".
+# SERVER_NAME_WITH_PORT   $SERVER_NAME_WITH_PORT$  Servers adress without protocol, but with the server port if existent e.g. "www.example.tld:1234".
+# SERVER_PROTOCOL         $SERVER_PROTOCOL$        Server protocol of the site e.g. "http", "https".
+# SERVER_NAME             $SERVER_NAME$            Server hostname of the site e.g. "localhost".
+# SERVER_PORT             $SERVER_PORT$            Server port e.g. "80".
+# SERVER_ALIASES          $SERVER_ALIASES$         Server alises (space separated) e.g. "*.example.tld example.com".
+#
+# SECURE_URL              $SECURE_URL$             Secure server URL if existent "https://www.example.tld".
+# SECURE_SERVER_NAME      $SECURE_SERVER_NAME$     Secure server name e.g "example.tld".
+# SECURE_SERVER_PORT      $SECURE_SERVER_PORT$     Secure server port e.g. "443".
+# SECURE_SERVER_PROTOCOL  $SECURE_SERVER_PROTOCOL$ Secure server protocol "https".
+# ALIAS_DIRECTIVE         $ALIAS_DIRECTIVE$        Apache server alias directive, always: "ServerAlias".
+# SITE_TITLE              $SITE_TITLE$             OpenCms title of this site e.g. "Default site".
+# ERROR_PAGE              $ERROR_PAGE$             OpenCms internal URI used as error page e.g. "/sites/default/error.html".
+########################
