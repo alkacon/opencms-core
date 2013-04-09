@@ -17,6 +17,10 @@ Legend:
 
 OpenCms 9.0.0 - ???????
 ! Implemented dynamic template provider feature.
+! Added Site Management workplace administration tool with web server configuration support
+! Added new option to configure an error per site that can be an XML content or Container page itself
+- Improved Solr search field mapping for multi-lingual XML contents that are using nested elements
+- Improved text based language detection
 
 
 OpenCms 8.5.1 - February 7, 2013
