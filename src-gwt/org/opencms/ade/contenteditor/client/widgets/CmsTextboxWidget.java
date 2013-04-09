@@ -90,7 +90,6 @@ public class CmsTextboxWidget extends Composite implements I_EditWidget {
      */
     public CmsTextboxWidget(String config) {
 
-        // All composites must call initWidget() in their constructors.
         if ((config != "") || (config != null)) {
             parseConfig(config);
         }
@@ -102,7 +101,7 @@ public class CmsTextboxWidget extends Composite implements I_EditWidget {
                 m_textbox.setCursorPos(m_textbox.getText().length());
             }
         }, ClickEvent.getType());
-        m_fadePanel.setStyleName(CSS.inputTextBoxFaider());
+        m_fadePanel.setStyleName(CSS.inputTextBoxFader());
         m_textbox.addFocusHandler(new FocusHandler() {
 
             public void onFocus(FocusEvent event) {
@@ -117,7 +116,6 @@ public class CmsTextboxWidget extends Composite implements I_EditWidget {
         m_mainPanel.add(m_fadePanel);
 
         m_textbox.setStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().textBox());
-        /* m_textarea.getTextAreaContainer().setStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().textAreaBoxPanel()); */
         m_textbox.addValueChangeHandler(new ValueChangeHandler<String>() {
 
             public void onValueChange(ValueChangeEvent<String> event) {

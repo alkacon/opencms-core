@@ -198,7 +198,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
         creatFaider();
         initWidget(m_panel);
         m_panel.add(m_textBoxContainer);
-        m_fadePanel.setStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().vfsInputBoxFaider());
+        m_fadePanel.setStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().vfsInputBoxFader());
         m_fadePanel.getElement().getStyle().setRight(21, Unit.PX);
         m_fadePanel.getElement().getStyle().setCursor(Cursor.TEXT);
         m_fadePanel.getElement().getStyle().setBottom(7, Unit.PX);

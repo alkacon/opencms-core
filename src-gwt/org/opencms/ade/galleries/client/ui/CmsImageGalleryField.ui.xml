@@ -7,7 +7,7 @@
 	<ui:with field="layout" type="org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle" />
 	<ui:with field="main" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 <ui:style>
-	div>div.faider{
+	div>div.fader{
 		right: 19px;
 		cursor: text;
 		top: 0px;
@@ -68,7 +68,7 @@
 	<g:FlowPanel styleName="{style.galleryField}" addStyleNames="{main.globalWidgetCss.textAreaBoxPanel}">
 		<cmi:CmsSimpleTextBox ui:field="m_textbox" />
 		<cms:CmsPushButton ui:field="m_opener" addStyleNames="{style.opener}"/>
-		<g:Label ui:field="m_fader" styleName="{layout.inputCss.vfsInputBoxFaider}" addStyleNames="{style.faider}" />
+		<g:Label ui:field="m_fader" styleName="{layout.inputCss.vfsInputBoxFader}" addStyleNames="{style.fader}" />
 	</g:FlowPanel>
 	<cmi:CmsSelectBox ui:field="m_formatSelection" styleName="{style.formats}"/>
 	<cmi:CmsTextArea  ui:field="m_descriptionArea" addStyleNames="{style.descriptionField}"/>
