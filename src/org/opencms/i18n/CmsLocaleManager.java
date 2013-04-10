@@ -947,6 +947,9 @@ public class CmsLocaleManager implements I_CmsEventListener {
         // set default locale 
         m_defaultLocale = m_defaultLocales.get(0);
         try {
+            // use a seed for initializing the language detection for making sure the
+            // same probabilities are detected for the same document contents
+            DetectorFactory.setSeed(42L);
             DetectorFactory.loadProfile(loadProfiles(getAvailableLocales()));
         } catch (Exception e) {
             LOG.error(Messages.get().getBundle().key(Messages.INIT_I18N_LANG_DETECT_FAILED_0), e);
