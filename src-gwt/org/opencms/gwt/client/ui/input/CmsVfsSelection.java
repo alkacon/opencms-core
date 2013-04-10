@@ -173,12 +173,6 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
     /** The handler registration. */
     protected HandlerRegistration m_previewHandlerRegistration;
 
-    /** The x-coords of the popup. */
-    protected int m_xcoordspopup;
-
-    /** The y-coords of the popup. */
-    protected int m_ycoordspopup;
-
     /** The default rows set. */
     int m_defaultRows;
 
@@ -232,7 +226,7 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
         m_openSelection = new OpenButton(iconImage);
 
         m_textBoxContainer.add(m_openSelection);
-        creatFaider();
+        createFader();
         initWidget(m_panel);
         m_panel.add(m_textBoxContainer);
         m_fadePanel.setStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().vfsInputBoxFader());
@@ -453,7 +447,7 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
         if (value instanceof String) {
             String strValue = (String)value;
             m_textBox.setText(strValue);
-            creatFaider();
+            createFader();
             setTitle(strValue);
         }
 
@@ -619,20 +613,16 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
             m_popup.getFrame().setUrl(buildGalleryUrl());
         }
         m_popup.setAutoHideEnabled(true);
-        m_popup.showRelativeTo(m_textBox);
+        m_popup.center();
         if (m_previewHandlerRegistration == null) {
             m_previewHandlerRegistration = Event.addNativePreviewHandler(new CloseEventPreviewHandler());
         }
-
-        m_xcoordspopup = m_popup.getPopupLeft();
-        m_ycoordspopup = m_popup.getPopupTop();
-
     }
 
     /**
      * Adds the fader if necessary.<p> 
      * */
-    private void creatFaider() {
+    private void createFader() {
 
         if ((m_textBox.getValue().length() * 6.88) > m_textBox.getOffsetWidth()) {
             m_textBoxContainer.add(m_fadePanel);
