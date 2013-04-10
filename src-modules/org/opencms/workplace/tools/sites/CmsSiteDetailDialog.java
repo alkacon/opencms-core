@@ -33,9 +33,15 @@ package org.opencms.workplace.tools.sites;
 
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
+import org.opencms.module.CmsModule;
 import org.opencms.site.CmsSite;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsCheckboxWidget;
@@ -65,8 +71,17 @@ import javax.servlet.jsp.PageContext;
  */
 public class CmsSiteDetailDialog extends CmsWidgetDialog {
 
+    /** The module name constant. */
+    public static final String MODULE_NAME = "org.opencms.workplace.tools.sites";
+
     /** Defines which pages are valid for this dialog. */
     public static final String[] PAGES = {"page1"};
+
+    /** Module parameter constant for the create OU default flag. */
+    public static final String PARAM_CREATE_OU = "createou";
+
+    /** Module parameter constant for the web server script. */
+    public static final String PARAM_OU_DESCRIPTION = "oudescription";
 
     /** The dialog action for editing a site. */
     protected static final String DIALOG_EDIT = "edit";
@@ -74,17 +89,23 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
     /** Dialog new action parameter value. */
     private static final String DIALOG_NEW = "new";
 
+    /** Signals whether to create an OU or not. */
+    private boolean m_createou;
+
+    /** The OU description text. */
+    private String m_ouDescription;
+
     /** The edit action to perform. */
     private String m_paramEditaction;
 
     /** The sites parameter. */
     private String m_paramSites;
 
-    /** The site's title parameter. */
-    private String m_paramSitetitle;
-
     /** The dialog object. */
     private CmsSiteBean m_site;
+
+    /** The name of the sites root folder. */
+    private String m_sitename;
 
     /**
      * Public constructor with JSP action element.<p>
@@ -115,11 +136,38 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
     public void actionCommit() {
 
         try {
-            CmsSite site = m_site.toCmsSite();
+
+            // validate the dialog form
+            validateDialog();
+
+            // create a root site clone of the current CMS object.
             CmsObject cms = OpenCms.initCmsObject(getCms());
             cms.getRequestContext().setSiteRoot("");
-            cms.readResource(site.getSiteRoot());
-            OpenCms.getSiteManager().updateSite(getCms(), m_site.getOriginalSite(), site);
+
+            // create the site root path
+            String siteRoot = "/sites".concat(m_sitename);
+            m_site.setSiteRoot(siteRoot);
+
+            CmsResource siteRootResource = null;
+            // check if the site root already exists
+            try {
+                // take the existing site and do not perform any OU related actions
+                siteRootResource = cms.readResource(siteRoot);
+            } catch (CmsVfsResourceNotFoundException e) {
+                // not create a new site folder and the according OU if option is checked checked
+                siteRootResource = cms.createResource(siteRoot, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
+                if (m_createou) {
+                    OpenCms.getOrgUnitManager().createOrganizationalUnit(
+                        cms,
+                        "/" + siteRootResource.getName(),
+                        m_ouDescription.replace("%(site)", m_site.getTitle() + " [" + m_site.getSiteRoot() + "]"),
+                        0,
+                        siteRootResource.getRootPath());
+                }
+            }
+
+            // update the site manager state
+            OpenCms.getSiteManager().updateSite(getCms(), m_site.getOriginalSite(), m_site.toCmsSite());
             // write the system configuration
             OpenCms.writeConfiguration(CmsSystemConfiguration.class);
             // refresh the list of sites
@@ -164,13 +212,33 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
     }
 
     /**
-     * Returns the paramSitetitle.<p>
+     * Returns the paramSitename.<p>
      *
-     * @return the paramSitetitle
+     * @return the paramSitename
      */
-    public String getParamSitetitle() {
+    public String getSitename() {
 
-        return m_paramSitetitle;
+        return m_sitename;
+    }
+
+    /**
+     * Returns the paramCreateou.<p>
+     *
+     * @return the paramCreateou
+     */
+    public boolean isCreateou() {
+
+        return m_createou;
+    }
+
+    /**
+     * Sets the paramCreateou.<p>
+     *
+     * @param createou the paramCreateou to set
+     */
+    public void setCreateou(boolean createou) {
+
+        m_createou = createou;
     }
 
     /**
@@ -194,13 +262,13 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
     }
 
     /**
-     * Sets the paramSitetitle.<p>
+     * Sets the site name.<p>
      *
-     * @param paramSitetitle the paramSitetitle to set
+     * @param sitename the site name to set
      */
-    public void setParamSitetitle(String paramSitetitle) {
+    public void setSitename(String sitename) {
 
-        m_paramSitetitle = paramSitetitle;
+        m_sitename = sitename;
     }
 
     /**
@@ -218,8 +286,12 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
         String title = m_site.getTitle() != null ? m_site.getTitle() : Messages.get().getBundle().key(
             Messages.GUI_SITES_NEW_SITE_TITLE_0);
 
+        // only show the position if editing a site or creating a new site 
         int count = getParamEditaction() == null ? 4 : 5;
+        // +1 if favicon present
         count = m_site.getFavicon() != null ? ++count : count;
+        // +1 for OU check box when creating a new site
+        count = DIALOG_NEW.equals(getParamEditaction()) ? ++count : count;
 
         // site info
         result.append(dialogBlockStart(Messages.get().getBundle().key(Messages.GUI_SITES_DETAIL_INFO_1, title)));
@@ -269,11 +341,7 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
             // edit or new
             // site info
             addWidget(new CmsWidgetDialogParameter(m_site, "title", PAGES[0], new CmsInputWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_site, "siteRoot", PAGES[0], new CmsVfsFileWidget(
-                false,
-                "/sites",
-                false,
-                false)));
+            addWidget(new CmsWidgetDialogParameter(this, "sitename", PAGES[0], new CmsInputWidget()));
             addWidget(new CmsWidgetDialogParameter(m_site, "server", PAGES[0], new CmsInputWidget()));
             addWidget(new CmsWidgetDialogParameter(m_site, "errorPage", PAGES[0], new CmsVfsFileWidget(
                 true,
@@ -283,6 +351,9 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
             addWidget(new CmsWidgetDialogParameter(m_site, "position", PAGES[0], new CmsSelectWidget(
                 createNavOpts(m_site))));
             addWidget(new CmsWidgetDialogParameter(m_site, "webserver", PAGES[0], new CmsCheckboxWidget()));
+            if (DIALOG_NEW.equals(getParamEditaction())) {
+                addWidget(new CmsWidgetDialogParameter(this, "createou", PAGES[0], new CmsCheckboxWidget()));
+            }
 
             if (m_site.getFavicon() != null) {
                 try {
@@ -473,6 +544,32 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
     }
 
     /**
+     * Checks if there are at least one character in the folder name,
+     * also ensures that it starts and ends with a '/'.<p>
+     *
+     * @param resourcename folder name to check (complete path)
+     * 
+     * @return the validated folder name
+     * 
+     * @throws CmsIllegalArgumentException if the folder name is empty or <code>null</code>
+     */
+    private String ensureFoldername(String resourcename) throws CmsIllegalArgumentException {
+
+        if (CmsStringUtil.isEmpty(resourcename)) {
+            throw new CmsIllegalArgumentException(org.opencms.db.Messages.get().container(
+                org.opencms.db.Messages.ERR_BAD_RESOURCENAME_1,
+                resourcename));
+        }
+        if (!CmsResource.isFolder(resourcename)) {
+            resourcename = resourcename.concat("/");
+        }
+        if (resourcename.charAt(0) != '/') {
+            resourcename = "/".concat(resourcename);
+        }
+        return resourcename;
+    }
+
+    /**
      * Initializes the dialog site object.<p>
      */
     private void initSite() {
@@ -517,6 +614,29 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
         } catch (Throwable t) {
             // noop
         }
+
+        if (m_site.getSiteRoot() != null) {
+            setSitename(CmsResource.getName(m_site.getSiteRoot()));
+        }
+
+        CmsModule module = OpenCms.getModuleManager().getModule(MODULE_NAME);
+        m_createou = Boolean.valueOf(module.getParameter(PARAM_CREATE_OU, Boolean.FALSE.toString())).booleanValue();
+        m_ouDescription = module.getParameter(PARAM_OU_DESCRIPTION, "OU for: %(site)");
         setDialogObject(m_site);
+    }
+
+    /**
+     * Validates the dialog before the commit action is performed.<p>
+     * 
+     * @throws Exception if sth. goes wrong
+     */
+    private void validateDialog() throws Exception {
+
+        CmsResource.checkResourceName(m_sitename);
+        m_sitename = ensureFoldername(m_sitename);
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_site.getServer())) {
+            // the server's URL must not be empty or null
+            throw new CmsException(Messages.get().container(Messages.ERR_SERVER_URL_NOT_EMPTY_0));
+        }
     }
 }

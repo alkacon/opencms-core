@@ -41,6 +41,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_INVALID_FAVICON_FILE_1 = "ERR_INVALID_FAVICON_FILE_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_SERVER_URL_NOT_EMPTY_0 = "ERR_SERVER_URL_NOT_EMPTY_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_SITES_WEBSERVER_1 = "ERR_SITES_WEBSERVER_1";
 
     /** Message constant for key in the resource bundle. */

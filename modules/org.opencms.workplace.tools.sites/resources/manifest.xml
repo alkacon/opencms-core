@@ -38,6 +38,8 @@
 			<param name="configtemplate">/path/to/webserver/config.template</param>
 			<param name="securetemplate">/path/to/webserver/secure-config.template</param>
 			<param name="enableconfig">true</param>
+			<param name="createou">false</param>
+			<param name="oudescription">OU for: %(site)</param>
 			<param name="filenameprefix">opencms</param>
 			<param name="loggingdir">/path/to/logging/folder/</param>
 			<param name="targetpath">/path/to/config/target/</param>
