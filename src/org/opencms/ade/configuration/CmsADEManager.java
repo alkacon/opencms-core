@@ -160,6 +160,9 @@ public class CmsADEManager {
     /** Node name for the nav level type value. */
     public static final String N_TYPE = "Type";
 
+    /** Name of the parameter for turning detail page validation on/off. */
+    public static final String PARAM_VALIDATE_DETAIL_PAGES = "validateDetailPages";
+
     /** The path to the sitemap editor JSP. */
     public static final String PATH_SITEMAP_EDITOR_JSP = "/system/modules/org.opencms.ade.sitemap/pages/sitemap.jsp";
 
@@ -187,11 +190,14 @@ public class CmsADEManager {
     /** The initialization status. */
     private Status m_initStatus = Status.notInitialized;
 
+    /** Flag which controls whether detail pages should be validated. */
+    private boolean m_isValidateDetailPages = true;
+
     /** The module configuration file type. */
     private I_CmsResourceType m_moduleConfigType;
 
     /** The online cache instance. */
-    private CmsConfigurationCache m_offlineCache;
+    private I_CmsAdeConfigurationCache m_offlineCache;
 
     /** The offline CMS context. */
     private CmsObject m_offlineCms;
@@ -200,7 +206,7 @@ public class CmsADEManager {
     private CmsContainerConfigurationCache m_offlineContainerConfigurationCache;
 
     /** The offline cache instance. */
-    private CmsConfigurationCache m_onlineCache;
+    private I_CmsAdeConfigurationCache m_onlineCache;
 
     /** The online CMS context. */
     private CmsObject m_onlineCms;
@@ -228,6 +234,10 @@ public class CmsADEManager {
         m_onlineCms = adminCms;
         m_cache = new CmsADECache(memoryMonitor, cacheSettings);
         m_parameters = new LinkedHashMap<String, String>(systemConfiguration.getAdeParameters());
+        String validateDetailPages = m_parameters.get(PARAM_VALIDATE_DETAIL_PAGES);
+        if (validateDetailPages != null) {
+            m_isValidateDetailPages = Boolean.valueOf(validateDetailPages).booleanValue();
+        }
         // further initialization is done by the initialize() method. We don't do that in the constructor,
         // because during the setup the configuration resource types don't exist yet.
     }
@@ -259,7 +269,7 @@ public class CmsADEManager {
      */
     public List<CmsDetailPageInfo> getAllDetailPages(CmsObject cms) {
 
-        CmsConfigurationCache cache = cms.getRequestContext().getCurrentProject().isOnlineProject()
+        I_CmsAdeConfigurationCache cache = cms.getRequestContext().getCurrentProject().isOnlineProject()
         ? m_onlineCache
         : m_offlineCache;
         return cache.getAllDetailPages();
@@ -315,7 +325,7 @@ public class CmsADEManager {
     public String getDetailPage(CmsObject cms, String pageRootPath, String originPath) {
 
         boolean online = cms.getRequestContext().getCurrentProject().isOnlineProject();
-        CmsConfigurationCache cache = online ? m_onlineCache : m_offlineCache;
+        I_CmsAdeConfigurationCache cache = online ? m_onlineCache : m_offlineCache;
         String resType = cache.getParentFolderType(pageRootPath);
         if (resType == null) {
             return null;
@@ -353,7 +363,7 @@ public class CmsADEManager {
      */
     public List<String> getDetailPages(CmsObject cms, String type) {
 
-        CmsConfigurationCache cache = cms.getRequestContext().getCurrentProject().isOnlineProject()
+        I_CmsAdeConfigurationCache cache = cms.getRequestContext().getCurrentProject().isOnlineProject()
         ? m_onlineCache
         : m_offlineCache;
         return cache.getDetailPages(type);
@@ -368,7 +378,7 @@ public class CmsADEManager {
      */
     public Set<String> getDetailPageTypes(CmsObject cms) {
 
-        CmsConfigurationCache cache = cms.getRequestContext().getCurrentProject().isOnlineProject()
+        I_CmsAdeConfigurationCache cache = cms.getRequestContext().getCurrentProject().isOnlineProject()
         ? m_onlineCache
         : m_offlineCache;
         return cache.getDetailPageTypes();
@@ -711,10 +721,10 @@ public class CmsADEManager {
      */
     public boolean isDetailPage(CmsObject cms, CmsResource resource) {
 
-        CmsConfigurationCache cache = cms.getRequestContext().getCurrentProject().isOnlineProject()
+        I_CmsAdeConfigurationCache cache = cms.getRequestContext().getCurrentProject().isOnlineProject()
         ? m_onlineCache
         : m_offlineCache;
-        return cache.isDetailPage(cms, resource);
+        return cache.isDetailPage(cms, resource, true);
     }
 
     /**
@@ -739,6 +749,16 @@ public class CmsADEManager {
         CmsUser user = cms.getRequestContext().getCurrentUser();
         String showHelp = (String)user.getAdditionalInfo(ADDINFO_ADE_SHOW_EDITOR_HELP);
         return CmsStringUtil.isEmptyOrWhitespaceOnly(showHelp) || Boolean.parseBoolean(showHelp);
+    }
+
+    /**
+     * Checks if detail pages should be validated during request processing.<p>
+     * 
+     * @return true if detail pages should be validated 
+     */
+    public boolean isValidateDetailPages() {
+
+        return m_isValidateDetailPages;
     }
 
     /**
@@ -962,7 +982,7 @@ public class CmsADEManager {
      * 
      * @return the offline configuration cache 
      */
-    protected CmsConfigurationCache getOfflineCache() {
+    protected I_CmsAdeConfigurationCache getOfflineCache() {
 
         return m_offlineCache;
     }
@@ -972,7 +992,7 @@ public class CmsADEManager {
      * 
      * @return the online configuration cache 
      */
-    protected CmsConfigurationCache getOnlineCache() {
+    protected I_CmsAdeConfigurationCache getOnlineCache() {
 
         return m_onlineCache;
     }
@@ -989,7 +1009,7 @@ public class CmsADEManager {
      */
     protected String getRootPath(CmsUUID structureId, boolean online) throws CmsException {
 
-        CmsConfigurationCache cache = online ? m_onlineCache : m_offlineCache;
+        I_CmsAdeConfigurationCache cache = online ? m_onlineCache : m_offlineCache;
         return cache.getPathForStructureId(structureId);
     }
 
@@ -1021,7 +1041,7 @@ public class CmsADEManager {
     protected CmsADEConfigData internalLookupConfiguration(CmsObject cms, String rootPath) {
 
         boolean online = cms.getRequestContext().getCurrentProject().isOnlineProject();
-        CmsConfigurationCache cache = online ? m_onlineCache : m_offlineCache;
+        I_CmsAdeConfigurationCache cache = online ? m_onlineCache : m_offlineCache;
         CmsADEConfigData result = cache.getSiteConfigData(rootPath);
         if (result == null) {
             result = cache.getModuleConfiguration();
