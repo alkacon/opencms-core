@@ -64,7 +64,7 @@ public class CmsTableGalleryWidgetFactory implements I_WidgetFactory, I_CmsHasIn
         return new FormWidgetWrapper(new CmsVfsWidget(
             configuration,
             CmsVfsSelection.TABLE,
-            I_CmsImageBundle.INSTANCE.style().tableGalleryIcon()));
+            I_CmsImageBundle.INSTANCE.style().popupIcon()));
     }
 
     /**

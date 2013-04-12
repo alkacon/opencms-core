@@ -28,22 +28,12 @@
 package org.opencms.gwt.client.ui.input;
 
 import org.opencms.gwt.client.CmsCoreProvider;
-import org.opencms.gwt.client.I_CmsHasInit;
-import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
-import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
-import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
-import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 import org.opencms.gwt.shared.CmsLinkBean;
 import org.opencms.util.CmsStringUtil;
 
-import java.util.Map;
-
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -56,8 +46,6 @@ import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * Basic gallery widget for forms.<p>
@@ -65,7 +53,7 @@ import com.google.gwt.user.client.ui.TextBox;
  * @since 8.0.0
  * 
  */
-public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_CmsHasInit {
+public class CmsVfsSelection extends Composite implements I_CmsFormWidget {
 
     /**
      * Event preview handler.<p>
@@ -88,7 +76,7 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
                 case Event.ONMOUSEDOWN:
                     break;
                 case Event.ONKEYUP:
-                    if (m_textBox.getValue().length() > 0) {
+                    if (m_selectionInput.m_textbox.getValue().length() > 0) {
                         close();
                     } else {
                         if (m_popup == null) {
@@ -106,22 +94,6 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
                 default:
                     // do nothing
             }
-        }
-
-    }
-
-    /** Inner class for the open button. */
-    protected class OpenButton extends CmsPushButton {
-
-        /**
-         * Default constructor.<p>
-         * @param imageClass 
-         */
-        public OpenButton(String imageClass) {
-
-            super(imageClass);
-            setStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().openVfsButton());
-
         }
 
     }
@@ -156,12 +128,6 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
     /** A counter used for giving text box widgets ids. */
     private static int idCounter;
 
-    /** The widget type identifier for this widget. */
-    private static final String WIDGET_TYPE = "vfsselection";
-
-    /** The fade panel. */
-    protected Panel m_fadePanel = new SimplePanel();
-
     /** The old value. */
     protected String m_oldValue = "";
 
@@ -177,11 +143,8 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
     /** The root panel containing the other components of this widget. */
     Panel m_panel = new FlowPanel();
 
-    /** The internal text area widget used by this widget. */
-    TextBox m_textBox;
-
     /** The container for the text area. */
-    FlowPanel m_textBoxContainer = new FlowPanel();
+    CmsSelectionInput m_selectionInput;
 
     /** The configuration string. */
     private String m_config;
@@ -192,20 +155,8 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
     /***/
     private String m_id;
 
-    /** The button to to open the selection. */
-    private OpenButton m_openSelection;
-
     /***/
     private String m_type;
-
-    /**
-     * VsfSelection widget to open the gallery selection.<p>
-     * 
-     */
-    public CmsVfsSelection() {
-
-        super();
-    }
 
     /**
      * VsfSelection widget to open the gallery selection.<p>
@@ -215,36 +166,21 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
      */
     public CmsVfsSelection(String iconImage, String type, String config) {
 
-        super();
+        initWidget(m_panel);
         m_type = type;
         m_config = config;
-        m_textBox = new TextBox();
+        m_selectionInput = new CmsSelectionInput(iconImage);
         m_id = "CmsVfsSelection_" + (idCounter++);
-        m_textBox.getElement().setId(m_id);
-        m_openSelection = new OpenButton(iconImage);
+        m_selectionInput.m_textbox.getElement().setId(m_id);
 
-        m_textBoxContainer.add(m_openSelection);
-        createFader();
-        initWidget(m_panel);
-        m_panel.add(m_textBoxContainer);
-        m_fadePanel.setStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().fader());
-        m_textBoxContainer.setStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().selectionInput());
-        m_textBoxContainer.add(m_textBox);
-        m_fadePanel.addDomHandler(new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-
-                m_textBox.setFocus(true);
-            }
-        }, ClickEvent.getType());
+        m_panel.add(m_selectionInput);
         m_panel.add(m_error);
-        m_textBoxContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
 
-        m_textBox.addMouseUpHandler(new MouseUpHandler() {
+        m_selectionInput.m_textbox.addMouseUpHandler(new MouseUpHandler() {
 
             public void onMouseUp(MouseUpEvent event) {
 
-                m_textBoxContainer.remove(m_fadePanel);
+                m_selectionInput.hideFader();
                 setTitle("");
                 if (m_popup == null) {
                     open();
@@ -257,20 +193,19 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
             }
 
         });
-        m_textBox.addBlurHandler(new BlurHandler() {
+        m_selectionInput.m_textbox.addBlurHandler(new BlurHandler() {
 
             public void onBlur(BlurEvent event) {
 
-                if ((m_textBox.getValue().length() * 6.88) > m_textBox.getOffsetWidth()) {
-                    m_textBoxContainer.add(m_fadePanel);
-                    setTitle(m_textBox.getValue());
+                if ((m_selectionInput.m_textbox.getValue().length() * 6.88) > m_selectionInput.m_textbox.getOffsetWidth()) {
+                    setTitle(m_selectionInput.m_textbox.getValue());
                 }
+                m_selectionInput.showFader();
             }
         });
+        m_selectionInput.setOpenCommand(new Command() {
 
-        m_openSelection.addClickHandler(new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
+            public void execute() {
 
                 if (m_popup == null) {
                     open();
@@ -285,29 +220,11 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
     }
 
     /**
-     * Initializes this class.<p>
-     */
-    public static void initClass() {
-
-        // registers a factory for creating new instances of this widget
-        CmsWidgetFactoryRegistry.instance().registerFactory(WIDGET_TYPE, new I_CmsFormWidgetFactory() {
-
-            /**
-             * @see org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory#createWidget(java.util.Map)
-             */
-            public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
-
-                return new CmsVfsSelection();
-            }
-        });
-    }
-
-    /**
      * @param handler
      */
     public void addValueChangeHandler(ValueChangeHandler<String> handler) {
 
-        m_textBox.addValueChangeHandler(handler);
+        m_selectionInput.m_textbox.addValueChangeHandler(handler);
     }
 
     /**
@@ -331,10 +248,10 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
      */
     public Object getFormValue() {
 
-        if (m_textBox.getText() == null) {
+        if (m_selectionInput.m_textbox.getText() == null) {
             return "";
         }
-        return m_textBox.getValue();
+        return m_selectionInput.m_textbox.getValue();
     }
 
     /**
@@ -352,11 +269,11 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
      */
     public CmsLinkBean getLinkBean() {
 
-        String link = m_textBox.getValue();
+        String link = m_selectionInput.m_textbox.getValue();
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(link)) {
             return null;
         }
-        return new CmsLinkBean(m_textBox.getText(), true);
+        return new CmsLinkBean(m_selectionInput.m_textbox.getText(), true);
     }
 
     /**
@@ -366,17 +283,7 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
      */
     public String getText() {
 
-        return m_textBox.getValue();
-    }
-
-    /**
-     * Returns the textarea of this widget.<p>
-     * 
-     * @return the textarea
-     */
-    public TextBox getTextArea() {
-
-        return m_textBox;
+        return m_selectionInput.m_textbox.getValue();
     }
 
     /**
@@ -384,9 +291,9 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
      * 
      * @return the text box container
      */
-    public FlowPanel getTextAreaContainer() {
+    public CmsSelectionInput getTextAreaContainer() {
 
-        return m_textBoxContainer;
+        return m_selectionInput;
     }
 
     /**
@@ -394,7 +301,7 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
      */
     public boolean isEnabled() {
 
-        return m_textBox.isEnabled();
+        return m_selectionInput.m_textbox.isEnabled();
     }
 
     /**
@@ -402,7 +309,7 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
      */
     public void reset() {
 
-        m_textBox.setText("");
+        m_selectionInput.m_textbox.setText("");
     }
 
     /**
@@ -418,7 +325,7 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
      */
     public void setEnabled(boolean enabled) {
 
-        m_textBox.setEnabled(enabled);
+        m_selectionInput.m_textbox.setEnabled(enabled);
     }
 
     /**
@@ -441,8 +348,7 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
         }
         if (value instanceof String) {
             String strValue = (String)value;
-            m_textBox.setText(strValue);
-            createFader();
+            m_selectionInput.m_textbox.setText(strValue);
             setTitle(strValue);
         }
 
@@ -466,7 +372,7 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
         if (link == null) {
             link = new CmsLinkBean("", true);
         }
-        m_textBox.setValue(link.getLink());
+        m_selectionInput.m_textbox.setValue(link.getLink());
     }
 
     /**
@@ -476,7 +382,7 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
      * */
     public void setName(String name) {
 
-        m_textBox.setName(name);
+        m_selectionInput.m_textbox.setName(name);
 
     }
 
@@ -487,7 +393,7 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
      */
     public void setText(String text) {
 
-        m_textBox.setValue(text);
+        m_selectionInput.m_textbox.setValue(text);
     }
 
     /**
@@ -497,9 +403,9 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
     public void setTitle(String title) {
 
         if ((title.length() * 6.88) > m_panel.getOffsetWidth()) {
-            m_textBox.getElement().setTitle(title);
+            m_selectionInput.m_textbox.getElement().setTitle(title);
         } else {
-            m_textBox.getElement().setTitle("");
+            m_selectionInput.m_textbox.getElement().setTitle("");
         }
     }
 
@@ -528,7 +434,7 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
             basePath += "?dialogmode=widget&fieldid=" + m_id;
         }
 
-        String pathparameter = m_textBox.getText();
+        String pathparameter = m_selectionInput.m_textbox.getText();
         if (pathparameter.indexOf("/") > -1) {
             basePath += "&currentelement=" + pathparameter;
         }
@@ -544,8 +450,8 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
     protected void close() {
 
         m_popup.hideDelayed();
-        m_textBox.setFocus(true);
-        m_textBox.setCursorPos(m_textBox.getText().length());
+        m_selectionInput.m_textbox.setFocus(true);
+        m_selectionInput.m_textbox.setCursorPos(m_selectionInput.m_textbox.getText().length());
     }
 
     /**
@@ -553,7 +459,7 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
      * */
     protected void open() {
 
-        m_oldValue = m_textBox.getValue();
+        m_oldValue = m_selectionInput.m_textbox.getValue();
         if (m_popup == null) {
             String title = org.opencms.gwt.client.Messages.get().key(
                 org.opencms.gwt.client.Messages.GUI_GALLERY_SELECT_DIALOG_TITLE_0);
@@ -563,19 +469,19 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
 
                 public void run() {
 
-                    String textboxValue = m_textBox.getText();
+                    String textboxValue = m_selectionInput.m_textbox.getText();
 
                     if (!m_oldValue.equals(textboxValue)) {
-                        m_textBox.setValue("", true);
-                        m_textBox.setValue(textboxValue, true);
+                        m_selectionInput.m_textbox.setValue("", true);
+                        m_selectionInput.m_textbox.setValue(textboxValue, true);
                     }
 
                     if (m_previewHandlerRegistration != null) {
                         m_previewHandlerRegistration.removeHandler();
                         m_previewHandlerRegistration = null;
                     }
-                    m_textBox.setFocus(true);
-                    m_textBox.setCursorPos(m_textBox.getText().length());
+                    m_selectionInput.m_textbox.setFocus(true);
+                    m_selectionInput.m_textbox.setCursorPos(m_selectionInput.m_textbox.getText().length());
                 }
             });
             m_popup.setModal(false);
@@ -611,16 +517,6 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
         m_popup.center();
         if (m_previewHandlerRegistration == null) {
             m_previewHandlerRegistration = Event.addNativePreviewHandler(new CloseEventPreviewHandler());
-        }
-    }
-
-    /**
-     * Adds the fader if necessary.<p> 
-     * */
-    private void createFader() {
-
-        if ((m_textBox.getValue().length() * 6.88) > m_textBox.getOffsetWidth()) {
-            m_textBoxContainer.add(m_fadePanel);
         }
     }
 }

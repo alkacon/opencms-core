@@ -31,7 +31,6 @@ import com.alkacon.acacia.client.widgets.I_EditWidget;
 
 import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsVfsSelection;
-import org.opencms.gwt.client.ui.input.CmsVfsSelector;
 
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -43,9 +42,6 @@ import com.google.gwt.user.client.ui.Composite;
  *
  * */
 public class CmsVfsWidget extends Composite implements I_EditWidget {
-
-    /** The popup to select a file. */
-    protected CmsVfsSelector m_selector = new CmsVfsSelector();
 
     /** Value of the activation. */
     private boolean m_active = true;

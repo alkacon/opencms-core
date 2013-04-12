@@ -425,10 +425,29 @@ div.selectBoxRoot div.fader{
 	bottom: 1px;
     right: 15px;
 }
+div.selectionInput{
+	border: 1px solid value("constants.css.borderColor");
+	padding: 0px 21px 0px 4px;
+	height: 18px;
+}
+
+div.selectionInput input{
+	height: 18px;
+	width: 100%;
+	outline:none;
+	border: none;
+}
+
 div.selectionInput div.fader{   	
 	right: 21px;
 	bottom: 1px;
 }
+div.selectionInput .opener{
+	position: absolute;
+	right: 2px;
+	bottom: 1px;
+}
+
 div.textArea div.fader{
 	width: auto;
 	border-radius: 0 0 0 3px;

@@ -100,22 +100,6 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
 
     }
 
-    /** Inner class for the open button. */
-    protected class OpenButton extends CmsPushButton {
-
-        /**
-         * Default constructor.<p>
-         * @param imageClass 
-         */
-        public OpenButton(String imageClass) {
-
-            super(imageClass);
-            setStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().openVfsButton());
-
-        }
-
-    }
-
     /** The widget type identifier for this widget. */
     private static final String WIDGET_TYPE = "vfsselection";
 
@@ -127,12 +111,6 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
 
     /** The handler registration. */
     protected HandlerRegistration m_previewHandlerRegistration;
-
-    /** The x-coords of the popup. */
-    protected int m_xcoordspopup;
-
-    /** The y-coords of the popup. */
-    protected int m_ycoordspopup;
 
     /** The default rows set. */
     int m_defaultRows;
@@ -153,7 +131,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
     private CmsErrorWidget m_error = new CmsErrorWidget();
 
     /** The button to to open the selection. */
-    private OpenButton m_openSelection;
+    private CmsPushButton m_openSelection;
 
     /** The id for the windows. */
     private String m_id;
@@ -190,7 +168,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
         super();
 
         m_textBox = new TextBox();
-        m_openSelection = new OpenButton(iconImage);
+        m_openSelection = new CmsPushButton(iconImage);
         m_id = "CmsGroupSelection_" + (idCounter++);
         m_textBoxContainer.add(m_openSelection);
         createFader();
