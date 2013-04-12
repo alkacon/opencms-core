@@ -1709,7 +1709,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     Messages.ERR_SOLR_SERVER_NOT_CREATED_3,
                     index.getName(),
                     index.getPath(),
-                    m_solrConfig.getSolrConfigFile().getAbsolutePath()));
+                    m_solrConfig.getSolrConfigFile().getAbsolutePath()), e);
             }
         }
         SolrServer server = new EmbeddedSolrServer(m_coreContainer, index.getName());
@@ -2304,26 +2304,24 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 // the index is configured correctly
                 try {
                     index.initialize();
-                } catch (CmsException e) {
-                    // in this case the index will be disabled
-                    if (CmsLog.INIT.isInfoEnabled()) {
-                        CmsLog.INIT.info(
-                            Messages.get().getBundle().key(Messages.INIT_SEARCH_INIT_FAILED_1, index.getName()),
-                            e);
+                } catch (Exception e) {
+                    if (CmsLog.INIT.isWarnEnabled()) {
+                        // in this case the index will be disabled
+                        CmsLog.INIT.warn(Messages.get().getBundle().key(Messages.INIT_SEARCH_INIT_FAILED_1, index));
                     }
                 }
             }
+            // output a log message if the index was successfully configured or not
             if (CmsLog.INIT.isInfoEnabled()) {
-                // output a log message if the index was successfully configured or not
                 if (index.isEnabled()) {
                     CmsLog.INIT.info(Messages.get().getBundle().key(
                         Messages.INIT_INDEX_CONFIGURED_2,
-                        index.getName(),
+                        index,
                         index.getProject()));
                 } else {
                     CmsLog.INIT.info(Messages.get().getBundle().key(
                         Messages.INIT_INDEX_NOT_CONFIGURED_2,
-                        index.getName(),
+                        index,
                         index.getProject()));
                 }
             }
