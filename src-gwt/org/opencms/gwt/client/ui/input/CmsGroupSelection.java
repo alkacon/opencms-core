@@ -40,8 +40,6 @@ import org.opencms.util.CmsStringUtil;
 
 import java.util.Map;
 
-import com.google.gwt.dom.client.Style.Cursor;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -195,14 +193,11 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
         m_openSelection = new OpenButton(iconImage);
         m_id = "CmsGroupSelection_" + (idCounter++);
         m_textBoxContainer.add(m_openSelection);
-        creatFaider();
+        createFader();
         initWidget(m_panel);
         m_panel.add(m_textBoxContainer);
-        m_fadePanel.setStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().vfsInputBoxFader());
-        m_fadePanel.getElement().getStyle().setRight(21, Unit.PX);
-        m_fadePanel.getElement().getStyle().setCursor(Cursor.TEXT);
-        m_fadePanel.getElement().getStyle().setBottom(7, Unit.PX);
-
+        m_fadePanel.setStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().fader());
+        m_textBoxContainer.setStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().selectionInput());
         m_textBoxContainer.add(m_textBox);
         m_fadePanel.addDomHandler(new ClickHandler() {
 
@@ -404,7 +399,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
         if (value instanceof String) {
             String strValue = (String)value;
             m_textBox.setValue(strValue, true);
-            creatFaider();
+            createFader();
             setTitle(strValue);
         }
 
@@ -528,7 +523,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
     /**
      * Adds the fader if necessary.<p> 
      * */
-    private void creatFaider() {
+    private void createFader() {
 
         if ((m_textBox.getValue().length() * 6.88) > m_textBox.getOffsetWidth()) {
             m_textBoxContainer.add(m_fadePanel);

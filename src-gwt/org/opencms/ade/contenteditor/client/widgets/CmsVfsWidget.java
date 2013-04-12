@@ -70,7 +70,7 @@ public class CmsVfsWidget extends Composite implements I_EditWidget {
         m_imageClass = icon;
         m_config = config;
         m_linkSelect = new CmsVfsSelection(m_imageClass, type, m_config);
-        m_linkSelect.getTextAreaContainer().setStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().vfsInputBox());
+        m_linkSelect.getTextAreaContainer().addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().vfsInputBox());
         m_linkSelect.addValueChangeHandler(new ValueChangeHandler<String>() {
 
             public void onValueChange(ValueChangeEvent<String> event) {

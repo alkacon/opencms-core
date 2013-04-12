@@ -40,8 +40,6 @@ import org.opencms.util.CmsStringUtil;
 
 import java.util.Map;
 
-import com.google.gwt.dom.client.Style.Cursor;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -229,11 +227,8 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
         createFader();
         initWidget(m_panel);
         m_panel.add(m_textBoxContainer);
-        m_fadePanel.setStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().vfsInputBoxFader());
-        m_fadePanel.getElement().getStyle().setRight(21, Unit.PX);
-        m_fadePanel.getElement().getStyle().setCursor(Cursor.TEXT);
-        m_fadePanel.getElement().getStyle().setBottom(7, Unit.PX);
-
+        m_fadePanel.setStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().fader());
+        m_textBoxContainer.setStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().selectionInput());
         m_textBoxContainer.add(m_textBox);
         m_fadePanel.addDomHandler(new ClickHandler() {
 
