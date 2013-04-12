@@ -32,12 +32,18 @@
       loadingOn();
     }
     function checkSize() {
-      var req = 'admin-fs.jsp?<%=req %>scroll=';
-      if (wHeight() <= pHeight() && wWidth() < 213) {
-    	parent.location.href = req + 'true';
-      } else if (wHeight() > pHeight() && wWidth() > 212) {
-        parent.location.href = req + 'false';
-      }
+	  if (top.vr.adminResizeCount < 1) {
+        var req = 'admin-fs.jsp?<%=req %>scroll=';
+        if (wHeight() <= pHeight() && wWidth() < 213) {
+	  	  top.vr.adminResizeCount++;
+    	  parent.location.href = req + 'true';
+        } else if (wHeight() > pHeight() && wWidth() > 212) {
+		  top.vr.adminResizeCount++;
+          parent.location.href = req + 'false';
+        }
+	  } else {
+	    top.vr.adminResizeCount = 0;
+	  }
     }
     var activeItem = '/';
   </script>

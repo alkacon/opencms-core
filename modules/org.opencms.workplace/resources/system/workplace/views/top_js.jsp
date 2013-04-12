@@ -58,7 +58,8 @@ this.altbelongto="<%= wp.key(org.opencms.workplace.explorer.Messages.GUI_EXPLORE
 this.publishlock="<%= wp.key(org.opencms.workplace.explorer.Messages.GUI_PUBLISH_TOOLTIP_0)%>";
 
 
-this.viewcfg=<%= wp.getExplorerSettings() %>;      
+this.viewcfg=<%= wp.getExplorerSettings() %>;
+this.adminResizeCount = 0;
 
 } // vars_resources()
 
