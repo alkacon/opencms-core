@@ -36,7 +36,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/runtime/dom4j-1.6.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/ehcache-core-2.4.7.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/ehcache-openjpa-0.2.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/runtime/fontbox-1.5.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/fontbox-1.7.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/geronimo-jms_1.1_spec-1.1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/geronimo-jpa_2.0_spec-1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/geronimo-jta_1.1_spec-1.1.1.jar"/>
@@ -73,7 +73,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/runtime/opencsv-2.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/openjpa-2.2.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/org.apache.bval.bundle-0.3-incubating.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/runtime/pdfbox-1.5.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/pdfbox-1.7.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/poi-3.8-20120326.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/poi-ooxml-3.8-20120326.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/poi-ooxml-schemas-3.8-20120326.jar"/>
