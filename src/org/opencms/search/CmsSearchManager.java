@@ -74,10 +74,12 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
@@ -2353,11 +2355,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     e);
                 return;
             }
+            Set<CmsUUID> bothNewAndDeleted = getIdsOfPublishResourcesWhichAreBothNewAndDeleted(publishedResources);
+            // When published resources with both states 'new' and 'deleted' exist in the same publish job history, the resource has been moved
 
             List<CmsPublishedResource> updateResources = new ArrayList<CmsPublishedResource>();
-            Iterator<CmsPublishedResource> itPubRes = publishedResources.iterator();
-            while (itPubRes.hasNext()) {
-                CmsPublishedResource res = itPubRes.next();
+            for (CmsPublishedResource res : publishedResources) {
                 if (res.isFolder() || res.getState().isUnchanged()) {
                     // folders and unchanged resources don't need to be indexed after publish
                     continue;
@@ -2366,7 +2368,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     if (updateResources.contains(res)) {
                         // resource may have been added as a sibling of another resource
                         // in this case we make sure to use the value from the publish list because of the "deleted" flag
-                        boolean hasMoved = (res.getMovedState() == CmsPublishedResource.STATE_MOVED_DESTINATION)
+                        boolean hasMoved = bothNewAndDeleted.contains(res.getStructureId())
+                            || (res.getMovedState() == CmsPublishedResource.STATE_MOVED_DESTINATION)
                             || (res.getMovedState() == CmsPublishedResource.STATE_MOVED_SOURCE);
                         // check it this is a moved resource with source / target info, in this case we need both entries
                         if (!hasMoved) {
@@ -2794,6 +2797,29 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             report = new CmsLogReport(Locale.ENGLISH, getClass());
         }
         return report;
+    }
+
+    /**
+     * Gets all structure ids for which published resources of both states 'new' and 'deleted' exist in the given list.<p>
+     * 
+     * @param publishedResources a list of published resources
+     * 
+     * @return the set of structure ids that satisfy the condition above 
+     */
+    private Set<CmsUUID> getIdsOfPublishResourcesWhichAreBothNewAndDeleted(List<CmsPublishedResource> publishedResources) {
+
+        Set<CmsUUID> result = new HashSet<CmsUUID>();
+        Set<CmsUUID> deletedSet = new HashSet<CmsUUID>();
+        for (CmsPublishedResource pubRes : publishedResources) {
+            if (pubRes.getState().isNew()) {
+                result.add(pubRes.getStructureId());
+            }
+            if (pubRes.getState().isDeleted()) {
+                deletedSet.add(pubRes.getStructureId());
+            }
+        }
+        result.retainAll(deletedSet);
+        return result;
     }
 
     /**
