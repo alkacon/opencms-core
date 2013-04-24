@@ -1232,7 +1232,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         }
         bean.setUserLastModified(sResult.getUserLastModified());
         Date date = sResult.getDateLastModified();
-        String formattedDate = CmsDateUtil.getDateTime(date, DateFormat.MEDIUM, wpLocale);
+        String formattedDate = date != null ? CmsDateUtil.getDateTime(date, DateFormat.MEDIUM, wpLocale) : "";
         bean.setDateLastModified(formattedDate);
         if (!type.getTypeName().equals(CmsResourceTypeImage.getStaticTypeName())) {
             bean.addAdditionalInfo(
