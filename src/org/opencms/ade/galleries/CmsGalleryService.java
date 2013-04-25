@@ -1232,8 +1232,10 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             bean.setDescription(resourceTypeDisplayName);
         }
         bean.setUserLastModified(sResult.getUserLastModified());
-        Date date = sResult.getDateLastModified();
-        String formattedDate = date != null ? CmsDateUtil.getDateTime(date, DateFormat.MEDIUM, wpLocale) : "";
+        Date lastModDate = sResult.getDateLastModified();
+        String formattedDate = lastModDate != null
+        ? CmsDateUtil.getDateTime(lastModDate, DateFormat.MEDIUM, wpLocale)
+        : "";
         bean.setDateLastModified(formattedDate);
         if (!type.getTypeName().equals(CmsResourceTypeImage.getStaticTypeName())) {
             bean.addAdditionalInfo(
@@ -1276,9 +1278,11 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         bean.addAdditionalInfo(
             Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_SIZE_0),
             (sResult.getLength() / 1000) + " kb");
-        bean.addAdditionalInfo(
-            Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_DATE_CHANGED_0),
-            CmsDateUtil.getDate(sResult.getDateLastModified(), DateFormat.SHORT, getWorkplaceLocale()));
+        if (lastModDate != null) {
+            bean.addAdditionalInfo(
+                Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_DATE_CHANGED_0),
+                CmsDateUtil.getDate(lastModDate, DateFormat.SHORT, getWorkplaceLocale()));
+        }
         if ((sResult.getDateExpired().getTime() != CmsResource.DATE_EXPIRED_DEFAULT)
             && !sResult.getDateExpired().equals(CmsSearchFieldMapping.getDefaultDateExpired())) {
             bean.addAdditionalInfo(
