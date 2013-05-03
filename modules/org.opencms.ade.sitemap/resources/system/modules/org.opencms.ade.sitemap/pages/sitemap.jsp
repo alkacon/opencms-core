@@ -1,6 +1,6 @@
 <%@ page import="org.opencms.ade.sitemap.CmsSitemapActionElement" contentType="text/plain" %><%
   CmsSitemapActionElement jsp = new CmsSitemapActionElement(pageContext, request, response);
-%><!DOCTYPE HTML>
+%><!DOCTYPE html>
 <html style="height:100%;">
   <head>
     <title><%= jsp.getTitle() %></title>

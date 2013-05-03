@@ -1,6 +1,6 @@
 <%@page taglibs="c"  import="org.opencms.ade.galleries.CmsGalleryActionElement, org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants" taglibs="cms"%><%
   CmsGalleryActionElement gallery = new CmsGalleryActionElement(pageContext, request, response);
-%><!DOCTYPE HTML>
+%><!DOCTYPE html>
 <html>
   <head>
   	<title><%= gallery.getTitle() %></title>
