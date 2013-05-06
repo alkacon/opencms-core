@@ -12,6 +12,7 @@
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
         <javaElement handleIdentifier="=OpenCms/src-components&lt;com.google.gwt.user.client.rpc"/>
+        <javaElement handleIdentifier="=OpenCms/src-components&lt;org.opencms.gwt.linker"/>
         <javaElement handleIdentifier="=OpenCms/src-components&lt;org.opencms.gwt.rebind.rpc"/>
         <javaElement handleIdentifier="=OpenCms/src-components&lt;org.opencms.gwt.rebind"/>
     </selectedElements>

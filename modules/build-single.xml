@@ -434,7 +434,7 @@
 									  failonerror="true"
 									  maxmemory="1024m">
 							<!--	<arg value="-XdisableClassMetadata" />
-						  			<arg value="-XdisableCastChecking" />
+						  			<arg value="-XdisableCastChecking" /> 
 						  			<arg value="-compileReport" />  removing compiler args for faster compiling and easier debugging -> stacktrace -->
 							<arg value="-strict" />
 							<arg value="-localWorkers" />
@@ -442,7 +442,7 @@
 							<arg value="-logLevel" />
 							<arg value="INFO" />
 							<arg value="-style" />
-							<arg value="obfuscated" />
+							<arg value="pretty" />
 							<arg value="-gen" />
 							<arg file="${opencms.output}/gwt/gen/" />
 							<arg value="-extra" />

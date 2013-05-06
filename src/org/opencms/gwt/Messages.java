@@ -62,6 +62,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_INSTANTIATION_INCORRECT_TYPE_2 = "ERR_INSTANTIATION_INCORRECT_TYPE_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_NO_PERMUTATION_AVAILABLE_0 = "ERR_NO_PERMUTATION_AVAILABLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_RESOURCE_HAS_BLOCKING_LOCKED_CHILDREN_1 = "ERR_RESOURCE_HAS_BLOCKING_LOCKED_CHILDREN_1";
 
     /** Message constant for key in the resource bundle. */
