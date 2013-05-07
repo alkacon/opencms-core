@@ -442,7 +442,7 @@
 							<arg value="-logLevel" />
 							<arg value="INFO" />
 							<arg value="-style" />
-							<arg value="pretty" />
+							<arg value="obfuscated" />
 							<arg value="-gen" />
 							<arg file="${opencms.output}/gwt/gen/" />
 							<arg value="-extra" />
