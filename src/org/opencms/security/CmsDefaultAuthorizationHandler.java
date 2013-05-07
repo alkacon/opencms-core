@@ -31,6 +31,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.A_CmsAuthorizationHandler;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsHttpAuthenticationSettings;
+import org.opencms.main.CmsReqStatistics;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.workplace.CmsWorkplaceManager;
@@ -210,8 +211,10 @@ public class CmsDefaultAuthorizationHandler extends A_CmsAuthorizationHandler {
                 username = token.substring(0, pos);
                 password = token.substring(pos + 1);
             }
+            CmsReqStatistics.startCmsInit("4:loginUser");
             // authentication in the DB
             cms.loginUser(username, password);
+            CmsReqStatistics.endCmsInit("4:loginUser");
 
             // authorization was successful create a session
             req.getSession(true);

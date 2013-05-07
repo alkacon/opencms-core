@@ -1485,7 +1485,7 @@ public final class OpenCmsCore {
                             Messages.ERR_SECURE_SITE_NOT_CONFIGURED_1,
                             resourceName), e);
                     }
-                    boolean usingSec = true;
+                    boolean usingSec = false;
                     if (req != null) {
                         usingSec = req.getRequestURL().toString().toUpperCase().startsWith(secureUrl.toUpperCase());
                     }
@@ -1653,7 +1653,7 @@ public final class OpenCmsCore {
         CmsObject cms = null;
         try {
             cms = initCmsObject(req, res);
-
+            CmsReqStatistics.setCmsObjectInitTime();
             if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
                 String uri = cms.getRequestContext().getUri();
                 if (OpenCms.getStaticExportManager().isExportLink(cms, uri)) {
@@ -1667,9 +1667,13 @@ public final class OpenCmsCore {
 
             // user is initialized, now deliver the requested resource
             CmsResource resource = initResource(cms, cms.getRequestContext().getUri(), req, res);
+
+            CmsReqStatistics.setInitResoueceTime();
+
             if (resource != null) {
                 // a file was read, go on process it
                 m_resourceManager.loadResource(cms, resource, req, res);
+                CmsReqStatistics.setLoadResoueceTime();
                 m_sessionManager.updateSessionInfo(cms, req);
             }
 
@@ -2384,11 +2388,17 @@ public final class OpenCmsCore {
      */
     private CmsObject initCmsObject(HttpServletRequest req, HttpServletResponse res) throws IOException, CmsException {
 
+        // -- statistics code --
+        CmsReqStatistics.startCmsInit("1:initFromSession");
+
+        // -- statistics code --
         // first try to restore a stored session
         CmsObject cms = initCmsObjectFromSession(req);
+        CmsReqStatistics.endCmsInit("1:initFromSession");
         if (cms != null) {
             return cms;
         }
+        CmsReqStatistics.startCmsInit("2:authorizeRequest");
 
         // if does not work, try to authorize the request
         I_CmsAuthorizationHandler.I_PrivilegedLoginAction loginAction = new I_CmsAuthorizationHandler.I_PrivilegedLoginAction() {
@@ -2453,21 +2463,27 @@ public final class OpenCmsCore {
                 m_adminCms = adminCms;
             }
         };
+        CmsReqStatistics.endCmsInit("2:authorizeRequest");
+
+        CmsReqStatistics.startCmsInit("3:useAuthorizationHandler");
         loginAction.setCmsObject(initCmsObject(req, res, OpenCms.getDefaultUsers().getUserAdmin(), null, null));
         cms = m_authorizationHandler.initCmsObject(req, loginAction);
+        CmsReqStatistics.endCmsInit("3:useAuthorizationHandler");
         if (cms != null) {
             return cms;
         }
-
+        CmsReqStatistics.startCmsInit("5:requestAuthorization");
         // authentification failed or not enough permissions, so display a login screen
         m_authorizationHandler.requestAuthorization(req, res, getLoginFormURL(req, res));
-
+        CmsReqStatistics.endCmsInit("5:requestAuthorization");
+        CmsReqStatistics.startCmsInit("6:initAsGuest");
         cms = initCmsObject(
             req,
             m_securityManager.readUser(null, OpenCms.getDefaultUsers().getUserGuest()),
             getSiteManager().matchRequest(req).getSiteRoot(),
             CmsProject.ONLINE_PROJECT_ID,
             "");
+        CmsReqStatistics.endCmsInit("6:initAsGuest");
         // return the initialized cms user context object
         return cms;
     }

@@ -138,7 +138,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
                 return;
             }
         }
-
+        CmsReqStatistics.startStatistics(req.getPathInfo());
         String path = OpenCmsCore.getInstance().getPathInfo(req);
         if (path.startsWith(HANDLE_PATH)) {
             // this is a request to an OpenCms handler URI
@@ -152,6 +152,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
             // standard request to a URI in the OpenCms VFS 
             OpenCmsCore.getInstance().showResource(req, res);
         }
+        CmsReqStatistics.setEndTime();
     }
 
     /**

@@ -27,10 +27,14 @@
 
 package org.opencms.db;
 
+import org.opencms.main.CmsLog;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Superclass for all SQL manager implementations.<p>
@@ -38,6 +42,9 @@ import java.util.List;
  * @since 6.0.0
  */
 public class CmsSqlManager {
+
+    /** The logger for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSqlManager.class);
 
     /** the driver manager. */
     private CmsDriverManager m_driverManager;
@@ -93,7 +100,18 @@ public class CmsSqlManager {
      */
     public Connection getConnectionByUrl(String dbPoolUrl) throws SQLException {
 
-        return DriverManager.getConnection(dbPoolUrl);
+        long timer = System.currentTimeMillis();
+
+        Connection con = DriverManager.getConnection(dbPoolUrl);
+        if (LOG.isDebugEnabled()) {
+            timer = System.currentTimeMillis() - timer;
+
+            if ((timer > 1000)) {
+
+                LOG.debug("DriverManager.getConnection required " + timer + " milliseconds");
+            }
+        }
+        return con;
     }
 
     /**
