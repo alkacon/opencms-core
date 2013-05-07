@@ -793,8 +793,17 @@ public class CmsLogin extends CmsJspLoginBean {
         html.append("\t}\n");
         html.append("}\n");
 
+        // function to check IE version, in case of a version < IE8 login will be disabled and an error message shown.
+        html.append("function checkBrowser(){\n  if ($.browser.msie && $.browser.version<8){\n  $('#");
+        html.append(PARAM_FORM);
+        html.append("').after('<div style=\"color: #B31B34; font-weight: bold; font-size: 14px; margin: 20px; text-align: center;\">");
+        html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_UNSUPPORTED_BROWSER_0));
+        html.append("</div>');\n $('#");
+        html.append(PARAM_FORM);
+        html.append("').css(\"display\",\"none\"); /** $('input').attr('disabled', 'disabled');\n  alert('wrong browser'); */\n}\n}\n");
+
         // called when the login form page is loaded
-        html.append("function doOnload() {\n");
+        html.append("function doOnload() {\n checkBrowser();\n");
         html.append("\tdocument.");
         html.append(PARAM_FORM);
         html.append(".");
@@ -1003,7 +1012,7 @@ public class CmsLogin extends CmsJspLoginBean {
 
         StringBuffer html = new StringBuffer(8192);
 
-        html.append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">\n");
+        html.append("<!DOCTYPE html>\n");
         html.append("<html><head>\n");
         html.append("<title>");
 

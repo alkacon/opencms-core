@@ -312,6 +312,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LOGIN_UNKNOWN_RESOURCE_1 = "GUI_LOGIN_UNKNOWN_RESOURCE_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_UNSUPPORTED_BROWSER_0 = "GUI_LOGIN_UNSUPPORTED_BROWSER_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_USERNAME_0 = "GUI_LOGIN_USERNAME_0";
 
     /** Message constant for key in the resource bundle. */
@@ -475,7 +478,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /**The part of  state constant. */
     private static final String STATE_PREFIX = "GUI_EXPLORER_STATE";
-
 
     /**
      * Hides the public constructor for this utility class.<p>
