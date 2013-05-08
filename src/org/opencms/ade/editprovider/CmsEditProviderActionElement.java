@@ -29,6 +29,7 @@ package org.opencms.ade.editprovider;
 
 import org.opencms.ade.publish.CmsPublishActionElement;
 import org.opencms.gwt.CmsGwtActionElement;
+import org.opencms.main.OpenCms;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,8 +42,11 @@ import javax.servlet.jsp.PageContext;
  */
 public class CmsEditProviderActionElement extends CmsGwtActionElement {
 
-    /** The module name. */
-    public static final String MODULE_NAME = "editprovider";
+    /** The OpenCms module name. */
+    public static final String CMS_MODULE_NAME = "org.opencms.ade.editprovider";
+
+    /** The GWT module name. */
+    public static final String GWT_MODULE_NAME = "editprovider";
 
     /**
      * Constructor.<p>
@@ -76,7 +80,9 @@ public class CmsEditProviderActionElement extends CmsGwtActionElement {
         sb.append(super.export());
         sb.append(new CmsPublishActionElement(getJspContext(), getRequest(), getResponse()).export());
         sb.append(export());
-        sb.append(createNoCacheScript(MODULE_NAME));
+        sb.append(createNoCacheScript(
+            GWT_MODULE_NAME,
+            OpenCms.getModuleManager().getModule(CMS_MODULE_NAME).getVersion().toString()));
         return sb.toString();
     }
 

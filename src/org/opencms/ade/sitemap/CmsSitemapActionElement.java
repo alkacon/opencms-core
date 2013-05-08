@@ -33,6 +33,7 @@ import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
 import org.opencms.ade.upload.CmsUploadActionElement;
 import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.gwt.CmsRpcException;
+import org.opencms.main.OpenCms;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -47,8 +48,11 @@ import javax.servlet.jsp.PageContext;
  */
 public class CmsSitemapActionElement extends CmsGwtActionElement {
 
-    /** The module name. */
-    public static final String MODULE_NAME = "sitemap";
+    /** The OpenCms module name. */
+    public static final String CMS_MODULE_NAME = "org.opencms.ade.sitemap";
+
+    /** The GWT module name. */
+    public static final String GWT_MODULE_NAME = "sitemap";
 
     /** The current sitemap data. */
     private CmsSitemapData m_sitemapData;
@@ -93,7 +97,9 @@ public class CmsSitemapActionElement extends CmsGwtActionElement {
         sb.append(export());
         sb.append(new CmsPublishActionElement(getJspContext(), getRequest(), getResponse()).export());
         sb.append(new CmsUploadActionElement(getJspContext(), getRequest(), getResponse()).export());
-        sb.append(createNoCacheScript(MODULE_NAME));
+        sb.append(createNoCacheScript(
+            GWT_MODULE_NAME,
+            OpenCms.getModuleManager().getModule(CMS_MODULE_NAME).getVersion().toString()));
         return sb.toString();
     }
 

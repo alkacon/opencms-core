@@ -32,6 +32,7 @@ import org.opencms.gwt.shared.CmsUploadData;
 import org.opencms.gwt.shared.I_CmsUploadConstants;
 import org.opencms.gwt.shared.rpc.I_CmsUploadService;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
@@ -73,8 +74,11 @@ public class CmsUploadActionElement extends CmsGwtActionElement {
         }
     }
 
-    /** The module name. */
-    public static final String MODULE_NAME = "upload";
+    /** The OpenCms module name. */
+    public static final String CMS_MODULE_NAME = "org.opencms.ade.upload";
+
+    /** The GWT module name. */
+    public static final String GWT_MODULE_NAME = "upload";
 
     /**
      * Constructor.<p>
@@ -115,7 +119,9 @@ public class CmsUploadActionElement extends CmsGwtActionElement {
         sb.append(export());
         sb.append(exportTargetFolder());
         sb.append(exportCloseLink());
-        sb.append(createNoCacheScript(MODULE_NAME));
+        sb.append(createNoCacheScript(
+            GWT_MODULE_NAME,
+            OpenCms.getModuleManager().getModule(CMS_MODULE_NAME).getVersion().toString()));
         return sb.toString();
     }
 

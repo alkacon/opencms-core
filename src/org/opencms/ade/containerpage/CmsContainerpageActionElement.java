@@ -36,6 +36,7 @@ import org.opencms.ade.publish.CmsPublishActionElement;
 import org.opencms.ade.upload.CmsUploadActionElement;
 import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.gwt.CmsRpcException;
+import org.opencms.main.OpenCms;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -48,8 +49,11 @@ import javax.servlet.jsp.PageContext;
  */
 public class CmsContainerpageActionElement extends CmsGwtActionElement {
 
-    /** The module name. */
-    public static final String MODULE_NAME = "containerpage";
+    /** The OpenCms module name. */
+    public static final String CMS_MODULE_NAME = "org.opencms.ade.containerpage";
+
+    /** The GWT module name. */
+    public static final String GWT_MODULE_NAME = "containerpage";
 
     /** The current container page data. */
     private CmsCntPageData m_cntPageData;
@@ -98,7 +102,9 @@ public class CmsContainerpageActionElement extends CmsGwtActionElement {
         sb.append(export());
         sb.append(new CmsUploadActionElement(getJspContext(), getRequest(), getResponse()).export());
         sb.append(new CmsContentEditorActionElement(getJspContext(), getRequest(), getResponse()).export());
-        sb.append(createNoCacheScript(MODULE_NAME));
+        sb.append(createNoCacheScript(
+            GWT_MODULE_NAME,
+            OpenCms.getModuleManager().getModule(CMS_MODULE_NAME).getVersion().toString()));
         return sb.toString();
     }
 

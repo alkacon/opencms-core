@@ -37,6 +37,7 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTab
 import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService;
 import org.opencms.ade.upload.CmsUploadActionElement;
 import org.opencms.gwt.CmsGwtActionElement;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
@@ -55,8 +56,11 @@ import javax.servlet.jsp.PageContext;
  */
 public class CmsGalleryActionElement extends CmsGwtActionElement {
 
-    /** The module name. */
-    public static final String MODULE_NAME = "galleries";
+    /** The OpenCms module name. */
+    public static final String CMS_MODULE_NAME = "org.opencms.ade.galleries";
+
+    /** The GWT module name. */
+    public static final String GWT_MODULE_NAME = "galleries";
 
     /** The gallery mode. */
     private GalleryMode m_galleryMode;
@@ -100,7 +104,9 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
         sb.append(export());
         sb.append(exportCloseLink());
         sb.append(new CmsUploadActionElement(getJspContext(), getRequest(), getResponse()).export());
-        sb.append(createNoCacheScript(MODULE_NAME));
+        sb.append(createNoCacheScript(
+            GWT_MODULE_NAME,
+            OpenCms.getModuleManager().getModule(CMS_MODULE_NAME).getVersion().toString()));
         return sb.toString();
     }
 
