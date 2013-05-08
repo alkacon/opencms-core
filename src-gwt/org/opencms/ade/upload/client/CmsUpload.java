@@ -90,29 +90,26 @@ public class CmsUpload extends A_CmsEntryPoint {
     public void onModuleLoad() {
 
         super.onModuleLoad();
-        // only proceed if JavaScript resources are up to date
-        if (checkBuildId("org.opencms.ade.upload")) {
-            if ((getDialogMode() != null) && getDialogMode().equals("button")) {
-                exportOpenUploadDialog();
-            } else {
-                try {
-                    A_CmsUploadDialog dialog = GWT.create(CmsUploadDialogImpl.class);
-                    I_CmsUploadContext context = new I_CmsUploadContext() {
+        if ((getDialogMode() != null) && getDialogMode().equals("button")) {
+            exportOpenUploadDialog();
+        } else {
+            try {
+                A_CmsUploadDialog dialog = GWT.create(CmsUploadDialogImpl.class);
+                I_CmsUploadContext context = new I_CmsUploadContext() {
 
-                        public void onUploadFinished() {
+                    public void onUploadFinished() {
 
-                            String closeLink = getCloseLink() + "?resource=";
-                            Window.Location.assign(CmsCoreProvider.get().link(closeLink));
-                        }
-                    };
-                    dialog.setContext(context);
-                    dialog.setTargetFolder(getTargetFolder());
-                    dialog.loadAndShow();
-                } catch (Exception e) {
-                    CmsErrorDialog.handleException(new Exception(
-                        "Deserialization of dialog data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
-                        e));
-                }
+                        String closeLink = getCloseLink() + "?resource=";
+                        Window.Location.assign(CmsCoreProvider.get().link(closeLink));
+                    }
+                };
+                dialog.setContext(context);
+                dialog.setTargetFolder(getTargetFolder());
+                dialog.loadAndShow();
+            } catch (Exception e) {
+                CmsErrorDialog.handleException(new Exception(
+                    "Deserialization of dialog data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
+                    e));
             }
         }
     }

@@ -524,7 +524,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             log(e.getLocalizedMessage(), e);
         }
         String defaultWorkplaceLink = CmsExplorer.getWorkplaceExplorerLink(cms, cms.getRequestContext().getSiteRoot());
-        Map<String, String> gwtBuildIds = getBuildIds();
         CmsRoleManager roleManager = OpenCms.getRoleManager();
         boolean isAdmin = roleManager.hasRole(cms, CmsRole.ADMINISTRATOR);
         boolean isDeveloper = roleManager.hasRole(cms, CmsRole.DEVELOPER);
@@ -546,7 +545,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             isShowHelp,
             toolbarVisible,
             defaultWorkplaceLink,
-            gwtBuildIds,
             userInfo,
             OpenCms.getWorkplaceManager().isKeepAlive(),
             OpenCms.getADEManager().getParameters(getCmsObject()));

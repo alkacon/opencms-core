@@ -680,12 +680,7 @@
 					dstmanifestfile="${module.input.res}/manifest.synched.xml"
 					base="${module.input.res}/"
 					directory="${module.gwt.output}" />
-				<echo message="Setting build id in manifest: ${gwt.buildid}" />
-				<xslt in="${module.input.res}/manifest.synched.xml" out="${module.input.res}/manifest.buildid-set.xml" style="${basedir}/add-buildid.xsl">
-					<param name="gwt.buildid" expression="${gwt.buildid}" />
-				</xslt>
-				
-				<zipfileset id="manifest.zipid" dir="${module.input.res}" includes="manifest.buildid-set.xml" fullpath="manifest.xml" />
+				<zipfileset id="manifest.zipid" dir="${module.input.res}" includes="manifest.synched.xml" fullpath="manifest.xml" />
 			</then>
 			<else>
 				<zipfileset id="manifest.zipid" dir="${module.input.res}" prefix="" includes="manifest.xml" />

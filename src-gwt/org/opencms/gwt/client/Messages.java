@@ -85,12 +85,6 @@ public final class Messages {
     public static final String GUI_BROWSING_0 = "GUI_BROWSING_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_BUILD_ID_MESSAGE_CONTENT_0 = "GUI_BUILD_ID_MESSAGE_CONTENT_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_BUILD_ID_MESSAGE_TITLE_0 = "GUI_BUILD_ID_MESSAGE_TITLE_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_CANCEL_0 = "GUI_CANCEL_0";
 
     /** Message constant for key in the resource bundle. */
