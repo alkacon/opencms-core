@@ -54,7 +54,9 @@ textarea.textAreaBox {
 .colorpickerpopup > div.popupContent > div {
 	
 }
-
+div.inActive div.textAreaBoxPanel{
+	height: 18px !important;
+}
 
 div.textAreaBoxPanel{
 	border: 1px solid #7788AA;
