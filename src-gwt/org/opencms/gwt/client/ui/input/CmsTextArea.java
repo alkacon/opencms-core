@@ -325,6 +325,8 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     public void setEnabled(boolean enabled) {
 
         m_textArea.setEnabled(enabled);
+        // hide / show resize handle
+        m_textAreaContainer.setResizable(enabled);
     }
 
     /**
