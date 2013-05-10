@@ -46,6 +46,7 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Scroll panel implementation allowing focused scrolling.<p>
@@ -202,6 +203,24 @@ public class CmsScrollPanel extends ScrollPanel implements HasResizeHandlers {
         } else if (m_handlerRegistration != null) {
             m_handlerRegistration.removeHandler();
             m_handlerRegistration = null;
+        }
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.SimplePanel#remove(com.google.gwt.user.client.ui.Widget)
+     */
+    @Override
+    public boolean remove(Widget w) {
+
+        if (w == m_resize) {
+            try {
+                orphan(m_resize);
+            } finally {
+                getElement().removeChild(m_resize.getElement());
+            }
+            return true;
+        } else {
+            return super.remove(w);
         }
     }
 
