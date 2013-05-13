@@ -44,7 +44,6 @@ import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.file.types.I_CmsResourceType;
-import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsBrokenLinkBean;
 import org.opencms.gwt.shared.CmsDeleteResourceBean;
@@ -107,8 +106,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.FactoryUtils;
@@ -287,21 +284,6 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         CmsListInfoBean result = getPageInfo(cms, resource);
         addLockInfo(cms, resource, result);
         return result;
-    }
-
-    /**
-     * Returns a new configured service instance.<p>
-     * 
-     * @param request the current request
-     * 
-     * @return a new service instance
-     */
-    public static CmsVfsService newInstance(HttpServletRequest request) {
-
-        CmsVfsService service = new CmsVfsService();
-        service.setCms(CmsFlexController.getCmsObject(request));
-        service.setRequest(request);
-        return service;
     }
 
     /**

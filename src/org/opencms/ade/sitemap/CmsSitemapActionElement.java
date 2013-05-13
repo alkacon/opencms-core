@@ -112,7 +112,7 @@ public class CmsSitemapActionElement extends CmsGwtActionElement {
 
         if (m_sitemapData == null) {
             try {
-                m_sitemapData = CmsVfsSitemapService.newInstance(getRequest()).prefetch(getCoreData().getUri());
+                m_sitemapData = CmsVfsSitemapService.prefetch(getRequest(), getCoreData().getUri());
             } catch (CmsRpcException e) {
                 // ignore, should never happen, and it is already logged
             }

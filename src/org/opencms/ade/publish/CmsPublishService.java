@@ -83,13 +83,21 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
      * @param request the servlet request
      * 
      * @return the service instance
+     * 
+     * @throws CmsRpcException if something goes wrong
      */
-    public static CmsPublishService newInstance(HttpServletRequest request) {
+    public static CmsPublishData prefetch(HttpServletRequest request) throws CmsRpcException {
 
         CmsPublishService srv = new CmsPublishService();
         srv.setCms(CmsFlexController.getCmsObject(request));
         srv.setRequest(request);
-        return srv;
+        CmsPublishData result = null;
+        try {
+            result = srv.getInitData();
+        } finally {
+            srv.clearThreadStorage();
+        }
+        return result;
     }
 
     /**

@@ -1588,20 +1588,15 @@ public final class OpenCmsCore {
             rpcService.checkPermissions(cms);
             // set runtime variables
             rpcService.setCms(cms);
-            try {
-                Object lock = req.getSession();
-                if (lock == null) {
-                    lock = new Object();
-                }
-                synchronized (lock) {
-                    rpcService.service(req, res);
-                }
-                // update the session info
-                m_sessionManager.updateSessionInfo(cms, req);
-            } finally {
-                // be sure to clear the cms context
-                rpcService.setCms(null);
+            Object lock = req.getSession();
+            if (lock == null) {
+                lock = new Object();
             }
+            synchronized (lock) {
+                rpcService.service(req, res);
+            }
+            // update the session info
+            m_sessionManager.updateSessionInfo(cms, req);
         } catch (CmsRoleViolationException rv) {
             // don't log these into the error channel
             LOG.debug(rv.getLocalizedMessage(), rv);

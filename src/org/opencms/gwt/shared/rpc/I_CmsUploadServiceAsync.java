@@ -27,7 +27,6 @@
 
 package org.opencms.gwt.shared.rpc;
 
-import org.opencms.gwt.shared.CmsUploadData;
 import org.opencms.gwt.shared.CmsUploadFileBean;
 import org.opencms.gwt.shared.CmsUploadProgessInfo;
 
@@ -45,13 +44,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * @see org.opencms.gwt.shared.rpc.I_CmsUploadServiceAsync
  */
 public interface I_CmsUploadServiceAsync {
-
-    /**
-     * Generates upload data for prefetching in the host page.<p>
-     * 
-     * @param callback the async callback
-     */
-    void prefetch(AsyncCallback<CmsUploadData> callback);
 
     /**
      * Cancels the upload.<p>

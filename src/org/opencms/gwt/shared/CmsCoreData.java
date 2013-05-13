@@ -58,11 +58,11 @@ public class CmsCoreData implements IsSerializable {
      */
     public static class UserInfo implements IsSerializable {
 
-        /** True if the user is a template developer. */
-        private boolean m_isDeveloper;
-
         /** True if the user is an administrator. */
         private boolean m_isAdmin;
+
+        /** True if the user is a template developer. */
+        private boolean m_isDeveloper;
 
         /** 
          * Creates a new instance.<p>
@@ -105,9 +105,6 @@ public class CmsCoreData implements IsSerializable {
         }
     }
 
-    /** A bean with information about the current user. */
-    protected UserInfo m_userInfo;
-
     /** Name of the used js variable. */
     public static final String DICT_NAME = "org_opencms_gwt";
 
@@ -122,6 +119,9 @@ public class CmsCoreData implements IsSerializable {
 
     /** The time sent from the server when loading the data. */
     protected long m_serverTime;
+
+    /** A bean with information about the current user. */
+    protected UserInfo m_userInfo;
 
     /** The XML content editor back-link URL. */
     private String m_contentEditorBacklinkUrl;
@@ -158,6 +158,9 @@ public class CmsCoreData implements IsSerializable {
 
     /** A flag which indicates whether the toolbar should be shown initially. */
     private boolean m_toolbarVisible;
+
+    /** The maximum file size for the upload. */
+    private long m_uploadFileSizeLimit;
 
     /** The current uri. */
     private String m_uri;
@@ -200,7 +203,8 @@ public class CmsCoreData implements IsSerializable {
             clone.isShowEditorHelp(),
             clone.isToolbarVisible(),
             clone.getDefaultWorkplaceLink(),
-            clone.getUserInfo());
+            clone.getUserInfo(),
+            clone.getUploadFileSizeLimit());
     }
 
     /**
@@ -223,6 +227,7 @@ public class CmsCoreData implements IsSerializable {
      * @param toolbarVisible a flag to indicate whether the toolbar should be visible initially
      * @param defaultWorkplaceLink the default link to use for opening the workplace  
      * @param userInfo information about the current user 
+     * @param uploadFileSizeLimit the upload file size limit
      */
     public CmsCoreData(
         String contentEditorUrl,
@@ -241,7 +246,8 @@ public class CmsCoreData implements IsSerializable {
         boolean isShowEditorHelp,
         boolean toolbarVisible,
         String defaultWorkplaceLink,
-        UserInfo userInfo) {
+        UserInfo userInfo,
+        long uploadFileSizeLimit) {
 
         m_contentEditorUrl = contentEditorUrl;
         m_contentEditorBacklinkUrl = contentEditorBacklinkUrl;
@@ -260,6 +266,7 @@ public class CmsCoreData implements IsSerializable {
         m_structureId = structureId;
         m_defaultWorkplaceLink = defaultWorkplaceLink;
         m_userInfo = userInfo;
+        m_uploadFileSizeLimit = uploadFileSizeLimit;
     }
 
     /**
@@ -370,6 +377,16 @@ public class CmsCoreData implements IsSerializable {
     public CmsUUID getStructureId() {
 
         return m_structureId;
+    }
+
+    /**
+     * Returns the upload file size limit.<p>
+     *
+     * @return the upload file size limit
+     */
+    public long getUploadFileSizeLimit() {
+
+        return m_uploadFileSizeLimit;
     }
 
     /**

@@ -77,13 +77,20 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
      * @param request the servlet request
      *  
      * @return a service instance for the request  
+     * @throws CmsRpcException if something goes wrong
      */
-    public static CmsPostUploadDialogService newInstance(HttpServletRequest request) {
+    public static CmsPostUploadDialogBean prefetch(HttpServletRequest request) throws CmsRpcException {
 
         CmsPostUploadDialogService srv = new CmsPostUploadDialogService();
         srv.setCms(CmsFlexController.getCmsObject(request));
         srv.setRequest(request);
-        return srv;
+        CmsPostUploadDialogBean result = null;
+        try {
+            result = srv.prefetch();
+        } finally {
+            srv.clearThreadStorage();
+        }
+        return result;
     }
 
     /**
@@ -102,11 +109,7 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
             if (description == null) {
                 description = getCmsObject().getSitePath(res);
             }
-            CmsVfsService vfsService = new CmsVfsService();
-            vfsService.setCms(getCmsObject());
-            vfsService.setRequest(getThreadLocalRequest());
-            //CmsListInfoBean listinfo = new CmsListInfoBean(title, description, new ArrayList<CmsAdditionalInfoBean>());
-            CmsListInfoBean listInfo = vfsService.getPageInfo(id);
+            CmsListInfoBean listInfo = CmsVfsService.getPageInfo(getCmsObject(), res);
 
             CmsPostUploadDialogPanelBean result = new CmsPostUploadDialogPanelBean(id, listInfo);
 

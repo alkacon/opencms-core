@@ -173,13 +173,20 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      * @param request the current request
      * 
      * @return a new service instance
+     * @throws CmsRpcException if something goes wrong
      */
-    public static CmsContentService newInstance(HttpServletRequest request) {
+    public static CmsContentDefinition prefetch(HttpServletRequest request) throws CmsRpcException {
 
         CmsContentService srv = new CmsContentService();
         srv.setCms(CmsFlexController.getCmsObject(request));
         srv.setRequest(request);
-        return srv;
+        CmsContentDefinition result = null;
+        try {
+            result = srv.prefetch();
+        } finally {
+            srv.clearThreadStorage();
+        }
+        return result;
     }
 
     /**

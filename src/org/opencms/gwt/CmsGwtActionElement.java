@@ -270,7 +270,7 @@ public class CmsGwtActionElement extends CmsJspActionElement {
     public CmsCoreData getCoreData() {
 
         if (m_coreData == null) {
-            m_coreData = CmsCoreService.newInstance(getRequest()).prefetch();
+            m_coreData = CmsCoreService.prefetch(getRequest());
         }
         return m_coreData;
     }

@@ -28,7 +28,6 @@
 package org.opencms.gwt.shared.rpc;
 
 import org.opencms.gwt.CmsRpcException;
-import org.opencms.gwt.shared.CmsUploadData;
 import org.opencms.gwt.shared.CmsUploadFileBean;
 import org.opencms.gwt.shared.CmsUploadProgessInfo;
 
@@ -46,15 +45,6 @@ import com.google.gwt.user.client.rpc.RemoteService;
  * @see org.opencms.gwt.shared.rpc.I_CmsUploadServiceAsync
  */
 public interface I_CmsUploadService extends RemoteService {
-
-    /**
-     * Generates upload data for prefetching in the host page.<p>
-     * 
-     * @return the upload data
-     * 
-     * @throws CmsRpcException if something goes wrong 
-     */
-    CmsUploadData prefetch() throws CmsRpcException;
 
     /**
      * Cancels the upload.<p>

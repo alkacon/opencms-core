@@ -29,6 +29,7 @@ package org.opencms.ade.upload.client.ui;
 
 import org.opencms.ade.upload.client.Messages;
 import org.opencms.ade.upload.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.css.I_CmsConstantsBundle;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
@@ -39,7 +40,6 @@ import java.util.List;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
-import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.client.ui.HTML;
 
 /**
@@ -57,11 +57,8 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
 
     /**
      * Default constructor.<p>
-     * 
-     * @throws SerializationException if deserialization falis 
      */
-    public CmsUploadDialogFormDataImpl()
-    throws SerializationException {
+    public CmsUploadDialogFormDataImpl() {
 
         super();
         addUploadZone(m_scrollPanel.getElement(), this);
@@ -88,7 +85,7 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
         return Messages.get().key(
             Messages.GUI_UPLOAD_FILE_TOO_LARGE_2,
             CmsUploadButton.formatBytes(file.getFileSize()),
-            CmsUploadButton.formatBytes(new Long(getData().getUploadFileSizeLimit()).intValue()));
+            CmsUploadButton.formatBytes(new Long(CmsCoreProvider.get().getUploadFileSizeLimit()).intValue()));
     }
 
     /**
@@ -97,7 +94,7 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
     @Override
     public boolean isTooLarge(CmsFileInfo cmsFileInfo) {
 
-        long maxFileSize = getData().getUploadFileSizeLimit();
+        long maxFileSize = CmsCoreProvider.get().getUploadFileSizeLimit();
         if (maxFileSize < 0) {
             return false;
         }

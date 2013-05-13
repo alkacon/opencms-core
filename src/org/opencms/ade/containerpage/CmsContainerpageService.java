@@ -112,6 +112,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 
@@ -175,18 +176,56 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
+     * Returns the serialized element data.<p>
+     * 
+     * @param cms 
+     * @param request 
+     * @param response 
+     * 
+     * @param elementBean the element to serialize
+     * 
+     * @return the serialized element data
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public static String getSerializedElementInfo(
+        CmsObject cms,
+        HttpServletRequest request,
+        HttpServletResponse response,
+        CmsContainerElementBean elementBean) throws Exception {
+
+        CmsContainerElement result = new CmsContainerElement();
+        CmsElementUtil util = new CmsElementUtil(
+            cms,
+            cms.getRequestContext().getUri(),
+            request,
+            response,
+            cms.getRequestContext().getLocale());
+        util.setElementInfo(elementBean, result);
+        return CmsGwtActionElement.serialize(I_CmsContainerpageService.class.getMethod("getElementInfo"), result);
+    }
+
+    /**
      * Returns a new configured service instance.<p>
      * 
      * @param request the current request
      * 
      * @return a new service instance
+     * 
+     * @throws CmsRpcException if something goes wrong
      */
-    public static CmsContainerpageService newInstance(HttpServletRequest request) {
+    public static CmsCntPageData prefetch(HttpServletRequest request) throws CmsRpcException {
 
         CmsContainerpageService srv = new CmsContainerpageService();
         srv.setCms(CmsFlexController.getCmsObject(request));
         srv.setRequest(request);
-        return srv;
+        CmsCntPageData result = null;
+        try {
+            result = srv.prefetch();
+        } finally {
+            srv.clearThreadStorage();
+        }
+        return result;
     }
 
     /**
@@ -492,29 +531,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             error(e);
             return null;
         }
-    }
-
-    /**
-     * Returns the serialized element data.<p>
-     * 
-     * @param elementBean the element to serialize
-     * 
-     * @return the serialized element data
-     * 
-     * @throws Exception if something goes wrong
-     */
-    public String getSerializedElementInfo(CmsContainerElementBean elementBean) throws Exception {
-
-        CmsObject cms = getCmsObject();
-        CmsContainerElement result = new CmsContainerElement();
-        CmsElementUtil util = new CmsElementUtil(
-            cms,
-            cms.getRequestContext().getUri(),
-            getThreadLocalRequest(),
-            getThreadLocalResponse(),
-            cms.getRequestContext().getLocale());
-        util.setElementInfo(elementBean, result);
-        return CmsGwtActionElement.serialize(I_CmsContainerpageService.class.getMethod("getElementInfo"), result);
     }
 
     /**
