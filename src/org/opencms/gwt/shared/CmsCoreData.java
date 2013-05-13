@@ -138,9 +138,6 @@ public class CmsCoreData implements IsSerializable {
     /** The mappings of file extensions to resource types. */
     private Map<String, String> m_extensionMapping;
 
-    /** The map of GWT build ids. */
-    private Map<String, String> m_gwtBuildIds;
-
     /** The show editor help flag. */
     private boolean m_isShowEditorHelp;
 
@@ -203,7 +200,6 @@ public class CmsCoreData implements IsSerializable {
             clone.isShowEditorHelp(),
             clone.isToolbarVisible(),
             clone.getDefaultWorkplaceLink(),
-            clone.getGwtBuildIds(),
             clone.getUserInfo());
     }
 
@@ -226,7 +222,6 @@ public class CmsCoreData implements IsSerializable {
      * @param isShowEditorHelp the show editor help flag
      * @param toolbarVisible a flag to indicate whether the toolbar should be visible initially
      * @param defaultWorkplaceLink the default link to use for opening the workplace  
-     * @param gwtBuildIds the map of GWT build ids 
      * @param userInfo information about the current user 
      */
     public CmsCoreData(
@@ -246,7 +241,6 @@ public class CmsCoreData implements IsSerializable {
         boolean isShowEditorHelp,
         boolean toolbarVisible,
         String defaultWorkplaceLink,
-        Map<String, String> gwtBuildIds,
         UserInfo userInfo) {
 
         m_contentEditorUrl = contentEditorUrl;
@@ -265,7 +259,6 @@ public class CmsCoreData implements IsSerializable {
         m_toolbarVisible = toolbarVisible;
         m_structureId = structureId;
         m_defaultWorkplaceLink = defaultWorkplaceLink;
-        m_gwtBuildIds = gwtBuildIds;
         m_userInfo = userInfo;
     }
 
@@ -317,16 +310,6 @@ public class CmsCoreData implements IsSerializable {
     public Map<String, String> getExtensionMapping() {
 
         return m_extensionMapping;
-    }
-
-    /**
-     * Gets the map of GWT build ids.<p>
-     * 
-     * @return the map containing the GWT build ids 
-     */
-    public Map<String, String> getGwtBuildIds() {
-
-        return m_gwtBuildIds;
     }
 
     /**
