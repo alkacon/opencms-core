@@ -245,15 +245,47 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * Returns a new configured service instance.<p>
      * 
      * @param request the current request
+     * @param config the gallery configuration
      * 
      * @return a new service instance 
+     * 
+     * @throws CmsRpcException if something goes wrong 
      */
-    public static CmsGalleryService newInstance(HttpServletRequest request) {
+    public static CmsGalleryDataBean getInitialSettings(HttpServletRequest request, CmsGalleryConfiguration config)
+    throws CmsRpcException {
 
         CmsGalleryService srv = new CmsGalleryService();
         srv.setCms(CmsFlexController.getCmsObject(request));
         srv.setRequest(request);
-        return srv;
+        CmsGalleryDataBean result = null;
+        try {
+            result = srv.getInitialSettings(config);
+        } finally {
+            srv.clearThreadStorage();
+        }
+        return result;
+    }
+
+    /**
+     * Returns a new configured service instance.<p>
+     * 
+     * @param request the current request
+     * @param config the gallery configuration
+     * 
+     * @return a new service instance 
+     */
+    public static CmsGallerySearchBean getSearch(HttpServletRequest request, CmsGalleryDataBean config) {
+
+        CmsGalleryService srv = new CmsGalleryService();
+        srv.setCms(CmsFlexController.getCmsObject(request));
+        srv.setRequest(request);
+        CmsGallerySearchBean result = null;
+        try {
+            result = srv.getSearch(config);
+        } finally {
+            srv.clearThreadStorage();
+        }
+        return result;
     }
 
     /**

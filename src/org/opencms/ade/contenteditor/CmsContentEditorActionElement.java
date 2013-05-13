@@ -136,7 +136,7 @@ public class CmsContentEditorActionElement extends CmsGwtActionElement {
         if (CmsContentService.LOG.isDebugEnabled()) {
             timer = System.currentTimeMillis();
         }
-        CmsContentDefinition definition = CmsContentService.newInstance(getRequest()).prefetch();
+        CmsContentDefinition definition = CmsContentService.prefetch(getRequest());
         StringBuffer sb = new StringBuffer();
         String backlink = getRequest().getParameter(CmsEditor.PARAM_BACKLINK);
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(backlink)) {

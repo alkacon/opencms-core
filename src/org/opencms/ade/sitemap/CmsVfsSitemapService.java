@@ -247,15 +247,24 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      * Returns a new configured service instance.<p>
      *
      * @param request the current request
+     * @param sitemapUri the site relative path
      *
      * @return a new service instance
+     * 
+     * @throws CmsRpcException if something goes wrong 
      */
-    public static CmsVfsSitemapService newInstance(HttpServletRequest request) {
+    public static CmsSitemapData prefetch(HttpServletRequest request, String sitemapUri) throws CmsRpcException {
 
         CmsVfsSitemapService service = new CmsVfsSitemapService();
         service.setCms(CmsFlexController.getCmsObject(request));
         service.setRequest(request);
-        return service;
+        CmsSitemapData result = null;
+        try {
+            result = service.prefetch(sitemapUri);
+        } finally {
+            service.clearThreadStorage();
+        }
+        return result;
     }
 
     /**
@@ -516,9 +525,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 (new CmsTemplateFinder(cms)).getTemplates(),
                 propertyConfig,
                 getClipboardData(),
-                CmsCoreService.newInstance(getRequest()).getContextMenuEntries(
-                    configData.getResource().getStructureId(),
-                    AdeContext.sitemap),
+                CmsCoreService.getContextMenuEntries(cms, configData.getResource().getStructureId(), AdeContext.sitemap),
                 parentProperties,
                 allPropNames,
                 exportRfsPrefix,

@@ -651,11 +651,11 @@ public class CmsJspTagContainer extends TagSupport {
      */
     private String getElementInfo(CmsObject cms, CmsContainerElementBean elementBean) throws Exception {
 
-        CmsContainerpageService service = new CmsContainerpageService();
-        service.setCms(cms);
-        service.setRequest((HttpServletRequest)pageContext.getRequest());
-        service.setResponse((HttpServletResponse)pageContext.getResponse());
-        return service.getSerializedElementInfo(elementBean);
+        return CmsContainerpageService.getSerializedElementInfo(
+            cms,
+            (HttpServletRequest)pageContext.getRequest(),
+            (HttpServletResponse)pageContext.getResponse(),
+            elementBean);
     }
 
     /**

@@ -173,7 +173,6 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
      */
     private String export(GalleryMode galleryMode) throws Exception {
 
-        CmsGalleryService galleryService = CmsGalleryService.newInstance(getRequest());
         CmsGalleryConfiguration conf = new CmsGalleryConfiguration();
         conf.setGalleryMode(galleryMode);
         conf.setReferencePath(getRequest().getParameter(I_CmsGalleryProviderConstants.CONFIG_REFERENCE_PATH));
@@ -187,10 +186,10 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(galleryTypes)) {
             conf.setGalleryTypes(galleryTypes.split(","));
         }
-        CmsGalleryDataBean data = galleryService.getInitialSettings(conf);
+        CmsGalleryDataBean data = CmsGalleryService.getInitialSettings(getRequest(), conf);
         CmsGallerySearchBean search = null;
         if (GalleryTabId.cms_tab_results.equals(data.getStartTab())) {
-            search = galleryService.getSearch(data);
+            search = CmsGalleryService.getSearch(getRequest(), data);
         }
         if ((search != null) && (search.getScope() != null) && (search.getScope() != data.getScope())) {
             // default selected scope option should be the one for which the search has been actually performed 

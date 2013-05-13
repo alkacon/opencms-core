@@ -28,9 +28,7 @@
 package org.opencms.ade.upload;
 
 import org.opencms.gwt.CmsGwtActionElement;
-import org.opencms.gwt.shared.CmsUploadData;
 import org.opencms.gwt.shared.I_CmsUploadConstants;
-import org.opencms.gwt.shared.rpc.I_CmsUploadService;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
@@ -98,14 +96,7 @@ public class CmsUploadActionElement extends CmsGwtActionElement {
     @Override
     public String export() throws Exception {
 
-        StringBuffer sb = new StringBuffer();
-        String prefetchedData = exportDictionary(
-            CmsUploadData.DICT_NAME,
-            I_CmsUploadService.class.getMethod("prefetch"),
-            getUploadData());
-        sb.append(prefetchedData);
-        sb.append(ClientMessages.get().export(getRequest()));
-        return sb.toString();
+        return ClientMessages.get().export(getRequest());
     }
 
     /**
@@ -148,16 +139,6 @@ public class CmsUploadActionElement extends CmsGwtActionElement {
     public String getTitle() {
 
         return Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_UPLOAD_TITLE_0);
-    }
-
-    /**
-     * Returns the needed server data for client-side usage.<p> 
-     *
-     * @return the needed server data for client-side usage
-     */
-    public CmsUploadData getUploadData() {
-
-        return CmsUploadService.newInstance(getRequest()).prefetch();
     }
 
     /**

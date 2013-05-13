@@ -165,6 +165,9 @@ public class CmsCoreData implements IsSerializable {
     /** A flag which indicates whether the toolbar should be shown initially. */
     private boolean m_toolbarVisible;
 
+    /** The maximum file size for the upload. */
+    private long m_uploadFileSizeLimit;
+
     /** The current uri. */
     private String m_uri;
 
@@ -180,6 +183,16 @@ public class CmsCoreData implements IsSerializable {
     public CmsCoreData() {
 
         // empty
+    }
+
+    /**
+     * Returns the uploadFileSizeLimit.<p>
+     *
+     * @return the uploadFileSizeLimit
+     */
+    public long getUploadFileSizeLimit() {
+
+        return m_uploadFileSizeLimit;
     }
 
     /**
@@ -207,6 +220,7 @@ public class CmsCoreData implements IsSerializable {
             clone.isToolbarVisible(),
             clone.getDefaultWorkplaceLink(),
             clone.getUserInfo(),
+            clone.getUploadFileSizeLimit(),
             clone.isKeepAlive(),
             clone.m_adeParameters);
     }
@@ -252,6 +266,7 @@ public class CmsCoreData implements IsSerializable {
         boolean toolbarVisible,
         String defaultWorkplaceLink,
         UserInfo userInfo,
+        long uploadFileSizeLimit,
         boolean isKeepAlive,
         Map<String, String> adeParameters) {
 
@@ -272,6 +287,7 @@ public class CmsCoreData implements IsSerializable {
         m_structureId = structureId;
         m_defaultWorkplaceLink = defaultWorkplaceLink;
         m_userInfo = userInfo;
+        m_uploadFileSizeLimit = uploadFileSizeLimit;
         m_keepAlive = isKeepAlive;
         m_adeParameters = adeParameters;
     }

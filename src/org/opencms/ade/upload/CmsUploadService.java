@@ -29,20 +29,15 @@ package org.opencms.ade.upload;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtService;
-import org.opencms.gwt.shared.CmsUploadData;
 import org.opencms.gwt.shared.CmsUploadFileBean;
 import org.opencms.gwt.shared.CmsUploadProgessInfo;
 import org.opencms.gwt.shared.CmsUploadProgessInfo.UPLOAD_STATE;
 import org.opencms.gwt.shared.rpc.I_CmsUploadService;
-import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.fileupload.InvalidFileNameException;
 import org.apache.commons.fileupload.util.Streams;
@@ -60,21 +55,6 @@ public class CmsUploadService extends CmsGwtService implements I_CmsUploadServic
 
     /** The serial version UID. */
     private static final long serialVersionUID = -2235662141861687012L;
-
-    /**
-     * Returns a new configured service instance.<p>
-     * 
-     * @param request the current request
-     * 
-     * @return a new service instance
-     */
-    public static CmsUploadService newInstance(HttpServletRequest request) {
-
-        CmsUploadService srv = new CmsUploadService();
-        srv.setCms(CmsFlexController.getCmsObject(request));
-        srv.setRequest(request);
-        return srv;
-    }
 
     /**
      * @see org.opencms.gwt.shared.rpc.I_CmsUploadService#cancelUpload()
@@ -140,16 +120,6 @@ public class CmsUploadService extends CmsGwtService implements I_CmsUploadServic
             }
         }
         return info;
-    }
-
-    /**
-     * @see org.opencms.gwt.shared.rpc.I_CmsUploadService#prefetch()
-     */
-    public CmsUploadData prefetch() {
-
-        long uploadFileSizeLimit = OpenCms.getWorkplaceManager().getFileBytesMaxUploadSize(getCmsObject());
-        CmsUploadData data = new CmsUploadData(uploadFileSizeLimit);
-        return data;
     }
 
     /**

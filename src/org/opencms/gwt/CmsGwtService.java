@@ -190,8 +190,12 @@ public class CmsGwtService extends RemoteServiceServlet {
     @Override
     public void service(ServletRequest arg0, ServletResponse arg1) throws ServletException, IOException {
 
-        arg1.setCharacterEncoding(arg0.getCharacterEncoding());
-        super.service(arg0, arg1);
+        try {
+            arg1.setCharacterEncoding(arg0.getCharacterEncoding());
+            super.service(arg0, arg1);
+        } finally {
+            clearThreadStorage();
+        }
     }
 
     /**
@@ -374,6 +378,22 @@ public class CmsGwtService extends RemoteServiceServlet {
             getCmsObject().unlockResource(resource);
         } catch (CmsException e) {
             LOG.debug("Unable to unlock " + resource.getRootPath(), e);
+        }
+    }
+
+    /**
+     * Clears the objects stored in thread local.<p>
+     */
+    protected void clearThreadStorage() {
+
+        if (m_perThreadCmsObject != null) {
+            m_perThreadCmsObject.remove();
+        }
+        if (perThreadRequest != null) {
+            perThreadRequest.remove();
+        }
+        if (perThreadResponse != null) {
+            perThreadResponse.remove();
         }
     }
 }

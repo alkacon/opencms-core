@@ -113,7 +113,7 @@ public class CmsPostUploadDialogActionElement extends CmsGwtActionElement {
     public CmsPostUploadDialogBean getDialogData() throws CmsRpcException {
 
         if (m_dialogData == null) {
-            m_dialogData = CmsPostUploadDialogService.newInstance(getRequest()).prefetch();
+            m_dialogData = CmsPostUploadDialogService.prefetch(getRequest());
         }
         m_dialogData.setUsePropertyConfiguration(m_useConfiguration);
         return m_dialogData;

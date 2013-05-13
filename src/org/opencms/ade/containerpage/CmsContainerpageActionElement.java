@@ -117,7 +117,7 @@ public class CmsContainerpageActionElement extends CmsGwtActionElement {
 
         if (m_cntPageData == null) {
             try {
-                m_cntPageData = CmsContainerpageService.newInstance(getRequest()).prefetch();
+                m_cntPageData = CmsContainerpageService.prefetch(getRequest());
             } catch (CmsRpcException e) {
                 // ignore, should never happen, and it is already logged
             }
