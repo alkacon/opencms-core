@@ -32,7 +32,6 @@ import org.opencms.ade.upload.client.Messages;
 import org.opencms.ade.upload.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
-import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
@@ -57,7 +56,6 @@ import org.opencms.gwt.client.util.CmsChangeHeightAnimation;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
-import org.opencms.gwt.shared.CmsUploadData;
 import org.opencms.gwt.shared.CmsUploadFileBean;
 import org.opencms.gwt.shared.CmsUploadProgessInfo;
 import org.opencms.gwt.shared.I_CmsUploadConstants;
@@ -90,7 +88,6 @@ import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
@@ -142,9 +139,6 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
 
     /** A flow panel with a dynamic height. */
     private FlowPanel m_contentWrapper;
-
-    /** The upload data. */
-    private CmsUploadData m_data;
 
     /** The user information text widget. */
     private HTML m_dialogInfo;
@@ -224,19 +218,12 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
 
     /**
      * Default constructor.<p>
-     * 
-     * @throws SerializationException if deserialization fails 
      */
-    public A_CmsUploadDialog()
-    throws SerializationException {
+    public A_CmsUploadDialog() {
 
         super(Messages.get().key(Messages.GUI_UPLOAD_DIALOG_TITLE_0));
 
         I_CmsLayoutBundle.INSTANCE.uploadCss().ensureInjected();
-        m_data = (CmsUploadData)CmsRpcPrefetcher.getSerializedObjectFromDictionary(
-            getUploadService(),
-            CmsUploadData.DICT_NAME);
-
         setModal(true);
         setGlassEnabled(true);
         catchNotifications();
@@ -671,16 +658,6 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
     protected FlowPanel getContentWrapper() {
 
         return m_contentWrapper;
-    }
-
-    /**
-     * Returns the data.<p>
-     *
-     * @return the data
-     */
-    protected CmsUploadData getData() {
-
-        return m_data;
     }
 
     /**

@@ -31,8 +31,6 @@ import org.opencms.ade.upload.client.Messages;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
 
-import com.google.gwt.user.client.rpc.SerializationException;
-
 /**
  * Provides the upload dialog for file API support.<p>
  * 
@@ -42,17 +40,6 @@ public class CmsUploadDialogFileApiImpl extends CmsUploadDialogFormDataImpl {
 
     /** The maximum upload size in bytes. (50 MB) */
     private static final long MAX_UPLOAD_SIZE = 51200000;
-
-    /**
-     * Constructor.<p>
-     * 
-     * @throws SerializationException if deserialization falis
-     */
-    public CmsUploadDialogFileApiImpl()
-    throws SerializationException {
-
-        super();
-    }
 
     /**
      * @see org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl#getFileSizeTooLargeMessage(org.opencms.gwt.client.ui.input.upload.CmsFileInfo)

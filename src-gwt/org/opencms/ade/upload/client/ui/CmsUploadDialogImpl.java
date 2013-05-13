@@ -35,8 +35,6 @@ import org.opencms.gwt.shared.CmsListInfoBean;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.gwt.user.client.rpc.SerializationException;
-
 /**
  * Provides the default upload dialog without multiple file selection.<p>
  * 
@@ -46,17 +44,6 @@ public class CmsUploadDialogImpl extends A_CmsUploadDialog {
 
     /** The input file input fields. */
     private Map<String, CmsFileInput> m_inputsToUpload = new HashMap<String, CmsFileInput>();
-
-    /**
-     * Constructor.<p>
-     * 
-     * @throws SerializationException if deserialization fails
-     */
-    public CmsUploadDialogImpl()
-    throws SerializationException {
-
-        super();
-    }
 
     /**
      * @see org.opencms.ade.upload.client.ui.A_CmsUploadDialog#createInfoBean(org.opencms.gwt.client.ui.input.upload.CmsFileInfo)
