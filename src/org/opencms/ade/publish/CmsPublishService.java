@@ -78,11 +78,11 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
     private static final String SESSION_ATTR_ADE_PUB_OPTS_CACHE = "__OCMS_ADE_PUB_OPTS_CACHE__";
 
     /**
-     * Returns a new publish service instance.<p>
+     * Fetches the publish data.<p>
      * 
      * @param request the servlet request
      * 
-     * @return the service instance
+     * @return the publish data
      * 
      * @throws CmsRpcException if something goes wrong
      */

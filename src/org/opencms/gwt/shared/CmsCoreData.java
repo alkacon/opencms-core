@@ -186,16 +186,6 @@ public class CmsCoreData implements IsSerializable {
     }
 
     /**
-     * Returns the uploadFileSizeLimit.<p>
-     *
-     * @return the uploadFileSizeLimit
-     */
-    public long getUploadFileSizeLimit() {
-
-        return m_uploadFileSizeLimit;
-    }
-
-    /**
      * Clone constructor.<p>
      * 
      * @param clone the instance to clone 
@@ -245,6 +235,7 @@ public class CmsCoreData implements IsSerializable {
      * @param toolbarVisible a flag to indicate whether the toolbar should be visible initially
      * @param defaultWorkplaceLink the default link to use for opening the workplace  
      * @param userInfo information about the current user 
+     * @param uploadFileSizeLimit the file upload size limit
      * @param isKeepAlive the keep-alive mode 
      * @param adeParameters the map of ADE configuration parameters 
      */
@@ -410,6 +401,16 @@ public class CmsCoreData implements IsSerializable {
     public CmsUUID getStructureId() {
 
         return m_structureId;
+    }
+
+    /**
+     * Returns the file upload size limit.<p>
+     *
+     * @return the file upload size limit
+     */
+    public long getUploadFileSizeLimit() {
+
+        return m_uploadFileSizeLimit;
     }
 
     /**

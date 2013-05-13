@@ -242,12 +242,12 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     private Locale m_wpLocale;
 
     /**
-     * Returns a new configured service instance.<p>
+     * Returns the initial gallery settings.<p>
      * 
      * @param request the current request
      * @param config the gallery configuration
      * 
-     * @return a new service instance 
+     * @return the initial gallery settings 
      * 
      * @throws CmsRpcException if something goes wrong 
      */
@@ -267,12 +267,12 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     }
 
     /**
-     * Returns a new configured service instance.<p>
+     * Returns the initial search data.<p>
      * 
      * @param request the current request
      * @param config the gallery configuration
      * 
-     * @return a new service instance 
+     * @return the search data 
      */
     public static CmsGallerySearchBean getSearch(HttpServletRequest request, CmsGalleryDataBean config) {
 

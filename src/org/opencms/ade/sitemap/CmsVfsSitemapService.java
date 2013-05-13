@@ -244,12 +244,12 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
-     * Returns a new configured service instance.<p>
+     * Fetches the sitemap data.<p>
      *
      * @param request the current request
      * @param sitemapUri the site relative path
      *
-     * @return a new service instance
+     * @return the sitemap data
      * 
      * @throws CmsRpcException if something goes wrong 
      */
