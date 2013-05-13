@@ -33,6 +33,7 @@ import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService;
 import org.opencms.ade.galleries.CmsGalleryActionElement;
 import org.opencms.ade.upload.CmsUploadActionElement;
 import org.opencms.gwt.CmsGwtActionElement;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsFrameset;
 import org.opencms.workplace.editors.CmsEditor;
@@ -49,8 +50,11 @@ import javax.servlet.jsp.PageContext;
  */
 public class CmsContentEditorActionElement extends CmsGwtActionElement {
 
-    /** The module name. */
-    public static final String MODULE_NAME = "contenteditor";
+    /** The OpenCms module name. */
+    public static final String CMS_MODULE_NAME = "org.opencms.ade.contenteditor";
+
+    /** The GWT module name. */
+    public static final String GWT_MODULE_NAME = "contenteditor";
 
     /**
      * Constructor.<p>
@@ -84,7 +88,9 @@ public class CmsContentEditorActionElement extends CmsGwtActionElement {
         sb.append(new CmsGalleryActionElement(null, getRequest(), null).exportWidget());
         sb.append(new CmsUploadActionElement(getJspContext(), getRequest(), getResponse()).export());
         sb.append(export());
-        sb.append(createNoCacheScript(MODULE_NAME));
+        sb.append(createNoCacheScript(
+            GWT_MODULE_NAME,
+            OpenCms.getModuleManager().getModule(CMS_MODULE_NAME).getVersion().toString()));
         sb.append(getPrefetch());
         return sb.toString();
     }

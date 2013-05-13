@@ -164,11 +164,29 @@ public class CmsGwtActionElement extends CmsJspActionElement {
      * 
      * @return the <code>"&lt;script&gt;"</code> tag for the "*.nocache.js".<p>
      */
+    @Deprecated
     public String createNoCacheScript(String moduleName) {
 
-        return "<script type=\"text/javascript\" src=\""
-            + CmsWorkplace.getResourceUri("ade/" + moduleName + "/" + moduleName + ".nocache.js")
-            + "\"></script>";
+        return createNoCacheScript(moduleName, null);
+    }
+
+    /**
+     * Returns the script tag for the "*.nocache.js".<p>
+     * 
+     * @param moduleName the module name to get the script tag for
+     * @param moduleVersion the module version
+     * 
+     * @return the <code>"&lt;script&gt;"</code> tag for the "*.nocache.js".<p>
+     */
+    public String createNoCacheScript(String moduleName, String moduleVersion) {
+
+        String result = "<script type=\"text/javascript\" src=\""
+            + CmsWorkplace.getResourceUri("ade/" + moduleName + "/" + moduleName + ".nocache.js");
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(moduleVersion)) {
+            result += "?version=" + moduleVersion;
+        }
+        result += "\"></script>";
+        return result;
     }
 
     /**

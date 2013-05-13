@@ -32,6 +32,7 @@ import org.opencms.ade.postupload.shared.I_CmsDialogConstants;
 import org.opencms.ade.postupload.shared.rpc.I_CmsPostUploadDialogService;
 import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.gwt.CmsRpcException;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
@@ -44,8 +45,11 @@ import javax.servlet.jsp.PageContext;
  */
 public class CmsPostUploadDialogActionElement extends CmsGwtActionElement {
 
-    /** The module name. */
-    public static final String MODULE_NAME = "postupload";
+    /** The OpenCms module name. */
+    public static final String CMS_MODULE_NAME = "org.opencms.ade.postupload";
+
+    /** The GWT module name. */
+    public static final String GWT_MODULE_NAME = "postupload";
 
     /** The dialog data. */
     private CmsPostUploadDialogBean m_dialogData;
@@ -94,7 +98,9 @@ public class CmsPostUploadDialogActionElement extends CmsGwtActionElement {
         sb.append(super.export());
         sb.append(exportCloseLink());
         sb.append(export());
-        sb.append(createNoCacheScript(MODULE_NAME));
+        sb.append(createNoCacheScript(
+            GWT_MODULE_NAME,
+            OpenCms.getModuleManager().getModule(CMS_MODULE_NAME).getVersion().toString()));
         return sb.toString();
     }
 

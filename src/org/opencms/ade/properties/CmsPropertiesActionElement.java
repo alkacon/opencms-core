@@ -43,6 +43,12 @@ import javax.servlet.jsp.PageContext;
  */
 public class CmsPropertiesActionElement extends CmsGwtActionElement {
 
+    /** The OpenCms module name. */
+    public static final String CMS_MODULE_NAME = "org.opencms.ade.properties";
+
+    /** The GWT module name. */
+    public static final String GWT_MODULE_NAME = "properties";
+
     /**
      * Creates a new instance.<p>
      * 
@@ -83,6 +89,9 @@ public class CmsPropertiesActionElement extends CmsGwtActionElement {
         StringBuffer buffer = new StringBuffer();
         buffer.append(super.export());
         buffer.append(export());
+        buffer.append(createNoCacheScript(
+            GWT_MODULE_NAME,
+            OpenCms.getModuleManager().getModule(CMS_MODULE_NAME).getVersion().toString()));
         return buffer.toString();
     }
 
