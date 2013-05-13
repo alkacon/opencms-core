@@ -72,11 +72,12 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
     }
 
     /**
-     * Creates a new service instance for the given request.<p>
+     * Fetches the dialog data.<p>
      * 
      * @param request the servlet request
      *  
-     * @return a service instance for the request  
+     * @return the dialog data
+     *   
      * @throws CmsRpcException if something goes wrong
      */
     public static CmsPostUploadDialogBean prefetch(HttpServletRequest request) throws CmsRpcException {

@@ -168,11 +168,12 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
-     * Returns a new configured service instance.<p>
+     * Fetches the initial content definition.<p>
      * 
      * @param request the current request
      * 
-     * @return a new service instance
+     * @return the initial content definition
+     * 
      * @throws CmsRpcException if something goes wrong
      */
     public static CmsContentDefinition prefetch(HttpServletRequest request) throws CmsRpcException {

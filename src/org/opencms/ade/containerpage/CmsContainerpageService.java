@@ -206,11 +206,11 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * Returns a new configured service instance.<p>
+     * Fetches the container page data.<p>
      * 
      * @param request the current request
      * 
-     * @return a new service instance
+     * @return the container page data
      * 
      * @throws CmsRpcException if something goes wrong
      */
