@@ -72,6 +72,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
+import org.opencms.search.CmsSearchManager;
 import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.security.CmsPermissionSet;
@@ -666,6 +667,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         }
         Collection<String> ids = new ArrayList<String>();
         ids.add(groupContainer.getClientId());
+        // update offline indices
+        OpenCms.getSearchManager().updateOfflineIndexes(2 * CmsSearchManager.DEFAULT_OFFLINE_UPDATE_FREQNENCY);
         return new CmsGroupContainerSaveResult(
             getElementsData(pageStructureId, reqParams, ids, containers, locale),
             removedElements);
@@ -720,6 +723,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     true,
                     elements);
             }
+            // update offline indices
+            OpenCms.getSearchManager().updateOfflineIndexes(2 * CmsSearchManager.DEFAULT_OFFLINE_UPDATE_FREQNENCY);
             return getElements(
                 new ArrayList<String>(Collections.singletonList(inheritanceContainer.getClientId())),
                 sitePath,
