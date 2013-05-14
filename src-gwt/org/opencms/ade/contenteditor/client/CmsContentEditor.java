@@ -575,7 +575,8 @@ public final class CmsContentEditor extends EditorBase {
 
         m_onClose = onClose;
         CmsUUID structureId = new CmsUUID(elementId);
-        if (CmsCoreProvider.get().lock(structureId)) {
+        // make sure the resource is locked, if we are not creating a new one
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(newLink) || CmsCoreProvider.get().lock(structureId)) {
             loadDefinition(
                 CmsContentDefinition.uuidToEntityId(structureId, locale),
                 newLink,
