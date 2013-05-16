@@ -111,6 +111,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/runtime/asm-4.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/jsonic-1.2.5.jar"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
+	<classpathentry exported="true" kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
