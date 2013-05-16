@@ -9,8 +9,9 @@
 	<set-property-fallback name="locale" value="en"/>
 	<set-property name="locale" value="en,de"/>
 	<collapse-property name="locale" values="*" />
+	<set-property name="user.agent" value="ie8,ie9,gecko1_8,opera,safari" />
 
-	<define-property name="fileapi.support" values="formdata,fileapi,no" />
+	<define-property name="fileapi.support" values="formdata,no" />
 	<property-provider name="fileapi.support"><![CDATA[
 		var input = document.createElement('input');
 		input.setAttribute('type', 'file');
@@ -19,7 +20,6 @@
 				if(typeof FormData == 'function' || typeof FormData == 'object') {
 					return 'formdata';
 				}
-				return 'fileapi';
 			}
 		}
 		return 'no';
@@ -31,11 +31,6 @@
 		<any>
 			<when-property-is name="user.agent" value="safari" />
 			<when-property-is name="user.agent" value="opera" />
-		</any>
-	</set-property>
-
-	<set-property name="fileapi.support" value="formdata,fileapi" >
-		<any>
 			<when-property-is name="user.agent" value="gecko1_8" />
 		</any>
 	</set-property>
@@ -43,24 +38,13 @@
 	<replace-with class="org.opencms.gwt.client.ui.input.upload.CmsFileInputFileApiImpl">
 		<when-type-is class="org.opencms.gwt.client.ui.input.upload.CmsFileInputImpl" />
 		<any>
-			<when-property-is name="fileapi.support" value="fileapi" />
 			<when-property-is name="fileapi.support" value="formdata" />
 		</any>
 	</replace-with>
 
-	<replace-with class="org.opencms.ade.upload.client.ui.CmsUploadDialogFileApiImpl">
-		<when-type-is class="org.opencms.ade.upload.client.ui.CmsUploadDialogImpl" />
-		<when-property-is name="fileapi.support" value="fileapi" />
-	</replace-with>
-	
 	<replace-with class="org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl">
 		<when-type-is class="org.opencms.ade.upload.client.ui.CmsUploadDialogImpl" />
 		<when-property-is name="fileapi.support" value="formdata" />
-	</replace-with>
-	
-	<replace-with class="org.opencms.gwt.client.ui.input.upload.impl.CmsUploaderFileApi">
-		<when-type-is class="org.opencms.gwt.client.ui.input.upload.impl.CmsUploaderDefault" />
-		<when-property-is name="fileapi.support" value="fileapi" />
 	</replace-with>
 	
 	<replace-with class="org.opencms.gwt.client.ui.input.upload.impl.CmsUploaderFormData">
@@ -71,7 +55,6 @@
     <replace-with class="org.opencms.gwt.client.util.impl.DocumentStyleImplIE6">
         <when-type-assignable class="org.opencms.gwt.client.util.impl.DocumentStyleImpl"/>
         <any>
-        	<when-property-is name="user.agent" value="ie6"/>
         	<when-property-is name="user.agent" value="ie8"/>
         </any>
     </replace-with>
@@ -96,14 +79,12 @@
     	<when-type-assignable class="org.opencms.gwt.client.ui.input.CmsLabel" />
     	<any>
     		<when-property-is name="user.agent" value="gecko1_8" />
-    		<when-property-is name="user.agent" value="gecko" />
     	</any>
     </replace-with>
     
     <replace-with class="org.opencms.gwt.client.util.impl.DOMImplIE">
         <when-type-assignable class="org.opencms.gwt.client.util.impl.DOMImpl"/>
         <any>
-        	<when-property-is name="user.agent" value="ie6"/>
         	<when-property-is name="user.agent" value="ie8"/>
         </any>
     </replace-with>
@@ -116,13 +97,6 @@
     
     <replace-with class="org.opencms.gwt.client.CmsDefaultUserAgentInfo">
     	<when-type-is class="org.opencms.gwt.client.I_CmsUserAgentInfo" />
-    </replace-with>
-    
-    <replace-with class="org.opencms.gwt.client.CmsIEUserAgentInfo">
-    	<when-type-is class="org.opencms.gwt.client.I_CmsUserAgentInfo" />
-    	<any>
-    		<when-property-is name="user.agent" value="ie6" />
-    	</any>
     </replace-with>
     
     <source path="gwt">
