@@ -621,6 +621,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     /** Configured analyzers for languages using &lt;analyzer&gt;. */
     private HashMap<Locale, CmsSearchAnalyzer> m_analyzers;
 
+    /** Stores the offline update frequency while indexing is paused. */
+    private long m_configuredOfflineIndexingFrequency;
+
     /** The Solr core container. */
     private CoreContainer m_coreContainer;
 
@@ -1514,6 +1517,16 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
+     * Returns if the offline indexing is paused.<p>
+     * 
+     * @return <code>true</code> if the offline indexing is paused
+     */
+    public boolean isOfflineIndexingPaused() {
+
+        return m_offlineUpdateFrequency == Long.MAX_VALUE;
+    }
+
+    /**
      * Updates the indexes from as a scheduled job.<p> 
      * 
      * @param cms the OpenCms user context to use when reading resources from the VFS
@@ -1574,6 +1587,19 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             LOG.info(finishMessage);
         }
         return finishMessage;
+    }
+
+    /**
+     * Pauses the offline indexing.<p>
+     * May take some time, because the indexes are updated first.<p>
+     */
+    public void pauseOfflineIndexing() {
+
+        if (m_offlineUpdateFrequency != Long.MAX_VALUE) {
+            m_configuredOfflineIndexingFrequency = m_offlineUpdateFrequency;
+            m_offlineUpdateFrequency = Long.MAX_VALUE;
+            updateOfflineIndexes(2 * DEFAULT_OFFLINE_UPDATE_FREQNENCY);
+        }
     }
 
     /**
@@ -1912,6 +1938,18 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         // remove operation (no exception) 
         return m_indexSources.remove(indexsource.getName()) != null;
 
+    }
+
+    /**
+     * Resumes offline indexing if it was paused.<p>
+     */
+    public void resumeOfflineIndexing() {
+
+        if (m_offlineUpdateFrequency == Long.MAX_VALUE) {
+            setOfflineUpdateFrequency(m_configuredOfflineIndexingFrequency > 0
+            ? m_configuredOfflineIndexingFrequency
+            : DEFAULT_OFFLINE_UPDATE_FREQNENCY);
+        }
     }
 
     /**
