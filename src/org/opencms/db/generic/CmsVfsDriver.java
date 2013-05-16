@@ -1470,10 +1470,13 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         moveRelations(dbc, projectId, source.getStructureId(), destinationPath);
         repairBrokenRelations(dbc, projectId, source.getStructureId(), destinationPath);
-        try {
-            m_driverManager.repairCategories(dbc, projectId, readResource(dbc, projectId, destinationPath, true));
-        } catch (CmsException e) {
-            throw new CmsDataAccessException(e.getMessageContainer(), e);
+        if (!projectId.equals(CmsProject.ONLINE_PROJECT_ID)) {
+            // doesn'T work in Online project
+            try {
+                m_driverManager.repairCategories(dbc, projectId, readResource(dbc, projectId, destinationPath, true));
+            } catch (CmsException e) {
+                throw new CmsDataAccessException(e.getMessageContainer(), e);
+            }
         }
         // repair project resources
         if (!projectId.equals(CmsProject.ONLINE_PROJECT_ID) && (dbc.getRequestContext() != null)) {
