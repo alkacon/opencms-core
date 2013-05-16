@@ -134,35 +134,41 @@ public class CmsModuleReplaceThread extends A_CmsReportThread {
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_REPLACE_THREAD_START_DELETE_0));
         }
-        // phase 1: delete the existing module  
-        m_phase = 1;
-        m_deleteThread.start();
+
         try {
-            m_deleteThread.join();
-        } catch (InterruptedException e) {
-            // should never happen
-            if (LOG.isErrorEnabled()) {
-                LOG.error(e.getLocalizedMessage(), e);
+            OpenCms.getSearchManager().pauseOfflineIndexing();
+            // phase 1: delete the existing module  
+            m_phase = 1;
+            m_deleteThread.start();
+            try {
+                m_deleteThread.join();
+            } catch (InterruptedException e) {
+                // should never happen
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
             }
-        }
-        // get remaining report contents
-        m_reportContent = m_deleteThread.getReportUpdate();
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(Messages.LOG_REPLACE_THREAD_START_IMPORT_0));
-        }
-        // phase 2: import the new module 
-        m_phase = 2;
-        m_importThread.start();
-        try {
-            m_importThread.join();
-        } catch (InterruptedException e) {
-            // should never happen
-            if (LOG.isErrorEnabled()) {
-                LOG.error(e.getLocalizedMessage(), e);
+            // get remaining report contents
+            m_reportContent = m_deleteThread.getReportUpdate();
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_REPLACE_THREAD_START_IMPORT_0));
             }
-        }
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(Messages.LOG_REPLACE_THREAD_FINISHED_0));
+            // phase 2: import the new module 
+            m_phase = 2;
+            m_importThread.start();
+            try {
+                m_importThread.join();
+            } catch (InterruptedException e) {
+                // should never happen
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_REPLACE_THREAD_FINISHED_0));
+            }
+        } finally {
+            OpenCms.getSearchManager().resumeOfflineIndexing();
         }
     }
 }
