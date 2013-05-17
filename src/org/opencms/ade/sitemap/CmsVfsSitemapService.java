@@ -538,7 +538,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 createNavigationLevelTypeInfo(),
                 getSitemapInfo(configData.getBasePath()),
                 parentSitemap,
-                getRootEntry(configData.getBasePath(), openPath),
+                getRootEntry(configData.getBasePath(), CmsResource.getFolderPath(openPath)),
                 openPath,
                 30,
                 detailPages,
@@ -1598,8 +1598,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 child.setPosition(i);
                 children.add(child);
                 int nextLevels = levels;
-                if ((nextLevels == 1) && (targetPath != null) && targetPath.startsWith(child.getSitePath())) {
-                    nextLevels = 2;
+                if ((nextLevels == 2) && (targetPath != null) && targetPath.startsWith(child.getSitePath())) {
+                    nextLevels = 3;
                 }
                 if (child.isFolderType() && ((nextLevels > 1) || (nextLevels == -1)) && !isSubSitemap(navElement)) {
 
