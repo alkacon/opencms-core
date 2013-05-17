@@ -1598,7 +1598,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         if (m_offlineUpdateFrequency != Long.MAX_VALUE) {
             m_configuredOfflineIndexingFrequency = m_offlineUpdateFrequency;
             m_offlineUpdateFrequency = Long.MAX_VALUE;
-            updateOfflineIndexes(2 * DEFAULT_OFFLINE_UPDATE_FREQNENCY);
+            updateOfflineIndexes(0);
         }
     }
 
