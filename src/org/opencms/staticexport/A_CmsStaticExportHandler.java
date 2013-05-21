@@ -189,6 +189,10 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
         CmsObject cms,
         List<CmsPublishedResource> publishedResources) {
 
+        long timer = System.currentTimeMillis();
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_SCRUB_EXPORT_START_MOVED_SOURCES_0));
+        }
         publishedResources = new ArrayList<CmsPublishedResource>(publishedResources);
         Set<String> pubResources = new HashSet<String>(publishedResources.size());
         // this is needed since the CmsPublishedResource#equals(Object) method just compares ids and not paths
@@ -246,6 +250,11 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
                     publishedResources.add(source);
                 }
             }
+        }
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(
+                Messages.LOG_SCRUB_EXPORT_FINISH_MOVED_SOURCES_1,
+                (System.currentTimeMillis() - timer) + ""));
         }
         return publishedResources;
     }
@@ -337,6 +346,10 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
         Set<String> scrubbedFolders,
         Set<String> scrubbedFiles) {
 
+        long timer = System.currentTimeMillis();
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_SCRUB_EXPORT_START_RESOURCE_1, res.getRootPath()));
+        }
         // ensure all siblings are scrubbed if the resource has one
         String resPath = cms.getRequestContext().removeSiteRoot(res.getRootPath());
         List<String> siblings = getSiblingsList(cms, resPath);
@@ -431,6 +444,12 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
                 scrubbedFiles.add(rfsName);
             }
         }
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(
+                Messages.LOG_SCRUB_EXPORT_FINISH_RESOURCE_2,
+                res.getRootPath(),
+                (System.currentTimeMillis() - timer) + ""));
+        }
     }
 
     /**
@@ -507,9 +526,14 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
                         + rfsName.substring(OpenCms.getStaticExportManager().getRfsPrefix(vfsName).length());
                     File file = new File(rfsExportFileName);
                     purgePages.add(file);
+                } else if (targetId.equals(source.getStructureId())
+                    && OpenCms.getResourceManager().getResourceType(source.getTypeId()).getTypeName().equals(
+                        CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME)) {
+                    LOG.warn(Messages.get().getBundle().key(
+                        Messages.LOG_WARN_ELEMENT_GROUP_REFERENCES_SELF_1,
+                        source.getRootPath()));
                 } else if (OpenCms.getResourceManager().getResourceType(source.getTypeId()).getTypeName().equals(
                     CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME)) {
-
                     // purge pages containing group containers containing the content
 
                     purgePages.addAll(getContainerPagesToPurge(cms, source.getStructureId()));
