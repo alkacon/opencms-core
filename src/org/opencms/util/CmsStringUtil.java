@@ -1048,9 +1048,6 @@ public final class CmsStringUtil {
         return true;
     }
 
-    /** Pattern which matches one or more slashes. */
-    private static Pattern oneOrMoreSlashes = Pattern.compile("/+");
-
     /**
      * Concatenates multiple paths and separates them with '/'.<p>
      * 
@@ -1065,7 +1062,7 @@ public final class CmsStringUtil {
 
         String result = listAsString(paths, "/");
         // result may now contain multiple consecutive slashes, so reduce them to single slashes
-        result = oneOrMoreSlashes.matcher(result).replaceAll("/");
+        result = result.replaceAll("/+", "/");
         return result;
     }
 

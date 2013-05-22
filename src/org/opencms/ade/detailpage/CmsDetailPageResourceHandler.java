@@ -148,6 +148,7 @@ public class CmsDetailPageResourceHandler implements I_CmsResourceInit {
             LOG.error(msg.key(), e);
             throw new CmsResourceInitException(msg, e);
         }
+
         return null;
     }
 
@@ -162,11 +163,7 @@ public class CmsDetailPageResourceHandler implements I_CmsResourceInit {
      */
     protected boolean isValidDetailPage(CmsObject cms, CmsResource page, CmsResource detailRes) {
 
-        if (!OpenCms.getADEManager().isValidateDetailPages()) {
-            return true;
-        } else {
-            return OpenCms.getADEManager().isDetailPage(cms, page);
-        }
+        return OpenCms.getADEManager().isDetailPage(cms, page);
     }
 
 }
