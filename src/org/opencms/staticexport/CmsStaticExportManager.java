@@ -1223,7 +1223,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             rfsName = getRfsNameWithExportName(cms, vfsName);
             String extension = CmsFileUtil.getExtension(rfsName);
             // check if the VFS resource is a JSP page with a ".jsp" ending 
-            // in this case the  name suffix must be build with special care,
+            // in this case the  name suffix must be built with special care,
             // usually it must be set to ".html"             
             boolean isJsp = extension.equals(".jsp");
             if (isJsp) {
