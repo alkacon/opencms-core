@@ -30,17 +30,12 @@ package org.opencms.ade.contenteditor.client.widgets;
 import com.alkacon.acacia.client.css.I_LayoutBundle;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
-import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
-import org.opencms.gwt.client.ui.css.I_CmsInputCss;
-import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
-
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -48,10 +43,12 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.TextBox;
 
 /**
@@ -60,23 +57,26 @@ import com.google.gwt.user.client.ui.TextBox;
  * */
 public class CmsTextboxWidget extends Composite implements I_EditWidget {
 
-    /** The value changed handler initialized flag. */
-    private boolean m_valueChangeHandlerInitialized;
+    /**
+     * The UI binder interface.<p>
+     */
+    interface I_CmsTextboxWidgetUiBinder extends UiBinder<HTMLPanel, CmsTextboxWidget> {
+        // nothing to do
+    }
 
-    /** The previous value. */
-    private String m_previousValue;
-
-    /** The layout bundle. */
-    protected static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
+    /** The UI binder instance. */
+    private static I_CmsTextboxWidgetUiBinder uiBinder = GWT.create(I_CmsTextboxWidgetUiBinder.class);
 
     /** The fader of this widget. */
-    Panel m_fadePanel = new SimplePanel();
+    @UiField
+    FocusPanel m_fadePanel;
 
     /**The main panel of this widget. */
-    Panel m_mainPanel = new FlowPanel();
+    HTMLPanel m_mainPanel;
 
     /** The input test area.*/
-    TextBox m_textbox = new TextBox();
+    @UiField
+    TextBox m_textbox;
 
     /** The token to control activation. */
     private boolean m_active = true;
@@ -84,56 +84,23 @@ public class CmsTextboxWidget extends Composite implements I_EditWidget {
     /** Default value. */
     private String m_defaultValue = "";
 
+    /** The previous value. */
+    private String m_previousValue;
+
+    /** The value changed handler initialized flag. */
+    private boolean m_valueChangeHandlerInitialized;
+
     /**
      * Creates a new display widget.<p>
      * @param config 
      */
     public CmsTextboxWidget(String config) {
 
+        m_mainPanel = uiBinder.createAndBindUi(this);
+        initWidget(m_mainPanel);
         if ((config != "") || (config != null)) {
             parseConfig(config);
         }
-        m_fadePanel.addDomHandler(new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-
-                m_textbox.setFocus(true);
-                m_textbox.setCursorPos(m_textbox.getText().length());
-            }
-        }, ClickEvent.getType());
-        m_fadePanel.setStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().fader());
-        m_textbox.addFocusHandler(new FocusHandler() {
-
-            public void onFocus(FocusEvent event) {
-
-                m_mainPanel.remove(m_fadePanel);
-                setTitle("");
-
-            }
-        });
-        m_mainPanel.getElement().getStyle().setMarginRight(12, Unit.PX);
-        m_mainPanel.add(m_textbox);
-        m_mainPanel.add(m_fadePanel);
-
-        m_textbox.setStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().textBox());
-        m_textbox.addValueChangeHandler(new ValueChangeHandler<String>() {
-
-            public void onValueChange(ValueChangeEvent<String> event) {
-
-                fireChangeEvent();
-
-            }
-        });
-        m_textbox.addBlurHandler(new BlurHandler() {
-
-            public void onBlur(BlurEvent event) {
-
-                m_mainPanel.add(m_fadePanel);
-                setTitle(m_textbox.getText());
-            }
-        });
-        initWidget(m_mainPanel);
-        addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().inputField());
     }
 
     /**
@@ -296,6 +263,55 @@ public class CmsTextboxWidget extends Composite implements I_EditWidget {
             m_previousValue = currentValue;
             ValueChangeEvent.fire(this, currentValue);
         }
+    }
+
+    /**
+     * Handles fade panel clicks.<p>
+     * 
+     * @param event the click event
+     */
+    @UiHandler("m_fadePanel")
+    void onFadeClick(ClickEvent event) {
+
+        m_textbox.setFocus(true);
+        m_textbox.setCursorPos(m_textbox.getText().length());
+    }
+
+    /**
+     * Handles text box blur.<p>
+     * 
+     * @param event the blur event
+     */
+    @UiHandler("m_textbox")
+    void onTextboxBlur(BlurEvent event) {
+
+        m_mainPanel.add(m_fadePanel);
+        setTitle(m_textbox.getText());
+    }
+
+    /**
+     * Handles text box focus.<p>
+     * 
+     * @param event the focus event
+     */
+    @UiHandler("m_textbox")
+    void onTextboxFocus(FocusEvent event) {
+
+        m_mainPanel.remove(m_fadePanel);
+        setTitle("");
+
+    }
+
+    /**
+     * Handles text box value change.<p>
+     * 
+     * @param event the value change event
+     */
+    @UiHandler("m_textbox")
+    void onTextboxValueChange(ValueChangeEvent<String> event) {
+
+        fireChangeEvent();
+
     }
 
     /**

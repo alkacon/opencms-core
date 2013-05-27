@@ -69,23 +69,25 @@ div.vfsInputBox{
 	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
 }
 
-input.textBox{
+div.textBox{
 	border: 1px solid #7788AA;
 	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
 	border-radius: value("constants.css.borderRadius");
 	font-family: value("constants.css.fontFamily");
+	padding: 0px 4px;
+	margin: 0px;
+}
+div.textBox > input{
+	width:100%;
+	outline:none;
 	display: block;
 	color: value("constants.css.textColor");
 	box-shadow: none;
-	width: 100%;
-	padding: 0px 4px;
-	margin: 0px;
-	line-height: value("constants.css.lineHeight");
-	height: 18px;
-	font-size: value("constants.css.fontSize");
-	outline:none;
-	display: inline;
 	vertical-align: baseline;
+	height: 18px;
+	line-height: value("constants.css.lineHeight");
+	border-radius: value("constants.css.borderRadius");
+	font-size: value("constants.css.fontSize");
 }
 
 
@@ -293,20 +295,20 @@ div.colorPicker{
 	border: 1px solid value("constants.css.borderColor");
 	background: none repeat scroll 0 0 transparent;
 }
-.emptyValue div.textAreaBoxPanel , .emptyValue .categoryPanel, .emptyValue input.textBox, .emptyValue div.vfsInputBox{
+.emptyValue div.textAreaBoxPanel , .emptyValue .categoryPanel, .emptyValue div.textBox, .emptyValue div.vfsInputBox{
 	border: 1px solid value("constants.css.borderColor");
 }
 
 
 /** The "has error" parameters. */
 
-.hasError div.selectBoxSelected, .hasError .radioButtonPanel, .hasError.inputField, .hasError div.textAreaBoxPanel, .hasError input.textBox, .hasError div.calendarStyle, .hasError input.passwordTextBox, .hasError .colorPickerValue, .hasError .colorPicker, .hasError .vfsInputBox{
+.hasError div.selectBoxSelected, .hasError .radioButtonPanel, .hasError.inputField, .hasError div.textAreaBoxPanel, .hasError div.textBox, .hasError div.calendarStyle, .hasError input.passwordTextBox, .hasError .colorPickerValue, .hasError .colorPicker, .hasError .vfsInputBox{
 	border: 1px solid value("constants.css.borderColorHighlight");
 }
 
 /** The "has warning" parameters. */
 
-.hasWarning div.selectBoxSelected, .hasWarning .radioButtonPanel, .hasWarning.inputField, .hasWarning div.textAreaBoxPanel, .hasWarning input.textBox, .hasWarning div.calendarStyle, .hasWarning input.passwordTextBox, .hasWarning .colorPickerValue, .hasWarning .colorPicker, .hasWarning .vfsInputBox {
+.hasWarning div.selectBoxSelected, .hasWarning .radioButtonPanel, .hasWarning.inputField, .hasWarning div.textAreaBoxPanel, .hasWarning div.textBox, .hasWarning div.calendarStyle, .hasWarning input.passwordTextBox, .hasWarning .colorPickerValue, .hasWarning .colorPicker, .hasWarning .vfsInputBox {
 	border: 1px solid #FFAA00;
 }
 
@@ -365,12 +367,9 @@ div.inputField{
 	position: relative;
 }
 
-div.inputField > div{
-	height: 18px;
-    width: 40px;
-    position: absolute;
-    bottom: 1px;
-    right: -7px;
+div.inputField>div{
+	bottom:1px;
+	right:2px;
 }
 
 .hasError{}
