@@ -2672,6 +2672,7 @@ public final class CmsContainerpageController {
                 public void execute() {
 
                     start(200, true);
+                    CmsCoreProvider.getVfsService().getPageInfo(new CmsUUID(getServerId(element.getId())), this);
                 }
 
                 @Override
