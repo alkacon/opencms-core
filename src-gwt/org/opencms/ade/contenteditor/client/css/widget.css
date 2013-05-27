@@ -277,10 +277,17 @@ div.colorPicker{
 }
 
 .checkBoxStyle div.label{
-		margin: 4px 3px 2px 20px;
+		margin: 0px 3px 0px 20px;
 }
 .checkBoxStyle .widget{
 	position: absolute;
+	margin: 0 !important;
+	left: 0 !important;
+}
+
+div.checkBoxStyle{
+	position: relative;
+	height: 22px;
 }
 
 
@@ -318,23 +325,23 @@ div.colorPicker{
 
 
 .entity .checkBoxStyle .widget{
-	top: 9px;
+	top: 5px;
 }
 .entity .entity .checkBoxStyle .widget{
-	top: 10px;
+	top: 6px;
 }
 
 .entity .entity .entity .checkBoxStyle .widget{
-	top: 8px;
+	top: 4px;
 }
 
 .entity .entity .entity .entity .checkBoxStyle .widget{
-	top: 7px;
+	top: 3px;
 }
 
 /** The "drag helper" parameters. */
 .dragHelper .checkBoxStyle .label{
-	margin: 4px 3px 2px 20px;
+	margin: 0px 3px 0px 20px;
 }
 .dragHelper .checkBoxStyle .widget{
 	position: absolute;
