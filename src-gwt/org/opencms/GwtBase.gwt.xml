@@ -5,9 +5,9 @@
     <inherits name="com.google.gwt.json.JSON" />
 	<inherits name="com.google.common.collect.Collect" />
 		
- 	<extend-property name="locale" values="en,de"/>
+ 	<extend-property name="locale" values="en,de,it"/>
 	<set-property-fallback name="locale" value="en"/>
-	<set-property name="locale" value="en,de"/>
+	<set-property name="locale" value="en,de,it"/>
 	<collapse-property name="locale" values="*" />
 
 	<define-property name="fileapi.support" values="formdata,fileapi,no" />
