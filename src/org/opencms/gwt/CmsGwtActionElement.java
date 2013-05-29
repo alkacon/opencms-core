@@ -219,6 +219,9 @@ public class CmsGwtActionElement extends CmsJspActionElement {
             wpLocale = Locale.ENGLISH.getLanguage();
         }
         StringBuffer sb = new StringBuffer();
+        // TODO: remove when GWT is compatible to IE10
+        // append meta tag to set the IE10 to IE9 compatibility mode
+        sb.append("<meta http-equiv=\"X-UA-Compatible\" content=\"IE=9\">");
         String prefetchedData = exportDictionary(
             CmsCoreData.DICT_NAME,
             I_CmsCoreService.class.getMethod("prefetch"),
@@ -230,9 +233,6 @@ public class CmsGwtActionElement extends CmsJspActionElement {
             "\");\n</style>\n");
         // append the workplace locale information
         sb.append("<meta name=\"gwt:property\" content=\"locale=").append(wpLocale).append("\" />\n");
-        // TODO: remove when GWT is compatible to IE10
-        // append meta tag to set the IE10 to IE9 compatibility mode
-        sb.append("<meta name=\"X-UA-Compatible\" content=\"IE=9; chrome=1\">");
         return sb.toString();
     }
 

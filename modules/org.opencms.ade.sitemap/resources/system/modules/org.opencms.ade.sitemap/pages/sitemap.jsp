@@ -4,7 +4,6 @@
 <html style="height:100%;">
   <head>
     <title><%= jsp.getTitle() %></title>
-    <meta http-equiv="X-UA-Compatible" content="IE=9">
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <%= jsp.exportAll() %>
   </head>
