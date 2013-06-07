@@ -46,6 +46,7 @@ import org.opencms.widgets.I_CmsWidget;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.content.CmsXmlContentTab;
 import org.opencms.xml.content.I_CmsXmlContentHandler;
+import org.opencms.xml.content.I_CmsXmlContentHandler.DisplayType;
 import org.opencms.xml.types.A_CmsXmlContentValue;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
@@ -311,17 +312,21 @@ public class CmsContentTypeVisitor {
         AttributeConfiguration result = null;
         String widgetName = null;
         String widgetConfig = null;
-        boolean compactView = false;
         CmsObject cms = getCmsObject();
+        // set the default display type
+        DisplayType displayType = DisplayType.wide;
         try {
             I_CmsXmlContentHandler contentHandler = schemaType.getContentDefinition().getContentHandler();
             // currently the compact view mode is restricted to complex types or single value types
-            compactView = contentHandler.isCompactView(schemaType)
-                && (!schemaType.isSimpleType() || (schemaType.getMaxOccurs() == 1));
+            displayType = contentHandler.getDisplayType(schemaType);
             I_CmsWidget widget = contentHandler.getWidget(schemaType);
             if (widget != null) {
                 widgetName = widget.getClass().getName();
-                compactView = compactView && widget.isCompactViewEnabled();
+                if ((displayType == DisplayType.column)
+                    && !(schemaType.isSimpleType() && (schemaType.getMaxOccurs() == 1) && widget.isCompactViewEnabled())) {
+                    // column view is not allowed for this widget
+                    displayType = DisplayType.wide;
+                }
                 long timer = 0;
                 if (widget instanceof I_CmsADEWidget) {
                     if (!checkWidgetsOnly) {
@@ -367,7 +372,7 @@ public class CmsContentTypeVisitor {
             widgetName,
             widgetConfig,
             readDefaultValue(schemaType, path),
-            compactView);
+            displayType.name());
         return result;
     }
 
