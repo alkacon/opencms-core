@@ -60,6 +60,23 @@ import org.dom4j.Element;
  */
 public interface I_CmsXmlContentHandler {
 
+    /**
+     * The available display types for element widgets.
+     */
+    public static enum DisplayType {
+        /** The two column type. */
+        column,
+
+        /** The compact type. */
+        compact,
+
+        /** The single line type. */
+        singleline,
+
+        /** The default wide display type. */
+        wide
+    }
+
     /** List of all allowed attribute mapping names, for fast lookup. */
     List<String> ATTRIBUTES = Collections.unmodifiableList(Arrays.asList(new String[] {"datereleased", "dateexpired"}));
 
@@ -188,6 +205,15 @@ public interface I_CmsXmlContentHandler {
      * @return the default complex widget configuration string 
      */
     String getDefaultComplexWidgetConfiguration();
+
+    /**
+     * Returns if the widget for this type should be displayed in compact view.<p> 
+     * 
+     * @param type the value to check the view mode for
+     * 
+     * @return the widgets display type
+     */
+    DisplayType getDisplayType(I_CmsXmlSchemaType type);
 
     /**
      * Returns the container page element formatter configuration for a given resource.<p>
@@ -369,15 +395,6 @@ public interface I_CmsXmlContentHandler {
      * @return true if the Acacia editor is disabled 
      */
     boolean isAcaciaEditorDisabled();
-
-    /**
-     * Returns if the widget for this type should be displayed in compact view.<p> 
-     * 
-     * @param type the value to check the view mode for
-     * 
-     * @return <code>true</code> if the widget for this type should be displayed in compact view
-     */
-    boolean isCompactView(I_CmsXmlSchemaType type);
 
     /**
      * Returns <code>true</code> if the XML content should be indexed when it is dropped in a container page,

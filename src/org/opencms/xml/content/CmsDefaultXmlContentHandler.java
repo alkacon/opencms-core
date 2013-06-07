@@ -142,7 +142,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     public static final String APPINFO_ATTR_DESCRIPTION = "description";
 
     /** Constant for the "displaycompact" appinfo attribute name. */
-    public static final String APPINFO_ATTR_DISPLAYCOMPACT = "displaycompact";
+    public static final String APPINFO_ATTR_DISPLAY = "display";
 
     /** Constant for the "element" appinfo attribute name. */
     public static final String APPINFO_ATTR_ELEMENT = "element";
@@ -467,9 +467,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** The validation rules that cause a warning (as defined in the annotations). */
     protected Map<String, String> m_validationWarningRules;
 
-    /** The elements to display in ncompact view. */
-    private Set<String> m_compactViews;
-
     /** The container page only flag, indicating if this XML content should be indexed on container pages only. */
     private boolean m_containerPageOnly;
 
@@ -481,6 +478,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** The default complex widget for this type. */
     private I_CmsComplexWidget m_defaultWidgetInstance;
+
+    /** The elements to display in ncompact view. */
+    private HashMap<String, DisplayType> m_displayTypes;
 
     /**
      * Creates a new instance of the default XML content handler.<p>  
@@ -657,6 +657,18 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     public String getDefaultComplexWidgetConfiguration() {
 
         return m_defaultWidgetConfig;
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getDisplayType(org.opencms.xml.types.I_CmsXmlSchemaType)
+     */
+    public DisplayType getDisplayType(I_CmsXmlSchemaType type) {
+
+        if (m_displayTypes.containsKey(type.getName())) {
+            return m_displayTypes.get(type.getName());
+        } else {
+            return DisplayType.wide;
+        }
     }
 
     /**
@@ -1000,14 +1012,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     public boolean isAcaciaEditorDisabled() {
 
         return !m_useAcacia;
-    }
-
-    /**
-     * @see org.opencms.xml.content.I_CmsXmlContentHandler#isCompactView(org.opencms.xml.types.I_CmsXmlSchemaType)
-     */
-    public boolean isCompactView(I_CmsXmlSchemaType type) {
-
-        return m_compactViews.contains(type.getName());
     }
 
     /**
@@ -1503,24 +1507,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
-     * Adds the given element to the compact view set.<p>
-     * 
-     * @param contentDefinition the XML content definition this XML content handler belongs to
-     * @param elementName the element name
-     * 
-     * @throws CmsXmlException in case an unknown element name is used
-     */
-    protected void addCompactView(CmsXmlContentDefinition contentDefinition, String elementName) throws CmsXmlException {
-
-        if (contentDefinition.getSchemaType(elementName) == null) {
-            throw new CmsXmlException(Messages.get().container(
-                Messages.ERR_XMLCONTENT_CONFIG_ELEM_UNKNOWN_1,
-                elementName));
-        }
-        m_compactViews.add(elementName);
-    }
-
-    /**
      * Adds a configuration value for an element widget.<p>
      * 
      * @param contentDefinition the XML content definition this XML content handler belongs to
@@ -1604,6 +1590,26 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 }
             }
         }
+    }
+
+    /**
+     * Adds the given element to the compact view set.<p>
+     * 
+     * @param contentDefinition the XML content definition this XML content handler belongs to
+     * @param elementName the element name
+     * @param displayType the display type to use for the element widget
+     * 
+     * @throws CmsXmlException in case an unknown element name is used
+     */
+    protected void addDisplayType(CmsXmlContentDefinition contentDefinition, String elementName, DisplayType displayType)
+    throws CmsXmlException {
+
+        if (contentDefinition.getSchemaType(elementName) == null) {
+            throw new CmsXmlException(Messages.get().container(
+                Messages.ERR_XMLCONTENT_CONFIG_ELEM_UNKNOWN_1,
+                elementName));
+        }
+        m_displayTypes.put(elementName, displayType);
     }
 
     /**
@@ -1905,7 +1911,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         m_searchFields = new HashMap<String, CmsSearchField>();
         m_allowedTemplates = new CmsDefaultSet<String>();
         m_allowedTemplates.setDefaultMembership(true);
-        m_compactViews = new HashSet<String>();
+        m_displayTypes = new HashMap<String, DisplayType>();
     }
 
     /**
@@ -2042,9 +2048,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             String elementName = element.attributeValue(APPINFO_ATTR_ELEMENT);
             String widgetClassOrAlias = element.attributeValue(APPINFO_ATTR_WIDGET);
             String configuration = element.attributeValue(APPINFO_ATTR_CONFIGURATION);
-            boolean displayCompact = Boolean.parseBoolean(element.attributeValue(APPINFO_ATTR_DISPLAYCOMPACT));
-            if (displayCompact && (elementName != null)) {
-                addCompactView(contentDefinition, elementName);
+            String displayCompact = element.attributeValue(APPINFO_ATTR_DISPLAY);
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(displayCompact) && (elementName != null)) {
+                addDisplayType(contentDefinition, elementName, DisplayType.valueOf(displayCompact));
             }
             if ((elementName != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(widgetClassOrAlias)) {
                 // add a widget mapping for the element
