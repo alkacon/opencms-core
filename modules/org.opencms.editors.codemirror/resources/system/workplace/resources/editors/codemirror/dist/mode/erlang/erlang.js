@@ -9,7 +9,7 @@
 
 CodeMirror.defineMIME("text/x-erlang", "erlang");
 
-CodeMirror.defineMode("erlang", function(cmCfg, modeCfg) {
+CodeMirror.defineMode("erlang", function(cmCfg) {
 
   function rval(state,stream,type) {
     // distinguish between "." as terminator and record field operator
@@ -247,7 +247,7 @@ CodeMirror.defineMode("erlang", function(cmCfg, modeCfg) {
           return rval(state,stream,"function");
         }
       }
-      return rval(state,stream,"atom");               
+      return rval(state,stream,"atom");
     }
 
     // number
@@ -456,8 +456,9 @@ CodeMirror.defineMode("erlang", function(cmCfg, modeCfg) {
 
     indent:
       function(state, textAfter) {
-//        console.log(state.tokenStack);
         return myIndent(state,textAfter);
-      }
+      },
+
+    lineComment: "%"
   };
 });

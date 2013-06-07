@@ -38,6 +38,9 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_BUTTON_AUTOCLOSE_0 = "GUI_EDITOR_BUTTON_AUTOCLOSE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_BUTTON_AUTOFORMAT_0 = "GUI_EDITOR_BUTTON_AUTOFORMAT_0";
 
     /** Message constant for key in the resource bundle. */
