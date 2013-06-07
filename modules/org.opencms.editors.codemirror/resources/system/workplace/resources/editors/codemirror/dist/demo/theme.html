@@ -15,9 +15,13 @@
     <link rel="stylesheet" href="../theme/rubyblue.css">
     <link rel="stylesheet" href="../theme/lesser-dark.css">
     <link rel="stylesheet" href="../theme/xq-dark.css">
+    <link rel="stylesheet" href="../theme/xq-light.css">
     <link rel="stylesheet" href="../theme/ambiance.css">
     <link rel="stylesheet" href="../theme/blackboard.css">
     <link rel="stylesheet" href="../theme/vibrant-ink.css">
+    <link rel="stylesheet" href="../theme/solarized.css">
+    <link rel="stylesheet" href="../theme/twilight.css">
+    <link rel="stylesheet" href="../theme/midnight.css">
     <script src="../mode/javascript/javascript.js"></script>
     <link rel="stylesheet" href="../doc/docs.css">
 
@@ -51,12 +55,17 @@ function findSequence(goal) {
     <option>elegant</option>
     <option>erlang-dark</option>
     <option>lesser-dark</option>
+    <option>midnight</option>
     <option>monokai</option>
     <option>neat</option>
     <option>night</option>
     <option>rubyblue</option>
+    <option>solarized dark</option>
+    <option>solarized light</option>
+    <option>twilight</option>
     <option>vibrant-ink</option>
     <option>xq-dark</option>
+    <option>xq-light</option>
 </select>
 </p>
 
@@ -69,7 +78,8 @@ function findSequence(goal) {
     var theme = input.options[input.selectedIndex].innerHTML;
     editor.setOption("theme", theme);
   }
-  var choice = document.location.search && document.location.search.slice(1);
+  var choice = document.location.search &&
+               decodeURIComponent(document.location.search.slice(1));
   if (choice) {
     input.value = choice;
     editor.setOption("theme", choice);

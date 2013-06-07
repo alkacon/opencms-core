@@ -1,4 +1,4 @@
-CodeMirror.defineMode("smarty", function(config, parserConfig) {
+CodeMirror.defineMode("smarty", function(config) {
   var keyFuncs = ["debug", "extends", "function", "include", "literal"];
   var last;
   var regs = {
@@ -88,7 +88,7 @@ CodeMirror.defineMode("smarty", function(config, parserConfig) {
 
       var str = "";
       if (ch != "/") {
-    	str += ch;
+        str += ch;
       }
       var c = "";
       while ((c = stream.eat(regs.validIdentifier))) {
@@ -101,7 +101,7 @@ CodeMirror.defineMode("smarty", function(config, parserConfig) {
         }
       }
       if (/\s/.test(ch)) {
-    	return null;
+        return null;
       }
       return ret("tag", "tag");
     }

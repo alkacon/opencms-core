@@ -12,26 +12,25 @@
 	background-color: Window;
 }
 
-.CodeMirror span, .CodeMirror pre {
+/* Initial editor font */
+.CodeMirror span, .CodeMirror pre, .CodeMirror-linenumber {
 	font-family: Monospace, sans-serif; 
 	font-size: 14px;
 	line-height: 1.2em;
 }
 
-.CodeMirror-scroll { 
-	height: 100%;
-	position: relative;
-}
-
-.CodeMirror-gutter {
-	min-width: 4.2em; 
+/* Gutter with minimum width to be capable of large line numbers */
+.CodeMirror-linenumber  {
+	min-width: 3em; 
 	cursor: pointer;
 }
 
-.activeline {
+/* Active editor line */
+.CodeMirror-activeline-background {
 	background: #ecf6ff !important;
 }
 
+/* Visible tabs layout */
 .cm-tab:after {
 	content: "\2192";
 	display: -moz-inline-block;
@@ -47,10 +46,6 @@
 
 /* Modification for search dialogs */
 .CodeMirror-dialog {
-	position: relative;
-}
-
-.CodeMirror-dialog > div {
 	position: fixed;
 	top: 35%; left: 50%;
 	width: 300px;
@@ -63,6 +58,9 @@
 	color: WindowText;
 	font-family: Verdana Arial, Helvetica, sans-serif;
 	font-size: 12px;
+}
+
+.CodeMirror-dialog > div {
 }
 
 .CodeMirror-dialog span {
@@ -82,4 +80,5 @@
 
 .CodeMirror-dialog button {
 	margin-left: 1em;
+	font-size: 12px !important;
 }
