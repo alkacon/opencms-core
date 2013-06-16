@@ -11,9 +11,12 @@
 	<property name="src.all.comps" value="lib,modules,src-components,src-gwt,src-modules,src-setup,test,webapp" />
 	
 
-	<property name="opencms.input" location="${basedir}" />
-	<property name="opencms.output" location="${basedir}/../BuildCms" />
-
+	<!-- <property name="opencms.input" location="${basedir}" /> -->
+	<!-- <property name="opencms.output" location="${basedir}/../BuildCms" /> -->
+	
+	<property name="opencms.input" location="/home/matteo/git/opencms-core" />
+	<property name="opencms.output" location="/home/matteo/git/opencms-core/../BuildCms" />
+	
 	<property name="opencms.build" location="${opencms.output}/build" />
 	<property name="opencms.output.classes" location="${opencms.output}/build/classes-core" />
 	<property name="opencms.output.tests" location="${opencms.output}/build/test" />
