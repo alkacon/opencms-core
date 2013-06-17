@@ -36,6 +36,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchIndexSource;
@@ -49,6 +50,8 @@ import org.opencms.search.fields.CmsSearchFieldMapping;
 import org.opencms.search.fields.CmsSearchFieldMappingType;
 import org.opencms.search.fields.I_CmsSearchFieldMapping;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.CmsXmlContentDefinition;
+import org.opencms.xml.content.I_CmsXmlContentHandler;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,6 +59,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
@@ -81,6 +85,29 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
     public CmsSolrFieldConfiguration() {
 
         super();
+    }
+
+    /**
+     * Returns the search field mappings declared within the XSD.<p>
+     * 
+     * @param cms the CmsObject
+     * @param resource the resource
+     * 
+     * @return the fields to map
+     */
+    protected static Set<CmsSearchField> getXSDMappings(CmsObject cms, CmsResource resource) {
+
+        try {
+            if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
+                I_CmsXmlContentHandler handler = CmsXmlContentDefinition.getContentHandlerForResource(cms, resource);
+                if ((handler != null) && !handler.getSearchFields().isEmpty()) {
+                    return handler.getSearchFields();
+                }
+            }
+        } catch (CmsException e) {
+            LOG.error(e.getMessage(), e);
+        }
+        return null;
     }
 
     /**
@@ -221,8 +248,9 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
         List<CmsProperty> properties,
         List<CmsProperty> propertiesSearched) {
 
-        if ((extractionResult != null) && (extractionResult.getMappingFields() != null)) {
-            for (CmsSearchField field : extractionResult.getMappingFields()) {
+        Set<CmsSearchField> mappedFields = getXSDMappings(cms, resource);
+        if (mappedFields != null) {
+            for (CmsSearchField field : mappedFields) {
                 document = appendFieldMapping(
                     document,
                     field,
