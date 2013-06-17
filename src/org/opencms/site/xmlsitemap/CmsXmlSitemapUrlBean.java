@@ -27,6 +27,7 @@
 
 package org.opencms.site.xmlsitemap;
 
+import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 
 import java.text.DateFormat;
@@ -44,8 +45,14 @@ public class CmsXmlSitemapUrlBean {
     /** The change frequency. */
     private String m_changeFrequency;
 
+    /** The detail page resource. */
+    private CmsResource m_detailPageResource;
+
     /** The last modification date. */
     private Date m_lastModified;
+
+    /** The original resource. */
+    private CmsResource m_origResource;
 
     /** The priority. */
     private double m_priority;
@@ -105,6 +112,16 @@ public class CmsXmlSitemapUrlBean {
         return m_lastModified;
     }
 
+    /** 
+     * Gets the detail page resource in case the link is the link to a detail page, else returns null.<p>
+     * 
+     * @return the container page used as the detail page 
+     */
+    public CmsResource getDetailPageResource() {
+
+        return m_detailPageResource;
+    }
+
     /**
      * Gets the last modification date formatted as W3C datetime.<p>
      * 
@@ -113,6 +130,18 @@ public class CmsXmlSitemapUrlBean {
     public String getFormattedDate() {
 
         return formatDate(m_lastModified);
+    }
+
+    /** 
+     * Gets the original resource belonging to the link.<p>
+     * 
+     * In case this is a link to a detail page, the resource will be the resource displayed on the detail page 
+     * 
+     * @return the original resource 
+     */
+    public CmsResource getOriginalResource() {
+
+        return m_origResource;
     }
 
     /**
@@ -136,27 +165,35 @@ public class CmsXmlSitemapUrlBean {
     }
 
     /** 
-     * Renders this single bean as XML for the XML sitemap format.<p>
-     * 
-     * @return an XML representation of this bean
+     * Sets the detail page resource.<p>
+     *
+     * @param detailPageResource the detail page resource
      */
-    public String renderXml() {
+    public void setDetailPageResource(CmsResource detailPageResource) {
 
-        StringBuffer buffer = new StringBuffer();
-        buffer.append("<url>");
-        writeElement(buffer, "loc", getUrl());
-        if (m_lastModified != null) {
-            writeElement(buffer, "lastmod", getFormattedDate());
-        }
+        m_detailPageResource = detailPageResource;
+    }
+
+    /** 
+     * Sets the original resource.<p>
+     * 
+     * @param resource the original resource
+     */
+    public void setOriginalResource(CmsResource resource) {
+
+        m_origResource = resource;
+    }
+
+    /** 
+     * Writes the changefreq node to the buffer.<p>
+     * 
+     * @param buffer the buffer to write to
+     */
+    public void writeChangefreq(StringBuffer buffer) {
+
         if (m_changeFrequency != null) {
             writeElement(buffer, "changefreq", getChangeFrequency());
         }
-        if ((m_priority >= 0) && (m_priority <= 1)) {
-            writeElement(buffer, "priority", "" + getPriority());
-        }
-        buffer.append("</url>");
-        return buffer.toString();
-
     }
 
     /**
@@ -166,11 +203,35 @@ public class CmsXmlSitemapUrlBean {
      * @param tag the XML tag name 
      * @param content the content of the XML element 
      */
-    private void writeElement(StringBuffer buffer, String tag, String content) {
+    public void writeElement(StringBuffer buffer, String tag, String content) {
 
         buffer.append("<" + tag + ">");
         buffer.append(CmsEncoder.escapeXml(content));
         buffer.append("</" + tag + ">");
+    }
+
+    /** 
+     * Writes the lastmod node to the buffer.<p>
+     * 
+     * @param buffer the buffer to write to
+     */
+    public void writeLastmod(StringBuffer buffer) {
+
+        if (m_lastModified != null) {
+            writeElement(buffer, "lastmod", getFormattedDate());
+        }
+    }
+
+    /** 
+     * Writes the priority node to the buffer.<p>
+     * 
+     * @param buffer the buffer to write to
+     */
+    public void writePriority(StringBuffer buffer) {
+
+        if ((m_priority >= 0) && (m_priority <= 1)) {
+            writeElement(buffer, "priority", "" + getPriority());
+        }
     }
 
 }
