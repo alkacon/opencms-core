@@ -29,7 +29,6 @@ package org.opencms.jsp;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.collectors.CmsCollectorData;
 import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.flex.CmsFlexController;
@@ -233,9 +232,13 @@ public class CmsJspTagEditable extends BodyTagSupport {
                 cms,
                 container.getCollectorName(),
                 container.getCollectorParam());
-            CmsCollectorData collectorData = new CmsCollectorData(createParam);
-            if ((createParam != null) && (collectorData.getType() != -1)) {
-                String createFolderName = CmsResource.getFolderPath(createParam);
+            String createLink = collector.getCreateLink(
+                cms,
+                container.getCollectorName(),
+                container.getCollectorParam());
+            if ((createParam != null)
+                && (collector.getCreateTypeId(cms, container.getCollectorName(), container.getCollectorParam()) != -1)) {
+                String createFolderName = CmsResource.getFolderPath(createLink);
                 createParam = CmsEncoder.encode(container.getCollectorName() + "|" + createParam);
                 getDirectEditProvider(context).insertDirectEditEmptyList(
                     context,

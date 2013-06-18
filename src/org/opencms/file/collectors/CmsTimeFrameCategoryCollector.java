@@ -457,14 +457,14 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
 
     }
 
+    /** SQL Standard date format: "yyyy-MM-dd HH:mm:ss".*/
+    public static final DateFormat DATEFORMAT_SQL = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
     /** Static array of the collectors implemented by this class. */
     private static final String COLLECTOR_NAME = "timeFrameAndCategories";
 
     /** Sorted set for fast collector name lookup. */
     private static final List<String> COLLECTORS_LIST = Collections.unmodifiableList(Arrays.asList(new String[] {COLLECTOR_NAME}));
-
-    /** SQL Standard date format: "yyyy-MM-dd HH:mm:ss".*/
-    public static final DateFormat DATEFORMAT_SQL = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     /**
      * Public constructor.<p>
@@ -507,6 +507,19 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
     public String getCreateParam(CmsObject cms, String collectorName, String param) {
 
         return null;
+    }
+
+    /**
+     * @see org.opencms.file.collectors.A_CmsResourceCollector#getCreateTypeId(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
+     */
+    @Override
+    public int getCreateTypeId(CmsObject cms, String collectorName, String param) throws CmsException {
+
+        int result = -1;
+        if (param != null) {
+            result = new CollectorDataPropertyBased(param).getType();
+        }
+        return result;
     }
 
     /**

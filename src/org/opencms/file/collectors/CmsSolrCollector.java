@@ -35,10 +35,12 @@ import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.search.solr.CmsSolrIndex;
 import org.opencms.search.solr.CmsSolrQuery;
 import org.opencms.util.CmsRequestUtil;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -79,7 +81,17 @@ public class CmsSolrCollector extends A_CmsResourceCollector {
         switch (COLLECTORS_LIST.indexOf(collectorName)) {
             case 0: // byQuery
             case 1: // byContext
-                return getCreateInFolder(cms, param);
+                int lastPipe = param.lastIndexOf('|');
+                if (lastPipe > 0) {
+                    int idx = param.indexOf(PARAM_CREATE_PATH, lastPipe);
+                    if (idx > 0) {
+                        String path = param.substring(idx + PARAM_CREATE_PATH.length());
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(path)) {
+                            return OpenCms.getResourceManager().getNameGenerator().getNewFileName(cms, path, 4);
+                        }
+                    }
+                }
+                return null;
             default:
                 throw new CmsDataAccessException(Messages.get().container(
                     Messages.ERR_COLLECTOR_NAME_INVALID_1,
@@ -96,19 +108,19 @@ public class CmsSolrCollector extends A_CmsResourceCollector {
         switch (COLLECTORS_LIST.indexOf(collectorName)) {
             case 0: // byQuery
             case 1: // byContext
+                // check if the param supports resource creation
                 String solrParams = null;
                 if (param.indexOf('|') > 0) {
                     solrParams = param.substring(0, param.indexOf('|'));
                     CmsSolrQuery q = new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(solrParams));
                     String type = CmsSolrQuery.getResourceType(q.getFilterQueries());
-                    String rows = q.getRows().toString();
                     int lastPipe = param.lastIndexOf('|');
                     if (lastPipe > 0) {
                         int idx = param.indexOf(PARAM_CREATE_PATH, lastPipe);
                         if (idx > 0) {
                             String path = param.substring(idx + PARAM_CREATE_PATH.length());
-                            if ((type != null) && (rows != null) && (path != null)) {
-                                return path + "|" + type + "|" + rows;
+                            if ((type != null) && (path != null)) {
+                                return param;
                             }
                         }
                     }
@@ -119,6 +131,24 @@ public class CmsSolrCollector extends A_CmsResourceCollector {
                     Messages.ERR_COLLECTOR_NAME_INVALID_1,
                     collectorName));
         }
+    }
+
+    /**
+     * @see org.opencms.file.collectors.A_CmsResourceCollector#getCreateTypeId(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
+     */
+    @Override
+    public int getCreateTypeId(CmsObject cms, String collectorName, String param) throws CmsException {
+
+        int result = -1;
+        if (param.indexOf('|') > 0) {
+            String solrParams = param.substring(0, param.indexOf('|'));
+            CmsSolrQuery q = new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(solrParams));
+            String type = CmsSolrQuery.getResourceType(q.getFilterQueries());
+            if (type != null) {
+                result = OpenCms.getResourceManager().getResourceType(type).getTypeId();
+            }
+        }
+        return result;
     }
 
     /**

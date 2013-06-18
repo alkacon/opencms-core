@@ -67,6 +67,14 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
     private int m_hashcode;
 
     /**
+     * Constructor to initialize some default values.<p>
+     */
+    public A_CmsResourceCollector() {
+
+        m_hashcode = getClass().getName().hashCode();
+    }
+
+    /**
      * Creates a new content collector resource.<p>
      * 
      * @param cms the cms context
@@ -126,7 +134,7 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
                 template.getEncoding(),
                 template.getContentDefinition());
         } else {
-            typeId = new CmsCollectorData(param).getType();
+            typeId = collector.getCreateTypeId(cloneCms, collectorName, collectorParams);
         }
         // IMPORTANT: calculation of the name MUST be done here so the file name is ensured to be valid
         newFileName = collector.getCreateLink(cms, collectorName, param);
@@ -146,14 +154,6 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
         }
         return newFileName;
 
-    }
-
-    /**
-     * Constructor to initialize some default values.<p>
-     */
-    public A_CmsResourceCollector() {
-
-        m_hashcode = getClass().getName().hashCode();
     }
 
     /**
@@ -201,6 +201,16 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
 
         checkParams();
         return getCreateParam(cms, getDefaultCollectorName(), getDefaultCollectorParam());
+    }
+
+    /**
+     * @see org.opencms.file.collectors.I_CmsResourceCollector#getCreateTypeId(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
+     */
+    @SuppressWarnings("unused")
+    public int getCreateTypeId(CmsObject cms, String collectorName, String param) throws CmsException {
+
+        // overwrite to allow creation of new items
+        return -1;
     }
 
     /**

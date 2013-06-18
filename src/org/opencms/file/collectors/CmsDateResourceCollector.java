@@ -120,6 +120,19 @@ public class CmsDateResourceCollector extends A_CmsResourceCollector {
     }
 
     /**
+     * @see org.opencms.file.collectors.A_CmsResourceCollector#getCreateTypeId(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
+     */
+    @Override
+    public int getCreateTypeId(CmsObject cms, String collectorName, String param) {
+
+        int result = -1;
+        if (param != null) {
+            result = new CmsExtendedCollectorData(param).getType();
+        }
+        return result;
+    }
+
+    /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getResults(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
     public List<CmsResource> getResults(CmsObject cms, String collectorName, String param)
