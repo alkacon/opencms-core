@@ -702,6 +702,46 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#lockIfExists(java.lang.String)
+     */
+    public String lockIfExists(String sitePath) throws CmsRpcException {
+
+        CmsObject cms = getCmsObject();
+        String errorMessage = null;
+        try {
+            if (cms.existsResource(sitePath, CmsResourceFilter.IGNORE_EXPIRATION)) {
+
+                try {
+                    ensureLock(cms.readResource(sitePath, CmsResourceFilter.IGNORE_EXPIRATION));
+                } catch (CmsException e) {
+                    errorMessage = e.getLocalizedMessage(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
+                }
+
+            } else {
+                // check if parent folder may be locked by the current user
+                String parentFolder = CmsResource.getParentFolder(sitePath);
+                while ((parentFolder != null) && !cms.existsResource(parentFolder, CmsResourceFilter.IGNORE_EXPIRATION)) {
+                    parentFolder = CmsResource.getParentFolder(parentFolder);
+                }
+                if (parentFolder != null) {
+                    CmsResource ancestorFolder = cms.readResource(parentFolder, CmsResourceFilter.IGNORE_EXPIRATION);
+                    CmsUser user = cms.getRequestContext().getCurrentUser();
+                    CmsLock lock = cms.getLock(ancestorFolder);
+                    if (!lock.isLockableBy(user)) {
+                        errorMessage = "Can not lock parent folder '" + parentFolder + "'.";
+                    }
+                } else {
+                    errorMessage = "Can not access any parent folder.";
+                }
+            }
+        } catch (Throwable e) {
+            error(e);
+        }
+
+        return errorMessage;
+    }
+
+    /**
      * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#lockTemp(org.opencms.util.CmsUUID)
      */
     public String lockTemp(CmsUUID structureId) throws CmsRpcException {
@@ -892,8 +932,27 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
         CmsObject cms = getCmsObject();
         try {
-            CmsResource resource = cms.readResource(structureId);
+            CmsResource resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
             tryUnlock(resource);
+        } catch (CmsException e) {
+            return e.getLocalizedMessage(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
+        } catch (Throwable e) {
+            error(e);
+        }
+        return null;
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#unlock(java.lang.String)
+     */
+    public String unlock(String sitePath) throws CmsRpcException {
+
+        CmsObject cms = getCmsObject();
+        try {
+            if (cms.existsResource(sitePath, CmsResourceFilter.IGNORE_EXPIRATION)) {
+                CmsResource resource = cms.readResource(sitePath, CmsResourceFilter.IGNORE_EXPIRATION);
+                tryUnlock(resource);
+            }
         } catch (CmsException e) {
             return e.getLocalizedMessage(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
         } catch (Throwable e) {

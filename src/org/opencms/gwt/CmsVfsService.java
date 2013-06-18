@@ -68,6 +68,7 @@ import org.opencms.gwt.shared.property.CmsPropertyModification;
 import org.opencms.gwt.shared.rpc.I_CmsVfsService;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.jsp.CmsJspTagContainer;
 import org.opencms.jsp.CmsJspTagEditable;
 import org.opencms.loader.CmsImageScaler;
 import org.opencms.loader.CmsLoaderException;
@@ -328,7 +329,8 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     public void deleteResource(CmsUUID structureId) throws CmsRpcException {
 
         try {
-            CmsResource res = getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+            CmsObject cms = getCmsObject();
+            CmsResource res = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
             deleteResource(res);
         } catch (Throwable e) {
             error(e);
@@ -1158,10 +1160,17 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     private void deleteResource(CmsResource resource) throws CmsException {
 
         String path = null;
+        CmsObject cms = getCmsObject();
         try {
-            path = getCmsObject().getSitePath(resource);
-            getCmsObject().lockResource(path);
-            getCmsObject().deleteResource(path, CmsResource.DELETE_PRESERVE_SIBLINGS);
+            path = cms.getSitePath(resource);
+            cms.lockResource(path);
+            cms.deleteResource(path, CmsResource.DELETE_PRESERVE_SIBLINGS);
+
+            // check if any detail container page resource exists to this resource
+            String detailContainers = CmsJspTagContainer.getDetailOnlyPageName(path);
+            if (cms.existsResource(detailContainers, CmsResourceFilter.IGNORE_EXPIRATION)) {
+                deleteResource(cms.readResource(detailContainers, CmsResourceFilter.IGNORE_EXPIRATION));
+            }
         } finally {
             try {
                 if (path != null) {

@@ -50,8 +50,8 @@ public final class CmsCntPageData implements IsSerializable {
     /** The xml-content editor URI. */
     private static final String EDITOR_URI = "/system/workplace/editors/editor.jsp";
 
-    /** The current container page URI. */
-    private String m_cntPageUri;
+    /** The detail view container resource path. */
+    private String m_detailContainerPage;
 
     /** The detail structure id, if available. */
     private CmsUUID m_detailId;
@@ -80,9 +80,6 @@ public final class CmsCntPageData implements IsSerializable {
     /** The current sitemap URI. */
     private String m_sitemapUri;
 
-    /** The current site path. */
-    private String m_sitePath;
-
     /** The template context information. */
     private CmsTemplateContextInfo m_templateContextInfo;
 
@@ -92,12 +89,11 @@ public final class CmsCntPageData implements IsSerializable {
     /**
      * Constructor.<p>
      * 
-     * @param cntPageUri the current container page URI
      * @param noEditReason the reason why the current user is not allowed to edit the current container page
      * @param requestParams the original request parameters
      * @param sitemapUri the current sitemap URI
-     * @param sitePath a sitemap path (null if this container page isn't reachable through the sitemap)
      * @param detailId the detail resource id, if available
+     * @param detailContainerPage the detail view container resource path
      * @param newTypes the map of available types and their new resource id's
      * @param lastModified the last modification date of the page 
      * @param lockInfo lock information, if the page is locked by another user
@@ -107,12 +103,11 @@ public final class CmsCntPageData implements IsSerializable {
      * @param showSmallElementsInitially flag which controls whether small elements should be shown initially 
      */
     public CmsCntPageData(
-        String cntPageUri,
         String noEditReason,
         String requestParams,
         String sitemapUri,
-        String sitePath,
         CmsUUID detailId,
+        String detailContainerPage,
         Map<String, String> newTypes,
         long lastModified,
         String lockInfo,
@@ -121,16 +116,15 @@ public final class CmsCntPageData implements IsSerializable {
         CmsTemplateContextInfo contextInfo,
         boolean showSmallElementsInitially) {
 
-        m_cntPageUri = cntPageUri;
         m_noEditReason = noEditReason;
         m_requestParams = requestParams;
         m_sitemapUri = sitemapUri;
-        m_sitePath = sitePath;
         m_newTypes = newTypes;
         m_lastModified = lastModified;
         m_lockInfo = lockInfo;
         m_locale = locale;
         m_detailId = detailId;
+        m_detailContainerPage = detailContainerPage;
         m_useClassicEditor = useClassicEditor;
         m_templateContextInfo = contextInfo;
         m_editSmallElementsInitially = showSmallElementsInitially;
@@ -155,16 +149,6 @@ public final class CmsCntPageData implements IsSerializable {
     }
 
     /**
-     * Returns the container-page URI.<p>
-     * 
-     * @return the container-page URI
-     */
-    public String getContainerpageUri() {
-
-        return m_cntPageUri;
-    }
-
-    /**
      * Gets the date at which the page was last modified.<p>
      * 
      * @return the date at which the page was last modified 
@@ -172,6 +156,16 @@ public final class CmsCntPageData implements IsSerializable {
     public long getDateLastModified() {
 
         return m_lastModified;
+    }
+
+    /**
+     * Returns the detail view container resource path.<p>
+     *
+     * @return the detail view container resource path
+     */
+    public String getDetailContainerPage() {
+
+        return m_detailContainerPage;
     }
 
     /**
@@ -252,16 +246,6 @@ public final class CmsCntPageData implements IsSerializable {
     public String getSitemapUri() {
 
         return m_sitemapUri;
-    }
-
-    /**
-     * Returns the sitemap path of the current container page, or null if the page is not reachable via the sitemap.<p>
-     * 
-     * @return the sitemap path 
-     */
-    public String getSitePath() {
-
-        return m_sitePath;
     }
 
     /**

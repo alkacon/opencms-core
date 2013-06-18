@@ -69,11 +69,11 @@ public class CmsDetailPageResourceHandler implements I_CmsResourceInit {
     }
 
     /**
-     * Returns the current detail content UID, or <code>null</code> if this is not a request to a content detail page.<p>
+     * Returns the current detail content UUID, or <code>null</code> if this is not a request to a content detail page.<p>
      * 
      * @param req the current request
      * 
-     * @return the current detail content UID, or <code>null</code> if this is not a request to a content detail page
+     * @return the current detail content UUID, or <code>null</code> if this is not a request to a content detail page
      */
     public static CmsUUID getDetailId(ServletRequest req) {
 

@@ -234,7 +234,10 @@ public class CmsContainerpageUtil {
                         groupContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().emptyGroupContainer());
                     }
                     // important: adding the option-bar only after the group-containers have been consumed 
-                    addOptionBar(groupContainer);
+                    if (!m_controller.isDetailPage() || container.isDetailView() || container.isDetailOnly()) {
+                        //only allow editing if either element of detail only container or not in detail view 
+                        addOptionBar(groupContainer);
+                    }
                     child = (Element)child.getNextSiblingElement();
                 }
             } else {
@@ -447,12 +450,19 @@ public class CmsContainerpageUtil {
             elementData.hasWritePermission(),
             elementData.isReleasedAndNotExpired(),
             elementData.isNewEditorDisabled());
-        addOptionBar(dragElement);
         boolean isSubElement = dragParent instanceof CmsGroupContainerElementPanel;
+        boolean isContainerEditable = isSubElement
+            || !m_controller.isDetailPage()
+            || dragParent.isDetailView()
+            || dragParent.isDetailOnly();
+        if (isContainerEditable) {
+            addOptionBar(dragElement);
+        }
         // only enable inline editing for the new content editor
         // also ignore group container sub-elements unless group editing
         if (!m_controller.getData().isUseClassicEditor()
             && m_controller.hasActiveSelection()
+            && isContainerEditable
             && (!isSubElement || m_controller.isGroupcontainerEditing())) {
             dragElement.initInlineEditor(m_controller);
         }

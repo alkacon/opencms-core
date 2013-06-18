@@ -241,6 +241,14 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
     }
 
     /**
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#isDetailOnly()
+     */
+    public boolean isDetailOnly() {
+
+        return false;
+    }
+
+    /**
      * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#isDetailView()
      */
     public boolean isDetailView() {

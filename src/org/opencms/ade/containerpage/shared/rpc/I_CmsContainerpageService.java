@@ -265,6 +265,18 @@ public interface I_CmsContainerpageService extends RemoteService {
     throws CmsRpcException;
 
     /**
+     * Saves the detail containers.<p>
+     * 
+     * @param detailContainerResource the detail container resource path
+     * @param containers the container-page's containers
+     * @param locale the content locale
+     * 
+     * @throws CmsRpcException if something goes wrong processing the request
+     */
+    void saveDetailContainers(String detailContainerResource, List<CmsContainer> containers, String locale)
+    throws CmsRpcException;
+
+    /**
      * Saves the favorite list.<p>
      * 
      * @param clientIds favorite list element id's
@@ -339,6 +351,18 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @throws CmsRpcException if something goes wrong processing the request
      */
     void syncSaveContainerpage(CmsUUID pageStructureId, List<CmsContainer> containers, String locale)
+    throws CmsRpcException;
+
+    /**
+     * Saves the detail containers.<p>
+     * 
+     * @param detailContainerResource the detail container resource path
+     * @param containers the container-page's containers
+     * @param locale the content locale
+     * 
+     * @throws CmsRpcException if something goes wrong processing the request
+     */
+    void syncSaveDetailContainers(String detailContainerResource, List<CmsContainer> containers, String locale)
     throws CmsRpcException;
 
 }

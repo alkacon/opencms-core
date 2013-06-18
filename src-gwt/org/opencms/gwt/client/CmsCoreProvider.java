@@ -404,6 +404,48 @@ public final class CmsCoreProvider extends CmsCoreData {
     }
 
     /**
+     * Tries to lock a resource with a given site path and returns an error if the locking fails.<p>
+     * If the resource does not exist yet, the next existing ancestor folder will be checked if it is lockable.<p>
+     * 
+     * @param sitePath the site path of the resource to lock 
+     * 
+     * @return the error message or null if the locking succeeded 
+     */
+    public String lockOrReturnError(final String sitePath) {
+
+        CmsRpcAction<String> lockAction = new CmsRpcAction<String>() {
+
+            /**
+            * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+            */
+            @Override
+            public void execute() {
+
+                setLoadingMessage(Messages.get().key(Messages.GUI_LOCKING_0));
+                start(200, false);
+                getService().lockIfExists(sitePath, this);
+            }
+
+            /**
+            * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+            */
+            @Override
+            public void onResponse(String result) {
+
+                stop(false);
+                if (result == null) {
+                    // ok
+                    return;
+                }
+                // unable to lock
+                final String text = Messages.get().key(Messages.GUI_LOCK_NOTIFICATION_2, sitePath, result);
+                CmsNotification.get().sendDeferred(CmsNotification.Type.WARNING, text);
+            }
+        };
+        return lockAction.executeSync();
+    }
+
+    /**
      * Locks the given resource with a temporary lock, synchronously and additionally checking that 
      * the given resource has not been modified after the given timestamp.<p>
      * 
@@ -538,6 +580,48 @@ public final class CmsCoreProvider extends CmsCoreData {
                 }
                 // unable to lock
                 String text = Messages.get().key(Messages.GUI_UNLOCK_NOTIFICATION_2, structureId.toString(), result);
+                CmsNotification.get().send(CmsNotification.Type.WARNING, text);
+            }
+        };
+        return unlockAction.executeSync() == null;
+    }
+
+    /**
+     * Unlocks the given resource, synchronously.<p>
+     * 
+     * @param sitePath the resource site path
+     * 
+     * @return <code>true</code> if succeeded, if not a a warning is already shown to the user
+     */
+    public boolean unlock(final String sitePath) {
+
+        // lock the sitemap
+        CmsRpcAction<String> unlockAction = new CmsRpcAction<String>() {
+
+            /**
+            * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+            */
+            @Override
+            public void execute() {
+
+                setLoadingMessage(Messages.get().key(Messages.GUI_UNLOCKING_0));
+                start(200, false);
+                getService().unlock(sitePath, this);
+            }
+
+            /**
+            * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+            */
+            @Override
+            public void onResponse(String result) {
+
+                stop(false);
+                if (result == null) {
+                    // ok
+                    return;
+                }
+                // unable to lock
+                String text = Messages.get().key(Messages.GUI_UNLOCK_NOTIFICATION_2, sitePath, result);
                 CmsNotification.get().send(CmsNotification.Type.WARNING, text);
             }
         };

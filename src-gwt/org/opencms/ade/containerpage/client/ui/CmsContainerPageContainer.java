@@ -57,6 +57,9 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDropContainer {
 
+    /** Flag indicating if this container is a detail view only container. */
+    boolean m_detailOnly;
+
     /** Container element id. */
     private String m_containerId;
 
@@ -96,6 +99,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
         m_containerType = containerData.getType();
         m_maxElements = containerData.getMaxElements();
         m_isDetailView = containerData.isDetailView();
+        m_detailOnly = containerData.isDetailOnly();
         getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragTarget());
     }
 
@@ -289,6 +293,14 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
             return m_widget.isAttached();
         }
         return false;
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#isDetailOnly()
+     */
+    public boolean isDetailOnly() {
+
+        return m_detailOnly;
     }
 
     /**

@@ -27,13 +27,18 @@
 
 package org.opencms.ade.containerpage.shared;
 
-
 /**
  * Interface representing the container methods to be used by overlay type CmsContainerJso and other types.<p>
  * 
  * @since 8.0.0
  */
 public interface I_CmsContainer {
+
+    /** Key 'isDetailOnly' used within the JSON representation of a container object. */
+    String JSONKEY_DETAILONLY = "isDetailOnly";
+
+    /** Key 'isDetailView' used within the JSON representation of a container object. */
+    String JSONKEY_DETAILVIEW = "isDetailView";
 
     /** Key 'elements' used within the JSON representation of a container object. */
     String JSONKEY_ELEMENTS = "elements";
@@ -46,6 +51,9 @@ public interface I_CmsContainer {
 
     /** Key 'type' used within the JSON representation of a container object. */
     String JSONKEY_TYPE = "type";
+
+    /** Key 'width' used within the JSON representation of a container object. */
+    String JSONKEY_WIDTH = "width";
 
     /**
      * Returns the elements client id's contained in this container.<p>
@@ -83,9 +91,16 @@ public interface I_CmsContainer {
     int getWidth();
 
     /**
-     * Returns true if this container is used for the detail view. 
+     * Returns <code>true</code> if the container is displayed in detail view only.<p>
      * 
-     * @return true if this is a detail view container
+     * @return <code>true</code> if the container is displayed in detail view only
+     */
+    boolean isDetailOnly();
+
+    /**
+     * Returns <code>true</code> if this container is used for the detail view. 
+     * 
+     * @return <code>true</code> if this is a detail view container
      */
     boolean isDetailView();
 

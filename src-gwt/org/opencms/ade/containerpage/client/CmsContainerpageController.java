@@ -97,8 +97,6 @@ import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.Window.ClosingEvent;
-import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
@@ -245,7 +243,7 @@ public final class CmsContainerpageController {
          */
         public boolean beginContainer(String name, CmsContainerJso container) {
 
-            if (container.isDetailView()) {
+            if (container.isDetailView() || ((getData().getDetailId() != null) && !container.isDetailOnly())) {
                 m_currentContainer = null;
                 return false;
 
@@ -648,7 +646,9 @@ public final class CmsContainerpageController {
                 e));
         }
         m_smallElementsHandler = new CmsSmallElementsHandler(getContainerpageService());
-        m_smallElementsHandler.setEditSmallElements(m_data.isEditSmallElementsInitially(), false);
+        if (m_data != null) {
+            m_smallElementsHandler.setEditSmallElements(m_data.isEditSmallElementsInitially(), false);
+        }
     }
 
     /**
@@ -836,9 +836,6 @@ public final class CmsContainerpageController {
 
         };
         action.execute();
-
-        // TODO: Auto-generated method stub
-
     }
 
     /**
@@ -1085,7 +1082,18 @@ public final class CmsContainerpageController {
      */
     public Map<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> getContainerTargets() {
 
-        return m_targetContainers;
+        Map<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> result = new HashMap<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer>();
+        if (isDetailPage()) {
+            // in case of a detail page, regular containers are not considered a drop target
+            for (Entry<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> entry : m_targetContainers.entrySet()) {
+                if (entry.getValue().isDetailOnly() || entry.getValue().isDetailView()) {
+                    result.put(entry.getKey(), entry.getValue());
+                }
+            }
+        } else {
+            result.putAll(m_targetContainers);
+        }
+        return result;
     }
 
     /**
@@ -1464,25 +1472,6 @@ public final class CmsContainerpageController {
                 previewNativeEvent(event);
             }
         });
-        // adding on close handler
-        Window.addWindowClosingHandler(new ClosingHandler() {
-
-            /**
-             * @see com.google.gwt.user.client.Window.ClosingHandler#onWindowClosing(com.google.gwt.user.client.Window.ClosingEvent)
-             */
-            public void onWindowClosing(ClosingEvent event) {
-
-                deactivateOnClosing();
-                if (hasPageChanged() && !isEditingDisabled()) {
-                    boolean savePage = Window.confirm(Messages.get().key(Messages.GUI_DIALOG_SAVE_BEFORE_LEAVING_0));
-                    if (savePage) {
-                        syncSaveContainerpage();
-                    } else {
-                        unlockContainerpage();
-                    }
-                }
-            }
-        });
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_data.getNoEditReason())) {
             m_handler.m_editor.disableEditing(m_data.getNoEditReason());
         } else {
@@ -1517,6 +1506,16 @@ public final class CmsContainerpageController {
     public boolean isContentEditing() {
 
         return m_isContentEditing;
+    }
+
+    /**
+     * Returns if this page displays a detail view.<p>
+     * 
+     * @return <code>true</code> if this page displays a detail view
+     */
+    public boolean isDetailPage() {
+
+        return m_data.getDetailId() != null;
     }
 
     /**
@@ -1672,7 +1671,12 @@ public final class CmsContainerpageController {
         if (m_lockStatus == LockStatus.failed) {
             return false;
         }
-        String lockError = CmsCoreProvider.get().lockOrReturnError(CmsCoreProvider.get().getStructureId());
+        String lockError;
+        if (getData().getDetailContainerPage() != null) {
+            lockError = CmsCoreProvider.get().lockOrReturnError(getData().getDetailContainerPage());
+        } else {
+            lockError = CmsCoreProvider.get().lockOrReturnError(CmsCoreProvider.get().getStructureId());
+        }
         if (lockError == null) {
             onLockSuccess();
             return true;
@@ -1709,7 +1713,7 @@ public final class CmsContainerpageController {
     public void onWindowClose() {
 
         // causes synchronous RPC call 
-        CmsCoreProvider.get().unlock();
+        unlockContainerpage();
     }
 
     /**
@@ -1940,11 +1944,19 @@ public final class CmsContainerpageController {
                 @Override
                 public void execute() {
 
-                    getContainerpageService().saveContainerpage(
-                        CmsCoreProvider.get().getStructureId(),
-                        getPageContent(),
-                        getLocale(),
-                        this);
+                    if (getData().getDetailContainerPage() != null) {
+                        getContainerpageService().saveDetailContainers(
+                            getData().getDetailContainerPage(),
+                            getPageContent(),
+                            getLocale(),
+                            this);
+                    } else {
+                        getContainerpageService().saveContainerpage(
+                            CmsCoreProvider.get().getStructureId(),
+                            getPageContent(),
+                            getLocale(),
+                            this);
+                    }
                 }
 
                 /**
@@ -1978,11 +1990,19 @@ public final class CmsContainerpageController {
                 @Override
                 public void execute() {
 
-                    getContainerpageService().saveContainerpage(
-                        CmsCoreProvider.get().getStructureId(),
-                        getPageContent(),
-                        getLocale(),
-                        this);
+                    if (getData().getDetailContainerPage() != null) {
+                        getContainerpageService().saveDetailContainers(
+                            getData().getDetailContainerPage(),
+                            getPageContent(),
+                            getLocale(),
+                            this);
+                    } else {
+                        getContainerpageService().saveContainerpage(
+                            CmsCoreProvider.get().getStructureId(),
+                            getPageContent(),
+                            getLocale(),
+                            this);
+                    }
                 }
 
                 /**
@@ -2016,7 +2036,13 @@ public final class CmsContainerpageController {
                 @Override
                 public void execute() {
 
-                    if (lockContainerpage()) {
+                    if (getData().getDetailContainerPage() != null) {
+                        getContainerpageService().saveDetailContainers(
+                            getData().getDetailContainerPage(),
+                            getPageContent(),
+                            getLocale(),
+                            this);
+                    } else if (lockContainerpage()) {
                         setLoadingMessage(org.opencms.gwt.client.Messages.get().key(
                             org.opencms.gwt.client.Messages.GUI_SAVING_0));
                         start(500, true);
@@ -2619,11 +2645,19 @@ public final class CmsContainerpageController {
                 @Override
                 public void execute() {
 
-                    getContainerpageService().syncSaveContainerpage(
-                        CmsCoreProvider.get().getStructureId(),
-                        getPageContent(),
-                        getLocale(),
-                        this);
+                    if (getData().getDetailContainerPage() != null) {
+                        getContainerpageService().syncSaveDetailContainers(
+                            getData().getDetailContainerPage(),
+                            getPageContent(),
+                            getLocale(),
+                            this);
+                    } else {
+                        getContainerpageService().syncSaveContainerpage(
+                            CmsCoreProvider.get().getStructureId(),
+                            getPageContent(),
+                            getLocale(),
+                            this);
+                    }
                 }
 
                 /**
@@ -2645,10 +2679,11 @@ public final class CmsContainerpageController {
      */
     protected void unlockContainerpage() {
 
-        if (unlockResource(CmsCoreProvider.get().getStructureId())) {
+        if (getData().getDetailContainerPage() != null) {
+
+            CmsCoreProvider.get().unlock(getData().getDetailContainerPage());
+        } else if (unlockResource(CmsCoreProvider.get().getStructureId())) {
             CmsDebugLog.getInstance().printLine(Messages.get().key(Messages.GUI_NOTIFICATION_PAGE_UNLOCKED_0));
-        } else {
-            // ignore
         }
     }
 

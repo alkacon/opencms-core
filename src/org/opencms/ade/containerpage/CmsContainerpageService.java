@@ -51,6 +51,7 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
+import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtActionElement;
@@ -61,6 +62,7 @@ import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsModelResourceInfo;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.jsp.CmsJspTagContainer;
 import org.opencms.jsp.util.CmsJspStandardContextBean.TemplateBean;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.loader.CmsTemplateContextManager;
@@ -621,20 +623,35 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             CmsADESessionCache sessionCache = CmsADESessionCache.getCache(getRequest(), cms);
             sessionCache.setTemplateBean(containerPage.getRootPath(), templateBean);
             long lastModified = containerPage.getDateLastModified();
-            String cntPageUri = cms.getSitePath(containerPage);
             String editorUri = OpenCms.getWorkplaceManager().getEditorHandler().getEditorUri(
                 cms,
                 "xmlcontent",
                 "User agent",
                 false);
             boolean useClassicEditor = (editorUri == null) || !editorUri.contains("acacia");
+            CmsResource detailResource = CmsDetailPageResourceHandler.getDetailResource(request);
+            String noEditReason;
+            String detailContainerPage = null;
+            if (detailResource != null) {
+                detailContainerPage = CmsJspTagContainer.getDetailOnlyPageName(cms.getSitePath(detailResource));
+                if (cms.existsResource(detailContainerPage)) {
+                    noEditReason = getNoEditReason(cms, cms.readResource(detailContainerPage));
+                } else {
+                    String permissionFolder = CmsResource.getFolderPath(detailContainerPage);
+                    if (!cms.existsResource(permissionFolder)) {
+                        permissionFolder = CmsResource.getParentFolder(permissionFolder);
+                    }
+                    noEditReason = getNoEditReason(cms, cms.readResource(permissionFolder));
+                }
+            } else {
+                noEditReason = getNoEditReason(cms, containerPage);
+            }
             data = new CmsCntPageData(
-                cms.getSitePath(containerPage),
-                getNoEditReason(cms, containerPage),
+                noEditReason,
                 CmsRequestUtil.encodeParams(request),
                 CmsADEManager.PATH_SITEMAP_EDITOR_JSP,
-                cntPageUri,
-                CmsDetailPageResourceHandler.getDetailId(getRequest()),
+                detailResource != null ? detailResource.getStructureId() : null,
+                detailContainerPage,
                 getNewTypes(cms, request),
                 lastModified,
                 getLockInfo(containerPage),
@@ -661,17 +678,44 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             ensureLock(containerpage);
             String containerpageUri = cms.getSitePath(containerpage);
             Locale contentLocale = CmsLocaleManager.getLocale(locale);
-            List<CmsContainerBean> containerBeans = new ArrayList<CmsContainerBean>();
-            for (CmsContainer container : containers) {
-                CmsContainerBean containerBean = getContainerBeanToSave(container, containerpage, locale);
-                containerBeans.add(containerBean);
-            }
-            CmsContainerPageBean page = new CmsContainerPageBean(contentLocale, containerBeans);
-            CmsXmlContainerPage xmlCnt = CmsXmlContainerPageFactory.unmarshal(cms, cms.readFile(containerpageUri));
-            xmlCnt.save(cms, contentLocale, page);
+            saveContainers(cms, containerpage, containerpageUri, containers, contentLocale);
         } catch (Throwable e) {
             error(e);
         }
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#saveDetailContainers(java.lang.String, java.util.List, java.lang.String)
+     */
+    public void saveDetailContainers(String detailContainerResource, List<CmsContainer> containers, String locale)
+    throws CmsRpcException {
+
+        CmsObject cms = getCmsObject();
+        try {
+            CmsResource containerpage;
+            ensureSession();
+            if (cms.existsResource(detailContainerResource)) {
+                containerpage = cms.readResource(detailContainerResource);
+            } else {
+                String parentFolder = CmsResource.getFolderPath(detailContainerResource);
+                // ensure the parent folder exists
+                if (!cms.existsResource(parentFolder)) {
+                    CmsResource parentRes = cms.createResource(
+                        parentFolder,
+                        OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.getStaticTypeName()).getTypeId());
+                    tryUnlock(parentRes);
+                }
+                containerpage = cms.createResource(
+                    detailContainerResource,
+                    CmsResourceTypeXmlContainerPage.getContainerPageTypeId());
+            }
+            ensureLock(containerpage);
+            Locale contentLocale = CmsLocaleManager.getLocale(locale);
+            saveContainers(cms, containerpage, detailContainerResource, containers, contentLocale);
+        } catch (Throwable e) {
+            error(e);
+        }
+
     }
 
     /**
@@ -817,6 +861,15 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#syncSaveDetailContainers(java.lang.String, java.util.List, java.lang.String)
+     */
+    public void syncSaveDetailContainers(String detailContainerResource, List<CmsContainer> containers, String locale)
+    throws CmsRpcException {
+
+        saveDetailContainers(detailContainerResource, containers, locale);
+    }
+
+    /**
      * Converts the given setting values according to the setting configuration of the given resource.<p>
      * 
      * @param resource the resource
@@ -906,11 +959,10 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * 
      * @param container the container for which the CmsContainerBean should be created
      * @param containerpage the container page resource 
-     * @param locale the locale to use  
      *  
      * @return a container bean
      */
-    private CmsContainerBean getContainerBeanToSave(CmsContainer container, CmsResource containerpage, String locale) {
+    private CmsContainerBean getContainerBeanToSave(CmsContainer container, CmsResource containerpage) {
 
         CmsObject cms = getCmsObject();
         List<CmsContainerElementBean> elements = new ArrayList<CmsContainerElementBean>();
@@ -1450,6 +1502,34 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         } else {
             return Boolean.valueOf(editSmallElementsStr).booleanValue();
         }
+    }
+
+    /**
+     * Saves the given containers to the container page resource.<p>
+     * 
+     * @param cms the cms context
+     * @param containerpage the container page resource
+     * @param containerpageUri the container page site path
+     * @param containers the container to save
+     * @param contentLocale the content locale
+     * 
+     * @throws CmsException if something goes wrong writing the file
+     */
+    private void saveContainers(
+        CmsObject cms,
+        CmsResource containerpage,
+        String containerpageUri,
+        List<CmsContainer> containers,
+        Locale contentLocale) throws CmsException {
+
+        List<CmsContainerBean> containerBeans = new ArrayList<CmsContainerBean>();
+        for (CmsContainer container : containers) {
+            CmsContainerBean containerBean = getContainerBeanToSave(container, containerpage);
+            containerBeans.add(containerBean);
+        }
+        CmsContainerPageBean page = new CmsContainerPageBean(contentLocale, containerBeans);
+        CmsXmlContainerPage xmlCnt = CmsXmlContainerPageFactory.unmarshal(cms, cms.readFile(containerpageUri));
+        xmlCnt.save(cms, contentLocale, page);
     }
 
     /**

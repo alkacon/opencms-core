@@ -30,6 +30,7 @@ package org.opencms.jsp;
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.containerpage.CmsContainerpageService;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
+import org.opencms.ade.containerpage.shared.I_CmsContainer;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.history.CmsHistoryResourceHandler;
@@ -125,6 +126,9 @@ public class CmsJspTagContainer extends TagSupport {
     /** Serial version UID required for safe serialisation. */
     private static final long serialVersionUID = -1228397990961282556L;
 
+    /** States if this container should only be displayed on detail pages. */
+    private boolean m_detailOnly;
+
     /** The detail-view attribute value. */
     private boolean m_detailView;
 
@@ -151,21 +155,26 @@ public class CmsJspTagContainer extends TagSupport {
      * 
      * @param container the container to get the data tag for
      * @param widthStr the width of the container as a string 
-     * @param isDetailView true if this container is currently being used for the detail view
+     * @param isDetailView <code>true</code> if this container is currently being used for the detail view
+     * @param isDetailOnly <code>true</code> if this container is displayed in detail view only
      * 
      * @return html data tag for the given container
      *
      * @throws JSONException if there is a problem with JSON manipulation
      */
-    protected static String getContainerDataTag(CmsContainerBean container, String widthStr, boolean isDetailView)
-    throws JSONException {
+    protected static String getContainerDataTag(
+        CmsContainerBean container,
+        String widthStr,
+        boolean isDetailView,
+        boolean isDetailOnly) throws JSONException {
 
         // add container data for the editor
         JSONObject jsonContainer = new JSONObject();
-        jsonContainer.put(CmsContainerJsonKeys.NAME, container.getName());
-        jsonContainer.put(CmsContainerJsonKeys.TYPE, container.getType());
-        jsonContainer.put(CmsContainerJsonKeys.MAXELEMENTS, container.getMaxElements());
-        jsonContainer.put(CmsContainerJsonKeys.DETAILVIEW, isDetailView);
+        jsonContainer.put(I_CmsContainer.JSONKEY_NAME, container.getName());
+        jsonContainer.put(I_CmsContainer.JSONKEY_TYPE, container.getType());
+        jsonContainer.put(I_CmsContainer.JSONKEY_MAXELEMENTS, container.getMaxElements());
+        jsonContainer.put(I_CmsContainer.JSONKEY_DETAILVIEW, isDetailView);
+        jsonContainer.put(I_CmsContainer.JSONKEY_DETAILONLY, isDetailOnly);
         int width = -1;
         try {
             if (widthStr != null) {
@@ -174,13 +183,13 @@ public class CmsJspTagContainer extends TagSupport {
         } catch (NumberFormatException e) {
             //ignore; set width to -1
         }
-        jsonContainer.put(CmsContainerJsonKeys.WIDTH, width);
+        jsonContainer.put(I_CmsContainer.JSONKEY_WIDTH, width);
 
         JSONArray jsonElements = new JSONArray();
         for (CmsContainerElementBean element : container.getElements()) {
             jsonElements.put(element.editorHash());
         }
-        jsonContainer.put(CmsContainerJsonKeys.ELEMENTS, jsonElements);
+        jsonContainer.put(I_CmsContainer.JSONKEY_ELEMENTS, jsonElements);
         // the container meta data is added to the javascript window object by the following tag, used within the container-page editor 
         return new StringBuffer("<script type=\"text/javascript\">if (").append(KEY_CONTAINER_DATA).append("!=null) {").append(
             KEY_CONTAINER_DATA).append(".push(").append(jsonContainer.toString()).append("); } </script>").toString();
@@ -245,6 +254,31 @@ public class CmsJspTagContainer extends TagSupport {
                     containerPage = xmlContainerPage.getContainerPage(cms, locale);
                     standardContext.setPage(containerPage);
                 }
+                CmsResource detailContent = standardContext.getDetailContent();
+                // get the container
+                CmsContainerBean container = null;
+                if (m_detailOnly) {
+                    if (detailContent == null) {
+                        // this is no detail page, so the detail only container will not be rendered at all
+                        return SKIP_BODY;
+                    } else {
+                        CmsContainerPageBean detailOnlyPage = standardContext.getDetailOnlyPage();
+                        if (detailOnlyPage == null) {
+                            String resourceName = getDetailOnlyPageName(cms.getSitePath(detailContent));
+                            if (cms.existsResource(resourceName)) {
+                                CmsXmlContainerPage xmlContainerPage = CmsXmlContainerPageFactory.unmarshal(
+                                    cms,
+                                    cms.readResource(resourceName),
+                                    req);
+                                detailOnlyPage = xmlContainerPage.getContainerPage(cms, locale);
+                                standardContext.setDetailOnlyPage(detailOnlyPage);
+                                container = detailOnlyPage.getContainers().get(m_name);
+                            }
+                        }
+                    }
+                } else if (containerPage != null) {
+                    container = containerPage.getContainers().get(getName());
+                }
                 // create tag for container if necessary
                 boolean createTag = false;
                 String tagName = CmsStringUtil.isEmptyOrWhitespaceOnly(getTag()) ? DEFAULT_TAG_NAME : getTag();
@@ -256,15 +290,8 @@ public class CmsJspTagContainer extends TagSupport {
                 // get the maximal number of elements
                 int maxElements = getMaxElements(requestUri);
 
-                // get the container
-                CmsContainerBean container = null;
-                if (containerPage != null) {
-                    container = containerPage.getContainers().get(getName());
-                }
                 boolean isOnline = cms.getRequestContext().getCurrentProject().isOnlineProject();
-
                 boolean isUsedAsDetailView = false;
-                CmsResource detailContent = standardContext.getDetailContent();
                 if (m_detailView && (detailContent != null)) {
                     isUsedAsDetailView = true;
                 }
@@ -285,7 +312,8 @@ public class CmsJspTagContainer extends TagSupport {
                                     getContainerDataTag(
                                         new CmsContainerBean(getName(), getType(), maxElements, null),
                                         getWidth(),
-                                        isUsedAsDetailView));
+                                        isUsedAsDetailView,
+                                        m_detailOnly));
                             } catch (JSONException e) {
                                 // should never happen
                                 throw new JspException(e);
@@ -334,7 +362,8 @@ public class CmsJspTagContainer extends TagSupport {
                                 getType(),
                                 maxElements,
                                 allElements);
-                            pageContext.getOut().print(getContainerDataTag(cntBean, getWidth(), isUsedAsDetailView));
+                            pageContext.getOut().print(
+                                getContainerDataTag(cntBean, getWidth(), isUsedAsDetailView, m_detailOnly));
                         } catch (JSONException e) {
                             // should never happen
                             throw new JspException(e);
@@ -373,6 +402,20 @@ public class CmsJspTagContainer extends TagSupport {
             }
         }
         return SKIP_BODY;
+    }
+
+    /**
+     * Returns the site path to the detail only container page.<p>
+     * 
+     * @param detailContentSitePath the detail content site path
+     * 
+     * @return the site path to the detail only container page
+     */
+    public static String getDetailOnlyPageName(String detailContentSitePath) {
+
+        String result = CmsResource.getFolderPath(detailContentSitePath);
+        result = CmsStringUtil.joinPaths(result, ".detailContainers", CmsResource.getName(detailContentSitePath));
+        return result;
     }
 
     /**
@@ -460,6 +503,16 @@ public class CmsJspTagContainer extends TagSupport {
         m_tag = null;
         m_tagClass = null;
         m_detailView = false;
+    }
+
+    /**
+     * Sets if this container should only be displayed on detail pages.<p>
+     * 
+     * @param detailOnly if this container should only be displayed on detail pages
+     */
+    public void setDetailonly(String detailOnly) {
+
+        m_detailOnly = Boolean.parseBoolean(detailOnly);
     }
 
     /**

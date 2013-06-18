@@ -167,6 +167,9 @@ public final class CmsJspStandardContextBean {
     /** The current detail content resource if available. */
     private CmsResource m_detailContentResource;
 
+    /** The detail only page references containers that are only displayed in detail view. */
+    private CmsContainerPageBean m_detailOnlyPage;
+
     /** Flag to indicate if element was just edited. */
     private boolean m_edited;
 
@@ -317,6 +320,16 @@ public final class CmsJspStandardContextBean {
         return ((m_cms == null) || (m_detailContentResource == null))
         ? null
         : m_cms.getSitePath(m_detailContentResource);
+    }
+
+    /**
+     * Returns the detail only page.<p>
+     *
+     * @return the detail only page
+     */
+    public CmsContainerPageBean getDetailOnlyPage() {
+
+        return m_detailOnlyPage;
     }
 
     /**    
@@ -612,6 +625,16 @@ public final class CmsJspStandardContextBean {
     public void setContainer(CmsContainerBean container) {
 
         m_container = container;
+    }
+
+    /**
+     * Sets the detail only page.<p>
+     *
+     * @param detailOnlyPage the detail only page to set
+     */
+    public void setDetailOnlyPage(CmsContainerPageBean detailOnlyPage) {
+
+        m_detailOnlyPage = detailOnlyPage;
     }
 
     /**
