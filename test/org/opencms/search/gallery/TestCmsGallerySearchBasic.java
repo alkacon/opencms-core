@@ -161,7 +161,7 @@ public class TestCmsGallerySearchBasic extends OpenCmsTestCase {
             @Override
             protected void setUp() {
 
-                setupOpenCms("simpletest", "", "/../org/opencms/search/gallery");
+                setupOpenCms("simpletest", "/sites/default/", "/../org/opencms/search/gallery");
             }
 
             @Override
