@@ -215,8 +215,10 @@ public class CmsJspTagEditable extends BodyTagSupport {
     public static void insertEditEmpty(PageContext context, I_CmsXmlContentContainer container, CmsDirectEditMode mode)
     throws CmsException, JspException {
 
-        if ((container.getCollectorResult() != null) && (container.getCollectorResult().size() == 0)) {
-            ServletRequest req = context.getRequest();
+        ServletRequest req = context.getRequest();
+        if (isEditableRequest(req)
+            && (container.getCollectorResult() != null)
+            && (container.getCollectorResult().size() == 0)) {
             CmsFlexController controller = CmsFlexController.getController(req);
             CmsObject cms = controller.getCmsObject();
             // now collect the resources
