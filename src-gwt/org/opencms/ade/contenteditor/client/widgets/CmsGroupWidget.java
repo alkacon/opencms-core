@@ -39,7 +39,6 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Image;
 
 /**
  * Provides a display only widget, for use on a widget dialog.<br>
@@ -71,8 +70,7 @@ public class CmsGroupWidget extends Composite implements I_EditWidget {
     private String m_userName;
 
     /** The disabled textbox to show the value. */
-    private CmsGroupSelection m_groupSelection = new CmsGroupSelection(
-        new Image(I_CmsImageBundle.INSTANCE.groupImage()).asWidget().toString());
+    private CmsGroupSelection m_groupSelection;
 
     /**
      * Creates a new display widget.<p>
@@ -82,9 +80,9 @@ public class CmsGroupWidget extends Composite implements I_EditWidget {
     public CmsGroupWidget(String config) {
 
         parseConfiguration(config);
-        // All composites must call initWidget() in their constructors.
+        m_groupSelection = new CmsGroupSelection(I_CmsImageBundle.INSTANCE.style().popupIcon());
         m_groupSelection.setParameter(m_flags, m_ouFqn, m_userName);
-        m_groupSelection.getTextAreaContainer().setStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().vfsInputBox());
+        m_groupSelection.getTextAreaContainer().addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().vfsInputBox());
         m_groupSelection.addValueChangeHandler(new ValueChangeHandler<String>() {
 
             public void onValueChange(ValueChangeEvent<String> event) {
