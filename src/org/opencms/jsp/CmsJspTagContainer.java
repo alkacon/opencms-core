@@ -106,6 +106,9 @@ public class CmsJspTagContainer extends TagSupport {
     /** Default number of max elements in the container in case no value has been set. */
     public static final String DEFAULT_MAX_ELEMENTS = "100";
 
+    /** The detail containers folder name. */
+    public static final String DETAIL_CONTAINERS_FOLDER_NAME = ".detailContainers";
+
     /** HTML used for invisible dummy elements. */
     public static final String DUMMY_ELEMENT = "<div class='"
         + CmsTemplateContextInfo.DUMMY_ELEMENT_MARKER
@@ -149,6 +152,23 @@ public class CmsJspTagContainer extends TagSupport {
 
     /** The container width as a string. */
     private String m_width;
+
+    /**
+     * Returns the site path to the detail only container page.<p>
+     * 
+     * @param detailContentSitePath the detail content site path
+     * 
+     * @return the site path to the detail only container page
+     */
+    public static String getDetailOnlyPageName(String detailContentSitePath) {
+
+        String result = CmsResource.getFolderPath(detailContentSitePath);
+        result = CmsStringUtil.joinPaths(
+            result,
+            DETAIL_CONTAINERS_FOLDER_NAME,
+            CmsResource.getName(detailContentSitePath));
+        return result;
+    }
 
     /**
      * Creates a new data tag for the given container.<p>
@@ -402,20 +422,6 @@ public class CmsJspTagContainer extends TagSupport {
             }
         }
         return SKIP_BODY;
-    }
-
-    /**
-     * Returns the site path to the detail only container page.<p>
-     * 
-     * @param detailContentSitePath the detail content site path
-     * 
-     * @return the site path to the detail only container page
-     */
-    public static String getDetailOnlyPageName(String detailContentSitePath) {
-
-        String result = CmsResource.getFolderPath(detailContentSitePath);
-        result = CmsStringUtil.joinPaths(result, ".detailContainers", CmsResource.getName(detailContentSitePath));
-        return result;
     }
 
     /**
