@@ -85,6 +85,14 @@ public abstract class A_CmsResourcePreview<T extends CmsResourceInfoBean> implem
     }
 
     /**
+     * Removes the preview service reference.<p>
+     */
+    private static void clearService() {
+
+        m_previewService = null;
+    }
+
+    /**
      * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#getGalleryDialog()
      */
     public CmsGalleryDialog getGalleryDialog() {
@@ -137,7 +145,7 @@ public abstract class A_CmsResourcePreview<T extends CmsResourceInfoBean> implem
 
         getPreviewDialog().removeFromParent();
         m_infoBean = null;
-        m_previewService = null;
+        clearService();
     }
 
     /**

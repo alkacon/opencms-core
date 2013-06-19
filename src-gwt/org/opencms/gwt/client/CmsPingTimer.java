@@ -71,8 +71,9 @@ public class CmsPingTimer {
 
         if (INSTANCE == null) {
             m_keepRunning = true;
-            INSTANCE = new CmsPingTimer();
-            INSTANCE.run();
+            CmsPingTimer timer = new CmsPingTimer();
+            timer.run();
+            INSTANCE = timer;
         }
     }
 
