@@ -65,7 +65,7 @@
 	<property name="app.name" value="opencms" />
 
 	<property name="jar.excludes" value="**/CVS/*,**/.cvsignore,**/.nbattrs,**/.project,**/.classpath,*.gwt.xml" />
-	<property name="zip.excludes" value="**/CVS/*,**/.cvsignore,**/.nbattrs,**/.project,**/.classpath" />
+	<property name="zip.excludes" value="**/CVS/*,**/.cvsignore,**/.nbattrs,**/.project,**/.classpath,component.properties" />
 	<property name="jar.includes.single" value="**/*.properties,**/*.txt,**/*.dtd,**/*.xml,**/*.sql,**/*.gwt.rpc" />
 	<property name="jar.includes.shared" value="*.properties,*.txt,*.dtd,*.xml,*.sql,*.gwt.rpc" />
 
