@@ -1139,14 +1139,10 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 // adding all sub-items to the elements data
                 for (CmsContainerElementBean subElement : subElements) {
                     getSessionCache().setCacheContainerElement(subElement.editorHash(), subElement);
-                    if (!ids.contains(subElement.getId())) {
-                        String subId = subElement.editorHash();
-                        if (ids.contains(subId)) {
-                            continue;
-                        }
+                    if (!ids.contains(subElement.editorHash())) {
                         CmsContainerElementData subItemData = elemUtil.getElementData(subElement, containers);
-                        ids.add(subId);
-                        result.put(subId, subItemData);
+                        ids.add(subElement.editorHash());
+                        result.put(subElement.editorHash(), subItemData);
                     }
                 }
             }
