@@ -542,7 +542,7 @@ public class CmsGallerySearchBean implements IsSerializable {
             Long.valueOf(m_dateModifiedEnd),
             Long.valueOf(m_dateModifiedStart)});
         for (Long date : dates) {
-            if ((date != null) && (date != Long.valueOf(-1L))) {
+            if ((date != null) && (!date.equals(Long.valueOf(-1L)))) {
                 return false;
             }
         }

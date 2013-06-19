@@ -27,7 +27,6 @@
 
 package org.opencms.gwt.client.ui.input;
 
-import org.opencms.gwt.client.ui.I_CmsTruncable;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 
@@ -49,7 +48,7 @@ import com.google.gwt.user.client.ui.Grid;
  * 
  * @since 8.5.0
  */
-public class CmsMultiSelectCell extends A_CmsSelectCell implements I_CmsTruncable {
+public class CmsMultiSelectCell extends A_CmsSelectCell {
 
     /** The list of checkboxes. */
     private List<CmsCheckBox> m_checkboxes = new ArrayList<CmsCheckBox>();
@@ -59,9 +58,6 @@ public class CmsMultiSelectCell extends A_CmsSelectCell implements I_CmsTruncabl
 
     /** The select options of the multi check box. */
     private Map<String, String> m_items = new LinkedHashMap<String, String>();
-
-    /***/
-    private I_CmsTruncable m_label;
 
     /** The value of the selection text. */
     private String m_openerText;
@@ -167,14 +163,6 @@ public class CmsMultiSelectCell extends A_CmsSelectCell implements I_CmsTruncabl
         if (openerText != null) {
             m_openerText = openerText;
         }
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.I_CmsTruncable#truncate(java.lang.String, int)
-     */
-    public void truncate(String textMetricsKey, int labelWidth) {
-
-        m_label.truncate(textMetricsKey, labelWidth);
     }
 
     /**

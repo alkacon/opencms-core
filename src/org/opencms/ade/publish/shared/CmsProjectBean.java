@@ -63,6 +63,7 @@ public class CmsProjectBean implements IsSerializable {
         m_id = id;
         m_name = name;
         m_type = type;
+        m_description = description;
     }
 
     /**

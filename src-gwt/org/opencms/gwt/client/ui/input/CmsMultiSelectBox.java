@@ -90,21 +90,7 @@ public class CmsMultiSelectBox extends A_CmsSelectBox<CmsMultiSelectCell> implem
      */
     public CmsMultiSelectBox() {
 
-        super();
-
-    }
-
-    /**
-     * Constructs a new select box from a map.<p>
-     * 
-     * The keys of the map are the values of the select options, and the values of the map are the labels to be displayed
-     * for each option.
-     * 
-     * @param items the map of select options 
-     */
-    public CmsMultiSelectBox(Map<String, String> items) {
-
-        super();
+        m_items = new HashMap<String, String>();
     }
 
     /**
@@ -115,20 +101,20 @@ public class CmsMultiSelectBox extends A_CmsSelectBox<CmsMultiSelectCell> implem
      */
     public CmsMultiSelectBox(Map<String, String> items, boolean addNullOption) {
 
-        super();
+        m_items = new HashMap<String, String>(items);
         m_multiSelectCell.getElement().getStyle().setWidth(100, Unit.PCT);
-        if (items.containsKey(NO_SELECTION_TEXT)) {
-            m_noSelectionText = items.get(NO_SELECTION_TEXT);
-            m_noSelectionOpenerText = items.get(NO_SELECTION_OPENER_TEXT);
+        if (m_items.containsKey(NO_SELECTION_TEXT)) {
+            m_noSelectionText = m_items.get(NO_SELECTION_TEXT);
+            m_noSelectionOpenerText = m_items.get(NO_SELECTION_OPENER_TEXT);
             if (m_noSelectionOpenerText == null) {
                 m_noSelectionOpenerText = m_noSelectionText;
             }
-            items.remove(NO_SELECTION_TEXT);
-            items.remove(NO_SELECTION_OPENER_TEXT);
+            m_items.remove(NO_SELECTION_TEXT);
+            m_items.remove(NO_SELECTION_OPENER_TEXT);
         }
         if (addNullOption) {
             String text = Messages.get().key(Messages.GUI_SELECTBOX_EMPTY_SELECTION_0);
-            items.put("", text);
+            m_items.put("", text);
         }
         if (addNullOption) {
             selectValue("");

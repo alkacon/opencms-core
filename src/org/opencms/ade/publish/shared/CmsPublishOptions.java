@@ -29,14 +29,17 @@ package org.opencms.ade.publish.shared;
 
 import org.opencms.util.CmsUUID;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+import java.io.Serializable;
 
 /**
  * Bean encapsulating all ADE publish options.<p>
  * 
  * @since 7.6 
  */
-public class CmsPublishOptions implements IsSerializable {
+public class CmsPublishOptions implements Serializable {
+
+    /** The serial version id. */
+    private static final long serialVersionUID = 1L;
 
     /** Flag to include related resources. */
     private boolean m_includeRelated;

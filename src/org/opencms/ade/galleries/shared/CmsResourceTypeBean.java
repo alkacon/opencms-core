@@ -50,9 +50,6 @@ public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSeria
     /** An array of gallery type names associated with this content type. */
     private ArrayList<String> m_galleryTypeNames;
 
-    /** The path to the resource type icon. */
-    private String m_iconResource;
-
     /** The name of the preview provider. */
     private String m_previewProviderName;
 
@@ -83,16 +80,6 @@ public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSeria
     public ArrayList<String> getGalleryTypeNames() {
 
         return m_galleryTypeNames;
-    }
-
-    /**
-     * Returns the resource type icon.<p>
-     *
-     * @return the iconResource the icon for the resource type
-     */
-    public String getIconResource() {
-
-        return m_iconResource;
     }
 
     /**

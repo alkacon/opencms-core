@@ -365,7 +365,6 @@ public class CmsUploadBean extends CmsJspBean {
                 throw sqlExc;
             } catch (OutOfMemoryError e) {
                 // the file is to large try to clear up
-                content = null;
                 cms.lockResource(newResname);
                 cms.deleteResource(newResname, CmsResource.DELETE_PRESERVE_SIBLINGS);
                 throw e;
@@ -392,7 +391,6 @@ public class CmsUploadBean extends CmsJspBean {
                     throw sqlExc;
                 } catch (OutOfMemoryError e) {
                     // the file is to large try to clear up
-                    content = null;
                     file.setContents(contents);
                     cms.writeFile(file);
                     throw e;

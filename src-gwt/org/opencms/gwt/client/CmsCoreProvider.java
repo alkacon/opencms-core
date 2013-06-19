@@ -498,7 +498,8 @@ public final class CmsCoreProvider extends CmsCoreData {
     public String removeSiteRoot(String rootPath) {
 
         String siteRoot = getAdjustedSiteRoot(getSiteRoot(), rootPath);
-        if ((siteRoot == getSiteRoot())
+        if ((siteRoot != null)
+            && (siteRoot.equals(getSiteRoot()))
             && rootPath.startsWith(siteRoot)
             && ((rootPath.length() == siteRoot.length()) || (rootPath.charAt(siteRoot.length()) == '/'))) {
             rootPath = rootPath.substring(siteRoot.length());

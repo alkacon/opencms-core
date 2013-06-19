@@ -29,12 +29,16 @@ package org.opencms.ade.galleries;
 
 import org.opencms.util.CmsUUID;
 
+import java.io.Serializable;
 import java.util.Set;
 
 /**
  * The tree open state of a gallery tree tab.<p>
  */
-public class CmsTreeOpenState {
+public class CmsTreeOpenState implements Serializable {
+
+    /** The serial version id. */
+    private static final long serialVersionUID = 1L;
 
     /** The set of structure ids belonging to opened tree items. */
     private Set<CmsUUID> m_openItems;

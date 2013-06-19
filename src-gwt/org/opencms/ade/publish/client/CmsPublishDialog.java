@@ -279,9 +279,10 @@ public class CmsPublishDialog extends CmsPopup {
     }
 
     /**
+     * Shows the publish dialog.<p>
      * 
-     * @param result
-     * @param handler
+     * @param result the publish data
+     * @param handler the dialog close handler
      */
     public static void showPublishDialog(CmsPublishData result, CloseHandler<PopupPanel> handler) {
 
@@ -446,6 +447,8 @@ public class CmsPublishDialog extends CmsPopup {
             succeed();
             hide();
         } else {
+            m_failureMessage = brokenResources.getMessage();
+            m_state = State.failure;
             m_brokenLinksPanel.setEntries(brokenResources.getResources(), brokenResources.getAvailableActions());
             setPanel(PANEL_BROKEN_LINKS);
         }

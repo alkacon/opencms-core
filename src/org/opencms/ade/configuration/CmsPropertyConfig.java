@@ -42,7 +42,7 @@ import org.opencms.xml.content.CmsXmlContentProperty;
  * 
  * @since 8.0.1
  */
-public class CmsPropertyConfig implements I_CmsConfigurationObject<CmsPropertyConfig> {
+public class CmsPropertyConfig implements I_CmsConfigurationObject<CmsPropertyConfig>, Cloneable {
 
     /** True if this property is disabled. */
     private boolean m_disabled;
