@@ -63,7 +63,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/runtime/langdetect-1.1-20120112.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/log4j-1.2.15.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-analyzers-common-4.3.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-core-4.3.0.jar" sourcepath="C:/Dokumente und Einstellungen/Administrator/Eigene Dateien/lucene-4.3.0"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-core-4.3.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-grouping-4.3.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-highlighter-4.3.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-memory-4.3.0.jar"/>
