@@ -949,6 +949,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
         try {
             // use a seed for initializing the language detection for making sure the
             // same probabilities are detected for the same document contents
+            DetectorFactory.clear();
             DetectorFactory.setSeed(42L);
             DetectorFactory.loadProfile(loadProfiles(getAvailableLocales()));
         } catch (Exception e) {
