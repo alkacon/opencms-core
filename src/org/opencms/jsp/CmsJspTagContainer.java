@@ -294,6 +294,8 @@ public class CmsJspTagContainer extends TagSupport {
                                 standardContext.setDetailOnlyPage(detailOnlyPage);
                                 container = detailOnlyPage.getContainers().get(m_name);
                             }
+                        } else {
+                            container = detailOnlyPage.getContainers().get(m_name);
                         }
                     }
                 } else if (containerPage != null) {
