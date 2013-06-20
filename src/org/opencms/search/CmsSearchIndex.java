@@ -107,80 +107,6 @@ import org.apache.lucene.util.Version;
  */
 public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
-    //    /**
-    //     * Lucene filter index reader implementation that will ensure the OpenCms default search index fields
-    //     * {@link org.opencms.search.fields.CmsLuceneField#FIELD_CONTENT} and {@link org.opencms.search.fields.CmsLuceneField#FIELD_CONTENT_BLOB}
-    //     * are lazy loaded.<p>
-    //     * 
-    //     * This is to optimize performance - these 2 fields will be rather large especially for extracted
-    //     * binary documents like PDF, MS Office etc. By using lazy fields the data is only read when it is 
-    //     * actually used.<p>
-    //     */
-    //    protected class LazyContentReader extends FilterIndexReader {
-    //
-    //        /** The initial index reader. */
-    //        private IndexReader m_reader;
-    //
-    //        /**
-    //         * Create a new lazy content reader.<p>
-    //         * 
-    //         * @param indexReader the index reader to use this lazy content reader with
-    //         */
-    //        public LazyContentReader(IndexReader indexReader) {
-    //
-    //            super(indexReader);
-    //            m_reader = indexReader;
-    //        }
-    //
-    //        /**
-    //         * @see org.apache.lucene.index.FilterIndexReader#document(int, org.apache.lucene.document.FieldSelector)
-    //         */
-    //        @Override
-    //        public Document document(int n, FieldSelector fieldSelector) throws CorruptIndexException, IOException {
-    //
-    //            return super.document(n, getFieldSelector(fieldSelector));
-    //        }
-    //
-    //        /**
-    //         * @see org.apache.lucene.index.IndexReader#reopen()
-    //         * 
-    //         * @deprecated since Lucene 3.5 but kept for backward compatibility
-    //         */
-    //        @Override
-    //        @Deprecated
-    //        public synchronized IndexReader reopen() throws CorruptIndexException, IOException {
-    //
-    //            return m_reader.reopen();
-    //        }
-    //
-    //        /**
-    //         * @see org.apache.lucene.index.IndexReader#doOpenIfChanged()
-    //         */
-    //        @Override
-    //        protected IndexReader doOpenIfChanged() throws CorruptIndexException, IOException {
-    //
-    //            IndexReader result = IndexReader.openIfChanged(m_reader);
-    //            if (result != null) {
-    //                result = new LazyContentReader(result);
-    //            }
-    //            return result;
-    //        }
-    //
-    //        /**
-    //         * @see org.apache.lucene.index.IndexReader#doOpenIfChanged(boolean)
-    //         */
-    //        @Override
-    //        @Deprecated
-    //        protected IndexReader doOpenIfChanged(boolean openReadOnly) throws CorruptIndexException, IOException {
-    //
-    //            IndexReader result = IndexReader.openIfChanged(m_reader, openReadOnly);
-    //            if (result != null) {
-    //                result = new LazyContentReader(result);
-    //            }
-    //            return result;
-    //        }
-    //    }
-
     /** A constant for the full qualified name of the CmsSearchIndex class. */
     public static final String A_LEGACY_PARAM_PREFIX = "org.opencms.search.CmsSearchIndex";
 
@@ -507,45 +433,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         Collections.sort(result);
         return result;
     }
-
-    //    /**
-    //     * Returns a field selector for Lucene that that will ensure the OpenCms default search index fields
-    //     * {@link org.opencms.search.fields.CmsLuceneField#FIELD_CONTENT} and {@link org.opencms.search.fields.CmsLuceneField#FIELD_CONTENT_BLOB}
-    //     * are lazy loaded.<p>
-    //     * 
-    //     * This is to optimize performance - these 2 fields will be rather large especially for extracted
-    //     * binary documents like PDF, MS Office etc. By using lazy fields the data is only read when it is 
-    //     * actually used.<p>
-    //     * 
-    //     * @param base the base field selector 
-    //     * 
-    //     * @return a field selector that that will ensure the OpenCms default search index fields are lazy loaded
-    //     */
-    //    protected static FieldSelector getFieldSelector(final FieldSelector base) {
-    //
-    //        return new FieldSelector() {
-    //
-    //            /** Required for safe serialization. */
-    //            private static final long serialVersionUID = 622179189540785073L;
-    //
-    //            /**
-    //             * Makes the content fields lazy.<p>
-    //             * 
-    //             * @see org.apache.lucene.document.FieldSelector#accept(java.lang.String)
-    //             */
-    //            public FieldSelectorResult accept(String fieldName) {
-    //
-    //                if (CmsSearchField.FIELD_CONTENT.equals(fieldName)
-    //                    || CmsSearchField.FIELD_CONTENT_BLOB.equals(fieldName)) {
-    //                    return FieldSelectorResult.LAZY_LOAD;
-    //                }
-    //                if (base == null) {
-    //                    return FieldSelectorResult.LOAD;
-    //                }
-    //                return base.accept(fieldName);
-    //            }
-    //        };
-    //    }
 
     /**
      * Calculate a span of days in the given year and month for the optimized date range search.<p>
@@ -1539,9 +1426,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             timeLucene += System.currentTimeMillis();
             timeResultProcessing = -System.currentTimeMillis();
 
-            Document doc;
-            CmsSearchResult searchResult;
-
             if (hits != null) {
                 int hitCount = hits.totalHits > hits.scoreDocs.length ? hits.scoreDocs.length : hits.totalHits;
                 int page = params.getSearchPage();
@@ -1559,15 +1443,13 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                     end = hitCount;
                 }
 
-                Set<String> retFields = ((CmsLuceneFieldConfiguration)m_fieldConfiguration).getReturnFields();
+                Set<String> returnFields = ((CmsLuceneFieldConfiguration)m_fieldConfiguration).getReturnFields();
+                Set<String> excerptFields = ((CmsLuceneFieldConfiguration)m_fieldConfiguration).getExcerptFields();
+
                 int visibleHitCount = hitCount;
                 for (int i = 0, cnt = 0; (i < hitCount) && (cnt < end); i++) {
                     try {
-                        // TODO: Earlier the "content" field and the "contentblob" field were lazy loaded
-                        // now they are not returned, anymore.
-                        // @see #getDocument(int) in order to get the whole document
-                        doc = searcher.doc(hits.scoreDocs[i].doc, retFields);
-                        doc = searcher.doc(hits.scoreDocs[i].doc);
+                        Document doc = searcher.doc(hits.scoreDocs[i].doc, returnFields);
                         I_CmsSearchDocument searchDoc = new CmsLuceneDocument(doc);
                         searchDoc.setScore(hits.scoreDocs[i].score);
                         if ((isInTimeRange(doc, params)) && (hasReadPermission(searchCms, searchDoc))) {
@@ -1576,14 +1458,12 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                                 // do not use the resource to obtain the raw content, read it from the lucene document!
                                 String excerpt = null;
                                 if (isCreatingExcerpt() && (fieldsQuery != null)) {
+                                    Document exDoc = searcher.doc(hits.scoreDocs[i].doc, excerptFields);
                                     I_CmsTermHighlighter highlighter = OpenCms.getSearchManager().getHighlighter();
-                                    excerpt = highlighter.getExcerpt(doc, this, params, fieldsQuery, getAnalyzer());
+                                    excerpt = highlighter.getExcerpt(exDoc, this, params, fieldsQuery, getAnalyzer());
                                 }
-                                searchResult = new CmsSearchResult(
-                                    Math.round((hits.scoreDocs[i].score / hits.getMaxScore()) * 100f),
-                                    doc,
-                                    excerpt);
-                                searchResults.add(searchResult);
+                                int score = Math.round((hits.scoreDocs[i].score / hits.getMaxScore()) * 100f);
+                                searchResults.add(new CmsSearchResult(score, doc, excerpt));
                             }
                             cnt++;
                         } else {

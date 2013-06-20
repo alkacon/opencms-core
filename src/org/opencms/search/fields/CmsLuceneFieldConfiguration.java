@@ -228,6 +228,16 @@ public class CmsLuceneFieldConfiguration extends CmsSearchFieldConfiguration {
     }
 
     /**
+     * Returns the field names used for the excerpt generation.<p>
+     * 
+     * @return the field names used for the excerpt generation
+     */
+    public Set<String> getExcerptFields() {
+
+        return new HashSet<String>(getExcerptFieldNames());
+    }
+
+    /**
      * Returns a list of the concrete Lucene search fields.<p>
      * 
      * @return a list of lucene search fields
@@ -244,9 +254,9 @@ public class CmsLuceneFieldConfiguration extends CmsSearchFieldConfiguration {
     }
 
     /**
-     * Returns all stored fields that should not be lazy loaded.<p>
+     * Returns the field names used for a regular result.<p>
      * 
-     * @return all stored fields that should not be lazy loaded
+     * @return the field names used for a regular result
      */
     public Set<String> getReturnFields() {
 
