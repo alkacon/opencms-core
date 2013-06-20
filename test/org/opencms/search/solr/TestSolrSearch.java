@@ -423,8 +423,10 @@ public class TestSolrSearch extends OpenCmsTestCase {
         // check min date last modified
         stamp = new Date();
         date = DF.format(stamp);
-        query = "?rows=50&q=+text:OpenCms +lastmodified:[" + date + " TO NOW]";
+        Thread.sleep(100);
+        query = "?rows=50&q=+text:OpenCms" + "&fq=lastmodified:[" + date + " TO NOW]";
         results = index.search(getCmsObject(), query);
+        AllTests.printResults(getCmsObject(), results, false);
         assertEquals(0, results.size());
 
         CmsFile file = cms.readFile(resName);
@@ -464,7 +466,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
 
         String query = "?rows=50&q=+text:OpenCms";
         CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
-        List<CmsSearchResource> results = index.search(getCmsObject(), query);
+        CmsSolrResultList results = index.search(getCmsObject(), query);
         int orgCount = results.size();
 
         // check min date created
@@ -519,6 +521,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
         results = index.search(getCmsObject(), query);
         // TODO This test finds two results for Lucene, but it should only be one
         // TODO This variant is correct for Solr
+        AllTests.printResults(getCmsObject(), results, false);
         assertEquals(1, results.size());
 
         maxDate = DF.format(new Date(newStamp.getTime() - (1000 * 60 * 60 * 24)));
