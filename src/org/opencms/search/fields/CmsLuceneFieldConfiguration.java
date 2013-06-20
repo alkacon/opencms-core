@@ -60,11 +60,14 @@ public class CmsLuceneFieldConfiguration extends CmsSearchFieldConfiguration {
     /** The description for the standard field configuration. */
     public static final String STR_STANDARD_DESCRIPTION = "The standard OpenCms search index field configuration.";
 
+    /** The fields that will be returned by a regular search (all stored and not lazy fields). */
+    private static Set<String> m_returnFields = new HashSet<String>();
+
     /** Contains all names of the fields that are used in the excerpt. */
     private List<String> m_excerptFieldNames;
 
-    /** The fields that will be returned by a regular search (all stored and not lazy fields). */
-    private static Set<String> m_returnFields = new HashSet<String>();
+    /** The field added flag. */
+    private boolean m_fieldAdded;
 
     static {
         m_returnFields.add(CmsSearchField.FIELD_CATEGORY);
@@ -162,6 +165,17 @@ public class CmsLuceneFieldConfiguration extends CmsSearchFieldConfiguration {
     }
 
     /**
+     * 
+     * @see org.opencms.search.fields.CmsSearchFieldConfiguration#addField(org.opencms.search.fields.CmsSearchField)
+     */
+    @Override
+    public void addField(CmsSearchField field) {
+
+        super.addField(field);
+        m_fieldAdded = true;
+    }
+
+    /**
      * Returns an analyzer that wraps the given base analyzer with the analyzers of this individual field configuration.<p>
      * 
      * @param analyzer the base analyzer to wrap
@@ -230,9 +244,10 @@ public class CmsLuceneFieldConfiguration extends CmsSearchFieldConfiguration {
     }
 
     /**
-     * @see org.opencms.search.fields.CmsSearchFieldConfiguration#getReturnFields()
+     * Returns all stored fields that should not be lazy loaded.<p>
+     * 
+     * @return all stored fields that should not be lazy loaded
      */
-    @Override
     public Set<String> getReturnFields() {
 
         if (m_fieldAdded) {
