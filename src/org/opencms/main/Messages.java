@@ -121,6 +121,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_OPENCMS_NOT_INITIALIZED_2 = "ERR_OPENCMS_NOT_INITIALIZED_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_PATH_NOT_FOUND_1 = "ERR_PATH_NOT_FOUND_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_PERMALINK_1 = "ERR_PERMALINK_1";
 
     /** Message constant for key in the resource bundle. */

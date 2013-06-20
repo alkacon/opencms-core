@@ -1530,6 +1530,7 @@ public final class OpenCmsCore {
             }
         }
 
+        boolean clearErrors = false;
         // test if this file has to be checked or modified
         for (I_CmsResourceInit handler : m_resourceInitHandlers) {
             try {
@@ -1538,6 +1539,7 @@ public final class OpenCmsCore {
             } catch (CmsResourceInitException e) {
                 if (e.isClearErrors()) {
                     tmpException = null;
+                    clearErrors = true;
                 }
                 break;
             } catch (CmsSecurityException e) {
@@ -1547,8 +1549,14 @@ public final class OpenCmsCore {
         }
 
         // file is still null and not found exception was thrown, so throw original exception
-        if ((resource == null) && (tmpException != null)) {
-            throw tmpException;
+        if (resource == null) {
+            if (tmpException != null) {
+                throw tmpException;
+            } else if (!clearErrors) {
+                throw new CmsVfsResourceNotFoundException(org.opencms.main.Messages.get().container(
+                    org.opencms.main.Messages.ERR_PATH_NOT_FOUND_1,
+                    resourceName));
+            }
         }
 
         // return the resource read from the VFS
