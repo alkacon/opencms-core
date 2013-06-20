@@ -82,9 +82,9 @@ public class CmsTermHighlighterHtml implements I_CmsTermHighlighter {
         while (excerptFieldNames.hasNext()) {
             String fieldName = excerptFieldNames.next();
             boolean createExcerpt = !params.isExcerptOnlySearchedFields() || params.getFields().contains(fieldName);
-            if (createExcerpt && (doc.getFieldable(fieldName) != null)) {
+            if (createExcerpt && (doc.getField(fieldName) != null)) {
                 // only generate field excerpt if the field is available in the document
-                String text = doc.getFieldable(fieldName).stringValue();
+                String text = doc.getField(fieldName).stringValue();
                 // make sure all XML in the text is escaped, otherwise excerpt HTML output may be garbled
                 text = CmsEncoder.escapeXml(text);
 

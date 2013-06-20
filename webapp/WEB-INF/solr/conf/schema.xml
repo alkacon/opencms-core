@@ -236,7 +236,7 @@
  </types>
 
  <fields>
-   <field name="id"                  type="uuid"         indexed="true"  stored="true"  default="NEW"/><!-- Unique identifier. -->
+   <field name="id"                  type="uuid"         indexed="true"  stored="true"  /><!-- Unique identifier. -->
    <field name="timestamp"           type="date"         indexed="true"  stored="true"  default="NOW"/>
    <field name="path"                type="string"       indexed="true"  stored="true"  required="true" />
    <field name="path_hierarchy"      type="text_path"    indexed="true"  stored="false" required="true" /><!-- is copied -->
@@ -251,8 +251,8 @@
    <field name="lastmodified"        type="date"         indexed="true"  stored="true"  required="true" />
    <field name="expired"             type="date"         indexed="true"  stored="true"  />
    <field name="relased"             type="date"         indexed="true"  stored="true"  />
-   <field name="content"             type="text_general" indexed="true"  stored="false" multiValued="true" compressed="true" />
-   <field name="contentblob"         type="binary"       indexed="false" stored="true"  compressed="true" />
+   <field name="content"             type="text_general" indexed="true"  stored="false" multiValued="true" />
+   <field name="contentblob"         type="binary"       indexed="false" stored="true"  />
    <field name="category"            type="text_general" indexed="true"  stored="true"  multiValued="true" />
    <field name="category_exact"      type="string"       indexed="true"  stored="false" multiValued="true" termVectors="true" /><!-- is copied -->
    <field name="dependencyType"      type="string"       indexed="true"  stored="true" />
@@ -267,7 +267,7 @@
    <field name="text_hu"             type="text_hu"      indexed="true"  stored="false" multiValued="true"/><!-- Catchall for Hungarian text fields -->
    <field name="text_it"             type="text_it"      indexed="true"  stored="false" multiValued="true"/><!-- Catchall for Italian text fields -->
 
-   <dynamicField name="*_excerpt"    type="text_general" indexed="true"  stored="true" termVectors="on" termPositions="on" termOffsets="on" maxChars="1000" />
+   <dynamicField name="*_excerpt"    type="text_general" indexed="true"  stored="true" termVectors="on" termPositions="on" termOffsets="on" />
    <dynamicField name="*_exact"      type="string"       indexed="true"  stored="false"/>
    <dynamicField name="*_prop"       type="text_general" indexed="true"  stored="true"/>
    <dynamicField name="*_i"          type="int"          indexed="true"  stored="true"/>

@@ -12,8 +12,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/runtime/antisamy-1.4.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/antlr-2.7.7.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/antlr-runtime-3.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/runtime/apache-solr-core-3.6.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/runtime/apache-solr-solrj-3.6.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/asm-4.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/batik-css.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/batik-util.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/bcprov-jdk15-146.jar"/>
@@ -44,6 +43,9 @@
 	<classpathentry exported="true" kind="lib" path="lib/runtime/guava-r08-gwt.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/guava-r08.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/htmlparser-1.6-20060610.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/httpclient-4.2.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/httpcore-4.2.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/httpmime-4.2.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/jakarta-oro-2.0.8.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/jaxb-api-2.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/jaxb-impl-2.1.11.jar"/>
@@ -51,25 +53,28 @@
 	<classpathentry exported="true" kind="lib" path="lib/runtime/jaxws-api-2.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/jaxws-rt-2.1.7.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/json-simple-1.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/jsonic-1.2.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/jsr181-api-1.0-MR1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/jsr250-api-1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/jsr305-1.3.9.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/jstl-1.1.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/jtidy-8-svn-2006-05-21b.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/jug-lgpl-2.0.0.jar"/>
-	<classpathentry kind="lib" path="lib/runtime/langdetect-1.1-20120112.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/langdetect-1.1-20120112.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/log4j-1.2.15.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-analyzers-3.6.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-core-3.6.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-grouping-3.6.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-highlighter-3.6.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-memory-3.6.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-queries-3.6.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-spatial-3.6.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-spellchecker-3.6.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-analyzers-common-4.3.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-core-4.3.0.jar" sourcepath="C:/Dokumente und Einstellungen/Administrator/Eigene Dateien/lucene-4.3.0"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-grouping-4.3.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-highlighter-4.3.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-memory-4.3.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-queries-4.3.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-queryparser-4.3.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-spatial-4.3.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-suggest-4.3.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/mail-1.4.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/mimepull-1.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/nekohtml.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/noggit-0.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/opencsv-2.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/openjpa-2.2.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/org.apache.bval.bundle-0.3-incubating.jar"/>
@@ -85,6 +90,9 @@
 	<classpathentry exported="true" kind="lib" path="lib/runtime/serp-1.13.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/slf4j-api-1.7.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/slf4j-log4j12-1.7.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/solr-core-4.3.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/solr-solrj-4.3.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/spatial4j-0.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/standard-1.1.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/stax-api-1.0.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/stax-api-1.0.jar"/>
@@ -97,6 +105,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/runtime/xercesImpl-2.11-0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/xml-apis-2.11-0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/xmlbeans-2.3.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/zookeeper-3.4.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/compile/ant-contrib-1.0b1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/compile/ant.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/compile/dumbster-1.6.jar"/>
@@ -107,8 +116,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/compile/wrapper-client.jar"/>
 	<classpathentry exported="true" kind="lib" path="webapp/setup/database/hsqldb/hsqldb-2.2.8.jar"/>
 	<classpathentry exported="true" kind="lib" path="webapp/setup/database/oracle/ojdbc14-10.2.0.3.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/runtime/asm-4.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/runtime/jsonic-1.2.5.jar"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER/GWT"/>
 	<classpathentry kind="lib" path="lib/compile/gwtexporter-2.4.0.jar"/>

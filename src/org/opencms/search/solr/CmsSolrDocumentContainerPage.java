@@ -170,6 +170,9 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
     /**
      * Merges the given list of extraction results into a single one.<p>
      * 
+     * @param cms the CMS object to use
+     * @param resource 
+     * 
      * @param all the extraction result objects to merge
      * 
      * @return the merged result

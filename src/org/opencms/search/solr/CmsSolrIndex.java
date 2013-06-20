@@ -79,7 +79,6 @@ import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.common.util.ContentStreamBase;
-import org.apache.solr.common.util.FastWriter;
 import org.apache.solr.core.CoreContainer;
 import org.apache.solr.core.SolrCore;
 import org.apache.solr.handler.ReplicationHandler;
@@ -89,6 +88,7 @@ import org.apache.solr.request.SolrRequestHandler;
 import org.apache.solr.response.BinaryQueryResponseWriter;
 import org.apache.solr.response.QueryResponseWriter;
 import org.apache.solr.response.SolrQueryResponse;
+import org.apache.solr.util.FastWriter;
 
 /**
  * Implements the search within an Solr index.<p>
@@ -316,7 +316,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
         super.initialize();
         getFieldConfiguration().init();
         try {
-            m_solr = OpenCms.getSearchManager().registerSolrIndex(this);
+            OpenCms.getSearchManager().registerSolrIndex(this);
         } catch (CmsConfigurationException ex) {
             LOG.error(ex.getMessage(), ex);
             setEnabled(false);
@@ -524,32 +524,39 @@ public class CmsSolrIndex extends CmsSearchIndex {
             SolrCore core = m_solr instanceof EmbeddedSolrServer
             ? ((EmbeddedSolrServer)m_solr).getCoreContainer().getCore(getName())
             : null;
-            CmsSolrResultList result = new CmsSolrResultList(
-                core,
-                initQuery,
-                queryResponse,
-                solrDocumentList,
-                resourceDocumentList,
-                start,
-                new Integer(rows),
-                end,
-                page,
-                visibleHitCount,
-                new Float(maxScore),
-                startTime);
 
-            if (LOG.isDebugEnabled()) {
-                Object[] logParams = new Object[] {
-                    new Long(System.currentTimeMillis() - startTime),
-                    new Long(result.getNumFound()),
-                    new Long(solrTime),
-                    new Long(processTime),
-                    new Long(result.getHighlightEndTime() != 0 ? result.getHighlightEndTime() - startTime : 0)};
-                LOG.debug(query.toString()
-                    + "\n"
-                    + Messages.get().getBundle().key(Messages.LOG_SOLR_SEARCH_EXECUTED_5, logParams));
+            try {
+                CmsSolrResultList result = new CmsSolrResultList(
+                    core,
+                    initQuery,
+                    queryResponse,
+                    solrDocumentList,
+                    resourceDocumentList,
+                    start,
+                    new Integer(rows),
+                    end,
+                    page,
+                    visibleHitCount,
+                    new Float(maxScore),
+                    startTime);
+
+                if (LOG.isDebugEnabled()) {
+                    Object[] logParams = new Object[] {
+                        new Long(System.currentTimeMillis() - startTime),
+                        new Long(result.getNumFound()),
+                        new Long(solrTime),
+                        new Long(processTime),
+                        new Long(result.getHighlightEndTime() != 0 ? result.getHighlightEndTime() - startTime : 0)};
+                    LOG.debug(query.toString()
+                        + "\n"
+                        + Messages.get().getBundle().key(Messages.LOG_SOLR_SEARCH_EXECUTED_5, logParams));
+                }
+                return result;
+            } finally {
+                if (core != null) {
+                    core.close();
+                }
             }
-            return result;
         } catch (Exception e) {
             throw new CmsSearchException(Messages.get().container(
                 Messages.LOG_SOLR_ERR_SEARCH_EXECUTION_FAILD_1,
@@ -624,12 +631,22 @@ public class CmsSolrIndex extends CmsSearchIndex {
     }
 
     /**
+     * Sets the Solr server used by this index.<p>
+     * 
+     * @param server the server to set
+     */
+    public void setSolrServer(SolrServer server) {
+
+        m_solr = server;
+    }
+
+    /**
      * @see org.opencms.search.CmsSearchIndex#shutDown()
      */
     @Override
     public void shutDown() {
 
-        // noop
+        m_solr.shutdown();
     }
 
     /**
@@ -643,14 +660,14 @@ public class CmsSolrIndex extends CmsSearchIndex {
      */
     public void spellCheck(ServletResponse res, CmsObject cms, CmsSolrQuery q) throws CmsSearchException {
 
+        SolrCore core = null;
         try {
-            q.setQueryType("/spell");
+            q.setRequestHandler("/spell");
 
             QueryResponse queryResponse = m_solr.query(q);
             // create and return the result
-            SolrCore core = m_solr instanceof EmbeddedSolrServer
-            ? ((EmbeddedSolrServer)m_solr).getCoreContainer().getCore(getName())
-            : null;
+            core = m_solr instanceof EmbeddedSolrServer ? ((EmbeddedSolrServer)m_solr).getCoreContainer().getCore(
+                getName()) : null;
 
             SolrQueryResponse solrQueryResponse = new SolrQueryResponse();
             solrQueryResponse.setAllValues(queryResponse.getResponse());
@@ -667,6 +684,10 @@ public class CmsSolrIndex extends CmsSearchIndex {
 
         } catch (Exception e) {
             throw new CmsSearchException(Messages.get().container(Messages.LOG_SOLR_ERR_SEARCH_EXECUTION_FAILD_1, q), e);
+        } finally {
+            if (core != null) {
+                core.close();
+            }
         }
     }
 
@@ -685,11 +706,15 @@ public class CmsSolrIndex extends CmsSearchIndex {
             CoreContainer con = ser.getCoreContainer();
             SolrCore core = con.getCore(getName());
             if (core != null) {
-                SolrRequestHandler h = core.getRequestHandler("/replication");
-                if (h instanceof ReplicationHandler) {
-                    h.handleRequest(
-                        new LocalSolrQueryRequest(core, CmsRequestUtil.createParameterMap("?command=backup")),
-                        new SolrQueryResponse());
+                try {
+                    SolrRequestHandler h = core.getRequestHandler("/replication");
+                    if (h instanceof ReplicationHandler) {
+                        h.handleRequest(
+                            new LocalSolrQueryRequest(core, CmsRequestUtil.createParameterMap("?command=backup")),
+                            new SolrQueryResponse());
+                    }
+                } finally {
+                    core.close();
                 }
             }
         }
@@ -785,24 +810,28 @@ public class CmsSolrIndex extends CmsSearchIndex {
 
         if (m_solr instanceof EmbeddedSolrServer) {
             SolrCore core = ((EmbeddedSolrServer)m_solr).getCoreContainer().getCore(getName());
-            QueryResponseWriter responseWriter = core.getQueryResponseWriter(queryRequest);
+            try {
+                QueryResponseWriter responseWriter = core.getQueryResponseWriter(queryRequest);
 
-            final String ct = responseWriter.getContentType(queryRequest, queryResponse);
-            if (null != ct) {
-                response.setContentType(ct);
-            }
+                final String ct = responseWriter.getContentType(queryRequest, queryResponse);
+                if (null != ct) {
+                    response.setContentType(ct);
+                }
 
-            if (responseWriter instanceof BinaryQueryResponseWriter) {
-                BinaryQueryResponseWriter binWriter = (BinaryQueryResponseWriter)responseWriter;
-                binWriter.write(response.getOutputStream(), queryRequest, queryResponse);
-            } else {
-                String charset = ContentStreamBase.getCharsetFromContentType(ct);
-                Writer out = ((charset == null) || charset.equalsIgnoreCase(UTF8.toString())) ? new OutputStreamWriter(
-                    response.getOutputStream(),
-                    UTF8) : new OutputStreamWriter(response.getOutputStream(), charset);
-                out = new FastWriter(out);
-                responseWriter.write(out, queryRequest, queryResponse);
-                out.flush();
+                if (responseWriter instanceof BinaryQueryResponseWriter) {
+                    BinaryQueryResponseWriter binWriter = (BinaryQueryResponseWriter)responseWriter;
+                    binWriter.write(response.getOutputStream(), queryRequest, queryResponse);
+                } else {
+                    String charset = ContentStreamBase.getCharsetFromContentType(ct);
+                    Writer out = ((charset == null) || charset.equalsIgnoreCase(UTF8.toString()))
+                    ? new OutputStreamWriter(response.getOutputStream(), UTF8)
+                    : new OutputStreamWriter(response.getOutputStream(), charset);
+                    out = new FastWriter(out);
+                    responseWriter.write(out, queryRequest, queryResponse);
+                    out.flush();
+                }
+            } finally {
+                core.close();
             }
         } else {
             throw new UnsupportedOperationException();

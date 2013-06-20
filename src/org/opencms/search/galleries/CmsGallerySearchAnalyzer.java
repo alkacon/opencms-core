@@ -34,13 +34,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-import org.apache.lucene.analysis.LowerCaseFilter;
-import org.apache.lucene.analysis.StopFilter;
-import org.apache.lucene.analysis.StopwordAnalyzerBase;
 import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.WordlistLoader;
+import org.apache.lucene.analysis.core.LowerCaseFilter;
+import org.apache.lucene.analysis.core.StopFilter;
 import org.apache.lucene.analysis.standard.StandardFilter;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
+import org.apache.lucene.analysis.util.StopwordAnalyzerBase;
+import org.apache.lucene.analysis.util.WordlistLoader;
 import org.apache.lucene.util.Version;
 
 /**
@@ -90,7 +90,7 @@ public class CmsGallerySearchAnalyzer extends StopwordAnalyzerBase {
     }
 
     /**
-     * @see org.apache.lucene.analysis.ReusableAnalyzerBase#createComponents(java.lang.String, java.io.Reader)
+     * @see org.apache.lucene.analysis.Analyzer#createComponents(java.lang.String, java.io.Reader)
      * 
      * This is take from the Lucene StandardAnalyzer, which is final since 3.1
      */
@@ -102,14 +102,6 @@ public class CmsGallerySearchAnalyzer extends StopwordAnalyzerBase {
         TokenStream tok = new StandardFilter(matchVersion, src);
         tok = new LowerCaseFilter(matchVersion, tok);
         tok = new StopFilter(matchVersion, tok, stopwords);
-        return new TokenStreamComponents(src, tok) {
-
-            @Override
-            protected boolean reset(final Reader r) throws IOException {
-
-                src.setMaxTokenLength(DEFAULT_MAX_TOKEN_LENGTH);
-                return super.reset(r);
-            }
-        };
+        return new TokenStreamComponents(src, tok);
     }
 }

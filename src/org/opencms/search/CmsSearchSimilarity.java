@@ -30,10 +30,10 @@ package org.opencms.search;
 import org.opencms.search.fields.CmsSearchField;
 
 import org.apache.lucene.index.FieldInvertState;
-import org.apache.lucene.search.DefaultSimilarity;
+import org.apache.lucene.search.similarities.DefaultSimilarity;
 
 /**
- * Reduces the importance of the <code>{@link #computeNorm(String, FieldInvertState)}</code> factor 
+ * Reduces the importance of the <code>{@link #lengthNorm(FieldInvertState)}</code> factor 
  * for the <code>{@link org.opencms.search.fields.CmsLuceneField#FIELD_CONTENT}</code> field, while 
  * keeping the Lucene default for all other fields.<p>
  * 
@@ -51,9 +51,6 @@ public class CmsSearchSimilarity extends DefaultSimilarity {
     /** Logarithm base 10 used as factor in the score calculations. */
     private static final double LOG10 = Math.log(10.0);
 
-    /** Serial version UID required for safe serialization. */
-    private static final long serialVersionUID = 3598754228215079733L;
-
     /**
      * Creates a new instance of the OpenCms search similarity.<p>
      */
@@ -67,17 +64,16 @@ public class CmsSearchSimilarity extends DefaultSimilarity {
      * for the <code>{@link org.opencms.search.fields.CmsLuceneField#FIELD_CONTENT}</code> field, while 
      * keeping the Lucene default for all other fields.<p>
      * 
-     * @see org.apache.lucene.search.DefaultSimilarity#computeNorm(java.lang.String, org.apache.lucene.index.FieldInvertState)
      */
     @Override
-    public float computeNorm(String fieldName, FieldInvertState state) {
+    public float lengthNorm(FieldInvertState state) {
 
-        if (fieldName.equals(CmsSearchField.FIELD_CONTENT)) {
+        if (state.getName().equals(CmsSearchField.FIELD_CONTENT)) {
             final int numTerms = state.getLength() - state.getNumOverlap();
             // special length norm for content
             return (float)(3.0 / (Math.log(1000 + numTerms) / LOG10));
         }
         // all other fields use the default Lucene implementation
-        return super.computeNorm(fieldName, state);
+        return super.lengthNorm(state);
     }
 }

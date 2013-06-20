@@ -51,6 +51,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Abstract implementation for OpenCms search field configurations.<p>
@@ -59,8 +60,14 @@ import java.util.Map;
  */
 public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldConfiguration> {
 
+    /** A list of fields that should be lazy-loaded. */
+    public static final List<String> LAZY_FIELDS = new ArrayList<String>();
+
     /** The name for the standard field configuration. */
     public static final String STR_STANDARD = "standard";
+
+    /** The field added flag. */
+    boolean m_fieldAdded;
 
     /** The description of the configuration. */
     private String m_description;
@@ -86,6 +93,11 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
     public CmsSearchFieldConfiguration() {
 
         m_fields = new ArrayList<CmsSearchField>();
+    }
+
+    static {
+        LAZY_FIELDS.add(CmsSearchField.FIELD_CONTENT);
+        LAZY_FIELDS.add(CmsSearchField.FIELD_CONTENT_BLOB);
     }
 
     /**
@@ -157,6 +169,7 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
         if (field != null) {
             m_fields.add(field);
         }
+        m_fieldAdded = true;
     }
 
     /**
@@ -317,6 +330,16 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
     public String getName() {
 
         return m_name;
+    }
+
+    /**
+     * Returns all stored fields that should not be lazy loaded.<p>
+     * 
+     * @return all stored fields that should not be lazy loaded
+     */
+    public Set<String> getReturnFields() {
+
+        return null;
     }
 
     /**

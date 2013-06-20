@@ -151,9 +151,9 @@ public class TestCmsGallerySearchBasic extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestCmsGallerySearchBasic.class.getName());
 
-        suite.addTest(new TestCmsGallerySearchBasic("testGallerySearchIndexCreation"));
-        suite.addTest(new TestCmsGallerySearchBasic("testGallerySortSearchResults"));
-        suite.addTest(new TestCmsGallerySearchBasic("testSearchById"));
+        //suite.addTest(new TestCmsGallerySearchBasic("testGallerySearchIndexCreation"));
+        //suite.addTest(new TestCmsGallerySearchBasic("testGallerySortSearchResults"));
+        //suite.addTest(new TestCmsGallerySearchBasic("testSearchById"));
         suite.addTest(new TestCmsGallerySearchBasic("testSearchForMovedFiles"));
 
         TestSetup wrapper = new TestSetup(suite) {
@@ -161,7 +161,7 @@ public class TestCmsGallerySearchBasic extends OpenCmsTestCase {
             @Override
             protected void setUp() {
 
-                setupOpenCms("simpletest", "/sites/default/", "/../org/opencms/search/gallery");
+                setupOpenCms("simpletest", "", "/../org/opencms/search/gallery");
             }
 
             @Override
@@ -396,7 +396,7 @@ public class TestCmsGallerySearchBasic extends OpenCmsTestCase {
         cms.moveResource("/foo1.txt", "/foo2.txt");
         OpenCms.getSearchManager().updateOfflineIndexes(5000);
         CmsSearchIndex index = OpenCms.getSearchManager().getIndex(CmsGallerySearchIndex.GALLERY_INDEX_NAME);
-        CmsSearchParameters params = new CmsSearchParameters("/foo1.txt");
+        CmsSearchParameters params = new CmsSearchParameters("foo1");
         CmsSearchResultList results = index.search(cms, params);
         assertEquals(1, results.size());
         assertTrue(results.get(0).getPath().contains("foo2"));

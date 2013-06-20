@@ -40,7 +40,7 @@ import java.util.Map;
 
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Fieldable;
+import org.apache.lucene.index.IndexableField;
 
 /**
  * Contains the data of a single item in a search result.<p>
@@ -86,31 +86,29 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable<CmsSe
         m_excerpt = excerpt;
         m_fields = new HashMap<String, String>();
 
-        Iterator<Fieldable> i = doc.getFields().iterator();
+        Iterator<IndexableField> i = doc.getFields().iterator();
         while (i.hasNext()) {
-            Fieldable field = i.next();
-            if ((field != null) && field.isStored()) {
-                // content can be displayed only if it has been stored in the field
-                String name = field.name();
-                String value = field.stringValue();
-                if (CmsStringUtil.isNotEmpty(value)
-                    && !CmsSearchField.FIELD_PATH.equals(name)
-                    && !CmsSearchField.FIELD_DATE_CREATED.equals(name)
-                    && !CmsSearchField.FIELD_DATE_LASTMODIFIED.equals(name)) {
-                    // these "hard coded" fields are treated differently
-                    m_fields.put(name, value);
-                }
+            IndexableField field = i.next();
+            // content can be displayed only if it has been stored in the field
+            String name = field.name();
+            String value = field.stringValue();
+            if (CmsStringUtil.isNotEmpty(value)
+                && !CmsSearchField.FIELD_PATH.equals(name)
+                && !CmsSearchField.FIELD_DATE_CREATED.equals(name)
+                && !CmsSearchField.FIELD_DATE_LASTMODIFIED.equals(name)) {
+                // these "hard coded" fields are treated differently
+                m_fields.put(name, value);
             }
         }
 
-        Fieldable f = doc.getFieldable(CmsSearchField.FIELD_PATH);
+        IndexableField f = doc.getField(CmsSearchField.FIELD_PATH);
         if (f != null) {
             m_path = f.stringValue();
         } else {
             m_path = null;
         }
 
-        f = doc.getFieldable(CmsSearchField.FIELD_DATE_CREATED);
+        f = doc.getField(CmsSearchField.FIELD_DATE_CREATED);
         if (f != null) {
             try {
                 m_dateCreated = DateTools.stringToDate(f.stringValue());
@@ -121,7 +119,7 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable<CmsSe
             m_dateCreated = null;
         }
 
-        f = doc.getFieldable(CmsSearchField.FIELD_DATE_LASTMODIFIED);
+        f = doc.getField(CmsSearchField.FIELD_DATE_LASTMODIFIED);
         if (f != null) {
             try {
                 m_dateLastModified = DateTools.stringToDate(f.stringValue());
@@ -132,7 +130,7 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable<CmsSe
             m_dateLastModified = null;
         }
 
-        f = doc.getFieldable(CmsSearchField.FIELD_TYPE);
+        f = doc.getField(CmsSearchField.FIELD_TYPE);
         if (f != null) {
             m_documentType = f.stringValue();
         } else {

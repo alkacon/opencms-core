@@ -59,15 +59,16 @@ import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.queries.BooleanFilter;
+import org.apache.lucene.queries.FilterClause;
+import org.apache.lucene.queries.TermsFilter;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanFilter;
 import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.FilterClause;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.TermsFilter;
 import org.apache.lucene.search.TopDocs;
 
 /**
@@ -335,8 +336,7 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
             }
 
             // perform the search operation          
-            searcher.setDefaultFieldSortScoring(true, true);
-            hits = searcher.search(query, filter, getMaxHits(), params.getSort());
+            hits = searcher.search(query, filter, getMaxHits(), params.getSort(), true, true);
 
             if (hits != null) {
                 int hitCount = hits.totalHits > hits.scoreDocs.length ? hits.scoreDocs.length : hits.totalHits;
@@ -497,23 +497,23 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
     protected BooleanFilter appendPathFilter(CmsObject cms, BooleanFilter filter, List<String> roots) {
 
         // complete the search root
-        TermsFilter pathFilter = new TermsFilter();
+        List<Term> terms = new ArrayList<Term>();
         if ((roots != null) && (roots.size() > 0)) {
             // add the all configured search roots with will request context
             for (int i = 0; i < roots.size(); i++) {
-                extendPathFilter(pathFilter, roots.get(i));
+                extendPathFilter(terms, roots.get(i));
             }
         } else {
             // use the current site root as the search root
-            extendPathFilter(pathFilter, cms.getRequestContext().getSiteRoot());
+            extendPathFilter(terms, cms.getRequestContext().getSiteRoot());
             // also add the shared folder (v 8.0)
-            extendPathFilter(pathFilter, OpenCms.getSiteManager().getSharedFolder());
-            extendPathFilter(pathFilter, FOLDER_SYTEM_MODULES);
-            extendPathFilter(pathFilter, FOLDER_SYSTEM_GALLERIES);
+            extendPathFilter(terms, OpenCms.getSiteManager().getSharedFolder());
+            extendPathFilter(terms, FOLDER_SYTEM_MODULES);
+            extendPathFilter(terms, FOLDER_SYSTEM_GALLERIES);
         }
 
         // add the calculated path filter for the root path
-        filter.add(new FilterClause(pathFilter, BooleanClause.Occur.MUST));
+        filter.add(new FilterClause(new TermsFilter(terms), BooleanClause.Occur.MUST));
         return filter;
     }
 

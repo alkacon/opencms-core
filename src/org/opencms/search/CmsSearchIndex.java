@@ -70,23 +70,25 @@ import org.apache.commons.logging.Log;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.FieldSelector;
-import org.apache.lucene.document.FieldSelectorResult;
-import org.apache.lucene.index.CorruptIndexException;
-import org.apache.lucene.index.FilterIndexReader;
+import org.apache.lucene.index.AtomicReader;
+import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.FieldInfo;
+import org.apache.lucene.index.FilterAtomicReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.LogByteSizeMergePolicy;
 import org.apache.lucene.index.LogMergePolicy;
+import org.apache.lucene.index.StoredFieldVisitor;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.queries.BooleanFilter;
+import org.apache.lucene.queries.FilterClause;
+import org.apache.lucene.queries.TermsFilter;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanFilter;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.CachingWrapperFilter;
 import org.apache.lucene.search.Filter;
-import org.apache.lucene.search.FilterClause;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.MultiTermQuery;
@@ -94,10 +96,11 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.TermsFilter;
 import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.similarities.Similarity;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.store.IOContext;
 import org.apache.lucene.util.Version;
 
 /**
@@ -114,69 +117,27 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      * binary documents like PDF, MS Office etc. By using lazy fields the data is only read when it is 
      * actually used.<p>
      */
-    protected class LazyContentReader extends FilterIndexReader {
-
-        /** The initial index reader. */
-        private IndexReader m_reader;
+    protected class LazyContentReader extends FilterAtomicReader {
 
         /**
          * Create a new lazy content reader.<p>
          * 
          * @param indexReader the index reader to use this lazy content reader with
          */
-        public LazyContentReader(IndexReader indexReader) {
+        public LazyContentReader(AtomicReader indexReader) {
 
             super(indexReader);
-            m_reader = indexReader;
         }
 
         /**
-         * @see org.apache.lucene.index.FilterIndexReader#document(int, org.apache.lucene.document.FieldSelector)
+         * @see org.apache.lucene.index.FilterAtomicReader#document(int, org.apache.lucene.index.StoredFieldVisitor)
          */
         @Override
-        public Document document(int n, FieldSelector fieldSelector) throws CorruptIndexException, IOException {
+        public void document(int docID, StoredFieldVisitor visitor) throws IOException {
 
-            return super.document(n, getFieldSelector(fieldSelector));
+            super.document(docID, VISITOR);
         }
 
-        /**
-         * @see org.apache.lucene.index.IndexReader#reopen()
-         * 
-         * @deprecated since Lucene 3.5 but kept for backward compatibility
-         */
-        @Override
-        @Deprecated
-        public synchronized IndexReader reopen() throws CorruptIndexException, IOException {
-
-            return m_reader.reopen();
-        }
-
-        /**
-         * @see org.apache.lucene.index.IndexReader#doOpenIfChanged()
-         */
-        @Override
-        protected IndexReader doOpenIfChanged() throws CorruptIndexException, IOException {
-
-            IndexReader result = IndexReader.openIfChanged(m_reader);
-            if (result != null) {
-                result = new LazyContentReader(result);
-            }
-            return result;
-        }
-
-        /**
-         * @see org.apache.lucene.index.IndexReader#doOpenIfChanged(boolean)
-         */
-        @Override
-        @Deprecated
-        protected IndexReader doOpenIfChanged(boolean openReadOnly) throws CorruptIndexException, IOException {
-
-            IndexReader result = IndexReader.openIfChanged(m_reader, openReadOnly);
-            if (result != null) {
-                result = new LazyContentReader(result);
-            }
-            return result;
-        }
     }
 
     /** A constant for the full qualified name of the CmsSearchIndex class. */
@@ -250,7 +211,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     public static final String LUCENE_USE_COMPOUND_FILE = "lucene.UseCompoundFile";
 
     /** The Lucene Version used to create Query parsers and such. */
-    public static final Version LUCENE_VERSION = Version.LUCENE_36;
+    public static final Version LUCENE_VERSION = Version.LUCENE_43;
 
     /** Constant for additional parameter for controlling how many hits are loaded at maximum (default: 1000). */
     public static final String MAX_HITS = A_LEGACY_PARAM_PREFIX + ".maxHits";
@@ -290,6 +251,21 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
     /** The use all locale. */
     public static final String USE_ALL_LOCALE = "all";
+
+    /**
+     * A stored field visitor, that does not return the large fields: "content" and "contentblob".<p>
+     */
+    protected static final StoredFieldVisitor VISITOR = new StoredFieldVisitor() {
+
+        /**
+         * @see org.apache.lucene.index.StoredFieldVisitor#needsField(org.apache.lucene.index.FieldInfo)
+         */
+        @Override
+        public Status needsField(FieldInfo fieldInfo) {
+
+            return !CmsSearchFieldConfiguration.LAZY_FIELDS.contains(fieldInfo.name) ? Status.YES : Status.NO;
+        }
+    };
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSearchIndex.class);
@@ -371,6 +347,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
     /** Controls if a resource requires view permission to be displayed in the result list. */
     private boolean m_requireViewPermission;
+
+    /** The cms specific Similarity implementation. */
+    private final Similarity m_sim = new CmsSearchSimilarity();
 
     /** The list of configured index source names. */
     private List<String> m_sourceNames;
@@ -486,45 +465,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         // sort the result, makes the range better readable in the debugger
         Collections.sort(result);
         return result;
-    }
-
-    /**
-     * Returns a field selector for Lucene that that will ensure the OpenCms default search index fields
-     * {@link org.opencms.search.fields.CmsLuceneField#FIELD_CONTENT} and {@link org.opencms.search.fields.CmsLuceneField#FIELD_CONTENT_BLOB}
-     * are lazy loaded.<p>
-     * 
-     * This is to optimize performance - these 2 fields will be rather large especially for extracted
-     * binary documents like PDF, MS Office etc. By using lazy fields the data is only read when it is 
-     * actually used.<p>
-     * 
-     * @param base the base field selector 
-     * 
-     * @return a field selector that that will ensure the OpenCms default search index fields are lazy loaded
-     */
-    protected static FieldSelector getFieldSelector(final FieldSelector base) {
-
-        return new FieldSelector() {
-
-            /** Required for safe serialization. */
-            private static final long serialVersionUID = 622179189540785073L;
-
-            /**
-             * Makes the content fields lazy.<p>
-             * 
-             * @see org.apache.lucene.document.FieldSelector#accept(java.lang.String)
-             */
-            public FieldSelectorResult accept(String fieldName) {
-
-                if (CmsSearchField.FIELD_CONTENT.equals(fieldName)
-                    || CmsSearchField.FIELD_CONTENT_BLOB.equals(fieldName)) {
-                    return FieldSelectorResult.LAZY_LOAD;
-                }
-                if (base == null) {
-                    return FieldSelectorResult.LOAD;
-                }
-                return base.accept(fieldName);
-            }
-        };
     }
 
     /**
@@ -1494,8 +1434,8 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 hits = searcher.search(query, filter, getMaxHits());
             } else {
                 // if  a sort order is provided, we must check if scoring must be calculated by the searcher
-                prepareSortScoring(searcher, params.getSort());
-                hits = searcher.search(query, filter, getMaxHits(), params.getSort());
+                boolean isSortScore = isSortScoring(searcher, params.getSort());
+                hits = searcher.search(query, filter, getMaxHits(), params.getSort(), isSortScore, isSortScore);
             }
 
             timeLucene += System.currentTimeMillis();
@@ -1524,6 +1464,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 int visibleHitCount = hitCount;
                 for (int i = 0, cnt = 0; (i < hitCount) && (cnt < end); i++) {
                     try {
+                        doc = searcher.doc(hits.scoreDocs[i].doc, m_fieldConfiguration.getReturnFields());
                         doc = searcher.doc(hits.scoreDocs[i].doc);
                         I_CmsSearchDocument searchDoc = new CmsLuceneDocument(doc);
                         searchDoc.setScore(hits.scoreDocs[i].score);
@@ -1765,12 +1706,13 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 LOG.error(Messages.get().getBundle().key(Messages.LOG_IO_INDEX_WRITER_CLOSE_2, getPath(), getName()), e);
             }
         }
-
         indexSearcherClose();
+        if (m_analyzer != null) {
+            m_analyzer.close();
+        }
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SHUTDOWN_INDEX_1, getName()));
         }
-
     }
 
     /**
@@ -1888,24 +1830,24 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     protected BooleanFilter appendPathFilter(CmsObject cms, BooleanFilter filter, List<String> roots) {
 
         // complete the search root
-        TermsFilter pathFilter = new TermsFilter();
+        List<Term> terms = new ArrayList<Term>();
         if ((roots != null) && (roots.size() > 0)) {
             // add the all configured search roots with will request context
             for (int i = 0; i < roots.size(); i++) {
                 String searchRoot = cms.getRequestContext().addSiteRoot(roots.get(i));
-                extendPathFilter(pathFilter, searchRoot);
+                extendPathFilter(terms, searchRoot);
             }
         } else {
             // use the current site root as the search root
-            extendPathFilter(pathFilter, cms.getRequestContext().getSiteRoot());
+            extendPathFilter(terms, cms.getRequestContext().getSiteRoot());
             // also add the shared folder (v 8.0)
             if (OpenCms.getSiteManager().getSharedFolder() != null) {
-                extendPathFilter(pathFilter, OpenCms.getSiteManager().getSharedFolder());
+                extendPathFilter(terms, OpenCms.getSiteManager().getSharedFolder());
             }
         }
 
         // add the calculated path filter for the root path
-        filter.add(new FilterClause(pathFilter, BooleanClause.Occur.MUST));
+        filter.add(new FilterClause(new TermsFilter(terms), BooleanClause.Occur.MUST));
         return filter;
     }
 
@@ -1948,7 +1890,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      */
     protected Filter createDateRangeFilter(String fieldName, long startTime, long endTime) {
 
-        TermsFilter filter = null;
+        Filter filter = null;
         if ((startTime != Long.MIN_VALUE) || (endTime != Long.MAX_VALUE)) {
             // a date range has been set for this document search
             if (startTime == Long.MIN_VALUE) {
@@ -1964,15 +1906,15 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 cal.set(cal.get(Calendar.YEAR) + MAX_YEAR_RANGE, 0, 1, 0, 0, 0);
                 endTime = cal.getTimeInMillis();
             }
-            // create the filter for the date
-            filter = new TermsFilter();
+
             // get the list of all possible date range options
-            List<String> dateRage = getDateRangeSpan(startTime, endTime);
-            Iterator<String> i = dateRage.iterator();
-            while (i.hasNext()) {
-                // generate one term query per date range option
-                filter.addTerm(new Term(fieldName, i.next()));
+            List<String> dateRange = getDateRangeSpan(startTime, endTime);
+            List<Term> terms = new ArrayList<Term>();
+            for (String range : dateRange) {
+                terms.add(new Term(fieldName, range));
             }
+            // create the filter for the date
+            filter = new TermsFilter(terms);
         }
         return filter;
     }
@@ -2001,7 +1943,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             FSDirectory oldDir = FSDirectory.open(file);
             FSDirectory newDir = FSDirectory.open(new File(backupPath));
             for (String fileName : oldDir.listAll()) {
-                oldDir.copy(newDir, fileName, fileName);
+                oldDir.copy(newDir, fileName, fileName, IOContext.DEFAULT);
             }
         } catch (Exception e) {
             LOG.error(
@@ -2062,6 +2004,8 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             } else {
                 indexConfig.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
             }
+            // register the modified default similarity implementation
+            indexConfig.setSimilarity(m_sim);
 
             indexWriter = new IndexWriter(dir, indexConfig);
         } catch (Exception e) {
@@ -2123,15 +2067,15 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /**
      * Extends the given path query with another term for the given search root element.<p>
      * 
-     * @param pathFilter the path filter to extend
+     * @param terms the path filter to extend
      * @param searchRoot the search root to add to the path query
      */
-    protected void extendPathFilter(TermsFilter pathFilter, String searchRoot) {
+    protected void extendPathFilter(List<Term> terms, String searchRoot) {
 
         if (!CmsResource.isFolder(searchRoot)) {
             searchRoot += "/";
         }
-        pathFilter.addTerm(new Term(CmsSearchField.FIELD_PARENT_FOLDERS, searchRoot));
+        terms.add(new Term(CmsSearchField.FIELD_PARENT_FOLDERS, searchRoot));
     }
 
     /**
@@ -2194,14 +2138,14 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         }
         Filter result = m_displayFilters.get((new StringBuffer(64)).append(field).append('|').append(termsStr).toString());
         if (result == null) {
-            TermsFilter filter = new TermsFilter();
+            List<Term> terms = new ArrayList<Term>();
             if (termsList == null) {
                 termsList = CmsStringUtil.splitAsList(termsStr, ' ');
             }
             for (int i = 0; i < termsList.size(); i++) {
-                filter.addTerm(new Term(field, termsList.get(i)));
+                terms.add(new Term(field, termsList.get(i)));
             }
-            result = new CachingWrapperFilter(filter);
+            result = new CachingWrapperFilter(new TermsFilter(terms));
             m_displayFilters.put(field + termsStr, result);
         }
         return result;
@@ -2287,7 +2231,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         if ((searcher != null) && (searcher.getIndexReader() != null)) {
             try {
                 searcher.getIndexReader().close();
-                searcher.close();
             } catch (Exception e) {
                 LOG.error(Messages.get().getBundle().key(Messages.ERR_INDEX_SEARCHER_CLOSE_1, getName()), e);
             }
@@ -2310,13 +2253,14 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         IndexSearcher oldSearcher = null;
         try {
             Directory indexDirectory = FSDirectory.open(new File(path));
-            if (IndexReader.indexExists(indexDirectory)) {
-                IndexReader reader = new LazyContentReader(IndexReader.open(indexDirectory));
+            if (DirectoryReader.indexExists(indexDirectory)) {
+                IndexReader reader = DirectoryReader.open(indexDirectory);
                 if (m_indexSearcher != null) {
                     // store old searcher instance to close it later
                     oldSearcher = m_indexSearcher;
                 }
                 m_indexSearcher = new IndexSearcher(reader);
+                m_indexSearcher.setSimilarity(m_sim);
                 m_displayFilters = new HashMap<String, Filter>();
             }
         } catch (IOException e) {
@@ -2339,10 +2283,13 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         if ((oldSearcher != null) && (oldSearcher.getIndexReader() != null)) {
             // in case there is an index searcher available close it
             try {
-                IndexReader newReader = IndexReader.openIfChanged(oldSearcher.getIndexReader());
-                if (newReader != null) {
-                    m_indexSearcher = new IndexSearcher(newReader);
-                    indexSearcherClose(oldSearcher);
+                if (oldSearcher.getIndexReader() instanceof DirectoryReader) {
+                    IndexReader newReader = DirectoryReader.openIfChanged((DirectoryReader)oldSearcher.getIndexReader());
+                    if (newReader != null) {
+                        m_indexSearcher = new IndexSearcher(newReader);
+                        m_indexSearcher.setSimilarity(m_sim);
+                        indexSearcherClose(oldSearcher);
+                    }
                 }
             } catch (Exception e) {
                 LOG.error(Messages.get().getBundle().key(Messages.ERR_INDEX_SEARCHER_REOPEN_1, getName()), e);
@@ -2409,7 +2356,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
         try {
             // check the creation date of the document against the given time range
-            Date dateCreated = DateTools.stringToDate(doc.getFieldable(CmsSearchField.FIELD_DATE_CREATED).stringValue());
+            Date dateCreated = DateTools.stringToDate(doc.getField(CmsSearchField.FIELD_DATE_CREATED).stringValue());
             if (dateCreated.getTime() < params.getMinDateCreated()) {
                 return false;
             }
@@ -2418,7 +2365,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             }
 
             // check the last modification date of the document against the given time range
-            Date dateLastModified = DateTools.stringToDate(doc.getFieldable(CmsSearchField.FIELD_DATE_LASTMODIFIED).stringValue());
+            Date dateLastModified = DateTools.stringToDate(doc.getField(CmsSearchField.FIELD_DATE_LASTMODIFIED).stringValue());
             if (dateLastModified.getTime() < params.getMinDateLastModified()) {
                 return false;
             }
@@ -2431,6 +2378,43 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         }
 
         return true;
+    }
+
+    /**
+     * Checks if the score for the results must be calculated based on the provided sort option.<p>  
+     * 
+     * Since Lucene 3 apparently the score is no longer calculated by default, but only if the 
+     * searcher is explicitly told so. This methods checks if, based on the given sort, 
+     * the score must be calculated.<p> 
+     * 
+     * @param searcher the index searcher to prepare 
+     * @param sort the sort option to use
+     * 
+     * @return true if the sort option should be used
+     */
+    protected boolean isSortScoring(IndexSearcher searcher, Sort sort) {
+
+        boolean doScoring = false;
+        if (sort != null) {
+            if ((sort == CmsSearchParameters.SORT_DEFAULT) || (sort == CmsSearchParameters.SORT_TITLE)) {
+                // these default sorts do need score calculation
+                doScoring = true;
+            } else if ((sort == CmsSearchParameters.SORT_DATE_CREATED)
+                || (sort == CmsSearchParameters.SORT_DATE_LASTMODIFIED)) {
+                // these default sorts don't need score calculation
+                doScoring = false;
+            } else {
+                // for all non-defaults: check if the score field is present, in that case we must calculate the score
+                SortField[] fields = sort.getSort();
+                for (SortField field : fields) {
+                    if (field == SortField.FIELD_SCORE) {
+                        doScoring = true;
+                        break;
+                    }
+                }
+            }
+        }
+        return doScoring;
     }
 
     /**
@@ -2458,41 +2442,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             return false;
         }
         return true;
-    }
-
-    /**
-     * Checks if the score for the results must be calculated based on the provided sort option.<p>  
-     * 
-     * Since Lucene 3 apparently the score is no longer calculated by default, but only if the 
-     * searcher is explicitly told so. This methods checks if, based on the given sort, 
-     * the score must be calculated.<p> 
-     * 
-     * @param searcher the index searcher to prepare 
-     * @param sort the sort option to use
-     */
-    protected void prepareSortScoring(IndexSearcher searcher, Sort sort) {
-
-        boolean doScoring = false;
-        if (sort != null) {
-            if ((sort == CmsSearchParameters.SORT_DEFAULT) || (sort == CmsSearchParameters.SORT_TITLE)) {
-                // these default sorts do need score calculation
-                doScoring = true;
-            } else if ((sort == CmsSearchParameters.SORT_DATE_CREATED)
-                || (sort == CmsSearchParameters.SORT_DATE_LASTMODIFIED)) {
-                // these default sorts don't need score calculation
-                doScoring = false;
-            } else {
-                // for all non-defaults: check if the score field is present, in that case we must calculate the score
-                SortField[] fields = sort.getSort();
-                for (SortField field : fields) {
-                    if (field == SortField.FIELD_SCORE) {
-                        doScoring = true;
-                        break;
-                    }
-                }
-            }
-        }
-        searcher.setDefaultFieldSortScoring(doScoring, doScoring);
     }
 
     /**

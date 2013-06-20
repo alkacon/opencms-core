@@ -32,6 +32,7 @@ import org.opencms.util.CmsStringUtil;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.FieldType;
 
 /**
  * An individual field configuration in a Lucene search index.<p>
@@ -206,20 +207,18 @@ public class CmsLuceneField extends CmsSearchField {
             content = getDefaultValue();
         }
         if (content != null) {
-
-            Field.Index index = Field.Index.NO;
+            final FieldType ft = new FieldType();
             if (isIndexed()) {
                 if (isTokenizedAndIndexed()) {
-                    index = Field.Index.ANALYZED;
+                    ft.setIndexed(true);
+                    ft.setTokenized(true);
                 } else {
-                    index = Field.Index.NOT_ANALYZED;
+                    ft.setIndexed(true);
+                    ft.setTokenized(false);
                 }
             }
-            Field.Store store = Field.Store.NO;
-            if (isStored() || isCompressed()) {
-                store = Field.Store.YES;
-            }
-            Field result = new Field(name, content, store, index);
+            ft.setStored(isStored() || isCompressed());
+            Field result = new Field(name, content, ft);
             if (getBoost() != BOOST_DEFAULT) {
                 result.setBoost(getBoost());
             }
@@ -349,8 +348,7 @@ public class CmsLuceneField extends CmsSearchField {
     /**
      * Returns <code>true</code> if the content of this field is tokenized in the Lucene index.<p>
      * 
-     * Please refer to the Lucene documentation about {@link org.apache.lucene.document.Field.Index}
-     * for the concept behind tokenized and untokenized fields.<p>
+     * Please refer to the Lucene documentation about the concept behind tokenized and untokenized fields.<p>
      *
      * @return <code>true</code> if the content of this field is tokenized in the Lucene index
      */
@@ -364,8 +362,7 @@ public class CmsLuceneField extends CmsSearchField {
      * 
      * A field can only be tokenized if it is also indexed, see {@link #isIndexed()}.<p>
      * 
-     * Please refer to the Lucene documentation about {@link org.apache.lucene.document.Field.Index}
-     * for the concept behind tokenized and untokenized fields.<p>
+     * Please refer to the Lucene documentation about the concept behind tokenized and untokenized fields.<p>
      *
      * @return <code>true</code> if the content of this field is tokenized in the Lucene index
      * 
@@ -375,6 +372,16 @@ public class CmsLuceneField extends CmsSearchField {
     public boolean isTokenizedAndIndexed() {
 
         return m_tokenized && isIndexed();
+    }
+
+    /**
+     * Closes the analyzer.<p>
+     */
+    public void closeAnalyzer() {
+
+        if (m_analyzer != null) {
+            m_analyzer.close();
+        }
     }
 
     /**
@@ -552,8 +559,7 @@ public class CmsLuceneField extends CmsSearchField {
     /**
      * Controls if the content of this field is tokenized in the Lucene index.<p>
      *
-     * Please refer to the Lucene documentation about {@link org.apache.lucene.document.Field.Index}
-     * for the concept behind tokenized and untokenized fields.<p>
+     * Please refer to the Lucene documentation about the concept behind tokenized and untokenized fields.<p>
      *
      * @param tokenized if <code>true</code>, then the field content is tokenized
      * 

@@ -137,7 +137,7 @@ public class TestCmsSolrCollector extends OpenCmsTestCase {
         I_CmsResourceCollector collector = new CmsSolrCollector();
 
         StringBuffer q = new StringBuffer(128);
-        q.append("&fq=parent-folders:/sites/default/xmlcontent/");
+        q.append("&fq=parent-folders:\"/sites/default/xmlcontent/\"");
         q.append("&fq=type:article");
         q.append("&rows=" + 3);
         q.append("&sort=" + CmsSearchField.FIELD_DATE_LASTMODIFIED + " desc");

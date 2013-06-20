@@ -32,13 +32,15 @@ import org.opencms.search.CmsSearchIndex;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
-import org.apache.lucene.analysis.WhitespaceAnalyzer;
+import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
+import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
 
 /**
  * Describes a configuration of fields that are used in building a search index.<p>
@@ -60,6 +62,22 @@ public class CmsLuceneFieldConfiguration extends CmsSearchFieldConfiguration {
 
     /** Contains all names of the fields that are used in the excerpt. */
     private List<String> m_excerptFieldNames;
+
+    /** The fields that will be returned by a regular search (all stored and not lazy fields). */
+    private static Set<String> m_returnFields = new HashSet<String>();
+
+    static {
+        m_returnFields.add(CmsSearchField.FIELD_CATEGORY);
+        m_returnFields.add(CmsSearchField.FIELD_DATE_CONTENT);
+        m_returnFields.add(CmsSearchField.FIELD_DATE_CREATED);
+        m_returnFields.add(CmsSearchField.FIELD_DATE_EXPIRED);
+        m_returnFields.add(CmsSearchField.FIELD_DATE_LASTMODIFIED);
+        m_returnFields.add(CmsSearchField.FIELD_DATE_RELEASED);
+        m_returnFields.add(CmsSearchField.FIELD_PARENT_FOLDERS);
+        m_returnFields.add(CmsSearchField.FIELD_PATH);
+        m_returnFields.add(CmsSearchField.FIELD_SUFFIX);
+        m_returnFields.add(CmsSearchField.FIELD_TYPE);
+    }
 
     /**
      * Creates the default standard search configuration.<p>
@@ -211,4 +229,20 @@ public class CmsLuceneFieldConfiguration extends CmsSearchFieldConfiguration {
         return result;
     }
 
+    /**
+     * @see org.opencms.search.fields.CmsSearchFieldConfiguration#getReturnFields()
+     */
+    @Override
+    public Set<String> getReturnFields() {
+
+        if (m_fieldAdded) {
+            for (CmsSearchField field : getLuceneFields()) {
+                if (field.isStored() && !LAZY_FIELDS.contains(field.getName())) {
+                    m_returnFields.add(field.getName());
+                }
+            }
+        }
+        m_fieldAdded = false;
+        return m_returnFields;
+    }
 }

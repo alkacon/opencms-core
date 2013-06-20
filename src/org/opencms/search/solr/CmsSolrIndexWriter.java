@@ -85,7 +85,6 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
         m_index = index;
         m_server = server;
         if (m_index != null) {
-            m_index.createIndexBackup();
             LOG.info(Messages.get().getBundle().key(
                 Messages.LOG_SOLR_WRITER_CREATE_2,
                 m_index.getName(),
@@ -94,7 +93,6 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
     }
 
     /**
-     * 
      * @see org.opencms.search.I_CmsIndexWriter#close()
      */
     public void close() {

@@ -39,7 +39,7 @@ import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.AtomicReaderContext;
 import org.apache.lucene.search.Collector;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Scorer;
@@ -203,12 +203,12 @@ public class CmsSearchCategoryCollector extends Collector {
     }
 
     /**
-     * @see org.apache.lucene.search.Collector#setNextReader(org.apache.lucene.index.IndexReader, int)
+     * @see org.apache.lucene.search.Collector#setNextReader(org.apache.lucene.index.AtomicReaderContext)
      */
     @Override
-    public void setNextReader(IndexReader reader, int docBase) {
+    public void setNextReader(AtomicReaderContext ctx) {
 
-        m_docBase = docBase;
+        m_docBase = ctx.docBase;
     }
 
     /**

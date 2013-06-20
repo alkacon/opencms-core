@@ -180,7 +180,7 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
         CmsSolrQuery squery = new CmsSolrQuery(
             null,
-            CmsRequestUtil.createParameterMap("q=path:/sites/default/xmlcontent/article_0001.html"));
+            CmsRequestUtil.createParameterMap("q=path:\"/sites/default/xmlcontent/article_0001.html\""));
         CmsSolrResultList results = index.search(getCmsObject(), squery);
 
         /////////////////
@@ -281,19 +281,19 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
 
         squery = new CmsSolrQuery(
             null,
-            CmsRequestUtil.createParameterMap("q=path:/sites/default/xmlcontent/article_0002.html"));
+            CmsRequestUtil.createParameterMap("q=path:\"/sites/default/xmlcontent/article_0002.html\""));
         results = index.search(getCmsObject(), squery);
         res = results.get(0);
         assertEquals("/sites/default/xmlcontent/article_0002.html", res.getRootPath());
         assertTrue(res.getMultivaluedField("ateaser2_en_txt").contains("This is teaser 2 in sample article 2."));
-        
+
         // test multi nested elements
         List<String> teaser = res.getMultivaluedField("mteaser");
         assertTrue(teaser.contains("This is the sample article number 2. This is just a demo teaser. (>>SearchEgg2<<)"));
         assertTrue(teaser.contains("This is teaser 2 in sample article 2."));
         squery = new CmsSolrQuery(
-                null,
-                CmsRequestUtil.createParameterMap("q=path:/sites/default/flower/flower-0001.html"));
+            null,
+            CmsRequestUtil.createParameterMap("q=path:\"/sites/default/flower/flower-0001.html\""));
         results = index.search(getCmsObject(), squery);
         assertEquals(1, results.size());
         res = results.get(0);
@@ -311,7 +311,7 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         assertTrue(desc.contains("First ocurence of a nested content"));
         assertTrue(desc.contains("Second ocurence of a nested content"));
         assertTrue(desc.contains("Third ocurence of a nested content"));
-        
+
     }
 
     /**
@@ -361,7 +361,7 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         for (Map.Entry<String, List<String>> filename : filenames.entrySet()) {
             String absoluteFileName = cms.getRequestContext().addSiteRoot(folderName + filename.getKey());
             SolrQuery squery = new CmsSolrQuery();
-            squery.addFilterQuery("path:" + absoluteFileName);
+            squery.addFilterQuery("path:\"" + absoluteFileName + "\"");
             results = index.search(cms, squery);
             assertEquals(1, results.size());
             CmsSearchResource res = results.get(0);
@@ -372,7 +372,7 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         }
 
         SolrQuery squery = new CmsSolrQuery();
-        squery.addFilterQuery("path:" + "/sites/default/xmlcontent/article_0004.html");
+        squery.addFilterQuery("path:\"/sites/default/xmlcontent/article_0004.html\"");
         results = index.search(cms, squery);
         assertEquals(1, results.size());
         CmsSearchResource res = results.get(0);
@@ -541,7 +541,7 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
 
         CmsSolrQuery squery = new CmsSolrQuery(
             null,
-            CmsRequestUtil.createParameterMap("q=path:/sites/default/xmlcontent/article_0001.html"));
+            CmsRequestUtil.createParameterMap("q=path:\"/sites/default/xmlcontent/article_0001.html\""));
         CmsSolrResultList results = index.search(getCmsObject(), squery);
 
         CmsSearchResource res = results.get(0);

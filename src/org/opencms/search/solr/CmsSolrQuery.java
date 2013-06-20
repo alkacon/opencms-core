@@ -145,7 +145,7 @@ public class CmsSolrQuery extends SolrQuery {
 
         setQuery(DEFAULT_QUERY);
         setFields(ALL_RETURN_FIELDS);
-        setQueryType(DEFAULT_QUERY_TYPE);
+        setRequestHandler(DEFAULT_QUERY_TYPE);
         setRows(DEFAULT_ROWS);
 
         // set the values from the request context
@@ -175,6 +175,7 @@ public class CmsSolrQuery extends SolrQuery {
             for (String fq : fqs) {
                 if (fq.startsWith(CmsSearchField.FIELD_TYPE + ":")) {
                     String val = fq.substring((CmsSearchField.FIELD_TYPE + ":").length());
+                    val = val.replaceAll("\"", "");
                     if (OpenCms.getResourceManager().hasResourceType(val)) {
                         count++;
                         ret = val;
@@ -214,7 +215,7 @@ public class CmsSolrQuery extends SolrQuery {
         if ((sortFields != null) && !sortFields.isEmpty()) {
             // add the sort fields to the query
             for (Map.Entry<String, ORDER> entry : sortFields.entrySet()) {
-                addSortField(entry.getKey(), entry.getValue());
+                addSort(entry.getKey(), entry.getValue());
             }
         }
     }
@@ -257,7 +258,7 @@ public class CmsSolrQuery extends SolrQuery {
      * <li><code>+lastmodified:[' + date + ' TO NOW]</code>
      * </ul>
      * whereby date is Solr formated:
-     * {@link org.apache.solr.schema.DateField#formatExternal(Date)}
+     * {@link org.opencms.search.solr.CmsSolrDocument#DF}
      * <p>
      * 
      * @param dateRanges the ranges map with field name as key and a CmsPair with min date as first and max date as second
@@ -447,11 +448,11 @@ public class CmsSolrQuery extends SolrQuery {
         String filterQuery = null;
         if ((vals != null)) {
             if (vals.size() == 1) {
-                filterQuery = fieldName + ":" + vals.get(0);
+                filterQuery = fieldName + ":\"" + vals.get(0) + "\"";
             } else if (vals.size() > 1) {
                 filterQuery = fieldName + ":(";
                 for (int j = 0; j < vals.size(); j++) {
-                    String val = vals.get(j);
+                    String val = "\"" + vals.get(j) + "\"";
                     filterQuery += val;
                     if (vals.size() > (j + 1)) {
                         if (all) {

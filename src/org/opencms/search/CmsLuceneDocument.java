@@ -38,26 +38,51 @@ import org.opencms.search.fields.CmsLuceneField;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.document.Fieldable;
+import org.apache.lucene.document.FieldType;
+import org.apache.lucene.document.StoredField;
+import org.apache.lucene.document.StringField;
+import org.apache.lucene.index.IndexableField;
+import org.apache.tika.io.IOUtils;
 
 /**
- * A Lucene search document implamentation.<p>
+ * A Lucene search document implementation.<p>
  */
 public class CmsLuceneDocument implements I_CmsSearchDocument {
 
+    /**
+     * Type for a stored-only field.
+     */
+    public static final FieldType NOT_STORED_ANALYSED_TYPE;
+
+    /**
+     * Type for a stored-and analyzed fields.
+     */
+    public static final FieldType STORED_ANALYSED_TYPE;
+
+    /**
+     * Type for a stored-only field.
+     */
+    public static final FieldType STORED_NOT_ANALYSED_TYPE;
+
     /** The Lucene document. */
     private Document m_doc;
+
+    /** The fields stored in this document. */
+    private Map<String, Field> m_fields;
 
     /** Holds the score for this document. */
     private float m_score;
@@ -70,6 +95,43 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
     public CmsLuceneDocument(Document doc) {
 
         m_doc = doc;
+        m_fields = new HashMap<String, Field>();
+    }
+
+    static {
+        STORED_ANALYSED_TYPE = new FieldType();
+        STORED_ANALYSED_TYPE.setIndexed(true);
+        STORED_ANALYSED_TYPE.setOmitNorms(false);
+        STORED_ANALYSED_TYPE.setStored(true);
+        STORED_ANALYSED_TYPE.setTokenized(true);
+        STORED_ANALYSED_TYPE.setStoreTermVectorPositions(false);
+        STORED_ANALYSED_TYPE.setStoreTermVectorOffsets(false);
+        STORED_ANALYSED_TYPE.setStoreTermVectors(false);
+        STORED_ANALYSED_TYPE.freeze();
+    }
+
+    static {
+        NOT_STORED_ANALYSED_TYPE = new FieldType();
+        NOT_STORED_ANALYSED_TYPE.setIndexed(true);
+        NOT_STORED_ANALYSED_TYPE.setOmitNorms(false);
+        NOT_STORED_ANALYSED_TYPE.setStored(false);
+        NOT_STORED_ANALYSED_TYPE.setTokenized(true);
+        NOT_STORED_ANALYSED_TYPE.setStoreTermVectorPositions(false);
+        NOT_STORED_ANALYSED_TYPE.setStoreTermVectorOffsets(false);
+        NOT_STORED_ANALYSED_TYPE.setStoreTermVectors(false);
+        NOT_STORED_ANALYSED_TYPE.freeze();
+    }
+
+    static {
+        STORED_NOT_ANALYSED_TYPE = new FieldType();
+        STORED_NOT_ANALYSED_TYPE.setIndexed(true);
+        STORED_NOT_ANALYSED_TYPE.setOmitNorms(false);
+        STORED_NOT_ANALYSED_TYPE.setStored(true);
+        STORED_NOT_ANALYSED_TYPE.setTokenized(false);
+        STORED_NOT_ANALYSED_TYPE.setStoreTermVectorPositions(false);
+        STORED_NOT_ANALYSED_TYPE.setStoreTermVectorOffsets(false);
+        STORED_NOT_ANALYSED_TYPE.setStoreTermVectors(false);
+        STORED_NOT_ANALYSED_TYPE.freeze();
     }
 
     /**
@@ -114,24 +176,21 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
                 categoryBuffer.append(' ');
             }
             if (categoryBuffer.length() > 0) {
-                Fieldable field = new Field(
+                Field field = new Field(
                     CmsSearchField.FIELD_CATEGORY,
                     categoryBuffer.toString().toLowerCase(),
-                    Field.Store.YES,
-                    Field.Index.ANALYZED);
+                    STORED_ANALYSED_TYPE);
                 field.setBoost(0);
-                m_doc.add(field);
+                add(field);
             }
         } else {
             // synthetic "unknown" category if no category property defined for resource
-            Fieldable field = new Field(
+            Field field = new Field(
                 CmsSearchField.FIELD_CATEGORY,
                 CmsSearchCategoryCollector.UNKNOWN_CATEGORY,
-                Field.Store.YES,
-                Field.Index.ANALYZED);
-            m_doc.add(field);
+                STORED_ANALYSED_TYPE);
+            add(field);
         }
-
     }
 
     /**
@@ -139,7 +198,7 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
      */
     public void addContentField(byte[] data) {
 
-        Fieldable field = new Field(CmsSearchField.FIELD_CONTENT_BLOB, data);
+        Field field = new StoredField(CmsSearchField.FIELD_CONTENT_BLOB, data);
         m_doc.add(field);
     }
 
@@ -156,22 +215,19 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
      */
     public void addDateField(String name, long date, boolean analyzed) {
 
-        Fieldable field = new Field(
+        Field field = new Field(
             name,
             DateTools.dateToString(new Date(date), DateTools.Resolution.MILLISECOND),
-            Field.Store.YES,
-            Field.Index.NOT_ANALYZED);
-
+            STORED_NOT_ANALYSED_TYPE);
         field.setBoost(0.0F);
-        m_doc.add(field);
+        add(field);
+
         if (analyzed) {
             field = new Field(
                 name + CmsSearchField.FIELD_DATE_LOOKUP_SUFFIX,
                 getDateTerms(date),
-                Field.Store.NO,
-                Field.Index.ANALYZED);
-
-            m_doc.add(field);
+                NOT_STORED_ANALYSED_TYPE);
+            add(field);
         }
     }
 
@@ -189,13 +245,9 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
     public void addPathField(String rootPath) {
 
         String parentFolders = CmsSearchFieldConfiguration.getParentFolderTokens(rootPath);
-        Fieldable field = new Field(
-            CmsSearchField.FIELD_PARENT_FOLDERS,
-            parentFolders,
-            Field.Store.NO,
-            Field.Index.ANALYZED);
+        Field field = new Field(CmsSearchField.FIELD_PARENT_FOLDERS, parentFolders, NOT_STORED_ANALYSED_TYPE);
         field.setBoost(0.0F);
-        m_doc.add(field);
+        add(field);
     }
 
     /**
@@ -211,7 +263,7 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
      */
     public void addRootPathField(String rootPath) {
 
-        m_doc.add(new Field(CmsSearchField.FIELD_PATH, rootPath, Field.Store.YES, Field.Index.NOT_ANALYZED));
+        add(new StringField(CmsSearchField.FIELD_PATH, rootPath, Field.Store.YES));
     }
 
     /**
@@ -220,7 +272,7 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
     public void addSearchField(CmsSearchField field, String value) {
 
         if (field instanceof CmsLuceneField) {
-            m_doc.add(((CmsLuceneField)field).createField(value));
+            add(((CmsLuceneField)field).createField(value));
         } else {
             new CmsRuntimeException(Messages.get().container(
                 Messages.LOG_INVALID_FIELD_CLASS_1,
@@ -233,7 +285,7 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
      */
     public void addSuffixField(String suffix) {
 
-        m_doc.add(new Field(CmsSearchField.FIELD_SUFFIX, suffix, Field.Store.YES, Field.Index.NOT_ANALYZED));
+        add(new StringField(CmsSearchField.FIELD_SUFFIX, suffix, Field.Store.YES));
     }
 
     /**
@@ -241,7 +293,7 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
      */
     public void addTypeField(String typeName) {
 
-        m_doc.add(new Field(CmsSearchField.FIELD_TYPE, typeName, Field.Store.YES, Field.Index.NOT_ANALYZED));
+        add(new StringField(CmsSearchField.FIELD_TYPE, typeName, Field.Store.YES));
     }
 
     /**
@@ -249,9 +301,15 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
      */
     public byte[] getContentBlob() {
 
-        Fieldable fieldContentBlob = m_doc.getFieldable(CmsSearchField.FIELD_CONTENT_BLOB);
+        IndexableField fieldContentBlob = m_doc.getField(CmsSearchField.FIELD_CONTENT_BLOB);
         if (fieldContentBlob != null) {
-            return fieldContentBlob.getBinaryValue();
+            try {
+                if (fieldContentBlob.readerValue() != null) {
+                    return IOUtils.toByteArray(fieldContentBlob.readerValue());
+                }
+            } catch (IOException e) {
+                // TODO:
+            }
         }
         return null;
     }
@@ -270,7 +328,7 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
     public List<String> getFieldNames() {
 
         List<String> result = new ArrayList<String>();
-        for (Fieldable field : m_doc.getFields()) {
+        for (IndexableField field : m_doc.getFields()) {
             result.add(field.name());
         }
         return result;
@@ -297,7 +355,7 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
      */
     public String getFieldValueAsString(String fieldName) {
 
-        Fieldable fieldValue = m_doc.getFieldable(fieldName);
+        IndexableField fieldValue = m_doc.getField(fieldName);
         if (fieldValue != null) {
             return fieldValue.stringValue();
         }
@@ -341,7 +399,48 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
      */
     public void setBoost(float boost) {
 
-        m_doc.setBoost(boost);
+        m_doc.removeFields(CmsSearchField.FIELD_META);
+        m_doc.removeFields(CmsSearchField.FIELD_CONTENT);
+        m_doc.removeFields(CmsSearchField.FIELD_DESCRIPTION);
+        m_doc.removeFields(CmsSearchField.FIELD_KEYWORDS);
+        m_doc.removeFields(CmsSearchField.FIELD_TITLE);
+        m_doc.removeFields(CmsSearchField.FIELD_TITLE_UNSTORED);
+
+        Field f = m_fields.get(CmsSearchField.FIELD_META);
+        if (f != null) {
+            f.setBoost(boost);
+            m_doc.add(f);
+        }
+        f = m_fields.get(CmsSearchField.FIELD_CONTENT);
+        if (f != null) {
+            f.setBoost(boost);
+            m_doc.add(f);
+        }
+        f = m_fields.get(CmsSearchField.FIELD_DESCRIPTION);
+        if (f != null) {
+            f.setBoost(boost);
+            m_doc.add(f);
+        }
+        f = m_fields.get(CmsSearchField.FIELD_KEYWORDS);
+        if (f != null) {
+            f.setBoost(boost);
+            m_doc.add(f);
+        }
+        f = m_fields.get(CmsSearchField.FIELD_TITLE);
+        if (f != null) {
+            f.setBoost(boost);
+            m_doc.add(f);
+        }
+        f = m_fields.get(CmsSearchField.FIELD_META);
+        if (f != null) {
+            f.setBoost(boost);
+            m_doc.add(f);
+        }
+        f = m_fields.get(CmsSearchField.FIELD_TITLE_UNSTORED);
+        if (f != null) {
+            f.setBoost(boost);
+            m_doc.add(f);
+        }
     }
 
     /**
@@ -350,5 +449,16 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
     public void setScore(float score) {
 
         m_score = score;
+    }
+
+    /**
+     * Adds a field to this document.<p>
+     * 
+     * @param f the field to add
+     */
+    private void add(Field f) {
+
+        m_fields.put(f.name(), f);
+        m_doc.add(f);
     }
 }

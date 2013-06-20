@@ -90,14 +90,14 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
         // suite.addTest(new TestSolrConfiguration("testMultipleIndices"));
         // suite.addTest(new TestSolrConfiguration("testMultipleLanguages"));
         suite.addTest(new TestSolrConfiguration("testPostProcessor"));
-        suite.addTest(new TestSolrConfiguration("testShutDown"));
+        // suite.addTest(new TestSolrConfiguration("testShutDown"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
             @Override
             protected void setUp() {
 
-                setupOpenCms("solrtest", "/", "/../org/opencms/search/solr");
+                setupOpenCms("solrtest", "", "/../org/opencms/search/solr");
                 // disable all lucene indexes
                 for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
                     if (!indexName.equalsIgnoreCase(AllTests.SOLR_ONLINE)) {
@@ -124,6 +124,7 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
      */
     public void testExtractionResults() throws Throwable {
 
+        echo("Testing extraction results");
         CmsObject cms = getCmsObject();
         CmsResource res = cms.createSibling(
             "/xmlcontent/link_article_0001.html",
@@ -198,9 +199,8 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
      */
     public void testPostProcessor() throws Exception {
 
-        CmsObject cms = getCmsObject();
         echo("Testing Solr link processor");
-
+        CmsObject cms = getCmsObject();
         CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
         String query = "q=+text:>>SearchEgg1<<";
         CmsSolrResultList results = index.search(cms, query);
@@ -216,6 +216,7 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
      */
     public void testShutDown() throws Throwable {
 
+        echo("Testing Solr shutdown");
         CmsSolrIndex index = new CmsSolrIndex(AllTests.INDEX_TEST);
         index.setProject("Offline");
         index.setLocale(Locale.GERMAN);
