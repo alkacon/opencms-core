@@ -524,32 +524,38 @@ public class CmsSolrIndex extends CmsSearchIndex {
             SolrCore core = m_solr instanceof EmbeddedSolrServer
             ? ((EmbeddedSolrServer)m_solr).getCoreContainer().getCore(getName())
             : null;
-            CmsSolrResultList result = new CmsSolrResultList(
-                core,
-                initQuery,
-                queryResponse,
-                solrDocumentList,
-                resourceDocumentList,
-                start,
-                new Integer(rows),
-                end,
-                page,
-                visibleHitCount,
-                new Float(maxScore),
-                startTime);
+            try {
+                CmsSolrResultList result = new CmsSolrResultList(
+                    core,
+                    initQuery,
+                    queryResponse,
+                    solrDocumentList,
+                    resourceDocumentList,
+                    start,
+                    new Integer(rows),
+                    end,
+                    page,
+                    visibleHitCount,
+                    new Float(maxScore),
+                    startTime);
 
-            if (LOG.isDebugEnabled()) {
-                Object[] logParams = new Object[] {
-                    new Long(System.currentTimeMillis() - startTime),
-                    new Long(result.getNumFound()),
-                    new Long(solrTime),
-                    new Long(processTime),
-                    new Long(result.getHighlightEndTime() != 0 ? result.getHighlightEndTime() - startTime : 0)};
-                LOG.debug(query.toString()
-                    + "\n"
-                    + Messages.get().getBundle().key(Messages.LOG_SOLR_SEARCH_EXECUTED_5, logParams));
+                if (LOG.isDebugEnabled()) {
+                    Object[] logParams = new Object[] {
+                        new Long(System.currentTimeMillis() - startTime),
+                        new Long(result.getNumFound()),
+                        new Long(solrTime),
+                        new Long(processTime),
+                        new Long(result.getHighlightEndTime() != 0 ? result.getHighlightEndTime() - startTime : 0)};
+                    LOG.debug(query.toString()
+                        + "\n"
+                        + Messages.get().getBundle().key(Messages.LOG_SOLR_SEARCH_EXECUTED_5, logParams));
+                }
+                return result;
+            } finally {
+                if (core != null) {
+                    core.close();
+                }
             }
-            return result;
         } catch (Exception e) {
             throw new CmsSearchException(Messages.get().container(
                 Messages.LOG_SOLR_ERR_SEARCH_EXECUTION_FAILD_1,
@@ -657,26 +663,32 @@ public class CmsSolrIndex extends CmsSearchIndex {
 
         if (m_solr instanceof EmbeddedSolrServer) {
             SolrCore core = ((EmbeddedSolrServer)m_solr).getCoreContainer().getCore(getName());
-            SolrQueryRequest queryRequest = result.getSolrQueryRequest();
-            SolrQueryResponse queryResponse = result.getSolrQueryResponse();
-            QueryResponseWriter responseWriter = core.getQueryResponseWriter(queryRequest);
+            try {
+                SolrQueryRequest queryRequest = result.getSolrQueryRequest();
+                SolrQueryResponse queryResponse = result.getSolrQueryResponse();
+                QueryResponseWriter responseWriter = core.getQueryResponseWriter(queryRequest);
 
-            final String ct = responseWriter.getContentType(queryRequest, queryResponse);
-            if (null != ct) {
-                response.setContentType(ct);
-            }
+                final String ct = responseWriter.getContentType(queryRequest, queryResponse);
+                if (null != ct) {
+                    response.setContentType(ct);
+                }
 
-            if (responseWriter instanceof BinaryQueryResponseWriter) {
-                BinaryQueryResponseWriter binWriter = (BinaryQueryResponseWriter)responseWriter;
-                binWriter.write(response.getOutputStream(), queryRequest, queryResponse);
-            } else {
-                String charset = ContentStreamBase.getCharsetFromContentType(ct);
-                Writer out = ((charset == null) || charset.equalsIgnoreCase(UTF8.toString())) ? new OutputStreamWriter(
-                    response.getOutputStream(),
-                    UTF8) : new OutputStreamWriter(response.getOutputStream(), charset);
-                out = new FastWriter(out);
-                responseWriter.write(out, queryRequest, queryResponse);
-                out.flush();
+                if (responseWriter instanceof BinaryQueryResponseWriter) {
+                    BinaryQueryResponseWriter binWriter = (BinaryQueryResponseWriter)responseWriter;
+                    binWriter.write(response.getOutputStream(), queryRequest, queryResponse);
+                } else {
+                    String charset = ContentStreamBase.getCharsetFromContentType(ct);
+                    Writer out = ((charset == null) || charset.equalsIgnoreCase(UTF8.toString()))
+                    ? new OutputStreamWriter(response.getOutputStream(), UTF8)
+                    : new OutputStreamWriter(response.getOutputStream(), charset);
+                    out = new FastWriter(out);
+                    responseWriter.write(out, queryRequest, queryResponse);
+                    out.flush();
+                }
+            } finally {
+                if (core != null) {
+                    core.close();
+                }
             }
         } else {
             throw new UnsupportedOperationException();
@@ -698,11 +710,15 @@ public class CmsSolrIndex extends CmsSearchIndex {
             CoreContainer con = ser.getCoreContainer();
             SolrCore core = con.getCore(getName());
             if (core != null) {
-                SolrRequestHandler h = core.getRequestHandler("/replication");
-                if (h instanceof ReplicationHandler) {
-                    h.handleRequest(
-                        new LocalSolrQueryRequest(core, CmsRequestUtil.createParameterMap("?command=backup")),
-                        new SolrQueryResponse());
+                try {
+                    SolrRequestHandler h = core.getRequestHandler("/replication");
+                    if (h instanceof ReplicationHandler) {
+                        h.handleRequest(
+                            new LocalSolrQueryRequest(core, CmsRequestUtil.createParameterMap("?command=backup")),
+                            new SolrQueryResponse());
+                    }
+                } finally {
+                    core.close();
                 }
             }
         }

@@ -1706,10 +1706,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             m_coreContainer = createCoreContainer();
         }
 
-        // get the core
-        SolrCore core = m_coreContainer.getCore(index.getName());
-
-        if (core == null) {
+        // create a new core if no core exists for the given index
+        if (!m_coreContainer.getCoreNames().contains(index.getName())) {
             // Being sure the core container is not 'null',
             // we can create a core for this index if not already existent
             File dataDir = new File(index.getPath());
@@ -1728,7 +1726,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             CoreDescriptor descriptor = new CoreDescriptor(m_coreContainer, "descriptor", m_solrConfig.getHome());
             descriptor.setDataDir(dataDir.getAbsolutePath());
             try {
-                core = m_coreContainer.create(descriptor);
+                SolrCore core = m_coreContainer.create(descriptor);
                 core.setName(index.getName());
                 // Register the newly created core
                 m_coreContainer.register(core, false);
