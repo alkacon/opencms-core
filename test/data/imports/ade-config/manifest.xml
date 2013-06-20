@@ -593,42 +593,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.ade.config/copyresources/models</destination>
-			<type>folder</type>
-			<uuidstructure>c913fc31-70d5-11e0-9709-91706a02fba1</uuidstructure>
-			<datelastmodified>Wed, 27 Apr 2011 13:53:52 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 27 Apr 2011 13:53:52 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Model folder]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.ade.config/copyresources/models/pages</destination>
-			<type>folder</type>
-			<uuidstructure>c91fe314-70d5-11e0-9709-91706a02fba1</uuidstructure>
-			<datelastmodified>Wed, 27 Apr 2011 13:53:52 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 27 Apr 2011 13:53:52 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Models for container pages]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<destination>system/modules/org.opencms.ade.config/schemas</destination>
 			<type>folder</type>
 			<uuidstructure>11e58fdd-70df-11e0-b650-91706a02fba1</uuidstructure>
