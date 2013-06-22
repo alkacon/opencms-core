@@ -420,10 +420,12 @@ public class TestSolrSearch extends OpenCmsTestCase {
         AllTests.printResults(cms, results, false);
         assertEquals(orgCount + 1, results.size());
 
+        // wait a second because the Solr time range precision
+        Thread.sleep(1000);
+
         // check min date last modified
         stamp = new Date();
         date = DF.format(stamp);
-        Thread.sleep(100);
         query = "?rows=50&q=+text:OpenCms" + "&fq=lastmodified:[" + date + " TO NOW]";
         results = index.search(getCmsObject(), query);
         AllTests.printResults(getCmsObject(), results, false);
