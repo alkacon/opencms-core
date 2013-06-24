@@ -105,6 +105,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
     /** Schema id 6. */
     private static final String SCHEMA_SYSTEM_ID_6 = "http://www.opencms.org/test6.xsd";
+
     /** Schema id 7. */
     private static final String SCHEMA_SYSTEM_ID_7 = "http://www.opencms.org/test7.xsd";
 
@@ -1369,6 +1370,26 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals(propValue, prop3.getValue());
         assertEquals(propValue, prop3.getStructureValue());
         assertNull(prop3.getResourceValue());
+
+        // test removal of mapped values 
+        xmlcontent.removeValue("VfsFile3", Locale.ENGLISH, 0);
+        xmlcontent.removeValue("VfsFile3", Locale.ENGLISH, 0);
+        xmlcontent.removeValue("VfsFile3", Locale.ENGLISH, 0);
+        xmlcontent.removeValue("VfsFile3", Locale.ENGLISH, 0);
+        file.setContents(xmlcontent.toString().getBytes(CmsEncoder.ENCODING_ISO_8859_1));
+        cms.writeFile(file);
+        CmsProperty p = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_NAVTEXT, false);
+        assertNull(p.getStructureValue());
+
+        xmlcontent.removeValue("VfsFile2", Locale.ENGLISH, 0);
+        xmlcontent.removeValue("VfsFile2", Locale.ENGLISH, 0);
+        xmlcontent.removeValue("VfsFile2", Locale.ENGLISH, 0);
+        xmlcontent.removeValue("VfsFile2", Locale.ENGLISH, 0);
+        file.setContents(xmlcontent.toString().getBytes(CmsEncoder.ENCODING_ISO_8859_1));
+        cms.writeFile(file);
+        p = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_KEYWORDS, false);
+        assertNull(p.getResourceValue());
+
     }
 
     /**
@@ -1795,7 +1816,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_1L2, content.getBytes(CmsEncoder.ENCODING_UTF_8));
 
         CmsXmlContent xmlcontentDE = CmsXmlContentFactory.createDocument(cms, Locale.GERMAN, content, definition);
-        // the unicode represents äöüÄÖÜß€
+        // the unicode represents ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß€
         assertEquals(
             "Dies ist etwas Text EINS \u00E4\u00F6\u00FC\u00C4\u00D6\u00DC\u00DF\u20AC",
             xmlcontentDE.getStringValue(cms, "StringOne", Locale.GERMAN));
