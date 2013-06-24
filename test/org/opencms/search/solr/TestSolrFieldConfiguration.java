@@ -211,37 +211,37 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
 
         // Test the contents of the copy fields
         fieldValue = res.getField("test_text_de");
-        assertEquals(true, fieldValue.contains("Alkacon Software German"));
+        assertTrue(fieldValue.contains("Alkacon Software German"));
         fieldValue = res.getField("test_text_en");
-        assertEquals(true, fieldValue.contains("Alkacon Software German"));
+        assertTrue(fieldValue.contains("Alkacon Software German"));
 
         fieldValue = res.getField("explicit_title");
-        assertEquals(true, fieldValue.contains("Sample article 1  (>>SearchEgg1<<)"));
+        assertTrue(fieldValue.contains("Sample article 1  (>>SearchEgg1<<)"));
 
         // Test locale restricted field
         fieldValue = res.getField("aauthor_de");
-        assertEquals(true, fieldValue.equals("Alkacon Software German"));
+        assertTrue(fieldValue.equals("Alkacon Software German"));
         fieldValue = res.getField("aauthor_en");
         assertNull(fieldValue);
 
         // Test source field
         Date dateValue = res.getDateField("arelease_en_dt");
-        assertEquals(true, "1308210520000".equals(new Long(dateValue.getTime()).toString()));
+        assertTrue("1308210520000".equals(new Long(dateValue.getTime()).toString()));
         dateValue = res.getDateField("arelease_de_dt");
-        assertEquals(true, "1308210420000".equals(new Long(dateValue.getTime()).toString()));
+        assertTrue("1308210420000".equals(new Long(dateValue.getTime()).toString()));
 
         // test 'default' value for the whole field
         fieldValue = res.getField("ahomepage_de");
-        assertEquals(true, fieldValue.equals("Homepage n.a."));
+        assertTrue(fieldValue.equals("Homepage n.a."));
         fieldValue = res.getField("ahomepage_en");
-        assertEquals(true, fieldValue.contains("/sites/default/index.html"));
+        assertTrue(fieldValue.contains("/sites/default/index.html"));
 
         // Test the boost to have a complete set of test cases
         // the boost for a field can only be set for "SolrInputDocument"s
         // fields of documents that are returned as query result "SolrDocument"s
         // never have a boost
         float boost = ((SolrInputDocument)res.getDocument().getDocument()).getField("ahtml_en").getBoost();
-        assertEquals(true, 1.0F == boost);
+        assertTrue(1.0F == boost);
 
         //////////////////
         // MAPPING TEST // 
@@ -252,36 +252,36 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
 
         // test the 'content' mapping
         fieldValue = res.getField("ateaser_en");
-        assertEquals(true, fieldValue.contains("OpenCms Alkacon This is the article 1 text"));
+        assertTrue(fieldValue.contains("OpenCms Alkacon This is the article 1 text"));
 
         // test the 'item' mapping with default
         fieldValue = res.getField("ateaser_en");
-        assertEquals(true, fieldValue.contains("/sites/default/index.html"));
+        assertTrue(fieldValue.contains("/sites/default/index.html"));
         fieldValue = res.getField("ateaser_de");
-        assertEquals(true, fieldValue.contains("Homepage n.a."));
+        assertTrue(fieldValue.contains("Homepage n.a."));
 
         // test the property mapping
         fieldValue = res.getField("atitle_en");
-        assertEquals(true, fieldValue.contains("Alkacon Software English"));
+        assertTrue(fieldValue.contains("Alkacon Software English"));
         fieldValue = res.getField("atitle_de");
         // properties are not localized
         assertEquals(false, fieldValue.contains("Alkacon Software German"));
-        assertEquals(true, fieldValue.contains("Alkacon Software English"));
+        assertTrue(fieldValue.contains("Alkacon Software English"));
         // but the title item value is localized
-        assertEquals(true, fieldValue.contains(">>GermanSearchEgg1<<"));
+        assertTrue(fieldValue.contains(">>GermanSearchEgg1<<"));
 
         // test the 'property-search' mapping
         fieldValue = res.getField("ateaser_en");
-        assertEquals(true, fieldValue.contains("Cologne is a nice city"));
+        assertTrue(fieldValue.contains("Cologne is a nice city"));
 
         // test the 'attribute' mapping
         fieldValue = res.getField("ateaser_en");
         // This is the Lucene optimized String representaion of the date
-        assertEquals(true, fieldValue.contains("20110616074840000"));
+        assertTrue(fieldValue.contains("20110616074840000"));
 
         // test the 'dynamic' mapping with 'class' attribute
         fieldValue = res.getField("ateaser_en");
-        assertEquals(true, fieldValue.contains("This is an amazing and very 'dynamic' content"));
+        assertTrue(fieldValue.contains("This is an amazing and very 'dynamic' content"));
 
         squery = new CmsSolrQuery(
             null,
@@ -289,7 +289,33 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         results = index.search(getCmsObject(), squery);
         res = results.get(0);
         assertEquals("/sites/default/xmlcontent/article_0002.html", res.getRootPath());
-        assertEquals(true, res.getMultivaluedField("ateaser2_en_txt").contains("This is teaser 2 in sample article 2."));
+        assertTrue(res.getMultivaluedField("ateaser2_en_txt").contains("This is teaser 2 in sample article 2."));
+
+        // test multi nested elements
+        List<String> teaser = res.getMultivaluedField("mteaser");
+        assertTrue(teaser.contains("This is the sample article number 2. This is just a demo teaser. (>>SearchEgg2<<)"));
+        assertTrue(teaser.contains("This is teaser 2 in sample article 2."));
+        squery = new CmsSolrQuery(
+            null,
+            CmsRequestUtil.createParameterMap("q=path:/sites/default/flower/flower-0001.html"));
+        results = index.search(getCmsObject(), squery);
+        assertEquals(1, results.size());
+        res = results.get(0);
+        assertEquals("/sites/default/flower/flower-0001.html", res.getRootPath());
+        List<String> desc = res.getMultivaluedField("desc_en");
+        assertEquals(3, desc.size());
+        assertTrue(desc.contains("This is the first paragraph of the test flower."));
+        assertTrue(desc.contains("This is the second paragraph of the test flower."));
+        assertTrue(desc.contains("This is the third paragraph of the test flower."));
+        desc = res.getMultivaluedField("desc_de");
+        assertEquals(2, desc.size());
+        assertTrue(desc.contains("Dies ist der erste Absatz der neuen Testblume ..."));
+        assertTrue(desc.contains("Dies ist der sweite Absatz der neuen Testblume ..."));
+        desc = res.getMultivaluedField("mteaser");
+        assertTrue(desc.contains("First ocurence of a nested content"));
+        assertTrue(desc.contains("Second ocurence of a nested content"));
+        assertTrue(desc.contains("Third ocurence of a nested content"));
+
     }
 
     /**

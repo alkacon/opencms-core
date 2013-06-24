@@ -528,48 +528,50 @@ public class TestSolrSearch extends OpenCmsTestCase {
      */
     public void testLocaleRestriction() throws Throwable {
 
-        CmsObject cms = OpenCms.initCmsObject(getCmsObject());
+        // turn off the language detection
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
+        index.setLanguageDetection(false);
 
-        // use a folder that only contains GERMAN content @see manifest.xml -> locale poperty
+        // some Strings
+        String queryText = "Language Detection Document";
         String folderName = "/folder1/subfolder12/subsubfolder121/";
+        String refsSource = "org/opencms/search/solr/lang-detect-doc.pdf";
 
+        // import some test files
+        CmsObject cms = OpenCms.initCmsObject(getCmsObject());
         CmsResource master = importTestResource(
             cms,
-            "org/opencms/search/pdf-test-112.pdf",
+            refsSource,
             folderName + "master.pdf",
             CmsResourceTypeBinary.getStaticTypeId(),
             Collections.<CmsProperty> emptyList());
-
         CmsResource de = importTestResource(
             cms,
-            "org/opencms/search/pdf-test-112.pdf",
+            refsSource,
             folderName + "master_de.pdf",
             CmsResourceTypeBinary.getStaticTypeId(),
             Collections.<CmsProperty> emptyList());
-
         CmsResource en = importTestResource(
             cms,
-            "org/opencms/search/pdf-test-112.pdf",
+            refsSource,
             folderName + "master_en.pdf",
             CmsResourceTypeBinary.getStaticTypeId(),
             Collections.<CmsProperty> emptyList());
-
         CmsResource fr = importTestResource(
             cms,
-            "org/opencms/search/pdf-test-112.pdf",
+            refsSource,
             folderName + "master_fr.pdf",
             CmsResourceTypeBinary.getStaticTypeId(),
             Collections.<CmsProperty> emptyList());
 
         // publish the project and update the search index
-        OpenCms.getPublishManager().publishProject(cms, new CmsShellReport(cms.getRequestContext().getLocale()));
+        OpenCms.getPublishManager().publishProject(cms, null);
         OpenCms.getPublishManager().waitWhileRunning();
-
-        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
 
         cms.getRequestContext().setLocale(Locale.GERMAN);
         CmsSolrQuery query = new CmsSolrQuery(cms, null);
-        query.setText("Testfile Intranet");
+        query.setText(queryText);
+
         CmsSolrResultList result = index.search(cms, query);
         assertTrue(!result.contains(master));
         assertTrue(!result.contains(en));
@@ -578,7 +580,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
 
         query = new CmsSolrQuery();
         query.setLocales(Collections.singletonList(Locale.GERMAN));
-        query.setText("Testfile Intranet");
+        query.setText(queryText);
         result = index.search(cms, query);
         assertTrue(!result.contains(master));
         assertTrue(!result.contains(en));
@@ -587,7 +589,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
 
         query = new CmsSolrQuery();
         query.setLocales(Collections.singletonList(Locale.FRENCH));
-        query.setText("Testfile Intranet");
+        query.setText(queryText);
         result = index.search(cms, query);
         assertTrue(!result.contains(master));
         assertTrue(!result.contains(en));
@@ -597,7 +599,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
         // Locale set to English: should return the master and the master_en
         query = new CmsSolrQuery();
         query.setLocales(Collections.singletonList(Locale.ENGLISH));
-        query.setText("Testfile Intranet");
+        query.setText(queryText);
         result = index.search(cms, query);
         assertTrue(result.contains(master));
         assertTrue(result.contains(en));
@@ -608,12 +610,15 @@ public class TestSolrSearch extends OpenCmsTestCase {
         query = new CmsSolrQuery();
         List<Locale> l = Collections.emptyList();
         query.setLocales(l);
-        query.setText("Testfile Intranet");
+        query.setText(queryText);
         result = index.search(cms, query);
         assertTrue(result.contains(master));
         assertTrue(result.contains(en));
         assertTrue(result.contains(de));
         assertTrue(result.contains(fr));
+
+        // turn the language detection on again
+        index.setLanguageDetection(true);
     }
 
     /**

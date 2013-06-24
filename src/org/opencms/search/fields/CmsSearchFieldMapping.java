@@ -38,10 +38,12 @@ import org.opencms.main.CmsRuntimeException;
 import org.opencms.search.Messages;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.CmsXmlUtils;
 
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.lucene.document.DateTools;
 
@@ -171,9 +173,9 @@ public class CmsSearchFieldMapping implements I_CmsSearchFieldMapping {
                     content = CmsProperty.get(getParam(), propertiesSearched).getValue();
                 }
                 break;
-            case 3: // item
+            case 3: // item (retrieve value for the given XPath from the content items)
                 if ((extractionResult != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParam())) {
-                    content = extractionResult.getContentItems().get(getParam());
+                    content = getContentItemForXPath(extractionResult.getContentItems(), getParam());
                 }
                 break;
             case 5: // attribute
@@ -356,4 +358,27 @@ public class CmsSearchFieldMapping implements I_CmsSearchFieldMapping {
         setType(mappingType);
     }
 
+    /**
+     * Returns a "\n" separated String of values for the given XPath if according content items can be found.<p>
+     * 
+     * @param contentItems the content items to get the value from
+     * @param xpath the short XPath parameter to get the value for
+     * 
+     * @return a "\n" separated String of element values found in the content items for the given XPath
+     */
+    private String getContentItemForXPath(Map<String, String> contentItems, String xpath) {
+
+        if (contentItems.get(xpath) != null) { // content item found for XPath
+            return contentItems.get(xpath);
+        } else { // try a multiple value mapping
+            StringBuffer result = new StringBuffer();
+            for (Map.Entry<String, String> entry : contentItems.entrySet()) {
+                if (CmsXmlUtils.removeXpath(entry.getKey()).equals(xpath)) { // the removed path refers an item
+                    result.append(entry.getValue());
+                    result.append("\n");
+                }
+            }
+            return result.length() > 1 ? result.toString().substring(0, result.length() - 1) : null;
+        }
+    }
 }

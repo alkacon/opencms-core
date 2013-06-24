@@ -233,6 +233,105 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+        <file>
+            <destination>sites/default/flower</destination>
+            <type>folder</type>
+            <uuidstructure>bc02340a-9851-11e2-9a21-c31143884f91</uuidstructure>
+            <datelastmodified>Fri, 29 Mar 2013 09:19:18 GMT</datelastmodified>
+            <userlastmodified>Admin</userlastmodified>
+            <datecreated>Fri, 29 Mar 2013 09:19:18 GMT</datecreated>
+            <usercreated>Admin</usercreated>
+            <flags>0</flags>
+            <properties/>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            <source>sites/default/flower/flower-0001.html</source>
+            <destination>sites/default/flower/flower-0001.html</destination>
+            <type>v8flower</type>
+            <uuidstructure>e23a4a9c-9851-11e2-9a21-c31143884f91</uuidstructure>
+            <uuidresource>e23a4a9d-9851-11e2-9a21-c31143884f91</uuidresource>
+            <datelastmodified>Fri, 29 Mar 2013 09:38:26 GMT</datelastmodified>
+            <userlastmodified>Admin</userlastmodified>
+            <datecreated>Fri, 29 Mar 2013 09:20:23 GMT</datecreated>
+            <usercreated>Admin</usercreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value><![CDATA[New test flower 1]]></value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            <destination>sites/default/flower/schema</destination>
+            <type>folder</type>
+            <uuidstructure>dcd8cf8a-9853-11e2-9a21-c31143884f91</uuidstructure>
+            <datelastmodified>Fri, 29 Mar 2013 09:34:32 GMT</datelastmodified>
+            <userlastmodified>Admin</userlastmodified>
+            <datecreated>Fri, 29 Mar 2013 09:34:32 GMT</datecreated>
+            <usercreated>Admin</usercreated>
+            <flags>0</flags>
+            <properties/>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            <source>sites/default/flower/schema/flower.xsd</source>
+            <destination>sites/default/flower/schema/flower.xsd</destination>
+            <type>plain</type>
+            <uuidstructure>d18216ff-9852-11e2-9a21-c31143884f91</uuidstructure>
+            <uuidresource>d1821700-9852-11e2-9a21-c31143884f91</uuidresource>
+            <datelastmodified>Fri, 29 Mar 2013 09:34:53 GMT</datelastmodified>
+            <userlastmodified>Admin</userlastmodified>
+            <datecreated>Fri, 29 Mar 2013 09:27:04 GMT</datecreated>
+            <usercreated>Admin</usercreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value><![CDATA[XSD for flower]]></value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            <destination>sites/default/flower/schema/nested</destination>
+            <type>folder</type>
+            <uuidstructure>d19c55c2-9852-11e2-9a21-c31143884f91</uuidstructure>
+            <datelastmodified>Fri, 29 Mar 2013 09:27:04 GMT</datelastmodified>
+            <userlastmodified>Admin</userlastmodified>
+            <datecreated>Fri, 29 Mar 2013 09:27:04 GMT</datecreated>
+            <usercreated>Admin</usercreated>
+            <flags>0</flags>
+            <properties/>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            <source>sites/default/flower/schema/nested/description.xsd</source>
+            <destination>sites/default/flower/schema/nested/description.xsd</destination>
+            <type>plain</type>
+            <uuidstructure>d1a27044-9852-11e2-9a21-c31143884f91</uuidstructure>
+            <uuidresource>d1a27045-9852-11e2-9a21-c31143884f91</uuidresource>
+            <datelastmodified>Fri, 29 Mar 2013 09:35:09 GMT</datelastmodified>
+            <userlastmodified>Admin</userlastmodified>
+            <datecreated>Fri, 29 Mar 2013 09:27:04 GMT</datecreated>
+            <usercreated>Admin</usercreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value><![CDATA[Nested XSD for flower description]]></value>
+                </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+        </file>
 		<file>
 			<destination>sites/default/folder1</destination>
 			<type>folder</type>

@@ -58,6 +58,7 @@
 						<mapping type="dynamic" class="org.opencms.search.solr.CmsDynamicDummyField">special</mapping>
 					</solrfield>
 					<solrfield targetfield="ateaser2" sourcefield="*_txt" />
+					<solrfield targetfield="mteaser" locale="none" />
 				</searchsetting>
 				<searchsetting element="Text" searchcontent="true">
 					<solrfield targetfield="ahtml" boost="2.0"/>
