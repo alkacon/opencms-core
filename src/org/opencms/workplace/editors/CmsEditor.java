@@ -737,6 +737,15 @@ public abstract class CmsEditor extends CmsEditorBase {
 
         try {
             if (Boolean.valueOf(getParamDirectedit()).booleanValue()) {
+                try {
+                    // apply auto time-warp in case of editing an expired/unreleased resource
+                    CmsResource resource = getCms().readResource(
+                        getParamResource(),
+                        CmsResourceFilter.IGNORE_EXPIRATION);
+                    autoTimeWarp(resource);
+                } catch (Exception e) {
+                    LOG.warn(e.getLocalizedMessage(), e);
+                }
                 // editor is in direct edit mode
                 if (CmsStringUtil.isNotEmpty(getParamBacklink())) {
                     // set link to the specified back link target
