@@ -134,7 +134,9 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
                     I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(element.getResource());
                     CmsFormatterConfiguration formatters = type.getFormattersForResource(cms, element.getResource());
 
-                    if (formatters.isSearchContent(element.getFormatterId())) {
+                    if ((formatters != null)
+                        && (element.getFormatterId() != null)
+                        && formatters.isSearchContent(element.getFormatterId())) {
                         // the content of this element must be included for the container page
                         element.initResource(cms);
                         all.add(super.extractContent(cms, element.getResource(), index));
