@@ -1,4 +1,4 @@
-.attributeValue, .dragHelper, .emptyValue, .entity, .label, .widgetHolder{}
+.attributeValue, .dragHelper, .emptyValue, .entity, .label, .widgetHolder, .singleLine, .compactView, .firstColumn, .secondColumn, .defaultView{}
 
 .widget.galleryField .fieldBox{
 	border: 1px solid #7788AA;

@@ -67,14 +67,14 @@ public interface I_CmsXmlContentHandler {
         /** The two column type. */
         column,
 
-        /** The compact type. */
-        compact,
-
         /** The single line type. */
         singleline,
 
         /** The default wide display type. */
-        wide
+        wide,
+
+        /** The default display type. */
+        none
     }
 
     /** List of all allowed attribute mapping names, for fast lookup. */

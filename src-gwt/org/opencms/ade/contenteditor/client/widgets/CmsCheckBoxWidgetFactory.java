@@ -60,9 +60,9 @@ public class CmsCheckBoxWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
      */
     public I_FormEditWidget createFormWidget(String configuration) {
 
-        FormWidgetWrapper test = new FormWidgetWrapper(new CmsCheckboxWidget());
-        test.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().checkBoxStyle());
-        return test;
+        FormWidgetWrapper wrapper = new FormWidgetWrapper(new CmsCheckboxWidget());
+        wrapper.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().checkBoxStyle());
+        return wrapper;
 
     }
 

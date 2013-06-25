@@ -41,6 +41,7 @@ import org.opencms.relations.CmsCategoryService;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.xml.content.I_CmsXmlContentHandler.DisplayType;
 import org.opencms.xml.types.A_CmsXmlContentValue;
 import org.opencms.xml.types.CmsXmlCategoryValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
@@ -207,6 +208,14 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
 
         // nothing to do
         return null;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getDefaultDisplayType()
+     */
+    public DisplayType getDefaultDisplayType() {
+
+        return DisplayType.wide;
     }
 
     /**

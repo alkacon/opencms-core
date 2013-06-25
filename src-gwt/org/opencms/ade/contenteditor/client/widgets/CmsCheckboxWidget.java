@@ -31,7 +31,9 @@ import com.alkacon.acacia.client.css.I_LayoutBundle;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
+import org.opencms.gwt.client.util.CmsDomUtil;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -53,7 +55,6 @@ public class CmsCheckboxWidget extends Composite implements I_EditWidget {
 
     /**
      * Constructs an OptionalTextBox with the given caption on the check.<p>
-     * 
      */
     public CmsCheckboxWidget() {
 
@@ -135,6 +136,11 @@ public class CmsCheckboxWidget extends Composite implements I_EditWidget {
      */
     public void setActive(boolean active) {
 
+        // fix button bar positioning issue
+        Element parent = CmsDomUtil.getAncestor(getElement(), I_LayoutBundle.INSTANCE.form().attributeValue());
+        if (parent != null) {
+            parent.addClassName(I_LayoutBundle.INSTANCE.form().shallowWidget());
+        }
         // control if the value has not change do nothing.        
         if (m_active == active) {
             return;
@@ -147,7 +153,6 @@ public class CmsCheckboxWidget extends Composite implements I_EditWidget {
         }
         // activate the checkbox.
         m_checkbox.setEnabled(active);
-
     }
 
     /**

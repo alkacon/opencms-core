@@ -667,7 +667,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         if (m_displayTypes.containsKey(type.getName())) {
             return m_displayTypes.get(type.getName());
         } else {
-            return DisplayType.wide;
+            return DisplayType.none;
         }
     }
 

@@ -36,6 +36,7 @@ import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsRole;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.xml.content.I_CmsXmlContentHandler.DisplayType;
 import org.opencms.xml.types.A_CmsXmlContentValue;
 
 import java.util.Iterator;
@@ -148,6 +149,14 @@ public class CmsOrgUnitWidget extends A_CmsWidget implements I_CmsADEWidget {
     public List<String> getCssResourceLinks(CmsObject cms) {
 
         return null;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getDefaultDisplayType()
+     */
+    public DisplayType getDefaultDisplayType() {
+
+        return DisplayType.singleline;
     }
 
     /**

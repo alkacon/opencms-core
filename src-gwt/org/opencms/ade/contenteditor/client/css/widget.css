@@ -262,30 +262,29 @@ div.colorPicker{
 	border: 1px solid value("constants.css.borderColor");
 }
 
-
 /** Checkbox styles*/
-
-.checkBoxStyle.inActive div.label{
+.singleLine{}
+.defaultView > div > .checkBoxStyle.inActive .label, .compactView > div > .checkBoxStyle.inActive .label, .firstColumn > div > .checkBoxStyle.inActive .label, .secondColumn > div > .checkBoxStyle.inActive .label{
 	color: #000000;
 }
-.checkBoxStyle:hover.inActive div.label{
+.defaultView > div > .checkBoxStyle:hover.inActive .label, .compactView > div > .checkBoxStyle:hover.inActive .label, .firstColumn > div > .checkBoxStyle:hover.inActive .label, .secondColumn > div > .checkBoxStyle:hover.inActive .label{
 	color: #000000;
 }
 
-.checkBoxStyle:hover div.label {
+.defaultView > div > .checkBoxStyle:hover .label, .compactView > div > .checkBoxStyle:hover .label, .firstColumn > div > .checkBoxStyle:hover .label, .secondColumn > div > .checkBoxStyle:hover .label  {
 	color: #445577;
 }
 
-.checkBoxStyle div.label{
+.defaultView > div > .checkBoxStyle div.label, .compactView > div > .checkBoxStyle div.label, .firstColumn > div > .checkBoxStyle div.label, .secondColumn > div > .checkBoxStyle div.label{
 		margin: 0px 3px 0px 20px;
 }
-.checkBoxStyle .widget{
+.defaultView > div > .checkBoxStyle .widget, .compactView > div > .checkBoxStyle .widget, .firstColumn > div > .checkBoxStyle .widget, .secondColumn > div > .checkBoxStyle .widget{
 	position: absolute;
 	margin: 0 !important;
 	left: 0 !important;
 }
 
-div.checkBoxStyle{
+.defaultView > div > div.checkBoxStyle, .compactView > div > div.checkBoxStyle, .firstColumn > div > div.checkBoxStyle, .secondColumn > div > div.checkBoxStyle{
 	position: relative;
 	height: 22px;
 }
@@ -325,17 +324,6 @@ div.checkBoxStyle{
 
 
 .entity .checkBoxStyle .widget{
-	top: 5px;
-}
-.entity .entity .checkBoxStyle .widget{
-	top: 6px;
-}
-
-.entity .entity .entity .checkBoxStyle .widget{
-	top: 4px;
-}
-
-.entity .entity .entity .entity .checkBoxStyle .widget{
 	top: 3px;
 }
 

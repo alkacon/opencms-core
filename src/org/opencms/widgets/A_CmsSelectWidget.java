@@ -32,6 +32,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.content.I_CmsXmlContentHandler.DisplayType;
 import org.opencms.xml.types.A_CmsXmlContentValue;
 
 import java.util.ArrayList;
@@ -158,6 +159,14 @@ public abstract class A_CmsSelectWidget extends A_CmsWidget implements I_CmsADEW
     public List<String> getCssResourceLinks(CmsObject cms) {
 
         return null;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getDefaultDisplayType()
+     */
+    public DisplayType getDefaultDisplayType() {
+
+        return DisplayType.singleline;
     }
 
     /**

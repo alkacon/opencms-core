@@ -41,6 +41,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.editors.CmsEditorDisplayOptions;
 import org.opencms.workplace.editors.CmsWorkplaceEditorConfiguration;
 import org.opencms.workplace.editors.I_CmsEditorCssHandler;
+import org.opencms.xml.content.I_CmsXmlContentHandler.DisplayType;
 import org.opencms.xml.types.A_CmsXmlContentValue;
 
 import java.io.UnsupportedEncodingException;
@@ -117,6 +118,14 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
 
         // not needed for internal widget
         return null;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getDefaultDisplayType()
+     */
+    public DisplayType getDefaultDisplayType() {
+
+        return DisplayType.wide;
     }
 
     /**

@@ -33,6 +33,7 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.content.I_CmsXmlContentHandler.DisplayType;
 import org.opencms.xml.types.A_CmsXmlContentValue;
 
 import java.util.List;
@@ -87,6 +88,14 @@ public class CmsDisplayWidget extends A_CmsWidget implements I_CmsADEWidget {
     public List<String> getCssResourceLinks(CmsObject cms) {
 
         return null;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getDefaultDisplayType()
+     */
+    public DisplayType getDefaultDisplayType() {
+
+        return DisplayType.singleline;
     }
 
     /**

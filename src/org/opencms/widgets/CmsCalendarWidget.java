@@ -34,6 +34,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.xml.content.I_CmsXmlContentHandler.DisplayType;
 import org.opencms.xml.types.A_CmsXmlContentValue;
 
 import java.text.DateFormat;
@@ -294,6 +295,14 @@ public class CmsCalendarWidget extends A_CmsWidget implements I_CmsADEWidget {
     public List<String> getCssResourceLinks(CmsObject cms) {
 
         return null;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getDefaultDisplayType()
+     */
+    public DisplayType getDefaultDisplayType() {
+
+        return DisplayType.singleline;
     }
 
     /**
