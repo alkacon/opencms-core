@@ -32,6 +32,7 @@ import com.alkacon.acacia.shared.TabInfo;
 import com.alkacon.acacia.shared.Type;
 import com.alkacon.vie.shared.I_Type;
 
+import org.opencms.ade.contenteditor.CmsContentTypeVisitor.DisplayTypeEvaluator;
 import org.opencms.ade.contenteditor.shared.CmsComplexWidgetData;
 import org.opencms.ade.contenteditor.shared.CmsExternalWidgetConfiguration;
 import org.opencms.file.CmsFile;
@@ -44,6 +45,7 @@ import org.opencms.widgets.I_CmsADEWidget;
 import org.opencms.widgets.I_CmsComplexWidget;
 import org.opencms.widgets.I_CmsWidget;
 import org.opencms.xml.CmsXmlContentDefinition;
+import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.content.CmsXmlContentTab;
 import org.opencms.xml.content.I_CmsXmlContentHandler;
 import org.opencms.xml.content.I_CmsXmlContentHandler.DisplayType;
@@ -58,8 +60,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import org.mortbay.log.Log;
 
 /**
  * Visitor to read all types and attribute configurations within a content definition.<p>
@@ -311,8 +311,10 @@ public class CmsContentTypeVisitor {
      * @param xmlContentDefinition the content definition
      * 
      * @return <code>true</code> if the content type widgets are compatible with the new content editor
+     * 
+     * @throws CmsXmlException if something goes wrong reading the type widget
      */
-    public boolean isEditorCompatible(CmsXmlContentDefinition xmlContentDefinition) {
+    public boolean isEditorCompatible(CmsXmlContentDefinition xmlContentDefinition) throws CmsXmlException {
 
         boolean result = true;
         for (I_CmsXmlSchemaType subType : xmlContentDefinition.getTypeSequence()) {
@@ -472,17 +474,15 @@ public class CmsContentTypeVisitor {
      * @param schemaType the content value type
      * 
      * @return <code>true</code> if the content value widget is compatible with the new content editor
+     * 
+     * @throws CmsXmlException if something goes wrong reading the type widget
      */
-    private boolean isEditorCompatible(A_CmsXmlContentValue schemaType) {
+    private boolean isEditorCompatible(A_CmsXmlContentValue schemaType) throws CmsXmlException {
 
         boolean result = false;
-        try {
-            I_CmsXmlContentHandler contentHandler = schemaType.getContentDefinition().getContentHandler();
-            I_CmsWidget widget = contentHandler.getWidget(schemaType);
-            result = (widget == null) || (widget instanceof I_CmsADEWidget);
-        } catch (Exception e) {
-            Log.warn(e.getLocalizedMessage(), e);
-        }
+        I_CmsXmlContentHandler contentHandler = schemaType.getContentDefinition().getContentHandler();
+        I_CmsWidget widget = contentHandler.getWidget(schemaType);
+        result = (widget == null) || (widget instanceof I_CmsADEWidget);
         return result;
     }
 
