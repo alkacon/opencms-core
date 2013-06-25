@@ -62,6 +62,7 @@ import org.opencms.setup.comptest.I_CmsSetupTest;
 import org.opencms.setup.xml.CmsSetupXmlHelper;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsFileUtil;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.tools.CmsIdentifiableObjectContainer;
@@ -74,6 +75,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.LineNumberReader;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -92,7 +94,7 @@ import java.util.zip.ZipFile;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspWriter;
+import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.logging.Log;
@@ -272,6 +274,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
     /** The absolute path to the config sub directory of the OpenCms web application. */
     private String m_configRfsPath;
 
+    /** Contains the properties of "opencms.properties". */
+    private CmsParameterConfiguration m_configuration;
+
     /** Key of the selected database server (e.g. "mysql", "generic" or "oracle") */
     private String m_databaseKey;
 
@@ -292,9 +297,6 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /** Contains the error messages to be displayed in the setup wizard. */
     private List<String> m_errors;
-
-    /** Contains the properties of "opencms.properties". */
-    private CmsParameterConfiguration m_configuration;
 
     /** The full key of the selected database including the "_jpa" or "_sql" information. */
     private String m_fullDatabaseKey;
@@ -540,6 +542,16 @@ public class CmsSetupBean implements I_CmsShellCommands {
             initializeComponents(new HashSet<String>(m_availableModules.keySet()));
         }
         return m_availableModules;
+    }
+
+    /**
+     * Returns the components.<p>
+     *
+     * @return the components
+     */
+    public CmsIdentifiableObjectContainer<CmsSetupComponent> getComponents() {
+
+        return m_components;
     }
 
     /**
@@ -1719,9 +1731,8 @@ public class CmsSetupBean implements I_CmsShellCommands {
      * Generates the output for step 8b of the setup wizard.<p>
      * 
      * @param out the JSP print stream
-     * @throws IOException in case errors occur while writing to "out"
      */
-    public void prepareStep8bOutput(JspWriter out) throws IOException {
+    public void prepareStep8bOutput(PrintStream out) {
 
         if ((m_workplaceImportThread == null) || (m_workplaceImportThread.getLoggingThread() == null)) {
             return;
@@ -1944,9 +1955,33 @@ public class CmsSetupBean implements I_CmsShellCommands {
      * 
      * @return true if already submitted
      */
+    @SuppressWarnings("unchecked")
     public boolean setDbParamaters(HttpServletRequest request, String provider) {
 
-        String conStr = request.getParameter("dbCreateConStr");
+        return setDbParamaters(
+            CmsRequestUtil.createParameterMap(request.getParameterMap()),
+            provider,
+            request.getContextPath(),
+            request.getSession());
+    }
+
+    /**
+     * Sets the needed database parameters.<p> 
+     * 
+     * @param request the http request
+     * @param provider the db provider
+     * @param contextPath the context path to use
+     * @param session  the session to use or <code>null</code> if running outside a servlet container
+     * 
+     * @return true if already submitted
+     */
+    public boolean setDbParamaters(
+        Map<String, String[]> request,
+        String provider,
+        String contextPath,
+        HttpSession session) {
+
+        String conStr = getReqValue(request, "dbCreateConStr");
         // store the DB provider
         m_provider = provider;
 
@@ -1957,7 +1992,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
             m_driverType = DRIVER_TYPE_SQL;
         }
 
-        boolean isFormSubmitted = ((request.getParameter("submit") != null) && (conStr != null));
+        boolean isFormSubmitted = ((getReqValue(request, "submit") != null) && (conStr != null));
         if (conStr == null) {
             conStr = "";
         }
@@ -1966,9 +2001,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
             || provider.equals(MSSQL_PROVIDER)
             || provider.equals(DB2_PROVIDER)
             || provider.equals(AS400_PROVIDER)) {
-            database = request.getParameter("db");
+            database = getReqValue(request, "db");
         } else if (provider.equals(POSTGRESQL_PROVIDER)) {
-            database = request.getParameter("dbName");
+            database = getReqValue(request, "dbName");
         }
         if (provider.equals(MYSQL_PROVIDER)
             || provider.equals(MSSQL_PROVIDER)
@@ -1979,12 +2014,12 @@ public class CmsSetupBean implements I_CmsShellCommands {
         }
 
         if (isInitialized()) {
-            String createDb = request.getParameter("createDb");
+            String createDb = getReqValue(request, "createDb");
             if ((createDb == null) || provider.equals(DB2_PROVIDER) || provider.equals(AS400_PROVIDER)) {
                 createDb = "";
             }
 
-            String createTables = request.getParameter("createTables");
+            String createTables = getReqValue(request, "createTables");
             if (createTables == null) {
                 createTables = "";
             }
@@ -1993,7 +2028,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
                 if (m_driverType == DRIVER_TYPE_JPA) {
                     if (isJpaSupported(m_databaseKey) && !isSqlSupported(m_databaseKey)) {
                         // driver name should be specified for only JPA supported databases
-                        String driverName = request.getParameter("jdbcDriver");
+                        String driverName = getReqValue(request, "jdbcDriver");
                         setDbDriver(driverName);
                     }
                 }
@@ -2001,7 +2036,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
                 if (provider.equals(POSTGRESQL_PROVIDER)) {
                     setDb(database);
 
-                    String templateDb = request.getParameter("templateDb");
+                    String templateDb = getReqValue(request, "templateDb");
                     setDbProperty(getDatabase() + ".templateDb", templateDb);
                     setDbProperty(getDatabase() + ".newDb", database);
 
@@ -2028,23 +2063,25 @@ public class CmsSetupBean implements I_CmsShellCommands {
                     }
                     conStr += "libraries='" + database + "'";
                 } else if (isJpaSupported(m_databaseKey) && !isSqlSupported(m_databaseKey)) {
-                    conStr = request.getParameter("dbCreateConStr")
+                    conStr = getReqValue(request, "dbCreateConStr")
                         + getDbProperty(m_databaseKey + "." + "separator")
-                        + request.getParameter("db");
+                        + getReqValue(request, "db");
                     setDbProperty(getDatabase() + ".constr", conStr + getDbProperty(getDatabase() + ".newDb"));
                     setDbWorkConStr(conStr);
-                    boolean createTbls = "true".equalsIgnoreCase(request.getParameter("createTables")) ? true : false;
-                    request.getSession().setAttribute("createTables", Boolean.valueOf(createTbls));
+                    boolean createTbls = "true".equalsIgnoreCase(getReqValue(request, "createTables")) ? true : false;
+                    if (session != null) {
+                        session.setAttribute("createTables", Boolean.valueOf(createTbls));
+                    }
                 }
                 setDbWorkConStr(conStr);
                 if (provider.equals(POSTGRESQL_PROVIDER)) {
                     setDb(database);
                 }
-                String dbCreateUser = request.getParameter("dbCreateUser");
-                String dbCreatePwd = request.getParameter("dbCreatePwd");
+                String dbCreateUser = getReqValue(request, "dbCreateUser");
+                String dbCreatePwd = getReqValue(request, "dbCreatePwd");
 
-                String dbWorkUser = request.getParameter("dbWorkUser");
-                String dbWorkPwd = request.getParameter("dbWorkPwd");
+                String dbWorkUser = getReqValue(request, "dbWorkUser");
+                String dbWorkPwd = getReqValue(request, "dbWorkPwd");
 
                 if ((dbCreateUser != null) && !provider.equals(DB2_PROVIDER) && !provider.equals(AS400_PROVIDER)) {
                     setDbCreateUser(dbCreateUser);
@@ -2052,7 +2089,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
                 setDbCreatePwd(dbCreatePwd);
 
                 if (dbWorkUser.equals("")) {
-                    dbWorkUser = request.getContextPath();
+                    dbWorkUser = contextPath;
                 }
                 if (dbWorkUser.equals("")) {
                     dbWorkUser = "opencms";
@@ -2064,9 +2101,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
                 setDbWorkPwd(dbWorkPwd);
 
                 if (provider.equals(ORACLE_PROVIDER)) {
-                    String dbDefaultTablespace = request.getParameter("dbDefaultTablespace");
-                    String dbTemporaryTablespace = request.getParameter("dbTemporaryTablespace");
-                    String dbIndexTablespace = request.getParameter("dbIndexTablespace");
+                    String dbDefaultTablespace = getReqValue(request, "dbDefaultTablespace");
+                    String dbTemporaryTablespace = getReqValue(request, "dbTemporaryTablespace");
+                    String dbIndexTablespace = getReqValue(request, "dbIndexTablespace");
 
                     setDbProperty(getDatabase() + ".defaultTablespace", dbDefaultTablespace);
                     setDbProperty(getDatabase() + ".temporaryTablespace", dbTemporaryTablespace);
@@ -2089,19 +2126,21 @@ public class CmsSetupBean implements I_CmsShellCommands {
                 }
                 setReplacer(replacer);
 
-                if (provider.equals(GENERIC_PROVIDER)
-                    || provider.equals(ORACLE_PROVIDER)
-                    || provider.equals(DB2_PROVIDER)
-                    || provider.equals(AS400_PROVIDER)
-                    || provider.equals(MAXDB_PROVIDER)) {
-                    request.getSession().setAttribute("createTables", createTables);
+                if (session != null) {
+                    if (provider.equals(GENERIC_PROVIDER)
+                        || provider.equals(ORACLE_PROVIDER)
+                        || provider.equals(DB2_PROVIDER)
+                        || provider.equals(AS400_PROVIDER)
+                        || provider.equals(MAXDB_PROVIDER)) {
+                        session.setAttribute("createTables", createTables);
+                    }
+                    session.setAttribute("createDb", createDb);
                 }
-                request.getSession().setAttribute("createDb", createDb);
             } else {
                 String dbName = "opencms";
                 // initialize the database name with the app name
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(request.getContextPath())) {
-                    dbName = request.getContextPath().substring(1);
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(contextPath)) {
+                    dbName = contextPath.substring(1);
                 }
                 if (provider.equals(ORACLE_PROVIDER)
                     || provider.equals(POSTGRESQL_PROVIDER)
@@ -2370,6 +2409,40 @@ public class CmsSetupBean implements I_CmsShellCommands {
     }
 
     /**
+     * Returns a pipe separated list of module names for the given list of components.<p>
+     * 
+     * @param componentIds the list of component IDs to get the modules for
+     * 
+     * @return a pipe separated list of module names for the given list of components
+     */
+    protected String getComponentModules(List<String> componentIds) {
+
+        Set<String> comps = new HashSet<String>();
+        List<CmsSetupComponent> components = CmsCollectionsGenericWrapper.list(m_components.elementList());
+        for (CmsSetupComponent comp : components) {
+            if (componentIds.contains(comp.getId())) {
+                comps.addAll(getComponentModules(comp));
+            }
+
+        }
+
+        StringBuffer buf = new StringBuffer();
+        List<String> moduleNames = sortModules(getAvailableModules().values());
+        boolean first = true;
+        for (String moduleName : moduleNames) {
+            if (!first) {
+                buf.append("|");
+            }
+            if (comps.contains(moduleName)) {
+                buf.append(moduleName);
+            }
+            first = false;
+        }
+
+        return buf.toString();
+    }
+
+    /**
      * Reads all properties from the components.properties file at the given location, a folder or a zip file.<p>
      * 
      * @param location the location to read the properties from
@@ -2614,6 +2687,16 @@ public class CmsSetupBean implements I_CmsShellCommands {
         }
     }
 
+    /**
+     * Returns <code>true</code> if the import thread is currently running.<p>
+     * 
+     * @return <code>true</code> if the import thread is currently running
+     */
+    protected boolean isImportRunning() {
+
+        return (m_workplaceImportThread != null) && m_workplaceImportThread.isAlive();
+    }
+
     /** 
      * Stores the properties of all available database configurations in a
      * map keyed by their database key names (e.g. "mysql", "generic" or "oracle").<p>
@@ -2825,6 +2908,19 @@ public class CmsSetupBean implements I_CmsShellCommands {
             valueToWrite = value;
         }
         return valueToWrite;
+    }
+
+    /**
+     * Returns the first value of the array for the given key.<p>
+     * 
+     * @param map the map to search the key in
+     * @param key the key to get the first value from
+     * 
+     * @return the first value of the array for the given key
+     */
+    private String getReqValue(Map<String, String[]> map, String key) {
+
+        return map.get(key) != null ? map.get(key)[0] : "";
     }
 
     /**

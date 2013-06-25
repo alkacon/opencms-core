@@ -135,6 +135,17 @@ public class CmsSetupTests {
      */
     public void runTests(CmsSetupBean setupBean) {
 
+        runTests(setupBean, null);
+    }
+
+    /**
+     * Runs all tests.<p>
+     * 
+     * @param setupBean the CmsSetup bean of the setup wizard
+     * @param serverInfo optional server info, if not present the server info is retrieved from the bean
+     */
+    public void runTests(CmsSetupBean setupBean, String serverInfo) {
+
         boolean hasRed = false;
         boolean hasYellow = false;
 
@@ -177,11 +188,15 @@ public class CmsSetupTests {
             setGreen();
         }
 
-        // save the detected software component versions in a text file
-        writeVersionInfo(
-            setupBean.getServletConfig().getServletContext().getServerInfo(),
-            System.getProperty("java.version"),
-            setupBean.getWebAppRfsPath());
+        if (serverInfo == null) {
+            // save the detected software component versions in a text file
+            writeVersionInfo(
+                setupBean.getServletConfig().getServletContext().getServerInfo(),
+                System.getProperty("java.version"),
+                setupBean.getWebAppRfsPath());
+        } else {
+            writeVersionInfo(serverInfo, System.getProperty("java.version"), setupBean.getWebAppRfsPath());
+        }
     }
 
     /**
