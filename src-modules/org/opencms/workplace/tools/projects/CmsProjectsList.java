@@ -116,6 +116,9 @@ public class CmsProjectsList extends A_CmsListDialog {
     public static final String LIST_COLUMN_NAME = "cn";
 
     /** list column id constant. */
+    public static final String LIST_COLUMN_ORGUNIT = "cou";
+
+    /** list column id constant. */
     public static final String LIST_COLUMN_OWNER = "co";
 
     /** list column id constant. */
@@ -141,9 +144,6 @@ public class CmsProjectsList extends A_CmsListDialog {
 
     /** Path to the list buttons. */
     public static final String PATH_BUTTONS = "tools/projects/buttons/";
-
-    /** list column id constant. */
-    public static final String LIST_COLUMN_ORGUNIT = "cou";
 
     /**
      * Public constructor.<p>
@@ -313,9 +313,10 @@ public class CmsProjectsList extends A_CmsListDialog {
             CmsListItem item = getList().newItem(project.getUuid().toString());
             item.set(LIST_COLUMN_NAME, project.getSimpleName());
             item.set(LIST_COLUMN_DESCRIPTION, project.getDescription());
-            item.set(LIST_COLUMN_ORGUNIT, OpenCms.getOrgUnitManager().readOrganizationalUnit(
-                getCms(),
-                project.getOuFqn()).getDisplayName(getLocale()));
+            item.set(
+                LIST_COLUMN_ORGUNIT,
+                OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), project.getOuFqn()).getDisplayName(
+                    getLocale()));
             try {
                 item.set(LIST_COLUMN_OWNER, getCms().readUser(project.getOwnerId()).getName());
             } catch (Exception e) {

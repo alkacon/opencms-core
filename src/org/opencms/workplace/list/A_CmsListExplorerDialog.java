@@ -42,6 +42,7 @@ import org.opencms.workplace.commons.CmsTouch;
 import org.opencms.workplace.explorer.CmsExplorer;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -339,6 +340,16 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
         super.fillList();
     }
 
+    /** 
+     * Gets a map of additional request parameters which should be passed to the explorer.<p>
+     * 
+     * @return the map of additional parameters to pass to the explorer 
+     */
+    protected Map<String, String[]> getAdditionalParametersForExplorerForward() {
+
+        return Collections.emptyMap();
+    }
+
     /**
      * Returns the colVisibilities map.<p>
      *
@@ -430,7 +441,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
             // set action parameter to initial dialog call
             params.put(CmsDialog.PARAM_ACTION, new String[] {CmsDialog.DIALOG_INITIAL});
             params.putAll(getToolManager().getCurrentTool(this).getHandler().getParameters(this));
-
+            params.putAll(getAdditionalParametersForExplorerForward());
             getSettings().setExplorerProjectId(projectId);
             getSettings().setCollector(getCollector());
             getSettings().setExplorerMode(CmsExplorer.VIEW_LIST);
