@@ -62,7 +62,6 @@ import org.opencms.setup.comptest.I_CmsSetupTest;
 import org.opencms.setup.xml.CmsSetupXmlHelper;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsFileUtil;
-import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.tools.CmsIdentifiableObjectContainer;
@@ -1958,11 +1957,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
     @SuppressWarnings("unchecked")
     public boolean setDbParamaters(HttpServletRequest request, String provider) {
 
-        return setDbParamaters(
-            CmsRequestUtil.createParameterMap(request.getParameterMap()),
-            provider,
-            request.getContextPath(),
-            request.getSession());
+        return setDbParamaters(request.getParameterMap(), provider, request.getContextPath(), request.getSession());
     }
 
     /**
@@ -2920,7 +2915,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     private String getReqValue(Map<String, String[]> map, String key) {
 
-        return map.get(key) != null ? map.get(key)[0] : "";
+        return map.get(key) != null ? map.get(key)[0] : null;
     }
 
     /**
