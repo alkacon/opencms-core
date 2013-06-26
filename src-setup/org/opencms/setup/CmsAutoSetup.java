@@ -85,8 +85,7 @@ public class CmsAutoSetup {
                 path = arg.substring(PARAM_CONFIG_PATH.length());
             }
         }
-        CmsAutoSetupProperties.initialize(path);
-        new CmsAutoSetup(CmsAutoSetupProperties.getInstance()).run();
+        new CmsAutoSetup(new CmsAutoSetupProperties(path)).run();
         System.exit(0);
     }
 
@@ -331,7 +330,7 @@ public class CmsAutoSetup {
             byte[] mac = network.getHardwareAddress();
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < mac.length; i++) {
-                sb.append(String.format("%02X%s", new String(new byte[] {mac[i]}), (i < (mac.length - 1)) ? ":" : ""));
+                sb.append(String.format("%02X%s", new Byte(mac[i]), (i < (mac.length - 1)) ? ":" : ""));
             }
             return sb.toString();
         } catch (UnknownHostException e) {
