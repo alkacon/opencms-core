@@ -1022,7 +1022,7 @@ public final class OpenCmsCore {
         }
 
         // read server ethernet address (MAC) and init UUID generator
-        String ethernetAddress = configuration.getString("server.ethernet.address", CmsUUID.getDummyEthernetAddress());
+        String ethernetAddress = configuration.getString("server.ethernet.address", CmsStringUtil.getEthernetAddress());
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_ETHERNET_ADDRESS_1, ethernetAddress));
         }
