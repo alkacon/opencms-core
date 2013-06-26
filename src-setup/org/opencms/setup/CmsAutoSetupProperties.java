@@ -94,19 +94,22 @@ public final class CmsAutoSetupProperties {
     public static final String PROP_DB_WORKER_USER = "db.worker.user";
 
     /** A property file key. */
+    public static final String PROP_SERVER_ETHERNET_ADDRESS = "server.ethernet.address";
+
+    /** A property file key. */
+    public static final String PROP_SERVER_NAME = "server.name";
+
+    /** A property file key. */
+    public static final String PROP_SERVER_SERVLET_MAPPING = "server.servlet.mapping";
+
+    /** A property file key. */
+    public static final String PROP_SERVER_URL = "server.url";
+
+    /** A property file key. */
     public static final String PROP_SETUP_DEFAULT_WEBAPP = "setup.default.webapp";
 
     /** A property file key. */
-    public static final String PROP_SETUP_INSTALL_COMPONENTS = "install.components";
-
-    /** A property file key. */
-    public static final String PROP_SETUP_SERVER_ETHERNET_ADDRESS = "server.ethernet.address";
-
-    /** A property file key. */
-    public static final String PROP_SETUP_SERVER_NAME = "server.name";
-
-    /** A property file key. */
-    public static final String PROP_SETUP_SERVER_URL = "server.url";
+    public static final String PROP_SETUP_INSTALL_COMPONENTS = "setup.install.components";
 
     /** A property file key. */
     public static final String PROP_SETUP_WEBAPP_PATH = "setup.webapp.path";
@@ -152,6 +155,9 @@ public final class CmsAutoSetupProperties {
 
     /** The name of the jdbc driver to use. */
     private String m_jdbcDriver;
+
+    /** The servlet mapping. */
+    private String m_serveltMapping;
 
     /** The server name. */
     private String m_serverName;
@@ -212,9 +218,10 @@ public final class CmsAutoSetupProperties {
             m_jdbcDriver = addProperty(PROP_DB_JDBC_DRIVER);
             m_templateDb = addProperty(PROP_DB_TEMPLATE_DB);
             m_temporaryTablespace = addProperty(PROP_DB_TEMPORARY_TABLESPACE);
-            m_serverUrl = addProperty(PROP_SETUP_SERVER_URL);
-            m_serverName = addProperty(PROP_SETUP_SERVER_NAME);
-            m_ethernetAddress = addProperty(PROP_SETUP_SERVER_ETHERNET_ADDRESS);
+            m_serverUrl = addProperty(PROP_SERVER_URL);
+            m_serverName = addProperty(PROP_SERVER_NAME);
+            m_ethernetAddress = addProperty(PROP_SERVER_ETHERNET_ADDRESS);
+            m_serveltMapping = addProperty(PROP_SERVER_SERVLET_MAPPING);
 
             if (System.getProperty(PROP_SETUP_INSTALL_COMPONENTS) != null) {
                 m_configuration.put(PROP_SETUP_INSTALL_COMPONENTS, System.getProperty(PROP_SETUP_INSTALL_COMPONENTS));
@@ -323,6 +330,16 @@ public final class CmsAutoSetupProperties {
     public String getJdbcDriver() {
 
         return m_jdbcDriver;
+    }
+
+    /**
+     * Returns the serveltMapping.<p>
+     *
+     * @return the serveltMapping
+     */
+    public String getServeltMapping() {
+
+        return m_serveltMapping;
     }
 
     /**
@@ -477,6 +494,7 @@ public final class CmsAutoSetupProperties {
         result.put("dbTemporaryTablespace", new String[] {getTemporaryTablespace()});
         result.put("dbIndexTablespace", new String[] {getIndexTablespace()});
         result.put("dropDb", new String[] {Boolean.toString(isDropDb())});
+        result.put("servletMapping", new String[] {getServeltMapping()});
         result.put("submit", new String[] {Boolean.TRUE.toString()});
 
         return result;

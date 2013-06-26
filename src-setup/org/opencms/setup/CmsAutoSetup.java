@@ -63,7 +63,7 @@ public class CmsAutoSetup {
 
         m_props = props;
         m_bean = new CmsSetupBean();
-        m_bean.init(props.getSetupWebappPath(), null, props.getSetupDefaultWebappName());
+        m_bean.init(props.getSetupWebappPath(), props.getServeltMapping(), props.getSetupDefaultWebappName());
     }
 
     /**
