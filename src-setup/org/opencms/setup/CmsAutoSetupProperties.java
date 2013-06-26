@@ -176,7 +176,8 @@ public final class CmsAutoSetupProperties {
 
     /**
      * Public constructor.<p>
-     * @param propertiesFile 
+     * 
+     * @param propertiesFile the path to the setup properties file 
      */
     public CmsAutoSetupProperties(String propertiesFile) {
 
@@ -188,177 +189,52 @@ public final class CmsAutoSetupProperties {
         }
 
         try {
-            // for java 1.4, getenv is deprecated and raises an error,
-            // so prefer properties set with "-D"
-            // read environment and update configuration if required
-            boolean allowGetEnv = true;
+            m_setupWebappPath = addProperty(PROP_SETUP_WEBAPP_PATH);
+            m_setupDefaultWebappName = addProperty(PROP_SETUP_DEFAULT_WEBAPP);
+            m_dbProduct = addProperty(PROP_DB_PRODUCT);
+            m_dbName = addProperty(PROP_DB_NAME);
+            m_createUser = addProperty(PROP_DB_CREATE_USER);
+            m_createPwd = addProperty(PROP_DB_CREATE_PWD);
+            m_workerUser = addProperty(PROP_DB_WORKER_USER);
+            m_workerPwd = addProperty(PROP_DB_WORKER_PWD);
+            m_connectionUrl = addProperty(PROP_DB_CONNECTION_URL);
+            m_createDb = Boolean.valueOf(addProperty(PROP_DB_CREATE_DB)).booleanValue();
+            m_createTables = Boolean.valueOf(addProperty(PROP_DB_CREATE_TABLES)).booleanValue();
+            m_dropDb = Boolean.valueOf(addProperty(PROP_DB_DROP_DB)).booleanValue();
+            m_defaultTablespace = addProperty(PROP_DB_DEFAULT_TABLESPACE);
+            m_indexTablespace = addProperty(PROP_DB_INDEX_TABLESPACE);
+            m_jdbcDriver = addProperty(PROP_DB_JDBC_DRIVER);
+            m_templateDb = addProperty(PROP_DB_TEMPLATE_DB);
+            m_temporaryTablespace = addProperty(PROP_DB_TEMPORARY_TABLESPACE);
+            m_serverUrl = addProperty(PROP_SETUP_SERVER_URL);
+            m_serverName = addProperty(PROP_SETUP_SERVER_NAME);
 
-            // get the setup webapp path
-            if (System.getProperty(PROP_SETUP_WEBAPP_PATH) != null) {
-                m_configuration.put(PROP_SETUP_WEBAPP_PATH, System.getProperty(PROP_SETUP_WEBAPP_PATH));
-            } else if (allowGetEnv && (System.getenv(PROP_SETUP_WEBAPP_PATH) != null)) {
-                m_configuration.put(PROP_SETUP_WEBAPP_PATH, System.getenv(PROP_SETUP_WEBAPP_PATH));
-            }
-            m_setupWebappPath = m_configuration.get(PROP_SETUP_WEBAPP_PATH);
-
-            // get the default webapp name
-            if (System.getProperty(PROP_SETUP_DEFAULT_WEBAPP) != null) {
-                m_configuration.put(PROP_SETUP_DEFAULT_WEBAPP, System.getProperty(PROP_SETUP_DEFAULT_WEBAPP));
-            } else if (allowGetEnv && (System.getenv(PROP_SETUP_DEFAULT_WEBAPP) != null)) {
-                m_configuration.put(PROP_SETUP_DEFAULT_WEBAPP, System.getenv(PROP_SETUP_DEFAULT_WEBAPP));
-            }
-            m_setupDefaultWebappName = m_configuration.get(PROP_SETUP_DEFAULT_WEBAPP);
-
-            // get the db product name
-            if (System.getProperty(PROP_DB_PRODUCT) != null) {
-                m_configuration.put(PROP_DB_PRODUCT, System.getProperty(PROP_DB_PRODUCT));
-            } else if (allowGetEnv && (System.getenv(PROP_DB_PRODUCT) != null)) {
-                m_configuration.put(PROP_DB_PRODUCT, System.getenv(PROP_DB_PRODUCT));
-            }
-            m_dbProduct = m_configuration.get(PROP_DB_PRODUCT);
-
-            // get the db name
-            if (System.getProperty(PROP_DB_NAME) != null) {
-                m_configuration.put(PROP_DB_NAME, System.getProperty(PROP_DB_NAME));
-            } else if (allowGetEnv && (System.getenv(PROP_DB_NAME) != null)) {
-                m_configuration.put(PROP_DB_NAME, System.getenv(PROP_DB_NAME));
-            }
-            m_dbName = m_configuration.get(PROP_DB_NAME);
-
-            // get the user name used for the setup process
-            if (System.getProperty(PROP_DB_CREATE_USER) != null) {
-                m_configuration.put(PROP_DB_CREATE_USER, System.getProperty(PROP_DB_CREATE_USER));
-            } else if (allowGetEnv && (System.getenv(PROP_DB_CREATE_USER) != null)) {
-                m_configuration.put(PROP_DB_CREATE_USER, System.getenv(PROP_DB_CREATE_USER));
-            }
-            m_createUser = m_configuration.get(PROP_DB_CREATE_USER);
-
-            // get the db user password used for the setup process
-            if (System.getProperty(PROP_DB_CREATE_PWD) != null) {
-                m_configuration.put(PROP_DB_CREATE_PWD, System.getProperty(PROP_DB_CREATE_PWD));
-            } else if (allowGetEnv && (System.getenv(PROP_DB_CREATE_PWD) != null)) {
-                m_configuration.put(PROP_DB_CREATE_PWD, System.getenv(PROP_DB_CREATE_PWD));
-            }
-            m_createPwd = m_configuration.get(PROP_DB_CREATE_PWD) != null
-            ? m_configuration.get(PROP_DB_CREATE_PWD)
-            : "";
-
-            // get the db user used for production
-            if (System.getProperty(PROP_DB_WORKER_USER) != null) {
-                m_configuration.put(PROP_DB_WORKER_USER, System.getProperty(PROP_DB_WORKER_USER));
-            } else if (allowGetEnv && (System.getenv(PROP_DB_WORKER_USER) != null)) {
-                m_configuration.put(PROP_DB_WORKER_USER, System.getenv(PROP_DB_WORKER_USER));
-            }
-            m_workerUser = m_configuration.get(PROP_DB_WORKER_USER);
-
-            // get the db user password used for production
-            if (System.getProperty(PROP_DB_WORKER_PWD) != null) {
-                m_configuration.put(PROP_DB_WORKER_PWD, System.getProperty(PROP_DB_WORKER_PWD));
-            } else if (allowGetEnv && (System.getenv(PROP_DB_WORKER_PWD) != null)) {
-                m_configuration.put(PROP_DB_WORKER_PWD, System.getenv(PROP_DB_WORKER_PWD));
-            }
-            m_workerPwd = m_configuration.get(PROP_DB_WORKER_PWD) != null
-            ? m_configuration.get(PROP_DB_WORKER_PWD)
-            : "";
-
-            // get the connection URL
-            if (System.getProperty(PROP_DB_CONNECTION_URL) != null) {
-                m_configuration.put(PROP_DB_CONNECTION_URL, System.getProperty(PROP_DB_CONNECTION_URL));
-            } else if (allowGetEnv && (System.getenv(PROP_DB_CONNECTION_URL) != null)) {
-                m_configuration.put(PROP_DB_CONNECTION_URL, System.getenv(PROP_DB_CONNECTION_URL));
-            }
-            m_connectionUrl = m_configuration.get(PROP_DB_CONNECTION_URL);
-
-            // get the create db flag
-            if (System.getProperty(PROP_DB_CREATE_DB) != null) {
-                m_configuration.put(PROP_DB_CREATE_DB, System.getProperty(PROP_DB_CREATE_DB));
-            } else if (allowGetEnv && (System.getenv(PROP_DB_CREATE_DB) != null)) {
-                m_configuration.put(PROP_DB_CREATE_DB, System.getenv(PROP_DB_CREATE_DB));
-            }
-            m_createDb = Boolean.valueOf(m_configuration.get(PROP_DB_CREATE_DB)).booleanValue();
-
-            // get the create db flag
-            if (System.getProperty(PROP_DB_CREATE_TABLES) != null) {
-                m_configuration.put(PROP_DB_CREATE_TABLES, System.getProperty(PROP_DB_CREATE_TABLES));
-            } else if (allowGetEnv && (System.getenv(PROP_DB_CREATE_TABLES) != null)) {
-                m_configuration.put(PROP_DB_CREATE_TABLES, System.getenv(PROP_DB_CREATE_TABLES));
-            }
-            m_createTables = Boolean.valueOf(m_configuration.get(PROP_DB_CREATE_TABLES)).booleanValue();
-
-            // get the create db flag
-            if (System.getProperty(PROP_DB_DROP_DB) != null) {
-                m_configuration.put(PROP_DB_DROP_DB, System.getProperty(PROP_DB_DROP_DB));
-            } else if (allowGetEnv && (System.getenv(PROP_DB_DROP_DB) != null)) {
-                m_configuration.put(PROP_DB_DROP_DB, System.getenv(PROP_DB_DROP_DB));
-            }
-            m_dropDb = Boolean.valueOf(m_configuration.get(PROP_DB_DROP_DB)).booleanValue();
-
-            // get the create db flag
-            if (System.getProperty(PROP_DB_DEFAULT_TABLESPACE) != null) {
-                m_configuration.put(PROP_DB_DEFAULT_TABLESPACE, System.getProperty(PROP_DB_DEFAULT_TABLESPACE));
-            } else if (allowGetEnv && (System.getenv(PROP_DB_DEFAULT_TABLESPACE) != null)) {
-                m_configuration.put(PROP_DB_DEFAULT_TABLESPACE, System.getenv(PROP_DB_DEFAULT_TABLESPACE));
-            }
-            m_defaultTablespace = m_configuration.get(PROP_DB_DEFAULT_TABLESPACE);
-
-            // get the create db flag
-            if (System.getProperty(PROP_DB_INDEX_TABLESPACE) != null) {
-                m_configuration.put(PROP_DB_INDEX_TABLESPACE, System.getProperty(PROP_DB_INDEX_TABLESPACE));
-            } else if (allowGetEnv && (System.getenv(PROP_DB_INDEX_TABLESPACE) != null)) {
-                m_configuration.put(PROP_DB_INDEX_TABLESPACE, System.getenv(PROP_DB_INDEX_TABLESPACE));
-            }
-            m_indexTablespace = m_configuration.get(PROP_DB_INDEX_TABLESPACE);
-
-            // get the create db flag
-            if (System.getProperty(PROP_DB_JDBC_DRIVER) != null) {
-                m_configuration.put(PROP_DB_JDBC_DRIVER, System.getProperty(PROP_DB_JDBC_DRIVER));
-            } else if (allowGetEnv && (System.getenv(PROP_DB_JDBC_DRIVER) != null)) {
-                m_configuration.put(PROP_DB_JDBC_DRIVER, System.getenv(PROP_DB_JDBC_DRIVER));
-            }
-            m_jdbcDriver = m_configuration.get(PROP_DB_JDBC_DRIVER);
-
-            // get the create db flag
-            if (System.getProperty(PROP_DB_TEMPLATE_DB) != null) {
-                m_configuration.put(PROP_DB_TEMPLATE_DB, System.getProperty(PROP_DB_TEMPLATE_DB));
-            } else if (allowGetEnv && (System.getenv(PROP_DB_TEMPLATE_DB) != null)) {
-                m_configuration.put(PROP_DB_TEMPLATE_DB, System.getenv(PROP_DB_TEMPLATE_DB));
-            }
-            m_templateDb = m_configuration.get(PROP_DB_TEMPLATE_DB);
-
-            // get the create db flag
-            if (System.getProperty(PROP_DB_TEMPORARY_TABLESPACE) != null) {
-                m_configuration.put(PROP_DB_TEMPORARY_TABLESPACE, System.getProperty(PROP_DB_TEMPORARY_TABLESPACE));
-            } else if (allowGetEnv && (System.getenv(PROP_DB_TEMPORARY_TABLESPACE) != null)) {
-                m_configuration.put(PROP_DB_TEMPORARY_TABLESPACE, System.getenv(PROP_DB_TEMPORARY_TABLESPACE));
-            }
-            m_temporaryTablespace = m_configuration.get(PROP_DB_TEMPORARY_TABLESPACE);
-
-            // get the create db flag
             if (System.getProperty(PROP_SETUP_INSTALL_COMPONENTS) != null) {
                 m_configuration.put(PROP_SETUP_INSTALL_COMPONENTS, System.getProperty(PROP_SETUP_INSTALL_COMPONENTS));
-            } else if (allowGetEnv && (System.getenv(PROP_SETUP_INSTALL_COMPONENTS) != null)) {
+            } else if (System.getenv(PROP_SETUP_INSTALL_COMPONENTS) != null) {
                 m_configuration.put(PROP_SETUP_INSTALL_COMPONENTS, System.getenv(PROP_SETUP_INSTALL_COMPONENTS));
             }
             m_installComponents = m_configuration.getList(PROP_SETUP_INSTALL_COMPONENTS);
-
-            if (System.getProperty(PROP_SETUP_SERVER_URL) != null) {
-                m_configuration.put(PROP_SETUP_SERVER_URL, System.getProperty(PROP_SETUP_SERVER_URL));
-            } else if (allowGetEnv && (System.getenv(PROP_SETUP_SERVER_URL) != null)) {
-                m_configuration.put(PROP_SETUP_SERVER_URL, System.getenv(PROP_SETUP_SERVER_URL));
-            }
-            m_serverUrl = m_configuration.get(PROP_SETUP_SERVER_URL);
-
-            if (System.getProperty(PROP_SETUP_SERVER_NAME) != null) {
-                m_configuration.put(PROP_SETUP_SERVER_NAME, System.getProperty(PROP_SETUP_SERVER_NAME));
-            } else if (allowGetEnv && (System.getenv(PROP_SETUP_SERVER_NAME) != null)) {
-                m_configuration.put(PROP_SETUP_SERVER_NAME, System.getenv(PROP_SETUP_SERVER_NAME));
-            }
-            m_serverName = m_configuration.get(PROP_SETUP_SERVER_NAME);
 
         } catch (SecurityException e) {
             // unable to read environment, use only properties from file
             e.printStackTrace(System.out);
         }
+    }
+
+    /**
+     * Adds and returns the property for the given key.<p>
+     * 
+     * @param key the key to add the property
+     * 
+     * @return the value of that property
+     */
+    private String addProperty(String key) {
+
+        if (System.getProperty(key) != null) {
+            m_configuration.put(key, System.getProperty(key));
+        }
+        return m_configuration.get(key);
     }
 
     /**
@@ -592,9 +468,9 @@ public final class CmsAutoSetupProperties {
         result.put("jdbcDriver", new String[] {getJdbcDriver()});
         result.put("templateDb", new String[] {getTemplateDb()});
         result.put("dbCreateUser", new String[] {getCreateUser()});
-        result.put("dbCreatePwd", new String[] {getCreatePwd()});
+        result.put("dbCreatePwd", new String[] {getCreatePwd() == null ? "" : getCreatePwd()});
         result.put("dbWorkUser", new String[] {getWorkerUser()});
-        result.put("dbWorkPwd", new String[] {getWorkerPwd()});
+        result.put("dbWorkPwd", new String[] {getWorkerPwd() == null ? "" : getWorkerPwd()});
         result.put("dbDefaultTablespace", new String[] {getDefaultTablespace()});
         result.put("dbTemporaryTablespace", new String[] {getTemporaryTablespace()});
         result.put("dbIndexTablespace", new String[] {getIndexTablespace()});
