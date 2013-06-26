@@ -81,7 +81,7 @@ public class CmsXmlUpdateExplorerTypes extends A_CmsXmlWorkplace {
         {"structurecontent", "10"}};
 
     /** The page data to update. */
-    private String[][] m_pages = { {"xmlpage", "otheroptions"}, {"link", "otheroptions"}};
+    private String[][] m_pages = {{"xmlpage", "otheroptions"}, {"link", "otheroptions"}};
 
     /**
      * @see org.opencms.setup.xml.I_CmsSetupXmlUpdate#getName()

@@ -38,12 +38,25 @@ import java.util.regex.Pattern;
  */
 public class CmsSetupComponent {
 
+    /** The default check flag. */
     private boolean m_checked;
+
+    /** The dependencies of the setup component. */
     private List<String> m_dependencies;
+
+    /** The description for the setup component. */
     private String m_description;
+
+    /** The ID of the setup component. */
     private String m_id;
+
+    /** The module's regex. */
     private Pattern m_modulesRegex;
+
+    /** The name of the setup component. */
     private String m_name;
+
+    /** The position of the setup component. */
     private int m_position;
 
     /**

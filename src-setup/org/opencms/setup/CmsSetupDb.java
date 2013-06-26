@@ -63,9 +63,16 @@ public class CmsSetupDb extends Object {
     /** The folder where the setup wizard is located. */
     public static final String SETUP_FOLDER = "setup/";
 
+    /** The setup base path. */
     private String m_basePath;
+
+    /** A SQL connection. */
     private Connection m_con;
+
+    /** A flag signaling if error logging is enabled. */
     private boolean m_errorLogging;
+
+    /** A list to store error messages. */
     private List<String> m_errors;
 
     /**
