@@ -35,13 +35,17 @@ import org.opencms.main.CmsException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.widgets.A_CmsWidget;
+import org.opencms.workplace.explorer.CmsExplorer;
 import org.opencms.workplace.list.A_CmsListExplorerDialog;
 import org.opencms.workplace.list.CmsHtmlList;
 import org.opencms.workplace.list.CmsListDropdownAction;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.I_CmsListResourceCollector;
+import org.opencms.workplace.tools.CmsToolDialog;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -214,6 +218,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     public void setParamProjectid(String projectId) {
 
         m_paramProjectid = projectId;
+        getJsp().getRequest().getSession().setAttribute("LASTPRJ", projectId);
     }
 
     /**
@@ -223,6 +228,19 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     protected void fillDetails(String detailId) {
 
         // no-details
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListExplorerDialog#getAdditionalParametersForExplorerForward()
+     */
+    @Override
+    protected java.util.Map<String, String[]> getAdditionalParametersForExplorerForward() {
+
+        Map<String, String[]> result = new HashMap<String, String[]>();
+        result.put(CmsExplorer.PARAMETER_CONTEXTMENUPARAMS, new String[] {CmsToolDialog.PARAM_ADMIN_PROJECT
+            + "="
+            + m_paramProjectid});
+        return result;
     }
 
     /**
