@@ -525,7 +525,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         return Collections.unmodifiableSet(m_cssHeadIncludes);
     }
 
-    /**
+    /***
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#getCSSHeadIncludes(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
      */
     @SuppressWarnings("unused")
@@ -2112,7 +2112,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                         // use provided locale
                         locale = CmsLocaleManager.getLocale(localeStr);
                     }
-                    if (CmsLocaleManager.getDefaultLocale().equals(locale)) {
+                    if (Locale.getDefault().equals(locale)) {
                         // in case the default locale is given, we store this as root
                         locale = null;
                     }
