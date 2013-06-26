@@ -30,6 +30,7 @@ package org.opencms.loader;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.util.CmsJspDeviceSelector;
 import org.opencms.main.CmsLog;
@@ -59,9 +60,6 @@ public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextPr
 
     /** The map of template contexts. */
     private Map<String, CmsTemplateContext> m_map = new HashMap<String, CmsTemplateContext>();
-
-    /** The device selector used internally for detecting mobile devices. */
-    private CmsJspDeviceSelector m_selector = new CmsJspDeviceSelector();
 
     /** Default constructor. */
     public CmsDefaultTemplateContextProvider() {
@@ -134,7 +132,8 @@ public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextPr
         HttpServletRequest request,
         CmsResource resource) {
 
-        String deviceType = m_selector.getDeviceType(request);
+        CmsFlexController controller = CmsFlexController.getController(request);
+        String deviceType = controller.getCmsCache().getDeviceSelector().getDeviceType(request);
         if (deviceType.equals(CmsJspDeviceSelector.C_MOBILE)) {
             return m_map.get("mobile");
         } else {
