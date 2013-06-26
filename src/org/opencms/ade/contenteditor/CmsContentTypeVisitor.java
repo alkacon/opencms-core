@@ -32,7 +32,6 @@ import com.alkacon.acacia.shared.TabInfo;
 import com.alkacon.acacia.shared.Type;
 import com.alkacon.vie.shared.I_Type;
 
-import org.opencms.ade.contenteditor.CmsContentTypeVisitor.DisplayTypeEvaluator;
 import org.opencms.ade.contenteditor.shared.CmsComplexWidgetData;
 import org.opencms.ade.contenteditor.shared.CmsExternalWidgetConfiguration;
 import org.opencms.file.CmsFile;

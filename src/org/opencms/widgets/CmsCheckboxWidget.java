@@ -94,7 +94,7 @@ public class CmsCheckboxWidget extends A_CmsWidget implements I_CmsADEWidget {
      */
     public DisplayType getDefaultDisplayType() {
 
-        return DisplayType.singleline;
+        return DisplayType.wide;
     }
 
     /**
