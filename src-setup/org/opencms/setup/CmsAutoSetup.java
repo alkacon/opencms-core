@@ -113,13 +113,11 @@ public class CmsAutoSetup {
             m_bean.setDatabase(m_props.getDbProduct());
             m_bean.setDb(m_props.getDbName());
             m_bean.setDbCreateUser(m_props.getCreateUser());
-            m_bean.setDbCreatePwd(m_props.getCreatePwd());
+            m_bean.setDbCreatePwd(m_props.getCreatePwd() == null ? "" : m_props.getCreatePwd());
             m_bean.setDbWorkUser(m_props.getWorkerUser());
-            m_bean.setDbWorkPwd(m_props.getWorkerPwd());
+            m_bean.setDbWorkPwd(m_props.getWorkerPwd() == null ? "" : m_props.getWorkerPwd());
             m_bean.setDbCreateConStr(m_props.getConnectionUrl());
             m_bean.setDbWorkConStr(m_props.getConnectionUrl());
-            // m_bean.setDriverType("sql");
-
             m_bean.setDbParamaters(m_props.toParameterMap(), m_props.getDbProduct(), "/opencms/", null);
 
             boolean enableContinue;
@@ -297,7 +295,6 @@ public class CmsAutoSetup {
 
             if (m_bean.prepareStep8()) {
                 m_bean.prepareStep8b();
-                m_bean.prepareStep8bOutput(System.out);
             }
 
             while (m_bean.isImportRunning()) {

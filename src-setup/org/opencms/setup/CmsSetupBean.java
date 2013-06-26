@@ -74,7 +74,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.LineNumberReader;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -94,6 +93,7 @@ import java.util.zip.ZipFile;
 import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.logging.Log;
@@ -1730,8 +1730,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
      * Generates the output for step 8b of the setup wizard.<p>
      * 
      * @param out the JSP print stream
+     * @throws IOException in case errors occur while writing to "out"
      */
-    public void prepareStep8bOutput(PrintStream out) {
+    public void prepareStep8bOutput(JspWriter out) throws IOException {
 
         if ((m_workplaceImportThread == null) || (m_workplaceImportThread.getLoggingThread() == null)) {
             return;
