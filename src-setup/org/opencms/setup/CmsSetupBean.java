@@ -266,6 +266,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
     /** The absolute path to the home directory of the OpenCms webapp. */
     protected String m_webAppRfsPath;
 
+    /** Signals whether the setup is executed in the auto mode or in the wizard mode. */
+    private boolean m_autoMode;
+
     /** Contains all defined components. */
     private CmsIdentifiableObjectContainer<CmsSetupComponent> m_components;
 
@@ -1385,6 +1388,16 @@ public class CmsSetupBean implements I_CmsShellCommands {
     }
 
     /**
+     * Returns the autoMode.<p>
+     *
+     * @return the autoMode
+     */
+    public boolean isAutoMode() {
+
+        return m_autoMode;
+    }
+
+    /**
      * Over simplistic helper to compare two strings to check radio buttons.
      * 
      * @param value1 the first value 
@@ -1843,6 +1856,16 @@ public class CmsSetupBean implements I_CmsShellCommands {
             m_errors.add("No valid file: " + file + "\n");
         }
 
+    }
+
+    /**
+     * Sets the autoMode.<p>
+     *
+     * @param autoMode the autoMode to set
+     */
+    public void setAutoMode(boolean autoMode) {
+
+        m_autoMode = autoMode;
     }
 
     /**

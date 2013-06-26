@@ -28,6 +28,7 @@
 package org.opencms.setup;
 
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.util.CmsDataTypeUtil;
 import org.opencms.util.CmsStringUtil;
 
@@ -50,6 +51,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Helper class to call database setup scripts.<p>
  * 
@@ -62,6 +65,9 @@ public class CmsSetupDb extends Object {
 
     /** The folder where the setup wizard is located. */
     public static final String SETUP_FOLDER = "setup/";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSetupDb.class);
 
     /** The setup base path. */
     private String m_basePath;
@@ -481,10 +487,8 @@ public class CmsSetupDb extends Object {
             }
             Class.forName(DbDriver).newInstance();
             m_con = DriverManager.getConnection(jdbcUrl, DbUser, DbPwd);
-
-            System.out.print("OpenCms setup connection established: " + m_con);
-            System.out.println(" [autocommit: " + m_con.getAutoCommit() + "]");
-
+            LOG.info("OpenCms setup connection established: " + m_con);
+            LOG.info(" [autocommit: " + m_con.getAutoCommit() + "]");
         } catch (ClassNotFoundException e) {
             System.out.println("Class not found exception: " + e);
             m_errors.add(Messages.get().getBundle().key(Messages.ERR_LOAD_JDBC_DRIVER_1, DbDriver));

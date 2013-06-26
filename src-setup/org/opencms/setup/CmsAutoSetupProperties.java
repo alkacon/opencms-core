@@ -189,51 +189,44 @@ public final class CmsAutoSetupProperties {
     /**
      * Public constructor.<p>
      * 
-     * @param propertiesFile the path to the setup properties file 
+     * @param propertiesFile the path to the setup properties file
+     *  
+     * @throws IOException if the property file could not be read
+     * @throws SecurityException if the environment variables could not be read
      */
-    public CmsAutoSetupProperties(String propertiesFile) {
+    public CmsAutoSetupProperties(String propertiesFile)
+    throws IOException, SecurityException {
 
-        try {
-            m_configuration = new CmsParameterConfiguration(propertiesFile);
-        } catch (IOException e) {
-            e.printStackTrace(System.out);
-            throw new RuntimeException(e);
+        m_configuration = new CmsParameterConfiguration(propertiesFile);
+
+        m_setupWebappPath = addProperty(PROP_SETUP_WEBAPP_PATH);
+        m_setupDefaultWebappName = addProperty(PROP_SETUP_DEFAULT_WEBAPP);
+        m_dbProduct = addProperty(PROP_DB_PRODUCT);
+        m_dbName = addProperty(PROP_DB_NAME);
+        m_createUser = addProperty(PROP_DB_CREATE_USER);
+        m_createPwd = addProperty(PROP_DB_CREATE_PWD);
+        m_workerUser = addProperty(PROP_DB_WORKER_USER);
+        m_workerPwd = addProperty(PROP_DB_WORKER_PWD);
+        m_connectionUrl = addProperty(PROP_DB_CONNECTION_URL);
+        m_createDb = Boolean.valueOf(addProperty(PROP_DB_CREATE_DB)).booleanValue();
+        m_createTables = Boolean.valueOf(addProperty(PROP_DB_CREATE_TABLES)).booleanValue();
+        m_dropDb = Boolean.valueOf(addProperty(PROP_DB_DROP_DB)).booleanValue();
+        m_defaultTablespace = addProperty(PROP_DB_DEFAULT_TABLESPACE);
+        m_indexTablespace = addProperty(PROP_DB_INDEX_TABLESPACE);
+        m_jdbcDriver = addProperty(PROP_DB_JDBC_DRIVER);
+        m_templateDb = addProperty(PROP_DB_TEMPLATE_DB);
+        m_temporaryTablespace = addProperty(PROP_DB_TEMPORARY_TABLESPACE);
+        m_serverUrl = addProperty(PROP_SERVER_URL);
+        m_serverName = addProperty(PROP_SERVER_NAME);
+        m_ethernetAddress = addProperty(PROP_SERVER_ETHERNET_ADDRESS);
+        m_serveltMapping = addProperty(PROP_SERVER_SERVLET_MAPPING);
+
+        if (System.getProperty(PROP_SETUP_INSTALL_COMPONENTS) != null) {
+            m_configuration.put(PROP_SETUP_INSTALL_COMPONENTS, System.getProperty(PROP_SETUP_INSTALL_COMPONENTS));
+        } else if (System.getenv(PROP_SETUP_INSTALL_COMPONENTS) != null) {
+            m_configuration.put(PROP_SETUP_INSTALL_COMPONENTS, System.getenv(PROP_SETUP_INSTALL_COMPONENTS));
         }
-
-        try {
-            m_setupWebappPath = addProperty(PROP_SETUP_WEBAPP_PATH);
-            m_setupDefaultWebappName = addProperty(PROP_SETUP_DEFAULT_WEBAPP);
-            m_dbProduct = addProperty(PROP_DB_PRODUCT);
-            m_dbName = addProperty(PROP_DB_NAME);
-            m_createUser = addProperty(PROP_DB_CREATE_USER);
-            m_createPwd = addProperty(PROP_DB_CREATE_PWD);
-            m_workerUser = addProperty(PROP_DB_WORKER_USER);
-            m_workerPwd = addProperty(PROP_DB_WORKER_PWD);
-            m_connectionUrl = addProperty(PROP_DB_CONNECTION_URL);
-            m_createDb = Boolean.valueOf(addProperty(PROP_DB_CREATE_DB)).booleanValue();
-            m_createTables = Boolean.valueOf(addProperty(PROP_DB_CREATE_TABLES)).booleanValue();
-            m_dropDb = Boolean.valueOf(addProperty(PROP_DB_DROP_DB)).booleanValue();
-            m_defaultTablespace = addProperty(PROP_DB_DEFAULT_TABLESPACE);
-            m_indexTablespace = addProperty(PROP_DB_INDEX_TABLESPACE);
-            m_jdbcDriver = addProperty(PROP_DB_JDBC_DRIVER);
-            m_templateDb = addProperty(PROP_DB_TEMPLATE_DB);
-            m_temporaryTablespace = addProperty(PROP_DB_TEMPORARY_TABLESPACE);
-            m_serverUrl = addProperty(PROP_SERVER_URL);
-            m_serverName = addProperty(PROP_SERVER_NAME);
-            m_ethernetAddress = addProperty(PROP_SERVER_ETHERNET_ADDRESS);
-            m_serveltMapping = addProperty(PROP_SERVER_SERVLET_MAPPING);
-
-            if (System.getProperty(PROP_SETUP_INSTALL_COMPONENTS) != null) {
-                m_configuration.put(PROP_SETUP_INSTALL_COMPONENTS, System.getProperty(PROP_SETUP_INSTALL_COMPONENTS));
-            } else if (System.getenv(PROP_SETUP_INSTALL_COMPONENTS) != null) {
-                m_configuration.put(PROP_SETUP_INSTALL_COMPONENTS, System.getenv(PROP_SETUP_INSTALL_COMPONENTS));
-            }
-            m_installComponents = m_configuration.getList(PROP_SETUP_INSTALL_COMPONENTS);
-
-        } catch (SecurityException e) {
-            // unable to read environment, use only properties from file
-            e.printStackTrace(System.out);
-        }
+        m_installComponents = m_configuration.getList(PROP_SETUP_INSTALL_COMPONENTS);
     }
 
     /**
