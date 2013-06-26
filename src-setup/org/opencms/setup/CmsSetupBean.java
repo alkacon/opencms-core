@@ -63,7 +63,6 @@ import org.opencms.setup.xml.CmsSetupXmlHelper;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.util.CmsUUID;
 import org.opencms.workplace.tools.CmsIdentifiableObjectContainer;
 
 import java.io.File;
@@ -297,6 +296,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
     /** Contains the error messages to be displayed in the setup wizard. */
     private List<String> m_errors;
 
+    /** The ethernet address. */
+    private String m_ethernetAddress;
+
     /** The full key of the selected database including the "_jpa" or "_sql" information. */
     private String m_fullDatabaseKey;
 
@@ -409,7 +411,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
         // check the ethernet address in order to generate a random address, if not available                   
         if (CmsStringUtil.isEmpty(getEthernetAddress())) {
-            setEthernetAddress(CmsUUID.getDummyEthernetAddress());
+            setEthernetAddress(CmsStringUtil.getEthernetAddress());
         }
     }
 
@@ -838,7 +840,11 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public String getEthernetAddress() {
 
-        return getExtProperty("server.ethernet.address");
+        if (m_ethernetAddress == null) {
+            String address = getExtProperty("server.ethernet.address");
+            m_ethernetAddress = CmsStringUtil.isNotEmpty(address) ? address : CmsStringUtil.getEthernetAddress();
+        }
+        return m_ethernetAddress;
     }
 
     /**

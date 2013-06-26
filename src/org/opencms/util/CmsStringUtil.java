@@ -35,6 +35,8 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
 import java.awt.Color;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -714,6 +716,34 @@ public final class CmsStringUtil {
             result = "/";
         }
         return result;
+    }
+
+    /**
+     * Returns the Ethernet-Address of the locale host.<p>
+     * 
+     * A dummy ethernet address is returned, if the ip is 
+     * representing the loopback address or in case of exceptions.<p>
+     * 
+     * @return the Ethernet-Address
+     */
+    public static String getEthernetAddress() {
+
+        try {
+            InetAddress ip = InetAddress.getLocalHost();
+            if (!ip.isLoopbackAddress()) {
+                NetworkInterface network = NetworkInterface.getByInetAddress(ip);
+                byte[] mac = network.getHardwareAddress();
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < mac.length; i++) {
+                    sb.append(String.format("%02X%s", new Byte(mac[i]), (i < (mac.length - 1)) ? ":" : ""));
+                }
+                return sb.toString();
+            }
+        } catch (Throwable t) {
+            // if an exception occurred return a dummy address
+        }
+        // return a dummy ethernet address, if the ip is representing the loopback address or in case of exceptions
+        return CmsUUID.getDummyEthernetAddress();
     }
 
     /**

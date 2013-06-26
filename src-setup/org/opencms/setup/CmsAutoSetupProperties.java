@@ -100,6 +100,9 @@ public final class CmsAutoSetupProperties {
     public static final String PROP_SETUP_INSTALL_COMPONENTS = "install.components";
 
     /** A property file key. */
+    public static final String PROP_SETUP_SERVER_ETHERNET_ADDRESS = "server.ethernet.address";
+
+    /** A property file key. */
     public static final String PROP_SETUP_SERVER_NAME = "server.name";
 
     /** A property file key. */
@@ -137,6 +140,9 @@ public final class CmsAutoSetupProperties {
 
     /** The drop db flag. */
     private boolean m_dropDb;
+
+    /** The ethernet address. */
+    private String m_ethernetAddress;
 
     /** The index table space for oracle DBs. */
     private String m_indexTablespace;
@@ -208,6 +214,7 @@ public final class CmsAutoSetupProperties {
             m_temporaryTablespace = addProperty(PROP_DB_TEMPORARY_TABLESPACE);
             m_serverUrl = addProperty(PROP_SETUP_SERVER_URL);
             m_serverName = addProperty(PROP_SETUP_SERVER_NAME);
+            m_ethernetAddress = addProperty(PROP_SETUP_SERVER_ETHERNET_ADDRESS);
 
             if (System.getProperty(PROP_SETUP_INSTALL_COMPONENTS) != null) {
                 m_configuration.put(PROP_SETUP_INSTALL_COMPONENTS, System.getProperty(PROP_SETUP_INSTALL_COMPONENTS));
@@ -220,21 +227,6 @@ public final class CmsAutoSetupProperties {
             // unable to read environment, use only properties from file
             e.printStackTrace(System.out);
         }
-    }
-
-    /**
-     * Adds and returns the property for the given key.<p>
-     * 
-     * @param key the key to add the property
-     * 
-     * @return the value of that property
-     */
-    private String addProperty(String key) {
-
-        if (System.getProperty(key) != null) {
-            m_configuration.put(key, System.getProperty(key));
-        }
-        return m_configuration.get(key);
     }
 
     /**
@@ -291,6 +283,16 @@ public final class CmsAutoSetupProperties {
     public String getDefaultTablespace() {
 
         return m_defaultTablespace;
+    }
+
+    /**
+     * Returns the ethernetAddress.<p>
+     *
+     * @return the ethernetAddress
+     */
+    public String getEthernetAddress() {
+
+        return m_ethernetAddress;
     }
 
     /**
@@ -478,5 +480,20 @@ public final class CmsAutoSetupProperties {
         result.put("submit", new String[] {Boolean.TRUE.toString()});
 
         return result;
+    }
+
+    /**
+     * Adds and returns the property for the given key.<p>
+     * 
+     * @param key the key to add the property
+     * 
+     * @return the value of that property
+     */
+    private String addProperty(String key) {
+
+        if (System.getProperty(key) != null) {
+            m_configuration.put(key, System.getProperty(key));
+        }
+        return m_configuration.get(key);
     }
 }

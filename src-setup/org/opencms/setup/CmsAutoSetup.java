@@ -35,10 +35,6 @@ import org.opencms.setup.comptest.CmsSetupTestResult;
 import org.opencms.setup.comptest.CmsSetupTests;
 import org.opencms.util.CmsStringUtil;
 
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -282,7 +278,9 @@ public class CmsAutoSetup {
 
             m_bean.setServerName(m_props.getServerName());
             m_bean.setWorkplaceSite(m_props.getServerUrl());
-            m_bean.setEthernetAddress(getMacAdress());
+            m_bean.setEthernetAddress(m_props.getEthernetAddress() == null
+            ? CmsStringUtil.getEthernetAddress()
+            : m_props.getEthernetAddress());
 
             // initialize the available modules
             m_bean.getAvailableModules();
@@ -313,28 +311,4 @@ public class CmsAutoSetup {
         }
     }
 
-    /**
-     * Returns the MAC address.<p>
-     * 
-     * @return the MAC address
-     */
-    private String getMacAdress() {
-
-        InetAddress ip;
-        try {
-            ip = InetAddress.getLocalHost();
-            NetworkInterface network = NetworkInterface.getByInetAddress(ip);
-            byte[] mac = network.getHardwareAddress();
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < mac.length; i++) {
-                sb.append(String.format("%02X%s", new Byte(mac[i]), (i < (mac.length - 1)) ? ":" : ""));
-            }
-            return sb.toString();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 }
