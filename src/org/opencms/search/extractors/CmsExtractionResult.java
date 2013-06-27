@@ -27,7 +27,6 @@
 
 package org.opencms.search.extractors;
 
-import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.ByteArrayInputStream;
@@ -36,9 +35,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * The result of a document text extraction.<p>
@@ -55,9 +52,6 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
 
     /** The extracted individual content items. */
     private Map<String, String> m_contentItems;
-
-    /** The list of mapping fields. */
-    private Set<CmsSearchField> m_mappingFields;
 
     /** The serialized version of this object. */
     private byte[] m_serializedVersion;
@@ -81,7 +75,6 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
      */
     public CmsExtractionResult(String content, Map<String, String> contentItems) {
 
-        m_mappingFields = new HashSet<CmsSearchField>();
         if (contentItems != null) {
             m_contentItems = contentItems;
         } else {
@@ -89,24 +82,6 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
         }
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(content)) {
             m_contentItems.put(ITEM_CONTENT, content);
-        }
-    }
-
-    /**
-     * Creates a new extraction result.<p>
-     * 
-     * @param content the extracted content
-     * @param contentItems the individual extracted content items
-     * @param mappingFields the mapping fields
-     */
-    public CmsExtractionResult(String content, Map<String, String> contentItems, Set<CmsSearchField> mappingFields) {
-
-        this(content, contentItems);
-
-        if (mappingFields != null) {
-            m_mappingFields = mappingFields;
-        } else {
-            m_mappingFields = new HashSet<CmsSearchField>();
         }
     }
 
@@ -137,15 +112,6 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
             }
         }
         return null;
-    }
-
-    /**
-     * @see org.opencms.search.extractors.I_CmsExtractionResult#addMappingField(org.opencms.search.fields.CmsSearchField)
-     */
-    public void addMappingField(CmsSearchField field) {
-
-        m_mappingFields.add(field);
-
     }
 
     /**
@@ -184,14 +150,6 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
     public Map<String, String> getContentItems() {
 
         return m_contentItems;
-    }
-
-    /**
-     * @see org.opencms.search.extractors.I_CmsExtractionResult#getMappingFields()
-     */
-    public Set<CmsSearchField> getMappingFields() {
-
-        return m_mappingFields;
     }
 
     /**

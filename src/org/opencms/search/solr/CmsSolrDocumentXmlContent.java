@@ -151,7 +151,7 @@ public class CmsSolrDocumentXmlContent extends CmsDocumentXmlContent {
 
             // add the locales that have been indexed for this document as item and return the extraction result
             items.put(CmsSearchField.FIELD_RESOURCE_LOCALES, locales.toString().trim());
-            return new CmsExtractionResult(defaultContent, items, xmlContent.getHandler().getSearchFields());
+            return new CmsExtractionResult(defaultContent, items);
 
         } catch (Throwable t) {
             throw new CmsIndexException(Messages.get().container(Messages.ERR_TEXT_EXTRACTION_1, resource), t);

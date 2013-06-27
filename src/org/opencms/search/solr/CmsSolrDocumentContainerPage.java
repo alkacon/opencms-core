@@ -134,14 +134,16 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
                     I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(element.getResource());
                     CmsFormatterConfiguration formatters = type.getFormattersForResource(cms, element.getResource());
 
-                    if (formatters.isSearchContent(element.getFormatterId())) {
+                    if ((formatters != null)
+                        && (element.getFormatterId() != null)
+                        && formatters.isSearchContent(element.getFormatterId())) {
                         // the content of this element must be included for the container page
                         element.initResource(cms);
                         all.add(super.extractContent(cms, element.getResource(), index));
                     }
                 }
             }
-            return merge(all);
+            return merge(cms, resource, all, (CmsSolrFieldConfiguration)index.getFieldConfiguration());
         } catch (Exception e) {
             throw new CmsIndexException(
                 Messages.get().container(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()),
@@ -170,11 +172,19 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
     /**
      * Merges the given list of extraction results into a single one.<p>
      * 
+     * @param cms the CMS object to use
+     * @param resource 
+     * 
      * @param all the extraction result objects to merge
+     * @param conf the Solr field configuration
      * 
      * @return the merged result
      */
-    private I_CmsExtractionResult merge(List<I_CmsExtractionResult> all) {
+    private I_CmsExtractionResult merge(
+        CmsObject cms,
+        CmsResource resource,
+        List<I_CmsExtractionResult> all,
+        CmsSolrFieldConfiguration conf) {
 
         StringBuffer content = new StringBuffer();
         Map<String, String> items = new HashMap<String, String>();
@@ -187,10 +197,11 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
             if (ex.getContentItems() != null) {
                 items.putAll(ex.getContentItems());
             }
-            if (ex.getMappingFields() != null) {
-                fields.addAll(ex.getMappingFields());
+            Set<CmsSearchField> mappedFields = conf.getXSDMappings(cms, resource);
+            if (mappedFields != null) {
+                fields.addAll(mappedFields);
             }
         }
-        return new CmsExtractionResult(content.toString(), items, fields);
+        return new CmsExtractionResult(content.toString(), items);
     }
 }
