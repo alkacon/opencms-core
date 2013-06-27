@@ -143,7 +143,7 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
                     }
                 }
             }
-            return merge(cms, resource, all);
+            return merge(cms, resource, all, (CmsSolrFieldConfiguration)index.getFieldConfiguration());
         } catch (Exception e) {
             throw new CmsIndexException(
                 Messages.get().container(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()),
@@ -176,10 +176,15 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
      * @param resource 
      * 
      * @param all the extraction result objects to merge
+     * @param conf the Solr field configuration
      * 
      * @return the merged result
      */
-    private I_CmsExtractionResult merge(CmsObject cms, CmsResource resource, List<I_CmsExtractionResult> all) {
+    private I_CmsExtractionResult merge(
+        CmsObject cms,
+        CmsResource resource,
+        List<I_CmsExtractionResult> all,
+        CmsSolrFieldConfiguration conf) {
 
         StringBuffer content = new StringBuffer();
         Map<String, String> items = new HashMap<String, String>();
@@ -192,11 +197,11 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
             if (ex.getContentItems() != null) {
                 items.putAll(ex.getContentItems());
             }
-            Set<CmsSearchField> mappedFields = CmsSolrFieldConfiguration.getXSDMappings(cms, resource);
+            Set<CmsSearchField> mappedFields = conf.getXSDMappings(cms, resource);
             if (mappedFields != null) {
                 fields.addAll(mappedFields);
             }
         }
-        return new CmsExtractionResult(content.toString(), items, fields);
+        return new CmsExtractionResult(content.toString(), items);
     }
 }

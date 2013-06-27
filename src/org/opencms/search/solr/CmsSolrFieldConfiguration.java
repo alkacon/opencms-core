@@ -88,29 +88,6 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
     }
 
     /**
-     * Returns the search field mappings declared within the XSD.<p>
-     * 
-     * @param cms the CmsObject
-     * @param resource the resource
-     * 
-     * @return the fields to map
-     */
-    protected static Set<CmsSearchField> getXSDMappings(CmsObject cms, CmsResource resource) {
-
-        try {
-            if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
-                I_CmsXmlContentHandler handler = CmsXmlContentDefinition.getContentHandlerForResource(cms, resource);
-                if ((handler != null) && !handler.getSearchFields().isEmpty()) {
-                    return handler.getSearchFields();
-                }
-            }
-        } catch (CmsException e) {
-            LOG.error(e.getMessage(), e);
-        }
-        return null;
-    }
-
-    /**
      * Returns all configured Solr fields.<p>
      * 
      * @return all configured Solr fields
@@ -387,6 +364,29 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_LANGUAGE_DETECTION_FAILED_1, resource));
         }
         return result;
+    }
+
+    /**
+     * Returns the search field mappings declared within the XSD.<p>
+     * 
+     * @param cms the CmsObject
+     * @param resource the resource
+     * 
+     * @return the fields to map
+     */
+    protected Set<CmsSearchField> getXSDMappings(CmsObject cms, CmsResource resource) {
+
+        try {
+            if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
+                I_CmsXmlContentHandler handler = CmsXmlContentDefinition.getContentHandlerForResource(cms, resource);
+                if ((handler != null) && !handler.getSearchFields().isEmpty()) {
+                    return handler.getSearchFields();
+                }
+            }
+        } catch (CmsException e) {
+            LOG.error(e.getMessage(), e);
+        }
+        return null;
     }
 
     /**
