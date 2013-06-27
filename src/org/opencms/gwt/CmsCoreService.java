@@ -133,43 +133,39 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
      * @param context the ade context (sitemap or containerpage)
      * 
      * @return the context menu entries 
-     * @throws CmsException
      */
     public static List<CmsContextMenuEntryBean> getContextMenuEntries(
         CmsObject cms,
         CmsUUID structureId,
-        AdeContext context) throws CmsException {
+        AdeContext context) {
 
-        List<CmsContextMenuEntryBean> result = null;
-        if (context != null) {
-            cms.getRequestContext().setAttribute(I_CmsMenuItemRule.ATTR_CONTEXT_INFO, context.toString());
+        List<CmsContextMenuEntryBean> result = Collections.<CmsContextMenuEntryBean> emptyList();
+        try {
+            if (context != null) {
+                cms.getRequestContext().setAttribute(I_CmsMenuItemRule.ATTR_CONTEXT_INFO, context.toString());
+            }
+            CmsResourceUtil[] resUtil = new CmsResourceUtil[1];
+            resUtil[0] = new CmsResourceUtil(cms, cms.readResource(structureId, CmsResourceFilter.ONLY_VISIBLE));
+            if (hasViewPermissions(cms, resUtil[0].getResource())) {
+                // the explorer type settings
+                CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+                    resUtil[0].getResourceTypeName());
+                // only if the user has access to this resource type
+                if ((settings != null)) {
+                    // get the context menu configuration for the given selection mode
+                    CmsExplorerContextMenu contextMenu = settings.getContextMenu();
+                    // transform the context menu into beans
+                    List<CmsContextMenuEntryBean> allEntries = transformToMenuEntries(
+                        cms,
+                        contextMenu.getAllEntries(),
+                        resUtil);
+                    // filter the result
+                    result = filterEntries(allEntries);
+                }
+            }
+        } catch (CmsException e) {
+            // ignore, the user probably has not enough permissions to read the resource
         }
-        CmsResourceUtil[] resUtil = new CmsResourceUtil[1];
-        resUtil[0] = new CmsResourceUtil(cms, cms.readResource(structureId));
-        if (!hasViewPermissions(cms, resUtil[0].getResource())) {
-            // the user has no access to this resource type
-            // could be configured in the opencms-vfs.xml or in the opencms-modules.xml
-            return Collections.<CmsContextMenuEntryBean> emptyList();
-        }
-        // the explorer type settings
-        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
-            resUtil[0].getResourceTypeName());
-
-        // get the context menu configuration for the given selection mode
-        CmsExplorerContextMenu contextMenu;
-        if ((settings == null) || !hasViewPermissions(cms, resUtil[0].getResource())) {
-            // the user has no access to this resource type
-            // could be configured in the opencms-vfs.xml or in the opencms-modules.xml
-            return Collections.<CmsContextMenuEntryBean> emptyList();
-        }
-        // get the context menu
-        contextMenu = settings.getContextMenu();
-
-        // transform the context menu into beans
-        List<CmsContextMenuEntryBean> allEntries = transformToMenuEntries(cms, contextMenu.getAllEntries(), resUtil);
-
-        // filter the result
-        result = filterEntries(allEntries);
         return result;
     }
 
