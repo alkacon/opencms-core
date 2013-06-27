@@ -27,7 +27,6 @@
 
 package org.opencms.search.extractors;
 
-import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.ByteArrayInputStream;
@@ -37,7 +36,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * The result of a document text extraction.<p>
@@ -85,18 +83,6 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(content)) {
             m_contentItems.put(ITEM_CONTENT, content);
         }
-    }
-
-    /**
-     * Creates a new extraction result.<p>
-     * 
-     * @param content the extracted content
-     * @param contentItems the individual extracted content items
-     * @param mappingFields the mapping fields
-     */
-    public CmsExtractionResult(String content, Map<String, String> contentItems, Set<CmsSearchField> mappingFields) {
-
-        this(content, contentItems);
     }
 
     /**
