@@ -2112,10 +2112,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                         // use provided locale
                         locale = CmsLocaleManager.getLocale(localeStr);
                     }
-                    if (Locale.getDefault().equals(locale)) {
-                        // in case the default locale is given, we store this as root
-                        locale = null;
-                    }
+                    boolean isDefaultLocaleAndNotNull = (locale != null)
+                        && locale.equals(CmsLocaleManager.getDefaultLocale());
 
                     CmsListResourceBundle xmlBundle = null;
 
@@ -2140,6 +2138,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                     }
                     if (xmlBundle != null) {
                         CmsResourceBundleLoader.addBundleToCache(xmlBundleName, locale, xmlBundle);
+                        if (isDefaultLocaleAndNotNull) {
+                            CmsResourceBundleLoader.addBundleToCache(xmlBundleName, null, xmlBundle);
+                        }
                     }
                 }
             }
