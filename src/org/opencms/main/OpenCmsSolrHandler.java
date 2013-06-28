@@ -62,7 +62,7 @@ import org.apache.solr.common.params.CommonParams;
 public class OpenCmsSolrHandler extends HttpServlet implements I_CmsRequestHandler {
 
     /**
-     * A enum storring the handler names implemented by this class.<p>
+     * An enum storing the handler names implemented by this class.<p>
      */
     private static enum HANDLER_NAMES {
 
@@ -74,7 +74,7 @@ public class OpenCmsSolrHandler extends HttpServlet implements I_CmsRequestHandl
 
         /** 
          * A constant for the '/spell' request handler of the embedded Solr server.
-         * This handler is reachable under "/opencms/opencms/handleSolrSelect".<p>
+         * This handler is reachable under "/opencms/opencms/handleSolrSpell".<p>
          */
         SolrSpell
     }
@@ -152,10 +152,10 @@ public class OpenCmsSolrHandler extends HttpServlet implements I_CmsRequestHandl
                 if ((m_params.get(CommonParams.Q) != null) || (m_params.get(CommonParams.FQ) != null)) {
                     switch (m_handlerName) {
                         case SolrSelect:
-                            m_index.writeResponse(res, m_index.search(m_cms, m_query, true));
+                            m_index.select(res, m_cms, m_query, true);
                             break;
                         case SolrSpell:
-                            res.getWriter().println(m_index.spellCheck(m_cms, m_query.getQuery(), m_params));
+                            m_index.spellCheck(res, m_cms, m_query);
                             break;
                         default:
                             break;

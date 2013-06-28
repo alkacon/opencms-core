@@ -58,13 +58,14 @@ import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 
+import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.servlet.ServletResponse;
 
@@ -77,7 +78,6 @@ import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
-import org.apache.solr.common.params.ModifiableSolrParams;
 import org.apache.solr.common.util.ContentStreamBase;
 import org.apache.solr.common.util.FastWriter;
 import org.apache.solr.core.CoreContainer;
@@ -601,6 +601,25 @@ public class CmsSolrIndex extends CmsSearchIndex {
     }
 
     /**
+     * Writes the response into the writer.<p>
+     * 
+     * NOTE: Currently not available for HTTP server.<p>
+     * 
+     * @param response the servlet response
+     * @param cms the CMS object to use for search
+     * @param query the Solr query
+     * @param ignoreMaxRows if to return unlimited results
+     * 
+     * @throws Exception if there is no embedded server
+     */
+    public void select(ServletResponse response, CmsObject cms, CmsSolrQuery query, boolean ignoreMaxRows)
+    throws Exception {
+
+        CmsSolrResultList result = search(cms, query, ignoreMaxRows);
+        writeResp(response, result.getSolrQueryRequest(), result.getSolrQueryResponse());
+    }
+
+    /**
      * Sets the search post processor.<p>
      *
      * @param postProcessor the search post processor to set
@@ -616,36 +635,50 @@ public class CmsSolrIndex extends CmsSearchIndex {
     @Override
     public void shutDown() {
 
-        // noop
+        if (m_solr instanceof EmbeddedSolrServer) {
+            ((EmbeddedSolrServer)m_solr).shutdown();
+        }
     }
 
     /**
      * Executes a spell checking Solr query and returns the Solr query response.<p>
      * 
+     * @param res the servlet response
      * @param cms the CMS object
      * @param q the query
-     * @param reqParams the request parameters as map
-     * 
-     * @return the Solr response
      * 
      * @throws CmsSearchException if something goes wrong
      */
-    public synchronized QueryResponse spellCheck(CmsObject cms, String q, Map<String, String[]> reqParams)
-    throws CmsSearchException {
+    public void spellCheck(ServletResponse res, CmsObject cms, CmsSolrQuery q) throws CmsSearchException {
 
+        SolrCore core = null;
         try {
-            ModifiableSolrParams params = new ModifiableSolrParams();
-            params.set("qt", "/spell");
-            params.set("q", q);
-            params.set("spellcheck", "true");
-            params.set("spellcheck.collate", "true");
-            params.set("spellcheck.build", "false");
-            for (Map.Entry<String, String[]> ent : reqParams.entrySet()) {
-                params.set(ent.getKey(), ent.getValue());
-            }
-            return m_solr.query(params);
+            q.setQueryType("/spell");
+
+            QueryResponse queryResponse = m_solr.query(q);
+            // create and return the result
+            core = m_solr instanceof EmbeddedSolrServer ? ((EmbeddedSolrServer)m_solr).getCoreContainer().getCore(
+                getName()) : null;
+
+            SolrQueryResponse solrQueryResponse = new SolrQueryResponse();
+            solrQueryResponse.setAllValues(queryResponse.getResponse());
+            solrQueryResponse.setEndTime(queryResponse.getQTime());
+
+            // create and initialize the solr request
+            LocalSolrQueryRequest solrQueryRequest = new LocalSolrQueryRequest(
+                core,
+                solrQueryResponse.getResponseHeader());
+            // set the OpenCms Solr query as parameters to the request
+            solrQueryRequest.setParams(q);
+
+            writeResp(res, solrQueryRequest, solrQueryResponse);
+
         } catch (Exception e) {
             throw new CmsSearchException(Messages.get().container(Messages.LOG_SOLR_ERR_SEARCH_EXECUTION_FAILD_1, q), e);
+        } finally {
+            if (core != null) {
+                core.close();
+            }
         }
     }
 
@@ -797,5 +830,48 @@ public class CmsSolrIndex extends CmsSearchIndex {
             }
         }
         return false;
+    }
+
+    /**
+     * Writes the Solr response.<p>
+     * 
+     * @param response the servlet response
+     * @param queryRequest the Solr request
+     * @param queryResponse the Solr response to write
+     * 
+     * @throws IOException if sth. goes wrong
+     * @throws UnsupportedEncodingException if sth. goes wrong
+     */
+    private void writeResp(ServletResponse response, SolrQueryRequest queryRequest, SolrQueryResponse queryResponse)
+    throws IOException, UnsupportedEncodingException {
+
+        if (m_solr instanceof EmbeddedSolrServer) {
+            SolrCore core = ((EmbeddedSolrServer)m_solr).getCoreContainer().getCore(getName());
+            try {
+                QueryResponseWriter responseWriter = core.getQueryResponseWriter(queryRequest);
+
+                final String ct = responseWriter.getContentType(queryRequest, queryResponse);
+                if (null != ct) {
+                    response.setContentType(ct);
+                }
+
+                if (responseWriter instanceof BinaryQueryResponseWriter) {
+                    BinaryQueryResponseWriter binWriter = (BinaryQueryResponseWriter)responseWriter;
+                    binWriter.write(response.getOutputStream(), queryRequest, queryResponse);
+                } else {
+                    String charset = ContentStreamBase.getCharsetFromContentType(ct);
+                    Writer out = ((charset == null) || charset.equalsIgnoreCase(UTF8.toString()))
+                    ? new OutputStreamWriter(response.getOutputStream(), UTF8)
+                    : new OutputStreamWriter(response.getOutputStream(), charset);
+                    out = new FastWriter(out);
+                    responseWriter.write(out, queryRequest, queryResponse);
+                    out.flush();
+                }
+            } finally {
+                core.close();
+            }
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 }
