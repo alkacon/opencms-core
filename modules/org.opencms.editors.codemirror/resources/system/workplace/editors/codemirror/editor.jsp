@@ -69,8 +69,11 @@ default:
 <script src="<%= wp.getEditorResourceUri() %>js/search.js"></script>
 <script src="<%= wp.getEditorResourceUri() %>dist/addon/edit/closebrackets.js"></script>
 <script src="<%= wp.getEditorResourceUri() %>dist/addon/edit/closetag.js"></script>
+<script src="<%= wp.getEditorResourceUri() %>dist/addon/edit/matchbrackets.js"></script>
 <script src="<%= wp.getEditorResourceUri() %>dist/addon/hint/show-hint.js"></script>
+<script src="<%= wp.getEditorResourceUri() %>dist/addon/hint/html-hint.js"></script>
 <script src="<%= wp.getEditorResourceUri() %>dist/addon/hint/javascript-hint.js"></script>
+<script src="<%= wp.getEditorResourceUri() %>dist/addon/hint/xml-hint.js"></script>
 <script src="<%= wp.getEditorResourceUri() %>dist/addon/fold/foldcode.js"></script>
 <script src="<%= wp.getEditorResourceUri() %>dist/addon/fold/brace-fold.js"></script>
 <script src="<%= wp.getEditorResourceUri() %>dist/addon/fold/xml-fold.js"></script>
@@ -86,6 +89,14 @@ if (mode.equals(CmsCodeMirror.HIGHLIGHT_TYPE_JAVASCRIPT)) {
     modeName = "text/html";
 } else if (mode.equals(CmsCodeMirror.HIGHLIGHT_TYPE_JSP)) {
     modeName = "application/x-jsp";
+}
+
+// determine which hint method to use depending on the mode
+String hintConfig;
+if (modeName.equals("text/html")) {
+	hintConfig = "CodeMirror.htmlHint";
+} else {
+	hintConfig = "CodeMirror.javascriptHint";
 }
 
 // include all necessary scripts for syntax highlighting
@@ -163,7 +174,7 @@ if (mode.equals(CmsCodeMirror.HIGHLIGHT_TYPE_JAVASCRIPT)) {
 				smartIndent: false,
 				autoCloseBrackets: true,
 				autoCloseTags: true,
-				extraKeys: {"Ctrl-Space": function(cm) {CodeMirror.showHint(cm, CodeMirror.javascriptHint);}, "Ctrl-Q": function(cm){foldFunc(cm, cm.getCursor().line);}}
+				extraKeys: {"Ctrl-Space": function(cm) {CodeMirror.showHint(cm, <%= hintConfig %>);}, "Ctrl-Q": function(cm){foldFunc(cm, cm.getCursor().line);}}
 			}
 		);
 		// set the editor content
