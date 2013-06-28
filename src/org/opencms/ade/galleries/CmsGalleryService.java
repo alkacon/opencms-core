@@ -459,11 +459,10 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             case editor:
             case view:
             case widget:
-                data.setStartGallery(conf.getGalleryPath());
                 data.setCurrentElement(conf.getCurrentElement());
                 String referencePath = conf.getReferencePath();
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(referencePath)) {
-                    referencePath = data.getStartGallery();
+                    referencePath = conf.getGalleryPath();
                 }
                 data.setReferenceSitePath(referencePath);
                 types = getResourceTypeBeans(
@@ -484,6 +483,16 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                     galleryTypeInfos = infos;
                 }
                 data.setGalleries(buildGalleriesList(galleryTypeInfos));
+                String startGallery = conf.getGalleryPath();
+                // check if the configured gallery path really is an existing gallery
+                boolean galleryAvailable = false;
+                for (CmsGalleryFolderBean folderBean : data.getGalleries()) {
+                    if (folderBean.getPath().equals(startGallery)) {
+                        galleryAvailable = true;
+                        break;
+                    }
+                }
+                data.setStartGallery(galleryAvailable ? startGallery : null);
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(conf.getStartFolder())) {
                     try {
                         CmsObject cloneCms = OpenCms.initCmsObject(getCmsObject());
@@ -497,11 +506,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                         log(e.getMessage(), e);
                     }
                 }
-
                 data.setStartTab(GalleryTabId.cms_tab_results);
-
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(data.getStartGallery()) && !types.isEmpty()) {
-
                     String lastGallery = getWorkplaceSettings().getLastUsedGallery(types.get(0).getTypeId());
                     if (CmsStringUtil.isEmptyOrWhitespaceOnly(lastGallery) && !data.getGalleries().isEmpty()) {
                         // check the user preferences for any configured start gallery
