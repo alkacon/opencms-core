@@ -515,20 +515,28 @@ public abstract class CmsWorkplace {
         // switch to users preferred site      
         String startSiteRoot = getStartSiteRoot(cms, settings);
 
-        cms.getRequestContext().setSiteRoot(startSiteRoot);
         try {
+            CmsObject cloneCms = OpenCms.initCmsObject(cms);
+            cloneCms.getRequestContext().setSiteRoot(startSiteRoot);
+            String projectName = settings.getUserSettings().getStartProject();
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(projectName)) {
+                cloneCms.getRequestContext().setCurrentProject(cloneCms.readProject(projectName));
+            }
             // check start folder: 
             String startFolder = settings.getUserSettings().getStartFolder();
-            if (!cms.existsResource(startFolder, CmsResourceFilter.IGNORE_EXPIRATION)) {
+            if (!cloneCms.existsResource(startFolder, CmsResourceFilter.IGNORE_EXPIRATION)) {
                 // self - healing: 
                 startFolder = "/";
                 settings.getUserSettings().setStartFolder(startFolder);
             }
             settings.setSite(startSiteRoot);
-            settings.setExplorerResource(startFolder, cms);
+            settings.setExplorerResource(startFolder, cloneCms);
+        } catch (Exception e) {
+            settings.getUserSettings().setStartFolder("/");
+            settings.setSite(startSiteRoot);
+            settings.setExplorerResource("/", null);
         } finally {
             settings.setSite(currentSite);
-            cms.getRequestContext().setSiteRoot(currentSite);
         }
         // get the default view from the user settings
         settings.setViewUri(OpenCms.getLinkManager().substituteLink(cms, settings.getUserSettings().getStartView()));
