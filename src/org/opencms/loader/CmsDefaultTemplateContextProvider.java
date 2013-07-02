@@ -29,11 +29,14 @@ package org.opencms.loader;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.util.CmsJspDeviceSelector;
 import org.opencms.jsp.util.I_CmsJspDeviceSelector;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
@@ -98,6 +101,24 @@ public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextPr
     public String getConfigurationPropertyPath() {
 
         return null;
+    }
+
+    /**
+     * @see org.opencms.loader.I_CmsTemplateContextProvider#getEditorStyleSheet(org.opencms.file.CmsObject, java.lang.String)
+     */
+    public String getEditorStyleSheet(CmsObject cms, String editedResourcePath) {
+
+        String templatePath = m_map.get("desktop").getTemplatePath();
+        String result = null;
+        try {
+            CmsProperty property = cms.readPropertyObject(templatePath, CmsPropertyDefinition.PROPERTY_TEMPLATE, true);
+            if (!property.isNullProperty()) {
+                result = property.getValue();
+            }
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        return result;
     }
 
     /**

@@ -53,6 +53,16 @@ public interface I_CmsTemplateContextProvider {
      */
     Map<String, CmsTemplateContext> getAllContexts();
 
+    /** 
+     * Returns the style sheet to be used for the editor.<p>
+     * 
+     * @param cms the current CMS context
+     * @param editedResourcePath the path of the edited resource 
+     * 
+     * @return the path of the style sheet to be used for the resource 
+     */
+    String getEditorStyleSheet(CmsObject cms, String editedResourcePath);
+
     /**
      * Gets the name of the cookie which should be used for overriding the template context.<p>
      * 
