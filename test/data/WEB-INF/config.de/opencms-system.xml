@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE opencms SYSTEM "http://www.opencms.org/dtd/6.0/opencms-system.dtd">
+
+<opencms>
+	<system>
+		<internationalization>
+			<localehandler class="org.opencms.i18n.CmsDefaultLocaleHandler" />
+			<localesconfigured>
+				<locale>de</locale>
+				<locale>en</locale>
+			</localesconfigured>
+			<localesdefault>
+				<locale>de</locale>
+				<locale>en</locale>
+			</localesdefault>
+			<timezone>GMT+01:00</timezone>
+		</internationalization>
+		<mail>
+			<mailfrom>nobody@nowhere.com</mailfrom>
+			<mailhost name="localhost" port="25" protocol="smtp" />
+			<mailhost name="alternative.smtp.server" port="25" />
+			<mailhost name="another.alternative.smtp.server" port="25" />
+		</mail>
+		<scheduler />
+		<versionhistory enabled="true" count="10" deleted="4" />
+		<resourceinit>
+			<resourceinithandler
+				class="org.opencms.file.history.CmsHistoryResourceHandler" />
+			<resourceinithandler class="org.opencms.main.CmsPermalinkResourceHandler" />
+			<resourceinithandler class="org.opencms.workplace.CmsWorkplaceLoginHandler" />
+			<resourceinithandler
+				class="org.opencms.ade.detailpage.CmsDetailPageResourceHandler" />
+		</resourceinit>
+		<requesthandlers>
+			<requesthandler class="org.opencms.main.OpenCmsSolrHandler" />
+		</requesthandlers>
+		<passwordhandler class="org.opencms.security.CmsDefaultPasswordHandler">
+			<encoding>UTF-8</encoding>
+			<digest-type>MD5</digest-type>
+			<param name="compatibility.convert.digestencoding">false</param>
+		</passwordhandler>
+		<validationhandler class="org.opencms.security.CmsDefaultValidationHandler" />
+		<sites>
+			<workplace-server>http://localhost:8080</workplace-server>
+			<default-uri>/sites/default/</default-uri>
+			<shared-folder>/shared/</shared-folder>
+			<site server="http://localhost:8080" uri="/sites/default/">
+				<secure server="https://localhost:443" />
+			</site>
+			<site server="http://localhost:8081" uri="/sites/default/folder1/" />
+			<site server="http://localhost:8082" uri="/sites/testsite/" />
+		</sites>
+		<runtimeproperties>
+			<param name="compatibility.support.oldlocales">false</param>
+			<param name="compatibility.support.webAppNames">/opencms/opencms/</param>
+		</runtimeproperties>
+		<runtimeclasses>
+			<runtimeinfo class="org.opencms.db.CmsDbContextFactory" />
+		</runtimeclasses>
+		<defaultusers>
+			<user-admin>Admin</user-admin>
+			<user-guest>Guest</user-guest>
+			<user-export>Export</user-export>
+			<group-administrators>Administrators</group-administrators>
+			<group-projectmanagers>Projectmanagers</group-projectmanagers>
+			<group-users>Users</group-users>
+			<group-guests>Guests</group-guests>
+		</defaultusers>
+		<defaultcontentencoding>ISO-8859-1</defaultcontentencoding>
+		<memorymonitor class='org.opencms.monitor.CmsMemoryMonitor'>
+			<maxusagepercent>90</maxusagepercent>
+			<log-interval>2</log-interval>
+			<email-interval>43200</email-interval>
+			<warning-interval>43200</warning-interval>
+		</memorymonitor>
+		<flexcache>
+			<cache-enabled>true</cache-enabled>
+			<cache-offline>false</cache-offline>
+			<maxcachebytes>8000000</maxcachebytes>
+			<avgcachebytes>6000000</avgcachebytes>
+			<maxentrybytes>400000</maxentrybytes>
+			<maxkeys>2000</maxkeys>
+		</flexcache>
+		<http-authentication>
+			<browser-based>true</browser-based>
+		</http-authentication>
+		<resultcache>
+			<keygenerator>org.opencms.db.CmsCacheKey</keygenerator>
+			<size-users>64</size-users>
+			<size-groups>64</size-groups>
+			<size-orgunits>64</size-orgunits>
+			<size-usergroups>256</size-usergroups>
+			<size-projects>32</size-projects>
+			<size-projectresources>64</size-projectresources>
+			<size-resources>8192</size-resources>
+			<size-resourcelists>256</size-resourcelists>
+			<size-properties>1024</size-properties>
+			<size-propertylists>1024</size-propertylists>
+			<size-accesscontrollists>1024</size-accesscontrollists>
+			<size-permissions>1024</size-permissions>
+		</resultcache>
+		<content-notification>
+			<notification-time>365</notification-time>
+			<notification-project>Offline</notification-project>
+		</content-notification>
+		<authorizationhandler
+			class="org.opencms.security.CmsDefaultAuthorizationHandler" />
+		<publishmanager>
+			<history-size>10</history-size>
+			<queue-persistance>true</queue-persistance>
+			<queue-shutdowntime>0</queue-shutdowntime>
+		</publishmanager>
+		<session-storageprovider
+			class="org.opencms.main.CmsDefaultSessionStorageProvider" />
+		<permissionhandler class="org.opencms.security.CmsDefaultPermissionHandler" />
+		<servletcontainer-settings mode="auto" />
+		<ade>
+			<configuration
+				class="org.opencms.xml.containerpage.CmsADEDefaultConfiguration" />
+			<ade-cache>
+				<containerpages offline="1024" online="1024" />
+				<groupcontainers offline="64" online="64" />
+			</ade-cache>
+		</ade>
+		<subscriptionmanager enabled="true" poolname="default"
+			maxvisited="100" />
+	</system>
+</opencms>

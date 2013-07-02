@@ -77,10 +77,10 @@ import junit.framework.TestSuite;
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
     /** Schema id 1L1. */
-    private static final String SCHEMA_SYSTEM_ID_1L1 = "http://www.opencms.org/test1_localized1.xsd";
+    public static final String SCHEMA_SYSTEM_ID_1L1 = "http://www.opencms.org/test1_localized1.xsd";
 
     /** Schema id 1L2. */
-    private static final String SCHEMA_SYSTEM_ID_1L2 = "http://www.opencms.org/test1_localized2.xsd";
+    public static final String SCHEMA_SYSTEM_ID_1L2 = "http://www.opencms.org/test1_localized2.xsd";
 
     /** Schema id 1L4. */
     private static final String SCHEMA_SYSTEM_ID_1L4 = "http://www.opencms.org/test1_localized4.xsd";
