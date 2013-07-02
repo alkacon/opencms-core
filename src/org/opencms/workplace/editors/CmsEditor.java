@@ -435,28 +435,30 @@ public abstract class CmsEditor extends CmsEditorBase {
     public String deleteLocaleButton(String href, String target, String image, String label, int type) {
 
         String filename = getParamResource();
-
+        int locales = 0;
         try {
-            CmsResource res = getCms().readResource(filename, CmsResourceFilter.IGNORE_EXPIRATION);
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(filename)) {
+                CmsResource res = getCms().readResource(filename, CmsResourceFilter.IGNORE_EXPIRATION);
 
-            String temporaryFilename = CmsWorkplace.getTemporaryFileName(filename);
-            if (getCms().existsResource(temporaryFilename, CmsResourceFilter.IGNORE_EXPIRATION)) {
-                res = getCms().readResource(temporaryFilename, CmsResourceFilter.IGNORE_EXPIRATION);
-            }
-            CmsFile file = getCms().readFile(res);
-            CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(getCms(), file);
-            int locales = xmlContent.getLocales().size();
-            // there are less than 2 locales, so disable the delete locale button
-            if (locales < 2) {
-                href = null;
-                target = null;
-                image += "_in";
+                String temporaryFilename = CmsWorkplace.getTemporaryFileName(filename);
+                if (getCms().existsResource(temporaryFilename, CmsResourceFilter.IGNORE_EXPIRATION)) {
+                    res = getCms().readResource(temporaryFilename, CmsResourceFilter.IGNORE_EXPIRATION);
+                }
+                CmsFile file = getCms().readFile(res);
+                CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(getCms(), file);
+                locales = xmlContent.getLocales().size();
+                // there are less than 2 locales, so disable the delete locale button
             }
         } catch (CmsException e) {
-            // to nothing here in case the resource could not be opened
-            if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(Messages.LOG_GET_LOCALES_1, filename), e);
+            // do nothing here in case the resource could not be opened
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(Messages.get().getBundle().key(Messages.LOG_GET_LOCALES_1, filename), e);
             }
+        }
+        if (locales < 2) {
+            href = null;
+            target = null;
+            image += "_in";
         }
         return button(href, target, image, label, type, getSkinUri() + "buttons/");
 
