@@ -2588,15 +2588,26 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                         }
 
                         String property;
-                        if (mapping.startsWith(MAPTO_PROPERTY_LIST)) {
-                            // this is a property list mapping
+                        boolean shared = false;
+                        if (mapping.startsWith(MAPTO_PROPERTY_LIST_INDIVIDUAL)) {
+                            property = mapping.substring(MAPTO_PROPERTY_LIST_INDIVIDUAL.length());
+                        } else if (mapping.startsWith(MAPTO_PROPERTY_LIST_SHARED)) {
+                            property = mapping.substring(MAPTO_PROPERTY_LIST_SHARED.length());
+                            shared = true;
+                        } else if (mapping.startsWith(MAPTO_PROPERTY_LIST)) {
                             property = mapping.substring(MAPTO_PROPERTY_LIST.length());
+                        } else if (mapping.startsWith(MAPTO_PROPERTY_SHARED)) {
+                            property = mapping.substring(MAPTO_PROPERTY_SHARED.length());
+                            shared = true;
+                        } else if (mapping.startsWith(MAPTO_PROPERTY_INDIVIDUAL)) {
+                            property = mapping.substring(MAPTO_PROPERTY_INDIVIDUAL.length());
                         } else {
-                            // this is a property mapping
                             property = mapping.substring(MAPTO_PROPERTY.length());
                         }
-                        // delete the property value for the not existing node
-                        rootCms.writePropertyObject(filename, new CmsProperty(property, CmsProperty.DELETE_VALUE, null));
+                        rootCms.writePropertyObject(filename, new CmsProperty(
+                            property,
+                            CmsProperty.DELETE_VALUE,
+                            shared ? CmsProperty.DELETE_VALUE : null));
                     }
                 } else if (mapping.startsWith(MAPTO_PERMISSION)) {
                     for (int i = 0; i < siblings.size(); i++) {

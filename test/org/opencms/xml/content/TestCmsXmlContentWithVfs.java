@@ -1369,6 +1369,26 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals(propValue, prop3.getValue());
         assertEquals(propValue, prop3.getStructureValue());
         assertNull(prop3.getResourceValue());
+
+        // test removal of mapped values 
+        xmlcontent.removeValue("VfsFile3", Locale.ENGLISH, 0);
+        xmlcontent.removeValue("VfsFile3", Locale.ENGLISH, 0);
+        xmlcontent.removeValue("VfsFile3", Locale.ENGLISH, 0);
+        xmlcontent.removeValue("VfsFile3", Locale.ENGLISH, 0);
+        file.setContents(xmlcontent.toString().getBytes(CmsEncoder.ENCODING_ISO_8859_1));
+        cms.writeFile(file);
+        CmsProperty p = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_NAVTEXT, false);
+        assertNull(p.getStructureValue());
+
+        xmlcontent.removeValue("VfsFile2", Locale.ENGLISH, 0);
+        xmlcontent.removeValue("VfsFile2", Locale.ENGLISH, 0);
+        xmlcontent.removeValue("VfsFile2", Locale.ENGLISH, 0);
+        xmlcontent.removeValue("VfsFile2", Locale.ENGLISH, 0);
+        file.setContents(xmlcontent.toString().getBytes(CmsEncoder.ENCODING_ISO_8859_1));
+        cms.writeFile(file);
+        p = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_KEYWORDS, false);
+        assertNull(p.getResourceValue());
+
     }
 
     /**
