@@ -727,7 +727,9 @@ public final class CmsJspStandardContextBean {
     @SuppressWarnings("unchecked")
     private <A> A getRequestAttribute(String name) {
 
-        return (A)(m_request.getAttribute(name));
+        Object attribute = m_request.getAttribute(name);
+
+        return attribute != null ? (A)attribute : null;
     }
 
 }
