@@ -65,12 +65,14 @@ public interface I_CmsContentService extends I_ContentService {
      * @param entityId the entity id/URI
      * @param newLink the new link
      * @param modelFileId  the optional model file id
+     * @param editContext the container page currently being edited (may be null)
      * 
      * @return the content definition
      * 
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    CmsContentDefinition loadDefinition(String entityId, String newLink, CmsUUID modelFileId) throws CmsRpcException;
+    CmsContentDefinition loadDefinition(String entityId, String newLink, CmsUUID modelFileId, String editContext)
+    throws CmsRpcException;
 
     /**
      * Loads new entity definition.<p>

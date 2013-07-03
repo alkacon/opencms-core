@@ -220,12 +220,13 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
-     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadDefinition(java.lang.String, java.lang.String, org.opencms.util.CmsUUID)
+     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadDefinition(java.lang.String, java.lang.String, org.opencms.util.CmsUUID, java.lang.String)
      */
-    public CmsContentDefinition loadDefinition(String entityId, String newLink, CmsUUID modelFileId)
+    public CmsContentDefinition loadDefinition(String entityId, String newLink, CmsUUID modelFileId, String editContext)
     throws CmsRpcException {
 
         CmsContentDefinition result = null;
+        getCmsObject().getRequestContext().setAttribute(CmsXmlContentEditor.ATTRIBUTE_EDITCONTEXT, editContext);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(newLink)) {
             try {
                 CmsUUID structureId = CmsContentDefinition.entityIdToUuid(entityId);
