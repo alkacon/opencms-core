@@ -76,6 +76,9 @@ public final class CmsEncoder {
      */
     public static final String ENCODING_UTF_8 = "UTF-8";
 
+    /** Valid URL characters (RFC 3986). */
+    public static final String VALID_URL_CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~:/?#[]@!$&'()*+,;=%";
+
     /** The regex pattern to match HTML entities. */
     private static final Pattern ENTITIY_PATTERN = Pattern.compile("\\&#\\d+;");
 
@@ -374,6 +377,30 @@ public final class CmsEncoder {
             }
         }
         return result.toString();
+    }
+
+    /**
+     * Only encodes characters which are not already valid characters in URLs. 
+     * 
+     * Note: '%' characters are considered valid URL characters for this method.
+     * 
+     * @param unencoded the source string 
+     * @param encoding the encoding to use
+     *  
+     * @return the encoded string
+     */
+    public static String encodeInvalidUriCharactersOnly(String unencoded, String encoding) {
+
+        StringBuffer buffer = new StringBuffer();
+        for (int i = 0; i < unencoded.length(); i++) {
+            char c = unencoded.charAt(i);
+            if (VALID_URL_CHARACTERS.indexOf(c) < 0) {
+                buffer.append(encode("" + c, encoding));
+            } else {
+                buffer.append(c);
+            }
+        }
+        return buffer.toString();
     }
 
     /**

@@ -30,6 +30,7 @@ package org.opencms.workplace.commons;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
@@ -97,7 +98,8 @@ public class CmsEditPointer extends CmsDialog {
             checkLock(getParamResource());
             // change the link target
             CmsFile editFile = getCms().readFile(getParamResource());
-            editFile.setContents(getParamLinkTarget().getBytes());
+            String encoding = CmsLocaleManager.getResourceEncoding(getCms(), editFile);
+            editFile.setContents(getParamLinkTarget().getBytes(encoding));
             getCms().writeFile(editFile);
             // close the dialog window
             actionCloseDialog();
@@ -123,7 +125,7 @@ public class CmsEditPointer extends CmsDialog {
             try {
                 // get pointer contents
                 CmsFile file = getCms().readFile(getParamResource());
-                linkTarget = new String(file.getContents());
+                linkTarget = new String(file.getContents(), CmsLocaleManager.getResourceEncoding(getCms(), file));
             } catch (Throwable e1) {
                 // error reading file, show error dialog
                 setParamMessage(Messages.get().getBundle(getLocale()).key(
@@ -157,8 +159,23 @@ public class CmsEditPointer extends CmsDialog {
     }
 
     /**
+     * @see org.opencms.workplace.CmsWorkplace#decodeParamValue(java.lang.String, java.lang.String)
+     */
+    @Override
+    protected String decodeParamValue(String paramName, String paramValue) {
+
+        // We DON'T want to decode the URL
+        if (PARAM_LINKTARGET.equals(paramName)) {
+            return paramValue;
+        } else {
+            return super.decodeParamValue(paramName, paramValue);
+        }
+    }
+
+    /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods
