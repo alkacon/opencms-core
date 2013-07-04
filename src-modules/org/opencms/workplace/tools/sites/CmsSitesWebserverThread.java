@@ -181,6 +181,8 @@ public class CmsSitesWebserverThread extends A_CmsReportThread {
      * 
      * @param site the site
      * @param templateContent the configuration template content
+     * 
+     * @return the file content for the configuration as String
      */
     private String createConfigForSite(CmsSite site, String templateContent) {
 
@@ -232,6 +234,8 @@ public class CmsSitesWebserverThread extends A_CmsReportThread {
 
     /**
      * Deletes all web server's configuration files with the given prefix.<p>
+     * 
+     * @param prefix a prefix used for the webserver configuration files
      */
     private void deleteAllWebserverConfigs(final String prefix) {
 
@@ -287,7 +291,8 @@ public class CmsSitesWebserverThread extends A_CmsReportThread {
     /**
      * Generates the web server configuration filename for the given site.<p>
      * 
-     * @param site the site to get the web server configuration filename for 
+     * @param macther the site matcher of the site to get the web server configuration filename for
+     * @param separator for the generated file name 
      * 
      * @return the web server configuration filename
      */

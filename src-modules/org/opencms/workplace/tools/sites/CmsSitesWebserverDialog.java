@@ -375,6 +375,7 @@ public class CmsSitesWebserverDialog extends CmsWidgetDialog {
         m_webserverscript = getParameter(params, PARAM_WEBSERVER_SCRIPT, DEFAULT_PARAM_WEBSERVER_SCRIPT);
         m_targetpath = getParameter(params, PARAM_TARGET_PATH, DEFAULT_PARAM_TARGET_PATH);
         m_configtemplate = getParameter(params, PARAM_CONFIG_TEMPLATE, DEFAULT_PARAM_CONFIG_TEMPLATE);
+        m_securetemplate = getParameter(params, PARAM_SECURE_TEMPLATE, DEFAULT_PARAM_SECURE_TEMPLATE);
         m_filenameprefix = getParameter(params, PARAM_FILENAME_PREFIX, DEFAULT_PARAM_FILENAME_PREFIX);
         m_loggingdir = getParameter(params, PARAM_LOGGING_DIR, DEFAULT_PARAM_LOGGING_DIR);
 
