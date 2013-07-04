@@ -501,6 +501,9 @@ public class TestSolrSearch extends OpenCmsTestCase {
         results = index.search(getCmsObject(), query);
         assertEquals(orgCount + 1, results.size());
 
+        // wait a second because the Solr time range precision
+        Thread.sleep(1000);
+
         // check min date last modified
         Date newStamp = new Date();
         date = DF.format(newStamp);
