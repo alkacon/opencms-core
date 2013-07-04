@@ -691,9 +691,13 @@ public final class CmsXmlUtils {
             }
             return reader.read(source);
         } catch (DocumentException e) {
-            throw new CmsXmlException(Messages.get().container(Messages.ERR_UNMARSHALLING_XML_DOC_0), e);
+            throw new CmsXmlException(Messages.get().container(
+                Messages.ERR_UNMARSHALLING_XML_DOC_1,
+                "(systemId = " + source.getSystemId() + ")"), e);
         } catch (SAXException e) {
-            throw new CmsXmlException(Messages.get().container(Messages.ERR_UNMARSHALLING_XML_DOC_0), e);
+            throw new CmsXmlException(Messages.get().container(
+                Messages.ERR_UNMARSHALLING_XML_DOC_1,
+                "(systemId = " + source.getSystemId() + ")"), e);
         }
     }
 
