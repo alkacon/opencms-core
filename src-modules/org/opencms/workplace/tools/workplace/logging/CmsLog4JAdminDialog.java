@@ -301,22 +301,26 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
             // the button was inactive
             else {
                 @SuppressWarnings("unchecked")
-                List<Appender> appenders_root = Collections.list(Logger.getRootLogger().getAllAppenders());
-                Iterator<Appender> app_root = appenders_root.iterator();
+                List<Appender> rootAppenders = Collections.list(Logger.getRootLogger().getAllAppenders());
                 // get the layout and file path from root logger
-                while (app_root.hasNext()) {
-                    FileAppender fapp = (FileAppender)app_root.next();
-                    filepath = fapp.getFile().substring(0, fapp.getFile().lastIndexOf(File.separatorChar));
-                    layout = fapp.getLayout();
+                for (Appender appender : rootAppenders) {
+                    if (appender instanceof FileAppender) {
+                        FileAppender fapp = (FileAppender)appender;
+                        filepath = fapp.getFile().substring(0, fapp.getFile().lastIndexOf(File.separatorChar));
+                        layout = fapp.getLayout();
+                        break;
+                    }
                 }
 
                 @SuppressWarnings("unchecked")
                 List<Appender> appenders = Collections.list(logchannel.getAllAppenders());
-                Iterator<Appender> app = appenders.iterator();
                 // check if the logger has an Appender get his layout
-                while (app.hasNext()) {
-                    FileAppender fapp = (FileAppender)app.next();
-                    layout = fapp.getLayout();
+                for (Appender appender : appenders) {
+                    if (appender instanceof FileAppender) {
+                        FileAppender fapp = (FileAppender)appender;
+                        layout = fapp.getLayout();
+                        break;
+                    }
                 }
                 String logfilename = "";
                 String temp = logchannel.getName();
@@ -396,41 +400,55 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
             String test = "";
             @SuppressWarnings("unchecked")
             List<Appender> appenders = Collections.list(logger.getAllAppenders());
-            Iterator<Appender> app = appenders.iterator();
+            Iterator<Appender> appendersIt = appenders.iterator();
             int count = 0;
             // select the Appender from logger 
-            while (app.hasNext()) {
-                FileAppender fapp = (FileAppender)app.next();
-                String temp = "";
-                temp = fapp.getFile().substring(fapp.getFile().lastIndexOf(File.separatorChar) + 1);
-                test = test + temp;
-                count++;
-
-            }
-            @SuppressWarnings("unchecked")
-            List<Appender> appenders_parent = Collections.list(logger.getParent().getAllAppenders());
-            Iterator<Appender> app_parent = appenders_parent.iterator();
-            // if no Appender found from logger, select the Appender from parent logger
-            if (!app.hasNext() && (count == 0)) {
-                while (app_parent.hasNext()) {
-                    FileAppender fapp = (FileAppender)app_parent.next();
+            while (appendersIt.hasNext()) {
+                Appender appender = appendersIt.next();
+                // only use file appenders
+                if (appender instanceof FileAppender) {
+                    FileAppender fapp = (FileAppender)appender;
                     String temp = "";
                     temp = fapp.getFile().substring(fapp.getFile().lastIndexOf(File.separatorChar) + 1);
                     test = test + temp;
                     count++;
+                    break;
+                }
+            }
+            @SuppressWarnings("unchecked")
+            List<Appender> parentAppenders = Collections.list(logger.getParent().getAllAppenders());
+            Iterator<Appender> parentAppendersIt = parentAppenders.iterator();
+            // if no Appender found from logger, select the Appender from parent logger
+            if (count == 0) {
+                while (parentAppendersIt.hasNext()) {
+                    Appender appender = parentAppendersIt.next();
+                    // only use file appenders
+                    if (appender instanceof FileAppender) {
+                        FileAppender fapp = (FileAppender)appender;
+                        String temp = "";
+                        temp = fapp.getFile().substring(fapp.getFile().lastIndexOf(File.separatorChar) + 1);
+                        test = test + temp;
+                        count++;
+                        break;
+                    }
                 }
             }
 
-            if (!app_parent.hasNext() && (count == 0)) {
+            if (count == 0) {
                 @SuppressWarnings("unchecked")
-                List<Appender> appenders_root = Collections.list(Logger.getRootLogger().getAllAppenders());
-                Iterator<Appender> app_root = appenders_root.iterator();
+                List<Appender> rootAppenders = Collections.list(Logger.getRootLogger().getAllAppenders());
+                Iterator<Appender> rootAppendersIt = rootAppenders.iterator();
                 // if no Appender found from parent logger, select the Appender from root logger
-                while (app_root.hasNext()) {
-                    FileAppender fapp = (FileAppender)app_root.next();
-                    String temp = "";
-                    temp = fapp.getFile().substring(fapp.getFile().lastIndexOf(File.separatorChar) + 1);
-                    test = test + temp;
+                while (rootAppendersIt.hasNext()) {
+                    Appender appender = rootAppendersIt.next();
+                    // only use file appenders
+                    if (appender instanceof FileAppender) {
+                        FileAppender fapp = (FileAppender)appender;
+                        String temp = "";
+                        temp = fapp.getFile().substring(fapp.getFile().lastIndexOf(File.separatorChar) + 1);
+                        test = test + temp;
+                        break;
+                    }
                 }
 
             }
