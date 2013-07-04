@@ -47,10 +47,15 @@ import org.dom4j.io.SAXWriter;
 public class TestCmsXmlSaxWriter extends OpenCmsTestCase {
 
     private static final String TEXT_1 = " This is a simple text ";
+
     private static final String TEXT_2 = " This is a text with XML entities like <, > and & ";
+
     private static final String TEXT_3 = " This is a text containing international chars like \u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df\u20ac ";
+
     private static final String TEXT_3_ESC = " This is a text containing international chars like &#228;&#246;&#252;&#196;&#214;&#220;&#223;&#8364; ";
+
     private static final String TEXT_4 = " This is a text with \u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df\u20ac as well as <> and & ";
+
     private static final String TEXT_4_ESC = " This is a text with &#228;&#246;&#252;&#196;&#214;&#220;&#223;&#8364; as well as &lt;&gt; and &amp; ";
 
     /**
@@ -124,7 +129,7 @@ public class TestCmsXmlSaxWriter extends OpenCmsTestCase {
         }
         assertNotNull("Expected Exception was not thrown", error);
         if (error != null) {
-            assertSame(org.opencms.xml.Messages.ERR_UNMARSHALLING_XML_DOC_0, error.getMessageContainer().getKey());
+            assertSame(org.opencms.xml.Messages.ERR_UNMARSHALLING_XML_DOC_1, error.getMessageContainer().getKey());
         }
     }
 

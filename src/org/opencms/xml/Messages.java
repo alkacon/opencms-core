@@ -128,7 +128,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_UNKNOWN_SCHEMA_1 = "ERR_UNKNOWN_SCHEMA_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_UNMARSHALLING_XML_DOC_0 = "ERR_UNMARSHALLING_XML_DOC_0";
+    public static final String ERR_UNMARSHALLING_XML_DOC_1 = "ERR_UNMARSHALLING_XML_DOC_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UNREGISTERED_TYPE_1 = "ERR_UNREGISTERED_TYPE_1";
