@@ -42,6 +42,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
+import org.opencms.report.CmsLogReport;
 import org.opencms.site.CmsSite;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsCheckboxWidget;
@@ -156,6 +157,11 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
             } catch (CmsVfsResourceNotFoundException e) {
                 // not create a new site folder and the according OU if option is checked checked
                 siteRootResource = cms.createResource(siteRoot, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
+                OpenCms.getPublishManager().publishResource(
+                    cms,
+                    siteRoot,
+                    false,
+                    new CmsLogReport(cms.getRequestContext().getLocale(), getClass()));
                 if (m_createou) {
                     OpenCms.getOrgUnitManager().createOrganizationalUnit(
                         cms,
