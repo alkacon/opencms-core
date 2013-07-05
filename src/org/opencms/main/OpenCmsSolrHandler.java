@@ -61,23 +61,8 @@ import org.apache.solr.common.params.CommonParams;
  */
 public class OpenCmsSolrHandler extends HttpServlet implements I_CmsRequestHandler {
 
-    /**
-     * An enum storing the handler names implemented by this class.<p>
-     */
-    private static enum HANDLER_NAMES {
-
-        /** 
-         * A constant for the '/select' request handler of the embedded Solr server.
-         * This handler is reachable under "/opencms/opencms/handleSolrSelect".<p>
-         */
-        SolrSelect,
-
-        /** 
-         * A constant for the '/spell' request handler of the embedded Solr server.
-         * This handler is reachable under "/opencms/opencms/handleSolrSpell".<p>
-         */
-        SolrSpell
-    }
+    /** The Solr select handler. */
+    public static final String HANDLER_NAME_SOLR_SELECT = "SolrSelect";
 
     /** A constant for the optional 'baseUri' parameter. */
     public static final String PARAM_BASE_URI = "baseUri";
@@ -97,9 +82,6 @@ public class OpenCmsSolrHandler extends HttpServlet implements I_CmsRequestHandl
     /** The CMS object. */
     private CmsObject m_cms;
 
-    /** The name of this handler. */
-    private HANDLER_NAMES m_handlerName;
-
     /** The Solr index. */
     private CmsSolrIndex m_index;
 
@@ -117,7 +99,7 @@ public class OpenCmsSolrHandler extends HttpServlet implements I_CmsRequestHandl
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
 
-        handle(req, res, HANDLER_NAMES.SolrSelect.toString());
+        handle(req, res, HANDLER_NAME_SOLR_SELECT);
     }
 
     /**
@@ -137,7 +119,7 @@ public class OpenCmsSolrHandler extends HttpServlet implements I_CmsRequestHandl
      */
     public String[] getHandlerNames() {
 
-        return CmsStringUtil.enumNameToStringArray(HANDLER_NAMES.values());
+        return new String[] {HANDLER_NAME_SOLR_SELECT};
     }
 
     /**
@@ -145,21 +127,11 @@ public class OpenCmsSolrHandler extends HttpServlet implements I_CmsRequestHandl
      */
     public void handle(HttpServletRequest req, HttpServletResponse res, String name) throws IOException {
 
-        m_handlerName = HANDLER_NAMES.valueOf(name);
-        if (m_handlerName != null) {
+        if (HANDLER_NAME_SOLR_SELECT.equals(name)) {
             try {
                 initializeRequest(req, res);
                 if ((m_params.get(CommonParams.Q) != null) || (m_params.get(CommonParams.FQ) != null)) {
-                    switch (m_handlerName) {
-                        case SolrSelect:
-                            m_index.select(res, m_cms, m_query, true);
-                            break;
-                        case SolrSpell:
-                            m_index.spellCheck(res, m_cms, m_query);
-                            break;
-                        default:
-                            break;
-                    }
+                    m_index.select(res, m_cms, m_query, true);
                 }
             } catch (Exception e) {
                 res.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);

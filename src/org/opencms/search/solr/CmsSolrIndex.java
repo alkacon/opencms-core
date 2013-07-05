@@ -505,50 +505,6 @@ public class CmsSolrIndex extends CmsSearchIndex {
     }
 
     /**
-     * Executes a spell checking Solr query and returns the Solr query response.<p>
-     * 
-     * @param res the servlet response
-     * @param cms the CMS object
-     * @param q the query
-     * 
-     * @throws CmsSearchException if something goes wrong
-     */
-    public void spellCheck(ServletResponse res, CmsObject cms, CmsSolrQuery q) throws CmsSearchException {
-
-        SolrCore core = null;
-        LocalSolrQueryRequest solrQueryRequest = null;
-        try {
-            q.setQueryType("/spell");
-
-            QueryResponse queryResponse = m_solr.query(q);
-            // create and return the result
-            core = m_solr instanceof EmbeddedSolrServer ? ((EmbeddedSolrServer)m_solr).getCoreContainer().getCore(
-                getName()) : null;
-
-            SolrQueryResponse solrQueryResponse = new SolrQueryResponse();
-            solrQueryResponse.setAllValues(queryResponse.getResponse());
-            solrQueryResponse.setEndTime(queryResponse.getQTime());
-
-            // create and initialize the solr request
-            solrQueryRequest = new LocalSolrQueryRequest(core, solrQueryResponse.getResponseHeader());
-            // set the OpenCms Solr query as parameters to the request
-            solrQueryRequest.setParams(q);
-
-            writeResp(res, solrQueryRequest, solrQueryResponse);
-
-        } catch (Exception e) {
-            throw new CmsSearchException(Messages.get().container(Messages.LOG_SOLR_ERR_SEARCH_EXECUTION_FAILD_1, q), e);
-        } finally {
-            if (solrQueryRequest != null) {
-                solrQueryRequest.close();
-            }
-            if (core != null) {
-                core.close();
-            }
-        }
-    }
-
-    /**
      * @see org.opencms.search.CmsSearchIndex#createIndexBackup()
      */
     @Override
@@ -659,7 +615,9 @@ public class CmsSolrIndex extends CmsSearchIndex {
      * @param ignoreMaxRows <code>true</code> to return all all requested rows, <code>false</code> to use max rows
      * @param query the OpenCms Solr query
      * @param response the servlet response to write the query result to, may also be <code>null</code>
-     * @return
+     * 
+     * @return the found documents
+     * 
      * @throws CmsSearchException
      */
     @SuppressWarnings("unchecked")
