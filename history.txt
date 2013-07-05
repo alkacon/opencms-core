@@ -15,11 +15,38 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 8.5.1.1 - March 4, 2013
-! Improved offline indexing to index content changes immediately.
-* Fixed head includes for inheritance group elements.
-* Fixed issue with information dialog for expired resources.
-* Fixed issue with inline editing for nested xsd:choice elements.
+OpenCms 8.5.2 - July 8, 2013
+* Improved lock behavior for group editor.
+* Improved offline indexing to index content changes immediately.
+* Improved PDF extraction with new library version.
+* Improved module import by pausing offline indexing while importing or deleting modules.
+* Improved IE10 compatibility.
+* Updated CodeMirror source code editor to version 3.14.
+* Improved purging of container pages after publish.
+! Fixed issue #50 with encoding links in pointer resources.
+! Fixed issue #114 with locale handling on embedded message bundles in schemas.
+! Fixed issue #152 where the lauyout of the VfsImageWidget was broken.
+! Fixed issue #155 where error messages where not displayed correctly.
+! Fixed issue #156 where newly created container pages from model pages did not have the right template property.
+! Fixed issue #159 where another resource was locked when creating a new one.
+! Fixed issue #167 where editing expired resources from direct edit caused errors.
+! Fixed issue #169 where Solr rebuild doesn't update unmodified resources.
+! Fixed issue #170 where folders without default files did deliver a blank page instead of the 404 error code.
+! Fixed issue #173 where XSS was possible.
+! Fixed issue #175 where depending on the current date certain dates could not be set.
+! Fixed issue with element language select.
+! Fixed possible XSS exploit using the CmsRequestUtil.
+! Fixed inline editing issue with choice attributes.
+! Fixed issue when saving a container page that contained inconsistent links.
+! Fixed issue where expired resources were not availably using the gallery select dialogs.
+! Fixed issue where head includes for elements did not work, if the element was part of an inheritance group.
+! Fixed history view for no longer existing historic resource versions.
+! Fixed memory leak issue related to GWT RPC services.
+! Fixed problem with publishing moved resources with categories.
+! Fixed issue where selecting "Undo changes" in the context menu for a JSP, the corresponding JSP in the RFS JSP repository is not deleted or updated.
+! Fixed issue with context menu for expired resources.
+! Fixed issue with determining the content CSS in the xml content editor. 
+! Fixed issue with memory leaks using SOLR.
 
 OpenCms 8.5.1 - February 7, 2013
 ! Improved file selector widget to show resource information.
