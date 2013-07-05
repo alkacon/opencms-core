@@ -515,16 +515,18 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                         lastGallery = getWorkplaceSettings().getUserSettings().getStartGallery(
                             galleryTypeName,
                             getCmsObject());
-                        if (!CmsPreferences.INPUT_DEFAULT.equals(lastGallery)) {
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(lastGallery)
+                            && !CmsPreferences.INPUT_DEFAULT.equals(lastGallery)) {
                             lastGallery = getCmsObject().getRequestContext().removeSiteRoot(lastGallery);
                         }
                     }
                     // check if the gallery is available in this site and still exists
-                    if (getCmsObject().existsResource(lastGallery)) {
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(lastGallery)
+                        && getCmsObject().existsResource(lastGallery)) {
                         data.setStartGallery(lastGallery);
-                    } else if (!data.getGalleries().isEmpty()) {
+                    } else {
                         // use the first available gallery
-                        data.setStartGallery(data.getGalleries().get(0).getPath());
+                        data.setStartGallery(null);
                     }
                 }
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(data.getStartGallery())
