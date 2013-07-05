@@ -35,14 +35,14 @@ OpenCms 8.5.2 - July 8, 2013
 ! Fixed issue #173 where XSS was possible.
 ! Fixed issue #175 where depending on the current date certain dates could not be set.
 ! Fixed issue with element language select.
-! Fixed possible XSS exploit using the CmsRequestUtil.
-! Fixed inline editing issue with choice attributes.
+! Fixed issue with possible XSS exploit using the CmsRequestUtil.
+! Fixed issue with in-line editing of choice attributes.
 ! Fixed issue when saving a container page that contained inconsistent links.
 ! Fixed issue where expired resources were not availably using the gallery select dialogs.
 ! Fixed issue where head includes for elements did not work, if the element was part of an inheritance group.
-! Fixed history view for no longer existing historic resource versions.
-! Fixed memory leak issue related to GWT RPC services.
-! Fixed problem with publishing moved resources with categories.
+! Fixed issue with history view for no longer existing historic resource versions.
+! Fixed issue with memory leak related to GWT RPC services.
+! Fixed issue with publishing moved resources with categories.
 ! Fixed issue where selecting "Undo changes" in the context menu for a JSP, the corresponding JSP in the RFS JSP repository is not deleted or updated.
 ! Fixed issue with context menu for expired resources.
 ! Fixed issue with determining the content CSS in the xml content editor. 
