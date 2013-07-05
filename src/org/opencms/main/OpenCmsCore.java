@@ -1678,6 +1678,8 @@ public final class OpenCmsCore {
             if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
                 String uri = cms.getRequestContext().getUri();
                 if (OpenCms.getStaticExportManager().isExportLink(cms, uri)) {
+                    // if we used the request's query string for getRfsName, clients could cause an unlimited number 
+                    // of files to be exported just by varying the request parameters! 
                     String url = OpenCms.getStaticExportManager().getRfsName(cms, uri);
                     String siteRoot = cms.getRequestContext().getSiteRoot();
                     url = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot).getUrl() + url;
