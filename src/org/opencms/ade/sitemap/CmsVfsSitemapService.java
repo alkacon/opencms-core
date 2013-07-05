@@ -2017,10 +2017,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         if (resource.isFolder()) {
             return false;
         }
-
-        CmsResource parent = cms.readResource(
-            CmsResource.getParentFolder(cms.getSitePath(resource)),
-            CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+        CmsResource parent = cms.readParentFolder(resource.getStructureId());
         CmsResource defaultFile = cms.readDefaultFile(parent, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
         return resource.equals(defaultFile);
     }
