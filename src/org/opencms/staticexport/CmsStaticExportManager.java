@@ -285,6 +285,40 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     }
 
     /**
+     * Creates unique, valid RFS name for the given filename that contains 
+     * a coded version of the given parameters, with the given file extension appended.<p>
+     *    
+     * Adapted from CmsFileUtil.getRfsPath().
+     * 
+     * @param filename the base file name
+     * @param extension the extension to use
+     * @param parameters the parameters to code in the result file name
+     * 
+     * @return a unique, valid RFS name for the given parameters
+     * 
+     * @see org.opencms.staticexport.CmsStaticExportManager
+     */
+    public static String getRfsPath(String filename, String extension, String parameters) {
+
+        boolean appendSlash = false;
+        if (filename.endsWith("/")) {
+            appendSlash = true;
+            filename = filename.substring(0, filename.length() - 1);
+        }
+        StringBuffer buf = new StringBuffer(128);
+        buf.append(filename);
+        buf.append('_');
+        int h = parameters.hashCode();
+        // ensure we do have a positive id value
+        buf.append(h > 0 ? h : -h);
+        buf.append(extension);
+        if (appendSlash) {
+            buf.append("/");
+        }
+        return buf.toString();
+    }
+
+    /**
      * Returns the real file system name plus the default file name.<p>
      * 
      * @param rfsName the real file system name to append the default file name to
@@ -490,7 +524,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         CmsResource resource = data.getResource();
         String vfsName = data.getVfsName();
         String rfsName;
-        if (data.getParameters() != null) {
+        if (data.isDetailPage()) {
+            rfsName = CmsStringUtil.joinPaths(data.getRfsName(), CmsStaticExportManager.DEFAULT_FILE);
+        } else if (data.getParameters() != null) {
             rfsName = data.getRfsName();
         } else {
             rfsName = addDefaultFileNameToFolder(data.getRfsName(), resource.isFolder());
@@ -1260,7 +1296,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             }
             if (parameters != null) {
                 // build the RFS name for the link with parameters
-                rfsName = CmsFileUtil.getRfsPath(rfsName, extension, parameters);
+                rfsName = getRfsPath(rfsName, extension, parameters);
                 // we have found a rfs name for a vfs resource with parameters, save it to the database
                 try {
                     cms.writeStaticExportPublishedResource(
@@ -2599,6 +2635,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     protected CmsStaticExportData readResource(CmsObject cms, String uri) throws CmsException {
 
         CmsResource resource = null;
+        boolean isDetailPage = false;
 
         try {
             resource = cms.readResource(uri);
@@ -2610,11 +2647,14 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 throw e;
             }
             resource = cms.readResource(id);
+            isDetailPage = true;
 
             //String parent = CmsResource.getParentFolder(uri);
             //resource = cms.readDefaultFile(parent);
         }
-        return new CmsStaticExportData(uri, null, resource, null);
+        CmsStaticExportData result = new CmsStaticExportData(uri, null, resource, null);
+        result.setIsDetailPage(isDetailPage);
+        return result;
     }
 
     /**

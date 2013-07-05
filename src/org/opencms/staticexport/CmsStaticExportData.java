@@ -36,6 +36,9 @@ import org.opencms.file.CmsResource;
  */
 public class CmsStaticExportData {
 
+    /** Flag to indicate whether this is the export data for a detail page. */
+    private boolean m_isDetailPage;
+
     /** The parameters. */
     private String m_parameters;
 
@@ -105,6 +108,16 @@ public class CmsStaticExportData {
     }
 
     /**
+     * Returns true if this is the static export data for a detail page.<p>
+     * 
+     * @return true if this is the static export data for a detail page 
+     */
+    public boolean isDetailPage() {
+
+        return m_isDetailPage;
+    }
+
+    /**
      * @see java.lang.Object#toString()
      */
     @Override
@@ -122,6 +135,16 @@ public class CmsStaticExportData {
         }
         result.append("]");
         return result.toString();
+    }
+
+    /**
+     * Changes the 'is detail page' flag in this export data instance.<p>
+     * 
+     * @param isDetailPage the new value for the flag 
+     */
+    protected void setIsDetailPage(boolean isDetailPage) {
+
+        m_isDetailPage = isDetailPage;
     }
 
     /**
