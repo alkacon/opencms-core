@@ -22,15 +22,16 @@ OpenCms 8.5.2 - July 8, 2013
 * Improved module import by pausing offline indexing while importing or deleting modules.
 * Improved IE10 compatibility.
 * Updated CodeMirror source code editor to version 3.14.
+* Updated commons DBCP library.
 * Improved purging of container pages after publish.
 ! Fixed issue #50 with encoding links in pointer resources.
 ! Fixed issue #114 with locale handling on embedded message bundles in schemas.
-! Fixed issue #152 where the lauyout of the VfsImageWidget was broken.
+! Fixed issue #152 where the layout of the VfsImageWidget was broken.
 ! Fixed issue #155 where error messages where not displayed correctly.
 ! Fixed issue #156 where newly created container pages from model pages did not have the right template property.
 ! Fixed issue #159 where another resource was locked when creating a new one.
 ! Fixed issue #167 where editing expired resources from direct edit caused errors.
-! Fixed issue #169 where Solr rebuild doesn't update unmodified resources.
+! Fixed issue #169 where SOLR rebuild doesn't update unmodified resources.
 ! Fixed issue #170 where folders without default files did deliver a blank page instead of the 404 error code.
 ! Fixed issue #173 where XSS was possible.
 ! Fixed issue #175 where depending on the current date certain dates could not be set.
@@ -45,7 +46,7 @@ OpenCms 8.5.2 - July 8, 2013
 ! Fixed issue with publishing moved resources with categories.
 ! Fixed issue where selecting "Undo changes" in the context menu for a JSP, the corresponding JSP in the RFS JSP repository is not deleted or updated.
 ! Fixed issue with context menu for expired resources.
-! Fixed issue with determining the content CSS in the xml content editor. 
+! Fixed issue with determining the content CSS in the XML content editor. 
 ! Fixed issue with memory leaks using SOLR.
 
 OpenCms 8.5.1 - February 7, 2013
