@@ -15,7 +15,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 8.5.2 - July 8, 2013
+OpenCms 8.5.2 - July 10, 2013
 * Improved lock behavior for group editor.
 * Improved offline indexing to index content changes immediately.
 * Improved PDF extraction with new library version.
