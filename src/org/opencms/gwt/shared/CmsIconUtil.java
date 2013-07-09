@@ -98,8 +98,9 @@ public class CmsIconUtil {
      */
     public static String getResourceSubTypeIconClass(String resourceTypeName, String suffix, boolean small) {
 
+        // only use lower case suffix
         StringBuffer buffer = new StringBuffer(TYPE_ICON_CLASS).append("_").append(resourceTypeName.hashCode()).append(
-            "_").append(suffix);
+            "_").append(suffix.toLowerCase());
         if (small) {
             buffer.append(SMALL_SUFFIX);
         }

@@ -90,7 +90,8 @@ public final class CmsIconUtil extends org.opencms.gwt.shared.CmsIconUtil implem
          */
         private void addCssForIconRule(String typeName, CmsIconRule rule) {
 
-            String extension = rule.getExtension();
+            // only use lower case extensions
+            String extension = rule.getExtension().toLowerCase();
             if (rule.getBigIcon() != null) {
                 CmsIconCssRuleBuilder cssBig = new CmsIconCssRuleBuilder();
                 cssBig.addSelectorForSubType(typeName, extension, false);
