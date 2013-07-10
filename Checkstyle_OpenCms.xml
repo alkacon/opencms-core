@@ -5,7 +5,7 @@
     This configuration file was written by the eclipse-cs plugin configuration editor
 -->
 <!--
-    Checkstyle-Configuration: Alkacon
+    Checkstyle-Configuration: Alkacon OpenCms (project-local)
     Description: none
 -->
 <module name="Checker">
@@ -33,7 +33,6 @@
     </module>
     <module name="CovariantEquals"/>
     <module name="DefaultComesLast"/>
-    <!-- <module name="DoubleCheckedLocking"/> -->
     <module name="EmptyStatement"/>
     <module name="EqualsHashCode"/>
     <module name="HiddenField">
