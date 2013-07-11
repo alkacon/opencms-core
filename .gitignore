@@ -3,6 +3,7 @@
 /.settings/*
 /test/data/WEB-INF/index
 /test/data/WEB-INF/config
+/gwt-unitCache
 Thumbs.db
 /xbuild.properties
 /modules/org.opencms.ade.containerpage/resources/system/modules/org.opencms.ade.containerpage/resources/containerpage
