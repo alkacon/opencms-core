@@ -44,6 +44,30 @@ public final class CmsCntPageData implements IsSerializable {
     /** Name of the used dictionary. */
     public static final String DICT_NAME = "org_opencms_ade_containerpage";
 
+    /** Key 'isDetailOnly' used within the JSON representation of a container object. */
+    public static final String JSONKEY_DETAILONLY = "isDetailOnly";
+
+    /** Key 'isDetailView' used within the JSON representation of a container object. */
+    public static final String JSONKEY_DETAILVIEW = "isDetailView";
+
+    /** Key 'elements' used within the JSON representation of a container object. */
+    public static final String JSONKEY_ELEMENTS = "elements";
+
+    /** Key 'maxElements' used within the JSON representation of a container object. */
+    public static final String JSONKEY_MAXELEMENTS = "maxElements";
+
+    /** Key 'name' used within the JSON representation of a container object. */
+    public static final String JSONKEY_NAME = "name";
+
+    /** Key 'type' used within the JSON representation of a container object. */
+    public static final String JSONKEY_TYPE = "type";
+
+    /** Key 'width' used within the JSON representation of a container object. */
+    public static final String JSONKEY_WIDTH = "width";
+
+    /** Key for container data. This has to be identical with {@link org.opencms.jsp.CmsJspTagContainer#KEY_CONTAINER_DATA}. */
+    public static final String KEY_CONTAINER_DATA = "org_opencms_ade_containerpage_containers";
+
     /** The editor back-link URI. */
     private static final String BACKLINK_URI = "/system/modules/org.opencms.ade.containerpage/editor-backlink.html";
 

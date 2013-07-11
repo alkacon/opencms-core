@@ -34,27 +34,6 @@ package org.opencms.ade.containerpage.shared;
  */
 public interface I_CmsContainer {
 
-    /** Key 'isDetailOnly' used within the JSON representation of a container object. */
-    String JSONKEY_DETAILONLY = "isDetailOnly";
-
-    /** Key 'isDetailView' used within the JSON representation of a container object. */
-    String JSONKEY_DETAILVIEW = "isDetailView";
-
-    /** Key 'elements' used within the JSON representation of a container object. */
-    String JSONKEY_ELEMENTS = "elements";
-
-    /** Key 'maxElements' used within the JSON representation of a container object. */
-    String JSONKEY_MAXELEMENTS = "maxElements";
-
-    /** Key 'name' used within the JSON representation of a container object. */
-    String JSONKEY_NAME = "name";
-
-    /** Key 'type' used within the JSON representation of a container object. */
-    String JSONKEY_TYPE = "type";
-
-    /** Key 'width' used within the JSON representation of a container object. */
-    String JSONKEY_WIDTH = "width";
-
     /**
      * Returns the elements client id's contained in this container.<p>
      * 

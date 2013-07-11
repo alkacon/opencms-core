@@ -29,8 +29,8 @@ package org.opencms.jsp;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.containerpage.CmsContainerpageService;
+import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
-import org.opencms.ade.containerpage.shared.I_CmsContainer;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.history.CmsHistoryResourceHandler;
@@ -190,11 +190,11 @@ public class CmsJspTagContainer extends TagSupport {
 
         // add container data for the editor
         JSONObject jsonContainer = new JSONObject();
-        jsonContainer.put(I_CmsContainer.JSONKEY_NAME, container.getName());
-        jsonContainer.put(I_CmsContainer.JSONKEY_TYPE, container.getType());
-        jsonContainer.put(I_CmsContainer.JSONKEY_MAXELEMENTS, container.getMaxElements());
-        jsonContainer.put(I_CmsContainer.JSONKEY_DETAILVIEW, isDetailView);
-        jsonContainer.put(I_CmsContainer.JSONKEY_DETAILONLY, isDetailOnly);
+        jsonContainer.put(CmsCntPageData.JSONKEY_NAME, container.getName());
+        jsonContainer.put(CmsCntPageData.JSONKEY_TYPE, container.getType());
+        jsonContainer.put(CmsCntPageData.JSONKEY_MAXELEMENTS, container.getMaxElements());
+        jsonContainer.put(CmsCntPageData.JSONKEY_DETAILVIEW, isDetailView);
+        jsonContainer.put(CmsCntPageData.JSONKEY_DETAILONLY, isDetailOnly);
         int width = -1;
         try {
             if (widthStr != null) {
@@ -203,13 +203,13 @@ public class CmsJspTagContainer extends TagSupport {
         } catch (NumberFormatException e) {
             //ignore; set width to -1
         }
-        jsonContainer.put(I_CmsContainer.JSONKEY_WIDTH, width);
+        jsonContainer.put(CmsCntPageData.JSONKEY_WIDTH, width);
 
         JSONArray jsonElements = new JSONArray();
         for (CmsContainerElementBean element : container.getElements()) {
             jsonElements.put(element.editorHash());
         }
-        jsonContainer.put(I_CmsContainer.JSONKEY_ELEMENTS, jsonElements);
+        jsonContainer.put(CmsCntPageData.JSONKEY_ELEMENTS, jsonElements);
         // the container meta data is added to the javascript window object by the following tag, used within the container-page editor 
         return new StringBuffer("<script type=\"text/javascript\">if (").append(KEY_CONTAINER_DATA).append("!=null) {").append(
             KEY_CONTAINER_DATA).append(".push(").append(jsonContainer.toString()).append("); } </script>").toString();

@@ -38,9 +38,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class CmsContainer implements IsSerializable {
 
-    /** Key for container data. This has to be identical with {@link org.opencms.jsp.CmsJspTagContainer#KEY_CONTAINER_DATA}. */
-    public static final String KEY_CONTAINER_DATA = "org_opencms_ade_containerpage_containers";
-
     /** List of the contained elements id's. */
     private List<CmsContainerElement> m_elements;
 
