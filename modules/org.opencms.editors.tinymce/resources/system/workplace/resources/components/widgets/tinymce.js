@@ -37,10 +37,11 @@ function editorsLoaded() {
 
 
 function setupTinyMCE(editor) {
-   editor.onInit.add(function(editor) {
-       addCustomShortcuts(editor);
+    var editorInstance=editor;
+   editor.on('init',function() {
+       addCustomShortcuts(editorInstance);
    });
-   if (tinyMCE.isWebKit) {
+ /*  if (tinyMCE.isWebKit) {
       // fix weird layout problem in Chrome 
       // If we don't do this, the button bar won't wrap if the window is too small 
       editor.onInit.add(function() {
@@ -55,7 +56,7 @@ function setupTinyMCE(editor) {
       // fixing the issue where the fullscreen mode editor is positioned below the XML content editor instead of overlaying it 
       $("head").append("<style type='text/css'>#mce_fullscreen_container { position: absolute !important; }</style>");
       window.cmsIE7CssFixForTinyMCE = true; 
-   }
+   }  */
 }
 
 // initializes the tinyMCE editor instance with the given options
@@ -66,16 +67,17 @@ function initTinyMCE(options){
             remove_script_host: false,
             skin_variant: 'ocms',
             mode: "exact",
-            theme: "advanced",
+            theme: "modern",
             file_browser_callback: 'cmsTinyMceFileBrowser',
             setup: function(editor) { setupTinyMCE(editor); },
-            plugins: "autolink,lists,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template,wordcount,advlist,-opencms",
-            theme_advanced_toolbar_location: "top",
-            theme_advanced_toolbar_align: "left",
-            theme_advanced_statusbar_location: "bottom",
-            width: '100%',
-            theme_advanced_resizing: false,
-            theme_advanced_resizing_use_cookie: false
+            plugins: "autolink,lists,pagebreak,layer,table,save,hr,image,link,emoticons,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,template,wordcount,advlist,-opencms",
+            menubar: false,
+//            theme_modern_toolbar_location: "top",
+//            theme_modern_toolbar_align: "left",
+//            theme_modern_statusbar_location: "bottom",
+            width: '100%'
+//            theme_modern_resizing: false,
+//            theme_modern_resizing_use_cookie: false
           };
     // check for fullpage option
     if (options["fullpage"]){
@@ -97,5 +99,5 @@ function initTinyMCE(options){
 
 function addCustomShortcuts(editor){
     editor.addShortcut('ctrl+shift+z','','Redo');
-    editor.addShortcut('ctrl+l','','mceAdvLink');
+ //   editor.addShortcut('ctrl+l','','mceAdvLink');
 }

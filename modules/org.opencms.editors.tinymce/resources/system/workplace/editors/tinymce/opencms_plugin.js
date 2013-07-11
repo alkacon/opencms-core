@@ -390,9 +390,9 @@ tinymce.create('tinymce.opencms', {
          image: '<%= org.opencms.workplace.CmsWorkplace.getResourceUri("editors/tinymce/toolbar/oc-linkgallery.gif") %>',
          cmd : 'cmsLinkGallery'
       });
-      
-      ed.onInit.add(function(ed) {
-         ed.plugins.contextmenu.onContextMenu.add(filterContextMenu);
+      var editor=ed;
+      ed.on('init',function() {
+       //   editor.plugins.contextmenu.onContextMenu.add(filterContextMenu);
       });
    },
 

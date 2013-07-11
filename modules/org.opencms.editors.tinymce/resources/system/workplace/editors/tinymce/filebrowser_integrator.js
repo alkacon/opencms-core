@@ -1,8 +1,3 @@
-<%@ page import="org.opencms.jsp.*" %><%
-CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
-%>
-
-<%= cms.getContent("/system/workplace/resources/editors/tinymce/jscripts/tiny_mce/tiny_mce_popup.js") %>
 /**
  * The JavaScript functions of this file serve as an interface between the API of the TinyMCE and the gallery dialog.<p>
  *

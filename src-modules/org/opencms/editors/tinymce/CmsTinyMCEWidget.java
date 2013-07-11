@@ -107,7 +107,7 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
 
         StringBuilder result = new StringBuilder(128);
         // general TinyMCE JS
-        result.append(getJSIncludeFile(CmsWorkplace.getSkinUri() + "editors/tinymce/jscripts/tiny_mce/tiny_mce.js"));
+        result.append(getJSIncludeFile(CmsWorkplace.getSkinUri() + "editors/tinymce/jscripts/tinymce/tinymce.min.js"));
         result.append("\n");
         result.append(getJSIncludeFile(OpenCms.getLinkManager().substituteLinkForRootPath(
             cms,
@@ -180,7 +180,7 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
         Properties displayOptions = options.getDisplayOptions(cms);
         try {
             result.put("elements", "ta_" + param.getId());
-            result.put("theme_advanced_row_height", 0);
+            result.put("theme_modern_row_height", 0);
             String editorHeight = getHtmlWidgetOption().getEditorHeight();
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(editorHeight)) {
                 editorHeight = editorHeight.replaceAll("px", "");
@@ -255,7 +255,7 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
             if (!CmsStringUtil.isEmpty(formatSelectOptions)
                 && !getHtmlWidgetOption().isButtonHidden(CmsHtmlWidgetOption.OPTION_FORMATSELECT)) {
                 formatSelectOptions = StringUtils.replace(formatSelectOptions, ";", ",");
-                result.put("theme_advanced_blockformats", formatSelectOptions);
+                result.put("theme_modern_blockformats", formatSelectOptions);
             }
             result.put("entity_encoding", "raw");
         } catch (JSONException e) {
@@ -323,15 +323,16 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
         // we use TinyMCE's button rows as groups instead of rows and fix the layout using CSS.
         // This is because we want the button bars to wrap automatically when there is not enough space.
         // Using this method, the wraps can only occur between different blocks/rows. 
-        int row = 1;
-        for (List<String> block : blocks) {
-            result.put("theme_advanced_buttons" + row, CmsStringUtil.listAsString(block, ","));
-            row += 1;
+        String toolbar = "";
+        for (int i = 0; i < blocks.size(); i++) {
+            List<String> block = blocks.get(i);
+            if (i > 0) {
+                toolbar += " | ";
+            }
+            toolbar += CmsStringUtil.listAsString(block, " ");
         }
-        // overwrite default toolbar rows 
-        for (int r = row; r <= 4; r++) {
-            result.put("theme_advanced_buttons" + r, "");
-        }
+        result.put("toolbar1", toolbar);
+
         return result;
     }
 }

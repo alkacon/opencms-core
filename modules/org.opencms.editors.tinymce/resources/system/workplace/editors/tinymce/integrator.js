@@ -25,7 +25,6 @@ function GetAttribute( element, attName, valueIfNull )
    return ( oValue == null ? valueIfNull : oValue ) ;
 }
 
-<%= cms.getContent("/system/workplace/resources/editors/tinymce/jscripts/tiny_mce/tiny_mce_popup.js") %>
 /**
  * The JavaScript functions of this file serve as an interface between the API of the TinyMCE and the gallery dialog.<p>
  *
@@ -37,7 +36,7 @@ function GetAttribute( element, attName, valueIfNull )
  * Returning <code>true</code> when all data has been set and the dialog should be closed.<p>
  */
 /* absolute path to the JSP that displays the image in original size */
-var vfsPopupUri = "<%= cms.link("/system/workplace/editors/fckeditor/plugins/ocmsimage/popup.html") %>";
+var vfsPopupUri = "<%= cms.link("/system/modules/org.opencms.jquery/pages/imagePopup.html") %>";
 var showSelect = "true";
 
 /** The editor frame. */
@@ -52,7 +51,7 @@ var tinymce = parentDialog.tinymce;
 var editorConfig= {};
 
 /* Absolute path to the JSP that displays the image in original size. */
-var imagePopupUri = "<%= cms.link("/system/workplace/editors/fckeditor/plugins/ocmsimage/popup.html") %>";
+var imagePopupUri = "<%= cms.link("/system/modules/org.opencms.jquery/pages/imagePopup.html") %>";
 
 // some string constants
 
@@ -81,7 +80,7 @@ var Ok =function(){
  * Closes the dialog without setting any data.<p>
  */
 function closeDialog(){
-   tinyMCEPopup.close();
+   editor.windowManager.close();
 }
 
 /**
@@ -360,8 +359,6 @@ function _triggerChangeEvent(){
  * @return void
  */
 function setImage(path, attributes){
-    // restore the selection; needed because IE forgets the selection otherwise 
-    tinyMCEPopup.restoreSelection();
     var image=_getSelectedImage();
     
     if (image){
@@ -569,7 +566,6 @@ function setImageLink(path, attributes, linkPath, target){
  * @return void
  */
 function setLink(path, title, target){
-   tinyMCEPopup.restoreSelection();
     if (_hasSelectedText()){
         var a = _selectionMoveToAncestorNode('A') ;
         if (a) {
@@ -663,4 +659,3 @@ function _setInnerText(element, value){
         element.textContent = value;
     }
 }
-

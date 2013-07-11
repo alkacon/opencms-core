@@ -25,7 +25,6 @@ function GetAttribute( element, attName, valueIfNull )
    return ( oValue == null ? valueIfNull : oValue ) ;
 }
 
-<%= cms.getContent("/system/workplace/resources/editors/tinymce/jscripts/tiny_mce/tiny_mce_popup.js") %>
 /**
  * The JavaScript functions of this file serve as an interface between the API of the TinyMCE and the gallery dialog.<p>
  *
@@ -37,7 +36,7 @@ function GetAttribute( element, attName, valueIfNull )
  * Returning <code>true</code> when all data has been set and the dialog should be closed.<p>
  */
 /* absolute path to the JSP that displays the image in original size */
-var vfsPopupUri = "<%= cms.link("/system/workplace/editors/fckeditor/plugins/ocmsimage/popup.html") %>";
+var vfsPopupUri = "<%= cms.link("/system/modules/org.opencms.jquery/pages/imagePopup.html") %>";
 var showSelect = "true";
 
 /** The editor frame. */
@@ -83,7 +82,7 @@ var Ok =function(){
  * Closes the dialog without setting any data.<p>
  */
 function closeDialog(){
-   tinyMCEPopup.close();
+    editor.windowManager.close();
 }
 
 /**
@@ -147,7 +146,7 @@ function getLinkTarget(){
 function _setValue(url) {
    var inputField = targetWindow.document.getElementById(fieldId);
    inputField.value = url;
-   tinyMCEPopup.close(); 
+   editor.windowManager.close();
 }
 
 /**
