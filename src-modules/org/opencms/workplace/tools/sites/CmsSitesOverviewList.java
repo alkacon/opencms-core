@@ -395,7 +395,17 @@ public class CmsSitesOverviewList extends A_CmsListDialog {
         removeCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         removeCol.setSorteable(false);
         // add remove action
-        CmsListDirectAction removeAction = new CmsListDirectAction(LIST_ACTION_REMOVE);
+        CmsListDirectAction removeAction = new CmsListDirectAction(LIST_ACTION_REMOVE) {
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isEnabled()
+             */
+            @Override
+            public boolean isEnabled() {
+
+                return !OpenCms.getSiteManager().getDefaultSite().getSiteRoot().equals(getItem().getId());
+            }
+        };
         removeAction.setName(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_REMOVE_NAME_0));
         removeAction.setHelpText(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_REMOVE_HELP_0));
         removeAction.setIconPath(ICON_DELETE);
