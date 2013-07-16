@@ -187,6 +187,16 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
     }
 
     /**
+     * Returns the highlighting information.<p>
+     * 
+     * @return the highlighting information
+     */
+    public Map<String, Map<String, List<String>>> getHighLighting() {
+
+        return m_queryResponse.getHighlighting();
+    }
+
+    /**
      * Delegator.<p>
      * 
      * @return the limiting facets
