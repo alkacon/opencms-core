@@ -151,7 +151,7 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
                     rootPath,
                     m_index.getName(),
                     m_index.getPath()));
-                m_server.deleteByQuery(CmsSearchField.FIELD_PATH + ":" + rootPath + "*");
+                m_server.deleteByQuery(CmsSearchField.FIELD_PATH + ":\"" + rootPath + "*\"");
             } catch (SolrServerException e) {
                 throw new IOException(e.getLocalizedMessage(), e);
             }
