@@ -416,19 +416,16 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
             for (CmsPublishedResource pubRes : resourcesToIndex) {
                 int pos = result.indexOf(pubRes);
-                if (CmsResource.isTemporaryFileName(pubRes.getRootPath())) {
-                    // do not index temporary files
-                    if (pos < 0) {
-                        // resource not already contained in the update list
+                if (pos < 0) {
+                    // resource not already contained in the update list
+                    result.add(pubRes);
+                } else {
+                    CmsPublishedResource curRes = result.get(pos);
+                    if ((pubRes.getState() != curRes.getState())
+                        || (pubRes.getMovedState() != curRes.getMovedState())
+                        || !pubRes.getRootPath().equals(curRes.getRootPath())) {
+                        // resource already in the update list but new state is different, so also add this
                         result.add(pubRes);
-                    } else {
-                        CmsPublishedResource curRes = result.get(pos);
-                        if ((pubRes.getState() != curRes.getState())
-                            || (pubRes.getMovedState() != curRes.getMovedState())
-                            || !pubRes.getRootPath().equals(curRes.getRootPath())) {
-                            // resource already in the update list but new state is different, so also add this
-                            result.add(pubRes);
-                        }
                     }
                 }
             }

@@ -86,7 +86,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
             if (!resourcesAlreadyDeleted.contains(rootPath)) {
                 // ensure siblings are only deleted once per update
                 resourcesAlreadyDeleted.add(rootPath);
-                if (!res.isFolder()) {
+                if (!res.isFolder() && !CmsResource.isTemporaryFileName(res.getRootPath())) {
                     // now delete the resource from the index
                     deleteResource(indexWriter, rootPath);
                 }
