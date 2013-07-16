@@ -195,7 +195,9 @@ public class CmsSitesOverviewList extends A_CmsListDialog {
         if (getParamListAction().equals(LIST_MACTION_REMOVE)) {
             List<String> selectedSites = new ArrayList<String>();
             for (CmsListItem item : getSelectedItems()) {
-                selectedSites.add(item.getId());
+                if (!OpenCms.getSiteManager().getDefaultSite().getSiteRoot().equals(item.getId())) {
+                    selectedSites.add(item.getId());
+                }
             }
             Map<String, String[]> params = new HashMap<String, String[]>();
             params.put(PARAM_SITES, new String[] {CmsStringUtil.listAsString(selectedSites, ",")});
