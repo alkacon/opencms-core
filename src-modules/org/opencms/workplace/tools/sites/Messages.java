@@ -170,6 +170,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SITES_LIST_ACTION_DEACTIVATE_NAME_0 = "GUI_SITES_LIST_ACTION_DEACTIVATE_NAME_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITES_LIST_ACTION_DEFAULT_SITE_REMOVE_HELP_0 = "GUI_SITES_LIST_ACTION_DEFAULT_SITE_REMOVE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITES_LIST_ACTION_DEFAULT_SITE_REMOVE_NAME_0 = "GUI_SITES_LIST_ACTION_DEFAULT_SITE_REMOVE_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SITES_LIST_ACTION_EDIT_HELP_0 = "GUI_SITES_LIST_ACTION_EDIT_HELP_0";
 
     /** Message constant for key in the resource bundle. */

@@ -34,6 +34,7 @@ package org.opencms.workplace.tools.sites;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
@@ -424,9 +425,33 @@ public class CmsSitesOverviewList extends A_CmsListDialog {
 
                 return !OpenCms.getSiteManager().getDefaultSite().getSiteRoot().equals(getItem().getId());
             }
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getName()
+             */
+            @Override
+            public CmsMessageContainer getName() {
+
+                if (!OpenCms.getSiteManager().getDefaultSite().getSiteRoot().equals(getItem().getId())) {
+                    return Messages.get().container(Messages.GUI_SITES_LIST_ACTION_REMOVE_NAME_0);
+                } else {
+                    return Messages.get().container(Messages.GUI_SITES_LIST_ACTION_DEFAULT_SITE_REMOVE_NAME_0);
+                }
+            }
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getHelpText()
+             */
+            @Override
+            public CmsMessageContainer getHelpText() {
+
+                if (!OpenCms.getSiteManager().getDefaultSite().getSiteRoot().equals(getItem().getId())) {
+                    return Messages.get().container(Messages.GUI_SITES_LIST_ACTION_REMOVE_HELP_0);
+                } else {
+                    return Messages.get().container(Messages.GUI_SITES_LIST_ACTION_DEFAULT_SITE_REMOVE_HELP_0);
+                }
+            }
         };
-        removeAction.setName(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_REMOVE_NAME_0));
-        removeAction.setHelpText(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_REMOVE_HELP_0));
         removeAction.setConfirmationMessage(Messages.get().container(Messages.GUI_SITES_LIST_MACTION_REMOVE_CONF_0));
         removeCol.addDirectAction(removeAction);
         metadata.addColumn(removeCol);
