@@ -69,6 +69,19 @@ public interface I_CmsContainerpageServiceAsync {
     void addToRecentList(String clientId, AsyncCallback<Void> callback);
 
     /**
+     * Check if a page or its elements have been changed.<p>
+     * 
+     * @param structureId the id of the container page 
+     * @param detailContentId the structure id of the detail content (may be null)
+     * 
+     * @param callback the callback for the result
+     */
+    void checkContainerpageOrElementsChanged(
+        CmsUUID structureId,
+        CmsUUID detailContentId,
+        AsyncCallback<Boolean> callback);
+
+    /**
      * To create a new element of the given type this method will check if a model resource needs to be selected, otherwise creates the new element.
      * Returns a bean containing either the new element data or a list of model resources to select.<p>
      * 
@@ -341,4 +354,5 @@ public interface I_CmsContainerpageServiceAsync {
         List<CmsContainer> containers,
         String locale,
         AsyncCallback<Void> callback);
+
 }

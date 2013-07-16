@@ -43,7 +43,16 @@ public final class Messages {
     public static final String ERR_DATEBOX_INVALID_TIME_FORMAT_0 = "ERR_DATEBOX_INVALID_TIME_FORMAT_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_EMPTY_PROPERTY_NAME_0 = "ERR_EMPTY_PROPERTY_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INVALID_PROPERTY_NAME_0 = "ERR_INVALID_PROPERTY_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_UUID_1 = "ERR_INVALID_UUID_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_PROPERTY_EXISTS_0 = "ERR_PROPERTY_EXISTS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_RESOURCE_UNAVAILABLE_1 = "ERR_RESOURCE_UNAVAILABLE_1";
@@ -76,19 +85,22 @@ public final class Messages {
     public static final String GUI_BROKEN_LINK_TEXT_0 = "GUI_BROKEN_LINK_TEXT_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_TEMPLATE_CONTEXT_PARENT_0 = "GUI_TEMPLATE_CONTEXT_PARENT_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_BROWSE_0 = "GUI_BROWSE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_BROWSING_0 = "GUI_BROWSING_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_BUTTON_ELEMENT_EDIT_0 = "GUI_BUTTON_ELEMENT_EDIT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CANCEL_0 = "GUI_CANCEL_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CANT_LOAD_TREE_1 = "GUI_CANT_LOAD_TREE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CAPTION_DEFINE_PROPERTY_0 = "GUI_CAPTION_DEFINE_PROPERTY_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CLOSE_0 = "GUI_CLOSE_0";
@@ -235,6 +247,12 @@ public final class Messages {
     public static final String GUI_INPUT_NOT_USED_0 = "GUI_INPUT_NOT_USED_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_EXISTING_PROPERTIES_0 = "GUI_LABEL_EXISTING_PROPERTIES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_NEW_PROPERTY_0 = "GUI_LABEL_NEW_PROPERTY_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LINK_CHECKBOX_EXTERNAL_0 = "GUI_LINK_CHECKBOX_EXTERNAL_0";
 
     /** Message constant for key in the resource bundle. */
@@ -307,9 +325,6 @@ public final class Messages {
     public static final String GUI_POPUP_BLOCKED_TITLE_0 = "GUI_POPUP_BLOCKED_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_SHOW_PREVIEW_0 = "GUI_SHOW_PREVIEW_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROPERTIES_0 = "GUI_PROPERTIES_0";
 
     /** Message constant for key in the resource bundle. */
@@ -365,6 +380,15 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_RESET_0 = "GUI_RESET_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCE_INFO_TAB_ATTRIBUTES_0 = "GUI_RESOURCE_INFO_TAB_ATTRIBUTES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCE_INFO_TAB_TARGETS_0 = "GUI_RESOURCE_INFO_TAB_TARGETS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCE_INFO_TAB_USAGE_0 = "GUI_RESOURCE_INFO_TAB_USAGE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_RESOURCE_LOCKED_0 = "GUI_RESOURCE_LOCKED_0";
@@ -481,6 +505,18 @@ public final class Messages {
     public static final String GUI_SESSION_EXPIRED_0 = "GUI_SESSION_EXPIRED_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SHOW_PREVIEW_0 = "GUI_SHOW_PREVIEW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TARGETS_EMPTY_0 = "GUI_TARGETS_EMPTY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TEMPLATE_CONTEXT_NONE_0 = "GUI_TEMPLATE_CONTEXT_NONE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TEMPLATE_CONTEXT_PARENT_0 = "GUI_TEMPLATE_CONTEXT_PARENT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_TICKET_MESSAGE_3 = "GUI_TICKET_MESSAGE_3";
 
     /** Message constant for key in the resource bundle. */
@@ -506,6 +542,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_EDIT_0 = "GUI_TOOLBAR_EDIT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_ELEMENT_INFO_0 = "GUI_TOOLBAR_ELEMENT_INFO_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_EXIT_0 = "GUI_TOOLBAR_EXIT_0";
@@ -565,6 +604,9 @@ public final class Messages {
     public static final String GUI_UNLOCKING_0 = "GUI_UNLOCKING_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_UNPUBLISHED_CHANGES_TITLE_0 = "GUI_UNPUBLISHED_CHANGES_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_UPLOAD_BUTTON_TITLE_0 = "GUI_UPLOAD_BUTTON_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -610,46 +652,16 @@ public final class Messages {
     public static final String GUI_URLNAME_PROPERTY_DESC_0 = "GUI_URLNAME_PROPERTY_DESC_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_USAGE_EMPTY_0 = "GUI_USAGE_EMPTY_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_YES_0 = "GUI_YES_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.gwt.clientmessages";
 
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_PROPERTY_EXISTS_0 = "ERR_PROPERTY_EXISTS_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_LABEL_EXISTING_PROPERTIES_0 = "GUI_LABEL_EXISTING_PROPERTIES_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_LABEL_NEW_PROPERTY_0 = "GUI_LABEL_NEW_PROPERTY_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_CAPTION_DEFINE_PROPERTY_0 = "GUI_CAPTION_DEFINE_PROPERTY_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_EMPTY_PROPERTY_NAME_0 = "ERR_EMPTY_PROPERTY_NAME_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_INVALID_PROPERTY_NAME_0 = "ERR_INVALID_PROPERTY_NAME_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_TEMPLATE_CONTEXT_NONE_0 = "GUI_TEMPLATE_CONTEXT_NONE_0";
-
     /** Static instance member. */
     private static CmsMessages INSTANCE;
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_RESOURCE_INFO_TAB_ATTRIBUTES_0 = "GUI_RESOURCE_INFO_TAB_ATTRIBUTES_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_RESOURCE_INFO_TAB_USAGE_0 = "GUI_RESOURCE_INFO_TAB_USAGE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_BUTTON_ELEMENT_EDIT_0 = "GUI_BUTTON_ELEMENT_EDIT_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_USAGE_EMPTY_0 = "GUI_USAGE_EMPTY_0";
 
     /**
      * Hides the public constructor for this utility class.<p> 

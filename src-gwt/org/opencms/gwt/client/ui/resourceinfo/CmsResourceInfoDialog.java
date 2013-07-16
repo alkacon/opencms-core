@@ -32,13 +32,18 @@ import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
+import org.opencms.gwt.client.ui.resourceinfo.CmsResourceRelationView.Mode;
 import org.opencms.gwt.client.util.CmsMessages;
 import org.opencms.gwt.shared.CmsResourceStatusBean;
 import org.opencms.util.CmsUUID;
 
+import java.util.List;
+
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -50,8 +55,9 @@ public class CmsResourceInfoDialog extends CmsPopup {
      * Creates the dialog for the given resource information.<p>
      * 
      * @param statusBean the resource information to bean 
+     * @param includeTargets true if relation targets should be displayed 
      */
-    public CmsResourceInfoDialog(final CmsResourceStatusBean statusBean) {
+    public CmsResourceInfoDialog(final CmsResourceStatusBean statusBean, boolean includeTargets) {
 
         super();
         setModal(true);
@@ -70,17 +76,27 @@ public class CmsResourceInfoDialog extends CmsPopup {
         CmsTabbedPanel<Widget> tabPanel = new CmsTabbedPanel<Widget>();
         tabPanel.add(panel, messages.key(org.opencms.gwt.client.Messages.GUI_RESOURCE_INFO_TAB_ATTRIBUTES_0));
 
-        final CmsResourceUsageView usage = new CmsResourceUsageView(statusBean);
+        final CmsResourceRelationView usage = new CmsResourceRelationView(statusBean, Mode.sources);
         usage.setPopup(this);
         tabPanel.add(usage, messages.key(org.opencms.gwt.client.Messages.GUI_RESOURCE_INFO_TAB_USAGE_0));
+
+        CmsResourceRelationView targets = null;
+        if (includeTargets) {
+            targets = new CmsResourceRelationView(statusBean, Mode.targets);
+            targets.setPopup(this);
+            tabPanel.add(targets, messages.key(org.opencms.gwt.client.Messages.GUI_RESOURCE_INFO_TAB_TARGETS_0));
+        }
+
+        final CmsResourceRelationView[] relationViews = new CmsResourceRelationView[] {null, usage, targets};
+
         tabPanel.addSelectionHandler(new SelectionHandler<Integer>() {
 
             public void onSelection(SelectionEvent<Integer> event) {
 
-                if (1 == event.getSelectedItem().intValue()) {
-                    usage.onSelect();
+                int tab = event.getSelectedItem().intValue();
+                if (relationViews[tab] != null) {
+                    relationViews[tab].onSelect();
                 }
-
             }
         });
         setMainContent(tabPanel);
@@ -89,9 +105,16 @@ public class CmsResourceInfoDialog extends CmsPopup {
     /**
      * Loads the resource information for a resource and displays it in a dialog.<p>   
      * 
-     * @param structureId the structure id of the resource for which the resource info should be loaded 
+     * @param structureId the structure id of the resource for which the resource info should be loaded
+     * @param includeTargets true if relation targets should also be displayed 
+     * @param targetIds the structure ids of additional resources to include with the relation targets
+     * @param closeHandler the close handler for the dialog (may be null if no close handler is needed) 
      */
-    public static void load(final CmsUUID structureId) {
+    public static void load(
+        final CmsUUID structureId,
+        final boolean includeTargets,
+        final List<CmsUUID> targetIds,
+        final CloseHandler<PopupPanel> closeHandler) {
 
         CmsRpcAction<CmsResourceStatusBean> action = new CmsRpcAction<CmsResourceStatusBean>() {
 
@@ -99,14 +122,22 @@ public class CmsResourceInfoDialog extends CmsPopup {
             public void execute() {
 
                 start(200, false);
-                CmsCoreProvider.getVfsService().getResourceStatus(structureId, CmsCoreProvider.get().getLocale(), this);
+                CmsCoreProvider.getVfsService().getResourceStatus(
+                    structureId,
+                    CmsCoreProvider.get().getLocale(),
+                    includeTargets,
+                    targetIds,
+                    this);
             }
 
             @Override
             protected void onResponse(CmsResourceStatusBean result) {
 
                 stop(false);
-                CmsResourceInfoDialog dialog = new CmsResourceInfoDialog(result);
+                CmsResourceInfoDialog dialog = new CmsResourceInfoDialog(result, includeTargets);
+                if (closeHandler != null) {
+                    dialog.addCloseHandler(closeHandler);
+                }
                 dialog.centerHorizontally(150);
             }
         };

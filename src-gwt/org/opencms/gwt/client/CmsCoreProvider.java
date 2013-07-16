@@ -49,6 +49,9 @@ import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
+import com.google.web.bindery.event.shared.Event;
+import com.google.web.bindery.event.shared.EventBus;
+import com.google.web.bindery.event.shared.SimpleEventBus;
 
 /**
  * Client side core data provider.<p>
@@ -73,6 +76,9 @@ public final class CmsCoreProvider extends CmsCoreData {
 
     /** The client time when the data is loaded. */
     private long m_clientTime;
+
+    /** Event bus for client side events. */
+    private EventBus m_eventBus = new SimpleEventBus();
 
     /** Flag which indicates whether we are in Internet Explorer 7. */
     private boolean m_isIe7;
@@ -218,6 +224,16 @@ public final class CmsCoreProvider extends CmsCoreData {
         action.execute();
     }
 
+    /** 
+     * Fires a client side event.<p>
+     * 
+     * @param event the event to fire 
+     */
+    public void fireEvent(Event<?> event) {
+
+        m_eventBus.fireEvent(event);
+    }
+
     /**
      * Returns the adjusted site root for a resource using the provided site root as a base.<p>
      * 
@@ -247,6 +263,16 @@ public final class CmsCoreProvider extends CmsCoreData {
     public long getEstimatedServerTime() {
 
         return m_clientTime + (System.currentTimeMillis() - m_clientTime);
+    }
+
+    /**
+     * Gets the core event bus.<p>
+     * 
+     * @return the core event bus 
+     */
+    public EventBus getEventBus() {
+
+        return m_eventBus;
     }
 
     /**

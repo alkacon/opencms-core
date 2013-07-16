@@ -156,3 +156,6 @@ div.optionBar div, div.optionBar span {
 @sprite .optionBar .cmsState-up .toolbarSelection, .optionBar .cmsState-up-disabled .toolbarSelection, .optionBar .cmsState-down-disabled .toolbarSelection {
     gwt-image: "coreImages.icons.selectionIconDeactivated";
 }
+
+.elementInfoChanged {} 
+.elementInfoUnchanged {} 

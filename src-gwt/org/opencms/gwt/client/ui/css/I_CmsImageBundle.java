@@ -295,6 +295,14 @@ public interface I_CmsImageBundle extends ClientBundle {
     ImageResource brokenImage();
 
     /**
+     * Image resource accessor.<p>
+     *
+     * @return an image resource
+     */
+    @Source("images/icons/changedIcon.png")
+    ImageResource changedIcon();
+
+    /**
      * Access method.<p>
      *
      * @return the image resource

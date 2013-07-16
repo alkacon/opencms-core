@@ -76,6 +76,9 @@ public class CmsResourceStatusBean implements IsSerializable {
     /** List of beans representing resources which have relations toward this resource. */
     private ArrayList<CmsResourceStatusRelationBean> m_relationSources = new ArrayList<CmsResourceStatusRelationBean>();
 
+    /** List of relation target beans. */
+    private ArrayList<CmsResourceStatusRelationBean> m_relationTargets = new ArrayList<CmsResourceStatusRelationBean>();
+
     /** Resource type. */
     private String m_resourceType;
 
@@ -194,11 +197,21 @@ public class CmsResourceStatusBean implements IsSerializable {
     /**
      * Gets the list info beans for the source resources of relations pointing to this resource.<p>
      * 
-     * @return the relation source list info bean 
+     * @return the relation source beans 
      */
     public ArrayList<CmsResourceStatusRelationBean> getRelationSources() {
 
         return m_relationSources;
+    }
+
+    /** 
+     * Gets the list info beans for the targets of relations pointing away from this resource.<p>
+     * 
+     * @return the relation target beans   
+     */
+    public ArrayList<CmsResourceStatusRelationBean> getRelationTargets() {
+
+        return m_relationTargets;
     }
 
     /**

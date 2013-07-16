@@ -170,6 +170,7 @@ public class CmsPublishDialog extends CmsPopup {
 
     /** The index of the "broken links" panel. */
     private static final int PANEL_BROKEN_LINKS = 1;
+
     /** The index of the publish selection panel. */
     private static final int PANEL_SELECT = 0;
 
@@ -525,6 +526,7 @@ public class CmsPublishDialog extends CmsPopup {
     public void succeed() {
 
         m_state = State.success;
+        CmsCoreProvider.get().fireEvent(new CmsPublishEvent());
     }
 
     /**

@@ -208,10 +208,17 @@ public interface I_CmsVfsServiceAsync {
      * Gets status information for a single resource.<p>
      * 
      * @param structureId the structure id of the resource
-     * @param locale the locale for which we want the resource information  
+     * @param locale the locale for which we want the resource information
+     * @param includeTargets flag to control whether relation targets should also be fetched 
+     * @param additionalTargetIds structure ids of additional resources to include in the relation targets returned   
      * @param callback the callback for the results 
      */
-    void getResourceStatus(CmsUUID structureId, String locale, AsyncCallback<CmsResourceStatusBean> callback);
+    void getResourceStatus(
+        CmsUUID structureId,
+        String locale,
+        boolean includeTargets,
+        List<CmsUUID> additionalTargetIds,
+        AsyncCallback<CmsResourceStatusBean> callback);
 
     /**
      * Gets the information which is necessary for opening the 'Restore' dialog for a resource.<p>

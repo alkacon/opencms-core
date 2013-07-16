@@ -124,6 +124,7 @@
     gwt-image: "sitemapBigIconActive";
 }
 
+
 @sprite .cmsState-up-disabled .toolbarRefresh, .cmsState-down-disabled .toolbarRefresh{
 	gwt-image: "resetBigIconActive";
 }
@@ -168,8 +169,20 @@
 }
 
 
+
+@sprite .elementInfoChanged .toolbarElementInfo { 
+	gwt-image:"elementsBigIconChanged";
+	
+}
+
+@sprite .toolbarElementInfo { 
+	gwt-image: "elementsBigIcon";
+}
+
 .cmsState-up .toolbarDelete, .cmsState-up-hovering .toolbarDelete, .cmsState-down-hovering .toolbarDelete, .cmsState-down .toolbarDelete, .cmsState-up-disabled .toolbarDelete, .cmsState-down-disabled .toolbarDelete{
 }
 
 
 .toolbarInfo {} 
+
+.elementInfoUnchanged {} 

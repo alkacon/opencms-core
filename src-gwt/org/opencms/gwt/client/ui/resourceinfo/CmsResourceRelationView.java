@@ -51,7 +51,9 @@ import org.opencms.gwt.shared.CmsResourceStatusBean;
 import org.opencms.gwt.shared.CmsResourceStatusRelationBean;
 import org.opencms.util.CmsUUID;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
@@ -72,7 +74,15 @@ import com.google.gwt.user.client.ui.Widget;
 /** 
  * Widget which shows which contents refer to a resource.<p> 
  */
-public class CmsResourceUsageView extends Composite {
+public class CmsResourceRelationView extends Composite {
+
+    /** Enum for the display mode. */
+    public enum Mode {
+        /** Display relation sources. */
+        sources,
+        /** Display relation targets. */
+        targets
+    }
 
     /** Set of context menu actions which we do not want to appear in the context menu for the relation source items. */
     protected static Set<String> m_filteredActions = new HashSet<String>();
@@ -95,6 +105,9 @@ public class CmsResourceUsageView extends Composite {
     /** True if the resource boxes have already been created. */
     private boolean m_filled;
 
+    /** The display mode. */
+    private Mode m_mode;
+
     /** Timer for notifying the scroll panel of size changes. */
     private Timer m_resizeTimer = new Timer() {
 
@@ -111,13 +124,15 @@ public class CmsResourceUsageView extends Composite {
     /** 
      * Creates a new widget instance.<p>
      * 
-     * @param status the resource status from which we get the related resources to display.  
+     * @param status the resource status from which we get the related resources to display.
+     * @param mode the display mode (display relation sources or targets)  
      */
-    public CmsResourceUsageView(CmsResourceStatusBean status) {
+    public CmsResourceRelationView(CmsResourceStatusBean status, Mode mode) {
 
         initWidget(m_panel);
         m_panel.getElement().getStyle().setOverflow(Style.Overflow.HIDDEN);
         m_statusBean = status;
+        m_mode = mode;
         CmsListItemWidget infoWidget = new CmsListItemWidget(status.getListInfo());
         CmsListItem infoItem = new CmsListItem(infoWidget);
         m_panel.add(infoItem);
@@ -126,8 +141,7 @@ public class CmsResourceUsageView extends Composite {
         scrollPanel.add(m_list);
         fieldset.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
         scrollPanel.getElement().getStyle().setHeight(280, Style.Unit.PX);
-        fieldset.setLegend(org.opencms.gwt.client.Messages.get().key(
-            org.opencms.gwt.client.Messages.GUI_RESOURCE_INFO_TAB_USAGE_0));
+        fieldset.setLegend(getLegend());
         fieldset.add(scrollPanel);
         m_panel.add(fieldset);
     }
@@ -167,13 +181,13 @@ public class CmsResourceUsageView extends Composite {
     protected void fill() {
 
         m_list.clear();
-        if (m_statusBean.getRelationSources().isEmpty()) {
+        List<CmsResourceStatusRelationBean> relationBeans = getRelationBeans();
+        if (relationBeans.isEmpty()) {
             CmsSimpleListItem item = new CmsSimpleListItem();
-            item.add(new Label(org.opencms.gwt.client.Messages.get().key(
-                org.opencms.gwt.client.Messages.GUI_USAGE_EMPTY_0)));
+            item.add(new Label(getEmptyMessage()));
             m_list.add(item);
         } else {
-            for (CmsResourceStatusRelationBean relationBean : m_statusBean.getRelationSources()) {
+            for (CmsResourceStatusRelationBean relationBean : relationBeans) {
                 CmsListItemWidget itemWidget = new CmsListItemWidget(relationBean.getInfoBean());
                 CmsListItem item = new CmsListItem(itemWidget);
                 CmsContextMenuButton button = new CmsContextMenuButton(
@@ -255,5 +269,58 @@ public class CmsResourceUsageView extends Composite {
 
         }
 
+    }
+
+    /**
+     * Gets the message to use for an empty relation list.<p>
+     * 
+     * @return the message to display for an empty relation list 
+     */
+    private String getEmptyMessage() {
+
+        switch (m_mode) {
+            case sources:
+                return org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_USAGE_EMPTY_0);
+            case targets:
+            default:
+                return org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_TARGETS_EMPTY_0);
+        }
+
+    }
+
+    /**
+     * Gets the label to use for the fieldset.<p>
+     * 
+     * @return the label for the fieldset 
+     */
+    private String getLegend() {
+
+        switch (m_mode) {
+            case sources:
+                return org.opencms.gwt.client.Messages.get().key(
+                    org.opencms.gwt.client.Messages.GUI_RESOURCE_INFO_TAB_USAGE_0);
+            case targets:
+            default:
+                return org.opencms.gwt.client.Messages.get().key(
+                    org.opencms.gwt.client.Messages.GUI_RESOURCE_INFO_TAB_TARGETS_0);
+        }
+
+    }
+
+    /** 
+     * Gets the relation beans to display.<p>
+     * 
+     * @return the list of relation beans to display 
+     */
+    private ArrayList<CmsResourceStatusRelationBean> getRelationBeans() {
+
+        switch (m_mode) {
+            case targets:
+                return m_statusBean.getRelationTargets();
+            case sources:
+            default:
+                return m_statusBean.getRelationSources();
+
+        }
     }
 }

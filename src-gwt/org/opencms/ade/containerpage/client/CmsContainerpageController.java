@@ -27,6 +27,7 @@
 
 package org.opencms.ade.containerpage.client;
 
+import org.opencms.ade.containerpage.client.CmsContainerpageEvent.EventType;
 import org.opencms.ade.containerpage.client.ui.CmsConfirmRemoveDialog;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
@@ -452,6 +453,7 @@ public final class CmsContainerpageController {
             }
             m_handler.updateClipboard(result);
             resetEditableListButtons();
+            CmsContainerpageController.get().fireEvent(new CmsContainerpageEvent(EventType.elementEdited));
         }
     }
 
@@ -713,6 +715,16 @@ public final class CmsContainerpageController {
 
         CmsRemovedElementDeletionDialog dialog = new CmsRemovedElementDeletionDialog(status);
         dialog.center();
+    }
+
+    /**
+     * Adds a handler for container page events.<p>
+     * 
+     * @param handler the handler to add 
+     */
+    public void addContainerpageEventHandler(I_CmsContainerpageEventHandler handler) {
+
+        CmsCoreProvider.get().getEventBus().addHandler(CmsContainerpageEvent.TYPE, handler);
     }
 
     /**
@@ -978,6 +990,17 @@ public final class CmsContainerpageController {
 
     }
 
+    /** 
+     * Fires an event on the core event bus.<p>
+     * 
+     * @param event the event to fire 
+     */
+    public void fireEvent(CmsContainerpageEvent event) {
+
+        CmsCoreProvider.get().getEventBus().fireEvent(event);
+
+    }
+
     /**
      * Returns all drag elements of the page.<p>
      * 
@@ -1042,6 +1065,21 @@ public final class CmsContainerpageController {
     public CmsContainerJso getContainer(String containerName) {
 
         return m_containers.get(containerName);
+    }
+
+    /**
+     * Returns the container-page RPC service.<p>
+     * 
+     * @return the container-page service
+     */
+    public I_CmsContainerpageServiceAsync getContainerpageService() {
+
+        if (m_containerpageService == null) {
+            m_containerpageService = GWT.create(I_CmsContainerpageService.class);
+            String serviceUrl = CmsCoreProvider.get().link("org.opencms.ade.containerpage.CmsContainerpageService.gwt");
+            ((ServiceDefTarget)m_containerpageService).setServiceEntryPoint(serviceUrl);
+        }
+        return m_containerpageService;
     }
 
     /**
@@ -1966,6 +2004,7 @@ public final class CmsContainerpageController {
                 protected void onResponse(Void result) {
 
                     CmsNotification.get().send(Type.NORMAL, Messages.get().key(Messages.GUI_NOTIFICATION_PAGE_SAVED_0));
+                    CmsContainerpageController.get().fireEvent(new CmsContainerpageEvent(EventType.pageSaved));
                     setPageChanged(false, true);
                     leaveCommand.execute();
                 }
@@ -2012,6 +2051,7 @@ public final class CmsContainerpageController {
                 protected void onResponse(Void result) {
 
                     CmsNotification.get().send(Type.NORMAL, Messages.get().key(Messages.GUI_NOTIFICATION_PAGE_SAVED_0));
+                    CmsContainerpageController.get().fireEvent(new CmsContainerpageEvent(EventType.pageSaved));
                     setPageChanged(false, true);
                     Window.Location.assign(targetUri);
                 }
@@ -2061,6 +2101,7 @@ public final class CmsContainerpageController {
                 protected void onResponse(Void result) {
 
                     stop(false);
+                    CmsContainerpageController.get().fireEvent(new CmsContainerpageEvent(EventType.pageSaved));
                     setPageChanged(false, false);
                     for (Runnable afterSaveAction : afterSaveActions) {
                         afterSaveAction.run();
@@ -2416,21 +2457,6 @@ public final class CmsContainerpageController {
     }
 
     /**
-     * Returns the container-page RPC service.<p>
-     * 
-     * @return the container-page service
-     */
-    protected I_CmsContainerpageServiceAsync getContainerpageService() {
-
-        if (m_containerpageService == null) {
-            m_containerpageService = GWT.create(I_CmsContainerpageService.class);
-            String serviceUrl = CmsCoreProvider.get().link("org.opencms.ade.containerpage.CmsContainerpageService.gwt");
-            ((ServiceDefTarget)m_containerpageService).setServiceEntryPoint(serviceUrl);
-        }
-        return m_containerpageService;
-    }
-
-    /**
      * Returns the core RPC service.<p>
      * 
      * @return the core service
@@ -2616,7 +2642,6 @@ public final class CmsContainerpageController {
 
         if (changed) {
             if (!m_pageChanged) {
-
                 m_pageChanged = changed;
                 if (lockContainerpage()) {
                     m_handler.enableSaveReset(!isEditingDisabled());
@@ -2666,6 +2691,7 @@ public final class CmsContainerpageController {
                 @Override
                 protected void onResponse(Void result) {
 
+                    CmsContainerpageController.get().fireEvent(new CmsContainerpageEvent(EventType.pageSaved));
                     CmsNotification.get().send(Type.NORMAL, Messages.get().key(Messages.GUI_NOTIFICATION_PAGE_SAVED_0));
                     setPageChanged(false, false);
                 }

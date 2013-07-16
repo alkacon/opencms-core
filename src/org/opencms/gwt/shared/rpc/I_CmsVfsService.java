@@ -252,12 +252,18 @@ public interface I_CmsVfsService extends RemoteService {
      * 
      * @param structureId the structure id of a resource
      * @param locale the locale for which we want the resource information
+     * @param includeTargets true if relation targets should also be fetched 
+     * @param additionalTargetIds structure ids of resources to add to the relation targets returned 
      *  
      * @return the resource status
      * 
      * @throws CmsRpcException if something goes wrong 
      */
-    CmsResourceStatusBean getResourceStatus(CmsUUID structureId, String locale) throws CmsRpcException;
+    CmsResourceStatusBean getResourceStatus(
+        CmsUUID structureId,
+        String locale,
+        boolean includeTargets,
+        List<CmsUUID> additionalTargetIds) throws CmsRpcException;
 
     /**
      * Gets the information which is necessary for opening the 'Restore' dialog for a resource.<p>

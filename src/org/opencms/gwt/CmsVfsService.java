@@ -28,7 +28,6 @@
 package org.opencms.gwt;
 
 import org.opencms.ade.galleries.CmsPreviewService;
-import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
@@ -37,7 +36,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResource.CmsResourceUndoMode;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
-import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypePlain;
@@ -57,7 +55,6 @@ import org.opencms.gwt.shared.CmsPrincipalBean;
 import org.opencms.gwt.shared.CmsRenameInfoBean;
 import org.opencms.gwt.shared.CmsReplaceInfo;
 import org.opencms.gwt.shared.CmsResourceStatusBean;
-import org.opencms.gwt.shared.CmsResourceStatusRelationBean;
 import org.opencms.gwt.shared.CmsRestoreInfoBean;
 import org.opencms.gwt.shared.CmsVfsEntryBean;
 import org.opencms.gwt.shared.alias.CmsAliasBean;
@@ -82,8 +79,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
-import org.opencms.search.galleries.CmsGallerySearch;
-import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.I_CmsPrincipal;
@@ -93,7 +88,6 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
-import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.page.CmsXmlPageFactory;
@@ -193,6 +187,22 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             resourceInfo.setTitle(resourceInfo.getTitle() + " (" + iconTitle + ")");
         }
         return resourceInfo;
+    }
+
+    /**
+     * Formats a date given the current user's workplace locale.<p>
+     * 
+     * @param cms the current CMS context  
+     * @param date the date to format
+     * 
+     * @return the formatted date 
+     */
+    public static String formatDateTime(CmsObject cms, long date) {
+
+        return CmsDateUtil.getDateTime(
+            new Date(date),
+            DateFormat.MEDIUM,
+            OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
     }
 
     /**
@@ -599,120 +609,18 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
-     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#getResourceStatus(org.opencms.util.CmsUUID, java.lang.String)
+     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#getResourceStatus(org.opencms.util.CmsUUID, java.lang.String, boolean, java.util.List)
      */
-    public CmsResourceStatusBean getResourceStatus(CmsUUID structureId, String contentLocale) throws CmsRpcException {
+    public CmsResourceStatusBean getResourceStatus(
+        CmsUUID structureId,
+        String contentLocale,
+        boolean includeTargets,
+        List<CmsUUID> additionalTargets) throws CmsRpcException {
 
         try {
             CmsObject cms = getCmsObject();
-            Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
-            cms.getRequestContext().setLocale(locale);
-            CmsResource resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
-            String localizedTitle = null;
-            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(contentLocale)) {
-                Locale realLocale = CmsLocaleManager.getLocale(contentLocale);
-                CmsGallerySearchResult result = CmsGallerySearch.searchById(cms, structureId, realLocale);
-                if (!CmsStringUtil.isEmptyOrWhitespaceOnly(result.getTitle())) {
-                    localizedTitle = result.getTitle();
-                }
-            }
-            CmsResourceUtil resourceUtil = new CmsResourceUtil(cms, resource);
-            List<CmsProperty> properties = cms.readPropertyObjects(resource, false);
-            CmsResourceStatusBean result = new CmsResourceStatusBean();
-            result.setDateCreated(formatDateTime(resource.getDateCreated()));
-            long dateExpired = resource.getDateExpired();
-            if (dateExpired != CmsResource.DATE_EXPIRED_DEFAULT) {
-                result.setDateExpired(formatDateTime(dateExpired));
-            }
-            result.setDateLastModified(formatDateTime(resource.getDateLastModified()));
-            long dateReleased = resource.getDateReleased();
-            if (dateReleased != CmsResource.DATE_RELEASED_DEFAULT) {
-                result.setDateReleased(formatDateTime(dateReleased));
-            }
-            String lastProject = resourceUtil.getLockedInProjectName();
-            if ("".equals(lastProject)) {
-                lastProject = null;
-            }
-            result.setLastProject(lastProject);
-
-            result.setListInfo(getPageInfo(cms, resource));
-            CmsLock lock = cms.getLock(resource);
-            CmsUser lockOwner = null;
-            if (!lock.isUnlocked()) {
-                lockOwner = cms.readUser(lock.getUserId());
-                result.setLockState(org.opencms.workplace.list.Messages.get().getBundle(locale).key(
-                    org.opencms.workplace.list.Messages.GUI_EXPLORER_LIST_ACTION_LOCK_NAME_2,
-                    lockOwner.getName(),
-                    lastProject));
-            } else {
-                result.setLockState(org.opencms.workplace.list.Messages.get().getBundle(locale).key(
-                    org.opencms.workplace.list.Messages.GUI_EXPLORER_LIST_ACTION_UNLOCK_NAME_0));
-            }
-
-            CmsProperty navText = CmsProperty.get(CmsPropertyDefinition.PROPERTY_NAVTEXT, properties);
-            if (navText != null) {
-                result.setNavText(navText.getValue());
-            }
-            result.setPermissions(resourceUtil.getPermissionString());
-            result.setSize(resource.getLength());
-            result.setStateBean(resource.getState());
-            CmsProperty title = CmsProperty.get(CmsPropertyDefinition.PROPERTY_TITLE, properties);
-            if (localizedTitle != null) {
-                result.setTitle(localizedTitle);
-                result.getListInfo().setTitle(localizedTitle);
-            } else if (title != null) {
-                result.setTitle(title.getValue());
-            }
-            result.setUserCreated(resourceUtil.getUserCreated());
-            result.setUserLastModified(resourceUtil.getUserLastModified());
-
-            I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
-            result.setResourceType(resType.getTypeName());
-            if (resType instanceof CmsResourceTypeXmlContent) {
-                CmsFile file = cms.readFile(resource);
-                CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
-                List<Locale> locales = content.getLocales();
-                List<String> localeStrings = new ArrayList<String>();
-                for (Locale l : locales) {
-                    localeStrings.add(l.toString());
-                }
-                result.setLocales(localeStrings);
-            }
-
-            List<CmsRelation> relations = cms.readRelations(CmsRelationFilter.relationsToStructureId(resource.getStructureId()));
-            Map<CmsUUID, CmsResource> relationSources = new HashMap<CmsUUID, CmsResource>();
-
-            // find all distinct relation sources 
-            for (CmsRelation relation : relations) {
-                CmsResource source = relation.getSource(cms, CmsResourceFilter.IGNORE_EXPIRATION);
-                relationSources.put(source.getStructureId(), source);
-            }
-
-            for (CmsResource source : relationSources.values()) {
-                try {
-                    CmsListInfoBean sourceBean = getPageInfo(source);
-                    String link = null;
-                    try {
-                        link = OpenCms.getLinkManager().substituteLink(cms, source);
-                    } catch (Exception e) {
-                        LOG.warn(e.getLocalizedMessage(), e);
-                    }
-                    CmsResourceStatusRelationBean relationBean = new CmsResourceStatusRelationBean(
-                        sourceBean,
-                        link,
-                        source.getStructureId());
-                    if (CmsResourceTypeXmlContent.isXmlContent(source)) {
-                        relationBean.setIsXmlContent(true);
-                    }
-                    String sitePath = cms.getSitePath(source);
-                    relationBean.setSitePath(sitePath);
-                    result.getRelationSources().add(relationBean);
-                } catch (CmsVfsResourceNotFoundException notfound) {
-                    LOG.error(notfound.getLocalizedMessage(), notfound);
-                    continue;
-                }
-            }
-            return result;
+            CmsDefaultResourceStatusProvider provider = new CmsDefaultResourceStatusProvider();
+            return provider.getResourceStatus(cms, structureId, contentLocale, includeTargets, additionalTargets);
         } catch (Throwable e) {
             error(e);
             return null;
@@ -1193,10 +1101,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     private String formatDateTime(long date) {
 
         CmsObject cms = getCmsObject();
-        return CmsDateUtil.getDateTime(
-            new Date(date),
-            DateFormat.MEDIUM,
-            OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
+        return formatDateTime(cms, date);
     }
 
     /**

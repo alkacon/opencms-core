@@ -310,6 +310,9 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
     /** The text metrics prefix. */
     private String m_tmPrefix;
 
+    /** Widget for the overlay icon in the top-right corner. */
+    private HTML m_topRightIcon;
+
     /**
      * Constructor. Using a 'li'-tag as default root element.<p>
      * 
@@ -832,8 +835,9 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
                 iconTitle = Messages.get().key(Messages.GUI_ICON_TITLE_SECURE_0);
                 break;
             case copy:
-                m_stateIcon.setStyleName(listItemWidgetCss.stateIcon() + " " + listItemWidgetCss.copyModel());
+                m_stateIcon.setStyleName(styleStateIcon + " " + listItemWidgetCss.copyModel());
                 break;
+            case standard:
             default:
                 m_stateIcon.setStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().stateIcon());
                 break;
@@ -901,6 +905,24 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
     public void setTitleLabel(String label) {
 
         m_title.setText(label);
+    }
+
+    /**
+     * Sets the icon in the top right corner and its title.<p>
+     * 
+     * @param iconClass the CSS class for the icon
+     * @param title the value for the title attribute of the icon
+     */
+    public void setTopRightIcon(String iconClass, String title) {
+
+        if (m_topRightIcon == null) {
+            m_topRightIcon = new HTML();
+            m_contentPanel.add(m_topRightIcon);
+        }
+        m_topRightIcon.setStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().topRightIcon() + " " + iconClass);
+        if (title != null) {
+            m_topRightIcon.setTitle(title);
+        }
     }
 
     /**
@@ -1058,6 +1080,13 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
         if (infoBean.getLockIcon() != null) {
             setLockIcon(infoBean.getLockIcon(), infoBean.getLockIconTitle());
         }
+
+        CmsResourceState resourceState = infoBean.getResourceState();
+        if ((resourceState != null) && resourceState.isChanged()) {
+            String title = Messages.get().key(Messages.GUI_UNPUBLISHED_CHANGES_TITLE_0);
+            setTopRightIcon(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().changed(), title);
+        }
+
         initAdditionalInfo(infoBean);
     }
 
@@ -1129,4 +1158,5 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
         return main + " [" + secondary + "]";
 
     }
+
 }

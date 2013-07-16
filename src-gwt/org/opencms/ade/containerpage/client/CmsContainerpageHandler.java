@@ -725,6 +725,31 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     }
 
     /**
+     * Opens the elements info dialog.<p>
+     */
+    public void openElementsInfo() {
+
+        CmsUUID detailId = CmsContainerpageController.get().getData().getDetailId();
+        List<CmsUUID> detailIdList = new ArrayList<CmsUUID>();
+        if (detailId != null) {
+            detailIdList.add(detailId);
+        }
+        CmsResourceInfoDialog.load(
+            CmsCoreProvider.get().getStructureId(),
+            true,
+            detailIdList,
+            new CloseHandler<PopupPanel>() {
+
+                public void onClose(CloseEvent<PopupPanel> event) {
+
+                    deactivateCurrentButton();
+                    activateSelection();
+                }
+
+            });
+    }
+
+    /**
      * Opens the lock report for the given element.<p>
      * 
      * @param element the element
@@ -908,7 +933,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     public void showElementInfo(CmsContainerPageElementPanel element) {
 
         CmsUUID structureId = element.getStructureId();
-        CmsResourceInfoDialog.load(structureId);
+        CmsResourceInfoDialog.load(structureId, false, new ArrayList<CmsUUID>(), null);
     }
 
     /**

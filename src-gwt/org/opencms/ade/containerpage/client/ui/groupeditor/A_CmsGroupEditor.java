@@ -28,6 +28,8 @@
 package org.opencms.ade.containerpage.client.ui.groupeditor;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageController;
+import org.opencms.ade.containerpage.client.CmsContainerpageEvent;
+import org.opencms.ade.containerpage.client.CmsContainerpageEvent.EventType;
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
 import org.opencms.ade.containerpage.client.Messages;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer;
@@ -415,6 +417,7 @@ public abstract class A_CmsGroupEditor extends Composite {
                 }
             }
         }
+        m_controller.fireEvent(new CmsContainerpageEvent(EventType.elementEdited));
     }
 
     /**

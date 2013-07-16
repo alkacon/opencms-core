@@ -74,11 +74,19 @@ li div.itemContainer.cmsHovering{
 }
 
 .lockIcon{
-    left: 16px;
     position: absolute;
+    left: 16px;
     top: 16px;
     z-index: value("constants.css.zIndexInline");
 }
+
+.topRightIcon {
+	position: absolute;
+	left: 16px;
+	top: 0ßx;
+	z-index: value("constants.css.zIndexInline");
+}
+
 
 @sprite .lockClosed, .lockSharedClosed{
 	gwt-image: "gwtImages.lockOtherImage";
@@ -95,6 +103,11 @@ li div.itemContainer.cmsHovering{
 @sprite .lockSharedOpen{
 	gwt-image: "gwtImages.lockSharedImage";
 }
+
+@sprite .changed { 
+	gwt-image: "gwtImages.changedIcon";
+}
+
 
 
 @sprite div.itemContent {

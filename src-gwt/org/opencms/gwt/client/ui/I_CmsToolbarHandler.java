@@ -68,4 +68,5 @@ public interface I_CmsToolbarHandler extends I_CmsContextMenuHandler {
      * @param button the new active button 
      */
     void setActiveButton(I_CmsToolbarButton button);
+
 }

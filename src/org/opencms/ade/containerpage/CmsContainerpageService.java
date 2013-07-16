@@ -54,6 +54,7 @@ import org.opencms.file.CmsUser;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.gwt.CmsDefaultResourceStatusProvider;
 import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsRpcException;
@@ -263,6 +264,31 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         } catch (Throwable e) {
             error(e);
         }
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#checkContainerpageOrElementsChanged(org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
+     */
+    public boolean checkContainerpageOrElementsChanged(CmsUUID structureId, CmsUUID detailContentId)
+    throws CmsRpcException {
+
+        try {
+            List<CmsUUID> additionalIds = new ArrayList<CmsUUID>();
+            additionalIds.add(structureId);
+            if (detailContentId != null) {
+                additionalIds.add(detailContentId);
+            }
+            CmsRelationTargetListBean result = CmsDefaultResourceStatusProvider.getContainerpageRelationTargets(
+                getCmsObject(),
+                structureId,
+                additionalIds,
+                true);
+            return result.isChanged();
+        } catch (Throwable e) {
+            error(e);
+            return false; // will never be reached 
+        }
+
     }
 
     /**
@@ -1576,4 +1602,5 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         list.add(0, element);
         return list;
     }
+
 }
