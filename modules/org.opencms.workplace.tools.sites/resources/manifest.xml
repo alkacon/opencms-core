@@ -33,6 +33,7 @@
 			<resource uri="/system/modules/org.opencms.workplace.tools.sites/"/>
 			<resource uri="/system/workplace/resources/tools/sites/icons/"/>
 			<resource uri="/system/workplace/admin/sites/"/>
+			<resource uri="/system/workplace/resources/list/delete_inactive.png"/>
 		</resources>
 		<parameters>
 			<param name="configtemplate">/path/to/webserver/config.template</param>
@@ -1101,6 +1102,39 @@
 					<name>Title</name>
 					<value><![CDATA[sites]]></value>
 				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/list</destination>
+			<type>folder</type>
+			<uuidstructure>96b20cfc-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Wed, 07 Feb 2007 11:31:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/list/delete_inactive.png</source>
+			<destination>system/workplace/resources/list/delete_inactive.png</destination>
+			<type>image</type>
+			<uuidstructure>ab1dc9e6-ee1b-11e2-9268-000c299b0940</uuidstructure>
+			<uuidresource>ab1dc9e7-ee1b-11e2-9268-000c299b0940</uuidresource>
+			<datelastmodified>Tue, 16 Jul 2013 13:29:12 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jul 2013 13:28:57 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:20,h:20]]></value>

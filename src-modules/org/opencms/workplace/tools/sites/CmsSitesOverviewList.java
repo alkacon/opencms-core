@@ -77,6 +77,9 @@ public class CmsSitesOverviewList extends A_CmsListDialog {
     /** The message key prefix to be used for widget labels. */
     public static final String KEY_PREFIX_SITES = "sites";
 
+    /** The inactive icon for single delete action. */
+    protected static final String ICON_DELETE_INACTIVE = "list/delete_inactive.png";
+
     /** List column id. */
     protected static final String LIST_COLUMN_ACTIVE = "wsi";
 
@@ -346,7 +349,7 @@ public class CmsSitesOverviewList extends A_CmsListDialog {
         activateCol.setWidth("20");
         activateCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         activateCol.setListItemComparator(new CmsListItemActionIconComparator());
-        CmsListDirectAction jobActAction = new CmsListDirectAction(LIST_ACTION_ACTIVATE) {
+        CmsListDirectAction activateForConig = new CmsListDirectAction(LIST_ACTION_ACTIVATE) {
 
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
@@ -360,13 +363,13 @@ public class CmsSitesOverviewList extends A_CmsListDialog {
                 return super.isVisible();
             }
         };
-        jobActAction.setName(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_ACTIVATE_NAME_0));
-        jobActAction.setConfirmationMessage(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_ACTIVATE_CONF_0));
-        jobActAction.setIconPath(ICON_INACTIVE);
-        jobActAction.setHelpText(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_ACTIVATE_HELP_0));
-        activateCol.addDirectAction(jobActAction);
+        activateForConig.setName(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_ACTIVATE_NAME_0));
+        activateForConig.setConfirmationMessage(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_ACTIVATE_CONF_0));
+        activateForConig.setIconPath(ICON_INACTIVE);
+        activateForConig.setHelpText(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_ACTIVATE_HELP_0));
+        activateCol.addDirectAction(activateForConig);
         // direct action: deactivate job
-        CmsListDirectAction jobDeactAction = new CmsListDirectAction(LIST_ACTION_DEACTIVATE) {
+        CmsListDirectAction deactivateForConfig = new CmsListDirectAction(LIST_ACTION_DEACTIVATE) {
 
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
@@ -380,11 +383,12 @@ public class CmsSitesOverviewList extends A_CmsListDialog {
                 return super.isVisible();
             }
         };
-        jobDeactAction.setName(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_DEACTIVATE_NAME_0));
-        jobDeactAction.setConfirmationMessage(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_DEACTIVATE_CONF_0));
-        jobDeactAction.setIconPath(ICON_ACTIVE);
-        jobDeactAction.setHelpText(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_DEACTIVATE_HELP_0));
-        activateCol.addDirectAction(jobDeactAction);
+        deactivateForConfig.setName(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_DEACTIVATE_NAME_0));
+        deactivateForConfig.setConfirmationMessage(Messages.get().container(
+            Messages.GUI_SITES_LIST_ACTION_DEACTIVATE_CONF_0));
+        deactivateForConfig.setIconPath(ICON_ACTIVE);
+        deactivateForConfig.setHelpText(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_DEACTIVATE_HELP_0));
+        activateCol.addDirectAction(deactivateForConfig);
         metadata.addColumn(activateCol);
 
         // create remove column
@@ -398,6 +402,19 @@ public class CmsSitesOverviewList extends A_CmsListDialog {
         CmsListDirectAction removeAction = new CmsListDirectAction(LIST_ACTION_REMOVE) {
 
             /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
+             */
+            @Override
+            public String getIconPath() {
+
+                if (!OpenCms.getSiteManager().getDefaultSite().getSiteRoot().equals(getItem().getId())) {
+                    return ICON_DELETE;
+                } else {
+                    return ICON_DELETE_INACTIVE;
+                }
+            }
+
+            /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isEnabled()
              */
             @Override
@@ -408,7 +425,6 @@ public class CmsSitesOverviewList extends A_CmsListDialog {
         };
         removeAction.setName(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_REMOVE_NAME_0));
         removeAction.setHelpText(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_REMOVE_HELP_0));
-        removeAction.setIconPath(ICON_DELETE);
         removeAction.setConfirmationMessage(Messages.get().container(Messages.GUI_SITES_LIST_MACTION_REMOVE_CONF_0));
         removeCol.addDirectAction(removeAction);
         metadata.addColumn(removeCol);
