@@ -13,13 +13,6 @@
     Allow from all
   </Directory>
 
-  # Deny accessing the webserver configuration templates directory
-  <Directory "$DOCUMENT_ROOT$/resources/webserver/">
-    AllowOverride None
-    Order Deny,Allow
-    Deny from All
-  </Directory>
-
   # Logging
   LogFormat "%h %l %u %t \"%r\" %>s %b" common
   CustomLog $LOGGING_DIRECTORY$access_$CONFIG_FILENAME$.log common

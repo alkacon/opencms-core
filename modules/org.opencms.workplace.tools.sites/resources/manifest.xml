@@ -24,10 +24,10 @@
 		<dependencies/>
 		<exportpoints>
 			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/lib/" destination="WEB-INF/lib/"/>
-			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/templates/vhost.template" destination="resources/webserver/resources/vhost.template"/>
-			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/templates/vhost-secure.template" destination="resources/webserver/resources/vhost-secure.template"/>
-			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/templates/script.sh" destination="resources/webserver/resources/script.sh"/>
-			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/templates/script.bat" destination="resources/webserver/resources/script.bat"/>
+			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/webserver-templates/vhost.template" destination="WEB-INF/server-scripts/vhost.template"/>
+			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/webserver-templates/vhost-secure.template" destination="WEB-INF/server-scripts/vhost-secure.template"/>
+			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/webserver-templates/script.sh" destination="WEB-INF/server-scripts/script.sh"/>
+			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/webserver-templates/script.bat" destination="WEB-INF/server-scripts/script.bat"/>
 		</exportpoints>
 		<resources>
 			<resource uri="/system/modules/org.opencms.workplace.tools.sites/"/>
@@ -133,7 +133,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.workplace.tools.sites/templates</destination>
+			<destination>system/modules/org.opencms.workplace.tools.sites/webserver-templates</destination>
 			<type>folder</type>
 			<uuidstructure>d22e7e52-9de5-11e2-8c36-c1221e6a3a06</uuidstructure>
 			<datelastmodified>Fri, 05 Apr 2013 11:42:33 GMT</datelastmodified>
@@ -151,8 +151,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.workplace.tools.sites/templates/available-macros.txt</source>
-			<destination>system/modules/org.opencms.workplace.tools.sites/templates/available-macros.txt</destination>
+			<source>system/modules/org.opencms.workplace.tools.sites/webserver-templates/available-macros.txt</source>
+			<destination>system/modules/org.opencms.workplace.tools.sites/webserver-templates/available-macros.txt</destination>
 			<type>plain</type>
 			<uuidstructure>36c95753-a101-11e2-842a-c1221e6a3a06</uuidstructure>
 			<uuidresource>36c95754-a101-11e2-842a-c1221e6a3a06</uuidresource>
@@ -171,8 +171,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.workplace.tools.sites/templates/script.bat</source>
-			<destination>system/modules/org.opencms.workplace.tools.sites/templates/script.bat</destination>
+			<source>system/modules/org.opencms.workplace.tools.sites/webserver-templates/script.bat</source>
+			<destination>system/modules/org.opencms.workplace.tools.sites/webserver-templates/script.bat</destination>
 			<type>plain</type>
 			<uuidstructure>0617fbb5-9de6-11e2-8c36-c1221e6a3a06</uuidstructure>
 			<uuidresource>0617fbb6-9de6-11e2-8c36-c1221e6a3a06</uuidresource>
@@ -191,8 +191,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.workplace.tools.sites/templates/script.sh</source>
-			<destination>system/modules/org.opencms.workplace.tools.sites/templates/script.sh</destination>
+			<source>system/modules/org.opencms.workplace.tools.sites/webserver-templates/script.sh</source>
+			<destination>system/modules/org.opencms.workplace.tools.sites/webserver-templates/script.sh</destination>
 			<type>plain</type>
 			<uuidstructure>225e7298-9de6-11e2-8c36-c1221e6a3a06</uuidstructure>
 			<uuidresource>225e7299-9de6-11e2-8c36-c1221e6a3a06</uuidresource>
@@ -211,8 +211,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.workplace.tools.sites/templates/tomcat.sh</source>
-			<destination>system/modules/org.opencms.workplace.tools.sites/templates/tomcat.sh</destination>
+			<source>system/modules/org.opencms.workplace.tools.sites/webserver-templates/tomcat.sh</source>
+			<destination>system/modules/org.opencms.workplace.tools.sites/webserver-templates/tomcat.sh</destination>
 			<type>plain</type>
 			<uuidstructure>1927ee45-9dfd-11e2-aabc-c1221e6a3a06</uuidstructure>
 			<uuidresource>1927ee46-9dfd-11e2-aabc-c1221e6a3a06</uuidresource>
@@ -231,8 +231,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.workplace.tools.sites/templates/vhost-secure.template</source>
-			<destination>system/modules/org.opencms.workplace.tools.sites/templates/vhost-secure.template</destination>
+			<source>system/modules/org.opencms.workplace.tools.sites/webserver-templates/vhost-secure.template</source>
+			<destination>system/modules/org.opencms.workplace.tools.sites/webserver-templates/vhost-secure.template</destination>
 			<type>plain</type>
 			<uuidstructure>229f334e-a115-11e2-b3ae-c1221e6a3a06</uuidstructure>
 			<uuidresource>229f334f-a115-11e2-b3ae-c1221e6a3a06</uuidresource>
@@ -251,8 +251,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.workplace.tools.sites/templates/vhost.template</source>
-			<destination>system/modules/org.opencms.workplace.tools.sites/templates/vhost.template</destination>
+			<source>system/modules/org.opencms.workplace.tools.sites/webserver-templates/vhost.template</source>
+			<destination>system/modules/org.opencms.workplace.tools.sites/webserver-templates/vhost.template</destination>
 			<type>plain</type>
 			<uuidstructure>419886fb-9de6-11e2-8c36-c1221e6a3a06</uuidstructure>
 			<uuidresource>419886fc-9de6-11e2-8c36-c1221e6a3a06</uuidresource>
@@ -271,8 +271,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.workplace.tools.sites/templates/worker.conf</source>
-			<destination>system/modules/org.opencms.workplace.tools.sites/templates/worker.conf</destination>
+			<source>system/modules/org.opencms.workplace.tools.sites/webserver-templates/worker.conf</source>
+			<destination>system/modules/org.opencms.workplace.tools.sites/webserver-templates/worker.conf</destination>
 			<type>plain</type>
 			<uuidstructure>d65ca058-9dfc-11e2-aabc-c1221e6a3a06</uuidstructure>
 			<uuidresource>d65ca059-9dfc-11e2-aabc-c1221e6a3a06</uuidresource>
@@ -291,8 +291,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.workplace.tools.sites/templates/workers.properties</source>
-			<destination>system/modules/org.opencms.workplace.tools.sites/templates/workers.properties</destination>
+			<source>system/modules/org.opencms.workplace.tools.sites/webserver-templates/workers.properties</source>
+			<destination>system/modules/org.opencms.workplace.tools.sites/webserver-templates/workers.properties</destination>
 			<type>plain</type>
 			<uuidstructure>f7def70b-9dfc-11e2-aabc-c1221e6a3a06</uuidstructure>
 			<uuidresource>f7def70c-9dfc-11e2-aabc-c1221e6a3a06</uuidresource>
