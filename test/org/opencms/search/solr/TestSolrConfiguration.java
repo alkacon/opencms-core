@@ -90,7 +90,7 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
         // suite.addTest(new TestSolrConfiguration("testMultipleIndices"));
         // suite.addTest(new TestSolrConfiguration("testMultipleLanguages"));
         suite.addTest(new TestSolrConfiguration("testPostProcessor"));
-        // suite.addTest(new TestSolrConfiguration("testShutDown"));
+        suite.addTest(new TestSolrConfiguration("testShutDown"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -225,13 +225,14 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
         index.addSourceName("solr_source2");
         OpenCms.getSearchManager().addSearchIndex(index);
         OpenCms.getSearchManager().rebuildIndex(AllTests.INDEX_TEST, new CmsShellReport(Locale.ENGLISH));
-        index.search(getCmsObject(), "q=*:*");
+                for (int i = 0; i < 250; i++) {
+            index.search(getCmsObject(), "q=*:*");
+        }
 
         // shut down
         CoreContainer container = ((EmbeddedSolrServer)index.m_solr).getCoreContainer();
         for (SolrCore core : container.getCores()) {
-            core.closeSearcher();
-            core.close();
+            echo("Open count for core: " + core.getName() + ": " + core.getOpenCount());
         }
         container.shutdown();
 
