@@ -414,6 +414,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
             for (CmsPublishedResource pubRes : resourcesToIndex) {
                 int pos = result.indexOf(pubRes);
+
+                // do not index temporary files
                 if (pos < 0) {
                     // resource not already contained in the update list
                     result.add(pubRes);
@@ -426,6 +428,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                         result.add(pubRes);
                     }
                 }
+
             }
             return changeStateOfMoveOriginsToDeleted(result);
         }
