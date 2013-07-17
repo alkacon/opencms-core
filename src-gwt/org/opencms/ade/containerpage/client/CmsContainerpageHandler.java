@@ -933,7 +933,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     public void showElementInfo(CmsContainerPageElementPanel element) {
 
         CmsUUID structureId = element.getStructureId();
-        CmsResourceInfoDialog.load(structureId, false, new ArrayList<CmsUUID>(), null);
+        CmsResourceInfoDialog.load(structureId, true, new ArrayList<CmsUUID>(), null);
     }
 
     /**

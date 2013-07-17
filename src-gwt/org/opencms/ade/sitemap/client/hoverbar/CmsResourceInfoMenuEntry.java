@@ -58,7 +58,7 @@ public class CmsResourceInfoMenuEntry extends A_CmsSitemapMenuEntry {
      */
     public void execute() {
 
-        CmsResourceInfoDialog.load(getHoverbar().getEntry().getId(), false, new ArrayList<CmsUUID>(), null);
+        CmsResourceInfoDialog.load(getHoverbar().getEntry().getId(), true, new ArrayList<CmsUUID>(), null);
     }
 
     /**

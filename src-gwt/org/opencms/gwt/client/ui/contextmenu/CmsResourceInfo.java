@@ -53,7 +53,7 @@ public class CmsResourceInfo implements I_CmsHasContextMenuCommand, I_CmsContext
      */
     public void execute(CmsUUID structureId, I_CmsContextMenuHandler handler, CmsContextMenuEntryBean bean) {
 
-        CmsResourceInfoDialog.load(structureId, false, new ArrayList<CmsUUID>(), null);
+        CmsResourceInfoDialog.load(structureId, true, new ArrayList<CmsUUID>(), null);
     }
 
     /**
