@@ -320,7 +320,6 @@ public class CmsResourceRelationView extends Composite {
             case sources:
             default:
                 return m_statusBean.getRelationSources();
-
         }
     }
 }

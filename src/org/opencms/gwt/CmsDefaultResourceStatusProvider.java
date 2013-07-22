@@ -43,13 +43,16 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsResourceStatusBean;
 import org.opencms.gwt.shared.CmsResourceStatusRelationBean;
+import org.opencms.gwt.shared.CmsResourceStatusTabId;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
+import org.opencms.relations.I_CmsLinkParseable;
 import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.util.CmsStringUtil;
@@ -60,6 +63,7 @@ import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -240,6 +244,7 @@ public class CmsDefaultResourceStatusProvider {
         if (includeTargets) {
             result.getRelationTargets().addAll(getTargets(cms, structureId, additionalStructureIds));
         }
+        result.setTabs(getTabClientData(cms, resource));
         return result;
     }
 
@@ -306,6 +311,43 @@ public class CmsDefaultResourceStatusProvider {
         String sitePath = cms.getSitePath(relationResource);
         relationBean.setSitePath(sitePath);
         return relationBean;
+    }
+
+    /**
+     * Determines the arrangement of tabs to display, together with their labels.<p>
+     * 
+     * @param cms the current CMS context
+     * @param res the resource for which the dialog should be displayed 
+     * @return the tab configuration for the dialog 
+     */
+    private LinkedHashMap<CmsResourceStatusTabId, String> getTabClientData(CmsObject cms, CmsResource res) {
+
+        Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+        LinkedHashMap<CmsResourceStatusTabId, String> result = new LinkedHashMap<CmsResourceStatusTabId, String>();
+        Map<CmsResourceStatusTabId, CmsMessageContainer> tabs = getTabData(res);
+        for (Map.Entry<CmsResourceStatusTabId, CmsMessageContainer> entry : tabs.entrySet()) {
+            result.put(entry.getKey(), entry.getValue().key(locale));
+        }
+        return result;
+    }
+
+    /**
+     * Determines the arrangement of tabs to display, together with their labels.<p>
+     * 
+     * @param res the resource for which the dialog should be displayed 
+     * @return the tab configuration for the dialog 
+     */
+    private Map<CmsResourceStatusTabId, CmsMessageContainer> getTabData(CmsResource res) {
+
+        Map<CmsResourceStatusTabId, CmsMessageContainer> tabs;
+        if (CmsResourceTypeXmlContainerPage.isContainerPage(res)) {
+            tabs = CmsResourceStatusConstants.STATUS_TABS_CONTAINER_PAGE;
+        } else if (OpenCms.getResourceManager().getResourceType(res) instanceof I_CmsLinkParseable) {
+            tabs = CmsResourceStatusConstants.STATUS_TABS_CONTENT;
+        } else {
+            tabs = CmsResourceStatusConstants.STATUS_TABS_OTHER;
+        }
+        return tabs;
     }
 
 }

@@ -33,11 +33,13 @@ import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.resourceinfo.CmsResourceRelationView.Mode;
-import org.opencms.gwt.client.util.CmsMessages;
 import org.opencms.gwt.shared.CmsResourceStatusBean;
+import org.opencms.gwt.shared.CmsResourceStatusTabId;
 import org.opencms.util.CmsUUID;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.CloseHandler;
@@ -68,34 +70,45 @@ public class CmsResourceInfoDialog extends CmsPopup {
         setHeight(height);
         removePadding();
 
-        CmsMessages messages = org.opencms.gwt.client.Messages.get();
-        CmsScrollPanel panel = GWT.create(CmsScrollPanel.class);
-        panel.getElement().getStyle().setProperty("maxHeight", height + "px");
-        CmsResourceInfoView infoView = new CmsResourceInfoView(statusBean);
-        panel.add(infoView);
         CmsTabbedPanel<Widget> tabPanel = new CmsTabbedPanel<Widget>();
-        tabPanel.add(panel, messages.key(org.opencms.gwt.client.Messages.GUI_RESOURCE_INFO_TAB_ATTRIBUTES_0));
 
-        final CmsResourceRelationView usage = new CmsResourceRelationView(statusBean, Mode.sources);
-        usage.setPopup(this);
-        tabPanel.add(usage, messages.key(org.opencms.gwt.client.Messages.GUI_RESOURCE_INFO_TAB_USAGE_0));
-
-        CmsResourceRelationView targets = null;
-        if (includeTargets) {
-            targets = new CmsResourceRelationView(statusBean, Mode.targets);
-            targets.setPopup(this);
-            tabPanel.add(targets, messages.key(org.opencms.gwt.client.Messages.GUI_RESOURCE_INFO_TAB_TARGETS_0));
+        final List<CmsResourceRelationView> relationViews = new ArrayList<CmsResourceRelationView>();
+        for (Map.Entry<CmsResourceStatusTabId, String> tabEntry : statusBean.getTabs().entrySet()) {
+            switch (tabEntry.getKey()) {
+                case tabRelationsFrom:
+                    CmsResourceRelationView targets = new CmsResourceRelationView(statusBean, Mode.targets);
+                    targets.setPopup(this);
+                    tabPanel.add(targets, tabEntry.getValue());
+                    relationViews.add(targets);
+                    break;
+                case tabRelationsTo:
+                    CmsResourceRelationView usage = new CmsResourceRelationView(statusBean, Mode.sources);
+                    usage.setPopup(this);
+                    tabPanel.add(usage, tabEntry.getValue());
+                    relationViews.add(usage);
+                    break;
+                case tabStatus:
+                    CmsScrollPanel panel = GWT.create(CmsScrollPanel.class);
+                    panel.getElement().getStyle().setProperty("maxHeight", height + "px");
+                    CmsResourceInfoView infoView = new CmsResourceInfoView(statusBean);
+                    panel.add(infoView);
+                    tabPanel.add(panel, tabEntry.getValue());
+                    relationViews.add(null);
+                    break;
+                default:
+                    break;
+            }
         }
-
-        final CmsResourceRelationView[] relationViews = new CmsResourceRelationView[] {null, usage, targets};
-
+        if (relationViews.get(0) != null) {
+            relationViews.get(0).onSelect();
+        }
         tabPanel.addSelectionHandler(new SelectionHandler<Integer>() {
 
             public void onSelection(SelectionEvent<Integer> event) {
 
                 int tab = event.getSelectedItem().intValue();
-                if (relationViews[tab] != null) {
-                    relationViews[tab].onSelect();
+                if (relationViews.get(tab) != null) {
+                    relationViews.get(tab).onSelect();
                 }
             }
         });

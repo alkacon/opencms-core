@@ -113,6 +113,24 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_NO_PREVIEW_WRONG_MIME_TYPE_0 = "GUI_NO_PREVIEW_WRONG_MIME_TYPE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_STATUS_TAB_FROM_CP_0 = "GUI_STATUS_TAB_FROM_CP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_STATUS_TAB_FROM_XML_0 = "GUI_STATUS_TAB_FROM_XML_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_STATUS_TAB_STATUS_0 = "GUI_STATUS_TAB_STATUS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_STATUS_TAB_TO_CP_0 = "GUI_STATUS_TAB_TO_CP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_STATUS_TAB_TO_OTHER_0 = "GUI_STATUS_TAB_TO_OTHER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_STATUS_TAB_TO_XML_0 = "GUI_STATUS_TAB_TO_XML_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_CLIENT_WITH_TICKET_4 = "LOG_CLIENT_WITH_TICKET_4";
 
     /** Message constant for key in the resource bundle. */

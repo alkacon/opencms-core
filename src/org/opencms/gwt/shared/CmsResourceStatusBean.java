@@ -30,6 +30,7 @@ package org.opencms.gwt.shared;
 import org.opencms.db.CmsResourceState;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -84,6 +85,9 @@ public class CmsResourceStatusBean implements IsSerializable {
 
     /** Size. */
     private int m_size;
+
+    /** An ordered map defining the tabs to display and their order, with the tab labels as values. */
+    private LinkedHashMap<CmsResourceStatusTabId, String> m_tabs;
 
     /** Title property. */
     private String m_title;
@@ -244,6 +248,16 @@ public class CmsResourceStatusBean implements IsSerializable {
         return m_stateBean;
     }
 
+    /** 
+     * Gets the tab configuration, which is an ordered map defining the tabs to display and their order, with the tab labels as values.
+     * 
+     * @return the tab configuration 
+     */
+    public LinkedHashMap<CmsResourceStatusTabId, String> getTabs() {
+
+        return m_tabs;
+    }
+
     /**
      * Gets the title.
      *
@@ -402,6 +416,16 @@ public class CmsResourceStatusBean implements IsSerializable {
     public void setStateBean(CmsResourceState stateBean) {
 
         m_stateBean = stateBean;
+    }
+
+    /**
+     * Sets the tab configuration.<p>
+     * 
+     * @param tabs the tab configuration 
+     */
+    public void setTabs(LinkedHashMap<CmsResourceStatusTabId, String> tabs) {
+
+        m_tabs = tabs;
     }
 
     /**

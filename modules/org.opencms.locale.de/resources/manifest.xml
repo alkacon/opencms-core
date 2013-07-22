@@ -1033,6 +1033,24 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+		<file>
+			<source>system/workplace/locales/de/messages/org/opencms/gwt/messages_de.properties</source>
+			<destination>system/workplace/locales/de/messages/org/opencms/gwt/messages_de.properties</destination>
+			<type>plain</type>
+			<uuidstructure>8f3dc099-0734-47f5-acfa-7b48ef4caa72</uuidstructure>
+			<uuidresource>f065cbfc-6f67-4f01-a183-7e13f3613297</uuidresource>
+			<datelastmodified>Thu, 05 May 2011 15:13:15 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 04 May 2011 10:42:40 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
+		
+		
 		
 		
 		<file>
