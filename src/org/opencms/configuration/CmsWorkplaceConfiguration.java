@@ -138,6 +138,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     /** The name of the default XML file for this configuration. */
     public static final String DEFAULT_XML_FILE_NAME = "opencms-workplace.xml";
 
+    /** Name of the acacia-unlock node. */
+    public static final String N_ACACIA_UNLOCK = "acacia-unlock";
+
     /** The name of the access control node. */
     public static final String N_ACCESSCONTROL = "accesscontrol";
 
@@ -935,6 +938,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         // add autolock rule
         digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_AUTOLOCK, "setAutoLock", 0);
 
+        // acacia-unlock
+        digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_ACACIA_UNLOCK, "setAcaciaUnlock", 0);
+
         // add XML content auto correction rule
         digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_XMLCONTENTAUTOCORRECTION, "setXmlContentAutoCorrect", 0);
 
@@ -1083,6 +1089,11 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
         // add miscellaneous configuration nodes
         workplaceElement.addElement(N_AUTOLOCK).setText(String.valueOf(m_workplaceManager.autoLockResources()));
+        String acaciaUnlock = m_workplaceManager.getAcaciaUnlock();
+        if (acaciaUnlock != null) {
+            workplaceElement.addElement(N_ACACIA_UNLOCK).setText(acaciaUnlock);
+        }
+
         workplaceElement.addElement(N_XMLCONTENTAUTOCORRECTION).setText(
             String.valueOf(m_workplaceManager.isXmlContentAutoCorrect()));
         workplaceElement.addElement(N_ENABLEUSERMGMT).setText(String.valueOf(m_workplaceManager.showUserGroupIcon()));

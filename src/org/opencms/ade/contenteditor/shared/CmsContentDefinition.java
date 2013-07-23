@@ -51,6 +51,9 @@ public class CmsContentDefinition extends ContentDefinition {
     /** The entity id prefix. */
     private static final String ENTITY_ID_PREFIX = "http://opencms.org/resources/";
 
+    /** The value of the acacia-unlock configuration option. */
+    private boolean m_autoUnlock;
+
     /** The available locales. */
     private Map<String, String> m_availableLocales;
 
@@ -65,6 +68,9 @@ public class CmsContentDefinition extends ContentDefinition {
 
     /** The external widget configurations. */
     private List<CmsExternalWidgetConfiguration> m_externalWidgetConfigurations;
+
+    /** The direct edit flag (set to true for classic direct edit mode). */
+    private boolean m_isDirectEdit;
 
     /** The model file informations. */
     private List<CmsModelResourceInfo> m_modelInfos;
@@ -103,6 +109,7 @@ public class CmsContentDefinition extends ContentDefinition {
      * @param sitePath the site path
      * @param resourceType the resource type name
      * @param performedAutocorrection flag indicating the current content has an invalid XML structure and was auto corrected
+     * @param autoUnlock false if the editor should not unlock resources automatically in standalone mode 
      */
     public CmsContentDefinition(
         Entity entity,
@@ -117,7 +124,8 @@ public class CmsContentDefinition extends ContentDefinition {
         String title,
         String sitePath,
         String resourceType,
-        boolean performedAutocorrection) {
+        boolean performedAutocorrection,
+        boolean autoUnlock) {
 
         super(entity, configurations, types, tabInfos, locale);
         m_contentLocales = contentLocales;
@@ -128,6 +136,7 @@ public class CmsContentDefinition extends ContentDefinition {
         m_resourceType = resourceType;
         m_externalWidgetConfigurations = new ArrayList<CmsExternalWidgetConfiguration>(externalWidgetConfigurations);
         m_performedAutocorrection = performedAutocorrection;
+        m_autoUnlock = autoUnlock;
     }
 
     /**
@@ -344,6 +353,16 @@ public class CmsContentDefinition extends ContentDefinition {
     }
 
     /**
+     * Returns the value of the acacia-unlock configuration option.<p>
+     * 
+     * @return the value of the acacia-unlock configuration option 
+     */
+    public boolean isAutoUnlock() {
+
+        return m_autoUnlock;
+    }
+
+    /**
      * Returns if the resource needs to removed on cancel.<p>
      *
      * @return <code>true</code> if the resource needs to removed on cancel
@@ -351,6 +370,16 @@ public class CmsContentDefinition extends ContentDefinition {
     public boolean isDeleteOnCancel() {
 
         return m_deleteOnCancel;
+    }
+
+    /**
+     * Returns true if the direct edit flag is set, which means that the editor was opened from the classic direct edit mode.<p>
+     * 
+     * @return true if the direct edit flag is set
+     */
+    public boolean isDirectEdit() {
+
+        return m_isDirectEdit;
     }
 
     /**
@@ -381,6 +410,16 @@ public class CmsContentDefinition extends ContentDefinition {
     public void setDeleteOnCancel(boolean deleteOnCancel) {
 
         m_deleteOnCancel = deleteOnCancel;
+    }
+
+    /** 
+     * Sets the value of the direct edit flag.<p>
+     * 
+     * @param isDirectEdit the new value for the direct edit flag
+     */
+    public void setDirectEdit(boolean isDirectEdit) {
+
+        m_isDirectEdit = isDirectEdit;
     }
 
 }

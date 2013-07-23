@@ -119,6 +119,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsWorkplaceManager.class);
 
+    /** Value of the acacia-unlock configuration option (may be null if not set). */
+    private String m_acaciaUnlock;
+
     /** The admin cms context. */
     private CmsObject m_adminCms;
 
@@ -653,6 +656,16 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         }
 
         return temporaryFilename;
+    }
+
+    /**
+     * Gets the value of the acacia-unlock configuration option (null if not set explicitly).<p>
+     * 
+     * @return the value of the acacia-unlock configuration option 
+     */
+    public String getAcaciaUnlock() {
+
+        return m_acaciaUnlock;
     }
 
     /**
@@ -1470,6 +1483,17 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     }
 
     /**
+     * Sets the value of the acacia-unlock configuration option.<p>
+     * 
+     * @param value the value of the acacia-unlock configuration option 
+     */
+    public void setAcaciaUnlock(String value) {
+
+        m_acaciaUnlock = value;
+
+    }
+
+    /**
      * Sets if the autolock resources feature is enabled.<p>
      * 
      * @param value <code>"true"</code> if the autolock resources feature is enabled, otherwise false
@@ -1758,6 +1782,20 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                 m_xmlContentAutoCorrect
                 ? Messages.INIT_XMLCONTENT_AUTOCORRECT_ENABLED_0
                 : Messages.INIT_XMLCONTENT_AUTOCORRECT_DISABLED_0));
+        }
+    }
+
+    /**
+     * Returns true if the Acacia editor in standalone mode should automatically unlock resources.<p>
+     * 
+     * @return true if resources should be automatically unlocked in standalone mode 
+     */
+    public boolean shouldAcaciaUnlock() {
+
+        if (m_acaciaUnlock == null) {
+            return true;
+        } else {
+            return Boolean.parseBoolean(m_acaciaUnlock);
         }
     }
 
