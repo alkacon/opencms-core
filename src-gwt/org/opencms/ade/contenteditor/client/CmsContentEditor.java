@@ -124,6 +124,9 @@ public final class CmsContentEditor extends EditorBase {
     /** The edit tool-bar. */
     protected CmsToolbar m_toolbar;
 
+    /** Value of the auto-unlock option from the configuration. */
+    private boolean m_autoUnlock;
+
     /** The available locales. */
     private Map<String, String> m_availableLocales;
 
@@ -171,6 +174,9 @@ public final class CmsContentEditor extends EditorBase {
 
     /** The hide help bubbles button. */
     private CmsToggleButton m_hideHelpBubblesButton;
+
+    /** Flag which indicate whether the directedit parameter was set to true when loading the editor. */
+    private boolean m_isDirectEdit;
 
     /** Flag indicating the editor was opened as the stand alone version, not from within any other module. */
     private boolean m_isStandAlone;
@@ -1074,6 +1080,9 @@ public final class CmsContentEditor extends EditorBase {
         m_locale = contentDefinition.getLocale();
         m_entityId = contentDefinition.getEntityId();
         m_deleteOnCancel = contentDefinition.isDeleteOnCancel();
+        m_autoUnlock = contentDefinition.isAutoUnlock();
+        m_isDirectEdit = contentDefinition.isDirectEdit();
+
         initClosingHandler();
         setContentDefinition(contentDefinition);
         initToolbar();
@@ -1210,7 +1219,9 @@ public final class CmsContentEditor extends EditorBase {
      */
     void saveAndExit() {
 
-        saveAndDeleteEntities(m_changedEntityIds, m_deletedEntities, true, new Command() {
+        boolean unlock = shouldUnlockAutomatically();
+
+        saveAndDeleteEntities(m_changedEntityIds, m_deletedEntities, unlock, new Command() {
 
             public void execute() {
 
@@ -1373,6 +1384,9 @@ public final class CmsContentEditor extends EditorBase {
      */
     void unlockResource() {
 
+        if (!shouldUnlockAutomatically()) {
+            return;
+        }
         if (m_entityId != null) {
             final CmsUUID structureId = CmsContentDefinition.entityIdToUuid(m_entityId);
             if (m_deleteOnCancel) {
@@ -1662,6 +1676,26 @@ public final class CmsContentEditor extends EditorBase {
       $wnd._editResource = sitePath;
       $wnd._editLanguage = locale;
     }-*/;
+
+    /**
+     * Returns true if the edited resource should be unlocked automatically after pressing Save/Exit.<p>
+     * 
+     * @return true if the edited resource should be unlocked automatically 
+     */
+    private boolean shouldUnlockAutomatically() {
+
+        if (m_isStandAlone) {
+            if (m_isDirectEdit) {
+                // Classic direct edit case - always unlock
+                return true;
+            } else {
+                // Workplace case - determined by configuration
+                return m_autoUnlock;
+            }
+        }
+        // Container page case - always unlock 
+        return true;
+    }
 
     /**
      * Shows the locked resource error message.<p>

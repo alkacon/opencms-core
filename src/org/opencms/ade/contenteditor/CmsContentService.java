@@ -269,6 +269,11 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     public CmsContentDefinition prefetch() throws CmsRpcException {
 
         String paramResource = getRequest().getParameter(CmsDialog.PARAM_RESOURCE);
+        String paramDirectEdit = getRequest().getParameter(CmsEditor.PARAM_DIRECTEDIT);
+        boolean isDirectEdit = false;
+        if (paramDirectEdit != null) {
+            isDirectEdit = Boolean.parseBoolean(paramDirectEdit);
+        }
         String paramNewLink = getRequest().getParameter(CmsXmlContentEditor.PARAM_NEWLINK);
         boolean createNew = false;
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(paramNewLink)) {
@@ -285,7 +290,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(paramLocale)) {
                         locale = CmsLocaleManager.getLocale(paramLocale);
                     }
-
+                    CmsContentDefinition result;
                     if (createNew) {
                         if (locale == null) {
                             locale = OpenCms.getLocaleManager().getDefaultLocale(cms, paramResource);
@@ -295,7 +300,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(paramModelFile)) {
                             modelFileId = cms.readResource(paramModelFile).getStructureId();
                         }
-                        return readContentDefnitionForNew(paramNewLink, resource, modelFileId, locale);
+                        result = readContentDefnitionForNew(paramNewLink, resource, modelFileId, locale);
                     } else {
 
                         CmsFile file = cms.readFile(resource);
@@ -303,8 +308,10 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                         if (locale == null) {
                             locale = getBestAvailableLocale(resource, content);
                         }
-                        return readContentDefinition(file, content, null, locale, false);
+                        result = readContentDefinition(file, content, null, locale, false);
                     }
+                    result.setDirectEdit(isDirectEdit);
+                    return result;
                 }
             } catch (Throwable e) {
                 error(e);
@@ -857,6 +864,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         }
         String title = cms.readPropertyObject(file, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
         String typeName = OpenCms.getResourceManager().getResourceType(file.getTypeId()).getTypeName();
+        boolean autoUnlock = OpenCms.getWorkplaceManager().shouldAcaciaUnlock();
+
         return new CmsContentDefinition(
             entity,
             visitor.getAttributeConfigurations(),
@@ -869,7 +878,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             title,
             cms.getSitePath(file),
             typeName,
-            performedAutoCorrection);
+            performedAutoCorrection,
+            autoUnlock);
     }
 
     /**

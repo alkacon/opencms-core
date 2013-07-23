@@ -19,7 +19,8 @@
 	editorpreconditions?,
 	directeditprovider?, 
 	exportpoints, 
-	autolock?, 
+	autolock?,
+	acacia-unlock?, 
 	xmlcontentautocorrection?,	
 	enableusermanagement?, 	
 	defaultpropertiesonstructure,
@@ -220,6 +221,12 @@
 # locking of the resource is required.
 -->
 <!ELEMENT autolock (#PCDATA)>
+
+
+<!--
+# Enables or disables automatic unlocking of resources by the Acacia editor.
+-->
+<!ELEMENT acacia-unlock (#PCDATA)>
 
 <!--
 # Enables or disables the auto correction of XML content resources in the editor if the XML Schema Definition has changed.
