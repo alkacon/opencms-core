@@ -60,6 +60,9 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     /** list id constant. */
     public static final String LIST_ID = "lpr";
 
+    /** Session attribute key for the stored project. */
+    public static final String SESSION_STORED_PROJECT = "CmsProjectFilesDialog_storedProject";
+
     /** The internal collector instance. */
     private I_CmsListResourceCollector m_collector;
 
@@ -94,6 +97,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListIndepActions()
      */
+    @Override
     public void executeListIndepActions() {
 
         if (getParamListAction().equals(LIST_IACTION_FILTER)) {
@@ -109,6 +113,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() {
 
         throwListUnsupportedActionException();
@@ -117,6 +122,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() {
 
         throwListUnsupportedActionException();
@@ -125,6 +131,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#getCollector()
      */
+    @Override
     public I_CmsListResourceCollector getCollector() {
 
         if (m_collector == null) {
@@ -151,6 +158,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getList()
      */
+    @Override
     public CmsHtmlList getList() {
 
         CmsHtmlList list = super.getList();
@@ -186,6 +194,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#refreshList()
      */
+    @Override
     public synchronized void refreshList() {
 
         if (LIST_IACTION_FILTER.equals(getParamListAction())) {
@@ -210,6 +219,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // no-details
@@ -218,6 +228,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#getProject()
      */
+    @Override
     protected CmsProject getProject() {
 
         CmsUUID projectId = new CmsUUID(getParamProjectid());
@@ -231,6 +242,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -242,12 +254,13 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         CmsListDropdownAction filterAction = new CmsListDropdownAction(LIST_IACTION_FILTER);
         filterAction.setName(Messages.get().container(Messages.GUI_PROJECT_FILES_FILTER_ACTION_NAME_0));
         filterAction.setHelpText(Messages.get().container(Messages.GUI_PROJECT_FILES_FILTER_ACTION_HELP_0));
-        Iterator it = CmsProjectResourcesDisplayMode.VALUES.iterator();
+        Iterator<?> it = CmsProjectResourcesDisplayMode.VALUES.iterator();
         while (it.hasNext()) {
             CmsProjectResourcesDisplayMode mode = (CmsProjectResourcesDisplayMode)it.next();
             filterAction.addItem(mode.getMode(), Messages.get().container(A_CmsWidget.LABEL_PREFIX + mode.getMode()));
@@ -259,6 +272,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // no LMAs
@@ -267,17 +281,52 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         try {
             getCms().readProject(new CmsUUID(getParamProjectid()));
+            setStoredProject(getParamProjectid()); // doing this after the readProject call because now we know the id is valid
         } catch (Exception e) {
-            if (!getCms().getRequestContext().getCurrentProject().isOnlineProject()) {
-                m_paramProjectid = getCms().getRequestContext().getCurrentProject().getUuid().toString();
-            } else {
-                throw e;
+            Exception exceptionToRethrow = e;
+            String storedProject = getStoredProject();
+            boolean usingStoredProject = false;
+            if (storedProject != null) {
+                try {
+                    getCms().readProject(new CmsUUID(storedProject));
+                    m_paramProjectid = storedProject;
+                    usingStoredProject = true;
+                } catch (Exception e2) {
+                    exceptionToRethrow = e2;
+                }
+            }
+            if (!usingStoredProject) {
+                if (!getCms().getRequestContext().getCurrentProject().isOnlineProject()) {
+                    m_paramProjectid = getCms().getRequestContext().getCurrentProject().getUuid().toString();
+                } else {
+                    throw exceptionToRethrow;
+                }
             }
         }
+    }
 
+    /**
+     * Gets the stored project id from the session.<p>
+     * 
+     * @return the stored project id 
+     */
+    private String getStoredProject() {
+
+        return (String)getSession().getAttribute(SESSION_STORED_PROJECT);
+    }
+
+    /**
+     * Sets the stored project id.<p>
+     * 
+     * @param project the project id to be stored 
+     */
+    private void setStoredProject(String project) {
+
+        getSession().setAttribute(SESSION_STORED_PROJECT, project);
     }
 }
