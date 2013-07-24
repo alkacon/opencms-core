@@ -64,6 +64,9 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     /** list id constant. */
     public static final String LIST_ID = "lpr";
 
+    /** Session attribute key for the stored project. */
+    public static final String SESSION_STORED_PROJECT = "CmsProjectFilesDialog_storedProject";
+
     /** The internal collector instance. */
     private I_CmsListResourceCollector m_collector;
 
@@ -301,13 +304,47 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
 
         try {
             getCms().readProject(new CmsUUID(getParamProjectid()));
+            setStoredProject(getParamProjectid()); // doing this after the readProject call because now we know the id is valid
         } catch (Exception e) {
-            if (!getCms().getRequestContext().getCurrentProject().isOnlineProject()) {
-                m_paramProjectid = getCms().getRequestContext().getCurrentProject().getUuid().toString();
-            } else {
-                throw e;
+            Exception exceptionToRethrow = e;
+            String storedProject = getStoredProject();
+            boolean usingStoredProject = false;
+            if (storedProject != null) {
+                try {
+                    getCms().readProject(new CmsUUID(storedProject));
+                    m_paramProjectid = storedProject;
+                    usingStoredProject = true;
+                } catch (Exception e2) {
+                    exceptionToRethrow = e2;
+                }
+            }
+            if (!usingStoredProject) {
+                if (!getCms().getRequestContext().getCurrentProject().isOnlineProject()) {
+                    m_paramProjectid = getCms().getRequestContext().getCurrentProject().getUuid().toString();
+                } else {
+                    throw exceptionToRethrow;
+                }
             }
         }
+    }
 
+    /**
+     * Gets the stored project id from the session.<p>
+     * 
+     * @return the stored project id 
+     */
+    private String getStoredProject() {
+
+        return (String)getSession().getAttribute(SESSION_STORED_PROJECT);
+    }
+
+    /**
+     * Sets the stored project id.<p>
+     * 
+     * @param project the project id to be stored 
+     */
+    private void setStoredProject(String project) {
+
+        getSession().setAttribute(SESSION_STORED_PROJECT, project);
     }
 }
