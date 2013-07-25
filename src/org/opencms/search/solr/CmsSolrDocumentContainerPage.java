@@ -119,6 +119,7 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
     throws CmsException {
 
         logContentExtraction(resource, index);
+        I_CmsExtractionResult ex = null;
         try {
             CmsFile file = readFile(cms, resource);
             CmsXmlContainerPage containerPage = CmsXmlContainerPageFactory.unmarshal(cms, file);
@@ -143,7 +144,10 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
                     }
                 }
             }
-            return merge(cms, resource, all, (CmsSolrFieldConfiguration)index.getFieldConfiguration());
+            // we have to overwrite the resource locales with the one from this container page
+            ex = merge(cms, resource, all, (CmsSolrFieldConfiguration)index.getFieldConfiguration());
+            ex.getContentItems().put(CmsSearchField.FIELD_RESOURCE_LOCALES, locale.toString());
+            return ex;
         } catch (Exception e) {
             throw new CmsIndexException(
                 Messages.get().container(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()),
