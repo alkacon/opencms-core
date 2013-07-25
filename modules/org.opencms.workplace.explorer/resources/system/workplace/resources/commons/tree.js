@@ -617,12 +617,22 @@ function doActionFolderOpen(doc, nodeId) {
     }
 }
 
+function reverseString(s) {
+   return s.split("").reverse().join("");
+ }
+
+ function removeDuplicateSlashes(url){
+   // collapse duplicate consecutive slashes not preceded by colons; reverse the string and use lookaheads because JS regexes don't support lookbehinds
+   return reverseString(reverseString(url).replace(/\/+(?!:)/g, "/"));
+ }
+
 function doActionInsertSelected(doc, nodeId) {
     var filePrefix = "";
     if (getSitePrefix()) {
         filePrefix = getSitePrefix();
     }
-    getForm().setFormValue(filePrefix + getNodeNameById(nodeId));
+    var valueToSet = removeDuplicateSlashes(filePrefix + getNodeNameById(nodeId));
+    getForm().setFormValue(valueToSet);
 }
 
 function getForm() {

@@ -28,6 +28,16 @@ var editorConfig= {};
 var targetWindow = editor.cmsTargetWindow;
 var fieldId = editor.cmsFieldId;
 
+function reverseString(s) {
+   return s.split("").reverse().join("");
+ }
+
+ function removeDuplicateSlashes(url){
+   // collapse duplicate consecutive slashes not preceded by colons; reverse the string and use lookaheads because JS regexes don't support lookbehinds
+   return reverseString(reverseString(url).replace(/\/+(?!:)/g, "/"));
+ }
+
+
 function setFormValue(url) {
    var inputField = targetWindow.document.getElementById(fieldId);
    if (url.indexOf("://") == -1) {
