@@ -179,7 +179,7 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
         CmsEditorDisplayOptions options = OpenCms.getWorkplaceManager().getEditorDisplayOptions();
         Properties displayOptions = options.getDisplayOptions(cms);
         try {
-            result.put("selector", "#ta_" + param.getId());
+            result.put("elements", "ta_" + param.getId());
             String editorHeight = getHtmlWidgetOption().getEditorHeight();
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(editorHeight)) {
                 editorHeight = editorHeight.replaceAll("px", "");
@@ -322,14 +322,10 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
         // This is because we want the button bars to wrap automatically when there is not enough space.
         // Using this method, the wraps can only occur between different blocks/rows. 
         String toolbar = "";
-        for (int i = 0; i < blocks.size(); i++) {
-            List<String> block = blocks.get(i);
-            if (i > 0) {
-                toolbar += " | ";
-            }
-            toolbar += CmsStringUtil.listAsString(block, " ");
+        for (List<String> block : blocks) {
+            toolbar += CmsStringUtil.listAsString(block, " ") + " ";
         }
-        result.put("toolbar1", toolbar);
+        result.put("toolbar", toolbar);
 
         return result;
     }

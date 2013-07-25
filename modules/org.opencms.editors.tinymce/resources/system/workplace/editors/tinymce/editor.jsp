@@ -559,13 +559,13 @@ case CmsEditor.ACTION_DELETELOCALE:
 	if (wp.getAction() == CmsEditor.ACTION_DELETELOCALE) {
 		wp.actionDeleteElementLocale();
     }
-
+	//$FALL-THROUGH$
 case CmsEditor.ACTION_SAVE:
 //////////////////// ACTION: save the modified content
 	if (wp.getAction() == CmsEditor.ACTION_SAVE) {
 		wp.actionSave();
 	}
-
+	//$FALL-THROUGH$
 case CmsDialog.ACTION_DEFAULT:
 case CmsEditor.ACTION_SHOW:
 default:
@@ -581,11 +581,9 @@ default:
 <meta http-equiv="content-type" content="text/html; charset=<%= wp.getEncoding() %>">
 <title>(<%= wp.getSettings().getUser().getName() %>) - <%= wp.getParamResource() %></title>
 
-<link rel=stylesheet type="text/css" href="<%= wp.getStyleUri("workplace.css") %>">
-<link rel=stylesheet type="text/css" href="<%= cms.link("/system/workplace/editors/tinymce/tinymce_xmlpage.css") %>">
-<!-- <script type="text/javascript" src="<cms:link>/system/workplace/editors/tinymce/gallery.js</cms:link>"></script>
-<script type="text/javascript" src="<cms:link>/system/workplace/editors/tinymce/link.js</cms:link>"></script>-->
-<script type="text/javascript" src="<%= CmsWorkplace.getSkinUri() + "editors/tinymce/jscripts/tiny_mce/" %>tiny_mce_src.js"></script>
+<link rel="stylesheet" type="text/css" href="<%= wp.getStyleUri("workplace.css") %>">
+<link rel="stylesheet" type="text/css" href="<%= cms.link("/system/workplace/editors/tinymce/tinymce_xmlpage.css") %>">
+<script type="text/javascript" src="<%= CmsWorkplace.getSkinUri() + "editors/tinymce/jscripts/tinymce/" %>tinymce.min.js"></script>
 <script type="text/javascript" src="<%= CmsWorkplace.getSkinUri() + "jquery/packed/" %>jquery.js"></script>
 <script type="text/javascript">
 
@@ -748,27 +746,21 @@ tinyMCE.init({
     // General options
     mode : "exact",
     elements : "tinymce_content",
-    theme : "advanced",
-    plugins : "autolink,lists,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template,wordcount,-opencms",
+    theme : "modern",
+    plugins : "autolink,lists,spellchecker,pagebreak,layer,table,save,hr,image,link,emoticons,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,template,wordcount,-opencms",
     file_browser_callback : 'cmsTinyMceFileBrowser',
     entity_encoding: "raw",
 
     // Theme options
     <%= CmsTinyMCE.buildToolbar(toolbar.toString())%>
-    theme_advanced_toolbar_location : "top",
-    theme_advanced_toolbar_align : "left",
-    theme_advanced_statusbar_location : "bottom",
-    theme_advanced_resizing : false,
-    paste_text_sticky: true,
-    paste_text_sticky_default: <%=""+Boolean.valueOf(OpenCms.getWorkplaceManager().getWorkplaceEditorManager().getEditorConfiguration("tinymce").getParameters().get("paste_text"))%>,
-    
+	toolbar_items_size: 'small',
+    menubar:false,
+    resize : false,
+    paste_as_text: <%=""+Boolean.valueOf(OpenCms.getWorkplaceManager().getWorkplaceEditorManager().getEditorConfiguration("tinymce").getParameters().get("paste_text"))%>,
     cmsGalleryEnhancedOptions : <%= options.showElement("gallery.enhancedoptions", displayOptions)%>,
     cmsGalleryUseThickbox : <%= options.showElement("gallery.usethickbox", displayOptions)%>,
     language : "<%= wp.getLocale().getLanguage() %>",
-
-    // Skin options
-    skin_variant : "ocms",
-    relative_urls: false,
+	relative_urls: false,
     remove_script_host: false,
 
     // Example content CSS (should be your site CSS)
@@ -785,7 +777,7 @@ tinyMCE.init({
     	String format = options.getOptionValue("formatselect.options", "", displayOptions);
     	format = StringUtils.replace(format, ";", ",");
     	%>
-    	theme_advanced_blockformats : "<%=format%>",
+    	block_formats : "<%=format%>",
     	<%
     }
     %>
@@ -810,12 +802,12 @@ tinyMCE.init({
     
     // events
     setup : function(ed) {
-		  ed.onInit.add(function(ed) {
-		      ed.setContent(decodeURIComponent('<%= wp.getParamContent() %>'));
-		      ed.undoManager.clear();
-		      addCustomShortcuts(ed);
+		  ed.on("init",function(event) {
+		      event.target.setContent(decodeURIComponent('<%= wp.getParamContent() %>'));
+		      event.target.undoManager.clear();
+		      addCustomShortcuts(event.target);
 		  });
-		  setupTinyMCE(ed);
+		//  setupTinyMCE(ed);
 		// Add Publisg button
 	    ed.addButton('oc-publish', {
 	    	title : '<%= CmsEncoder.encodeJavaEntities(wp.key(org.opencms.workplace.editors.Messages.GUI_EXPLORER_CONTEXT_PUBLISH_0), encoding)  %>',

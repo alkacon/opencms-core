@@ -43,26 +43,15 @@ public class CmsTinyMCE extends CmsSimplePageEditor {
     public static String buildToolbar(String buttonString) {
 
         StringBuilder toolbar = new StringBuilder();
+        toolbar.append("toolbar: \"");
         String[] buttons = buttonString.split("\\,");
 
         String button;
-        boolean theFirstButtonInGroup = true;
-        int rowNum = 1;
         for (int i = 0; i < buttons.length; i++) {
             button = buttons[i];
-            if (theFirstButtonInGroup) {
-                toolbar.append("theme_advanced_buttons" + rowNum + " : \"" + button);
-                theFirstButtonInGroup = false;
-            } else {
-                toolbar.append("," + button);
-            }
-            if (GROUP_SEPARATOR.equals(button)) {
-                toolbar.append("\",\n");
-                rowNum++;
-                theFirstButtonInGroup = true;
-            }
+            toolbar.append(button + " ");
         }
-
+        toolbar.append("\",");
         return toolbar.toString();
     }
 
@@ -72,7 +61,7 @@ public class CmsTinyMCE extends CmsSimplePageEditor {
     @Override
     public String getEditorResourceUri() {
 
-        return getSkinUri() + "editors/" + EDITOR_TYPE + "/jscripts/tiny_mce/";
+        return getSkinUri() + "editors/" + EDITOR_TYPE + "/jscripts/tinymce/";
     }
 
     /**
