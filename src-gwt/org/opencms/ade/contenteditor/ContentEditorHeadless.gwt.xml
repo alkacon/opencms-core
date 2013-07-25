@@ -4,11 +4,8 @@
 	 This module does not have an entry point. --> 
 	<inherits name="org.opencms.ade.galleries.GalleryHeadless" />
 	<inherits name="org.opencms.ade.contenteditor.WidgetRegistry" />
-	<stylesheet src="../jquery-ui-theme/jquery-ui-1.8.23.custom.css" />
-	<stylesheet src="../hallo/hallo.css" />
-	<stylesheet src="../hallo/fontawesome/css/font-awesome.css" />
 	<script src="../org.opencms.ade.contenteditor.scripts.js" />
-	<script src="../../editors/tinymce/jscripts/tiny_mce/tiny_mce.js" />
+	<script src="../../editors/tinymce/jscripts/tinymce/tinymce.min.js" />
 	<source path="client" />
 	<source path="shared" />
 </module>

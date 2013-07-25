@@ -179,8 +179,7 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
         CmsEditorDisplayOptions options = OpenCms.getWorkplaceManager().getEditorDisplayOptions();
         Properties displayOptions = options.getDisplayOptions(cms);
         try {
-            result.put("elements", "ta_" + param.getId());
-            result.put("theme_modern_row_height", 0);
+            result.put("selector", "#ta_" + param.getId());
             String editorHeight = getHtmlWidgetOption().getEditorHeight();
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(editorHeight)) {
                 editorHeight = editorHeight.replaceAll("px", "");
@@ -192,11 +191,10 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
             if (options.showElement("gallery.usethickbox", displayOptions)) {
                 result.put("cmsGalleryUseThickbox", true);
             }
-            result.put("paste_text_sticky", Boolean.TRUE);
             CmsWorkplaceEditorConfiguration editorConfig = OpenCms.getWorkplaceManager().getWorkplaceEditorManager().getEditorConfiguration(
                 "tinymce");
             Boolean pasteText = Boolean.valueOf(editorConfig.getParameters().get("paste_text"));
-            result.put("paste_text_sticky_default", pasteText);
+            result.put("paste_as_text", pasteText);
 
             result.put("fullpage", getHtmlWidgetOption().isFullPage());
             result.merge(getToolbarJson(), true, false);
@@ -255,7 +253,7 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
             if (!CmsStringUtil.isEmpty(formatSelectOptions)
                 && !getHtmlWidgetOption().isButtonHidden(CmsHtmlWidgetOption.OPTION_FORMATSELECT)) {
                 formatSelectOptions = StringUtils.replace(formatSelectOptions, ";", ",");
-                result.put("theme_modern_blockformats", formatSelectOptions);
+                result.put("block_formats", formatSelectOptions);
             }
             result.put("entity_encoding", "raw");
         } catch (JSONException e) {

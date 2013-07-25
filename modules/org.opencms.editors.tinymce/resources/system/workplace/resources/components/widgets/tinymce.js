@@ -72,12 +72,9 @@ function initTinyMCE(options){
             setup: function(editor) { setupTinyMCE(editor); },
             plugins: "autolink,lists,pagebreak,layer,table,save,hr,image,link,emoticons,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,template,wordcount,advlist,-opencms",
             menubar: false,
-//            theme_modern_toolbar_location: "top",
-//            theme_modern_toolbar_align: "left",
-//            theme_modern_statusbar_location: "bottom",
+            toolbar_items_size: 'small',
+            resize: false,
             width: '100%'
-//            theme_modern_resizing: false,
-//            theme_modern_resizing_use_cookie: false
           };
     // check for fullpage option
     if (options["fullpage"]){
@@ -99,5 +96,5 @@ function initTinyMCE(options){
 
 function addCustomShortcuts(editor){
     editor.addShortcut('ctrl+shift+z','','Redo');
- //   editor.addShortcut('ctrl+l','','mceAdvLink');
+    editor.addShortcut('ctrl+l','','Link');
 }
