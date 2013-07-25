@@ -112,22 +112,15 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
         m_handler.disableToolbarButtons();
         m_handler.deactivateCurrentButton();
         m_currentElementId = element.getId();
-        final String serverId = CmsContainerpageController.getServerId(getCurrentElementId());
-        final Runnable classicEdit = new Runnable() {
-
-            public void run() {
-
-                CmsEditableData editableData = new CmsEditableData();
-                editableData.setElementLanguage(CmsCoreProvider.get().getLocale());
-                editableData.setStructureId(new CmsUUID(serverId));
-                editableData.setSitePath(element.getSitePath());
-                CmsContentEditorDialog.get().openEditDialog(editableData, false, CmsContentEditorHandler.this);
-            }
-        };
+        String serverId = CmsContainerpageController.getServerId(getCurrentElementId());
         if (m_handler.m_controller.getData().isUseClassicEditor() || element.isNewEditorDisabled()) {
-            classicEdit.run();
+            CmsEditableData editableData = new CmsEditableData();
+            editableData.setElementLanguage(CmsCoreProvider.get().getLocale());
+            editableData.setStructureId(new CmsUUID(serverId));
+            editableData.setSitePath(element.getSitePath());
+            CmsContentEditorDialog.get().openEditDialog(editableData, false, CmsContentEditorHandler.this);
         } else {
-            final String editorLocale = CmsCoreProvider.get().getLocale();
+            String editorLocale = CmsCoreProvider.get().getLocale();
 
             Command onClose = new Command() {
 
