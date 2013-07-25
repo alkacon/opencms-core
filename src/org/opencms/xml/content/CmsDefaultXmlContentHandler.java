@@ -569,7 +569,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         return Collections.unmodifiableSet(m_cssHeadIncludes);
     }
 
-    /**
+    /***
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#getCSSHeadIncludes(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
      */
     @SuppressWarnings("unused")
