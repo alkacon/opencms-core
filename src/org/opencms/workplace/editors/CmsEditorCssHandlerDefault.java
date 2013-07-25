@@ -93,7 +93,7 @@ public class CmsEditorCssHandlerDefault implements I_CmsEditorCssHandler {
             try {
                 templatePath = cms.readPropertyObject(editedResourcePath, CmsPropertyDefinition.PROPERTY_TEMPLATE, true).getValue(
                     "");
-                if (templatePath.indexOf("/") < 0) {
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(templatePath) && (templatePath.indexOf("/") < 0)) {
                     I_CmsTemplateContextProvider provider = OpenCms.getTemplateContextManager().getTemplateContextProvider(
                         templatePath);
                     if (provider != null) {
