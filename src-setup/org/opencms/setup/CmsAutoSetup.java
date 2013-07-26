@@ -146,7 +146,7 @@ public class CmsAutoSetup {
             if (CmsStringUtil.isEmpty(m_bean.getDatabaseConfigPage(m_props.getDbProduct()))) {
                 throw new Exception("DB product: " + m_props.getDbProduct() + " not supported.");
             }
-            System.out.println("System requirements tested successful.");
+            System.out.println("System requirements tested successfully.");
 
             m_bean.setAutoMode(true);
             m_bean.setDatabase(m_props.getDbProduct());
@@ -172,7 +172,7 @@ public class CmsAutoSetup {
             m_bean.setInstallModules(modules);
 
             if (m_bean.isInitialized()) {
-                System.out.println("Setup-Bean initialized successful.");
+                System.out.println("Setup-Bean initialized successfully.");
                 CmsSetupDb db = new CmsSetupDb(m_bean.getWebAppRfsPath());
                 try {
                     // try to connect as the runtime user
@@ -202,7 +202,7 @@ public class CmsAutoSetup {
                 }
             }
 
-            System.out.println("DB connection tested successful.");
+            System.out.println("DB connection tested successfully.");
 
             CmsSetupDb db = null;
             boolean dbExists = false;
@@ -274,7 +274,7 @@ public class CmsAutoSetup {
                     db.clearErrors();
                     throw new Exception("Error ocurred while dropping the DB!");
                 }
-                System.out.println("Database dropped successful.");
+                System.out.println("Database dropped successfully.");
             }
 
             if (m_props.isCreateDb() && (db != null) && (!CmsSetupBean.JPA_PROVIDER.equals(m_props.getDbProvider()))) {
@@ -289,7 +289,7 @@ public class CmsAutoSetup {
                     throw new Exception("Error ocurred while creating the DB!");
                 }
                 db.closeConnection();
-                System.out.println("Database created successful.");
+                System.out.println("Database created successfully.");
             }
 
             if (m_props.isCreateTables() && (db != null)) {
@@ -321,7 +321,7 @@ public class CmsAutoSetup {
                     throw new Exception("Error ocurred while creating tables.");
                 }
                 db.closeConnection();
-                System.out.println("Tables created successful.");
+                System.out.println("Tables created successfully.");
             }
             if (db != null) {
                 db.closeConnection();
@@ -329,18 +329,18 @@ public class CmsAutoSetup {
             System.out.println("Database setup was successful.");
 
             if (m_bean.prepareStep8()) {
-                System.out.println("Configuration files written successful.");
+                System.out.println("Configuration files written successfully.");
                 m_bean.prepareStep8b();
             }
             while (m_bean.isImportRunning()) {
                 Thread.sleep(500);
             }
-            System.out.println("Module import successful");
+            System.out.println("Modules imported successfully");
 
             m_bean.prepareStep10();
             System.out.println();
             System.out.println("-------------------------------------------");
-            System.out.println("Setup finished successful in: "
+            System.out.println("Setup finished successfully in: "
                 + Math.round((System.currentTimeMillis() - timeStarted) / 1000)
                 + " seconds.");
             System.out.println("-------------------------------------------");
