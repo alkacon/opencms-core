@@ -1,8 +1,9 @@
-setup.webapp.path=C:\dev\Tomcat7\webapps\opencms9
+setup.webapp.path=C:\dev\tomcat7\webapps\opencms
 setup.default.webapp=ROOT
 setup.install.components=workplace,releasenotes,template3,devdemo
 
 db.product=mysql
+db.provider=sql
 db.create.user=root
 db.create.pwd=
 db.worker.user=root
@@ -14,7 +15,7 @@ db.create.tables=true
 db.dropDb=true
 db.default.tablespace=
 db.index.tablespace=
-db.jdbc.driver=
+db.jdbc.driver=org.gjt.mm.mysql.Driver
 db.template.db=
 db.temporary.tablespace=
 

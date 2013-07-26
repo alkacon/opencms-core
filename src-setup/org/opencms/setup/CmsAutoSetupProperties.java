@@ -82,6 +82,9 @@ public final class CmsAutoSetupProperties {
     public static final String PROP_DB_PRODUCT = "db.product";
 
     /** A property file key. */
+    public static final String PROP_DB_PROVIDER = "db.provider";
+
+    /** A property file key. */
     public static final String PROP_DB_TEMPLATE_DB = "db.template.db";
 
     /** A property file key. */
@@ -137,6 +140,9 @@ public final class CmsAutoSetupProperties {
 
     /** The database to use. */
     private String m_dbProduct;
+
+    /** The db privider (sql or jpa). */
+    private String m_dbProvider;
 
     /** The default table space for oracle DBs. */
     private String m_defaultTablespace;
@@ -203,6 +209,7 @@ public final class CmsAutoSetupProperties {
         m_setupDefaultWebappName = addProperty(PROP_SETUP_DEFAULT_WEBAPP);
         m_dbProduct = addProperty(PROP_DB_PRODUCT);
         m_dbName = addProperty(PROP_DB_NAME);
+        m_dbProvider = addProperty(PROP_DB_PROVIDER);
         m_createUser = addProperty(PROP_DB_CREATE_USER);
         m_createPwd = addProperty(PROP_DB_CREATE_PWD);
         m_workerUser = addProperty(PROP_DB_WORKER_USER);
@@ -273,6 +280,16 @@ public final class CmsAutoSetupProperties {
     public String getDbProduct() {
 
         return m_dbProduct;
+    }
+
+    /**
+     * Returns the dbProvider.<p>
+     *
+     * @return the dbProvider
+     */
+    public String getDbProvider() {
+
+        return m_dbProvider;
     }
 
     /**
@@ -473,6 +490,9 @@ public final class CmsAutoSetupProperties {
         Map<String, String[]> result = new HashMap<String, String[]>();
 
         result.put("dbCreateConStr", new String[] {getConnectionUrl()});
+        result.put("dbName", new String[] {getDbName()});
+        result.put("dbProduct", new String[] {getDbProduct()});
+        result.put("dbProvider", new String[] {getDbProvider()});
         result.put("dbName", new String[] {getDbName()});
         result.put("db", new String[] {getDbName()});
         result.put("createDb", new String[] {Boolean.toString(isCreateDb())});

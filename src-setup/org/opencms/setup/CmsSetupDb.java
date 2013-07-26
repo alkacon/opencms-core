@@ -494,7 +494,7 @@ public class CmsSetupDb extends Object {
             m_errors.add(Messages.get().getBundle().key(Messages.ERR_LOAD_JDBC_DRIVER_1, DbDriver));
             m_errors.add(CmsException.getStackTraceAsString(e));
         } catch (Exception e) {
-            System.out.println("Exception: " + e);
+            System.out.println("Exception: " + CmsException.getStackTraceAsString(e));
             m_errors.add(Messages.get().getBundle().key(Messages.ERR_DB_CONNECT_1, DbConStr));
             m_errors.add(CmsException.getStackTraceAsString(e));
         }

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+	version="2.0">
+	<persistence-unit name="OpenCmsJPAPool" transaction-type="RESOURCE_LOCAL">
+
+		<provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+
+		<class>org.opencms.db.jpa.persistence.CmsDAOContents</class>
+		<class>org.opencms.db.jpa.persistence.CmsDAOGroups</class>
+		<class>org.opencms.db.jpa.persistence.CmsDAOGroupUsers</class>
+		<class>org.opencms.db.jpa.persistence.CmsDAOHistoryPrincipals</class>
+		<class>org.opencms.db.jpa.persistence.CmsDAOHistoryProjectResources</class>
+		<class>org.opencms.db.jpa.persistence.CmsDAOHistoryProjects</class>
+		<class>org.opencms.db.jpa.persistence.CmsDAOHistoryProperties</class>
+		<class>org.opencms.db.jpa.persistence.CmsDAOHistoryPropertyDef</class>
+		<class>org.opencms.db.jpa.persistence.CmsDAOHistoryResources</class>
+		<class>org.opencms.db.jpa.persistence.CmsDAOHistoryStructure</class>
+		<class>org.opencms.db.jpa.persistence.CmsDAOOfflineAccessControl</class>
+		<class>org.opencms.db.jpa.persistence.CmsDAOOfflineContents</class>
+		<class>org.opencms.db.jpa.persistence.CmsDAOOfflineProperties</class>
+		<class>org.opencms.db.jpa.persistence.CmsDAOOfflinePropertyDef</class>
+		<class>org.opencms.db.jpa.persistence.CmsDAOOfflineResourceRelations</class>
+		<class>org.opencms.db.jpa.persistence.CmsDAOOfflineResources</class>
+		<class>org.opencms.db.jpa.persistence.CmsDAOOfflineStructure</class>
+		<class>org.opencms.db.jpa.persistence.CmsDAOOnlineAccessControl</class>
+		<class>org.opencms.db.jpa.persistence.CmsDAOOnlineProperties</class>
+		<class>org.opencms.db.jpa.persistence.CmsDAOOnlinePropertyDef</class>
+		<class>org.opencms.db.jpa.persistence.CmsDAOOnlineResourceRelations</class>
+		<class>org.opencms.db.jpa.persistence.CmsDAOOnlineResources</class>
+		<class>org.opencms.db.jpa.persistence.CmsDAOOnlineStructure</class>
+		<class>org.opencms.db.jpa.persistence.CmsDAOProjectResources</class>
+		<class>org.opencms.db.jpa.persistence.CmsDAOProjects</class>
+		<class>org.opencms.db.jpa.persistence.CmsDAOPublishHistory</class>
+		<class>org.opencms.db.jpa.persistence.CmsDAOPublishJobs</class>
+		<class>org.opencms.db.jpa.persistence.CmsDAOResourceLocks</class>
+		<class>org.opencms.db.jpa.persistence.CmsDAOStaticExportLinks</class>
+		<class>org.opencms.db.jpa.persistence.CmsDAOUserData</class>
+		<class>org.opencms.db.jpa.persistence.CmsDAOUsers</class>
+		<class>org.opencms.db.jpa.persistence.CmsDAOLog</class>
+		<class>org.opencms.db.jpa.persistence.CmsDAOSubscription</class>
+		<class>org.opencms.db.jpa.persistence.CmsDAOSubscriptionVisit</class>
+		<class>org.opencms.db.jpa.persistence.CmsDAOCounters</class>
+		<class>org.opencms.db.jpa.persistence.CmsDAOOfflineUrlNameMappings</class>
+		<class>org.opencms.db.jpa.persistence.CmsDAOOnlineUrlNameMappings</class>
+		<class>org.opencms.db.jpa.persistence.CmsDAOAlias</class>
+		<class>org.opencms.db.jpa.persistence.CmsDAORewriteAlias</class>
+		<class>org.opencms.db.jpa.persistence.CmsDAOUserPublishListEntry</class>
+
+		<properties>
+			<!-- *** DBCP Connection pool configuration *** -->
+			<property name="openjpa.ConnectionDriverName" value="org.apache.commons.dbcp.BasicDataSource" />
+
+			<!-- *** Connection management *** -->
+			<property name="openjpa.ConnectionRetainMode" value="on-demand" />
+
+			<!-- *** Synchronize database schema with persistence classes. *** -->
+			<property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(ForeignKeys=true)" />
+			<property name="openjpa.jdbc.SchemaFactory" value="native(ForeignKeys=true)" />
+
+			<!-- *** OpenJPA Query cache configuration *** -->
+			<property name="openjpa.QueryCompilationCache" value="true" />
+			<property name="openjpa.jdbc.QuerySQLCache" value="true" />
+
+			<!-- *** OpenJPA Query data cache configuration *** -->
+			<property name="openjpa.QueryCache" value="ehcache" />
+
+			<!-- *** OpenJPA Data cache configuration *** -->
+			<property name="openjpa.DataCacheManager" value="ehcache" />
+
+			<!-- *** DB dictionary settings *** -->
+			<property name="openjpa.jdbc.DBDictionary" value="JoinSyntax=traditional, SupportsUniqueConstraints=false" />
+
+			<property name="openjpa.Log" value="log4j" />
+		</properties>
+	</persistence-unit>
+</persistence>

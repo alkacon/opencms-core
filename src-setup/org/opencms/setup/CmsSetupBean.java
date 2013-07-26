@@ -2495,6 +2495,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
                     entry = zipFile.getEntry(location.substring(1));
                 }
                 if (entry == null) {
+                    zipFile.close();
                     throw new FileNotFoundException(org.opencms.importexport.Messages.get().getBundle().key(
                         org.opencms.importexport.Messages.LOG_IMPORTEXPORT_FILE_NOT_FOUND_IN_ZIP_1,
                         location + "/" + COMPONENTS_PROPERTIES));

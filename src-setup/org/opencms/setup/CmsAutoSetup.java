@@ -157,7 +157,7 @@ public class CmsAutoSetup {
             m_bean.setDbWorkPwd(m_props.getWorkerPwd() == null ? "" : m_props.getWorkerPwd());
             m_bean.setDbCreateConStr(m_props.getConnectionUrl());
             m_bean.setDbWorkConStr(m_props.getConnectionUrl());
-            m_bean.setDbParamaters(m_props.toParameterMap(), m_props.getDbProduct(), "/opencms/", null);
+            m_bean.setDbParamaters(m_props.toParameterMap(), m_props.getDbProvider(), "/opencms/", null);
 
             m_bean.setServerName(m_props.getServerName());
             m_bean.setWorkplaceSite(m_props.getServerUrl());
@@ -252,7 +252,11 @@ public class CmsAutoSetup {
             if (dbExists && m_props.isCreateTables() && !m_props.isDropDb() && (db != null)) {
                 throw new Exception("You have selected to not drop existing DBs, but a DB with the given name exists.");
             }
-            if (dbExists && m_props.isCreateDb() && m_props.isDropDb() && (db != null)) {
+            if (dbExists
+                && m_props.isCreateDb()
+                && m_props.isDropDb()
+                && (db != null)
+                && (!CmsSetupBean.JPA_PROVIDER.equals(m_props.getDbProvider()))) {
                 // drop the DB
                 db.closeConnection();
                 db.setConnection(
@@ -273,7 +277,7 @@ public class CmsAutoSetup {
                 System.out.println("Database dropped successful.");
             }
 
-            if (m_props.isCreateDb() && (db != null)) {
+            if (m_props.isCreateDb() && (db != null) && (!CmsSetupBean.JPA_PROVIDER.equals(m_props.getDbProvider()))) {
                 // Create Database
                 db.createDatabase(m_bean.getDatabase(), m_bean.getReplacer());
                 if (!db.noErrors()) {
