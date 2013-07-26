@@ -260,7 +260,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
                 m_trackOn.put(em, Thread.currentThread().getStackTrace());
             }
         } catch (Exception e) {
-            LOG.error(e);
+            LOG.error("Error while getting JPA EntityManager", e);
         }
 
         return em;
