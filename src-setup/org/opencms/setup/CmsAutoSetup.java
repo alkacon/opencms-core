@@ -36,6 +36,7 @@ import org.opencms.setup.comptest.CmsSetupTestResult;
 import org.opencms.setup.comptest.CmsSetupTests;
 import org.opencms.util.CmsStringUtil;
 
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -87,28 +88,38 @@ public class CmsAutoSetup {
         System.out.println();
 
         String path = null;
-        for (int i = 0; i < args.length; i++) {
-            String arg = args[i];
-            if (arg.startsWith(PARAM_CONFIG_PATH)) {
-                path = arg.substring(PARAM_CONFIG_PATH.length());
+
+        if ((args[0] != null) && args[0].startsWith(PARAM_CONFIG_PATH)) {
+            if ((args.length == 2) && (args[1] != null) && new File(args[1]).exists()) {
+                path = args[1];
+            } else {
+                path = args[0].substring(PARAM_CONFIG_PATH.length()).trim();
             }
         }
 
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(path)) {
+        if (new File(path).exists()) {
             System.out.println("Using config file: " + path + ":");
-        }
-        try {
-            CmsAutoSetupProperties props = new CmsAutoSetupProperties(path);
-            for (Map.Entry<String, String[]> entry : props.toParameterMap().entrySet()) {
-                System.out.println(entry.getKey() + " = " + entry.getValue()[0]);
+            try {
+                CmsAutoSetupProperties props = new CmsAutoSetupProperties(path);
+                for (Map.Entry<String, String[]> entry : props.toParameterMap().entrySet()) {
+                    System.out.println(entry.getKey() + " = " + entry.getValue()[0]);
+                }
+                System.out.println();
+                new CmsAutoSetup(props).run();
+            } catch (Exception e) {
+                System.out.println("An error occurred during the setup process with the following error message:");
+                System.out.println(e.getMessage());
+                System.out.println("Please have a look into the opencms log file for detailed information.");
+                LOG.error(e.getMessage(), e);
             }
-            System.out.println();
-            new CmsAutoSetup(props).run();
-        } catch (Exception e) {
-            System.out.println("An error occurred during the setup process with the following error message:");
-            System.out.println(e.getMessage());
-            System.out.println("Please have a look into the opencms log file for detailed information.");
-            LOG.error(e.getMessage(), e);
+        } else {
+            System.out.println("");
+            System.err.println("Config file not found, please specify a path where to find the setup properties to use.");
+            System.out.println("Usage example (Unix): setup.sh  -path /path/to/setup.properties");
+            System.out.println("Usage example (Win):  setup.bat -path C:\\setup.properties");
+            System.out.println("");
+            System.out.println("Have a look at the package: org/opencms/setup/setup.properties.example");
+            System.out.println("in order to find a sample configuration file.");
         }
         System.exit(0);
     }
@@ -326,7 +337,7 @@ public class CmsAutoSetup {
             System.out.println();
             System.out.println("-------------------------------------------");
             System.out.println("Setup finished successful in: "
-                + Math.round(timeStarted - (System.currentTimeMillis() / 1000))
+                + Math.round((System.currentTimeMillis() - timeStarted) / 1000)
                 + " seconds.");
             System.out.println("-------------------------------------------");
         } else {
