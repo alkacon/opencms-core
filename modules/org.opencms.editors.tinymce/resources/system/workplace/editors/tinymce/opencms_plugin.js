@@ -49,6 +49,26 @@ function doShowCmsGalleries(editor, url) {
        		    "margin: 0; " +
        		    "padding: 6px 5px 5px;"
    }, {});
+   var closeButton=window.document.createElement("div");
+   var currentEd=editor;
+   closeButton.onclick=function(){
+       currentEd.windowManager.close();
+   };
+   closeButton.setAttribute("style", 
+           "background-image: url('<%= cms.link("/system/workplace/resources/editors/tinymce/toolbar/dialogCloseImage.png") %>'); " +
+           "background-color: transparent; " +
+           "cursor: pointer; " +
+           "height: 23px; " +
+           "overflow: hidden; " +
+           "position: absolute; " +
+           "right: -11px; " +
+           "top: -12px; " +
+           "width: 23px; " +
+           "border: 0; " +
+           "margin: 0; " +
+           "padding: 0;");
+   var windows= editor.windowManager.windows;
+   windows[windows.length-1].getEl().appendChild(closeButton);
 }
 
 /**
