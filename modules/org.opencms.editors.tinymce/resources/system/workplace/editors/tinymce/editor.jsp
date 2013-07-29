@@ -744,6 +744,7 @@ function popupCloseAction(closeObj) {
 <!--
 tinyMCE.init({
     // General options
+    toolbar_items_size: 'small',
     mode : "exact",
     elements : "tinymce_content",
     theme : "modern",

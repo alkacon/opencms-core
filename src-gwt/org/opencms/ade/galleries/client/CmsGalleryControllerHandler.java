@@ -229,13 +229,6 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
                 panel.setWidth("660px");
                 panel.getElement().getStyle().setProperty("margin", "20px auto");
 
-            } else if (m_mode.equals(I_CmsGalleryProviderConstants.GalleryMode.editor)) {
-
-                RootPanel panel = RootPanel.get(I_CmsGalleryProviderConstants.GALLERY_DIALOG_ID);
-                panel.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popup());
-                panel.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupContent());
-                panel.addStyleName(org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.galleryDialogCss().editorGallery());
-
             }
 
             if ((dialogBean.getSitemapSiteSelectorOptions() == null)
@@ -485,7 +478,7 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
      */
     protected native String getCloseLink() /*-{
 
-      return $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::ATTR_CLOSE_LINK];
+        return $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::ATTR_CLOSE_LINK];
     }-*/;
 
     /**

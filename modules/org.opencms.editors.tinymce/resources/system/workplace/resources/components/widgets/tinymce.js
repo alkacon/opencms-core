@@ -2,7 +2,7 @@
  * These scripts are required for the TinyMCE widgets in the xml content editor
  */
 
-// FCKeditor global objects
+// editor global objects
 var editorInstances = new Array();
 var contentFields = new Array();
 var expandedToolbars = new Array();

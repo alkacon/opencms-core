@@ -32,7 +32,23 @@ var workplacePath="<%= cms.link("/system/workplace/") %>";
 function doShowCmsGalleries(editor, url) {
    var width = 685;
    var height = 502;
-   editor.windowManager.open({url: url, width : width, height: height, inline: "yes"}, {});
+   editor.windowManager.open({
+       url: url, 
+       width : width, 
+       height: height, 
+       inline: "yes", 
+       style:   "background-color: #1F232A; " +
+       		    "background-image: url('<%= cms.link("/system/workplace/resources/editors/tinymce/toolbar/dialogBackground.png") %>'); " +
+       		    "background-position: center top; " +
+       		    "background-repeat: repeat-x; " +
+       		    "border-color: #606161 black black; " +
+       		    "border-radius: 12px 12px 12px 12px; " +
+       		    "border-style: solid; " +
+       		    "border-width: 1px; " +
+       		    "box-shadow: 6px 6px 12px #666666; " +
+       		    "margin: 0; " +
+       		    "padding: 6px 5px 5px;"
+   }, {});
 }
 
 /**

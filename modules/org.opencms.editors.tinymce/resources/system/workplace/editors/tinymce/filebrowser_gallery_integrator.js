@@ -51,7 +51,7 @@ var tinymce = parentDialog.tinymce;
 var editorConfig= {};
 
 /* Absolute path to the JSP that displays the image in original size. */
-var imagePopupUri = "<%= cms.link("/system/workplace/editors/fckeditor/plugins/ocmsimage/popup.html") %>";
+var imagePopupUri = "<%= cms.link("/system/workplace/editors/tinymce/image_popup.html") %>";
 
 // some string constants
 

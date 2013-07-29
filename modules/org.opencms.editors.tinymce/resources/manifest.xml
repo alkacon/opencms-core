@@ -324,6 +324,26 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/editors/tinymce/image_popup.html</source>
+			<destination>system/workplace/editors/tinymce/image_popup.html</destination>
+			<type>jsp</type>
+			<uuidstructure>becf6d4c-f860-11e2-b124-000c298a1fde</uuidstructure>
+			<uuidresource>becf6d4d-f860-11e2-b124-000c298a1fde</uuidresource>
+			<datelastmodified>Mon, 29 Jul 2013 15:10:18 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 29 Jul 2013 15:08:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[image popup]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/editors/tinymce/integrator.js</source>
 			<destination>system/workplace/editors/tinymce/integrator.js</destination>
 			<type>jsp</type>
@@ -2907,6 +2927,54 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/toolbar/dialogBackground.png</source>
+			<destination>system/workplace/resources/editors/tinymce/toolbar/dialogBackground.png</destination>
+			<type>image</type>
+			<uuidstructure>d2a82560-f860-11e2-b124-000c298a1fde</uuidstructure>
+			<uuidresource>d2a82561-f860-11e2-b124-000c298a1fde</uuidresource>
+			<datelastmodified>Mon, 29 Jul 2013 15:09:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 29 Jul 2013 15:09:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[dialogBackground]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:300]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/toolbar/dialogCloseImage.png</source>
+			<destination>system/workplace/resources/editors/tinymce/toolbar/dialogCloseImage.png</destination>
+			<type>image</type>
+			<uuidstructure>d2af5154-f860-11e2-b124-000c298a1fde</uuidstructure>
+			<uuidresource>d2af5155-f860-11e2-b124-000c298a1fde</uuidresource>
+			<datelastmodified>Mon, 29 Jul 2013 15:09:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 29 Jul 2013 15:09:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[dialogCloseImage]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:23,h:23]]></value>
+				</property>
+			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
