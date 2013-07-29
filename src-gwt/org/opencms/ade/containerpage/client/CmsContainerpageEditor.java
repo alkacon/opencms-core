@@ -209,6 +209,8 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
                 ((I_CmsToolbarButton)button).setEnabled(false);
             }
         }
+        m_toolbar.setVisible(false);
+        m_toggleToolbarButton.setVisible(false);
     }
 
     /**
@@ -224,6 +226,8 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
                 ((I_CmsToolbarButton)button).setEnabled(true);
             }
         }
+        m_toolbar.setVisible(true);
+        m_toggleToolbarButton.setVisible(true);
     }
 
     /**
@@ -531,18 +535,18 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
      * Exports the openMessageDialog method to the page context.<p>
      */
     private native void exportStacktraceDialogMethod() /*-{
-      $wnd.__openStacktraceDialog = function(event) {
-         event = (event) ? event : ((window.event) ? window.event : "");
-         var elem = (event.target) ? event.target : event.srcElement;
-         if (elem != null) {
-            var children = elem.getElementsByTagName("span");
-            if (children.length > 0) {
-               var title = children[0].getAttribute("title");
-               var content = children[0].innerHTML;
-               @org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
+        $wnd.__openStacktraceDialog = function(event) {
+            event = (event) ? event : ((window.event) ? window.event : "");
+            var elem = (event.target) ? event.target : event.srcElement;
+            if (elem != null) {
+                var children = elem.getElementsByTagName("span");
+                if (children.length > 0) {
+                    var title = children[0].getAttribute("title");
+                    var content = children[0].innerHTML;
+                    @org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
+                }
             }
-         }
-      }
+        }
     }-*/;
 
 }
