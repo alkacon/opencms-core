@@ -41,22 +41,6 @@ function setupTinyMCE(editor) {
    editor.on('init',function() {
        addCustomShortcuts(editorInstance);
    });
- /*  if (tinyMCE.isWebKit) {
-      // fix weird layout problem in Chrome 
-      // If we don't do this, the button bar won't wrap if the window is too small 
-      editor.onInit.add(function() {
-         var id = editor.id + "_tbl";
-         var baseElem = document.getElementById(id); 
-         var modElem = $(baseElem).parents(".cmsTinyMCE").get(0);
-         $(modElem).removeClass("cmsTinyMCE");
-         window.setTimeout(function() { $(modElem).addClass("cmsTinyMCE"); } , 1);
-      });
-   }
-   if (tinyMCE.isIE7 && !window.cmsIE7CssFixForTinyMCE) {
-      // fixing the issue where the fullscreen mode editor is positioned below the XML content editor instead of overlaying it 
-      $("head").append("<style type='text/css'>#mce_fullscreen_container { position: absolute !important; }</style>");
-      window.cmsIE7CssFixForTinyMCE = true; 
-   }  */
 }
 
 // initializes the tinyMCE editor instance with the given options
@@ -65,7 +49,6 @@ function initTinyMCE(options){
     var defaults={
             relative_urls: false,
             remove_script_host: false,
-            skin_variant: 'ocms',
             mode: "exact",
             theme: "modern",
             file_browser_callback: 'cmsTinyMceFileBrowser',
