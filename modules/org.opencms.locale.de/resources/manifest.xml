@@ -723,47 +723,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/locales/de/messages/org/opencms/editors</destination>
-			<type>folder</type>
-			<uuidstructure>12ed2000-700c-11db-85b5-e907d95948a7</uuidstructure>
-			<datelastmodified>Tue, 07 Nov 2006 08:59:30 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 07 Nov 2006 08:59:30 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/locales/de/messages/org/opencms/editors/fckeditor</destination>
-			<type>folder</type>
-			<uuidstructure>12ef9102-700c-11db-85b5-e907d95948a7</uuidstructure>
-			<datelastmodified>Tue, 07 Nov 2006 08:59:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 07 Nov 2006 08:59:50 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/locales/de/messages/org/opencms/editors/fckeditor/messages_de.properties</source>
-			<destination>system/workplace/locales/de/messages/org/opencms/editors/fckeditor/messages_de.properties</destination>
-			<type>plain</type>
-			<uuidstructure>12f1daf3-700c-11db-85b5-e907d95948a7</uuidstructure>
-			<uuidresource>628e6ba3-6e3e-11db-a5bf-e907d95948a7</uuidresource>
-			<datelastmodified>Tue, 07 Nov 2006 09:00:15 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 07 Nov 2006 09:00:15 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<destination>system/workplace/locales/de/messages/org/opencms/file</destination>
 			<type>folder</type>
 			<uuidstructure>13131ead-700c-11db-85b5-e907d95948a7</uuidstructure>
