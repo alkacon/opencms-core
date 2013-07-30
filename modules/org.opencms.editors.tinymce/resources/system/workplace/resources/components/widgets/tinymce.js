@@ -51,7 +51,7 @@ function initTinyMCE(options){
             remove_script_host: false,
             mode: "exact",
             theme: "modern",
-            file_browser_callback: 'cmsTinyMceFileBrowser',
+            file_browser_callback: cmsTinyMceFileBrowser,
             setup: function(editor) { setupTinyMCE(editor); },
             plugins: "autolink,lists,pagebreak,layer,table,save,hr,image,link,emoticons,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,template,wordcount,advlist,-opencms",
             menubar: false,

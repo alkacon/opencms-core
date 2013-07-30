@@ -98,7 +98,8 @@ public class CmsHtmlWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
         try {
             var config = @org.opencms.gwt.client.util.CmsDomUtil::parseJSON(Ljava/lang/String;)(configuration);
             options = {
-                skin_variant : 'contenteditor'
+                // the browser call back function is defined in /system/workplace/editors/tinymce/opencms_plugin.js
+                file_browser_callback : $wnd.cmsTinyMceFileBrowser
             };
             if (config.language) {
                 options.language = config.language;
@@ -161,7 +162,7 @@ public class CmsHtmlWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
                     linkgallery : "OcmsLinkGallery",
                     htmlgallery : "OcmsHtmlGallery",
                     tablegallery : "OcmsTableGallery",
-                    link : "oc-link"
+                    link : "link"
                 };
 
                 var toolbarGroup = "";

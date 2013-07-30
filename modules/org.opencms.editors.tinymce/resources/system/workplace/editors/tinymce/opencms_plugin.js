@@ -200,7 +200,13 @@ function createGalleryDialogUrl(path, typesParam, integrator) {
            // nothing to do
        }
    }
-   var searchParam = "&<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_RESOURCE_TYPES%>="+typesParam+"&<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_CURRENT_ELEMENT%>="+ ( path==null ? "" : path)+"&__locale="+elementLanguage;
+   var searchParam;
+   if (typesParam=="all"){
+       searchParam="&<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_TAB_IDS%>=cms_tab_types,cms_tab_sitemap,cms_tab_vfstree,cms_tab_search,cms_tab_results";
+   }else{
+       searchParam="&<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_RESOURCE_TYPES%>="+typesParam;
+   }
+   searchParam+="&<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_CURRENT_ELEMENT%>="+ ( path==null ? "" : path)+"&__locale="+elementLanguage;
    return "<%= cms.link("/system/modules/org.opencms.ade.galleries/gallery.jsp") %>?<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_GALLERY_MODE+"="+org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode.editor.name() %>" + searchParam + resParam + integratorParam + debugParam;
 }
 
@@ -445,22 +451,16 @@ tinymce.create('tinymce.opencms', {
 
 window.cmsTinyMceFileBrowser = function(fieldId, currentValue, browserType, targetWindow) {
    var editor = tinymce.activeEditor;
+   var resourceType="all";
    if (browserType == "image") {
-      var integrator = "/system/workplace/editors/tinymce/filebrowser_gallery_integrator.js"
-      var url = createGalleryDialogUrl(currentValue, "image", integrator);
-      url = url + "&hideformats=true";
-   } else {
-      var url = "<cms:link>/system/workplace/views/explorer/tree_fs.jsp?type=pagelink&includefiles=true</cms:link>"; 
-      var integrator = "<cms:link>/system/workplace/editors/tinymce/filebrowser_integrator.js</cms:link>";
-      var url = "<cms:link>/system/workplace/views/explorer/tree_fs.jsp?type=pagelink&includefiles=true</cms:link>";
-      url = url + "&integrator=" + integrator;
-   }
-   var width = 685;
-   var height = 502;
+       resourceType=browserType;
+   } 
+   var integrator = "/system/workplace/editors/tinymce/filebrowser_gallery_integrator.js"
+   var url = createGalleryDialogUrl(currentValue, resourceType, integrator);
+   url = url + "&hideformats=true";
    editor.cmsTargetWindow = targetWindow;
    editor.cmsFieldId = fieldId; 
-   editor.windowManager.open({url: url, width : width, height: height, inline: "yes"}, {});
-   
+   doShowCmsGalleries(editor, url);
 }
 
 tinymce.PluginManager.add('opencms', tinymce.opencms);

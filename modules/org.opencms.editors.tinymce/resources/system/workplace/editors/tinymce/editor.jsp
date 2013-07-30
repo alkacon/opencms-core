@@ -120,12 +120,7 @@ grp = new StringBuilder() ;
 if (options.showElement("option.links", displayOptions)) {
 
 	// determine if the local link button should be shown
-	if (options.showElement("option.link", displayOptions)) {
-		grp.append(",oc-link");
-	}
-
-	// determine if the external link button should be shown
-	if (options.showElement("option.extlink", displayOptions)) {
+	if (options.showElement("option.link", displayOptions)||options.showElement("option.extlink", displayOptions)) {
 		grp.append(",link");
 	}
 
@@ -749,7 +744,7 @@ tinyMCE.init({
     elements : "tinymce_content",
     theme : "modern",
     plugins : "autolink,lists,spellchecker,pagebreak,layer,table,save,hr,image,link,emoticons,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,template,wordcount,-opencms",
-    file_browser_callback : 'cmsTinyMceFileBrowser',
+    file_browser_callback : cmsTinyMceFileBrowser,
     entity_encoding: "raw",
 
     // Theme options
