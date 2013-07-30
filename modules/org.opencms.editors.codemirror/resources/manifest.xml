@@ -440,36 +440,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/editors/codemirror/dist/.gitattributes</source>
-			<destination>system/workplace/resources/editors/codemirror/dist/.gitattributes</destination>
-			<type>plain</type>
-			<uuidstructure>fc640f84-dfca-11e2-8921-170bfb738a71</uuidstructure>
-			<uuidresource>fc640f85-dfca-11e2-8921-170bfb738a71</uuidresource>
-			<datelastmodified>Fri, 28 Jun 2013 08:16:08 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 28 Jun 2013 08:16:08 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/editors/codemirror/dist/.gitignore</source>
-			<destination>system/workplace/resources/editors/codemirror/dist/.gitignore</destination>
-			<type>plain</type>
-			<uuidstructure>fc68ca76-dfca-11e2-8921-170bfb738a71</uuidstructure>
-			<uuidresource>fc68ca77-dfca-11e2-8921-170bfb738a71</uuidresource>
-			<datelastmodified>Fri, 28 Jun 2013 08:16:08 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 28 Jun 2013 08:16:08 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>system/workplace/resources/editors/codemirror/dist/.travis.yml</source>
 			<destination>system/workplace/resources/editors/codemirror/dist/.travis.yml</destination>
 			<type>plain</type>
