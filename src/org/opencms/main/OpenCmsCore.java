@@ -63,6 +63,7 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsI18nInfo;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.i18n.CmsVfsBundleManager;
 import org.opencms.importexport.CmsImportExportManager;
 import org.opencms.jsp.util.CmsErrorBean;
 import org.opencms.loader.CmsResourceManager;
@@ -1292,6 +1293,8 @@ public final class OpenCmsCore {
                 m_workflowManager.setParameters(new HashMap<String, String>());
             }
             m_workflowManager.initialize(adminCms);
+
+            (new CmsVfsBundleManager(adminCms)).reload();
         } catch (CmsException e) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_MANAGERS_0), e);
         }

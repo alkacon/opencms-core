@@ -16,6 +16,12 @@
 			<ranking>20</ranking>
 			<mapto>plain</mapto>
 		</type>
+		<type>
+			<name>propertyvfsbundle</name>
+			<ranking>20</ranking>
+			<mapto>plain</mapto>
+		</type>
+		
 	</resourcetypes>
 	<useragents>
 		<agent>^Mozilla/[45]\.0 \(compatible; MSIE .*\)$</agent> 
