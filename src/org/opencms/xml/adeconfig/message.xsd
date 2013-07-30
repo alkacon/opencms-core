@@ -1,0 +1,26 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+    <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
+    <xsd:element name="Messages" type="OpenCmsMessages" />
+    
+    <xsd:complexType name="OpenCmsMessages">
+        <xsd:sequence>
+            <xsd:element name="Message" type="OpenCmsMessage" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="OpenCmsMessage">
+        <xsd:sequence>
+        	<xsd:element name="Key" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
+        	<xsd:element name="Value" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
+        </xsd:sequence>
+        <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
+    </xsd:complexType>
+   <xsd:annotation>
+        <xsd:appinfo>
+        <layouts>
+        	<layout element="Key" display="column"  widget="StringWidget"/>
+        	<layout element="Value" display="column" widget="StringWidget" />
+        </layouts>
+        </xsd:appinfo> 
+    </xsd:annotation>    
+</xsd:schema>

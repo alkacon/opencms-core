@@ -164,7 +164,7 @@ public final class CmsResourceBundleLoader {
     private static BundleKey m_lookupKey = new BundleKey();
 
     /**  The permanent list resource bundle cache. */
-    private static Map<String, CmsListResourceBundle> m_permanentCache;
+    private static Map<String, I_CmsResourceBundle> m_permanentCache;
 
     /** Singleton cache entry to represent previous failed lookups. */
     private static final ResourceBundle NULL_ENTRY = new CmsListResourceBundle();
@@ -184,7 +184,7 @@ public final class CmsResourceBundleLoader {
      * @param locale the locale
      * @param bundle the bundle to cache
      */
-    public static synchronized void addBundleToCache(String baseName, Locale locale, CmsListResourceBundle bundle) {
+    public static synchronized void addBundleToCache(String baseName, Locale locale, I_CmsResourceBundle bundle) {
 
         String key = baseName;
         if (locale != null) {
@@ -216,8 +216,9 @@ public final class CmsResourceBundleLoader {
      * Flushes all variations for the provided bundle from the cache.<p>
      * 
      * @param baseName the bundle base name to flush the variations for
+     * @param flushPermanent if true, the cache for additional message bundles will be flushed, too
      */
-    public static synchronized void flushBundleCache(String baseName) {
+    public static synchronized void flushBundleCache(String baseName, boolean flushPermanent) {
 
         if (baseName != null) {
             // first check and clear the bundle cache
@@ -233,19 +234,21 @@ public final class CmsResourceBundleLoader {
                 // switch caches if only if at least one entry was removed
                 m_bundleCache = bundleCacheNew;
             }
-            // now check and clear the permanent cache
-            HashMap<String, CmsListResourceBundle> permanentCacheNew = new HashMap<String, CmsListResourceBundle>(
-                m_permanentCache.size());
-            for (Map.Entry<String, CmsListResourceBundle> entry : m_permanentCache.entrySet()) {
-                String key = entry.getKey();
-                if (!(key.startsWith(baseName) && ((key.length() == baseName.length()) || (key.charAt(baseName.length()) == '_')))) {
-                    // entry has a different base name, keep it
-                    permanentCacheNew.put(entry.getKey(), entry.getValue());
+            if (flushPermanent) {
+                // now check and clear the permanent cache
+                HashMap<String, I_CmsResourceBundle> permanentCacheNew = new HashMap<String, I_CmsResourceBundle>(
+                    m_permanentCache.size());
+                for (Map.Entry<String, I_CmsResourceBundle> entry : m_permanentCache.entrySet()) {
+                    String key = entry.getKey();
+                    if (!(key.startsWith(baseName) && ((key.length() == baseName.length()) || (key.charAt(baseName.length()) == '_')))) {
+                        // entry has a different base name, keep it
+                        permanentCacheNew.put(entry.getKey(), entry.getValue());
+                    }
                 }
-            }
-            if (permanentCacheNew.size() < m_permanentCache.size()) {
-                // switch caches if only if at least one entry was removed
-                m_permanentCache = permanentCacheNew;
+                if (permanentCacheNew.size() < m_permanentCache.size()) {
+                    // switch caches if only if at least one entry was removed
+                    m_permanentCache = permanentCacheNew;
+                }
             }
         }
     }
@@ -300,7 +303,7 @@ public final class CmsResourceBundleLoader {
             m_lastDefaultLocale = defaultLocale;
             if (m_permanentCache == null) {
                 // the permanent cache is not cleared after the default locale changes
-                m_permanentCache = new HashMap<String, CmsListResourceBundle>();
+                m_permanentCache = new HashMap<String, I_CmsResourceBundle>();
             }
         }
 
@@ -380,9 +383,9 @@ public final class CmsResourceBundleLoader {
                 }
             } else {
                 // no found with class loader, so try the injected list cache
-                CmsListResourceBundle listBundle = m_permanentCache.get(localizedName);
-                if (listBundle != null) {
-                    result = listBundle.getClone();
+                I_CmsResourceBundle additionalBundle = m_permanentCache.get(localizedName);
+                if (additionalBundle != null) {
+                    result = additionalBundle.getClone();
                 }
             }
         } catch (IOException ex) {

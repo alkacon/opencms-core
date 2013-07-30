@@ -59,6 +59,15 @@ public class CmsPropertyResourceBundle extends PropertyResourceBundle implements
     }
 
     /**
+     * @see org.opencms.i18n.I_CmsResourceBundle#getClone()
+     */
+    public I_CmsResourceBundle getClone() {
+
+        // doesn't need to be cloned
+        return this;
+    }
+
+    /**
      * @see java.util.ResourceBundle#getLocale()
      */
     @Override

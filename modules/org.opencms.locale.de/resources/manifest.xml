@@ -3302,7 +3302,34 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-		
+		<file>
+			<destination>system/workplace/locales/de/messages/org/opencms/xml/adeconfig</destination>
+			<type>folder</type>
+			<uuidstructure>e342f53c-95db-42df-93a7-05abc5881179</uuidstructure>
+			<datelastmodified>Thu, 05 May 2011 13:45:03 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 13:45:03 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/messages/org/opencms/xml/adeconfig/xmlvfsbundle_messages_de.properties</source>
+			<destination>system/workplace/locales/de/messages/org/opencms/xml/adeconfig/xmlvfsbundle_messages_de.properties</destination>
+			<type>plain</type>
+			<uuidstructure>e855b3d6-75ca-4ba2-a9d1-3700cb1a68f3</uuidstructure>
+			<uuidresource>fca1e0b9-9717-4a2a-b99c-712aafc5d60e</uuidresource>
+			<datelastmodified>Thu, 05 May 2011 14:43:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 05 May 2011 13:45:13 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
 		<file>
 			<destination>system/workplace/locales/de/messages/org/opencms/workflow</destination>
 			<type>folder</type>

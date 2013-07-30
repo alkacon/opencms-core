@@ -2196,7 +2196,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 m_messageBundleNames.add(messageBundleName);
             }
             // clear the cached resource bundles for this bundle
-            CmsResourceBundleLoader.flushBundleCache(messageBundleName);
+            CmsResourceBundleLoader.flushBundleCache(messageBundleName, false);
 
         } else {
             // multiple "resourcebundles" node
@@ -2212,7 +2212,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                     m_messageBundleNames.add(propertyBundleName);
                 }
                 // clear the cached resource bundles for this bundle
-                CmsResourceBundleLoader.flushBundleCache(propertyBundleName);
+                CmsResourceBundleLoader.flushBundleCache(propertyBundleName, false);
             }
 
             // get an iterator for all "xmlbundle" subnodes
@@ -2226,7 +2226,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                     m_messageBundleNames.add(xmlBundleName);
                 }
                 // clear the cached resource bundles for this bundle
-                CmsResourceBundleLoader.flushBundleCache(xmlBundleName);
+                CmsResourceBundleLoader.flushBundleCache(xmlBundleName, true);
                 Iterator<Element> bundles = CmsXmlGenericWrapper.elementIterator(xmlbundle, APPINFO_BUNDLE);
                 while (bundles.hasNext()) {
                     // iterate all "bundle" elements in the "xmlbundle" node

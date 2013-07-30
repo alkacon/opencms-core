@@ -204,6 +204,26 @@
 				<param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/inheritance_config.xsd
 				</param>
 			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
+				name="xmlvfsbundle" id="306">
+				<properties>
+					<property>
+						<name>search.exclude</name>
+						<value>all</value>
+					</property>
+				</properties>
+				<param name="schema">/system/modules/org.opencms.ade.config/schemas/xmlvfsbundle.xsd</param>
+			</type>
+			
+			<type class="org.opencms.file.types.CmsResourceTypePlain"
+				name="propertyvfsbundle" id="307">
+				<properties>
+					<property>
+						<name>search.exclude</name>
+						<value>all</value>
+					</property>
+				</properties>
+			</type>
 		</resourcetypes>
 		<explorertypes>
 			<explorertype name="subsitemap" key="fileicon.subsitemap"
@@ -525,6 +545,27 @@
 					uri="newresource_xmlcontent.jsp?newresourcetype=inheritance_config"
 					order="28" autosetnavigation="false" autosettitle="false"
 					info="desc.inheritance_config" />
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER"
+						permissions="+r+v+w+c" />
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="xmlvfsbundle" key="fileicon.xmlvfsbundle"
+				reference="xmlcontent">
+				<newresource page="otheroptions"
+					uri="newresource_xmlcontent.jsp?newresourcetype=xmlvfsbundle"
+					order="28" autosetnavigation="false" autosettitle="false"
+					info="desc.xmlvfsbundle" />
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER"
+						permissions="+r+v+w+c" />
+				</accesscontrol>
+			</explorertype>
+			
+			<explorertype name="propertyvfsbundle" key="fileicon.propertyvfsbundle"
+				reference="plain">
+				<newresource page="otheroptions" uri="newresource.jsp?newresourcetype=propertyvfsbundle"
+					order="30" autosetnavigation="false" autosettitle="false" info="desc.propertyvfsbundle" />
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER"
 						permissions="+r+v+w+c" />

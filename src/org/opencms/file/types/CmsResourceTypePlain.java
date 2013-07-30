@@ -52,13 +52,11 @@ import java.util.Set;
  */
 public class CmsResourceTypePlain extends A_CmsResourceType {
 
-    /** Indicates that the static configuration of the resource type has been frozen. */
-    private static boolean m_staticFrozen;
-
-    /** The static type id of this resource type. */
+    /** Static type id. */
     private static int m_staticTypeId;
 
     /** The type id of this resource type. */
+    @SuppressWarnings("unused")
     private static final int RESOURCE_TYPE_ID = 1;
 
     /** The name of this resource type. */
@@ -73,8 +71,6 @@ public class CmsResourceTypePlain extends A_CmsResourceType {
     public CmsResourceTypePlain() {
 
         super();
-        m_typeId = RESOURCE_TYPE_ID;
-        m_typeName = RESOURCE_TYPE_NAME;
     }
 
     /**
@@ -151,30 +147,10 @@ public class CmsResourceTypePlain extends A_CmsResourceType {
     @Override
     public void initConfiguration(String name, String id, String className) throws CmsConfigurationException {
 
-        if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) && m_staticFrozen) {
-            // configuration already frozen
-            throw new CmsConfigurationException(Messages.get().container(
-                Messages.ERR_CONFIG_FROZEN_3,
-                this.getClass().getName(),
-                getStaticTypeName(),
-                new Integer(getStaticTypeId())));
+        super.initConfiguration(name, id, className);
+        if (name.equals(RESOURCE_TYPE_NAME)) {
+            m_staticTypeId = m_typeId;
         }
-
-        if (!RESOURCE_TYPE_NAME.equals(name)) {
-            // default resource type MUST have default name
-            throw new CmsConfigurationException(Messages.get().container(
-                Messages.ERR_INVALID_RESTYPE_CONFIG_NAME_3,
-                this.getClass().getName(),
-                RESOURCE_TYPE_NAME,
-                name));
-        }
-
-        // freeze the configuration
-        m_staticFrozen = true;
-
-        super.initConfiguration(RESOURCE_TYPE_NAME, id, className);
-        // set static members with values from the configuration        
-        m_staticTypeId = m_typeId;
     }
 
     /**
