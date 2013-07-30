@@ -1294,7 +1294,8 @@ public final class OpenCmsCore {
             }
             m_workflowManager.initialize(adminCms);
 
-            (new CmsVfsBundleManager(adminCms)).reload();
+            CmsVfsBundleManager vfsBundleManager = new CmsVfsBundleManager(adminCms);
+            vfsBundleManager.reload(true);
         } catch (CmsException e) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_MANAGERS_0), e);
         }
