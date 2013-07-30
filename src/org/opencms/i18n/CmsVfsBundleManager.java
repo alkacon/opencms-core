@@ -61,9 +61,9 @@ public class CmsVfsBundleManager {
 
             if (event.getType() == I_CmsEventListener.EVENT_PUBLISH_PROJECT) {
                 try {
-                    reload();
+                    reload(false);
                 } catch (Exception e) {
-                    LOG.error(e.getLocalizedMessage(), e);
+                    logError(e);
                 }
             }
         }
@@ -131,6 +131,9 @@ public class CmsVfsBundleManager {
     /** The event listener used by this class. */
     private Listener m_eventListener = new Listener();
 
+    /** True if errors while reading the bundles should be logged to the error channel rather than the info channel. */
+    private boolean m_logToErrorChannel;
+
     /**
      * Creates a new instance.<p>
      *  
@@ -171,9 +174,12 @@ public class CmsVfsBundleManager {
 
     /**
      * Re-initializes the resource bundles.<p>
+     * 
+     * @param isStartup true when this is called during startup 
      */
-    public void reload() {
+    public void reload(boolean isStartup) {
 
+        m_logToErrorChannel = isStartup;
         flushBundles();
         try {
             int xmlType = OpenCms.getResourceManager().getResourceType(TYPE_XML_BUNDLE).getTypeId();
@@ -182,7 +188,7 @@ public class CmsVfsBundleManager {
                 addXmlBundle(xmlBundle);
             }
         } catch (Exception e) {
-            LOG.error(e.getLocalizedMessage(), e);
+            logError(e);
         }
         try {
             int propType = OpenCms.getResourceManager().getResourceType(TYPE_PROPERTIES_BUNDLE).getTypeId();
@@ -194,7 +200,21 @@ public class CmsVfsBundleManager {
                 addPropertyBundle(propertyBundle);
             }
         } catch (Exception e) {
+            logError(e);
+        }
+    }
+
+    /**
+     * Logs an exception that occurred.<p>
+     * 
+     * @param e the exception to log 
+     */
+    protected void logError(Exception e) {
+
+        if (m_logToErrorChannel) {
             LOG.error(e.getLocalizedMessage(), e);
+        } else {
+            LOG.info(e.getLocalizedMessage(), e);
         }
     }
 
