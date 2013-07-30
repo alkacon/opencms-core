@@ -85,6 +85,9 @@ public class CmsGalleryDataBean implements IsSerializable {
     /** The start up tab id. */
     private GalleryTabId m_startTab;
 
+    /** The configured tabs. */
+    private GalleryTabId[] m_tabIds;
+
     /** A token used to determine which tree state is loaded/saved . */
     private String m_treeToken;
 
@@ -217,6 +220,16 @@ public class CmsGalleryDataBean implements IsSerializable {
     public GalleryTabId getStartTab() {
 
         return m_startTab;
+    }
+
+    /**
+     * Returns the configured tabs.<p>
+     *
+     * @return the configured tabs
+     */
+    public GalleryTabId[] getTabIds() {
+
+        return m_tabIds;
     }
 
     /**
@@ -378,6 +391,16 @@ public class CmsGalleryDataBean implements IsSerializable {
     public void setStartTab(GalleryTabId startTab) {
 
         m_startTab = startTab;
+    }
+
+    /**
+     * Sets the tab id's.<p>
+     *
+     * @param tabIds the tab id's to set
+     */
+    public void setTabIds(GalleryTabId[] tabIds) {
+
+        m_tabIds = tabIds;
     }
 
     /**

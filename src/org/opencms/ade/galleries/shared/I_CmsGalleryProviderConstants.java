@@ -43,7 +43,7 @@ public interface I_CmsGalleryProviderConstants {
         ade(GalleryTabId.cms_tab_types, GalleryTabId.cms_tab_galleries, GalleryTabId.cms_tab_categories,
         GalleryTabId.cms_tab_search, GalleryTabId.cms_tab_results),
 
-        /** The FCKEditor mode. */
+        /** The wysiwyg editor mode. */
         editor(GalleryTabId.cms_tab_galleries, GalleryTabId.cms_tab_categories, GalleryTabId.cms_tab_search,
         GalleryTabId.cms_tab_results),
 

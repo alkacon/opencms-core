@@ -186,6 +186,15 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(galleryTypes)) {
             conf.setGalleryTypes(galleryTypes.split(","));
         }
+        String tabs = getRequest().getParameter(I_CmsGalleryProviderConstants.CONFIG_TAB_IDS);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(tabs)) {
+            String[] tabNames = tabs.split(",");
+            GalleryTabId[] tabIds = new GalleryTabId[tabNames.length];
+            for (int i = 0; i < tabNames.length; i++) {
+                tabIds[i] = GalleryTabId.valueOf(tabNames[i]);
+            }
+            conf.setTabIds(tabIds);
+        }
         CmsGalleryDataBean data = CmsGalleryService.getInitialSettings(getRequest(), conf);
         CmsGallerySearchBean search = null;
         if (GalleryTabId.cms_tab_results.equals(data.getStartTab())) {

@@ -184,6 +184,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             m_searchObject.setScope(m_dialogBean.getScope());
         }
         if (m_dialogBean != null) {
+            m_tabIds = m_dialogBean.getTabIds();
             m_handler.onInitialSearch(m_searchObject, m_dialogBean, this, true);
         }
     }
@@ -235,10 +236,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             }
         };
         initAction.execute();
-        if (m_configuration.getTabIds() != null) {
-            m_tabIds = m_configuration.getTabIds();
-        }
-
+        m_tabIds = m_configuration.getTabIds();
         setShowSiteSelector(m_configuration.isShowSiteSelector());
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_configuration.getStartSite())) {
             setStartSite(m_configuration.getStartSite());
