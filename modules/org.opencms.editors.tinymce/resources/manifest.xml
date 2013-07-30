@@ -557,6 +557,66 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/de.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/de.js</destination>
+			<type>plain</type>
+			<uuidstructure>9efb8a6e-f8ff-11e2-bd1b-000c298a1fde</uuidstructure>
+			<uuidresource>9efb8a6f-f8ff-11e2-bd1b-000c298a1fde</uuidresource>
+			<datelastmodified>Tue, 30 Jul 2013 10:05:54 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 30 Jul 2013 10:05:54 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Language pack - de]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/es.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/es.js</destination>
+			<type>plain</type>
+			<uuidstructure>9f0e9d41-f8ff-11e2-bd1b-000c298a1fde</uuidstructure>
+			<uuidresource>9f0e9d42-f8ff-11e2-bd1b-000c298a1fde</uuidresource>
+			<datelastmodified>Tue, 30 Jul 2013 10:05:54 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 30 Jul 2013 10:05:54 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Language pack - es]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/it.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/it.js</destination>
+			<type>plain</type>
+			<uuidstructure>9f135834-f8ff-11e2-bd1b-000c298a1fde</uuidstructure>
+			<uuidresource>9f135835-f8ff-11e2-bd1b-000c298a1fde</uuidresource>
+			<datelastmodified>Tue, 30 Jul 2013 10:05:54 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 30 Jul 2013 10:05:54 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Language pack - it]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/readme.md</source>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/readme.md</destination>
 			<type>plain</type>
@@ -571,6 +631,26 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[readme]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/ru.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/ru.js</destination>
+			<type>plain</type>
+			<uuidstructure>9f183a37-f8ff-11e2-bd1b-000c298a1fde</uuidstructure>
+			<uuidresource>9f183a38-f8ff-11e2-bd1b-000c298a1fde</uuidresource>
+			<datelastmodified>Tue, 30 Jul 2013 10:05:54 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 30 Jul 2013 10:05:54 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Language pack - ru]]></value>
 				</property>
 			</properties>
 			<relations/>
