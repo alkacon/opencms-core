@@ -947,7 +947,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
             setPositionFixed();
         }
         if (m_useAnimation && !wasAlreadyShowing) {
-            CmsFadeAnimation.fadeIn(getElement(), null, 500);
+            CmsFadeAnimation.fadeIn(getElement(), null, 250);
         }
         if (m_resizeHandlerRegistration == null) {
             m_resizeHandlerRegistration = Window.addResizeHandler(new ResizeHandler() {
