@@ -188,7 +188,11 @@ public class CmsToolbarAllGalleriesMenu extends A_CmsToolbarMenu<CmsContainerpag
 
             }
         };
-        action.execute();
+        if (m_initialized) {
+            openDialog(null);
+        } else {
+            action.execute();
+        }
 
     }
 
