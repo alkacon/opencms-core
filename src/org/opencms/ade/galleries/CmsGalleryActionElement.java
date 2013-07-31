@@ -163,15 +163,13 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
     }
 
     /**
-     * Returns the serialized initial data for gallery dialog depending on the given mode.<p>
+     * Uses the request parameters of the current request to create a gallery configuration object.<p>
      * 
-     * @param galleryMode the gallery mode
+     * @param galleryMode the gallery mode 
      * 
-     * @return the data
-     * 
-     * @throws Exception if something goes wrong
+     * @return the gallery configuration 
      */
-    private String export(GalleryMode galleryMode) throws Exception {
+    private CmsGalleryConfiguration createGalleryConfigurationFromRequest(GalleryMode galleryMode) {
 
         CmsGalleryConfiguration conf = new CmsGalleryConfiguration();
         conf.setGalleryMode(galleryMode);
@@ -195,6 +193,21 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
             }
             conf.setTabIds(tabIds);
         }
+        return conf;
+    }
+
+    /**
+     * Returns the serialized initial data for gallery dialog depending on the given mode.<p>
+     * 
+     * @param galleryMode the gallery mode
+     * 
+     * @return the data
+     * 
+     * @throws Exception if something goes wrong
+     */
+    private String export(GalleryMode galleryMode) throws Exception {
+
+        CmsGalleryConfiguration conf = createGalleryConfigurationFromRequest(galleryMode);
         CmsGalleryDataBean data = CmsGalleryService.getInitialSettings(getRequest(), conf);
         CmsGallerySearchBean search = null;
         if (GalleryTabId.cms_tab_results.equals(data.getStartTab())) {

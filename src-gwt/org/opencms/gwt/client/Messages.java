@@ -550,6 +550,9 @@ public final class Messages {
     public static final String GUI_TOOLBAR_EXIT_0 = "GUI_TOOLBAR_EXIT_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_GALLERY_0 = "GUI_TOOLBAR_GALLERY_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_INFO_0 = "GUI_TOOLBAR_INFO_0";
 
     /** Message constant for key in the resource bundle. */

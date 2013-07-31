@@ -179,6 +179,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
 
         if (m_searchObject == null) {
             m_searchObject = new CmsGallerySearchBean();
+            m_searchObject.setGalleryMode(m_dialogMode);
             m_searchObject.setIgnoreSearchExclude(m_dialogMode != GalleryMode.ade);
             m_searchObject.setLocale(m_dialogBean.getLocale());
             m_searchObject.setScope(m_dialogBean.getScope());
@@ -241,6 +242,20 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_configuration.getStartSite())) {
             setStartSite(m_configuration.getStartSite());
         }
+    }
+
+    /**
+     * Creates a gallery service instance.<p>
+     * 
+     * @return the gallery service instance 
+     */
+    public static I_CmsGalleryServiceAsync createGalleryService() {
+
+        I_CmsGalleryServiceAsync service;
+        service = GWT.create(I_CmsGalleryService.class);
+        String serviceUrl = CmsCoreProvider.get().link("org.opencms.ade.galleries.CmsGalleryService.gwt");
+        ((ServiceDefTarget)service).setServiceEntryPoint(serviceUrl);
+        return service;
     }
 
     /**
@@ -1446,9 +1461,8 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     protected I_CmsGalleryServiceAsync getGalleryService() {
 
         if (m_gallerySvc == null) {
-            m_gallerySvc = GWT.create(I_CmsGalleryService.class);
-            String serviceUrl = CmsCoreProvider.get().link("org.opencms.ade.galleries.CmsGalleryService.gwt");
-            ((ServiceDefTarget)m_gallerySvc).setServiceEntryPoint(serviceUrl);
+            I_CmsGalleryServiceAsync service = createGalleryService();
+            m_gallerySvc = service;
         }
         return m_gallerySvc;
     }

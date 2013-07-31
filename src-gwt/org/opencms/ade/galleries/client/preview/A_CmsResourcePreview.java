@@ -167,6 +167,7 @@ public abstract class A_CmsResourcePreview<T extends CmsResourceInfoBean> implem
                 break;
             case ade:
             case view:
+            case adeView:
             default:
                 //nothing to do here, should not be called
                 break;

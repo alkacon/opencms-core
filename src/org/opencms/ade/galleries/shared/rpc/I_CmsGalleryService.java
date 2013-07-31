@@ -63,6 +63,13 @@ public interface I_CmsGalleryService extends RemoteService {
     void deleteResource(String resourcePath) throws CmsRpcException;
 
     /**
+     * Loads the gallery configuration for the adeView mode.<p>
+     * 
+     * @return the gallery configuration
+     */
+    CmsGalleryConfiguration getAdeViewModeConfiguration();
+
+    /**
      * Returns the available galleries depending on the given resource types.<p>
      * 
      * @param resourceTypes the resource types

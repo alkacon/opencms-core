@@ -61,6 +61,13 @@ public interface I_CmsGalleryServiceAsync {
     void deleteResource(String resourcePath, AsyncCallback<Void> callback);
 
     /**
+     * Loads the gallery configuration for the adeView mode.<p>
+     * 
+     * @param callback the callback for the result 
+     */
+    void getAdeViewModeConfiguration(AsyncCallback<CmsGalleryConfiguration> callback);
+
+    /**
      * Returns the available galleries depending on the given resource types.<p>
      * 
      * @param resourceTypes the resource types

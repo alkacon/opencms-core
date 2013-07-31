@@ -300,9 +300,9 @@ public class CmsWorkplaceSettings {
      * @param galleryTypeId the type id of the gallery
      * @return the last saved gallery for the given gallery type id
      */
-    public String getLastUsedGallery(int galleryTypeId) {
+    public String getLastUsedGallery(String galleryTypeId) {
 
-        return m_lastUsedGalleries.get(String.valueOf(galleryTypeId));
+        return m_lastUsedGalleries.get(galleryTypeId);
     }
 
     /**
@@ -632,9 +632,9 @@ public class CmsWorkplaceSettings {
      * @param galleryTypeId the type id of the gallery as key
      * @param gallerypath the resourcepath of the gallery
      */
-    public void setLastUsedGallery(int galleryTypeId, String gallerypath) {
+    public void setLastUsedGallery(String galleryTypeId, String gallerypath) {
 
-        m_lastUsedGalleries.put(String.valueOf(galleryTypeId), gallerypath);
+        m_lastUsedGalleries.put(galleryTypeId, gallerypath);
     }
 
     /**

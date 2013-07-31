@@ -33,6 +33,7 @@ import org.opencms.ade.containerpage.client.ui.CmsToolbarClipboardMenu;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarEditButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarElementInfoButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarGalleryMenu;
+import org.opencms.ade.containerpage.client.ui.CmsToolbarAllGalleriesMenu;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarInfoButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarMoveButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarPublishButton;
@@ -101,6 +102,9 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
     /** Add menu. */
     private CmsToolbarGalleryMenu m_add;
+
+    /** The button for the 'complete galleries' dialog. */
+    private CmsToolbarAllGalleriesMenu m_allGalleries;
 
     /** Add to favorites button. */
     private CmsAddToFavoritesButton m_addToFavorites;
@@ -422,6 +426,10 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         m_add.addClickHandler(clickHandler);
         m_toolbar.addLeft(m_add);
 
+        m_allGalleries = new CmsToolbarAllGalleriesMenu(containerpageHandler, dndHandler);
+        m_allGalleries.addClickHandler(clickHandler);
+        m_toolbar.addLeft(m_allGalleries);
+
         m_elementsInfo = new CmsToolbarElementInfoButton(containerpageHandler, controller);
         m_elementsInfo.addClickHandler(clickHandler);
         m_toolbar.addLeft(m_elementsInfo);
@@ -535,18 +543,18 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
      * Exports the openMessageDialog method to the page context.<p>
      */
     private native void exportStacktraceDialogMethod() /*-{
-        $wnd.__openStacktraceDialog = function(event) {
-            event = (event) ? event : ((window.event) ? window.event : "");
-            var elem = (event.target) ? event.target : event.srcElement;
-            if (elem != null) {
-                var children = elem.getElementsByTagName("span");
-                if (children.length > 0) {
-                    var title = children[0].getAttribute("title");
-                    var content = children[0].innerHTML;
-                    @org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
-                }
+      $wnd.__openStacktraceDialog = function(event) {
+         event = (event) ? event : ((window.event) ? window.event : "");
+         var elem = (event.target) ? event.target : event.srcElement;
+         if (elem != null) {
+            var children = elem.getElementsByTagName("span");
+            if (children.length > 0) {
+               var title = children[0].getAttribute("title");
+               var content = children[0].innerHTML;
+               @org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
             }
-        }
+         }
+      }
     }-*/;
 
 }

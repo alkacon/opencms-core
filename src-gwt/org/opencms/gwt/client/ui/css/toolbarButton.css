@@ -47,6 +47,14 @@
     gwt-image: "copyLocaleBigIconActive";
 }
 
+@sprite .cmsState-up-disabled .toolbarGallery, .cmsState-down-disabled .toolbarGallery {
+	gwt-image: "galleryBigIcon";
+}
+@sprite .cmsState-up .toolbarGallery, .cmsState-up-hovering .toolbarGallery, .cmsState-down-hovering .toolbarGallery, .cmsState-down .toolbarGallery {
+    gwt-image: "galleryBigIcon";
+}
+
+
 @sprite .cmsState-up-disabled .toolbarClipboard, .cmsState-down-disabled .toolbarClipboard{
 	gwt-image: "clipboardBigIconDeactivated";
 }

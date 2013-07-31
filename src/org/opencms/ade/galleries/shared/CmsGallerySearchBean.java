@@ -27,6 +27,7 @@
 
 package org.opencms.ade.galleries.shared;
 
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.util.CmsStringUtil;
@@ -78,6 +79,9 @@ public class CmsGallerySearchBean implements IsSerializable {
 
     /** The list of selected galleries ids (path). */
     private List<String> m_galleries = new ArrayList<String>();
+
+    /** The gallery mode. */
+    private GalleryMode m_galleryMode;
 
     /** Indicates the search exclude property should be ignored. */
     private boolean m_ignoreSearchExclude;
@@ -174,6 +178,7 @@ public class CmsGallerySearchBean implements IsSerializable {
         setScope(searchObj.getScope());
         setIncludeExpired(searchObj.isIncludeExpired());
         setIgnoreSearchExclude(searchObj.isIgnoreSearchExclude());
+        setGalleryMode(searchObj.getGalleryMode());
     }
 
     /**
@@ -334,6 +339,16 @@ public class CmsGallerySearchBean implements IsSerializable {
     public List<String> getGalleries() {
 
         return m_galleries;
+    }
+
+    /**
+     * Gets the gallery mode.<p>
+     * 
+     * @return the gallery mode 
+     */
+    public GalleryMode getGalleryMode() {
+
+        return m_galleryMode;
     }
 
     /**
@@ -677,6 +692,16 @@ public class CmsGallerySearchBean implements IsSerializable {
     public void setGalleries(List<String> galleries) {
 
         m_galleries = galleries;
+    }
+
+    /**
+     * Sets the gallery mode.<p>
+     * 
+     * @param galleryMode the gallery mode to set 
+     */
+    public void setGalleryMode(GalleryMode galleryMode) {
+
+        m_galleryMode = galleryMode;
     }
 
     /**

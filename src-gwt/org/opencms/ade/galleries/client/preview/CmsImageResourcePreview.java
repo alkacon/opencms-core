@@ -234,6 +234,7 @@ public final class CmsImageResourcePreview extends A_CmsResourcePreview<CmsImage
                 break;
             case ade:
             case view:
+            case adeView:
             default:
                 //nothing to do here, should not be called
                 break;
@@ -285,6 +286,7 @@ public final class CmsImageResourcePreview extends A_CmsResourcePreview<CmsImage
                 break;
             case ade:
             case view:
+            case adeView:
             default:
                 //nothing to do here, should not be called
                 break;

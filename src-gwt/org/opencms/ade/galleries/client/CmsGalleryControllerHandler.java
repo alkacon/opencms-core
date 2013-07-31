@@ -111,6 +111,7 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
                 break;
             case ade:
             case view:
+            case adeView:
             default:
                 break;
         }
@@ -478,7 +479,7 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
      */
     protected native String getCloseLink() /*-{
 
-        return $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::ATTR_CLOSE_LINK];
+      return $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::ATTR_CLOSE_LINK];
     }-*/;
 
     /**

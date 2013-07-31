@@ -158,6 +158,7 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
                 break;
             case ade:
             case view:
+            case adeView:
             default:
                 break;
         }
