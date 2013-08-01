@@ -587,7 +587,11 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                         }
                         result.setTypes(types);
                         result.setLocale(data.getLocale());
-                        result.setScope(CmsGallerySearchScope.everything);
+                        CmsGallerySearchScope scope = data.getScope();
+                        if (scope == null) {
+                            scope = OpenCms.getWorkplaceManager().getGalleryDefaultScope();
+                        }
+                        result.setScope(scope);
                         result = search(result);
                     }
                     result.setSitemapPreloadData(sitemapPreloadData);
@@ -1906,7 +1910,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         }
         params.setSortOrder(sortOrder);
         if (searchData.getScope() == null) {
-            params.setScope(CmsGallerySearchScope.everything);
+            params.setScope(OpenCms.getWorkplaceManager().getGalleryDefaultScope());
         } else {
             params.setScope(searchData.getScope());
         }

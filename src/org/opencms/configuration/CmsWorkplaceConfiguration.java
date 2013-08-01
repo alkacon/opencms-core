@@ -516,6 +516,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     /** The name of the xmlcontentautocorrection node. */
     public static final String N_XMLCONTENTAUTOCORRECTION = "xmlcontentautocorrection";
 
+    /** Node name. */
+    private static final String N_GALLERY_DEFAULT_SCOPE = "gallery-default-scope";
+
     /** The configured workplace manager. */
     private CmsWorkplaceManager m_workplaceManager;
 
@@ -854,6 +857,8 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
             "*/" + N_WORKPLACE + "/" + N_SYNCHRONIZATION + "/" + N_EXCLUDEPATTERN,
             "addSynchronizeExcludePattern",
             0);
+
+        digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_GALLERY_DEFAULT_SCOPE, "setGalleryDefaultScope", 0);
 
         digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_USER_LISTS, "setUserListMode", 1);
         digester.addCallParam("*/" + N_WORKPLACE + "/" + N_USER_LISTS, 0, A_MODE);
@@ -1471,6 +1476,12 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         if (keepAlive != null) {
             workplaceElement.addElement(N_KEEP_ALIVE).setText(keepAlive.toString());
         }
+
+        String defaultScope = m_workplaceManager.getGalleryDefaultScopeString();
+        if (defaultScope != null) {
+            workplaceElement.addElement(N_GALLERY_DEFAULT_SCOPE).setText(defaultScope);
+        }
+
         // return the configured node
         return workplaceElement;
     }

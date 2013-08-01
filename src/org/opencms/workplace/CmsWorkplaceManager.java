@@ -27,6 +27,7 @@
 
 package org.opencms.workplace;
 
+import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.configuration.CmsDefaultUserSettings;
 import org.opencms.db.CmsExportPoint;
 import org.opencms.db.CmsUserSettings;
@@ -193,6 +194,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
 
     /** The configured workplace galleries. */
     private Map<String, A_CmsAjaxGallery> m_galleries;
+
+    /** The configured gallery default scope. */
+    private String m_galleryDefaultScope;
 
     /** The group translation. */
     private I_CmsGroupNameTranslation m_groupNameTranslation;
@@ -884,6 +888,33 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     public Map<String, A_CmsAjaxGallery> getGalleries() {
 
         return m_galleries;
+    }
+
+    /**
+     * Returns the gallery default scope.<p>
+     * 
+     * @return the gallery default scope 
+     */
+    public CmsGallerySearchScope getGalleryDefaultScope() {
+
+        if (m_galleryDefaultScope == null) {
+            return CmsGallerySearchScope.everything;
+        }
+        try {
+            return CmsGallerySearchScope.valueOf(m_galleryDefaultScope);
+        } catch (Throwable t) {
+            return CmsGallerySearchScope.everything;
+        }
+    }
+
+    /**
+     * Gets the configured gallery default scope as a string.<p>
+     * 
+     * @return the gallery default scope as a string 
+     */
+    public String getGalleryDefaultScopeString() {
+
+        return m_galleryDefaultScope;
     }
 
     /**
@@ -1699,6 +1730,21 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         m_fileViewSettings = fileViewSettings;
         // disallow modifications of this "new original"
         m_fileViewSettings.setFrozen(true);
+    }
+
+    /** 
+     * Sets the gallery default scope.<p>
+     * 
+     * @param galleryDefaultScope the gallery default scope 
+     */
+    public void setGalleryDefaultScope(String galleryDefaultScope) {
+
+        m_galleryDefaultScope = galleryDefaultScope;
+        try {
+            CmsGallerySearchScope.valueOf(galleryDefaultScope);
+        } catch (Throwable t) {
+            LOG.warn(t.getLocalizedMessage(), t);
+        }
     }
 
     /**

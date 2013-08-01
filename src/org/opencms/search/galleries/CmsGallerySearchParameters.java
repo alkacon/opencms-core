@@ -29,6 +29,7 @@ package org.opencms.search.galleries;
 
 import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchParameters;
 import org.opencms.search.fields.CmsSearchField;
@@ -523,7 +524,7 @@ public class CmsGallerySearchParameters {
     public CmsGallerySearchScope getScope() {
 
         if (m_scope == null) {
-            return CmsGallerySearchScope.everything;
+            return OpenCms.getWorkplaceManager().getGalleryDefaultScope();
         }
         return m_scope;
     }

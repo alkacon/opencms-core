@@ -289,7 +289,7 @@ public class CmsWorkplaceSettings {
     public CmsGallerySearchScope getLastSearchScope() {
 
         if (m_scope == null) {
-            return CmsGallerySearchScope.everything;
+            return OpenCms.getWorkplaceManager().getGalleryDefaultScope();
         }
         return m_scope;
     }

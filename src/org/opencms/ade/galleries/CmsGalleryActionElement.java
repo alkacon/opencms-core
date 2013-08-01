@@ -30,7 +30,6 @@ package org.opencms.ade.galleries;
 import org.opencms.ade.galleries.shared.CmsGalleryConfiguration;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
-import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
@@ -217,7 +216,7 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
             // default selected scope option should be the one for which the search has been actually performed 
             data.setScope(search.getScope());
         } else if ((search != null) && (search.getScope() == null)) {
-            data.setScope(CmsGallerySearchScope.everything);
+            data.setScope(OpenCms.getWorkplaceManager().getGalleryDefaultScope());
         }
 
         StringBuffer sb = new StringBuffer();

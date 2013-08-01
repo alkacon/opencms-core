@@ -37,7 +37,8 @@
 	tool-manager?,
 	user-lists?,
 	synchronization?,
-	keep-alive?
+	keep-alive?,
+	gallery-default-scope?
 	)>
 
 <!--
@@ -853,6 +854,8 @@
 <!ATTLIST user-lists mode CDATA #REQUIRED>
 
 <!ELEMENT keep-alive (#PCDATA)>
+
+<!ELEMENT gallery-default-scope (#PCDATA)>
 
 <!--
 # Include the explorer types DTD.
