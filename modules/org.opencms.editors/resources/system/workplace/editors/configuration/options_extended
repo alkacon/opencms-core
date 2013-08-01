@@ -85,6 +85,7 @@ button.acronym=false
 button.advhr=true
 button.attribs=false
 button.blockquote=true
+button.hr=true
 button.cite=false
 button.del=false
 button.image=false

@@ -71,10 +71,6 @@ if(grp.length() > 0){
 //Group
 grp = new StringBuilder() ;
 
-if (options.showElement("button.hr", displayOptions)) {
-	grp.append(",hr");
-}
-
 grp.append(",selectall") ;
 
 if (options.showElement("button.removeformat", displayOptions)) {
@@ -348,6 +344,12 @@ if (options.showElement("text.indent", displayOptions)) {
 if (options.showElement("button.blockquote", CmsStringUtil.TRUE, displayOptions)) {
 	grp.append(",blockquote");
 }
+
+if (options.showElement("button.hr", CmsStringUtil.TRUE, displayOptions)) {
+	grp.append(",hr");
+}
+
+
 
 if(grp.length() > 0){
 	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
