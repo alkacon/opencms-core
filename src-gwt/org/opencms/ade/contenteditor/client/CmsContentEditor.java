@@ -28,7 +28,7 @@
 package org.opencms.ade.contenteditor.client;
 
 import com.alkacon.acacia.client.EditorBase;
-import com.alkacon.acacia.client.HighlightingHandler;
+import com.alkacon.acacia.client.ValueFocusHandler;
 import com.alkacon.acacia.client.I_EntityRenderer;
 import com.alkacon.acacia.client.I_InlineFormParent;
 import com.alkacon.acacia.client.ValidationContext;
@@ -225,7 +225,7 @@ public final class CmsContentEditor extends EditorBase {
      */
     private CmsContentEditor() {
 
-        super((I_CmsContentServiceAsync)GWT.create(I_CmsContentService.class));
+        super((I_CmsContentServiceAsync)GWT.create(I_CmsContentService.class), new CmsDefaultWidgetService());
         m_service = (I_CmsContentServiceAsync)super.getService();
         String serviceUrl = CmsCoreProvider.get().link("org.opencms.ade.contenteditor.CmsContentService.gwt");
         ((ServiceDefTarget)m_service).setServiceEntryPoint(serviceUrl);
@@ -381,16 +381,16 @@ public final class CmsContentEditor extends EditorBase {
      * @param changeScope the change scope
      */
     private static native void addNativeListsner(I_CmsEntityChangeListener changeListener, String changeScope)/*-{
-        var instance = changeListener;
-        var nat = {
-            onChange : function(entity) {
-                instance.@org.opencms.ade.contenteditor.client.I_CmsEntityChangeListener::onEntityChange(Lcom/alkacon/vie/client/Entity;)(entity);
-            }
-        }
-        var method = $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD];
-        if (typeof method == 'function') {
-            method(nat, changeScope);
-        }
+      var instance = changeListener;
+      var nat = {
+         onChange : function(entity) {
+            instance.@org.opencms.ade.contenteditor.client.I_CmsEntityChangeListener::onEntityChange(Lcom/alkacon/vie/client/Entity;)(entity);
+         }
+      }
+      var method = $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD];
+      if (typeof method == 'function') {
+         method(nat, changeScope);
+      }
     }-*/;
 
     /**
@@ -399,12 +399,12 @@ public final class CmsContentEditor extends EditorBase {
      * @return <code>true</code> if the add entity change listener method has been exported
      */
     private static native boolean isObserverExported()/*-{
-        var method = $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD];
-        if (typeof method == 'function') {
-            return true;
-        } else {
-            return false;
-        }
+      var method = $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD];
+      if (typeof method == 'function') {
+         return true;
+      } else {
+         return false;
+      }
     }-*/;
 
     /**
@@ -413,8 +413,8 @@ public final class CmsContentEditor extends EditorBase {
      * @return the current entity
      */
     private static native Entity nativeGetEntity()/*-{
-        return $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::GET_CURRENT_ENTITY_METHOD]
-                ();
+      return $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::GET_CURRENT_ENTITY_METHOD]
+            ();
     }-*/;
 
     /**
@@ -1084,7 +1084,7 @@ public final class CmsContentEditor extends EditorBase {
     void hideHelpBubbles(boolean hide) {
 
         setShowEditorHelp(!hide);
-        HighlightingHandler.getInstance().hideHelpBubbles(RootPanel.get(), hide);
+        ValueFocusHandler.getInstance().hideHelpBubbles(RootPanel.get(), hide);
         if (!hide) {
             m_hideHelpBubblesButton.setTitle(Messages.get().key(Messages.GUI_TOOLBAR_HELP_BUBBLES_SHOWN_0));
         } else {
@@ -1455,14 +1455,14 @@ public final class CmsContentEditor extends EditorBase {
      * Closes the editor.<p>
      */
     private native void closeEditorWidow() /*-{
-        if ($wnd.top.cms_ade_closeEditorDialog) {
-            $wnd.top.cms_ade_closeEditorDialog();
-        } else {
-            var backlink = $wnd[@org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService::PARAM_BACKLINK];
-            if (backlink) {
-                $wnd.top.location.href = backlink;
-            }
-        }
+      if ($wnd.top.cms_ade_closeEditorDialog) {
+         $wnd.top.cms_ade_closeEditorDialog();
+      } else {
+         var backlink = $wnd[@org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService::PARAM_BACKLINK];
+         if (backlink) {
+            $wnd.top.location.href = backlink;
+         }
+      }
     }-*/;
 
     /**
@@ -1496,17 +1496,17 @@ public final class CmsContentEditor extends EditorBase {
      * Exports the add entity change listener method.<p>
      */
     private native void exportObserver()/*-{
-        var self = this;
-        $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD] = function(
-                listener, scope) {
-            var wrapper = {
-                onChange : listener.onChange
-            }
-            self.@org.opencms.ade.contenteditor.client.CmsContentEditor::addChangeListener(Lcom/google/gwt/core/client/JavaScriptObject;Ljava/lang/String;)(wrapper, scope);
-        }
-        $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::GET_CURRENT_ENTITY_METHOD] = function() {
-            return self.@org.opencms.ade.contenteditor.client.CmsContentEditor::getCurrentEntity()();
-        }
+      var self = this;
+      $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD] = function(
+            listener, scope) {
+         var wrapper = {
+            onChange : listener.onChange
+         }
+         self.@org.opencms.ade.contenteditor.client.CmsContentEditor::addChangeListener(Lcom/google/gwt/core/client/JavaScriptObject;Ljava/lang/String;)(wrapper, scope);
+      }
+      $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::GET_CURRENT_ENTITY_METHOD] = function() {
+         return self.@org.opencms.ade.contenteditor.client.CmsContentEditor::getCurrentEntity()();
+      }
     }-*/;
 
     /**
@@ -1668,7 +1668,7 @@ public final class CmsContentEditor extends EditorBase {
             }
         });
         m_hideHelpBubblesButton.setDown(CmsCoreProvider.get().isShowEditorHelp());
-        HighlightingHandler.getInstance().hideHelpBubbles(RootPanel.get(), !CmsCoreProvider.get().isShowEditorHelp());
+        ValueFocusHandler.getInstance().hideHelpBubbles(RootPanel.get(), !CmsCoreProvider.get().isShowEditorHelp());
         if (!CmsCoreProvider.get().isShowEditorHelp()) {
             m_hideHelpBubblesButton.setTitle(Messages.get().key(Messages.GUI_TOOLBAR_HELP_BUBBLES_HIDDEN_0));
         } else {
@@ -1697,8 +1697,8 @@ public final class CmsContentEditor extends EditorBase {
      * @param locale the content locale
      */
     private native void setNativeResourceInfo(String sitePath, String locale)/*-{
-        $wnd._editResource = sitePath;
-        $wnd._editLanguage = locale;
+      $wnd._editResource = sitePath;
+      $wnd._editLanguage = locale;
     }-*/;
 
     /**
