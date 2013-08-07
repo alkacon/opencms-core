@@ -21,7 +21,9 @@
 		<datecreated/>
 		<userinstalled/>
 		<dateinstalled/>
-		<dependencies/>
+		<dependencies>
+			<dependency name="org.opencms.workplace.administration" version="1.0" />
+		</dependencies>
 		<exportpoints>
 			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/lib/" destination="WEB-INF/lib/"/>
 			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/webserver-templates/vhost.template" destination="WEB-INF/server-scripts/vhost.template"/>
