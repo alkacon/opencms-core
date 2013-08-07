@@ -24,6 +24,7 @@
 		<dateinstalled/>
 		<dependencies>
 			<dependency name="org.opencms.workplace.administration" version="1.0.0"/>
+			<dependency name="org.opencms.workplace.tools.database" version="1.0.0"/>
 		</dependencies>
 		<exportpoints>
 			<exportpoint uri="/system/modules/org.opencms.workplace.tools.content/lib/" destination="WEB-INF/lib/"/>
