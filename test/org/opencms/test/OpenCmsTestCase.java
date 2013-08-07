@@ -986,16 +986,19 @@ public class OpenCmsTestCase extends TestCase {
             script = new File(getTestDataPath("scripts/script_default_projects.txt"));
             stream = new FileInputStream(script);
             m_shell.start(stream);
+            stream.close();
 
             if (publish) {
                 // publish the current project by script
                 script = new File(getTestDataPath("scripts/script_publish.txt"));
                 stream = new FileInputStream(script);
                 m_shell.start(stream);
+                stream.close();
                 OpenCms.getPublishManager().waitWhileRunning();
             } else {
                 cms.unlockProject(cms.readProject("_setupProject").getUuid());
             }
+            stream.close();
 
             // switch to the "Offline" project
             cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));

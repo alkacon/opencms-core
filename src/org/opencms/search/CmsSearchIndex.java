@@ -76,8 +76,6 @@ import org.apache.lucene.index.FieldInfo;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.index.LogByteSizeMergePolicy;
-import org.apache.lucene.index.LogMergePolicy;
 import org.apache.lucene.index.StoredFieldVisitor;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queries.BooleanFilter;
@@ -166,16 +164,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     public static final String LUCENE_AUTO_COMMIT = "lucene.AutoCommit";
 
     /** Constant for additional parameter for the Lucene index setting. */
-    public static final String LUCENE_MAX_MERGE_DOCS = "lucene.MaxMergeDocs";
-
-    /** Constant for additional parameter for the Lucene index setting. */
-    public static final String LUCENE_MERGE_FACTOR = "lucene.MergeFactor";
-
-    /** Constant for additional parameter for the Lucene index setting. */
     public static final String LUCENE_RAM_BUFFER_SIZE_MB = "lucene.RAMBufferSizeMB";
-
-    /** Constant for additional parameter for the Lucene index setting. */
-    public static final String LUCENE_USE_COMPOUND_FILE = "lucene.UseCompoundFile";
 
     /** The Lucene Version used to create Query parsers and such. */
     public static final Version LUCENE_VERSION = Version.LUCENE_43;
@@ -282,17 +271,8 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /** The locale of this index. */
     private Locale m_locale;
 
-    /** The Lucene index merge factor setting, see {@link LogMergePolicy#setMaxMergeDocs(int)}. */
-    private Integer m_luceneMaxMergeDocs;
-
-    /** The Lucene index merge factor setting, see {@link LogMergePolicy#setMergeFactor(int)}. */
-    private Integer m_luceneMergeFactor;
-
     /** The Lucene index RAM buffer size, see {@link IndexWriterConfig#setRAMBufferSizeMB(double)}. */
     private Double m_luceneRAMBufferSizeMB;
-
-    /** The Lucene index setting that controls, see {@link LogMergePolicy#setUseCompoundFile(boolean)}.  */
-    private Boolean m_luceneUseCompoundFile;
 
     /** Indicates how many hits are loaded at maximum. */
     private int m_maxHits;
@@ -548,26 +528,13 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             m_checkTimeRange = Boolean.valueOf(value).booleanValue();
         } else if (CmsSearchIndex.EXCERPT.equals(key)) {
             m_createExcerpt = Boolean.valueOf(value).booleanValue();
-        } else if (LUCENE_MAX_MERGE_DOCS.equals(key)) {
-            try {
-                m_luceneMaxMergeDocs = Integer.valueOf(value);
-            } catch (NumberFormatException e) {
-                LOG.error(Messages.get().getBundle().key(Messages.LOG_INVALID_PARAM_3, value, key, getName()));
-            }
-        } else if (LUCENE_MERGE_FACTOR.equals(key)) {
-            try {
-                m_luceneMergeFactor = Integer.valueOf(value);
-            } catch (NumberFormatException e) {
-                LOG.error(Messages.get().getBundle().key(Messages.LOG_INVALID_PARAM_3, value, key, getName()));
-            }
+
         } else if (LUCENE_RAM_BUFFER_SIZE_MB.equals(key)) {
             try {
                 m_luceneRAMBufferSizeMB = Double.valueOf(value);
             } catch (NumberFormatException e) {
                 LOG.error(Messages.get().getBundle().key(Messages.LOG_INVALID_PARAM_3, value, key, getName()));
             }
-        } else if (LUCENE_USE_COMPOUND_FILE.equals(key)) {
-            m_luceneUseCompoundFile = Boolean.valueOf(value);
         }
     }
 
@@ -683,17 +650,8 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         if (!isCreatingExcerpt()) {
             result.put(EXCERPT, String.valueOf(m_createExcerpt));
         }
-        if (m_luceneMaxMergeDocs != null) {
-            result.put(LUCENE_MAX_MERGE_DOCS, String.valueOf(m_luceneMaxMergeDocs));
-        }
-        if (m_luceneMergeFactor != null) {
-            result.put(LUCENE_MERGE_FACTOR, String.valueOf(m_luceneMergeFactor));
-        }
         if (m_luceneRAMBufferSizeMB != null) {
             result.put(LUCENE_RAM_BUFFER_SIZE_MB, String.valueOf(m_luceneRAMBufferSizeMB));
-        }
-        if (m_luceneUseCompoundFile != null) {
-            result.put(LUCENE_USE_COMPOUND_FILE, String.valueOf(m_luceneUseCompoundFile));
         }
         // always write time range check parameter because of logic change in OpenCms 8.0
         result.put(TIME_RANGE, String.valueOf(m_checkTimeRange));
@@ -1964,19 +1922,8 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             }
 
             FSDirectory dir = FSDirectory.open(new File(getPath()));
-
-            LogMergePolicy mergePolicy = new LogByteSizeMergePolicy();
-            if (m_luceneMaxMergeDocs != null) {
-                mergePolicy.setMaxMergeDocs(m_luceneMaxMergeDocs.intValue());
-            }
-            if (m_luceneMergeFactor != null) {
-                mergePolicy.setMergeFactor(m_luceneMergeFactor.intValue());
-            }
-            if (m_luceneUseCompoundFile != null) {
-                mergePolicy.setUseCompoundFile(m_luceneUseCompoundFile.booleanValue());
-            }
-
             IndexWriterConfig indexConfig = new IndexWriterConfig(LUCENE_VERSION, getAnalyzer());
+            //indexConfig.setMergePolicy(mergePolicy);
 
             if (m_luceneRAMBufferSizeMB != null) {
                 indexConfig.setRAMBufferSizeMB(m_luceneRAMBufferSizeMB.doubleValue());
