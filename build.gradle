@@ -1,0 +1,623 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+apply plugin: 'java'
+sourceCompatibility = java_target_version
+version = version_number
+buildDir = 'c:/dev/BuildCms/gradleOut'
+repositories {
+   	mavenCentral()
+}
+
+Properties props = new Properties() 
+props.load(new FileInputStream("$projectDir/modules/all-modules.properties")) 
+project.ext.allModuleNames = props['modules.common.all']
+if (project.hasProperty('external_directories')){
+	Properties externalprops = new Properties() 
+    println 'reading external modules from '+external_directories+'/modules/all-modules.properties'
+	externalprops.load(new FileInputStream(external_directories+'/modules/all-modules.properties')) 
+	project.ext.allExternalModuleNames = externalprops['modules.common.all']
+    project.ext.allModuleNames += ','+allExternalModuleNames
+}
+
+configurations {
+    compile {
+        description = 'used to compile the opencms.jar and the modules jars'
+        transitive = false
+        extendsFrom distribution
+    }
+    
+    componentsCompile {
+        description = 'needed to compile the opencms components'
+        transitive = false
+    }
+    
+    modulesCompile {
+    	description = 'used to compile the modules classes'
+    	transitive = false
+    	extendsFrom compile
+    }
+    
+    gwtCompile {
+		description = 'needed to generate the GWT JavaScript resources'
+		transitive = false
+		extendsFrom modulesCompile
+	}
+    
+    setupCompile {
+        transitive = false
+        extendsFrom modulesCompile
+    }
+
+	distribution {
+        description = 'libraries included into the opencms distribution'
+        transitive = false
+    }
+}
+
+
+dependencies {
+    // the components
+    compile files("$buildDir/libs/opencms-components.jar") {
+        builtBy 'componentsJar'
+    }
+	compile group: 'antlr', name: 'antlr', version: '2.7.7'
+	compile group: 'com.puppycrawl.tools', name: 'checkstyle', version: '5.5'
+	compile group: 'javax.servlet', name: 'jsp-api', version: '2.0'
+	compile group: 'javax.servlet', name: 'servlet-api', version: '2.4'
+    compile group: 'junit', name: 'junit', version: '3.8.1'
+	
+	componentsCompile group: 'commons-digester', name: 'commons-digester', version: '1.8'
+	componentsCompile group: 'dom4j', name: 'dom4j', version: '1.6.1'
+	componentsCompile group: 'commons-httpclient', name: 'commons-httpclient', version: '3.1'
+	componentsCompile files('lib/runtime/jug-lgpl-2.0.0.jar')
+	componentsCompile group: 'com.google.gwt', name: 'gwt-dev', version: '2.5.1'
+	componentsCompile group: 'com.google.gwt', name: 'gwt-user', version: '2.5.1'
+	componentsCompile (group: 'javax.validation', name: 'validation-api', version: '1.0.0.GA'){
+		artifact {
+			name = 'validation-api'
+			type = 'jar'
+		}
+		artifact {
+			name = 'validation-api'
+			type = 'jar'
+			classifier = 'sources'
+		}
+	}
+	
+    modulesCompile files("$buildDir/classes/main") {
+       	builtBy 'compileJava'
+   	}
+   	
+    gwtCompile files('lib/compile/acacia-client.jar', 'lib/compile/geranium-client.jar', 'lib/compile/wrapper-client.jar')
+	gwtCompile group: 'com.google.guava', name: 'guava-gwt', version: '10.0.1'
+	gwtCompile group: 'com.google.gwt', name: 'gwt-dev', version: '2.5.1'
+	gwtCompile group: 'com.google.gwt', name: 'gwt-user', version: '2.5.1'
+	gwtCompile(group: 'javax.validation', name: 'validation-api', version: '1.0.0.GA'){
+		artifact {
+			name = 'validation-api'
+			type = 'jar'
+		}
+		artifact {
+			name = 'validation-api'
+			type = 'jar'
+			classifier = 'sources'
+		}
+	}
+	gwtCompile group: 'org.timepedia.exporter', name: 'gwtexporter', version: '2.4.0'
+
+  	distribution group: 'com.alkacon', name: 'alkacon-simapi', version: '1.0.0'
+	distribution group: 'com.alkacon', name: 'alkacon-diff', version: '0.9.2'
+	distribution files('lib/runtime/acacia.jar', 'lib/runtime/wrapper.jar')
+	// the jug-lgpl-2.0.0.jar is currently not available from the repository, using the local file version
+	// distribution group: 'org.safehaus.jug', name: 'jug', version: '2.0.0'
+	distribution files('lib/runtime/jug-lgpl-2.0.0.jar')
+	distribution group: 'ant-contrib', name: 'ant-contrib', version: '1.0b3'
+	distribution group: 'asm', name: 'asm', version: '3.2'
+	distribution group: 'com.cybozu.labs', name: 'langdetect', version: '1.1-20120112'
+	distribution group: 'com.google.guava', name: 'guava', version: '10.0.1'
+	distribution group: 'com.google.gwt', name: 'gwt-servlet', version: '2.5.1'
+    distribution group: 'com.spatial4j', name: 'spatial4j', version: '0.3'
+	distribution group: 'com.sun.org.apache.xml.internal', name: 'resolver', version: '20050927'
+	distribution group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.1.11'
+	distribution group: 'com.sun.xml.stream.buffer', name: 'streambuffer', version: '0.9'
+	distribution group: 'com.sun.xml.ws', name: 'jaxws-rt', version: '2.1.7'
+	distribution group: 'commons-beanutils', name: 'commons-beanutils', version: '1.8.3'
+	distribution group: 'commons-codec', name: 'commons-codec', version: '1.6'
+	distribution group: 'commons-collections', name: 'commons-collections', version: '3.2.1'
+	distribution group: 'commons-dbcp', name: 'commons-dbcp', version: '1.4'
+	distribution group: 'commons-digester', name: 'commons-digester', version: '1.8'
+	distribution group: 'commons-fileupload', name: 'commons-fileupload', version: '1.2.2'
+	distribution group: 'commons-httpclient', name: 'commons-httpclient', version: '3.1'
+	distribution group: 'commons-io', name: 'commons-io', version: '2.1'
+	distribution group: 'commons-lang', name: 'commons-lang', version: '2.6'
+	distribution group: 'commons-logging', name: 'commons-logging', version: '1.1.1'
+	distribution group: 'commons-pool', name: 'commons-pool', version: '1.5.5'
+	distribution group: 'dom4j', name: 'dom4j', version: '1.6.1'
+	distribution group: 'dumbster', name: 'dumbster', version: '1.6'
+	distribution group: 'javax.activation', name: 'activation', version: '1.1.1'
+	distribution group: 'javax.annotation', name: 'jsr250-api', version: '1.0'
+	distribution group: 'javax.jws', name: 'jsr181-api', version: '1.0-MR1'
+	distribution group: 'javax.mail', name: 'mail', version: '1.4.1'
+	distribution group: 'javax.xml.ws', name: 'jaxws-api', version: '2.1'
+	distribution group: 'jaxen', name: 'jaxen', version: '1.1.1'
+	distribution group: 'javax.servlet', name: 'jstl', version: '1.1.2'
+	distribution group: 'log4j', name: 'log4j', version: '1.2.15' 
+	distribution group: 'net.arnx', name: 'jsonic', version: '1.2.7'
+	distribution group: 'net.sf.ehcache', name: 'ehcache-core', version: '2.4.7'
+	distribution group: 'net.sf.ehcache', name: 'ehcache-openjpa', version: '0.2.0'
+	distribution group: 'net.sf.opencsv', name: 'opencsv', version: '2.3'
+	distribution group: 'net.sourceforge.nekohtml', name: 'nekohtml', version: '1.9.15'
+	distribution group: 'net.sourceforge.serp', name: 'serp', version: '1.13.1'
+	distribution group: 'org.antlr', name: 'antlr-runtime', version: '3.2'
+	distribution group: 'org.antlr', name: 'stringtemplate', version: '3.2'
+	distribution group: 'org.apache.bval', name: 'org.apache.bval.bundle', version: '0.4'
+	distribution group: 'org.apache.chemistry.opencmis', name: 'chemistry-opencmis-commons-api', version: '0.7.0'
+	distribution group: 'org.apache.chemistry.opencmis', name: 'chemistry-opencmis-commons-impl', version: '0.7.0'
+  	distribution (group: 'org.apache.chemistry.opencmis', name: 'chemistry-opencmis-server-bindings', version: '0.7.0'){
+          artifact {
+            name = 'chemistry-opencmis-server-bindings'
+            classifier= 'classes'
+            type= 'jar'
+          }
+	}
+	distribution group: 'org.apache.chemistry.opencmis', name: 'chemistry-opencmis-server-support', version: '0.7.0'
+	distribution group: 'org.apache.commons', name: 'commons-email', version: '1.2'
+	distribution group: 'org.apache.geronimo.specs', name: 'geronimo-jms_1.1_spec', version: '1.1.1'
+	distribution group: 'org.apache.geronimo.specs', name: 'geronimo-jpa_2.0_spec', version: '1.1'
+	distribution group: 'org.apache.geronimo.specs', name: 'geronimo-jta_1.1_spec', version: '1.1.1'
+	distribution group: 'org.apache.geronimo.specs', name: 'geronimo-validation_1.0_spec', version: '1.1'
+	distribution group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.2.3'
+  	distribution group: 'org.apache.httpcomponents', name: 'httpcore', version: '4.2.3'
+  	distribution group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.2.3'
+	distribution group: 'org.apache.lucene', name: 'lucene-analyzers-common', version: '4.3.0'
+	distribution group: 'org.apache.lucene', name: 'lucene-core', version: '4.3.0'
+	distribution group: 'org.apache.lucene', name: 'lucene-grouping', version: '4.3.0'
+	distribution group: 'org.apache.lucene', name: 'lucene-highlighter', version: '4.3.0'
+	distribution group: 'org.apache.lucene', name: 'lucene-memory', version: '4.3.0'
+	distribution group: 'org.apache.lucene', name: 'lucene-queries', version: '4.3.0'
+	distribution group: 'org.apache.lucene', name: 'lucene-queryparser', version: '4.3.0'
+	distribution group: 'org.apache.lucene', name: 'lucene-spatial', version: '4.3.0'
+	distribution group: 'org.apache.lucene', name: 'lucene-suggest', version: '4.3.0'
+	distribution group: 'org.apache.openjpa', name: 'openjpa', version: '2.2.0'
+	distribution group: 'org.apache.pdfbox', name: 'fontbox', version: '1.7.1'
+	distribution group: 'org.apache.pdfbox', name: 'pdfbox', version: '1.7.1'
+	distribution group: 'org.apache.poi', name: 'poi', version: '3.8'
+	distribution group: 'org.apache.poi', name: 'poi-ooxml', version: '3.8'
+	distribution group: 'org.apache.poi', name: 'poi-ooxml-schemas', version: '3.8'
+	distribution group: 'org.apache.poi', name: 'poi-scratchpad', version: '3.8'
+	distribution group: 'org.apache.solr', name: 'solr-core', version: '4.3.0'
+	distribution group: 'org.apache.solr', name: 'solr-solrj', version: '4.3.0'
+	distribution group: 'org.apache.tika', name: 'tika-core', version: '1.1'
+	distribution group: 'org.apache.tika', name: 'tika-parsers', version: '1.1'
+	distribution group: 'org.apache.xmlbeans', name: 'xmlbeans', version: '2.3.0'
+	distribution group: 'org.apache.xmlgraphics', name: 'batik-css', version: '1.7'
+	distribution group: 'org.apache.xmlgraphics', name: 'batik-util', version: '1.7'
+	distribution group: 'org.apache.zookeeper', name: 'zookeeper', version: '3.4.5'
+	distribution group: 'org.bouncycastle', name: 'bcprov-jdk15', version: '1.46'
+	distribution group: 'org.codehaus.woodstox', name: 'wstx-asl', version: '3.2.7'
+	distribution group: 'org.hibernate', name: 'jtidy', version: 'r8-20060801'
+	distribution group: 'org.htmlparser', name: 'htmlparser', version: '1.6'
+	distribution group: 'org.json', name: 'json', version: '20090211'
+	distribution group: 'org.jsoup', name: 'jsoup', version: '1.6.3'
+	distribution group: 'org.jvnet', name: 'mimepull', version: '1.3'
+	distribution group: 'org.jvnet.staxex', name: 'stax-ex', version: '1.2'
+	distribution group: 'org.noggit', name: 'noggit', version: '0.5'
+	distribution group: 'org.owasp', name: 'antisamy', version: '1.4'
+	distribution group: 'org.slf4j', name: 'slf4j-api', version: '1.7.1'
+	distribution group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.1'
+	distribution group: 'oro', name: 'oro', version: '2.0.8'
+	distribution group: 'quartz', name: 'quartz', version: '1.5.2'
+	distribution group: 'stax', name: 'stax-api', version: '1.0.1'
+	distribution group: 'taglibs', name: 'standard', version: '1.1.2'
+	distribution group: 'xerces', name: 'xercesImpl', version: '2.11.0'
+	distribution group: 'xml-apis', name: 'xml-apis', version: '1.4.01'
+}
+
+sourceSets{
+	main {
+		java.srcDir 'src'
+		resources.srcDir 'src'
+	}
+	components {
+		java.srcDir 'src-components'
+		resources.srcDir 'src-components'
+	}
+	modules {
+		java.srcDir 'src-modules'
+		resources.srcDir 'src-modules'
+	}
+	gwt {
+		java.srcDir 'src-gwt'
+		resources.srcDir 'src-gwt'
+	}
+    setup {
+        java.srcDir 'src-setup'
+        resources.srcDir 'src-setup'
+    }
+}
+
+allModuleNames.split(',').each{ moduleName ->
+    def modulePackages = moduleName
+    def gwtModule = null
+    def moduleScripts = null
+    def moduleFolder = file(projectDir.toString() + '/modules/'  + moduleName)
+    def srcGwtDir = projectDir.toString()+'/src-gwt/'
+    def moduleSrcFolder = file(projectDir.toString()+'/src-modules')
+    def isExternal = allExternalModuleNames.contains(moduleName)
+    
+    if (isExternal.toBoolean()){
+        moduleFolder = file(external_directories + '/modules/'  + moduleName)
+        srcGwtDir = external_directories + '/src-gwt/'
+        moduleSrcFolder = file(external_directories+'/src-modules')
+    }
+    def propertyFile = file(moduleFolder.toString() + '/module.properties')
+    def gwtRename = null
+    if (propertyFile.exists()){
+        Properties moduleProperties= new Properties()
+        moduleProperties.load(new FileInputStream(propertyFile))
+        if (moduleProperties['module.packages']!=null){
+            modulePackages=moduleProperties['module.packages']
+        }
+        if (moduleProperties['module.gwt']!=null){
+            gwtModule = moduleProperties['module.gwt']
+            def moduleXml = (new XmlParser()).parse(srcGwtDir +gwtModule.replaceAll('\\.','/')+'.gwt.xml')
+            gwtRename = moduleXml['@rename-to']
+            if (gwtRename==null){
+                gwtRename=moduleName
+            }
+        }
+        if (moduleProperties['module.scripts']!=null){
+            moduleScripts=moduleProperties['module.scripts']
+        }
+    }
+    def manifestFile = file(moduleFolder.toString()+'/resources/manifest.xml')
+    def moduleDependencies=[]
+    def moduleVersion = version
+    if (manifestFile.exists()){
+        def parsedManifest= (new XmlParser()).parse(moduleFolder.toString()+'/resources/manifest.xml')
+        parsedManifest.module[0].dependencies[0].dependency.each{ dep ->
+            moduleDependencies.add(dep.@name)
+        }
+        moduleVersion = parsedManifest.module[0].version[0].text()
+    }
+    
+    def requiresJar = false
+    // check if there are any java packages to include into the module's jar
+    modulePackages.split(',').each{ pack ->
+        if (isExternal.toBoolean() && file(external_directories + '/src-modules/'+ pack.replaceAll('\\.','/')).exists() || file(projectDir.toString() + '/src-modules/'+ pack.replaceAll('\\.','/')).exists()){
+            requiresJar = true
+        }
+    }
+    
+    task "dist_$moduleName" (type: Zip){
+        ext.moduleName = moduleName
+        ext.modulePackages = modulePackages
+        ext.gwtModule = gwtModule
+        ext.moduleScripts = moduleScripts
+        ext.moduleFolder = moduleFolder
+        ext.srcGwtDir = srcGwtDir
+        ext.isExternal = isExternal
+        ext.requiresJar = requiresJar
+        ext.dependencies = moduleDependencies
+        ext.gwtRenameTo = gwtRename
+        version moduleVersion
+        // include the jar file if necessary
+        if (requiresJar.toBoolean()){
+            from( project.buildDir.toString() + '/libs') {
+                include moduleName+'.jar'
+                into '/system/modules/'+moduleName+'/lib/'
+            }
+            
+        }
+        // include the GWT resources if necessary
+        if (gwtModule == null){
+            from moduleFolder.toString() + '/resources'
+        }else{
+            // exclude the manifest for now, use the synced manifest later
+            from (moduleFolder.toString() + '/resources') {
+                exclude 'manifest.xml'
+                exclude 'system/modules/'+moduleName+'/resources/'+gwtRenameTo+'/**'
+            }
+            from( project.buildDir.toString() + '/gwt/'+moduleName) {
+                exclude '**/WEB-INF/**'
+                into '/system/modules/'+moduleName+'/resources/'
+            }
+            def syncedManifest=project.buildDir.toString() + '/extra/'+moduleName+'/manifest.xml'
+            from syncedManifest
+            doFirst{
+                ant.taskdef(resource: 'org/opencms/util/ant/taskdefs.properties', classpath: configurations.compile.asPath)
+                ant.syncmanifest(
+                    srcmanifestfile: moduleFolder.toString() + '/resources/manifest.xml',
+                    dstmanifestfile: syncedManifest,
+                    base: moduleFolder.toString() + '/resources/',
+                    prefix: 'system/modules/'+moduleName+'/resources/'+gwtRenameTo,
+                    directory: project.buildDir.toString() + '/gwt/'+moduleName+'/'+gwtRenameTo
+                )
+            }
+        }
+        if (moduleScripts != null){
+            from( project.buildDir.toString() + '/scripts/'+moduleName) {
+                into '/system/modules/'+moduleName+'/resources/'
+            }
+        }
+        // TODO: set the module version to match the manifest.xml
+        baseName moduleName
+        doFirst {
+            println '======================================================'
+            println 'Building ZIP for '+moduleName+' version '+moduleVersion
+            println '======================================================'
+        }
+    }
+    
+    if (requiresJar.toBoolean()){
+        
+        sourceSets.add(moduleName)
+        sourceSets[moduleName].java.srcDirs=files(moduleSrcFolder.toString())
+        sourceSets[moduleName].resources.srcDirs=files(moduleSrcFolder.toString())
+        modulePackages.split(',').each{ pack ->
+            sourceSets[moduleName].java.includes.add(pack.replaceAll('\\.','/')+'/**')
+            sourceSets[moduleName].resources.includes.add(pack.replaceAll('\\.','/')+'/**')
+        }
+        
+        sourceSets[moduleName].compileClasspath=configurations.modulesCompile
+        
+        task "jar_$moduleName" (type: Jar) {
+            manifest {
+                attributes 'Implementation-Title': 'Alkacon OpenCms', 'Implementation-Version': version
+            }
+            from sourceSets[moduleName].output
+            archiveName moduleName+'.jar'
+            exclude '**/.gitignore'
+            doFirst{
+                println '======================================================'
+                println 'Building '+moduleName+'.jar including '+modulePackages
+                println '======================================================'
+            }
+        }
+
+        tasks['dist_'+moduleName].dependsOn('jar_'+moduleName)
+    }
+    
+    if (gwtModule != null){
+        task "gwt_$moduleName" (dependsOn: gwtClasses, type: JavaExec) {
+            ext.buildDir =  project.buildDir.toString() + '/gwt/'+moduleName
+            ext.extraDir =  project.buildDir.toString() + '/extra/'+moduleName
+            inputs.source sourceSets.gwt.java.srcDirs
+            inputs.dir sourceSets.gwt.output.resourcesDir
+            outputs.dir buildDir
+         
+            // Workaround for incremental build (GRADLE-1483)
+            outputs.upToDateSpec = new org.gradle.api.specs.AndSpec()
+         
+            doFirst {
+                println '======================================================'
+                println 'Building GWT resources for '+gwtModule
+                println '======================================================'
+                // to clean the output directory, delete it first
+                def dir = file(buildDir)
+                if (dir.exists()){
+                    delete{
+                        delete dir
+                    }
+                }
+                dir.mkdirs()
+            }
+         
+            main = 'com.google.gwt.dev.Compiler'
+         
+            classpath {
+                [
+                    sourceSets.main.java.srcDirs,           // Java source core
+                    sourceSets.gwt.java.srcDirs,           // Java source
+                    sourceSets.gwt.output.resourcesDir,    // Generated resources
+                    sourceSets.gwt.output.classesDir,      // Generated classes
+                    sourceSets.gwt.compileClasspath,       // Deps
+                ]
+            }
+         
+            args =
+            [
+                gwtModule, // Your GWT module
+                '-war', buildDir,
+                '-logLevel', 'INFO',
+                '-localWorkers', '2',
+                '-style', 'obfuscated',
+                '-compileReport',
+                '-extra', extraDir,
+                '-strict'
+                // '-draftCompile' // Speeds up compile with 25%
+            ]
+         
+            maxHeapSize = '1024M'
+        }
+    
+        tasks['dist_'+moduleName].dependsOn('gwt_'+moduleName)
+    }
+    if (moduleScripts != null){
+        task "scripts_$moduleName" {
+            ext.srcDir = file(moduleFolder.toString() + '/scripts')
+            ext.destDir = new File(project.buildDir.toString() + '/scripts/'+moduleName)
+            inputs.dir srcDir
+            outputs.dir destDir
+            doFirst{
+                // to clean the output directory, delete it first
+                if (destDir.exists()){
+                    delete {
+                       delete destDir
+                    }
+                }
+                destDir.mkdirs()
+            }
+            doLast {
+                
+                def text=''
+                moduleScripts.split(',').each{ script ->
+                    def scriptFile = file(srcDir.toString()+'/'+script)
+                    
+                    if (scriptFile.exists()){
+                        text += scriptFile.text
+                    }
+                }
+                def destFile = new File(destDir, moduleName+'.scripts.js')
+                destFile.write(text)
+            }
+        }
+        tasks['dist_'+moduleName].dependsOn('scripts_'+moduleName)
+    }
+}
+
+tasks.findAll{ task -> task.name.startsWith('dist_')}.each{ dist_task ->
+    if (dist_task.requiresJar.toBoolean()){
+        dist_task.dependencies.each{ dep ->
+            def depCompileName = 'compile'+dep.replaceAll('\\.','')+'java'
+            tasks.findAll{ comp_task -> comp_task.name.toLowerCase().equals(depCompileName)}.each {comp_task ->
+                    sourceSets[dist_task.moduleName].compileClasspath += files(project.buildDir.toString()+'/classes/'+dep) {
+                        builtBy comp_task.name
+                    }
+            }
+        }
+        tasks['jar_'+dist_task.moduleName].dependsOn{
+            tasks.findAll{ comp_task -> comp_task.name.toLowerCase().equals('compile'+dist_task.moduleName.replaceAll('\\.','')+'java')}
+        }
+    }
+}
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'Alkacon OpenCms', 'Implementation-Version': version
+    }
+    archiveName 'opencms.jar'
+    include 'org/opencms/**'
+    include 'com/**'
+    exclude '**/*.html'
+    exclude '**/.gitignore'
+}
+
+task componentsJar(type: Jar) {
+    from sourceSets.components.output
+    archiveName 'opencms-components.jar'
+    include 'org/opencms/**'
+    include 'com/**'
+    exclude '**/.gitignore'
+}
+
+task setupJar(dependsOn: jar, type: Jar) {
+    from sourceSets.setup.output
+    archiveName 'opencms-setup.jar'
+    exclude '**/.gitignore'
+}
+
+task allModules(dependsOn: tasks.matching{ Task task -> task.name.startsWith('dist_')}) << {
+    println '======================================================'
+    println 'Building all modules'
+    println '======================================================'
+}
+
+task war (dependsOn: [setupJar, allModules], type: Zip){
+    
+    archiveName 'opencms.war'
+    from (projectDir.toString()+'/webapp'){
+        // exclude the database drivers
+        exclude '**/setup/**/*.jar'
+        exclude '**/update/**'
+        exclude '**/*.html'
+        exclude '**/*.properties'
+        exclude '**/*.txt'
+        exclude '**/*.xml'
+    }
+    from (projectDir.toString()+'/webapp'){
+        exclude '**/update/**'
+        include '**/*.html'
+        include '**/*.properties'
+        include '**/*.txt'
+        include '**/*.xml'
+        filter(ReplaceTokens, tokens: [
+            OPENCMS_VERSION_NUMBER: version_number,
+            OPENCMS_VERSION_NAME: version_number,
+            OPENCMS_VERSION: product_name+' '+version_number,
+            DRIVERS_VFS: drivers_vfs,
+            DRIVERS_PROJECT: drivers_project,
+            DRIVERS_USER: drivers_user,
+            DRIVERS_HISTORY: drivers_history,
+            DRIVERS_CONFIGURATION: drivers_configuration,
+            DRIVERS_SUBSCRIPTION: drivers_subscription,
+            ADDITIONAL_DB_POOLS: db_additional_pools,
+            OPENCMS_CONFIGURATION: opencms_configuration,
+            RUNTIME_INFO: system_runtimeinfo
+        ])
+    }
+    fileTree('webapp/setup/database'){ include '**/*.jar'}.each {File driverJar ->
+        // copy the database drivers into the lib folder
+        from (driverJar.path) {
+            into '/WEB-INF/lib/'
+        }
+    }
+    from (project.buildDir.toString() + '/libs') {
+        include '*.jar'
+        exclude 'opencms-components.jar'
+        into '/WEB-INF/lib/'
+    }
+    into ('WEB-INF/lib') {
+        from configurations.distribution
+    }
+    from (project.buildDir.toString() + '/distributions') {
+        include '*.zip'
+        into '/WEB-INF/packages/modules'
+    }
+}
+
+task updater (dependsOn: setupJar, type: Zip){
+    baseName 'opencms_upgrade_to'
+    from (projectDir.toString()+'/webapp'){
+        include 'update/**'
+        exclude 'update/empty.jar'
+        exclude 'update/readme.txt'
+    }
+    from projectDir.toString()+'/webapp/update/readme.txt'
+    from (projectDir.toString()+'/webapp/WEB-INF'){
+        into 'WEB-INF'
+        include 'opencms.tld'
+        include 'web.xml'
+        include 'cmsshell.sh'
+        include 'classes/META-INF/persistence.xml'
+        include 'classes/ehcache.xml'
+        include 'classes/repository.properties'
+        include 'sun-jaxws.xml'
+        include 'wsdl/**'
+    }
+    from (project.buildDir.toString() + '/libs') {
+        include 'opencms.jar'
+        include 'opencms-setup.jar'
+        into '/WEB-INF/lib/'
+    }
+    into ('WEB-INF/lib') {
+        from configurations.distribution
+    }
+    tasks.findAll{dist_task -> dist_task.name.startsWith('dist_') && !(updater_excluded_modules.split(',').contains(dist_task.moduleName))}.each{ dist_task ->
+        from (project.buildDir.toString()+'/distributions/'+dist_task.archiveName){
+            into 'update/modules'
+        }
+        if (dist_task.requiresJar.toBoolean()){
+            from (project.buildDir.toString()+'/libs/'+dist_task.moduleName+'.zip'){
+                into 'WEB-INF/lib'
+            }
+        }
+    }
+    fileTree('webapp/setup/database'){ include '**/*.jar'}.each {File driverJar ->
+        // copy the database drivers into the lib folder
+        from (driverJar.path) {
+            into '/WEB-INF/lib/'
+        }
+    }
+}
+
+updater.dependsOn(tasks.matching{dist_task -> dist_task.name.startsWith('dist_') && !(updater_excluded_modules.split(',').contains(dist_task.moduleName))})
+
+task bindist (dependsOn: war, type: Zip){
+    baseName 'opencms'
+    from project.buildDir.toString()+'/distributions/opencms.war'
+    from(projectDir) {
+        include 'install.html'
+        include 'license.txt'
+        include 'history.txt'
+    }
+}
