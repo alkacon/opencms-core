@@ -394,7 +394,7 @@
 						                 <string>
 
 </string>
-							<fileset dir="${module.input.res}/scripts" includes="@{script-file}"/>
+							<fileset dir="${module.input}/scripts" includes="@{script-file}"/>
 						</concat>
 								</sequential>
 							</for>
