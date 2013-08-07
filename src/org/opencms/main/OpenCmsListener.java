@@ -142,13 +142,11 @@ public class OpenCmsListener implements ServletContextListener, HttpSessionListe
             Driver driver = drivers.nextElement();
             try {
                 DriverManager.deregisterDriver(driver);
-                System.out.println(Messages.get().getBundle().key(
-                    Messages.LOG_ERROR_DERIGISTERING_JDBC_DRIVER_1,
-                    driver.getClass().getName()));
             } catch (Throwable e) {
                 System.out.println(Messages.get().getBundle().key(
                     Messages.ERR_DEREGISTERING_JDBC_DRIVER_1,
                     driver.getClass().getName()));
+                e.printStackTrace(System.out);
             }
         }
     }
