@@ -30,6 +30,16 @@ configurations {
         extendsFrom distribution
     }
     
+    testCompile{
+        transitive = false
+        
+    }
+    
+    testRuntime{
+        transitive = false
+        extendsFrom compile
+    }
+    
     componentsCompile {
         description = 'needed to compile the opencms components'
         transitive = false
@@ -88,10 +98,14 @@ dependencies {
 		}
 	}
 	
-    modulesCompile files("$buildDir/classes/main") {
-       	builtBy 'compileJava'
+    modulesCompile files("$buildDir/libs/opencms.jar") {
+       	builtBy 'jar'
    	}
-   	
+    
+    testRuntime fileTree('webapp/setup/database'){
+        include '**/*.jar'
+    }
+    
     gwtCompile files('lib/compile/acacia-client.jar', 'lib/compile/geranium-client.jar', 'lib/compile/wrapper-client.jar')
 	gwtCompile group: 'com.google.guava', name: 'guava-gwt', version: '10.0.1'
 	gwtCompile group: 'com.google.gwt', name: 'gwt-dev', version: '2.5.1'
@@ -236,6 +250,16 @@ sourceSets{
 	}
     setup {
         java.srcDir 'src-setup'
+        resources.srcDir 'src-setup'
+    }
+    test {
+        java.srcDir 'test'
+        java.srcDir 'src'
+        java.srcDir 'src-modules'
+        java.srcDir 'src-setup'
+        resources.srcDir 'test'
+        resources.srcDir 'src'
+        resources.srcDir 'src-modules'
         resources.srcDir 'src-setup'
     }
 }
@@ -634,5 +658,19 @@ task bindist (dependsOn: war, type: Zip){
         include 'install.html'
         include 'license.txt'
         include 'history.txt'
+    }
+}
+
+test {
+    useJUnit()
+    include 'org/opencms/test/AllTests*'
+    scanForTestClasses false
+    testClassesDir = sourceSets.test.output.classesDir
+    systemProperties['test.data.path'] = projectDir.toString()+'/test/data'
+    systemProperties['test.webapp.path'] = projectDir.toString()+'/webapp'
+    systemProperties['test.build.folder'] =sourceSets.test.output.classesDir
+    // listen to standard out and standard error of the test JVM(s)
+    onOutput { descriptor, event ->
+       logger.lifecycle("Test: " + descriptor + " produced standard out/err: " + event.message )
     }
 }
