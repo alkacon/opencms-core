@@ -111,6 +111,7 @@ public class CmsAutoSetup {
                 System.out.println(e.getMessage());
                 System.out.println("Please have a look into the opencms log file for detailed information.");
                 LOG.error(e.getMessage(), e);
+                System.exit(1);
             }
         } else {
             System.out.println("");
