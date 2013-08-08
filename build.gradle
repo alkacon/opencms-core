@@ -11,6 +11,7 @@ Properties props = new Properties()
 props.load(new FileInputStream("$projectDir/modules/all-modules.properties")) 
 project.ext.allModuleNames = props['modules.common.all']
 project.ext.allExternalModuleNames = ''
+project.ext.modulesDistsDir = file(project.buildDir.toString() + 'modulesZip')
 if (project.hasProperty('external_directories')){
     if (file(external_directories+'/modules/all-modules.properties').exists()){
     	Properties externalprops = new Properties() 
@@ -329,6 +330,7 @@ allModuleNames.split(',').each{ moduleName ->
         ext.dependencies = moduleDependencies
         ext.gwtRenameTo = gwtRename
         version moduleVersion
+        destinationDir modulesDistsDir
         // include the jar file if necessary
         if (requiresJar.toBoolean()){
             from( project.buildDir.toString() + '/libs') {
@@ -574,24 +576,21 @@ task war (dependsOn: [setupJar, allModules], type: Zip){
             RUNTIME_INFO: system_runtimeinfo
         ])
     }
-    fileTree('webapp/setup/database'){ include '**/*.jar'}.each {File driverJar ->
-        // copy the database drivers into the lib folder
-        from (driverJar.path) {
-            into '/WEB-INF/lib/'
-        }
-    }
     from (project.buildDir.toString() + '/libs') {
         include '*.jar'
         exclude 'opencms-components.jar'
-        into '/WEB-INF/lib/'
+        into '/WEB-INF/lib'
     }
-    into ('WEB-INF/lib') {
+    into ('/WEB-INF/lib') {
         from configurations.distribution
     }
-    from (project.buildDir.toString() + '/distributions') {
-        allModuleNames.split(',').each{ moduleName ->
-            include moduleName + '*.zip'
+    fileTree('webapp/setup/database'){ include '**/*.jar'}.each {File driverJar ->
+        // copy the database drivers into the lib folder
+        from (driverJar.path) {
+            into '/WEB-INF/lib'
         }
+    }
+    from (modulesDistsDir) {
         into '/WEB-INF/packages/modules'
     }
 }
@@ -605,7 +604,7 @@ task updater (dependsOn: setupJar, type: Zip){
     }
     from projectDir.toString()+'/webapp/update/readme.txt'
     from (projectDir.toString()+'/webapp/WEB-INF'){
-        into 'WEB-INF'
+        into '/WEB-INF'
         include 'opencms.tld'
         include 'web.xml'
         include 'cmsshell.sh'
@@ -618,17 +617,17 @@ task updater (dependsOn: setupJar, type: Zip){
     from (project.buildDir.toString() + '/libs') {
         include 'opencms.jar'
         include 'opencms-setup.jar'
-        into '/WEB-INF/lib/'
+        into '/WEB-INF/lib'
     }
-    into ('WEB-INF/lib') {
+    into ('/WEB-INF/lib') {
         from configurations.distribution
     }
     tasks.findAll{dist_task -> dist_task.name.startsWith('dist_') && !(updater_excluded_modules.split(',').contains(dist_task.moduleName))}.each{ dist_task ->
-        from (project.buildDir.toString()+'/distributions/'+dist_task.archiveName){
-            into 'update/modules'
+        from (modulesDistsDir.toString()+'/'+dist_task.archiveName){
+            into '/update/modules'
         }
         if (dist_task.requiresJar.toBoolean()){
-            from (project.buildDir.toString()+'/libs/'+dist_task.moduleName+'.zip'){
+            from (project.buildDir.toString()+'/libs/'+dist_task.moduleName+'.jar'){
                 into 'WEB-INF/lib'
             }
         }
@@ -636,14 +635,14 @@ task updater (dependsOn: setupJar, type: Zip){
     fileTree('webapp/setup/database'){ include '**/*.jar'}.each {File driverJar ->
         // copy the database drivers into the lib folder
         from (driverJar.path) {
-            into '/WEB-INF/lib/'
+            into '/WEB-INF/lib'
         }
     }
     Properties buildProps = new Properties()
     buildProps.load(new FileInputStream(projectDir.toString()+'/build-default.properties'))
     buildProps['updater.jars.remove'].split(',').each{ jar ->
         from(projectDir.toString()+'/webapp/update/empty.jar'){
-            into '/WEB-INF/lib/'
+            into '/WEB-INF/lib'
             rename('empty\\.jar', jar)
         }
     }
@@ -669,8 +668,6 @@ test {
     systemProperties['test.data.path'] = projectDir.toString()+'/test/data'
     systemProperties['test.webapp.path'] = projectDir.toString()+'/webapp'
     systemProperties['test.build.folder'] =sourceSets.test.output.classesDir
-    // listen to standard out and standard error of the test JVM(s)
-    onOutput { descriptor, event ->
-       logger.lifecycle("Test: " + descriptor + " produced standard out/err: " + event.message )
-    }
+    maxHeapSize = "1024m"
+    jvmArgs '-XX:MaxPermSize=256m'
 }
