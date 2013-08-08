@@ -2,7 +2,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 apply plugin: 'java'
 sourceCompatibility = java_target_version
 version = version_number
-buildDir = 'c:/dev/BuildCms/gradleOut'
+buildDir = build_directory
 repositories {
    	mavenCentral()
 }
@@ -10,6 +10,7 @@ repositories {
 Properties props = new Properties() 
 props.load(new FileInputStream("$projectDir/modules/all-modules.properties")) 
 project.ext.allModuleNames = props['modules.common.all']
+project.ext.allExternalModuleNames = ''
 if (project.hasProperty('external_directories')){
 	Properties externalprops = new Properties() 
     println 'reading external modules from '+external_directories+'/modules/all-modules.properties'
