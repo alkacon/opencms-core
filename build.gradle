@@ -12,11 +12,15 @@ props.load(new FileInputStream("$projectDir/modules/all-modules.properties"))
 project.ext.allModuleNames = props['modules.common.all']
 project.ext.allExternalModuleNames = ''
 if (project.hasProperty('external_directories')){
-	Properties externalprops = new Properties() 
-    println 'reading external modules from '+external_directories+'/modules/all-modules.properties'
-	externalprops.load(new FileInputStream(external_directories+'/modules/all-modules.properties')) 
-	project.ext.allExternalModuleNames = externalprops['modules.common.all']
-    project.ext.allModuleNames += ','+allExternalModuleNames
+    if (file(external_directories+'/modules/all-modules.properties').exists()){
+    	Properties externalprops = new Properties() 
+        println 'reading external modules from '+external_directories+'/modules/all-modules.properties'
+    	externalprops.load(new FileInputStream(external_directories+'/modules/all-modules.properties')) 
+    	project.ext.allExternalModuleNames = externalprops['modules.common.all']
+        project.ext.allModuleNames += ','+allExternalModuleNames
+    }else{
+        println 'Can\'t read from external module properties modules/all-modules.properties from directory '+external_directories
+    }
 }
 
 configurations {
@@ -351,7 +355,7 @@ allModuleNames.split(',').each{ moduleName ->
     
     if (requiresJar.toBoolean()){
         
-        sourceSets.add(moduleName)
+        sourceSets.create(moduleName)
         sourceSets[moduleName].java.srcDirs=files(moduleSrcFolder.toString())
         sourceSets[moduleName].resources.srcDirs=files(moduleSrcFolder.toString())
         modulePackages.split(',').each{ pack ->
@@ -561,7 +565,9 @@ task war (dependsOn: [setupJar, allModules], type: Zip){
         from configurations.distribution
     }
     from (project.buildDir.toString() + '/distributions') {
-        include '*.zip'
+        allModuleNames.split(',').each{ moduleName ->
+            include moduleName + '*.zip'
+        }
         into '/WEB-INF/packages/modules'
     }
 }
@@ -607,6 +613,14 @@ task updater (dependsOn: setupJar, type: Zip){
         // copy the database drivers into the lib folder
         from (driverJar.path) {
             into '/WEB-INF/lib/'
+        }
+    }
+    Properties buildProps = new Properties()
+    buildProps.load(new FileInputStream(projectDir.toString()+'/build-default.properties'))
+    buildProps['updater.jars.remove'].split(',').each{ jar ->
+        from(projectDir.toString()+'/webapp/update/empty.jar'){
+            into '/WEB-INF/lib/'
+            rename('empty\\.jar', jar)
         }
     }
 }
