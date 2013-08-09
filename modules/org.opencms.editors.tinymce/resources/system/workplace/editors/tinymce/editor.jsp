@@ -773,10 +773,19 @@ tinyMCE.init({
     <%
     if(formatSelectOption){
     	String format = options.getOptionValue("formatselect.options", "", displayOptions);
-    	format = StringUtils.replace(format, ";", ",");
-    	%>
-    	block_formats : "<%=format%>",
-    	<%
+    	if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(format)){
+	    	String[] formats=format.split(";");
+	    	format="";
+	    	for (int i=0; i < formats.length; i++){
+	    	    format+=formats[i].toUpperCase()+"="+formats[i];
+	    	    if (i<formats.length-1){
+	    	        format+=";";
+	    	    }
+	    	}
+	    	%>
+	    	block_formats : "<%=format%>",
+	    	<%
+    	}
     }
     %>
     
