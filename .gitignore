@@ -17,4 +17,5 @@ Thumbs.db
 /modules/org.opencms.ade.properties/resources/system/modules/org.opencms.ade.properties/resources/properties
 /modules/org.opencms.ade.publish/resources/system/modules/org.opencms.ade.publish/resources/publish
 /.gradle
+**/.gradle
 /hostedmode-war
