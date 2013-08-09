@@ -8,11 +8,10 @@
 	<classpathentry excluding="META-INF/|data/|ehcache.xml" kind="src" path="test"/>
 	<classpathentry exported="true" kind="lib" path="lib/compile/acacia-client.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/compile/geranium-client.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/compile/gwtexporter-2.4.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/compile/wrapper-client.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/runtime/guava-r08.jar"/>
-	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
-	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="con" path="org.springsource.ide.eclipse.gradle.classpathcontainer"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="lib" path="lib/compile/gwtexporter-2.4.0.jar"/>
+	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
