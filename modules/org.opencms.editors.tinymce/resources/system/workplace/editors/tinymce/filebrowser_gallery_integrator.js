@@ -146,7 +146,6 @@ function getLinkTarget(){
 function _setValue(url) {
    var inputField = targetWindow.document.getElementById(fieldId);
    inputField.value = url;
-   editor.windowManager.close();
 }
 
 /**
