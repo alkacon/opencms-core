@@ -45,6 +45,11 @@ configurations {
         transitive = false
     }
     
+    componentsRuntime {
+        transitive = false
+        extendsFrom componentsCompile
+    }
+    
     modulesCompile {
     	description = 'used to compile the modules classes'
     	transitive = false
@@ -70,32 +75,19 @@ configurations {
 
 
 dependencies {
-    // the components
-    compile files("$buildDir/libs/opencms-components.jar") {
-        builtBy 'componentsJar'
-    }
-    compile group: 'ant-contrib', name: 'ant-contrib', version: '1.0b3'
-	compile group: 'com.puppycrawl.tools', name: 'checkstyle', version: '5.5'
-	compile group: 'javax.servlet', name: 'jsp-api', version: '2.0'
+    compile group: 'javax.servlet', name: 'jsp-api', version: '2.0'
 	compile group: 'javax.servlet', name: 'servlet-api', version: '2.4'
     
+    componentsCompile group: 'org.apache.ant', name: 'ant', version: '1.8.4'
+    componentsCompile group: 'ant-contrib', name: 'ant-contrib', version: '1.0b3'
 	componentsCompile group: 'commons-digester', name: 'commons-digester', version: '1.8'
 	componentsCompile group: 'dom4j', name: 'dom4j', version: '1.6.1'
-	componentsCompile group: 'commons-httpclient', name: 'commons-httpclient', version: '3.1'
+    componentsCompile group: 'jaxen', name: 'jaxen', version: '1.1.1'
 	componentsCompile files('lib/runtime/jug-lgpl-2.0.0.jar')
-	componentsCompile group: 'com.google.gwt', name: 'gwt-dev', version: '2.5.1'
-	componentsCompile group: 'com.google.gwt', name: 'gwt-user', version: '2.5.1'
-	componentsCompile (group: 'javax.validation', name: 'validation-api', version: '1.0.0.GA'){
-		artifact {
-			name = 'validation-api'
-			type = 'jar'
-		}
-		artifact {
-			name = 'validation-api'
-			type = 'jar'
-			classifier = 'sources'
-		}
-	}
+	
+    componentsRuntime files("$buildDir/libs/opencms-components.jar") {
+         builtBy 'componentsJar'
+    }
 	
     modulesCompile files("$buildDir/libs/opencms.jar") {
        	builtBy 'jar'
@@ -109,7 +101,6 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '3.8.1'
     
     gwtCompile files('lib/compile/acacia-client.jar', 'lib/compile/geranium-client.jar', 'lib/compile/wrapper-client.jar')
-	gwtCompile group: 'com.google.guava', name: 'guava-gwt', version: '10.0.1'
 	gwtCompile group: 'com.google.gwt', name: 'gwt-dev', version: '2.5.1'
 	gwtCompile group: 'com.google.gwt', name: 'gwt-user', version: '2.5.1'
 	gwtCompile(group: 'javax.validation', name: 'validation-api', version: '1.0.0.GA'){
@@ -136,7 +127,9 @@ dependencies {
 	distribution group: 'com.cybozu.labs', name: 'langdetect', version: '1.1-20120112'
     distribution group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
     distribution group: 'com.google.guava', name: 'guava', version: '10.0.1'
+    distribution group: 'com.google.guava', name: 'guava-gwt', version: '10.0.1'
 	distribution group: 'com.google.gwt', name: 'gwt-servlet', version: '2.5.1'
+    distribution group: 'com.google.code.findbugs', name: 'jsr305', version: '2.0.1'
     distribution group: 'com.spatial4j', name: 'spatial4j', version: '0.3'
 	distribution group: 'com.sun.org.apache.xml.internal', name: 'resolver', version: '20050927'
 	distribution group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.1.11'
@@ -270,6 +263,14 @@ sourceSets{
 }
 // tests require to use the classes folder also for resources 
 sourceSets.test.output.resourcesDir =sourceSets.test.output.classesDir 
+
+task componentsJar(type: Jar) {
+    from sourceSets.components.output
+    archiveName 'opencms-components.jar'
+    include 'org/opencms/**'
+    exclude '**/.gitignore'
+}
+
 allModuleNames.split(',').each{ moduleName ->
     def modulePackages = moduleName
     def gwtModule = null
@@ -323,7 +324,7 @@ allModuleNames.split(',').each{ moduleName ->
         }
     }
     
-    task "dist_$moduleName" (type: Zip){
+    task "dist_$moduleName" (dependsOn: componentsJar, type: Zip){
         ext.moduleName = moduleName
         ext.modulePackages = modulePackages
         ext.gwtModule = gwtModule
@@ -360,7 +361,7 @@ allModuleNames.split(',').each{ moduleName ->
             def syncedManifest=project.buildDir.toString() + '/extra/'+moduleName+'/manifest.xml'
             from syncedManifest
             doFirst{
-                ant.taskdef(resource: 'org/opencms/util/ant/taskdefs.properties', classpath: configurations.compile.asPath)
+                ant.taskdef(resource: 'org/opencms/util/ant/taskdefs.properties', classpath: configurations.componentsRuntime.asPath)
                 ant.syncmanifest(
                     srcmanifestfile: moduleFolder.toString() + '/resources/manifest.xml',
                     dstmanifestfile: syncedManifest,
@@ -525,14 +526,6 @@ jar {
     include 'org/opencms/**'
     include 'com/**'
     exclude '**/*.html'
-    exclude '**/.gitignore'
-}
-
-task componentsJar(type: Jar) {
-    from sourceSets.components.output
-    archiveName 'opencms-components.jar'
-    include 'org/opencms/**'
-    include 'com/**'
     exclude '**/.gitignore'
 }
 
