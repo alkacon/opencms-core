@@ -24,6 +24,8 @@ if (project.hasProperty('external_directories')){
     }
 }
 
+project.ext.debug = project.hasProperty('enable_debug')&&enable_debug.toBoolean()
+
 configurations {
     compile {
         description = 'used to compile the opencms.jar and the modules jars'
@@ -675,4 +677,14 @@ test {
     systemProperties['test.build.folder'] =sourceSets.test.output.classesDir
     maxHeapSize = "1024m"
     jvmArgs '-XX:MaxPermSize=256m'
+}
+
+if (debug.toBoolean()){
+    compileGwtJava.doFirst{
+        println '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++'
+        println 'Dependencies of compileGwtJava:'
+        classpath.each{ dep ->
+            println dep
+        }
+    }
 }
