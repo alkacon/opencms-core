@@ -679,6 +679,10 @@ test {
     jvmArgs '-XX:MaxPermSize=256m'
 }
 
+tasks.withType(JavaCompile) {
+    options.compilerArgs += ["-sourcepath", ""]
+}
+
 if (debug.toBoolean()){
     compileGwtJava.doFirst{
         println '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++'
