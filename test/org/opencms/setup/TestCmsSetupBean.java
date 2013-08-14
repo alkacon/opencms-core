@@ -30,6 +30,7 @@ package org.opencms.setup;
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.configuration.TestParameterConfiguration;
 import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestProperties;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,12 +41,6 @@ import java.util.List;
  * @since 6.0.0
  */
 public class TestCmsSetupBean extends OpenCmsTestCase {
-
-    // DEBUG flag
-    // private static final boolean DEBUG = true;
-
-    // private static final String PROPERTIES = "/opencms/etc/config/opencms.properties";
-    // private static final String PROPERTIES = "/../OpenCms6-Setup/webapp/WEB-INF/config/opencms.properties";
 
     /**
      * Default JUnit constructor.<p>
@@ -65,7 +60,7 @@ public class TestCmsSetupBean extends OpenCmsTestCase {
     public void testSaveProperties() throws IOException {
 
         CmsSetupBean bean = new CmsSetupBean();
-        bean.init("", null, null);
+        bean.init(OpenCmsTestProperties.getInstance().getTestWebappPath(), null, null);
 
         String testPropPath = "org/opencms/configuration/";
 
