@@ -24,8 +24,6 @@ if (project.hasProperty('external_directories')){
     }
 }
 
-project.ext.debug = project.hasProperty('enable_debug')&&enable_debug.toBoolean()
-
 configurations {
     compile {
         description = 'used to compile the opencms.jar and the modules jars'
@@ -91,8 +89,8 @@ dependencies {
          builtBy 'componentsJar'
     }
 	
-    modulesCompile files("$buildDir/libs/opencms.jar") {
-       	builtBy 'jar'
+    modulesCompile files("$buildDir/classes/main") {
+       	builtBy 'compileJava'
    	}
     
     testCompile fileTree('webapp/setup/database'){
@@ -519,9 +517,28 @@ tasks.findAll{ task -> task.name.startsWith('dist_')}.each{ dist_task ->
     }
 }
 
+task enhance << {
+    ant.taskdef(
+        name      : 'openjpaenhancer',
+        classpath : configurations.modulesCompile.asPath,
+        classname : 'org.apache.openjpa.ant.PCEnhancerTask'
+    )
+
+    ant.openjpaenhancer(classpath : configurations.modulesCompile.asPath){
+        fileset(dir: "${sourceSets.main.output.classesDir}/org/opencms/db/jpa/persistence"){ 
+            exclude(name: '*$*.class')
+        }
+        config(propertiesFile: "${projectDir}/webapp/WEB-INF/classes/META-INF/persistence.xml")
+    }
+}
+
 jar {
+    it.dependsOn enhance
     manifest {
-        attributes 'Implementation-Title': 'Alkacon OpenCms', 'Implementation-Version': version
+        attributes 'Implementation-Title': 'Alkacon OpenCms', 
+            'Implementation-Version': version, 
+            'JPA-PersistenceUnits': 'DATA_OPENJPA,DATA_OPENJPA_JTA', 
+            'Meta-Persistence': 'META-INF/persistence.xml'
     }
     archiveName 'opencms.jar'
     include 'org/opencms/**'
@@ -677,28 +694,9 @@ test {
     systemProperties['test.build.folder'] =sourceSets.test.output.classesDir
     maxHeapSize = "1024m"
     jvmArgs '-XX:MaxPermSize=256m'
-    if (debug.toBoolean()){
-        testLogging.showStandardStreams = true
-    }
+    testLogging.showStandardStreams = true
 }
 
 tasks.withType(JavaCompile) {
     options.compilerArgs += ["-sourcepath", ""]
-}
-
-if (debug.toBoolean()){
-    compileGwtJava.doFirst{
-        println '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++'
-        println 'Dependencies of compileGwtJava:'
-        classpath.each{ dep ->
-            println dep
-        }
-    }
-    test.doFirst{
-        println '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++'
-        println 'Dependencies of test:'
-        classpath.each{ dep ->
-            println dep
-        }
-    }
 }
