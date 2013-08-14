@@ -30,7 +30,6 @@ package org.opencms.gwt.client.ui.resourceinfo;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsPopup;
-import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.resourceinfo.CmsResourceRelationView.Mode;
 import org.opencms.gwt.shared.CmsResourceStatusBean;
@@ -41,7 +40,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -88,11 +86,8 @@ public class CmsResourceInfoDialog extends CmsPopup {
                     relationViews.add(usage);
                     break;
                 case tabStatus:
-                    CmsScrollPanel panel = GWT.create(CmsScrollPanel.class);
-                    panel.getElement().getStyle().setProperty("maxHeight", height + "px");
                     CmsResourceInfoView infoView = new CmsResourceInfoView(statusBean);
-                    panel.add(infoView);
-                    tabPanel.add(panel, tabEntry.getValue());
+                    tabPanel.add(infoView, tabEntry.getValue());
                     relationViews.add(null);
                     break;
                 default:

@@ -30,6 +30,7 @@ package org.opencms.gwt.client.ui.resourceinfo;
 import org.opencms.db.CmsResourceState;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.util.CmsResourceStateUtil;
 import org.opencms.gwt.shared.CmsResourceStatusBean;
 
@@ -125,6 +126,12 @@ public class CmsResourceInfoView extends Composite {
     protected HasText m_resourceType;
 
     /**
+     * Scroll panel for resource information.<p>
+     */
+    @UiField
+    protected CmsScrollPanel m_scrollPanel;
+
+    /**
      * Text field for resource information.<p>
      */
     @UiField
@@ -181,6 +188,7 @@ public class CmsResourceInfoView extends Composite {
         m_size.setText("" + status.getSize() + " Bytes");
         m_userCreated.setText(status.getUserCreated());
         m_userLastModified.setText(status.getUserLastModified());
+        m_scrollPanel.setHeight("280px");
         List<String> locales = status.getLocales();
         if (locales != null) {
             StringBuffer buffer = new StringBuffer();
