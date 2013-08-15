@@ -503,7 +503,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     }
 
     /**
-     * Splits the value in all it´s informations.<p>
+     * Splits the value in all it's informations.<p>
      * First part is the URL of the image. The second one describes the scale of this image.<p>
      * The last one sets the selected format.<p>
      * 
