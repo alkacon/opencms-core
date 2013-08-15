@@ -13,10 +13,11 @@ project.ext.allModuleNames = props['modules.common.all']
 project.ext.allExternalModuleNames = ''
 project.ext.modulesDistsDir = file(project.buildDir.toString() + '/modulesZip')
 if (project.hasProperty('external_directories')){
-    if (file(external_directories+'/modules/all-modules.properties').exists()){
+	def externalPropFile =file(external_directories+'/modules/all-modules.properties')
+    if (externalPropFile.exists()){
     	Properties externalprops = new Properties() 
         println 'reading external modules from '+external_directories+'/modules/all-modules.properties'
-    	externalprops.load(new FileInputStream(external_directories+'/modules/all-modules.properties')) 
+    	externalprops.load(new FileInputStream(externalPropFile)) 
     	project.ext.allExternalModuleNames = externalprops['modules.common.all']
         project.ext.allModuleNames += ','+allExternalModuleNames
     }else{
