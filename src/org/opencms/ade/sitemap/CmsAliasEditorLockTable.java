@@ -30,10 +30,10 @@ package org.opencms.ade.sitemap;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import com.google.common.collect.MapMaker;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 
 /**
  * A class used to keep track of which user is editing the alias table from which sites.<p>
@@ -52,15 +52,17 @@ public class CmsAliasEditorLockTable {
     /**
      * Internal map from site roots to users.
      */
-    private Map<String, CmsUser> m_map;
+    private Cache<String, CmsUser> m_map;
 
     /**
      * Creates a new lock table instance.<p>
      */
     public CmsAliasEditorLockTable() {
 
-        MapMaker mm = new MapMaker().expireAfterWrite(TIMEOUT_INTERVAL, TimeUnit.MILLISECONDS);
-        m_map = mm.makeMap();
+        CacheBuilder<Object, Object> mm = CacheBuilder.newBuilder().expireAfterWrite(
+            TIMEOUT_INTERVAL,
+            TimeUnit.MILLISECONDS);
+        m_map = mm.build();
     }
 
     /**
@@ -71,11 +73,11 @@ public class CmsAliasEditorLockTable {
      */
     public void clear(CmsObject cms, String siteRoot) {
 
-        CmsUser originalUser = m_map.get(siteRoot);
+        CmsUser originalUser = m_map.getIfPresent(siteRoot);
         if ((originalUser == null) || !originalUser.equals(cms.getRequestContext().getCurrentUser())) {
             return;
         }
-        m_map.remove(siteRoot);
+        m_map.invalidate(siteRoot);
     }
 
     /**
@@ -91,7 +93,7 @@ public class CmsAliasEditorLockTable {
      */
     public CmsUser update(CmsObject cms, String siteRoot) {
 
-        CmsUser originalUser = m_map.get(siteRoot);
+        CmsUser originalUser = m_map.getIfPresent(siteRoot);
         if ((originalUser == null) || originalUser.equals(cms.getRequestContext().getCurrentUser())) {
             m_map.put(siteRoot, cms.getRequestContext().getCurrentUser());
             return null;
