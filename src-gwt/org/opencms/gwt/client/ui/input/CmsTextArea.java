@@ -141,7 +141,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
                 }
 
                 m_textArea.setVisibleLines(height);
-                m_textAreaContainer.onResize();
+                m_textAreaContainer.onResizeDescendant();
                 fireValueChangedEvent(false);
             }
 
@@ -386,7 +386,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         m_textArea.setVisibleLines(rows);
         m_textAreaContainer.setHeight(height_scroll + "px");
         m_textAreaContainer.setDefaultHeight(height_scroll);
-        m_textAreaContainer.onResize();
+        m_textAreaContainer.onResizeDescendant();
     }
 
     /**
@@ -401,7 +401,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         m_textArea.setVisibleLines(rows);
         m_textAreaContainer.setHeight(height_scroll + "px");
         m_textAreaContainer.setDefaultHeight(height_scroll);
-        m_textAreaContainer.onResize();
+        m_textAreaContainer.onResizeDescendant();
     }
 
     /**
@@ -461,7 +461,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
                 m_panel.add(m_fadePanel);
                 m_panel.getElement().setTitle(string);
                 m_textArea.setVisibleLines(height);
-                m_textAreaContainer.onResize();
+                m_textAreaContainer.onResizeDescendant();
             }
         });
     }

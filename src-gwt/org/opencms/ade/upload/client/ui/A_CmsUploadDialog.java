@@ -553,7 +553,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
                 CmsFileInfo file = m_allFiles.get(filename);
                 addFileToList(file, false, isTooLarge(file));
             }
-            onResize();
+            doResize();
         }
         loadAndShow();
     }
@@ -619,7 +619,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
         m_loadingPanel.add(messageDiv);
 
         m_contentWrapper.add(m_loadingPanel);
-        onResize();
+        doResize();
     }
 
     /**
@@ -783,9 +783,9 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
     /**
      * Required to be called when the content has changed.<p> 
      */
-    protected void onResize() {
+    protected void doResize() {
 
-        m_scrollPanel.onResize();
+        m_scrollPanel.onResizeDescendant();
     }
 
     /**
@@ -851,7 +851,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
             fixedContent += m_selectionSummary.getOffsetHeight();
         }
         m_scrollPanel.getElement().getStyle().setPropertyPx("maxHeight", getAvailableHeight(fixedContent));
-        onResize();
+        doResize();
     }
 
     /**
@@ -867,7 +867,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
         getContentWrapper().add(m_dragAndDropMessage);
         getContentWrapper().getElement().getStyle().setBackgroundColor(
             I_CmsConstantsBundle.INSTANCE.css().notificationErrorBg());
-        onResize();
+        doResize();
     }
 
     /**
@@ -1039,7 +1039,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
         CmsListItem listItem = new CmsListItem(check, listItemWidget);
         m_fileList.addItem(listItem);
         m_listItems.put(file.getFileName(), listItem);
-        onResize();
+        doResize();
     }
 
     /**
@@ -1056,7 +1056,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
 
                 public void execute() {
 
-                    onResize();
+                    doResize();
                 }
             }, 750);
         }
@@ -1268,7 +1268,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
     private void removeContent() {
 
         m_contentWrapper.clear();
-        onResize();
+        doResize();
     }
 
     /**
@@ -1283,7 +1283,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
         m_scrollPanel.getElement().getStyle().setHeight(height, Unit.PX);
         m_scrollPanel.getElement().getStyle().clearProperty("minHeight");
         m_scrollPanel.getElement().getStyle().clearProperty("maxHeight");
-        onResize();
+        doResize();
     }
 
     /**
@@ -1377,7 +1377,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
         }
         if (m_clientLoading) {
             m_contentWrapper.remove(m_loadingPanel);
-            onResize();
+            doResize();
             m_clientLoading = false;
         }
     }

@@ -27,6 +27,8 @@
 
 package org.opencms.gwt.client.util;
 
+import com.alkacon.geranium.client.I_DescendantResizeHandler;
+
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
@@ -58,7 +60,6 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
-import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -735,22 +736,22 @@ public final class CmsDomUtil {
      * @param styleSheetLink the style-sheet link
      */
     public static native void ensureStyleSheetIncluded(String styleSheetLink)/*-{
-        var styles = $wnd.document.styleSheets;
-        for ( var i = 0; i < styles.length; i++) {
-            if (styles[i].href != null
-                    && styles[i].href.indexOf(styleSheetLink) >= 0) {
-                // style-sheet is present
-                return;
-            }
-        }
-        // include style-sheet into head
-        var headID = $wnd.document.getElementsByTagName("head")[0];
-        var cssNode = $wnd.document.createElement('link');
-        cssNode.type = 'text/css';
-        cssNode.rel = 'stylesheet';
-        cssNode.href = styleSheetLink;
-        headID.appendChild(cssNode);
-    }-*/;
+                                                                             var styles = $wnd.document.styleSheets;
+                                                                             for ( var i = 0; i < styles.length; i++) {
+                                                                             if (styles[i].href != null
+                                                                             && styles[i].href.indexOf(styleSheetLink) >= 0) {
+                                                                             // style-sheet is present
+                                                                             return;
+                                                                             }
+                                                                             }
+                                                                             // include style-sheet into head
+                                                                             var headID = $wnd.document.getElementsByTagName("head")[0];
+                                                                             var cssNode = $wnd.document.createElement('link');
+                                                                             cssNode.type = 'text/css';
+                                                                             cssNode.rel = 'stylesheet';
+                                                                             cssNode.href = styleSheetLink;
+                                                                             headID.appendChild(cssNode);
+                                                                             }-*/;
 
     /**
      * Ensures that the given element is visible.<p>
@@ -797,79 +798,79 @@ public final class CmsDomUtil {
      */
     public static native void fixFlashZindex(Element element)/*-{
 
-        var embeds = element.getElementsByTagName('embed');
-        for (i = 0; i < embeds.length; i++) {
-            embed = embeds[i];
-            var new_embed;
-            // everything but Firefox & Konqueror
-            if (embed.outerHTML) {
-                var html = embed.outerHTML;
-                // replace an existing wmode parameter
-                if (html.match(/wmode\s*=\s*('|")[a-zA-Z]+('|")/i))
-                    new_embed = html.replace(/wmode\s*=\s*('|")window('|")/i,
-                            "wmode='transparent'");
-                // add a new wmode parameter
-                else
-                    new_embed = html.replace(/<embed\s/i,
-                            "<embed wmode='transparent' ");
-                // replace the old embed object with the fixed version
-                embed.insertAdjacentHTML('beforeBegin', new_embed);
-                embed.parentNode.removeChild(embed);
-            } else {
-                // cloneNode is buggy in some versions of Safari & Opera, but works fine in FF
-                new_embed = embed.cloneNode(true);
-                if (!new_embed.getAttribute('wmode')
-                        || new_embed.getAttribute('wmode').toLowerCase() == 'window')
-                    new_embed.setAttribute('wmode', 'transparent');
-                embed.parentNode.replaceChild(new_embed, embed);
-            }
-        }
-        // loop through every object tag on the site
-        var objects = element.getElementsByTagName('object');
-        for (i = 0; i < objects.length; i++) {
-            object = objects[i];
-            var new_object;
-            // object is an IE specific tag so we can use outerHTML here
-            if (object.outerHTML) {
-                var html = object.outerHTML;
-                // replace an existing wmode parameter
-                if (html
-                        .match(/<param\s+name\s*=\s*('|")wmode('|")\s+value\s*=\s*('|")[a-zA-Z]+('|")\s*\/?\>/i))
-                    new_object = html
-                            .replace(
-                                    /<param\s+name\s*=\s*('|")wmode('|")\s+value\s*=\s*('|")window('|")\s*\/?\>/i,
-                                    "<param name='wmode' value='transparent' />");
-                // add a new wmode parameter
-                else
-                    new_object = html
-                            .replace(/<\/object\>/i,
-                                    "<param name='wmode' value='transparent' />\n</object>");
-                // loop through each of the param tags
-                var children = object.childNodes;
-                for (j = 0; j < children.length; j++) {
-                    try {
-                        if (children[j] != null) {
-                            var theName = children[j].getAttribute('name');
-                            if (theName != null && theName.match(/flashvars/i)) {
-                                new_object = new_object
-                                        .replace(
-                                                /<param\s+name\s*=\s*('|")flashvars('|")\s+value\s*=\s*('|")[^'"]*('|")\s*\/?\>/i,
-                                                "<param name='flashvars' value='"
-                                                        + children[j]
+                                                             var embeds = element.getElementsByTagName('embed');
+                                                             for (i = 0; i < embeds.length; i++) {
+                                                             embed = embeds[i];
+                                                             var new_embed;
+                                                             // everything but Firefox & Konqueror
+                                                             if (embed.outerHTML) {
+                                                             var html = embed.outerHTML;
+                                                             // replace an existing wmode parameter
+                                                             if (html.match(/wmode\s*=\s*('|")[a-zA-Z]+('|")/i))
+                                                             new_embed = html.replace(/wmode\s*=\s*('|")window('|")/i,
+                                                             "wmode='transparent'");
+                                                             // add a new wmode parameter
+                                                             else
+                                                             new_embed = html.replace(/<embed\s/i,
+                                                             "<embed wmode='transparent' ");
+                                                             // replace the old embed object with the fixed version
+                                                             embed.insertAdjacentHTML('beforeBegin', new_embed);
+                                                             embed.parentNode.removeChild(embed);
+                                                             } else {
+                                                             // cloneNode is buggy in some versions of Safari & Opera, but works fine in FF
+                                                             new_embed = embed.cloneNode(true);
+                                                             if (!new_embed.getAttribute('wmode')
+                                                             || new_embed.getAttribute('wmode').toLowerCase() == 'window')
+                                                             new_embed.setAttribute('wmode', 'transparent');
+                                                             embed.parentNode.replaceChild(new_embed, embed);
+                                                             }
+                                                             }
+                                                             // loop through every object tag on the site
+                                                             var objects = element.getElementsByTagName('object');
+                                                             for (i = 0; i < objects.length; i++) {
+                                                             object = objects[i];
+                                                             var new_object;
+                                                             // object is an IE specific tag so we can use outerHTML here
+                                                             if (object.outerHTML) {
+                                                             var html = object.outerHTML;
+                                                             // replace an existing wmode parameter
+                                                             if (html
+                                                             .match(/<param\s+name\s*=\s*('|")wmode('|")\s+value\s*=\s*('|")[a-zA-Z]+('|")\s*\/?\>/i))
+                                                             new_object = html
+                                                             .replace(
+                                                             /<param\s+name\s*=\s*('|")wmode('|")\s+value\s*=\s*('|")window('|")\s*\/?\>/i,
+                                                             "<param name='wmode' value='transparent' />");
+                                                             // add a new wmode parameter
+                                                             else
+                                                             new_object = html
+                                                             .replace(/<\/object\>/i,
+                                                             "<param name='wmode' value='transparent' />\n</object>");
+                                                             // loop through each of the param tags
+                                                             var children = object.childNodes;
+                                                             for (j = 0; j < children.length; j++) {
+                                                             try {
+                                                             if (children[j] != null) {
+                                                             var theName = children[j].getAttribute('name');
+                                                             if (theName != null && theName.match(/flashvars/i)) {
+                                                             new_object = new_object
+                                                             .replace(
+                                                             /<param\s+name\s*=\s*('|")flashvars('|")\s+value\s*=\s*('|")[^'"]*('|")\s*\/?\>/i,
+                                                             "<param name='flashvars' value='"
+                                                             + children[j]
                                                                 .getAttribute('value')
-                                                        + "' />");
-                            }
-                        }
-                    } catch (err) {
-                    }
-                }
-                // replace the old embed object with the fixed versiony
-                object.insertAdjacentHTML('beforeBegin', new_object);
-                object.parentNode.removeChild(object);
-            }
-        }
+                                                             + "' />");
+                                                             }
+                                                             }
+                                                             } catch (err) {
+                                                             }
+                                                             }
+                                                             // replace the old embed object with the fixed versiony
+                                                             object.insertAdjacentHTML('beforeBegin', new_object);
+                                                             object.parentNode.removeChild(object);
+                                                             }
+                                                             }
 
-    }-*/;
+                                                             }-*/;
 
     /**
      * Generates a form element with hidden input fields.<p>
@@ -1236,8 +1237,8 @@ public final class CmsDomUtil {
      * @return the DOM window object 
      */
     public static native JavaScriptObject getWindow() /*-{
-        return $wnd;
-    }-*/;
+                                                      return $wnd;
+                                                      }-*/;
 
     /**
      * Returns the Z index from the given style.<p>
@@ -1341,16 +1342,16 @@ public final class CmsDomUtil {
      * @return <code>true</code> if the script resource is present within the window context
      */
     public static native boolean isJavaScriptPresent(String javascriptLink)/*-{
-        var scripts = $wnd.document.scripts;
-        for ( var i = 0; i < scripts.length; i++) {
-            if (scripts[i].src != null
-                    && scripts[i].src.indexOf(javascriptLink) >= 0) {
-                // script resource is present
-                return true;
-            }
-        }
-        return false;
-    }-*/;
+                                                                           var scripts = $wnd.document.scripts;
+                                                                           for ( var i = 0; i < scripts.length; i++) {
+                                                                           if (scripts[i].src != null
+                                                                           && scripts[i].src.indexOf(javascriptLink) >= 0) {
+                                                                           // script resource is present
+                                                                           return true;
+                                                                           }
+                                                                           }
+                                                                           return false;
+                                                                           }-*/;
 
     /**
      * Gives an element the overflow:auto property.<p>
@@ -1421,11 +1422,11 @@ public final class CmsDomUtil {
      * @param features the features to be enabled/disabled on this window
      */
     public static native void openWindow(String url, String name, String features) /*-{
-        var w = $wnd.open(url, name, features);
-        if (!w) {
-            @org.opencms.gwt.client.util.CmsDomUtil::showPopupBlockerMessage()();
-        }
-    }-*/;
+                                                                                   var w = $wnd.open(url, name, features);
+                                                                                   if (!w) {
+                                                                                   @org.opencms.gwt.client.util.CmsDomUtil::showPopupBlockerMessage()();
+                                                                                   }
+                                                                                   }-*/;
 
     /**
      * Parses the given string into a JSON object.<p>
@@ -1435,9 +1436,9 @@ public final class CmsDomUtil {
      * @return the JSON object
      */
     public static native JavaScriptObject parseJSON(String jsonString)/*-{
-        return (typeof $wnd.JSON != 'undefined') && $wnd.JSON.parse(jsonString)
-                || eval('(' + jsonString + ')');
-    }-*/;
+                                                                      return (typeof $wnd.JSON != 'undefined') && $wnd.JSON.parse(jsonString)
+                                                                      || eval('(' + jsonString + ')');
+                                                                      }-*/;
 
     /**
      * Positions an element in the DOM relative to another element.<p>
@@ -1631,22 +1632,23 @@ public final class CmsDomUtil {
      */
     public static native String removeScriptTags(String source)/*-{
 
-        var matchTag = /<script[^>]*?>[\s\S]*?<\/script>/g;
-        return source.replace(matchTag, "");
-    }-*/;
+                                                               var matchTag = /<script[^>]*?>[\s\S]*?<\/script>/g;
+                                                               return source.replace(matchTag, "");
+                                                               }-*/;
 
     /**
-     * Calls {@link com.google.gwt.user.client.ui.RequiresResize#onResize()} on the closest resizable ancestor.<p>
+     * Calls {@link com.alkacon.geranium.client.I_DescendantResizeHandler#onResizeDescendant()} on the closest resizable ancestor.<p>
      * 
      * @param parent the parent widget
      */
     public static void resizeAncestor(Widget parent) {
 
-        if (parent != null) {
-            if (parent instanceof RequiresResize) {
-                ((RequiresResize)parent).onResize();
+        while (parent != null) {
+            if (parent instanceof I_DescendantResizeHandler) {
+                ((I_DescendantResizeHandler)parent).onResizeDescendant();
+                return;
             } else {
-                resizeAncestor(parent.getParent());
+                parent = parent.getParent();
             }
         }
     }
@@ -1659,8 +1661,8 @@ public final class CmsDomUtil {
      * @param value the new attribute value
      */
     public static native void setAttribute(JavaScriptObject jso, String key, JavaScriptObject value) /*-{
-        jso[key] = value;
-    }-*/;
+                                                                                                     jso[key] = value;
+                                                                                                     }-*/;
 
     /**
      * Sets an attribute on a Javascript object.<p>
@@ -1670,8 +1672,8 @@ public final class CmsDomUtil {
      * @param value the new attribute value 
      */
     public static native void setAttribute(JavaScriptObject jso, String key, String value) /*-{
-        jso[key] = value;
-    }-*/;
+                                                                                           jso[key] = value;
+                                                                                           }-*/;
 
     /**
      * Sets a CSS class to show or hide a given overlay. Will not add an overlay to the element.<p>
@@ -1758,12 +1760,12 @@ public final class CmsDomUtil {
      * @param scriptLink the link to the javascript resource
      */
     private static native void injectScript(String scriptLink)/*-{
-        var headID = $wnd.document.getElementsByTagName("head")[0];
-        var scriptNode = $wnd.document.createElement('script');
-        scriptNode.type = 'text/javascript';
-        scriptNode.src = scriptLink;
-        headID.appendChild(scriptNode);
-    }-*/;
+                                                              var headID = $wnd.document.getElementsByTagName("head")[0];
+                                                              var scriptNode = $wnd.document.createElement('script');
+                                                              scriptNode.type = 'text/javascript';
+                                                              scriptNode.src = scriptLink;
+                                                              headID.appendChild(scriptNode);
+                                                              }-*/;
 
     /**
      * Internal method to indicate if the given element has a CSS class.<p>

@@ -167,7 +167,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         m_descriptionArea.getTextAreaContainer().addStyleName(
             I_CmsLayoutBundle.INSTANCE.globalWidgetCss().textAreaBoxPanel());
         m_descriptionArea.setRows(3);
-        m_descriptionArea.getTextAreaContainer().onResize();
+        m_descriptionArea.getTextAreaContainer().onResizeDescendant();
 
         m_formatSelection.getOpener().addStyleName(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().selectBoxSelected());
         m_formatSelection.getSelectorPopup().addStyleName(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().selectBoxPopup());
@@ -503,7 +503,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     }
 
     /**
-     * Splits the value in all it's informations.<p>
+     * Splits the value in all its informations.<p>
      * First part is the URL of the image. The second one describes the scale of this image.<p>
      * The last one sets the selected format.<p>
      * 

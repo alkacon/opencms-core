@@ -84,6 +84,9 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
     /** The map of models of the fields. */
     Map<String, I_CmsStringModel> m_models = new HashMap<String, I_CmsStringModel>();
 
+    /** Flag to control whether the properties should be editable. */
+    private boolean m_isReadOnly;
+
     /** The previous tab index. */
     private int m_oldTabIndex = -1;
 
@@ -95,9 +98,6 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
 
     /** Flag which indicates whether the resource properties should be editable. */
     private boolean m_showResourceProperties;
-
-    /** Flag to control whether the properties should be editable. */
-    private boolean m_isReadOnly;
 
     /**
      * Creates a new sitemap entry editor instance for the VFS mode.<p>
@@ -268,7 +268,7 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
             int selectedIndex = m_panel.getTabPanel().getSelectedIndex();
             CmsScrollPanel widget = m_panel.getTabPanel().getWidget(selectedIndex);
             widget.setHeight((newHeight - 45) + "px");
-            widget.onResize();
+            widget.onResizeDescendant();
             //dialog.center();
         }
     }

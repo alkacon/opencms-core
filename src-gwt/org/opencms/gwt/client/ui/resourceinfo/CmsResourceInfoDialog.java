@@ -30,6 +30,7 @@ package org.opencms.gwt.client.ui.resourceinfo;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsPopup;
+import org.opencms.gwt.client.ui.CmsTabContentWrapper;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.resourceinfo.CmsResourceRelationView.Mode;
 import org.opencms.gwt.shared.CmsResourceStatusBean;
@@ -40,6 +41,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -50,6 +53,9 @@ import com.google.gwt.user.client.ui.Widget;
  * Dialog for displaying resource information.<p>
  */
 public class CmsResourceInfoDialog extends CmsPopup {
+
+    /** The tab panel. */
+    CmsTabbedPanel<Widget> m_tabPanel;
 
     /**
      * Creates the dialog for the given resource information.<p>
@@ -64,30 +70,33 @@ public class CmsResourceInfoDialog extends CmsPopup {
         setGlassEnabled(true);
         addDialogClose(null);
         setWidth(520);
-        int height = 400;
-        setHeight(height);
         removePadding();
 
-        CmsTabbedPanel<Widget> tabPanel = new CmsTabbedPanel<Widget>();
-
+        final CmsTabbedPanel<Widget> tabPanel = new CmsTabbedPanel<Widget>();
+        m_tabPanel = tabPanel;
+        tabPanel.setAutoResize(true);
+        tabPanel.setAutoResizeHeightDelta(40);
         final List<CmsResourceRelationView> relationViews = new ArrayList<CmsResourceRelationView>();
         for (Map.Entry<CmsResourceStatusTabId, String> tabEntry : statusBean.getTabs().entrySet()) {
             switch (tabEntry.getKey()) {
                 case tabRelationsFrom:
                     CmsResourceRelationView targets = new CmsResourceRelationView(statusBean, Mode.targets);
+                    setTabMinHeight(targets);
                     targets.setPopup(this);
-                    tabPanel.add(targets, tabEntry.getValue());
+                    tabPanel.add(new CmsTabContentWrapper(targets), tabEntry.getValue());
                     relationViews.add(targets);
                     break;
                 case tabRelationsTo:
                     CmsResourceRelationView usage = new CmsResourceRelationView(statusBean, Mode.sources);
+                    setTabMinHeight(usage);
                     usage.setPopup(this);
-                    tabPanel.add(usage, tabEntry.getValue());
+                    tabPanel.add(new CmsTabContentWrapper(usage), tabEntry.getValue());
                     relationViews.add(usage);
                     break;
                 case tabStatus:
                     CmsResourceInfoView infoView = new CmsResourceInfoView(statusBean);
-                    tabPanel.add(infoView, tabEntry.getValue());
+                    setTabMinHeight(infoView);
+                    tabPanel.add(new CmsTabContentWrapper(infoView), tabEntry.getValue());
                     relationViews.add(null);
                     break;
                 default:
@@ -105,7 +114,9 @@ public class CmsResourceInfoDialog extends CmsPopup {
                 if (relationViews.get(tab) != null) {
                     relationViews.get(tab).onSelect();
                 }
+                delayedResize();
             }
+
         });
         setMainContent(tabPanel);
     }
@@ -150,5 +161,39 @@ public class CmsResourceInfoDialog extends CmsPopup {
             }
         };
         action.execute();
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.Widget#onLoad()
+     */
+    @Override
+    public void onLoad() {
+
+        delayedResize();
+    }
+
+    /**
+     * Schedules a resize operation.<p>
+     */
+    void delayedResize() {
+
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+            public void execute() {
+
+                m_tabPanel.onResizeDescendant();
+            }
+        });
+
+    }
+
+    /**
+     * Sets the minimum height for a tab content widget.<p>
+     * 
+     * @param w the minimum height for a tab content widget 
+     */
+    private void setTabMinHeight(Widget w) {
+
+        w.getElement().getStyle().setProperty("minHeight", "355px");
     }
 }

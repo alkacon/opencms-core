@@ -131,7 +131,7 @@ public class CmsBrokenLinksPanel extends Composite {
             item.addChild(subItem);
         }
         m_list.addItem(item);
-        m_scrollPanel.onResize();
+        m_scrollPanel.onResizeDescendant();
     }
 
     /**

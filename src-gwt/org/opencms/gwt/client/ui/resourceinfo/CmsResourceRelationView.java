@@ -62,7 +62,6 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -102,21 +101,8 @@ public class CmsResourceRelationView extends Composite {
     /** The edit button. */
     private CmsPushButton m_editButton;
 
-    /** True if the resource boxes have already been created. */
-    private boolean m_filled;
-
     /** The display mode. */
     private Mode m_mode;
-
-    /** Timer for notifying the scroll panel of size changes. */
-    private Timer m_resizeTimer = new Timer() {
-
-        @Override
-        public void run() {
-
-            CmsDomUtil.resizeAncestor(m_list);
-        }
-    };
 
     /** The resource status from which we get the related resources to display. */
     private CmsResourceStatusBean m_statusBean;
@@ -130,12 +116,16 @@ public class CmsResourceRelationView extends Composite {
     public CmsResourceRelationView(CmsResourceStatusBean status, Mode mode) {
 
         initWidget(m_panel);
-        m_panel.getElement().getStyle().setOverflow(Style.Overflow.HIDDEN);
+        //m_panel.getElement().getStyle().setOverflow(Style.Overflow.HIDDEN);
         m_statusBean = status;
         m_mode = mode;
+        // wrap list info item in another panel to achieve layout uniformity with other similar widgets 
+        SimplePanel infoBoxPanel = new SimplePanel();
+        infoBoxPanel.getElement().getStyle().setMarginTop(2, Style.Unit.PX);
         CmsListItemWidget infoWidget = new CmsListItemWidget(status.getListInfo());
         CmsListItem infoItem = new CmsListItem(infoWidget);
-        m_panel.add(infoItem);
+        m_panel.add(infoBoxPanel);
+        infoBoxPanel.add(infoItem);
         CmsFieldSet fieldset = new CmsFieldSet();
         CmsScrollPanel scrollPanel = GWT.create(CmsScrollPanel.class);
         scrollPanel.add(m_list);
@@ -144,6 +134,7 @@ public class CmsResourceRelationView extends Composite {
         fieldset.setLegend(getLegend());
         fieldset.add(scrollPanel);
         m_panel.add(fieldset);
+        fill();
     }
 
     static {
@@ -157,12 +148,8 @@ public class CmsResourceRelationView extends Composite {
      */
     public void onSelect() {
 
-        if (!m_filled) {
-            // only produce the widgets when they actually need to be shown 
-            fill();
-            m_filled = true;
-        }
-        m_resizeTimer.schedule(1);
+        // do nothing 
+
     }
 
     /**
@@ -266,9 +253,7 @@ public class CmsResourceRelationView extends Composite {
                 }
                 m_list.add(item);
             }
-
         }
-
     }
 
     /**

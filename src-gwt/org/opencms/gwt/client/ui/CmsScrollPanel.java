@@ -27,6 +27,8 @@
 
 package org.opencms.gwt.client.ui;
 
+import com.alkacon.geranium.client.I_DescendantResizeHandler;
+
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsFocusedScrollingHandler;
@@ -51,7 +53,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Scroll panel implementation allowing focused scrolling.<p>
  */
-public class CmsScrollPanel extends ScrollPanel implements HasResizeHandlers {
+public class CmsScrollPanel extends ScrollPanel implements HasResizeHandlers, I_DescendantResizeHandler {
 
     /**Inner class for the resize button. */
     protected class ResizeButton extends CmsPushButton {
@@ -102,7 +104,7 @@ public class CmsScrollPanel extends ScrollPanel implements HasResizeHandlers {
                 case Event.ONMOUSEMOVE:
                     // dragging
                     setNewHeight(nativeEvent);
-                    onResize();
+                    onResizeDescendant();
                     event.cancel();
                     break;
                 case Event.ONMOUSEUP:
@@ -204,6 +206,14 @@ public class CmsScrollPanel extends ScrollPanel implements HasResizeHandlers {
             m_handlerRegistration.removeHandler();
             m_handlerRegistration = null;
         }
+    }
+
+    /**
+     * @see com.alkacon.geranium.client.I_DescendantResizeHandler#onResizeDescendant()
+     */
+    public void onResizeDescendant() {
+
+        // not needed 
     }
 
     /**

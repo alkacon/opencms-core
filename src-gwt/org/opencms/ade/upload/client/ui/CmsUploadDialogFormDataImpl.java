@@ -162,7 +162,7 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
             m_dragAndDropMessage = null;
             m_normalColor = I_CmsLayoutBundle.INSTANCE.constants().css().backgroundColorDialog();
             m_scrollPanel.getElement().getStyle().setBackgroundColor(m_normalColor);
-            onResize();
+            doResize();
         }
     }
 
@@ -180,7 +180,7 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
         getContentWrapper().add(m_dragAndDropMessage);
         m_normalColor = I_CmsConstantsBundle.INSTANCE.css().notificationNormalBg();
         m_scrollPanel.getElement().getStyle().setBackgroundColor(m_normalColor);
-        onResize();
+        doResize();
     }
 
     /**

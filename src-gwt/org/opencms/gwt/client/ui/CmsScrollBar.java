@@ -27,6 +27,8 @@
 
 package org.opencms.gwt.client.ui;
 
+import com.alkacon.geranium.client.I_DescendantResizeHandler;
+
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsPositionBean;
@@ -46,13 +48,12 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.VerticalScrollbar;
 
 /**
  * A custom scroll bar to be used with {@link org.opencms.gwt.client.ui.CmsScrollPanel}.<p>
  */
-public class CmsScrollBar extends FocusPanel implements RequiresResize, HasValue<Integer>, VerticalScrollbar {
+public class CmsScrollBar extends FocusPanel implements I_DescendantResizeHandler, HasValue<Integer>, VerticalScrollbar {
 
     /**
      * The timer used to continue to shift the knob as the user holds down one of
@@ -139,11 +140,11 @@ public class CmsScrollBar extends FocusPanel implements RequiresResize, HasValue
     /** The initial delay. */
     private static final int INITIALDELAY = 400;
 
-    /** The scroll knob top and bottom offset. */
-    private static final int SCROLL_KNOB_OFFSET = 2;
-
     /** The scroll knob minimum height. */
     private static final int SCROLL_KNOB_MIN_HEIGHT = 10;
+
+    /** The scroll knob top and bottom offset. */
+    private static final int SCROLL_KNOB_OFFSET = 2;
 
     /** The size of the increments between knob positions. */
     protected int m_stepSize = 5;
@@ -217,19 +218,6 @@ public class CmsScrollBar extends FocusPanel implements RequiresResize, HasValue
     }
 
     /**
-     * @param reziseable true if the panel is resizeable
-     * 
-     */
-    public void isResizeable(boolean reziseable) {
-
-        if (reziseable) {
-            this.getElement().getStyle().setMarginBottom(7, Unit.PX);
-        } else {
-            this.getElement().getStyle().setMarginBottom(0, Unit.PX);
-        }
-    }
-
-    /**
      * @see com.google.gwt.event.dom.client.HasScrollHandlers#addScrollHandler(com.google.gwt.event.dom.client.ScrollHandler)
      */
     public HandlerRegistration addScrollHandler(ScrollHandler handler) {
@@ -285,6 +273,19 @@ public class CmsScrollBar extends FocusPanel implements RequiresResize, HasValue
     public int getVerticalScrollPosition() {
 
         return getValue().intValue();
+    }
+
+    /**
+     * @param reziseable true if the panel is resizeable
+     * 
+     */
+    public void isResizeable(boolean reziseable) {
+
+        if (reziseable) {
+            this.getElement().getStyle().setMarginBottom(7, Unit.PX);
+        } else {
+            this.getElement().getStyle().setMarginBottom(0, Unit.PX);
+        }
     }
 
     /**
@@ -399,9 +400,9 @@ public class CmsScrollBar extends FocusPanel implements RequiresResize, HasValue
     }
 
     /**
-     * @see com.google.gwt.user.client.ui.RequiresResize#onResize()
+     * @see com.alkacon.geranium.client.I_DescendantResizeHandler#onResizeDescendant()
      */
-    public void onResize() {
+    public void onResizeDescendant() {
 
         redraw();
     }

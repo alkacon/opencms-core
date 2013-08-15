@@ -305,7 +305,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
             public void execute() {
 
-                m_list.onResize();
+                m_list.onResizeDescendant();
             }
         });
     }

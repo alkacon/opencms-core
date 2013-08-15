@@ -22,8 +22,13 @@
 			margin-top: 2px; 
 		}
 		
+		.main {
+			overflow: hidden; 
+		}
+		
+		
 	</ui:style>
-	<g:FlowPanel>
+	<g:FlowPanel addStyleNames="{style.main}">
 		<g:SimplePanel addStyleNames="{style.infobox}" ui:field="m_infoBoxContainer"></g:SimplePanel>
 		<cms:CmsFieldSet legend="{m.messageFieldsetTitle}" addStyleNames="{style.fieldset}">
 		<cms:CmsScrollPanel ui:field="m_scrollPanel">
@@ -47,4 +52,5 @@
 		</cms:CmsScrollPanel>
 		</cms:CmsFieldSet>
 	</g:FlowPanel>
+
 </ui:UiBinder> 

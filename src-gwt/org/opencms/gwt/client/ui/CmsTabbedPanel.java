@@ -27,6 +27,8 @@
 
 package org.opencms.gwt.client.ui;
 
+import com.alkacon.geranium.client.I_DescendantResizeHandler;
+
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.util.CmsStringUtil;
@@ -65,7 +67,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @since 8.0.0
  * 
  */
-public class CmsTabbedPanel<E extends Widget> extends Composite implements Iterable<E> {
+public class CmsTabbedPanel<E extends Widget> extends Composite implements I_DescendantResizeHandler, Iterable<E> {
 
     /** Enumeration with layout keys. */
     public enum CmsTabbedPanelStyle {
@@ -185,6 +187,12 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements Itera
 
     /** The TabLayoutPanel widget. */
     TabPanel m_tabPanel;
+
+    /** Auto resize mode. */
+    private boolean m_autoResize;
+
+    /** Offset which is added to the measured tab content height to resize the panel. */
+    private int m_autoResizeHeightDelta;
 
     /** Stores the indexes and the title of disabled tabs. */
     private Map<Integer, String> m_disabledTabIndexes = new HashMap<Integer, String>();
@@ -496,6 +504,21 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements Itera
     }
 
     /**
+     * @see com.alkacon.geranium.client.I_DescendantResizeHandler#onResizeDescendant()
+     */
+    public void onResizeDescendant() {
+
+        if (m_autoResize) {
+            Widget w = m_tabPanel.getWidget(getSelectedIndex());
+            if (w instanceof CmsTabContentWrapper) {
+                w = ((CmsTabContentWrapper)w).getWidget();
+            }
+            int h = w.getOffsetHeight() + m_autoResizeHeightDelta;
+            setHeight(h + "px");
+        }
+    }
+
+    /**
      * Removes the tab with the given index.<p>
      * 
      * @param tabIndex the index of the tab which should be removed 
@@ -554,6 +577,26 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements Itera
     public void selectTab(int tabIndex, boolean fireEvent) {
 
         m_tabPanel.selectTab(tabIndex, fireEvent);
+    }
+
+    /**
+     * Enables or disables auto-resizing.<p>
+     * 
+     * @param autoResize the auto resize flag value 
+     */
+    public void setAutoResize(boolean autoResize) {
+
+        m_autoResize = autoResize;
+    }
+
+    /**
+     * Sets a value which is added to the height of a tab content to change the tabbed panel height.<p>
+     * 
+     * @param heightDelta the height difference 
+     */
+    public void setAutoResizeHeightDelta(int heightDelta) {
+
+        m_autoResizeHeightDelta = heightDelta;
     }
 
     /**

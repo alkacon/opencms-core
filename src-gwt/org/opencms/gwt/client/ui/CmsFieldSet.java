@@ -300,6 +300,7 @@ implements HasOpenHandlers<CmsFieldSet>, HasCloseHandlers<CmsFieldSet>, HasWidge
                 public void execute() {
 
                     OpenEvent.fire(CmsFieldSet.this, CmsFieldSet.this);
+                    CmsDomUtil.resizeAncestor(getParent());
                 }
             }, m_animationDuration);
         } else {
@@ -314,6 +315,7 @@ implements HasOpenHandlers<CmsFieldSet>, HasCloseHandlers<CmsFieldSet>, HasWidge
 
                     setOpen(false);
                     CloseEvent.fire(CmsFieldSet.this, CmsFieldSet.this);
+                    CmsDomUtil.resizeAncestor(getParent());
                 }
             }, m_animationDuration);
         }

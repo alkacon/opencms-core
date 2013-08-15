@@ -27,6 +27,8 @@
 
 package org.opencms.gwt.client.ui;
 
+import com.alkacon.geranium.client.I_DescendantResizeHandler;
+
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Style;
@@ -53,7 +55,6 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.AbstractNativeScrollbar;
-import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.VerticalScrollbar;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -250,10 +251,10 @@ public class CmsScrollPanelImpl extends CmsScrollPanel {
     }
 
     /**
-     * @see com.google.gwt.user.client.ui.ScrollPanel#onResize()
+     * @see com.alkacon.geranium.client.I_DescendantResizeHandler#onResizeDescendant()
      */
     @Override
-    public void onResize() {
+    public void onResizeDescendant() {
 
         int maxHeight = CmsDomUtil.getCurrentStyleInt(getElement(), Style.maxHeight);
         if (maxHeight > 0) {
@@ -267,7 +268,6 @@ public class CmsScrollPanelImpl extends CmsScrollPanel {
             getContainerElement().getStyle().setWidth(width, Unit.PX);
             maybeUpdateScrollbars();
         }
-        super.onResize();
     }
 
     /**
@@ -302,7 +302,7 @@ public class CmsScrollPanelImpl extends CmsScrollPanel {
 
         super.onAttach();
         hideNativeScrollbars();
-        onResize();
+        onResizeDescendant();
     }
 
     /**
@@ -317,7 +317,7 @@ public class CmsScrollPanelImpl extends CmsScrollPanel {
 
             public void execute() {
 
-                onResize();
+                onResizeDescendant();
             }
         });
     }
@@ -399,8 +399,8 @@ public class CmsScrollPanelImpl extends CmsScrollPanel {
         } else if (m_scrollLayer != null) {
             m_scrollLayer.getStyle().setDisplay(Display.NONE);
         }
-        if (m_scrollbar instanceof RequiresResize) {
-            ((RequiresResize)m_scrollbar).onResize();
+        if (m_scrollbar instanceof I_DescendantResizeHandler) {
+            ((I_DescendantResizeHandler)m_scrollbar).onResizeDescendant();
         }
         maybeUpdateScrollbarPositions();
     }

@@ -482,7 +482,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         }
         m_groupPanels.clear();
         m_groupPanelContainer.clear();
-        m_scrollPanel.onResize();
+        m_scrollPanel.onResizeDescendant();
         enableActions(false);
 
         int numGroups = groups.size();
@@ -572,7 +572,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
                 // found next item in the current group 
                 boolean found = m_currentGroupPanel.addNextItem();
                 if (found) {
-                    m_scrollPanel.onResize();
+                    m_scrollPanel.onResizeDescendant();
                     return true;
                 }
             } else if (m_currentGroupIndex < (m_model.getGroups().size() - 1)) {
@@ -582,7 +582,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
                 m_currentGroupPanel = addGroupPanel(m_model.getGroups().get(m_currentGroupIndex), m_currentGroupIndex);
             } else {
                 // all groups exhausted 
-                m_scrollPanel.onResize();
+                m_scrollPanel.onResizeDescendant();
                 return false;
             }
         }
