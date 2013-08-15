@@ -60,13 +60,13 @@ public class TestCmsSetupBean extends OpenCmsTestCase {
     public void testSaveProperties() throws IOException {
 
         CmsSetupBean bean = new CmsSetupBean();
-        bean.init(OpenCmsTestProperties.getInstance().getTestWebappPath(), null, null);
+        bean.init("", null, null);
 
         String testPropPath = "org/opencms/configuration/";
 
-        File input = new File(TestParameterConfiguration.class.getClassLoader().getResource(
+        File input = new File(this.getClass().getClassLoader().getResource(
             testPropPath + "opencms-test.properties").getPath());
-
+        assertTrue("Checking if test properties file is present", input.exists());
         String inputFile = input.getAbsolutePath();
         String outputFile = input.getParent() + "/output.properties";
 
@@ -75,8 +75,19 @@ public class TestCmsSetupBean extends OpenCmsTestCase {
 
         System.out.println("Writing properties to " + outputFile);
         bean.copyFile(inputFile, outputFile);
+        if (!bean.getErrors().isEmpty()){
+        	for (String message : bean.getErrors()){
+        		System.out.println(message);
+        	}
+        	assertTrue("There shouldn't be any errors copying the properties files",!bean.getErrors().isEmpty());
+        }
         bean.saveProperties(oldProperties, outputFile, false);
-
+        if (!bean.getErrors().isEmpty()){
+        	for (String message : bean.getErrors()){
+        		System.out.println(message);
+        	}
+        	assertTrue("There shouldn't be any errors saving the properties files",!bean.getErrors().isEmpty());
+        }
         System.out.println("Checking properties from " + outputFile);
         CmsParameterConfiguration newProperties = new CmsParameterConfiguration(outputFile);
 
