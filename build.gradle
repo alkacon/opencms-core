@@ -692,7 +692,6 @@ test {
     // important: exclude all anonymous classes
     exclude '**/*$*.class'
     scanForTestClasses false
-    enableAssertions false
     testClassesDir = sourceSets.test.output.classesDir
     systemProperties['test.data.path'] = projectDir.toString()+'/test/data'
     systemProperties['test.webapp.path'] = projectDir.toString()+'/webapp'

@@ -72,6 +72,9 @@ public class CmsSolrConfiguration {
     /** The system property name for the Solr home directory. */
     public static final String SOLR_HOME_PROPERTY = "solr.solr.home";
 
+    /** The Solr schema name. */
+    public static final String SOLR_SCHEMA_NAME = "OpenCms SOLR schema";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSolrConfiguration.class);
 
@@ -233,7 +236,7 @@ public class CmsSolrConfiguration {
         if (m_schema == null) {
             try {
                 InputSource solrSchema = new InputSource(new FileInputStream(getSolrSchemaFile()));
-                m_schema = new IndexSchema(getSolrConfig(), null, solrSchema);
+                m_schema = new IndexSchema(getSolrConfig(), SOLR_SCHEMA_NAME, solrSchema);
             } catch (FileNotFoundException e) {
                 CmsConfigurationException ex = new CmsConfigurationException(Messages.get().container(
                     Messages.LOG_SOLR_ERR_SCHEMA_XML_NOT_FOUND_1,
