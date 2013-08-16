@@ -897,14 +897,15 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
      */
     public CmsGallerySearchScope getGalleryDefaultScope() {
 
-        if (m_galleryDefaultScope == null) {
-            return CmsGallerySearchScope.everything;
+        CmsGallerySearchScope result = CmsGallerySearchScope.siteShared;
+        if (m_galleryDefaultScope != null) {
+            try {
+                result = CmsGallerySearchScope.valueOf(m_galleryDefaultScope);
+            } catch (Throwable t) {
+                // ignore 
+            }
         }
-        try {
-            return CmsGallerySearchScope.valueOf(m_galleryDefaultScope);
-        } catch (Throwable t) {
-            return CmsGallerySearchScope.everything;
-        }
+        return result;
     }
 
     /**

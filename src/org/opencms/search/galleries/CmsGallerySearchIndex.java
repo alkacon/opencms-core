@@ -218,9 +218,6 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
                 result.add(sharedFolder);
             }
         }
-        if (scope.isIncludeShared()) {
-            result.add(FOLDER_SYSTEM);
-        }
         return result;
     }
 
