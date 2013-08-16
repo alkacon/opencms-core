@@ -60,6 +60,8 @@ import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.dom.client.HasFocusHandlers;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.HasResizeHandlers;
@@ -89,35 +91,13 @@ import com.google.gwt.user.client.ui.Panel;
  * @since 8.0.0
  */
 public class CmsGalleryField extends Composite
-implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasResizeHandlers {
+implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasResizeHandlers, HasFocusHandlers {
 
     /**
      * The UI Binder interface for this widget.<p>
      */
     protected interface I_CmsGalleryFieldUiBinder extends UiBinder<Panel, CmsGalleryField> {
         // binder interface
-    }
-
-    /**
-     * Handler to fire resize event on resource info widget open/close.<p>
-     */
-    protected class OpenCloseHandler implements CloseHandler<CmsListItemWidget>, OpenHandler<CmsListItemWidget> {
-
-        /**
-         * @see com.google.gwt.event.logical.shared.CloseHandler#onClose(com.google.gwt.event.logical.shared.CloseEvent)
-         */
-        public void onClose(CloseEvent<CmsListItemWidget> event) {
-
-            fireResize();
-        }
-
-        /**
-         * @see com.google.gwt.event.logical.shared.OpenHandler#onOpen(com.google.gwt.event.logical.shared.OpenEvent)
-         */
-        public void onOpen(OpenEvent<CmsListItemWidget> event) {
-
-            fireResize();
-        }
     }
 
     /** Timer to update the resource info box. */
@@ -147,11 +127,53 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         }
     }
 
+    /**
+     * Handler to fire resize event on resource info widget open/close.<p>
+     */
+    protected class OpenCloseHandler implements CloseHandler<CmsListItemWidget>, OpenHandler<CmsListItemWidget> {
+
+        /**
+         * @see com.google.gwt.event.logical.shared.CloseHandler#onClose(com.google.gwt.event.logical.shared.CloseEvent)
+         */
+        public void onClose(CloseEvent<CmsListItemWidget> event) {
+
+            fireResize();
+        }
+
+        /**
+         * @see com.google.gwt.event.logical.shared.OpenHandler#onOpen(com.google.gwt.event.logical.shared.OpenEvent)
+         */
+        public void onOpen(OpenEvent<CmsListItemWidget> event) {
+
+            fireResize();
+        }
+    }
+
     /** The widget type. */
     public static final String WIDGET_TYPE = "gallery";
 
     /** The ui binder for this widget. */
     private static I_CmsGalleryFieldUiBinder uibinder = GWT.create(I_CmsGalleryFieldUiBinder.class);
+
+    /**
+     * Initializes this class.<p>
+     */
+    public static void initClass() {
+
+        // registers a factory for creating new instances of this widget
+        CmsWidgetFactoryRegistry.instance().registerFactory(WIDGET_TYPE, new I_CmsFormWidgetFactory() {
+
+            /**
+             * @see org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory#createWidget(java.util.Map)
+             */
+            public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
+
+                CmsGalleryConfigurationJSO conf = CmsGalleryConfigurationJSO.parseConfiguration(widgetParams.get("configuration"));
+                CmsGalleryField galleryField = new CmsGalleryField(conf);
+                return galleryField;
+            }
+        });
+    }
 
     /** The fading element. */
     @UiField
@@ -224,26 +246,6 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     }
 
     /**
-     * Initializes this class.<p>
-     */
-    public static void initClass() {
-
-        // registers a factory for creating new instances of this widget
-        CmsWidgetFactoryRegistry.instance().registerFactory(WIDGET_TYPE, new I_CmsFormWidgetFactory() {
-
-            /**
-             * @see org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory#createWidget(java.util.Map)
-             */
-            public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
-
-                CmsGalleryConfigurationJSO conf = CmsGalleryConfigurationJSO.parseConfiguration(widgetParams.get("configuration"));
-                CmsGalleryField galleryField = new CmsGalleryField(conf);
-                return galleryField;
-            }
-        });
-    }
-
-    /**
      * Adds a style name to the DIV carrying the input field.<p>
      * 
      * @param styleName the style name to add
@@ -251,6 +253,14 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     public void addFieldStyleName(String styleName) {
 
         m_fieldBox.addClassName(styleName);
+    }
+
+    /**
+     * @see com.google.gwt.event.dom.client.HasFocusHandlers#addFocusHandler(com.google.gwt.event.dom.client.FocusHandler)
+     */
+    public HandlerRegistration addFocusHandler(FocusHandler handler) {
+
+        return m_textbox.addFocusHandler(handler);
     }
 
     /**
@@ -270,188 +280,35 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getApparentValue()
-     */
-    public String getApparentValue() {
-
-        return getFormValueAsString();
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFieldType()
-     */
-    public FieldType getFieldType() {
-
-        return FieldType.STRING;
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFormValue()
-     */
-    public Object getFormValue() {
-
-        return m_textbox.getValue();
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFormValueAsString()
-     */
-    public String getFormValueAsString() {
-
-        return m_textbox.getValue();
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#isEnabled()
-     */
-    public boolean isEnabled() {
-
-        return m_textbox.isEnabled();
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#reset()
-     */
-    public void reset() {
-
-        m_textbox.setValue("");
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setAutoHideParent(org.opencms.gwt.client.ui.I_CmsAutoHider)
-     */
-    public void setAutoHideParent(I_CmsAutoHider autoHideParent) {
-
-        // do nothing 
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setEnabled(boolean)
-     */
-    public void setEnabled(boolean enabled) {
-
-        m_textbox.setEnabled(enabled);
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setErrorMessage(java.lang.String)
-     */
-    public void setErrorMessage(String errorMessage) {
-
-        // do nothing 
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setFormValueAsString(java.lang.String)
-     */
-    public void setFormValueAsString(String value) {
-
-        setValue(value, false);
-    }
-
-    /**
-     * Sets the gallery opener button title.<p>
-     * 
-     * @param openerTitle the gallery opener button title
-     */
-    public void setGalleryOpenerTitle(String openerTitle) {
-
-        m_opener.setTitle(openerTitle);
-    }
-
-    /** 
-     * Sets the has image flag.<p>
-     * 
-     * @param hasImage the has image flag
-     **/
-    public void setHasImage(boolean hasImage) {
-
-        m_hasImage = hasImage;
-    }
-
-    /**
-     * Sets the name of the input field.<p>
-     * 
-     * @param name of the input field
-     * */
-    public void setName(String name) {
-
-        m_textbox.setName(name);
-
-    }
-
-    /**
-     * Fires the value change event if the value has changed.<p>
-     * 
-     * @param force <code>true</code> to force firing the event in any case
-     */
-    protected void fireChange(boolean force) {
-
-        String value = getFormValueAsString();
-        if (force || !value.equals(m_previousValue)) {
-            m_previousValue = value;
-            ValueChangeEvent.fire(this, value);
-        }
-    }
-
-    /**
-     * Fires the resize event for this widget.<p>
-     */
-    protected void fireResize() {
-
-        ResizeEvent.fire(this, getElement().getOffsetWidth(), getElement().getOffsetHeight());
-    }
-
-    /**
-     * Returns the gallery service instance.<p>
-     * 
-     * @return the gallery service instance
-     */
-    protected I_CmsGalleryServiceAsync getGalleryService() {
-
-        if (m_gallerySvc == null) {
-            m_gallerySvc = GWT.create(I_CmsGalleryService.class);
-            String serviceUrl = CmsCoreProvider.get().link("org.opencms.ade.galleries.CmsGalleryService.gwt");
-            ((ServiceDefTarget)m_gallerySvc).setServiceEntryPoint(serviceUrl);
-        }
-        return m_gallerySvc;
-    }
-
-    /**
-     * Internal method which opens the gallery dialog.<p>
-     */
-    protected void openGalleryDialog() {
-
-        if (m_popup == null) {
-            m_popup = createPopup();
-            m_popup.center();
-        } else {
-            m_popup.searchElement(getFormValueAsString());
-        }
-    }
-
-    /**
-     * Sets the widget value.<p>
-     * 
-     * @param value the value to set
-     * @param fireEvent if the change event should be fired
-     */
-    protected void setValue(String value, boolean fireEvent) {
-
-        m_textbox.setValue(value);
-        updateResourceInfo(value);
-        m_previousValue = value;
-        if (fireEvent) {
-            fireChange(true);
-        }
-    }
-
-    /**
      * Clears the info timer.<p>
      */
     void clearInfoTimer() {
 
         m_infoTimer = null;
+    }
+
+    /**
+     * Creates the gallery pop-up.<p>
+     * 
+     * @return the gallery pop-up
+     */
+    private CmsGalleryPopup createPopup() {
+
+        I_CmsGalleryWidgetHandler handler = new I_CmsGalleryWidgetHandler() {
+
+            public void setWidgetValue(String resourcePath, CmsUUID structureId, CmsCroppingParamBean croppingParameter) {
+
+                String path = resourcePath;
+                // in case of an image check the cropping parameter
+                if ((croppingParameter != null) && (croppingParameter.isCropped() || croppingParameter.isScaled())) {
+                    path += "?" + croppingParameter.toString();
+                }
+                setValue(path, true);
+                m_popup.hide();
+            }
+        };
+        m_configuration.setCurrentElement(getFormValueAsString());
+        return new CmsGalleryPopup(handler, m_configuration);
     }
 
     /**
@@ -495,6 +352,83 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
                 widget.truncate("STANDARD", width);
             }
         }
+    }
+
+    /**
+     * Fires the value change event if the value has changed.<p>
+     * 
+     * @param force <code>true</code> to force firing the event in any case
+     */
+    protected void fireChange(boolean force) {
+
+        String value = getFormValueAsString();
+        if (force || !value.equals(m_previousValue)) {
+            m_previousValue = value;
+            ValueChangeEvent.fire(this, value);
+        }
+    }
+
+    /**
+     * Fires the resize event for this widget.<p>
+     */
+    protected void fireResize() {
+
+        ResizeEvent.fire(this, getElement().getOffsetWidth(), getElement().getOffsetHeight());
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getApparentValue()
+     */
+    public String getApparentValue() {
+
+        return getFormValueAsString();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFieldType()
+     */
+    public FieldType getFieldType() {
+
+        return FieldType.STRING;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFormValue()
+     */
+    public Object getFormValue() {
+
+        return m_textbox.getValue();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFormValueAsString()
+     */
+    public String getFormValueAsString() {
+
+        return m_textbox.getValue();
+    }
+
+    /**
+     * Returns the gallery service instance.<p>
+     * 
+     * @return the gallery service instance
+     */
+    protected I_CmsGalleryServiceAsync getGalleryService() {
+
+        if (m_gallerySvc == null) {
+            m_gallerySvc = GWT.create(I_CmsGalleryService.class);
+            String serviceUrl = CmsCoreProvider.get().link("org.opencms.ade.galleries.CmsGalleryService.gwt");
+            ((ServiceDefTarget)m_gallerySvc).setServiceEntryPoint(serviceUrl);
+        }
+        return m_gallerySvc;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#isEnabled()
+     */
+    public boolean isEnabled() {
+
+        return m_textbox.isEnabled();
     }
 
     /**
@@ -550,6 +484,51 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     }
 
     /**
+     * Internal method which opens the gallery dialog.<p>
+     */
+    protected void openGalleryDialog() {
+
+        if (m_popup == null) {
+            m_popup = createPopup();
+            m_popup.center();
+        } else {
+            m_popup.searchElement(getFormValueAsString());
+        }
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#reset()
+     */
+    public void reset() {
+
+        m_textbox.setValue("");
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setAutoHideParent(org.opencms.gwt.client.ui.I_CmsAutoHider)
+     */
+    public void setAutoHideParent(I_CmsAutoHider autoHideParent) {
+
+        // do nothing 
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setEnabled(boolean)
+     */
+    public void setEnabled(boolean enabled) {
+
+        m_textbox.setEnabled(enabled);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setErrorMessage(java.lang.String)
+     */
+    public void setErrorMessage(String errorMessage) {
+
+        // do nothing 
+    }
+
+    /**
      * Toggles the fading element.<p>
      * 
      * @param faded <code>true</code> to show the fading element.<p>
@@ -557,6 +536,61 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     void setFaded(boolean faded) {
 
         m_fader.setVisible(faded);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setFormValueAsString(java.lang.String)
+     */
+    public void setFormValueAsString(String value) {
+
+        setValue(value, false);
+    }
+
+    /**
+     * Sets the gallery opener button title.<p>
+     * 
+     * @param openerTitle the gallery opener button title
+     */
+    public void setGalleryOpenerTitle(String openerTitle) {
+
+        m_opener.setTitle(openerTitle);
+    }
+
+    /** 
+     * Sets the has image flag.<p>
+     * 
+     * @param hasImage the has image flag
+     **/
+    public void setHasImage(boolean hasImage) {
+
+        m_hasImage = hasImage;
+    }
+
+    /**
+     * Sets the name of the input field.<p>
+     * 
+     * @param name of the input field
+     * */
+    public void setName(String name) {
+
+        m_textbox.setName(name);
+
+    }
+
+    /**
+     * Sets the widget value.<p>
+     * 
+     * @param value the value to set
+     * @param fireEvent if the change event should be fired
+     */
+    protected void setValue(String value, boolean fireEvent) {
+
+        m_textbox.setValue(value);
+        updateResourceInfo(value);
+        m_previousValue = value;
+        if (fireEvent) {
+            fireChange(true);
+        }
     }
 
     /**
@@ -593,29 +627,5 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
             };
             action.execute();
         }
-    }
-
-    /**
-     * Creates the gallery pop-up.<p>
-     * 
-     * @return the gallery pop-up
-     */
-    private CmsGalleryPopup createPopup() {
-
-        I_CmsGalleryWidgetHandler handler = new I_CmsGalleryWidgetHandler() {
-
-            public void setWidgetValue(String resourcePath, CmsUUID structureId, CmsCroppingParamBean croppingParameter) {
-
-                String path = resourcePath;
-                // in case of an image check the cropping parameter
-                if ((croppingParameter != null) && (croppingParameter.isCropped() || croppingParameter.isScaled())) {
-                    path += "?" + croppingParameter.toString();
-                }
-                setValue(path, true);
-                m_popup.hide();
-            }
-        };
-        m_configuration.setCurrentElement(getFormValueAsString());
-        return new CmsGalleryPopup(handler, m_configuration);
     }
 }

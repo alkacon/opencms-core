@@ -46,6 +46,9 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.dom.client.HasFocusHandlers;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
@@ -81,7 +84,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  */
 public abstract class A_CmsSelectBox<OPTION extends A_CmsSelectCell> extends Composite
-implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
+implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_CmsTruncable {
 
     /**
      * The UI Binder interface for this widget.<p>
@@ -258,6 +261,14 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
             m_firstValue = value;
         }
         initSelectCell(cell);
+    }
+
+    /**
+     * @see com.google.gwt.event.dom.client.HasFocusHandlers#addFocusHandler(com.google.gwt.event.dom.client.FocusHandler)
+     */
+    public HandlerRegistration addFocusHandler(FocusHandler handler) {
+
+        return addDomHandler(handler, FocusEvent.getType());
     }
 
     /**
@@ -509,6 +520,17 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
      * The implementation of this method should initialize the opener of the select box.<p>
      */
     protected abstract void initOpener();
+
+    /**
+     * Handles the focus event on the opener.<p>
+     * 
+     * @param event  
+     */
+    @UiHandler("m_opener")
+    protected void onFocus(FocusEvent event) {
+
+        CmsDomUtil.fireFocusEvent(this);
+    }
 
     /**
      * This method is called when a value is selected.<p>

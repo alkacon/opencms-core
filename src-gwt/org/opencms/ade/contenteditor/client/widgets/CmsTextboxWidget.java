@@ -30,6 +30,7 @@ package org.opencms.ade.contenteditor.client.widgets;
 import com.alkacon.acacia.client.css.I_LayoutBundle;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
+import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.core.client.GWT;
@@ -110,7 +111,7 @@ public class CmsTextboxWidget extends Composite implements I_EditWidget {
      */
     public HandlerRegistration addFocusHandler(FocusHandler handler) {
 
-        return null;
+        return addDomHandler(handler, FocusEvent.getType());
     }
 
     /**
@@ -301,7 +302,7 @@ public class CmsTextboxWidget extends Composite implements I_EditWidget {
 
         m_mainPanel.remove(m_fadePanel);
         setTitle("");
-
+        CmsDomUtil.fireFocusEvent(this);
     }
 
     /**
@@ -313,7 +314,6 @@ public class CmsTextboxWidget extends Composite implements I_EditWidget {
     void onTextboxValueChange(ValueChangeEvent<String> event) {
 
         fireChangeEvent();
-
     }
 
     /**

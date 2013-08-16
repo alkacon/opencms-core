@@ -34,6 +34,7 @@ import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -47,11 +48,11 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * */
 public class CmsCheckboxWidget extends Composite implements I_EditWidget {
 
-    /** The token to control activation. */
-    private boolean m_active = true;
-
     /** The check box of this widget. */
     protected CmsCheckBox m_checkbox = new CmsCheckBox();
+
+    /** The token to control activation. */
+    private boolean m_active = true;
 
     /**
      * Constructs an OptionalTextBox with the given caption on the check.<p>
@@ -78,6 +79,13 @@ public class CmsCheckboxWidget extends Composite implements I_EditWidget {
             }
 
         });
+        m_checkbox.getButton().addFocusHandler(new FocusHandler() {
+
+            public void onFocus(FocusEvent event) {
+
+                CmsDomUtil.fireFocusEvent(CmsCheckboxWidget.this);
+            }
+        });
         // All composites must call initWidget() in their constructors.
         initWidget(panel);
 
@@ -88,7 +96,7 @@ public class CmsCheckboxWidget extends Composite implements I_EditWidget {
      */
     public HandlerRegistration addFocusHandler(FocusHandler handler) {
 
-        return null;
+        return addDomHandler(handler, FocusEvent.getType());
     }
 
     /**

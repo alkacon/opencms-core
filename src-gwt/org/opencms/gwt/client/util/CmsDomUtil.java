@@ -873,6 +873,17 @@ public final class CmsDomUtil {
                                                              }-*/;
 
     /**
+     * Fires a focus event for the given widget.<p>
+     * 
+     * @param widget the widget
+     */
+    public static void fireFocusEvent(Widget widget) {
+
+        NativeEvent nativeEvent = Document.get().createFocusEvent();
+        DomEvent.fireNativeEvent(nativeEvent, widget, widget.getElement());
+    }
+
+    /**
      * Generates a form element with hidden input fields.<p>
      * 
      * @param action the form action

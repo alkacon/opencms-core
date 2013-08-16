@@ -31,7 +31,9 @@ import com.alkacon.acacia.client.widgets.I_EditWidget;
 
 import org.opencms.ade.galleries.client.CmsGalleryConfigurationJSO;
 import org.opencms.ade.galleries.client.ui.CmsImageGalleryField;
+import org.opencms.gwt.client.util.CmsDomUtil;
 
+import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.HasResizeHandlers;
 import com.google.gwt.event.logical.shared.ResizeHandler;
@@ -71,7 +73,13 @@ public class CmsImageGalleryWidget extends Composite implements I_EditWidget, Ha
         });
         // All composites must call initWidget() in their constructors.
         initWidget(m_linkSelect);
+        m_linkSelect.addFocusHandler(new FocusHandler() {
 
+            public void onFocus(FocusEvent event) {
+
+                CmsDomUtil.fireFocusEvent(CmsImageGalleryWidget.this);
+            }
+        });
     }
 
     /**
@@ -79,7 +87,7 @@ public class CmsImageGalleryWidget extends Composite implements I_EditWidget, Ha
      */
     public HandlerRegistration addFocusHandler(FocusHandler handler) {
 
-        return null;
+        return addDomHandler(handler, FocusEvent.getType());
     }
 
     /**

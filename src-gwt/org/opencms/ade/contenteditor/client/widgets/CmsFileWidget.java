@@ -31,7 +31,9 @@ import com.alkacon.acacia.client.widgets.I_EditWidget;
 
 import org.opencms.ade.galleries.client.CmsGalleryConfigurationJSO;
 import org.opencms.ade.galleries.client.ui.CmsGalleryField;
+import org.opencms.gwt.client.util.CmsDomUtil;
 
+import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.HasResizeHandlers;
 import com.google.gwt.event.logical.shared.ResizeHandler;
@@ -86,7 +88,13 @@ public class CmsFileWidget extends Composite implements I_EditWidget, HasResizeH
         });
         // All composites must call initWidget() in their constructors.
         initWidget(m_linkSelect);
+        m_linkSelect.addFocusHandler(new FocusHandler() {
 
+            public void onFocus(FocusEvent event) {
+
+                CmsDomUtil.fireFocusEvent(CmsFileWidget.this);
+            }
+        });
     }
 
     /**
@@ -94,7 +102,7 @@ public class CmsFileWidget extends Composite implements I_EditWidget, HasResizeH
      */
     public HandlerRegistration addFocusHandler(FocusHandler handler) {
 
-        return null;
+        return addDomHandler(handler, FocusEvent.getType());
     }
 
     /**
@@ -197,14 +205,14 @@ public class CmsFileWidget extends Composite implements I_EditWidget, HasResizeH
      * @param configuration the widget configuration
      */
     private native void parseConfiguration(String configuration)/*-{
-        var config = @org.opencms.gwt.client.util.CmsDomUtil::parseJSON(Ljava/lang/String;)(configuration);
-        if (config.includefiles)
-            this.@org.opencms.ade.contenteditor.client.widgets.CmsFileWidget::m_includeFiles = config.includefiles;
-        if (config.showsiteselector)
-            this.@org.opencms.ade.contenteditor.client.widgets.CmsFileWidget::m_showSiteSelector = config.showsiteselector;
-        if (config.startsite)
-            this.@org.opencms.ade.contenteditor.client.widgets.CmsFileWidget::m_startSite = config.startsite;
-        if (config.referencepath)
-            this.@org.opencms.ade.contenteditor.client.widgets.CmsFileWidget::m_referencePath = config.referencepath;
-    }-*/;
+                                                                var config = @org.opencms.gwt.client.util.CmsDomUtil::parseJSON(Ljava/lang/String;)(configuration);
+                                                                if (config.includefiles)
+                                                                this.@org.opencms.ade.contenteditor.client.widgets.CmsFileWidget::m_includeFiles = config.includefiles;
+                                                                if (config.showsiteselector)
+                                                                this.@org.opencms.ade.contenteditor.client.widgets.CmsFileWidget::m_showSiteSelector = config.showsiteselector;
+                                                                if (config.startsite)
+                                                                this.@org.opencms.ade.contenteditor.client.widgets.CmsFileWidget::m_startSite = config.startsite;
+                                                                if (config.referencepath)
+                                                                this.@org.opencms.ade.contenteditor.client.widgets.CmsFileWidget::m_referencePath = config.referencepath;
+                                                                }-*/;
 }

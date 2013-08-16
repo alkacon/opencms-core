@@ -33,6 +33,7 @@ import org.opencms.ade.contenteditor.client.Messages;
 import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
+import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.util.CmsPair;
 
 import java.util.Iterator;
@@ -43,6 +44,7 @@ import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -66,6 +68,9 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * 
  * */
 public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
+
+    /** Configuration parameter to indicate the multi-select needs to be activated by a check box. */
+    public static final String CONFIGURATION_REQUIRES_ACTIVATION = "|requiresactivation";
 
     /** Optional shortcut default marker. */
     private static final String DEFAULT_MARKER = "*";
@@ -100,9 +105,6 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
     /** Key suffix for the 'default' , 'help', 'option' text without following entrances.*/
     private static final String KEY_SUFFIX_SHORT = "'";
 
-    /** Configuration parameter to indicate the multi-select needs to be activated by a check box. */
-    public static final String CONFIGURATION_REQUIRES_ACTIVATION = "|requiresactivation";
-
     /** Key prefix for the 'value'. */
     private static final String KEY_VALUE = "value='";
 
@@ -110,22 +112,22 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
     FlowPanel m_panel = new FlowPanel();
 
     /** The scroll panel around the multiselections. */
-    CmsScrollPanel m_scrollPanel = GWT.create(CmsScrollPanel.class);
-
-    /** Value of the activation. */
-    private boolean m_active = true;
-
-    /** Value of the requiresactivation. */
-    private boolean m_requiresactivation;
+    CmsScrollPanel m_scrollPanel;
 
     /** Activation button.*/
     private CmsCheckBox m_activation;
 
-    /** Array of all radio button. */
-    private CmsCheckBox[] m_arrayCheckbox;
+    /** Value of the activation. */
+    private boolean m_active = true;
 
-    /** The default radio button set in xsd. */
-    private List<CmsCheckBox> m_defaultCheckBox = new LinkedList<CmsCheckBox>();
+    /** List of all check boxes button. */
+    private List<CmsCheckBox> m_checkboxes;
+
+    /** The default check boxes set in xsd. */
+    private List<CmsCheckBox> m_defaultCheckBox;
+
+    /** Value of the requiresactivation. */
+    private boolean m_requiresactivation;
 
     /** The parameter set from configuration.*/
     private int m_rowsToShow = DEFAULT_ROWS_SHOWN;
@@ -137,10 +139,13 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
     public CmsMultiSelectWidget(String config) {
 
         FlowPanel main = new FlowPanel();
+        m_scrollPanel = GWT.create(CmsScrollPanel.class);
+        // add separate style to the panel.
+        m_scrollPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().radioButtonPanel());
         // generate a list of all radio button.
         Map<String, CmsPair<String, Boolean>> list = parse(config);
-        m_arrayCheckbox = new CmsCheckBox[list.size()];
-        int j = 0;
+        m_defaultCheckBox = new LinkedList<CmsCheckBox>();
+        m_checkboxes = new LinkedList<CmsCheckBox>();
         if (m_requiresactivation) {
 
             buildActivationButton();
@@ -149,14 +154,21 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
             activation.getElement().getStyle().setMarginBottom(5, Unit.PX);
             main.add(activation);
         }
+        FocusHandler focusHandler = new FocusHandler() {
+
+            public void onFocus(FocusEvent event) {
+
+                CmsDomUtil.fireFocusEvent(CmsMultiSelectWidget.this);
+            }
+        };
 
         for (Map.Entry<String, CmsPair<String, Boolean>> entry : list.entrySet()) {
-            m_arrayCheckbox[j] = new CmsCheckBox(entry.getKey());
-            m_arrayCheckbox[j].setInternalValue(entry.getValue().getFirst());
+            CmsCheckBox checkbox = new CmsCheckBox(entry.getKey());
+            checkbox.setInternalValue(entry.getValue().getFirst());
             if ((entry.getValue().getSecond()).booleanValue()) {
-                m_defaultCheckBox.add(m_arrayCheckbox[j]);
+                m_defaultCheckBox.add(checkbox);
             }
-            m_arrayCheckbox[j].addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+            checkbox.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
 
                 public void onValueChange(ValueChangeEvent<Boolean> event) {
 
@@ -165,23 +177,20 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
                 }
 
             });
-            j++;
-        }
-        // add separate style to the panel.
-        m_scrollPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().radioButtonPanel());
-        // iterate about all chechboxes.
-        for (int i = 0; i < m_arrayCheckbox.length; i++) {
             // add a separate style each checkbox .
-            m_arrayCheckbox[i].addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().checkboxlabel());
+            checkbox.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().checkboxlabel());
+            checkbox.getButton().addFocusHandler(focusHandler);
+            m_checkboxes.add(checkbox);
             // add the checkbox to the panel.
-            m_panel.add(m_arrayCheckbox[i]);
+            m_panel.add(checkbox);
+
         }
         // All composites must call initWidget() in their constructors.
         m_scrollPanel.add(m_panel);
         m_scrollPanel.setResizable(false);
         int height = (m_rowsToShow * 17);
-        if (m_arrayCheckbox.length < m_rowsToShow) {
-            height = (m_arrayCheckbox.length * 17);
+        if (m_checkboxes.size() < m_rowsToShow) {
+            height = (m_checkboxes.size() * 17);
         }
         m_scrollPanel.setDefaultHeight(height);
         m_scrollPanel.setHeight(height + "px");
@@ -198,8 +207,7 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
      */
     public HandlerRegistration addFocusHandler(FocusHandler handler) {
 
-        // TODO: Auto-generated method stub
-        return null;
+        return addDomHandler(handler, FocusEvent.getType());
     }
 
     /**
@@ -254,14 +262,14 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
         }
         // set the new value.
         m_active = active;
-        // Iterate about all checkboxes.
-        for (int i = 0; i < m_arrayCheckbox.length; i++) {
+        // Iterate over all checkboxes.
+        for (CmsCheckBox checkbox : m_checkboxes) {
             // set the checkbox active / inactive.
-            m_arrayCheckbox[i].setEnabled(active);
+            checkbox.setEnabled(active);
             // if this widget is set inactive.
             if (!active) {
                 // deselect all checkboxes.
-                m_arrayCheckbox[i].setChecked(active);
+                checkbox.setChecked(active);
             } else {
                 // select the default value if set.
                 if (m_defaultCheckBox != null) {
@@ -309,11 +317,11 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
             } else {
                 values = new String[] {value};
             }
-            for (int i = 0; i < m_arrayCheckbox.length; i++) {
-                m_arrayCheckbox[i].setChecked(false);
+            for (CmsCheckBox checkbox : m_checkboxes) {
+                checkbox.setChecked(false);
                 for (int j = 0; j < values.length; j++) {
-                    if (m_arrayCheckbox[i].getInternalValue().equals(values[j])) {
-                        m_arrayCheckbox[i].setChecked(true);
+                    if (checkbox.getInternalValue().equals(values[j])) {
+                        checkbox.setChecked(true);
                     }
                 }
             }
@@ -334,9 +342,9 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
      */
     protected void setAllCheckboxEnabled(boolean value) {
 
-        for (int i = 0; i < m_arrayCheckbox.length; i++) {
+        for (CmsCheckBox checkbox : m_checkboxes) {
             // set the checkbox active / inactive.
-            m_arrayCheckbox[i].setEnabled(value);
+            checkbox.setEnabled(value);
         }
     }
 
@@ -383,7 +391,7 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
                     try {
                         m_rowsToShow = Integer.parseInt(sub.replace(KEY_LENGTH, KEY_EMPTY));
                     } catch (Exception e) {
-                        //TODO: do something;
+                        m_rowsToShow = 5;
                     }
                     labels[i] = labels[i].replace(KEY_LENGTH + m_rowsToShow, KEY_EMPTY);
                     parameter = true;
@@ -516,9 +524,9 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
     private String generateValue() {
 
         String result = "";
-        for (int i = 0; i < m_arrayCheckbox.length; i++) {
-            if (m_arrayCheckbox[i].isChecked()) {
-                result += m_arrayCheckbox[i].getInternalValue() + ",";
+        for (CmsCheckBox checkbox : m_checkboxes) {
+            if (checkbox.isChecked()) {
+                result += checkbox.getInternalValue() + ",";
             }
         }
         if (result.contains(",")) {

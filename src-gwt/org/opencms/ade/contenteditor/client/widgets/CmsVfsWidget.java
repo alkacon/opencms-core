@@ -31,7 +31,9 @@ import com.alkacon.acacia.client.widgets.I_EditWidget;
 
 import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsVfsSelection;
+import org.opencms.gwt.client.util.CmsDomUtil;
 
+import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -75,7 +77,13 @@ public class CmsVfsWidget extends Composite implements I_EditWidget {
 
             }
         });
-        // All composites must call initWidget() in their constructors.
+        m_linkSelect.getTextAreaContainer().getTextBox().addFocusHandler(new FocusHandler() {
+
+            public void onFocus(FocusEvent event) {
+
+                CmsDomUtil.fireFocusEvent(CmsVfsWidget.this);
+            }
+        });
         initWidget(m_linkSelect);
 
     }
@@ -85,7 +93,7 @@ public class CmsVfsWidget extends Composite implements I_EditWidget {
      */
     public HandlerRegistration addFocusHandler(FocusHandler handler) {
 
-        return null;
+        return addDomHandler(handler, FocusEvent.getType());
     }
 
     /**

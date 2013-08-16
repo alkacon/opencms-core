@@ -31,9 +31,11 @@ import com.alkacon.acacia.client.widgets.I_EditWidget;
 
 import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsComboBox;
+import org.opencms.gwt.client.util.CmsDomUtil;
 
 import java.util.HashMap;
 
+import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
@@ -161,10 +163,14 @@ public class CmsComboWidget extends Composite implements I_EditWidget {
             }
 
         });
-
-        // All composites must call initWidget() in their constructors.
         initWidget(m_comboBox);
+        m_comboBox.getTextBox().addFocusHandler(new FocusHandler() {
 
+            public void onFocus(FocusEvent event) {
+
+                CmsDomUtil.fireFocusEvent(CmsComboWidget.this);
+            }
+        });
     }
 
     /**
@@ -172,7 +178,7 @@ public class CmsComboWidget extends Composite implements I_EditWidget {
      */
     public HandlerRegistration addFocusHandler(FocusHandler handler) {
 
-        return null;
+        return addDomHandler(handler, FocusEvent.getType());
     }
 
     /**

@@ -35,6 +35,7 @@ import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -121,17 +122,17 @@ public class CmsSelectWidget extends Composite implements I_EditWidget {
     /** Key prefix for the 'value'. */
     private static final String KEY_VALUE = "value='";
 
-    /** Value of the activation. */
-    private boolean m_active = true;
-
-    /** The last value set through the setValue method. This is not necessarily the current widget value. */
-    private String m_externalValue;
-
     /** The global select box. */
     protected CmsSelectBox m_selectBox = new CmsSelectBox();
 
+    /** Value of the activation. */
+    private boolean m_active = true;
+
     /** THe default value. */
     private String m_defaultValue;
+
+    /** The last value set through the setValue method. This is not necessarily the current widget value. */
+    private String m_externalValue;
 
     /**
      * Constructs an CmsComboWidget with the in XSD schema declared configuration.<p>
@@ -168,7 +169,7 @@ public class CmsSelectWidget extends Composite implements I_EditWidget {
      */
     public HandlerRegistration addFocusHandler(FocusHandler handler) {
 
-        return null;
+        return addDomHandler(handler, FocusEvent.getType());
     }
 
     /**

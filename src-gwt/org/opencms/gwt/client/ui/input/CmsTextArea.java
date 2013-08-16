@@ -34,6 +34,7 @@ import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
+import org.opencms.gwt.client.util.CmsDomUtil;
 
 import java.util.Map;
 
@@ -47,6 +48,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.dom.client.HasFocusHandlers;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.HasResizeHandlers;
@@ -68,7 +70,7 @@ import com.google.gwt.user.client.ui.TextArea;
  * 
  */
 public class CmsTextArea extends Composite
-implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasResizeHandlers {
+implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasResizeHandlers, HasFocusHandlers {
 
     /** The widget type identifier for this widget. */
     private static final String WIDGET_TYPE = "textarea";
@@ -164,7 +166,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
 
                 m_panel.remove(m_fadePanel);
                 m_panel.getElement().setTitle("");
-
+                CmsDomUtil.fireFocusEvent(CmsTextArea.this);
             }
         });
         m_textArea.addBlurHandler(new BlurHandler() {
@@ -212,6 +214,11 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
                 return new CmsTextArea();
             }
         });
+    }
+
+    public HandlerRegistration addFocusHandler(FocusHandler handler) {
+
+        return addDomHandler(handler, FocusEvent.getType());
     }
 
     /**

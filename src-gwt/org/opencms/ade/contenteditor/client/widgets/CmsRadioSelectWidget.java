@@ -33,16 +33,18 @@ import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.input.CmsRadioButton;
 import org.opencms.gwt.client.ui.input.CmsRadioButtonGroup;
+import org.opencms.gwt.client.util.CmsDomUtil;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -66,11 +68,11 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * */
 public class CmsRadioSelectWidget extends Composite implements I_EditWidget {
 
-    /** Default value of rows to be shown. */
-    private static final int DEFAULT_ROWS_SHOWN = 10;
-
     /** Optional shortcut default marker. */
     private static final String DEFAULT_MARKER = "*";
+
+    /** Default value of rows to be shown. */
+    private static final int DEFAULT_ROWS_SHOWN = 10;
 
     /** Delimiter between option sets. */
     private static final String INPUT_DELIMITER = "|";
@@ -108,14 +110,14 @@ public class CmsRadioSelectWidget extends Composite implements I_EditWidget {
     /** Value of the activation. */
     private boolean m_active = true;
 
-    /** Array of all radio button. */
-    private CmsRadioButton[] m_arrayRadioButtons;
-
     /** The default radio button set in xsd. */
-    private CmsRadioButton m_defaultCheckBox;
+    private CmsRadioButton m_defaultRadioButton;
 
     /** Value of the radio group. */
-    private CmsRadioButtonGroup m_group = new CmsRadioButtonGroup();
+    private CmsRadioButtonGroup m_group;
+
+    /** List of all radio button. */
+    private List<CmsRadioButton> m_radioButtons;
 
     /** The parameter set from configuration.*/
     private int m_rowsToShow = DEFAULT_ROWS_SHOWN;
@@ -127,30 +129,35 @@ public class CmsRadioSelectWidget extends Composite implements I_EditWidget {
     public CmsRadioSelectWidget(String config) {
 
         // generate a list of all radio button.
-        List<CmsRadioButton> list = parseconfig(config);
+        m_group = new CmsRadioButtonGroup();
         // move the list to the array of all radio button.
-        m_arrayRadioButtons = new CmsRadioButton[list.size()];
-        list.toArray(m_arrayRadioButtons);
+        m_radioButtons = parseconfig(config);
         // add separate style to the panel.
         m_scrollPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().radioButtonPanel());
+        FocusHandler focusHandler = new FocusHandler() {
+
+            public void onFocus(FocusEvent event) {
+
+                CmsDomUtil.fireFocusEvent(CmsRadioSelectWidget.this);
+            }
+        };
         // iterate about all radio button.
-        for (int i = 0; i < m_arrayRadioButtons.length; i++) {
+        for (CmsRadioButton radiobutton : m_radioButtons) {
             // add a separate style each radio button.
-            m_arrayRadioButtons[i].addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().radioButtonlabel());
+            radiobutton.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().radioButtonlabel());
+            radiobutton.getRadioButton().addFocusHandler(focusHandler);
             // add the radio button to the panel.
-            m_panel.add(m_arrayRadioButtons[i]);
+            m_panel.add(radiobutton);
         }
         m_scrollPanel.add(m_panel);
         m_scrollPanel.setResizable(false);
         int height = (m_rowsToShow * 17);
-        if (m_arrayRadioButtons.length < m_rowsToShow) {
-            height = (m_arrayRadioButtons.length * 17);
+        if (m_radioButtons.size() < m_rowsToShow) {
+            height = (m_radioButtons.size() * 17);
         }
         m_scrollPanel.setDefaultHeight(height);
         m_scrollPanel.setHeight(height + "px");
         initWidget(m_scrollPanel);
-        // All composites must call initWidget() in their constructors.
-
     }
 
     /**
@@ -158,8 +165,7 @@ public class CmsRadioSelectWidget extends Composite implements I_EditWidget {
      */
     public HandlerRegistration addFocusHandler(FocusHandler handler) {
 
-        // TODO: Auto-generated method stub
-        return null;
+        return addDomHandler(handler, FocusEvent.getType());
     }
 
     /**
@@ -226,17 +232,17 @@ public class CmsRadioSelectWidget extends Composite implements I_EditWidget {
         // set the new value.
         m_active = active;
         // Iterate about all radio button.
-        for (int i = 0; i < m_arrayRadioButtons.length; i++) {
+        for (CmsRadioButton radiobutton : m_radioButtons) {
             // set the radio button active / inactive.
-            m_arrayRadioButtons[i].setEnabled(active);
+            radiobutton.setEnabled(active);
             // if this widget is set inactive.
             if (!active) {
                 // deselect all radio button.
-                m_arrayRadioButtons[i].setChecked(active);
+                radiobutton.setChecked(active);
             } else {
                 // select the default value if set.
-                if (m_defaultCheckBox != null) {
-                    m_defaultCheckBox.setChecked(active);
+                if (m_defaultRadioButton != null) {
+                    m_defaultRadioButton.setChecked(active);
                     fireChangeEvent();
                 }
             }
@@ -272,11 +278,10 @@ public class CmsRadioSelectWidget extends Composite implements I_EditWidget {
     public void setValue(String value, boolean fireEvents) {
 
         // iterate about all the radio button.
-        for (int i = 0; i < m_arrayRadioButtons.length; i++) {
-            CmsRadioButton rb = m_arrayRadioButtons[i];
+        for (CmsRadioButton radiobutton : m_radioButtons) {
             // if the value is the name of a radio button active it.
-            if (rb.getName().equals(value)) {
-                m_group.selectButton(rb);
+            if (radiobutton.getName().equals(value)) {
+                m_group.selectButton(radiobutton);
             }
             // fire change event.
             if (fireEvents) {
@@ -295,7 +300,7 @@ public class CmsRadioSelectWidget extends Composite implements I_EditWidget {
     private List<CmsRadioButton> parseconfig(String config) {
 
         // generate an empty list off radio button.
-        List<CmsRadioButton> result = new ArrayList<CmsRadioButton>();
+        List<CmsRadioButton> result = new LinkedList<CmsRadioButton>();
 
         //split the configuration in single strings to handle every string single. 
         String[] labels = config.split("\\" + INPUT_DELIMITER);
@@ -428,7 +433,7 @@ public class CmsRadioSelectWidget extends Composite implements I_EditWidget {
             // check if this value is default set.
             if (j == selected) {
                 radiobutton.setChecked(true);
-                m_defaultCheckBox = radiobutton;
+                m_defaultRadioButton = radiobutton;
             }
             // add this radio button to the list.
             result.add(radiobutton);

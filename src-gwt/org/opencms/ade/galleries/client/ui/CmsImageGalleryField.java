@@ -44,6 +44,7 @@ import org.opencms.gwt.client.ui.input.CmsTextArea;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
+import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -54,6 +55,9 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.dom.client.HasFocusHandlers;
 import com.google.gwt.event.logical.shared.HasResizeHandlers;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ResizeEvent;
@@ -78,7 +82,7 @@ import com.google.gwt.user.client.ui.TextBox;
  * @since 8.0.0
  */
 public class CmsImageGalleryField extends Composite
-implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasResizeHandlers {
+implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasResizeHandlers, HasFocusHandlers {
 
     /**
      * The UI Binder interface for this widget.<p>
@@ -486,6 +490,50 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     }
 
     /**
+     * Handles the focus event on the opener.<p>
+     * 
+     * @param event  
+     */
+    @UiHandler("m_descriptionArea")
+    protected void onFocusDescription(FocusEvent event) {
+
+        CmsDomUtil.fireFocusEvent(this);
+    }
+
+    /**
+     * Handles the focus event on the opener.<p>
+     * 
+     * @param event  
+     */
+    @UiHandler("m_opener")
+    protected void onFocusOpener(FocusEvent event) {
+
+        CmsDomUtil.fireFocusEvent(this);
+    }
+
+    /**
+     * Handles the focus event on the opener.<p>
+     * 
+     * @param event  
+     */
+    @UiHandler("m_formatSelection")
+    protected void onFocusSelect(FocusEvent event) {
+
+        CmsDomUtil.fireFocusEvent(this);
+    }
+
+    /**
+     * Handles the focus event on the opener.<p>
+     * 
+     * @param event  
+     */
+    @UiHandler("m_textbox")
+    protected void onFocusTextbox(FocusEvent event) {
+
+        CmsDomUtil.fireFocusEvent(this);
+    }
+
+    /**
      * Generates the format select box.<p> 
      **/
     private void generatesFormatSelection() {
@@ -574,6 +622,14 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         }
         return path;
 
+    }
+
+    /**
+     * @see com.google.gwt.event.dom.client.HasFocusHandlers#addFocusHandler(com.google.gwt.event.dom.client.FocusHandler)
+     */
+    public HandlerRegistration addFocusHandler(FocusHandler handler) {
+
+        return addDomHandler(handler, FocusEvent.getType());
     }
 
 }

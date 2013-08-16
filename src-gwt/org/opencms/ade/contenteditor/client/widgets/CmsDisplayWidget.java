@@ -32,6 +32,7 @@ import com.alkacon.acacia.client.widgets.I_EditWidget;
 import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
 
+import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -76,7 +77,7 @@ public class CmsDisplayWidget extends Composite implements I_EditWidget {
      */
     public HandlerRegistration addFocusHandler(FocusHandler handler) {
 
-        return null;
+        return addDomHandler(handler, FocusEvent.getType());
     }
 
     /**
@@ -84,7 +85,7 @@ public class CmsDisplayWidget extends Composite implements I_EditWidget {
      */
     public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
 
-        return null;
+        return addHandler(handler, ValueChangeEvent.getType());
     }
 
     /**

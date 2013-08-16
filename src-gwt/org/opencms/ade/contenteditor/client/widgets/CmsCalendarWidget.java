@@ -32,9 +32,11 @@ import com.alkacon.acacia.client.widgets.I_EditWidget;
 
 import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.datebox.CmsDateBox;
+import org.opencms.gwt.client.util.CmsDomUtil;
 
 import java.util.Date;
 
+import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
@@ -93,7 +95,13 @@ public class CmsCalendarWidget extends Composite implements I_EditWidget {
 
             }
         });
+        m_dateBox.getTextField().addFocusHandler(new FocusHandler() {
 
+            public void onFocus(FocusEvent event) {
+
+                CmsDomUtil.fireFocusEvent(CmsCalendarWidget.this);
+            }
+        });
     }
 
     /**
@@ -101,7 +109,7 @@ public class CmsCalendarWidget extends Composite implements I_EditWidget {
      */
     public HandlerRegistration addFocusHandler(FocusHandler handler) {
 
-        return null;
+        return addDomHandler(handler, FocusEvent.getType());
     }
 
     /**
