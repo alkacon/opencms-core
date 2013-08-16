@@ -116,7 +116,6 @@ public class CmsResourceRelationView extends Composite {
     public CmsResourceRelationView(CmsResourceStatusBean status, Mode mode) {
 
         initWidget(m_panel);
-        //m_panel.getElement().getStyle().setOverflow(Style.Overflow.HIDDEN);
         m_statusBean = status;
         m_mode = mode;
         // wrap list info item in another panel to achieve layout uniformity with other similar widgets 
@@ -148,7 +147,7 @@ public class CmsResourceRelationView extends Composite {
      */
     public void onSelect() {
 
-        // do nothing 
+        //noop
 
     }
 
@@ -177,6 +176,7 @@ public class CmsResourceRelationView extends Composite {
             for (CmsResourceStatusRelationBean relationBean : relationBeans) {
                 CmsListItemWidget itemWidget = new CmsListItemWidget(relationBean.getInfoBean());
                 CmsListItem item = new CmsListItem(itemWidget);
+                itemWidget.setWidth("490px");
                 CmsContextMenuButton button = new CmsContextMenuButton(
                     relationBean.getStructureId(),
                     new CmsContextMenuHandler() {
