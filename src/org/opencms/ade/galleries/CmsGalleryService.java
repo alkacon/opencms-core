@@ -52,6 +52,7 @@ import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypePointer;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
+import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtService;
@@ -311,7 +312,13 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
         CmsGalleryConfiguration result = new CmsGalleryConfiguration();
         List<String> typeNames = new ArrayList<String>();
+
         for (I_CmsResourceType type : OpenCms.getResourceManager().getResourceTypes()) {
+            Class<?> typeClass = type.getClass();
+            if (CmsResourceTypeXmlContent.class.isAssignableFrom(typeClass)
+                || CmsResourceTypeXmlPage.class.isAssignableFrom(typeClass)) {
+                continue;
+            }
             if (type.getGalleryTypes().size() > 0) {
                 typeNames.add(type.getTypeName());
             }
