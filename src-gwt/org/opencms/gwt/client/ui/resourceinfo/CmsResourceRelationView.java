@@ -41,15 +41,12 @@ import org.opencms.gwt.client.ui.CmsSimpleListItem;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuButton;
-import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler;
 import org.opencms.gwt.client.ui.contextmenu.CmsLogout;
-import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
+import org.opencms.gwt.client.ui.resourceinfo.CmsResourceInfoView.ContextMenuHandler;
 import org.opencms.gwt.client.util.CmsDomUtil;
-import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsResourceStatusBean;
 import org.opencms.gwt.shared.CmsResourceStatusRelationBean;
-import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -122,6 +119,7 @@ public class CmsResourceRelationView extends Composite {
         SimplePanel infoBoxPanel = new SimplePanel();
         infoBoxPanel.getElement().getStyle().setMarginTop(2, Style.Unit.PX);
         CmsListItemWidget infoWidget = new CmsListItemWidget(status.getListInfo());
+        infoWidget.addButton(new CmsContextMenuButton(status.getStructureId(), new ContextMenuHandler()));
         CmsListItem infoItem = new CmsListItem(infoWidget);
         m_panel.add(infoBoxPanel);
         infoBoxPanel.add(infoItem);
@@ -179,27 +177,7 @@ public class CmsResourceRelationView extends Composite {
                 itemWidget.setWidth("490px");
                 CmsContextMenuButton button = new CmsContextMenuButton(
                     relationBean.getStructureId(),
-                    new CmsContextMenuHandler() {
-
-                        @Override
-                        public void refreshResource(CmsUUID structureId) {
-
-                            Window.Location.reload();
-                        }
-
-                        @Override
-                        protected I_CmsContextMenuEntry transformSingleEntry(
-                            CmsContextMenuEntryBean entryBean,
-                            CmsUUID structureId) {
-
-                            if (m_filteredActions.contains(entryBean.getName())) {
-                                return null;
-                            } else {
-                                return super.transformSingleEntry(entryBean, structureId);
-                            }
-                        }
-
-                    });
+                    new CmsResourceInfoView.ContextMenuHandler());
                 item.getListItemWidget().addButton(button);
                 final boolean isContainerpage = CmsGwtConstants.TYPE_CONTAINERPAGE.equals(relationBean.getInfoBean().getResourceType());
                 final boolean isXmlContent = relationBean.isXmlContent();

@@ -28,6 +28,7 @@
 package org.opencms.gwt.shared;
 
 import org.opencms.db.CmsResourceState;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -85,6 +86,9 @@ public class CmsResourceStatusBean implements IsSerializable {
 
     /** Size. */
     private int m_size;
+
+    /** Structure id of the resource. */
+    private CmsUUID m_structureId;
 
     /** An ordered map defining the tabs to display and their order, with the tab labels as values. */
     private LinkedHashMap<CmsResourceStatusTabId, String> m_tabs;
@@ -246,6 +250,16 @@ public class CmsResourceStatusBean implements IsSerializable {
     public CmsResourceState getStateBean() {
 
         return m_stateBean;
+    }
+
+    /**
+     * Gets the structure id of the resource.<p>
+     * 
+     * @return the structure id of the resource
+     */
+    public CmsUUID getStructureId() {
+
+        return m_structureId;
     }
 
     /** 
@@ -416,6 +430,16 @@ public class CmsResourceStatusBean implements IsSerializable {
     public void setStateBean(CmsResourceState stateBean) {
 
         m_stateBean = stateBean;
+    }
+
+    /**
+     * Sets the structure id of the resource.<p>
+     * 
+     * @param structureId the structure id of the resource 
+     */
+    public void setStructureId(CmsUUID structureId) {
+
+        m_structureId = structureId;
     }
 
     /**

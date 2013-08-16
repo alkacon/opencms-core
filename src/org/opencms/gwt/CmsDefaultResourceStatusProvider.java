@@ -212,6 +212,7 @@ public class CmsDefaultResourceStatusProvider {
 
         I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
         result.setResourceType(resType.getTypeName());
+        result.setStructureId(resource.getStructureId());
         if (resType instanceof CmsResourceTypeXmlContent) {
             CmsFile file = cms.readFile(resource);
             CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
