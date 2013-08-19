@@ -54,7 +54,7 @@ public class CmsSetupTestJdkVersion implements I_CmsSetupTest {
 
         CmsSetupTestResult testResult = new CmsSetupTestResult(this);
 
-        String requiredJDK = "1.4.0";
+        String requiredJDK = "1.6.0";
         String JDKVersion = System.getProperty("java.version");
 
         testResult.setResult(JDKVersion);

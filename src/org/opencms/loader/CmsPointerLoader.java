@@ -30,6 +30,7 @@ package org.opencms.loader;
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -302,7 +303,6 @@ public class CmsPointerLoader extends CmsDumpLoader {
             // nothing we can do
             return;
         }
-
         String pointer = new String(cms.readFile(resource).getContents(), CmsLocaleManager.getResourceEncoding(
             cms,
             resource));
@@ -317,7 +317,13 @@ public class CmsPointerLoader extends CmsDumpLoader {
 
         // conditionally append parameters of the current request:
         pointer = appendLinkParams(pointer, req);
-        res.sendRedirect(pointer);
+
+        // The pointer URL may already contain %-encoded characters, so we can't just encode all of it.
+        // Instead, we only encode the characters which are not valid for a URL.
+        String encodedPointer = CmsEncoder.encodeInvalidUriCharactersOnly(
+            pointer,
+            OpenCms.getSystemInfo().getDefaultEncoding());
+        res.sendRedirect(encodedPointer);
     }
 
     /**

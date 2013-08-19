@@ -27,6 +27,7 @@
 
 package org.opencms.util;
 
+import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.I_CmsMessageBundle;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -103,6 +104,12 @@ public final class CmsStringUtil {
 
     /** Context macro. */
     public static final String MACRO_OPENCMS_CONTEXT = "${OpenCmsContext}";
+
+    /** Pattern to determine a locale for suffixes like '_de' or '_en_US'. */
+    public static final Pattern PATTERN_LOCALE_SUFFIX = Pattern.compile("(.*)_([a-z]{2}(?:_[A-Z]{2})?)(?:\\.[^\\.]*)?$");
+
+    /** Pattern to determine the document number for suffixes like '_0001'. */
+    public static final Pattern PATTERN_NUMBER_SUFFIX = Pattern.compile("(.*)_(\\d+)(\\.[^\\.^\\n]*)?$");
 
     /** The place holder end sign in the pattern. */
     public static final String PLACEHOLDER_END = "}";
@@ -368,6 +375,9 @@ public final class CmsStringUtil {
         source = CmsStringUtil.substitute(source, "\'", "\\\'");
         source = CmsStringUtil.substitute(source, "\r\n", "\\n");
         source = CmsStringUtil.substitute(source, "\n", "\\n");
+
+        // to avoid XSS (closing script tags) in embedded Javascript 
+        source = CmsStringUtil.substitute(source, "/", "\\/");
         return source;
     }
 
@@ -759,6 +769,27 @@ public final class CmsStringUtil {
         return result;
     }
 
+    /** 
+     * Returns the locale by suffix for the given name, including optional country code.<p>
+     * 
+     * Calls {@link CmsResource#getName(String)} first, so the given name can also be a resource root path.<p>
+     * 
+     * @param name the name to get the locale for
+     * 
+     * @return the locale, or <code>null</code>
+     * 
+     * @see #getLocaleSuffixForName(String)
+     */
+    public static Locale getLocaleForName(String name) {
+
+        String suffix = getLocaleSuffixForName(CmsResource.getName(name));
+        if (suffix != null) {
+            String laguageString = suffix.substring(0, 2);
+            return suffix.length() == 5 ? new Locale(laguageString, suffix.substring(3, 5)) : new Locale(laguageString);
+        }
+        return null;
+    }
+
     /**
      * Returns the locale for the given text based on the language detection library.<p>
      * 
@@ -769,7 +800,7 @@ public final class CmsStringUtil {
      * 
      * @return the detected locale for the given text
      */
-    public static Locale getLocaleFromText(String text) {
+    public static Locale getLocaleForText(String text) {
 
         // try to detect locale by language detector
         if (isNotEmptyOrWhitespaceOnly(text)) {
@@ -784,6 +815,37 @@ public final class CmsStringUtil {
             } catch (LangDetectException e) {
                 LOG.debug(e);
             }
+        }
+        return null;
+    }
+
+    /**
+     * Returns the locale suffix as String for a given name, <code>null</code> otherwise.<p>
+     * 
+     * Uses the the {@link #PATTERN_LOCALE_SUFFIX} to find a language_country occurrence in the
+     * given name and returns the first group of the match.<p>
+     * 
+     * <b>Examples:</b>
+     * 
+     * <ul>
+     * <li><code>rabbit_en_EN.html -> Locale[en_EN]</code>
+     * <li><code>rabbit_en_EN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-> Locale[en_EN]</code>
+     * <li><code>rabbit_en.html&nbsp;&nbsp;&nbsp;&nbsp;-> Locale[en]</code>
+     * <li><code>rabbit_en&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-> Locale[en]</code>
+     * <li><code>rabbit_en.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-> Locale[en]</code>
+     * <li><code>rabbit_enr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-> null</code>
+     * <li><code>rabbit_en.tar.gz&nbsp;&nbsp;-> null</code>
+     * </ul>
+     * 
+     * @param name the resource name to get the locale suffix for
+     * 
+     * @return the locale suffix if found, <code>null</code> otherwise
+     */
+    public static String getLocaleSuffixForName(String name) {
+
+        Matcher matcher = PATTERN_LOCALE_SUFFIX.matcher(name);
+        if (matcher.find()) {
+            return matcher.group(2);
         }
         return null;
     }

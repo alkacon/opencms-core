@@ -1,5 +1,5 @@
             
-            Instructions for updating OpenCms 7.x and 8.x to OpenCms 8.5.1
+            Instructions for updating OpenCms 7.x and 8.x to OpenCms 8.5.2
 
 
                                     WARNING:
@@ -24,7 +24,7 @@ IMPORTANT: The updater is only compatible with the database engines MySQL,
 IMPORTANT: This version of OpenCms requires at least Java 6 because of library 
            dependencies.
 
-Follow the following steps to update from OpenCms 7.x and 8.x to OpenCms 8.5.1:
+Follow the following steps to update from OpenCms 7.x and 8.x to OpenCms 8.5.2:
 
 
 1. Shutdown your OpenCms servlet container
@@ -34,7 +34,7 @@ Broadcast message tool in the 'Administration' view to inform users before the
 server is shut down.
 
 
-2. Extract the OpenCms upgrade file 'opencms_upgrade_to_8.5.1.zip' to 
+2. Extract the OpenCms upgrade file 'opencms_upgrade_to_8.5.2.zip' to 
    your web application directory
 
 If you extracted the file to an external directory, copy the folders 'update'

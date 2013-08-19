@@ -128,9 +128,7 @@ public class CmsSimpleEditor extends CmsEditor {
         CmsFile editFile = null;
         try {
             editFile = getCms().readFile(getParamResource(), CmsResourceFilter.ALL);
-            // ensure all chars in the content are valid for the selected encoding
-            String decodedContent = CmsEncoder.adjustHtmlEncoding(decodeContent(getParamContent()), getFileEncoding());
-
+            String decodedContent = decodeContentParameter(getParamContent(), getFileEncoding(), editFile);
             try {
                 editFile.setContents(decodedContent.getBytes(getFileEncoding()));
             } catch (UnsupportedEncodingException e) {
@@ -166,6 +164,20 @@ public class CmsSimpleEditor extends CmsEditor {
     public String getEditorResourceUri() {
 
         return getSkinUri() + "editors/" + EDITOR_TYPE + "/";
+    }
+
+    /**
+     * Decodes the content from the content request parameter.<p>
+     *  
+     * @param encodedContent the encoded content 
+     * @param encoding the encoding to use 
+     * @param originalFile the current file state 
+     * 
+     * @return the decoded content 
+     */
+    protected String decodeContentParameter(String encodedContent, String encoding, CmsFile originalFile) {
+
+        return decodeContent(encodedContent);
     }
 
     /**

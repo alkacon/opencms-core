@@ -163,9 +163,6 @@ public final class OpenCmsCore {
     /** The ADE manager instance. */
     private CmsADEManager m_adeManager;
 
-    /** The template context manager. */
-    private CmsTemplateContextManager m_templateContextManager;
-
     /** The manager for page aliases. */
     private CmsAliasManager m_aliasManager;
 
@@ -264,6 +261,9 @@ public final class OpenCmsCore {
 
     /** The system information container for "read only" system settings. */
     private CmsSystemInfo m_systemInfo;
+
+    /** The template context manager. */
+    private CmsTemplateContextManager m_templateContextManager;
 
     /** The thread store. */
     private CmsThreadStore m_threadStore;
@@ -1512,6 +1512,7 @@ public final class OpenCmsCore {
             }
         }
 
+        boolean clearErrors = false;
         // test if this file has to be checked or modified
         for (I_CmsResourceInit handler : m_resourceInitHandlers) {
             try {
@@ -1520,6 +1521,7 @@ public final class OpenCmsCore {
             } catch (CmsResourceInitException e) {
                 if (e.isClearErrors()) {
                     tmpException = null;
+                    clearErrors = true;
                 }
                 break;
             } catch (CmsSecurityException e) {
@@ -1529,8 +1531,14 @@ public final class OpenCmsCore {
         }
 
         // file is still null and not found exception was thrown, so throw original exception
-        if ((resource == null) && (tmpException != null)) {
-            throw tmpException;
+        if (resource == null) {
+            if (tmpException != null) {
+                throw tmpException;
+            } else if (!clearErrors) {
+                throw new CmsVfsResourceNotFoundException(org.opencms.main.Messages.get().container(
+                    org.opencms.main.Messages.ERR_PATH_NOT_FOUND_1,
+                    resourceName));
+            }
         }
 
         // return the resource read from the VFS
@@ -1652,6 +1660,8 @@ public final class OpenCmsCore {
             if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
                 String uri = cms.getRequestContext().getUri();
                 if (OpenCms.getStaticExportManager().isExportLink(cms, uri)) {
+                    // if we used the request's query string for getRfsName, clients could cause an unlimited number 
+                    // of files to be exported just by varying the request parameters! 
                     String url = OpenCms.getStaticExportManager().getRfsName(cms, uri);
                     String siteRoot = cms.getRequestContext().getSiteRoot();
                     url = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot).getUrl() + url;

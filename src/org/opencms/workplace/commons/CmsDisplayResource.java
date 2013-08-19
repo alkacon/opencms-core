@@ -36,7 +36,6 @@ import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -218,53 +217,6 @@ public class CmsDisplayResource extends CmsDialog {
     public void setParamVersionid(String paramVersion) {
 
         m_paramVersion = paramVersion;
-    }
-
-    /**
-     * Performs a timewarp for resources that are expired or not released yet to always allow a
-     * preview of a page out of the workplace.<p>
-     *
-     * If the user has a configured timewarp (preferences dialog) a mandatory timewarp will lead to 
-     * an exception. One cannot auto timewarp with configured timewarp time.<p>
-     * 
-     * @param resource the resource to show
-     * 
-     * @throws CmsVfsResourceNotFoundException if a warp would be needed to show the resource but the user has a configured
-     *      timewarp which disallows auto warping
-     */
-    protected void autoTimeWarp(CmsResource resource) throws CmsVfsResourceNotFoundException {
-
-        long surfTime = getCms().getRequestContext().getRequestTime();
-        if (resource.isReleasedAndNotExpired(surfTime)) {
-            // resource is valid, no modification of time required
-            return;
-        }
-
-        if (getSettings().getUserSettings().getTimeWarp() == CmsContextInfo.CURRENT_TIME) {
-            // no time warp has been set, enable auto time warp
-            long timeWarp;
-            // will also work if ATTRIBUTE_REQUEST_TIME was CmsResource.DATE_RELEASED_EXPIRED_IGNORE
-            if (resource.isExpired(surfTime)) {
-                // do a time warp into the past
-                timeWarp = resource.getDateExpired() - 1;
-            } else if (!resource.isReleased(surfTime)) {
-                // do a time warp into the future
-                timeWarp = resource.getDateReleased() + 1;
-            } else {
-                // do no time warp
-                timeWarp = CmsContextInfo.CURRENT_TIME;
-            }
-            if (timeWarp != CmsContextInfo.CURRENT_TIME) {
-                // let's do the time warp again...
-                getSession().setAttribute(CmsContextInfo.ATTRIBUTE_REQUEST_TIME, new Long(timeWarp));
-            }
-        } else {
-            // resource is not vaild in the time window set by the user,
-            // report an error message
-            throw new CmsVfsResourceNotFoundException(Messages.get().container(
-                Messages.ERR_RESOURCE_OUTSIDE_TIMEWINDOW_1,
-                getParamResource()));
-        }
     }
 
     /**

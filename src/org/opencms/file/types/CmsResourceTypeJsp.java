@@ -405,6 +405,8 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
         Set<String> references = getReferencingStrongLinks(cms, resource);
         super.undoChanges(cms, securityManager, resource, mode);
         removeReferencingFromCache(references);
+        // make sure the changed JSP version gets removed from the file system
+        ((CmsJspLoader)OpenCms.getResourceManager().getLoader(getLoaderId())).purgeOfflineJsps(cms, resource);
     }
 
     /**

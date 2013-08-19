@@ -199,9 +199,9 @@ public class CmsToolManager {
             } catch (CmsException e) {
                 // log failure
                 if (CmsLog.INIT.isWarnEnabled()) {
-                    CmsLog.INIT.warn(Messages.get().getBundle().key(
-                        Messages.INIT_TOOLMANAGER_SETUP_ERROR_1,
-                        toolRoot.getKey()), e);
+                    CmsLog.INIT.warn(
+                        Messages.get().getBundle().key(Messages.INIT_TOOLMANAGER_SETUP_ERROR_1, toolRoot.getKey()),
+                        e);
                 }
             }
         }
@@ -625,9 +625,11 @@ public class CmsToolManager {
                 } catch (Exception e) {
                     // log failure
                     if (CmsLog.INIT.isWarnEnabled()) {
-                        CmsLog.INIT.warn(Messages.get().getBundle().key(
-                            Messages.INIT_TOOLMANAGER_TOOL_SETUP_ERROR_1,
-                            res.getRootPath()), e);
+                        CmsLog.INIT.warn(
+                            Messages.get().getBundle().key(
+                                Messages.INIT_TOOLMANAGER_TOOL_SETUP_ERROR_1,
+                                res.getRootPath()),
+                            e);
                     }
                 }
             }
@@ -661,10 +663,9 @@ public class CmsToolManager {
         if (!newParams.containsKey(CmsDialog.PARAM_CLOSELINK)) {
             Map<String, String[]> argMap = resolveAdminTool(getCurrentRoot(wp).getKey(), getCurrentToolPath(wp)).getHandler().getParameters(
                 wp);
-            newParams.put(CmsDialog.PARAM_CLOSELINK, new String[] {linkForToolPath(
-                wp.getJsp(),
-                getCurrentToolPath(wp),
-                argMap)});
+            newParams.put(
+                CmsDialog.PARAM_CLOSELINK,
+                new String[] {linkForToolPath(wp.getJsp(), getCurrentToolPath(wp), argMap)});
         }
         return newParams;
     }

@@ -54,7 +54,6 @@ import org.opencms.relations.CmsCategoryService;
 import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.search.fields.CmsSearchField;
-import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
 import org.opencms.search.fields.CmsSearchFieldMappingType;
 import org.opencms.search.fields.I_CmsSearchFieldMapping;
@@ -87,7 +86,6 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -527,7 +525,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         return Collections.unmodifiableSet(m_cssHeadIncludes);
     }
 
-    /**
+    /***
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#getCSSHeadIncludes(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
      */
     @SuppressWarnings("unused")
@@ -729,10 +727,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /**
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#getSearchFields()
      */
-    public Collection<CmsSearchField> getSearchFields() {
+    public Set<CmsSearchField> getSearchFields() {
 
-        Set<CmsSearchField> searchFields = new HashSet<CmsSearchField>(m_searchFields.values());
-        return Collections.unmodifiableCollection(searchFields);
+        return Collections.unmodifiableSet(new HashSet<CmsSearchField>(m_searchFields.values()));
     }
 
     /**
@@ -1559,8 +1556,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         if (field instanceof CmsSolrField) {
             locale = ((CmsSolrField)field).getLocale();
         }
-        String key = CmsSearchFieldConfiguration.getLocaleExtendedName(field.getName(), locale);
-        m_searchFields.put(key, field);
+        m_searchFields.put(CmsXmlUtils.concatXpath(locale != null ? locale.toString() : null, field.getName()), field);
     }
 
     /**
@@ -2116,10 +2112,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                         // use provided locale
                         locale = CmsLocaleManager.getLocale(localeStr);
                     }
-                    if (CmsLocaleManager.getDefaultLocale().equals(locale)) {
-                        // in case the default locale is given, we store this as root
-                        locale = null;
-                    }
+                    boolean isDefaultLocaleAndNotNull = (locale != null)
+                        && locale.equals(CmsLocaleManager.getDefaultLocale());
 
                     CmsListResourceBundle xmlBundle = null;
 
@@ -2144,6 +2138,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                     }
                     if (xmlBundle != null) {
                         CmsResourceBundleLoader.addBundleToCache(xmlBundleName, locale, xmlBundle);
+                        if (isDefaultLocaleAndNotNull) {
+                            CmsResourceBundleLoader.addBundleToCache(xmlBundleName, null, xmlBundle);
+                        }
                     }
                 }
             }
@@ -2224,11 +2221,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
                     // if no mapping was defined yet, create a mapping for the element itself 
                     if ((field.getMappings() == null) || field.getMappings().isEmpty()) {
-
-                        CmsSearchFieldMapping valueMapping = new CmsSearchFieldMapping(
-                            CmsSearchFieldMappingType.ITEM,
-                            CmsSearchFieldConfiguration.getLocaleExtendedName(elementName, locale));
-                        field.addMapping(valueMapping);
+                        String param = CmsXmlUtils.concatXpath(locale.toString(), elementName);
+                        CmsSearchFieldMapping map = new CmsSearchFieldMapping(CmsSearchFieldMappingType.ITEM, param);
+                        field.addMapping(map);
                     }
 
                     addSearchField(contentDefinition, field);
@@ -2466,15 +2461,26 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                         }
 
                         String property;
-                        if (mapping.startsWith(MAPTO_PROPERTY_LIST)) {
-                            // this is a property list mapping
+                        boolean shared = false;
+                        if (mapping.startsWith(MAPTO_PROPERTY_LIST_INDIVIDUAL)) {
+                            property = mapping.substring(MAPTO_PROPERTY_LIST_INDIVIDUAL.length());
+                        } else if (mapping.startsWith(MAPTO_PROPERTY_LIST_SHARED)) {
+                            property = mapping.substring(MAPTO_PROPERTY_LIST_SHARED.length());
+                            shared = true;
+                        } else if (mapping.startsWith(MAPTO_PROPERTY_LIST)) {
                             property = mapping.substring(MAPTO_PROPERTY_LIST.length());
+                        } else if (mapping.startsWith(MAPTO_PROPERTY_SHARED)) {
+                            property = mapping.substring(MAPTO_PROPERTY_SHARED.length());
+                            shared = true;
+                        } else if (mapping.startsWith(MAPTO_PROPERTY_INDIVIDUAL)) {
+                            property = mapping.substring(MAPTO_PROPERTY_INDIVIDUAL.length());
                         } else {
-                            // this is a property mapping
                             property = mapping.substring(MAPTO_PROPERTY.length());
                         }
-                        // delete the property value for the not existing node
-                        rootCms.writePropertyObject(filename, new CmsProperty(property, CmsProperty.DELETE_VALUE, null));
+                        rootCms.writePropertyObject(filename, new CmsProperty(
+                            property,
+                            CmsProperty.DELETE_VALUE,
+                            shared ? CmsProperty.DELETE_VALUE : null));
                     }
                 } else if (mapping.startsWith(MAPTO_PERMISSION)) {
                     for (int i = 0; i < siblings.size(); i++) {
@@ -2924,8 +2930,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             case 0: // content
             case 3: // item
                 // localized
-                String p = CmsSearchFieldConfiguration.getLocaleExtendedName(element.getStringValue(), locale);
-                fieldMapping = new CmsSearchFieldMapping(type, p);
+                String param = CmsXmlUtils.concatXpath(locale.toString(), element.getStringValue());
+                fieldMapping = new CmsSearchFieldMapping(type, param);
                 break;
             case 1: // property
             case 2: // property-search

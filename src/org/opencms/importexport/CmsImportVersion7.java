@@ -2275,6 +2275,7 @@ public class CmsImportVersion7 implements I_CmsImport {
                     I_CmsReport.FORMAT_ERROR);
                 if (LOG.isWarnEnabled()) {
                     LOG.warn(Messages.get().getBundle().key(Messages.LOG_IMPORTEXPORT_REWRITING_1, resName));
+                    LOG.warn(e.getMessage(), e);
                 }
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(e.getLocalizedMessage(), e);

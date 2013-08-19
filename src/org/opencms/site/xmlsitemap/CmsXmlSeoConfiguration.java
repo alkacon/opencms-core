@@ -59,6 +59,9 @@ public class CmsXmlSeoConfiguration {
     public static final String N_EXCLUDE = "SitemapExclude";
 
     /** Node name. */
+    public static final String N_GENERATOR_CLASS = "GeneratorClass";
+
+    /** Node name. */
     public static final String N_INCLUDE = "SitemapInclude";
 
     /** Node name. */
@@ -84,6 +87,9 @@ public class CmsXmlSeoConfiguration {
 
     /** Flag which indicates whether container page modification dates should be computed. */
     private boolean m_computeContainerPageDates;
+
+    /** The sitemap generator class name. */
+    private String m_generatorClassName;
 
     /** 
      * Gets the list of exclude paths.<p>
@@ -123,6 +129,16 @@ public class CmsXmlSeoConfiguration {
     public String getRobotsTxtText() {
 
         return m_robotsTxtText;
+    }
+
+    /** 
+     * Gets the class name for the sitemap generator class (may return null if none is explicitly configured).
+     * 
+     * @return the sitemap generator class name 
+     */
+    public String getSitemapGeneratorClassName() {
+
+        return m_generatorClassName;
     }
 
     /**
@@ -169,6 +185,11 @@ public class CmsXmlSeoConfiguration {
         I_CmsXmlContentValue computeContPageDates = content.getValue(N_COMPUTE_CONTAINER_PAGE_DATES, en);
         if (computeContPageDates != null) {
             m_computeContainerPageDates = Boolean.parseBoolean(computeContPageDates.getStringValue(rootCms));
+        }
+
+        I_CmsXmlContentValue generatorClassValue = content.getValue(N_GENERATOR_CLASS, en);
+        if (generatorClassValue != null) {
+            m_generatorClassName = generatorClassValue.getStringValue(rootCms);
         }
     }
 

@@ -459,11 +459,10 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             case editor:
             case view:
             case widget:
-                data.setStartGallery(conf.getGalleryPath());
                 data.setCurrentElement(conf.getCurrentElement());
                 String referencePath = conf.getReferencePath();
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(referencePath)) {
-                    referencePath = data.getStartGallery();
+                    referencePath = conf.getGalleryPath();
                 }
                 data.setReferenceSitePath(referencePath);
                 types = getResourceTypeBeans(
@@ -484,6 +483,16 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                     galleryTypeInfos = infos;
                 }
                 data.setGalleries(buildGalleriesList(galleryTypeInfos));
+                String startGallery = conf.getGalleryPath();
+                // check if the configured gallery path really is an existing gallery
+                boolean galleryAvailable = false;
+                for (CmsGalleryFolderBean folderBean : data.getGalleries()) {
+                    if (folderBean.getPath().equals(startGallery)) {
+                        galleryAvailable = true;
+                        break;
+                    }
+                }
+                data.setStartGallery(galleryAvailable ? startGallery : null);
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(conf.getStartFolder())) {
                     try {
                         CmsObject cloneCms = OpenCms.initCmsObject(getCmsObject());
@@ -497,11 +506,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                         log(e.getMessage(), e);
                     }
                 }
-
                 data.setStartTab(GalleryTabId.cms_tab_results);
-
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(data.getStartGallery()) && !types.isEmpty()) {
-
                     String lastGallery = getWorkplaceSettings().getLastUsedGallery(types.get(0).getTypeId());
                     if (CmsStringUtil.isEmptyOrWhitespaceOnly(lastGallery) && !data.getGalleries().isEmpty()) {
                         // check the user preferences for any configured start gallery
@@ -509,16 +515,18 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                         lastGallery = getWorkplaceSettings().getUserSettings().getStartGallery(
                             galleryTypeName,
                             getCmsObject());
-                        if (!CmsPreferences.INPUT_DEFAULT.equals(lastGallery)) {
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(lastGallery)
+                            && !CmsPreferences.INPUT_DEFAULT.equals(lastGallery)) {
                             lastGallery = getCmsObject().getRequestContext().removeSiteRoot(lastGallery);
                         }
                     }
                     // check if the gallery is available in this site and still exists
-                    if (getCmsObject().existsResource(lastGallery)) {
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(lastGallery)
+                        && getCmsObject().existsResource(lastGallery)) {
                         data.setStartGallery(lastGallery);
-                    } else if (!data.getGalleries().isEmpty()) {
+                    } else {
                         // use the first available gallery
-                        data.setStartGallery(data.getGalleries().get(0).getPath());
+                        data.setStartGallery(null);
                     }
                 }
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(data.getStartGallery())

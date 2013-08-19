@@ -11,9 +11,9 @@
     <style type="text/css">
       .CodeMirror {
         border: 1px solid #eee;
+        height: auto;
       }
       .CodeMirror-scroll {
-        height: auto;
         overflow-y: hidden;
         overflow-x: auto;
       }
@@ -23,18 +23,25 @@
     <h1>CodeMirror: Autoresize demo</h1>
 
     <form><textarea id="code" name="code">
-.CodeMirror-scroll {
+.CodeMirror {
+  border: 1px solid #eee;
   height: auto;
+}
+.CodeMirror-scroll {
   overflow-y: hidden;
   overflow-x: auto;
-}</textarea></form>
+}
+</textarea></form>
 
-<p>By setting a few CSS properties, CodeMirror can be made to
+<p>By setting a few CSS properties, and giving
+the <a href="../doc/manual.html#option_viewportMargin"><code>viewportMargin</code></a>
+a value of <code>Infinity</code>, CodeMirror can be made to
 automatically resize to fit its content.</p>
 
     <script>
       var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
-        lineNumbers: true
+        lineNumbers: true,
+        viewportMargin: Infinity
       });
     </script>
 

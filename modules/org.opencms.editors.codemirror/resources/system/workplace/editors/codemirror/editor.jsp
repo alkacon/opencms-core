@@ -57,20 +57,28 @@ default:
 <link rel=stylesheet type="text/css" href="<%= wp.getStyleUri("workplace.css") %>">
 <link rel="stylesheet" type="text/css" href="<%= wp.getEditorResourceUri() %>dist/lib/codemirror.css">
 <link rel="stylesheet" type="text/css" href="<%= wp.getEditorResourceUri() %>dist/theme/eclipse.css">
-<link rel="stylesheet" href="<%= wp.getEditorResourceUri() %>dist/lib/util/dialog.css">
-<link rel="stylesheet" href="<%= wp.getEditorResourceUri() %>dist/lib/util/simple-hint.css">
+<link rel="stylesheet" href="<%= wp.getEditorResourceUri() %>dist/addon/dialog/dialog.css">
+<link rel="stylesheet" href="<%= wp.getEditorResourceUri() %>dist/addon/hint/show-hint.css">
 <link rel="stylesheet" type="text/css" href="<%= wp.getEditorResourceUri() %>codemirror-ocms.css" title="cssocms">
 
 <script type="text/javascript" src="<%= wp.getEditorResourceUri() %>js/lang-<%= wp.getEditorLanguage() %>.js"></script>
 <script type="text/javascript" src="<%= wp.getEditorResourceUri() %>edit.js"></script>
 <script type="text/javascript" src="<%= wp.getEditorResourceUri() %>dist/lib/codemirror.js"></script>
-<script src="<%= wp.getEditorResourceUri() %>dist/lib/util/dialog.js"></script>
-<script src="<%= wp.getEditorResourceUri() %>dist/lib/util/searchcursor.js"></script>
+<script src="<%= wp.getEditorResourceUri() %>dist/addon/dialog/dialog.js"></script>
+<script src="<%= wp.getEditorResourceUri() %>dist/addon/search/searchcursor.js"></script>
 <script src="<%= wp.getEditorResourceUri() %>js/search.js"></script>
-<script src="<%= wp.getEditorResourceUri() %>dist/lib/util/simple-hint.js"></script>
-<script src="<%= wp.getEditorResourceUri() %>dist/lib/util/javascript-hint.js"></script>
-<script src="<%= wp.getEditorResourceUri() %>dist/lib/util/foldcode.js"></script>
-<script src="<%= wp.getEditorResourceUri() %>dist/lib/util/formatting.js"></script>
+<script src="<%= wp.getEditorResourceUri() %>dist/addon/edit/closebrackets.js"></script>
+<script src="<%= wp.getEditorResourceUri() %>dist/addon/edit/closetag.js"></script>
+<script src="<%= wp.getEditorResourceUri() %>dist/addon/edit/matchbrackets.js"></script>
+<script src="<%= wp.getEditorResourceUri() %>dist/addon/hint/show-hint.js"></script>
+<script src="<%= wp.getEditorResourceUri() %>dist/addon/hint/html-hint.js"></script>
+<script src="<%= wp.getEditorResourceUri() %>dist/addon/hint/javascript-hint.js"></script>
+<script src="<%= wp.getEditorResourceUri() %>dist/addon/hint/xml-hint.js"></script>
+<script src="<%= wp.getEditorResourceUri() %>dist/addon/fold/foldcode.js"></script>
+<script src="<%= wp.getEditorResourceUri() %>dist/addon/fold/brace-fold.js"></script>
+<script src="<%= wp.getEditorResourceUri() %>dist/addon/fold/xml-fold.js"></script>
+<script src="<%= wp.getEditorResourceUri() %>dist/addon/comment/comment.js"></script>
+<script src="<%= wp.getEditorResourceUri() %>dist/addon/selection/active-line.js"></script>
 <%
 
 // determine the codemirror mode name to use for highlighting
@@ -81,6 +89,14 @@ if (mode.equals(CmsCodeMirror.HIGHLIGHT_TYPE_JAVASCRIPT)) {
     modeName = "text/html";
 } else if (mode.equals(CmsCodeMirror.HIGHLIGHT_TYPE_JSP)) {
     modeName = "application/x-jsp";
+}
+
+// determine which hint method to use depending on the mode
+String hintConfig;
+if (modeName.equals("text/html")) {
+	hintConfig = "CodeMirror.htmlHint";
+} else {
+	hintConfig = "CodeMirror.javascriptHint";
 }
 
 // include all necessary scripts for syntax highlighting
@@ -97,9 +113,6 @@ if (mode.equals(CmsCodeMirror.HIGHLIGHT_TYPE_JAVASCRIPT)) {
 	// the editor instance object
 	var editorCodeMirror;
 
-	// highlighted line, this is needed to style the active line
-	var hlLine;
-
 	// stored editor modes, used for manual mode change
 	var editorMode = "<%= modeName %>";
 	var currMode = editorMode;
@@ -108,6 +121,9 @@ if (mode.equals(CmsCodeMirror.HIGHLIGHT_TYPE_JAVASCRIPT)) {
 	// visible tabs helpers, used for toggling the visible tab characters
 	var tabsVisible = false;
 	var tabsClass = "norm";
+
+	// close brackets and tags button mode class
+	var closeClass = "push";
 
 	// the fold function to use
 	var foldFunc = CodeMirror.newFoldFunction(CodeMirror.<% if (mode.equals(CmsCodeMirror.HIGHLIGHT_TYPE_HTML) || mode.equals(CmsCodeMirror.HIGHLIGHT_TYPE_XML)) { out.print("tagRangeFinder"); } else { out.print("braceRangeFinder"); } %>);
@@ -119,7 +135,7 @@ if (mode.equals(CmsCodeMirror.HIGHLIGHT_TYPE_JAVASCRIPT)) {
 	var actionExit = "<%= CmsEditor.EDITOR_EXIT %>";
 	var actionSaveExit = "<%= CmsEditor.EDITOR_SAVEEXIT %>";
 	var actionSave = "<%= CmsEditor.EDITOR_SAVE %>";
-	
+
     // stores the content state (dirty or not)
 	var contentDirty = false;
 	function setContentDirty(newVal) {
@@ -137,7 +153,7 @@ if (mode.equals(CmsCodeMirror.HIGHLIGHT_TYPE_JAVASCRIPT)) {
 			buttonAction(1);
 		}
 	}
-	
+
 <%	if (wp.isHelpEnabled()) {
 		out.println(CmsHelpTemplateBean.buildOnlineHelpJavaScript(wp.getLocale())); 
 	} %>
@@ -148,6 +164,7 @@ if (mode.equals(CmsCodeMirror.HIGHLIGHT_TYPE_JAVASCRIPT)) {
 		editorCodeMirror = CodeMirror(document.getElementById("edit1"), {
 				autofocus : true,
 				lineNumbers: true,
+				styleActiveLine: true,
 				mode: editorMode,
 				theme: "eclipse",
 				fixedGutter: true,
@@ -155,27 +172,22 @@ if (mode.equals(CmsCodeMirror.HIGHLIGHT_TYPE_JAVASCRIPT)) {
 				indentWithTabs: true,
 				matchBrackets: true,
 				smartIndent: false,
-				onChange: function() {
-					setContentDirty(true);
-				},
-				onCursorActivity: function() {
-					editorCodeMirror.setLineClass(hlLine, null, null);
-					hlLine = editorCodeMirror.setLineClass(editorCodeMirror.getCursor().line, null, "activeline");
-				},
-				onGutterClick: foldFunc,
-				extraKeys: {"Ctrl-Space": function(cm) {CodeMirror.simpleHint(cm, CodeMirror.javascriptHint);}, "Ctrl-Q": function(cm){foldFunc(cm, cm.getCursor().line);}}
+				autoCloseBrackets: true,
+				autoCloseTags: true,
+				extraKeys: {"Ctrl-Space": function(cm) {CodeMirror.showHint(cm, <%= hintConfig %>);}, "Ctrl-Q": function(cm){foldFunc(cm, cm.getCursor().line);}}
 			}
 		);
 		// set the editor content
 	  	editorCodeMirror.setValue(decodeURIComponent(content));
 	  	//  adjust the editor height
-	  	adjustEditorHeight();
-	  	// highlight the first line
-	  	hlLine = editorCodeMirror.setLineClass(0, "activeline");
+	  	editorCodeMirror.setSize("100%", "100%");
+		// trigger dirty flag on editor changes
+		editorCodeMirror.on("change", function(cm, change) {
+			setContentDirty(true);
+		});
+		// activate fold functionality on gutter click
+		editorCodeMirror.on("gutterClick", foldFunc);
 	}
-	
-	// editor height has to be adjusted every time the window is resized
-	window.onresize = adjustEditorHeight;
 
 </script>
 
@@ -242,6 +254,13 @@ if (mode.equals(CmsCodeMirror.HIGHLIGHT_TYPE_JAVASCRIPT)) {
 	</a>
 </td>
 <%-- (deactivated, does not work properly!) = wp.button("javascript:autoFormatSelection();", null, "../editors/codemirror/images/autoformat.png", "GUI_EDITOR_BUTTON_AUTOFORMAT_0", buttonStyle) --%>
+<td style="vertical-align: top;">
+	<a href="#" onclick="javascript:editorCodeMirror.setOption('autoCloseBrackets', !editorCodeMirror.getOption('autoCloseBrackets'));editorCodeMirror.setOption('autoCloseTags', !editorCodeMirror.getOption('autoCloseTags'));if (closeClass == 'push') { closeClass = 'norm'; } else { closeClass = 'push'; }" class="button" title="<%= wp.key("GUI_EDITOR_BUTTON_AUTOCLOSE_0") %>">
+		<span unselectable="on" class="push" onmouseover="className='over'" onmouseout="className=closeClass" onmousedown="className='push'" onmouseup="className='over'">
+			<img class="button" src="<%= wp.getEditorResourceUri() %>images/autoclose.png" alt="<%= wp.key("GUI_EDITOR_BUTTON_AUTOCLOSE_0") %>"/>
+		</span>
+	</a>
+</td>
 <%= wp.button("javascript:editorCodeMirror.setOption('lineWrapping', !editorCodeMirror.getOption('lineWrapping'));", null, "../editors/codemirror/images/word_wrap.gif", "GUI_EDITOR_BUTTON_WORDWRAP_0", buttonStyle) %>
 <%
 if (wp.isHelpEnabled()) {%>
@@ -256,7 +275,7 @@ if (wp.isHelpEnabled()) {%>
 <div id="edit1"></div>
 
 </form>
-    
+
 <script type="text/javascript">
 	// create the editor and manually set the content state
     loadEditor();

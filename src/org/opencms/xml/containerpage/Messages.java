@@ -104,6 +104,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_DEBUG_CACHE_SET_ONLINE_2 = "LOG_DEBUG_CACHE_SET_ONLINE_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_WARN_ELEMENT_GROUP_INSIDE_ELEMENT_GROUP_0 = "LOG_WARN_ELEMENT_GROUP_INSIDE_ELEMENT_GROUP_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_WARN_NO_FORMATTERS_DEFINED_1 = "LOG_WARN_NO_FORMATTERS_DEFINED_1";
 
     /** Message constant for key in the resource bundle. */

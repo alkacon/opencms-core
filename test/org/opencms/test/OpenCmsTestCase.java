@@ -628,6 +628,34 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
+     * Returns the path to a file in the test data configuration, 
+     * or <code>null</code> if the given file can not be found.<p>
+     * 
+     * This methods searches the given file in all configured test data paths.
+     * It returns the file found first.<p>
+     * 
+     * @param filename the file name to look up
+     * @return the path to a file in the test data configuration
+     */
+    public static String getTestDataPath(String filename) {
+
+        for (int i = 0; i < m_testDataPath.size(); i++) {
+
+            String path = m_testDataPath.get(i);
+            File file = new File(path + filename);
+            if (file.exists()) {
+                if (file.isDirectory()) {
+                    return CmsFileUtil.normalizePath(file.getAbsolutePath() + File.separator);
+                } else {
+                    return CmsFileUtil.normalizePath(file.getAbsolutePath());
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Does a database import from the given RFS folder to the given VFS folder.<p>
      * 
      * @param importFolder the RFS folder to import from
@@ -1092,34 +1120,6 @@ public class OpenCmsTestCase extends TestCase {
         }
 
         return setupDb;
-    }
-
-    /**
-     * Returns the path to a file in the test data configuration, 
-     * or <code>null</code> if the given file can not be found.<p>
-     * 
-     * This methods searches the given file in all configured test data paths.
-     * It returns the file found first.<p>
-     * 
-     * @param filename the file name to look up
-     * @return the path to a file in the test data configuration
-     */
-    protected static String getTestDataPath(String filename) {
-
-        for (int i = 0; i < m_testDataPath.size(); i++) {
-
-            String path = m_testDataPath.get(i);
-            File file = new File(path + filename);
-            if (file.exists()) {
-                if (file.isDirectory()) {
-                    return CmsFileUtil.normalizePath(file.getAbsolutePath() + File.separator);
-                } else {
-                    return CmsFileUtil.normalizePath(file.getAbsolutePath());
-                }
-            }
-        }
-
-        return null;
     }
 
     /**

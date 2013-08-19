@@ -58,17 +58,20 @@ import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 
+import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.servlet.ServletResponse;
 
 import org.apache.commons.logging.Log;
+import org.apache.lucene.index.Term;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
@@ -77,18 +80,25 @@ import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
-import org.apache.solr.common.params.ModifiableSolrParams;
+import org.apache.solr.common.params.CommonParams;
+import org.apache.solr.common.params.HighlightParams;
 import org.apache.solr.common.util.ContentStreamBase;
 import org.apache.solr.common.util.FastWriter;
-import org.apache.solr.core.CoreContainer;
+import org.apache.solr.common.util.NamedList;
 import org.apache.solr.core.SolrCore;
 import org.apache.solr.handler.ReplicationHandler;
+import org.apache.solr.handler.component.ResponseBuilder;
+import org.apache.solr.handler.component.SearchComponent;
 import org.apache.solr.request.LocalSolrQueryRequest;
 import org.apache.solr.request.SolrQueryRequest;
 import org.apache.solr.request.SolrRequestHandler;
 import org.apache.solr.response.BinaryQueryResponseWriter;
 import org.apache.solr.response.QueryResponseWriter;
 import org.apache.solr.response.SolrQueryResponse;
+import org.apache.solr.schema.SchemaField;
+import org.apache.solr.search.DocListAndSet;
+import org.apache.solr.search.DocSlice;
+import org.apache.solr.search.QParser;
 
 /**
  * Implements the search within an Solr index.<p>
@@ -112,8 +122,17 @@ public class CmsSolrIndex extends CmsSearchIndex {
     /** A constant for debug formatting outpu. */
     protected static final int DEBUG_PADDING_RIGHT = 50;
 
+    /** The name for the parameters key of the response header. */
+    private static final String HEADER_PARAMS_NAME = "params";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSolrIndex.class);
+
+    /** The name of the key that is used for the result documents inside the Solr query response. */
+    private static final String QUERY_RESPONSE_NAME = "response";
+
+    /** The name of the key that is used for the query time. */
+    private static final String QUERY_TIME_NAME = "QTime";
 
     /** Indicates the maximum number of documents from the complete result set to return. */
     private static final int ROWS_MAX = 50;
@@ -408,6 +427,227 @@ public class CmsSolrIndex extends CmsSearchIndex {
     public CmsSolrResultList search(CmsObject cms, final CmsSolrQuery query, boolean ignoreMaxRows)
     throws CmsSearchException {
 
+        return search(cms, query, ignoreMaxRows, null, null);
+    }
+
+    /**
+     * Default search method.<p>
+     * 
+     * @param cms the current CMS object 
+     * @param query the query
+     * 
+     * @return the results
+     * 
+     * @throws CmsSearchException if something goes wrong
+     * 
+     * @see #search(CmsObject, String)
+     */
+    public CmsSolrResultList search(CmsObject cms, SolrQuery query) throws CmsSearchException {
+
+        return search(cms, CmsEncoder.decode(query.toString()));
+    }
+
+    /**
+     * Performs a search.<p>
+     * 
+     * @param cms the cms object
+     * @param solrQuery the Solr query
+     * 
+     * @return a list of documents
+     * 
+     * @throws CmsSearchException if something goes wrong
+     * 
+     * @see #search(CmsObject, CmsSolrQuery, boolean)
+     */
+    public CmsSolrResultList search(CmsObject cms, String solrQuery) throws CmsSearchException {
+
+        return search(cms, new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(solrQuery)), false);
+    }
+
+    /**
+     * Writes the response into the writer.<p>
+     * 
+     * NOTE: Currently not available for HTTP server.<p>
+     * 
+     * @param response the servlet response
+     * @param cms the CMS object to use for search
+     * @param query the Solr query
+     * @param ignoreMaxRows if to return unlimited results
+     * 
+     * @throws Exception if there is no embedded server
+     */
+    public void select(ServletResponse response, CmsObject cms, CmsSolrQuery query, boolean ignoreMaxRows)
+    throws Exception {
+
+        SolrCore core = ((EmbeddedSolrServer)m_solr).getCoreContainer().getCore(getName());
+        if (core != null) {
+            try {
+                if (!isCheckingPermissions() && (m_solr instanceof EmbeddedSolrServer)) {
+                    // if permissions should not be checked, execute the query directly
+                    SolrQueryRequest solrRequest = new LocalSolrQueryRequest(core, query.toNamedList());
+                    SolrQueryResponse solrResponse = new SolrQueryResponse();
+                    solrResponse.setAllValues(m_solr.query(query).getResponse());
+                    writeResp(response, solrRequest, solrResponse, core.getQueryResponseWriter(solrRequest));
+                } else {
+                    // perform a regular, permission checked search
+                    search(cms, query, ignoreMaxRows, response, core);
+                }
+            } finally {
+                core.close();
+            }
+        }
+    }
+
+    /**
+     * Sets the search post processor.<p>
+     *
+     * @param postProcessor the search post processor to set
+     */
+    public void setPostProcessor(I_CmsSolrPostSearchProcessor postProcessor) {
+
+        m_postProcessor = postProcessor;
+    }
+
+    /**
+     * @see org.opencms.search.CmsSearchIndex#shutDown()
+     */
+    @Override
+    public void shutDown() {
+
+        if (m_solr instanceof EmbeddedSolrServer) {
+            ((EmbeddedSolrServer)m_solr).shutdown();
+        }
+    }
+
+    /**
+     * @see org.opencms.search.CmsSearchIndex#createIndexBackup()
+     */
+    @Override
+    protected String createIndexBackup() {
+
+        if (!isBackupReindexing()) {
+            // if no backup is generated we don't need to do anything
+            return null;
+        }
+        if (m_solr instanceof EmbeddedSolrServer) {
+            SolrCore core = ((EmbeddedSolrServer)m_solr).getCoreContainer().getCore(getName());
+            if (core != null) {
+                try {
+                    SolrRequestHandler h = core.getRequestHandler("/replication");
+                    if (h instanceof ReplicationHandler) {
+                        LocalSolrQueryRequest req = null;
+                        try {
+                            req = new LocalSolrQueryRequest(core, CmsRequestUtil.createParameterMap("?command=backup"));
+                            h.handleRequest(req, new SolrQueryResponse());
+                        } finally {
+                            if (req != null) {
+                                req.close();
+                            }
+                        }
+                    }
+                } finally {
+                    core.close();
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @see org.opencms.search.CmsSearchIndex#excludeFromIndex(CmsObject, CmsResource)
+     */
+    @Override
+    protected boolean excludeFromIndex(CmsObject cms, CmsResource resource) {
+
+        if (resource.isFolder() || resource.isTemporaryFile()) {
+            // don't index  folders or temporary files for galleries, but pretty much everything else
+            return true;
+        }
+        boolean excludeFromIndex = false;
+        try {
+            String propValue = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_SEARCH_EXCLUDE, true).getValue();
+            excludeFromIndex = Boolean.valueOf(propValue).booleanValue();
+            if (!excludeFromIndex && (propValue != null)) {
+                // property value was neither "true" nor null, must check for "all"
+                excludeFromIndex = PROPERTY_SEARCH_EXCLUDE_VALUE_ALL.equalsIgnoreCase(propValue.trim())
+                    || PROPERTY_SEARCH_EXCLUDE_VALUE_SOLR.equalsIgnoreCase(propValue.trim());
+            }
+        } catch (CmsException e) {
+            LOG.debug(e.getMessage(), e);
+        }
+        return excludeFromIndex;
+    }
+
+    /**
+     * @see org.opencms.search.CmsSearchIndex#indexSearcherClose()
+     */
+    @Override
+    protected void indexSearcherClose() {
+
+        // nothing to do here
+    }
+
+    /**
+     * @see org.opencms.search.CmsSearchIndex#indexSearcherOpen(java.lang.String)
+     */
+    @Override
+    protected void indexSearcherOpen(String path) {
+
+        // nothing to do here
+    }
+
+    /**
+     * @see org.opencms.search.CmsSearchIndex#indexSearcherUpdate()
+     */
+    @Override
+    protected void indexSearcherUpdate() {
+
+        // nothing to do here
+    }
+
+    /**
+     * Checks if the given resource should be indexed by this index or not.<p>
+     * 
+     * @param res the resource candidate
+     * 
+     * @return <code>true</code> if the given resource should be indexed or <code>false</code> if not
+     */
+    protected boolean isIndexing(CmsResource res) {
+
+        if ((res != null) && (getSources() != null)) {
+            I_CmsDocumentFactory result = OpenCms.getSearchManager().getDocumentFactory(res);
+            for (CmsSearchIndexSource source : getSources()) {
+                if (source.isIndexing(res.getRootPath(), CmsSolrDocumentContainerPage.TYPE_CONTAINERPAGE_SOLR)
+                    || source.isIndexing(res.getRootPath(), CmsSolrDocumentXmlContent.TYPE_XMLCONTENT_SOLR)
+                    || source.isIndexing(res.getRootPath(), result.getName())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Performs the actual search.<p>
+     * 
+     * @param cms the current OpenCms context
+     * @param ignoreMaxRows <code>true</code> to return all all requested rows, <code>false</code> to use max rows
+     * @param query the OpenCms Solr query
+     * @param response the servlet response to write the query result to, may also be <code>null</code>
+     * @param core the Solr core
+     * 
+     * @return the found documents
+     * 
+     * @throws CmsSearchException
+     */
+    @SuppressWarnings("unchecked")
+    private CmsSolrResultList search(
+        CmsObject cms,
+        final CmsSolrQuery query,
+        boolean ignoreMaxRows,
+        ServletResponse response,
+        SolrCore core) throws CmsSearchException {
+
         int previousPriority = Thread.currentThread().getPriority();
         long startTime = System.currentTimeMillis();
 
@@ -415,7 +655,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
         SolrQuery initQuery = query.clone();
 
         query.setHighlight(false);
-
+        LocalSolrQueryRequest solrQueryRequest = null;
         try {
 
             // initialize the search context
@@ -521,33 +761,139 @@ public class CmsSolrIndex extends CmsSearchIndex {
             long processTime = System.currentTimeMillis() - startTime - solrTime;
 
             // create and return the result
-            SolrCore core = m_solr instanceof EmbeddedSolrServer
-            ? ((EmbeddedSolrServer)m_solr).getCoreContainer().getCore(getName())
-            : null;
-            CmsSolrResultList result = new CmsSolrResultList(
-                core,
-                initQuery,
-                queryResponse,
-                solrDocumentList,
-                resourceDocumentList,
-                start,
-                new Integer(rows),
-                end,
-                page,
-                visibleHitCount,
-                new Float(maxScore),
-                startTime);
+            solrDocumentList.setStart(start);
+            solrDocumentList.setMaxScore(new Float(maxScore));
+            solrDocumentList.setNumFound(visibleHitCount);
 
-            if (LOG.isDebugEnabled()) {
-                Object[] logParams = new Object[] {
-                    new Long(System.currentTimeMillis() - startTime),
-                    new Long(result.getNumFound()),
-                    new Long(solrTime),
-                    new Long(processTime),
-                    new Long(result.getHighlightEndTime() != 0 ? result.getHighlightEndTime() - startTime : 0)};
-                LOG.debug(query.toString()
-                    + "\n"
-                    + Messages.get().getBundle().key(Messages.LOG_SOLR_SEARCH_EXECUTED_5, logParams));
+            queryResponse.getResponse().setVal(
+                queryResponse.getResponse().indexOf(QUERY_RESPONSE_NAME, 0),
+                solrDocumentList);
+
+            queryResponse.getResponseHeader().setVal(
+                queryResponse.getResponseHeader().indexOf(QUERY_TIME_NAME, 0),
+                new Integer(new Long(System.currentTimeMillis() - startTime).intValue()));
+            long highlightEndTime = System.currentTimeMillis();
+            CmsSolrResultList result = null;
+            try {
+                SearchComponent highlightComponenet = null;
+                if (core != null) {
+                    highlightComponenet = core.getSearchComponent("highlight");
+                    solrQueryRequest = new LocalSolrQueryRequest(core, queryResponse.getResponseHeader());
+                }
+                SolrQueryResponse solrQueryResponse = null;
+                if (solrQueryRequest != null) {
+                    // create and initialize the solr response
+                    solrQueryResponse = new SolrQueryResponse();
+                    solrQueryResponse.setAllValues(queryResponse.getResponse());
+                    solrQueryResponse.setEndTime(queryResponse.getQTime());
+                    int paramsIndex = queryResponse.getResponseHeader().indexOf(HEADER_PARAMS_NAME, 0);
+                    NamedList<Object> header = null;
+                    Object o = queryResponse.getResponseHeader().getVal(paramsIndex);
+                    if (o instanceof NamedList) {
+                        header = (NamedList<Object>)o;
+                        header.setVal(header.indexOf(CommonParams.ROWS, 0), new Integer(rows));
+                        header.setVal(header.indexOf(CommonParams.START, 0), new Long(start));
+                    }
+
+                    // set the OpenCms Solr query as parameters to the request
+                    solrQueryRequest.setParams(initQuery);
+
+                    // perform the highlighting
+                    if ((header != null) && (initQuery.getHighlight()) && (highlightComponenet != null)) {
+                        header.add(HighlightParams.HIGHLIGHT, "on");
+                        if ((initQuery.getHighlightFields() != null) && (initQuery.getHighlightFields().length > 0)) {
+                            header.add(
+                                HighlightParams.FIELDS,
+                                CmsStringUtil.arrayAsString(initQuery.getHighlightFields(), ","));
+                        }
+                        String formatter = initQuery.getParams(HighlightParams.FORMATTER) != null
+                        ? initQuery.getParams(HighlightParams.FORMATTER)[0]
+                        : null;
+                        if (formatter != null) {
+                            header.add(HighlightParams.FORMATTER, formatter);
+                        }
+                        if (initQuery.getHighlightFragsize() != 100) {
+                            header.add(HighlightParams.FRAGSIZE, new Integer(initQuery.getHighlightFragsize()));
+                        }
+                        if (initQuery.getHighlightRequireFieldMatch()) {
+                            header.add(
+                                HighlightParams.FIELD_MATCH,
+                                new Boolean(initQuery.getHighlightRequireFieldMatch()));
+                        }
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(initQuery.getHighlightSimplePost())) {
+                            header.add(HighlightParams.SIMPLE_POST, initQuery.getHighlightSimplePost());
+                        }
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(initQuery.getHighlightSimplePre())) {
+                            header.add(HighlightParams.SIMPLE_PRE, initQuery.getHighlightSimplePre());
+                        }
+                        if (initQuery.getHighlightSnippets() != 1) {
+                            header.add(HighlightParams.SNIPPETS, new Integer(initQuery.getHighlightSnippets()));
+                        }
+                        ResponseBuilder rb = new ResponseBuilder(
+                            solrQueryRequest,
+                            solrQueryResponse,
+                            Collections.singletonList(highlightComponenet));
+                        try {
+                            rb.doHighlights = true;
+                            DocListAndSet res = new DocListAndSet();
+                            SchemaField idField = OpenCms.getSearchManager().getSolrServerConfiguration().getSolrSchema().getUniqueKeyField();
+
+                            int[] luceneIds = new int[rows];
+                            int docs = 0;
+                            for (SolrDocument doc : solrDocumentList) {
+                                String idString = (String)doc.getFirstValue(CmsSearchField.FIELD_ID);
+                                int id = solrQueryRequest.getSearcher().getFirstMatch(
+                                    new Term(idField.getName(), idField.getType().toInternal(idString)));
+                                luceneIds[docs++] = id;
+                            }
+                            res.docList = new DocSlice(0, docs, luceneIds, null, docs, 0);
+                            rb.setResults(res);
+                            rb.setQuery(QParser.getParser(initQuery.getQuery(), null, solrQueryRequest).getQuery());
+                            rb.setQueryString(initQuery.getQuery());
+                            highlightComponenet.prepare(rb);
+                            highlightComponenet.process(rb);
+                        } catch (Exception e) {
+                            LOG.error(e);
+                        }
+                        highlightEndTime = System.currentTimeMillis();
+                    }
+                }
+
+                result = new CmsSolrResultList(
+                    initQuery,
+                    queryResponse,
+                    solrDocumentList,
+                    resourceDocumentList,
+                    start,
+                    new Integer(rows),
+                    end,
+                    page,
+                    visibleHitCount,
+                    new Float(maxScore),
+                    startTime,
+                    highlightEndTime);
+                if (LOG.isDebugEnabled()) {
+                    Object[] logParams = new Object[] {
+                        new Long(System.currentTimeMillis() - startTime),
+                        new Long(result.getNumFound()),
+                        new Long(solrTime),
+                        new Long(processTime),
+                        new Long(result.getHighlightEndTime() != 0 ? result.getHighlightEndTime() - startTime : 0)};
+                    LOG.debug(query.toString()
+                        + "\n"
+                        + Messages.get().getBundle().key(Messages.LOG_SOLR_SEARCH_EXECUTED_5, logParams));
+                }
+                if ((response != null) && (core != null)) {
+                    writeResp(
+                        response,
+                        solrQueryRequest,
+                        solrQueryResponse,
+                        core.getQueryResponseWriter(solrQueryRequest));
+                }
+            } finally {
+                if (solrQueryRequest != null) {
+                    solrQueryRequest.close();
+                }
             }
             return result;
         } catch (Exception e) {
@@ -555,231 +901,46 @@ public class CmsSolrIndex extends CmsSearchIndex {
                 Messages.LOG_SOLR_ERR_SEARCH_EXECUTION_FAILD_1,
                 CmsEncoder.decode(query.toString())), e);
         } finally {
+
             // re-set thread to previous priority
             Thread.currentThread().setPriority(previousPriority);
         }
+
     }
 
     /**
-     * Default search method.<p>
-     * 
-     * @param cms the current CMS object 
-     * @param query the query
-     * 
-     * @return the results
-     * 
-     * @throws CmsSearchException if something goes wrong
-     * 
-     * @see #search(CmsObject, String)
-     */
-    public CmsSolrResultList search(CmsObject cms, SolrQuery query) throws CmsSearchException {
-
-        return search(cms, CmsEncoder.decode(query.toString()));
-    }
-
-    /**
-     * Performs a search.<p>
-     * 
-     * @param cms the cms object
-     * @param solrQuery the Solr query
-     * 
-     * @return a list of documents
-     * 
-     * @throws CmsSearchException if something goes wrong
-     * 
-     * @see #search(CmsObject, CmsSolrQuery, boolean)
-     */
-    public CmsSolrResultList search(CmsObject cms, String solrQuery) throws CmsSearchException {
-
-        return search(cms, new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(solrQuery)), false);
-    }
-
-    /**
-     * Sets the search post processor.<p>
-     *
-     * @param postProcessor the search post processor to set
-     */
-    public void setPostProcessor(I_CmsSolrPostSearchProcessor postProcessor) {
-
-        m_postProcessor = postProcessor;
-    }
-
-    /**
-     * @see org.opencms.search.CmsSearchIndex#shutDown()
-     */
-    @Override
-    public void shutDown() {
-
-        // noop
-    }
-
-    /**
-     * Executes a spell checking Solr query and returns the Solr query response.<p>
-     * 
-     * @param cms the CMS object
-     * @param q the query
-     * @param reqParams the request parameters as map
-     * 
-     * @return the Solr response
-     * 
-     * @throws CmsSearchException if something goes wrong
-     */
-    public synchronized QueryResponse spellCheck(CmsObject cms, String q, Map<String, String[]> reqParams)
-    throws CmsSearchException {
-
-        try {
-            ModifiableSolrParams params = new ModifiableSolrParams();
-            params.set("qt", "/spell");
-            params.set("q", q);
-            params.set("spellcheck", "true");
-            params.set("spellcheck.collate", "true");
-            params.set("spellcheck.build", "false");
-            for (Map.Entry<String, String[]> ent : reqParams.entrySet()) {
-                params.set(ent.getKey(), ent.getValue());
-            }
-            return m_solr.query(params);
-        } catch (Exception e) {
-            throw new CmsSearchException(Messages.get().container(Messages.LOG_SOLR_ERR_SEARCH_EXECUTION_FAILD_1, q), e);
-        }
-    }
-
-    /**
-     * Writes the response into the writer.<p>
-     * 
-     * NOTE: Currently not available for HTTP server.<p>
+     * Writes the Solr response.<p>
      * 
      * @param response the servlet response
-     * @param result the result to print
+     * @param queryRequest the Solr request
+     * @param queryResponse the Solr response to write
+     * @param responseWriter the Solr query response writer
      * 
-     * @throws Exception if there is no embedded server
+     * @throws IOException if sth. goes wrong
+     * @throws UnsupportedEncodingException if sth. goes wrong
      */
-    public void writeResponse(ServletResponse response, CmsSolrResultList result) throws Exception {
+    private void writeResp(
+        ServletResponse response,
+        SolrQueryRequest queryRequest,
+        SolrQueryResponse queryResponse,
+        QueryResponseWriter responseWriter) throws IOException, UnsupportedEncodingException {
 
-        if (m_solr instanceof EmbeddedSolrServer) {
-            SolrCore core = ((EmbeddedSolrServer)m_solr).getCoreContainer().getCore(getName());
-            SolrQueryRequest queryRequest = result.getSolrQueryRequest();
-            SolrQueryResponse queryResponse = result.getSolrQueryResponse();
-            QueryResponseWriter responseWriter = core.getQueryResponseWriter(queryRequest);
-
-            final String ct = responseWriter.getContentType(queryRequest, queryResponse);
-            if (null != ct) {
-                response.setContentType(ct);
-            }
-
-            if (responseWriter instanceof BinaryQueryResponseWriter) {
-                BinaryQueryResponseWriter binWriter = (BinaryQueryResponseWriter)responseWriter;
-                binWriter.write(response.getOutputStream(), queryRequest, queryResponse);
-            } else {
-                String charset = ContentStreamBase.getCharsetFromContentType(ct);
-                Writer out = ((charset == null) || charset.equalsIgnoreCase(UTF8.toString())) ? new OutputStreamWriter(
-                    response.getOutputStream(),
-                    UTF8) : new OutputStreamWriter(response.getOutputStream(), charset);
-                out = new FastWriter(out);
-                responseWriter.write(out, queryRequest, queryResponse);
-                out.flush();
-            }
+        final String ct = responseWriter.getContentType(queryRequest, queryResponse);
+        if (null != ct) {
+            response.setContentType(ct);
+        }
+        if (responseWriter instanceof BinaryQueryResponseWriter) {
+            BinaryQueryResponseWriter binWriter = (BinaryQueryResponseWriter)responseWriter;
+            binWriter.write(response.getOutputStream(), queryRequest, queryResponse);
         } else {
-            throw new UnsupportedOperationException();
+            String charset = ContentStreamBase.getCharsetFromContentType(ct);
+            Writer out = ((charset == null) || charset.equalsIgnoreCase(UTF8.toString())) ? new OutputStreamWriter(
+                response.getOutputStream(),
+                UTF8) : new OutputStreamWriter(response.getOutputStream(), charset);
+            out = new FastWriter(out);
+            responseWriter.write(out, queryRequest, queryResponse);
+            out.flush();
         }
     }
 
-    /**
-     * @see org.opencms.search.CmsSearchIndex#createIndexBackup()
-     */
-    @Override
-    protected String createIndexBackup() {
-
-        if (!isBackupReindexing()) {
-            // if no backup is generated we don't need to do anything
-            return null;
-        }
-        if (m_solr instanceof EmbeddedSolrServer) {
-            EmbeddedSolrServer ser = (EmbeddedSolrServer)m_solr;
-            CoreContainer con = ser.getCoreContainer();
-            SolrCore core = con.getCore(getName());
-            if (core != null) {
-                SolrRequestHandler h = core.getRequestHandler("/replication");
-                if (h instanceof ReplicationHandler) {
-                    h.handleRequest(
-                        new LocalSolrQueryRequest(core, CmsRequestUtil.createParameterMap("?command=backup")),
-                        new SolrQueryResponse());
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @see org.opencms.search.CmsSearchIndex#excludeFromIndex(CmsObject, CmsResource)
-     */
-    @Override
-    protected boolean excludeFromIndex(CmsObject cms, CmsResource resource) {
-
-        if (resource.isFolder() || resource.isTemporaryFile()) {
-            // don't index  folders or temporary files for galleries, but pretty much everything else
-            return true;
-        }
-        boolean excludeFromIndex = false;
-        try {
-            String propValue = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_SEARCH_EXCLUDE, true).getValue();
-            excludeFromIndex = Boolean.valueOf(propValue).booleanValue();
-            if (!excludeFromIndex && (propValue != null)) {
-                // property value was neither "true" nor null, must check for "all"
-                excludeFromIndex = PROPERTY_SEARCH_EXCLUDE_VALUE_ALL.equalsIgnoreCase(propValue.trim())
-                    || PROPERTY_SEARCH_EXCLUDE_VALUE_SOLR.equalsIgnoreCase(propValue.trim());
-            }
-        } catch (CmsException e) {
-            LOG.debug(e.getMessage(), e);
-        }
-        return excludeFromIndex;
-    }
-
-    /**
-     * @see org.opencms.search.CmsSearchIndex#indexSearcherClose()
-     */
-    @Override
-    protected void indexSearcherClose() {
-
-        // nothing to do here
-    }
-
-    /**
-     * @see org.opencms.search.CmsSearchIndex#indexSearcherOpen(java.lang.String)
-     */
-    @Override
-    protected void indexSearcherOpen(String path) {
-
-        // nothing to do here
-    }
-
-    /**
-     * @see org.opencms.search.CmsSearchIndex#indexSearcherUpdate()
-     */
-    @Override
-    protected void indexSearcherUpdate() {
-
-        // nothing to do here
-    }
-
-    /**
-     * Checks if the given resource should be indexed by this index or not.<p>
-     * 
-     * @param res the resource candidate
-     * 
-     * @return <code>true</code> if the given resource should be indexed or <code>false</code> if not
-     */
-    protected boolean isIndexing(CmsResource res) {
-
-        if ((res != null) && (getSources() != null)) {
-            I_CmsDocumentFactory result = OpenCms.getSearchManager().getDocumentFactory(res);
-            for (CmsSearchIndexSource source : getSources()) {
-                if (source.isIndexing(res.getRootPath(), CmsSolrDocumentContainerPage.TYPE_CONTAINERPAGE_SOLR)
-                    || source.isIndexing(res.getRootPath(), CmsSolrDocumentXmlContent.TYPE_XMLCONTENT_SOLR)
-                    || source.isIndexing(res.getRootPath(), result.getName())) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 }

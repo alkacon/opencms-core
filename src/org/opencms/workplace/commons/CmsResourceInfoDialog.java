@@ -30,9 +30,12 @@ package org.opencms.workplace.commons;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
+import org.opencms.util.CmsUUID;
 import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
+import org.opencms.workplace.tools.CmsToolDialog;
 
 import java.util.ArrayList;
 
@@ -84,10 +87,11 @@ public class CmsResourceInfoDialog extends CmsWidgetDialog {
     /**
      * Commits the edited user to the db.<p>
      */
+    @Override
     public void actionCommit() {
 
         // no saving is done
-        setCommitErrors(new ArrayList());
+        setCommitErrors(new ArrayList<Throwable>());
     }
 
     /**
@@ -131,6 +135,26 @@ public class CmsResourceInfoDialog extends CmsWidgetDialog {
     }
 
     /**
+     * @see org.opencms.workplace.tools.CmsToolDialog#computeUpLevelLink()
+     */
+    @Override
+    protected String computeUpLevelLink() {
+
+        // if adminProject is set, go back to the project file list in the administration 
+        String adminProject = getJsp().getRequest().getParameter(CmsToolDialog.PARAM_ADMIN_PROJECT);
+        if ((adminProject != null) && CmsUUID.isValidUUID(adminProject)) {
+            String upLevelLink = OpenCms.getLinkManager().substituteLink(
+                getCms(),
+                "/system/workplace/views/admin/admin-main.jsp")
+                + "?path=%2Fprojects%2Ffiles&action=initial&projectid="
+                + adminProject;
+            return upLevelLink;
+        } else {
+            return super.computeUpLevelLink();
+        }
+    }
+
+    /**
      * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>
      * 
      * This overwrites the method from the super class to create a layout variation for the widgets.<p>
@@ -138,6 +162,7 @@ public class CmsResourceInfoDialog extends CmsWidgetDialog {
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -159,6 +184,7 @@ public class CmsResourceInfoDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defaultActionHtmlEnd()
      */
+    @Override
     protected String defaultActionHtmlEnd() {
 
         return "";
@@ -167,6 +193,7 @@ public class CmsResourceInfoDialog extends CmsWidgetDialog {
     /**
      * Creates the list of widgets for this dialog.<p>
      */
+    @Override
     protected void defineWidgets() {
 
         // initialize the user object to use for the dialog
@@ -181,6 +208,7 @@ public class CmsResourceInfoDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;

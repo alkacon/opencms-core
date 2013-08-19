@@ -178,17 +178,17 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
         squery.setRows(new Integer(100));
         CmsSolrResultList results = index.search(getCmsObject(), squery);
         AllTests.printResults(getCmsObject(), results, true);
-        assertEquals(53, results.getNumFound());
+        assertEquals(56, results.getNumFound());
 
         CmsObject cms = OpenCms.initCmsObject(getCmsObject(), new CmsContextInfo("test1"));
         results = index.search(cms, squery);
         AllTests.printResults(cms, results, false);
-        assertEquals(47, results.getNumFound());
+        assertEquals(50, results.getNumFound());
 
         cms = OpenCms.initCmsObject(getCmsObject(), new CmsContextInfo("test2"));
         results = index.search(cms, squery);
         AllTests.printResults(cms, results, true);
-        assertEquals(49, results.getNumFound());
+        assertEquals(52, results.getNumFound());
     }
 
     /**
@@ -224,13 +224,14 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
         index.addSourceName("solr_source2");
         OpenCms.getSearchManager().addSearchIndex(index);
         OpenCms.getSearchManager().rebuildIndex(AllTests.INDEX_TEST, new CmsShellReport(Locale.ENGLISH));
-        index.search(getCmsObject(), "q=*:*");
+        for (int i = 0; i < 250; i++) {
+            index.search(getCmsObject(), "q=*:*");
+        }
 
         // shut down
         CoreContainer container = ((EmbeddedSolrServer)index.m_solr).getCoreContainer();
         for (SolrCore core : container.getCores()) {
-            core.closeSearcher();
-            core.close();
+            echo("Open count for core: " + core.getName() + ": " + core.getOpenCount());
         }
         container.shutdown();
 

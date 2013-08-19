@@ -127,12 +127,12 @@ public class CmsSolrCollector extends A_CmsResourceCollector {
     public List<CmsResource> getResults(CmsObject cms, String name, String param) throws CmsException {
 
         name = name == null ? COLLECTORS[1] : name;
-        if (param != null && param.indexOf('|') != -1) {
+        if ((param != null) && (param.indexOf('|') != -1)) {
             param = param.substring(0, param.indexOf('|'));
         }
         Map<String, String[]> pm = CmsRequestUtil.createParameterMap(param);
         CmsSolrIndex index = CmsSearchManager.getIndexSolr(cms, pm);
         CmsSolrQuery q = COLLECTORS_LIST.indexOf(name) == 0 ? new CmsSolrQuery(null, pm) : new CmsSolrQuery(cms, pm);
-        return new ArrayList<CmsResource>(index.search(cms, q));
+        return new ArrayList<CmsResource>(index.search(cms, q, true));
     }
 }

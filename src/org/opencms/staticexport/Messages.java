@@ -167,6 +167,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_EXPORT_FILE_STATUS_3 = "LOG_EXPORT_FILE_STATUS_3";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_EXPORT_RFSNAME_1 = "LOG_EXPORT_RFSNAME_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_EXPORT_TEMPLATES_1 = "LOG_EXPORT_TEMPLATES_1";
 
     /** Message constant for key in the resource bundle. */
@@ -224,6 +227,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_PROCESSING_1 = "LOG_PROCESSING_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_PURGED_CONTAINERPAGES_0 = "LOG_PURGED_CONTAINERPAGES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_PURGED_DETAILPAGES_0 = "LOG_PURGED_DETAILPAGES_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_READING_CHANGED_RESOURCES_FAILED_1 = "LOG_READING_CHANGED_RESOURCES_FAILED_1";
 
     /** Message constant for key in the resource bundle. */
@@ -234,6 +243,18 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_RFSNAME_1 = "LOG_RFSNAME_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_SCRUB_EXPORT_FINISH_MOVED_SOURCES_1 = "LOG_SCRUB_EXPORT_FINISH_MOVED_SOURCES_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_SCRUB_EXPORT_FINISH_RESOURCE_2 = "LOG_SCRUB_EXPORT_FINISH_RESOURCE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_SCRUB_EXPORT_START_MOVED_SOURCES_0 = "LOG_SCRUB_EXPORT_START_MOVED_SOURCES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_SCRUB_EXPORT_START_RESOURCE_1 = "LOG_SCRUB_EXPORT_START_RESOURCE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SCRUBBING_EXPORT_FOLDERS_1 = "LOG_SCRUBBING_EXPORT_FOLDERS_1";
@@ -279,6 +300,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_WAITING_STATIC_EXPORT_3 = "LOG_WAITING_STATIC_EXPORT_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_WARN_ELEMENT_GROUP_REFERENCES_SELF_1 = "LOG_WARN_ELEMENT_GROUP_REFERENCES_SELF_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_WRITE_FAILED_1 = "LOG_WRITE_FAILED_1";

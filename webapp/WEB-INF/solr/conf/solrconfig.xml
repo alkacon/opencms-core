@@ -1104,68 +1104,15 @@
 
         http://wiki.apache.org/solr/SpellCheckComponent
      -->
-  <searchComponent name="spellcheck" class="solr.SpellCheckComponent">
-
-    <str name="queryAnalyzerFieldType">textSpell</str>
-
-    <!-- Multiple "Spell Checkers" can be declared and used by this
-         component
-      -->
-
-    <!-- a spellchecker built from a field of the main index, and
-         written to disk
-      -->
-    <lst name="spellchecker">
-      <str name="name">default</str>
-      <str name="field">name</str>
-      <str name="spellcheckIndexDir">spellchecker</str>
-      <!-- uncomment this to require terms to occur in 1% of the documents 
-           in order to be included in the dictionary
-        -->
-      <!--
-      	<float name="thresholdTokenFrequency">.01</float>
-      -->
-    </lst>
-
-    <!-- a spellchecker that uses a different distance measure -->
-    <!--
+    <searchComponent name="spellcheck" class="solr.SpellCheckComponent">
+       <str name="queryAnalyzerFieldType">string</str> <!-- Replace with Field Type of your schema -->
        <lst name="spellchecker">
-         <str name="name">jarowinkler</str>
-         <str name="field">spell</str>
-         <str name="distanceMeasure">
-           org.apache.lucene.search.spell.JaroWinklerDistance
-         </str>
-         <str name="spellcheckIndexDir">spellcheckerJaro</str>
+           <str name="name">default</str>
+           <str name="field">spell</str> <!-- Replace with field name as per your scheme -->
+           <str name="spellcheckIndexDir">./spellchecker</str>
+           <str name="buildOnOptimize">true</str>
        </lst>
-     -->
-
-    <!-- a spellchecker that use an alternate comparator 
-
-         comparatorClass be one of:
-          1. score (default)
-          2. freq (Frequency first, then score)
-          3. A fully qualified class name
-      -->
-    <!--
-       <lst name="spellchecker">
-         <str name="name">freq</str>
-         <str name="field">lowerfilt</str>
-         <str name="spellcheckIndexDir">spellcheckerFreq</str>
-         <str name="comparatorClass">freq</str>
-         <str name="buildOnCommit">true</str>
-      -->
-
-    <!-- A spellchecker that reads the list of words from a file -->
-    <!--
-       <lst name="spellchecker">
-         <str name="classname">solr.FileBasedSpellChecker</str>
-         <str name="name">file</str>
-         <str name="sourceLocation">spellings.txt</str>
-         <str name="characterEncoding">UTF-8</str>
-         <str name="spellcheckIndexDir">spellcheckerFile</str>
-       </lst>
-      -->
-  </searchComponent>
+    </searchComponent>
 
   <!-- A request handler for demonstrating the spellcheck component.  
 
@@ -1180,17 +1127,23 @@
        See http://wiki.apache.org/solr/SpellCheckComponent for details
        on the request parameters.
     -->
-  <requestHandler name="/spell" class="solr.SearchHandler" startup="lazy">
-    <lst name="defaults">
-      <str name="df">text</str>
-      <str name="spellcheck.onlyMorePopular">false</str>
-      <str name="spellcheck.extendedResults">false</str>
-      <str name="spellcheck.count">1</str>
-    </lst>
-    <arr name="last-components">
-      <str>spellcheck</str>
-    </arr>
-  </requestHandler>
+    <requestHandler name="/spell" class="solr.SearchHandler" startup="lazy">
+        <lst name="defaults">
+            <str name="df">text</str> <!--The default field for spell checking. -->
+            <str name="spellcheck.dictionary">default</str> <!--default or file or jarowinkler as mentioned above. -->
+            <str name="spellcheck">on</str>
+            <str name="spellcheck.extendedResults">true</str> 
+            <str name="spellcheck.count">10</str>
+            <str name="spellcheck.maxResultsForSuggest">5</str> 
+            <str name="spellcheck.collate">true</str>
+            <str name="spellcheck.collateExtendedResults">true</str> 
+            <str name="spellcheck.maxCollationTries">10</str>
+            <str name="spellcheck.maxCollations">5</str> 
+        </lst>
+     <arr name="last-components">
+         <str>spellcheck</str>
+     </arr>
+    </requestHandler>
 
   <!-- Term Vector Component
 

@@ -224,7 +224,7 @@
  </types>
 
  <fields>
-   <field name="id"                  type="uuid"         indexed="true"  stored="true" default="NEW" /> <!-- Unique indetifier. -->
+   <field name="id"                  type="uuid"         indexed="true"  stored="true" /> <!-- Unique indetifier. -->
    <field name="path"                type="string"       indexed="true"  stored="true" required="true" />
    <field name="path_hierarchy"      type="text_path"    indexed="true"  stored="true" required="true" /><!-- is copied -->
    <field name="parent-folders"      type="string"       indexed="true"  stored="true" required="true" multiValued="true" />
@@ -238,8 +238,8 @@
    <field name="lastmodified"        type="date"         indexed="true"  stored="true" required="true" />
    <field name="expired"             type="date"         indexed="true"  stored="true" />
    <field name="relased"             type="date"         indexed="true"  stored="true" />
-   <field name="content"             type="text_general" indexed="true"  stored="true" multiValued="true" compressed="true" />
-   <field name="contentblob"         type="binary"       indexed="false" stored="true" compressed="true" />
+   <field name="content"             type="text_general" indexed="true"  stored="true" multiValued="true" />
+   <field name="contentblob"         type="binary"       indexed="false" stored="true" />
    <field name="category"            type="text_general" indexed="true"  stored="true" multiValued="true" />
    <field name="category_exact"      type="string"       indexed="true"  stored="true" multiValued="true" termVectors="true" /><!-- is copied -->
    <field name="dependencyType"       type="string"       indexed="true" stored="true" />
@@ -260,22 +260,24 @@
    <field name="test_text_de"             type="text_de"      indexed="true"  stored="true" />
    <field name="explicit_title"           type="string"       indexed="true"  stored="true" />
 
+	<field name="mteaser" type="string" indexed="true"  stored="true" multiValued="true"/>
+
    <dynamicField name="*_exact"      type="string"       indexed="true"  stored="true"/>
    <dynamicField name="*_prop"       type="text_general" indexed="true"  stored="true"/>
    <dynamicField name="*_i"          type="int"          indexed="true"  stored="true"/>
    <dynamicField name="*_s"          type="string"       indexed="true"  stored="true"/>
    <dynamicField name="*_l"          type="long"         indexed="true"  stored="true"/>
-   <dynamicField name="*_excerpt"    type="text_general" indexed="true"  stored="true" termVectors="on" termPositions="on" termOffsets="on" maxChars="1000" />
+   <dynamicField name="*_excerpt"    type="text_general" indexed="true"  stored="true" termVectors="on" termPositions="on" termOffsets="on" />
    <dynamicField name="*_t"          type="text_general" indexed="true"  stored="true"/>
    <dynamicField name="*_txt"        type="text_general" indexed="true"  stored="true" multiValued="true"/>
-   <dynamicField name="*_en"         type="text_en"      indexed="true"  stored="true" />
-   <dynamicField name="*_de"         type="text_de"      indexed="true"  stored="true" />
-   <dynamicField name="*_el"         type="text_el"      indexed="true"  stored="true" />
-   <dynamicField name="*_es"         type="text_es"      indexed="true"  stored="true" />
-   <dynamicField name="*_fi"         type="text_fi"      indexed="true"  stored="true" />
-   <dynamicField name="*_fr"         type="text_fr"      indexed="true"  stored="true" />
-   <dynamicField name="*_hu"         type="text_hu"      indexed="true"  stored="true" />
-   <dynamicField name="*_it"         type="text_it"      indexed="true"  stored="true" />
+   <dynamicField name="*_en"         type="text_en"      indexed="true"  stored="true" multiValued="true" />
+   <dynamicField name="*_de"         type="text_de"      indexed="true"  stored="true" multiValued="true" />
+   <dynamicField name="*_el"         type="text_el"      indexed="true"  stored="true" multiValued="true" />
+   <dynamicField name="*_es"         type="text_es"      indexed="true"  stored="true" multiValued="true" />
+   <dynamicField name="*_fi"         type="text_fi"      indexed="true"  stored="true" multiValued="true" />
+   <dynamicField name="*_fr"         type="text_fr"      indexed="true"  stored="true" multiValued="true" />
+   <dynamicField name="*_hu"         type="text_hu"      indexed="true"  stored="true" multiValued="true" />
+   <dynamicField name="*_it"         type="text_it"      indexed="true"  stored="true" multiValued="true" />
    <dynamicField name="*_b"          type="boolean"      indexed="true"  stored="true"/>
    <dynamicField name="*_f"          type="float"        indexed="true"  stored="true"/>
    <dynamicField name="*_d"          type="double"       indexed="true"  stored="true"/>

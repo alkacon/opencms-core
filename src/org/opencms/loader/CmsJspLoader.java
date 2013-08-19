@@ -71,6 +71,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -170,15 +171,15 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     /** The maximum age for delivered contents in the clients cache. */
     private static long m_clientCacheMaxAge;
 
+    /** Read write locks for jsp files. */
+    @SuppressWarnings("unchecked")
+    private static Map<String, ReentrantReadWriteLock> m_fileLocks = new LRUMap(10000);
+
     /** The directory to store the generated JSP pages in (absolute path). */
     private static String m_jspRepository;
 
     /** The directory to store the generated JSP pages in (relative path in web application). */
     private static String m_jspWebAppRepository;
-
-    /** Read write locks for jsp files. */
-    @SuppressWarnings("unchecked")
-    private static Map<String, ReentrantReadWriteLock> m_fileLocks = new LRUMap(10000);
 
     /** The CmsFlexCache used to store generated cache entries in. */
     private CmsFlexCache m_cache;
@@ -187,8 +188,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     private CmsParameterConfiguration m_configuration;
 
     /** Flag to indicate if error pages are marked as "committed". */
-    // TODO: This is a hack, investigate this issue with different runtime environments
-    private boolean m_errorPagesAreNotCommitted; // default false should work for Tomcat > 4.1
+    private boolean m_errorPagesAreNotCommitted;
 
     /** The offline JSPs. */
     private Map<String, Boolean> m_offlineJsps;
@@ -214,17 +214,6 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             EVENT_CLEAR_ONLINE_CACHES});
 
         initCaches(1000);
-    }
-
-    /**
-     * Returns the absolute path in the "real" file system for the JSP repository
-     * toplevel directory.<p>
-     *
-     * @return The full path to the JSP repository
-     */
-    public String getJspRepository() {
-
-        return m_jspRepository;
     }
 
     /**
@@ -342,6 +331,17 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
 
         // return the configuration in an immutable form
         return m_configuration;
+    }
+
+    /**
+     * Returns the absolute path in the "real" file system for the JSP repository
+     * toplevel directory.<p>
+     *
+     * @return The full path to the JSP repository
+     */
+    public String getJspRepository() {
+
+        return m_jspRepository;
     }
 
     /**
@@ -580,6 +580,49 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         // remove empty page directives 
         substituted = substituted.replaceAll("(?sm)<%@\\s*page\\s*%>", "");
         return substituted;
+    }
+
+    /**
+     * Purges the offline versions of the resource JSP and it's siblings.<p>
+     * 
+     * @param cms the cms context
+     * @param resource the resource
+     * @throws CmsException if something goes wrong reading the siblings
+     */
+    public void purgeOfflineJsps(CmsObject cms, CmsResource resource) throws CmsException {
+
+        List<CmsResource> siblings = cms.readSiblings(resource, CmsResourceFilter.ALL);
+        for (CmsResource res : siblings) {
+            try {
+                String jspVfsName = res.getRootPath();
+                String extension;
+                int loaderId = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getLoaderId();
+                if ((loaderId == CmsJspLoader.RESOURCE_LOADER_ID) && (!jspVfsName.endsWith(JSP_EXTENSION))) {
+                    // this is a true JSP resource that does not end with ".jsp"
+                    extension = JSP_EXTENSION;
+                } else {
+                    // not a JSP resource or already ends with ".jsp"
+                    extension = "";
+                    // if this is a JSP we don't treat it as hard include
+                }
+
+                String jspTargetName = CmsFileUtil.getRepositoryName(m_jspRepository, jspVfsName + extension, false);
+                ReentrantReadWriteLock readWriteLock = getFileLock(jspVfsName);
+                try {
+                    // get a read lock for this jsp
+                    readWriteLock.writeLock().lock();
+                    File jspFile = new File(jspTargetName);
+                    if (jspFile.exists()) {
+                        jspFile.delete();
+                    }
+                } finally {
+                    readWriteLock.writeLock().unlock();
+                }
+
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
     }
 
     /**

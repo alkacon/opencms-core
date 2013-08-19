@@ -10,6 +10,13 @@ div.hallotoolbar {
 div.hallotoolbar .ui-button *{
 	font-size:14px;
 	line-height:18px;
+	background: transparent;
+}
+
+div.hallotoolbar .ui-button {
+	float: none;
+	min-width: auto;
+	min-height: auto;
 }
 
 div.hallotoolbar > span{

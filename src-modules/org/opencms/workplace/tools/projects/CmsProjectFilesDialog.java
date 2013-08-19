@@ -35,13 +35,17 @@ import org.opencms.main.CmsException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.widgets.A_CmsWidget;
+import org.opencms.workplace.explorer.CmsExplorer;
 import org.opencms.workplace.list.A_CmsListExplorerDialog;
 import org.opencms.workplace.list.CmsHtmlList;
 import org.opencms.workplace.list.CmsListDropdownAction;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.I_CmsListResourceCollector;
+import org.opencms.workplace.tools.CmsToolDialog;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -94,6 +98,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListIndepActions()
      */
+    @Override
     public void executeListIndepActions() {
 
         if (getParamListAction().equals(LIST_IACTION_FILTER)) {
@@ -109,6 +114,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() {
 
         throwListUnsupportedActionException();
@@ -117,6 +123,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() {
 
         throwListUnsupportedActionException();
@@ -125,6 +132,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#getCollector()
      */
+    @Override
     public I_CmsListResourceCollector getCollector() {
 
         if (m_collector == null) {
@@ -151,6 +159,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getList()
      */
+    @Override
     public CmsHtmlList getList() {
 
         CmsHtmlList list = super.getList();
@@ -186,6 +195,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#refreshList()
      */
+    @Override
     public synchronized void refreshList() {
 
         if (LIST_IACTION_FILTER.equals(getParamListAction())) {
@@ -205,19 +215,35 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     public void setParamProjectid(String projectId) {
 
         m_paramProjectid = projectId;
+        getJsp().getRequest().getSession().setAttribute("LASTPRJ", projectId);
     }
 
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // no-details
     }
 
     /**
+     * @see org.opencms.workplace.list.A_CmsListExplorerDialog#getAdditionalParametersForExplorerForward()
+     */
+    @Override
+    protected java.util.Map<String, String[]> getAdditionalParametersForExplorerForward() {
+
+        Map<String, String[]> result = new HashMap<String, String[]>();
+        result.put(CmsExplorer.PARAMETER_CONTEXTMENUPARAMS, new String[] {CmsToolDialog.PARAM_ADMIN_PROJECT
+            + "="
+            + m_paramProjectid});
+        return result;
+    }
+
+    /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#getProject()
      */
+    @Override
     protected CmsProject getProject() {
 
         CmsUUID projectId = new CmsUUID(getParamProjectid());
@@ -231,6 +257,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -242,12 +269,13 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         CmsListDropdownAction filterAction = new CmsListDropdownAction(LIST_IACTION_FILTER);
         filterAction.setName(Messages.get().container(Messages.GUI_PROJECT_FILES_FILTER_ACTION_NAME_0));
         filterAction.setHelpText(Messages.get().container(Messages.GUI_PROJECT_FILES_FILTER_ACTION_HELP_0));
-        Iterator it = CmsProjectResourcesDisplayMode.VALUES.iterator();
+        Iterator<?> it = CmsProjectResourcesDisplayMode.VALUES.iterator();
         while (it.hasNext()) {
             CmsProjectResourcesDisplayMode mode = (CmsProjectResourcesDisplayMode)it.next();
             filterAction.addItem(mode.getMode(), Messages.get().container(A_CmsWidget.LABEL_PREFIX + mode.getMode()));
@@ -259,6 +287,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // no LMAs
@@ -267,6 +296,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         try {

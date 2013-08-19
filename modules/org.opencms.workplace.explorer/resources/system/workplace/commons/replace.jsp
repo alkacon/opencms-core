@@ -51,32 +51,23 @@ default:
 //-->
 </script>
 <%= wp.bodyStart("dialog") %>
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');" enctype="multipart/form-data">
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
-
 <%@ include file="includes/resourceinfo.txt" %>
 <%= wp.dialogSpacer() %>
-
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');" enctype="multipart/form-data">
 <%= wp.paramsAsHidden() %>
 <input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
-
 <table border="0" width="100%">
 <tr>
 	<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_LABEL_NAME_0) %></td>
 	<td class="maxwidth"><input name="<%= wp.PARAM_UPLOADFILE %>" id="newresfield" type="file" value="" size="60" class="maxwidth" onchange="checkValue();"></td>
 </tr> 
 </table>
-
-
 <%= wp.dialogContentEnd() %>
-
 <%= wp.dialogButtonsOkCancel("id=\"okButton\" disabled=\"disabled\"", null) %>
-
-</form>
-
 <%= wp.dialogEnd() %>
-
+</form>
 <%= wp.bodyEnd() %>
 <%= wp.htmlEnd() %>
 <%
