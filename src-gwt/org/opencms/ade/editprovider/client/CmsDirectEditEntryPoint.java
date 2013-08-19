@@ -40,6 +40,7 @@ import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.CmsDomUtil.Tag;
 import org.opencms.gwt.client.util.CmsPositionBean;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
@@ -93,7 +94,7 @@ public class CmsDirectEditEntryPoint extends A_CmsEntryPoint {
      */
     public void initializeButtons() {
 
-        List<Element> editableElements = CmsDomUtil.getElementsByClass(CLASS_NAME);
+        List<Element> editableElements = CmsDomUtil.getElementsByClass(CLASS_NAME, Tag.div);
         List<CmsDirectEditButtons> editables = Lists.newArrayList();
 
         for (Element elem : editableElements) {
