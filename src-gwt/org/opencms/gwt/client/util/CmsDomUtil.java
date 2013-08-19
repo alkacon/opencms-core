@@ -792,6 +792,17 @@ public final class CmsDomUtil {
     }
 
     /**
+     * Fires a focus event for the given widget.<p>
+     * 
+     * @param widget the widget
+     */
+    public static void fireFocusEvent(Widget widget) {
+
+        NativeEvent nativeEvent = Document.get().createFocusEvent();
+        DomEvent.fireNativeEvent(nativeEvent, widget, widget.getElement());
+    }
+
+    /**
      * Ensures any embedded flash players are set opaque so UI elements may be placed above them.<p>
      * 
      * @param element the element to work on
@@ -871,17 +882,6 @@ public final class CmsDomUtil {
                                                              }
 
                                                              }-*/;
-
-    /**
-     * Fires a focus event for the given widget.<p>
-     * 
-     * @param widget the widget
-     */
-    public static void fireFocusEvent(Widget widget) {
-
-        NativeEvent nativeEvent = Document.get().createFocusEvent();
-        DomEvent.fireNativeEvent(nativeEvent, widget, widget.getElement());
-    }
 
     /**
      * Generates a form element with hidden input fields.<p>
@@ -1788,12 +1788,16 @@ public final class CmsDomUtil {
      */
     private static boolean internalHasClass(String className, Element element) {
 
-        String elementClass = element.getClassName().trim();
-        boolean hasClass = elementClass.equals(className);
-        hasClass |= elementClass.contains(" " + className + " ");
-        hasClass |= elementClass.startsWith(className + " ");
-        hasClass |= elementClass.endsWith(" " + className);
-
+        boolean hasClass = false;
+        try {
+            String elementClass = element.getClassName().trim();
+            hasClass = elementClass.equals(className);
+            hasClass |= elementClass.contains(" " + className + " ");
+            hasClass |= elementClass.startsWith(className + " ");
+            hasClass |= elementClass.endsWith(" " + className);
+        } catch (Throwable t) {
+            // my fail in case of special tags, ignore
+        }
         return hasClass;
     }
 
