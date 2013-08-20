@@ -208,7 +208,7 @@ public class CmsScrollBar extends FocusPanel implements I_DescendantResizeHandle
     public CmsScrollBar(Element scrollableElement, Element containerElement) {
 
         I_CmsLayoutBundle.INSTANCE.scrollBarCss().ensureInjected();
-        this.setStyleName(I_CmsLayoutBundle.INSTANCE.scrollBarCss().scrollBar());
+        setStyleName(I_CmsLayoutBundle.INSTANCE.scrollBarCss().scrollBar());
         m_scrollableElement = scrollableElement;
         m_containerElement = containerElement;
         m_knob = DOM.createDiv();
@@ -382,7 +382,6 @@ public class CmsScrollBar extends FocusPanel implements I_DescendantResizeHandle
 
             // Mouse Events
             case Event.ONMOUSEDOWN:
-                setFocus(true);
                 if (sliderClicked(event)) {
                     startMouseSliding(event);
                     DOM.eventPreventDefault(event);
