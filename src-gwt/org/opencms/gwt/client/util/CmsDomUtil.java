@@ -1711,6 +1711,20 @@ public final class CmsDomUtil {
     }
 
     /**
+     * Returns the text content to any HTML.
+     * 
+     * @param html the HTML
+     * 
+     * @return the text content
+     */
+    public static String stripHtml(String html) {
+
+        Element el = DOM.createDiv();
+        el.setInnerHTML(html);
+        return el.getInnerText();
+    }
+
+    /**
      * Wraps a widget in a scrollable FlowPanel.<p>
      *  
      * @param widget the original widget 

@@ -276,7 +276,7 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
     public void add(E tabContent, String tabName) {
 
         tabContent.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
-        m_tabPanel.add(tabContent, tabName);
+        m_tabPanel.add(tabContent, CmsDomUtil.stripHtml(tabName));
 
         Element tabRootEl = m_tabPanel.getElement();
         // set an additional css class for the parent element of the .gwt-TabLayoutPanelTabs element
@@ -351,7 +351,7 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
     public void addWithLeftMargin(E tabContent, String tabName) {
 
         tabContent.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
-        m_tabPanel.add(tabContent, tabName);
+        m_tabPanel.add(tabContent, CmsDomUtil.stripHtml(tabName));
 
         int tabIndex = m_tabPanel.getWidgetIndex(tabContent);
         Element tabElement = getTabElement(tabIndex);
