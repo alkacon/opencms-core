@@ -234,6 +234,19 @@ public class CmsElementOptionBar extends Composite implements HasMouseOverHandle
         return m_panel.iterator();
     }
 
+    /**
+     * Removes the highlighting and option bar.<p>
+     */
+    public void removeHighlighting() {
+
+        timer = null;
+        if (activeBar == this) {
+            activeBar = null;
+        }
+        getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering());
+        getContainerElement().removeHighlighting();
+    }
+
     /** 
      * Adds the highlighting and option bar.<p>
      */
@@ -254,18 +267,5 @@ public class CmsElementOptionBar extends Composite implements HasMouseOverHandle
     protected CmsContainerPageElementPanel getContainerElement() {
 
         return m_containerElement;
-    }
-
-    /**
-     * Removes the highlighting and option bar.<p>
-     */
-    protected void removeHighlighting() {
-
-        timer = null;
-        if (activeBar == this) {
-            activeBar = null;
-        }
-        getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering());
-        getContainerElement().removeHighlighting();
     }
 }

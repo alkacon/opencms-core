@@ -29,10 +29,9 @@ package org.opencms.ade.sitemap.client.toolbar;
 
 import org.opencms.ade.publish.client.CmsPublishDialog;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
-import org.opencms.gwt.client.ui.CmsToggleButton;
+import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
-import org.opencms.gwt.client.util.CmsDomUtil;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -45,7 +44,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @since 8.0.0
  */
-public class CmsToolbarPublishButton extends CmsToggleButton {
+public class CmsToolbarPublishButton extends CmsPushButton {
 
     /**
      * Constructor.<p>
@@ -67,8 +66,6 @@ public class CmsToolbarPublishButton extends CmsToggleButton {
             public void onClick(ClickEvent event) {
 
                 toolbar.onButtonActivation(CmsToolbarPublishButton.this);
-                CmsDomUtil.ensureMouseOut(getElement());
-                setDown(false);
                 setEnabled(false);
                 openPublish();
             }

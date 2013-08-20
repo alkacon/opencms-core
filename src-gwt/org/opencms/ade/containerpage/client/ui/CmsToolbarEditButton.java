@@ -30,7 +30,6 @@ package org.opencms.ade.containerpage.client.ui;
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.I_CmsButton;
-import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -80,7 +79,6 @@ public class CmsToolbarEditButton extends A_CmsToolbarOptionButton {
     @Override
     public void onElementClick(ClickEvent event, CmsContainerPageElementPanel element) {
 
-        CmsDomUtil.ensureMouseOut(element.getElementOptionBar().getElement());
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(element.getNoEditReason())) {
             openEditor(element);
         } else {

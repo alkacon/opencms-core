@@ -44,7 +44,6 @@ import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuButton;
 import org.opencms.gwt.client.ui.contextmenu.CmsLogout;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.resourceinfo.CmsResourceInfoView.ContextMenuHandler;
-import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsResourceStatusBean;
 import org.opencms.gwt.shared.CmsResourceStatusRelationBean;
 
@@ -65,7 +64,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /** 
  * Widget which shows which contents refer to a resource.<p> 
@@ -203,14 +201,13 @@ public class CmsResourceRelationView extends Composite {
                                 editableData.setElementLanguage(CmsCoreProvider.get().getLocale());
                                 editableData.setStructureId(currentRelationBean.getStructureId());
                                 editableData.setSitePath(currentRelationBean.getSitePath());
-                                CmsDomUtil.ensureMouseOut((Widget)event.getSource());
                                 FormElement form = CmsContentEditorDialog.generateForm(editableData, false, "_blank");
                                 RootPanel.get().getElement().appendChild(form);
                                 form.submit();
                                 if (m_popup != null) {
                                     m_popup.hide();
                                 }
-
+                                ((CmsPushButton)event.getSource()).clearHoverState();
                             }
                         }
                     });

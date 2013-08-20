@@ -184,6 +184,9 @@ public class CmsDirectEditEntryPoint extends A_CmsEntryPoint {
 
                 I_CmsToolbarButton source = (I_CmsToolbarButton)event.getSource();
                 source.onToolbarClick();
+                if (source instanceof CmsPushButton) {
+                    ((CmsPushButton)source).clearHoverState();
+                }
             }
         };
         m_toolbar = new CmsToolbar();

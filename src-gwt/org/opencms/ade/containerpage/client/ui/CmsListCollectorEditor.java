@@ -100,9 +100,9 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
     protected void onClickDelete() {
 
         removeHighlighting();
-        openWarningDialog();
-        CmsDomUtil.ensureMouseOut(m_delete.getElement());
         CmsDomUtil.ensureMouseOut(getElement());
+        openWarningDialog();
+        m_delete.clearHoverState();
     }
 
     /**

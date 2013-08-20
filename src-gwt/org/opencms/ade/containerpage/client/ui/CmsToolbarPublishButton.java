@@ -30,7 +30,6 @@ package org.opencms.ade.containerpage.client.ui;
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
 import org.opencms.gwt.client.ui.A_CmsToolbarButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
-import org.opencms.gwt.client.util.CmsDomUtil;
 
 /**
  * The publish button holding all publish related methods.<p>
@@ -54,8 +53,6 @@ public class CmsToolbarPublishButton extends A_CmsToolbarButton<CmsContainerpage
      */
     public void onToolbarActivate() {
 
-        // triggering a mouse-out event, as it won't be fired once the dialog has opened (the dialog will capture all events)
-        CmsDomUtil.ensureMouseOut(getElement());
         setEnabled(false);
         getHandler().showPublishDialog();
     }

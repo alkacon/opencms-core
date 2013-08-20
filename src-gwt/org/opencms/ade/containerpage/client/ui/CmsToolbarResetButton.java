@@ -30,7 +30,6 @@ package org.opencms.ade.containerpage.client.ui;
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
 import org.opencms.gwt.client.ui.A_CmsToolbarButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
-import org.opencms.gwt.client.util.CmsDomUtil;
 
 /**
  * The reset button holding all related methods.<p>
@@ -54,7 +53,6 @@ public class CmsToolbarResetButton extends A_CmsToolbarButton<CmsContainerpageHa
      */
     public void onToolbarActivate() {
 
-        CmsDomUtil.ensureMouseOut(getElement());
         getHandler().resetPage();
     }
 

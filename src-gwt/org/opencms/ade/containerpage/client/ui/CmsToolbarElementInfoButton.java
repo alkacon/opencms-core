@@ -39,7 +39,6 @@ import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.A_CmsToolbarButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle;
-import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 
 import com.google.gwt.user.client.Timer;
@@ -105,7 +104,6 @@ implements I_CmsContainerpageEventHandler, I_CmsPublishEventHandler {
      */
     public void onToolbarActivate() {
 
-        CmsDomUtil.ensureMouseOut(getElement());
         CmsContainerpageHandler handler = getHandler();
         handler.openElementsInfo();
         setEnabled(false);

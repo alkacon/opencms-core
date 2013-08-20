@@ -48,7 +48,6 @@ import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
-import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -462,7 +461,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     @UiHandler("m_opener")
     void onOpenerClick(ClickEvent event) {
 
-        CmsDomUtil.ensureMouseOut(m_opener);
+        m_opener.clearHoverState();
         openGalleryDialog();
     }
 

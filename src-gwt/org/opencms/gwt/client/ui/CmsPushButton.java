@@ -111,6 +111,16 @@ public class CmsPushButton extends PushButton implements HasHorizontalAlignment 
     }
 
     /**
+     * Clears the hover state of the button.<p>
+     * Use when opening modal popups to ensure the button is not left in hovered state.<p>
+     */
+    public void clearHoverState() {
+
+        setEnabled(!isEnabled());
+        setEnabled(!isEnabled());
+    }
+
+    /**
      * Disables the button and changes the button title attribute to the disabled reason.<p>
      *   
      * @param disabledReason the disabled reason

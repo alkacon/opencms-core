@@ -473,7 +473,9 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
     public void forceMouseOut() {
 
         for (Widget w : m_buttonPanel) {
-            CmsDomUtil.ensureMouseOut(w);
+            if (w instanceof CmsPushButton) {
+                ((CmsPushButton)w).clearHoverState();
+            }
         }
         CmsDomUtil.ensureMouseOut(this);
         removeStyleName(I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering());

@@ -40,6 +40,7 @@ import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.CmsEditableData;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
+import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuButton;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler;
 import org.opencms.gwt.client.util.CmsDebugLog;
@@ -61,7 +62,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Utility class for the container-page editor.<p>
@@ -374,8 +374,8 @@ public class CmsContainerpageUtil {
                     editableData.setStructureId(new CmsUUID(
                         CmsContainerpageController.getServerId(containerElement.getClientId())));
                     editableData.setSitePath(containerElement.getSitePath());
-                    CmsDomUtil.ensureMouseOut((Widget)event.getSource());
                     getController().getContentEditorHandler().openDialog(editableData, false, null);
+                    ((CmsPushButton)event.getSource()).clearHoverState();
                 }
             });
         } else {

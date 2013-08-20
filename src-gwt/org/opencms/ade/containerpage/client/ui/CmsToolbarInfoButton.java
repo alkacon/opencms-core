@@ -29,7 +29,6 @@ package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
 import org.opencms.gwt.client.ui.I_CmsButton;
-import org.opencms.gwt.client.util.CmsDomUtil;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 
@@ -68,7 +67,6 @@ public class CmsToolbarInfoButton extends A_CmsToolbarOptionButton {
     @Override
     public void onElementClick(ClickEvent event, CmsContainerPageElementPanel element) {
 
-        CmsDomUtil.ensureMouseOut(element.getElementOptionBar().getElement());
         getHandler().showElementInfo(element);
     }
 
