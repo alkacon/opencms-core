@@ -46,7 +46,9 @@ import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * The result item context menu button.<p>
@@ -55,6 +57,9 @@ public class CmsContextMenuButton extends CmsMenuButton {
 
     /** The menu data. */
     protected List<I_CmsContextMenuEntry> m_menuEntries;
+
+    /** The loading panel. */
+    private SimplePanel m_loadingPanel;
 
     /** The context menu. */
     private CmsContextMenu m_menu;
@@ -66,7 +71,7 @@ public class CmsContextMenuButton extends CmsMenuButton {
     private FlexTable m_menuPanel;
 
     /** The label which is displayed when no entries are found. */
-    private CmsLabel m_noEntriesLabel = new CmsLabel("No entries found!");
+    private CmsLabel m_noEntriesLabel;
 
     /** The registration for the second close handler. */
     private HandlerRegistration m_popupCloseHandler;
@@ -81,6 +86,12 @@ public class CmsContextMenuButton extends CmsMenuButton {
 
         super(null, I_CmsImageBundle.INSTANCE.style().menuIcon());
         setTitle(Messages.get().key(Messages.GUI_TOOLBAR_CONTEXT_0));
+        m_noEntriesLabel = new CmsLabel(Messages.get().key(Messages.GUI_TOOLBAR_CONTEXT_EMPTY_0));
+        m_noEntriesLabel.addStyleName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().menuInfoLabel());
+        m_noEntriesLabel.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll());
+        m_loadingPanel = new SimplePanel(new Image(I_CmsImageBundle.INSTANCE.loadingBigImage()));
+        m_loadingPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().menuInfoLabel());
+        m_loadingPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll());
         // create the menu panel (it's a table because of ie6)
         m_menuPanel = new FlexTable();
         // set a style name for the menu table
@@ -121,6 +132,19 @@ public class CmsContextMenuButton extends CmsMenuButton {
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.CmsMenuButton#openMenu()
+     */
+    @Override
+    public void openMenu() {
+
+        if (m_menu == null) {
+            m_menuPanel.setWidget(0, 0, m_loadingPanel);
+        }
+        super.openMenu();
+
+    }
+
+    /**
      * Creates the menu and adds it to the panel.<p>
      * 
      * @param menuEntries the menu entries 
@@ -151,14 +175,8 @@ public class CmsContextMenuButton extends CmsMenuButton {
             });
             m_popup.position();
         } else {
-            if (m_noEntriesLabel.getParent() != null) {
-                m_noEntriesLabel.removeFromParent();
-            }
-            m_noEntriesLabel.addStyleName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().menuInfoLabel());
-            m_noEntriesLabel.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll());
-            getPopup().add(m_noEntriesLabel);
+            m_menuPanel.setWidget(0, 0, m_noEntriesLabel);
             m_popup.position();
-
         }
     }
 

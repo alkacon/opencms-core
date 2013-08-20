@@ -81,7 +81,8 @@ div.cmsMenuBar { /* the outer menu bar */
 }
 div.menuInfoLabel {
 	background-color: value("constants.css.backgroundColorDialog");
-	padding: 4px;
+	font-size: value("constants.css.fontSizeBig");
+	padding: 8px 26px;
 	cursor: default;
 }
 

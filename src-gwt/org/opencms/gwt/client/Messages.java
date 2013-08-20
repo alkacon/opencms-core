@@ -535,6 +535,9 @@ public final class Messages {
     public static final String GUI_TOOLBAR_CONTEXT_0 = "GUI_TOOLBAR_CONTEXT_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_CONTEXT_EMPTY_0 = "GUI_TOOLBAR_CONTEXT_EMPTY_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_COPY_LOCALE_0 = "GUI_TOOLBAR_COPY_LOCALE_0";
 
     /** Message constant for key in the resource bundle. */

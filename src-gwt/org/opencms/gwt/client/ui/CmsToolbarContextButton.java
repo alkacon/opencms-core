@@ -28,9 +28,11 @@
 package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenu;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuCloseHandler;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
+import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.util.CmsCollectionUtil;
@@ -43,7 +45,9 @@ import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * The context tool-bar menu button.<p>
@@ -54,6 +58,9 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu<I_CmsToolbarHandle
 
     /** The menu data. */
     protected List<I_CmsContextMenuEntry> m_menuEntries;
+
+    /** The loading panel. */
+    private SimplePanel m_loadingPanel;
 
     /** The context menu. */
     private CmsContextMenu m_menu;
@@ -68,7 +75,7 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu<I_CmsToolbarHandle
     private FlexTable m_menuPanel;
 
     /** The label which is displayed when no entries are found. */
-    private CmsLabel m_noEntriesLabel = new CmsLabel("No entries found!");
+    private CmsLabel m_noEntriesLabel;
 
     /** The registration for the second close handler. */
     private HandlerRegistration m_popupCloseHandler;
@@ -81,7 +88,12 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu<I_CmsToolbarHandle
     public CmsToolbarContextButton(final I_CmsToolbarHandler handler) {
 
         super(I_CmsButton.ButtonData.CONTEXT, handler);
-
+        m_noEntriesLabel = new CmsLabel(Messages.get().key(Messages.GUI_TOOLBAR_CONTEXT_EMPTY_0));
+        m_noEntriesLabel.addStyleName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().menuInfoLabel());
+        m_noEntriesLabel.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll());
+        m_loadingPanel = new SimplePanel(new Image(I_CmsImageBundle.INSTANCE.loadingBigImage()));
+        m_loadingPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().menuInfoLabel());
+        m_loadingPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll());
         // create the menu panel (it's a table because of ie6)
         m_menuPanel = new FlexTable();
         // set a style name for the menu table
@@ -113,6 +125,19 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu<I_CmsToolbarHandle
             m_resizeRegistration.removeHandler();
             m_resizeRegistration = null;
         }
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.CmsMenuButton#openMenu()
+     */
+    @Override
+    public void openMenu() {
+
+        if (m_menu == null) {
+            m_menuPanel.setWidget(0, 0, m_loadingPanel);
+        }
+        super.openMenu();
+
     }
 
     /** 
@@ -156,12 +181,7 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu<I_CmsToolbarHandle
             });
             m_popup.position();
         } else {
-            if (m_noEntriesLabel.getParent() != null) {
-                m_noEntriesLabel.removeFromParent();
-            }
-            m_noEntriesLabel.addStyleName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().menuInfoLabel());
-            m_noEntriesLabel.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll());
-            getPopup().add(m_noEntriesLabel);
+            m_menuPanel.setWidget(0, 0, m_noEntriesLabel);
             m_popup.position();
 
         }
