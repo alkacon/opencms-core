@@ -37,16 +37,9 @@ div.cmsMenuBar { /* the outer menu bar */
 }
 .cmsMenuBar .cmsMenuItem .label, .cmsMenuBar .cmsMenuItem .html-face { /* menu item label */
 	padding: 4px;
-	
+	margin: 0px 0px 0px 16px;
 	font-size: value("constants.css.fontSizeBig");
 	text-align: left;
-}
-.cmsMenuBar .cmsMenuItem .label{
-	margin-right: 0px;
-	margin-bottom: 0px;
-	margin-top: 0px; 
-	
-	margin-left: 16px; 
 }
 
 .cmsMenuItem .iconBox { 
@@ -55,9 +48,6 @@ div.cmsMenuBar { /* the outer menu bar */
 	padding-top: 4px;
 }
 
-.cmsMenuBar .cmsMenuItem .html-face {
-	margin: 0px;
-}
 .cmsMenuBar .cmsMenuItem .html-face > span{
 	margin-right: 6px;
 }
