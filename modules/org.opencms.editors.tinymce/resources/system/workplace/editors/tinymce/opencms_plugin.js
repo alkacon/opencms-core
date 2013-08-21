@@ -32,6 +32,11 @@ var workplacePath="<%= cms.link("/system/workplace/") %>";
 function doShowCmsGalleries(editor, url) {
    var width = 685;
    var height = 502;
+   // HACK: check for IE8 and add some attributes to iframe to prevent layout issues
+   if (typeof document.addEventListener =='undefined'){
+       // let's call this iframe attribute injection
+       url+="\" allowtransparency=\"true\" scrolling=\"no\" frameborder=\"0\" framespacing=\"0"
+   }
    editor.windowManager.open({
        url: url, 
        width : width, 
