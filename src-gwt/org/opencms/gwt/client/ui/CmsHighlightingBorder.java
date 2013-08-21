@@ -36,6 +36,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
@@ -109,6 +110,9 @@ public class CmsHighlightingBorder extends Composite {
     @UiField
     protected DivElement m_borderTop;
 
+    /** The positioning parent element. */
+    private Element m_positioningParent;
+
     /**
      * Constructor.<p>
      * 
@@ -118,6 +122,20 @@ public class CmsHighlightingBorder extends Composite {
     public CmsHighlightingBorder(CmsPositionBean position, BorderColor color) {
 
         this(position.getHeight(), position.getWidth(), position.getLeft(), position.getTop(), color);
+    }
+
+    /**
+     * Constructor.<p>
+     * 
+     * @param positioningParent the element the border is positioned around, position is set relative to it
+     * @param color the border color
+     */
+    public CmsHighlightingBorder(Element positioningParent, BorderColor color) {
+
+        initWidget(uiBinder.createAndBindUi(this));
+        getWidget().addStyleName(color.getCssClass());
+        m_positioningParent = positioningParent;
+        resetPosition();
     }
 
     /**
@@ -146,6 +164,18 @@ public class CmsHighlightingBorder extends Composite {
     }
 
     /**
+     * Recalculates the position and dimension when a positioning parent is given.<p>
+     */
+    public void resetPosition() {
+
+        // fail if no positioning parent given
+        assert m_positioningParent != null;
+        if (m_positioningParent != null) {
+            setPosition(m_positioningParent.getOffsetHeight(), m_positioningParent.getOffsetWidth(), 0, 0);
+        }
+    }
+
+    /**
      * Sets the border position.<p>
      * 
      * @param position the position data
@@ -168,13 +198,15 @@ public class CmsHighlightingBorder extends Composite {
         positionLeft -= BORDER_OFFSET;
 
         // make sure highlighting does not introduce additional horizontal scroll-bars
-        if (positionLeft < 0) {
+        if ((m_positioningParent == null) && (positionLeft < 0)) {
             // position left should not be negative
             width += positionLeft;
             positionLeft = 0;
         }
         width += (2 * BORDER_OFFSET) - BORDER_WIDTH;
-        if ((Window.getClientWidth() < (width + positionLeft)) && (Window.getScrollLeft() == 0)) {
+        if ((m_positioningParent == null)
+            && (Window.getClientWidth() < (width + positionLeft))
+            && (Window.getScrollLeft() == 0)) {
             // highlighting should not extend over the right hand 
             width = Window.getClientWidth() - (positionLeft + BORDER_WIDTH);
         }
