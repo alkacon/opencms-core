@@ -483,10 +483,10 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
             m_selection,
             m_move,
             m_edit,
-            m_remove,
             m_info,
             m_properties,
-            m_addToFavorites);
+            m_addToFavorites,
+            m_remove);
         controller.init(containerpageHandler, dndHandler, contentEditorHandler, containerpageUtil);
 
         // export open stack trace dialog function
