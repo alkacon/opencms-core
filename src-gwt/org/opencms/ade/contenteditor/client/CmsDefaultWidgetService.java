@@ -34,6 +34,7 @@ import com.alkacon.acacia.client.widgets.TinyMCEWidget;
 
 import org.opencms.ade.contenteditor.client.widgets.CmsTextareaWidget;
 import org.opencms.ade.contenteditor.client.widgets.CmsTextboxWidget;
+import org.opencms.util.CmsStringUtil;
 
 /**
  * Default OpenCms widget service implementation.<p>
@@ -53,7 +54,11 @@ public class CmsDefaultWidgetService extends WidgetService {
         if ((widget instanceof CmsTextareaWidget)
             || (widget instanceof CmsTextboxWidget)
             || (widget instanceof TinyMCEWidget)) {
-            return (widget.getValue() == null) || "".equals(widget.getValue());
+            String value = widget.getValue();
+            if (" ".equals(value)) {
+                return false;
+            }
+            return CmsStringUtil.isEmptyOrWhitespaceOnly(value);
         }
         return false;
     }
