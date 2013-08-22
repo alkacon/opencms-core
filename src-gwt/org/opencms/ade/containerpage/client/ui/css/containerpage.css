@@ -124,12 +124,11 @@ div.toolbarToggle{
 	max-width: none;
 }
 
-@sprite .toolbarSelection .optionBar.cmsHovering{
-	gwt-image: "backgrounds.softBackground";
+.toolbarSelection .optionBar.cmsHovering{
 	height: auto;
 	border: 1px solid value("constants.css.borderColor");
 	border-radius: 2px;
-	background-color: value("constants.css.backgroundColorSoft");
+	background: value("constants.css.backgroundColorDialog");
 }
 
 .optionBar div.cmsState{

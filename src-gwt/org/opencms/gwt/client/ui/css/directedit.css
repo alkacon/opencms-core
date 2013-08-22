@@ -53,11 +53,10 @@ div.optionBar div, div.optionBar span {
 	max-width: none;
 }
 
-@sprite .toolbarSelection .optionBar.cmsHovering{
-	gwt-image: "backgrounds.softBackground";
+.toolbarSelection .optionBar.cmsHovering{
 	height: auto;
 	border: 1px solid value("constants.css.borderColor");
-	background-color: value("constants.css.backgroundColorSoft");
+	background: value("constants.css.backgroundColorDialog");
 }
 
 .toolbarSelection .optionBar.cmsHovering{
