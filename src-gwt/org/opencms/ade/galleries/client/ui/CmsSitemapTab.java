@@ -121,6 +121,15 @@ public class CmsSitemapTab extends A_CmsListTab {
     }
 
     /**
+     * @see com.google.gwt.user.client.ui.Widget#onLoad()
+     */
+    @Override
+    public void onLoad() {
+
+        m_handler.initializeSitemapTab();
+    }
+
+    /**
      * Method which is called when the sitemap preload data is received.<p>
      * 
      * @param sitemapPreloadData the sitemap tree's preloaded root entry 

@@ -28,7 +28,6 @@
 package org.opencms.ade.galleries.shared;
 
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
-import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 
 import java.util.List;
 
@@ -122,11 +121,11 @@ public interface I_CmsGalleryConfiguration {
     String getStartSite();
 
     /**
-     * Returns the tab id's.<p>
+     * Gets the tab configuration.<p>
      * 
-     * @return the tab id's
+     * @return the gallery tab configuration 
      */
-    GalleryTabId[] getTabIds();
+    CmsGalleryTabConfiguration getTabConfiguration();
 
     /** 
      * Gets the tree token.<p>

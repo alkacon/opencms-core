@@ -35,6 +35,7 @@ import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
+import org.opencms.ade.galleries.shared.CmsGalleryTabConfiguration;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
 import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.ade.galleries.shared.CmsSitemapEntryBean;
@@ -326,6 +327,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         result.setSearchTypes(typeNames);
         result.setResourceTypes(typeNames);
         result.setGalleryMode(GalleryMode.adeView);
+        result.setTabConfiguration(CmsGalleryTabConfiguration.resolve("selectDoc"));
         return result;
     }
 
@@ -514,11 +516,11 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                             sitemapPreloadData = result.getSitemapPreloadData();
                             vfsPreloadData = result.getVfsPreloadData();
                         }
-                        if (sitemapPreloadData != null) {
-                            startTab = GalleryTabId.cms_tab_sitemap;
-                        } else if (vfsPreloadData != null) {
-                            startTab = GalleryTabId.cms_tab_vfstree;
-                        }
+                        //                        if (sitemapPreloadData != null) {
+                        //                            startTab = GalleryTabId.cms_tab_sitemap;
+                        //                        } else if (vfsPreloadData != null) {
+                        //                            startTab = GalleryTabId.cms_tab_vfstree;
+                        //                        }
 
                     } else {
                         CmsTreeOpenState vfsState = getVfsTreeState(data.getTreeToken());
@@ -546,7 +548,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                             vfsPreloadData = vfsloader.preloadData(
                                 getCmsObject(),
                                 readAll(vfsState.getOpenItems(), CmsResourceFilter.ONLY_VISIBLE_NO_DELETED));
-                            startTab = GalleryTabId.cms_tab_vfstree;
+                            //   startTab = GalleryTabId.cms_tab_vfstree;
                         }
                         CmsTreeOpenState sitemapState = getSitemapTreeState(data.getTreeToken());
                         if (sitemapState != null) {
@@ -572,9 +574,10 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                             sitemapPreloadData = sitemaploader.preloadData(
                                 getCmsObject(),
                                 readAll(sitemapState.getOpenItems(), CmsResourceFilter.ONLY_VISIBLE_NO_DELETED));
-                            if ((vfsState == null) || (vfsState.getTimestamp() < sitemapState.getTimestamp())) {
-                                startTab = GalleryTabId.cms_tab_sitemap;
-                            }
+
+                            //        if ((vfsState == null) || (vfsState.getTimestamp() < sitemapState.getTimestamp())) {
+                            //              startTab = GalleryTabId.cms_tab_sitemap;
+                            //       }
                         }
                     }
                     if ((result == null) || (result.getResults() == null) || result.getResults().isEmpty()) {
@@ -1543,12 +1546,15 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         data.setScope(getWorkplaceSettings().getLastSearchScope());
 
         List<CmsResourceTypeBean> types = null;
+        data.setTabIds(conf.getGalleryMode().getTabs());
         switch (conf.getGalleryMode()) {
             case editor:
             case view:
             case adeView:
             case widget:
-                data.setTabIds(conf.getTabIds());
+                if (conf.getTabIds() != null) {
+                    data.setTabIds(conf.getTabIds());
+                }
                 data.setCurrentElement(conf.getCurrentElement());
                 String referencePath = conf.getReferencePath();
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(referencePath)) {
@@ -1597,7 +1603,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                     }
                 }
 
-                data.setStartTab(GalleryTabId.cms_tab_results);
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(data.getStartGallery()) && !types.isEmpty()) {
                     String key;
                     if (conf.getGalleryMode() == GalleryMode.adeView) {
@@ -1626,20 +1631,15 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                         data.setStartGallery(null);
                     }
                 }
+
+                GalleryTabId defaultTab = conf.getTabConfiguration().getDefaultTab();
+                data.setTabConfiguration(conf.getTabConfiguration());
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(data.getStartGallery())
                     && CmsStringUtil.isEmptyOrWhitespaceOnly(data.getCurrentElement())
-                    && CmsStringUtil.isEmptyOrWhitespaceOnly(data.getStartFolder())
-                    && (data.getTypes().size() > 1)) {
-                    data.setStartTab(GalleryTabId.cms_tab_galleries);
-                }
-
-                if (!conf.isIncludeFiles()) {
-                    data.setStartTab(GalleryTabId.cms_tab_vfstree);
-                }
-
-                if ((conf.getGalleryMode() == GalleryMode.adeView)
-                    && CmsStringUtil.isEmptyOrWhitespaceOnly(data.getStartGallery())) {
-                    data.setStartTab(GalleryTabId.cms_tab_galleries);
+                    && CmsStringUtil.isEmptyOrWhitespaceOnly(data.getStartFolder())) {
+                    data.setStartTab(defaultTab);
+                } else {
+                    data.setStartTab(GalleryTabId.cms_tab_results);
                 }
                 break;
             case ade:

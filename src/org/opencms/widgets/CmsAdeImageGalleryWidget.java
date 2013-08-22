@@ -44,11 +44,11 @@ import org.opencms.util.CmsStringUtil;
  */
 public class CmsAdeImageGalleryWidget extends A_CmsAdeGalleryWidget {
 
-    /** The widget configuration. */
-    private CmsVfsImageWidgetConfiguration m_widgetConfiguration;
-
     /** The gallery name. */
     private static final String GALLERY_NAME = "image";
+
+    /** The widget configuration. */
+    private CmsVfsImageWidgetConfiguration m_widgetConfiguration;
 
     /**
      * Constructor.<p>
@@ -111,6 +111,7 @@ public class CmsAdeImageGalleryWidget extends A_CmsAdeGalleryWidget {
             formatNames = config.getSelectFormatString().split("\\|");
         }
         result.put(I_CmsGalleryProviderConstants.CONFIG_IMAGE_FORMAT_NAMES, new JSONArray(formatNames));
+        result.put(I_CmsGalleryProviderConstants.CONFIG_TAB_CONFIG, "selectDoc");
         return result;
     }
 

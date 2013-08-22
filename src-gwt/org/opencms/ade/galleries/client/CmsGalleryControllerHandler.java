@@ -275,8 +275,7 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
         }
         if (startTab == GalleryTabId.cms_tab_results) {
             if (searchObj.isEmpty()) {
-                // if there are no search parameters set, don't show the result tab
-                startTab = m_mode.getTabs()[0];
+                startTab = dialogBean.getTabConfiguration().getDefaultTab();
             }
         }
         m_galleryDialog.selectTab(startTab, startTab != GalleryTabId.cms_tab_results);
@@ -479,8 +478,8 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
      */
     protected native String getCloseLink() /*-{
 
-      return $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::ATTR_CLOSE_LINK];
-    }-*/;
+                                           return $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::ATTR_CLOSE_LINK];
+                                           }-*/;
 
     /**
      * Causes the preloaded tree states to be displayed in the tree tabs.<p>

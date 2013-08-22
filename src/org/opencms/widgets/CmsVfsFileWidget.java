@@ -31,7 +31,6 @@ import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsResourceTypeConfig;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
-import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeBinary;
@@ -576,25 +575,13 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
         JSONObject config = new JSONObject();
         try {
             config.put(I_CmsGalleryProviderConstants.CONFIG_START_SITE, m_startSite);
-            String tabIds = null;
+            String tabConfig = null;
             if (m_includeFiles) {
-                tabIds = GalleryTabId.cms_tab_types.name()
-                    + ","
-                    + GalleryTabId.cms_tab_galleries.name()
-                    + ","
-                    + GalleryTabId.cms_tab_vfstree.name()
-                    + ","
-                    + GalleryTabId.cms_tab_sitemap.name()
-                    + ","
-                    + GalleryTabId.cms_tab_categories.name()
-                    + ","
-                    + GalleryTabId.cms_tab_search.name()
-                    + ","
-                    + GalleryTabId.cms_tab_results.name();
+                tabConfig = "selectAll";
             } else {
-                tabIds = GalleryTabId.cms_tab_vfstree.name();
+                tabConfig = "folders";
             }
-            config.put(I_CmsGalleryProviderConstants.CONFIG_TAB_IDS, tabIds);
+            config.put(I_CmsGalleryProviderConstants.CONFIG_TAB_CONFIG, tabConfig);
             config.put(I_CmsGalleryProviderConstants.CONFIG_SHOW_SITE_SELECTOR, m_showSiteSelector);
             config.put(I_CmsGalleryProviderConstants.CONFIG_REFERENCE_PATH, cms.getSitePath(resource));
             config.put(I_CmsGalleryProviderConstants.CONFIG_LOCALE, contentLocale.toString());

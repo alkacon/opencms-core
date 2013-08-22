@@ -219,9 +219,6 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
 
                 m_dialogBean = result;
                 m_dialogMode = m_dialogBean.getMode();
-                if ((m_dialogBean.getTypes().size() == 1) && (m_dialogMode != GalleryMode.ade)) {
-                    removeTypesTab();
-                }
                 if (m_dialogBean.getStartTab() != GalleryTabId.cms_tab_results) {
                     List<GalleryTabId> tabs = Arrays.asList(getTabIds());
                     // in case the selected start tab is not present, choose another one
@@ -237,7 +234,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             }
         };
         initAction.execute();
-        m_tabIds = m_configuration.getTabIds();
+        m_tabIds = m_configuration.getTabConfiguration().getTabs().toArray(new GalleryTabId[] {});
         setShowSiteSelector(m_configuration.isShowSiteSelector());
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_configuration.getStartSite())) {
             setStartSite(m_configuration.getStartSite());

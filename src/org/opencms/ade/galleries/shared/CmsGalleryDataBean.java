@@ -85,6 +85,9 @@ public class CmsGalleryDataBean implements IsSerializable {
     /** The start up tab id. */
     private GalleryTabId m_startTab;
 
+    /** The tab configuration. */
+    private CmsGalleryTabConfiguration m_tabConfiguration;
+
     /** The configured tabs. */
     private GalleryTabId[] m_tabIds;
 
@@ -220,6 +223,16 @@ public class CmsGalleryDataBean implements IsSerializable {
     public GalleryTabId getStartTab() {
 
         return m_startTab;
+    }
+
+    /** 
+     * Gets the tab configuration.<p>
+     * 
+     * @return the tab configuration 
+     */
+    public CmsGalleryTabConfiguration getTabConfiguration() {
+
+        return m_tabConfiguration;
     }
 
     /**
@@ -391,6 +404,17 @@ public class CmsGalleryDataBean implements IsSerializable {
     public void setStartTab(GalleryTabId startTab) {
 
         m_startTab = startTab;
+    }
+
+    /**
+     * Sets the tab configuration.<p>
+     * 
+     * @param tabConfiguration the tab configuration 
+     */
+    public void setTabConfiguration(CmsGalleryTabConfiguration tabConfiguration) {
+
+        m_tabConfiguration = tabConfiguration;
+
     }
 
     /**

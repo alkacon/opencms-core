@@ -78,8 +78,8 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
     /** The start site. */
     private String m_startSite;
 
-    /** The tab id's. */
-    private GalleryTabId[] m_tabIds;
+    /** The tab configuration. */
+    private CmsGalleryTabConfiguration m_tabConfiguration;
 
     /** The tree token. */
     private String m_treeToken;
@@ -116,7 +116,7 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
         m_showSiteSelector = configuration.isShowSiteSelector();
         m_startFolder = configuration.getStartFolder();
         m_startSite = configuration.getStartSite();
-        m_tabIds = configuration.getTabIds();
+        m_tabConfiguration = configuration.getTabConfiguration();
         m_useFormats = configuration.isUseFormats();
         m_treeToken = configuration.getTreeToken();
     }
@@ -218,11 +218,24 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
     }
 
     /**
-     * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#getTabIds()
+     * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#getTabConfiguration()
+     */
+    public CmsGalleryTabConfiguration getTabConfiguration() {
+
+        return m_tabConfiguration;
+    }
+
+    /** 
+     * Gets the array of tab ids.<p>
+     * 
+     * @return the tab ids 
      */
     public GalleryTabId[] getTabIds() {
 
-        return m_tabIds;
+        if (m_tabConfiguration == null) {
+            return null;
+        }
+        return m_tabConfiguration.getTabs().toArray(new GalleryTabId[] {});
     }
 
     /**
@@ -238,7 +251,7 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
      */
     public boolean isIncludeFiles() {
 
-        return (getTabIds() == null) || (getTabIds().length != 1);
+        return getTabConfiguration().getTabs().contains(GalleryTabId.cms_tab_results);
     }
 
     /**
@@ -386,13 +399,13 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
     }
 
     /**
-     * Sets the tab id's.<p>
-     *
-     * @param tabIds the tab id's to set
+     * Sets the tab configuration.<p>
+     * 
+     * @param tabConfig the gallery tab configuration 
      */
-    public void setTabIds(GalleryTabId... tabIds) {
+    public void setTabConfiguration(CmsGalleryTabConfiguration tabConfig) {
 
-        m_tabIds = tabIds;
+        m_tabConfiguration = tabConfig;
     }
 
     /**

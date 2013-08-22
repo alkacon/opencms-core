@@ -27,10 +27,12 @@
 
 package org.opencms.widgets;
 
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.file.CmsObject;
 import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 
 /**
@@ -91,9 +93,12 @@ public class CmsAdeDownloadGalleryWidget extends A_CmsAdeGalleryWidget {
      * @see org.opencms.widgets.A_CmsAdeGalleryWidget#getAdditionalGalleryInfo(org.opencms.file.CmsObject, org.opencms.i18n.CmsMessages, org.opencms.widgets.I_CmsWidgetParameter)
      */
     @Override
-    protected JSONObject getAdditionalGalleryInfo(CmsObject cms, CmsMessages messages, I_CmsWidgetParameter param) {
+    protected JSONObject getAdditionalGalleryInfo(CmsObject cms, CmsMessages messages, I_CmsWidgetParameter param)
+    throws JSONException {
 
-        return null;
+        JSONObject result = new JSONObject();
+        result.put(I_CmsGalleryProviderConstants.CONFIG_TAB_CONFIG, "selectDoc");
+        return result;
     }
 
     /**

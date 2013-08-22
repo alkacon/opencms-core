@@ -30,6 +30,7 @@ package org.opencms.ade.galleries;
 import org.opencms.ade.galleries.shared.CmsGalleryConfiguration;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
+import org.opencms.ade.galleries.shared.CmsGalleryTabConfiguration;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
@@ -183,14 +184,11 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(galleryTypes)) {
             conf.setGalleryTypes(galleryTypes.split(","));
         }
-        String tabs = getRequest().getParameter(I_CmsGalleryProviderConstants.CONFIG_TAB_IDS);
+        String tabs = getRequest().getParameter(I_CmsGalleryProviderConstants.CONFIG_TAB_CONFIG);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(tabs)) {
-            String[] tabNames = tabs.split(",");
-            GalleryTabId[] tabIds = new GalleryTabId[tabNames.length];
-            for (int i = 0; i < tabNames.length; i++) {
-                tabIds[i] = GalleryTabId.valueOf(tabNames[i]);
-            }
-            conf.setTabIds(tabIds);
+            conf.setTabConfiguration(CmsGalleryTabConfiguration.resolve(tabs));
+        } else {
+            conf.setTabConfiguration(CmsGalleryTabConfiguration.getDefault());
         }
         return conf;
     }
