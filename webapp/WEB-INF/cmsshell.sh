@@ -6,7 +6,7 @@
 
 # get path to opencms base directory 
 pushd `dirname $0` > /dev/null
-OPENCMS_BASE=`dirs +0`
+OPENCMS_BASE=`dirs +0 -l`
 popd > /dev/null
 
 # get path to tomcat home 
