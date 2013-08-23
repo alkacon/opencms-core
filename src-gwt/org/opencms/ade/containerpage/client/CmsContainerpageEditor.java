@@ -480,7 +480,6 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
         CmsContainerpageUtil containerpageUtil = new CmsContainerpageUtil(
             controller,
-            m_selection,
             m_move,
             m_edit,
             m_info,

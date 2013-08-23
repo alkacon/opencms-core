@@ -35,11 +35,17 @@ import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import com.google.gwt.event.dom.client.ClickEvent;
 
 /**
- * The selection option.<p>
+ * The info option.<p>
  * 
  * @since 8.5.0
  */
-public class CmsSelectionOptionButton extends CmsPushButton implements I_CmsGroupEditorOption {
+public class CmsInfoOptionButton extends CmsPushButton implements I_CmsGroupEditorOption {
+
+    /** The element widget. */
+    private CmsContainerPageElementPanel m_elementWidget;
+
+    /** The editor instance. */
+    private CmsInheritanceContainerEditor m_editor;
 
     /**
      * The constructor.<p>
@@ -47,13 +53,15 @@ public class CmsSelectionOptionButton extends CmsPushButton implements I_CmsGrou
      * @param elementWidget the associated element widget
      * @param editor the editor instance
      */
-    public CmsSelectionOptionButton(CmsContainerPageElementPanel elementWidget, CmsInheritanceContainerEditor editor) {
+    public CmsInfoOptionButton(CmsContainerPageElementPanel elementWidget, CmsInheritanceContainerEditor editor) {
 
         super();
-        setImageClass(I_CmsButton.ButtonData.SELECTION.getIconClass());
+        setImageClass(I_CmsButton.ButtonData.INFO.getIconClass());
         setButtonStyle(ButtonStyle.TRANSPARENT, null);
-        // no title for selection button
-        addStyleName(I_CmsButton.ButtonData.SELECTION.getIconClass());
+        setTitle(I_CmsButton.ButtonData.INFO.getTitle());
+        addStyleName(I_CmsButton.ButtonData.INFO.getIconClass());
+        m_elementWidget = elementWidget;
+        m_editor = editor;
     }
 
     /**
@@ -69,6 +77,6 @@ public class CmsSelectionOptionButton extends CmsPushButton implements I_CmsGrou
      */
     public void onClick(ClickEvent event) {
 
-        // nothing to do
+        m_editor.getHandler().showElementInfo(m_elementWidget);
     }
 }

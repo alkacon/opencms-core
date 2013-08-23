@@ -128,6 +128,8 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
             public void onClick(ClickEvent event) {
 
                 I_CmsGroupEditorOption optionButton = (I_CmsGroupEditorOption)event.getSource();
+                ((CmsPushButton)optionButton).clearHoverState();
+                CmsDomUtil.ensureMouseOut(((CmsPushButton)optionButton).getElement().getParentElement());
                 optionButton.onClick(event);
             }
         };
@@ -505,31 +507,36 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
     private CmsElementOptionBar createOptionBar(CmsContainerPageElementPanel elementWidget) {
 
         CmsElementOptionBar optionBar = new CmsElementOptionBar(elementWidget);
-        CmsPushButton button = new CmsFavoritesOptionButton(elementWidget, this);
+        CmsPushButton button = new CmsRemoveOptionButton(elementWidget, this);
         button.addClickHandler(m_optionClickHandler);
         optionBar.add(button);
+
+        button = new CmsFavoritesOptionButton(elementWidget, this);
+        button.addClickHandler(m_optionClickHandler);
+        optionBar.add(button);
+
         button = new CmsSettingsOptionButton(elementWidget, this);
         button.addClickHandler(m_optionClickHandler);
         optionBar.add(button);
-        button = new CmsRemoveOptionButton(elementWidget, this);
+
+        button = new CmsInfoOptionButton(elementWidget, this);
         button.addClickHandler(m_optionClickHandler);
         optionBar.add(button);
+
         button = new CmsEditOptionButton(elementWidget, this);
         button.addClickHandler(m_optionClickHandler);
         optionBar.add(button);
-        button = new CmsMoveOptionButton(elementWidget, this);
-        // setting the drag and drop handler
-        button.addMouseDownHandler(getController().getDndHandler());
-        button.addClickHandler(m_optionClickHandler);
-        optionBar.add(button);
+
         button = new CmsAddOptionButton(elementWidget, this);
         button.addClickHandler(m_optionClickHandler);
         optionBar.add(button);
+
         button = new CmsInheritedOptionButton(elementWidget, this);
-        button.addClickHandler(m_optionClickHandler);
         optionBar.add(button);
-        button = new CmsSelectionOptionButton(elementWidget, this);
-        button.addClickHandler(m_optionClickHandler);
+
+        button = new CmsMoveOptionButton(elementWidget, this);
+        // setting the drag and drop handler
+        button.addMouseDownHandler(getController().getDndHandler());
         optionBar.add(button);
 
         return optionBar;

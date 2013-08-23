@@ -186,7 +186,6 @@ div.groupcontainerPlaceholder{
 .toolbarSelection .dragging .optionBar .toolbarNew, 
 .toolbarSelection .dragging .optionBar .toolbarProperties, 
 .toolbarSelection .dragging .optionBar .toolbarInherited,
-.toolbarSelection .dragging .optionBar .toolbarSelection,
 .toolbarSelection .dragging .optionBar .toolbarInfo{
 	visibility: hidden;
 }
@@ -241,11 +240,8 @@ div.groupcontainerPlaceholder{
 @sprite .optionBar .cmsState-up-disabled .toolbarEdit, .optionBar .cmsState-down-disabled .toolbarEdit {
 	gwt-image: "images.lockIconDeactivated";
 }
-@sprite .optionBar .cmsState-up-hovering .toolbarMove, .optionBar .cmsState-down-hovering .toolbarMove, .optionBar .cmsState-down .toolbarMove {
+@sprite .optionBar .toolbarMove.cmsState-up-hovering .toolbarSelection, .optionBar .toolbarMove.cmsState-down-hovering .toolbarSelection, .optionBar .toolbarMove.cmsState-down .toolbarSelection {
     gwt-image: "images.moveIconActive";
-}
-@sprite .optionBar .cmsState-up .toolbarMove, .optionBar .cmsState-up-disabled .toolbarMove, .optionBar .cmsState-down-disabled .toolbarMove {
-    gwt-image: "images.moveIconDeactivated";
 }
 @sprite .optionBar .cmsState-up-hovering .toolbarNew, .optionBar .cmsState-down-hovering .toolbarNew, .optionBar .cmsState-down .toolbarNew {
     gwt-image: "images.addIconActive";
