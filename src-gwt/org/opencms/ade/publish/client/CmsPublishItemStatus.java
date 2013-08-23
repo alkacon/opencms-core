@@ -51,24 +51,10 @@ import org.opencms.util.CmsUUID;
  */
 public class CmsPublishItemStatus {
 
-    /**
-     * The enum for the type of signals which can change the item state.<p>
-     */
-    enum Signal {
-        /** User selected publish. */
-        publish,
-        /** User deselected publish. */
-        unpublish,
-        /** User selected remove. */
-        remove,
-        /** User deselected remove. */
-        unremove;
-    }
-
     /** 
      * The enum for the publish item state.<p>
      */
-    enum State {
+    public enum State {
         /** Normal state. */
         normal,
         /** State for items which should be published. */
@@ -78,6 +64,23 @@ public class CmsPublishItemStatus {
         remove;
     }
 
+    /**
+     * The enum for the type of signals which can change the item state.<p>
+     */
+    enum Signal {
+        /** User selected publish. */
+        publish,
+        /** User selected remove. */
+        remove,
+        /** User deselected publish. */
+        unpublish,
+        /** User deselected remove. */
+        unremove;
+    }
+
+    /** The status update handler which should be notified of changes to the state. */
+    I_CmsPublishItemStatusUpdateHandler m_handler;
+
     /** Flag which indicates if this item is disabled. */
     private boolean m_disabled;
 
@@ -86,9 +89,6 @@ public class CmsPublishItemStatus {
 
     /** The current state of the item. */
     private State m_state;
-
-    /** The status update handler which should be notified of changes to the state. */
-    I_CmsPublishItemStatusUpdateHandler m_handler;
 
     /**
      * Creates a new publish item status bean.<p>

@@ -38,9 +38,10 @@ import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
-import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
+import org.opencms.gwt.client.ui.input.CmsTriStateCheckBox;
+import org.opencms.gwt.client.ui.input.CmsTriStateCheckBox.State;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsMessages;
 import org.opencms.gwt.client.util.CmsScrollToBottomHandler;
@@ -61,6 +62,7 @@ import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -82,6 +84,59 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class CmsPublishSelectPanel extends Composite
 implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandler {
+
+    /**
+     * Data with which to update a check box.
+     */
+    public static class CheckBoxUpdate {
+
+        /** The new state. */
+        private CmsTriStateCheckBox.State m_state;
+
+        /** The new text. */
+        private String m_text;
+
+        /**
+         * Gets the new state.<p>
+         * 
+         * @return the new state 
+         */
+        public CmsTriStateCheckBox.State getState() {
+
+            return m_state;
+        }
+
+        /**
+         * Gets the new text.<p>
+         * 
+         * @return the new text 
+         */
+        public String getText() {
+
+            return m_text;
+        }
+
+        /**
+         * Sets the new state.<p>
+         * 
+         * @param state the new state 
+         */
+        public void setState(CmsTriStateCheckBox.State state) {
+
+            m_state = state;
+        }
+
+        /**
+         * Sets the new text.<p>
+         * 
+         * @param text the new text 
+         */
+        public void setText(String text) {
+
+            m_text = text;
+        }
+
+    }
 
     /** The UiBinder interface for this widget. */
     protected interface I_CmsPublishSelectPanelUiBinder extends UiBinder<Widget, CmsPublishSelectPanel> {
@@ -186,16 +241,8 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     @UiField
     protected CmsScrollPanel m_scrollPanel;
 
-    /** The button for selecting all resources for publishing. */
-    @UiField
-    protected CmsPushButton m_selectAll;
-
     /** The global map of selection controllers for all groups. */
     protected Map<CmsUUID, CmsPublishItemSelectionController> m_selectionControllers = Maps.newHashMap();
-
-    /** The button for de-selecting all resources for publishing. */
-    @UiField
-    protected CmsPushButton m_selectNone;
 
     /** The label shown in front of the project selector. */
     @UiField
@@ -234,6 +281,8 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
     /** Flag indicating that the panel has been initialized. */
     private boolean m_initialized;
+    /** Checkbox for selecting/deselecting all items. */
+    private CmsTriStateCheckBox m_selectAll;
 
     /** Flag which indicates whether only resources with problems should be shown. */
     private boolean m_showProblemsOnly;
@@ -260,6 +309,22 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         m_actions = workflows.get(selectedWorkflowId).getActions();
         m_actionButtons = new ArrayList<CmsPushButton>();
         initWidget(UI_BINDER.createAndBindUi(this));
+        m_selectAll = new CmsTriStateCheckBox("");
+        m_selectAll.setNextStateAfterIntermediateState(State.on);
+        m_selectAll.addValueChangeHandler(new ValueChangeHandler<CmsTriStateCheckBox.State>() {
+
+            public void onValueChange(ValueChangeEvent<State> event) {
+
+                State state = event.getValue();
+                if (state == State.on) {
+                    m_model.signalAll(Signal.publish);
+                } else if (state == State.off) {
+                    m_model.signalAll(Signal.unpublish);
+                }
+            }
+        });
+        m_topBar.add(m_selectAll);
+
         m_scrollPanel.getElement().getStyle().setPropertyPx(CmsDomUtil.Style.maxHeight.toString(), scrollPanelHeight);
         m_checkboxProblems.setVisible(false);
         CmsMessages messages = Messages.get();
@@ -312,12 +377,12 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         }
         m_cancelButton.setText(messages.key(Messages.GUI_PUBLISH_DIALOG_CANCEL_BUTTON_0));
         m_cancelButton.setUseMinWidth(true);
-        m_selectAll.setText(messages.key(Messages.GUI_PUBLISH_TOP_PANEL_ALL_BUTTON_0));
-        m_selectAll.setImageClass(I_CmsInputLayoutBundle.INSTANCE.inputCss().checkBoxImageChecked());
-        m_selectAll.setUseMinWidth(true);
-        m_selectNone.setText(messages.key(Messages.GUI_PUBLISH_TOP_PANEL_NONE_BUTTON_0));
-        m_selectNone.setImageClass(I_CmsInputLayoutBundle.INSTANCE.inputCss().checkBoxImageUnchecked());
-        m_selectNone.setUseMinWidth(true);
+        //        m_selectAll.setText(messages.key(Messages.GUI_PUBLISH_TOP_PANEL_ALL_BUTTON_0));
+        //        m_selectAll.setImageClass(I_CmsInputLayoutBundle.INSTANCE.inputCss().checkBoxImageChecked());
+        //        m_selectAll.setUseMinWidth(true);
+        //        m_selectNone.setText(messages.key(Messages.GUI_PUBLISH_TOP_PANEL_NONE_BUTTON_0));
+        //        m_selectNone.setImageClass(I_CmsInputLayoutBundle.INSTANCE.inputCss().checkBoxImageUnchecked());
+        //        m_selectNone.setUseMinWidth(true);
         m_noResources.setText(messages.key(Messages.GUI_PUBLISH_DIALOG_NO_RES_0));
         m_checkboxSiblings.setText(messages.key(Messages.GUI_PUBLISH_CHECKBOXES_SIBLINGS_0));
         m_checkboxRelated.setText(messages.key(Messages.GUI_PUBLISH_CHECKBOXES_REL_RES_0));
@@ -337,6 +402,36 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     public static String formatResourceCount(int resourceCount) {
 
         return Messages.get().key(Messages.GUI_RESOURCE_COUNT_1, "" + resourceCount);
+    }
+
+    /**
+     * Updates the state of a check box used for selecting/deselecting items.<p>
+     * 
+     * @param states the selection states of the items for the check box 
+     * 
+     * @return the data needed to update the check box 
+     */
+    public static CheckBoxUpdate updateCheckbox(Set<CmsPublishItemStatus.State> states) {
+
+        CheckBoxUpdate result = new CheckBoxUpdate();
+        boolean hasPublish = states.contains(CmsPublishItemStatus.State.publish);
+        boolean hasNormal = states.contains(CmsPublishItemStatus.State.normal);
+        String textSelectAll = Messages.get().key(Messages.GUI_CHECKBOX_SELECT_ALL_0);
+        String textDeselectAll = Messages.get().key(Messages.GUI_CHECKBOX_DESELECT_ALL_0);
+        if (hasNormal && hasPublish) {
+            result.setText(textSelectAll);
+            result.setState(CmsTriStateCheckBox.State.middle);
+        } else if (hasNormal) {
+            result.setText(textSelectAll);
+            result.setState(CmsTriStateCheckBox.State.off);
+        } else if (hasPublish) {
+            result.setText(textDeselectAll);
+            result.setState(CmsTriStateCheckBox.State.on);
+        } else {
+            result.setText(textSelectAll);
+            result.setState(CmsTriStateCheckBox.State.off);
+        }
+        return result;
     }
 
     /** 
@@ -453,6 +548,18 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     public void onChangePublishSelection() {
 
         enableActions(shouldEnablePublishButton());
+        Map<Integer, Set<CmsPublishItemStatus.State>> states = m_model.computeGroupSelectionStates();
+        for (Map.Entry<Integer, Set<CmsPublishItemStatus.State>> entry : states.entrySet()) {
+            int key = entry.getKey().intValue();
+            if (key == -1) {
+                updateCheckboxState(entry.getValue());
+            } else {
+                if (key < m_groupPanels.size()) {
+                    m_groupPanels.get(key).updateCheckboxState(entry.getValue());
+                }
+            }
+
+        }
     }
 
     /**
@@ -495,7 +602,6 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         enableActions(true);
         addMoreListItems();
         showProblemCount(m_model.countProblems());
-        onChangePublishSelection();
     }
 
     /**
@@ -604,6 +710,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     protected void finishLoading() {
 
         m_loading = false;
+        onChangePublishSelection();
     }
 
     /**
@@ -658,32 +765,6 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
         m_publishDialog.setIncludeRelated(m_checkboxRelated.isChecked());
         m_publishDialog.updateResourceList();
-    }
-
-    /**
-     * Handles the click event for select all button.<p>
-     * 
-     * @param event the click event
-     * 
-     * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
-     */
-    @UiHandler("m_selectAll")
-    protected void onSelectAllClick(ClickEvent event) {
-
-        m_model.signalAll(Signal.publish);
-    }
-
-    /**
-     * Handles the click event for select none button.<p>
-     * 
-     * @param event the click event
-     * 
-     * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
-     */
-    @UiHandler("m_selectNone")
-    protected void onSelectNoneClick(ClickEvent event) {
-
-        m_model.signalAll(Signal.unpublish);
     }
 
     /**
@@ -834,5 +915,18 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
             m_problemsPanel.setVisible(true);
         }
         m_checkboxProblems.setVisible(numProblems > 0);
+    }
+
+    /**
+     * Updates the state of the check box for all items.<p>
+     * 
+     * @param value the state to use to update the check box 
+     */
+    private void updateCheckboxState(Set<org.opencms.ade.publish.client.CmsPublishItemStatus.State> value) {
+
+        CheckBoxUpdate update = updateCheckbox(value);
+        m_selectAll.setText(update.getText());
+        m_selectAll.setState(update.getState(), false);
+
     }
 }

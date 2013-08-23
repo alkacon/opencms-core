@@ -115,6 +115,34 @@ div.textArea textarea{
 }
 
 
+@sprite .triState .triStateOn {
+	gwt-image: "inputImages.checkboxChecked";
+	
+}
+
+@sprite .triState .triStateOff {
+	gwt-image: "inputImages.checkboxUnchecked";
+	
+}
+
+@sprite .triState .triStateMedium {
+	gwt-image: "inputImages.checkboxCheckedDisabled";
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 .radioButton .gwt-ToggleButton {
 	outline: none;

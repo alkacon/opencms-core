@@ -14,8 +14,6 @@
 			<cmsi:CmsSelectBox ui:field="m_projectSelector" />
 		</g:FlowPanel>
 		<g:FlowPanel ui:field="m_topBar" styleName="{res.publishCss.topBar}">
-			<cms:CmsPushButton ui:field="m_selectAll" />
-			<cms:CmsPushButton ui:field="m_selectNone" />
 		</g:FlowPanel>
 		<g:Label ui:field="m_noResources" styleName="{res.publishCss.noResources}" />
 		<cms:CmsScrollPanel ui:field="m_scrollPanel" addStyleNames="{res.publishCss.scrollPanel} {main.generalCss.cornerAll}">

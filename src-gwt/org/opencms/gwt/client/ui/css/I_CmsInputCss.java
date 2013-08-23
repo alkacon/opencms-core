@@ -344,6 +344,13 @@ public interface I_CmsInputCss extends I_CmsGlobalWidgetCss {
      * 
      * @return the css class
      */
+    String selectionInput();
+
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
     String selectorPopup();
 
     /**
@@ -423,12 +430,13 @@ public interface I_CmsInputCss extends I_CmsGlobalWidgetCss {
      */
     String transparentSelectBox();
 
-    /**
-     * Css class reader.<p>
-     * 
-     * @return the css class
-     */
-    String selectionInput();
+    String triState();
+
+    String triStateMedium();
+
+    String triStateOff();
+
+    String triStateOn();
 
     /**
      * Css class reader.<p>

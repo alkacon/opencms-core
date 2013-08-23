@@ -37,9 +37,11 @@ import org.opencms.util.CmsUUID;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 /**
  * This class contains the data for the publish resources which are displayed 
@@ -132,6 +134,31 @@ public class CmsPublishDataModel {
     public static boolean hasProblems(CmsPublishResource publishResource) {
 
         return (publishResource.getInfo() != null) && publishResource.getInfo().hasProblemType();
+    }
+
+    /**
+     * Collects group selection states.<p>
+     * 
+     * @return the group selection states 
+     */
+    public Map<Integer, Set<CmsPublishItemStatus.State>> computeGroupSelectionStates() {
+
+        Map<Integer, Set<CmsPublishItemStatus.State>> stateMap = Maps.newHashMap();
+        Set<CmsPublishItemStatus.State> allStates = Sets.newHashSet();
+        int i = 0;
+        for (CmsPublishGroup group : m_groups) {
+            Set<CmsPublishItemStatus.State> groupStates = Sets.newHashSet();
+            for (CmsPublishResource res : group.getResources()) {
+                CmsPublishItemStatus item = m_status.get(res.getId());
+                groupStates.add(item.getState());
+                allStates.add(item.getState());
+
+            }
+            stateMap.put(new Integer(i), groupStates);
+            i += 1;
+        }
+        stateMap.put(new Integer(-1), allStates);
+        return stateMap;
     }
 
     /**
