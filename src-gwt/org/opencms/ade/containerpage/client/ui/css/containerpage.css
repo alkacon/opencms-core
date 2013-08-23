@@ -127,7 +127,7 @@ div.toolbarToggle{
 .toolbarSelection .optionBar.cmsHovering{
 	height: auto;
 	border: 1px solid value("constants.css.borderColor");
-	border-radius: 2px;
+	border-radius: value("constants.css.borderRadius");
 	background: value("constants.css.backgroundColorDialog");
 }
 

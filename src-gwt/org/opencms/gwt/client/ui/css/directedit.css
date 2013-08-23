@@ -60,7 +60,7 @@ div.optionBar div, div.optionBar span {
 }
 
 .toolbarSelection .optionBar.cmsHovering{
-	border-radius: 2px;
+	border-radius: value("constants.css.borderRadius");
 }
 
 .optionBar div.cmsState {
