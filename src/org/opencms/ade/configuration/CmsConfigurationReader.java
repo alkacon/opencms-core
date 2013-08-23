@@ -372,9 +372,16 @@ public class CmsConfigurationReader {
 
         I_CmsXmlContentValueLocation typeNameLoc = node.getSubValue(N_TYPE_NAME);
         String typeName = typeNameLoc.asString(m_cms);
-        I_CmsXmlContentValueLocation disabledLoc = node.getSubValue(N_DISABLED);
         CmsFolderOrName folderOrName = parseFolderOrName(basePath, node.getSubValue(N_FOLDER));
-        boolean disabled = (disabledLoc != null) && Boolean.parseBoolean(disabledLoc.asString(m_cms));
+        I_CmsXmlContentValueLocation disabledLoc = node.getSubValue(N_DISABLED);
+        boolean disabled = false;
+        boolean addDisabled = false;
+        String disabledStr = disabledLoc == null ? null : disabledLoc.asString(m_cms);
+        if ((disabledStr != null) && "add".equalsIgnoreCase(disabledStr.trim())) {
+            addDisabled = true;
+        } else {
+            disabled = Boolean.parseBoolean(disabledStr);
+        }
         I_CmsXmlContentValueLocation namePatternLoc = node.getSubValue(N_NAME_PATTERN);
         String namePattern = null;
         if (namePatternLoc != null) {
@@ -412,6 +419,7 @@ public class CmsConfigurationReader {
             namePattern,
             formatterConfig,
             detailPagesDisabled,
+            addDisabled,
             order);
         m_resourceTypeConfigs.add(typeConfig);
     }

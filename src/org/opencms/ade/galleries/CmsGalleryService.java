@@ -1753,12 +1753,18 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                         getCmsObject(),
                         getCmsObject().getRequestContext().addSiteRoot(getCmsObject().getRequestContext().getUri()));
                     for (CmsResourceTypeConfig typeConfig : config.getResourceTypes()) {
+                        if (typeConfig.isAddDisabled()) {
+                            continue;
+                        }
                         if (typeConfig.checkViewable(getCmsObject(), referenceSitePath)) {
                             String typeName = typeConfig.getTypeName();
                             resourceTypes.add(getResourceManager().getResourceType(typeName));
                         }
                     }
                     for (CmsResourceTypeConfig typeConfig : config.getCreatableTypes(getCmsObject())) {
+                        if (typeConfig.isAddDisabled()) {
+                            continue;
+                        }
                         String typeName = typeConfig.getTypeName();
                         creatableTypes.add(typeName);
                     }

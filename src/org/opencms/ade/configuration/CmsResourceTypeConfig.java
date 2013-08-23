@@ -66,6 +66,9 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     /** The CMS object used for VFS operations. */
     protected CmsObject m_cms;
 
+    /** Flag which controls whether adding elements of this type using ADE is disabled. */
+    private boolean m_addDisabled;
+
     /** The flag for disabling detail pages. */
     private boolean m_detailPagesDisabled;
 
@@ -103,7 +106,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         String pattern,
         CmsFormatterConfiguration formatterConfig) {
 
-        this(typeName, disabled, folder, pattern, formatterConfig, false, I_CmsConfigurationObject.DEFAULT_ORDER);
+        this(typeName, disabled, folder, pattern, formatterConfig, false, false, I_CmsConfigurationObject.DEFAULT_ORDER);
     }
 
     /** 
@@ -115,6 +118,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      * @param pattern the name pattern 
      * @param formatterConfig the formatter configuration 
      * @param detailPagesDisabled true if detail page creation should be disabled for this type
+     * @param addDisabled true if adding elements of this type via ADE should be disabled 
      * @param order the number used for sorting resource types from modules  
      */
     public CmsResourceTypeConfig(
@@ -124,6 +128,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         String pattern,
         CmsFormatterConfiguration formatterConfig,
         boolean detailPagesDisabled,
+        boolean addDisabled,
         int order) {
 
         m_typeName = typeName;
@@ -132,6 +137,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         m_namePattern = pattern;
         m_formatterConfig = formatterConfig;
         m_detailPagesDisabled = detailPagesDisabled;
+        m_addDisabled = addDisabled;
         m_order = order;
     }
 
@@ -153,7 +159,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         CmsFormatterConfiguration formatterConfig,
         int order) {
 
-        this(typeName, disabled, folder, pattern, formatterConfig, false, order);
+        this(typeName, disabled, folder, pattern, formatterConfig, false, false, order);
     }
 
     /** 
@@ -440,6 +446,16 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     }
 
     /**
+     * Returns true if adding elements of this type via ADE should be disabled.<p>
+     * 
+     * @return true if elements of this type shouldn't be added to the page 
+     */
+    public boolean isAddDisabled() {
+
+        return m_addDisabled;
+    }
+
+    /**
      * True if the detail page creation should be disabled for this resource type.<p>
      * 
      * @return true if detail page creation should be disabled for this type 
@@ -474,6 +490,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             namePattern,
             formatterConfig,
             isDetailPagesDisabled() || childConfig.isDetailPagesDisabled(),
+            childConfig.isAddDisabled(),
             m_order);
 
     }
@@ -492,6 +509,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             m_namePattern,
             m_formatterConfig,
             m_detailPagesDisabled,
+            isAddDisabled(),
             m_order);
     }
 
