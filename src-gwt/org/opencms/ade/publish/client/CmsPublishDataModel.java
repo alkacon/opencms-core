@@ -150,8 +150,16 @@ public class CmsPublishDataModel {
             Set<CmsPublishItemStatus.State> groupStates = Sets.newHashSet();
             for (CmsPublishResource res : group.getResources()) {
                 CmsPublishItemStatus item = m_status.get(res.getId());
-                groupStates.add(item.getState());
-                allStates.add(item.getState());
+                CmsPublishItemStatus.State stateToAdd;
+                if (item.isDisabled()) {
+                    // a disabled item should have no influence on the select/deselect all checkboxes,
+                    // just as an item which is marked to be removed 
+                    stateToAdd = CmsPublishItemStatus.State.remove;
+                } else {
+                    stateToAdd = item.getState();
+                }
+                groupStates.add(stateToAdd);
+                allStates.add(stateToAdd);
 
             }
             stateMap.put(new Integer(i), groupStates);
