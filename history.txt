@@ -16,6 +16,9 @@ Legend:
 - General comment
 
 OpenCms 8.7.1 - July 23, 2013
+! Added gallery access to the toolbar
+! Added new option to configure an error page (XML content) per site
+! Added page info dialog and element info dialog
 ! Implemented dynamic template provider feature.
 ! Added Site Management workplace administration tool with web server configuration support
 ! Added new option to configure an error per site that can be an XML content or Container page itself
