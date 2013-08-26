@@ -1184,6 +1184,27 @@ public class CmsResourceManager {
     }
 
     /**
+     * Checks if there is a resource type with a given name whose id matches the given id.<p>
+     * 
+     * This will return 'false' if no resource type with the given name is registered.<p>
+     * 
+     * @param name a resource type name 
+     * @param id a resource type id 
+     * 
+     * @return true if a matching resource type with the given name and id was found 
+     * 
+     * @throws CmsLoaderException if something goes wrong 
+     */
+    public boolean matchResourceType(String name, int id) throws CmsLoaderException {
+
+        if (hasResourceType(name)) {
+            return getResourceType(name).getTypeId() == id;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Configures the URL name generator for XML contents.<p>
      * 
      * @param nameGenerator the configured name generator class

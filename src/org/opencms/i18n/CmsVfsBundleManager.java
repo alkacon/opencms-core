@@ -27,14 +27,17 @@
 
 package org.opencms.i18n;
 
+import org.opencms.db.CmsPublishedResource;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsEvent;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -59,14 +62,80 @@ public class CmsVfsBundleManager {
          */
         public void cmsEvent(CmsEvent event) {
 
-            if (event.getType() == I_CmsEventListener.EVENT_PUBLISH_PROJECT) {
-                try {
-                    reload(false);
-                } catch (Exception e) {
-                    logError(e);
-                }
+            // wrap in try-catch so that errors don't affect other handlers 
+            try {
+                handleEvent(event);
+            } catch (Throwable t) {
+                LOG.error(t.getLocalizedMessage(), t);
             }
         }
+
+        /**
+         * This actually handles the event.<p> 
+         * 
+         * @param event the received event 
+         */
+        private void handleEvent(CmsEvent event) {
+
+            switch (event.getType()) {
+                case I_CmsEventListener.EVENT_PUBLISH_PROJECT:
+                    //System.out.print(getEventName(event.getType()));
+                    String publishIdStr = (String)event.getData().get(I_CmsEventListener.KEY_PUBLISHID);
+                    if (publishIdStr != null) {
+                        CmsUUID publishId = new CmsUUID(publishIdStr);
+                        try {
+                            List<CmsPublishedResource> publishedResources = getCmsObject().readPublishedResources(
+                                publishId);
+                            if (publishedResources.isEmpty()) {
+                                scheduleReload();
+                            } else {
+                                String[] typesToMatch = new String[] {TYPE_PROPERTIES_BUNDLE, TYPE_XML_BUNDLE};
+                                boolean reload = false;
+                                for (CmsPublishedResource res : publishedResources) {
+                                    for (String typeName : typesToMatch) {
+                                        if (OpenCms.getResourceManager().matchResourceType(typeName, res.getType())) {
+                                            reload = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (reload) {
+                                    scheduleReload();
+                                }
+                            }
+                        } catch (CmsException e) {
+                            LOG.error(e.getLocalizedMessage(), e);
+                        }
+                    }
+                    break;
+                case I_CmsEventListener.EVENT_CLEAR_CACHES:
+                default:
+                    scheduleReload();
+                    break;
+            }
+        }
+
+        /**
+         * Schedules a bundle reload.<p>
+         */
+        private void scheduleReload() {
+
+            Thread thread = new Thread() {
+
+                @Override
+                public void run() {
+
+                    try {
+                        Thread.sleep(1000);
+                    } catch (Exception e) {
+                        // ignore 
+                    }
+                    reload(false);
+                }
+            };
+            thread.start();
+        }
+
     }
 
     /**
@@ -146,7 +215,7 @@ public class CmsVfsBundleManager {
         CmsVfsResourceBundle.setCmsObject(cms);
         OpenCms.getEventManager().addCmsEventListener(
             new Listener(),
-            new int[] {I_CmsEventListener.EVENT_PUBLISH_PROJECT});
+            new int[] {I_CmsEventListener.EVENT_PUBLISH_PROJECT, I_CmsEventListener.EVENT_CLEAR_CACHES});
     }
 
     /**
@@ -177,7 +246,7 @@ public class CmsVfsBundleManager {
      * 
      * @param isStartup true when this is called during startup 
      */
-    public void reload(boolean isStartup) {
+    public synchronized void reload(boolean isStartup) {
 
         m_logToErrorChannel = isStartup;
         flushBundles();
@@ -202,6 +271,16 @@ public class CmsVfsBundleManager {
         } catch (Exception e) {
             logError(e);
         }
+    }
+
+    /**
+     * Gets the current CMS context.<p>
+     * 
+     * @return the current CMS context 
+     */
+    protected CmsObject getCmsObject() {
+
+        return m_cms;
     }
 
     /**
@@ -247,7 +326,6 @@ public class CmsVfsBundleManager {
             bundleResource.getRootPath(),
             baseName,
             "" + locale));
-        OpenCms.getLocaleManager();
         Locale paramLocale = locale != null ? locale : CmsLocaleManager.getDefaultLocale();
         CmsVfsBundleParameters params = new CmsVfsBundleParameters(
             nameAndLocale.getName(),
