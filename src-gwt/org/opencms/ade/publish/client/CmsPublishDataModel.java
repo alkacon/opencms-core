@@ -324,6 +324,16 @@ public class CmsPublishDataModel {
     }
 
     /**
+     * Checks if there is only a single group of resources.<p>
+     * 
+     * @return true if there is only a single group of resources 
+     */
+    public boolean hasSingleGroup() {
+
+        return m_groups.size() == 1;
+    }
+
+    /**
      * Checks if there are any publish resources.<p>
      * 
      * @return true if there are no publish resources at all

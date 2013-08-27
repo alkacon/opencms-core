@@ -853,6 +853,9 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
             m_model,
             m_selectionControllers,
             m_showProblemsOnly);
+        if (m_model.hasSingleGroup()) {
+            groupPanel.hideGroupSelectCheckBox();
+        }
         m_groupPanels.add(groupPanel);
         m_groupPanelContainer.add(groupPanel);
         return groupPanel;

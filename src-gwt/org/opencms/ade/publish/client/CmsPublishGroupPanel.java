@@ -295,6 +295,14 @@ public class CmsPublishGroupPanel extends Composite {
         return m_itemIndex < m_publishResources.size();
     }
 
+    /**
+     * Hides the tri-state select box for the group.<p>
+     */
+    public void hideGroupSelectCheckBox() {
+
+        m_selectGroup.getElement().getStyle().setVisibility(Visibility.HIDDEN);
+    }
+
     /** 
      * Updates the check box state for this group.<p>
      * 

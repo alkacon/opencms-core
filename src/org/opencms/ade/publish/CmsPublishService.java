@@ -228,8 +228,12 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
             for (CmsPublishResource publishResource : publishResources) {
                 checkPreview(publishResource);
             }
-            A_CmsPublishGroupHelper<CmsPublishResource, CmsPublishGroup> groupHelper = new CmsDefaultPublishGroupHelper(
-                locale);
+            A_CmsPublishGroupHelper<CmsPublishResource, CmsPublishGroup> groupHelper;
+            if ((options.getProjectId() == null) || options.getProjectId().isNullUUID()) {
+                groupHelper = new CmsDefaultPublishGroupHelper(locale);
+            } else {
+                groupHelper = new CmsSinglePublishGroupHelper(locale);
+            }
             results = groupHelper.getGroups(publishResources);
             setCachedOptions(options);
         } catch (Throwable e) {
