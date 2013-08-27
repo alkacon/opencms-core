@@ -59,6 +59,7 @@ import com.google.common.collect.Maps;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -312,6 +313,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         m_actionButtons = new ArrayList<CmsPushButton>();
         initWidget(UI_BINDER.createAndBindUi(this));
         m_selectAll = new CmsTriStateCheckBox("");
+        m_selectAll.getElement().getStyle().setMarginLeft(4, Style.Unit.PX);
         m_selectAll.setNextStateAfterIntermediateState(State.on);
         m_selectAll.addValueChangeHandler(new ValueChangeHandler<CmsTriStateCheckBox.State>() {
 
