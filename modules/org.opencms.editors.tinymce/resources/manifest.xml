@@ -3059,11 +3059,11 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/editors/tinymce/toolbar/oc-downloadgallery.gif</source>
-			<destination>system/workplace/resources/editors/tinymce/toolbar/oc-downloadgallery.gif</destination>
+			<source>system/workplace/resources/editors/tinymce/toolbar/oc-downloadgallery.png</source>
+			<destination>system/workplace/resources/editors/tinymce/toolbar/oc-downloadgallery.png</destination>
 			<type>image</type>
-			<uuidstructure>6c498511-7b5c-45d1-a5c2-fc15fd9f8443</uuidstructure>
-			<uuidresource>6c498512-7b5c-45d1-a5c2-fc15fd9f8443</uuidresource>
+			<uuidstructure>b315edc4-640b-40a3-95e5-09911e963c57</uuidstructure>
+			<uuidresource>3ecb47b3-9d02-4521-9f0e-601bbea6009d</uuidresource>
 			<datelastmodified>Tue, 17 Jan 2012 13:21:18 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 16 Jan 2012 13:14:38 GMT</datecreated>
@@ -3123,11 +3123,11 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/editors/tinymce/toolbar/oc-imagegallery.gif</source>
-			<destination>system/workplace/resources/editors/tinymce/toolbar/oc-imagegallery.gif</destination>
+			<source>system/workplace/resources/editors/tinymce/toolbar/oc-imagegallery.png</source>
+			<destination>system/workplace/resources/editors/tinymce/toolbar/oc-imagegallery.png</destination>
 			<type>image</type>
-			<uuidstructure>116b3b4e-415b-499a-b1d2-b13981bd6e90</uuidstructure>
-			<uuidresource>116b3b4f-415b-499a-b1d2-b13981bd6e90</uuidresource>
+			<uuidstructure>f00e03d0-36a5-4590-a70e-2a211c9e7611</uuidstructure>
+			<uuidresource>52df918b-faea-4764-9c01-efb297f7182a</uuidresource>
 			<datelastmodified>Tue, 17 Jan 2012 13:21:18 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 16 Jan 2012 13:14:38 GMT</datecreated>

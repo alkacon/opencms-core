@@ -120,15 +120,29 @@ div.textArea textarea{
 	
 }
 
+@sprite .triState.cmsState-down-hovering .triStateOn,.triState.cmsState-up-hovering .triStateOn {
+	gwt-image: "inputImages.checkboxCheckedHover";
+}
+
+
 @sprite .triState .triStateOff {
 	gwt-image: "inputImages.checkboxUnchecked";
 	
 }
 
-@sprite .triState .triStateMedium {
-	gwt-image: "inputImages.checkboxCheckedDisabled";
-	
+@sprite .triState.cmsState-up-hovering .triStateOff, .triState.cmsState-down-hovering .triStateOff {
+	gwt-image: "inputImages.checkboxUncheckedHover";
 }
+
+
+@sprite .triState .triStateMedium {
+	gwt-image: "inputImages.checkboxCheckedSome";
+}
+
+@sprite .triState.cmsState-up-hovering .triStateMedium, .triState.cmsState-down-hovering .triStateMedium {
+	gwt-image: "inputImages.checkboxCheckedSomeHover";
+}
+
 
 
 

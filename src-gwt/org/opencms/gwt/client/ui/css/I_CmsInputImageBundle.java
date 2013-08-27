@@ -239,6 +239,30 @@ public interface I_CmsInputImageBundle extends ClientBundle {
      * 
      * @return an image resource
      */
+    @Source("images/input/checkboxCheckedSome.png")
+    ImageResource checkboxCheckedSome();
+
+    /**
+     * Image resource accessor.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/input/checkboxCheckedSomeDisabled.png")
+    ImageResource checkboxCheckedSomeDisabled();
+
+    /**
+     * Image resource accessor.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/input/checkboxCheckedSomeHover.png")
+    ImageResource checkboxCheckedSomeHover();
+
+    /**
+     * Image resource accessor.<p>
+     * 
+     * @return an image resource
+     */
     @Source("images/input/checkboxUnchecked.png")
     ImageResource checkboxUnchecked();
 

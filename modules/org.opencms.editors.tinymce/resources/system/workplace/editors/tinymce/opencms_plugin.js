@@ -410,13 +410,13 @@ tinymce.create('tinymce.opencms', {
       
       ed.addButton('OcmsImageGallery', {
          title: '<fmt:message key="GUI_IMAGE_GALLERY_TITLE_0" />',
-         image: '<%= org.opencms.workplace.CmsWorkplace.getResourceUri("editors/tinymce/toolbar/oc-imagegallery.gif") %>',
+         image: '<%= org.opencms.workplace.CmsWorkplace.getResourceUri("editors/tinymce/toolbar/oc-imagegallery.png") %>',
          cmd: "cmsImageGallery"
        });
       
       ed.addButton('OcmsDownloadGallery', {
          title: '<fmt:message key="GUI_DOWNLOAD_GALLERY_TITLE_0" />',
-         image: '<%= org.opencms.workplace.CmsWorkplace.getResourceUri("editors/tinymce/toolbar/oc-downloadgallery.gif") %>',
+         image: '<%= org.opencms.workplace.CmsWorkplace.getResourceUri("editors/tinymce/toolbar/oc-downloadgallery.png") %>',
          cmd: "cmsDownloadGallery"
       });
       
