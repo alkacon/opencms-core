@@ -1101,7 +1101,8 @@ public class CmsUserSettings {
             }
         }
         if (m_startGalleriesSettings.isEmpty()) {
-            m_startGalleriesSettings = new TreeMap<String, String>();
+            m_startGalleriesSettings = new TreeMap<String, String>(
+                OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartGalleriesSettings());
         }
 
         // start site
