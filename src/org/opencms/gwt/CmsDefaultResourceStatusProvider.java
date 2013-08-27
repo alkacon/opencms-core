@@ -52,6 +52,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
+import org.opencms.relations.CmsRelationType;
 import org.opencms.relations.I_CmsLinkParseable;
 import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchResult;
@@ -112,6 +113,9 @@ public class CmsDefaultResourceStatusProvider {
         }
         List<CmsRelation> relations = cms.readRelations(CmsRelationFilter.relationsFromStructureId(source));
         for (CmsRelation relation : relations) {
+            if (relation.getType() == CmsRelationType.XSD) {
+                continue;
+            }
             try {
                 CmsResource target = relation.getTarget(cms, CmsResourceFilter.IGNORE_EXPIRATION);
                 I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(target);
