@@ -52,6 +52,9 @@ public class CmsGalleryDataBean implements IsSerializable {
     /** The current element. */
     private String m_currentElement;
 
+    /** The default search scope. */
+    private CmsGallerySearchScope m_defaultScope = CmsGallerySearchScope.everything;
+
     /** The galleries to display in the list with available galleries. */
     private List<CmsGalleryFolderBean> m_galleries;
 
@@ -121,6 +124,16 @@ public class CmsGalleryDataBean implements IsSerializable {
     public String getCurrentElement() {
 
         return m_currentElement;
+    }
+
+    /**
+     * Gets the default search scope.<p>
+     * 
+     * @return the default search scope
+     */
+    public CmsGallerySearchScope getDefaultScope() {
+
+        return m_defaultScope;
     }
 
     /**
@@ -303,6 +316,16 @@ public class CmsGalleryDataBean implements IsSerializable {
     public void setCurrentElement(String currentElement) {
 
         m_currentElement = currentElement;
+    }
+
+    /** 
+     * Sets the default search scope.<p>
+     * 
+     * @param scope the default search scope 
+     */
+    public void setDefaultScope(CmsGallerySearchScope scope) {
+
+        m_defaultScope = scope;
     }
 
     /**

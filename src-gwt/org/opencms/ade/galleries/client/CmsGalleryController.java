@@ -520,6 +520,16 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     }
 
     /**
+     * Gets the default search scope.<p>
+     * 
+     * @return the default search scope 
+     */
+    public CmsGallerySearchScope getDefaultScope() {
+
+        return m_dialogBean.getDefaultScope();
+    }
+
+    /**
      * Gets the default site root for the sitemap tab.<p>
      * 
      * @return the default site root for the sitemap tab 

@@ -1668,7 +1668,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             sitemapOptionBuilder.addCurrentSubsite(getCmsObject().addSiteRoot(data.getReferenceSitePath()));
         }
         data.setSitemapSiteSelectorOptions(sitemapOptionBuilder.getOptions());
-
+        data.setDefaultScope(OpenCms.getWorkplaceManager().getGalleryDefaultScope());
         return data;
     }
 

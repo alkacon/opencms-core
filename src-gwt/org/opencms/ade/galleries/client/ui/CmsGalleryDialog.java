@@ -273,6 +273,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
 
         m_controller = controller;
         GalleryTabId[] tabIds = m_controller.getTabIds();
+
         int i;
         for (i = 0; i < tabIds.length; i++) {
             switch (tabIds[i]) {
@@ -301,7 +302,8 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
                         m_autoHideParent,
                         m_controller.getStartLocale(),
                         m_controller.getAvailableLocales(),
-                        m_controller.getSearchScope());
+                        m_controller.getSearchScope(),
+                        m_controller.getDefaultScope());
                     m_searchTab.enableExpiredResourcesSearch(controller.getDialogMode() == I_CmsGalleryProviderConstants.GalleryMode.ade);
                     m_searchTab.setTabTextAccessor(getTabTextAccessor(i));
                     m_tabbedPanel.add(m_searchTab, Messages.get().key(Messages.GUI_TAB_TITLE_SEARCH_0));
