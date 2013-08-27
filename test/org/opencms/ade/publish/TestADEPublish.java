@@ -285,9 +285,7 @@ public class TestADEPublish extends OpenCmsTestCase {
         assertEquals(1, groups.get(0).getResources().size());
         assertEquals(resource.getStructureId(), groups.get(0).getResources().get(0).getId());
         assertTrue(groups.get(0).getResources().get(0).isRemovable());
-        assertEquals(
-            CmsPublishResourceInfo.Type.PERMISSIONS,
-            groups.get(0).getResources().get(0).getInfo().getType());
+        assertEquals(CmsPublishResourceInfo.Type.PERMISSIONS, groups.get(0).getResources().get(0).getInfo().getType());
         assertEquals(0, groups.get(0).getResources().get(0).getRelated().size());
 
         // give permissions

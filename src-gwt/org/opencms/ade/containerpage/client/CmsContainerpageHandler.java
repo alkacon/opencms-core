@@ -35,6 +35,7 @@ import org.opencms.ade.containerpage.client.ui.groupeditor.CmsInheritanceContain
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.publish.client.CmsPublishDialog;
+import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.CmsGwtConstants;
 import org.opencms.gwt.client.dnd.I_CmsDNDController;
@@ -96,6 +97,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.Maps;
 import com.google.gwt.dom.client.FormElement;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Position;
@@ -1225,7 +1227,10 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
      */
     protected void openPublish() {
 
-        CmsPublishDialog.showPublishDialog(new CloseHandler<PopupPanel>() {
+        HashMap<String, String> params = Maps.newHashMap();
+        params.put(CmsPublishOptions.PARAM_CONTAINERPAGE, "" + CmsCoreProvider.get().getStructureId());
+        params.put(CmsPublishOptions.PARAM_START_WITH_CURRENT_PAGE, "");
+        CmsPublishDialog.showPublishDialog(params, new CloseHandler<PopupPanel>() {
 
             /**
              * @see com.google.gwt.event.logical.shared.CloseHandler#onClose(com.google.gwt.event.logical.shared.CloseEvent)

@@ -40,6 +40,7 @@ import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.util.CmsUUID;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -195,7 +196,7 @@ public class CmsDirectEditToolbarHandler extends A_CmsToolbarHandler {
      */
     public void showPublishDialog() {
 
-        CmsPublishDialog.showPublishDialog(new CloseHandler<PopupPanel>() {
+        CmsPublishDialog.showPublishDialog(new HashMap<String, String>(), new CloseHandler<PopupPanel>() {
 
             /**
              * @see com.google.gwt.event.logical.shared.CloseHandler#onClose(com.google.gwt.event.logical.shared.CloseEvent)

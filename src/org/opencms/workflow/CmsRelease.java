@@ -48,7 +48,9 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 
 import com.google.common.base.Function;
-import com.google.common.collect.MapMaker;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 
 /**
  * A subclass of CmsPublish which builds resource lists for resources which can be released, rather than published.<p>
@@ -59,32 +61,22 @@ public class CmsRelease extends CmsPublish {
     protected static final Log LOG = CmsLog.getLog(CmsPublish.class);
 
     /** Computing map which keeps track of which projects are workflow projects. */
-    private Map<CmsUUID, Boolean> m_workflowProjectStatus = new MapMaker().makeComputingMap(new Function<CmsUUID, Boolean>() {
+    private LoadingCache<CmsUUID, Boolean> m_workflowProjectStatus = CacheBuilder.newBuilder().build(
+        CacheLoader.from(new Function<CmsUUID, Boolean>() {
 
-        public Boolean apply(CmsUUID projectId) {
+            public Boolean apply(CmsUUID projectId) {
 
-            try {
-                @SuppressWarnings("synthetic-access")
-                CmsProject project = m_cms.readProject(projectId);
-                return new Boolean(project.isWorkflowProject());
-            } catch (CmsException e) {
-                LOG.warn(e.getLocalizedMessage(), e);
-                return Boolean.FALSE;
+                try {
+                    @SuppressWarnings("synthetic-access")
+                    CmsProject project = m_cms.readProject(projectId);
+                    return new Boolean(project.isWorkflowProject());
+                } catch (CmsException e) {
+                    LOG.warn(e.getLocalizedMessage(), e);
+                    return Boolean.FALSE;
+                }
             }
-        }
 
-    });
-
-    /**
-     * Creates a new instance.<p>
-     * 
-     * @param cms the user CMS context
-     */
-    public CmsRelease(CmsObject cms) {
-
-        super(cms);
-
-    }
+        }));
 
     /**
      * Creates a new instance.<p>
@@ -95,6 +87,17 @@ public class CmsRelease extends CmsPublish {
     public CmsRelease(CmsObject cms, CmsPublishOptions options) {
 
         super(cms, options);
+
+    }
+
+    /**
+     * Creates a new instance.<p>
+     * @param cms the user CMS context
+     * @param params the additional publish parameters 
+     */
+    public CmsRelease(CmsObject cms, Map<String, String> params) {
+
+        super(cms, params);
 
     }
 
@@ -219,7 +222,12 @@ public class CmsRelease extends CmsPublish {
      */
     private boolean isWorkflowProject(CmsUUID projectId) {
 
-        return m_workflowProjectStatus.get(projectId).booleanValue();
+        try {
+            return m_workflowProjectStatus.get(projectId).booleanValue();
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            return false;
+        }
     }
 
 }

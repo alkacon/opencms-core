@@ -41,6 +41,6 @@ public class CmsContentEditorEntryPoint extends A_CmsEntryPoint {
     public void onModuleLoad() {
 
         super.onModuleLoad();
-        CmsContentEditor.getInstance().openStandAloneFormEditor();
+        CmsContentEditor.getInstance().openStandAloneFormEditor(new CmsEditorContext());
     }
 }

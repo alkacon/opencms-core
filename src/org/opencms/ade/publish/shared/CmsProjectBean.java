@@ -29,6 +29,7 @@ package org.opencms.ade.publish.shared;
 
 import org.opencms.util.CmsUUID;
 
+import com.google.common.collect.ComparisonChain;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -36,7 +37,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @since 7.6 
  */
-public class CmsProjectBean implements IsSerializable {
+public class CmsProjectBean implements IsSerializable, Comparable<CmsProjectBean> {
 
     /** The project description. */
     private String m_description;
@@ -46,6 +47,9 @@ public class CmsProjectBean implements IsSerializable {
 
     /** The project name.*/
     private String m_name;
+
+    /** The rank which is used for sorting projects. */
+    private int m_rank = 1000;
 
     /** The project type. */
     private int m_type;
@@ -72,6 +76,15 @@ public class CmsProjectBean implements IsSerializable {
     protected CmsProjectBean() {
 
         // for serialization
+    }
+
+    /**
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    public int compareTo(CmsProjectBean otherProject) {
+
+        return ComparisonChain.start().compare(m_rank, otherProject.getRank()).compare(m_name, otherProject.getName()).result();
+
     }
 
     /**
@@ -105,6 +118,16 @@ public class CmsProjectBean implements IsSerializable {
     }
 
     /**
+     * Gets the sorting rank.<p>
+     * 
+     * @return the sorting rank
+     */
+    public int getRank() {
+
+        return m_rank;
+    }
+
+    /**
      * Returns the project type.<p>
      * 
      * @return the project type 
@@ -122,5 +145,15 @@ public class CmsProjectBean implements IsSerializable {
     public boolean isWorkflowProject() {
 
         return m_type == 2;
+    }
+
+    /**
+     * Sets the sorting rank.<p>
+     * 
+     * @param rank the sorting rank 
+     */
+    public void setRank(int rank) {
+
+        m_rank = rank;
     }
 }

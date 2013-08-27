@@ -30,6 +30,7 @@ package org.opencms.ade.publish.shared;
 import org.opencms.util.CmsUUID;
 
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * Bean encapsulating all ADE publish options.<p>
@@ -37,6 +38,15 @@ import java.io.Serializable;
  * @since 7.6 
  */
 public class CmsPublishOptions implements Serializable {
+
+    /** Parameter name for the container page structure id. */
+    public static final String PARAM_CONTAINERPAGE = "containerpage";
+
+    /** Parameter name for the content structure id. */
+    public static final String PARAM_CONTENT = "content";
+
+    /** Parameter for indicating that the initial project should be the 'current page' virtual project. */
+    public static final String PARAM_START_WITH_CURRENT_PAGE = "startWithCurrentPage";
 
     /** The serial version id. */
     private static final long serialVersionUID = 1L;
@@ -46,6 +56,9 @@ public class CmsPublishOptions implements Serializable {
 
     /** Flag to include siblings. */
     private boolean m_includeSiblings;
+
+    /** The additional publish parameters. */
+    private Map<String, String> m_params;
 
     /** The id of the project to publish. */
     private CmsUUID m_projectId;
@@ -71,6 +84,27 @@ public class CmsPublishOptions implements Serializable {
         m_includeRelated = includeRelated;
         m_includeSiblings = includeSiblings;
         m_projectId = projectId;
+    }
+
+    /**
+     * Creates a new instance.<p>
+     * 
+     * @param params the additional publish parameters 
+     */
+    public CmsPublishOptions(Map<String, String> params) {
+
+        this();
+        m_params = params;
+    }
+
+    /** 
+     * Gets the additional publish parameters.<p>
+     * 
+     * @return the additional publish parameters 
+     */
+    public Map<String, String> getParameters() {
+
+        return m_params;
     }
 
     /**
@@ -121,6 +155,16 @@ public class CmsPublishOptions implements Serializable {
     public void setIncludeSiblings(boolean includeSiblings) {
 
         m_includeSiblings = includeSiblings;
+    }
+
+    /** 
+     * Sets the additional publish parameters.<p>
+     * 
+     * @param params the additional parameters to set 
+     */
+    public void setParameters(Map<String, String> params) {
+
+        m_params = params;
     }
 
     /**

@@ -31,6 +31,7 @@ import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
 import org.opencms.ade.contenteditor.shared.CmsExternalWidgetConfiguration;
 import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService;
 import org.opencms.ade.galleries.CmsGalleryActionElement;
+import org.opencms.ade.publish.CmsPublishActionElement;
 import org.opencms.ade.upload.CmsUploadActionElement;
 import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.main.OpenCms;
@@ -91,6 +92,8 @@ public class CmsContentEditorActionElement extends CmsGwtActionElement {
         sb.append(createNoCacheScript(
             GWT_MODULE_NAME,
             OpenCms.getModuleManager().getModule(CMS_MODULE_NAME).getVersion().toString()));
+        sb.append(new CmsPublishActionElement(getJspContext(), getRequest(), getResponse()).export());
+
         sb.append(getPrefetch());
         return sb.toString();
     }

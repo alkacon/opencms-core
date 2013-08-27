@@ -48,6 +48,7 @@ import org.opencms.gwt.client.util.CmsScrollToBottomHandler;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -305,6 +306,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         String selectedWorkflowId,
         int scrollPanelHeight) {
 
+        projects = new ArrayList<CmsProjectBean>(projects);
         m_publishDialog = publishDialog;
         m_actions = workflows.get(selectedWorkflowId).getActions();
         m_actionButtons = new ArrayList<CmsPushButton>();
@@ -333,7 +335,15 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
             workflowSelectorItems.put(workflow.getId(), workflow.getNiceName());
         }
         LinkedHashMap<String, String> projectSelectItems = new LinkedHashMap<String, String>();
-        projectSelectItems.put(CmsUUID.getNullUUID().toString(), messages.key(Messages.GUI_PUBLISH_DIALOG_MY_CHANGES_0));
+        CmsProjectBean myChangesDummyProject = new CmsProjectBean(
+            CmsUUID.getNullUUID(),
+            0,
+            messages.key(Messages.GUI_PUBLISH_DIALOG_MY_CHANGES_0),
+            null);
+        myChangesDummyProject.setRank(200);
+        projects.add(myChangesDummyProject);
+        Collections.<CmsProjectBean> sort(projects);
+
         boolean foundOldProject = false;
         boolean selectedWorkflowProject = false;
         for (CmsProjectBean project : projects) {

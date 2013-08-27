@@ -51,6 +51,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -93,7 +94,7 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
         srv.setRequest(request);
         CmsPublishData result = null;
         try {
-            result = srv.getInitData();
+            result = srv.getInitData(new HashMap<String, String>());
         } finally {
             srv.clearThreadStorage();
         }
@@ -122,9 +123,9 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
     }
 
     /**
-     * @see org.opencms.ade.publish.shared.rpc.I_CmsPublishService#getInitData()
+     * @see org.opencms.ade.publish.shared.rpc.I_CmsPublishService#getInitData(java.util.HashMap)
      */
-    public CmsPublishData getInitData() throws CmsRpcException {
+    public CmsPublishData getInitData(HashMap<String, String> params) throws CmsRpcException {
 
         CmsPublishData result = null;
         CmsObject cms = getCmsObject();
@@ -143,27 +144,33 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
             }
             setLastWorkflowForUser(workflowId);
             String projectParam = getRequest().getParameter(PARAM_PUBLISH_PROJECT_ID);
+            boolean useCurrentPage = params.containsKey(CmsPublishOptions.PARAM_START_WITH_CURRENT_PAGE);
             CmsPublishOptions options = getCachedOptions();
-            List<CmsProjectBean> projects = getProjects();
+            List<CmsProjectBean> projects = getProjects(params);
             boolean foundProject = false;
             CmsUUID selectedProject = null;
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(projectParam) && CmsUUID.isValidUUID(projectParam)) {
-                selectedProject = new CmsUUID(projectParam);
-                // check if the selected project is a manageable project
-                for (CmsProjectBean project : projects) {
-                    if (selectedProject.equals(project.getId())) {
-                        foundProject = true;
-                        break;
+            if (useCurrentPage) {
+                selectedProject = CmsCurrentPageProject.ID;
+                foundProject = true;
+            } else {
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(projectParam) && CmsUUID.isValidUUID(projectParam)) {
+                    selectedProject = new CmsUUID(projectParam);
+                    // check if the selected project is a manageable project
+                    for (CmsProjectBean project : projects) {
+                        if (selectedProject.equals(project.getId())) {
+                            foundProject = true;
+                            break;
+                        }
                     }
                 }
-            }
-            if (!foundProject) {
-                selectedProject = options.getProjectId();
-                // check if the selected project is a manageable project
-                for (CmsProjectBean project : projects) {
-                    if (selectedProject.equals(project.getId())) {
-                        foundProject = true;
-                        break;
+                if (!foundProject) {
+                    selectedProject = options.getProjectId();
+                    // check if the selected project is a manageable project
+                    for (CmsProjectBean project : projects) {
+                        if (selectedProject.equals(project.getId())) {
+                            foundProject = true;
+                            break;
+                        }
                     }
                 }
             }
@@ -172,6 +179,7 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
             } else {
                 options.setProjectId(CmsUUID.getNullUUID());
             }
+            options.setParameters(params);
             result = new CmsPublishData(
                 options,
                 projects,
@@ -185,13 +193,18 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
     }
 
     /**
-     * @see org.opencms.ade.publish.shared.rpc.I_CmsPublishService#getProjects()
+     * Gets a list of projects from the server.<p>
+     * 
+     * @param params the additional publish parameters 
+     * @return a list of projects 
+     * 
+     * @throws CmsRpcException if something goes wrong 
      */
-    public List<CmsProjectBean> getProjects() throws CmsRpcException {
+    public List<CmsProjectBean> getProjects(Map<String, String> params) throws CmsRpcException {
 
         List<CmsProjectBean> result = null;
         try {
-            result = new CmsPublish(getCmsObject()).getManageableProjects();
+            result = new CmsPublish(getCmsObject(), params).getManageableProjects();
         } catch (Throwable e) {
             error(e);
         }
@@ -226,7 +239,11 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
     }
 
     /**
-     * @see org.opencms.ade.publish.shared.rpc.I_CmsPublishService#getResourceOptions()
+     * Retrieves the publish options.<p>
+     * 
+     * @return the publish options last used
+     * 
+     * @throws CmsRpcException if something goes wrong
      */
     public CmsPublishOptions getResourceOptions() throws CmsRpcException {
 

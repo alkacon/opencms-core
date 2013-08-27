@@ -74,7 +74,7 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
         } else if (ACTION_PUBLISH.equals(actionKey)) {
             return actionPublish(userCms, options, resources);
         } else if (ACTION_FORCE_PUBLISH.equals(actionKey)) {
-            return actionForcePublish(userCms, resources);
+            return actionForcePublish(userCms, options, resources);
         }
         throw new CmsInvalidActionException(actionKey);
     }
@@ -135,14 +135,17 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
      * 
      * @param userCms the user CMS context 
      * @param resources the resources which the action should process 
+     * @param options the publish options to use 
      * @return the workflow response
      *  
      * @throws CmsException if something goes wrong 
      */
-    protected CmsWorkflowResponse actionForcePublish(CmsObject userCms, List<CmsResource> resources)
-    throws CmsException {
+    protected CmsWorkflowResponse actionForcePublish(
+        CmsObject userCms,
+        CmsPublishOptions options,
+        List<CmsResource> resources) throws CmsException {
 
-        CmsPublish publish = new CmsPublish(userCms);
+        CmsPublish publish = new CmsPublish(userCms, options.getParameters());
         publish.publishResources(resources);
         CmsWorkflowResponse response = new CmsWorkflowResponse(
             true,

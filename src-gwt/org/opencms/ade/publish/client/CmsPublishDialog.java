@@ -43,6 +43,7 @@ import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -245,38 +246,7 @@ public class CmsPublishDialog extends CmsPopup {
      */
     public static void showPublishDialog() {
 
-        showPublishDialog(null);
-    }
-
-    /**
-     * Convenience method which opens a publish dialog.<p>
-     * 
-     * @param handler the close handler
-     */
-    public static void showPublishDialog(final CloseHandler<PopupPanel> handler) {
-
-        (new CmsRpcAction<CmsPublishData>() {
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
-             */
-            @Override
-            public void execute() {
-
-                start(0, true);
-                getService().getInitData(this);
-            }
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-             */
-            @Override
-            protected void onResponse(CmsPublishData result) {
-
-                stop(false);
-                showPublishDialog(result, handler);
-            }
-        }).execute();
+        showPublishDialog(new HashMap<String, String>(), null);
     }
 
     /**
@@ -294,6 +264,38 @@ public class CmsPublishDialog extends CmsPopup {
         publishDialog.centerHorizontally(50);
         // replace current notification widget by overlay
         publishDialog.catchNotifications();
+    }
+
+    /**
+     * Convenience method which opens a publish dialog.<p>
+     * 
+     * @param handler the close handler
+     * @param params the additional publish dialog parameters 
+     */
+    public static void showPublishDialog(final HashMap<String, String> params, final CloseHandler<PopupPanel> handler) {
+
+        (new CmsRpcAction<CmsPublishData>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                start(0, true);
+                getService().getInitData(params, this);
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(CmsPublishData result) {
+
+                stop(false);
+                showPublishDialog(result, handler);
+            }
+        }).execute();
     }
 
     /**

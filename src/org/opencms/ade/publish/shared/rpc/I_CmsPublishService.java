@@ -27,7 +27,6 @@
 
 package org.opencms.ade.publish.shared.rpc;
 
-import org.opencms.ade.publish.shared.CmsProjectBean;
 import org.opencms.ade.publish.shared.CmsPublishData;
 import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
@@ -37,6 +36,7 @@ import org.opencms.ade.publish.shared.CmsWorkflowResponse;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.util.CmsUUID;
 
+import java.util.HashMap;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -47,45 +47,6 @@ import com.google.gwt.user.client.rpc.RemoteService;
  * @since 8.0.0
  */
 public interface I_CmsPublishService extends RemoteService {
-
-    /**
-     * Returns the initial publish data.<p>
-     * 
-     * @return the initial publish data
-     *  
-     * @throws CmsRpcException if something goes wrong
-     */
-    CmsPublishData getInitData() throws CmsRpcException;
-
-    /**
-     * Gets a list of projects from the server.<p>
-     * 
-     * @return a list of projects 
-     * 
-     * @throws CmsRpcException if something goes wrong 
-     */
-    List<CmsProjectBean> getProjects() throws CmsRpcException;
-
-    /**
-     * Retrieves the publish list, subdivided into groups based on the time of their last change.<p>
-     * 
-     * @param workflow the selected workflow 
-     * @param options the publish options for which the publish list should be fetched
-     * 
-     * @return the publish list groups 
-     *  
-     * @throws CmsRpcException if something goes wrong
-     */
-    List<CmsPublishGroup> getResourceGroups(CmsWorkflow workflow, CmsPublishOptions options) throws CmsRpcException;
-
-    /**
-     * Retrieves the publish options.<p>
-     * 
-     * @return the publish options last used
-     * 
-     * @throws CmsRpcException if something goes wrong
-     */
-    CmsPublishOptions getResourceOptions() throws CmsRpcException;
 
     /**
      * Tries to publish a list of resources.<p>
@@ -100,5 +61,28 @@ public interface I_CmsPublishService extends RemoteService {
      */
     CmsWorkflowResponse executeAction(List<CmsUUID> toPublish, List<CmsUUID> toRemove, CmsWorkflowAction action)
     throws CmsRpcException;
+
+    /**
+     * Returns the initial publish data.<p>
+     * 
+     * @param params a map of additional publish parameters 
+     * 
+     * @return the initial publish data
+     *  
+     * @throws CmsRpcException if something goes wrong
+     */
+    CmsPublishData getInitData(HashMap<String, String> params) throws CmsRpcException;
+
+    /**
+     * Retrieves the publish list, subdivided into groups based on the time of their last change.<p>
+     * 
+     * @param workflow the selected workflow 
+     * @param options the publish options for which the publish list should be fetched
+     * 
+     * @return the publish list groups 
+     *  
+     * @throws CmsRpcException if something goes wrong
+     */
+    List<CmsPublishGroup> getResourceGroups(CmsWorkflow workflow, CmsPublishOptions options) throws CmsRpcException;
 
 }

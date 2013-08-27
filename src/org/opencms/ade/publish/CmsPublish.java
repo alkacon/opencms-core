@@ -60,6 +60,7 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -141,6 +142,9 @@ public class CmsPublish {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsPublish.class);
 
+    /** The map of registered virtual project handlers. */
+    private static Map<CmsUUID, I_CmsVirtualProject> virtualProjectHandlers = new HashMap<CmsUUID, I_CmsVirtualProject>();
+
     /** The current cms context. */
     protected final CmsObject m_cms;
 
@@ -154,13 +158,13 @@ public class CmsPublish {
     private ResourcesAndRelated m_resourceList;
 
     /**
-     * Constructor with default options.<p>
+     * Creates a new instance.<p>
      * 
-     * @param cms the current cms context
+     * @param cms the CMS context to use 
      */
     public CmsPublish(CmsObject cms) {
 
-        this(cms, new CmsPublishOptions());
+        this(cms, new HashMap<String, String>());
     }
 
     /**
@@ -174,6 +178,46 @@ public class CmsPublish {
         m_cms = cms;
         m_workplaceLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms);
         m_options = options;
+    }
+
+    /**
+     * Constructor with default options.<p>
+     * 
+     * @param cms the current cms context
+     * @param params the additional publish parameters 
+     */
+    public CmsPublish(CmsObject cms, Map<String, String> params) {
+
+        this(cms, new CmsPublishOptions(params));
+    }
+
+    static {
+        CmsPublish.registerVirtualProject(CmsCurrentPageProject.INSTANCE);
+    }
+
+    /**
+     * Registers a virtual project so it can be used in the publish dialog.<p>
+     * 
+     * @param handler the virtual project handler to register 
+     */
+    public static void registerVirtualProject(I_CmsVirtualProject handler) {
+
+        if (virtualProjectHandlers.containsKey(handler.getProjectId())) {
+            return;
+        }
+        virtualProjectHandlers.put(handler.getProjectId(), handler);
+    }
+
+    /**
+     * Gets the virtual project handler with the given id.<p>
+     * 
+     * @param projectId the id of the virtual project 
+     * 
+     * @return the virtual project handler with the given id 
+     */
+    private static I_CmsVirtualProject getProjectHandler(CmsUUID projectId) {
+
+        return virtualProjectHandlers.get(projectId);
     }
 
     /**
@@ -286,9 +330,17 @@ public class CmsPublish {
             CmsProjectBean manProj = new CmsProjectBean(
                 project.getUuid(),
                 project.getType().getMode(),
-                getOuAwareName(project.getName()),
+                wrapProjectName(getOuAwareName(project.getName())),
                 project.getDescription());
             manProjs.add(manProj);
+        }
+
+        for (I_CmsVirtualProject handler : virtualProjectHandlers.values()) {
+            CmsProjectBean projectBean = handler.getProjectBean(m_cms, m_options.getParameters());
+            if (projectBean != null) {
+                manProjs.add(projectBean);
+            }
+
         }
 
         return manProjs;
@@ -706,6 +758,14 @@ public class CmsPublish {
             // get the users publish list
             rawResourceList.addAll(OpenCms.getPublishManager().getUsersPubList(m_cms));
         } else {
+
+            I_CmsVirtualProject projectHandler = null;
+            projectHandler = CmsPublish.getProjectHandler(m_options.getProjectId());
+            if (projectHandler != null) {
+                rawResourceList = projectHandler.getResources(m_cms, m_options.getParameters());
+                return rawResourceList;
+            }
+
             CmsProject project = m_cms.getRequestContext().getCurrentProject();
             try {
                 project = m_cms.readProject(m_options.getProjectId());
@@ -713,6 +773,7 @@ public class CmsPublish {
                 // can happen if the cached project was deleted
                 // so ignore and use current project
             }
+
             // get the project publish list
             CmsProject originalProject = m_cms.getRequestContext().getCurrentProject();
             try {
@@ -947,6 +1008,20 @@ public class CmsPublish {
             info,
             related);
         return pubResource;
+    }
+
+    /** 
+     * Wraps the project name in a message string.<p>
+     * 
+     * @param name the project name 
+     * 
+     * @return the message for the given project name 
+     */
+    private String wrapProjectName(String name) {
+
+        return Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms)).key(
+            Messages.GUI_NORMAL_PROJECT_1,
+            name);
     }
 
 }
