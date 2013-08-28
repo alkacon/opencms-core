@@ -35,8 +35,10 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
-import org.opencms.loader.CmsResourceManager;
+import org.opencms.file.types.CmsResourceTypeBinary;
+import org.opencms.file.types.CmsResourceTypeImage;
+import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.file.types.CmsResourceTypePointer;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -49,6 +51,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -124,17 +127,18 @@ public class CmsCurrentPageProject implements I_CmsVirtualProject {
         /**
          * @see org.opencms.ade.publish.I_CmsVirtualProject.I_Context#getResources()
          */
-        public List<CmsResource> getResources() throws CmsException {
+        public List<CmsResource> getResources() {
 
             String containerpageId = m_params.get(CmsPublishOptions.PARAM_CONTAINERPAGE);
             String elementId = m_params.get(CmsPublishOptions.PARAM_CONTENT);
-            List<CmsResource> result = new ArrayList<CmsResource>();
-            if (containerpageId != null) {
-                return filterChanged(getPageElementResources(containerpageId, elementId));
-            } else if (elementId != null) {
-                return filterChanged(getElementResources(elementId));
+            List<CmsUUID> startIds = new ArrayList<CmsUUID>();
+            if (CmsUUID.isValidUUID(containerpageId)) {
+                startIds.add(new CmsUUID(containerpageId));
             }
-            return result;
+            if (CmsUUID.isValidUUID(elementId)) {
+                startIds.add(new CmsUUID(elementId));
+            }
+            return collectResources(startIds);
         }
 
         /**
@@ -162,6 +166,74 @@ public class CmsCurrentPageProject implements I_CmsVirtualProject {
         }
 
         /**
+         * This method collects all resources on which the current page or the current element depends.
+         * More precisely, it will return all resources which are reachable from the resources whose structure ids are given in startids 
+         * by a chain of relations of which at most the last one in the chain is weak.<p>
+         * 
+         * @param startIds the structure ids of the resources with which to start 
+         * @return the collected resources
+         */
+        private List<CmsResource> collectResources(Collection<CmsUUID> startIds) {
+
+            // collect all resources reachable by following a chain of relations from the start ids such that either all relations of that 
+            // chain are strong, or the last relation is the only weak relation in the chain
+
+            Set<CmsUUID> followedRelations = new HashSet<CmsUUID>();
+            LinkedList<CmsUUID> toFollow = new LinkedList<CmsUUID>();
+            Set<CmsResource> result = new HashSet<CmsResource>();
+            toFollow.addAll(startIds);
+            while (toFollow.size() > 0) {
+                CmsUUID currentId = toFollow.removeFirst();
+                LOG.info("Visiting: " + currentId);
+                if (followedRelations.contains(currentId)) {
+                    continue;
+                }
+                followedRelations.add(currentId);
+                if (currentId.isNullUUID()) {
+                    continue;
+                }
+                try {
+                    CmsResource currentResource = m_cms.readResource(currentId, CmsResourceFilter.ALL);
+                    LOG.info("adding resource with root path: " + currentResource.getRootPath());
+                    result.add(currentResource);
+                    List<CmsRelation> relations = m_cms.readRelations(CmsRelationFilter.relationsFromStructureId(currentId));
+
+                    for (CmsRelation relation : relations) {
+                        LOG.info("got relation to " + relation.getTargetPath() + " (" + relation.getTargetId() + ")");
+                        if (relation.getType().isStrong()) {
+                            LOG.info("(strong relation)");
+                            toFollow.add(relation.getTargetId());
+                        } else {
+                            // original idea was to follow only strong relations, but not everyone may have used strong relations 
+                            // for images, etc. in their schemas
+                            LOG.info("(weak relation)");
+                            try {
+                                CmsResource weakResource = relation.getTarget(m_cms, CmsResourceFilter.ALL);
+                                for (String typeName : new String[] {
+                                    CmsResourceTypePlain.getStaticTypeName(),
+                                    CmsResourceTypeImage.getStaticTypeName(),
+                                    CmsResourceTypePointer.getStaticTypeName(),
+                                    CmsResourceTypeBinary.getStaticTypeName()}) {
+                                    if (OpenCms.getResourceManager().matchResourceType(
+                                        typeName,
+                                        weakResource.getTypeId())) {
+                                        LOG.info("Of document type -> adding " + weakResource.getRootPath());
+                                        result.add(weakResource);
+                                    }
+                                }
+                            } catch (CmsException e) {
+                                LOG.error(e.getLocalizedMessage(), e);
+                            }
+                        }
+                    }
+                } catch (CmsException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+            return filterChanged(result);
+        }
+
+        /**
          * Creates a new list of resources which does not contain unchanged resources from an original list.<p>
          * 
          * @param resources the original resource list 
@@ -176,79 +248,6 @@ public class CmsCurrentPageProject implements I_CmsVirtualProject {
                     continue;
                 }
                 result.add(res);
-            }
-            return result;
-        }
-
-        /**
-         * Gets the resources for the non-containerpage case.<p>
-         *  
-         * @param elementId the element structure id 
-         * @return the list of publish resources for the edited element 
-         * 
-         * @throws CmsException if something goes wrong 
-         */
-        private Set<CmsResource> getElementResources(String elementId) throws CmsException {
-
-            CmsUUID pageId = new CmsUUID(elementId);
-            Set<CmsResource> result = new HashSet<CmsResource>();
-            CmsResource content = m_cms.readResource(pageId, CmsResourceFilter.IGNORE_EXPIRATION);
-            result.add(content);
-            List<CmsRelation> rels = m_cms.readRelations(CmsRelationFilter.relationsFromStructureId(pageId));
-            for (CmsRelation rel : rels) {
-                CmsResource target = rel.getTarget(m_cms, CmsResourceFilter.IGNORE_EXPIRATION);
-                if (CmsResourceTypeXmlContainerPage.isContainerPage(target)) {
-                    continue;
-                }
-                result.add(target);
-            }
-            return result;
-
-        }
-
-        /**
-         * Gets the resources for the containerpage case.<p>
-         * 
-         * @param containerpageId the container page structure id 
-         * @param elementId the content element's structure id 
-         * @return the list of publish resources for the edited container page 
-         * 
-         * @throws CmsException if soemthing goes wrong 
-         */
-        private Set<CmsResource> getPageElementResources(String containerpageId, String elementId) throws CmsException {
-
-            CmsUUID pageId = new CmsUUID(containerpageId);
-            CmsResourceManager resMan = OpenCms.getResourceManager();
-            boolean foundElement = false;
-            Set<CmsResource> result = new HashSet<CmsResource>();
-            CmsResource page = m_cms.readResource(pageId, CmsResourceFilter.IGNORE_EXPIRATION);
-            result.add(page);
-            List<CmsRelation> rels = m_cms.readRelations(CmsRelationFilter.relationsFromStructureId(pageId));
-            for (CmsRelation rel : rels) {
-                CmsResource target = rel.getTarget(m_cms, CmsResourceFilter.IGNORE_EXPIRATION);
-                // do not include element/inheritance groups because they may affect multiple pages 
-                if (resMan.matchResourceType(
-                    CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME,
-                    target.getTypeId())
-                    || resMan.matchResourceType(
-                        CmsResourceTypeXmlContainerPage.INHERIT_CONTAINER_TYPE_NAME,
-                        target.getTypeId())) {
-                    continue;
-                }
-                foundElement |= (("" + target.getStructureId()).equals(elementId));
-                result.add(target);
-                List<CmsRelation> rels2 = m_cms.readRelations(CmsRelationFilter.relationsFromStructureId(target.getStructureId()));
-                for (CmsRelation rel2 : rels2) {
-                    CmsResource target2 = rel2.getTarget(m_cms, CmsResourceFilter.IGNORE_EXPIRATION);
-                    if (CmsResourceTypeXmlContainerPage.isContainerPage(target)) {
-                        continue;
-                    }
-                    result.add(target2);
-                }
-            }
-            if ((elementId != null) && !foundElement) {
-                // no element with the given id was found while going through the relations of the container page, so it's probaby a resource from a collector: add it and its related resources separately 
-                result.addAll(getElementResources(elementId));
             }
             return result;
         }

@@ -75,7 +75,7 @@ public interface I_CmsVirtualProject {
     }
 
     /**
-     * Creates a context object to work this virtual project.<p>
+     * Creates a context object to work with this virtual project.<p>
      * 
      * @param cms the current CMS context 
      * @param params the current publish parameters 
