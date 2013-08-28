@@ -83,7 +83,7 @@ public abstract class A_CmsPublishGroupHelper<RESOURCE, GROUP> {
     }
 
     /** The gap between session groups. */
-    protected static final int GROUP_SESSIONS_GAP = 5 * 60 * 1000;
+    protected static final int GROUP_SESSIONS_GAP = 8 * 60 * 60 * 1000;
 
     /** The log instance for this class. */
     private static final Log LOG = CmsLog.getLog(A_CmsPublishGroupHelper.class);
