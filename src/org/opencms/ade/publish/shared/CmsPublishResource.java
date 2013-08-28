@@ -227,4 +227,14 @@ public class CmsPublishResource implements IsSerializable {
 
         m_info = info;
     }
+
+    /**
+     * Enables/disables removability.<p>
+     * 
+     * @param removable true if the item should be removable 
+     */
+    public void setRemovable(boolean removable) {
+
+        m_removable = removable;
+    }
 }

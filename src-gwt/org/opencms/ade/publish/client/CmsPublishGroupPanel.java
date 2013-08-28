@@ -422,7 +422,9 @@ public class CmsPublishGroupPanel extends Composite {
                     m_model.signal(remove ? Signal.remove : Signal.unremove, resourceBean.getId());
                 }
             });
-            fillButtonSlot(itemWidget, SLOT_REMOVE, remover);
+            if (resourceBean.isRemovable()) {
+                fillButtonSlot(itemWidget, SLOT_REMOVE, remover);
+            }
             controller.update(status);
         }
         return row;

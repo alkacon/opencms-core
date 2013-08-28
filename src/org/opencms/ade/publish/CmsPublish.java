@@ -157,6 +157,9 @@ public class CmsPublish {
     /** The user's resource publish list. */
     private ResourcesAndRelated m_resourceList;
 
+    /** Flag to control whether publish resources should be set to removable. */
+    private boolean m_setRemovable;
+
     /**
      * Creates a new instance.<p>
      * 
@@ -451,7 +454,11 @@ public class CmsPublish {
                 locked);
             publishResources.add(pubRes);
         }
-
+        if (!m_setRemovable) {
+            for (CmsPublishResource res : publishResources) {
+                res.setRemovable(false);
+            }
+        }
         return publishResources;
 
     }
@@ -757,6 +764,7 @@ public class CmsPublish {
         if ((m_options.getProjectId() == null) || m_options.getProjectId().isNullUUID()) {
             // get the users publish list
             rawResourceList.addAll(OpenCms.getPublishManager().getUsersPubList(m_cms));
+            m_setRemovable = true;
         } else {
 
             I_CmsVirtualProject projectHandler = null;
