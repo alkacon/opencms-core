@@ -39,6 +39,9 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class CmsProjectBean implements IsSerializable, Comparable<CmsProjectBean> {
 
+    /** The default group name. */
+    private String m_defaultGroupName;
+
     /** The project description. */
     private String m_description;
 
@@ -85,6 +88,16 @@ public class CmsProjectBean implements IsSerializable, Comparable<CmsProjectBean
 
         return ComparisonChain.start().compare(m_rank, otherProject.getRank()).compare(m_name, otherProject.getName()).result();
 
+    }
+
+    /**
+     * The default name to use for publish groups computed from this project, if no other name is available.<p>
+     * 
+     * @return the default publish group name 
+     */
+    public String getDefaultGroupName() {
+
+        return m_defaultGroupName;
     }
 
     /**
@@ -145,6 +158,16 @@ public class CmsProjectBean implements IsSerializable, Comparable<CmsProjectBean
     public boolean isWorkflowProject() {
 
         return m_type == 2;
+    }
+
+    /**
+     * Sets the default publish group name.<p>
+     * 
+     * @param defaultGroupName the default publish group name 
+     */
+    public void setDefaultGroupName(String defaultGroupName) {
+
+        m_defaultGroupName = defaultGroupName;
     }
 
     /**

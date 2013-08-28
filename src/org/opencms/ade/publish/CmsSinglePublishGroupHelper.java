@@ -40,16 +40,19 @@ import java.util.Locale;
  */
 public class CmsSinglePublishGroupHelper extends A_CmsPublishGroupHelper<CmsPublishResource, CmsPublishGroup> {
 
+    /** The title to use for the single group. */
+    private String m_title;
+
     /**
      * Creates a new instance.<p>
      * 
-     * @param locale the locale to use 
+     * @param locale the locale to use
+     * @param title the title to use for the single group 
      */
-    public CmsSinglePublishGroupHelper(Locale locale) {
+    public CmsSinglePublishGroupHelper(Locale locale, String title) {
 
-        // TODO Auto-generated constructor stub
         super(locale);
-
+        m_title = title;
     }
 
     /**
@@ -62,7 +65,7 @@ public class CmsSinglePublishGroupHelper extends A_CmsPublishGroupHelper<CmsPubl
         if (!resources.isEmpty()) { // only add a group if there are resources 
             List<CmsPublishResource> copyResources = new ArrayList<CmsPublishResource>(resources);
             Collections.sort(copyResources, new SortingComparator());
-            CmsPublishGroup singleGroup = new CmsPublishGroup("", resources);
+            CmsPublishGroup singleGroup = new CmsPublishGroup(m_title, resources);
             result.add(singleGroup);
         }
         return result;

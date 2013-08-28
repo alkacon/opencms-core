@@ -199,6 +199,18 @@ public class CmsPublish {
     }
 
     /**
+     * Gets the virtual project with the given id, or null if no such virtual project was found.<p>
+     * 
+     * @param id the project id 
+     * 
+     * @return the virtual project with the given id 
+     */
+    public static I_CmsVirtualProject getVirtualProject(CmsUUID id) {
+
+        return virtualProjectHandlers.get(id);
+    }
+
+    /**
      * Registers a virtual project so it can be used in the publish dialog.<p>
      * 
      * @param handler the virtual project handler to register 

@@ -38,6 +38,7 @@ import org.opencms.ade.publish.shared.CmsWorkflowAction;
 import org.opencms.ade.publish.shared.CmsWorkflowResponse;
 import org.opencms.ade.publish.shared.rpc.I_CmsPublishService;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
@@ -232,7 +233,23 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
             if ((options.getProjectId() == null) || options.getProjectId().isNullUUID()) {
                 groupHelper = new CmsDefaultPublishGroupHelper(locale);
             } else {
-                groupHelper = new CmsSinglePublishGroupHelper(locale);
+                I_CmsVirtualProject virtualProject = CmsPublish.getVirtualProject(options.getProjectId());
+                String title = "";
+                if (virtualProject != null) {
+                    CmsProjectBean projectBean = virtualProject.getProjectBean(cms, options.getParameters());
+                    title = projectBean.getDefaultGroupName();
+                    if (title == null) {
+                        title = "";
+                    }
+                } else {
+                    try {
+                        CmsProject project = cms.readProject(options.getProjectId());
+                        title = project.getName();
+                    } catch (CmsException e) {
+                        title = "";
+                    }
+                }
+                groupHelper = new CmsSinglePublishGroupHelper(locale, title);
             }
             results = groupHelper.getGroups(publishResources);
             setCachedOptions(options);

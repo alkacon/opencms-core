@@ -30,11 +30,14 @@ package org.opencms.ade.publish;
 import org.opencms.ade.publish.shared.CmsProjectBean;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
@@ -47,6 +50,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Virtual project which includes the currently edited resource and all its related resources.
  */
@@ -57,6 +62,9 @@ public class CmsCurrentPageProject implements I_CmsVirtualProject {
 
     /** A static instance of this class. */
     public static final CmsCurrentPageProject INSTANCE = new CmsCurrentPageProject();
+
+    /** The logger for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsCurrentPageProject.class);
 
     /**
      * @see org.opencms.ade.publish.I_CmsVirtualProject#getProjectBean(org.opencms.file.CmsObject, java.util.Map)
@@ -70,8 +78,21 @@ public class CmsCurrentPageProject implements I_CmsVirtualProject {
         if ((pageId != null) || (elementId != null)) {
             CmsProjectBean bean = new CmsProjectBean(ID, 0, title, title);
             bean.setRank(100);
+            bean.setDefaultGroupName("");
+            if (pageId != null) {
+                try {
+                    CmsResource page = cms.readResource(new CmsUUID(pageId), CmsResourceFilter.IGNORE_EXPIRATION);
+                    CmsProperty titleProp = cms.readPropertyObject(page, CmsPropertyDefinition.PROPERTY_TITLE, true);
+                    if (titleProp.isNullProperty()) {
+                        bean.setDefaultGroupName(cms.getSitePath(page));
+                    } else {
+                        bean.setDefaultGroupName(titleProp.getValue());
+                    }
+                } catch (Exception e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
             return bean;
-
         } else {
             return null;
         }
