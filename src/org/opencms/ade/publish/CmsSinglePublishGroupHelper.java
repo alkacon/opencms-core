@@ -58,11 +58,13 @@ public class CmsSinglePublishGroupHelper extends A_CmsPublishGroupHelper<CmsPubl
     @Override
     public List<CmsPublishGroup> getGroups(List<CmsPublishResource> resources) {
 
-        List<CmsPublishResource> copyResources = new ArrayList<CmsPublishResource>(resources);
-        Collections.sort(copyResources, new SortingComparator());
-        CmsPublishGroup singleGroup = new CmsPublishGroup("", resources);
         List<CmsPublishGroup> result = new ArrayList<CmsPublishGroup>();
-        result.add(singleGroup);
+        if (!resources.isEmpty()) { // only add a group if there are resources 
+            List<CmsPublishResource> copyResources = new ArrayList<CmsPublishResource>(resources);
+            Collections.sort(copyResources, new SortingComparator());
+            CmsPublishGroup singleGroup = new CmsPublishGroup("", resources);
+            result.add(singleGroup);
+        }
         return result;
     }
 
