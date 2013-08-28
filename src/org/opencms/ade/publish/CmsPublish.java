@@ -40,6 +40,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.gwt.CmsVfsService;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockFilter;
 import org.opencms.main.CmsException;
@@ -199,6 +200,38 @@ public class CmsPublish {
     }
 
     /**
+     * Creates a project bean from a real project.<p>
+     * 
+     * @param cms the CMS context 
+     * @param project the project
+     *  
+     * @return the bean containing the project information 
+     */
+    public static CmsProjectBean createProjectBeanFromProject(CmsObject cms, CmsProject project) {
+
+        CmsProjectBean manProj = new CmsProjectBean(project.getUuid(), project.getType().getMode(), wrapProjectName(
+            cms,
+            getOuAwareName(cms, project.getName())), project.getDescription());
+        return manProj;
+    }
+
+    /**
+     * Gets a virtual project by its id, or if no virtual project with that id exists, a wrapper
+     * for a real OpenCms project.<p>
+     * 
+     * @param id the virtual project id 
+     * @return the virtual project or real project wrapper 
+     */
+    public static I_CmsVirtualProject getRealOrVirtualProject(CmsUUID id) {
+
+        I_CmsVirtualProject project = getVirtualProject(id);
+        if (project != null) {
+            return project;
+        }
+        return new CmsRealProjectVirtualWrapper(id);
+    }
+
+    /**
      * Gets the virtual project with the given id, or null if no such virtual project was found.<p>
      * 
      * @param id the project id 
@@ -223,16 +256,36 @@ public class CmsPublish {
         virtualProjectHandlers.put(handler.getProjectId(), handler);
     }
 
-    /**
-     * Gets the virtual project handler with the given id.<p>
+    /** 
+     * Wraps the project name in a message string.<p>
      * 
-     * @param projectId the id of the virtual project 
+     * @param cms the CMS context 
+     * @param name the project name 
      * 
-     * @return the virtual project handler with the given id 
+     * @return the message for the given project name 
      */
-    private static I_CmsVirtualProject getProjectHandler(CmsUUID projectId) {
+    public static String wrapProjectName(CmsObject cms, String name) {
 
-        return virtualProjectHandlers.get(projectId);
+        return Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).key(
+            Messages.GUI_NORMAL_PROJECT_1,
+            name);
+    }
+
+    /**
+     * Returns the simple name if the ou is the same as the current user's ou.<p>
+     * 
+     * @param cms the CMS context 
+     * @param name the fully qualified name to check
+     * 
+     * @return the simple name if the ou is the same as the current user's ou
+     */
+    protected static String getOuAwareName(CmsObject cms, String name) {
+
+        String ou = CmsOrganizationalUnit.getParentFqn(name);
+        if (ou.equals(cms.getRequestContext().getCurrentUser().getOuFqn())) {
+            return CmsOrganizationalUnit.getSimpleName(name);
+        }
+        return CmsOrganizationalUnit.SEPARATOR + name;
     }
 
     /**
@@ -342,16 +395,12 @@ public class CmsPublish {
         }
 
         for (CmsProject project : projects) {
-            CmsProjectBean manProj = new CmsProjectBean(
-                project.getUuid(),
-                project.getType().getMode(),
-                wrapProjectName(getOuAwareName(project.getName())),
-                project.getDescription());
+            CmsProjectBean manProj = createProjectBeanFromProject(m_cms, project);
             manProjs.add(manProj);
         }
 
         for (I_CmsVirtualProject handler : virtualProjectHandlers.values()) {
-            CmsProjectBean projectBean = handler.getProjectBean(m_cms, m_options.getParameters());
+            CmsProjectBean projectBean = handler.createContext(m_cms, m_options.getParameters()).getProjectBean();
             if (projectBean != null) {
                 manProjs.add(projectBean);
             }
@@ -559,6 +608,7 @@ public class CmsPublish {
             CmsResourceState.STATE_UNCHANGED,
             0,
             null,
+            null,
             false,
             null,
             null);
@@ -747,22 +797,6 @@ public class CmsPublish {
     }
 
     /**
-     * Returns the simple name if the ou is the same as the current user's ou.<p>
-     * 
-     * @param name the fully qualified name to check
-     * 
-     * @return the simple name if the ou is the same as the current user's ou
-     */
-    protected String getOuAwareName(String name) {
-
-        String ou = CmsOrganizationalUnit.getParentFqn(name);
-        if (ou.equals(m_cms.getRequestContext().getCurrentUser().getOuFqn())) {
-            return CmsOrganizationalUnit.getSimpleName(name);
-        }
-        return CmsOrganizationalUnit.SEPARATOR + name;
-    }
-
-    /**
      * Gets the raw list of publish resources without any related resources or siblings.<p>
      * 
      * @return the raw list of publish resources
@@ -778,29 +812,11 @@ public class CmsPublish {
             rawResourceList.addAll(OpenCms.getPublishManager().getUsersPubList(m_cms));
             m_setRemovable = true;
         } else {
-
             I_CmsVirtualProject projectHandler = null;
-            projectHandler = CmsPublish.getProjectHandler(m_options.getProjectId());
+            projectHandler = CmsPublish.getRealOrVirtualProject(m_options.getProjectId());
             if (projectHandler != null) {
-                rawResourceList = projectHandler.getResources(m_cms, m_options.getParameters());
+                rawResourceList = projectHandler.createContext(m_cms, m_options.getParameters()).getResources();
                 return rawResourceList;
-            }
-
-            CmsProject project = m_cms.getRequestContext().getCurrentProject();
-            try {
-                project = m_cms.readProject(m_options.getProjectId());
-            } catch (Exception e) {
-                // can happen if the cached project was deleted
-                // so ignore and use current project
-            }
-
-            // get the project publish list
-            CmsProject originalProject = m_cms.getRequestContext().getCurrentProject();
-            try {
-                m_cms.getRequestContext().setCurrentProject(project);
-                rawResourceList.addAll(OpenCms.getPublishManager().getPublishList(m_cms).getAllResources());
-            } finally {
-                m_cms.getRequestContext().setCurrentProject(originalProject);
             }
         }
         return rawResourceList;
@@ -885,7 +901,7 @@ public class CmsPublish {
         try {
             if (published.contains(resource)) {
                 // TODO: get the real publish data
-                String publishUser = getOuAwareName(m_cms.readUser(resource.getUserLastModified()).getName());
+                String publishUser = getOuAwareName(m_cms, m_cms.readUser(resource.getUserLastModified()).getName());
                 Date publishDate = new Date(resource.getDateLastModified());
                 info = Messages.get().getBundle(m_workplaceLocale).key(
                     Messages.GUI_RESOURCE_PUBLISHED_BY_2,
@@ -899,8 +915,8 @@ public class CmsPublish {
                 CmsLock lock = m_cms.getLock(resource);
                 info = Messages.get().getBundle(m_workplaceLocale).key(
                     Messages.GUI_RESOURCE_LOCKED_BY_2,
-                    getOuAwareName(m_cms.readUser(lock.getUserId()).getName()),
-                    getOuAwareName(lock.getProject().getName()));
+                    getOuAwareName(m_cms, m_cms.readUser(lock.getUserId()).getName()),
+                    getOuAwareName(m_cms, lock.getProject().getName()));
                 infoType = CmsPublishResourceInfo.Type.LOCKED;
             }
         } catch (Exception e) {
@@ -1024,24 +1040,11 @@ public class CmsPublish {
             resource.getState(),
             resource.getDateLastModified(),
             resUtil.getUserLastModified(),
+            CmsVfsService.formatDateTime(m_cms, resource.getDateLastModified()),
             removable,
             info,
             related);
         return pubResource;
-    }
-
-    /** 
-     * Wraps the project name in a message string.<p>
-     * 
-     * @param name the project name 
-     * 
-     * @return the message for the given project name 
-     */
-    private String wrapProjectName(String name) {
-
-        return Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms)).key(
-            Messages.GUI_NORMAL_PROJECT_1,
-            name);
     }
 
 }

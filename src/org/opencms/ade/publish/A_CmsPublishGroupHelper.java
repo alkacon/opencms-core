@@ -64,7 +64,7 @@ public abstract class A_CmsPublishGroupHelper<RESOURCE, GROUP> {
     /**
      * Comparator used for sorting publish resources.<p>
      */
-    protected class SortingComparator implements Comparator<RESOURCE> {
+    public class SortingComparator implements Comparator<RESOURCE> {
 
         /**
          * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)

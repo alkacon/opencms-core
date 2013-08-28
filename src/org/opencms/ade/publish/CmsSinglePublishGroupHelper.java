@@ -31,7 +31,6 @@ import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishResource;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -64,8 +63,7 @@ public class CmsSinglePublishGroupHelper extends A_CmsPublishGroupHelper<CmsPubl
         List<CmsPublishGroup> result = new ArrayList<CmsPublishGroup>();
         if (!resources.isEmpty()) { // only add a group if there are resources 
             List<CmsPublishResource> copyResources = new ArrayList<CmsPublishResource>(resources);
-            Collections.sort(copyResources, new SortingComparator());
-            CmsPublishGroup singleGroup = new CmsPublishGroup(m_title, resources);
+            CmsPublishGroup singleGroup = new CmsPublishGroup(m_title, copyResources);
             result.add(singleGroup);
         }
         return result;

@@ -64,6 +64,9 @@ public final class Messages {
     public static final String GUI_CONFIRMATION_WORKPLACE_BUTTON_0 = "GUI_CONFIRMATION_WORKPLACE_BUTTON_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_DATE_LAST_MODIFIED_0 = "GUI_LABEL_DATE_LAST_MODIFIED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_USER_LAST_MODIFIED_0 = "GUI_LABEL_USER_LAST_MODIFIED_0";
 
     /** Message constant for key in the resource bundle. */

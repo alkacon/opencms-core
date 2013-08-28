@@ -38,7 +38,6 @@ import org.opencms.ade.publish.shared.CmsWorkflowAction;
 import org.opencms.ade.publish.shared.CmsWorkflowResponse;
 import org.opencms.ade.publish.shared.rpc.I_CmsPublishService;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
@@ -230,26 +229,25 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
                 checkPreview(publishResource);
             }
             A_CmsPublishGroupHelper<CmsPublishResource, CmsPublishGroup> groupHelper;
+            I_CmsVirtualProject.I_Context context = null;
             if ((options.getProjectId() == null) || options.getProjectId().isNullUUID()) {
                 groupHelper = new CmsDefaultPublishGroupHelper(locale);
             } else {
-                I_CmsVirtualProject virtualProject = CmsPublish.getVirtualProject(options.getProjectId());
+                I_CmsVirtualProject virtualProject = CmsPublish.getRealOrVirtualProject(options.getProjectId());
                 String title = "";
+
                 if (virtualProject != null) {
-                    CmsProjectBean projectBean = virtualProject.getProjectBean(cms, options.getParameters());
+                    context = virtualProject.createContext(cms, options.getParameters());
+                    CmsProjectBean projectBean = context.getProjectBean();
                     title = projectBean.getDefaultGroupName();
                     if (title == null) {
                         title = "";
                     }
-                } else {
-                    try {
-                        CmsProject project = cms.readProject(options.getProjectId());
-                        title = project.getName();
-                    } catch (CmsException e) {
-                        title = "";
-                    }
                 }
                 groupHelper = new CmsSinglePublishGroupHelper(locale, title);
+            }
+            if (context != null) {
+                context.preSort(publishResources);
             }
             results = groupHelper.getGroups(publishResources);
             setCachedOptions(options);

@@ -192,6 +192,12 @@ public class CmsPublishGroupPanel extends Composite {
                 org.opencms.ade.publish.client.Messages.GUI_LABEL_USER_LAST_MODIFIED_0);
             info.addAdditionalInfo(userLabel, resourceBean.getUserLastModified());
         }
+        if (resourceBean.getDateLastModifiedString() != null) {
+            String dateLabel = org.opencms.ade.publish.client.Messages.get().key(
+                org.opencms.ade.publish.client.Messages.GUI_LABEL_DATE_LAST_MODIFIED_0);
+            info.addAdditionalInfo(dateLabel, resourceBean.getDateLastModifiedString());
+        }
+
         CmsListItemWidget itemWidget = new CmsListItemWidget(info);
         for (int i = 0; i < NUM_BUTTON_SLOTS; i++) {
             SimplePanel panel = new SimplePanel();

@@ -45,6 +45,9 @@ public class CmsPublishResource implements IsSerializable {
     /** The last modification date. */
     private long m_dateLastModified;
 
+    /** The last modification date as a formatted string. */
+    private String m_dateLastModifiedStr;
+
     /** The resource id.*/
     private CmsUUID m_id;
 
@@ -80,8 +83,9 @@ public class CmsPublishResource implements IsSerializable {
      * @param title the resource title
      * @param resourceType the resource type name
      * @param state the resource state
-     * @param dateLastModified the last modification date 
-     * @param userLastModified name of the user who last modified the resource 
+     * @param dateLastModified the last modification date
+     * @param userLastModified name of the user who last modified the resource
+     * @param dateLastModifiedStr the last modification date as a formatted string 
      * @param removable to indicate if the resource can be removed from the user's publish list
      * @param info the additional information, if any
      * @param related the related resources
@@ -94,6 +98,7 @@ public class CmsPublishResource implements IsSerializable {
         CmsResourceState state,
         long dateLastModified,
         String userLastModified,
+        String dateLastModifiedStr,
         boolean removable,
         CmsPublishResourceInfo info,
         List<CmsPublishResource> related) {
@@ -107,6 +112,7 @@ public class CmsPublishResource implements IsSerializable {
         m_removable = removable;
         m_info = info;
         m_dateLastModified = dateLastModified;
+        m_dateLastModifiedStr = dateLastModifiedStr;
         m_userLastModified = userLastModified;
     }
 
@@ -126,6 +132,16 @@ public class CmsPublishResource implements IsSerializable {
     public long getDateLastModified() {
 
         return m_dateLastModified;
+    }
+
+    /**
+     * Gets the modification date formatted as a string.<p>
+     *  
+     * @return the formatted modification date 
+     */
+    public String getDateLastModifiedString() {
+
+        return m_dateLastModifiedStr;
     }
 
     /**

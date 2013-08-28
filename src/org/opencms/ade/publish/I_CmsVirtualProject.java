@@ -28,6 +28,7 @@
 package org.opencms.ade.publish;
 
 import org.opencms.ade.publish.shared.CmsProjectBean;
+import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
@@ -44,14 +45,44 @@ import java.util.Map;
 public interface I_CmsVirtualProject {
 
     /**
-     * Gets the project bean.<p>
+     * Work context which is  used to actually work with a virtual project.<p>
+     */
+    public interface I_Context {
+
+        /**
+         * Gets the project bean.<p>
+         * 
+         * @return the project bean 
+         */
+        CmsProjectBean getProjectBean();
+
+        /**
+         * Gets the resources of the virtual project.<p>
+         * 
+         * @return the generated list of resources 
+         * 
+         * @throws CmsException if something goes wrong 
+         */
+        List<CmsResource> getResources() throws CmsException;
+
+        /**
+         * Sorts a list of publish resources before grouping.<p>
+         * 
+         * @param publishResources the publish resources to sort 
+         */
+        void preSort(List<CmsPublishResource> publishResources);
+
+    }
+
+    /**
+     * Creates a context object to work this virtual project.<p>
      * 
      * @param cms the current CMS context 
-     * @param params the map of parameters 
+     * @param params the current publish parameters 
      * 
-     * @return the project bean 
+     * @return a new context based on the CmsObject and the publish parameters  
      */
-    CmsProjectBean getProjectBean(CmsObject cms, Map<String, String> params);
+    I_Context createContext(CmsObject cms, Map<String, String> params);
 
     /**
      * Gets the project id.<p>
@@ -59,17 +90,4 @@ public interface I_CmsVirtualProject {
      * @return the project id 
      */
     CmsUUID getProjectId();
-
-    /**
-     * Gets the resources of the virtual project.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param params the publish parameters 
-     * 
-     * @return the generated list of resources 
-     * 
-     * @throws CmsException if something goes wrong 
-     */
-    List<CmsResource> getResources(CmsObject cms, Map<String, String> params) throws CmsException;
-
 }
