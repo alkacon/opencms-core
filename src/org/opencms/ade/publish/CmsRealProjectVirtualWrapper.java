@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import com.google.common.collect.ComparisonChain;
@@ -75,7 +76,9 @@ public class CmsRealProjectVirtualWrapper implements I_CmsVirtualProject {
             try {
                 CmsProject project = m_cms.readProject(getProjectId());
                 CmsProjectBean result = CmsPublish.createProjectBeanFromProject(m_cms, project);
-                result.setDefaultGroupName(project.getName());
+                Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms);
+                String name = Messages.get().getBundle(locale).key(Messages.GUI_NORMAL_PROJECT_1, project.getName());
+                result.setDefaultGroupName(name);
                 return result;
             } catch (CmsException e) {
                 return null;
@@ -118,7 +121,7 @@ public class CmsRealProjectVirtualWrapper implements I_CmsVirtualProject {
                     if (o1 == o2) {
                         return 0;
                     }
-                    return ComparisonChain.start().compare(o2.getDateLastModified(), o1.getDateLastModified()).result();
+                    return ComparisonChain.start().compare(o2.getSortDate(), o1.getSortDate()).result();
                 }
             });
         }

@@ -51,12 +51,18 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+
+import com.google.common.collect.ComparisonChain;
 
 /**
  * The implementation of the publish service.<p>
@@ -246,6 +252,22 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
                 }
                 groupHelper = new CmsSinglePublishGroupHelper(locale, title);
             }
+            if (options.isIncludeRelated()) {
+                publishResources = eliminateRelatedResourcesFromTopLevel(publishResources);
+                for (CmsPublishResource pubRes : publishResources) {
+                    // sort nested related resources 
+                    Collections.sort(pubRes.getRelated(), new Comparator<CmsPublishResource>() {
+
+                        public int compare(CmsPublishResource first, CmsPublishResource second) {
+
+                            return ComparisonChain.start().compare(second.getSortDate(), first.getSortDate()).result();
+                        }
+                    });
+                }
+            } else {
+                removeRelatedResources(publishResources);
+            }
+
             if (context != null) {
                 context.preSort(publishResources);
             }
@@ -299,6 +321,30 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
     }
 
     /**
+     * Removes publish resources from a list which are contained in the related resources of another entry in the list.<p>
+     * 
+     * @param publishResources the publish resource list from which the related resources should be eliminated 
+     * 
+     * @return the new list of publish resources 
+     */
+    private List<CmsPublishResource> eliminateRelatedResourcesFromTopLevel(List<CmsPublishResource> publishResources) {
+
+        Set<CmsUUID> relatedIds = new HashSet<CmsUUID>();
+        for (CmsPublishResource res : publishResources) {
+            for (CmsPublishResource related : res.getRelated()) {
+                relatedIds.add(related.getId());
+            }
+        }
+        List<CmsPublishResource> result = new ArrayList<CmsPublishResource>();
+        for (CmsPublishResource res : publishResources) {
+            if (!relatedIds.contains(res.getId())) {
+                result.add(res);
+            }
+        }
+        return result;
+    }
+
+    /**
      * Returns the cached publish options, creating it if it doesn't already exist.<p>
      * 
      * @return the cached publish options
@@ -347,6 +393,18 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
             }
         }
         return result;
+    }
+
+    /** 
+     * Removes the related resources from publish resources.<p>
+     * 
+     * @param publishResources the list of publish resources from which to remove related resource 
+     */
+    private void removeRelatedResources(List<CmsPublishResource> publishResources) {
+
+        for (CmsPublishResource resource : publishResources) {
+            resource.getRelated().clear();
+        }
     }
 
     /**

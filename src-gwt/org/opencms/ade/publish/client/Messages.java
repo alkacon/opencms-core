@@ -46,10 +46,17 @@ public final class Messages {
     public static final String ERR_PUBLISH_CANT_PUBLISH_NEW_RESOURCE_2 = "ERR_PUBLISH_CANT_PUBLISH_NEW_RESOURCE_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CHECKBOX_ALL_0 = "GUI_CHECKBOX_ALL_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CHECKBOX_DESELECT_ALL_0 = "GUI_CHECKBOX_DESELECT_ALL_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CHECKBOX_NONE_0 = "GUI_CHECKBOX_NONE_0";
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CHECKBOX_SELECT_ALL_0 = "GUI_CHECKBOX_SELECT_ALL_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CHECKBOX_SOME_2 = "GUI_CHECKBOX_SOME_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CONFIRMATION_CAPTION_0 = "GUI_CONFIRMATION_CAPTION_0";

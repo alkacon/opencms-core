@@ -56,6 +56,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_NORMAL_PROJECT_1 = "GUI_NORMAL_PROJECT_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PAGE_1 = "GUI_PAGE_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_RELATED_RESOURCE_CAN_NOT_BE_PUBLISHED_0 = "GUI_RELATED_RESOURCE_CAN_NOT_BE_PUBLISHED_0";
 
     /** Message constant for key in the resource bundle. */

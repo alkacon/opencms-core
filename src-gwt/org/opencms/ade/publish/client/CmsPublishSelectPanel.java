@@ -92,11 +92,24 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
      */
     public static class CheckBoxUpdate {
 
+        /** The action (used for the tooltip). */
+        private String m_action;
+
         /** The new state. */
         private CmsTriStateCheckBox.State m_state;
 
         /** The new text. */
         private String m_text;
+
+        /**
+         * Gets the action text.<P>
+         * 
+         * @return the action text 
+         */
+        public String getAction() {
+
+            return m_action;
+        }
 
         /**
          * Gets the new state.<p>
@@ -116,6 +129,16 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         public String getText() {
 
             return m_text;
+        }
+
+        /** 
+         * Sets the action text.<p>
+         * 
+         * @param action the action text
+         */
+        public void setAction(String action) {
+
+            m_action = action;
         }
 
         /**
@@ -423,24 +446,35 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
      * 
      * @return the data needed to update the check box 
      */
-    public static CheckBoxUpdate updateCheckbox(Set<CmsPublishItemStatus.State> states) {
+    public static CheckBoxUpdate updateCheckbox(CmsPublishItemStateSummary states) {
 
         CheckBoxUpdate result = new CheckBoxUpdate();
-        boolean hasPublish = states.contains(CmsPublishItemStatus.State.publish);
-        boolean hasNormal = states.contains(CmsPublishItemStatus.State.normal);
-        String textSelectAll = Messages.get().key(Messages.GUI_CHECKBOX_SELECT_ALL_0);
+        boolean hasPublish = states.getPublishCount() > 0;
+        boolean hasNormal = states.getNormalCount() > 0;
+        String actionSelectAll = Messages.get().key(Messages.GUI_CHECKBOX_SELECT_ALL_0);
         String textDeselectAll = Messages.get().key(Messages.GUI_CHECKBOX_DESELECT_ALL_0);
+        String some = Messages.get().key(
+            Messages.GUI_CHECKBOX_SOME_2,
+            "" + states.getPublishCount(),
+            "" + (states.getPublishCount() + states.getNormalCount()));
+        String all = Messages.get().key(Messages.GUI_CHECKBOX_ALL_0);
+        String none = Messages.get().key(Messages.GUI_CHECKBOX_NONE_0);
+
         if (hasNormal && hasPublish) {
-            result.setText(textSelectAll);
+            result.setAction(actionSelectAll);
+            result.setText(some);
             result.setState(CmsTriStateCheckBox.State.middle);
         } else if (hasNormal) {
-            result.setText(textSelectAll);
+            result.setAction(actionSelectAll);
+            result.setText(none);
             result.setState(CmsTriStateCheckBox.State.off);
         } else if (hasPublish) {
-            result.setText(textDeselectAll);
+            result.setAction(textDeselectAll);
+            result.setText(all);
             result.setState(CmsTriStateCheckBox.State.on);
         } else {
-            result.setText(textSelectAll);
+            result.setText(none);
+            result.setAction(actionSelectAll);
             result.setState(CmsTriStateCheckBox.State.off);
         }
         return result;
@@ -560,8 +594,8 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     public void onChangePublishSelection() {
 
         enableActions(shouldEnablePublishButton());
-        Map<Integer, Set<CmsPublishItemStatus.State>> states = m_model.computeGroupSelectionStates();
-        for (Map.Entry<Integer, Set<CmsPublishItemStatus.State>> entry : states.entrySet()) {
+        Map<Integer, CmsPublishItemStateSummary> states = m_model.computeGroupSelectionStates();
+        for (Map.Entry<Integer, CmsPublishItemStateSummary> entry : states.entrySet()) {
             int key = entry.getKey().intValue();
             if (key == -1) {
                 updateCheckboxState(entry.getValue());
@@ -937,10 +971,11 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
      * 
      * @param value the state to use to update the check box 
      */
-    private void updateCheckboxState(Set<org.opencms.ade.publish.client.CmsPublishItemStatus.State> value) {
+    private void updateCheckboxState(CmsPublishItemStateSummary value) {
 
         CheckBoxUpdate update = updateCheckbox(value);
         m_selectAll.setText(update.getText());
+        m_selectAll.setTitle(update.getAction());
         m_selectAll.setState(update.getState(), false);
 
     }

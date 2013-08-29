@@ -52,7 +52,6 @@ import org.opencms.util.CmsUUID;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.Style.Visibility;
@@ -314,10 +313,10 @@ public class CmsPublishGroupPanel extends Composite {
      * 
      * @param value the state to use for updating the check box 
      */
-    public void updateCheckboxState(Set<org.opencms.ade.publish.client.CmsPublishItemStatus.State> value) {
+    public void updateCheckboxState(CmsPublishItemStateSummary value) {
 
         CheckBoxUpdate update = CmsPublishSelectPanel.updateCheckbox(value);
-        m_selectGroup.setTitle(update.getText());
+        m_selectGroup.setTitle(update.getAction());
         m_selectGroup.setState(update.getState(), false);
     }
 

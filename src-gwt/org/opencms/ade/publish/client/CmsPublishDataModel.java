@@ -37,11 +37,9 @@ import org.opencms.util.CmsUUID;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 /**
  * This class contains the data for the publish resources which are displayed 
@@ -141,13 +139,14 @@ public class CmsPublishDataModel {
      * 
      * @return the group selection states 
      */
-    public Map<Integer, Set<CmsPublishItemStatus.State>> computeGroupSelectionStates() {
+    public Map<Integer, CmsPublishItemStateSummary> computeGroupSelectionStates() {
 
-        Map<Integer, Set<CmsPublishItemStatus.State>> stateMap = Maps.newHashMap();
-        Set<CmsPublishItemStatus.State> allStates = Sets.newHashSet();
+        Map<Integer, CmsPublishItemStateSummary> stateMap = Maps.newHashMap();
+
+        CmsPublishItemStateSummary allStates = new CmsPublishItemStateSummary();
         int i = 0;
         for (CmsPublishGroup group : m_groups) {
-            Set<CmsPublishItemStatus.State> groupStates = Sets.newHashSet();
+            CmsPublishItemStateSummary groupStates = new CmsPublishItemStateSummary();
             for (CmsPublishResource res : group.getResources()) {
                 CmsPublishItemStatus item = m_status.get(res.getId());
                 CmsPublishItemStatus.State stateToAdd;
@@ -158,8 +157,8 @@ public class CmsPublishDataModel {
                 } else {
                     stateToAdd = item.getState();
                 }
-                groupStates.add(stateToAdd);
-                allStates.add(stateToAdd);
+                groupStates.addState(stateToAdd);
+                allStates.addState(stateToAdd);
 
             }
             stateMap.put(new Integer(i), groupStates);

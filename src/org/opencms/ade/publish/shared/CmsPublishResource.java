@@ -194,6 +194,22 @@ public class CmsPublishResource implements IsSerializable {
         return m_resourceType;
     }
 
+    /** 
+     * Gets the date to be used for sorting.<p>
+     * 
+     * @return the date which should be used for sorting 
+     */
+    public long getSortDate() {
+
+        long result = getDateLastModified();
+        if (m_related != null) {
+            for (CmsPublishResource rel : m_related) {
+                result = Math.max(result, rel.getSortDate());
+            }
+        }
+        return result;
+    }
+
     /**
      * Returns the state.<p>
      *

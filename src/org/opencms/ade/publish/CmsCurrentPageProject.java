@@ -53,6 +53,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -96,32 +97,35 @@ public class CmsCurrentPageProject implements I_CmsVirtualProject {
 
             String pageId = m_params.get(CmsPublishOptions.PARAM_CONTAINERPAGE);
             String elementId = m_params.get(CmsPublishOptions.PARAM_CONTENT);
-            String title = Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms)).key(
-                Messages.GUI_CURRENTPAGE_PROJECT_0);
-            if ((pageId != null) || (elementId != null)) {
-                CmsProjectBean bean = new CmsProjectBean(ID, 0, title, title);
-                bean.setRank(100);
-                bean.setDefaultGroupName("");
-                if (pageId != null) {
-                    try {
-                        CmsResource page = m_cms.readResource(new CmsUUID(pageId), CmsResourceFilter.IGNORE_EXPIRATION);
-                        CmsProperty titleProp = m_cms.readPropertyObject(
-                            page,
-                            CmsPropertyDefinition.PROPERTY_TITLE,
-                            true);
-                        if (titleProp.isNullProperty()) {
-                            bean.setDefaultGroupName(m_cms.getSitePath(page));
-                        } else {
-                            bean.setDefaultGroupName(titleProp.getValue());
-                        }
-                    } catch (Exception e) {
-                        LOG.error(e.getLocalizedMessage(), e);
-                    }
-                }
-                return bean;
-            } else {
+            Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms);
+            String title = Messages.get().getBundle(locale).key(Messages.GUI_CURRENTPAGE_PROJECT_0);
+            CmsUUID structureIdForTitle;
+            if ((pageId == null) && (elementId == null)) {
                 return null;
+            } else {
+                structureIdForTitle = pageId != null ? new CmsUUID(pageId) : new CmsUUID(elementId);
             }
+
+            CmsProjectBean bean = new CmsProjectBean(ID, 0, title, title);
+            bean.setRank(100);
+            bean.setDefaultGroupName("");
+            try {
+                CmsResource titleResource = m_cms.readResource(structureIdForTitle, CmsResourceFilter.IGNORE_EXPIRATION);
+                CmsProperty titleProp = m_cms.readPropertyObject(
+                    titleResource,
+                    CmsPropertyDefinition.PROPERTY_TITLE,
+                    true);
+                String rawName;
+                if (titleProp.isNullProperty()) {
+                    rawName = m_cms.getSitePath(titleResource);
+                } else {
+                    rawName = titleProp.getValue();
+                }
+                bean.setDefaultGroupName(Messages.get().getBundle(locale).key(Messages.GUI_PAGE_1, rawName));
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+            return bean;
         }
 
         /**
@@ -151,8 +155,8 @@ public class CmsCurrentPageProject implements I_CmsVirtualProject {
                 public int compare(CmsPublishResource first, CmsPublishResource second) {
 
                     return ComparisonChain.start().compareTrueFirst(isNotPage(first), isNotPage(second)).compare(
-                        second.getDateLastModified(),
-                        first.getDateLastModified()).result();
+                        second.getSortDate(),
+                        first.getSortDate()).result();
                 }
 
                 private boolean isNotPage(CmsPublishResource res) {
