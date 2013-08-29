@@ -331,12 +331,18 @@ public class CmsModule implements Comparable<CmsModule> {
         result.m_frozen = false;
 
         if (getExplorerTypes() != null) {
-            result.setExplorerTypes(new ArrayList<CmsExplorerTypeSettings>(getExplorerTypes()));
+            List<CmsExplorerTypeSettings> settings = new ArrayList<CmsExplorerTypeSettings>();
+            for (CmsExplorerTypeSettings setting : getExplorerTypes()) {
+                settings.add((CmsExplorerTypeSettings)setting.clone());
+            }
+            result.setExplorerTypes(settings);
         }
         if (getResourceTypes() != null) {
+            // TODO: The resource types must be cloned also, otherwise modification will effect the origin also
             result.setResourceTypes(new ArrayList<I_CmsResourceType>(getResourceTypes()));
         }
         if (getDependencies() != null) {
+            // TODO: The dependencies must be cloned also, otherwise modification will effect the origin also
             result.setDependencies(new ArrayList<CmsModuleDependency>(getDependencies()));
         }
 

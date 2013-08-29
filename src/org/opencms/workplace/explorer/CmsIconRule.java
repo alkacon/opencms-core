@@ -61,13 +61,12 @@ public class CmsIconRule {
     }
 
     /**
-     * Returns the biggest icon available.<p>
-     * 
-     * @return the biggest icon available
+     * @see java.lang.Object#clone()
      */
-    public String getBigIconIfAvailable() {
+    @Override
+    public Object clone() {
 
-        return m_bigIcon != null ? m_bigIcon : m_icon;
+        return new CmsIconRule(m_extension, m_icon, m_bigIcon);
     }
 
     /**
@@ -78,6 +77,16 @@ public class CmsIconRule {
     public String getBigIcon() {
 
         return m_bigIcon;
+    }
+
+    /**
+     * Returns the biggest icon available.<p>
+     * 
+     * @return the biggest icon available
+     */
+    public String getBigIconIfAvailable() {
+
+        return m_bigIcon != null ? m_bigIcon : m_icon;
     }
 
     /**
@@ -100,5 +109,4 @@ public class CmsIconRule {
 
         return m_icon;
     }
-
 }
