@@ -5,6 +5,7 @@
 	xmlns:cms="urn:import:org.opencms.gwt.client.ui">
 
 	<ui:with field="res" type="org.opencms.ade.publish.client.I_CmsPublishLayoutBundle" />
+	<ui:with field="input" type="org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle" />
 	<ui:with field="main" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<g:FlowPanel styleName="{res.publishCss.selectPanel}">
 		<g:FlowPanel ui:field="m_selectorPanel" styleName="{res.publishCss.selectorPanel}">
@@ -19,16 +20,16 @@
 		<cms:CmsScrollPanel ui:field="m_scrollPanel" addStyleNames="{res.publishCss.scrollPanel} {main.generalCss.cornerAll}">
 			<g:FlowPanel ui:field="m_groupPanelContainer" styleName="{res.publishCss.groupPanel}"></g:FlowPanel>
 		</cms:CmsScrollPanel>
-		<cms:CmsSimplePanel styleName="{res.publishCss.checkboxes}">
+		<cms:CmsSimplePanel addStyleNames="{res.publishCss.checkboxes} {input.inputCss.alignCheckboxBottom}">
 			<cmsi:CmsCheckBox ui:field="m_checkboxRelated"></cmsi:CmsCheckBox>
 		</cms:CmsSimplePanel>
-		<cms:CmsSimplePanel styleName="{res.publishCss.checkboxes}">
+		<cms:CmsSimplePanel addStyleNames="{res.publishCss.checkboxes} {input.inputCss.alignCheckboxBottom}">
 			<cmsi:CmsCheckBox ui:field="m_checkboxSiblings"></cmsi:CmsCheckBox>
 		</cms:CmsSimplePanel>
-		<cms:CmsSimplePanel styleName="{res.publishCss.checkboxes}">
+		<cms:CmsSimplePanel addStyleNames="{res.publishCss.checkboxes} {input.inputCss.alignCheckboxBottom}">
 			<cmsi:CmsCheckBox ui:field="m_checkboxProblems"></cmsi:CmsCheckBox>
 		</cms:CmsSimplePanel>
-		<cms:CmsSimplePanel ui:field="m_problemsPanel" styleName="{res.publishCss.problemPanel}" />
+		<cms:CmsSimplePanel ui:field="m_problemsPanel" styleName="{res.publishCss.problemPanel} {input.inputCss.alignCheckboxBottom}" />
 		<g:FlowPanel>
 			<cms:CmsPushButton ui:field="m_cancelButton"></cms:CmsPushButton>
 		</g:FlowPanel>

@@ -156,7 +156,7 @@ public class CmsPublishGroupPanel extends Composite {
         }
 
         HTML label = new HTML();
-        label.setHTML(title + CmsPublishSelectPanel.formatResourceCount(m_publishResources.size()));
+        label.setHTML(title);
         label.addStyleName(CSS.groupHeader());
         m_header.add(label);
 
@@ -443,6 +443,7 @@ public class CmsPublishGroupPanel extends Composite {
 
         m_selectGroup = new CmsTriStateCheckBox("");
         m_selectGroup.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().inlineBlock());
+        m_selectGroup.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().alignBottom());
         m_selectGroup.setNextStateAfterIntermediateState(State.on);
         m_selectGroup.addValueChangeHandler(new ValueChangeHandler<CmsTriStateCheckBox.State>() {
 
@@ -458,5 +459,6 @@ public class CmsPublishGroupPanel extends Composite {
 
         });
         m_header.add(m_selectGroup);
+        m_header.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().alignCheckboxBottom());
     }
 }

@@ -48,6 +48,13 @@ public interface I_CmsInputCss extends I_CmsGlobalWidgetCss {
      * 
      * @return the css class
      */
+    String alignCheckboxBottom();
+
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
     String categoryItem();
 
     /**
@@ -430,12 +437,32 @@ public interface I_CmsInputCss extends I_CmsGlobalWidgetCss {
      */
     String transparentSelectBox();
 
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
     String triState();
 
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
     String triStateMedium();
 
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
     String triStateOff();
 
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
     String triStateOn();
 
     /**

@@ -7,8 +7,6 @@
 	display: inline-block;
 	font-weight: bold;
 	font-size: value("constants.css.fontSize");
-    margin-top:1px;
-    margin-bottom: 3px;
     margin-left: 3px; 
 }
 
@@ -50,6 +48,7 @@
 	margin-top: 5px;
 	margin-left: 5px;
 }
+
 
 @external html-face;
 

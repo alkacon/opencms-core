@@ -38,6 +38,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
+import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.CmsTriStateCheckBox;
@@ -336,6 +337,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         m_actionButtons = new ArrayList<CmsPushButton>();
         initWidget(UI_BINDER.createAndBindUi(this));
         m_selectAll = new CmsTriStateCheckBox("");
+        m_selectAll.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().alignCheckboxBottom());
         m_selectAll.getElement().getStyle().setMarginLeft(4, Style.Unit.PX);
         m_selectAll.setNextStateAfterIntermediateState(State.on);
         m_selectAll.addValueChangeHandler(new ValueChangeHandler<CmsTriStateCheckBox.State>() {

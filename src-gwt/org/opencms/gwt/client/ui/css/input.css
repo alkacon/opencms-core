@@ -1,5 +1,17 @@
 @external gwt-ToggleButton, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled;
 
+@external html-face;
+
+.alignCheckboxBottom.alignCheckboxBottom.alignCheckboxBottom.alignCheckboxBottom *, .alignCheckboxBottom.alignCheckboxBottom.alignCheckboxBottom.alignCheckboxBottom { 
+	vertical-align: baseline;  
+}
+
+.alignCheckboxBottom.alignCheckboxBottom.alignCheckboxBottom.alignCheckboxBottom .html-face > span:first-child { 
+	vertical-align: -3px; 
+}
+
+
+
 
 /* inner text box of the text box widget */
 input.textBox {
