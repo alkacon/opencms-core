@@ -1709,7 +1709,7 @@ public final class CmsContentEditor extends EditorBase {
         });
 
         m_publishButton = createButton(
-            "publish",
+            org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_TOOLBAR_PUBLISH_0),
             I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarPublish());
         m_toolbar.addLeft(m_publishButton);
         m_publishButton.addClickHandler(new ClickHandler() {
