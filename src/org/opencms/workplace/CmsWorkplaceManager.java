@@ -1678,16 +1678,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         m_groupTranslationClass = translationClassName;
     }
 
-    /** 
-     * Sets the "keep alive" mode.<p>
-     * 
-     * @param keepAlive the keep-alive mode 
-     */
-    public void setKeepAlive(String keepAlive) {
-
-        m_keepAlive = Boolean.valueOf(keepAlive);
-    }
-
     /**
      * Sets the configured multi context menu to use in the Explorer view.<p>
      * 
