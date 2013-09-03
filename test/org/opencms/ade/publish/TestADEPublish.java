@@ -351,7 +351,7 @@ public class TestADEPublish extends OpenCmsTestCase {
         List<CmsProjectBean> projects = adePub.getManageableProjects();
         CmsProject offline = cms.readProject("Offline");
         assertEquals(1, projects.size());
-        assertEquals(offline.getName(), projects.get(0).getName());
+        assertContains(projects.get(0).getName(), offline.getName());
         assertEquals(offline.getUuid(), projects.get(0).getId());
 
         // create new project
@@ -359,9 +359,12 @@ public class TestADEPublish extends OpenCmsTestCase {
         adePub = new CmsPublish(cms);
         projects = adePub.getManageableProjects();
         assertEquals(2, projects.size());
-        assertEquals(offline.getName(), projects.get(0).getName());
+        //assertEquals(offline.getName(), projects.get(0).getName());
+        assertContains(projects.get(0).getName(), offline.getName());
+
         assertEquals(offline.getUuid(), projects.get(0).getId());
-        assertEquals(newProject.getName(), projects.get(1).getName());
+        //assertEquals(newProject.getName(), projects.get(1).getName());
+        assertContains(projects.get(1).getName(), newProject.getName());
         assertEquals(newProject.getUuid(), projects.get(1).getId());
 
         // change user
@@ -369,7 +372,8 @@ public class TestADEPublish extends OpenCmsTestCase {
         adePub = new CmsPublish(cms);
         projects = adePub.getManageableProjects();
         assertEquals(1, projects.size());
-        assertEquals(newProject.getName(), projects.get(0).getName());
+        //assertEquals(newProject.getName(), projects.get(0).getName());
+        assertContains(projects.get(0).getName(), newProject.getName());
         assertEquals(newProject.getUuid(), projects.get(0).getId());
     }
 
