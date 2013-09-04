@@ -2097,6 +2097,9 @@ public final class OpenCmsCore {
                 t = t.getCause();
             }
             LOG.error(t.getLocalizedMessage() + " rendering URL " + req.getRequestURL(), t);
+        } else if (t.getClass().getName().equals("org.apache.catalina.connector.ClientAbortException")) {
+            // only log to debug channel any exceptions caused by a client abort - this is tomcat specific 
+            LOG.debug(t.getLocalizedMessage() + " rendering URL " + req.getRequestURL(), t);
         } else {
             LOG.error(t.getLocalizedMessage() + " rendering URL " + req.getRequestURL(), t);
         }
