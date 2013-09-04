@@ -17,10 +17,6 @@
     </xsd:complexType>
    <xsd:annotation>
         <xsd:appinfo>
-        <layouts>
-        	<layout element="Key" display="column"  widget="StringWidget"/>
-        	<layout element="Value" display="column" widget="StringWidget" />
-        </layouts>
         </xsd:appinfo> 
     </xsd:annotation>    
 </xsd:schema>
