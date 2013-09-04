@@ -171,9 +171,6 @@ public final class CmsContentEditor extends EditorBase {
     /** Flag indicating the resource needs to removed on cancel. */
     private boolean m_deleteOnCancel;
 
-    /** The in-line edit overlay hiding other content. */
-    private CmsInlineEditOverlay m_editOverlay;
-
     /** The id of the edited entity. */
     private String m_entityId;
 
@@ -755,7 +752,7 @@ public final class CmsContentEditor extends EditorBase {
                 } else {
                     callback.execute();
                     if (clearOnSuccess) {
-                        destroyFrom(true);
+                        destroyForm(true);
                     }
                 }
             }
@@ -834,10 +831,7 @@ public final class CmsContentEditor extends EditorBase {
 
         m_context = null;
 
-        if (m_editOverlay != null) {
-            m_editOverlay.removeFromParent();
-            m_editOverlay = null;
-        }
+        removeEditOverlays();
         if (m_toolbar != null) {
             m_toolbar.removeFromParent();
             m_toolbar = null;
@@ -933,7 +927,7 @@ public final class CmsContentEditor extends EditorBase {
         if (m_onClose != null) {
             m_onClose.execute();
         }
-        destroyFrom(true);
+        destroyForm(true);
         clearEditor();
     }
 
@@ -1159,11 +1153,8 @@ public final class CmsContentEditor extends EditorBase {
         setContentDefinition(contentDefinition);
         initToolbar();
         if (inline && (formParent != null)) {
-            m_editOverlay = new CmsInlineEditOverlay(formParent.getElement());
-            RootPanel.get().add(m_editOverlay);
-            m_editOverlay.updatePosition();
-            m_editOverlay.checkZIndex();
-            m_editOverlay.addClickHandler(new ClickHandler() {
+            initEditOverlay(formParent.getElement());
+            addOverlayClickHandler(new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
 
@@ -1188,10 +1179,7 @@ public final class CmsContentEditor extends EditorBase {
      */
     void initFormPanel() {
 
-        if (m_editOverlay != null) {
-            m_editOverlay.removeFromParent();
-            m_editOverlay = null;
-        }
+        removeEditOverlays();
         m_openFormButton.setVisible(false);
         m_saveButton.setVisible(true);
         m_hideHelpBubblesButton.setVisible(true);
@@ -1262,8 +1250,7 @@ public final class CmsContentEditor extends EditorBase {
             CmsIconUtil.getResourceIconClasses(m_resourceTypeName, m_sitePath, false));
         m_basePanel.add(header);
         SimplePanel content = new SimplePanel();
-        content.addStyleName(I_CmsLayoutBundle.INSTANCE.editorCss().contentPanel());
-        content.addStyleName(I_LayoutBundle.INSTANCE.form().formParent());
+        content.setStyleName(I_LayoutBundle.INSTANCE.form().formParent());
         m_basePanel.add(content);
         if (m_entityObserver != null) {
             m_entityObserver.clear();
@@ -1326,9 +1313,7 @@ public final class CmsContentEditor extends EditorBase {
         enableSave();
         m_changedEntityIds.add(m_entityId);
         m_deletedEntities.remove(m_entityId);
-        if (m_editOverlay != null) {
-            m_editOverlay.updatePosition();
-        }
+        updateOverlayPosition();
     }
 
     /**
@@ -1434,7 +1419,7 @@ public final class CmsContentEditor extends EditorBase {
         }
         m_locale = locale;
         m_basePanel.clear();
-        destroyFrom(false);
+        destroyForm(false);
         m_entityId = getIdForLocale(locale);
         // if the content does not contain the requested locale yet, a new node will be created 
         final boolean addedNewLocale = !m_contentLocales.contains(locale);

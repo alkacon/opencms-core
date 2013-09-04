@@ -58,16 +58,6 @@ body.integratedEditor{
 	z-index: value("constants.css.zIndexPopup");
 }
 
-.contentPanel{
-	padding: 2px 2px 0px;
-	position: relative;
-	width: value("constants.css.toolbarWidth");
-	margin: 10px auto;
-	background-color: value("constants.css.backgroundColorDialog");
-	border: 2px solid value("constants.css.borderColor");
-	border-radius: value("constants.css.borderRadius");
-}
-
 div.basePanel > div{
 	padding-left:2px;
 	padding-right: 2px;

@@ -127,7 +127,7 @@ public class CmsContentDefinition extends ContentDefinition {
         boolean performedAutocorrection,
         boolean autoUnlock) {
 
-        super(entity, configurations, types, tabInfos, locale);
+        super(entity, configurations, types, tabInfos, true, locale);
         m_contentLocales = contentLocales;
         m_availableLocales = availableLocales;
         m_complexWidgetData = complexWidgetData;
@@ -153,7 +153,7 @@ public class CmsContentDefinition extends ContentDefinition {
         CmsUUID referenceId,
         String locale) {
 
-        super(null, null, null, null, locale);
+        super(null, null, null, null, true, locale);
         m_modelInfos = modelInfos;
         m_newLink = newLink;
         m_referenceResourceId = referenceId;
