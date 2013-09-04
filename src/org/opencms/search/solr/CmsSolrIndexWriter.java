@@ -42,6 +42,7 @@ import java.io.IOException;
 import org.apache.commons.logging.Log;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.common.SolrException;
 import org.apache.solr.common.SolrInputDocument;
 
 /**
@@ -153,6 +154,8 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
                     m_index.getPath()));
                 m_server.deleteByQuery(CmsSearchField.FIELD_PATH + ":\"" + rootPath + "\"");
             } catch (SolrServerException e) {
+                throw new IOException(e.getLocalizedMessage(), e);
+            } catch (SolrException e) {
                 throw new IOException(e.getLocalizedMessage(), e);
             }
         }
