@@ -27,12 +27,13 @@
 
 package org.opencms.notification;
 
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsUser;
-import org.opencms.report.I_CmsReport;
-
 import java.util.Iterator;
 import java.util.List;
+
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsUser;
+import org.opencms.i18n.CmsMessages;
+import org.opencms.report.I_CmsReport;
 
 /**
  * Class to send a notification to an OpenCms user with a summary of warnings and
@@ -68,10 +69,12 @@ public class CmsPublishNotification extends A_CmsNotification {
 
         StringBuffer buffer = new StringBuffer();
 
+        CmsMessages messages = Messages.get().getBundle(getLocale());
+
         // add warnings to the notification
         if (m_report.hasWarning()) {
             buffer.append("<b>");
-            buffer.append(Messages.get().getBundle().key(Messages.GUI_PUBLISH_WARNING_HEADER_0));
+            buffer.append(messages.key(Messages.GUI_PUBLISH_WARNING_HEADER_0));
             buffer.append("</b><br/>\n");
             appendList(buffer, m_report.getWarnings());
             buffer.append("<br/>\n");
@@ -80,7 +83,7 @@ public class CmsPublishNotification extends A_CmsNotification {
         // add errors to the notification
         if (m_report.hasError()) {
             buffer.append("<b>");
-            buffer.append(Messages.get().getBundle().key(Messages.GUI_PUBLISH_ERROR_HEADER_0));
+            buffer.append(messages.key(Messages.GUI_PUBLISH_ERROR_HEADER_0));
             buffer.append("</b><br/>\n");
             appendList(buffer, m_report.getErrors());
             buffer.append("<br/>\n");
