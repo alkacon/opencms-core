@@ -351,6 +351,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
                 widget.truncate("STANDARD", width);
             }
         }
+        fireResize();
     }
 
     /**
@@ -626,5 +627,6 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
             };
             action.execute();
         }
+        fireResize();
     }
 }
