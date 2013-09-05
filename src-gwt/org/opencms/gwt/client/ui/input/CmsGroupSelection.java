@@ -31,30 +31,18 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.I_CmsHasInit;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
-import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
-import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
-import org.opencms.gwt.shared.CmsLinkBean;
-import org.opencms.util.CmsStringUtil;
 
 import java.util.Map;
 
-import com.google.gwt.dom.client.Style.Cursor;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.MouseUpEvent;
-import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Event.NativePreviewEvent;
-import com.google.gwt.user.client.Event.NativePreviewHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Panel;
@@ -70,54 +58,6 @@ import com.google.gwt.user.client.ui.TextBox;
 public class CmsGroupSelection extends Composite
 implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
 
-    /**
-     * Event preview handler.<p>
-     * 
-     * To be used while popup open.<p>
-     */
-    protected class CloseEventPreviewHandler implements NativePreviewHandler {
-
-        /**
-         * @see com.google.gwt.user.client.Event.NativePreviewHandler#onPreviewNativeEvent(com.google.gwt.user.client.Event.NativePreviewEvent)
-         */
-        public void onPreviewNativeEvent(NativePreviewEvent event) {
-
-            Event nativeEvent = Event.as(event.getNativeEvent());
-            switch (DOM.eventGetType(nativeEvent)) {
-                case Event.ONMOUSEMOVE:
-                    break;
-                case Event.ONMOUSEUP:
-                    break;
-                case Event.ONMOUSEDOWN:
-                    break;
-                case Event.ONKEYUP:
-                    openNative(buildGalleryUrl(), m_title);
-                    break;
-                case Event.ONMOUSEWHEEL:
-                    break;
-                default:
-                    // do nothing
-            }
-        }
-
-    }
-
-    /** Inner class for the open button. */
-    protected class OpenButton extends CmsPushButton {
-
-        /**
-         * Default constructor.<p>
-         * @param imageClass 
-         */
-        public OpenButton(String imageClass) {
-
-            super(imageClass);
-            setStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().openVfsButton());
-
-        }
-
-    }
-
     /** The widget type identifier for this widget. */
     private static final String WIDGET_TYPE = "vfsselection";
 
@@ -129,12 +69,6 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
 
     /** The handler registration. */
     protected HandlerRegistration m_previewHandlerRegistration;
-
-    /** The x-coords of the popup. */
-    protected int m_xcoordspopup;
-
-    /** The y-coords of the popup. */
-    protected int m_ycoordspopup;
 
     /** The default rows set. */
     int m_defaultRows;
@@ -155,10 +89,13 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
     private CmsErrorWidget m_error = new CmsErrorWidget();
 
     /** The button to to open the selection. */
-    private OpenButton m_openSelection;
+    private CmsPushButton m_openSelection;
 
     /** The id for the windows. */
     private String m_id;
+
+    /** The container for the text area. */
+    CmsSelectionInput m_selectionInput;
 
     /** The flag parameter. */
     private Integer m_flags;
@@ -174,75 +111,40 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
         org.opencms.gwt.client.Messages.GUI_GALLERY_SELECT_DIALOG_TITLE_0);
 
     /**
-     * VsfSelection widget to open the gallery selection.<p>
+     * Constructor.<p>
      * 
-     */
-    public CmsGroupSelection() {
-
-        super();
-    }
-
-    /**
-     * VsfSelection widget to open the gallery selection.<p>
      * @param iconImage the image of the icon shown in the 
 
      */
     public CmsGroupSelection(String iconImage) {
 
-        super();
-
-        m_textBox = new TextBox();
-        m_openSelection = new OpenButton(iconImage);
-        m_id = "CmsGroupSelection_" + (idCounter++);
-        m_textBoxContainer.add(m_openSelection);
-        creatFaider();
         initWidget(m_panel);
-        m_panel.add(m_textBoxContainer);
-        m_fadePanel.setStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().vfsInputBoxFader());
-        m_fadePanel.getElement().getStyle().setRight(21, Unit.PX);
-        m_fadePanel.getElement().getStyle().setCursor(Cursor.TEXT);
-        m_fadePanel.getElement().getStyle().setBottom(7, Unit.PX);
-
-        m_textBoxContainer.add(m_textBox);
-        m_fadePanel.addDomHandler(new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-
-                m_textBox.setFocus(true);
-            }
-        }, ClickEvent.getType());
+        m_selectionInput = new CmsSelectionInput(iconImage);
+        m_id = "CmsGroupSelection_" + (idCounter++);
+        m_selectionInput.m_textbox.getElement().setId(m_id);
+        m_panel.add(m_selectionInput);
         m_panel.add(m_error);
-        m_textBoxContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
 
-        m_textBox.addMouseUpHandler(new MouseUpHandler() {
-
-            public void onMouseUp(MouseUpEvent event) {
-
-                m_textBoxContainer.remove(m_fadePanel);
-                setTitle("");
-
-                openNative(buildGalleryUrl(), m_title);
-            }
-
-        });
-        m_textBox.addBlurHandler(new BlurHandler() {
+        m_selectionInput.m_textbox.addBlurHandler(new BlurHandler() {
 
             public void onBlur(BlurEvent event) {
 
-                if ((m_textBox.getValue().length() * 6.88) > m_textBox.getOffsetWidth()) {
-                    m_textBoxContainer.add(m_fadePanel);
-                    setTitle(m_textBox.getValue());
+                if ((m_selectionInput.m_textbox.getValue().length() * 6.88) > m_selectionInput.m_textbox.getOffsetWidth()) {
+                    setTitle(m_selectionInput.m_textbox.getValue());
                 }
+                m_selectionInput.showFader();
             }
         });
 
-        m_openSelection.addClickHandler(new ClickHandler() {
+        m_selectionInput.setOpenCommand(new Command() {
 
-            public void onClick(ClickEvent event) {
+            public void execute() {
 
-                openNative(buildGalleryUrl(), m_title);
+                setTitle("");
 
+                openNative(buildGalleryUrl());
             }
+
         });
     }
 
@@ -259,7 +161,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
              */
             public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
 
-                return new CmsGroupSelection();
+                return new CmsGroupSelection(I_CmsImageBundle.INSTANCE.style().popupIcon());
             }
         });
     }
@@ -269,7 +171,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
      */
     public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
 
-        return m_textBox.addValueChangeHandler(handler);
+        return m_selectionInput.m_textbox.addValueChangeHandler(handler);
     }
 
     /**
@@ -293,10 +195,10 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
      */
     public Object getFormValue() {
 
-        if (m_textBox.getText() == null) {
+        if (m_selectionInput.m_textbox.getText() == null) {
             return "";
         }
-        return m_textBox.getValue();
+        return m_selectionInput.m_textbox.getValue();
     }
 
     /**
@@ -308,37 +210,13 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
     }
 
     /**
-     * Returns the selected link as a bean.<p>
-     * 
-     * @return the selected link as a bean 
-     */
-    public CmsLinkBean getLinkBean() {
-
-        String link = m_textBox.getValue();
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(link)) {
-            return null;
-        }
-        return new CmsLinkBean(m_textBox.getText(), true);
-    }
-
-    /**
      * Returns the text contained in the text area.<p>
      * 
      * @return the text in the text area
      */
     public String getText() {
 
-        return m_textBox.getValue();
-    }
-
-    /**
-     * Returns the textarea of this widget.<p>
-     * 
-     * @return the textarea
-     */
-    public TextBox getTextArea() {
-
-        return m_textBox;
+        return getFormValueAsString();
     }
 
     /**
@@ -346,9 +224,9 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
      * 
      * @return the text box container
      */
-    public FlowPanel getTextAreaContainer() {
+    public CmsSelectionInput getTextAreaContainer() {
 
-        return m_textBoxContainer;
+        return m_selectionInput;
     }
 
     /**
@@ -356,7 +234,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
      */
     public boolean isEnabled() {
 
-        return m_textBox.isEnabled();
+        return m_selectionInput.m_textbox.isEnabled();
     }
 
     /**
@@ -364,7 +242,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
      */
     public void reset() {
 
-        m_textBox.setText("");
+        m_selectionInput.m_textbox.setText("");
     }
 
     /**
@@ -380,7 +258,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
      */
     public void setEnabled(boolean enabled) {
 
-        m_textBox.setEnabled(enabled);
+        m_selectionInput.m_textbox.setEnabled(enabled);
     }
 
     /**
@@ -403,8 +281,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
         }
         if (value instanceof String) {
             String strValue = (String)value;
-            m_textBox.setValue(strValue, true);
-            creatFaider();
+            m_selectionInput.m_textbox.setText(strValue);
             setTitle(strValue);
         }
 
@@ -419,27 +296,13 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
     }
 
     /**
-     * Sets the link from a bean.<p>
-     * 
-     * @param link the link bean 
-     */
-    public void setLinkBean(CmsLinkBean link) {
-
-        if (link == null) {
-            link = new CmsLinkBean("", true);
-        }
-        m_textBox.setValue(link.getLink());
-
-    }
-
-    /**
      * Sets the name of the input field.<p>
      * 
      * @param name of the input field
      * */
     public void setName(String name) {
 
-        m_textBox.setName(name);
+        m_selectionInput.m_textbox.setName(name);
 
     }
 
@@ -465,7 +328,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
      */
     public void setText(String text) {
 
-        m_textBox.setValue(text);
+        setFormValueAsString(text);
     }
 
     /**
@@ -474,11 +337,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
     @Override
     public void setTitle(String title) {
 
-        if ((title.length() * 6.88) > m_panel.getOffsetWidth()) {
-            m_textBox.getElement().setTitle(title);
-        } else {
-            m_textBox.getElement().setTitle("");
-        }
+        m_selectionInput.m_textbox.getElement().setTitle(title);
     }
 
     /**
@@ -503,7 +362,6 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
             basePath += "&oufqn=" + m_ouFqn;
         }
 
-        //basePath += "&gwt.codesvr=127.0.0.1:9996"; //to start the hosted mode just remove commentary  
         return CmsCoreProvider.get().link(basePath);
     }
 
@@ -511,27 +369,16 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
      * Opens the Group selection.
      * 
      * @param url the url of the popup
-     * @param title the title of the popup
-     * */
-    native void openNative(String url, String title) /*-{
-        $wnd
-                .open(
-                        url,
-                        title,
-                        'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=150,left=260,width=650,height=450');
-        var self = this;
-        $wnd.setGroupFormValue = function(value) {
-            self.@org.opencms.gwt.client.ui.input.CmsGroupSelection::setFormValueAsString(Ljava/lang/String;)(value);
-        };
-    }-*/;
-
-    /**
-     * Adds the fader if necessary.<p> 
-     * */
-    private void creatFaider() {
-
-        if ((m_textBox.getValue().length() * 6.88) > m_textBox.getOffsetWidth()) {
-            m_textBoxContainer.add(m_fadePanel);
-        }
-    }
+     **/
+    native void openNative(String url) /*-{
+                                                     $wnd
+                                                     .open(
+                                                     url,
+                                                     'group_select_popup',
+                                                     'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=150,left=260,width=650,height=450');
+                                                     var self = this;
+                                                     $wnd.setGroupFormValue = function(value) {
+                                                     self.@org.opencms.gwt.client.ui.input.CmsGroupSelection::setFormValueAsString(Ljava/lang/String;)(value);
+                                                     };
+                                                     }-*/;
 }

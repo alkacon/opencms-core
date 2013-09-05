@@ -9,12 +9,12 @@
 	<ui:with field="gallery" type="org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle" />
 <g:HTMLPanel styleName="{gallery.galleryFieldCss.galleryField}">
 	<div class="{gallery.galleryFieldCss.imagePreview} {main.generalCss.cornerAll}"><div ui:field="m_imagePreview"></div></div>
-	<div ui:field="m_fieldBox" class="{gallery.galleryFieldCss.fieldBox} {main.generalCss.cornerAll}">
+	<div ui:field="m_fieldBox" class="{gallery.galleryFieldCss.fieldBox} {input.inputCss.selectionInput} {main.generalCss.cornerAll}">
 		<div class="{gallery.galleryFieldCss.inputContainer}">
 			<input:CmsSimpleTextBox ui:field="m_textbox" />
 		</div>
 		<cms:CmsPushButton ui:field="m_opener" addStyleNames="{gallery.galleryFieldCss.opener}"/>
-		<g:Label ui:field="m_fader" styleName="{input.inputCss.vfsInputBoxFader}" addStyleNames="{gallery.galleryFieldCss.fader}" />
+		<g:Label ui:field="m_fader" styleName="{input.inputCss.fader}"/>
 	</div>
 	<g:FlowPanel ui:field="m_resourceInfoPanel" styleName="{gallery.galleryFieldCss.resourceInfo}" />
 </g:HTMLPanel>

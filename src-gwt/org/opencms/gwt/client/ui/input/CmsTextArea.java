@@ -101,10 +101,13 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
 
         super();
         initWidget(m_panel);
+        m_panel.setStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().textArea());
+        m_textAreaContainer.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().textAreaBoxPanel());
+        m_textArea.setStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().textAreaBox());
+        m_fadePanel.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().fader());
         m_panel.add(m_textAreaContainer);
         m_textAreaContainer.setResizable(true);
         m_textAreaContainer.getElement().getStyle().setHeight(m_textArea.getOffsetHeight(), Unit.PX);
-        m_fadePanel.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().inputTextAreaFader());
         m_textAreaContainer.add(m_textArea);
         m_fadePanel.addDomHandler(new ClickHandler() {
 

@@ -80,18 +80,6 @@ div.resizeButton{
 	}
 }
 
-/** Button styles for vfs selection.*/
-div.openVfsButton{
-    bottom: 12px;
-    cursor: pointer;
-    height: 12px;
-    padding: 0;
-    position: absolute;
-    right: 8px;
-    width: 12px;
-    background: transparent;
-}
-
 /** Button size styles. */
 div.cmsButtonMedium div.html-face {
 	font-size: value("constants.css.fontSize");

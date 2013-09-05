@@ -50,7 +50,9 @@ textarea.textAreaBox {
 	padding: 3px 0 0 3px;
 	outline:none;
 }
-
+div.inActive div.textAreaBoxPanel{
+	height: 18px !important;
+}
 div.textAreaBoxPanel{
 	border: 1px solid #7788AA;
 	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
@@ -60,45 +62,28 @@ div.textAreaBoxPanel{
 div.vfsInputBox{
 	border: 1px solid #7788AA;
 	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
-	border-radius: value("constants.css.borderRadius");
-	display: block;
-	width: auto;
-	padding: 0px 4px;
-	height: 18px;
-	font-size: 12px;
-}
-div.vfsInputBox input{
-	border: none;
-	font-family: value("constants.css.fontFamily");
-	border-radius: value("constants.css.borderRadius");
-	color: value("constants.css.textColor");
-	width: 98%;
-	height: 18px;
-	font-size: 12px;
-	box-shadow: none;
-	padding: 0px 0px;
-	outline:none;
 }
 
-input.textBox{
+div.textBox{
 	border: 1px solid #7788AA;
 	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
 	border-radius: value("constants.css.borderRadius");
 	font-family: value("constants.css.fontFamily");
+	padding: 0px 4px;
+	margin: 0px;
+}
+div.textBox > input{
+	width:100%;
+	outline:none;
 	display: block;
 	color: value("constants.css.textColor");
 	box-shadow: none;
-	width: 100%;
-	padding: 0px 4px;
-	margin: 0px;
-	line-height: value("constants.css.lineHeight");
-	height: 18px;
-	font-size: value("constants.css.fontSize");
-	outline:none;
-	display: inline;
 	vertical-align: baseline;
+	height: 18px;
+	line-height: value("constants.css.lineHeight");
+	border-radius: value("constants.css.borderRadius");
+	font-size: value("constants.css.fontSize");
 }
-
 
 .passwordTextBox{
 	border: 1px solid #7788AA;
@@ -181,7 +166,7 @@ input.comboBoxInput {
     color: value("constants.css.textColor");
     display: block;
     height: 16px;
-    width: 97.6%;
+    width: 100%;
     font-size: 12px;
     padding-top: 1px;
     outline:none;
@@ -259,8 +244,7 @@ div.colorPicker{
     cursor: pointer;
     display: block;
     height: 18px;
-    position: relative;
-    float: left;
+    float:left;
     width: 100px;
 }
 
@@ -304,20 +288,20 @@ div.colorPicker{
 	border: 1px solid value("constants.css.borderColor");
 	background: none repeat scroll 0 0 transparent;
 }
-.emptyValue div.textAreaBoxPanel , .emptyValue .categoryPanel, .emptyValue input.textBox, .emptyValue div.vfsInputBox{
+.emptyValue div.textAreaBoxPanel , .emptyValue .categoryPanel, .emptyValue div.textBox, .emptyValue div.vfsInputBox{
 	border: 1px solid value("constants.css.borderColor");
 }
 
 
 /** The "has error" parameters. */
 
-.hasError div.selectBoxSelected, .hasError .radioButtonPanel, .hasError.inputField, .hasError div.textAreaBoxPanel, .hasError input.textBox, .hasError div.calendarStyle, .hasError input.passwordTextBox, .hasError .colorPickerValue, .hasError .colorPicker, .hasError .vfsInputBox{
+.hasError div.selectBoxSelected, .hasError .radioButtonPanel, .hasError.inputField, .hasError div.textAreaBoxPanel, .hasError div.textBox, .hasError div.calendarStyle, .hasError input.passwordTextBox, .hasError .colorPickerValue, .hasError .colorPicker, .hasError .vfsInputBox{
 	border: 1px solid value("constants.css.borderColorHighlight");
 }
 
 /** The "has warning" parameters. */
 
-.hasWarning div.selectBoxSelected, .hasWarning .radioButtonPanel, .hasWarning.inputField, .hasWarning div.textAreaBoxPanel, .hasWarning input.textBox, .hasWarning div.calendarStyle, .hasWarning input.passwordTextBox, .hasWarning .colorPickerValue, .hasWarning .colorPicker, .hasWarning .vfsInputBox {
+.hasWarning div.selectBoxSelected, .hasWarning .radioButtonPanel, .hasWarning.inputField, .hasWarning div.textAreaBoxPanel, .hasWarning div.textBox, .hasWarning div.calendarStyle, .hasWarning input.passwordTextBox, .hasWarning .colorPickerValue, .hasWarning .colorPicker, .hasWarning .vfsInputBox {
 	border: 1px solid #FFAA00;
 }
 
@@ -329,25 +313,14 @@ div.colorPicker{
 .entity .checkBoxStyle .widget{
 	top: 9px;
 }
-.entity .entity .checkBoxStyle .widget{
-	top: 10px;
-}
-
-.entity .entity .entity .checkBoxStyle .widget{
-	top: 8px;
-}
-
-.entity .entity .entity .entity .checkBoxStyle .widget{
-	top: 7px;
-}
 
 /** The "drag helper" parameters. */
 .dragHelper .checkBoxStyle .label{
-	margin: 4px 3px 2px 20px;
+	margin: 0px 3px 0px 20px;
 }
 .dragHelper .checkBoxStyle .widget{
 	position: absolute;
-	top: 5px;
+	top: 9px;
 }
 
 .dragHelper .radioButtonPanel {
@@ -371,7 +344,15 @@ div.colorPicker{
 	
 .emptyValue{}
 
-.inputField{}
+div.inputField{
+	margin-right: 12px;
+	position: relative;
+}
+
+div.inputField>div{
+	bottom:1px;
+	right:2px;
+}
 
 .hasError{}
 

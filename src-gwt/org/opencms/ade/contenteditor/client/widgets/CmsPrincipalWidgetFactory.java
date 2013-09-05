@@ -64,7 +64,7 @@ public class CmsPrincipalWidgetFactory implements I_WidgetFactory, I_CmsHasInit 
         return new FormWidgetWrapper(new CmsVfsWidget(
             configuration,
             CmsVfsSelection.PRINCIPAL,
-            I_CmsImageBundle.INSTANCE.style().tableGalleryIcon()));
+            I_CmsImageBundle.INSTANCE.style().popupIcon()));
     }
 
     /**

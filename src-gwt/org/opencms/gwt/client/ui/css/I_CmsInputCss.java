@@ -131,6 +131,13 @@ public interface I_CmsInputCss extends I_CmsGlobalWidgetCss {
      * 
      * @return the css class
      */
+    String fader();
+
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
     String formDescriptionLabel();
 
     /**
@@ -208,27 +215,6 @@ public interface I_CmsInputCss extends I_CmsGlobalWidgetCss {
      * 
      * @return the css class
      */
-    String inputBoxFader();
-
-    /**
-     * Css class reader.<p>
-     * 
-     * @return the css class
-     */
-    String inputTextAreaFader();
-
-    /**
-     * Css class reader.<p>
-     * 
-     * @return the css class
-     */
-    String inputTextBoxFader();
-
-    /**
-     * Css class reader.<p>
-     * 
-     * @return the css class
-     */
     String label();
 
     /**
@@ -265,6 +251,13 @@ public interface I_CmsInputCss extends I_CmsGlobalWidgetCss {
      * @return the css class
      */
     String multiCheckboxPanel();
+
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
+    String opener();
 
     /**
      * Css class reader.<p>
@@ -375,13 +368,6 @@ public interface I_CmsInputCss extends I_CmsGlobalWidgetCss {
     String textArea();
 
     /**
-     * Css class reader.<p>
-     * 
-     * @return the css class
-     */
-    String textAreaContainer();
-
-    /**
      * Css class reader. <p>
      * 
      * @return the css class
@@ -442,7 +428,7 @@ public interface I_CmsInputCss extends I_CmsGlobalWidgetCss {
      * 
      * @return the css class
      */
-    String vfsInputBoxFader();
+    String selectionInput();
 
     /**
      * Css class reader.<p>

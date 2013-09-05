@@ -65,7 +65,7 @@ public class CmsHtmlGalleryWidgetFactory implements I_WidgetFactory, I_CmsHasIni
         return new FormWidgetWrapper(new CmsVfsWidget(
             configuration,
             CmsVfsSelection.HTML,
-            I_CmsImageBundle.INSTANCE.style().htmlGalleryIcon()));
+            I_CmsImageBundle.INSTANCE.style().popupIcon()));
     }
 
     /**

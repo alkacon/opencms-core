@@ -100,9 +100,6 @@ public class CmsPasswordWidget extends Composite implements I_EditWidget {
      */
     public void fireChangeEvent() {
 
-        if ((m_passwordTextBox.getValue() == "")) {
-            m_passwordTextBox.setValue("");
-        }
         ValueChangeEvent.fire(this, m_passwordTextBox.getValue());
     }
 
