@@ -216,6 +216,9 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         });
     }
 
+    /**
+     * @see com.google.gwt.event.dom.client.HasFocusHandlers#addFocusHandler(com.google.gwt.event.dom.client.FocusHandler)
+     */
     public HandlerRegistration addFocusHandler(FocusHandler handler) {
 
         return addDomHandler(handler, FocusEvent.getType());
