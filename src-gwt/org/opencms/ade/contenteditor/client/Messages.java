@@ -163,6 +163,9 @@ public final class Messages {
     public static final String GUI_VIEW_DELETE_0 = "GUI_VIEW_DELETE_0"; //Acacia message: Delete
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_VIEW_EDIT_0 = "GUI_VIEW_EDIT_0"; //Acacia message: Edit
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_VIEW_MOVE_0 = "GUI_VIEW_MOVE_0"; //Acacia message: Move
 
     /** Message constant for key in the resource bundle. */

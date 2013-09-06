@@ -138,8 +138,8 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
         super();
 
         initWidget(m_panel);
-        m_panel.add(m_textboxpanel);
         m_panel.add(m_colorField);
+        m_panel.add(m_textboxpanel);
         m_panel.add(m_error);
         m_textboxpanel.add(m_textboxColorValue);
 

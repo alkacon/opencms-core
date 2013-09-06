@@ -171,9 +171,6 @@ public final class CmsContentEditor extends EditorBase {
     /** Flag indicating the resource needs to removed on cancel. */
     private boolean m_deleteOnCancel;
 
-    /** The id of the edited entity. */
-    private String m_entityId;
-
     /** The entity observer instance. */
     private CmsEntityObserver m_entityObserver;
 
@@ -450,16 +447,6 @@ public final class CmsContentEditor extends EditorBase {
                 cancelEdit();
             }
         }
-    }
-
-    /**
-     * Returns the currently edited entity.<p>
-     * 
-     * @return the currently edited entity
-     */
-    public Entity getCurrentEntity() {
-
-        return (Entity)m_vie.getEntity(m_entityId);
     }
 
     /**
@@ -1172,6 +1159,24 @@ public final class CmsContentEditor extends EditorBase {
             CmsNotification.get().send(Type.NORMAL, Messages.get().key(Messages.GUI_WARN_INVALID_XML_STRUCTURE_0));
             setChanged();
         }
+    }
+
+    /**
+     * @see com.alkacon.acacia.client.EditorBase#getHtmlContextInfo()
+     */
+    @Override
+    protected String getHtmlContextInfo() {
+
+        return m_context.getHtmlContextInfo();
+    }
+
+    /**
+     * @see com.alkacon.acacia.client.EditorBase#getContextUri()
+     */
+    @Override
+    protected String getContextUri() {
+
+        return CmsCoreProvider.get().getUri();
     }
 
     /**

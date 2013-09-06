@@ -29,6 +29,7 @@ package org.opencms.ade.contenteditor;
 
 import com.alkacon.acacia.shared.ContentDefinition;
 import com.alkacon.acacia.shared.Entity;
+import com.alkacon.acacia.shared.EntityHtml;
 import com.alkacon.acacia.shared.Type;
 import com.alkacon.acacia.shared.ValidationResult;
 import com.alkacon.vie.shared.I_Entity;
@@ -36,6 +37,7 @@ import com.alkacon.vie.shared.I_EntityAttribute;
 import com.alkacon.vie.shared.I_Type;
 
 import org.opencms.ade.containerpage.CmsContainerpageService;
+import org.opencms.ade.containerpage.CmsElementUtil;
 import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
 import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService;
 import org.opencms.file.CmsFile;
@@ -51,6 +53,7 @@ import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.shared.CmsModelResourceInfo;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.json.JSONObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -395,6 +398,52 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     public ValidationResult saveEntity(Entity entity) throws CmsRpcException {
 
         return saveEntities(Collections.singletonList(entity));
+    }
+
+    /**
+     * @see com.alkacon.acacia.shared.rpc.I_ContentService#updateEntityHtml(com.alkacon.acacia.shared.Entity, java.lang.String, java.lang.String)
+     */
+    public EntityHtml updateEntityHtml(Entity entity, String contextUri, String htmlContextInfo) throws Exception {
+
+        CmsUUID structureId = CmsContentDefinition.entityIdToUuid(entity.getId());
+        if (structureId != null) {
+            CmsObject cms = getCmsObject();
+            try {
+                CmsResource resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+                CmsFile file = cms.readFile(resource);
+                CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
+                String entityId = entity.getId();
+                Locale contentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(entityId));
+                if (content.hasLocale(contentLocale)) {
+                    content.removeLocale(contentLocale);
+                }
+                content.addLocale(cms, contentLocale);
+                addEntityAttributes(cms, content, "", entity, contentLocale);
+                ValidationResult validationResult = validateContent(cms, structureId, content);
+                String htmlContent = null;
+                if (!validationResult.hasErrors()) {
+                    file.setContents(content.marshal());
+                    CmsElementUtil elementUtil = new CmsElementUtil(
+                        cms,
+                        contextUri,
+                        getThreadLocalRequest(),
+                        getThreadLocalResponse(),
+                        contentLocale);
+                    JSONObject contextInfo = new JSONObject(htmlContextInfo);
+                    htmlContent = elementUtil.getContentByContainer(
+                        file,
+                        contextInfo.getString("elementId"),
+                        contextInfo.getString("containerName"),
+                        contextInfo.getString("containerType"),
+                        contextInfo.getInt("containerWidth"));
+                }
+                return new EntityHtml(htmlContent, validationResult);
+
+            } catch (Exception e) {
+                error(e);
+            }
+        }
+        return null;
     }
 
     /**

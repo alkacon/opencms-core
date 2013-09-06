@@ -54,7 +54,7 @@ import java.util.Map;
  * 
  * @since 8.0
  */
-public class CmsContainerElementBean {
+public class CmsContainerElementBean implements Cloneable {
 
     /** Flag indicating if a new element should be created replacing the given one on first edit of a container-page. */
     private final boolean m_createNew;
@@ -89,6 +89,9 @@ public class CmsContainerElementBean {
     /** The element site path, only set while rendering. */
     private String m_sitePath;
 
+    /** Indicates the element bean has a temporary file content set. */
+    private boolean m_temporaryContent;
+
     /**
      * Creates a new container page element bean.<p> 
      *  
@@ -116,6 +119,47 @@ public class CmsContainerElementBean {
         }
         m_editorHash = clientId;
         m_createNew = createNew;
+    }
+
+    /**
+     * Cloning constructor.<p>
+     * 
+     * @param createNew create new flag
+     * @param elementId element id
+     * @param formatterId formatter id
+     * @param individualSettings individual settings
+     * @param inheritanceInfo inheritance info
+     * @param inMemoryOnly in memory only flag
+     * @param temporaryContent temporary content flag
+     * @param releasedAndNotExpired released and not expired flag
+     * @param resource the resource/file object
+     * @param settings the settings
+     * @param sitePath the site path
+     */
+    private CmsContainerElementBean(
+        boolean createNew,
+        CmsUUID elementId,
+        CmsUUID formatterId,
+        Map<String, String> individualSettings,
+        CmsInheritanceInfo inheritanceInfo,
+        boolean inMemoryOnly,
+        boolean temporaryContent,
+        boolean releasedAndNotExpired,
+        CmsResource resource,
+        Map<String, String> settings,
+        String sitePath) {
+
+        m_createNew = createNew;
+        m_elementId = elementId;
+        m_formatterId = formatterId;
+        m_individualSettings = Collections.unmodifiableMap(individualSettings);
+        m_inheritanceInfo = inheritanceInfo;
+        m_inMemoryOnly = inMemoryOnly;
+        m_releasedAndNotExpired = releasedAndNotExpired;
+        m_resource = resource;
+        m_settings = settings;
+        m_sitePath = sitePath;
+        m_temporaryContent = temporaryContent;
     }
 
     /**
@@ -222,6 +266,26 @@ public class CmsContainerElementBean {
             0,
             content);
         return elementBean;
+    }
+
+    /**
+     * @see java.lang.Object#clone()
+     */
+    @Override
+    public CmsContainerElementBean clone() {
+
+        return new CmsContainerElementBean(
+            m_createNew,
+            m_elementId,
+            m_formatterId,
+            m_individualSettings,
+            m_inheritanceInfo,
+            m_inMemoryOnly,
+            m_temporaryContent,
+            m_releasedAndNotExpired,
+            m_resource,
+            m_settings,
+            m_sitePath);
     }
 
     /**
@@ -361,7 +425,9 @@ public class CmsContainerElementBean {
                 m_resource = cms.readResource(getId());
                 m_releasedAndNotExpired = true;
             } else {
-                m_resource = cms.readResource(getId(), CmsResourceFilter.IGNORE_EXPIRATION);
+                if (!isTemporaryContent()) {
+                    m_resource = cms.readResource(getId(), CmsResourceFilter.IGNORE_EXPIRATION);
+                }
                 m_releasedAndNotExpired = m_resource.isReleasedAndNotExpired(cms.getRequestContext().getRequestTime());
             }
         }
@@ -438,6 +504,16 @@ public class CmsContainerElementBean {
     }
 
     /**
+     * Returns if the element resource contains temporary file content.<p>
+     * 
+     * @return <code>true</code> if the element resource contains temporary file content
+     */
+    public boolean isTemporaryContent() {
+
+        return m_temporaryContent;
+    }
+
+    /**
      * Sets the inheritance info for this element.<p>
      * 
      * @param inheritanceInfo the inheritance info
@@ -445,6 +521,17 @@ public class CmsContainerElementBean {
     public void setInheritanceInfo(CmsInheritanceInfo inheritanceInfo) {
 
         m_inheritanceInfo = inheritanceInfo;
+    }
+
+    /**
+     * Sets the element resource as a temporary file.<p>
+     * 
+     * @param elementFile the temporary file
+     */
+    public void setTemporaryFile(CmsFile elementFile) {
+
+        m_resource = elementFile;
+        m_temporaryContent = true;
     }
 
     /**

@@ -90,7 +90,6 @@ div.textBox > input{
 	font-size: value("constants.css.fontSize");
 }
 
-
 .passwordTextBox{
 	border: 1px solid #7788AA;
 	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
@@ -250,8 +249,7 @@ div.colorPicker{
     cursor: pointer;
     display: block;
     height: 18px;
-    position: relative;
-    top: -20px;
+    float:left;
     width: 100px;
 }
 

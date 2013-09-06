@@ -37,6 +37,7 @@ import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.containerpage.shared.CmsInheritanceInfo;
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -191,6 +192,39 @@ public class CmsElementUtil {
     }
 
     /**
+     * Returns the HTML content for the given resource and container.<p>
+     * 
+     * @param elementFile the element resource file
+     * @param elementId the element id
+     * @param containerName the container name
+     * @param containerType the container type
+     * @param containerWidth the container width
+     * 
+     * @return the HTML content
+     */
+    public String getContentByContainer(
+        CmsFile elementFile,
+        String elementId,
+        String containerName,
+        String containerType,
+        int containerWidth) {
+
+        CmsContainerElementBean element = CmsADESessionCache.getCache(m_req, m_cms).getCacheContainerElement(elementId);
+        element = element.clone();
+        element.setTemporaryFile(elementFile);
+        CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(
+            m_cms,
+            m_cms.addSiteRoot(m_currentPageUri));
+        CmsFormatterConfiguration configs = adeConfig.getFormatters(m_cms, element.getResource());
+        return getContentByContainer(element, new CmsContainer(
+            containerName,
+            containerType,
+            containerWidth,
+            1,
+            Collections.<CmsContainerElement> emptyList()), configs);
+    }
+
+    /**
      * Returns the rendered element content for all the given containers.
      *  
      * @param element the element to render
@@ -208,19 +242,10 @@ public class CmsElementUtil {
         CmsFormatterConfiguration configs = adeConfig.getFormatters(m_cms, element.getResource());
         Map<String, String> result = new HashMap<String, String>();
         for (CmsContainer container : containers) {
-            String name = container.getName();
-            CmsFormatterBean formatter = configs.getFormatter(container.getType(), container.getWidth());
-            if (formatter != null) {
-                String content = null;
-                try {
-                    content = getElementContent(element, m_cms.readResource(formatter.getJspStructureId()), container);
-                } catch (Exception e) {
-                    LOG.error(e.getLocalizedMessage(), e);
-                }
-                if (content != null) {
-                    content = removeScriptTags(content);
-                    result.put(name, content);
-                }
+            String content = getContentByContainer(element, container, configs);
+            if (content != null) {
+                content = removeScriptTags(content);
+                result.put(container.getName(), content);
             }
         }
         return result;
@@ -438,6 +463,35 @@ public class CmsElementUtil {
         result.setReleasedAndNotExpired(elementBean.isReleasedAndNotExpired());
         result.setNoEditReason(noEditReason);
         return result;
+    }
+
+    /**
+     * Returns the HTML content of the given element and container.<p>
+     *  
+     * @param element the element
+     * @param container the container
+     * @param configs the formatter configurations
+     * 
+     * @return the HTML content
+     */
+    private String getContentByContainer(
+        CmsContainerElementBean element,
+        CmsContainer container,
+        CmsFormatterConfiguration configs) {
+
+        String content = null;
+        CmsFormatterBean formatter = configs.getFormatter(container.getType(), container.getWidth());
+        if (formatter != null) {
+            try {
+                content = getElementContent(element, m_cms.readResource(formatter.getJspStructureId()), container);
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+            if (content != null) {
+                content = removeScriptTags(content);
+            }
+        }
+        return content;
     }
 
     /**

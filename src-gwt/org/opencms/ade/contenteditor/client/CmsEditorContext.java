@@ -35,6 +35,9 @@ import java.util.Map;
  */
 public class CmsEditorContext {
 
+    /** The HTML context info. */
+    private String m_htmlContextInfo;
+
     /** The parameters for the publish function in the Acacia editor. */
     private Map<String, String> m_publishParameters = new HashMap<String, String>();
 
@@ -44,6 +47,16 @@ public class CmsEditorContext {
     public CmsEditorContext() {
 
         // do nothing
+    }
+
+    /**
+     * Returns the HTML context info.<p>
+     *
+     * @return the HTML context info
+     */
+    public String getHtmlContextInfo() {
+
+        return m_htmlContextInfo;
     }
 
     /**
@@ -57,6 +70,16 @@ public class CmsEditorContext {
     }
 
     /**
+     * Sets the HTML context info.<p>
+     *
+     * @param htmlContextInfo the HTML context info to set
+     */
+    public void setHtmlContextInfo(String htmlContextInfo) {
+
+        m_htmlContextInfo = htmlContextInfo;
+    }
+
+    /**
      * Sets the additional publish parameters for the publish functionality in the Acacia editor.<p>
      * 
      * @param publishParams the additional publish parameters 
@@ -65,5 +88,4 @@ public class CmsEditorContext {
 
         m_publishParameters = publishParams;
     }
-
 }

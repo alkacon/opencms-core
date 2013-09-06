@@ -496,6 +496,20 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
     }
 
     /**
+     * @see com.alkacon.acacia.client.I_InlineFormParent#replaceHtml(java.lang.String)
+     */
+    public void replaceHtml(String html) {
+
+        // detach all children first
+        while (getChildren().size() > 0) {
+            getChildren().get(getChildren().size() - 1).removeFromParent();
+        }
+        Element tempDiv = DOM.createDiv();
+        tempDiv.setInnerHTML(html);
+        getElement().setInnerHTML(tempDiv.getFirstChildElement().getInnerHTML());
+    }
+
+    /**
      * Sets the elementOptionBar.<p>
      *
      * @param elementOptionBar the elementOptionBar to set
@@ -850,5 +864,4 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
             insert(m_elementOptionBar, 0);
         }
     }
-
 }

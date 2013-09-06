@@ -27,6 +27,7 @@
 
 package org.opencms.ade.containerpage.client;
 
+import org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
 import org.opencms.ade.contenteditor.client.CmsContentEditor;
 import org.opencms.ade.contenteditor.client.CmsEditorContext;
@@ -136,8 +137,20 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
             };
             if (inline && CmsContentEditor.hasEditable(element.getElement())) {
                 addEditingHistoryItem(true);
+                CmsEditorContext context = getEditorContext();
+                CmsContainerPageContainer container = (CmsContainerPageContainer)element.getParentTarget();
+
+                context.setHtmlContextInfo("{elementId:'"
+                    + element.getId()
+                    + "', containerName:'"
+                    + container.getContainerId()
+                    + "', containerType: '"
+                    + container.getContainerType()
+                    + "', containerWidth: "
+                    + container.getOffsetWidth()
+                    + "}");
                 CmsContentEditor.getInstance().openInlineEditor(
-                    getEditorContext(),
+                    context,
                     new CmsUUID(serverId),
                     editorLocale,
                     element,
