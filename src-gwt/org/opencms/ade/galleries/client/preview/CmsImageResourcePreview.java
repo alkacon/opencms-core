@@ -229,7 +229,10 @@ public final class CmsImageResourcePreview extends A_CmsResourcePreview<CmsImage
                 param = getInitialCroppingParameter(resourcePath);
                 attributes.put("width", String.valueOf(param.getResultingWidth()));
                 attributes.put("height", String.valueOf(param.getResultingHeight()));
-                CmsPreviewUtil.setImage(CmsCoreProvider.get().link(resourcePath), attributes);
+                CmsPreviewUtil.setImage(
+                    CmsCoreProvider.get().link(resourcePath)
+                        + (param.isScaled() ? "?" + param.toString() + ",c:transparent" : ""),
+                    attributes);
                 CmsPreviewUtil.closeDialog();
                 break;
             case ade:
@@ -278,9 +281,9 @@ public final class CmsImageResourcePreview extends A_CmsResourcePreview<CmsImage
                 CmsPreviewUtil.setImage(
                     CmsCoreProvider.get().link(
                         m_infoBean.getResourcePath()
-                            + ((croppingParam.isCropped() || croppingParam.isScaled())
-                            ? "?" + croppingParam.toString()
-                            : "")),
+                            + ((croppingParam.isCropped() || croppingParam.isScaled()) ? "?"
+                                + croppingParam.toString()
+                                + ",c:transparent" : "")),
                     attributes);
                 break;
             case ade:
