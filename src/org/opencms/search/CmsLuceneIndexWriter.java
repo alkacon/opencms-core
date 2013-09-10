@@ -27,6 +27,7 @@
 
 package org.opencms.search;
 
+import org.opencms.db.CmsPublishedResource;
 import org.opencms.main.CmsLog;
 import org.opencms.search.fields.CmsSearchField;
 
@@ -123,16 +124,16 @@ public class CmsLuceneIndexWriter implements I_CmsIndexWriter {
     }
 
     /**
-     * @see org.opencms.search.I_CmsIndexWriter#deleteDocuments(java.lang.String)
+     * @see org.opencms.search.I_CmsIndexWriter#deleteDocuments(org.opencms.db.CmsPublishedResource)
      */
-    public void deleteDocuments(String rootPath) throws IOException {
+    public void deleteDocuments(CmsPublishedResource resource) throws IOException {
 
         // search for an exact match on the document root path
-        Term term = new Term(CmsSearchField.FIELD_PATH, rootPath);
+        Term term = new Term(CmsSearchField.FIELD_PATH, resource.getRootPath());
         if ((m_index != null) && LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(
                 Messages.LOG_INDEX_WRITER_MSG_DOC_DELETE_3,
-                rootPath,
+                resource.getRootPath(),
                 m_index.getName(),
                 m_index.getPath()));
         }

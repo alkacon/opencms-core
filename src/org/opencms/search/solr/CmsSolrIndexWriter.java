@@ -31,11 +31,11 @@
 
 package org.opencms.search.solr;
 
+import org.opencms.db.CmsPublishedResource;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.I_CmsIndexWriter;
 import org.opencms.search.I_CmsSearchDocument;
-import org.opencms.search.fields.CmsSearchField;
 
 import java.io.IOException;
 
@@ -141,18 +141,18 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
     }
 
     /**
-     * @see org.opencms.search.I_CmsIndexWriter#deleteDocuments(java.lang.String)
+     * @see org.opencms.search.I_CmsIndexWriter#deleteDocuments(org.opencms.db.CmsPublishedResource)
      */
-    public void deleteDocuments(String rootPath) throws IOException {
+    public void deleteDocuments(CmsPublishedResource resource) throws IOException {
 
         if ((m_server != null) && (m_index != null)) {
             try {
                 LOG.info(Messages.get().getBundle().key(
                     Messages.LOG_SOLR_WRITER_DOC_DELETE_3,
-                    rootPath,
+                    resource.getRootPath(),
                     m_index.getName(),
                     m_index.getPath()));
-                m_server.deleteByQuery(CmsSearchField.FIELD_PATH + ":\"" + rootPath + "\"");
+                m_server.deleteById(resource.getStructureId().toString());
             } catch (SolrServerException e) {
                 throw new IOException(e.getLocalizedMessage(), e);
             } catch (SolrException e) {
