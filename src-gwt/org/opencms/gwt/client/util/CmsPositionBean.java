@@ -139,10 +139,11 @@ public class CmsPositionBean {
      * If the panel has no visible child elements, it's outer dimensions are returned.<p>
      * 
      * @param panel the panel
+     * @param levels the levels to traverse down the DOM tree
      * 
      * @return the position info
      */
-    public static CmsPositionBean getInnerDimensions(Element panel) {
+    private static CmsPositionBean getInnerDimensions(Element panel, int levels) {
 
         boolean first = true;
         int top = 0;
@@ -154,20 +155,23 @@ public class CmsPositionBean {
             String positioning = CmsDomUtil.getCurrentStyle(child, Style.position);
             if (!Display.NONE.getCssName().equals(CmsDomUtil.getCurrentStyle(child, Style.display))
                 && !(positioning.equalsIgnoreCase(Position.ABSOLUTE.getCssName()) || positioning.equalsIgnoreCase(Position.FIXED.getCssName()))) {
+                CmsPositionBean childDimensions = levels > 0
+                ? getInnerDimensions(child, levels - 1)
+                : generatePositionInfo(panel);
                 if (first) {
                     first = false;
-                    top = child.getAbsoluteTop();
-                    left = child.getAbsoluteLeft();
-                    bottom = top + child.getOffsetHeight();
-                    right = left + child.getOffsetWidth();
+                    top = childDimensions.getTop();
+                    left = childDimensions.getLeft();
+                    bottom = top + childDimensions.getHeight();
+                    right = left + childDimensions.getWidth();
                 } else {
-                    int wTop = child.getAbsoluteTop();
+                    int wTop = childDimensions.getTop();
                     top = top < wTop ? top : wTop;
-                    int wLeft = child.getAbsoluteLeft();
+                    int wLeft = childDimensions.getLeft();
                     left = left < wLeft ? left : wLeft;
-                    int wBottom = wTop + child.getOffsetHeight();
+                    int wBottom = wTop + childDimensions.getHeight();
                     bottom = bottom > wBottom ? bottom : wBottom;
-                    int wRight = wLeft + child.getOffsetWidth();
+                    int wRight = wLeft + childDimensions.getWidth();
                     right = right > wRight ? right : wRight;
                 }
             }
@@ -186,6 +190,19 @@ public class CmsPositionBean {
     }
 
     /**
+     * Returns a position info representing the dimensions of all visible child elements of the given panel (excluding elements with position:absolute).
+     * If the panel has no visible child elements, it's outer dimensions are returned.<p>
+     * 
+     * @param panel the panel
+     * 
+     * @return the position info
+     */
+    public static CmsPositionBean getInnerDimensions(Element panel) {
+
+        return getInnerDimensions(panel, 1);
+    }
+
+    /**
      * Returns over which area of this the given position is. Will return <code>null</code> if the provided position is not within this position.<p>
      *  
      * @param absLeft the left position
@@ -197,34 +214,34 @@ public class CmsPositionBean {
     public Area getArea(int absLeft, int absTop, int offset) {
 
         if (isOverElement(absLeft, absTop)) {
-            if (absLeft < m_left + 10) {
+            if (absLeft < (m_left + 10)) {
                 // left border
-                if (absTop < m_top + offset) {
+                if (absTop < (m_top + offset)) {
                     // top left corner
                     return Area.CORNER_TOP_LEFT;
-                } else if (absTop > m_top + m_height - offset) {
+                } else if (absTop > ((m_top + m_height) - offset)) {
                     // bottom left corner
                     return Area.CORNER_BOTTOM_LEFT;
                 }
                 return Area.BORDER_LEFT;
             }
-            if (absLeft > m_left + m_width - offset) {
+            if (absLeft > ((m_left + m_width) - offset)) {
                 // right border
-                if (absTop < m_top + offset) {
+                if (absTop < (m_top + offset)) {
                     // top right corner
                     return Area.CORNER_TOP_RIGHT;
                     // fixing opposite corner
-                } else if (absTop > m_top + m_height - offset) {
+                } else if (absTop > ((m_top + m_height) - offset)) {
                     // bottom right corner
                     return Area.CORNER_BOTTOM_RIGHT;
                     // fixing opposite corner
                 }
                 return Area.BORDER_RIGHT;
             }
-            if (absTop < m_top + offset) {
+            if (absTop < (m_top + offset)) {
                 // border top
                 return Area.BORDER_TOP;
-            } else if (absTop > m_top + m_height - offset) {
+            } else if (absTop > ((m_top + m_height) - offset)) {
                 // border bottom
                 return Area.BORDER_BOTTOM;
             }
