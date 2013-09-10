@@ -305,8 +305,8 @@ allModuleNames.split(',').each{ moduleName ->
     
     if (gwtModule != null){
         task "gwt_$moduleName" (dependsOn: gwtClasses, type: JavaExec) {
-            ext.buildDir =  "${project.buildDir}/gwt/$moduleName"
-            ext.extraDir =  "${project.buildDir}/extra/$moduleName"
+            ext.buildDir =  project.buildDir.toString()  +"/gwt/$moduleName"
+            ext.extraDir =  project.buildDir.toString() + "/extra/$moduleName"
             inputs.source sourceSets.gwt.java.srcDirs
             inputs.dir sourceSets.gwt.output.resourcesDir
             outputs.dir buildDir
