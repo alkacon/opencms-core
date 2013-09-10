@@ -14,6 +14,37 @@
     <short-name>cms</short-name>
     <uri>http://www.opencms.org/taglib/cms</uri>
 
+	<tag>
+      <description>
+          Loads a resource bundle to be used by its tag body
+      </description>
+      <name>bundle</name>
+      <tag-class>org.opencms.jsp.CmsJspTagBundle</tag-class>
+      <body-content>JSP</body-content>
+      <attribute>
+          <description>
+            Resource bundle base name. This is the bundle's
+            fully-qualified resource name, which has the same
+            form as a fully-qualified class name, that is, it uses
+            "." as the package component separator and does not
+            have any file type (such as ".class" or ".properties")
+            suffix.
+          </description>
+          <name>basename</name>
+          <required>true</required>
+          <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+          <description>
+            Prefix to be prepended to the value of the message
+            key of any nested &lt;fmt:message&gt; action.
+          </description>
+          <name>prefix</name>
+          <required>false</required>
+          <rtexprvalue>true</rtexprvalue>
+      </attribute>
+    </tag>
+
     <tag>
         <description>
             This tag enables read access to the current files OpenCms properties.
