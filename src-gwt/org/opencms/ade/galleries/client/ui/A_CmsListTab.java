@@ -43,11 +43,13 @@ import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
+import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.util.Collection;
 import java.util.LinkedHashMap;
 
 import com.google.common.base.Supplier;
@@ -493,7 +495,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
                 return new I_CmsUploadContext() {
 
-                    public void onUploadFinished() {
+                    public void onUploadFinished(Collection<CmsFileInfo> uploadedFiles) {
 
                         getTabHandler().updateIndex();
                     }

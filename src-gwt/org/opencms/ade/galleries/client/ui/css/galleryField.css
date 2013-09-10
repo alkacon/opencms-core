@@ -1,3 +1,5 @@
+@external cmsState;
+
 div>div.fader{
 	right: 20px;
 	cursor: text;
@@ -57,6 +59,7 @@ div.imagePreview {
 	float: left;
 	display: none;
 	overflow: hidden;
+	position: relative;
 }
 div.imagePreview > div{
 	height: 110px;
@@ -64,10 +67,39 @@ div.imagePreview > div{
 	background: white;
 	text-align: center;
 }
+div.imagePreview > div.cmsState{
+	height: auto;
+	width: auto;
+	border: 1px solid #bbbbbb;
+	border-radius: 3px;
+	position: absolute;
+	top: 5px;
+	right: 5px;
+}
+div.imagePreview > div.cmsState > input{
+	height: auto;
+	width: auto;
+	font-size: 200px;
+	line-height: 200px;	
+}
 div.imagePreview img {
 	margin: auto;
 }
 
 .hasImage div.imagePreview {
 	display: block;	
+}
+
+div.imagePreview > div.uploadDropZone{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	bottom: 0px;
+	right: 0px;
+	background: transparent;
+}
+        
+div.imagePreview > div.uploadDropZone.dropZoneHover{
+	opacity: 0.5;
+	background: red;
 }

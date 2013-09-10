@@ -29,12 +29,16 @@ package org.opencms.ade.galleries.client.ui;
 
 import org.opencms.ade.galleries.client.CmsGalleryConfigurationJSO;
 import org.opencms.ade.galleries.client.I_CmsGalleryWidgetHandler;
+import org.opencms.ade.galleries.client.Messages;
 import org.opencms.ade.galleries.client.preview.CmsCroppingParamBean;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration;
 import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService;
 import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryServiceAsync;
+import org.opencms.ade.upload.client.I_CmsUploadContext;
+import org.opencms.ade.upload.client.ui.CmsDialogUploadButtonHandler;
+import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.I_CmsHasInit;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
@@ -47,14 +51,22 @@ import org.opencms.gwt.client.ui.input.CmsSimpleTextBox;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
+import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
+import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
+import com.google.common.base.Supplier;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -99,6 +111,28 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         // binder interface
     }
 
+    /**
+     * Handler to fire resize event on resource info widget open/close.<p>
+     */
+    protected class OpenCloseHandler implements CloseHandler<CmsListItemWidget>, OpenHandler<CmsListItemWidget> {
+
+        /**
+         * @see com.google.gwt.event.logical.shared.CloseHandler#onClose(com.google.gwt.event.logical.shared.CloseEvent)
+         */
+        public void onClose(CloseEvent<CmsListItemWidget> event) {
+
+            fireResize();
+        }
+
+        /**
+         * @see com.google.gwt.event.logical.shared.OpenHandler#onOpen(com.google.gwt.event.logical.shared.OpenEvent)
+         */
+        public void onOpen(OpenEvent<CmsListItemWidget> event) {
+
+            fireResize();
+        }
+    }
+
     /** Timer to update the resource info box. */
     class InfoTimer extends Timer {
 
@@ -126,53 +160,11 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         }
     }
 
-    /**
-     * Handler to fire resize event on resource info widget open/close.<p>
-     */
-    protected class OpenCloseHandler implements CloseHandler<CmsListItemWidget>, OpenHandler<CmsListItemWidget> {
-
-        /**
-         * @see com.google.gwt.event.logical.shared.CloseHandler#onClose(com.google.gwt.event.logical.shared.CloseEvent)
-         */
-        public void onClose(CloseEvent<CmsListItemWidget> event) {
-
-            fireResize();
-        }
-
-        /**
-         * @see com.google.gwt.event.logical.shared.OpenHandler#onOpen(com.google.gwt.event.logical.shared.OpenEvent)
-         */
-        public void onOpen(OpenEvent<CmsListItemWidget> event) {
-
-            fireResize();
-        }
-    }
-
     /** The widget type. */
     public static final String WIDGET_TYPE = "gallery";
 
     /** The ui binder for this widget. */
     private static I_CmsGalleryFieldUiBinder uibinder = GWT.create(I_CmsGalleryFieldUiBinder.class);
-
-    /**
-     * Initializes this class.<p>
-     */
-    public static void initClass() {
-
-        // registers a factory for creating new instances of this widget
-        CmsWidgetFactoryRegistry.instance().registerFactory(WIDGET_TYPE, new I_CmsFormWidgetFactory() {
-
-            /**
-             * @see org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory#createWidget(java.util.Map)
-             */
-            public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
-
-                CmsGalleryConfigurationJSO conf = CmsGalleryConfigurationJSO.parseConfiguration(widgetParams.get("configuration"));
-                CmsGalleryField galleryField = new CmsGalleryField(conf);
-                return galleryField;
-            }
-        });
-    }
 
     /** The fading element. */
     @UiField
@@ -201,8 +193,22 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     @UiField
     protected CmsSimpleTextBox m_textbox;
 
+    /** The upload button. */
+    @UiField(provided = true)
+    protected CmsUploadButton m_uploadButton;
+
+    /** The upload drop zone. */
+    @UiField
+    protected DivElement m_uploadDropZone;
+
     /** The gallery configuration. */
     I_CmsGalleryConfiguration m_configuration;
+
+    /** The upload target folder. */
+    String m_uploadTarget;
+
+    /** The upload button handler. */
+    private CmsDialogUploadButtonHandler m_buttonHandler;
 
     /** The gallery service instance. */
     private I_CmsGalleryServiceAsync m_gallerySvc;
@@ -223,7 +229,29 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
      */
     public CmsGalleryField(I_CmsGalleryConfiguration configuration) {
 
+        m_buttonHandler = new CmsDialogUploadButtonHandler(new Supplier<I_CmsUploadContext>() {
+
+            public I_CmsUploadContext get() {
+
+                return new I_CmsUploadContext() {
+
+                    public void onUploadFinished(Collection<CmsFileInfo> uploadedFiles) {
+
+                        if ((uploadedFiles != null) && !uploadedFiles.isEmpty()) {
+                            setValue(m_uploadTarget + uploadedFiles.iterator().next().getFileName(), true);
+                        }
+                    }
+
+                };
+            }
+        });
+        m_buttonHandler.setIsTargetRootPath(false);
+        m_uploadButton = new CmsUploadButton(m_buttonHandler);
+        m_uploadButton.setText(null);
+        m_uploadButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        m_uploadButton.setImageClass(I_CmsImageBundle.INSTANCE.style().uploadIcon());
         initWidget(uibinder.createAndBindUi(this));
+        this.addUploadZone(m_uploadDropZone);
         m_configuration = configuration;
         I_CmsLayoutBundle.INSTANCE.galleryFieldCss().ensureInjected();
         m_opener.setButtonStyle(ButtonStyle.TRANSPARENT, null);
@@ -242,6 +270,26 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(iconImage)) {
             m_opener.setImageClass(I_CmsImageBundle.INSTANCE.style().popupIcon());
         }
+    }
+
+    /**
+     * Initializes this class.<p>
+     */
+    public static void initClass() {
+
+        // registers a factory for creating new instances of this widget
+        CmsWidgetFactoryRegistry.instance().registerFactory(WIDGET_TYPE, new I_CmsFormWidgetFactory() {
+
+            /**
+             * @see org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory#createWidget(java.util.Map)
+             */
+            public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
+
+                CmsGalleryConfigurationJSO conf = CmsGalleryConfigurationJSO.parseConfiguration(widgetParams.get("configuration"));
+                CmsGalleryField galleryField = new CmsGalleryField(conf);
+                return galleryField;
+            }
+        });
     }
 
     /**
@@ -279,35 +327,188 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getApparentValue()
+     */
+    public String getApparentValue() {
+
+        return getFormValueAsString();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFieldType()
+     */
+    public FieldType getFieldType() {
+
+        return FieldType.STRING;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFormValue()
+     */
+    public Object getFormValue() {
+
+        return m_textbox.getValue();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFormValueAsString()
+     */
+    public String getFormValueAsString() {
+
+        return m_textbox.getValue();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#isEnabled()
+     */
+    public boolean isEnabled() {
+
+        return m_textbox.isEnabled();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#reset()
+     */
+    public void reset() {
+
+        m_textbox.setValue("");
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setAutoHideParent(org.opencms.gwt.client.ui.I_CmsAutoHider)
+     */
+    public void setAutoHideParent(I_CmsAutoHider autoHideParent) {
+
+        // do nothing 
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setEnabled(boolean)
+     */
+    public void setEnabled(boolean enabled) {
+
+        m_textbox.setEnabled(enabled);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setErrorMessage(java.lang.String)
+     */
+    public void setErrorMessage(String errorMessage) {
+
+        // do nothing 
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setFormValueAsString(java.lang.String)
+     */
+    public void setFormValueAsString(String value) {
+
+        setValue(value, false);
+    }
+
+    /**
+     * Sets the gallery opener button title.<p>
+     * 
+     * @param openerTitle the gallery opener button title
+     */
+    public void setGalleryOpenerTitle(String openerTitle) {
+
+        m_opener.setTitle(openerTitle);
+    }
+
+    /** 
+     * Sets the has image flag.<p>
+     * 
+     * @param hasImage the has image flag
+     **/
+    public void setHasImage(boolean hasImage) {
+
+        m_hasImage = hasImage;
+    }
+
+    /**
+     * Sets the name of the input field.<p>
+     * 
+     * @param name of the input field
+     * */
+    public void setName(String name) {
+
+        m_textbox.setName(name);
+
+    }
+
+    /**
+     * Fires the value change event if the value has changed.<p>
+     * 
+     * @param force <code>true</code> to force firing the event in any case
+     */
+    protected void fireChange(boolean force) {
+
+        String value = getFormValueAsString();
+        if (force || !value.equals(m_previousValue)) {
+            m_previousValue = value;
+            ValueChangeEvent.fire(this, value);
+        }
+    }
+
+    /**
+     * Fires the resize event for this widget.<p>
+     */
+    protected void fireResize() {
+
+        ResizeEvent.fire(this, getElement().getOffsetWidth(), getElement().getOffsetHeight());
+    }
+
+    /**
+     * Returns the gallery service instance.<p>
+     * 
+     * @return the gallery service instance
+     */
+    protected I_CmsGalleryServiceAsync getGalleryService() {
+
+        if (m_gallerySvc == null) {
+            m_gallerySvc = GWT.create(I_CmsGalleryService.class);
+            String serviceUrl = CmsCoreProvider.get().link("org.opencms.ade.galleries.CmsGalleryService.gwt");
+            ((ServiceDefTarget)m_gallerySvc).setServiceEntryPoint(serviceUrl);
+        }
+        return m_gallerySvc;
+    }
+
+    /**
+     * Internal method which opens the gallery dialog.<p>
+     */
+    protected void openGalleryDialog() {
+
+        if (m_popup == null) {
+            m_popup = createPopup();
+            m_popup.center();
+        } else {
+            m_popup.searchElement(getFormValueAsString());
+        }
+    }
+
+    /**
+     * Sets the widget value.<p>
+     * 
+     * @param value the value to set
+     * @param fireEvent if the change event should be fired
+     */
+    protected void setValue(String value, boolean fireEvent) {
+
+        m_textbox.setValue(value);
+        updateResourceInfo(value);
+        m_previousValue = value;
+        if (fireEvent) {
+            fireChange(true);
+        }
+    }
+
+    /**
      * Clears the info timer.<p>
      */
     void clearInfoTimer() {
 
         m_infoTimer = null;
-    }
-
-    /**
-     * Creates the gallery pop-up.<p>
-     * 
-     * @return the gallery pop-up
-     */
-    private CmsGalleryPopup createPopup() {
-
-        I_CmsGalleryWidgetHandler handler = new I_CmsGalleryWidgetHandler() {
-
-            public void setWidgetValue(String resourcePath, CmsUUID structureId, CmsCroppingParamBean croppingParameter) {
-
-                String path = resourcePath;
-                // in case of an image check the cropping parameter
-                if ((croppingParameter != null) && (croppingParameter.isCropped() || croppingParameter.isScaled())) {
-                    path += "?" + croppingParameter.toString();
-                }
-                setValue(path, true);
-                m_popup.hide();
-            }
-        };
-        m_configuration.setCurrentElement(getFormValueAsString());
-        return new CmsGalleryPopup(handler, m_configuration);
     }
 
     /**
@@ -317,6 +518,9 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
      */
     void displayResourceInfo(CmsResultItemBean info) {
 
+        m_uploadTarget = CmsResource.getFolderPath(info.getPath());
+        m_buttonHandler.setTargetFolder(m_uploadTarget);
+        m_uploadButton.setTitle(Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_1, m_uploadTarget));
         if (m_hasImage) {
             CmsCroppingParamBean cropping = CmsCroppingParamBean.parseImagePath(getFormValueAsString());
             String imagePath = info.getViewLink();
@@ -355,83 +559,6 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     }
 
     /**
-     * Fires the value change event if the value has changed.<p>
-     * 
-     * @param force <code>true</code> to force firing the event in any case
-     */
-    protected void fireChange(boolean force) {
-
-        String value = getFormValueAsString();
-        if (force || !value.equals(m_previousValue)) {
-            m_previousValue = value;
-            ValueChangeEvent.fire(this, value);
-        }
-    }
-
-    /**
-     * Fires the resize event for this widget.<p>
-     */
-    protected void fireResize() {
-
-        ResizeEvent.fire(this, getElement().getOffsetWidth(), getElement().getOffsetHeight());
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getApparentValue()
-     */
-    public String getApparentValue() {
-
-        return getFormValueAsString();
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFieldType()
-     */
-    public FieldType getFieldType() {
-
-        return FieldType.STRING;
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFormValue()
-     */
-    public Object getFormValue() {
-
-        return m_textbox.getValue();
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFormValueAsString()
-     */
-    public String getFormValueAsString() {
-
-        return m_textbox.getValue();
-    }
-
-    /**
-     * Returns the gallery service instance.<p>
-     * 
-     * @return the gallery service instance
-     */
-    protected I_CmsGalleryServiceAsync getGalleryService() {
-
-        if (m_gallerySvc == null) {
-            m_gallerySvc = GWT.create(I_CmsGalleryService.class);
-            String serviceUrl = CmsCoreProvider.get().link("org.opencms.ade.galleries.CmsGalleryService.gwt");
-            ((ServiceDefTarget)m_gallerySvc).setServiceEntryPoint(serviceUrl);
-        }
-        return m_gallerySvc;
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#isEnabled()
-     */
-    public boolean isEnabled() {
-
-        return m_textbox.isEnabled();
-    }
-
-    /**
      * On text box blur.<p>
      * 
      * @param event the event
@@ -441,6 +568,22 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
 
         setFaded((m_textbox.getValue().length() * 6.88) > m_textbox.getOffsetWidth());
         setTitle(m_textbox.getValue());
+    }
+
+    /**
+     * Handles styling changes on drag out.<p>
+     */
+    void onDragOut() {
+
+        m_uploadDropZone.removeClassName(I_CmsLayoutBundle.INSTANCE.galleryFieldCss().dropZoneHover());
+    }
+
+    /**
+     * Handles styling changes on drag over.<p>
+     */
+    void onDragOver() {
+
+        m_uploadDropZone.addClassName(I_CmsLayoutBundle.INSTANCE.galleryFieldCss().dropZoneHover());
     }
 
     /**
@@ -484,51 +627,6 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     }
 
     /**
-     * Internal method which opens the gallery dialog.<p>
-     */
-    protected void openGalleryDialog() {
-
-        if (m_popup == null) {
-            m_popup = createPopup();
-            m_popup.center();
-        } else {
-            m_popup.searchElement(getFormValueAsString());
-        }
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#reset()
-     */
-    public void reset() {
-
-        m_textbox.setValue("");
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setAutoHideParent(org.opencms.gwt.client.ui.I_CmsAutoHider)
-     */
-    public void setAutoHideParent(I_CmsAutoHider autoHideParent) {
-
-        // do nothing 
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setEnabled(boolean)
-     */
-    public void setEnabled(boolean enabled) {
-
-        m_textbox.setEnabled(enabled);
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setErrorMessage(java.lang.String)
-     */
-    public void setErrorMessage(String errorMessage) {
-
-        // do nothing 
-    }
-
-    /**
      * Toggles the fading element.<p>
      * 
      * @param faded <code>true</code> to show the fading element.<p>
@@ -536,61 +634,6 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     void setFaded(boolean faded) {
 
         m_fader.setVisible(faded);
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setFormValueAsString(java.lang.String)
-     */
-    public void setFormValueAsString(String value) {
-
-        setValue(value, false);
-    }
-
-    /**
-     * Sets the gallery opener button title.<p>
-     * 
-     * @param openerTitle the gallery opener button title
-     */
-    public void setGalleryOpenerTitle(String openerTitle) {
-
-        m_opener.setTitle(openerTitle);
-    }
-
-    /** 
-     * Sets the has image flag.<p>
-     * 
-     * @param hasImage the has image flag
-     **/
-    public void setHasImage(boolean hasImage) {
-
-        m_hasImage = hasImage;
-    }
-
-    /**
-     * Sets the name of the input field.<p>
-     * 
-     * @param name of the input field
-     * */
-    public void setName(String name) {
-
-        m_textbox.setName(name);
-
-    }
-
-    /**
-     * Sets the widget value.<p>
-     * 
-     * @param value the value to set
-     * @param fireEvent if the change event should be fired
-     */
-    protected void setValue(String value, boolean fireEvent) {
-
-        m_textbox.setValue(value);
-        updateResourceInfo(value);
-        m_previousValue = value;
-        if (fireEvent) {
-            fireChange(true);
-        }
     }
 
     /**
@@ -628,5 +671,81 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
             action.execute();
         }
         fireResize();
+    }
+
+    /**
+     * Adds the upload drop zone event handlers.<p>
+     * 
+     * @param element the drop zone element
+     */
+    private native void addUploadZone(JavaScriptObject element)/*-{
+                                                                                                   
+                                                                                                   var self=this;
+
+                                                                                                   function dragover(event) {
+                                                                                                   event.stopPropagation();
+                                                                                                   event.preventDefault();
+                                                                                                   self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::onDragOver()();
+                                                                                                   }
+
+                                                                                                   function dragleave(event) {
+                                                                                                   event.stopPropagation();
+                                                                                                   event.preventDefault();
+                                                                                                  self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::onDragOut()();
+                                                                                                   }
+
+                                                                                                   function drop(event) {
+                                                                                                   event.preventDefault();
+                                                                                                   var dt = event.dataTransfer;
+                                                                                                   var files = dt.files;
+                                                                                                   self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::onDragOut()();
+                                                                                                   self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::openUploadWithFiles(Lcom/google/gwt/core/client/JavaScriptObject;)(files);
+                                                                                                   }
+
+                                                                                                   element.addEventListener("dragover", dragover, false);
+                                                                                                   element.addEventListener("dragexit", dragleave, false);
+                                                                                                   element.addEventListener("dragleave", dragleave, false);
+                                                                                                   element.addEventListener("dragend", dragleave, false);
+                                                                                                   element.addEventListener("drop", drop, false);
+
+                                                                                                   }-*/;
+
+    /**
+     * Creates the gallery pop-up.<p>
+     * 
+     * @return the gallery pop-up
+     */
+    private CmsGalleryPopup createPopup() {
+
+        I_CmsGalleryWidgetHandler handler = new I_CmsGalleryWidgetHandler() {
+
+            public void setWidgetValue(String resourcePath, CmsUUID structureId, CmsCroppingParamBean croppingParameter) {
+
+                String path = resourcePath;
+                // in case of an image check the cropping parameter
+                if ((croppingParameter != null) && (croppingParameter.isCropped() || croppingParameter.isScaled())) {
+                    path += "?" + croppingParameter.toString();
+                }
+                setValue(path, true);
+                m_popup.hide();
+            }
+        };
+        m_configuration.setCurrentElement(getFormValueAsString());
+        return new CmsGalleryPopup(handler, m_configuration);
+    }
+
+    /**
+     * Opens the upload dialog with the given file references to upload.<p>
+     * 
+     * @param files the file references
+     */
+    private void openUploadWithFiles(JavaScriptObject files) {
+
+        JsArray<CmsFileInfo> cmsFiles = files.cast();
+        List<CmsFileInfo> fileObjects = new ArrayList<CmsFileInfo>();
+        for (int i = 0; i < cmsFiles.length(); ++i) {
+            fileObjects.add(cmsFiles.get(i));
+        }
+        m_buttonHandler.openDialogWithFiles(fileObjects);
     }
 }

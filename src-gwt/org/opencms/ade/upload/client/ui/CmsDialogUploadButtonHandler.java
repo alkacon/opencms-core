@@ -29,9 +29,12 @@ package org.opencms.ade.upload.client.ui;
 
 import org.opencms.ade.upload.client.I_CmsUploadContext;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
+import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInput;
 import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
 import org.opencms.gwt.client.ui.input.upload.I_CmsUploadButtonHandler;
+
+import java.util.List;
 
 import com.google.common.base.Supplier;
 import com.google.gwt.core.client.GWT;
@@ -129,6 +132,35 @@ public class CmsDialogUploadButtonHandler implements I_CmsUploadButtonHandler {
             }
         }
         m_uploadDialog.addFileInput(fileInput);
+        m_button.createFileInput();
+    }
+
+    /**
+     * Opens the upload dialog for the given file references.<p>
+     * 
+     * @param files the file references
+     */
+    public void openDialogWithFiles(List<CmsFileInfo> files) {
+
+        if (m_uploadDialog == null) {
+            try {
+                m_uploadDialog = GWT.create(CmsUploadDialogImpl.class);
+                I_CmsUploadContext context = m_contextFactory.get();
+                m_uploadDialog.setContext(context);
+                updateDialog();
+                // the current upload button is located outside the dialog, reinitialize it with a new button handler instance
+                m_button.reinitButton(new CmsDialogUploadButtonHandler(
+                    m_contextFactory,
+                    m_targetFolder,
+                    m_isTargetRootPath));
+            } catch (Exception e) {
+                CmsErrorDialog.handleException(new Exception(
+                    "Deserialization of dialog data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
+                    e));
+                return;
+            }
+        }
+        m_uploadDialog.addFiles(files);
         m_button.createFileInput();
     }
 

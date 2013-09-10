@@ -126,7 +126,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
     private Map<String, CmsFileInfo> m_allFiles;
 
     /** Signals that the upload dialog was canceled. */
-    private boolean m_canceled;
+    boolean m_canceled;
 
     /** Signals that the client currently loading. */
     private boolean m_clientLoading;
@@ -272,7 +272,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
             public void onClose(CloseEvent<PopupPanel> e) {
 
                 if (m_context != null) {
-                    m_context.onUploadFinished();
+                    m_context.onUploadFinished(m_canceled ? null : getFilesToUpload().values());
                 }
             }
         });
@@ -413,7 +413,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
                         public void onClose(CloseEvent<PopupPanel> event) {
 
                             if (context != null) {
-                                context.onUploadFinished();
+                                context.onUploadFinished(getFilesToUpload().values());
                             }
                         }
                     };

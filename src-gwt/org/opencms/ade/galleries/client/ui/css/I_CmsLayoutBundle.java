@@ -276,6 +276,12 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * 
          * @return the CSS class name
          */
+        String dropZoneHover();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String fader();
 
         /** Access method.<p>
@@ -295,6 +301,12 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * @return the CSS class name
          */
         String opener();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String uploadDropZone();
     }
 
     /** The result item CSS. */
