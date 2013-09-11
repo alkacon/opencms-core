@@ -8,7 +8,7 @@
 	<ui:with field="input" type="org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle" />
 	<ui:with field="main" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<ui:with field="gallery" type="org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle" />
-<g:HTMLPanel styleName="{gallery.galleryFieldCss.galleryField}">
+<g:HTMLPanel styleName="{gallery.galleryFieldCss.galleryField} {main.generalCss.clearFix}">
 	<div class="{gallery.galleryFieldCss.imagePreview} {main.generalCss.cornerAll}">
 		<div ui:field="m_imagePreview"></div>
 		<div class="{gallery.galleryFieldCss.uploadDropZone}" ui:field="m_uploadDropZone"></div>

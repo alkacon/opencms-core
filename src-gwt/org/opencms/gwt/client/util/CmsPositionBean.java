@@ -199,7 +199,7 @@ public class CmsPositionBean {
      */
     public static CmsPositionBean getInnerDimensions(Element panel) {
 
-        return getInnerDimensions(panel, 1);
+        return getInnerDimensions(panel, 2);
     }
 
     /**

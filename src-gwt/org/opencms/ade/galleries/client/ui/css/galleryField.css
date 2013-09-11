@@ -101,5 +101,16 @@ div.imagePreview > div.uploadDropZone{
         
 div.imagePreview > div.uploadDropZone.dropZoneHover{
 	opacity: 0.5;
-	background: red;
+	background: value("constants.css.textColorImportant");
+}
+
+div.formats{
+	height: 18px;
+	width: auto;
+	margin: 5px 0px 5px 170px;
+	position: relative;
+}
+	
+div.descriptionField{
+	margin-left: 170px;
 }
