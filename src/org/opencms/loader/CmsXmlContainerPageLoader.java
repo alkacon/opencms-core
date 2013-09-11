@@ -110,6 +110,7 @@ public class CmsXmlContainerPageLoader extends CmsXmlContentLoader {
         TemplateBean templateBean = new TemplateBean(context != null
         ? context.getKey()
         : loaderFacade.getTemplateName(), loaderFacade.getTemplate());
+        templateBean.setForced((context != null) && context.isForced());
         req.setAttribute(CmsTemplateContextManager.ATTR_TEMPLATE_BEAN, templateBean);
         loaderFacade.getLoader().load(cms, loaderFacade.getLoaderStartResource(), req, res);
     }

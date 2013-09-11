@@ -38,6 +38,9 @@ import java.util.Locale;
  */
 public class CmsTemplateContext {
 
+    /** A flag which indicates whether this template context has been manually selected rather than automatically determined. */
+    private boolean m_forced;
+
     /** The key used for identifying the template context. */
     private String m_key;
 
@@ -64,10 +67,30 @@ public class CmsTemplateContext {
         CmsMessageContainer container,
         I_CmsTemplateContextProvider provider) {
 
+        this(key, path, container, provider, false);
+    }
+
+    /**
+     * Constructor.<p>
+     * 
+     * @param key the internal name 
+     * @param path the template path 
+     * @param container the message container for the name
+     * @param provider the template context provider
+     * @param forced true if the template context is forced to a specific value instead of automatically determined
+     */
+    public CmsTemplateContext(
+        String key,
+        String path,
+        CmsMessageContainer container,
+        I_CmsTemplateContextProvider provider,
+        boolean forced) {
+
         m_key = key;
         m_templatePath = path;
         m_messageContainer = container;
         m_provider = provider;
+        m_forced = forced;
     }
 
     /**
@@ -123,6 +146,16 @@ public class CmsTemplateContext {
     public String getTemplatePath() {
 
         return m_templatePath;
+    }
+
+    /**
+     * Return true if the template context was not automatically determined.<p>
+     * 
+     * @return true if the template context was not automatically determined 
+     */
+    public boolean isForced() {
+
+        return m_forced;
     }
 
     /**

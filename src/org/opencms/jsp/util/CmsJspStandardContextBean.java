@@ -80,6 +80,9 @@ public final class CmsJspStandardContextBean {
      */
     public static class TemplateBean {
 
+        /** True if the template context was manually selected. */
+        private boolean m_forced;
+
         /** The template name. */
         private String m_name;
 
@@ -145,6 +148,26 @@ public final class CmsJspStandardContextBean {
             } else {
                 return m_uri;
             }
+        }
+
+        /**
+         * Returns true if the template context was manually selected.<p>
+         * 
+         * @return true if the template context was manually selected 
+         */
+        public boolean isForced() {
+
+            return m_forced;
+        }
+
+        /**
+         * Sets the 'forced' flag to a new value.<p>
+         * 
+         * @param forced the new value 
+         */
+        public void setForced(boolean forced) {
+
+            m_forced = forced;
         }
 
     }

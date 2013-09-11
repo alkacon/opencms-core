@@ -195,7 +195,14 @@ public class CmsTemplateContextManager {
             if (cookieValue != null) {
                 Map<String, CmsTemplateContext> contextMap = provider.getAllContexts();
                 if (contextMap.containsKey(cookieValue)) {
-                    return contextMap.get(cookieValue);
+                    CmsTemplateContext contextBean = contextMap.get(cookieValue);
+                    return new CmsTemplateContext(
+                        contextBean.getKey(),
+                        contextBean.getTemplatePath(),
+                        contextBean.getMessageContainer(),
+                        contextBean.getProvider(),
+                        true);
+
                 }
             }
         }
