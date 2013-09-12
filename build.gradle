@@ -151,6 +151,14 @@ jar {
     include 'com/**'
     exclude '**/*.html'
     exclude '**/.gitignore'
+    from ("${projectDir}/webapp/WEB-INF/setupdata/version.properties"){
+        include 'version.properties'
+        filter(ReplaceTokens, tokens: [
+            OPENCMS_VERSION_NUMBER: version_number,
+            OPENCMS_VERSION_NAME: version_number
+        ])
+        into '/org/opencms/main/'
+    }
 }
 
 task setupJar(dependsOn: jar, type: Jar) {
@@ -539,7 +547,7 @@ compileTestJava {
 
 test {
     useJUnit()
-    include 'org/opencms/test/AllTests*'
+    include 'org/opencms/configuration/AllTests*'
     // important: exclude all anonymous classes
     exclude '**/*$*.class'
     scanForTestClasses false
