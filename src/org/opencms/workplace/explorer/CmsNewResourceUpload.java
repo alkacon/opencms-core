@@ -1228,9 +1228,6 @@ public class CmsNewResourceUpload extends CmsNewResource {
             setAction(ACTION_APPLET_CHECK_OVERWRITE);
         } else {
             switch (getSettings().getUserSettings().getUploadVariant()) {
-                case applet:
-                    setAction(ACTION_APPLET);
-                    break;
                 case basic:
                     setAction(ACTION_DEFAULT);
                     break;

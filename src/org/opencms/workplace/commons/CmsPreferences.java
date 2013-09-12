@@ -329,10 +329,11 @@ public class CmsPreferences extends CmsTabDialog {
         m_userSettings.setStartGalleriesSetting(userSettings.getStartGalleriesSettings());
         // then set the old synchronization settings
         m_userSettings.setSynchronizeSettings(userSettings.getSynchronizeSettings());
-        Enumeration en = request.getParameterNames();
+        @SuppressWarnings("unchecked")
+        Enumeration<String> en = request.getParameterNames();
         while (en.hasMoreElements()) {
             // search all request parameters for the presence of the preferred editor parameters
-            String paramName = (String)en.nextElement();
+            String paramName = en.nextElement();
             if (paramName.startsWith(PARAM_PREFERREDEDITOR_PREFIX)) {
                 String paramValue = request.getParameter(paramName);
                 if ((paramValue != null) && !INPUT_DEFAULT.equals(paramValue.trim())) {
@@ -384,14 +385,14 @@ public class CmsPreferences extends CmsTabDialog {
         try {
             if (DIALOG_SET.equals(getParamAction())) {
                 // after "set" action, leave dialog open
-                Map params = new HashMap();
-                params.put(PARAM_TAB, String.valueOf(getActiveTab()));
-                params.put(PARAM_SETPRESSED, Boolean.TRUE.toString());
+                Map<String, String[]> params = new HashMap<String, String[]>();
+                params.put(PARAM_TAB, new String[] {String.valueOf(getActiveTab())});
+                params.put(PARAM_SETPRESSED, new String[] {Boolean.TRUE.toString()});
                 sendForward(getJsp().getRequestContext().getUri(), params);
             } else {
                 // forward to dialog with action set to reload the workplace
-                Map params = new HashMap();
-                params.put(PARAM_ACTION, DIALOG_RELOAD);
+                Map<String, String[]> params = new HashMap<String, String[]>();
+                params.put(PARAM_ACTION, new String[] {DIALOG_RELOAD});
                 sendForward(getJsp().getRequestContext().getUri(), params);
             }
         } catch (IOException e) {
@@ -415,10 +416,10 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public String buildSelectCopyFileMode(String htmlAttributes) {
 
-        List options = new ArrayList(2);
+        List<String> options = new ArrayList<String>(2);
         options.add(key(Messages.GUI_PREF_COPY_AS_SIBLING_0));
         options.add(key(Messages.GUI_COPY_AS_NEW_0));
-        List values = new ArrayList(2);
+        List<String> values = new ArrayList<String>(2);
         values.add(CmsResource.COPY_AS_SIBLING.toString());
         values.add(CmsResource.COPY_AS_NEW.toString());
         int selectedIndex = values.indexOf(getParamTabDiCopyFileMode());
@@ -433,11 +434,11 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public String buildSelectCopyFolderMode(String htmlAttributes) {
 
-        List options = new ArrayList(3);
+        List<String> options = new ArrayList<String>(3);
         options.add(key(Messages.GUI_PREF_COPY_AS_SIBLINGS_0));
         options.add(key(Messages.GUI_PREF_PRESERVE_SIBLINGS_RESOURCES_0));
         options.add(key(Messages.GUI_PREF_COPY_AS_NEW_0));
-        List values = new ArrayList(3);
+        List<String> values = new ArrayList<String>(3);
         values.add(CmsResource.COPY_AS_SIBLING.toString());
         values.add(CmsResource.COPY_PRESERVE_SIBLING.toString());
         values.add(CmsResource.COPY_AS_NEW.toString());
@@ -453,10 +454,10 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public String buildSelectDeleteFileMode(String htmlAttributes) {
 
-        List options = new ArrayList(2);
+        List<String> options = new ArrayList<String>(2);
         options.add(key(Messages.GUI_PREF_PRESERVE_SIBLINGS_0));
         options.add(key(Messages.GUI_PREF_DELETE_SIBLINGS_0));
-        List values = new ArrayList(2);
+        List<String> values = new ArrayList<String>(2);
         values.add(String.valueOf(CmsResource.DELETE_PRESERVE_SIBLINGS));
         values.add(String.valueOf(CmsResource.DELETE_REMOVE_SIBLINGS));
         int selectedIndex = values.indexOf(getParamTabDiDeleteFileMode());
@@ -515,10 +516,10 @@ public class CmsPreferences extends CmsTabDialog {
         emptyOption = emptyOption.replaceAll("[^0-9|^,]", "");
         // remove all empty entries
         emptyOption = emptyOption.replaceAll(",,", ",");
-        List opts = CmsStringUtil.splitAsList(emptyOption, ",", true);
+        List<String> opts = CmsStringUtil.splitAsList(emptyOption, ",", true);
         opts.add(key(Messages.GUI_LABEL_UNLIMITED_0));
         opts.remove("0");
-        List vals = CmsStringUtil.splitAsList(emptyOption, ",", true);
+        List<String> vals = CmsStringUtil.splitAsList(emptyOption, ",", true);
         vals.add("" + Integer.MAX_VALUE);
         vals.remove("0");
         int selectedIndex = 2;
@@ -540,15 +541,15 @@ public class CmsPreferences extends CmsTabDialog {
     public String buildSelectLanguage(String htmlAttributes) {
 
         // get available locales from the workplace manager
-        List locales = OpenCms.getWorkplaceManager().getLocales();
-        List options = new ArrayList(locales.size());
-        List values = new ArrayList(locales.size());
+        List<Locale> locales = OpenCms.getWorkplaceManager().getLocales();
+        List<String> options = new ArrayList<String>(locales.size());
+        List<String> values = new ArrayList<String>(locales.size());
         int checkedIndex = 0;
         int counter = 0;
-        Iterator i = locales.iterator();
+        Iterator<Locale> i = locales.iterator();
         Locale setLocale = getSettings().getUserSettings().getLocale();
         while (i.hasNext()) {
-            Locale currentLocale = (Locale)i.next();
+            Locale currentLocale = i.next();
             // add all locales to the select box
             String language = currentLocale.getDisplayLanguage(setLocale);
             if (CmsStringUtil.isNotEmpty(currentLocale.getCountry())) {
@@ -581,14 +582,14 @@ public class CmsPreferences extends CmsTabDialog {
         if (htmlAttributes != null) {
             htmlAttributes += " name=\"" + PARAM_PREFERREDEDITOR_PREFIX;
         }
-        Map resourceEditors = OpenCms.getWorkplaceManager().getWorkplaceEditorManager().getConfigurableEditors();
+        Map<String, SortedMap<Float, CmsWorkplaceEditorConfiguration>> resourceEditors = OpenCms.getWorkplaceManager().getWorkplaceEditorManager().getConfigurableEditors();
         if (resourceEditors != null) {
             // first: iterate over the resource types and consider order from configuration
-            Iterator i = resourceEditors.keySet().iterator();
+            Iterator<String> i = resourceEditors.keySet().iterator();
 
-            SortedMap rankResources = new TreeMap();
+            SortedMap<Float, String> rankResources = new TreeMap<Float, String>();
             while (i.hasNext()) {
-                String currentResourceType = (String)i.next();
+                String currentResourceType = i.next();
                 CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
                     currentResourceType);
                 rankResources.put(new Float(settings.getNewResourceOrder()), currentResourceType);
@@ -596,22 +597,22 @@ public class CmsPreferences extends CmsTabDialog {
 
             while (rankResources.size() > 0) {
                 // get editor configuration with lowest order
-                Float keyVal = (Float)rankResources.firstKey();
-                String currentResourceType = (String)rankResources.get(keyVal);
+                Float keyVal = rankResources.firstKey();
+                String currentResourceType = rankResources.get(keyVal);
 
-                SortedMap availableEditors = (TreeMap)resourceEditors.get(currentResourceType);
+                SortedMap<Float, CmsWorkplaceEditorConfiguration> availableEditors = resourceEditors.get(currentResourceType);
                 if ((availableEditors != null) && (availableEditors.size() > 0)) {
                     String preSelection = computeEditorPreselection(request, currentResourceType);
-                    List options = new ArrayList(availableEditors.size() + 1);
-                    List values = new ArrayList(availableEditors.size() + 1);
+                    List<String> options = new ArrayList<String>(availableEditors.size() + 1);
+                    List<String> values = new ArrayList<String>(availableEditors.size() + 1);
                     options.add(key(Messages.GUI_PREF_EDITOR_BEST_0));
                     values.add(INPUT_DEFAULT);
                     // second: iteration over the available editors for the resource type
                     int selectedIndex = 0;
                     int counter = 1;
                     while (availableEditors.size() > 0) {
-                        Float key = (Float)availableEditors.lastKey();
-                        CmsWorkplaceEditorConfiguration conf = (CmsWorkplaceEditorConfiguration)availableEditors.get(key);
+                        Float key = availableEditors.lastKey();
+                        CmsWorkplaceEditorConfiguration conf = availableEditors.get(key);
                         options.add(keyDefault(conf.getEditorLabel(), conf.getEditorLabel()));
                         values.add(conf.getEditorUri());
                         if (conf.getEditorUri().equals(preSelection)) {
@@ -650,7 +651,7 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public String buildSelectProject(String htmlAttributes) {
 
-        List allProjects;
+        List<CmsProject> allProjects;
         try {
             String ouFqn = "";
             CmsUserSettings settings = new CmsUserSettings(getCms());
@@ -666,14 +667,14 @@ public class CmsPreferences extends CmsTabDialog {
             if (LOG.isErrorEnabled()) {
                 LOG.error(e.getLocalizedMessage(), e);
             }
-            allProjects = Collections.EMPTY_LIST;
+            allProjects = Collections.emptyList();
         }
 
         boolean singleOu = true;
         String ouFqn = null;
-        Iterator itProjects = allProjects.iterator();
+        Iterator<CmsProject> itProjects = allProjects.iterator();
         while (itProjects.hasNext()) {
-            CmsProject prj = (CmsProject)itProjects.next();
+            CmsProject prj = itProjects.next();
             if (prj.isOnlineProject()) {
                 // skip the online project
                 continue;
@@ -689,15 +690,15 @@ public class CmsPreferences extends CmsTabDialog {
             }
         }
 
-        List options = new ArrayList(allProjects.size());
-        List values = new ArrayList(allProjects.size());
+        List<String> options = new ArrayList<String>(allProjects.size());
+        List<String> values = new ArrayList<String>(allProjects.size());
         int checkedIndex = 0;
         String startProject = "";
 
         startProject = getParamTabWpProject();
 
         for (int i = 0, n = allProjects.size(); i < n; i++) {
-            CmsProject project = (CmsProject)allProjects.get(i);
+            CmsProject project = allProjects.get(i);
             String projectName = project.getSimpleName();
             if (!singleOu && !project.isOnlineProject()) {
                 try {
@@ -727,10 +728,10 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public String buildSelectPublishSiblings(String htmlAttributes) {
 
-        List options = new ArrayList(2);
+        List<String> options = new ArrayList<String>(2);
         options.add(key(Messages.GUI_PREF_PUBLISH_SIBLINGS_0));
         options.add(key(Messages.GUI_PREF_PUBLISH_ONLY_SELECTED_0));
-        List values = new ArrayList(2);
+        List<String> values = new ArrayList<String>(2);
         values.add(CmsStringUtil.TRUE);
         values.add(CmsStringUtil.FALSE);
         int selectedIndex = values.indexOf(getParamTabDiPublishFileMode());
@@ -745,11 +746,11 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public String buildSelectReportType(String htmlAttributes) {
 
-        List options = new ArrayList(2);
+        List<String> options = new ArrayList<String>(2);
         options.add(key(Messages.GUI_LABEL_SIMPLE_0));
         options.add(key(Messages.GUI_LABEL_EXTENDED_0));
         String[] vals = new String[] {I_CmsReport.REPORT_TYPE_SIMPLE, I_CmsReport.REPORT_TYPE_EXTENDED};
-        List values = new ArrayList(java.util.Arrays.asList(vals));
+        List<String> values = new ArrayList<String>(java.util.Arrays.asList(vals));
         int selectedIndex = 0;
         if (I_CmsReport.REPORT_TYPE_EXTENDED.equals(getParamTabWpReportType())) {
             selectedIndex = 1;
@@ -765,11 +766,11 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public String buildSelectSite(String htmlAttributes) {
 
-        List options = new ArrayList();
-        List values = new ArrayList();
+        List<String> options = new ArrayList<String>();
+        List<String> values = new ArrayList<String>();
         int selectedIndex = 0;
 
-        List sites = OpenCms.getSiteManager().getAvailableSites(
+        List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(
             getCms(),
             true,
             false,
@@ -779,10 +780,10 @@ public class CmsPreferences extends CmsTabDialog {
             wpSite += "/";
         }
 
-        Iterator i = sites.iterator();
+        Iterator<CmsSite> i = sites.iterator();
         int pos = 0;
         while (i.hasNext()) {
-            CmsSite site = (CmsSite)i.next();
+            CmsSite site = i.next();
             String siteRoot = site.getSiteRoot();
             if (!siteRoot.endsWith("/")) {
                 siteRoot += "/";
@@ -2226,9 +2227,6 @@ public class CmsPreferences extends CmsTabDialog {
 
         String message = null;
         switch (variant) {
-            case applet:
-                message = key(Messages.GUI_PREF_USE_UPLOAD_APPLET_0);
-                break;
             case basic:
                 message = key(Messages.GUI_PREF_USE_UPLOAD_BASIC_0);
                 break;

@@ -130,12 +130,10 @@ public class CmsUserSettings {
 
     /** A enum for the different upload variants. */
     public enum UploadVariant {
-        /** The java applet upload. */
-        applet,
         /** The default html upload. */
         basic,
         /** The gwt upload. */
-        gwt,
+        gwt
     }
 
     /** Key for additional info address. */
