@@ -48,6 +48,9 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
     /** The gallery path. */
     private String m_galleryPath;
 
+    /** The gallery type name. */
+    private String m_galleryTypeName;
+
     /** The gallery types. */
     private String[] m_galleryTypes;
 
@@ -83,6 +86,9 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
 
     /** The tree token. */
     private String m_treeToken;
+
+    /** The upload folder. */
+    private String m_uploadFolder;
 
     /** The use formats flag. */
     private boolean m_useFormats;
@@ -143,6 +149,14 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
     public String getGalleryPath() {
 
         return m_galleryPath;
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#getGalleryTypeName()
+     */
+    public String getGalleryTypeName() {
+
+        return m_galleryTypeName;
     }
 
     /**
@@ -247,6 +261,14 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
     }
 
     /**
+     * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#getUploadFolder()
+     */
+    public String getUploadFolder() {
+
+        return m_uploadFolder;
+    }
+
+    /**
      * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#isIncludeFiles()
      */
     public boolean isIncludeFiles() {
@@ -296,6 +318,16 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
     public void setGalleryPath(String galleryPath) {
 
         m_galleryPath = galleryPath;
+    }
+
+    /**
+     * Sets the gallery type name.<p>
+     * 
+     * @param galleryTypeName the gallery type name
+     */
+    public void setGalleryTypeName(String galleryTypeName) {
+
+        m_galleryTypeName = galleryTypeName;
     }
 
     /**
@@ -406,6 +438,16 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
     public void setTabConfiguration(CmsGalleryTabConfiguration tabConfig) {
 
         m_tabConfiguration = tabConfig;
+    }
+
+    /**
+     * Sets the upload folder.<p>
+     * 
+     * @param uploadFolder the upload folder
+     */
+    public void setUploadFolder(String uploadFolder) {
+
+        m_uploadFolder = uploadFolder;
     }
 
     /**

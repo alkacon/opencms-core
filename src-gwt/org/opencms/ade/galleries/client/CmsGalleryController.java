@@ -205,7 +205,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         m_handler.m_galleryDialog.setImageFormatNames(m_configuration.getImageFormatNames());
         m_eventBus = new SimpleEventBus();
         addValueChangeHandler(m_handler);
-        m_treeToken = conf.getTreeToken();
+        m_treeToken = m_configuration.getTreeToken();
         CmsRpcAction<CmsGalleryDataBean> initAction = new CmsRpcAction<CmsGalleryDataBean>() {
 
             @Override

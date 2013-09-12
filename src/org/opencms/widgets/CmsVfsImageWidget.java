@@ -39,6 +39,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.types.CmsXmlVfsImageValue;
 
@@ -176,7 +177,11 @@ public class CmsVfsImageWidget extends CmsAdeImageGalleryWidget {
 
         JSONObject additional = null;
         try {
-            additional = getAdditionalGalleryInfo(cms, widgetDialog.getMessages(), param);
+            additional = getAdditionalGalleryInfo(
+                cms,
+                widgetDialog instanceof CmsDialog ? ((CmsDialog)widgetDialog).getParamResource() : null,
+                widgetDialog.getMessages(),
+                param);
         } catch (JSONException e) {
             LOG.error("Error parsing widget configuration", e);
         }
@@ -398,13 +403,16 @@ public class CmsVfsImageWidget extends CmsAdeImageGalleryWidget {
     }
 
     /**
-    * @see org.opencms.widgets.CmsAdeImageGalleryWidget#getAdditionalGalleryInfo(org.opencms.file.CmsObject, org.opencms.i18n.CmsMessages, org.opencms.widgets.I_CmsWidgetParameter)
-    */
+     * @see org.opencms.widgets.CmsAdeImageGalleryWidget#getAdditionalGalleryInfo(org.opencms.file.CmsObject, java.lang.String, org.opencms.i18n.CmsMessages, org.opencms.widgets.I_CmsWidgetParameter)
+     */
     @Override
-    protected JSONObject getAdditionalGalleryInfo(CmsObject cms, CmsMessages widgetDialog, I_CmsWidgetParameter param)
-    throws JSONException {
+    protected JSONObject getAdditionalGalleryInfo(
+        CmsObject cms,
+        String resource,
+        CmsMessages messages,
+        I_CmsWidgetParameter param) throws JSONException {
 
-        JSONObject result = super.getAdditionalGalleryInfo(cms, widgetDialog, param);
+        JSONObject result = super.getAdditionalGalleryInfo(cms, resource, messages, param);
         result.put("isAdvancedWidget", true);
         return result;
     }

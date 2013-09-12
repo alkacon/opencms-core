@@ -96,6 +96,16 @@ public final class CmsGalleryConfigurationJSO extends JavaScriptObject implement
                                          }-*/;
 
     /**
+     * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#getGalleryTypeName()
+     */
+    public native String getGalleryTypeName()/*-{
+                                             if (typeof this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_GALLERY_NAME] != 'undefined') {
+                                             return this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_GALLERY_NAME];
+                                             }
+                                             return null;
+                                             }-*/;
+
+    /**
      * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#getGalleryTypes()
      */
     public String[] getGalleryTypes() {
@@ -209,6 +219,16 @@ public final class CmsGalleryConfigurationJSO extends JavaScriptObject implement
                                        }
                                        return null;
                                        }-*/;
+
+    /**
+     * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#getUploadFolder()
+     */
+    public native String getUploadFolder()/*-{
+                                          if (typeof this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_UPLOAD_FOLDER] != 'undefined') {
+                                          return this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_UPLOAD_FOLDER];
+                                          }
+                                          return null;
+                                          }-*/;
 
     /**
      * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#isIncludeFiles()

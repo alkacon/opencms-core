@@ -177,7 +177,11 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget implements I_Cms
 
         JSONObject additional = null;
         try {
-            additional = getAdditionalGalleryInfo(cms, widgetDialog.getMessages(), param);
+            additional = getAdditionalGalleryInfo(
+                cms,
+                widgetDialog instanceof CmsDialog ? ((CmsDialog)widgetDialog).getParamResource() : null,
+                widgetDialog.getMessages(),
+                param);
         } catch (JSONException e) {
             LOG.error("Error parsing widget configuration", e);
         }
@@ -244,6 +248,7 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget implements I_Cms
      * May be <code>null</code>.<p>
      * 
      * @param cms an initialized instance of a CmsObject
+     * @param resource the edited resource
      * @param messages the dialog messages
      * @param param the widget parameter to generate the widget for
      * 
@@ -253,6 +258,7 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget implements I_Cms
      */
     protected abstract JSONObject getAdditionalGalleryInfo(
         CmsObject cms,
+        String resource,
         CmsMessages messages,
         I_CmsWidgetParameter param) throws JSONException;
 
@@ -298,6 +304,7 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget implements I_Cms
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(configuration.getGalleryTypes())) {
             result.put(I_CmsGalleryProviderConstants.CONFIG_GALLERY_TYPES, configuration.getGalleryTypes());
         }
+        result.put(I_CmsGalleryProviderConstants.CONFIG_GALLERY_NAME, getGalleryName());
         return result;
     }
 
@@ -336,7 +343,7 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget implements I_Cms
                 0).entrySet()) {
                 result.put(paramEntry.getKey(), paramEntry.getValue());
             }
-            JSONObject additional = getAdditionalGalleryInfo(cms, messages, null);
+            JSONObject additional = getAdditionalGalleryInfo(cms, cms.getSitePath(resource), messages, null);
             if (additional != null) {
                 result.merge(additional, true, true);
             }

@@ -35,6 +35,8 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsLog;
 import org.opencms.util.A_CmsModeStringEnumeration;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsUploadFolderHandler;
+import org.opencms.workplace.I_CmsUploadFolderHandler;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -118,15 +120,6 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
         createfolder
     }
 
-    /** 
-     * Array of the possible "button styles".
-     * Must be private because of Findbugs rule "MS".
-     */
-    private static final String[] BUTTON_STYLES = {"image", "textimage", "text"};
-
-    /** Array list for fast lookup of "button styles". */
-    public static final List<String> BUTTON_STYLES_LIST = Collections.unmodifiableList(Arrays.asList(BUTTON_STYLES));
-
     /** Constant for the publish related resources mode, checkbox disabled by default. */
     public static final CmsPublishRelatedResourcesMode PUBLISH_RELATED_RESOURCES_MODE_FALSE = CmsPublishRelatedResourcesMode.MODE_FALSE;
 
@@ -147,6 +140,15 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
 
     /** Publish button appearance: show never. */
     public static final String PUBLISHBUTTON_SHOW_NEVER = "never";
+
+    /** 
+     * Array of the possible "button styles".
+     * Must be private because of Findbugs rule "MS".
+     */
+    private static final String[] BUTTON_STYLES = {"image", "textimage", "text"};
+
+    /** Array list for fast lookup of "button styles". */
+    public static final List<String> BUTTON_STYLES_LIST = Collections.unmodifiableList(Arrays.asList(BUTTON_STYLES));
 
     /** Parameter for buttonstyle text & image. */
     private static final int BUTTONSTYLE_TEXTIMAGE = 1;
@@ -183,6 +185,9 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
 
     /** The subsitemap creation mode. */
     private SubsitemapCreationMode m_subsitemapCreationMode;
+
+    /** The gallery upload folder handler. */
+    private I_CmsUploadFolderHandler m_uploadFolderHandler;
 
     /**
      * Gets the default copy mode when copying a file of the user.<p>
@@ -324,6 +329,20 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     public String getExplorerButtonStyleString() {
 
         return BUTTON_STYLES[getExplorerButtonStyle()];
+    }
+
+    /**
+     * Returns the gallery upload folder handler.<p>
+     * 
+     * @return the gallery upload folder handler
+     */
+    public I_CmsUploadFolderHandler getGalleryUploadHandler() {
+
+        if (m_uploadFolderHandler == null) {
+            // handler has not been configured, use the default one
+            m_uploadFolderHandler = new CmsUploadFolderHandler();
+        }
+        return m_uploadFolderHandler;
     }
 
     /**
@@ -728,6 +747,21 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
             setExplorerFileEntries(Integer.parseInt(entries));
         } catch (Throwable t) {
             // ignore this exception
+        }
+    }
+
+    /**
+     * Sets the gallery upload folder handler.<p>
+     * 
+     * @param clazz the gallery upload folder handler
+     */
+    public void setGallerUploadHandler(I_CmsUploadFolderHandler clazz) {
+
+        m_uploadFolderHandler = clazz;
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_GALLERY_UPLOAD_1,
+                m_uploadFolderHandler.getClass().getName()));
         }
     }
 

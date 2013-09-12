@@ -68,6 +68,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -238,6 +239,8 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         m_main = uibinder.createAndBindUi(this);
         initWidget(m_main);
         initUploadZone(m_uploadDropZone);
+        m_uploadDropZone.setTitle(org.opencms.ade.upload.client.Messages.get().key(
+            org.opencms.ade.upload.client.Messages.GUI_UPLOAD_DRAG_AND_DROP_ENABLED_0));
         m_configuration = configuration;
         I_CmsLayoutBundle.INSTANCE.galleryFieldCss().ensureInjected();
         m_opener.setButtonStyle(ButtonStyle.TRANSPARENT, null);
@@ -564,6 +567,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     protected void setValue(String value, boolean fireEvent) {
 
         m_textbox.setValue(value);
+        updateUploadTarget(CmsResource.getFolderPath(value));
         updateResourceInfo(value);
         m_previousValue = value;
         if (fireEvent) {
@@ -605,9 +609,6 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
      */
     void displayResourceInfo(CmsResultItemBean info) {
 
-        m_uploadTarget = CmsResource.getFolderPath(info.getPath());
-        m_buttonHandler.setTargetFolder(m_uploadTarget);
-        m_uploadButton.setTitle(Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_1, m_uploadTarget));
         if (m_hasImage) {
             setImagePreview(info.getViewLink());
             m_resourceInfoPanel.add(new CmsImageInfo(info, info.getDimension()));
@@ -624,6 +625,31 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
             }
         }
         fireResize();
+    }
+
+    /**
+     * Updates the upload target folder path.<p>
+     * 
+     * @param uploadTarget the upload target folder
+     */
+    protected void updateUploadTarget(String uploadTarget) {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(uploadTarget)) {
+            m_uploadTarget = m_configuration.getUploadFolder();
+        } else {
+            m_uploadTarget = uploadTarget;
+        }
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_uploadTarget)) {
+            // disable the upload button as no target folder is available
+            m_uploadButton.setVisible(false);
+            m_uploadDropZone.getStyle().setDisplay(Display.NONE);
+        } else {
+            // make sure the upload button is available
+            m_uploadButton.setVisible(true);
+            m_uploadDropZone.getStyle().clearDisplay();
+            m_buttonHandler.setTargetFolder(m_uploadTarget);
+            m_uploadButton.setTitle(Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_1, m_uploadTarget));
+        }
     }
 
     /**

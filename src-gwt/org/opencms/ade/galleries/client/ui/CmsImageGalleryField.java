@@ -29,6 +29,7 @@ package org.opencms.ade.galleries.client.ui;
 
 import org.opencms.ade.galleries.client.preview.CmsCroppingParamBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration;
+import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
@@ -332,6 +333,7 @@ public class CmsImageGalleryField extends CmsGalleryField {
             m_description = URL.decode(m_description);
             m_descriptionArea.setFormValueAsString(m_description);
         }
+        updateUploadTarget(CmsResource.getFolderPath(path));
         if (!path.isEmpty()) {
             String imageLink = CmsCoreProvider.get().link(path);
             setImagePreview(imageLink);

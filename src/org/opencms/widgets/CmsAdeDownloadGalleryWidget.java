@@ -90,11 +90,14 @@ public class CmsAdeDownloadGalleryWidget extends A_CmsAdeGalleryWidget {
     }
 
     /**
-     * @see org.opencms.widgets.A_CmsAdeGalleryWidget#getAdditionalGalleryInfo(org.opencms.file.CmsObject, org.opencms.i18n.CmsMessages, org.opencms.widgets.I_CmsWidgetParameter)
+     * @see org.opencms.widgets.A_CmsAdeGalleryWidget#getAdditionalGalleryInfo(org.opencms.file.CmsObject, java.lang.String, org.opencms.i18n.CmsMessages, org.opencms.widgets.I_CmsWidgetParameter)
      */
     @Override
-    protected JSONObject getAdditionalGalleryInfo(CmsObject cms, CmsMessages messages, I_CmsWidgetParameter param)
-    throws JSONException {
+    protected JSONObject getAdditionalGalleryInfo(
+        CmsObject cms,
+        String resource,
+        CmsMessages messages,
+        I_CmsWidgetParameter param) throws JSONException {
 
         JSONObject result = new JSONObject();
         result.put(I_CmsGalleryProviderConstants.CONFIG_TAB_CONFIG, "selectDoc");

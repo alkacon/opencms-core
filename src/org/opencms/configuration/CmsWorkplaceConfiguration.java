@@ -1248,6 +1248,10 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         // add the <uploadapplet> node
         workplaceGeneraloptions.addElement(N_UPLOADAPPLET).setText(
             m_workplaceManager.getDefaultUserSettings().getUploadVariant().toString());
+        // add the <galleryupload> node
+        workplaceGeneraloptions.addElement(N_GALLERY_UPLOAD).addAttribute(
+            A_CLASS,
+            m_workplaceManager.getDefaultUserSettings().getGalleryUploadHandler().getClass().getName());
         // add the <publishbuttonappearance> node if not empty
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_workplaceManager.getDefaultUserSettings().getPublishButtonAppearance())) {
             workplaceGeneraloptions.addElement(N_PUBLISHBUTTONAPPEARANCE).setText(
@@ -1657,7 +1661,11 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         digester.addCallMethod(xPathPrefix + "/" + N_BUTTONSTYLE, "setWorkplaceButtonStyle", 0);
         digester.addCallMethod(xPathPrefix + "/" + N_REPORTTYPE, "setWorkplaceReportType", 0);
         digester.addCallMethod(xPathPrefix + "/" + N_UPLOADAPPLET, "setUploadVariant", 0);
-        digester.addCallMethod(xPathPrefix + "/" + N_GALLERY_UPLOAD, "setGallerUploadHandler", 0);
+
+        // set the gallery upload folder handler
+        digester.addObjectCreate(xPathPrefix + "/" + N_GALLERY_UPLOAD, A_CLASS, CmsConfigurationException.class);
+        digester.addSetNext(xPathPrefix + "/" + N_GALLERY_UPLOAD, "setGallerUploadHandler");
+
         digester.addCallMethod(xPathPrefix + "/" + N_LISTALLPROJECTS, "setListAllProjects", 0);
         digester.addCallMethod(xPathPrefix + "/" + N_PUBLISHNOTIFICATION, "setShowPublishNotification", 0);
         digester.addCallMethod(xPathPrefix + "/" + N_PUBLISHBUTTONAPPEARANCE, "setPublishButtonAppearance", 0);

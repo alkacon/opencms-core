@@ -83,6 +83,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String INIT_EXPORT_USER_1 = "INIT_EXPORT_USER_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String INIT_GALLERY_UPLOAD_1 = "INIT_GALLERY_UPLOAD_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String INIT_GUEST_USER_1 = "INIT_GUEST_USER_1";
 
     /** Message constant for key in the resource bundle. */

@@ -183,7 +183,13 @@ public interface I_CmsGalleryProviderConstants {
     String CONFIG_GALLERY_PATH = "gallerypath";
 
     /** Configuration key. */
+    String CONFIG_GALLERY_NAME = "galleryname";
+
+    /** Configuration key. */
     String CONFIG_GALLERY_TYPES = "gallerytypes";
+
+    /** Configuration key. */
+    String CONFIG_UPLOAD_FOLDER = "uploadfolder";
 
     /** Configuration key. */
     String CONFIG_IMAGE_FORMAT_NAMES = "imageformatnames";

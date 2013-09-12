@@ -58,6 +58,13 @@ public interface I_CmsGalleryConfiguration {
     String getGalleryPath();
 
     /**
+     * Returns the gallery type name.<p>
+     * 
+     * @return the gallery type name
+     */
+    String getGalleryTypeName();
+
+    /**
      * Returns the available gallery types.<p>
      * 
      * @return the available gallery types
@@ -137,6 +144,13 @@ public interface I_CmsGalleryConfiguration {
      * @return the tree token 
      */
     String getTreeToken();
+
+    /**
+     * Returns the upload folder.<p>
+     * 
+     * @return the upload folder
+     */
+    String getUploadFolder();
 
     /**
      * Returns if files are selectable.<p>

@@ -1603,29 +1603,26 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                     }
                 }
 
-                if (CmsStringUtil.isEmptyOrWhitespaceOnly(data.getStartGallery()) && !types.isEmpty()) {
-                    String key;
-                    if (conf.getGalleryMode() == GalleryMode.adeView) {
-                        key = KEY_LAST_USED_GALLERY_ADEVIEW;
-                    } else {
-                        key = "" + types.get(0).getTypeId();
-                    }
-                    String lastGallery = getWorkplaceSettings().getLastUsedGallery(key);
-                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(lastGallery) && !data.getGalleries().isEmpty()) {
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(data.getStartGallery()) && !data.getGalleries().isEmpty()) {
+                    startGallery = null;
+                    if (!data.getGalleries().isEmpty()) {
                         // check the user preferences for any configured start gallery
                         String galleryTypeName = data.getGalleries().get(0).getType();
-                        lastGallery = getWorkplaceSettings().getUserSettings().getStartGallery(
+                        startGallery = getWorkplaceSettings().getUserSettings().getStartGallery(
                             galleryTypeName,
                             getCmsObject());
-                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(lastGallery)
-                            && !CmsPreferences.INPUT_DEFAULT.equals(lastGallery)) {
-                            lastGallery = getCmsObject().getRequestContext().removeSiteRoot(lastGallery);
+                        if (CmsPreferences.INPUT_DEFAULT.equals(startGallery)) {
+                            startGallery = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartGallery(
+                                galleryTypeName);
+                        }
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(startGallery)) {
+                            startGallery = getCmsObject().getRequestContext().removeSiteRoot(startGallery);
                         }
                     }
                     // check if the gallery is available in this site and still exists
-                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(lastGallery)
-                        && getCmsObject().existsResource(lastGallery)) {
-                        data.setStartGallery(lastGallery);
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(startGallery)
+                        && getCmsObject().existsResource(startGallery)) {
+                        data.setStartGallery(startGallery);
                     } else {
                         // don't select any gallery
                         data.setStartGallery(null);
