@@ -151,6 +151,11 @@ jar {
     include 'com/**'
     exclude '**/*.html'
     exclude '**/.gitignore'
+    
+    metaInf { 
+        from("${projectDir}/webapp/WEB-INF/opencms.tld")
+    }
+    
     from ("${projectDir}/webapp/WEB-INF/setupdata/version.properties"){
         include 'version.properties'
         filter(ReplaceTokens, tokens: [
