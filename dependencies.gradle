@@ -49,7 +49,11 @@ dependencies {
     // the jug-lgpl-2.0.0.jar is currently not available from the repository, using the local file version
     // distribution group: 'org.safehaus.jug', name: 'jug', version: '2.0.0'
     distribution files('lib/runtime/jug-lgpl-2.0.0.jar')
+    
+    // http://svn.alfresco.com/repos/alfresco-open-mirror/alfresco/HEAD/root/projects/alfresco-jlan/    
+    // Revision r55007
     distribution files('lib/runtime/alfresco-jlan.jar')
+    
     distribution files('lib/runtime/cryptix-jce-provider.jar')
     distribution group: 'asm', name: 'asm', version: '3.2'
     distribution group: 'com.cybozu.labs', name: 'langdetect', version: '1.1-20120112'
