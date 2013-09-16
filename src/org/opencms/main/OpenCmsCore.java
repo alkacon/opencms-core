@@ -104,6 +104,7 @@ import org.opencms.xml.CmsXmlContentTypeManager;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 
 import java.io.IOException;
+import java.security.Security;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -124,6 +125,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
+
+import cryptix.jce.provider.CryptixCrypto;
 
 /**
  * The internal implementation of the core OpenCms "operating system" functions.<p>
@@ -1018,6 +1021,7 @@ public final class OpenCmsCore {
         } catch (SecurityException se) {
             // security manager is active, but we will try other options before giving up
         }
+        Security.addProvider(new CryptixCrypto());
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_FILE_ENCODING_1, systemEncoding));
         }
@@ -1288,6 +1292,9 @@ public final class OpenCmsCore {
             // initialize the search manager
             m_searchManager.initialize(initCmsObject(adminCms));
 
+            CmsVfsBundleManager vfsBundleManager = new CmsVfsBundleManager(adminCms);
+            vfsBundleManager.reload(true);
+
             // initialize the workplace manager
             m_workplaceManager.initialize(initCmsObject(adminCms));
 
@@ -1311,9 +1318,6 @@ public final class OpenCmsCore {
                 m_workflowManager.setParameters(new HashMap<String, String>());
             }
             m_workflowManager.initialize(adminCms);
-
-            CmsVfsBundleManager vfsBundleManager = new CmsVfsBundleManager(adminCms);
-            vfsBundleManager.reload(true);
         } catch (CmsException e) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_MANAGERS_0), e);
         }
