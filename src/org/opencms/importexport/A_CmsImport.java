@@ -880,7 +880,7 @@ public abstract class A_CmsImport implements I_CmsImport {
         List<Element> groupNodes;
         List<String> userGroups;
         Element currentElement, currentGroup;
-        Map<String, Object> userInfo = new HashMap<String, Object>();
+        Map<String, Object> userInfo = null;
         String name, description, flags, password, firstname, lastname, email, address, pwd, infoNode, defaultGroup;
         // try to get the import resource
         //getImportResource();
@@ -918,7 +918,10 @@ public abstract class A_CmsImport implements I_CmsImport {
                 } catch (ClassNotFoundException cnfex) {
                     m_report.println(cnfex);
                 }
-
+                // in case the user info could not be parsed create a new map
+                if (userInfo == null) {
+                    userInfo = new HashMap<String, Object>();
+                }
                 // get the groups of the user and put them into the list
                 groupNodes = currentElement.selectNodes("*/" + A_CmsImport.N_GROUPNAME);
                 userGroups = new ArrayList<String>();
