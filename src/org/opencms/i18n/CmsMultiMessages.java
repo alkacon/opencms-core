@@ -211,12 +211,14 @@ public class CmsMultiMessages extends CmsMessages {
             // key was already checked and not found   
             return null;
         }
+        boolean noCache = false;
         if (result == null) {
             // so far not in the cache
             for (int i = 0; (result == null) && (i < m_messages.size()); i++) {
                 try {
                     result = (m_messages.get(i)).getString(keyName);
                     // if no exception is thrown here we have found the result
+                    noCache |= m_messages.get(i).isUncacheable();
                 } catch (CmsMessageException e) {
                     // can usually be ignored
                     if (LOG.isDebugEnabled()) {
@@ -243,8 +245,10 @@ public class CmsMultiMessages extends CmsMessages {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_MESSAGE_KEY_FOUND_2, keyName, result));
             }
-            // cache the result
-            m_messageCache.put(keyName, result);
+            if (!noCache) {
+                // cache the result
+                m_messageCache.put(keyName, result);
+            }
         }
         // return the result        
         return result;

@@ -356,6 +356,16 @@ public class CmsMessages {
         return (m_resourceBundle != null);
     }
 
+    /** 
+     * Indicates that users of this CmsMessages instance should not cache message from it.<p>
+     *  
+     * @return true if messages from this CmsMessages instance should not be cached 
+     */
+    public boolean isUncacheable() {
+
+        return (m_resourceBundle instanceof CmsVfsResourceBundle);
+    }
+
     /**
      * Returns the localized resource string for a given message key.<p>
      * 
