@@ -28,7 +28,9 @@
 
 .dragTarget.dragging{
 	min-height: 25px;
-
+}
+.dragTarget.dragging:empty{
+	margin-bottom: 10px;
 }
 
 /** Following is a clear-fix for containers with floated content, forcing the container to enclose its content.
