@@ -753,7 +753,7 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Resource type configuration]]></value>
+					<value><![CDATA[Sitemap configuration file]]></value>
 				</property>
 				<property>
 					<name>locale</name>
