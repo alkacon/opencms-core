@@ -24,7 +24,7 @@
 .emptyValue .widget.galleryField div.imagePreview *{
 	visibility: hidden;
 }
-.widget.galleryField	input{
+.widget.galleryField input[type="text"]{
 	font-family: value("constants.css.fontFamily");
 	border-radius: value("constants.css.borderRadius");
 	color: value("constants.css.textColor");

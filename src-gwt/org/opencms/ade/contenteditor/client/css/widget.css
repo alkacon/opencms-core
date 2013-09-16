@@ -70,7 +70,7 @@ div.textBox{
 	padding: 0px 4px;
 	margin: 0px;
 }
-div.textBox > input{
+div.textBox > input[type="text"]{
 	width:100%;
 	outline:none;
 	display: block;
@@ -91,7 +91,7 @@ div.passwordTextBox{
 	padding: 0px 4px;
 }
 
-div.passwordTextBox input{
+div.passwordTextBox input[type="text"]{
 	border: none;
 	font-family: value("constants.css.fontFamily");
 	display: block;
@@ -104,7 +104,7 @@ div.passwordTextBox input{
 	outline:none;
 }
 
-div.calendarStyle input {
+div.calendarStyle input[type="text"] {
 	box-shadow: none;
 	color: value("constants.css.textColor");
 	font-size: 12px;
@@ -112,7 +112,7 @@ div.calendarStyle input {
 	font-style:normal;
 	outline: none;
 }
-div.calendarStyle input.textboxGhostMode{
+div.calendarStyle input[type="text"].textboxGhostMode{
 	color: #7788AA;
 	font-style:normal;
 	outline: none;
@@ -131,7 +131,7 @@ div.calendarStyle {
 }
 
 
-input.displayTextBox{
+input[type="text"].displayTextBox{
 	background: none repeat scroll 0 0 transparent;
 	height: 18px;
 	display: block;
@@ -141,7 +141,7 @@ input.displayTextBox{
 	border: medium none;
 }
 
-input.displayTextBox:disabled{
+input[type="text"].displayTextBox:disabled{
 	background: none repeat scroll 0 0 transparent;
 	height: 18px;
 	display: block;
@@ -155,7 +155,7 @@ div.displayTextBoxPanel{
 	background: none repeat scroll 0 0 transparent;
 }
 
-input.comboBoxInput {
+input[type="text"].comboBoxInput {
     border: medium none;
     box-shadow: none;
     color: value("constants.css.textColor");
@@ -220,7 +220,7 @@ div.colorPickerValue {
     width: auto;	
 }
 
-div.colorPickerValue input{
+div.colorPickerValue input[type="text"]{
 	background-color: #FFFFFF;
     border: none;
     box-shadow: none;
