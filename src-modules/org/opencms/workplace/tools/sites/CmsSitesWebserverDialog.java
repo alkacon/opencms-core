@@ -99,7 +99,7 @@ public class CmsSitesWebserverDialog extends CmsWidgetDialog {
         "resources/webserver/");
 
     /** Sample files folder name. */
-    public static final String TEMPLATE_FILES = "templates/";
+    public static final String TEMPLATE_FILES = "webserver-templates/";
 
     /** */
     private static final String DEFAULT_NAME_WEBSERVER_SECURE = "vhost-secure.template";
