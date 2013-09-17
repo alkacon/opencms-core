@@ -9,7 +9,7 @@ div>div.fader{
 	border: 1px solid #bbbbbb;
 	position:relative;
 }
-div.galleryField input{
+div.galleryField input[type="text"]{
 	border: none;
     box-shadow: none;
     outline: none;
@@ -27,7 +27,7 @@ div.inputContainer{
 	margin: 0px 21px 0px 4px;
 	padding: 0px;
 }
-div.galleryField input:focus{
+div.galleryField input[type="text"]:focus{
 	box-shadow: none;
     outline: none;
 }
