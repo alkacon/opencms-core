@@ -298,7 +298,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                 LOG.info(Messages.get().getBundle().key(Messages.LOG_DELETING_FROM_INDEX_1, resource.getRootPath()));
             }
             // delete all documents with this term from the index
-            indexWriter.deleteDocuments(resource);
+            indexWriter.deleteDocument(resource);
         } catch (IOException e) {
             if (LOG.isWarnEnabled()) {
                 LOG.warn(

@@ -124,9 +124,9 @@ public class CmsLuceneIndexWriter implements I_CmsIndexWriter {
     }
 
     /**
-     * @see org.opencms.search.I_CmsIndexWriter#deleteDocuments(org.opencms.db.CmsPublishedResource)
+     * @see org.opencms.search.I_CmsIndexWriter#deleteDocument(org.opencms.db.CmsPublishedResource)
      */
-    public void deleteDocuments(CmsPublishedResource resource) throws IOException {
+    public void deleteDocument(CmsPublishedResource resource) throws IOException {
 
         // search for an exact match on the document root path
         Term term = new Term(CmsSearchField.FIELD_PATH, resource.getRootPath());

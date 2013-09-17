@@ -59,7 +59,7 @@ public interface I_CmsIndexWriter {
      * 
      * @throws IOException in case something goes wrong
      */
-    void deleteDocuments(CmsPublishedResource resource) throws IOException;
+    void deleteDocument(CmsPublishedResource resource) throws IOException;
 
     /**
      * Optimizes the index.<p>

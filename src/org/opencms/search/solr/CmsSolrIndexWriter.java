@@ -55,6 +55,9 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
     /** The log object for this class. */
     protected static final Log LOG = CmsLog.getLog(CmsSolrIndexWriter.class);
 
+    /** The time to wait before a commit is sent to the Solr index.  */
+    private int m_commitMs = new Long(OpenCms.getSearchManager().getSolrServerConfiguration().getSolrCommitMs()).intValue();
+
     /** The Solr index. */
     private CmsSolrIndex m_index;
 
@@ -132,8 +135,7 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
                     Messages.LOG_SOLR_WRITER_DELETE_ALL_2,
                     m_index.getName(),
                     m_index.getPath()));
-
-                m_server.deleteByQuery("*:*");
+                m_server.deleteByQuery("*:*", m_commitMs);
             } catch (SolrServerException e) {
                 throw new IOException(e.getLocalizedMessage(), e);
             }
@@ -141,9 +143,9 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
     }
 
     /**
-     * @see org.opencms.search.I_CmsIndexWriter#deleteDocuments(org.opencms.db.CmsPublishedResource)
+     * @see org.opencms.search.I_CmsIndexWriter#deleteDocument(org.opencms.db.CmsPublishedResource)
      */
-    public void deleteDocuments(CmsPublishedResource resource) throws IOException {
+    public void deleteDocument(CmsPublishedResource resource) throws IOException {
 
         if ((m_server != null) && (m_index != null)) {
             try {
@@ -152,7 +154,7 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
                     resource.getRootPath(),
                     m_index.getName(),
                     m_index.getPath()));
-                m_server.deleteById(resource.getStructureId().toString());
+                m_server.deleteById(resource.getStructureId().toString(), m_commitMs);
             } catch (SolrServerException e) {
                 throw new IOException(e.getLocalizedMessage(), e);
             } catch (SolrException e) {
@@ -183,8 +185,7 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
                         rootPath,
                         m_index.getName(),
                         m_index.getPath()));
-                    int commitMs = new Long(OpenCms.getSearchManager().getSolrServerConfiguration().getSolrCommitMs()).intValue();
-                    m_server.add((SolrInputDocument)document.getDocument(), commitMs);
+                    m_server.add((SolrInputDocument)document.getDocument(), m_commitMs);
                 } catch (SolrServerException e) {
                     throw new IOException(e.getLocalizedMessage(), e);
                 }
