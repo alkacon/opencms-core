@@ -298,7 +298,8 @@ public class CmsVfsTab extends A_CmsListTab {
         }
         // we need this in a final variable to access it in the click handler 
         final CmsLazyTreeItem constResult = result;
-        dataValue.getLabelWidget().addClickHandler(new ClickHandler() {
+        final SelectionHandler constSelectionHandler = selectionHandler;
+        dataValue.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent e) {
 

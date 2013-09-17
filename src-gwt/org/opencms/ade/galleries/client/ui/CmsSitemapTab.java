@@ -219,7 +219,7 @@ public class CmsSitemapTab extends A_CmsListTab {
         }
         m_items.add(result);
         final CmsLazyTreeItem constResult = result;
-        dataValue.getLabelWidget().addClickHandler(new ClickHandler() {
+        dataValue.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent e) {
 

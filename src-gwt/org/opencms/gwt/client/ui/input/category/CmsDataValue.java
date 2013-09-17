@@ -32,6 +32,10 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -46,7 +50,7 @@ import com.google.gwt.user.client.ui.Widget;
  * Widget to generate an single row of values.<p> 
  * 
  * */
-public class CmsDataValue extends Composite implements I_CmsTruncable {
+public class CmsDataValue extends Composite implements I_CmsTruncable, HasClickHandlers {
 
     /**
      * @see com.google.gwt.uibinder.client.UiBinder
@@ -157,6 +161,14 @@ public class CmsDataValue extends Composite implements I_CmsTruncable {
         for (Widget button : buttons) {
             m_buttonPanel.add(button);
         }
+    }
+
+    /**
+     * @see com.google.gwt.event.dom.client.HasClickHandlers#addClickHandler(com.google.gwt.event.dom.client.ClickHandler)
+     */
+    public HandlerRegistration addClickHandler(ClickHandler clickHandler) {
+
+        return addDomHandler(clickHandler, ClickEvent.getType());
     }
 
     /**
