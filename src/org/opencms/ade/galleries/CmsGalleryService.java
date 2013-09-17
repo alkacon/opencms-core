@@ -1475,6 +1475,15 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
                         return internalCreateSitemapEntryBean(innerCms, innerResource);
                     }
+
+                    /**
+                     * @see org.opencms.ade.galleries.A_CmsTreeTabDataPreloader#getChildren(org.opencms.file.CmsResource)
+                     */
+                    @Override
+                    protected List<CmsResource> getChildren(CmsResource resource) throws CmsException {
+
+                        return getSitemapSubEntryResources(resource.getRootPath());
+                    }
                 };
                 CmsSitemapEntryBean entryBean = loader.preloadData(cms, Collections.singletonList(resource));
                 initialSearchObj.setSitemapPreloadData(entryBean);
