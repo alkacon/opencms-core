@@ -556,7 +556,7 @@ compileTestJava {
 
 test {
     useJUnit()
-    include 'org/opencms/configuration/AllTests*'
+    include 'org/opencms/test/AllTests*'
     // important: exclude all anonymous classes
     exclude '**/*$*.class'
     scanForTestClasses false
