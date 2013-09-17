@@ -922,6 +922,29 @@
 			<relations />
 			<accesscontrol />
 		</file>
+		
+		<file>
+			<source>system/workplace/resources/filetypes/navlevel.png
+			</source>
+			<destination>system/workplace/resources/filetypes/navlevel.png
+			</destination>
+			<type>image</type>
+			<uuidstructure>e20c5421-a4b5-4389-958e-5323d4b6843f</uuidstructure>
+			<uuidresource>4d1f707c-3e04-472b-b825-0ff4783f5a2f</uuidresource>
+			<datelastmodified>Wed, 04 May 2011 12:28:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations />
+			<accesscontrol />
+		</file>
 		<file>
 			<source>system/workplace/resources/filetypes/containerpage.png
 			</source>

@@ -28,7 +28,7 @@
 package org.opencms.gwt;
 
 import org.opencms.file.types.CmsResourceTypeUnknownFile;
-import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
@@ -61,9 +61,13 @@ public final class CmsIconUtil extends org.opencms.gwt.shared.CmsIconUtil implem
         public String buildResourceIconCss() {
 
             m_buffer.append(buildUnknownIconCss());
-            for (I_CmsResourceType type : OpenCms.getResourceManager().getResourceTypes()) {
+            for (CmsExplorerTypeSettings type : OpenCms.getWorkplaceManager().getExplorerTypeSettings()) {
                 addCssForType(type);
             }
+            CmsExplorerTypeSettings navlevel = new CmsExplorerTypeSettings();
+            navlevel.setName(CmsGwtConstants.TYPE_NAVLEVEL);
+            navlevel.setIcon("navlevel.png");
+            addCssForType(navlevel);
             addResourceNotFoundIconRule();
             return m_buffer.toString();
         }
@@ -115,28 +119,24 @@ public final class CmsIconUtil extends org.opencms.gwt.shared.CmsIconUtil implem
         /**
          * Helper method for appending the CSS for a single resource type to a buffer.<p>
          * 
-         * @param type the resource type for which the CSS should be generated 
+         * @param explorerType the explorer type for which the CSS should be generated 
          */
-        private void addCssForType(I_CmsResourceType type) {
+        private void addCssForType(CmsExplorerTypeSettings explorerType) {
 
-            String typeName = type.getTypeName();
-            CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
-            if (settings == null) {
-                return;
-            }
-            if (settings.getBigIcon() != null) {
+            String typeName = explorerType.getName();
+            if (explorerType.getBigIcon() != null) {
                 CmsIconCssRuleBuilder css = new CmsIconCssRuleBuilder();
-                css.setImageUri(getIconUri(settings.getBigIcon()));
+                css.setImageUri(getIconUri(explorerType.getBigIcon()));
                 css.addSelectorForType(typeName, false);
                 css.writeCss(m_buffer);
 
                 CmsIconCssRuleBuilder cssSmall = new CmsIconCssRuleBuilder();
-                cssSmall.setImageUri(getIconUri(settings.getIcon()));
+                cssSmall.setImageUri(getIconUri(explorerType.getIcon()));
                 cssSmall.addSelectorForType(typeName, true);
                 cssSmall.writeCss(m_buffer);
-            } else if (settings.getOriginalIcon() != null) {
+            } else if (explorerType.getOriginalIcon() != null) {
                 CmsIconCssRuleBuilder css = new CmsIconCssRuleBuilder();
-                css.setImageUri(getIconUri(settings.getIcon()));
+                css.setImageUri(getIconUri(explorerType.getIcon()));
                 css.addSelectorForType(typeName, true);
                 css.addSelectorForType(typeName, false);
                 css.writeCss(m_buffer);
@@ -152,7 +152,7 @@ public final class CmsIconUtil extends org.opencms.gwt.shared.CmsIconUtil implem
                 cssSmall.writeCss(m_buffer);
             }
 
-            Map<String, CmsIconRule> iconRules = settings.getIconRules();
+            Map<String, CmsIconRule> iconRules = explorerType.getIconRules();
             for (Map.Entry<String, CmsIconRule> entry : iconRules.entrySet()) {
                 CmsIconRule rule = entry.getValue();
                 addCssForIconRule(typeName, rule);

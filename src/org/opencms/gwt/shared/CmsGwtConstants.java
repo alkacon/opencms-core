@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client;
+package org.opencms.gwt.shared;
 
 /** 
  * Common constants needed for client side code.<p>
@@ -40,6 +40,9 @@ public final class CmsGwtConstants {
 
     /** Type name for container pages. */
     public static final String TYPE_CONTAINERPAGE = "containerpage";
+
+    /** Name for the pseudo-type 'navlevel'. */
+    public static final String TYPE_NAVLEVEL = "navlevel";
 
     /**
      * Hide constructor.<p>

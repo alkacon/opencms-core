@@ -27,6 +27,7 @@
 
 package org.opencms.ade.galleries.shared;
 
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -48,6 +49,9 @@ public class CmsSitemapEntryBean implements IsSerializable, I_CmsGalleryTreeEntr
 
     /** The hidden entry flag. */
     private boolean m_isHiddenEntry;
+
+    /** Flag which indicates whether this bean belongs to a navigation level. */
+    private boolean m_isNavLevel;
 
     /** Flag indicating whether this is entry should be displayed at the top level of the tree. */
     private boolean m_isRoot;
@@ -81,6 +85,7 @@ public class CmsSitemapEntryBean implements IsSerializable, I_CmsGalleryTreeEntr
      * @param isFolder <code>true</code> if this entry represents a folder
      * @param isRoot <code>true</code> if this is a site root entry
      * @param isHiddenEntry <code>true</code> if this is a hidden entry
+     * @param isNavLevel <code>true</code> if this is a navigation level 
      * 
      */
     public CmsSitemapEntryBean(
@@ -91,7 +96,8 @@ public class CmsSitemapEntryBean implements IsSerializable, I_CmsGalleryTreeEntr
         String type,
         boolean isFolder,
         boolean isRoot,
-        boolean isHiddenEntry) {
+        boolean isHiddenEntry,
+        boolean isNavLevel) {
 
         m_rootPath = rootPath;
         m_sitePath = sitePath;
@@ -101,6 +107,7 @@ public class CmsSitemapEntryBean implements IsSerializable, I_CmsGalleryTreeEntr
         m_isFolder = isFolder;
         m_isRoot = isRoot;
         m_isHiddenEntry = isHiddenEntry;
+        m_isNavLevel = isNavLevel;
     }
 
     /**
@@ -151,6 +158,20 @@ public class CmsSitemapEntryBean implements IsSerializable, I_CmsGalleryTreeEntr
                 return fixedPath;
             }
             return fixedPath.substring(lastSlash + 1);
+        }
+    }
+
+    /** 
+     * Returns the type name used to determine the icon (may be different from the actual type.<p>
+     * 
+     * @return the type name used for the icon 
+     */
+    public String getImageType() {
+
+        if (m_isNavLevel) {
+            return CmsGwtConstants.TYPE_NAVLEVEL;
+        } else {
+            return getType();
         }
     }
 

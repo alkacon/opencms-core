@@ -31,9 +31,9 @@ import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
-import org.opencms.gwt.client.CmsGwtConstants;
 import org.opencms.gwt.client.ui.CmsModelSelectDialog;
 import org.opencms.gwt.client.ui.I_CmsModelSelectHandler;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsModelResourceInfo;
 import org.opencms.util.CmsUUID;
 

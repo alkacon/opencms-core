@@ -189,7 +189,7 @@ public class CmsSitemapTab extends A_CmsListTab {
     protected CmsLazyTreeItem createItem(final CmsSitemapEntryBean sitemapEntry) {
 
         CmsDataValue dataValue = new CmsDataValue(600, 3, CmsIconUtil.getResourceIconClasses(
-            sitemapEntry.getType(),
+            sitemapEntry.getImageType(),
             true), sitemapEntry.getDisplayName());
         dataValue.setUnselectable();
         if (sitemapEntry.isHiddenEntry()) {

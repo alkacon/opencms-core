@@ -2028,6 +2028,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         } else {
             type = OpenCms.getResourceManager().getResourceType(ownResource.getTypeId()).getTypeName();
         }
+        boolean isNavLevel = ownResource.isFolder() && navElement.isNavigationLevel();
         // make sure not to show ??? NavText ???
         String title = null;
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(navElement.getProperty(CmsPropertyDefinition.PROPERTY_NAVTEXT))) {
@@ -2062,7 +2063,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             type,
             ownResource.isFolder(),
             isRoot,
-            navElement.isHiddenNavigationEntry());
+            navElement.isHiddenNavigationEntry(),
+            isNavLevel);
         result.setSiteRoot(OpenCms.getSiteManager().getSiteRoot(ownResource.getRootPath()));
         if (noChildren) {
             result.setChildren(new ArrayList<CmsSitemapEntryBean>());
