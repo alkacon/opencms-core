@@ -87,7 +87,7 @@ public class CmsJlanUsers implements UsersInterface {
         if (m_adminCms == null) {
             m_adminCms = cms;
         } else {
-            throw new IllegalStateException("Can't set the Admin Cms object twice!");
+            LOG.warn("Can't set admin CmsObject twice!");
         }
     }
 
