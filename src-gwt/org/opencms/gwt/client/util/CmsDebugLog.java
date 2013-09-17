@@ -47,11 +47,11 @@ import com.google.gwt.user.client.ui.RootPanel;
  */
 public final class CmsDebugLog extends Composite {
 
-    /** Debug log displayed within the client window. */
-    private static CmsDebugLog m_debug;
-
     /** Global debugging flag. */
     private static final boolean DEBUG = false;
+
+    /** Debug log displayed within the client window. */
+    private static CmsDebugLog m_debug;
 
     /** The wrapped widget. */
     protected HTML m_html;
@@ -83,6 +83,17 @@ public final class CmsDebugLog extends Composite {
     }
 
     /**
+     * Logs a message to the browser console if possible.<p>
+     * 
+     * @param message the message to log
+     */
+    public static native void consoleLog(String message) /*-{
+                                                         if ($wnd.console) { 
+                                                         $wnd.console.log(message);
+                                                         }
+                                                         }-*/;
+
+    /**
      * Returns the debug log.<p>
      * 
      * @return the debug log
@@ -96,6 +107,18 @@ public final class CmsDebugLog extends Composite {
             }
         }
         return m_debug;
+    }
+
+    /**
+     * Clears the debug log.<p>
+     */
+    @SuppressWarnings("unused")
+    public void clear() {
+
+        if (!DEBUG) {
+            return;
+        }
+        m_html.setHTML("");
     }
 
     /**
@@ -113,17 +136,5 @@ public final class CmsDebugLog extends Composite {
         child.setInnerHTML(text);
         m_html.getElement().insertFirst(child);
 
-    }
-
-    /**
-     * Clears the debug log.<p>
-     */
-    @SuppressWarnings("unused")
-    public void clear() {
-
-        if (!DEBUG) {
-            return;
-        }
-        m_html.setHTML("");
     }
 }
