@@ -72,7 +72,7 @@ public class CmsRenameDialog extends CmsPopup {
             @Override
             public void execute() {
 
-                start(200, false);
+                start(0, true);
                 CmsCoreProvider.getVfsService().getRenameInfo(m_structureId, this);
             }
 

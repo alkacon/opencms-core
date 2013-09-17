@@ -75,7 +75,7 @@ public class CmsRestoreDialog extends CmsPopup {
             @Override
             public void execute() {
 
-                start(200, true);
+                start(0, true);
                 CmsCoreProvider.getVfsService().getRestoreInfo(m_structureId, this);
             }
 

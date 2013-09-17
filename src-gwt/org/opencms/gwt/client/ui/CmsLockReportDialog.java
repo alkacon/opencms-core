@@ -168,12 +168,14 @@ public final class CmsLockReportDialog extends CmsPopup {
             @Override
             public void execute() {
 
+                start(0, true);
                 CmsCoreProvider.getVfsService().getLockReportInfo(structureId, this);
             }
 
             @Override
             public void onFailure(Throwable t) {
 
+                stop(false);
                 dialog.hide();
                 super.onFailure(t);
             }
@@ -181,6 +183,7 @@ public final class CmsLockReportDialog extends CmsPopup {
             @Override
             protected void onResponse(CmsLockReportInfo result) {
 
+                stop(false);
                 dialog.initContent(result);
             }
         };

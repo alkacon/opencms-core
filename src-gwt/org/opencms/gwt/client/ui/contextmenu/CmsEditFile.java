@@ -175,7 +175,7 @@ public final class CmsEditFile implements I_CmsHasContextMenuCommand, I_CmsConte
             @Override
             public void execute() {
 
-                start(400, false);
+                start(0, true);
                 CmsCoreProvider.getVfsService().prepareEdit(structureId, fileName, this);
             }
 
