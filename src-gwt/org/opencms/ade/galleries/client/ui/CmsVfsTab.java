@@ -325,7 +325,11 @@ public class CmsVfsTab extends A_CmsListTab {
             }
             result.onFinishLoading();
             result.setOpen(true, false);
+            if (vfsEntry.getChildren().isEmpty()) {
+                result.setLeafStyle(true);
+            }
         }
+
         return result;
     }
 

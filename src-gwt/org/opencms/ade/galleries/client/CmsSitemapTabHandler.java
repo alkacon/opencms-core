@@ -145,6 +145,7 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
             m_controller.getStartSiteRoot(),
             m_controller.getSitemapSiteSelectorOptions());
         getTab().setSortSelectBoxValue(siteRoot, true);
+        m_controller.getDefaultScope();
         if (siteRoot == null) {
             siteRoot = m_controller.getDefaultVfsTabSiteRoot();
         }
@@ -153,7 +154,7 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
 
             public void execute(List<CmsSitemapEntryBean> result) {
 
-                getTab().fillInitially(result);
+                getTab().fillDefault(result);
                 getTab().onContentChange();
             }
         });
@@ -193,7 +194,7 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
 
             public void execute(List<CmsSitemapEntryBean> entries) {
 
-                getTab().fillInitially(entries);
+                getTab().fill(entries);
                 setSiteRoot(sortParams);
                 onChangeTreeState(new HashSet<CmsUUID>());
             }

@@ -489,10 +489,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
         CmsGallerySearchBean result = null;
         // search within all available types
-        List<String> types = new ArrayList<String>();
-        for (CmsResourceTypeBean info : data.getTypes()) {
-            types.add(info.getType());
-        }
+        List<String> types = getTypeNames(data);
         switch (data.getMode()) {
             case editor:
             case view:
@@ -536,8 +533,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                                         CmsPropertyDefinition.PROPERTY_TITLE,
                                         false).getValue();
                                     return internalCreateVfsEntryBean(
-                                        resource.getRootPath(),
-                                        resource.getStructureId(),
+                                        resource,
                                         title,
                                         true,
                                         isEditable(cms, resource),
@@ -670,13 +666,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                     CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
                 for (CmsResource res : resources) {
                     String title = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
-                    result.add(internalCreateVfsEntryBean(
-                        res.getRootPath(),
-                        res.getStructureId(),
-                        title,
-                        false,
-                        isEditable(cms, res),
-                        null));
+                    result.add(internalCreateVfsEntryBean(res, title, false, isEditable(cms, res), null));
                 }
             }
             return result;
@@ -704,8 +694,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             }
             CmsResource optionRes = cms.readResource(path);
             CmsVfsEntryBean entryBean = internalCreateVfsEntryBean(
-                path,
-                optionRes.getStructureId(),
+                optionRes,
                 path,
                 true,
                 isEditable(cms, optionRes),
@@ -797,7 +786,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             Visibility.all,
             CmsResourceFilter.ONLY_VISIBLE)) {
             if ((navElement != null) && navElement.isInNavigation()) {
-                result.add(prepareSitemapEntry(rootCms, navElement, false));
+                CmsSitemapEntryBean nextEntry = prepareSitemapEntry(rootCms, navElement, false);
+
+                result.add(nextEntry);
             }
         }
         if (isRoot) {
@@ -810,6 +801,21 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             return Collections.singletonList(root);
         }
         return result;
+    }
+
+    /** 
+     * Gets the type names from the gallery data bean.<p>
+     * 
+     * @param data the gallery data bean 
+     * @return the type names 
+     */
+    protected List<String> getTypeNames(CmsGalleryDataBean data) {
+
+        List<String> types = new ArrayList<String>();
+        for (CmsResourceTypeBean info : data.getTypes()) {
+            types.add(info.getType());
+        }
+        return types;
     }
 
     /**
@@ -948,26 +954,44 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /**
      * Creates the VFS entry bean for a resource.<p>
-     * 
-     * @param rootPath the root path 
-     * @param structureId the structure id 
+     *
+     * @param resource the resource for which to create the VFS entry bean 
      * @param title the title 
      * @param isRoot true if this is a root entry 
      * @param isEditable true if this entry is editable 
      * @param children the children of the entry 
      * 
      * @return the created VFS entry bean 
+     * @throws CmsException 
      */
     CmsVfsEntryBean internalCreateVfsEntryBean(
-        String rootPath,
-        CmsUUID structureId,
+        CmsResource resource,
         String title,
         boolean isRoot,
         boolean isEditable,
-        List<CmsVfsEntryBean> children) {
+        List<CmsVfsEntryBean> children) throws CmsException {
 
+        String rootPath = resource.getRootPath();
+        CmsUUID structureId = resource.getStructureId();
         CmsVfsEntryBean result = new CmsVfsEntryBean(rootPath, structureId, title, isRoot, isEditable, children);
         String siteRoot = null;
+        if (resource.isFolder()) {
+            CmsObject cms = OpenCms.initCmsObject(getCmsObject());
+            cms.getRequestContext().setSiteRoot("");
+            List<CmsResource> realChildren = cms.getResourcesInFolder(
+                rootPath,
+                CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+            List<CmsResource> effectiveChildren = new ArrayList<CmsResource>();
+            for (CmsResource realChild : realChildren) {
+                if (realChild.isFolder()) {
+                    effectiveChildren.add(realChild);
+                }
+            }
+            if (effectiveChildren.isEmpty()) {
+                result.setChildren(new ArrayList<CmsVfsEntryBean>());
+            }
+        }
+
         if (OpenCms.getSiteManager().startsWithShared(rootPath)) {
             siteRoot = OpenCms.getSiteManager().getSharedFolder();
         } else {
@@ -1466,8 +1490,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                             CmsPropertyDefinition.PROPERTY_TITLE,
                             false).getValue();
                         return internalCreateVfsEntryBean(
-                            innerResource.getRootPath(),
-                            innerResource.getStructureId(),
+                            innerResource,
                             title,
                             true,
                             isEditable(innerCms, innerResource),
@@ -1803,8 +1826,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                     CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
                 String title = cms.readPropertyObject(path, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
                 rootFolders.add(internalCreateVfsEntryBean(
-                    rootFolderResource.getRootPath(),
-                    rootFolderResource.getStructureId(),
+                    rootFolderResource,
                     title,
                     true,
                     isEditable(getCmsObject(), rootFolderResource),
@@ -1996,6 +2018,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
         CmsResource ownResource = navElement.getResource();
         CmsResource defaultFileResource = null;
+        CmsJspNavBuilder navBuilder = new CmsJspNavBuilder(cms);
         if (ownResource.isFolder() && !navElement.isNavigationLevel()) {
             defaultFileResource = cms.readDefaultFile(ownResource, CmsResourceFilter.ONLY_VISIBLE);
         }
@@ -2017,6 +2040,20 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 title = title.substring(0, title.indexOf("/"));
             }
         }
+        String childPath = navElement.getResource().getRootPath();
+        boolean noChildren = true;
+
+        List<CmsJspNavElement> childNav = navBuilder.getNavigationForFolder(
+            childPath,
+            Visibility.all,
+            CmsResourceFilter.ONLY_VISIBLE);
+        for (CmsJspNavElement childNavEntry : childNav) {
+            if (childNavEntry.isInNavigation()) {
+                noChildren = false;
+                break;
+            }
+        }
+
         CmsSitemapEntryBean result = new CmsSitemapEntryBean(
             navElement.getResource().getRootPath(),
             navElement.getResourceName(),
@@ -2027,6 +2064,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             isRoot,
             navElement.isHiddenNavigationEntry());
         result.setSiteRoot(OpenCms.getSiteManager().getSiteRoot(ownResource.getRootPath()));
+        if (noChildren) {
+            result.setChildren(new ArrayList<CmsSitemapEntryBean>());
+        }
         return result;
     }
 

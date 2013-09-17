@@ -264,4 +264,13 @@ public class CmsSitemapEntryBean implements IsSerializable, I_CmsGalleryTreeEntr
         m_siteRoot = siteRoot;
     }
 
+    /** 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+
+        return "CmsSitemapEntryBean(rootpath=" + m_rootPath + ",sitepath=" + m_sitePath + ")";
+    }
+
 }

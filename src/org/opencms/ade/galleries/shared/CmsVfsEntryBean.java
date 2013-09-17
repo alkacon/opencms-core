@@ -188,6 +188,16 @@ public class CmsVfsEntryBean implements IsSerializable, I_CmsGalleryTreeEntry<Cm
     }
 
     /**
+     * Sets the list of children.<p>
+     * 
+     * @param children the list of children 
+     */
+    public void setChildren(List<CmsVfsEntryBean> children) {
+
+        m_preloadedChildren = children;
+    }
+
+    /**
      * Sets if the user has write permissions to the folder.<p>
      *
      * @param editable <code>true</code> if the user has write permissions to the folder

@@ -273,6 +273,7 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
                 m_galleryDialog.getVfsTab().fillInitially(dialogBean.getVfsRootFolders());
             }
         }
+
         if (startTab == GalleryTabId.cms_tab_results) {
             if (searchObj.isEmpty()) {
                 startTab = dialogBean.getTabConfiguration().getDefaultTab();
