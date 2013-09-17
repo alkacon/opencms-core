@@ -476,6 +476,10 @@ task war (dependsOn: [setupJar, allModules], type: Zip){
     from (modulesDistsDir) {
         into '/WEB-INF/packages/modules'
     }
+    
+    from("${projectDir}/lib/jni") {
+        into "/WEB-INF/lib/jni"
+    }
 }
 
 task updater (dependsOn: setupJar, type: Zip){
