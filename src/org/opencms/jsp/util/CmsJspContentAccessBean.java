@@ -27,6 +27,7 @@
 
 package org.opencms.jsp.util;
 
+import org.opencms.ade.contenteditor.CmsContentService;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -259,8 +260,11 @@ public class CmsJspContentAccessBean {
          */
         public Object transform(Object input) {
 
-            CmsJspContentAccessValueWrapper wrapper = getLocaleValue().get(m_selectedLocale).get(input);
-            return wrapper.getRdfaAttr();
+            if ((getCmsObject() != null) && !getCmsObject().getRequestContext().getCurrentProject().isOnlineProject()) {
+                return CmsContentService.getRdfaAttributes(getRawContent(), m_selectedLocale, String.valueOf(input));
+            } else {
+                return "";
+            }
         }
     }
 

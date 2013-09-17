@@ -69,10 +69,12 @@ import org.opencms.workplace.explorer.CmsNewResourceXmlContent;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
+import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentErrorHandler;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
+import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -158,6 +160,57 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 + "]";
         }
         return result;
+    }
+
+    /**
+     * Returns the RDF annotations required for in line editing.<p>
+     * 
+     * @param parentValue the parent XML content value
+     * @param childName the child attribute name
+     * 
+     * @return the RDFA
+     */
+    public static String getRdfaAttributes(I_CmsXmlContentValue parentValue, String childName) {
+
+        I_CmsXmlSchemaType schemaType = parentValue.getContentDefinition().getSchemaType(
+            parentValue.getName() + "/" + childName);
+        StringBuffer result = new StringBuffer();
+        if (schemaType != null) {
+            result.append("about=\"");
+            result.append(CmsContentDefinition.uuidToEntityId(
+                parentValue.getDocument().getFile().getStructureId(),
+                parentValue.getLocale().toString()));
+            result.append("/").append(parentValue.getPath());
+            result.append("\" property=\"");
+            result.append(getTypeUri(schemaType.getContentDefinition())).append("/").append(childName);
+            result.append("\"");
+        }
+        return result.toString();
+    }
+
+    /**
+     * Returns the RDF annotations required for in line editing.<p>
+     * 
+     * @param document the parent XML document
+     * @param contentLocale the content locale
+     * @param childName the child attribute name
+     * 
+     * @return the RDFA
+     */
+    public static String getRdfaAttributes(I_CmsXmlDocument document, Locale contentLocale, String childName) {
+
+        I_CmsXmlSchemaType schemaType = document.getContentDefinition().getSchemaType(childName);
+        StringBuffer result = new StringBuffer();
+        if (schemaType != null) {
+            result.append("about=\"");
+            result.append(CmsContentDefinition.uuidToEntityId(
+                document.getFile().getStructureId(),
+                contentLocale.toString()));
+            result.append("\" property=\"");
+            result.append(getTypeUri(schemaType.getContentDefinition())).append("/").append(childName);
+            result.append("\"");
+        }
+        return result.toString();
     }
 
     /**
