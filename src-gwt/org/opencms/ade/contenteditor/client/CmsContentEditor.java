@@ -30,6 +30,8 @@ package org.opencms.ade.contenteditor.client;
 import com.alkacon.acacia.client.EditorBase;
 import com.alkacon.acacia.client.I_EntityRenderer;
 import com.alkacon.acacia.client.I_InlineFormParent;
+import com.alkacon.acacia.client.UndoRedoHandler;
+import com.alkacon.acacia.client.UndoRedoHandler.UndoRedoState;
 import com.alkacon.acacia.client.ValidationContext;
 import com.alkacon.acacia.client.ValueFocusHandler;
 import com.alkacon.acacia.client.css.I_LayoutBundle;
@@ -198,6 +200,9 @@ public final class CmsContentEditor extends EditorBase {
     /** The publish button. */
     private CmsPushButton m_publishButton;
 
+    /** The redo button. */
+    private CmsPushButton m_redoButton;
+
     /** The registered entity id's. */
     private Set<String> m_registeredEntities;
 
@@ -221,6 +226,9 @@ public final class CmsContentEditor extends EditorBase {
 
     /** The resource title. */
     private String m_title;
+
+    /** The undo button. */
+    private CmsPushButton m_undoButton;
 
     /**
      * Constructor.<p>
@@ -872,6 +880,15 @@ public final class CmsContentEditor extends EditorBase {
     }
 
     /**
+     * @see com.alkacon.acacia.client.EditorBase#getContextUri()
+     */
+    @Override
+    protected String getContextUri() {
+
+        return CmsCoreProvider.get().getUri();
+    }
+
+    /**
      * Returns the core RPC service.<p>
      * 
      * @return the core service
@@ -892,6 +909,15 @@ public final class CmsContentEditor extends EditorBase {
     protected String getEntityId() {
 
         return m_entityId;
+    }
+
+    /**
+     * @see com.alkacon.acacia.client.EditorBase#getHtmlContextInfo()
+     */
+    @Override
+    protected String getHtmlContextInfo() {
+
+        return m_context.getHtmlContextInfo();
     }
 
     /**
@@ -1162,24 +1188,6 @@ public final class CmsContentEditor extends EditorBase {
     }
 
     /**
-     * @see com.alkacon.acacia.client.EditorBase#getHtmlContextInfo()
-     */
-    @Override
-    protected String getHtmlContextInfo() {
-
-        return m_context.getHtmlContextInfo();
-    }
-
-    /**
-     * @see com.alkacon.acacia.client.EditorBase#getContextUri()
-     */
-    @Override
-    protected String getContextUri() {
-
-        return CmsCoreProvider.get().getUri();
-    }
-
-    /**
      * Opens the form based editor.<p>
      */
     void initFormPanel() {
@@ -1367,6 +1375,25 @@ public final class CmsContentEditor extends EditorBase {
         m_changedEntityIds.clear();
         m_deletedEntities.clear();
         disableSave(Messages.get().key(Messages.GUI_TOOLBAR_NOTHING_CHANGED_0));
+    }
+
+    /**
+     * Enables and disabler the undo redo buttons according to the state.<p>
+     * 
+     * @param state the undo redo state
+     */
+    void setUndoRedoState(UndoRedoState state) {
+
+        if (state.hasUndo()) {
+            m_undoButton.setEnabled(true);
+        } else {
+            m_undoButton.disable("No changes to be undone.");
+        }
+        if (state.hasRedo()) {
+            m_redoButton.setEnabled(true);
+        } else {
+            m_redoButton.disable("No changes to be re-done");
+        }
     }
 
     /**
@@ -1687,17 +1714,6 @@ public final class CmsContentEditor extends EditorBase {
     private void initToolbar() {
 
         m_toolbar = new CmsToolbar();
-        m_saveExitButton = createButton(
-            Messages.get().key(Messages.GUI_TOOLBAR_SAVE_AND_EXIT_0),
-            I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarSaveExit());
-        m_saveExitButton.addClickHandler(new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-
-                deferSaveAndExit();
-            }
-        });
-
         m_publishButton = createButton(
             org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_TOOLBAR_PUBLISH_0),
             I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarPublish());
@@ -1734,7 +1750,16 @@ public final class CmsContentEditor extends EditorBase {
 
             }
         });
+        m_saveExitButton = createButton(
+            Messages.get().key(Messages.GUI_TOOLBAR_SAVE_AND_EXIT_0),
+            I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarSaveExit());
+        m_saveExitButton.addClickHandler(new ClickHandler() {
 
+            public void onClick(ClickEvent event) {
+
+                deferSaveAndExit();
+            }
+        });
         m_toolbar.addLeft(m_saveExitButton);
         m_saveButton = createButton(
             Messages.get().key(Messages.GUI_TOOLBAR_SAVE_0),
@@ -1761,6 +1786,39 @@ public final class CmsContentEditor extends EditorBase {
             }
         });
         m_toolbar.addLeft(m_openFormButton);
+
+        m_undoButton = createButton("UNDO", I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarRefresh());
+        m_undoButton.addClickHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+
+                if (UndoRedoHandler.getInstance().isIntitalized()) {
+                    UndoRedoHandler.getInstance().undo();
+                }
+            }
+        });
+        m_undoButton.disable("No changes to be undone.");
+        m_toolbar.addLeft(m_undoButton);
+        m_redoButton = createButton("REDO", I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarRefresh());
+        m_redoButton.addClickHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+
+                if (UndoRedoHandler.getInstance().isIntitalized()) {
+                    UndoRedoHandler.getInstance().redo();
+                }
+            }
+        });
+        m_redoButton.disable("No changes to be re-done");
+        m_toolbar.addLeft(m_redoButton);
+
+        UndoRedoHandler.getInstance().addValueChangeHandler(new ValueChangeHandler<UndoRedoHandler.UndoRedoState>() {
+
+            public void onValueChange(ValueChangeEvent<UndoRedoState> event) {
+
+                setUndoRedoState(event.getValue());
+            }
+        });
 
         m_hideHelpBubblesButton = new CmsToggleButton();
 
