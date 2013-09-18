@@ -74,6 +74,9 @@ public class CmsGallerySearchBean implements IsSerializable {
     /** The start modification date criteria as long. */
     private long m_dateModifiedStart = -1L;
 
+    /** Flag to disable the preview. */
+    private boolean m_disablePreview;
+
     /** The list of selected vfs folders. */
     private Set<String> m_folders = new HashSet<String>();
 
@@ -535,6 +538,16 @@ public class CmsGallerySearchBean implements IsSerializable {
     }
 
     /**
+     * Returns true if no preview should be shown for the search result.<p>
+     * 
+     * @return true if no preview should be shown 
+     */
+    public boolean isDisablePreview() {
+
+        return m_disablePreview;
+    }
+
+    /**
      * Checks if any search parameter are selected.<p>
      * 
      * @return false if any search parameter is selected, true if there are no search parameter selected
@@ -672,6 +685,16 @@ public class CmsGallerySearchBean implements IsSerializable {
     public void setDateModifiedStart(long dateModifiedStart) {
 
         m_dateModifiedStart = dateModifiedStart;
+    }
+
+    /**
+     * Sets the 'disable preview' flag.<p>
+     * 
+     * @param disablePreview true if the preview for the search result should not be shown 
+     */
+    public void setDisablePreview(boolean disablePreview) {
+
+        m_disablePreview = disablePreview;
     }
 
     /** 

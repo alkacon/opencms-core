@@ -661,6 +661,16 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     }
 
     /**
+     * Updates variable ui-element dimensions, execute after dialog has been attached and it's content is displayed.<p>
+     */
+    public void updateSizes() {
+
+        if (m_resultsTab != null) {
+            m_resultsTab.updateListSize();
+        }
+    }
+
+    /**
      * Make sure a notification widget is installed.<p>
      */
     protected void ensureNotifications() {
@@ -722,16 +732,6 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
                 updateSizes();
             }
         });
-    }
-
-    /**
-     * Updates variable ui-element dimensions, execute after dialog has been attached and it's content is displayed.<p>
-     */
-    protected void updateSizes() {
-
-        if (m_resultsTab != null) {
-            m_resultsTab.updateListSize();
-        }
     }
 
     /**

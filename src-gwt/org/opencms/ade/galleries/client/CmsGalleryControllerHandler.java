@@ -58,6 +58,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -280,8 +281,10 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
             }
         }
         m_galleryDialog.selectTab(startTab, startTab != GalleryTabId.cms_tab_results);
+
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(searchObj.getResourcePath())
-            && CmsStringUtil.isNotEmptyOrWhitespaceOnly(searchObj.getResourceType())) {
+            && CmsStringUtil.isNotEmptyOrWhitespaceOnly(searchObj.getResourceType())
+            && !searchObj.isDisablePreview()) {
             if (m_galleryDialog.isAttached()) {
                 controller.openPreview(searchObj.getResourcePath(), searchObj.getResourceType());
             } else {
@@ -299,6 +302,15 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
                 });
             }
         }
+        Timer timer = new Timer() {
+
+            @Override
+            public void run() {
+
+                m_galleryDialog.updateSizes();
+            }
+        };
+        timer.schedule(1);
 
     }
 

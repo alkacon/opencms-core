@@ -499,6 +499,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 try {
                     CmsSitemapEntryBean sitemapPreloadData = null;
                     CmsVfsEntryBean vfsPreloadData = null;
+                    boolean disablePreview = false;
                     GalleryTabId startTab = null;
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(currentelement)) {
                         log("looking up:" + currentelement);
@@ -513,12 +514,11 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                             sitemapPreloadData = result.getSitemapPreloadData();
                             vfsPreloadData = result.getVfsPreloadData();
                         }
-                        //                        if (sitemapPreloadData != null) {
-                        //                            startTab = GalleryTabId.cms_tab_sitemap;
-                        //                        } else if (vfsPreloadData != null) {
-                        //                            startTab = GalleryTabId.cms_tab_vfstree;
-                        //                        }
-
+                        if ((sitemapPreloadData != null)
+                            && data.getTabConfiguration().getTabs().contains(GalleryTabId.cms_tab_sitemap)) {
+                            startTab = GalleryTabId.cms_tab_sitemap;
+                            disablePreview = true;
+                        }
                     } else {
                         CmsTreeOpenState vfsState = getVfsTreeState(data.getTreeToken());
                         if (vfsState != null) {
@@ -603,6 +603,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                     result.setSitemapPreloadData(sitemapPreloadData);
                     result.setVfsPreloadData(vfsPreloadData);
                     result.setInitialTabId(startTab);
+                    result.setDisablePreview(disablePreview);
                     if (types.size() > 1) {
                         // only remove types parameter if there is more than one type available
                         result.setTypes(null);
@@ -1480,9 +1481,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                      * @see org.opencms.ade.galleries.A_CmsTreeTabDataPreloader#getChildren(org.opencms.file.CmsResource)
                      */
                     @Override
-                    protected List<CmsResource> getChildren(CmsResource resource) throws CmsException {
+                    protected List<CmsResource> getChildren(CmsResource parent) throws CmsException {
 
-                        return getSitemapSubEntryResources(resource.getRootPath());
+                        return getSitemapSubEntryResources(parent.getRootPath());
                     }
                 };
                 CmsSitemapEntryBean entryBean = loader.preloadData(cms, Collections.singletonList(resource));
