@@ -288,6 +288,20 @@ public interface I_CmsBigIconBundle extends ClientBundle {
      * Access method.<p>
      * @return an image resource
      */
+    @Source("images/icons/big/redoBigIconActive.png")
+    ImageResource redoBigIconActive();
+
+    /** 
+    * Access method.<p>
+    * @return an image resource
+    */
+    @Source("images/icons/big/redoBigIconDeactivated.png")
+    ImageResource redoBigIconDeactivated();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
     @Source("images/icons/big/removeBigIconActive.png")
     ImageResource removeBigIconActive();
 

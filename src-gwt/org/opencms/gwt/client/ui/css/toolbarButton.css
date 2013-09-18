@@ -76,6 +76,20 @@
     gwt-image: "deleteLocaleBigIconActive";
 }
 
+@sprite .cmsState-up-disabled .toolbarRedo, .cmsState-down-disabled .toolbarRedo{
+	gwt-image: "redoBigIconDeactivated";
+}
+@sprite .cmsState-up .toolbarRedo, .cmsState-up-hovering .toolbarRedo, .cmsState-down-hovering .toolbarRedo, .cmsState-down .toolbarRedo{
+    gwt-image: "redoBigIconActive";
+}
+
+@sprite .cmsState-up-disabled .toolbarUndo, .cmsState-down-disabled .toolbarUndo{
+	gwt-image: "undoBigIconDeactivated";
+}
+@sprite .cmsState-up .toolbarUndo, .cmsState-up-hovering .toolbarUndo, .cmsState-down-hovering .toolbarUndo, .cmsState-down .toolbarUndo{
+    gwt-image: "undoBigIconActive";
+}
+
 @sprite .cmsState-up-disabled .toolbarReset, .cmsState-down-disabled .toolbarReset{
 	gwt-image: "resetBigIconDeactivated";
 }

@@ -87,6 +87,12 @@ public interface I_CmsToolbarButtonLayoutBundle extends I_CmsBigIconBundle {
          * 
          * @return the CSS class name
          */
+        String toolbarRedo();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String toolbarRefresh();
 
         /** Access method.<p>
@@ -124,6 +130,12 @@ public interface I_CmsToolbarButtonLayoutBundle extends I_CmsBigIconBundle {
          * @return the CSS class name
          */
         String toolbarToggleHelp();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String toolbarUndo();
     }
 
     /** The button CSS. */
