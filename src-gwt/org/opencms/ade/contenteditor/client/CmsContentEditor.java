@@ -1196,6 +1196,8 @@ public final class CmsContentEditor extends EditorBase {
         m_openFormButton.setVisible(false);
         m_saveButton.setVisible(true);
         m_hideHelpBubblesButton.setVisible(true);
+        m_undoButton.setVisible(true);
+        m_redoButton.setVisible(true);
         m_basePanel = new FlowPanel();
         m_basePanel.addStyleName(I_CmsLayoutBundle.INSTANCE.editorCss().basePanel());
         // insert base panel before the tool bar to keep the tool bar visible 
@@ -1385,14 +1387,14 @@ public final class CmsContentEditor extends EditorBase {
     void setUndoRedoState(UndoRedoState state) {
 
         if (state.hasUndo()) {
-            m_undoButton.setEnabled(true);
+            m_undoButton.enable();
         } else {
-            m_undoButton.disable("No changes to be undone.");
+            m_undoButton.disable(Messages.get().key(Messages.GUI_TOOLBAR_UNDO_DISABLED_0));
         }
         if (state.hasRedo()) {
-            m_redoButton.setEnabled(true);
+            m_redoButton.enable();
         } else {
-            m_redoButton.disable("No changes to be re-done");
+            m_redoButton.disable(Messages.get().key(Messages.GUI_TOOLBAR_REDO_DISABLED_0));
         }
     }
 
@@ -1774,6 +1776,46 @@ public final class CmsContentEditor extends EditorBase {
         m_saveButton.setVisible(false);
         m_toolbar.addLeft(m_saveButton);
         disableSave(Messages.get().key(Messages.GUI_TOOLBAR_NOTHING_CHANGED_0));
+        m_undoButton = createButton(
+            Messages.get().key(Messages.GUI_TOOLBAR_UNDO_0),
+            I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarUndo());
+        m_undoButton.addClickHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+
+                if (UndoRedoHandler.getInstance().isIntitalized()) {
+                    UndoRedoHandler.getInstance().undo();
+                }
+            }
+        });
+        m_undoButton.disable(Messages.get().key(Messages.GUI_TOOLBAR_UNDO_DISABLED_0));
+        m_undoButton.getElement().getStyle().setMarginLeft(10, Unit.PX);
+        m_undoButton.setVisible(false);
+        m_toolbar.addLeft(m_undoButton);
+        m_redoButton = createButton(
+            Messages.get().key(Messages.GUI_TOOLBAR_REDO_0),
+            I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarRedo());
+        m_redoButton.addClickHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+
+                if (UndoRedoHandler.getInstance().isIntitalized()) {
+                    UndoRedoHandler.getInstance().redo();
+                }
+            }
+        });
+        m_redoButton.disable(Messages.get().key(Messages.GUI_TOOLBAR_REDO_DISABLED_0));
+        m_redoButton.getElement().getStyle().setMarginRight(20, Unit.PX);
+        m_redoButton.setVisible(false);
+        m_toolbar.addLeft(m_redoButton);
+
+        UndoRedoHandler.getInstance().addValueChangeHandler(new ValueChangeHandler<UndoRedoHandler.UndoRedoState>() {
+
+            public void onValueChange(ValueChangeEvent<UndoRedoState> event) {
+
+                setUndoRedoState(event.getValue());
+            }
+        });
         m_openFormButton = createButton(
             Messages.get().key(Messages.GUI_TOOLBAR_OPEN_FORM_0),
             I_CmsButton.ButtonData.EDIT.getIconClass());
@@ -1786,39 +1828,6 @@ public final class CmsContentEditor extends EditorBase {
             }
         });
         m_toolbar.addLeft(m_openFormButton);
-
-        m_undoButton = createButton("UNDO", I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarRefresh());
-        m_undoButton.addClickHandler(new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-
-                if (UndoRedoHandler.getInstance().isIntitalized()) {
-                    UndoRedoHandler.getInstance().undo();
-                }
-            }
-        });
-        m_undoButton.disable("No changes to be undone.");
-        m_toolbar.addLeft(m_undoButton);
-        m_redoButton = createButton("REDO", I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarRefresh());
-        m_redoButton.addClickHandler(new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-
-                if (UndoRedoHandler.getInstance().isIntitalized()) {
-                    UndoRedoHandler.getInstance().redo();
-                }
-            }
-        });
-        m_redoButton.disable("No changes to be re-done");
-        m_toolbar.addLeft(m_redoButton);
-
-        UndoRedoHandler.getInstance().addValueChangeHandler(new ValueChangeHandler<UndoRedoHandler.UndoRedoState>() {
-
-            public void onValueChange(ValueChangeEvent<UndoRedoState> event) {
-
-                setUndoRedoState(event.getValue());
-            }
-        });
 
         m_hideHelpBubblesButton = new CmsToggleButton();
 

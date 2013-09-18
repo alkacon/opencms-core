@@ -127,6 +127,7 @@ public class CmsPushButton extends PushButton implements HasHorizontalAlignment 
      */
     public void disable(String disabledReason) {
 
+        setDown(false);
         setEnabled(false);
         super.setTitle(disabledReason);
     }

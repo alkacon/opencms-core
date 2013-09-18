@@ -55,45 +55,6 @@ public final class Messages {
     public static final String GUI_DOWNLOAD_GALLERY_OPEN_0 = "GUI_DOWNLOAD_GALLERY_OPEN_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_HALLO_BLOCK_FORMATS_0 = "GUI_HALLO_BLOCK_FORMATS_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HALLO_BOLD_0 = "GUI_HALLO_BOLD_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HALLO_CENTER_0 = "GUI_HALLO_CENTER_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HALLO_ITALIC_0 = "GUI_HALLO_ITALIC_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HALLO_JUSTIFY_0 = "GUI_HALLO_JUSTIFY_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HALLO_LEFT_0 = "GUI_HALLO_LEFT_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HALLO_ORDERED_LIST_0 = "GUI_HALLO_ORDERED_LIST_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HALLO_REDO_0 = "GUI_HALLO_REDO_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HALLO_RIGHT_0 = "GUI_HALLO_RIGHT_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HALLO_STRIKE_THROUGH_0 = "GUI_HALLO_STRIKE_THROUGH_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HALLO_UNDERLINE_0 = "GUI_HALLO_UNDERLINE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HALLO_UNDO_0 = "GUI_HALLO_UNDO_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HALLO_UNORDERED_LIST_0 = "GUI_HALLO_UNORDERED_LIST_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_IMAGE_GALLERY_OPEN_0 = "GUI_IMAGE_GALLERY_OPEN_0";
 
     /** Message constant for key in the resource bundle. */
@@ -143,6 +104,18 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_SAVE_0 = "GUI_TOOLBAR_SAVE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_UNDO_0 = "GUI_TOOLBAR_UNDO_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_REDO_0 = "GUI_TOOLBAR_REDO_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_UNDO_DISABLED_0 = "GUI_TOOLBAR_UNDO_DISABLED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_REDO_DISABLED_0 = "GUI_TOOLBAR_REDO_DISABLED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_SAVE_AND_EXIT_0 = "GUI_TOOLBAR_SAVE_AND_EXIT_0";
