@@ -108,12 +108,7 @@ public class CmsVfsResourceBundle extends ResourceBundle implements I_CmsResourc
      */
     public static void setCmsObject(CmsObject cms) {
 
-        if (m_cms != null) {
-            LOG.info("Ignoring setCmsObject, since the CmsObject was already set.");
-        } else {
-            m_cms = cms;
-        }
-
+        m_cms = cms;
     }
 
     /** 
