@@ -88,10 +88,12 @@ public final class CmsContextMenuItem extends A_CmsContextMenuItem {
     @Override
     public void onClick(ClickEvent event) {
 
-        getParentMenu().hide();
         if (m_entry != null) {
             m_entry.execute();
         }
+        // hide menu *after* executing the action, because hiding the menu may trigger mouseover events of the elements lying under it,
+        // and executing the action first gives it the opportunity to add a 'blocking notification' to prevent this 
+        getParentMenu().hide();
     }
 
     /**
