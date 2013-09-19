@@ -397,7 +397,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             return m_namePattern;
         }
         if (useDefaultIfEmpty) {
-            return m_typeName + "-%(number).html";
+            return m_typeName + "-%(number).xml";
         }
         return null;
     }
