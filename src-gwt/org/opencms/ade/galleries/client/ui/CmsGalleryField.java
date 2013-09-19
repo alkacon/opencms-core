@@ -191,9 +191,6 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     /** The upload target folder. */
     String m_uploadTarget;
 
-    /** The upload button handler. */
-    private CmsDialogUploadButtonHandler m_buttonHandler;
-
     /** The gallery service instance. */
     private I_CmsGalleryServiceAsync m_gallerySvc;
 
@@ -213,26 +210,27 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
      */
     public CmsGalleryField(I_CmsGalleryConfiguration configuration) {
 
-        m_buttonHandler = new CmsDialogUploadButtonHandler(new Supplier<I_CmsUploadContext>() {
+        CmsDialogUploadButtonHandler buttonHandler = new CmsDialogUploadButtonHandler(
+            new Supplier<I_CmsUploadContext>() {
 
-            @Override
-            public I_CmsUploadContext get() {
+                @Override
+                public I_CmsUploadContext get() {
 
-                return new I_CmsUploadContext() {
+                    return new I_CmsUploadContext() {
 
-                    @Override
-                    public void onUploadFinished(Collection<CmsFileInfo> uploadedFiles) {
+                        @Override
+                        public void onUploadFinished(Collection<CmsFileInfo> uploadedFiles) {
 
-                        if ((uploadedFiles != null) && !uploadedFiles.isEmpty()) {
-                            setValue(m_uploadTarget + uploadedFiles.iterator().next().getFileName(), true);
+                            if ((uploadedFiles != null) && !uploadedFiles.isEmpty()) {
+                                setValue(m_uploadTarget + uploadedFiles.iterator().next().getFileName(), true);
+                            }
                         }
-                    }
 
-                };
-            }
-        });
-        m_buttonHandler.setIsTargetRootPath(false);
-        m_uploadButton = new CmsUploadButton(m_buttonHandler);
+                    };
+                }
+            });
+        buttonHandler.setIsTargetRootPath(false);
+        m_uploadButton = new CmsUploadButton(buttonHandler);
         m_uploadButton.setText(null);
         m_uploadButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
         m_uploadButton.setImageClass(I_CmsImageBundle.INSTANCE.style().uploadIcon());
@@ -647,7 +645,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
             // make sure the upload button is available
             m_uploadButton.setVisible(true);
             m_uploadDropZone.getStyle().clearDisplay();
-            m_buttonHandler.setTargetFolder(m_uploadTarget);
+            ((CmsDialogUploadButtonHandler)m_uploadButton.getButtonHandler()).setTargetFolder(m_uploadTarget);
             m_uploadButton.setTitle(Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_1, m_uploadTarget));
         }
     }
@@ -844,6 +842,6 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         for (int i = 0; i < cmsFiles.length(); ++i) {
             fileObjects.add(cmsFiles.get(i));
         }
-        m_buttonHandler.openDialogWithFiles(fileObjects);
+        ((CmsDialogUploadButtonHandler)m_uploadButton.getButtonHandler()).openDialogWithFiles(fileObjects);
     }
 }
