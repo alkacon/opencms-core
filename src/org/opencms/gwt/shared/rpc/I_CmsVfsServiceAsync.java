@@ -42,6 +42,7 @@ import org.opencms.gwt.shared.alias.CmsAliasBean;
 import org.opencms.gwt.shared.property.CmsPropertiesBean;
 import org.opencms.gwt.shared.property.CmsPropertyChangeSet;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -138,6 +139,17 @@ public interface I_CmsVfsServiceAsync {
      * @param callback the asynchronous callback 
      */
     void getChildren(String path, AsyncCallback<List<CmsVfsEntryBean>> callback);
+
+    /**
+     * Gets the default property configurations for a list of structure ids.<p>
+     * 
+     * @param structureIds the structure ids for which to fetch the default property configurations 
+     * 
+     * @param callback the callback for the result 
+     */
+    void getDefaultProperties(
+        List<CmsUUID> structureIds,
+        AsyncCallback<Map<CmsUUID, Map<String, CmsXmlContentProperty>>> callback);
 
     /**
      * Gets the names of defined properties.<p>

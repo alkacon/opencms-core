@@ -86,6 +86,7 @@ import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -95,6 +96,7 @@ import org.opencms.xml.page.CmsXmlPageFactory;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -108,6 +110,8 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.FactoryUtils;
 import org.apache.commons.collections.map.MultiValueMap;
 import org.apache.commons.logging.Log;
+
+import com.google.common.collect.Maps;
 
 /**
  * A service class for reading the VFS tree.<p>
@@ -467,6 +471,20 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             error(e);
         }
         return null;
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#getDefaultProperties(java.util.List)
+     */
+    public Map<CmsUUID, Map<String, CmsXmlContentProperty>> getDefaultProperties(List<CmsUUID> structureIds)
+    throws CmsRpcException {
+
+        try {
+            return internalGetDefaultProperties(structureIds);
+        } catch (Throwable e) {
+            error(e);
+            return null;
+        }
     }
 
     /**
@@ -989,6 +1007,60 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
+     * Helper method to get the default property configuration for the given resource type.<p>
+     * 
+     * @param typeName the name of the resource type 
+     * 
+     * @return the default property configuration for the given type 
+     */
+    protected Map<String, CmsXmlContentProperty> getDefaultPropertiesForType(String typeName) {
+
+        Map<String, CmsXmlContentProperty> propertyConfig = new LinkedHashMap<String, CmsXmlContentProperty>();
+        CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
+        if (explorerType != null) {
+            List<String> defaultProps = explorerType.getProperties();
+            for (String propName : defaultProps) {
+                CmsXmlContentProperty property = new CmsXmlContentProperty(
+                    propName,
+                    "string",
+                    "string",
+                    "",
+                    "",
+                    "",
+                    "",
+                    null,
+                    "",
+                    "",
+                    "false");
+                propertyConfig.put(propName, property);
+            }
+        }
+        return propertyConfig;
+    }
+
+    /**
+     * Internal method for computing the default property configurations for a list of structure ids.<p>
+     * 
+     * @param structureIds the structure ids for which we want the default property configurations 
+     * @return a map from the given structure ids to their default property configurations 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    protected Map<CmsUUID, Map<String, CmsXmlContentProperty>> internalGetDefaultProperties(List<CmsUUID> structureIds)
+    throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        Map<CmsUUID, Map<String, CmsXmlContentProperty>> result = Maps.newHashMap();
+        for (CmsUUID structureId : structureIds) {
+            CmsResource resource = cms.readResource(structureId, CmsResourceFilter.ALL);
+            String typeName = OpenCms.getResourceManager().getResourceType(resource).getTypeName();
+            Map<String, CmsXmlContentProperty> propertyConfig = getDefaultPropertiesForType(typeName);
+            result.put(structureId, propertyConfig);
+        }
+        return result;
+    }
+
+    /**
      * Saves a set of property changes.<p>
      *  
      * @param changes the set of property changes 
@@ -1489,6 +1561,12 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         Map<String, CmsXmlContentProperty> propertyConfig = OpenCms.getADEManager().lookupConfiguration(
             cms,
             resource.getRootPath()).getPropertyConfigurationAsMap();
+        Map<String, CmsXmlContentProperty> defaultProperties = internalGetDefaultProperties(
+            Collections.singletonList(resource.getStructureId())).get(resource.getStructureId());
+        Map<String, CmsXmlContentProperty> mergedConfig = new LinkedHashMap<String, CmsXmlContentProperty>();
+        mergedConfig.putAll(defaultProperties);
+        mergedConfig.putAll(propertyConfig);
+        propertyConfig = mergedConfig;
         result.setPropertyDefinitions(new LinkedHashMap<String, CmsXmlContentProperty>(propertyConfig));
         try {
             cms.getRequestContext().setSiteRoot("");

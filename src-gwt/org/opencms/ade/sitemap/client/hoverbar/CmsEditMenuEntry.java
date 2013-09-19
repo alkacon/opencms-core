@@ -47,7 +47,12 @@ import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Sitemap context menu edit entry.<p>
@@ -83,6 +88,15 @@ public class CmsEditMenuEntry extends A_CmsSitemapMenuEntry {
         } else {
             infoId = entry.getId();
         }
+        Set<CmsUUID> idsForPropertyConfig = new HashSet<CmsUUID>();
+        if (entry.getDefaultFileId() != null) {
+            idsForPropertyConfig.add(entry.getDefaultFileId());
+        }
+        if (entry.getId() != null) {
+            idsForPropertyConfig.add(entry.getId());
+        }
+        final List<CmsUUID> propertyConfigIds = new ArrayList<CmsUUID>(idsForPropertyConfig);
+
         CmsRpcAction<CmsListInfoBean> action = new CmsRpcAction<CmsListInfoBean>() {
 
             @Override
@@ -93,43 +107,66 @@ public class CmsEditMenuEntry extends A_CmsSitemapMenuEntry {
             }
 
             @Override
-            protected void onResponse(CmsListInfoBean result) {
+            protected void onResponse(CmsListInfoBean infoResult) {
 
                 stop(false);
-                CmsEditEntryHandler handler = new CmsEditEntryHandler(
+                final CmsEditEntryHandler handler = new CmsEditEntryHandler(
                     controller,
                     entry,
                     CmsSitemapView.getInstance().isNavigationMode());
-                handler.setPageInfo(result);
-                A_CmsPropertyEditor editor = createEntryEditor(handler);
-                editor.setPropertyNames(CmsSitemapView.getInstance().getController().getData().getAllPropertyNames());
-                final CmsFormDialog dialog = new CmsFormDialog(handler.getDialogTitle(), editor.getForm());
-                CmsPropertyDefinitionButton defButton = new CmsPropertyDefinitionButton() {
+                handler.setPageInfo(infoResult);
 
-                    /**
-                     * @see org.opencms.gwt.client.property.definition.CmsPropertyDefinitionButton#onBeforeEditPropertyDefinition()
-                     */
+                CmsRpcAction<Map<CmsUUID, Map<String, CmsXmlContentProperty>>> propertyAction = new CmsRpcAction<Map<CmsUUID, Map<String, CmsXmlContentProperty>>>() {
+
                     @Override
-                    public void onBeforeEditPropertyDefinition() {
+                    public void execute() {
 
-                        dialog.hide();
+                        start(0, true);
+                        CmsCoreProvider.getVfsService().getDefaultProperties(propertyConfigIds, this);
                     }
 
+                    @Override
+                    protected void onResponse(Map<CmsUUID, Map<String, CmsXmlContentProperty>> propertyResult) {
+
+                        stop(false);
+                        Map<String, CmsXmlContentProperty> propConfig = new LinkedHashMap<String, CmsXmlContentProperty>();
+                        for (Map<String, CmsXmlContentProperty> defaultProps : propertyResult.values()) {
+                            propConfig.putAll(defaultProps);
+                        }
+                        propConfig.putAll(CmsSitemapView.getInstance().getController().getData().getProperties());
+                        A_CmsPropertyEditor editor = createEntryEditor(handler, propConfig);
+                        editor.setPropertyNames(CmsSitemapView.getInstance().getController().getData().getAllPropertyNames());
+                        final CmsFormDialog dialog = new CmsFormDialog(handler.getDialogTitle(), editor.getForm());
+                        CmsPropertyDefinitionButton defButton = new CmsPropertyDefinitionButton() {
+
+                            /**
+                             * @see org.opencms.gwt.client.property.definition.CmsPropertyDefinitionButton#onBeforeEditPropertyDefinition()
+                             */
+                            @Override
+                            public void onBeforeEditPropertyDefinition() {
+
+                                dialog.hide();
+                            }
+
+                        };
+                        defButton.installOnDialog(dialog);
+                        CmsDialogFormHandler formHandler = new CmsDialogFormHandler();
+                        formHandler.setDialog(dialog);
+                        I_CmsFormSubmitHandler submitHandler = new CmsPropertySubmitHandler(handler);
+                        formHandler.setSubmitHandler(submitHandler);
+                        dialog.setFormHandler(formHandler);
+                        editor.initializeWidgets(dialog);
+                        dialog.centerHorizontally(50);
+                        dialog.catchNotifications();
+                        String noEditReason = controller.getNoEditReason(entry);
+                        if (noEditReason != null) {
+                            editor.disableInput(noEditReason);
+                            dialog.getOkButton().disable(noEditReason);
+                        }
+
+                    }
                 };
-                defButton.installOnDialog(dialog);
-                CmsDialogFormHandler formHandler = new CmsDialogFormHandler();
-                formHandler.setDialog(dialog);
-                I_CmsFormSubmitHandler submitHandler = new CmsPropertySubmitHandler(handler);
-                formHandler.setSubmitHandler(submitHandler);
-                dialog.setFormHandler(formHandler);
-                editor.initializeWidgets(dialog);
-                dialog.centerHorizontally(50);
-                dialog.catchNotifications();
-                String noEditReason = controller.getNoEditReason(entry);
-                if (noEditReason != null) {
-                    editor.disableInput(noEditReason);
-                    dialog.getOkButton().disable(noEditReason);
-                }
+                propertyAction.execute();
             }
 
         };
@@ -150,13 +187,14 @@ public class CmsEditMenuEntry extends A_CmsSitemapMenuEntry {
     /**
      * Creates the right sitemap entry editor for the current mode.<p>
      * 
-     * @param handler the entry editor handler 
+     * @param handler the entry editor handler
+     * @param  propConfig the property configuration to use  
      * 
      * @return a sitemap entry editor instance 
      */
-    protected A_CmsPropertyEditor createEntryEditor(I_CmsPropertyEditorHandler handler) {
-
-        Map<String, CmsXmlContentProperty> propConfig = CmsSitemapView.getInstance().getController().getData().getProperties();
+    protected A_CmsPropertyEditor createEntryEditor(
+        I_CmsPropertyEditorHandler handler,
+        Map<String, CmsXmlContentProperty> propConfig) {
 
         if (CmsSitemapView.getInstance().isNavigationMode()) {
             return new CmsNavModePropertyEditor(propConfig, handler);

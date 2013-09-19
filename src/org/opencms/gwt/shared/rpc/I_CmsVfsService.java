@@ -43,6 +43,7 @@ import org.opencms.gwt.shared.alias.CmsAliasBean;
 import org.opencms.gwt.shared.property.CmsPropertiesBean;
 import org.opencms.gwt.shared.property.CmsPropertyChangeSet;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -158,6 +159,17 @@ public interface I_CmsVfsService extends RemoteService {
      * @throws CmsRpcException if something goes wrong 
      */
     List<CmsVfsEntryBean> getChildren(String path) throws CmsRpcException;
+
+    /**
+     * Gets the default property configurations for the given structure ids.<p>
+     * 
+     * @param structureIds the structure ids for which the property configurations should be fetched 
+     * @return a map from the given structure ids to their default property configurations
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    Map<CmsUUID, Map<String, CmsXmlContentProperty>> getDefaultProperties(List<CmsUUID> structureIds)
+    throws CmsRpcException;
 
     /**
      * Gets the names of defined properties.<p>

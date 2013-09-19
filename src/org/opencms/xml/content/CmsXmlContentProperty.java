@@ -96,17 +96,14 @@ public class CmsXmlContentProperty implements Serializable {
     /** The error message. */
     private String m_error;
 
+    /** The name of the property. */
+    private String m_name;
+
     /** The nice name. */
     private String m_niceName;
 
     /** The "prefer folder" option. */
     private String m_preferFolder;
-
-    /** The name of the property. */
-    private String m_name;
-
-    /** The property type. */
-    private String m_type;
 
     /** The validation rule regex. */
     private String m_ruleRegex;
@@ -116,6 +113,9 @@ public class CmsXmlContentProperty implements Serializable {
 
     /** The value which indicates whether the user can influence how this property is going to be inherited. */
     private String m_selectInherit;
+
+    /** The property type. */
+    private String m_type;
 
     /** The widget to use in the editor. */
     private String m_widget;
@@ -227,16 +227,6 @@ public class CmsXmlContentProperty implements Serializable {
     }
 
     /**
-     * Returns the niceName.<p>
-     *
-     * @return the niceName
-     */
-    public String getNiceName() {
-
-        return m_niceName;
-    }
-
-    /**
      * Returns the property name.<p>
      *
      * @return the property name
@@ -247,13 +237,13 @@ public class CmsXmlContentProperty implements Serializable {
     }
 
     /**
-     * Returns the property type.<p>
+     * Returns the niceName.<p>
      *
-     * @return the property type
+     * @return the niceName
      */
-    public String getType() {
+    public String getNiceName() {
 
-        return m_type;
+        return m_niceName;
     }
 
     /**
@@ -284,6 +274,16 @@ public class CmsXmlContentProperty implements Serializable {
     public String getSelectInherit() {
 
         return m_selectInherit;
+    }
+
+    /**
+     * Returns the property type.<p>
+     *
+     * @return the property type
+     */
+    public String getType() {
+
+        return m_type;
     }
 
     /**
