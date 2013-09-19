@@ -176,7 +176,7 @@ div.groupcontainerPlaceholder{
 	border: none;
 }
 
-.dragStarted .dragElement.dragging .optionBar{
+.dragStarted .dragElement.dragging > .optionBar{
 	display: block;
 }
 
