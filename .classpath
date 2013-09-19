@@ -87,6 +87,9 @@
 	<classpathentry exported="true" kind="lib" path="lib/runtime/org.apache.bval.bundle-0.3-incubating.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/slf4j-api-1.6.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/slf4j-jdk14-1.6.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="webapp/setup/database/hsqldb/hsqldb-1.8.0.10.jar"/>
+	<classpathentry kind="lib" path="webapp/setup/database/hsqldb/hsqldb-2.2.8.jar"/>
+	<classpathentry kind="lib" path="lib/compile/gwt-dev-2.4.0.jar"/>
+	<classpathentry kind="lib" path="lib/compile/gwt-servlet-deps-2.4.0.jar"/>
+	<classpathentry kind="lib" path="lib/compile/gwt-user-2.4.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
