@@ -146,6 +146,9 @@ public class CmsSearchField implements Serializable {
     /** Name of the field that usually contains file size. */
     public static final String FIELD_SIZE = "size";
 
+    /** Name of the field that contains the lower-case title, untokenized, for sorting. */
+    public static final String FIELD_SORT_TITLE = "sort-title";
+
     /** Name of the field that contains the file name suffix of the resource. */
     public static final String FIELD_SUFFIX = "suffix";
 

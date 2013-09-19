@@ -59,7 +59,15 @@ public class CmsGallerySearchFieldConfiguration extends CmsLuceneFieldConfigurat
      */
     public CmsGallerySearchFieldConfiguration() {
 
-        // nothing special to do here
+        // Field used only for sorting by title, needs to be untokenized 
+        CmsLuceneField sortTitle = new CmsLuceneField(
+            CmsSearchField.FIELD_SORT_TITLE,
+            CmsSearchField.FIELD_SORT_TITLE,
+            false,
+            true);
+
+        sortTitle.setTokenized(false);
+        addField(sortTitle);
     }
 
     /**
@@ -91,6 +99,7 @@ public class CmsGallerySearchFieldConfiguration extends CmsLuceneFieldConfigurat
             if (CmsSearchField.FIELD_TITLE.equals(fieldConfig.getName())
                 || (CmsResourceTypeXmlContent.isXmlContent(resource) && (CmsSearchField.FIELD_CONTENT.equals(fieldConfig.getName())
                     || CmsSearchField.FIELD_TITLE_UNSTORED.equals(fieldConfig.getName())
+                    || CmsSearchField.FIELD_SORT_TITLE.equals(fieldConfig.getName())
                     || CmsSearchField.FIELD_DESCRIPTION.equals(fieldConfig.getName()) || CmsSearchField.FIELD_META.equals(fieldConfig.getName())))) {
                 appendMultipleFieldMapping(
                 // XML content and special multiple language mapping field
@@ -147,7 +156,7 @@ public class CmsGallerySearchFieldConfiguration extends CmsLuceneFieldConfigurat
             mappingName = CmsSearchField.FIELD_CONTENT;
         } else if (CmsSearchField.FIELD_TITLE_UNSTORED.equals(fieldName)) {
             mappingName = CmsSearchField.FIELD_TITLE_UNSTORED;
-        } else if (CmsSearchField.FIELD_TITLE.equals(fieldName)) {
+        } else if (CmsSearchField.FIELD_TITLE.equals(fieldName) || CmsSearchField.FIELD_SORT_TITLE.equals(fieldName)) {
             if (!CmsResourceTypeXmlContent.isXmlContent(resource)) {
                 // not an XML content - we need to read the property and map it to all fields
                 value = CmsProperty.get(CmsPropertyDefinition.PROPERTY_TITLE, properties).getValue();
@@ -191,7 +200,8 @@ public class CmsGallerySearchFieldConfiguration extends CmsLuceneFieldConfigurat
             if ((value != null) && (field instanceof CmsLuceneField)) {
                 // In order to search and sort case insensitive in the title field
                 // take the lower case value for the un-stored title field.
-                if (field.getName().equals(CmsSearchField.FIELD_TITLE_UNSTORED)) {
+                if (field.getName().equals(CmsSearchField.FIELD_TITLE_UNSTORED)
+                    || field.getName().equals(CmsSearchField.FIELD_SORT_TITLE)) {
                     value = value.toLowerCase();
                 }
                 // localized content is available for this field
