@@ -218,12 +218,17 @@ public class CmsSitemapTab extends A_CmsListTab {
             result.setLeafStyle(true);
         }
         m_items.add(result);
-        final CmsLazyTreeItem constResult = result;
         dataValue.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent e) {
 
-                constResult.setOpen(true);
+                if (getTabHandler().hasSelectResource()) {
+                    getTabHandler().selectResource(
+                        m_handler.getSelectPath(sitemapEntry),
+                        sitemapEntry.getStructureId(),
+                        sitemapEntry.getDisplayName(),
+                        sitemapEntry.getType());
+                }
             }
         });
         return result;

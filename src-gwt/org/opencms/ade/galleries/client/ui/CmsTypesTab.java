@@ -140,7 +140,7 @@ public class CmsTypesTab extends A_CmsListTab {
             CmsCheckBox checkBox = new CmsCheckBox();
             SelectionHandler selectionHandler = new SelectionHandler(typeBean.getType(), checkBox);
             checkBox.addClickHandler(selectionHandler);
-            listItemWidget.addDoubleClickHandler(selectionHandler);
+            listItemWidget.addClickHandler(selectionHandler);
             if ((selectedTypes != null) && selectedTypes.contains(typeBean.getType())) {
                 checkBox.setChecked(true);
             }

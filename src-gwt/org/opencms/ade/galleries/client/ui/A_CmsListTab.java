@@ -84,7 +84,7 @@ import com.google.gwt.user.client.ui.Widget;
 public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandler<String> {
 
     /** Selection handler to handle check box click events and double clicks on the list items. */
-    protected abstract class A_SelectionHandler implements ClickHandler, DoubleClickHandler {
+    protected abstract class A_SelectionHandler implements ClickHandler {
 
         /** The reference to the checkbox. */
         private CmsCheckBox m_checkBox;
@@ -103,27 +103,26 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
         }
 
         /**
+         * Returns the select button.<p>
+         * 
+         * @return the select button 
+         */
+        public CmsPushButton getSelectButton() {
+
+            return m_selectButton;
+        }
+
+        /**
          * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
          */
         public void onClick(ClickEvent event) {
 
-            if (event.getSource().equals(m_selectButton)) {
+            if (event.getSource().equals(m_checkBox)) {
+                onSelectionChange();
+            } else {
                 selectBeforeGoingToResultTab();
                 getTabHandler().selectResultTab();
-            } else if (event.getSource().equals(m_checkBox)) {
-                onSelectionChange();
             }
-        }
-
-        /**
-         * @see com.google.gwt.event.dom.client.DoubleClickHandler#onDoubleClick(com.google.gwt.event.dom.client.DoubleClickEvent)
-         */
-        public void onDoubleClick(DoubleClickEvent event) {
-
-            selectBeforeGoingToResultTab();
-            getTabHandler().selectResultTab();
-            event.stopPropagation();
-            event.preventDefault();
         }
 
         /**

@@ -442,7 +442,7 @@ public class CmsGalleriesTab extends A_CmsListTab {
         CmsCheckBox checkBox = new CmsCheckBox();
         SelectionHandler selectionHandler = new SelectionHandler(galleryInfo.getPath(), checkBox);
         checkBox.addClickHandler(selectionHandler);
-        listItemWidget.addDoubleClickHandler(selectionHandler);
+        listItemWidget.addClickHandler(selectionHandler);
         if ((selectedGalleries != null) && selectedGalleries.contains(galleryInfo.getPath())) {
             checkBox.setChecked(true);
         }

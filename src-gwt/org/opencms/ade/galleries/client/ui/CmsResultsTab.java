@@ -393,6 +393,7 @@ public class CmsResultsTab extends A_CmsListTab {
      */
     public void showNoParamsMessage() {
 
+        m_scrollList.clear();
         if (m_noParamsMessage == null) {
             StringBuffer buf = new StringBuffer();
             buf.append("<div class=\"");
