@@ -36,6 +36,7 @@
     <enableadvancedpropertytabs>true</enableadvancedpropertytabs>
     <maxfileuploadsize>-1</maxfileuploadsize>
     <labeledfolders/>
+    <repositoryfolder class="org.opencms.workplace.CmsRepositoryFolderHandler" />
     <rfsfileviewsettings>
       <enabled>true</enabled>
       <fileEncoding>windows-1252</fileEncoding>
@@ -743,7 +744,6 @@
           <buttonstyle>textimage</buttonstyle>
           <reporttype>extended</reporttype>
           <uploadapplet>gwt</uploadapplet>
-          <galleryupload class="org.opencms.workplace.CmsUploadFolderHandler" />
           <publishbuttonappearance>always</publishbuttonappearance>
           <listallprojects>false</listallprojects>
           <publishnotification>false</publishnotification>

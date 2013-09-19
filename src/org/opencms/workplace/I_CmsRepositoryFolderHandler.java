@@ -30,18 +30,18 @@ package org.opencms.workplace;
 import org.opencms.file.CmsObject;
 
 /**
- * Evaluates the gallery upload folder.<p>
+ * Evaluates the repository folder.<p>
  */
-public interface I_CmsUploadFolderHandler {
+public interface I_CmsRepositoryFolderHandler {
 
     /**
-     * Returns the gallery folder to upload to when using a gallery widget with upload function.<p>
+     * Returns the repository folder to store new contents in.<p>
      * 
      * @param cms the user cms context
      * @param reference the reference resource - the resource being edited
-     * @param galleryType the gallery type - like 'imagegallery'
+     * @param type the resource or gallery type - like 'image' or 'imagegallery'
      * 
-     * @return the site path of the gallery folder
+     * @return the site path of the repository folder
      */
-    String getUploadFolder(CmsObject cms, String reference, String galleryType);
+    String getRepositoryFolder(CmsObject cms, String reference, String type);
 }

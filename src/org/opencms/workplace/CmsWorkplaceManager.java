@@ -231,6 +231,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     /** The condition definitions for the resource types  which are triggered before opening the editor. */
     private List<I_CmsPreEditorActionDefinition> m_preEditorConditionDefinitions;
 
+    /** The repository folder handler. */
+    private I_CmsRepositoryFolderHandler m_repositoryFolderHandler;
+
     /** Indicates if the user management icon should be displayed in the workplace. */
     private boolean m_showUserGroupIcon;
 
@@ -1169,6 +1172,20 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     }
 
     /**
+     * Returns the repository folder handler.<p>
+     * 
+     * @return the repository folder handler
+     */
+    public I_CmsRepositoryFolderHandler getRepositoryFolderHandler() {
+
+        if (m_repositoryFolderHandler == null) {
+            // handler has not been configured, use the default one
+            m_repositoryFolderHandler = new CmsRepositoryFolderHandler();
+        }
+        return m_repositoryFolderHandler;
+    }
+
+    /**
      * Returns Regex patterns that should be excluded from synchronization.<p>
      * 
      * @return the exclude patterns
@@ -1777,6 +1794,21 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
 
         multiContextMenu.setMultiMenu(true);
         m_multiContextMenu = multiContextMenu;
+    }
+
+    /**
+     * Sets the repository folder handler.<p>
+     * 
+     * @param clazz the repository folder handler
+     */
+    public void setRepositoryFolderHandler(I_CmsRepositoryFolderHandler clazz) {
+
+        m_repositoryFolderHandler = clazz;
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(org.opencms.configuration.Messages.get().getBundle().key(
+                org.opencms.configuration.Messages.INIT_REPOSITORY_FOLDER_1,
+                m_repositoryFolderHandler.getClass().getName()));
+        }
     }
 
     /**

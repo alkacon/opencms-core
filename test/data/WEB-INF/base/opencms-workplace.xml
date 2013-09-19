@@ -1188,7 +1188,6 @@
 					<buttonstyle>textimage</buttonstyle>
 					<reporttype>extended</reporttype>
 					<uploadapplet>gwt</uploadapplet>
-					<galleryupload class="org.opencms.workplace.CmsUploadFolderHandler" />
 					<publishbuttonappearance>always</publishbuttonappearance>
 					<listallprojects>false</listallprojects>
 					<publishnotification>true</publishnotification>

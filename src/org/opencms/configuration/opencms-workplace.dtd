@@ -28,6 +28,7 @@
 	group-translation?,
 	maxfileuploadsize?, 
 	labeledfolders?,
+	repositoryfolder?,
 	workflow?,
 	rfsfileviewsettings?,
 	explorertypes+,
@@ -288,6 +289,14 @@
 <!ELEMENT labeledfolders (resource*)>
 
 <!--
+# The repository folder handler class.
+# class: the class of the handler replacing the default implementation
+# needs to implement the interface org.opencms.workplace.I_CmsRepositoryFolderHandler
+-->
+<!ELEMENT repositoryfolder EMPTY>
+<!ATTLIST repositoryfolder class CDATA #REQUIRED>
+
+<!--
 # Rfs file view settings:
 # This corresponds to the bean class: org.opencms.util.CmsRfsFileView.
 # The effect of these settings may be seen in OpenCms at: 
@@ -495,7 +504,6 @@
 <!ELEMENT workplace-generaloptions (buttonstyle,
 									reporttype,
 									uploadapplet,
-									galleryupload?,
 									publishbuttonappearance?,
 									listallprojects?,
 									publishnotification?,
@@ -526,14 +534,6 @@
 # gwt:    use the gwt based upload
 -->	
 <!ELEMENT uploadapplet (#PCDATA)>
-
-<!--
-# The gallery upload folder handler class.
-# class: the class of the handler replacing the default implementation
-# needs to implement the interface org.opencms.workplace.I_CmsUploadFolderHandler
--->
-<!ELEMENT galleryupload EMPTY>
-<!ATTLIST galleryupload class CDATA #REQUIRED>
 
 <!--
 # This element controls the appearance of the "publish project" button in the workplace button bar.

@@ -313,7 +313,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     public static final String N_GALLERIESPREFERENCES = "galleries-preferences";
 
     /** The node name of the gallery upload folder handler node. */
-    public static final String N_GALLERY_UPLOAD = "galleryupload";
+    public static final String N_REPOSITORY_FOLDER = "repositoryfolder";
 
     /** The node name of the group-translation node. */
     public static final String N_GROUP_TRANSLATION = "group-translation";
@@ -962,6 +962,13 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_LABELEDFOLDERS + "/" + N_RESOURCE, "addLabeledFolder", 1);
         digester.addCallParam("*/" + N_WORKPLACE + "/" + N_LABELEDFOLDERS + "/" + N_RESOURCE, 0, A_URI);
 
+        // set the gallery upload folder handler
+        digester.addObjectCreate(
+            "*/" + N_WORKPLACE + "/" + N_REPOSITORY_FOLDER,
+            A_CLASS,
+            CmsConfigurationException.class);
+        digester.addSetNext("*/" + N_WORKPLACE + "/" + N_REPOSITORY_FOLDER, "setRepositoryFolderHandler");
+
         // add localized folders rule
         digester.addCallMethod(
             "*/" + N_WORKPLACE + "/" + N_LOCALIZEDFOLDERS + "/" + N_RESOURCE,
@@ -1124,6 +1131,10 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         while (sitesFolders.hasNext()) {
             labeledElement.addElement(N_RESOURCE).addAttribute(A_URI, sitesFolders.next());
         }
+        // add the <galleryupload> node
+        workplaceElement.addElement(N_REPOSITORY_FOLDER).addAttribute(
+            A_CLASS,
+            m_workplaceManager.getRepositoryFolderHandler().getClass().getName());
 
         // add <rfsfileviewsettings> node
         CmsRfsFileViewer viewSettings = m_workplaceManager.getFileViewSettings();
@@ -1248,10 +1259,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         // add the <uploadapplet> node
         workplaceGeneraloptions.addElement(N_UPLOADAPPLET).setText(
             m_workplaceManager.getDefaultUserSettings().getUploadVariant().toString());
-        // add the <galleryupload> node
-        workplaceGeneraloptions.addElement(N_GALLERY_UPLOAD).addAttribute(
-            A_CLASS,
-            m_workplaceManager.getDefaultUserSettings().getGalleryUploadHandler().getClass().getName());
         // add the <publishbuttonappearance> node if not empty
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_workplaceManager.getDefaultUserSettings().getPublishButtonAppearance())) {
             workplaceGeneraloptions.addElement(N_PUBLISHBUTTONAPPEARANCE).setText(
@@ -1661,11 +1668,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         digester.addCallMethod(xPathPrefix + "/" + N_BUTTONSTYLE, "setWorkplaceButtonStyle", 0);
         digester.addCallMethod(xPathPrefix + "/" + N_REPORTTYPE, "setWorkplaceReportType", 0);
         digester.addCallMethod(xPathPrefix + "/" + N_UPLOADAPPLET, "setUploadVariant", 0);
-
-        // set the gallery upload folder handler
-        digester.addObjectCreate(xPathPrefix + "/" + N_GALLERY_UPLOAD, A_CLASS, CmsConfigurationException.class);
-        digester.addSetNext(xPathPrefix + "/" + N_GALLERY_UPLOAD, "setGallerUploadHandler");
-
         digester.addCallMethod(xPathPrefix + "/" + N_LISTALLPROJECTS, "setListAllProjects", 0);
         digester.addCallMethod(xPathPrefix + "/" + N_PUBLISHNOTIFICATION, "setShowPublishNotification", 0);
         digester.addCallMethod(xPathPrefix + "/" + N_PUBLISHBUTTONAPPEARANCE, "setPublishButtonAppearance", 0);

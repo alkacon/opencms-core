@@ -38,17 +38,17 @@ import org.opencms.util.CmsStringUtil;
 /**
  * The default upload folder handler.<p>
  */
-public class CmsUploadFolderHandler implements I_CmsUploadFolderHandler {
+public class CmsRepositoryFolderHandler implements I_CmsRepositoryFolderHandler {
 
     /**
-     * @see org.opencms.workplace.I_CmsUploadFolderHandler#getUploadFolder(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
+     * @see org.opencms.workplace.I_CmsRepositoryFolderHandler#getRepositoryFolder(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
-    public String getUploadFolder(CmsObject cms, String reference, String galleryType) {
+    public String getRepositoryFolder(CmsObject cms, String reference, String type) {
 
         String result = null;
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(reference)) {
             try {
-                CmsProperty prop = cms.readPropertyObject(reference, "uploadfolder_" + galleryType, true);
+                CmsProperty prop = cms.readPropertyObject(reference, "repositoryfolder_" + type, true);
                 // check if the resource exists, is a folder and the user has write permissions to it
                 if (!prop.isNullProperty()
                     && cms.existsResource(prop.getValue(), CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {

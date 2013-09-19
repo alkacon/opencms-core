@@ -115,7 +115,7 @@ public class CmsAdeImageGalleryWidget extends A_CmsAdeGalleryWidget {
         }
         result.put(I_CmsGalleryProviderConstants.CONFIG_IMAGE_FORMAT_NAMES, new JSONArray(formatNames));
         result.put(I_CmsGalleryProviderConstants.CONFIG_TAB_CONFIG, "selectDoc");
-        String uploadFolder = OpenCms.getWorkplaceManager().getDefaultUserSettings().getGalleryUploadHandler().getUploadFolder(
+        String uploadFolder = OpenCms.getWorkplaceManager().getRepositoryFolderHandler().getRepositoryFolder(
             cms,
             resource,
             GALLERY_NAME + "gallery");
