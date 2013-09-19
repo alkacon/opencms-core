@@ -223,3 +223,25 @@
 .classicTabs.gwt-TabLayoutPanel .tabDisabled.gwt-TabLayoutPanelTab div.gwt-TabLayoutPanelTabInner div {
 	color:value("constants.css.textColorDisabledButton") !important;
 }
+
+/* disables text selection */
+.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab {
+	user-select: none;
+}
+@if user.agent gecko gecko1_8 {
+	.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab {
+		-moz-user-select: none;
+	}
+} @elif user.agent safari {
+	.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab {
+		-webkit-user-select: none;
+	}
+} @elif user.agent opera {
+	.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab {
+		-o-user-select: none;
+	}
+} @elif user.agent ie9 {
+	.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab {
+		-ms-user-select: none;
+	}
+}
