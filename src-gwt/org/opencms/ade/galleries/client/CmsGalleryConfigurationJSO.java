@@ -264,6 +264,14 @@ public final class CmsGalleryConfigurationJSO extends JavaScriptObject implement
                                                                }-*/;
 
     /**
+     * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#setStartFolder(java.lang.String)
+     */
+    public native void setStartFolder(String startFolder)/*-{
+
+                                                         this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_START_FOLDER]=startFolder;
+                                                         }-*/;
+
+    /**
      * Gets the tab configuration string.<p>
      * 
      * @return the tab configuration string 

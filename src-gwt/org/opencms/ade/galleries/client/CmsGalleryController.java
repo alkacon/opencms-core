@@ -96,6 +96,9 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
  */
 public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySearchBean> {
 
+    /** The last selected gallery paths. */
+    private static Map<String, String> m_lastSelectedGallerys = new HashMap<String, String>();
+
     /** The preview factory registration. */
     private static Map<String, I_CmsPreviewFactory> m_previewFactoryRegistration = new HashMap<String, I_CmsPreviewFactory>();
 
@@ -256,6 +259,18 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     }
 
     /**
+     * Returns the last selecte gallery for the given configuration or <code>null</code>.
+     * 
+     * @param config the gallery configuration
+     * 
+     * @return the gallery path
+     */
+    public static String getLastSelectedGallery(I_CmsGalleryConfiguration config) {
+
+        return m_lastSelectedGallerys.get(generateGalleryKey(config));
+    }
+
+    /**
      * Registers a preview factory for the given name.
      * 
      * @param previewProviderName the preview provider name
@@ -264,6 +279,18 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     public static void registerPreviewFactory(String previewProviderName, I_CmsPreviewFactory factory) {
 
         m_previewFactoryRegistration.put(previewProviderName, factory);
+    }
+
+    /**
+     * Generates the last selected gallery key from the given configuration.<p>
+     * 
+     * @param config the gallery configuration
+     * 
+     * @return the key
+     */
+    private static String generateGalleryKey(I_CmsGalleryConfiguration config) {
+
+        return config.getReferencePath() + "###" + config.getGalleryTypeName();
     }
 
     /**
@@ -348,6 +375,9 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         m_searchObject.addGallery(galleryPath);
         m_searchObjectChanged = true;
         ValueChangeEvent.fire(this, m_searchObject);
+        if (m_searchObject.getGalleries().size() == 1) {
+            storeLastSelectedGallery(galleryPath);
+        }
     }
 
     /**
@@ -1811,5 +1841,17 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             return lookForParent(possibleParent.getParent(), targetPath);
         }
         return null;
+    }
+
+    /**
+     * Stores the the last selected gallery path in the page context.<p>
+     * 
+     * @param galleryPath the gallery path
+     */
+    private void storeLastSelectedGallery(String galleryPath) {
+
+        if (m_configuration != null) {
+            m_lastSelectedGallerys.put(generateGalleryKey(m_configuration), galleryPath);
+        }
     }
 }

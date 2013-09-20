@@ -179,4 +179,11 @@ public interface I_CmsGalleryConfiguration {
      * @param currentElement the currentElement to set
      */
     void setCurrentElement(String currentElement);
+
+    /**
+     * Sets the start folder.<p>
+     * 
+     * @param startFolder the start folder
+     */
+    void setStartFolder(String startFolder);
 }
