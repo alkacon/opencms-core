@@ -317,6 +317,9 @@ allModuleNames.split(',').each{ moduleName ->
     }
     
     if (gwtModule != null){
+        sourceSets.create(moduleName+'_gwt')
+        sourceSets[moduleName+'_gwt'].java.srcDirs=files("$srcGwtDir")
+        sourceSets[moduleName+'_gwt'].resources.srcDirs=files("$srcGwtDir")
         task "gwt_$moduleName" (dependsOn: gwtClasses, type: JavaExec) {
             ext.buildDir =  project.buildDir.toString()  +"/gwt/$moduleName"
             ext.extraDir =  project.buildDir.toString() + "/extra/$moduleName"
@@ -349,9 +352,13 @@ allModuleNames.split(',').each{ moduleName ->
                     sourceSets.gwt.java.srcDirs,           // Java source
                     sourceSets.gwt.output.resourcesDir,    // Generated resources
                     sourceSets.gwt.output.classesDir,      // Generated classes
-                    sourceSets.gwt.compileClasspath,       // Deps
+                    sourceSets.gwt.compileClasspath,      // Deps
+                    sourceSets[moduleName+'_gwt'].java.srcDirs,
+                    sourceSets[moduleName+'_gwt'].output.resourcesDir,
+                    sourceSets[moduleName+'_gwt'].output.classesDir
                 ]
             }
+            
          
             args =
             [
