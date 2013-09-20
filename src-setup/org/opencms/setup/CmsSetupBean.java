@@ -50,6 +50,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.CmsShell;
 import org.opencms.main.CmsSystemInfo;
+import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.I_CmsShellCommands;
 import org.opencms.main.OpenCms;
 import org.opencms.main.OpenCmsServlet;
@@ -416,6 +417,14 @@ public class CmsSetupBean implements I_CmsShellCommands {
         if (CmsStringUtil.isEmpty(getEthernetAddress())) {
             setEthernetAddress(CmsStringUtil.getEthernetAddress());
         }
+    }
+
+    /** 
+     * Clears the cache.<p>
+     */
+    public void clearCache() {
+
+        OpenCms.getEventManager().fireEvent(I_CmsEventListener.EVENT_CLEAR_CACHES);
     }
 
     /** 
