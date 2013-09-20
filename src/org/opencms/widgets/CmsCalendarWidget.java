@@ -119,7 +119,7 @@ public class CmsCalendarWidget extends A_CmsWidget implements I_CmsADEWidget {
         result.append("<script type=\"text/javascript\" src=\"");
         result.append(calendarPath);
         result.append("lang/calendar-");
-        result.append(locale.getLanguage());
+        result.append(getLanguageSuffix(locale.getLanguage()));
         result.append(".js\"></script>\n");
         result.append("<script type=\"text/javascript\" src=\"");
         result.append(calendarPath);
@@ -274,6 +274,22 @@ public class CmsCalendarWidget extends A_CmsWidget implements I_CmsADEWidget {
                 + " "
                 + messages.key(org.opencms.workplace.Messages.GUI_CALENDAR_TIME_FORMAT_0)));
         return df.format(cal.getTime());
+    }
+
+    /** 
+     * Returns the language suffix for the calendar-*.js localizations.<p>
+     * 
+     * @param language the language from the locale 
+     * 
+     * @return the suffix to use for the calendar-*js localication file 
+     */
+    private static String getLanguageSuffix(String language) {
+
+        if (language.equals(Locale.JAPANESE.getLanguage())) {
+            return "jp";
+        } else {
+            return language;
+        }
     }
 
     /**
