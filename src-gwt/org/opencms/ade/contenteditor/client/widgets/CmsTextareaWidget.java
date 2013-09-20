@@ -28,6 +28,7 @@
 package org.opencms.ade.contenteditor.client.widgets;
 
 import com.alkacon.acacia.client.css.I_LayoutBundle;
+import com.alkacon.acacia.client.ui.I_HasResizeOnShow;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
 import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
@@ -47,7 +48,7 @@ import com.google.gwt.user.client.ui.Composite;
  * Provides a display only widget, for use on a widget dialog.<p>
  *  
  * */
-public class CmsTextareaWidget extends Composite implements I_EditWidget, HasResizeHandlers {
+public class CmsTextareaWidget extends Composite implements I_EditWidget, HasResizeHandlers, I_HasResizeOnShow {
 
     /** Default number of rows to display. */
     private static final int DEFAULT_ROWS_NUMBER = 5;
@@ -163,6 +164,14 @@ public class CmsTextareaWidget extends Composite implements I_EditWidget, HasRes
     public void onAttachWidget() {
 
         super.onAttach();
+    }
+
+    /**
+     * @see com.alkacon.acacia.client.ui.I_HasResizeOnShow#resizeOnShow()
+     */
+    public void resizeOnShow() {
+
+        m_textarea.getTextAreaContainer().onResizeDescendant();
     }
 
     /**
