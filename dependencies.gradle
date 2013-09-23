@@ -52,7 +52,7 @@ dependencies {
     
     // http://svn.alfresco.com/repos/alfresco-open-mirror/alfresco/HEAD/root/projects/alfresco-jlan/    
     // Revision r55007
-    distribution files('lib/runtime/alfresco-jlan.jar')
+    distribution files('lib/runtime/jlan.jar')
     
     distribution files('lib/runtime/cryptix-jce-provider.jar')
     distribution group: 'asm', name: 'asm', version: '3.2'
