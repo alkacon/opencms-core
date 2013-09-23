@@ -38,6 +38,9 @@ import com.alkacon.vie.shared.I_Type;
 
 import org.opencms.ade.containerpage.CmsContainerpageService;
 import org.opencms.ade.containerpage.CmsElementUtil;
+import org.opencms.ade.containerpage.shared.CmsCntPageData;
+import org.opencms.ade.containerpage.shared.CmsContainer;
+import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
 import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService;
 import org.opencms.file.CmsFile;
@@ -476,19 +479,35 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 String htmlContent = null;
                 if (!validationResult.hasErrors()) {
                     file.setContents(content.marshal());
+
+                    JSONObject contextInfo = new JSONObject(htmlContextInfo);
+                    String containerName = contextInfo.getString(CmsCntPageData.JSONKEY_NAME);
+                    String containerType = contextInfo.getString(CmsCntPageData.JSONKEY_TYPE);
+                    int containerWidth = contextInfo.getInt(CmsCntPageData.JSONKEY_WIDTH);
+                    int maxElements = contextInfo.getInt(CmsCntPageData.JSONKEY_MAXELEMENTS);
+                    boolean detailView = contextInfo.getBoolean(CmsCntPageData.JSONKEY_DETAILVIEW);
+                    CmsContainer container = new CmsContainer(
+                        containerName,
+                        containerType,
+                        containerWidth,
+                        maxElements,
+                        detailView,
+                        Collections.<CmsContainerElement> emptyList());
+                    CmsUUID detailContentId = null;
+                    if (contextInfo.has(CmsCntPageData.JSONKEY_DETAIL_ELEMENT_ID)) {
+                        detailContentId = new CmsUUID(contextInfo.getString(CmsCntPageData.JSONKEY_DETAIL_ELEMENT_ID));
+                    }
                     CmsElementUtil elementUtil = new CmsElementUtil(
                         cms,
                         contextUri,
+                        detailContentId,
                         getThreadLocalRequest(),
                         getThreadLocalResponse(),
                         contentLocale);
-                    JSONObject contextInfo = new JSONObject(htmlContextInfo);
                     htmlContent = elementUtil.getContentByContainer(
                         file,
-                        contextInfo.getString("elementId"),
-                        contextInfo.getString("containerName"),
-                        contextInfo.getString("containerType"),
-                        contextInfo.getInt("containerWidth"));
+                        contextInfo.getString(CmsCntPageData.JSONKEY_DETAIL_ELEMENT_ID),
+                        container);
                 }
                 return new EntityHtml(htmlContent, validationResult);
 

@@ -60,6 +60,9 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     /** Flag indicating if this container is a detail view only container. */
     boolean m_detailOnly;
 
+    /** The configured width for this container. */
+    private int m_configuredWidth;
+
     /** Container element id. */
     private String m_containerId;
 
@@ -100,6 +103,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
         m_maxElements = containerData.getMaxElements();
         m_isDetailView = containerData.isDetailView();
         m_detailOnly = containerData.isDetailOnly();
+        m_configuredWidth = containerData.getWidth();
         getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragTarget());
     }
 
@@ -201,6 +205,16 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
             }
         }
         return elements;
+    }
+
+    /**
+     * Returns the configured width for this container.<p>
+     * 
+     * @return the configured width
+     */
+    public int getConfiguredWidth() {
+
+        return m_configuredWidth;
     }
 
     /**

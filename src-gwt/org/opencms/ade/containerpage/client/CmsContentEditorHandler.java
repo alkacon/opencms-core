@@ -29,6 +29,7 @@ package org.opencms.ade.containerpage.client;
 
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
+import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.contenteditor.client.CmsContentEditor;
 import org.opencms.ade.contenteditor.client.CmsEditorContext;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
@@ -138,17 +139,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
             if (inline && CmsContentEditor.hasEditable(element.getElement())) {
                 addEditingHistoryItem(true);
                 CmsEditorContext context = getEditorContext();
-                CmsContainerPageContainer container = (CmsContainerPageContainer)element.getParentTarget();
-
-                context.setHtmlContextInfo("{elementId:'"
-                    + element.getId()
-                    + "', containerName:'"
-                    + container.getContainerId()
-                    + "', containerType: '"
-                    + container.getContainerType()
-                    + "', containerWidth: "
-                    + container.getOffsetWidth()
-                    + "}");
+                context.setHtmlContextInfo(getContextInfo(element));
                 CmsContentEditor.getInstance().openInlineEditor(
                     context,
                     new CmsUUID(serverId),
@@ -302,6 +293,50 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                 + CmsContainerpageController.getServerId(getCurrentElementId())
                 + (m_dependingElementId != null ? "," + m_dependingElementId + ";" : ";"), false);
         }
+    }
+
+    /**
+     * Returns the HTML context info for the given element.<p>
+     * 
+     * @param element the edited element 
+     * 
+     * @return the JSON string
+     */
+    private String getContextInfo(CmsContainerPageElementPanel element) {
+
+        CmsContainerPageContainer container = (CmsContainerPageContainer)element.getParentTarget();
+        return "{"
+            + CmsCntPageData.JSONKEY_ELEMENT_ID
+            + ":'"
+            + element.getId()
+            + "', "
+            + (m_handler.m_controller.getData().getDetailId() != null ? (CmsCntPageData.JSONKEY_DETAIL_ELEMENT_ID
+                + ":'"
+                + m_handler.m_controller.getData().getDetailId() + "', ") : "")
+            + CmsCntPageData.JSONKEY_NAME
+            + ":'"
+            + container.getContainerId()
+            + "', "
+            + CmsCntPageData.JSONKEY_TYPE
+            + ": '"
+            + container.getContainerType()
+            + "', "
+            + CmsCntPageData.JSONKEY_WIDTH
+            + ": "
+            + container.getConfiguredWidth()
+            + ", "
+            + CmsCntPageData.JSONKEY_DETAILVIEW
+            + ": "
+            + container.isDetailView()
+            + ", "
+            + CmsCntPageData.JSONKEY_DETAILONLY
+            + ": "
+            + container.isDetailOnly()
+            + ", "
+            + CmsCntPageData.JSONKEY_MAXELEMENTS
+            + ": "
+            + 1
+            + "}";
     }
 
 }

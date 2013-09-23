@@ -266,6 +266,7 @@ public final class CmsContainerpageController {
                 m_currentContainer.getType(),
                 m_currentContainer.getWidth(),
                 m_currentContainer.getMaxElements(),
+                m_currentContainer.isDetailView(),
                 m_currentElements));
         }
 
@@ -357,6 +358,7 @@ public final class CmsContainerpageController {
             } else {
                 getContainerpageService().getElementsData(
                     CmsCoreProvider.get().getStructureId(),
+                    getData().getDetailId(),
                     getRequestParams(),
                     m_clientIds,
                     m_containerBeans,
@@ -414,6 +416,7 @@ public final class CmsContainerpageController {
 
             getContainerpageService().getElementsData(
                 CmsCoreProvider.get().getStructureId(),
+                getData().getDetailId(),
                 getRequestParams(),
                 m_clientIds,
                 m_containerBeans,
@@ -517,6 +520,7 @@ public final class CmsContainerpageController {
                 clientIds.add(m_clientId);
                 getContainerpageService().getElementsData(
                     CmsCoreProvider.get().getStructureId(),
+                    getData().getDetailId(),
                     getRequestParams(),
                     clientIds,
                     m_containerBeans,
@@ -1279,9 +1283,14 @@ public final class CmsContainerpageController {
                 @Override
                 public void execute() {
 
-                    getContainerpageService().getNewElementData(CmsCoreProvider.get().getStructureId(),
-
-                    getRequestParams(), resourceType, m_containerBeans, getLocale(), this);
+                    getContainerpageService().getNewElementData(
+                        CmsCoreProvider.get().getStructureId(),
+                        getData().getDetailId(),
+                        getRequestParams(),
+                        resourceType,
+                        m_containerBeans,
+                        getLocale(),
+                        this);
                 }
 
                 @Override
@@ -1640,6 +1649,7 @@ public final class CmsContainerpageController {
                 start(200, true);
                 getContainerpageService().getFavoriteList(
                     CmsCoreProvider.get().getStructureId(),
+                    getData().getDetailId(),
                     m_containerBeans,
                     getLocale(),
                     this);
@@ -1677,6 +1687,7 @@ public final class CmsContainerpageController {
                 start(200, true);
                 getContainerpageService().getRecentList(
                     CmsCoreProvider.get().getStructureId(),
+                    getData().getDetailId(),
                     m_containerBeans,
                     getLocale(),
                     this);
@@ -2163,6 +2174,7 @@ public final class CmsContainerpageController {
 
                     getContainerpageService().saveGroupContainer(
                         CmsCoreProvider.get().getStructureId(),
+                        getData().getDetailId(),
                         getRequestParams(),
                         groupContainer,
                         m_containerBeans,
@@ -2220,6 +2232,7 @@ public final class CmsContainerpageController {
 
                     getContainerpageService().saveInheritanceContainer(
                         CmsCoreProvider.get().getStructureId(),
+                        getData().getDetailId(),
                         inheritanceContainer,
                         m_containerBeans,
                         getLocale(),
@@ -2796,6 +2809,7 @@ public final class CmsContainerpageController {
                 containerJso.getType(),
                 containerJso.getWidth(),
                 containerJso.getMaxElements(),
+                containerJso.isDetailView(),
                 null);
             result.add(container);
         }
@@ -2826,6 +2840,7 @@ public final class CmsContainerpageController {
                 start(200, false);
                 getContainerpageService().getElementWithSettings(
                     CmsCoreProvider.get().getStructureId(),
+                    getData().getDetailId(),
                     getRequestParams(),
                     clientId,
                     settings,

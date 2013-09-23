@@ -65,6 +65,12 @@ public final class CmsCntPageData implements IsSerializable {
     /** Key 'width' used within the JSON representation of a container object. */
     public static final String JSONKEY_WIDTH = "width";
 
+    /** Key 'elementId' for the element id. */
+    public static final String JSONKEY_ELEMENT_ID = "elementId";
+
+    /** Key 'detailElementId' for the detail content id. */
+    public static final String JSONKEY_DETAIL_ELEMENT_ID = "detailElementId";
+
     /** Key for container data. This has to be identical with {@link org.opencms.jsp.CmsJspTagContainer#KEY_CONTAINER_DATA}. */
     public static final String KEY_CONTAINER_DATA = "org_opencms_ade_containerpage_containers";
 

@@ -37,6 +37,7 @@ import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.containerpage.shared.CmsInheritanceInfo;
+import org.opencms.ade.detailpage.CmsDetailPageResourceHandler;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -135,6 +136,7 @@ public class CmsElementUtil {
      * 
      * @param cms the cms context
      * @param currentPageUri the current page uri
+     * @param detailContentId the detail content structure id
      * @param req the http request
      * @param res the http response
      * @param locale the content locale
@@ -144,6 +146,7 @@ public class CmsElementUtil {
     public CmsElementUtil(
         CmsObject cms,
         String currentPageUri,
+        CmsUUID detailContentId,
         HttpServletRequest req,
         HttpServletResponse res,
         Locale locale)
@@ -157,7 +160,13 @@ public class CmsElementUtil {
         m_locale = locale;
         // initializing request for standard context bean
         req.setAttribute(CmsJspStandardContextBean.ATTRIBUTE_CMS_OBJECT, m_cms);
+        if (detailContentId != null) {
+            CmsResource detailRes = m_cms.readResource(detailContentId);
+            req.setAttribute(CmsDetailPageResourceHandler.ATTR_DETAIL_CONTENT_RESOURCE, detailRes);
+        }
+
         m_standardContext = CmsJspStandardContextBean.getInstance(req);
+
         CmsXmlContainerPage xmlContainerPage = CmsXmlContainerPageFactory.unmarshal(
             cms,
             m_cms.readResource(currentPageUri),
@@ -171,6 +180,7 @@ public class CmsElementUtil {
      * 
      * @param cms the cms context
      * @param currentPageUri the current page uri
+     * @param detailContentId the detail content structure id
      * @param requestParameters the request parameters to use while rendering the elements
      * @param req the http request
      * @param res the http response
@@ -181,13 +191,14 @@ public class CmsElementUtil {
     public CmsElementUtil(
         CmsObject cms,
         String currentPageUri,
+        CmsUUID detailContentId,
         String requestParameters,
         HttpServletRequest req,
         HttpServletResponse res,
         Locale locale)
     throws CmsException {
 
-        this(cms, currentPageUri, req, res, locale);
+        this(cms, currentPageUri, detailContentId, req, res, locale);
         m_parameterMap = parseRequestParameters(requestParameters);
     }
 
@@ -196,18 +207,11 @@ public class CmsElementUtil {
      * 
      * @param elementFile the element resource file
      * @param elementId the element id
-     * @param containerName the container name
-     * @param containerType the container type
-     * @param containerWidth the container width
+     * @param container the container
      * 
      * @return the HTML content
      */
-    public String getContentByContainer(
-        CmsFile elementFile,
-        String elementId,
-        String containerName,
-        String containerType,
-        int containerWidth) {
+    public String getContentByContainer(CmsFile elementFile, String elementId, CmsContainer container) {
 
         CmsContainerElementBean element = CmsADESessionCache.getCache(m_req, m_cms).getCacheContainerElement(elementId);
         element = element.clone();
@@ -216,12 +220,7 @@ public class CmsElementUtil {
             m_cms,
             m_cms.addSiteRoot(m_currentPageUri));
         CmsFormatterConfiguration configs = adeConfig.getFormatters(m_cms, element.getResource());
-        return getContentByContainer(element, new CmsContainer(
-            containerName,
-            containerType,
-            containerWidth,
-            1,
-            Collections.<CmsContainerElement> emptyList()), configs);
+        return getContentByContainer(element, container, configs);
     }
 
     /**
