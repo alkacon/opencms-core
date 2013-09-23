@@ -139,24 +139,44 @@ public class CmsPositionBean {
      * If the panel has no visible child elements, it's outer dimensions are returned.<p>
      * 
      * @param panel the panel
-     * @param levels the levels to traverse down the DOM tree
      * 
      * @return the position info
      */
-    private static CmsPositionBean getInnerDimensions(Element panel, int levels) {
+    public static CmsPositionBean getInnerDimensions(Element panel) {
+
+        return getInnerDimensions(panel, 2, false);
+    }
+
+    /**
+     * Returns a position info representing the dimensions of all visible child elements of the given panel (excluding elements with position:absolute).
+     * If the panel has no visible child elements, it's outer dimensions are returned.<p>
+     * 
+     * @param panel the panel
+     * @param levels the levels to traverse down the DOM tree
+     * @param includeSelf <code>true</code> to include the outer dimensions of the given panel
+     * 
+     * @return the position info
+     */
+    private static CmsPositionBean getInnerDimensions(Element panel, int levels, boolean includeSelf) {
 
         boolean first = true;
         int top = 0;
         int left = 0;
         int bottom = 0;
         int right = 0;
+        if (includeSelf) {
+            top = panel.getAbsoluteTop();
+            left = panel.getAbsoluteLeft();
+            bottom = top + panel.getOffsetHeight();
+            right = left + panel.getOffsetWidth();
+        }
         Element child = panel.getFirstChildElement();
         while (child != null) {
             String positioning = CmsDomUtil.getCurrentStyle(child, Style.position);
             if (!Display.NONE.getCssName().equals(CmsDomUtil.getCurrentStyle(child, Style.display))
                 && !(positioning.equalsIgnoreCase(Position.ABSOLUTE.getCssName()) || positioning.equalsIgnoreCase(Position.FIXED.getCssName()))) {
                 CmsPositionBean childDimensions = levels > 0
-                ? getInnerDimensions(child, levels - 1)
+                ? getInnerDimensions(child, levels - 1, true)
                 : generatePositionInfo(panel);
                 if (first) {
                     first = false;
@@ -187,19 +207,6 @@ public class CmsPositionBean {
         } else {
             return generatePositionInfo(panel);
         }
-    }
-
-    /**
-     * Returns a position info representing the dimensions of all visible child elements of the given panel (excluding elements with position:absolute).
-     * If the panel has no visible child elements, it's outer dimensions are returned.<p>
-     * 
-     * @param panel the panel
-     * 
-     * @return the position info
-     */
-    public static CmsPositionBean getInnerDimensions(Element panel) {
-
-        return getInnerDimensions(panel, 2);
     }
 
     /**
