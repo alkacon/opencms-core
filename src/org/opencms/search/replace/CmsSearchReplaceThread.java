@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.tools.searchindex.sourcesearch;
+package org.opencms.search.replace;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -58,10 +58,10 @@ import org.apache.commons.logging.Log;
  * 
  * @since 7.5.3
  */
-public class CmsSourceSearchThread extends A_CmsReportThread {
+public class CmsSearchReplaceThread extends A_CmsReportThread {
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsSourceSearchThread.class);
+    private static final Log LOG = CmsLog.getLog(CmsSearchReplaceThread.class);
 
     /** Number of errors while searching. */
     private int m_errorSearch;
@@ -79,7 +79,7 @@ public class CmsSourceSearchThread extends A_CmsReportThread {
     private HttpSession m_session;
 
     /** Settings. */
-    private CmsSourceSearchSettings m_settings;
+    private CmsSearchReplaceSettings m_settings;
 
     /**
      * Creates a replace html tag Thread.<p>
@@ -88,9 +88,9 @@ public class CmsSourceSearchThread extends A_CmsReportThread {
      * @param cms the current cms object
      * @param settings the settings needed to perform the operation.
      */
-    public CmsSourceSearchThread(HttpSession session, CmsObject cms, CmsSourceSearchSettings settings) {
+    public CmsSearchReplaceThread(HttpSession session, CmsObject cms, CmsSearchReplaceSettings settings) {
 
-        super(cms, Messages.get().getBundle().key(Messages.GUI_SOURCESEARCH_THREAD_NAME_0));
+        super(cms, "searchAndReplace");
         initHtmlReport(cms.getRequestContext().getLocale());
         m_session = session;
         m_settings = settings;
@@ -197,7 +197,7 @@ public class CmsSourceSearchThread extends A_CmsReportThread {
         if (!isError && searchResources(report, replace, cmsObject)) {
             // show the resources
             // save the matched file list in the session
-            m_session.setAttribute(CmsSourceSearchSettings.ATTRIBUTE_NAME_SOURCESEARCH_RESULT_LIST, m_matchedResources);
+            m_session.setAttribute(CmsSearchReplaceSettings.ATTRIBUTE_NAME_SOURCESEARCH_RESULT_LIST, m_matchedResources);
         } else {
             // do not show the resources, because there were errors while searching
         }

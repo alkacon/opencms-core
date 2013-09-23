@@ -1672,6 +1672,34 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>system/workplace/locales/ru/messages/org/opencms/search/replace</destination>
+			<type>folder</type>
+			<uuidstructure>d2fd6516-2467-11e3-ade6-000c297c001d</uuidstructure>
+			<datelastmodified>Mon, 23 Sep 2013 15:50:09 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 23 Sep 2013 15:50:09 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/ru/messages/org/opencms/search/replace/messages_ru.properties</source>
+			<destination>system/workplace/locales/ru/messages/org/opencms/search/replace/messages_ru.properties</destination>
+			<type>plain</type>
+			<uuidstructure>d9909788-2467-11e3-ade6-000c297c001d</uuidstructure>
+			<uuidresource>d9909789-2467-11e3-ade6-000c297c001d</uuidresource>
+			<datelastmodified>Mon, 23 Sep 2013 15:50:26 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 23 Sep 2013 15:50:20 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/locales/ru/messages/org/opencms/search/solr</destination>
 			<type>folder</type>
 			<uuidstructure>e39a38ff-9ab1-11e2-920a-496fdeb7578e</uuidstructure>

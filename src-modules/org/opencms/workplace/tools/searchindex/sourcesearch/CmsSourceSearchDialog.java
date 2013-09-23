@@ -31,6 +31,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.search.replace.CmsSearchReplaceSettings;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.widgets.CmsInputWidget;
@@ -74,7 +75,7 @@ public class CmsSourceSearchDialog extends CmsWidgetDialog {
     public static final String PARAM_SEARCHCONTENT = "searchcontent";
 
     /** The widget mapped data container. */
-    private CmsSourceSearchSettings m_settings;
+    private CmsSearchReplaceSettings m_settings;
 
     /**
      * Public constructor with JSP action element.
@@ -218,7 +219,7 @@ public class CmsSourceSearchDialog extends CmsWidgetDialog {
 
         Object o;
         if (CmsStringUtil.isEmpty(getParamAction())) {
-            o = new CmsSourceSearchSettings();
+            o = new CmsSearchReplaceSettings();
         } else {
             // this is not the initial call, get the job object from session
             o = getDialogObject();
@@ -226,10 +227,10 @@ public class CmsSourceSearchDialog extends CmsWidgetDialog {
 
         if (o == null) {
             // create a new export handler object
-            m_settings = new CmsSourceSearchSettings();
+            m_settings = new CmsSearchReplaceSettings();
         } else {
             // reuse export handler object stored in session
-            m_settings = (CmsSourceSearchSettings)o;
+            m_settings = (CmsSearchReplaceSettings)o;
         }
 
     }

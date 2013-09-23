@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.tools.searchindex.sourcesearch;
+package org.opencms.search.replace;
 
 import org.opencms.util.CmsStringUtil;
 
@@ -40,7 +40,7 @@ import java.util.List;
  * 
  */
 
-public class CmsSourceSearchSettings {
+public class CmsSearchReplaceSettings {
 
     /** The content search result list attribute name in the session. */
     public static final String ATTRIBUTE_NAME_SOURCESEARCH_RESULT_LIST = "sourcesearchResultList";
@@ -66,7 +66,7 @@ public class CmsSourceSearchSettings {
     /**
      * Bean constructor with cms object for path validation.<p>
      */
-    public CmsSourceSearchSettings() {
+    public CmsSearchReplaceSettings() {
 
         super();
         m_paths.add("/");
