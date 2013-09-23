@@ -31,7 +31,6 @@ import com.alkacon.acacia.client.I_WidgetFactory;
 import com.alkacon.acacia.client.widgets.FormWidgetWrapper;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 import com.alkacon.acacia.client.widgets.I_FormEditWidget;
-import com.alkacon.acacia.client.widgets.StringWidget;
 
 import org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry;
 import org.opencms.gwt.client.I_CmsHasInit;
@@ -67,6 +66,6 @@ public class CmsMultiSelectGroupWidgetFactory implements I_WidgetFactory, I_CmsH
      */
     public I_EditWidget createInlineWidget(String configuration, Element element) {
 
-        return new StringWidget(element);
+        return null;
     }
 }

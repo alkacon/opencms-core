@@ -31,7 +31,7 @@ import com.alkacon.acacia.client.I_WidgetFactory;
 import com.alkacon.acacia.client.widgets.FormWidgetWrapper;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 import com.alkacon.acacia.client.widgets.I_FormEditWidget;
-import com.alkacon.acacia.client.widgets.StringWidget;
+import com.alkacon.acacia.client.widgets.TinyMCEWidget;
 
 import org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry;
 import org.opencms.gwt.client.I_CmsHasInit;
@@ -67,7 +67,7 @@ public class CmsTextareaWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
      */
     public I_EditWidget createInlineWidget(String configuration, Element element) {
 
-        return new StringWidget(element);
+        return new TinyMCEWidget(element, TinyMCEWidget.NO_HTML_EDIT);
     }
 
 }
