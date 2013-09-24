@@ -55,7 +55,7 @@ dependencies {
     distribution files('lib/runtime/jlan.jar')
     
     distribution files('lib/runtime/cryptix-jce-provider.jar')
-    distribution group: 'asm', name: 'asm', version: '3.2'
+    distribution group: 'org.ow2.asm', name: 'asm', version: '4.0'
     distribution group: 'com.cybozu.labs', name: 'langdetect', version: '1.1-20120112'
     distribution group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
     distribution group: 'com.google.guava', name: 'guava', version: '14.0.1'
