@@ -44,6 +44,7 @@ import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeUnknown;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.i18n.CmsVfsResourceBundle;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.lock.CmsLock;
@@ -269,6 +270,7 @@ public class CmsCloneModule extends CmsJspActionElement {
 
             // search and replace the localization keys
             replaceMessageKeys(targetClassesPath, descKeys);
+            renameXmlVfsBundles(targetModule, sourceModule.getName());
 
             // search and replace paths
             CmsSearchReplaceThread t = initializePathThread();
@@ -325,6 +327,29 @@ public class CmsCloneModule extends CmsJspActionElement {
             LOG.error(e.getMessage(), e);
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Renames the vfs resource bundle files within the target module according to the new module's name.<p>
+     * 
+     * @param targetModule the target module
+     * @param name the package name of the source module
+     * 
+     * @throws CmsException if something gows wrong
+     */
+    private void renameXmlVfsBundles(CmsModule targetModule, String name) throws CmsException {
+
+        int type = OpenCms.getResourceManager().getResourceType(CmsVfsResourceBundle.TYPE_XML).getTypeId();
+        CmsResourceFilter filter = CmsResourceFilter.requireType(type);
+        String taregetModulePath = "/system/modules/" + targetModule.getName();
+        List<CmsResource> resources = getCmsObject().readResources(taregetModulePath, filter);
+        for (CmsResource res : resources) {
+            String newName = res.getName().replaceAll(name, targetModule.getName());
+            String targetRootPath = CmsResource.getFolderPath(res.getRootPath()) + newName;
+            if (!getCmsObject().existsResource(targetRootPath)) {
+                getCmsObject().moveResource(res.getRootPath(), targetRootPath);
+            }
         }
     }
 
