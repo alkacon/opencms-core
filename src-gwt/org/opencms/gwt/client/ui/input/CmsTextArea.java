@@ -27,6 +27,8 @@
 
 package org.opencms.gwt.client.ui.input;
 
+import com.alkacon.acacia.client.ui.I_HasResizeOnShow;
+
 import org.opencms.gwt.client.I_CmsHasInit;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
@@ -70,7 +72,8 @@ import com.google.gwt.user.client.ui.TextArea;
  * 
  */
 public class CmsTextArea extends Composite
-implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasResizeHandlers, HasFocusHandlers {
+implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasResizeHandlers, HasFocusHandlers,
+I_HasResizeOnShow {
 
     /** The widget type identifier for this widget. */
     private static final String WIDGET_TYPE = "textarea";
@@ -123,27 +126,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
 
             public void onKeyUp(KeyUpEvent event) {
 
-                String string = m_textArea.getText();
-                String searchString = "\n";
-                int occurences = 0;
-                if (0 != searchString.length()) {
-                    for (int index = string.indexOf(searchString, 0); index != -1; index = string.indexOf(
-                        searchString,
-                        index + 1)) {
-                        occurences++;
-                    }
-                }
-                String[] splittext = m_textArea.getText().split("\\n");
-                for (int i = 0; i < splittext.length; i++) {
-                    occurences += (splittext[i].length() * 6.77) / m_textArea.getOffsetWidth();
-                }
-                int height = occurences + 1;
-                if (m_defaultRows > height) {
-                    height = m_defaultRows;
-                }
-
-                m_textArea.setVisibleLines(height);
-                m_textAreaContainer.onResizeDescendant();
+                updateContentSize();
                 fireValueChangedEvent(false);
             }
 
@@ -165,7 +148,6 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
             public void onFocus(FocusEvent event) {
 
                 m_panel.remove(m_fadePanel);
-                m_panel.getElement().setTitle("");
                 CmsDomUtil.fireFocusEvent(CmsTextArea.this);
             }
         });
@@ -190,7 +172,6 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
                 int height = occurences + 1;
                 if (m_defaultRows < height) {
                     m_panel.add(m_fadePanel);
-                    m_panel.getElement().setTitle(string);
                 }
                 m_textAreaContainer.scrollToTop();
 
@@ -322,6 +303,15 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     }
 
     /**
+     * @see com.alkacon.acacia.client.ui.I_HasResizeOnShow#resizeOnShow()
+     */
+    public void resizeOnShow() {
+
+        m_textAreaContainer.onResizeDescendant();
+        updateContentSize();
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setAutoHideParent(org.opencms.gwt.client.ui.I_CmsAutoHider)
      */
     public void setAutoHideParent(I_CmsAutoHider autoHideParent) {
@@ -448,31 +438,35 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
 
             public void execute() {
 
-                String string = m_textArea.getText();
-                String searchString = "\n";
-                int occurences = 0;
-                if (0 != searchString.length()) {
-                    for (int index = string.indexOf(searchString, 0); index != -1; index = string.indexOf(
-                        searchString,
-                        index + 1)) {
-                        occurences++;
-                    }
-                }
-                String[] splittext = m_textArea.getText().split("\\n");
-                for (int i = 0; i < splittext.length; i++) {
-                    occurences += (splittext[i].length() * 6.88) / m_textArea.getOffsetWidth();
-                }
-                int height = occurences + 1;
-                if (m_defaultRows > height) {
-                    height = m_defaultRows;
-                    m_panel.remove(m_fadePanel);
-                    m_panel.getElement().setTitle("");
-                }
-                m_panel.add(m_fadePanel);
-                m_panel.getElement().setTitle(string);
-                m_textArea.setVisibleLines(height);
-                m_textAreaContainer.onResizeDescendant();
+                resizeOnShow();
             }
         });
+    }
+
+    /**
+     * Updates the text area height according to the current text content.<p>
+     */
+    protected void updateContentSize() {
+
+        String string = m_textArea.getText();
+        String searchString = "\n";
+        int occurences = 0;
+        if (0 != searchString.length()) {
+            for (int index = string.indexOf(searchString, 0); index != -1; index = string.indexOf(
+                searchString,
+                index + 1)) {
+                occurences++;
+            }
+        }
+        String[] splittext = m_textArea.getText().split("\\n");
+        for (int i = 0; i < splittext.length; i++) {
+            occurences += (splittext[i].length() * 6.77) / m_textArea.getOffsetWidth();
+        }
+        int height = occurences + 1;
+        if (m_defaultRows > height) {
+            height = m_defaultRows;
+        }
+        m_textArea.setVisibleLines(height);
+        m_textAreaContainer.onResizeDescendant();
     }
 }

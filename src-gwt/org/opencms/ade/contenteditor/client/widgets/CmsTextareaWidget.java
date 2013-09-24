@@ -171,7 +171,7 @@ public class CmsTextareaWidget extends Composite implements I_EditWidget, HasRes
      */
     public void resizeOnShow() {
 
-        m_textarea.getTextAreaContainer().onResizeDescendant();
+        m_textarea.resizeOnShow();
     }
 
     /**
