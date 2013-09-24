@@ -29,6 +29,8 @@ package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.ui.CmsNotification.Type;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.CmsDomUtil.Style;
 import org.opencms.gwt.client.util.CmsFadeAnimation;
 
 import com.google.gwt.core.client.GWT;
@@ -102,6 +104,12 @@ public class CmsToolbarNotificationWidget extends A_CmsNotificationWidget {
     @Override
     protected void animateShow() {
 
+        // ensure to display the notification above everything else
+        Element parent = getElement().getParentElement();
+        if (parent != null) {
+            int parentZIndex = CmsDomUtil.getCurrentStyleInt(parent, Style.zIndex);
+            parent.getStyle().setZIndex(parentZIndex * 2);
+        }
         getElement().getStyle().clearVisibility();
         setAnimation(CmsFadeAnimation.fadeIn(getElement(), new Command() {
 
@@ -194,6 +202,10 @@ public class CmsToolbarNotificationWidget extends A_CmsNotificationWidget {
      */
     private void restore() {
 
+        Element parent = getElement().getParentElement();
+        if (parent != null) {
+            parent.getStyle().clearZIndex();
+        }
         getElement().getStyle().setVisibility(Visibility.HIDDEN);
         // back to plain style without error or warning
         getElement().setClassName(I_CmsLayoutBundle.INSTANCE.toolbarCss().notification());
