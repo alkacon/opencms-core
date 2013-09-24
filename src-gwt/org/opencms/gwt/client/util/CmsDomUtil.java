@@ -295,6 +295,9 @@ public final class CmsDomUtil {
         opacity,
 
         /** CSS Property. */
+        overflow,
+
+        /** CSS Property. */
         padding,
 
         /** CSS Property. */
