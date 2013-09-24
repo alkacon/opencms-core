@@ -28,8 +28,8 @@
 package org.opencms.ade.contenteditor.client.widgets;
 
 import com.alkacon.acacia.client.css.I_LayoutBundle;
-import com.alkacon.acacia.client.ui.I_HasResizeOnShow;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
+import com.alkacon.geranium.client.I_HasResizeOnShow;
 
 import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsTextArea;
@@ -167,7 +167,7 @@ public class CmsTextareaWidget extends Composite implements I_EditWidget, HasRes
     }
 
     /**
-     * @see com.alkacon.acacia.client.ui.I_HasResizeOnShow#resizeOnShow()
+     * @see com.alkacon.geranium.client.I_HasResizeOnShow#resizeOnShow()
      */
     public void resizeOnShow() {
 
