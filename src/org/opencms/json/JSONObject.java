@@ -62,6 +62,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeSet;
 
 /**
@@ -949,6 +950,16 @@ public class JSONObject {
     public Iterator<String> keys() {
 
         return this.m_map.keySet().iterator();
+    }
+
+    /**
+     * Gets the set of keys.<p>
+     * 
+     * @return the set of keys 
+     */
+    public Set<String> keySet() {
+
+        return m_map.keySet();
     }
 
     /**

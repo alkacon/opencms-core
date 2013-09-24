@@ -28,6 +28,7 @@
 package org.opencms.main;
 
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.jsp.util.I_CmsJspDeviceSelector;
 import org.opencms.mail.CmsMailSettings;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
@@ -53,6 +54,13 @@ public class CmsSystemInfo {
     /** Name of the config folder property provides as Java VM parameter -Dopencms.config=.*/
     public static final String CONFIG_FOLDER_PROPERTY = "opencms.config";
 
+    /** Relative path to persistence.xml file. */
+    public static final String FILE_PERSISTENCE = "classes"
+        + File.separatorChar
+        + "META-INF"
+        + File.separatorChar
+        + "persistence.xml";
+
     /** The name of the opencms.properties file. */
     public static final String FILE_PROPERTIES = "opencms.properties";
 
@@ -71,13 +79,6 @@ public class CmsSystemInfo {
     /** Path to the "WEB-INF" folder relative to the directory of the application. */
     public static final String FOLDER_WEBINF = "WEB-INF" + File.separatorChar;
 
-    /** Relative path to persistence.xml file. */
-    public static final String FILE_PERSISTENCE = "classes"
-        + File.separatorChar
-        + "META-INF"
-        + File.separatorChar
-        + "persistence.xml";
-
     /** Default encoding. */
     private static final String DEFAULT_ENCODING = CmsEncoder.ENCODING_UTF_8;
 
@@ -89,6 +90,9 @@ public class CmsSystemInfo {
 
     /** Default encoding, can be set in opencms-system.xml. */
     private String m_defaultEncoding;
+
+    /** The device selector instance. */
+    private I_CmsJspDeviceSelector m_deviceSelector;
 
     /** Indicates if the version history is enabled. */
     private boolean m_historyEnabled;
@@ -148,23 +152,6 @@ public class CmsSystemInfo {
     }
 
     /**
-     * Gets the path of the opencms config folder.<p>
-     * Per default this is the "/WEB-INF/config/ folder. 
-     * If configured with the "-Dopencms.config=..." java startup parameter, OpenCms can access an external config
-     * folder outside its webapplication.
-     * @return complete rfs path to the config folder.
-     */
-    public String getConfigFolder() {
-
-        // check if the system property is set and return its value
-        if (CmsStringUtil.isNotEmpty(System.getProperty(CONFIG_FOLDER_PROPERTY))) {
-            return System.getProperty(CONFIG_FOLDER_PROPERTY);
-        } else {
-            return getAbsoluteRfsPathRelativeToWebInf(FOLDER_CONFIG_DEFAULT);
-        }
-    }
-
-    /**
      * Returns an absolute path (to a directory or a file in the "real" file system) from a path relative to 
      * the web application folder of OpenCms.<p> 
      * 
@@ -217,6 +204,23 @@ public class CmsSystemInfo {
     }
 
     /**
+     * Gets the path of the opencms config folder.<p>
+     * Per default this is the "/WEB-INF/config/ folder. 
+     * If configured with the "-Dopencms.config=..." java startup parameter, OpenCms can access an external config
+     * folder outside its webapplication.
+     * @return complete rfs path to the config folder.
+     */
+    public String getConfigFolder() {
+
+        // check if the system property is set and return its value
+        if (CmsStringUtil.isNotEmpty(System.getProperty(CONFIG_FOLDER_PROPERTY))) {
+            return System.getProperty(CONFIG_FOLDER_PROPERTY);
+        } else {
+            return getAbsoluteRfsPathRelativeToWebInf(FOLDER_CONFIG_DEFAULT);
+        }
+    }
+
+    /**
      * Returns the absolute path to the "opencms.properties" configuration file (in the "real" file system).<p>
      * 
      * @return the absolute path to the "opencms.properties" configuration file
@@ -227,19 +231,6 @@ public class CmsSystemInfo {
             m_configurationFileRfsPath = getConfigFolder() + FILE_PROPERTIES;
         }
         return m_configurationFileRfsPath;
-    }
-
-    /**
-     * Returns the absolute path to the "persistence.xml" file (in the "real" file system).<p>
-     * 
-     * @return the absolute path to the "persistence.xml" configuration file
-     */
-    public String getPersistenceFileRfsPath() {
-
-        if (m_persistenceFileRfsPath == null) {
-            m_persistenceFileRfsPath = getAbsoluteRfsPathRelativeToWebInf(FILE_PERSISTENCE);
-        }
-        return m_persistenceFileRfsPath;
     }
 
     /**
@@ -286,6 +277,16 @@ public class CmsSystemInfo {
     public String getDefaultWebApplicationName() {
 
         return m_servletContainerSettings.getDefaultWebApplicationName();
+    }
+
+    /** 
+     * Gets the device selector.<p>
+     * 
+     * @return the device selector 
+     */
+    public I_CmsJspDeviceSelector getDeviceSelector() {
+
+        return m_deviceSelector;
     }
 
     /**
@@ -391,6 +392,19 @@ public class CmsSystemInfo {
             m_packagesRfsPath = getAbsoluteRfsPathRelativeToWebInf(CmsSystemInfo.FOLDER_PACKAGES);
         }
         return m_packagesRfsPath;
+    }
+
+    /**
+     * Returns the absolute path to the "persistence.xml" file (in the "real" file system).<p>
+     * 
+     * @return the absolute path to the "persistence.xml" configuration file
+     */
+    public String getPersistenceFileRfsPath() {
+
+        if (m_persistenceFileRfsPath == null) {
+            m_persistenceFileRfsPath = getAbsoluteRfsPathRelativeToWebInf(FILE_PERSISTENCE);
+        }
+        return m_persistenceFileRfsPath;
     }
 
     /**
@@ -587,6 +601,16 @@ public class CmsSystemInfo {
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.LOG_SET_DEFAULT_ENCODING_1, m_defaultEncoding));
         }
+    }
+
+    /**
+     * Sets the device selector.<p>
+     * 
+     * @param selector the device selector to set 
+     */
+    protected void setDeviceSelector(I_CmsJspDeviceSelector selector) {
+
+        m_deviceSelector = selector;
     }
 
     /**

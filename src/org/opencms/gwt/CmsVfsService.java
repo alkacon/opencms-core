@@ -46,6 +46,7 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsBrokenLinkBean;
 import org.opencms.gwt.shared.CmsDeleteResourceBean;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsListInfoBean.LockIcon;
 import org.opencms.gwt.shared.CmsLockReportInfo;
@@ -66,7 +67,6 @@ import org.opencms.gwt.shared.rpc.I_CmsVfsService;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspTagContainer;
-import org.opencms.jsp.CmsJspTagEditable;
 import org.opencms.loader.CmsImageScaler;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.lock.CmsLock;
@@ -1458,7 +1458,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
                 cms,
                 resource.getRootPath())
                 + "?"
-                + CmsJspTagEditable.PARAM_DISABLE_DIRECT_EDIT
+                + CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT
                 + "=true"
                 + "&__locale="
                 + locale.toString(), false, title, cms.getSitePath(resource), locale.toString());
@@ -1469,7 +1469,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             cms,
             resource.getRootPath())
             + "?"
-            + CmsJspTagEditable.PARAM_DISABLE_DIRECT_EDIT
+            + CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT
             + "=true", true, title, cms.getSitePath(resource), locale.toString());
     }
 

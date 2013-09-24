@@ -223,6 +223,9 @@ public final class Messages {
     public static final String GUI_TAB_RECENT_TITLE_0 = "GUI_TAB_RECENT_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_TEMPLATE_CONTEXT_NO_VARIANT_0 = "GUI_TEMPLATE_CONTEXT_NO_VARIANT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_TITLE_INHERITED_FROM_1 = "GUI_TITLE_INHERITED_FROM_1";
 
     /** Name of the used resource bundle. */

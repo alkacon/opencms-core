@@ -1158,6 +1158,7 @@ public final class OpenCmsCore {
             }
             // get the flex cache configuration from the SystemConfiguration
             CmsFlexCacheConfiguration flexCacheConfiguration = systemConfiguration.getCmsFlexCacheConfiguration();
+            getSystemInfo().setDeviceSelector(flexCacheConfiguration.getDeviceSelector());
             // pass configuration to flex cache for initialization
             flexCache = new CmsFlexCache(flexCacheConfiguration);
             if (CmsLog.INIT.isInfoEnabled()) {

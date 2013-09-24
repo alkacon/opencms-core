@@ -32,6 +32,8 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.gwt.shared.CmsClientVariantInfo;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -160,6 +162,15 @@ public class CmsTemplateContextManager {
                 CmsTemplateContext otherContext = entry.getValue();
                 String niceName = otherContext.getLocalizedName(locale);
                 niceNames.put(otherContext.getKey(), niceName);
+                for (CmsClientVariant variant : otherContext.getClientVariants().values()) {
+                    CmsClientVariantInfo info = new CmsClientVariantInfo(
+                        variant.getName(),
+                        variant.getNiceName(locale),
+                        variant.getScreenWidth(),
+                        variant.getScreenHeight(),
+                        variant.getParameters());
+                    result.setClientVariant(otherContext.getKey(), variant.getName(), info);
+                }
             }
             result.setContextLabels(niceNames);
             result.setContextProvider(provider.getClass().getName());
@@ -190,20 +201,26 @@ public class CmsTemplateContextManager {
             return null;
         }
         String cookieName = provider.getOverrideCookieName();
-        if (cookieName != null) {
-            String cookieValue = CmsRequestUtil.getCookieValue(request.getCookies(), cookieName);
-            if (cookieValue != null) {
-                Map<String, CmsTemplateContext> contextMap = provider.getAllContexts();
-                if (contextMap.containsKey(cookieValue)) {
-                    CmsTemplateContext contextBean = contextMap.get(cookieValue);
-                    return new CmsTemplateContext(
-                        contextBean.getKey(),
-                        contextBean.getTemplatePath(),
-                        contextBean.getMessageContainer(),
-                        contextBean.getProvider(),
-                        true);
+        String forcedValue = null;
 
-                }
+        String paramTemplateContext = request.getParameter(CmsGwtConstants.PARAM_TEMPLATE_CONTEXT);
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(paramTemplateContext)) {
+            forcedValue = paramTemplateContext;
+        } else if (cookieName != null) {
+            forcedValue = CmsRequestUtil.getCookieValue(request.getCookies(), cookieName);
+        }
+        if (forcedValue != null) {
+            Map<String, CmsTemplateContext> contextMap = provider.getAllContexts();
+            if (contextMap.containsKey(forcedValue)) {
+                CmsTemplateContext contextBean = contextMap.get(forcedValue);
+                return new CmsTemplateContext(
+                    contextBean.getKey(),
+                    contextBean.getTemplatePath(),
+                    contextBean.getMessageContainer(),
+                    contextBean.getProvider(),
+                    contextBean.getClientVariants().values(),
+                    true);
+
             }
         }
         return provider.getTemplateContext(cms, request, resource);

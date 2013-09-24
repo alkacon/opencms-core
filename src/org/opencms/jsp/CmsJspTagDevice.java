@@ -48,11 +48,11 @@ import org.apache.commons.logging.Log;
  */
 public class CmsJspTagDevice extends BodyTagSupport {
 
-    /** Serial version UID required for safe serialization. */
-    private static final long serialVersionUID = 9175484824140856283L;
-
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJspTagDevice.class);
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = 9175484824140856283L;
 
     /** Device for output. */
     protected String m_type;
@@ -89,7 +89,7 @@ public class CmsJspTagDevice extends BodyTagSupport {
         CmsFlexController controller = CmsFlexController.getController(pageContext.getRequest());
 
         // get the device selector
-        I_CmsJspDeviceSelector selector = controller.getCmsCache().getDeviceSelector();
+        I_CmsJspDeviceSelector selector = OpenCms.getSystemInfo().getDeviceSelector();
 
         List<String> supportedDevices = selector.getDeviceTypes();
         List<String> selectedDevices = CmsStringUtil.splitAsList(m_type, ",", true);
@@ -127,16 +127,6 @@ public class CmsJspTagDevice extends BodyTagSupport {
     }
 
     /**
-     * Releases any resources we may have (or inherit).<p>
-     */
-    @Override
-    public void release() {
-
-        super.release();
-        m_type = null;
-    }
-
-    /**
      * Returns the device type.<p>
      *
      * @return the device type
@@ -144,6 +134,16 @@ public class CmsJspTagDevice extends BodyTagSupport {
     public String getType() {
 
         return m_type != null ? m_type : "";
+    }
+
+    /**
+     * Releases any resources we may have (or inherit).<p>
+     */
+    @Override
+    public void release() {
+
+        super.release();
+        m_type = null;
     }
 
     /**

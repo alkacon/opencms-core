@@ -93,7 +93,7 @@ public final class CmsContextMenuItem extends A_CmsContextMenuItem {
         }
         // hide menu *after* executing the action, because hiding the menu may trigger mouseover events of the elements lying under it,
         // and executing the action first gives it the opportunity to add a 'blocking notification' to prevent this 
-        getParentMenu().hide();
+        getParentMenu().hideAll();
     }
 
     /**

@@ -38,6 +38,12 @@ public final class CmsGwtConstants {
     /** Context menu action id. */
     public static final String ACTION_TEMPLATECONTEXTS = "templatecontexts";
 
+    /** Parameter to disable direct edit. */
+    public static final String PARAM_DISABLE_DIRECT_EDIT = "__disableDirectEdit";
+
+    /** Parameter to force a specific template context. */
+    public static final String PARAM_TEMPLATE_CONTEXT = "__templateContext";
+
     /** Type name for container pages. */
     public static final String TYPE_CONTAINERPAGE = "containerpage";
 

@@ -59,6 +59,9 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
     /** The panel for the menu items. */
     private FlowPanel m_panel = new FlowPanel();
 
+    /** The parent item. */
+    private A_CmsContextMenuItem m_parentItem;
+
     /** The popup for a sub menu. */
     private CmsPopup m_popup;
 
@@ -120,6 +123,20 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
     public void hide() {
 
         m_autoHideParent.hide();
+    }
+
+    /** 
+     * Hides this menu and all its parent menus.<p>
+     */
+    public void hideAll() {
+
+        CmsContextMenu currentMenu = this;
+        int i = 0;
+        while ((currentMenu != null) && (i < 10)) {
+            currentMenu.hide();
+            currentMenu = currentMenu.getParentMenu();
+            i += 1;
+        }
     }
 
     /**
@@ -184,6 +201,16 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
     public void setAutoHideOnHistoryEventsEnabled(boolean enabled) {
 
         m_autoHideParent.setAutoHideOnHistoryEventsEnabled(enabled);
+    }
+
+    /**
+     * Sets the parent item.<p>
+     * 
+     * @param parentItem the parent item 
+     */
+    public void setParentItem(A_CmsContextMenuItem parentItem) {
+
+        m_parentItem = parentItem;
     }
 
     /**
@@ -338,6 +365,20 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
     }
 
     /**
+     * Gets the parent menu.<p>
+     * 
+     * @return the parent menu 
+     */
+    CmsContextMenu getParentMenu() {
+
+        if (m_parentItem != null) {
+            return m_parentItem.getParentMenu();
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Creates the context menu.<p>
      * 
      * @param entries a list with all entries for the context menu
@@ -355,12 +396,14 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
             } else {
                 A_CmsContextMenuItem item = entry.generateMenuItem();
                 if (entry.hasSubMenu()) {
-                    item.setSubMenu(new CmsContextMenu(entry.getSubMenu(), m_isFixed, m_popup));
+                    CmsContextMenu submenu = new CmsContextMenu(entry.getSubMenu(), m_isFixed, m_popup);
+                    item.setSubMenu(submenu);
                     addItem(item);
                 } else {
                     addItem(item);
                 }
             }
+
         }
     }
 }

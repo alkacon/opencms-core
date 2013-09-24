@@ -32,20 +32,20 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
-import org.opencms.flex.CmsFlexController;
-import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.json.JSONObject;
 import org.opencms.jsp.util.CmsJspDeviceSelector;
+import org.opencms.jsp.util.CmsJspDeviceSelectorDesktopMobileTablet;
 import org.opencms.jsp.util.I_CmsJspDeviceSelector;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -54,19 +54,31 @@ import org.apache.commons.logging.Log;
 /**
  * Example implementation of a template context provider for deciding between a desktop template and a mobile template.<p>
  * 
- * The template JSP paths are read from a file "templatecontext.properties" in the classpath.
+ * The template JSP paths are read from a VFS file "/system/shared/templatecontexts.json" 
  * 
  */
 public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextProvider {
+
+    /** JSON attribute name. */
+    public static final String A_HEIGHT = "height";
+
+    /** JSON attribute name. */
+    public static final String A_NICE_NAME = "niceName";
+
+    /** JSON attribute name. */
+    public static final String A_PATH = "path";
+
+    /** JSON attribute name. */
+    public static final String A_VARIANTS = "variants";
+
+    /** JSON attribute name. */
+    public static final String A_WIDTH = "width";
 
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDefaultTemplateContextProvider.class);
 
     /** The map of template contexts. */
-    private Map<String, CmsTemplateContext> m_map = new HashMap<String, CmsTemplateContext>();
-
-    /** The device selector used internally for detecting mobile devices. */
-    private CmsJspDeviceSelector m_selector = new CmsJspDeviceSelector();
+    private Map<String, CmsTemplateContext> m_map = new LinkedHashMap<String, CmsTemplateContext>();
 
     /** Default constructor. */
     public CmsDefaultTemplateContextProvider() {
@@ -82,25 +94,14 @@ public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextPr
     }
 
     /**
-     * Returns the absolute VFS path, where the configuration property file is stored.<p>
+     * Returns the absolute VFS path where the configuration property file is stored.<p>
      * 
-     * The configuration property file must have the following format:
-     * <ul>
-     * <li>template.mobile=/absolute/path/to/mobile/template.jsp
-     * <li>template.desktop=/absolute/path/to/mobile/desktop.jsp
-     * </ul>
      * 
-     * By default this method returns <code>null</code> what will trigger the default behavior:<br/>
-     * looking for a java property file named 'templatecontext.properties' in the class path.<p>
-     * 
-     * Extends this class, override this method and return the absolute VFS path where OpenCms
-     * should lookup the property file, in order to configure the template JSP inside OpenCms.<p> 
-     * 
-     * @return the absolute VFS path, where the configuration property file is stored
+     * @return the absolute VFS path where the configuration property file is stored
      */
     public String getConfigurationPropertyPath() {
 
-        return null;
+        return "/system/shared/templatecontexts.json";
     }
 
     /**
@@ -122,26 +123,6 @@ public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextPr
     }
 
     /**
-     * Returns the message container.<p>
-     * 
-     * @return the message container
-     */
-    public CmsMessageContainer getMessageContainerDesktop() {
-
-        return null;
-    }
-
-    /**
-     * Returns the message container.<p>
-     * 
-     * @return the message container
-     */
-    public CmsMessageContainer getMessageContainerMobile() {
-
-        return null;
-    }
-
-    /**
      * @see org.opencms.loader.I_CmsTemplateContextProvider#getOverrideCookieName()
      */
     public String getOverrideCookieName() {
@@ -157,13 +138,12 @@ public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextPr
         HttpServletRequest request,
         CmsResource resource) {
 
-        I_CmsJspDeviceSelector selector = CmsFlexController.getController(request).getCmsCache().getDeviceSelector();
-        if (selector == null) {
-            selector = m_selector;
-        }
+        I_CmsJspDeviceSelector selector = OpenCms.getSystemInfo().getDeviceSelector();
         String deviceType = selector.getDeviceType(request);
         if (deviceType.equals(CmsJspDeviceSelector.C_MOBILE)) {
             return m_map.get("mobile");
+        } else if (deviceType.equals(CmsJspDeviceSelectorDesktopMobileTablet.C_TABLET)) {
+            return m_map.get("tablet");
         } else {
             return m_map.get("desktop");
         }
@@ -175,44 +155,46 @@ public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextPr
     public void initialize(CmsObject cms) {
 
         try {
-            InputStream stream = null;
-            if (getConfigurationPropertyPath() != null) {
-                try {
-                    CmsObject clone = OpenCms.initCmsObject(cms);
-                    clone.getRequestContext().setSiteRoot("");
-                    CmsResource res = clone.readResource(getConfigurationPropertyPath());
-                    if (res != null) {
-                        CmsFile file = cms.readFile(res);
-                        stream = new ByteArrayInputStream(file.getContents());
+            String path = getConfigurationPropertyPath();
+            CmsResource resource = cms.readResource(path);
+            CmsFile file = cms.readFile(resource);
+            String fileContent = new String(file.getContents(), "UTF-8");
+            JSONObject root = new JSONObject(fileContent, true);
+            for (String templateContextName : root.keySet()) {
+                JSONObject templateContextJson = (JSONObject)(root.opt(templateContextName));
+                CmsJsonMessageContainer jsonMessage = new CmsJsonMessageContainer(templateContextJson.opt("niceName"));
+                String templatePath = (String)templateContextJson.opt(A_PATH);
+                JSONObject variantsJson = (JSONObject)templateContextJson.opt(A_VARIANTS);
+                List<CmsClientVariant> variants = new ArrayList<CmsClientVariant>();
+                if (variantsJson != null) {
+                    for (String variantName : variantsJson.keySet()) {
+                        JSONObject variantJson = (JSONObject)variantsJson.opt(variantName);
+                        CmsJsonMessageContainer variantMessage = new CmsJsonMessageContainer(
+                            variantJson.opt(A_NICE_NAME));
+                        int width = variantJson.optInt(A_WIDTH, 800);
+                        int height = variantJson.optInt(A_HEIGHT, 600);
+                        CmsClientVariant variant = new CmsClientVariant(
+                            variantName,
+                            variantMessage,
+                            width,
+                            height,
+                            new HashMap<String, String>());
+                        variants.add(variant);
                     }
-                } catch (Exception e) {
-                    LOG.error("Could not cerate input stream for given configuration path: "
-                        + getConfigurationPropertyPath(), e);
                 }
+                CmsTemplateContext templateContext = new CmsTemplateContext(
+                    templateContextName,
+                    templatePath,
+                    jsonMessage,
+                    this,
+                    variants,
+                    false);
+                m_map.put(templateContextName, templateContext);
+
             }
-            if (stream == null) {
-                stream = getClass().getClassLoader().getResourceAsStream("templatecontext.properties");
-            }
-            Properties properties = new Properties();
-            properties.load(stream);
-            stream.close();
-            String templateMobile = properties.getProperty("template.mobile");
-            String templateDesktop = properties.getProperty("template.desktop");
-            CmsTemplateContext mobile = new CmsTemplateContext(
-                "mobile",
-                templateMobile,
-                getMessageContainerMobile(),
-                this);
-            m_map.put(mobile.getKey(), mobile);
-            CmsTemplateContext desktop = new CmsTemplateContext(
-                "desktop",
-                templateDesktop,
-                getMessageContainerDesktop(),
-                this);
-            m_map.put(desktop.getKey(), desktop);
-        } catch (Throwable t) {
-            LOG.error(t.getLocalizedMessage(), t);
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            throw new RuntimeException(e);
         }
     }
-
 }
