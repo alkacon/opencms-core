@@ -155,28 +155,21 @@ I_HasResizeOnShow {
 
             public void onBlur(BlurEvent event) {
 
-                String string = m_textArea.getText();
-                String searchString = "\n";
-                int occurences = 0;
-                if (0 != searchString.length()) {
-                    for (int index = string.indexOf(searchString, 0); index != -1; index = string.indexOf(
-                        searchString,
-                        index + 1)) {
-                        occurences++;
-                    }
-                }
-                String[] splittext = m_textArea.getText().split("\\n");
-                for (int i = 0; i < splittext.length; i++) {
-                    occurences += (splittext[i].length() * 6.88) / m_textArea.getOffsetWidth();
-                }
-                int height = occurences + 1;
-                if (m_defaultRows < height) {
-                    m_panel.add(m_fadePanel);
-                }
+                showFadePanelIfNeeded();
                 m_textAreaContainer.scrollToTop();
 
             }
         });
+    }
+
+    /**
+     * Shows the fade panel if the text area content exceeds the visible area.<p> 
+     */
+    protected void showFadePanelIfNeeded() {
+
+        if (m_defaultRows < m_textArea.getVisibleLines()) {
+            m_panel.add(m_fadePanel);
+        }
     }
 
     /**
@@ -309,6 +302,7 @@ I_HasResizeOnShow {
 
         m_textAreaContainer.onResizeDescendant();
         updateContentSize();
+        showFadePanelIfNeeded();
     }
 
     /**
