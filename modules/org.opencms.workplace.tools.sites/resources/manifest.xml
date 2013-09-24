@@ -26,10 +26,7 @@
 		</dependencies>
 		<exportpoints>
 			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/lib/" destination="WEB-INF/lib/"/>
-			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/webserver-templates/vhost.template" destination="WEB-INF/server-scripts/vhost.template"/>
-			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/webserver-templates/vhost-secure.template" destination="WEB-INF/server-scripts/vhost-secure.template"/>
-			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/webserver-templates/script.sh" destination="WEB-INF/server-scripts/script.sh"/>
-			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/webserver-templates/script.bat" destination="WEB-INF/server-scripts/script.bat"/>
+			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/webserver-templates/" destination="WEB-INF/server-scripts/"/>
 		</exportpoints>
 		<resources>
 			<resource uri="/system/modules/org.opencms.workplace.tools.sites/"/>
