@@ -2474,6 +2474,10 @@ public final class OpenCmsCore {
                             // unable to set the startup project, bad but not critical
                         }
                     }
+                    // fire the login user event
+                    OpenCms.fireCmsEvent(
+                        I_CmsEventListener.EVENT_LOGIN_USER,
+                        Collections.<String, Object> singletonMap("data", user));
                     return newCms;
                 } finally {
                     m_adminCms = null;
