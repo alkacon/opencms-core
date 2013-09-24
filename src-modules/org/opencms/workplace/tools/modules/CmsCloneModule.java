@@ -35,6 +35,7 @@ import org.opencms.configuration.CmsConfigurationCopyResource;
 import org.opencms.configuration.Messages;
 import org.opencms.db.CmsExportPoint;
 import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -42,11 +43,14 @@ import org.opencms.file.types.A_CmsResourceType;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeUnknown;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.loader.CmsLoaderException;
+import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.search.replace.CmsSearchReplaceSettings;
@@ -55,9 +59,10 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
-import java.nio.charset.Charset;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,30 +90,46 @@ public class CmsCloneModule extends CmsJspActionElement {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsCloneModule.class);
 
+    /** The action class used for the clone. */
     private String m_actionClass;
 
+    /** The author's email used for the clone. */
     private String m_authorEmail = "sales@alkacon.com";
 
+    /** The author's name used for the clone. */
     private String m_authorName = "Alkacon Software GmbH";
 
+    /** Option to change the resource types (optional flag). */
     private String m_changeResourceTypes;
 
+    /** Option to delete the source module after cloning (optional flag). */
+    private String m_deleteModule;
+
+    /** The description used for the clone. */
     private String m_description = "This module provides the template layout.";
 
+    /** A module name where the formatters are located that are referenced within the XSDs of the module to clone. */
     private String m_formatterSourceModule = "com.alkacon.bootstrap.formatters";
 
+    /** A module name where the formatters are located that should be referenced by the XSDs of the clone. */
     private String m_formatterTargetModule;
 
+    /** The module group used for the clone. */
     private String m_group;
 
+    /** The nice name used for the clone. */
     private String m_niceName = "My new template module.";
 
+    /** The new module name used for the clone. */
     private String m_packageName = "my.company.template";
 
+    /** The name of the source module to be cloned. */
     private String m_sourceModuleName = "com.alkacon.bootstrap.formatters";
 
+    /** The prefix that is used by the source module. */
     private String m_sourceNamePrefix = "bs";
 
+    /** The prefix that is used by the target module. */
     private String m_targetNamePrefix = "my";
 
     /**
@@ -134,19 +155,19 @@ public class CmsCloneModule extends CmsJspActionElement {
     /**
      * Bean constructor.<p>
      *  
-     * @param actionClass
-     * @param authorEmail
-     * @param authorName
-     * @param changeResourceTypes
-     * @param description
-     * @param formatterSourceModule
-     * @param formatterTargetModule
-     * @param group
-     * @param niceName
-     * @param packageName
-     * @param sourceModuleName
-     * @param sourceNamePrefix
-     * @param targetNamePrefix
+     * @param actionClass action class
+     * @param authorEmail author email
+     * @param authorName author name
+     * @param changeResourceTypes change resource type flags
+     * @param description module description
+     * @param formatterSourceModule formatter source module
+     * @param formatterTargetModule formatter target module
+     * @param group module group
+     * @param niceName nice name
+     * @param packageName package/module name
+     * @param sourceModuleName source module package/name
+     * @param sourceNamePrefix source name prefix
+     * @param targetNamePrefix source name prefix
      */
     public CmsCloneModule(
         String actionClass,
@@ -180,195 +201,137 @@ public class CmsCloneModule extends CmsJspActionElement {
     }
 
     /**
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object obj) {
-
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        CmsCloneModule other = (CmsCloneModule)obj;
-        if (m_packageName == null) {
-            if (other.m_packageName != null) {
-                return false;
-            }
-        } else if (!m_packageName.equals(other.m_packageName)) {
-            return false;
-        }
-        if (m_sourceModuleName == null) {
-            if (other.m_sourceModuleName != null) {
-                return false;
-            }
-        } else if (!m_sourceModuleName.equals(other.m_sourceModuleName)) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
      * Executes the module clone and returns the new module.<p>
-     * 
-     * @return the new module or <code>null</code> in case of any errors
      */
-    public CmsModule executeModuleClone() {
+    public void executeModuleClone() {
 
         CmsModule sourceModule = OpenCms.getModuleManager().getModule(m_sourceModuleName);
-        String errMessage = null;
-        if (sourceModule != null) {
 
-            // clone the module object
-            CmsModule targetModule = (CmsModule)sourceModule.clone();
-            targetModule.setName(m_packageName);
-            targetModule.setNiceName(m_niceName);
-            targetModule.setDescription(m_description);
-            targetModule.setAuthorEmail(m_authorEmail);
-            targetModule.setAuthorName(m_authorName);
-            targetModule.setGroup(m_group);
-            targetModule.setActionClass(m_actionClass);
+        // clone the module object
+        CmsModule targetModule = (CmsModule)sourceModule.clone();
+        targetModule.setName(m_packageName);
+        targetModule.setNiceName(m_niceName);
+        targetModule.setDescription(m_description);
+        targetModule.setAuthorEmail(m_authorEmail);
+        targetModule.setAuthorName(m_authorName);
+        targetModule.setGroup(m_group);
+        targetModule.setActionClass(m_actionClass);
 
-            try {
+        try {
 
-                // store the module paths
-                String sourceModulePath = CmsWorkplace.VFS_PATH_MODULES + sourceModule.getName() + "/";
-                String targetModulePath = CmsWorkplace.VFS_PATH_MODULES + targetModule.getName() + "/";
+            // store the module paths
+            String sourceModulePath = CmsWorkplace.VFS_PATH_MODULES + sourceModule.getName() + "/";
+            String targetModulePath = CmsWorkplace.VFS_PATH_MODULES + targetModule.getName() + "/";
 
-                // store the package name as path part
-                String sourcePathPart = sourceModule.getName().replaceAll("\\.", "/");
-                String targetPathPart = targetModule.getName().replaceAll("\\.", "/");
+            // store the package name as path part
+            String sourcePathPart = sourceModule.getName().replaceAll("\\.", "/");
+            String targetPathPart = targetModule.getName().replaceAll("\\.", "/");
 
-                // store the classes folder paths
-                String sourceClassesPath = targetModulePath + PATH_CLASSES + sourcePathPart + "/";
-                String targetClassesPath = targetModulePath + PATH_CLASSES + targetPathPart + "/";
+            // store the classes folder paths
+            String sourceClassesPath = targetModulePath + PATH_CLASSES + sourcePathPart + "/";
+            String targetClassesPath = targetModulePath + PATH_CLASSES + targetPathPart + "/";
 
-                // copy the resources
-                getCmsObject().copyResource(sourceModulePath, targetModulePath);
+            // copy the resources
+            getCmsObject().copyResource(sourceModulePath, targetModulePath);
 
-                // check if we have to create the classes folder
-                if (getCmsObject().existsResource(sourceClassesPath)) {
-                    // in the source module a classes folder was defined,
-                    // now create all sub-folders for the package structure in the new module folder
-                    createTargetClassesFolder(targetModule, sourceClassesPath, targetModulePath + PATH_CLASSES);
-                    // delete the origin classes folder
-                    deleteSourceClassesFolder(targetModulePath, sourcePathPart);
-                }
-
-                // TODO: clone module dependencies
-
-                // adjust the export points
-                cloneExportPoints(sourceModule, targetModule, sourcePathPart, targetPathPart);
-
-                // adjust the resource type names and IDs
-                Map<String, String> descKeys = new HashMap<String, String>();
-                Map<I_CmsResourceType, I_CmsResourceType> resTypeMap = cloneResourceTypes(
-                    sourceModule,
-                    targetModule,
-                    sourcePathPart,
-                    targetPathPart,
-                    descKeys);
-
-                // adjust the explorer type names and store referred icons and message keys
-                Map<String, String> iconPaths = new HashMap<String, String>();
-                cloneExplorerTypes(targetModule, iconPaths, descKeys);
-
-                // rename the icon file names
-                cloneExplorerTypeIcons(iconPaths);
-
-                // adjust the module resources
-                adjustModuleResources(sourceModule, targetModule, sourcePathPart, targetPathPart, iconPaths);
-
-                // search and replace the localization keys
-                replaceMessageKeys(targetClassesPath, descKeys);
-
-                // search and replace paths
-                CmsSearchReplaceThread t = initializePathThread();
-                t.start();
-                t.join();
-
-                // search and replace module name
-                t = initializeNameThread();
-                t.start();
-                t.join();
-
-                // replace formatter paths
-                Charset charset = Charset.forName(OpenCms.getSystemInfo().getDefaultEncoding());
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_formatterTargetModule)
-                    && !targetModule.getResourceTypes().isEmpty()) {
-
-                    CmsResource formatterSourceFolder = getCmsObject().readResource(
-                        "/system/modules/" + m_formatterSourceModule + "/formatters/");
-                    CmsResource formatterTargetFolder = getCmsObject().readResource(
-                        "/system/modules/" + m_formatterTargetModule + "/formatters/");
-                    for (I_CmsResourceType type : targetModule.getResourceTypes()) {
-                        String schemaPath = type.getConfiguration().get("schema");
-                        CmsResource res = getCmsObject().readResource(schemaPath);
-                        CmsFile file = getCmsObject().readFile(res);
-                        String content = new String(file.getContents(), charset);
-                        content = content.replaceAll(
-                            formatterSourceFolder.getRootPath(),
-                            formatterTargetFolder.getRootPath());
-                        file.setContents(content.getBytes(charset));
-                        getCmsObject().writeFile(file);
-                    }
-                }
-
-                // publish the new module
-                for (String res : targetModule.getResources()) {
-                    OpenCms.getPublishManager().publishResource(getCmsObject(), res);
-                    OpenCms.getPublishManager().waitWhileRunning();
-                }
-
-                // add the module
-                OpenCms.getModuleManager().addModule(getCmsObject(), targetModule);
-
-                // change resource types and schema locations
-                if (Boolean.valueOf(m_changeResourceTypes).booleanValue()) {
-                    for (Map.Entry<I_CmsResourceType, I_CmsResourceType> mapping : resTypeMap.entrySet()) {
-                        List<CmsResource> resources = getCmsObject().readResources(
-                            "/",
-                            CmsResourceFilter.requireType(mapping.getKey().getTypeId()));
-                        String sourceSchemaPath = mapping.getKey().getConfiguration().get("schema");
-                        String targetSchemaPath = mapping.getValue().getConfiguration().get("schema");
-                        for (CmsResource res : resources) {
-                            CmsFile file = getCmsObject().readFile(res);
-                            String content = new String(file.getContents(), charset);
-                            content = content.replaceAll(sourceSchemaPath, targetSchemaPath);
-                            file.setContents(content.getBytes(charset));
-                            getCmsObject().writeFile(file);
-                            res.setType(mapping.getValue().getTypeId());
-                            getCmsObject().writeResource(res);
-                        }
-                    }
-                }
-
-                // TODO: delete the old module ??
-
-            } catch (CmsIllegalArgumentException e) {
-                LOG.error(e.getMessage(), e);
-            } catch (CmsException e) {
-                LOG.error(e.getMessage(), e);
-            } catch (Exception e) {
-                LOG.error(e.getMessage(), e);
+            // check if we have to create the classes folder
+            if (getCmsObject().existsResource(sourceClassesPath)) {
+                // in the source module a classes folder was defined,
+                // now create all sub-folders for the package structure in the new module folder
+                createTargetClassesFolder(targetModule, sourceClassesPath, targetModulePath + PATH_CLASSES);
+                // delete the origin classes folder
+                deleteSourceClassesFolder(targetModulePath, sourcePathPart, targetPathPart);
             }
-        } else {
-            errMessage = "Source module does not exist.";
+
+            // TODO: clone module dependencies
+
+            // adjust the export points
+            cloneExportPoints(sourceModule, targetModule, sourcePathPart, targetPathPart);
+
+            // adjust the resource type names and IDs
+            Map<String, String> descKeys = new HashMap<String, String>();
+            Map<I_CmsResourceType, I_CmsResourceType> resTypeMap = cloneResourceTypes(
+                sourceModule,
+                targetModule,
+                sourcePathPart,
+                targetPathPart,
+                descKeys);
+
+            // adjust the explorer type names and store referred icons and message keys
+            Map<String, String> iconPaths = new HashMap<String, String>();
+            cloneExplorerTypes(targetModule, iconPaths, descKeys);
+
+            // rename the icon file names
+            cloneExplorerTypeIcons(iconPaths);
+
+            // adjust the module resources
+            adjustModuleResources(sourceModule, targetModule, sourcePathPart, targetPathPart, iconPaths);
+
+            // search and replace the localization keys
+            replaceMessageKeys(targetClassesPath, descKeys);
+
+            // search and replace paths
+            CmsSearchReplaceThread t = initializePathThread();
+            t.start();
+            t.join();
+
+            // search and replace module name
+            t = initializeNameThread();
+            t.start();
+            t.join();
+
+            // replace formatter paths
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_formatterTargetModule)
+                && !targetModule.getResourceTypes().isEmpty()) {
+                replaceFormatterPaths(targetModule);
+            }
+
+            // publish the new module
+            for (String res : targetModule.getResources()) {
+                OpenCms.getPublishManager().publishResource(getCmsObject(), res);
+                OpenCms.getPublishManager().waitWhileRunning();
+            }
+
+            //  add the imported module to the module manager
+            OpenCms.getModuleManager().addModule(getCmsObject(), targetModule);
+
+            // reinitialize the resource manager with additional module resource types if necessary
+            if (targetModule.getResourceTypes() != Collections.EMPTY_LIST) {
+                OpenCms.getResourceManager().initialize(getCmsObject());
+            }
+            // reinitialize the workplace manager with additional module explorer types if necessary
+            if (targetModule.getExplorerTypes() != Collections.EMPTY_LIST) {
+                OpenCms.getWorkplaceManager().addExplorerTypeSettings(targetModule);
+            }
+
+            // re-initialize the workplace
+            OpenCms.getWorkplaceManager().initialize(getCmsObject());
+            // fire "clear caches" event to reload all cached resource bundles
+            OpenCms.fireCmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, new HashMap<String, Object>());
+
+            // change resource types and schema locations
+            if (Boolean.valueOf(m_changeResourceTypes).booleanValue()) {
+                changeResourceTypes(resTypeMap);
+            }
+
+            // delete the old module
+            if (Boolean.valueOf(m_deleteModule).booleanValue()) {
+                OpenCms.getModuleManager().deleteModule(getCmsObject(), sourceModule.getName(), false, null);
+            }
+
+        } catch (CmsIllegalArgumentException e) {
+            LOG.error(e.getMessage(), e);
+        } catch (CmsException e) {
+            LOG.error(e.getMessage(), e);
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
         }
-        if (errMessage != null) {
-            LOG.error(errMessage);
-        }
-        return null;
     }
 
     /**
-     * Returns the actionClass.<p>
+     * Returns the action class.<p>
      *
-     * @return the actionClass
+     * @return the action class
      */
     public String getActionClass() {
 
@@ -388,9 +351,9 @@ public class CmsCloneModule extends CmsJspActionElement {
     }
 
     /**
-     * Returns the authorEmail.<p>
+     * Returns the author email.<p>
      *
-     * @return the authorEmail
+     * @return the author email
      */
     public String getAuthorEmail() {
 
@@ -398,9 +361,9 @@ public class CmsCloneModule extends CmsJspActionElement {
     }
 
     /**
-     * Returns the authorName.<p>
+     * Returns the author name.<p>
      *
-     * @return the authorName
+     * @return the author name
      */
     public String getAuthorName() {
 
@@ -408,13 +371,23 @@ public class CmsCloneModule extends CmsJspActionElement {
     }
 
     /**
-     * Returns the changeResourceTypes.<p>
+     * Returns the change resource types flag as String.<p>
      *
-     * @return the changeResourceTypes
+     * @return the change resource types flag as String
      */
     public String getChangeResourceTypes() {
 
         return m_changeResourceTypes;
+    }
+
+    /**
+     * Returns the delete module flag String.<p>
+     *
+     * @return the delete module flag as String
+     */
+    public String getDeleteModule() {
+
+        return m_deleteModule;
     }
 
     /**
@@ -428,9 +401,9 @@ public class CmsCloneModule extends CmsJspActionElement {
     }
 
     /**
-     * Returns the formatterFolder.<p>
+     * Returns the formatter source module package/name.<p>
      *
-     * @return the formatterFolder
+     * @return the formatter source module package/name
      */
     public String getFormatterSourceModule() {
 
@@ -438,9 +411,9 @@ public class CmsCloneModule extends CmsJspActionElement {
     }
 
     /**
-     * Returns the formatterTargetModule.<p>
+     * Returns the formatter target module package/name.<p>
      *
-     * @return the formatterTargetModule
+     * @return the formatter target module package/name
      */
     public String getFormatterTargetModule() {
 
@@ -458,9 +431,9 @@ public class CmsCloneModule extends CmsJspActionElement {
     }
 
     /**
-     * Returns the niceName.<p>
+     * Returns the nice name.<p>
      *
-     * @return the niceName
+     * @return the nice name
      */
     public String getNiceName() {
 
@@ -468,9 +441,9 @@ public class CmsCloneModule extends CmsJspActionElement {
     }
 
     /**
-     * Returns the packageName.<p>
+     * Returns the package/module name for the clone/target.<p>
      *
-     * @return the packageName
+     * @return the package/module name for the clone/target
      */
     public String getPackageName() {
 
@@ -478,9 +451,9 @@ public class CmsCloneModule extends CmsJspActionElement {
     }
 
     /**
-     * Returns the sourceModuleName.<p>
+     * Returns the source module package/name (the module to clone).<p>
      *
-     * @return the sourceModuleName
+     * @return the source module package/name (the module to clone)
      */
     public String getSourceModuleName() {
 
@@ -488,9 +461,9 @@ public class CmsCloneModule extends CmsJspActionElement {
     }
 
     /**
-     * Returns the sourceNamePrefix.<p>
+     * Returns the source name prefix.<p>
      *
-     * @return the sourceNamePrefix
+     * @return the source name prefix
      */
     public String getSourceNamePrefix() {
 
@@ -498,9 +471,9 @@ public class CmsCloneModule extends CmsJspActionElement {
     }
 
     /**
-     * Returns the targetNamePrefix.<p>
+     * Returns the target name prefix.<p>
      *
-     * @return the targetNamePrefix
+     * @return the target name prefix
      */
     public String getTargetNamePrefix() {
 
@@ -508,22 +481,9 @@ public class CmsCloneModule extends CmsJspActionElement {
     }
 
     /**
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-
-        final int prime = 31;
-        int result = 1;
-        result = (prime * result) + ((m_packageName == null) ? 0 : m_packageName.hashCode());
-        result = (prime * result) + ((m_sourceModuleName == null) ? 0 : m_sourceModuleName.hashCode());
-        return result;
-    }
-
-    /**
-     * Sets the actionClass.<p>
+     * Sets the action class.<p>
      *
-     * @param actionClass the actionClass to set
+     * @param actionClass the action class
      */
     public void setActionClass(String actionClass) {
 
@@ -531,9 +491,9 @@ public class CmsCloneModule extends CmsJspActionElement {
     }
 
     /**
-     * Sets the authorEmail.<p>
+     * Sets the author email.<p>
      *
-     * @param authorEmail the authorEmail to set
+     * @param authorEmail the author email to set
      */
     public void setAuthorEmail(String authorEmail) {
 
@@ -541,9 +501,9 @@ public class CmsCloneModule extends CmsJspActionElement {
     }
 
     /**
-     * Sets the authorName.<p>
+     * Sets the author name.<p>
      *
-     * @param authorName the authorName to set
+     * @param authorName the author name to set
      */
     public void setAuthorName(String authorName) {
 
@@ -551,13 +511,23 @@ public class CmsCloneModule extends CmsJspActionElement {
     }
 
     /**
-     * Sets the changeResourceTypes.<p>
+     * Sets the change resource types flag.<p>
      *
-     * @param changeResourceTypes the changeResourceTypes to set
+     * @param changeResourceTypes the change resource types falg to set
      */
     public void setChangeResourceTypes(String changeResourceTypes) {
 
         m_changeResourceTypes = changeResourceTypes;
+    }
+
+    /**
+     * Sets the delete module flag.<p>
+     *
+     * @param deleteModule the delete module flag to set
+     */
+    public void setDeleteModule(String deleteModule) {
+
+        m_deleteModule = deleteModule;
     }
 
     /**
@@ -571,9 +541,9 @@ public class CmsCloneModule extends CmsJspActionElement {
     }
 
     /**
-     * Sets the formatterFolder.<p>
+     * Sets the formatter source module name.<p>
      *
-     * @param formatterSourceModule the formatterFolder to set
+     * @param formatterSourceModule the formatter source module name to set
      */
     public void setFormatterSourceModule(String formatterSourceModule) {
 
@@ -581,9 +551,9 @@ public class CmsCloneModule extends CmsJspActionElement {
     }
 
     /**
-     * Sets the formatterTargetModule.<p>
+     * Sets the formatter target module name.<p>
      *
-     * @param formatterTargetModule the formatterTargetModule to set
+     * @param formatterTargetModule the formatter target module name to set
      */
     public void setFormatterTargetModule(String formatterTargetModule) {
 
@@ -601,9 +571,9 @@ public class CmsCloneModule extends CmsJspActionElement {
     }
 
     /**
-     * Sets the niceName.<p>
+     * Sets the nice name.<p>
      *
-     * @param niceName the niceName to set
+     * @param niceName the nice name to set
      */
     public void setNiceName(String niceName) {
 
@@ -611,9 +581,9 @@ public class CmsCloneModule extends CmsJspActionElement {
     }
 
     /**
-     * Sets the packageName.<p>
+     * Sets the package name.<p>
      *
-     * @param packageName the packageName to set
+     * @param packageName the package name to set
      */
     public void setPackageName(String packageName) {
 
@@ -621,9 +591,9 @@ public class CmsCloneModule extends CmsJspActionElement {
     }
 
     /**
-     * Sets the sourceModuleName.<p>
+     * Sets the source module name.<p>
      *
-     * @param sourceModuleName the sourceModuleName to set
+     * @param sourceModuleName the source module name to set
      */
     public void setSourceModuleName(String sourceModuleName) {
 
@@ -631,9 +601,9 @@ public class CmsCloneModule extends CmsJspActionElement {
     }
 
     /**
-     * Sets the sourceNamePrefix.<p>
+     * Sets the source name prefix.<p>
      *
-     * @param sourceNamePrefix the sourceNamePrefix to set
+     * @param sourceNamePrefix the source name prefix to set
      */
     public void setSourceNamePrefix(String sourceNamePrefix) {
 
@@ -641,15 +611,24 @@ public class CmsCloneModule extends CmsJspActionElement {
     }
 
     /**
-     * Sets the targetNamePrefix.<p>
+     * Sets the target name prefix.<p>
      *
-     * @param targetNamePrefix the targetNamePrefix to set
+     * @param targetNamePrefix the target name prefix to set
      */
     public void setTargetNamePrefix(String targetNamePrefix) {
 
         m_targetNamePrefix = targetNamePrefix;
     }
 
+    /**
+     * Adjusts the paths of the module resources from the source path to the target path.<p>
+     * 
+     * @param sourceModule the source module
+     * @param targetModule the target module
+     * @param sourcePathPart the path part of the source module
+     * @param targetPathPart the path part of the target module
+     * @param iconPaths the path where resource type icons are located
+     */
     private void adjustModuleResources(
         CmsModule sourceModule,
         CmsModule targetModule,
@@ -678,15 +657,63 @@ public class CmsCloneModule extends CmsJspActionElement {
         targetModule.setResources(newTargetResources);
     }
 
+    /**
+     * Changes the resource types and the schema locations of existing content.<p>
+     * 
+     * @param resTypeMap a map containing the source types as keys and the target types as values
+     * 
+     * @throws CmsException if something goes wrong
+     * @throws UnsupportedEncodingException if the file content could not be read with the determined encoding
+     */
+    private void changeResourceTypes(Map<I_CmsResourceType, I_CmsResourceType> resTypeMap)
+    throws CmsException, UnsupportedEncodingException {
+
+        for (Map.Entry<I_CmsResourceType, I_CmsResourceType> mapping : resTypeMap.entrySet()) {
+            List<CmsResource> resources = getCmsObject().readResources(
+                "/",
+                CmsResourceFilter.requireType(mapping.getKey().getTypeId()));
+            String sourceSchemaPath = mapping.getKey().getConfiguration().get("schema");
+            String targetSchemaPath = mapping.getValue().getConfiguration().get("schema");
+            for (CmsResource res : resources) {
+                if (lockResource(getCmsObject(), res)) {
+                    CmsFile file = getCmsObject().readFile(res);
+                    String encoding = CmsLocaleManager.getResourceEncoding(getCmsObject(), file);
+                    String content = new String(file.getContents(), encoding);
+                    content = content.replaceAll(sourceSchemaPath, targetSchemaPath);
+                    file.setContents(content.getBytes(encoding));
+                    getCmsObject().writeFile(file);
+                    res.setType(mapping.getValue().getTypeId());
+                    getCmsObject().writeResource(res);
+                }
+            }
+        }
+    }
+
+    /**
+     * Copies the explorer type icons.<p>
+     * 
+     * @param iconPaths the path to the location where the icons are located
+     * 
+     * @throws CmsException if something goes wrong
+     */
     private void cloneExplorerTypeIcons(Map<String, String> iconPaths) throws CmsException {
 
         for (Map.Entry<String, String> entry : iconPaths.entrySet()) {
             String source = ICON_PATH + entry.getKey();
             String target = ICON_PATH + entry.getValue();
-            getCmsObject().copyResource(source, target);
+            if (!getCmsObject().existsResource(target)) {
+                getCmsObject().copyResource(source, target);
+            }
         }
     }
 
+    /**
+     * Copies the explorer type definitions.<p>
+     * 
+     * @param targetModule the target module
+     * @param iconPaths the path to the location where the icons are located
+     * @param descKeys a map that contains a mapping of the explorer type definitions messages
+     */
     private void cloneExplorerTypes(CmsModule targetModule, Map<String, String> iconPaths, Map<String, String> descKeys) {
 
         List<CmsExplorerTypeSettings> targetExplorerTypes = targetModule.getExplorerTypes();
@@ -707,6 +734,14 @@ public class CmsCloneModule extends CmsJspActionElement {
         }
     }
 
+    /**
+     * Clones the export points of the module and adjusts its paths.<p>
+     * 
+     * @param sourceModule the source module
+     * @param targetModule the target module
+     * @param sourcePathPart the source path part
+     * @param targetPathPart the target path part
+     */
     private void cloneExportPoints(
         CmsModule sourceModule,
         CmsModule targetModule,
@@ -723,6 +758,17 @@ public class CmsCloneModule extends CmsJspActionElement {
         }
     }
 
+    /**
+     * Clones/copies the resource types.<p>
+     * 
+     * @param sourceModule the source module
+     * @param targetModule the target module
+     * @param sourcePathPart the source path part
+     * @param targetPathPart the target path part
+     * @param keys the map where to put in the messages of the resource type
+     * 
+     * @return a map with source resource types as key and the taregt resource types as value
+     */
     private Map<I_CmsResourceType, I_CmsResourceType> cloneResourceTypes(
         CmsModule sourceModule,
         CmsModule targetModule,
@@ -817,6 +863,15 @@ public class CmsCloneModule extends CmsJspActionElement {
         return resourceTypeMapping;
     }
 
+    /**
+     * Creates the target folder for the module clone.<p>
+     * 
+     * @param targetModule the target module
+     * @param sourceClassesPath the source module class path
+     * @param targetBaseClassesPath the 'classes' folder of the target module
+     * 
+     * @throws CmsException if something goes wrong
+     */
     private void createTargetClassesFolder(
         CmsModule targetModule,
         String sourceClassesPath,
@@ -829,22 +884,54 @@ public class CmsCloneModule extends CmsJspActionElement {
         while (tok.hasMoreTokens()) {
             String folder = tok.nextToken();
             targetClassesPath += folder + "/";
-            getCmsObject().createResource(targetClassesPath, folderId);
+            if (!getCmsObject().existsResource(targetClassesPath)) {
+                getCmsObject().createResource(targetClassesPath, folderId);
+            }
         }
         // move exiting content into new classes sub-folder
-
         List<CmsResource> propertyFiles = getCmsObject().readResources(sourceClassesPath, CmsResourceFilter.ALL);
         for (CmsResource res : propertyFiles) {
-            getCmsObject().copyResource(res.getRootPath(), targetClassesPath + res.getName());
+            if (!getCmsObject().existsResource(targetClassesPath + res.getName())) {
+                getCmsObject().copyResource(res.getRootPath(), targetClassesPath + res.getName());
+            }
         }
     }
 
-    private void deleteSourceClassesFolder(String targetModulePath, String sourcePathPart) throws CmsException {
+    /**
+     * Deletes the temporarily copied classes files.<p>
+     * 
+     * @param targetModulePath the target module path
+     * @param sourcePathPart the path part of the source module
+     * @param targetPathPart the target path part
+     *  
+     * @throws CmsException if something goes wrong
+     */
+    private void deleteSourceClassesFolder(String targetModulePath, String sourcePathPart, String targetPathPart)
+    throws CmsException {
 
+        String[] targetPathParts = CmsStringUtil.splitAsArray(targetPathPart, '/');
+        String[] sourcePathParts = CmsStringUtil.splitAsArray(sourcePathPart, '/');
+        int sourceLength = sourcePathParts.length;
+        int diff = 0;
+        for (int i = 0; i < targetPathParts.length; i++) {
+            if (sourceLength >= i) {
+                if (!targetPathParts[i].equals(sourcePathParts[i])) {
+                    diff = i + 1;
+                }
+            }
+        }
         String topSourceClassesPath = targetModulePath
             + PATH_CLASSES
             + sourcePathPart.substring(0, sourcePathPart.indexOf('/'))
             + "/";
+
+        if (diff != 0) {
+
+            topSourceClassesPath = targetModulePath + PATH_CLASSES;
+            for (int i = 0; i < diff; i++) {
+                topSourceClassesPath += sourcePathParts[i] + "/";
+            }
+        }
         getCmsObject().deleteResource(topSourceClassesPath, CmsResource.DELETE_PRESERVE_SIBLINGS);
     }
 
@@ -885,17 +972,105 @@ public class CmsCloneModule extends CmsJspActionElement {
         return new CmsSearchReplaceThread(session, getCmsObject(), settings);
     }
 
-    private void replaceMessageKeys(String targetClassesPath, Map<String, String> descKeys) throws CmsException {
+    /**
+     * Locks the current resource.<p>
+     * 
+     * @param cms the current CmsObject 
+     * @param cmsResource the resource to lock
+     * 
+     * @return <code>true</code> if the given resource was locked was successfully
+     * 
+     * @throws CmsException if some goes wrong
+     */
+    private boolean lockResource(CmsObject cms, CmsResource cmsResource) throws CmsException {
+
+        CmsLock lock = cms.getLock(cms.getSitePath(cmsResource));
+        // check the lock
+        if ((lock != null)
+            && lock.isOwnedBy(cms.getRequestContext().getCurrentUser())
+            && lock.isOwnedInProjectBy(
+                cms.getRequestContext().getCurrentUser(),
+                cms.getRequestContext().getCurrentProject())) {
+            // prove is current lock from current user in current project
+            return true;
+        } else if ((lock != null) && !lock.isUnlocked() && !lock.isOwnedBy(cms.getRequestContext().getCurrentUser())) {
+            // the resource is not locked by the current user, so can not lock it
+            return false;
+        } else if ((lock != null)
+            && !lock.isUnlocked()
+            && lock.isOwnedBy(cms.getRequestContext().getCurrentUser())
+            && !lock.isOwnedInProjectBy(
+                cms.getRequestContext().getCurrentUser(),
+                cms.getRequestContext().getCurrentProject())) {
+            // prove is current lock from current user but not in current project
+            // file is locked by current user but not in current project
+            // change the lock 
+            cms.changeLock(cms.getSitePath(cmsResource));
+        } else if ((lock != null) && lock.isUnlocked()) {
+            // lock resource from current user in current project
+            cms.lockResource(cms.getSitePath(cmsResource));
+        }
+        lock = cms.getLock(cms.getSitePath(cmsResource));
+        if ((lock != null)
+            && lock.isOwnedBy(cms.getRequestContext().getCurrentUser())
+            && !lock.isOwnedInProjectBy(
+                cms.getRequestContext().getCurrentUser(),
+                cms.getRequestContext().getCurrentProject())) {
+            // resource could not be locked
+            return false;
+        }
+        // resource is locked successfully
+        return true;
+    }
+
+    /**
+     * Replaces the referenced formatters within the new XSD files with the new formatter paths.<p>
+     * 
+     * @param targetModule the target module
+     * 
+     * @throws CmsException if something goes wrong
+     * @throws UnsupportedEncodingException if the file content could not be read with the determined encoding 
+     */
+    private void replaceFormatterPaths(CmsModule targetModule) throws CmsException, UnsupportedEncodingException {
+
+        CmsResource formatterSourceFolder = getCmsObject().readResource(
+            "/system/modules/" + m_formatterSourceModule + "/formatters/");
+        CmsResource formatterTargetFolder = getCmsObject().readResource(
+            "/system/modules/" + m_formatterTargetModule + "/formatters/");
+        for (I_CmsResourceType type : targetModule.getResourceTypes()) {
+            String schemaPath = type.getConfiguration().get("schema");
+            CmsResource res = getCmsObject().readResource(schemaPath);
+            CmsFile file = getCmsObject().readFile(res);
+            String encoding = CmsLocaleManager.getResourceEncoding(getCmsObject(), file);
+            String content = new String(file.getContents(), encoding);
+            content = content.replaceAll(formatterSourceFolder.getRootPath(), formatterTargetFolder.getRootPath());
+            file.setContents(content.getBytes(encoding));
+            getCmsObject().writeFile(file);
+        }
+    }
+
+    /**
+     * Replaces the message keys with in the message properties files below 'classes'.<p>
+     * 
+     * @param targetClassesPath the 'classes' folder path of the cloned module
+     * @param descKeys the map with replacements
+     * 
+     * @throws CmsException if something goes wrong
+     * @throws UnsupportedEncodingException if the file content could not be read with the determined encoding
+     */
+    private void replaceMessageKeys(String targetClassesPath, Map<String, String> descKeys)
+    throws CmsException, UnsupportedEncodingException {
 
         List<CmsResource> propFiles = getCmsObject().readResources(targetClassesPath, CmsResourceFilter.DEFAULT_FILES);
-        Charset charset = Charset.forName(OpenCms.getSystemInfo().getDefaultEncoding());
         for (CmsResource propFile : propFiles) {
+
             CmsFile file = getCmsObject().readFile(propFile);
-            String content = new String(file.getContents(), charset);
+            String encoding = CmsLocaleManager.getResourceEncoding(getCmsObject(), file);
+            String content = new String(file.getContents(), encoding);
             for (Map.Entry<String, String> entry : descKeys.entrySet()) {
                 content = content.replaceAll(entry.getKey(), entry.getValue());
             }
-            file.setContents(content.getBytes(charset));
+            file.setContents(content.getBytes(encoding));
             getCmsObject().writeFile(file);
         }
     }
