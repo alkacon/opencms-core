@@ -35,7 +35,6 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.json.JSONObject;
 import org.opencms.json.JSONTokener;
-import org.opencms.jsp.util.CmsJspDeviceSelectorDesktopMobileTablet;
 import org.opencms.jsp.util.I_CmsJspDeviceSelector;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -142,10 +141,8 @@ public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextPr
         I_CmsJspDeviceSelector selector = OpenCms.getSystemInfo().getDeviceSelector();
         String deviceType = selector.getDeviceType(request);
         Map<String, CmsTemplateContext> contextMap = getContextMap();
-        if (deviceType.equals(CmsJspDeviceSelectorDesktopMobileTablet.C_MOBILE)) {
-            return contextMap.get("mobile");
-        } else if (deviceType.equals(CmsJspDeviceSelectorDesktopMobileTablet.C_TABLET)) {
-            return contextMap.get("tablet");
+        if (contextMap.containsKey(deviceType)) {
+            return contextMap.get(deviceType);
         } else {
             return contextMap.get("desktop");
         }
