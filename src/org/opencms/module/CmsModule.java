@@ -342,8 +342,18 @@ public class CmsModule implements Comparable<CmsModule> {
             result.setResourceTypes(new ArrayList<I_CmsResourceType>(getResourceTypes()));
         }
         if (getDependencies() != null) {
-            // TODO: The dependencies must be cloned also, otherwise modification will effect the origin also
+            List<CmsModuleDependency> deps = new ArrayList<CmsModuleDependency>();
+            for (CmsModuleDependency dep : getDependencies()) {
+                deps.add((CmsModuleDependency)dep.clone());
+            }
             result.setDependencies(new ArrayList<CmsModuleDependency>(getDependencies()));
+        }
+        if (getExportPoints() != null) {
+            List<CmsExportPoint> exps = new ArrayList<CmsExportPoint>();
+            for (CmsExportPoint exp : getExportPoints()) {
+                exps.add((CmsExportPoint)exp.clone());
+            }
+            result.setExportPoints(exps);
         }
 
         result.setCreateClassesFolder(m_createClassesFolder);
@@ -356,7 +366,7 @@ public class CmsModule implements Comparable<CmsModule> {
         result.setCreateFormattersFolder(m_createFormattersFolder);
 
         result.setResources(new ArrayList<String>(m_resources));
-        result.setExportPoints(new ArrayList<CmsExportPoint>(m_exportPoints));
+
         return result;
     }
 

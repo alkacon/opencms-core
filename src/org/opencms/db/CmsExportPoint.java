@@ -70,6 +70,17 @@ public class CmsExportPoint {
     }
 
     /**
+     * @see java.lang.Object#clone()
+     */
+    @Override
+    public Object clone() {
+
+        CmsExportPoint clone = new CmsExportPoint(m_uri, m_configuredDestination);
+        clone.setDestinationPath(getDestinationPath());
+        return clone;
+    }
+
+    /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
