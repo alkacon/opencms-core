@@ -55,10 +55,9 @@ public class CmsMoveOptionButton extends CmsPushButton implements I_CmsGroupEdit
     public CmsMoveOptionButton(CmsContainerPageElementPanel elementWidget, CmsInheritanceContainerEditor editor) {
 
         super();
-        setImageClass(I_CmsButton.ButtonData.SELECTION.getIconClass());
+        setImageClass(I_CmsButton.ButtonData.MOVE.getIconClass());
         setButtonStyle(ButtonStyle.TRANSPARENT, null);
         setTitle(I_CmsButton.ButtonData.MOVE.getTitle());
-        addStyleName(I_CmsButton.ButtonData.SELECTION.getIconClass());
         addStyleName(I_CmsButton.ButtonData.MOVE.getIconClass());
         m_elementWidget = elementWidget;
     }

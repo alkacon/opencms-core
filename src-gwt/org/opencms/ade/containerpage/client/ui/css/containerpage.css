@@ -2,10 +2,6 @@
 
 .showButtons, .hideButtons{}
 
-body.forceScrollbar{
-	overflow-y: scroll;
-}
-
 .menuTabContainer{
 	height: 486px;
 }
@@ -62,12 +58,6 @@ div.optionBar{
 .toolbarSelection div.expired, .dragging div.expired, .toolbarAdd div.expired, .toolbarClipboard div.expired{
 	display: block;
 }
-
-/** Force scroll-bar as long as direct edit buttons are visible to avoid any flickering when elements highlighted. */
-body.toolbarSelection{
-	overflow-y: scroll;
-}
-
 
 div.expired{
 	display: none;
@@ -220,7 +210,7 @@ div.groupcontainerPlaceholder{
     gwt-image: "images.deleteIconDeactivated";
 }
 
-@sprite .optionBar .cmsState-up-hovering .toolbarEdit, .optionBar .cmsState-down-hovering .toolbarEdit, .optionBar .cmsState-down .toolbarEdit {
+@sprite .optionBar .toolbarEdit.cmsState-up-hovering .toolbarSelection, .optionBar .toolbarEdit.cmsState-down-hovering .toolbarSelection, .optionBar .toolbarEdit.cmsState-down .toolbarSelection {
     gwt-image: "images.editIconActive";
 }
 @sprite .optionBar .cmsState-up .toolbarEdit{
@@ -228,10 +218,10 @@ div.groupcontainerPlaceholder{
 }
 
 
-@sprite .optionBar .cmsState-up-hovering .toolbarEdit.lockedElement, .optionBar .cmsState-down-hovering .toolbarEdit.lockedElement, .optionBar .cmsState-down .toolbarEdit.lockedElement {
+@sprite .optionBar .cmsState-up-hovering .toolbarSelection.lockedElement, .optionBar .cmsState-down-hovering .toolbarSelection.lockedElement, .optionBar .cmsState-down .toolbarSelection.lockedElement {
     gwt-image: "images.lockIconActive";
 }
-@sprite .optionBar .cmsState-up .toolbarEdit.lockedElement{
+@sprite .optionBar .cmsState-up .toolbarSelection.lockedElement{
     gwt-image: "images.lockIconDeactivated";
 }
 
@@ -240,7 +230,10 @@ div.groupcontainerPlaceholder{
 @sprite .optionBar .cmsState-up-disabled .toolbarEdit, .optionBar .cmsState-down-disabled .toolbarEdit {
 	gwt-image: "images.lockIconDeactivated";
 }
-@sprite .optionBar .toolbarMove.cmsState-up-hovering .toolbarSelection, .optionBar .toolbarMove.cmsState-down-hovering .toolbarSelection, .optionBar .toolbarMove.cmsState-down .toolbarSelection {
+@sprite .optionBar .cmsState-up .toolbarMove, .optionBar .cmsState-up-disabled .toolbarMove, .optionBar .cmsState-down-disabled .toolbarMove {
+    gwt-image: "images.moveIconDeactivated";
+}
+@sprite .optionBar .toolbarMove.cmsState-up-hovering .toolbarMove, .optionBar .toolbarMove.cmsState-down-hovering .toolbarMove, .optionBar .toolbarMove.cmsState-down .toolbarMove {
     gwt-image: "images.moveIconActive";
 }
 @sprite .optionBar .cmsState-up-hovering .toolbarNew, .optionBar .cmsState-down-hovering .toolbarNew, .optionBar .cmsState-down .toolbarNew {

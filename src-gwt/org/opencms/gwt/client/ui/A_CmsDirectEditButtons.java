@@ -182,18 +182,6 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
                 add(m_delete);
                 m_delete.addClickHandler(handler);
             }
-            if (m_editableData.hasEdit()) {
-                m_edit = new CmsPushButton();
-                m_edit.setImageClass(I_CmsButton.ButtonData.EDIT.getIconClass());
-                m_edit.addStyleName(I_CmsButton.ButtonData.EDIT.getIconClass());
-                m_edit.setTitle(I_CmsButton.ButtonData.EDIT.getTitle());
-                m_edit.setButtonStyle(I_CmsButton.ButtonStyle.TRANSPARENT, null);
-                add(m_edit);
-                m_edit.addClickHandler(handler);
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_editableData.getNoEditReason())) {
-                    m_edit.disable(m_editableData.getNoEditReason());
-                }
-            }
             if (m_editableData.hasNew()) {
                 m_new = new CmsPushButton();
                 m_new.setImageClass(I_CmsButton.ButtonData.NEW.getIconClass());
@@ -204,11 +192,19 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
                 m_new.addClickHandler(handler);
             }
             if (this.getWidgetCount() > 0) {
-                CmsPushButton selection = new CmsPushButton();
-                selection.setImageClass(I_CmsButton.ButtonData.SELECTION.getIconClass());
-                selection.addStyleName(I_CmsButton.ButtonData.SELECTION.getIconClass());
-                selection.setButtonStyle(I_CmsButton.ButtonStyle.TRANSPARENT, null);
-                add(selection);
+                m_edit = new CmsPushButton();
+                m_edit.setImageClass(I_CmsButton.ButtonData.SELECTION.getIconClass());
+                m_edit.addStyleName(I_CmsButton.ButtonData.SELECTION.getIconClass());
+                m_edit.setButtonStyle(I_CmsButton.ButtonStyle.TRANSPARENT, null);
+                add(m_edit);
+                if (m_editableData.hasEdit()) {
+                    m_edit.addStyleName(I_CmsButton.ButtonData.EDIT.getIconClass());
+                    m_edit.setTitle(I_CmsButton.ButtonData.EDIT.getTitle());
+                    m_edit.addClickHandler(handler);
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_editableData.getNoEditReason())) {
+                        m_edit.disable(m_editableData.getNoEditReason());
+                    }
+                }
             }
         } catch (Exception e) {
             throw new UnsupportedOperationException("Error while parsing editable tag information: " + e.getMessage());

@@ -480,8 +480,8 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
         CmsContainerpageUtil containerpageUtil = new CmsContainerpageUtil(
             controller,
-            m_move,
             m_edit,
+            m_move,
             m_info,
             m_properties,
             m_addToFavorites,
@@ -511,11 +511,6 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     public void showToolbar(boolean show) {
 
         CmsToolbar.showToolbar(m_toolbar, show, m_toolbarVisibility);
-        if (show) {
-            RootPanel.getBodyElement().addClassName(I_CmsLayoutBundle.INSTANCE.containerpageCss().forceScrollbar());
-        } else {
-            RootPanel.getBodyElement().removeClassName(I_CmsLayoutBundle.INSTANCE.containerpageCss().forceScrollbar());
-        }
     }
 
     /**

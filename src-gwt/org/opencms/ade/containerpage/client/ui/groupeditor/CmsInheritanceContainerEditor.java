@@ -523,10 +523,6 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
         button.addClickHandler(m_optionClickHandler);
         optionBar.add(button);
 
-        button = new CmsEditOptionButton(elementWidget, this);
-        button.addClickHandler(m_optionClickHandler);
-        optionBar.add(button);
-
         button = new CmsAddOptionButton(elementWidget, this);
         button.addClickHandler(m_optionClickHandler);
         optionBar.add(button);
@@ -537,6 +533,10 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
         button = new CmsMoveOptionButton(elementWidget, this);
         // setting the drag and drop handler
         button.addMouseDownHandler(getController().getDndHandler());
+        optionBar.add(button);
+
+        button = new CmsEditOptionButton(elementWidget, this);
+        button.addClickHandler(m_optionClickHandler);
         optionBar.add(button);
 
         return optionBar;

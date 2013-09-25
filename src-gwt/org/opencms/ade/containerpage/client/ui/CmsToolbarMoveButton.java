@@ -52,7 +52,7 @@ public class CmsToolbarMoveButton extends A_CmsToolbarOptionButton {
      */
     public CmsToolbarMoveButton(CmsContainerpageHandler handler, CmsDNDHandler dndHandler) {
 
-        super(I_CmsButton.ButtonData.SELECTION, handler);
+        super(I_CmsButton.ButtonData.MOVE, handler);
         m_dndHandler = dndHandler;
     }
 
@@ -62,12 +62,9 @@ public class CmsToolbarMoveButton extends A_CmsToolbarOptionButton {
     @Override
     public CmsElementOptionButton createOptionForElement(CmsContainerPageElementPanel element) {
 
-        CmsElementOptionButton button = new CmsElementOptionButton(this, element);
-
-        if (isOptionAvailable(element)) {
+        CmsElementOptionButton button = super.createOptionForElement(element);
+        if (button != null) {
             button.addMouseDownHandler(m_dndHandler);
-            button.setTitle(I_CmsButton.ButtonData.MOVE.getTitle());
-            button.addStyleName(I_CmsButton.ButtonData.MOVE.getIconClass());
         }
         return button;
     }
