@@ -813,6 +813,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
                                                                                                    self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::onDragOver()();
                                                                                                    }
 
+
                                                                                                    function dragleave(event) {
                                                                                                    event.stopPropagation();
                                                                                                    event.preventDefault();
