@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.tools.modules;
 
+import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.configuration.CmsConfigurationCopyResource;
 import org.opencms.configuration.Messages;
 import org.opencms.db.CmsExportPoint;
@@ -44,7 +45,7 @@ import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeUnknown;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsLocaleManager;
-import org.opencms.i18n.CmsVfsResourceBundle;
+import org.opencms.i18n.CmsVfsBundleManager;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.lock.CmsLock;
@@ -57,6 +58,7 @@ import org.opencms.module.CmsModule;
 import org.opencms.search.replace.CmsSearchReplaceSettings;
 import org.opencms.search.replace.CmsSearchReplaceThread;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
@@ -69,6 +71,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -269,8 +273,17 @@ public class CmsCloneModule extends CmsJspActionElement {
             adjustModuleResources(sourceModule, targetModule, sourcePathPart, targetPathPart, iconPaths);
 
             // search and replace the localization keys
-            replaceMessageKeys(targetClassesPath, descKeys);
-            renameXmlVfsBundles(targetModule, sourceModule.getName());
+            List<CmsResource> props = getCmsObject().readResources(targetClassesPath, CmsResourceFilter.DEFAULT_FILES);
+            replacesMessages(descKeys, props);
+
+            int type = OpenCms.getResourceManager().getResourceType(CmsVfsBundleManager.TYPE_XML_BUNDLE).getTypeId();
+            CmsResourceFilter filter = CmsResourceFilter.requireType(type);
+            List<CmsResource> resources = getCmsObject().readResources(targetModulePath, filter);
+            replacesMessages(descKeys, resources);
+            renameXmlVfsBundles(resources, targetModule, sourceModule.getName());
+
+            List<CmsResource> allModuleResources = getCmsObject().readResources(targetModulePath, CmsResourceFilter.ALL);
+            replacePath(sourceModulePath, targetModulePath, allModuleResources);
 
             // search and replace paths
             CmsSearchReplaceThread t = initializePathThread();
@@ -287,6 +300,8 @@ public class CmsCloneModule extends CmsJspActionElement {
                 && !targetModule.getResourceTypes().isEmpty()) {
                 replaceFormatterPaths(targetModule);
             }
+
+            adjustModuleConfig(targetModule, resTypeMap);
 
             // publish the new module
             for (String res : targetModule.getResources()) {
@@ -327,29 +342,6 @@ public class CmsCloneModule extends CmsJspActionElement {
             LOG.error(e.getMessage(), e);
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
-        }
-    }
-
-    /**
-     * Renames the vfs resource bundle files within the target module according to the new module's name.<p>
-     * 
-     * @param targetModule the target module
-     * @param name the package name of the source module
-     * 
-     * @throws CmsException if something gows wrong
-     */
-    private void renameXmlVfsBundles(CmsModule targetModule, String name) throws CmsException {
-
-        int type = OpenCms.getResourceManager().getResourceType(CmsVfsResourceBundle.TYPE_XML).getTypeId();
-        CmsResourceFilter filter = CmsResourceFilter.requireType(type);
-        String taregetModulePath = "/system/modules/" + targetModule.getName();
-        List<CmsResource> resources = getCmsObject().readResources(taregetModulePath, filter);
-        for (CmsResource res : resources) {
-            String newName = res.getName().replaceAll(name, targetModule.getName());
-            String targetRootPath = CmsResource.getFolderPath(res.getRootPath()) + newName;
-            if (!getCmsObject().existsResource(targetRootPath)) {
-                getCmsObject().moveResource(res.getRootPath(), targetRootPath);
-            }
         }
     }
 
@@ -646,6 +638,42 @@ public class CmsCloneModule extends CmsJspActionElement {
     }
 
     /**
+     * Returns <code>true</code> if the module has been created successful.<p>
+     * 
+     * @return <code>true</code> if the module has been created successful
+     */
+    public boolean success() {
+
+        return OpenCms.getModuleManager().getModule(m_packageName) != null;
+    }
+
+    /**
+     * Adjusts the module configuration file.<p>
+     * 
+     * @param targetModule the target moodule
+     * @param resTypeMap the resource type mapping
+     * 
+     * @throws CmsException if something goes wrong
+     * @throws UnsupportedEncodingException if the file content could not be read with the determined encoding
+     */
+    private void adjustModuleConfig(CmsModule targetModule, Map<I_CmsResourceType, I_CmsResourceType> resTypeMap)
+    throws CmsException, UnsupportedEncodingException {
+
+        String modPath = CmsWorkplace.VFS_PATH_MODULES + targetModule.getName() + "/" + CmsADEManager.CONFIG_FILE_NAME;
+        CmsResource config = getCmsObject().readResource(
+            modPath,
+            CmsResourceFilter.requireType(OpenCms.getResourceManager().getResourceType(CmsADEManager.MODULE_CONFIG_TYPE).getTypeId()));
+        CmsFile file = getCmsObject().readFile(config);
+        String encoding = CmsLocaleManager.getResourceEncoding(getCmsObject(), file);
+        String content = new String(file.getContents(), encoding);
+        for (Map.Entry<I_CmsResourceType, I_CmsResourceType> mapping : resTypeMap.entrySet()) {
+            content = content.replaceAll(mapping.getKey().getTypeName(), mapping.getValue().getTypeName());
+            file.setContents(content.getBytes(encoding));
+            getCmsObject().writeFile(file);
+        }
+    }
+
+    /**
      * Adjusts the paths of the module resources from the source path to the target path.<p>
      * 
      * @param sourceModule the source module
@@ -743,19 +771,21 @@ public class CmsCloneModule extends CmsJspActionElement {
 
         List<CmsExplorerTypeSettings> targetExplorerTypes = targetModule.getExplorerTypes();
         for (CmsExplorerTypeSettings expSetting : targetExplorerTypes) {
-            descKeys.put(expSetting.getKey(), expSetting.getKey().replaceAll(m_sourceNamePrefix, m_targetNamePrefix));
-            String newIcon = expSetting.getIcon().replaceAll(m_sourceNamePrefix, m_targetNamePrefix);
-            String newBigIcon = expSetting.getBigIconIfAvailable().replaceAll(m_sourceNamePrefix, m_targetNamePrefix);
+            descKeys.put(expSetting.getKey(), expSetting.getKey().replaceFirst(m_sourceNamePrefix, m_targetNamePrefix));
+            String newIcon = expSetting.getIcon().replaceFirst(m_sourceNamePrefix, m_targetNamePrefix);
+            String newBigIcon = expSetting.getBigIconIfAvailable().replaceFirst(m_sourceNamePrefix, m_targetNamePrefix);
             iconPaths.put(expSetting.getIcon(), newIcon);
             iconPaths.put(expSetting.getBigIconIfAvailable(), newBigIcon);
-            expSetting.setName(expSetting.getName().replaceAll(m_sourceNamePrefix, m_targetNamePrefix));
-            expSetting.setKey(expSetting.getKey().replaceAll(m_sourceNamePrefix, m_targetNamePrefix));
-            expSetting.setIcon(expSetting.getIcon().replaceAll(m_sourceNamePrefix, m_targetNamePrefix));
-            expSetting.setBigIcon(expSetting.getBigIconIfAvailable().replaceAll(m_sourceNamePrefix, m_targetNamePrefix));
-            expSetting.setNewResourceUri(expSetting.getNewResourceUri().replaceAll(
+            expSetting.setName(expSetting.getName().replaceFirst(m_sourceNamePrefix, m_targetNamePrefix));
+            expSetting.setKey(expSetting.getKey().replaceFirst(m_sourceNamePrefix, m_targetNamePrefix));
+            expSetting.setIcon(expSetting.getIcon().replaceFirst(m_sourceNamePrefix, m_targetNamePrefix));
+            expSetting.setBigIcon(expSetting.getBigIconIfAvailable().replaceFirst(
                 m_sourceNamePrefix,
                 m_targetNamePrefix));
-            expSetting.setInfo(expSetting.getInfo().replaceAll(m_sourceNamePrefix, m_targetNamePrefix));
+            expSetting.setNewResourceUri(expSetting.getNewResourceUri().replaceFirst(
+                m_sourceNamePrefix,
+                m_targetNamePrefix));
+            expSetting.setInfo(expSetting.getInfo().replaceFirst(m_sourceNamePrefix, m_targetNamePrefix));
         }
     }
 
@@ -934,6 +964,14 @@ public class CmsCloneModule extends CmsJspActionElement {
     private void deleteSourceClassesFolder(String targetModulePath, String sourcePathPart, String targetPathPart)
     throws CmsException {
 
+        String sourceFirstFolder = sourcePathPart.substring(0, sourcePathPart.indexOf('/'));
+        String targetFirstFolder = sourcePathPart.substring(0, sourcePathPart.indexOf('/'));
+        if (!sourceFirstFolder.equals(targetFirstFolder)) {
+            getCmsObject().deleteResource(
+                targetModulePath + PATH_CLASSES + sourceFirstFolder,
+                CmsResource.DELETE_PRESERVE_SIBLINGS);
+            return;
+        }
         String[] targetPathParts = CmsStringUtil.splitAsArray(targetPathPart, '/');
         String[] sourcePathParts = CmsStringUtil.splitAsArray(sourcePathPart, '/');
         int sourceLength = sourcePathParts.length;
@@ -951,7 +989,6 @@ public class CmsCloneModule extends CmsJspActionElement {
             + "/";
 
         if (diff != 0) {
-
             topSourceClassesPath = targetModulePath + PATH_CLASSES;
             for (int i = 0; i < diff; i++) {
                 topSourceClassesPath += sourcePathParts[i] + "/";
@@ -1049,6 +1086,31 @@ public class CmsCloneModule extends CmsJspActionElement {
     }
 
     /**
+     * Renames the vfs resource bundle files within the target module according to the new module's name.<p>
+     * 
+     * @param resources the vfs resource bundle files
+     * @param targetModule the target module
+     * @param name the package name of the source module
+     * 
+     * @return a list of all xml vfs bundles within the given module
+     * 
+     * @throws CmsException if something gows wrong
+     */
+    private List<CmsResource> renameXmlVfsBundles(List<CmsResource> resources, CmsModule targetModule, String name)
+    throws CmsException {
+
+        for (CmsResource res : resources) {
+            String newName = res.getName().replaceAll(name, targetModule.getName());
+            String targetRootPath = CmsResource.getFolderPath(res.getRootPath()) + newName;
+            if (!getCmsObject().existsResource(targetRootPath)) {
+                getCmsObject().moveResource(res.getRootPath(), targetRootPath);
+            }
+        }
+        return resources;
+
+    }
+
+    /**
      * Replaces the referenced formatters within the new XSD files with the new formatter paths.<p>
      * 
      * @param targetModule the target module
@@ -1075,21 +1137,47 @@ public class CmsCloneModule extends CmsJspActionElement {
     }
 
     /**
-     * Replaces the message keys with in the message properties files below 'classes'.<p>
+     * Replaces the paths within all the given resources and removes all UUIDs by an regex.<p>
      * 
-     * @param targetClassesPath the 'classes' folder path of the cloned module
-     * @param descKeys the map with replacements
+     * @param sourceModulePath the search path
+     * @param targetModulePath the replace path
+     * @param allModuleResources the resources
      * 
      * @throws CmsException if something goes wrong
-     * @throws UnsupportedEncodingException if the file content could not be read with the determined encoding
+     * @throws UnsupportedEncodingException if the file content could not be read with the determined encoding 
      */
-    private void replaceMessageKeys(String targetClassesPath, Map<String, String> descKeys)
+    private void replacePath(String sourceModulePath, String targetModulePath, List<CmsResource> allModuleResources)
     throws CmsException, UnsupportedEncodingException {
 
-        List<CmsResource> propFiles = getCmsObject().readResources(targetClassesPath, CmsResourceFilter.DEFAULT_FILES);
-        for (CmsResource propFile : propFiles) {
+        for (CmsResource resource : allModuleResources) {
+            if (resource.isFile()) {
+                CmsFile file = getCmsObject().readFile(resource);
+                String encoding = CmsLocaleManager.getResourceEncoding(getCmsObject(), file);
+                String content = new String(file.getContents(), encoding);
+                content = content.replaceAll(sourceModulePath, targetModulePath);
+                Matcher matcher = Pattern.compile(CmsUUID.UUID_REGEX).matcher(content);
+                content = matcher.replaceAll("");
+                content = content.replaceAll("<uuid></uuid>", "");
+                file.setContents(content.getBytes(encoding));
+                getCmsObject().writeFile(file);
+            }
+        }
+    }
 
-            CmsFile file = getCmsObject().readFile(propFile);
+    /**
+     * Replaces the messages for the given resources.<p>
+     * 
+     * @param descKeys the replacement mapping
+     * @param resources the resources to consult
+     * 
+     * @throws CmsException if something goes wrong
+     * @throws UnsupportedEncodingException if the file content could not be read with the determined encoding 
+     */
+    private void replacesMessages(Map<String, String> descKeys, List<CmsResource> resources)
+    throws CmsException, UnsupportedEncodingException {
+
+        for (CmsResource resource : resources) {
+            CmsFile file = getCmsObject().readFile(resource);
             String encoding = CmsLocaleManager.getResourceEncoding(getCmsObject(), file);
             String content = new String(file.getContents(), encoding);
             for (Map.Entry<String, String> entry : descKeys.entrySet()) {
