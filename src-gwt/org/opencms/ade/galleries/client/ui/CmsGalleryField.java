@@ -803,7 +803,8 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
      * @param element the drop zone element
      */
     private native void initUploadZone(JavaScriptObject element)/*-{
-                                                                                                   
+                                                                                                   // check for file api support
+                                                                                                   if ((typeof FileReader == 'function' || typeof FileReader == 'object')&&(typeof FormData == 'function' || typeof FormData == 'object')) {
                                                                                                    var self=this;
 
                                                                                                    function dragover(event) {
@@ -831,7 +832,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
                                                                                                    element.addEventListener("dragleave", dragleave, false);
                                                                                                    element.addEventListener("dragend", dragleave, false);
                                                                                                    element.addEventListener("drop", drop, false);
-
+                                                                                                   }
                                                                                                    }-*/;
 
     /**
