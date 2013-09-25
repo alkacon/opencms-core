@@ -15,50 +15,75 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 8.7.1 - July 23, 2013
+OpenCms 8.9.0 (aka 9.0 RC) - September 30, 2013
+! Integrated JLan for accessing the VFS as a network share
 ! Added gallery access to the toolbar
-! Added new option to configure an error page (XML content) per site
-! Added page info dialog and element info dialog
-! Implemented dynamic template provider feature.
-! Added Site Management workplace administration tool with web server configuration support
-! Added new option to configure an error per site that can be an XML content or Container page itself
+! Added enhanced page / element info dialog
+! Added dynamic template provider feature.
+! Added site management administration tool with web server configuration support
+! Added option to configure an error page per site
 ! Added detail view containers the allow individual detail pages 
+! Added XML content based resource bundles
+! Replaced in line wysiwyg editor with fully-fledged TinyMCE
+! Added undo / redo function to content editor
+! Added in place editing options for nested contents
+! Added dynamic HTML update during in place editing
+! Added direct upload option to image widget
+! Improved XML content editor layout
+! Added scripted setup feature
+! Added option to create new contents for empty collector lists
+! Added new demo template
+! Added 'This page' publishing mode
+* Fixed issue #23 where parsing the publish scheduled date failed due to a wrong locale
+* Fixed issue #61 where the removal of mapped properties failed
+* Fixed issue #67 where malformed nested XML content schemas resulted in misleading error messages
+* Fixed issue #130 where container page elements where removed without confirmation
+* Fixed issue #168 where the source code contained some spelling errors
+* Fixed issue #180 where database names where not validated during setup 
+* Fixed issue #187 where sort by title did not work in the gallery dialogs
+- Updated Italian localization
+- Updated Spanish localization
+- Updated Russian localization
+- Changed build process to use Gradle
+- Removed upload applet
+- Removed obsolete FCKEditor and EditArea
+- Updated Solr and Lucene libraries
 - Improved Solr search field mapping for multi-lingual XML contents that are using nested elements
 - Improved text based language detection
 
 OpenCms 8.5.2 - July 10, 2013
-* Improved lock behavior for group editor.
-* Improved offline indexing to index content changes immediately.
-* Improved PDF extraction with new library version.
-* Improved module import by pausing offline indexing while importing or deleting modules.
-* Improved IE10 compatibility.
-* Updated CodeMirror source code editor to version 3.14.
-* Updated commons DBCP library.
-* Improved purging of container pages after publish.
-! Fixed issue #50 with encoding links in pointer resources.
-! Fixed issue #114 with locale handling on embedded message bundles in schemas.
-! Fixed issue #152 where the layout of the VfsImageWidget was broken.
-! Fixed issue #155 where error messages where not displayed correctly.
-! Fixed issue #156 where newly created container pages from model pages did not have the right template property.
-! Fixed issue #159 where another resource was locked when creating a new one.
-! Fixed issue #167 where editing expired resources from direct edit caused errors.
-! Fixed issue #169 where SOLR rebuild doesn't update unmodified resources.
-! Fixed issue #170 where folders without default files did deliver a blank page instead of the 404 error code.
-! Fixed issue #173 where XSS was possible.
-! Fixed issue #175 where depending on the current date certain dates could not be set.
-! Fixed issue with element language select.
-! Fixed issue with possible XSS exploit using the CmsRequestUtil.
-! Fixed issue with in-line editing of choice attributes.
-! Fixed issue when saving a container page that contained inconsistent links.
-! Fixed issue where expired resources were not availably using the gallery select dialogs.
-! Fixed issue where head includes for elements did not work, if the element was part of an inheritance group.
-! Fixed issue with history view for no longer existing historic resource versions.
-! Fixed issue with memory leak related to GWT RPC services.
-! Fixed issue with publishing moved resources with categories.
-! Fixed issue where selecting "Undo changes" in the context menu for a JSP, the corresponding JSP in the RFS JSP repository is not deleted or updated.
-! Fixed issue with context menu for expired resources.
-! Fixed issue with determining the content CSS in the XML content editor. 
-! Fixed issue with memory leaks using SOLR.
+! Improved lock behavior for group editor.
+! Improved offline indexing to index content changes immediately.
+! Improved PDF extraction with new library version.
+! Improved module import by pausing offline indexing while importing or deleting modules.
+! Improved IE10 compatibility.
+! Updated CodeMirror source code editor to version 3.14.
+! Updated commons DBCP library.
+! Improved purging of container pages after publish.
+* Fixed issue #50 with encoding links in pointer resources.
+* Fixed issue #114 with locale handling on embedded message bundles in schemas.
+* Fixed issue #152 where the layout of the VfsImageWidget was broken.
+* Fixed issue #155 where error messages where not displayed correctly.
+* Fixed issue #156 where newly created container pages from model pages did not have the right template property.
+* Fixed issue #159 where another resource was locked when creating a new one.
+* Fixed issue #167 where editing expired resources from direct edit caused errors.
+* Fixed issue #169 where SOLR rebuild doesn't update unmodified resources.
+* Fixed issue #170 where folders without default files did deliver a blank page instead of the 404 error code.
+* Fixed issue #173 where XSS was possible.
+* Fixed issue #175 where depending on the current date certain dates could not be set.
+* Fixed issue with element language select.
+* Fixed issue with possible XSS exploit using the CmsRequestUtil.
+* Fixed issue with in-line editing of choice attributes.
+* Fixed issue when saving a container page that contained inconsistent links.
+* Fixed issue where expired resources were not availably using the gallery select dialogs.
+* Fixed issue where head includes for elements did not work, if the element was part of an inheritance group.
+* Fixed issue with history view for no longer existing historic resource versions.
+* Fixed issue with memory leak related to GWT RPC services.
+* Fixed issue with publishing moved resources with categories.
+* Fixed issue where selecting "Undo changes" in the context menu for a JSP, the corresponding JSP in the RFS JSP repository is not deleted or updated.
+* Fixed issue with context menu for expired resources.
+* Fixed issue with determining the content CSS in the XML content editor. 
+* Fixed issue with memory leaks using SOLR.
 
 OpenCms 8.5.1 - February 7, 2013
 ! Improved file selector widget to show resource information.
