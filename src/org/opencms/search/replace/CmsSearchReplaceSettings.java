@@ -45,6 +45,9 @@ public class CmsSearchReplaceSettings {
     /** The content search result list attribute name in the session. */
     public static final String ATTRIBUTE_NAME_SOURCESEARCH_RESULT_LIST = "sourcesearchResultList";
 
+    /** The force replacement flag. */
+    private boolean m_forceReplace;
+
     /** Display message. */
     private String m_message;
 
@@ -128,6 +131,27 @@ public class CmsSearchReplaceSettings {
     public String getSearchpattern() {
 
         return m_searchpattern;
+    }
+
+    /**
+     * Returns the force replace flag, if <code>true</code> the replacement
+     * will also be performed if the replacement String is empty.<p>
+     * 
+     * @return the force replace flag
+     */
+    public boolean isForceReplace() {
+
+        return m_forceReplace;
+    }
+
+    /**
+     * Sets the force replace flag.<p>
+     *
+     * @param forceReplace the force replace flag to set
+     */
+    public void setForceReplace(boolean forceReplace) {
+
+        m_forceReplace = forceReplace;
     }
 
     /**
