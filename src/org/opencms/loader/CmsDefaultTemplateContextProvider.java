@@ -27,6 +27,7 @@
 
 package org.opencms.loader;
 
+import org.opencms.cache.CmsVfsMemoryObjectCache;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
@@ -34,7 +35,6 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.json.JSONObject;
 import org.opencms.json.JSONTokener;
-import org.opencms.jsp.util.CmsJspDeviceSelector;
 import org.opencms.jsp.util.CmsJspDeviceSelectorDesktopMobileTablet;
 import org.opencms.jsp.util.I_CmsJspDeviceSelector;
 import org.opencms.main.CmsException;
@@ -78,8 +78,8 @@ public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextPr
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDefaultTemplateContextProvider.class);
 
-    /** The map of template contexts. */
-    private Map<String, CmsTemplateContext> m_map = new LinkedHashMap<String, CmsTemplateContext>();
+    /** The stored Cms context. */
+    private CmsObject m_cms;
 
     /** Default constructor. */
     public CmsDefaultTemplateContextProvider() {
@@ -91,7 +91,7 @@ public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextPr
      */
     public synchronized Map<String, CmsTemplateContext> getAllContexts() {
 
-        return Collections.unmodifiableMap(m_map);
+        return Collections.unmodifiableMap(getContextMap());
     }
 
     /**
@@ -110,7 +110,7 @@ public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextPr
      */
     public String getEditorStyleSheet(CmsObject cms, String editedResourcePath) {
 
-        String templatePath = m_map.get("desktop").getTemplatePath();
+        String templatePath = getContextMap().get("desktop").getTemplatePath();
         String result = null;
         try {
             CmsProperty property = cms.readPropertyObject(templatePath, CmsPropertyDefinition.PROPERTY_TEMPLATE, true);
@@ -141,12 +141,13 @@ public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextPr
 
         I_CmsJspDeviceSelector selector = OpenCms.getSystemInfo().getDeviceSelector();
         String deviceType = selector.getDeviceType(request);
-        if (deviceType.equals(CmsJspDeviceSelector.C_MOBILE)) {
-            return m_map.get("mobile");
+        Map<String, CmsTemplateContext> contextMap = getContextMap();
+        if (deviceType.equals(CmsJspDeviceSelectorDesktopMobileTablet.C_MOBILE)) {
+            return contextMap.get("mobile");
         } else if (deviceType.equals(CmsJspDeviceSelectorDesktopMobileTablet.C_TABLET)) {
-            return m_map.get("tablet");
+            return contextMap.get("tablet");
         } else {
-            return m_map.get("desktop");
+            return contextMap.get("desktop");
         }
     }
 
@@ -155,49 +156,86 @@ public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextPr
      */
     public void initialize(CmsObject cms) {
 
-        try {
-            String path = getConfigurationPropertyPath();
-            CmsResource resource = cms.readResource(path);
-            CmsFile file = cms.readFile(resource);
-            String fileContent = new String(file.getContents(), "UTF-8");
-            JSONTokener tok = new JSONTokener(fileContent);
-            tok.setOrdered(true);
-            JSONObject root = new JSONObject(tok, true);
-            for (String templateContextName : root.keySet()) {
-                JSONObject templateContextJson = (JSONObject)(root.opt(templateContextName));
-                CmsJsonMessageContainer jsonMessage = new CmsJsonMessageContainer(templateContextJson.opt("niceName"));
-                String templatePath = (String)templateContextJson.opt(A_PATH);
-                JSONObject variantsJson = (JSONObject)templateContextJson.opt(A_VARIANTS);
-                List<CmsClientVariant> variants = new ArrayList<CmsClientVariant>();
-                if (variantsJson != null) {
-                    for (String variantName : variantsJson.keySet()) {
-                        JSONObject variantJson = (JSONObject)variantsJson.opt(variantName);
-                        CmsJsonMessageContainer variantMessage = new CmsJsonMessageContainer(
-                            variantJson.opt(A_NICE_NAME));
-                        int width = variantJson.optInt(A_WIDTH, 800);
-                        int height = variantJson.optInt(A_HEIGHT, 600);
-                        CmsClientVariant variant = new CmsClientVariant(
-                            variantName,
-                            variantMessage,
-                            width,
-                            height,
-                            new HashMap<String, String>());
-                        variants.add(variant);
-                    }
-                }
-                CmsTemplateContext templateContext = new CmsTemplateContext(
-                    templateContextName,
-                    templatePath,
-                    jsonMessage,
-                    this,
-                    variants,
-                    false);
-                m_map.put(templateContextName, templateContext);
+        m_cms = cms;
+        getContextMap();
+    }
 
+    /**
+     * Gets the context map, either from a cache or from the VFS if it'S not already cached.<p>
+     * 
+     * @return the context map 
+     */
+    @SuppressWarnings("unchecked")
+    private Map<String, CmsTemplateContext> getContextMap() {
+
+        Object cachedObj = CmsVfsMemoryObjectCache.getVfsMemoryObjectCache().getCachedObject(
+            m_cms,
+            getConfigurationPropertyPath());
+        if (cachedObj != null) {
+            return (Map<String, CmsTemplateContext>)cachedObj;
+        } else {
+            try {
+                Map<String, CmsTemplateContext> map = initMap();
+                CmsVfsMemoryObjectCache.getVfsMemoryObjectCache().putCachedObject(
+                    m_cms,
+                    getConfigurationPropertyPath(),
+                    map);
+                return map;
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+                return Collections.emptyMap();
             }
-        } catch (Exception e) {
-            LOG.error(e.getLocalizedMessage(), e);
-            throw new RuntimeException(e);
         }
+
+    }
+
+    /**
+     * Loads the context map from the VFS.<p>
+     * 
+     * @return the context map  
+     * @throws Exception if something goes wrong  
+     */
+    private Map<String, CmsTemplateContext> initMap() throws Exception {
+
+        Map<String, CmsTemplateContext> result = new LinkedHashMap<String, CmsTemplateContext>();
+        String path = getConfigurationPropertyPath();
+        CmsResource resource = m_cms.readResource(path);
+        CmsFile file = m_cms.readFile(resource);
+        String fileContent = new String(file.getContents(), "UTF-8");
+        JSONTokener tok = new JSONTokener(fileContent);
+        tok.setOrdered(true);
+        JSONObject root = new JSONObject(tok, true);
+        for (String templateContextName : root.keySet()) {
+            JSONObject templateContextJson = (JSONObject)(root.opt(templateContextName));
+            CmsJsonMessageContainer jsonMessage = new CmsJsonMessageContainer(templateContextJson.opt(A_NICE_NAME));
+            String templatePath = (String)templateContextJson.opt(A_PATH);
+            JSONObject variantsJson = (JSONObject)templateContextJson.opt(A_VARIANTS);
+            List<CmsClientVariant> variants = new ArrayList<CmsClientVariant>();
+            if (variantsJson != null) {
+                for (String variantName : variantsJson.keySet()) {
+                    JSONObject variantJson = (JSONObject)variantsJson.opt(variantName);
+                    CmsJsonMessageContainer variantMessage = new CmsJsonMessageContainer(variantJson.opt(A_NICE_NAME));
+                    int width = variantJson.optInt(A_WIDTH, 800);
+                    int height = variantJson.optInt(A_HEIGHT, 600);
+                    CmsClientVariant variant = new CmsClientVariant(
+                        variantName,
+                        variantMessage,
+                        width,
+                        height,
+                        new HashMap<String, String>());
+                    variants.add(variant);
+                }
+            }
+            CmsTemplateContext templateContext = new CmsTemplateContext(
+                templateContextName,
+                templatePath,
+                jsonMessage,
+                this,
+                variants,
+                false);
+            result.put(templateContextName, templateContext);
+
+        }
+        return result;
     }
 }
