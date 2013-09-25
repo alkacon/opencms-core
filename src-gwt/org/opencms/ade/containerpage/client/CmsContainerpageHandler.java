@@ -1250,10 +1250,8 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                 final String label = entry.getValue();
                 if (info.hasClientVariants(key)) {
                     CmsContextMenuEntry singleContextEntry = createRawMenuEntry(structureId, DO_NOTHING);
-                    decorateMenuEntry(
-                        singleContextEntry,
-                        label,
-                        Objects.equal(info.getSelectedContext(), entry.getValue()));
+                    boolean showCheckbox = Objects.equal(info.getSelectedContext(), entry.getKey());
+                    decorateMenuEntry(singleContextEntry, label, showCheckbox);
                     List<I_CmsContextMenuEntry> variantEntries = new ArrayList<I_CmsContextMenuEntry>();
                     CmsContextMenuEntry editVariantEntry = createMenuEntryForTemplateContext(
                         info.getCookieName(),
