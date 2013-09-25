@@ -506,7 +506,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                         contentLocale);
                     htmlContent = elementUtil.getContentByContainer(
                         file,
-                        contextInfo.getString(CmsCntPageData.JSONKEY_DETAIL_ELEMENT_ID),
+                        contextInfo.getString(CmsCntPageData.JSONKEY_ELEMENT_ID),
                         container);
                 }
                 return new EntityHtml(htmlContent, validationResult);
