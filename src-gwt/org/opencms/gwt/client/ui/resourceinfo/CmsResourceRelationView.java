@@ -58,6 +58,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -93,6 +94,9 @@ public class CmsResourceRelationView extends Composite {
     /** Container which is used to display the main resource information box. */
     SimplePanel m_infoBox = new SimplePanel();
 
+    /** Scroll panel. */
+    CmsScrollPanel m_scrollPanel;
+
     /** The edit button. */
     private CmsPushButton m_editButton;
 
@@ -123,6 +127,7 @@ public class CmsResourceRelationView extends Composite {
         infoBoxPanel.add(infoItem);
         CmsFieldSet fieldset = new CmsFieldSet();
         CmsScrollPanel scrollPanel = GWT.create(CmsScrollPanel.class);
+        m_scrollPanel = scrollPanel;
         scrollPanel.add(m_list);
         fieldset.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
         scrollPanel.getElement().getStyle().setHeight(280, Style.Unit.PX);
@@ -143,7 +148,16 @@ public class CmsResourceRelationView extends Composite {
      */
     public void onSelect() {
 
-        //noop
+        Timer timer = new Timer() {
+
+            @Override
+            public void run() {
+
+                m_scrollPanel.onResizeDescendant();
+
+            }
+        };
+        timer.schedule(100);
 
     }
 
