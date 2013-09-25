@@ -335,7 +335,7 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
                         // if create link is not null, show "edit", "delete" and "new" button for first element
                         directEditButtons = CmsDirectEditButtonSelection.EDIT_DELETE_NEW;
                         // show "edit" and "delete" button for 2nd to last element
-                        m_directEditFollowButtons = CmsDirectEditButtonSelection.EDIT_DELETE;
+                        m_directEditFollowButtons = CmsDirectEditButtonSelection.EDIT_DELETE_NEW;
                     }
                 } else {
                     // re-use pre calculated options
