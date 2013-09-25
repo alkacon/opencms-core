@@ -1269,7 +1269,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                         CmsContextMenuEntry currentVariantEntry = createRawMenuEntry(
                             structureId,
                             new ClientVariantSelectAction(key, variant));
-                        decorateMenuEntry(currentVariantEntry, variant.getName(), false);
+                        decorateMenuEntry(currentVariantEntry, variant.getNiceName(), false);
                         variantEntries.add(currentVariantEntry);
                     }
                     singleContextEntry.setSubMenu(variantEntries);

@@ -33,6 +33,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.json.JSONObject;
+import org.opencms.json.JSONTokener;
 import org.opencms.jsp.util.CmsJspDeviceSelector;
 import org.opencms.jsp.util.CmsJspDeviceSelectorDesktopMobileTablet;
 import org.opencms.jsp.util.I_CmsJspDeviceSelector;
@@ -159,7 +160,9 @@ public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextPr
             CmsResource resource = cms.readResource(path);
             CmsFile file = cms.readFile(resource);
             String fileContent = new String(file.getContents(), "UTF-8");
-            JSONObject root = new JSONObject(fileContent, true);
+            JSONTokener tok = new JSONTokener(fileContent);
+            tok.setOrdered(true);
+            JSONObject root = new JSONObject(tok, true);
             for (String templateContextName : root.keySet()) {
                 JSONObject templateContextJson = (JSONObject)(root.opt(templateContextName));
                 CmsJsonMessageContainer jsonMessage = new CmsJsonMessageContainer(templateContextJson.opt("niceName"));

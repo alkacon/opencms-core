@@ -30,10 +30,9 @@ package org.opencms.gwt.shared;
 import org.opencms.util.CmsDefaultSet;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.google.common.collect.Maps;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -54,10 +53,10 @@ public class CmsTemplateContextInfo implements IsSerializable {
     private Map<String, CmsDefaultSet<String>> m_allowedContextMap;
 
     /** Client variant information. */
-    private Map<String, Map<String, CmsClientVariantInfo>> m_clientVariantInfo = Maps.newHashMap();
+    private Map<String, Map<String, CmsClientVariantInfo>> m_clientVariantInfo = new LinkedHashMap<String, Map<String, CmsClientVariantInfo>>();
 
     /** A map from the names of all available template contexts to their localized names. */
-    private Map<String, String> m_contextLabels = new HashMap<String, String>();
+    private Map<String, String> m_contextLabels = new LinkedHashMap<String, String>();
 
     /** The context provider class. */
     private String m_contextProvider;
@@ -196,7 +195,7 @@ public class CmsTemplateContextInfo implements IsSerializable {
     public void setClientVariant(String context, String variant, CmsClientVariantInfo info) {
 
         if (!m_clientVariantInfo.containsKey(context)) {
-            Map<String, CmsClientVariantInfo> variants = Maps.newHashMap();
+            Map<String, CmsClientVariantInfo> variants = new LinkedHashMap<String, CmsClientVariantInfo>();
             m_clientVariantInfo.put(context, variants);
         }
         m_clientVariantInfo.get(context).put(variant, info);

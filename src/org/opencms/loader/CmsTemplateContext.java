@@ -32,7 +32,7 @@ import org.opencms.i18n.I_CmsMessageContainer;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
@@ -102,7 +102,7 @@ public class CmsTemplateContext {
         m_messageContainer = container;
         m_provider = provider;
         m_forced = forced;
-        m_clientVariants = new HashMap<String, CmsClientVariant>();
+        m_clientVariants = new LinkedHashMap<String, CmsClientVariant>();
         for (CmsClientVariant variant : clientVariants) {
             m_clientVariants.put(variant.getName(), variant);
         }
