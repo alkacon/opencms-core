@@ -27,6 +27,7 @@
 
 package org.opencms.ade.containerpage.client;
 
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.shared.CmsClientVariantInfo;
 import org.opencms.gwt.shared.CmsGwtConstants;
 
@@ -112,6 +113,7 @@ public class CmsClientVariantDisplay {
         popup.setGlassEnabled(true);
         popup.add(container);
         m_popup = popup;
+        m_popup.getGlassElement().addClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupOverlay());
         m_popup.getGlassElement().getStyle().setBackgroundColor("white");
         m_popup.getGlassElement().getStyle().setOpacity(0.8);
         m_popup.getElement().getStyle().setZIndex(200000);
