@@ -139,6 +139,8 @@ public class CmsClientVariantDisplay {
     private String buildClientVariantUrl(String context, CmsClientVariantInfo info) {
 
         String currentUrl = Window.Location.getHref();
+        // remove fragment
+        currentUrl = currentUrl.replaceFirst("#.*$", "");
         String connector = "?";
         if (currentUrl.indexOf('?') >= 0) {
             connector = "&";
