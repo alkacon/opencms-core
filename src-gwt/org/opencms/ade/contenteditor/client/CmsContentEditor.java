@@ -90,6 +90,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.Style.VerticalAlign;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -865,7 +866,7 @@ public final class CmsContentEditor extends EditorBase {
         if (m_isStandAlone) {
             closeEditorWidow();
         } else {
-            RootPanel.getBodyElement().removeClassName(I_CmsLayoutBundle.INSTANCE.editorCss().integratedEditor());
+            RootPanel.getBodyElement().getParentElement().getStyle().clearOverflow();
         }
     }
 
@@ -1205,7 +1206,7 @@ public final class CmsContentEditor extends EditorBase {
         if (m_isStandAlone) {
             RootPanel.getBodyElement().addClassName(I_CmsLayoutBundle.INSTANCE.editorCss().standAloneEditor());
         } else {
-            RootPanel.getBodyElement().addClassName(I_CmsLayoutBundle.INSTANCE.editorCss().integratedEditor());
+            RootPanel.getBodyElement().getParentElement().getStyle().setOverflow(Overflow.HIDDEN);
         }
     }
 
