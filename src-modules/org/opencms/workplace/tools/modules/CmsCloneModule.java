@@ -43,6 +43,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.A_CmsResourceType;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeUnknown;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsVfsBundleManager;
@@ -55,6 +56,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
+import org.opencms.report.CmsLogReport;
 import org.opencms.search.replace.CmsSearchReplaceSettings;
 import org.opencms.search.replace.CmsSearchReplaceThread;
 import org.opencms.util.CmsStringUtil;
@@ -106,6 +108,9 @@ public class CmsCloneModule extends CmsJspActionElement {
 
     /** Option to change the resource types (optional flag). */
     private String m_changeResourceTypes;
+
+    /** If 'true' resource types in all sites will be adjusted. */
+    private String m_changeResourceTypesEverywhere;
 
     /** Option to delete the source module after cloning (optional flag). */
     private String m_deleteModule;
@@ -330,10 +335,22 @@ public class CmsCloneModule extends CmsJspActionElement {
             if (Boolean.valueOf(m_changeResourceTypes).booleanValue()) {
                 changeResourceTypes(resTypeMap);
             }
+            // adjust container pages
+            CmsObject cms = OpenCms.initCmsObject(getCmsObject());
+            if (Boolean.valueOf(m_changeResourceTypesEverywhere).booleanValue()) {
+                cms.getRequestContext().setSiteRoot("/");
+            }
+            CmsResourceFilter f = CmsResourceFilter.requireType(CmsResourceTypeXmlContainerPage.getContainerPageTypeId());
+            List<CmsResource> allContainerPages = cms.readResources("/", f);
+            replacePath(sourceModulePath, targetModulePath, allContainerPages);
 
             // delete the old module
             if (Boolean.valueOf(m_deleteModule).booleanValue()) {
-                OpenCms.getModuleManager().deleteModule(getCmsObject(), sourceModule.getName(), false, null);
+                OpenCms.getModuleManager().deleteModule(
+                    getCmsObject(),
+                    sourceModule.getName(),
+                    false,
+                    new CmsLogReport(getCmsObject().getRequestContext().getLocale(), CmsCloneModule.class));
             }
 
         } catch (CmsIllegalArgumentException e) {
@@ -395,6 +412,16 @@ public class CmsCloneModule extends CmsJspActionElement {
     public String getChangeResourceTypes() {
 
         return m_changeResourceTypes;
+    }
+
+    /**
+     * Returns the changeResourceTypesEverywhere.<p>
+     *
+     * @return the changeResourceTypesEverywhere
+     */
+    public String getChangeResourceTypesEverywhere() {
+
+        return m_changeResourceTypesEverywhere;
     }
 
     /**
@@ -535,6 +562,16 @@ public class CmsCloneModule extends CmsJspActionElement {
     public void setChangeResourceTypes(String changeResourceTypes) {
 
         m_changeResourceTypes = changeResourceTypes;
+    }
+
+    /**
+     * Sets the changeResourceTypesEverywhere.<p>
+     *
+     * @param changeResourceTypesEverywhere the changeResourceTypesEverywhere to set
+     */
+    public void setChangeResourceTypesEverywhere(String changeResourceTypesEverywhere) {
+
+        m_changeResourceTypesEverywhere = changeResourceTypesEverywhere;
     }
 
     /**
@@ -721,10 +758,14 @@ public class CmsCloneModule extends CmsJspActionElement {
     private void changeResourceTypes(Map<I_CmsResourceType, I_CmsResourceType> resTypeMap)
     throws CmsException, UnsupportedEncodingException {
 
+        CmsObject clone = OpenCms.initCmsObject(getCmsObject());
+        if (Boolean.valueOf(m_changeResourceTypesEverywhere).booleanValue()) {
+            clone.getRequestContext().setSiteRoot("/");
+        }
+
         for (Map.Entry<I_CmsResourceType, I_CmsResourceType> mapping : resTypeMap.entrySet()) {
-            List<CmsResource> resources = getCmsObject().readResources(
-                "/",
-                CmsResourceFilter.requireType(mapping.getKey().getTypeId()));
+            CmsResourceFilter filter = CmsResourceFilter.requireType(mapping.getKey().getTypeId());
+            List<CmsResource> resources = clone.readResources("/", filter);
             String sourceSchemaPath = mapping.getKey().getConfiguration().get("schema");
             String targetSchemaPath = mapping.getValue().getConfiguration().get("schema");
             for (CmsResource res : resources) {
@@ -1153,13 +1194,21 @@ public class CmsCloneModule extends CmsJspActionElement {
             if (resource.isFile()) {
                 CmsFile file = getCmsObject().readFile(resource);
                 String encoding = CmsLocaleManager.getResourceEncoding(getCmsObject(), file);
-                String content = new String(file.getContents(), encoding);
-                content = content.replaceAll(sourceModulePath, targetModulePath);
-                Matcher matcher = Pattern.compile(CmsUUID.UUID_REGEX).matcher(content);
-                content = matcher.replaceAll("");
-                content = content.replaceAll("<uuid></uuid>", "");
-                file.setContents(content.getBytes(encoding));
-                getCmsObject().writeFile(file);
+                String oldContent = new String(file.getContents(), encoding);
+                String newContent = oldContent.replaceAll(sourceModulePath, targetModulePath);
+                Matcher matcher = Pattern.compile(CmsUUID.UUID_REGEX).matcher(newContent);
+                newContent = matcher.replaceAll("");
+                newContent = newContent.replaceAll("<uuid></uuid>", "");
+                if (!oldContent.equals(newContent)) {
+                    file.setContents(newContent.getBytes(encoding));
+                    if (!resource.getRootPath().startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
+                        if (lockResource(getCmsObject(), resource)) {
+                            getCmsObject().writeFile(file);
+                        }
+                    } else {
+                        getCmsObject().writeFile(file);
+                    }
+                }
             }
         }
     }
