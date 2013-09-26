@@ -99,6 +99,29 @@ public class CmsJlanDiskInterface implements DiskInterface {
     }
 
     /**
+     * Converts a CIFS path to an OpenCms path by converting backslashes to slashes and translating special characters in the file name.<p>
+     * 
+     * @param path the path to transform 
+     * @return the OpenCms path for the given path 
+     */
+    protected static String getCmsPath(String path) {
+
+        String slashPath = path.replace('\\', '/');
+
+        // split path into components, translate each of them separately, then combine them again at the end 
+        String[] segments = slashPath.split("/");
+        List<String> nonEmptySegments = new ArrayList<String>();
+        for (String segment : segments) {
+            if (segment.length() > 0) {
+                String translatedSegment = OpenCms.getResourceManager().getFileTranslator().translateResource(segment);
+                nonEmptySegments.add(translatedSegment);
+            }
+        }
+        String result = "/" + Joiner.on("/").join(nonEmptySegments);
+        return result;
+    }
+
+    /**
      * @see org.alfresco.jlan.server.filesys.DiskInterface#closeFile(org.alfresco.jlan.server.SrvSession, org.alfresco.jlan.server.filesys.TreeConnection, org.alfresco.jlan.server.filesys.NetworkFile)
      */
     public void closeFile(SrvSession session, TreeConnection connection, NetworkFile file) throws IOException {
@@ -401,29 +424,6 @@ public class CmsJlanDiskInterface implements DiskInterface {
 
         CmsJlanRepository repository = ((CmsJlanDeviceContext)connection.getContext()).getRepository();
         CmsObjectWrapper result = repository.getCms(session, connection);
-        return result;
-    }
-
-    /**
-     * Converts a CIFS path to an OpenCms path by converting backslashes to slashes and translating special characters in the file name.<p>
-     * 
-     * @param path the path to transform 
-     * @return the OpenCms path for the given path 
-     */
-    protected String getCmsPath(String path) {
-
-        String slashPath = path.replace('\\', '/');
-
-        // split path into components, translate each of them separately, then combine them again at the end 
-        String[] segments = slashPath.split("/");
-        List<String> nonEmptySegments = new ArrayList<String>();
-        for (String segment : segments) {
-            if (segment.length() > 0) {
-                String translatedSegment = OpenCms.getResourceManager().getFileTranslator().translateResource(segment);
-                nonEmptySegments.add(translatedSegment);
-            }
-        }
-        String result = "/" + Joiner.on("/").join(nonEmptySegments);
         return result;
     }
 

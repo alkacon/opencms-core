@@ -30,6 +30,7 @@ package org.opencms.jlan;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsResource;
 import org.opencms.file.wrapper.CmsObjectWrapper;
+import org.opencms.file.wrapper.CmsWrappedResource;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -135,6 +136,11 @@ public class CmsJlanNetworkFile extends NetworkFile {
             if (writeCount > m_lastFlush) {
                 CmsFile file = getFile();
                 if (file != null) {
+                    CmsWrappedResource wr = new CmsWrappedResource(file);
+                    String rootPath = m_cms.getRequestContext().addSiteRoot(
+                        CmsJlanDiskInterface.getCmsPath(getFullName()));
+                    wr.setRootPath(rootPath);
+                    file = wr.getFile();
                     file.setContents(m_buffer.getContents());
                     ensureLock();
                     m_cms.writeFile(file);
