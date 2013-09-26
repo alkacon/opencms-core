@@ -62,6 +62,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
+import org.opencms.xml.CmsXmlException;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -794,7 +795,11 @@ public class CmsCloneModule extends CmsJspActionElement {
                     String content = new String(file.getContents(), encoding);
                     content = content.replaceAll(sourceSchemaPath, targetSchemaPath);
                     file.setContents(content.getBytes(encoding));
-                    getCmsObject().writeFile(file);
+                    try {
+                        getCmsObject().writeFile(file);
+                    } catch (CmsXmlException e) {
+                        LOG.error(e.getMessage(), e);
+                    }
                     res.setType(mapping.getValue().getTypeId());
                     getCmsObject().writeResource(res);
                 }
@@ -1181,9 +1186,9 @@ public class CmsCloneModule extends CmsJspActionElement {
     private void replaceFormatterPaths(CmsModule targetModule) throws CmsException, UnsupportedEncodingException {
 
         CmsResource formatterSourceFolder = getCmsObject().readResource(
-            "/system/modules/" + m_formatterSourceModule + "/formatters/");
+            "/system/modules/" + m_formatterSourceModule + "/");
         CmsResource formatterTargetFolder = getCmsObject().readResource(
-            "/system/modules/" + m_formatterTargetModule + "/formatters/");
+            "/system/modules/" + m_formatterTargetModule + "/");
         for (I_CmsResourceType type : targetModule.getResourceTypes()) {
             String schemaPath = type.getConfiguration().get("schema");
             CmsResource res = getCmsObject().readResource(schemaPath);
