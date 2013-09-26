@@ -62,6 +62,9 @@ public class CmsJlanNetworkFile extends NetworkFile {
     /** The buffer used for reading/writing file contents. */
     private CmsFileBuffer m_buffer = new CmsFileBuffer();
 
+    /** Flag which indicates whether the buffer has been initialized. */
+    private boolean m_bufferInitialized;
+
     /** The CMS context to use. */
     private CmsObjectWrapper m_cms;
 
@@ -423,9 +426,13 @@ public class CmsJlanNetworkFile extends NetworkFile {
             }
             if (m_resource.isFile() && needContent && (!(m_resource instanceof CmsFile))) {
                 m_resource = m_cms.readFile(m_cms.getSitePath(m_resource), CmsJlanDiskInterface.STANDARD_FILTER);
-                m_buffer.init(getFile().getContents());
             }
-
+            if (!m_bufferInitialized && (getFile() != null)) {
+                // readResource may already have returned a CmsFile, this is why we need to initialize the buffer
+                // here and not in the if-block above 
+                m_buffer.init(getFile().getContents());
+                m_bufferInitialized = true;
+            }
         } catch (CmsException e) {
             throw e;
         }
