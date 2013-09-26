@@ -51,7 +51,6 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
@@ -212,8 +211,10 @@ public class CmsCloneModule extends CmsJspActionElement {
 
     /**
      * Executes the module clone and returns the new module.<p>
+     * 
+     * @throws Throwable if anything goes wrong
      */
-    public void executeModuleClone() {
+    public void executeModuleClone() throws Throwable {
 
         CmsModule sourceModule = OpenCms.getModuleManager().getModule(m_sourceModuleName);
 
@@ -332,12 +333,12 @@ public class CmsCloneModule extends CmsJspActionElement {
             OpenCms.fireCmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, new HashMap<String, Object>());
 
             // change resource types and schema locations
-            if (Boolean.valueOf(m_changeResourceTypes).booleanValue()) {
+            if (isTrue(m_changeResourceTypes)) {
                 changeResourceTypes(resTypeMap);
             }
             // adjust container pages
             CmsObject cms = OpenCms.initCmsObject(getCmsObject());
-            if (Boolean.valueOf(m_changeResourceTypesEverywhere).booleanValue()) {
+            if (isTrue(m_changeResourceTypesEverywhere)) {
                 cms.getRequestContext().setSiteRoot("/");
             }
             CmsResourceFilter f = CmsResourceFilter.requireType(CmsResourceTypeXmlContainerPage.getContainerPageTypeId());
@@ -345,7 +346,7 @@ public class CmsCloneModule extends CmsJspActionElement {
             replacePath(sourceModulePath, targetModulePath, allContainerPages);
 
             // delete the old module
-            if (Boolean.valueOf(m_deleteModule).booleanValue()) {
+            if (isTrue(m_deleteModule)) {
                 OpenCms.getModuleManager().deleteModule(
                     getCmsObject(),
                     sourceModule.getName(),
@@ -353,13 +354,31 @@ public class CmsCloneModule extends CmsJspActionElement {
                     new CmsLogReport(getCmsObject().getRequestContext().getLocale(), CmsCloneModule.class));
             }
 
-        } catch (CmsIllegalArgumentException e) {
-            LOG.error(e.getMessage(), e);
-        } catch (CmsException e) {
-            LOG.error(e.getMessage(), e);
-        } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
+        } catch (Throwable t) {
+            LOG.error(t.getMessage(), t);
+            throw t;
         }
+    }
+
+    /**
+     * Returns <code>true</code> if form imput is selected, checked, on or yes.<p>
+     * 
+     * @param value the value to check
+     * 
+     * @return <code>true</code> if form imput is selected, checked, on or yes
+     */
+    private boolean isTrue(String value) {
+
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
+            if (Boolean.valueOf(value.toLowerCase()).booleanValue()
+                || value.toLowerCase().equals("on")
+                || value.toLowerCase().equals("yes")
+                || value.toLowerCase().equals("checked")
+                || value.toLowerCase().equals("selected")) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -759,7 +778,7 @@ public class CmsCloneModule extends CmsJspActionElement {
     throws CmsException, UnsupportedEncodingException {
 
         CmsObject clone = OpenCms.initCmsObject(getCmsObject());
-        if (Boolean.valueOf(m_changeResourceTypesEverywhere).booleanValue()) {
+        if (isTrue(m_changeResourceTypesEverywhere)) {
             clone.getRequestContext().setSiteRoot("/");
         }
 
