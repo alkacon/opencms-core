@@ -152,6 +152,9 @@ div.optionBar div, div.optionBar span {
 @sprite .optionBar .cmsState-up-hovering .toolbarSelection, .optionBar .cmsState-down-hovering .toolbarSelection, .optionBar .cmsState-down .toolbarSelection {
     gwt-image: "coreImages.icons.selectionIconActive";
 }
+@sprite .optionBar .toolbarEdit.cmsState-up-hovering .toolbarSelection, .optionBar .toolbarEdit.cmsState-down-hovering .toolbarSelection, .optionBar .toolbarEdit.cmsState-down .toolbarSelection {
+    gwt-image: "coreImages.icons.editIconActive";
+}
 @sprite .optionBar .cmsState-up .toolbarSelection, .optionBar .cmsState-up-disabled .toolbarSelection, .optionBar .cmsState-down-disabled .toolbarSelection {
     gwt-image: "coreImages.icons.selectionIconDeactivated";
 }

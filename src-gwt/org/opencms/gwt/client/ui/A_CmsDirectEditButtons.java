@@ -191,7 +191,7 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
                 add(m_new);
                 m_new.addClickHandler(handler);
             }
-            if (this.getWidgetCount() > 0) {
+            if ((this.getWidgetCount() > 0) || m_editableData.hasEdit()) {
                 m_edit = new CmsPushButton();
                 m_edit.setImageClass(I_CmsButton.ButtonData.SELECTION.getIconClass());
                 m_edit.addStyleName(I_CmsButton.ButtonData.SELECTION.getIconClass());
