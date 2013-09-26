@@ -213,7 +213,7 @@ div.groupcontainerPlaceholder{
 @sprite .optionBar .toolbarEdit.cmsState-up-hovering .toolbarSelection, .optionBar .toolbarEdit.cmsState-down-hovering .toolbarSelection, .optionBar .toolbarEdit.cmsState-down .toolbarSelection {
     gwt-image: "images.editIconActive";
 }
-@sprite .optionBar .cmsState-up .toolbarEdit{
+@sprite .cmsHovering.optionBar .toolbarEdit.cmsState-up .toolbarSelection,  .optionBar .cmsState-up .toolbarEdit{
     gwt-image: "images.editIconDeactivated";
 }
 

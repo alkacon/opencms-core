@@ -117,7 +117,7 @@ div.optionBar div, div.optionBar span {
 @sprite .optionBar .cmsState-up-hovering .toolbarEdit, .optionBar .cmsState-down-hovering .toolbarEdit, .optionBar .cmsState-down .toolbarEdit {
     gwt-image: "coreImages.icons.editIconActive";
 }
-@sprite .optionBar .cmsState-up .toolbarEdit{
+@sprite .optionBar .cmsState-up .toolbarEdit, .cmsHovering.optionBar .toolbarEdit.cmsState-up .toolbarSelection{
 	gwt-image: "coreImages.icons.editIconDeactivated";
 }
 @sprite .optionBar .cmsState-up-disabled .toolbarEdit, .optionBar .cmsState-down-disabled .toolbarEdit {
