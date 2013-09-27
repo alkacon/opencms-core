@@ -44,6 +44,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
+import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -230,6 +231,20 @@ public class CmsCurrentPageProject implements I_CmsVirtualProject {
                             }
                         }
                     }
+                    Set<CmsResource> changedParentFolders = new HashSet<CmsResource>();
+                    for (CmsResource res : result) {
+                        if (res.isFile()) {
+                            try {
+                                CmsResource parentFolder = m_cms.readParentFolder(res.getStructureId());
+                                if (!parentFolder.getState().isUnchanged()) {
+                                    changedParentFolders.add(parentFolder);
+                                }
+                            } catch (CmsPermissionViolationException e) {
+                                LOG.error(e.getLocalizedMessage(), e);
+                            }
+                        }
+                    }
+                    result.addAll(changedParentFolders);
                 } catch (CmsException e) {
                     LOG.error(e.getLocalizedMessage(), e);
                 }
