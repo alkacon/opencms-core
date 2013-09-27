@@ -280,8 +280,12 @@ public class CmsCloneModule extends CmsJspActionElement {
             adjustModuleResources(sourceModule, targetModule, sourcePathPart, targetPathPart, iconPaths);
 
             // search and replace the localization keys
-            List<CmsResource> props = getCmsObject().readResources(targetClassesPath, CmsResourceFilter.DEFAULT_FILES);
-            replacesMessages(descKeys, props);
+            if (getCmsObject().existsResource(targetClassesPath)) {
+                List<CmsResource> props = getCmsObject().readResources(
+                    targetClassesPath,
+                    CmsResourceFilter.DEFAULT_FILES);
+                replacesMessages(descKeys, props);
+            }
 
             int type = OpenCms.getResourceManager().getResourceType(CmsVfsBundleManager.TYPE_XML_BUNDLE).getTypeId();
             CmsResourceFilter filter = CmsResourceFilter.requireType(type);
