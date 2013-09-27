@@ -173,7 +173,16 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
             }
 
             // update the site manager state
-            OpenCms.getSiteManager().updateSite(getCms(), m_site.getOriginalSite(), m_site.toCmsSite());
+            CmsSite newSite = m_site.toCmsSite();
+            OpenCms.getSiteManager().updateSite(getCms(), m_site.getOriginalSite(), newSite);
+            // update the workplace server if the changed site was the workplace server
+            if (OpenCms.getSiteManager().getWorkplaceServer().equals(m_site.getOriginalSite().getUrl())) {
+                OpenCms.getSiteManager().updateGeneralSettings(
+                    getCms(),
+                    OpenCms.getSiteManager().getDefaultUri(),
+                    newSite.getUrl(),
+                    OpenCms.getSiteManager().getSharedFolder());
+            }
             // write the system configuration
             OpenCms.writeConfiguration(CmsSystemConfiguration.class);
             // refresh the list of sites
