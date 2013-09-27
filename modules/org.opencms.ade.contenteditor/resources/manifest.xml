@@ -3,7 +3,7 @@
 <export>
   <info>
     <creator>Admin</creator>
-    <opencms_version>8.5.0</opencms_version>
+    <opencms_version>8.9.0</opencms_version>
     <createdate>Fri, 10 Feb 2012 10:42:28 GMT</createdate>
     <infoproject>Offline</infoproject>
     <export_version>7</export_version>
@@ -15,14 +15,14 @@
     <class/>
     <description><![CDATA[Editor for structured contents.<br>
 <i>(c) 2013 by Alkacon Software GmbH (http://www.alkacon.com).</i>]]></description>
-    <version>8.7.1</version>
+    <version>8.9.0</version>
     <authorname><![CDATA[Alkacon Software GmbH]]></authorname>
     <authoremail><![CDATA[sales@alkacon.com]]></authoremail>
     <datecreated/>
     <userinstalled/>
     <dateinstalled/>
     <dependencies>
-      <dependency name="org.opencms.ade.config" version="8.5.0"/>
+      <dependency name="org.opencms.ade.config" version="8.9.0"/>
     </dependencies>
     <exportpoints>
       <exportpoint uri="/system/modules/org.opencms.ade.contenteditor/resources/" destination="resources/ade/"/>
