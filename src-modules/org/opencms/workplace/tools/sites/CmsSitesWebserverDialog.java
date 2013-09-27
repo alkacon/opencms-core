@@ -372,6 +372,8 @@ public class CmsSitesWebserverDialog extends CmsWidgetDialog {
      */
     protected void initMembers(Map<String, String> params) {
 
+        clearDialogObject();
+
         m_webserverscript = getParameter(params, PARAM_WEBSERVER_SCRIPT, DEFAULT_PARAM_WEBSERVER_SCRIPT);
         m_targetpath = getParameter(params, PARAM_TARGET_PATH, DEFAULT_PARAM_TARGET_PATH);
         m_configtemplate = getParameter(params, PARAM_CONFIG_TEMPLATE, DEFAULT_PARAM_CONFIG_TEMPLATE);
@@ -379,30 +381,32 @@ public class CmsSitesWebserverDialog extends CmsWidgetDialog {
         m_filenameprefix = getParameter(params, PARAM_FILENAME_PREFIX, DEFAULT_PARAM_FILENAME_PREFIX);
         m_loggingdir = getParameter(params, PARAM_LOGGING_DIR, DEFAULT_PARAM_LOGGING_DIR);
 
-        if (m_webserverscript.equals(DEFAULT_PARAM_WEBSERVER_SCRIPT)
-            || m_configtemplate.equals(DEFAULT_PARAM_CONFIG_TEMPLATE)
-            || m_securetemplate.equals(DEFAULT_PARAM_SECURE_TEMPLATE)) {
+        if (DEFAULT_PARAM_WEBSERVER_SCRIPT.equals(m_webserverscript)
+            || DEFAULT_PARAM_CONFIG_TEMPLATE.equals(m_configtemplate)
+            || DEFAULT_PARAM_SECURE_TEMPLATE.equals(m_securetemplate)) {
             for (CmsExportPoint point : OpenCms.getModuleManager().getModule(MODULE_NAME).getExportPoints()) {
-                if (point.getUri().equals(DEFAULT_PATH_TEMPLATE)) {
+                if (DEFAULT_PATH_TEMPLATE.equals(point.getUri())) {
                     m_configtemplate = point.getDestinationPath();
                 }
-                if (point.getUri().equals(DEFAULT_PATH_SECURE_TEMPLATE)) {
+                if (DEFAULT_PATH_SECURE_TEMPLATE.equals(point.getUri())) {
                     m_securetemplate = point.getDestinationPath();
                 }
-                if (point.getUri().equals(DEFAULT_PATH_SCRIPT_WIDNOWS) && SystemUtils.IS_OS_WINDOWS) {
-                    // only take the windows script if the OS is a windows
-                    m_webserverscript = point.getDestinationPath();
-                } else if (point.getUri().equals(DEFAULT_PATH_SCRIPT_LINUX)) {
-                    m_webserverscript = point.getDestinationPath();
+                if (DEFAULT_PARAM_WEBSERVER_SCRIPT.equals(m_webserverscript)) {
+                    if (DEFAULT_PATH_SCRIPT_WIDNOWS.equals(point.getUri()) && SystemUtils.IS_OS_WINDOWS) {
+                        // only take the windows script if the OS is a windows
+                        m_webserverscript = point.getDestinationPath();
+                    } else if (DEFAULT_PATH_SCRIPT_LINUX.equals(point.getUri())) {
+                        m_webserverscript = point.getDestinationPath();
+                    }
                 }
             }
         }
 
-        if (m_targetpath.equals(DEFAULT_PARAM_TARGET_PATH)) {
+        if (DEFAULT_PARAM_TARGET_PATH.equals(m_targetpath)) {
             m_targetpath = PATH_WEBSERVER_CONFIG;
         }
 
-        if (m_loggingdir.equals(DEFAULT_PARAM_LOGGING_DIR)) {
+        if (DEFAULT_PARAM_LOGGING_DIR.equals(m_loggingdir)) {
             m_loggingdir = SystemUtils.IS_OS_WINDOWS ? "" : DEFAULT_PATH_LOG_LINUX;
         }
 
