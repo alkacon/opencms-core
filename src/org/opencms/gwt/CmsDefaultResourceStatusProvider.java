@@ -231,6 +231,17 @@ public class CmsDefaultResourceStatusProvider {
         List<CmsRelation> relations = cms.readRelations(CmsRelationFilter.relationsToStructureId(resource.getStructureId()));
         Map<CmsUUID, CmsResource> relationSources = new HashMap<CmsUUID, CmsResource>();
 
+        if (CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
+            // People may link to the folder of a container page instead of the page itself
+            try {
+                CmsResource parent = cms.readParentFolder(resource.getStructureId());
+                List<CmsRelation> parentRelations = cms.readRelations(CmsRelationFilter.relationsToStructureId(parent.getStructureId()));
+                relations.addAll(parentRelations);
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+
         // find all distinct relation sources 
         for (CmsRelation relation : relations) {
             CmsResource currentSource = relation.getSource(cms, CmsResourceFilter.IGNORE_EXPIRATION);
