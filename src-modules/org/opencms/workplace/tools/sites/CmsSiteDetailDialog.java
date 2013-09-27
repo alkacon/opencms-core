@@ -176,7 +176,8 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
             CmsSite newSite = m_site.toCmsSite();
             OpenCms.getSiteManager().updateSite(getCms(), m_site.getOriginalSite(), newSite);
             // update the workplace server if the changed site was the workplace server
-            if (OpenCms.getSiteManager().getWorkplaceServer().equals(m_site.getOriginalSite().getUrl())) {
+            if ((m_site.getOriginalSite() != null)
+                && m_site.getOriginalSite().getUrl().equals(OpenCms.getSiteManager().getWorkplaceServer())) {
                 OpenCms.getSiteManager().updateGeneralSettings(
                     getCms(),
                     OpenCms.getSiteManager().getDefaultUri(),
