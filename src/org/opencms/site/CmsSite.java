@@ -127,7 +127,9 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
         // init the position value
         m_position = Float.MAX_VALUE;
         try {
-            m_position = Float.parseFloat(position);
+            if (position != null) {
+                m_position = Float.parseFloat(position);
+            }
         } catch (Throwable e) {
             // m_position will have Float.MAX_VALUE, so this site will appear last
         }
