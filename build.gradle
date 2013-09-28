@@ -221,8 +221,18 @@ allModuleNames.split(',').each{ moduleName ->
     def requiresJar = false
     // check if there are any java packages to include into the module's jar
     modulePackages.split(',').each{ pack ->
-        if (isExternal.toBoolean() && file("${external_directories}/src-modules/"+ pack.replaceAll('\\.','/')).exists() || file("${projectDir}/src-modules/"+ pack.replaceAll('\\.','/')).exists()){
-            requiresJar = true
+        def packageFolder
+        if (isExternal.toBoolean()){
+            packageFolder= file("${external_directories}/src-modules/"+ pack.replaceAll('\\.','/'))
+        }else{
+            packageFolder= file("${projectDir}/src-modules/"+ pack.replaceAll('\\.','/'))
+        }
+        if (packageFolder.exists()&&packageFolder.isDirectory()){
+            packageFolder.listFiles().each{ file ->
+                if (file.isFile()){
+                   requiresJar = true
+                }
+            }
         }
     }
     
@@ -278,7 +288,6 @@ allModuleNames.split(',').each{ moduleName ->
                 into "/system/modules/${moduleName}/resources/"
             }
         }
-        // TODO: set the module version to match the manifest.xml
         baseName moduleName
         doFirst {
             println '======================================================'
