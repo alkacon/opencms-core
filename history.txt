@@ -16,46 +16,44 @@ Legend:
 - General comment
 
 OpenCms 8.9.0 (aka 9.0 RC) - September 30, 2013
-! Integrated JLan for accessing the VFS as a network share
-! Added gallery access to the toolbar
-! Added enhanced page / element info dialog
-! Added dynamic template provider feature.
-! Added site management administration tool with web server configuration support
-! Added option to configure an error page per site
-! Added detail view containers the allow individual detail pages 
-! Added XML content based resource bundles
-! Replaced in line wysiwyg editor with fully-fledged TinyMCE
-! Added undo / redo function to content editor
-! Added in place editing options for nested contents
-! Added dynamic HTML update during in place editing
-! Added direct upload option to image widget
-! Improved XML content editor layout
-! Added scripted setup feature
-! Added option to create new contents for empty collector lists
-! Added new demo template
-! Added 'This page' publishing mode
-! Added mode for the workplace where the session is not kept alive
-! Added configurable password substitution mechanism to avoid putting passwords in the configuration files
+! Improved "in place" editing of web pages for text and also for images and other content types.
+! Enhanced support for different devices with preview and device specific content output control.
+! Access to the content repository over a shared network drive.
+! Detail pages now allow individual content to be added with drag & drop.
+! A new site management tool allows simple configuration of multiple sites.
+! Automated / scripted setup option, great for continuous integration builds.
+! Optimized build process using Gradle.
+! A new responsive demo template based on Bootstrap as a base for customization.
+! Added gallery access to the toolbar.
+! Added enhanced page / element info dialog, accessible from the toolbar.
+! Added undo / redo function to the form content editor.
+! Added direct upload option to image widget in the form content editor.
+! Added automatic optimized layout of widgets in the from content editor.
+! Added 'This page' publishing mode and other improvements to the publish dialog.
+! Added option to create new contents for empty collector lists.
+! Added XML content based resource bundles.
+! Added dynamic HTML update during in place editing.
+! Added option to configure an individual error page per site.
 ! Added global permission overview dialog
-! Added feature to unlock users who are locked out because of too many login attempts
-! Added feature to destroy sessions of logged in users
-! Added optional feature to prevent users from having more than one session
-* Fixed issue #23 where parsing the publish scheduled date failed due to a wrong locale
-* Fixed issue #61 where the removal of mapped properties failed
-* Fixed issue #67 where malformed nested XML content schemas resulted in misleading error messages
-* Fixed issue #130 where container page elements where removed without confirmation
-* Fixed issue #168 where the source code contained some spelling errors
-* Fixed issue #180 where database names where not validated during setup 
-* Fixed issue #187 where sort by title did not work in the gallery dialogs
+! Added option to retrieve the database password from a configurable source.
+! Added optional feature to prevent users from having more than one session.
+! Added feature to destroy sessions of logged in users.
+! Added feature to unlock users who are locked out because of too many login attempts.
 - Updated Italian localization
 - Updated Spanish localization
 - Updated Russian localization
-- Changed build process to use Gradle
 - Removed upload applet
 - Removed obsolete FCKEditor and EditArea
-- Updated Solr and Lucene libraries
-- Improved Solr search field mapping for multi-lingual XML contents that are using nested elements
-- Improved text based language detection
+- Updated SOLR and Lucene libraries
+- Improved SOLR search field mapping for multi-lingual XML contents that are using nested elements
+- Improved text based language detection.
+* Fixed issue #23 where parsing the publish scheduled date failed due to a wrong locale
+* Fixed issue #61 where the removal of mapped properties failed
+* Fixed issue #67 where a malformed nested XML content schema resulted in misleading error messages
+* Fixed issue #130 where container page elements where removed without confirmation
+* Fixed issue #168 where the source code contained some spelling errors
+* Fixed issue #180 where database names where not validated during setup
+* Fixed issue #187 where sort by title did not work in the gallery dialogs
 
 OpenCms 8.5.2 - July 10, 2013
 ! Improved lock behavior for group editor.
