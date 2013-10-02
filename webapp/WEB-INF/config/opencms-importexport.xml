@@ -157,10 +157,8 @@
 				<param name="project">Offline</param>
 				<param name="root">/</param>
 				<param name="addBOM">false</param>
+				<param name="wrapper">org.opencms.file.wrapper.CmsResourceWrapperPreventCreateNameCI:thumbs.db,.thumbnails,.xvpics</param>
 				<param name="wrapper">org.opencms.file.wrapper.CmsResourceWrapperReplaceDeleted</param>
-				<!--  
-				<param name="wrapper">org.opencms.file.wrapper.CmsResourceWrapperPropertyFile</param>
-				 -->
 			</params>					
 		</repository>
 	</repositories>
