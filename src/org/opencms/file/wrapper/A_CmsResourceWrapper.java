@@ -70,6 +70,15 @@ public abstract class A_CmsResourceWrapper implements I_CmsResourceWrapper {
     }
 
     /**
+     * @see org.opencms.file.wrapper.I_CmsResourceWrapper#configure(java.lang.String)
+     */
+    public void configure(String configString) {
+
+        // ignore 
+
+    }
+
+    /**
      * @see org.opencms.file.wrapper.I_CmsResourceWrapper#copyResource(org.opencms.file.CmsObject, java.lang.String, java.lang.String, org.opencms.file.CmsResource.CmsResourceCopyMode)
      */
     public boolean copyResource(CmsObject cms, String source, String destination, CmsResourceCopyMode siblingMode)
@@ -126,7 +135,7 @@ public abstract class A_CmsResourceWrapper implements I_CmsResourceWrapper {
     }
 
     /**
-     * @see org.opencms.file.wrapper.I_CmsResourceWrapper#lockResource(CmsObject, String)
+     * @see org.opencms.file.wrapper.I_CmsResourceWrapper#lockResource(org.opencms.file.CmsObject, java.lang.String, boolean)
      */
     public boolean lockResource(CmsObject cms, String resourcename, boolean temporary) throws CmsException {
 

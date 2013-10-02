@@ -61,6 +61,9 @@ public class CmsRepositoryManager {
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsRepositoryManager.class);
 
+    /** Separator between a wrapper class and its parameters. */
+    private static final String WRAPPER_CONFIG_SEPARATOR = ":";
+
     /** Determines if the repository manager was configured or not. */
     private boolean m_configured;
 
@@ -124,16 +127,25 @@ public class CmsRepositoryManager {
         List<I_CmsResourceWrapper> wrapperObjects = Lists.newArrayList();
         if (config.containsKey(paramName)) {
             List<String> wrappers = config.getList(paramName);
-            for (String classname : wrappers) {
+            for (String wrapperString : wrappers) {
+                wrapperString = wrapperString.trim();
+                String className;
+                String configString = null;
+                int separatorPos = wrapperString.indexOf(WRAPPER_CONFIG_SEPARATOR);
+                if (separatorPos < 0) {
+                    className = wrapperString;
+                } else {
+                    className = wrapperString.substring(0, separatorPos);
+                    configString = wrapperString.substring(separatorPos + 1);
+                }
 
-                classname = classname.trim();
                 Class<?> nameClazz;
 
                 // init class for wrapper
                 try {
-                    nameClazz = Class.forName(classname);
+                    nameClazz = Class.forName(className);
                 } catch (ClassNotFoundException e) {
-                    log.error(Messages.get().getBundle().key(Messages.LOG_WRAPPER_CLASS_NOT_FOUND_1, classname), e);
+                    log.error(Messages.get().getBundle().key(Messages.LOG_WRAPPER_CLASS_NOT_FOUND_1, className), e);
                     wrapperObjects.clear();
                     break;
                 }
@@ -141,18 +153,21 @@ public class CmsRepositoryManager {
                 I_CmsResourceWrapper wrapper;
                 try {
                     wrapper = (I_CmsResourceWrapper)nameClazz.newInstance();
+                    if (configString != null) {
+                        wrapper.configure(configString);
+                    }
                 } catch (InstantiationException e) {
                     throw new CmsConfigurationException(Messages.get().container(
                         Messages.ERR_INVALID_WRAPPER_NAME_1,
-                        classname));
+                        wrapperString));
                 } catch (IllegalAccessException e) {
                     throw new CmsConfigurationException(Messages.get().container(
                         Messages.ERR_INVALID_WRAPPER_NAME_1,
-                        classname));
+                        wrapperString));
                 } catch (ClassCastException e) {
                     throw new CmsConfigurationException(Messages.get().container(
                         Messages.ERR_INVALID_WRAPPER_NAME_1,
-                        classname));
+                        wrapperString));
                 }
 
                 wrapperObjects.add(wrapper);

@@ -76,6 +76,16 @@ public interface I_CmsResourceWrapper {
     List<CmsResource> addResourcesToFolder(CmsObject cms, String resourcename, CmsResourceFilter filter)
     throws CmsException;
 
+    /** 
+     * If there is a configuration string for the wrapper, this method will be called with the configuration string
+     * before it is used.<p>
+     * 
+     *  Otherwise, it will not be called. 
+     * 
+     * @param configuration the configuration string for the wrapper 
+     */
+    void configure(String configuration);
+
     /**
      * Copies a resource.<p>
      * 
@@ -202,6 +212,7 @@ public interface I_CmsResourceWrapper {
      * 
      * @param cms the current users OpenCms context
      * @param resourcename the name of the resource to lock (full path)
+     * @param temporary true if the resource should only be locked temporarily
      * 
      * @return true if this request could be handled by this wrapper or false if not
      * 
