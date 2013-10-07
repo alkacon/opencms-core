@@ -371,7 +371,7 @@ public class CmsSelectWidgetOption {
                     isDefault = Boolean.valueOf(sub).booleanValue();
                 } else {
                     // check for shortcut syntax, value must end with a '*'
-                    if (value.charAt(value.length() - 1) == DEFAULT_MARKER) {
+                    if ((value != null) && (value.charAt(value.length() - 1) == DEFAULT_MARKER)) {
                         isDefault = true;
                         value = value.substring(0, value.length() - 1);
                     }
