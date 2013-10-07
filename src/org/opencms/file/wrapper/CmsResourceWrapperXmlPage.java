@@ -455,7 +455,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
     }
 
     /**
-     * @see org.opencms.file.wrapper.A_CmsResourceWrapper#lockResource(org.opencms.file.CmsObject, java.lang.String)
+     * @see org.opencms.file.wrapper.A_CmsResourceWrapper#lockResource(org.opencms.file.CmsObject, java.lang.String, boolean)
      */
     @Override
     public boolean lockResource(CmsObject cms, String resourcename, boolean temporary) throws CmsException {

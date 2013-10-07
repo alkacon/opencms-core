@@ -440,7 +440,6 @@ public class CmsObjectWrapper {
      *
      * Iterates through all configured resource wrappers till the first returns <code>true</code>.<p>
      *
-     * @see I_CmsResourceWrapper#lockResource(CmsObject, String)
      * @see CmsObject#lockResource(String)
      *
      * @param resourcename the name of the resource to lock (full path)
@@ -468,6 +467,13 @@ public class CmsObjectWrapper {
         }
     }
 
+    /**
+     * Locks a resource temporarily.<p>
+     * 
+     * @param resourceName the name of the resource to lock
+     * 
+     * @throws CmsException if something goes wrong
+     */
     public void lockResourceTemporary(String resourceName) throws CmsException {
 
         boolean exec = false;
