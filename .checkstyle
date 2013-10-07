@@ -6,5 +6,6 @@
   </local-check-config>
   <fileset name="all" enabled="true" check-config-name="Alkacon OpenCms (project-local)" local="true">
     <file-match-pattern match-pattern="\.java$" include-pattern="true"/>
+    <file-match-pattern match-pattern="UAgentInfo\.java$" include-pattern="false"/>
   </fileset>
 </fileset-config>

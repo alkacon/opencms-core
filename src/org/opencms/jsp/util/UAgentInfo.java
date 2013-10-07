@@ -71,6 +71,7 @@ package org.opencms.jsp.util;
  * This class is an exact copy of http://mobileesp.googlecode.com/svn/Java/UAgentInfo.java.
  * When updating only adjust the package name.
  */
+@SuppressWarnings("javadoc")
 public class UAgentInfo {
 
     // User-Agent and Accept HTTP request headers
@@ -190,6 +191,7 @@ public class UAgentInfo {
      * @param userAgent the User-Agent header
      * @param httpAccept the Accept header
      */
+    @SuppressWarnings("hiding")
     public UAgentInfo(String userAgent, String httpAccept) {
 
         if (userAgent != null) {
