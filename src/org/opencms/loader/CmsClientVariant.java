@@ -77,7 +77,7 @@ public class CmsClientVariant {
     }
 
     /**
-     * Gets the internal name
+     * Gets the internal name.<p>
      *  
      * @return the name 
      */
