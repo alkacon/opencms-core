@@ -27,7 +27,6 @@
 
 package org.opencms.security;
 
-import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessageContainer;
@@ -186,17 +185,13 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
      */
-    public void initConfiguration() throws CmsConfigurationException {
+    public void initConfiguration() {
 
         // simple default configuration does not need to be initialized
         if (LOG.isDebugEnabled()) {
             CmsMessageContainer message = Messages.get().container(Messages.LOG_INIT_CONFIG_CALLED_1, this);
             LOG.debug(message.key());
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_INIT_CONFIG_CALLED_1, this));
-            // suppress compiler warning, this is never true
-            if (this == null) {
-                throw new CmsConfigurationException(message);
-            }
         }
         m_configuration = CmsParameterConfiguration.unmodifiableVersion(m_configuration);
     }
