@@ -59,7 +59,6 @@ public final class CmsDebugLog extends Composite {
     /**
      * Constructor.<p>
      */
-    @SuppressWarnings("unused")
     private CmsDebugLog() {
 
         if (!DEBUG) {
@@ -88,10 +87,10 @@ public final class CmsDebugLog extends Composite {
      * @param message the message to log
      */
     public static native void consoleLog(String message) /*-{
-                                                         if ($wnd.console) { 
-                                                         $wnd.console.log(message);
-                                                         }
-                                                         }-*/;
+        if ($wnd.console) {
+            $wnd.console.log(message);
+        }
+    }-*/;
 
     /**
      * Returns the debug log.<p>
@@ -112,7 +111,6 @@ public final class CmsDebugLog extends Composite {
     /**
      * Clears the debug log.<p>
      */
-    @SuppressWarnings("unused")
     public void clear() {
 
         if (!DEBUG) {
@@ -131,7 +129,6 @@ public final class CmsDebugLog extends Composite {
         if (!DEBUG) {
             return;
         }
-        @SuppressWarnings("unused")
         Element child = DOM.createElement("p");
         child.setInnerHTML(text);
         m_html.getElement().insertFirst(child);
