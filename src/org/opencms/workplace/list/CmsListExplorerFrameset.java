@@ -32,6 +32,7 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -276,17 +277,17 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
      * @see org.opencms.workplace.CmsWorkplace#paramsAsHidden(java.util.Collection)
      */
     @Override
-    public String paramsAsHidden(Collection excludes) {
+    public String paramsAsHidden(Collection<String> excludes) {
 
         StringBuffer result = new StringBuffer(512);
-        Map params = new HashMap(getJsp().getRequest().getParameterMap());
+        Map<String, String[]> params = CmsCollectionsGenericWrapper.map(getJsp().getRequest().getParameterMap());
         params.remove(CmsListExplorerFrameset.PARAM_PAGE);
-        Iterator it = params.entrySet().iterator();
+        Iterator<Map.Entry<String, String[]>> it = params.entrySet().iterator();
         while (it.hasNext()) {
-            Map.Entry entry = (Map.Entry)it.next();
-            String param = (String)entry.getKey();
+            Map.Entry<String, String[]> entry = it.next();
+            String param = entry.getKey();
             if ((excludes == null) || (!excludes.contains(param))) {
-                String[] value = (String[])entry.getValue();
+                String[] value = entry.getValue();
                 for (int i = 0; i < value.length; i++) {
                     result.append("<input type=\"hidden\" name=\"");
                     result.append(param);

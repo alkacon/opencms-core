@@ -102,6 +102,7 @@ public class CmsListDateMacroFormatter extends CmsListMacroFormatter {
     /**
      * @see org.opencms.workplace.list.CmsListMacroFormatter#format(java.lang.Object, java.util.Locale)
      */
+    @Override
     public String format(Object data, Locale locale) {
 
         if (data == null) {
