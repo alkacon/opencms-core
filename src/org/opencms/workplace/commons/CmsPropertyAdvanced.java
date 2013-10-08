@@ -184,7 +184,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
     private static final Log LOG = CmsLog.getLog(CmsPropertyAdvanced.class);
 
     /** Holds all active properties for the current resource. */
-    private Map m_activeProperties;
+    private Map<String, CmsProperty> m_activeProperties;
 
     /** Parameters of this class. */
     private CmsParameterConfiguration m_handlerParams = new CmsParameterConfiguration();
@@ -198,15 +198,17 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
     /** Helper stores the mode this dialog is in, because it can be called from "new" wizard. */
     private String m_paramDialogMode;
 
+    /** A parameter used by this dialog. */
     private String m_paramIndexPageType;
 
     /** Request parameter members. */
     private String m_paramNewproperty;
 
+    /** A parameter used by this dialog. */
     private String m_paramUseTempfileProject;
 
     /** Stores the values of properties in a String array. */
-    private List m_propertyValues;
+    private List<String[]> m_propertyValues;
 
     /** Helper to determine if the user switched the tab views of the dialog. */
     private boolean m_tabSwitched;
@@ -260,10 +262,10 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
         CmsProperty property = null;
 
         if ((list == null) || (list.size() == 0)) {
-            return Collections.EMPTY_MAP;
+            return Collections.emptyMap();
         }
 
-        result = new HashMap();
+        result = new HashMap<String, CmsProperty>();
 
         // choose the fastest method to iterate the list
         if (list instanceof RandomAccess) {
@@ -273,9 +275,9 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 result.put(key, property);
             }
         } else {
-            Iterator i = list.iterator();
+            Iterator<CmsProperty> i = list.iterator();
             while (i.hasNext()) {
-                property = (CmsProperty)i.next();
+                property = i.next();
                 key = property.getName();
                 result.put(key, property);
             }
@@ -312,9 +314,9 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             try {
                 // forward to new xmlpage dialog
                 CmsUriSplitter splitter = new CmsUriSplitter(newUri);
-                Map params = CmsRequestUtil.createParameterMap(splitter.getQuery());
-                params.put(PARAM_DIALOGMODE, MODE_WIZARD_CREATEINDEX);
-                params.put(PARAM_ACTION, CmsNewResource.DIALOG_NEWFORM);
+                Map<String, String[]> params = CmsRequestUtil.createParameterMap(splitter.getQuery());
+                params.put(PARAM_DIALOGMODE, new String[] {MODE_WIZARD_CREATEINDEX});
+                params.put(PARAM_ACTION, new String[] {CmsNewResource.DIALOG_NEWFORM});
                 sendForward(splitter.getPrefix(), params);
                 return;
             } catch (IOException e) {
@@ -331,7 +333,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             try {
                 CmsResource res = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
                 if (res.isFolder()) {
-                    List folderList = new ArrayList(1);
+                    List<String> folderList = new ArrayList<String>(1);
                     folderList.add(CmsResource.getParentFolder(getParamResource()));
                     getJsp().getRequest().setAttribute(REQUEST_ATTRIBUTE_RELOADTREE, folderList);
                 }
@@ -346,7 +348,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             getSettings().setExplorerResource(
                 CmsResource.getParentFolder(CmsResource.getParentFolder(getParamResource())),
                 getCms());
-            List folderList = new ArrayList(1);
+            List<String> folderList = new ArrayList<String>(1);
             folderList.add(CmsResource.getParentFolder(CmsResource.getParentFolder(getParamResource())));
             getJsp().getRequest().setAttribute(REQUEST_ATTRIBUTE_RELOADTREE, folderList);
         }
@@ -441,7 +443,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
     public String buildActivePropertiesList() {
 
         StringBuffer retValue = new StringBuffer(256);
-        List propertyDef = new ArrayList();
+        List<CmsPropertyDefinition> propertyDef = new ArrayList<CmsPropertyDefinition>();
         try {
             // get all property definitions
             propertyDef = getCms().readAllPropertyDefinitions();
@@ -452,10 +454,10 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             }
         }
 
-        Iterator j = propertyDef.iterator();
+        Iterator<CmsPropertyDefinition> j = propertyDef.iterator();
         int i = 0;
         while (j.hasNext()) {
-            CmsPropertyDefinition curProperty = (CmsPropertyDefinition)j.next();
+            CmsPropertyDefinition curProperty = j.next();
             retValue.append(CmsEncoder.escapeXml(curProperty.getName()));
             if ((i + 1) < propertyDef.size()) {
                 retValue.append("<br>");
@@ -488,7 +490,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
         }
 
         // get all properties for the resource
-        List properties = getPropertyValues();
+        List<String[]> properties = getPropertyValues();
 
         // check for presence of property definitions, should always be true
         if (properties.size() > 0) {
@@ -509,9 +511,9 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             result.append("<tr><td colspan=\"3\"><span style=\"height: 6px;\"></span></td></tr>\n");
 
             // show all possible properties for the resource
-            Iterator i = properties.iterator();
+            Iterator<String[]> i = properties.iterator();
             while (i.hasNext()) {
-                String[] curProp = (String[])i.next();
+                String[] curProp = i.next();
                 // create a single property row
                 result.append(buildPropertyRow(curProp[0], curProp[1], curProp[2], curProp[3], disabled, activeTab));
             }
@@ -542,9 +544,9 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
         String activeTab = getActiveTabName();
         // get structure panel name
         String structurePanelName = key(Messages.GUI_PROPERTIES_INDIVIDUAL_0);
-        Iterator i = getPropertyValues().iterator();
+        Iterator<String[]> i = getPropertyValues().iterator();
         while (i.hasNext()) {
-            String[] curProp = (String[])i.next();
+            String[] curProp = i.next();
             // determine the shown value
             String shownValue = curProp[1];
             // in "shared properties" form, show resource value if no structure value is set
@@ -690,9 +692,9 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
      * @see org.opencms.workplace.CmsTabDialog#getTabParameterOrder()
      */
     @Override
-    public List getTabParameterOrder() {
+    public List<String> getTabParameterOrder() {
 
-        ArrayList orderList = new ArrayList(2);
+        ArrayList<String> orderList = new ArrayList<String>(2);
         orderList.add(TAB_STRUCTURE);
         orderList.add(TAB_RESOURCE);
         return orderList;
@@ -702,9 +704,9 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
      * @see org.opencms.workplace.CmsTabDialog#getTabs()
      */
     @Override
-    public List getTabs() {
+    public List<String> getTabs() {
 
-        ArrayList tabList = new ArrayList(2);
+        ArrayList<String> tabList = new ArrayList<String>(2);
         if (OpenCms.getWorkplaceManager().isEnableAdvancedPropertyTabs()) {
             // tabs are enabled, show both tabs except for folders
             if (m_isFolder) {
@@ -831,7 +833,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
      * 
      * @return a map with CmsProperty object values
      */
-    protected Map getActiveProperties() {
+    protected Map<String, CmsProperty> getActiveProperties() {
 
         // get all used properties for the resource
         if (m_activeProperties == null) {
@@ -844,7 +846,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 if (LOG.isInfoEnabled()) {
                     LOG.info(e.getLocalizedMessage());
                 }
-                m_activeProperties = new HashMap();
+                m_activeProperties = new HashMap<String, CmsProperty>();
             }
         }
         return m_activeProperties;
@@ -1001,7 +1003,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                     if ((file == null) || file.isFolder()) {
                         // check locked resources in folder
                         try {
-                            List lockedResources = getCms().getLockedResources(
+                            List<String> lockedResources = getCms().getLockedResources(
                                 resourceName,
                                 CmsLockFilter.FILTER_ALL.filterNotOwnedByUserId(getCms().getRequestContext().getCurrentUser().getId()));
                             if (!lockedResources.isEmpty()) {
@@ -1157,7 +1159,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
      * 
      * @return the list of property values in display order
      */
-    private List getPropertyValues() {
+    private List<String[]> getPropertyValues() {
 
         // check if list has to be generated
         if (m_propertyValues == null) {
@@ -1167,7 +1169,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             String structurePanelName = key(Messages.GUI_PROPERTIES_INDIVIDUAL_0);
 
             // get all properties for the resource
-            List propertyDef = new ArrayList();
+            List<CmsPropertyDefinition> propertyDef = new ArrayList<CmsPropertyDefinition>();
             try {
                 propertyDef = getCms().readAllPropertyDefinitions();
             } catch (CmsException e) {
@@ -1176,15 +1178,15 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                     LOG.info(e.getLocalizedMessage());
                 }
             }
-            m_propertyValues = new ArrayList(propertyDef.size());
+            m_propertyValues = new ArrayList<String[]>(propertyDef.size());
 
             // get all used properties for the resource
-            Map activeProperties = getActiveProperties();
+            Map<String, CmsProperty> activeProperties = getActiveProperties();
 
             // iterate over all possible properties for the resource
-            Iterator i = propertyDef.iterator();
+            Iterator<CmsPropertyDefinition> i = propertyDef.iterator();
             while (i.hasNext()) {
-                CmsPropertyDefinition currentPropertyDef = (CmsPropertyDefinition)i.next();
+                CmsPropertyDefinition currentPropertyDef = i.next();
                 String propName = CmsEncoder.escapeXml(currentPropertyDef.getName());
                 String propValue = "";
                 String valueStructure = "";
@@ -1219,7 +1221,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                     }
                 } else {
                     // initial call of edit form, get property values from database 
-                    CmsProperty currentProperty = (CmsProperty)activeProperties.get(propName);
+                    CmsProperty currentProperty = activeProperties.get(propName);
                     if (currentProperty == null) {
                         currentProperty = new CmsProperty();
                     }
@@ -1292,20 +1294,20 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
      */
     private boolean performDialogOperation(HttpServletRequest request) throws CmsException {
 
-        List propertyDef = getCms().readAllPropertyDefinitions();
+        List<CmsPropertyDefinition> propertyDef = getCms().readAllPropertyDefinitions();
         boolean useTempfileProject = Boolean.valueOf(getParamUsetempfileproject()).booleanValue();
         try {
             if (useTempfileProject) {
                 switchToTempProject();
             }
-            Map activeProperties = getActiveProperties();
+            Map<String, CmsProperty> activeProperties = getActiveProperties();
             String activeTab = getActiveTabName();
-            List propertiesToWrite = new ArrayList();
+            List<CmsProperty> propertiesToWrite = new ArrayList<CmsProperty>();
 
             // check all property definitions of the resource for new values
-            Iterator i = propertyDef.iterator();
+            Iterator<CmsPropertyDefinition> i = propertyDef.iterator();
             while (i.hasNext()) {
-                CmsPropertyDefinition curPropDef = (CmsPropertyDefinition)i.next();
+                CmsPropertyDefinition curPropDef = i.next();
                 String propName = CmsEncoder.escapeXml(curPropDef.getName());
                 String valueStructure = null;
                 String valueResource = null;
@@ -1342,7 +1344,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 newProperty.setResourceValue(valueResource);
 
                 // get the old property values
-                CmsProperty oldProperty = (CmsProperty)activeProperties.get(curPropDef.getName());
+                CmsProperty oldProperty = activeProperties.get(curPropDef.getName());
                 if (oldProperty == null) {
                     // property was not set, create new empty property object
                     oldProperty = new CmsProperty();

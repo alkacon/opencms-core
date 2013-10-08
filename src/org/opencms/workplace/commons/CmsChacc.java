@@ -132,6 +132,7 @@ public class CmsChacc extends CmsDialog {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsChacc.class);
 
+    /** Constant for unknown type. */
     private static final String UNKNOWN_TYPE = "Unknown";
 
     /** PermissionSet of the current user for the resource. */
@@ -141,7 +142,7 @@ public class CmsChacc extends CmsDialog {
     private boolean m_editable;
 
     /** Stores eventual error message Strings. */
-    private List m_errorMessages = new ArrayList();
+    private List<String> m_errorMessages = new ArrayList<String>();
 
     /** Indicates if inheritance flags are set as hidden fields for resource folders. */
     private boolean m_inherit;
@@ -152,10 +153,11 @@ public class CmsChacc extends CmsDialog {
     /** The type parameter. */
     private String m_paramType;
 
+    /** UUID paramter as String. */
     private String m_paramUuid;
 
     /** Stores all possible permission keys of a permission set. */
-    private Set m_permissionKeys = CmsPermissionSet.getPermissionKeys();
+    private Set<String> m_permissionKeys = CmsPermissionSet.getPermissionKeys();
 
     /** Marks if the inherited permissions information should be displayed. */
     private boolean m_showInheritedPermissions;
@@ -297,9 +299,9 @@ public class CmsChacc extends CmsDialog {
                         CmsRole role = CmsRole.valueOfRoleName(name);
                         if (role == null) {
                             // we need translation
-                            Iterator it = CmsRole.getSystemRoles().iterator();
+                            Iterator<CmsRole> it = CmsRole.getSystemRoles().iterator();
                             while (it.hasNext()) {
-                                role = (CmsRole)it.next();
+                                role = it.next();
                                 if (role.getName(getLocale()).equalsIgnoreCase(name)) {
                                     name = role.getRoleName();
                                     break;
@@ -377,16 +379,16 @@ public class CmsChacc extends CmsDialog {
         String responsible = request.getParameter(PARAM_RESPONSIBLE);
 
         // get the new permissions
-        Set permissionKeys = CmsPermissionSet.getPermissionKeys();
+        Set<String> permissionKeys = CmsPermissionSet.getPermissionKeys();
         int allowValue = 0;
         int denyValue = 0;
         String key, param;
         int value, paramInt;
 
-        Iterator i = permissionKeys.iterator();
+        Iterator<String> i = permissionKeys.iterator();
         // loop through all possible permissions 
         while (i.hasNext()) {
-            key = (String)i.next();
+            key = i.next();
             value = CmsPermissionSet.getPermissionValue(key);
             // set the right allowed and denied permissions from request parameters
             try {
@@ -413,10 +415,10 @@ public class CmsChacc extends CmsDialog {
 
         // get the current Ace to get the current ace flags
         try {
-            List allEntries = getCms().getAccessControlEntries(file, false);
+            List<CmsAccessControlEntry> allEntries = getCms().getAccessControlEntries(file, false);
             int flags = 0;
             for (int k = 0; k < allEntries.size(); k++) {
-                CmsAccessControlEntry curEntry = (CmsAccessControlEntry)allEntries.get(k);
+                CmsAccessControlEntry curEntry = allEntries.get(k);
                 String curType = getEntryType(curEntry.getFlags(), false);
                 I_CmsPrincipal p;
                 try {
@@ -576,15 +578,15 @@ public class CmsChacc extends CmsDialog {
     }
 
     /**
-     * Builds a String with HTML code to display the responsibles of a resource.<p>
+     * Builds a String with HTML code to display the responsible users of a resource.<p>
      * 
      * @param show true the responsible list is open
-     * @return HTML code for the responsibles of the current resource
+     * @return HTML code for the responsible users of the current resource
      */
     public String buildResponsibleList(boolean show) {
 
-        List parentResources = new ArrayList();
-        Map responsibles = new HashMap();
+        List<CmsResource> parentResources = new ArrayList<CmsResource>();
+        Map<Object, String> responsibles = new HashMap<Object, String>();
         CmsObject cms = getCms();
         try {
             // get all parent folders of the current file
@@ -600,14 +602,14 @@ public class CmsChacc extends CmsDialog {
         String site = cms.getRequestContext().getSiteRoot();
         try {
             cms.getRequestContext().setSiteRoot("");
-            Iterator i = parentResources.iterator();
+            Iterator<CmsResource> i = parentResources.iterator();
             while (i.hasNext()) {
-                CmsResource resource = (CmsResource)i.next();
+                CmsResource resource = i.next();
                 try {
                     String rootPath = resource.getRootPath();
-                    Iterator entries = cms.getAccessControlEntries(rootPath, false).iterator();
+                    Iterator<CmsAccessControlEntry> entries = cms.getAccessControlEntries(rootPath, false).iterator();
                     while (entries.hasNext()) {
-                        CmsAccessControlEntry ace = (CmsAccessControlEntry)entries.next();
+                        CmsAccessControlEntry ace = entries.next();
                         if (ace.isResponsible()) {
                             try {
                                 responsibles.put(
@@ -632,9 +634,9 @@ public class CmsChacc extends CmsDialog {
             result.append(dialogToggleStart(key(Messages.GUI_AVAILABILITY_RESPONSIBLES_0), "responsibles", show));
 
             result.append(dialogWhiteBoxStart());
-            i = responsibles.entrySet().iterator();
+            Iterator<Map.Entry<Object, String>> it = responsibles.entrySet().iterator();
             while (i.hasNext()) {
-                Map.Entry entry = (Map.Entry)i.next();
+                Map.Entry<Object, String> entry = it.next();
                 String name;
                 String ou = null;
                 String image;
@@ -680,7 +682,7 @@ public class CmsChacc extends CmsDialog {
                 result.append(name);
                 result.append("</span>");
                 if ("long".equals(getSettings().getPermissionDetailView())) {
-                    String resourceName = (String)entry.getValue();
+                    String resourceName = entry.getValue();
                     if (!resourceRootPath.equals(resourceName)) {
                         result.append("<div class=\"dialogpermissioninherit\">");
                         result.append(key(Messages.GUI_PERMISSION_INHERITED_FROM_1, new Object[] {resourceName}));
@@ -732,9 +734,9 @@ public class CmsChacc extends CmsDialog {
             getSettings().getUserSettings().getDialogExpandInheritedPermissions() || getShowInheritedPermissions()));
 
         // store all parent folder ids together with path in a map
-        Map parents = new HashMap();
+        Map<CmsUUID, String> parents = new HashMap<CmsUUID, String>();
         String path = CmsResource.getParentFolder(getParamResource());
-        List parentResources = new ArrayList();
+        List<CmsResource> parentResources = new ArrayList<CmsResource>();
         try {
             // get all parent folders of the current file
             parentResources = getCms().readPath(path, CmsResourceFilter.IGNORE_EXPIRATION);
@@ -744,19 +746,19 @@ public class CmsChacc extends CmsDialog {
                 LOG.info(e.getLocalizedMessage());
             }
         }
-        Iterator k = parentResources.iterator();
+        Iterator<CmsResource> k = parentResources.iterator();
         while (k.hasNext()) {
             // add the current folder to the map
-            CmsResource curRes = (CmsResource)k.next();
+            CmsResource curRes = k.next();
             parents.put(curRes.getResourceId(), curRes.getRootPath());
         }
 
         // create new ArrayLists in which inherited and non inherited entries are stored
-        ArrayList ownEntries = new ArrayList();
+        ArrayList<CmsAccessControlEntry> ownEntries = new ArrayList<CmsAccessControlEntry>();
         try {
-            Iterator itAces = getCms().getAccessControlEntries(getParamResource(), false).iterator();
+            Iterator<CmsAccessControlEntry> itAces = getCms().getAccessControlEntries(getParamResource(), false).iterator();
             while (itAces.hasNext()) {
-                CmsAccessControlEntry curEntry = (CmsAccessControlEntry)itAces.next();
+                CmsAccessControlEntry curEntry = itAces.next();
                 if (!curEntry.isInherited()) {
                     // add the entry to the own rights list
                     ownEntries.add(curEntry);
@@ -769,11 +771,11 @@ public class CmsChacc extends CmsDialog {
             }
         }
 
-        ArrayList inheritedEntries = new ArrayList();
+        ArrayList<CmsAccessControlEntry> inheritedEntries = new ArrayList<CmsAccessControlEntry>();
         try {
-            Iterator itAces = getCms().getAccessControlEntries(path, true).iterator();
+            Iterator<CmsAccessControlEntry> itAces = getCms().getAccessControlEntries(path, true).iterator();
             while (itAces.hasNext()) {
-                CmsAccessControlEntry curEntry = (CmsAccessControlEntry)itAces.next();
+                CmsAccessControlEntry curEntry = itAces.next();
                 // add the entry to the inherited rights list for the "long" view
                 if ("long".equals(getSettings().getPermissionDetailView())) {
                     inheritedEntries.add(curEntry);
@@ -818,7 +820,7 @@ public class CmsChacc extends CmsDialog {
      * 
      * @return List of error message Strings
      */
-    public List getErrorMessages() {
+    public List<String> getErrorMessages() {
 
         return m_errorMessages;
     }
@@ -831,9 +833,9 @@ public class CmsChacc extends CmsDialog {
     public String getErrorMessagesString() {
 
         StringBuffer errors = new StringBuffer(8);
-        Iterator i = getErrorMessages().iterator();
+        Iterator<String> i = getErrorMessages().iterator();
         while (i.hasNext()) {
-            errors.append((String)i.next());
+            errors.append(i.next());
             if (i.hasNext()) {
                 errors.append("<br>");
             }
@@ -867,6 +869,11 @@ public class CmsChacc extends CmsDialog {
         return m_paramType;
     }
 
+    /**
+     * Returns the UUID parameter.<p>
+     * 
+     * @return the UUID parameter
+     */
     public String getParamUuid() {
 
         return m_paramUuid;
@@ -885,6 +892,7 @@ public class CmsChacc extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsDialog#htmlStart()
      */
+    @Override
     public String htmlStart() {
 
         StringBuffer result = new StringBuffer(256);
@@ -972,6 +980,11 @@ public class CmsChacc extends CmsDialog {
         m_paramType = value;
     }
 
+    /**
+     * Sets the UUID parameter.<p>
+     * 
+     * @param uuid the UUID to set
+     */
     public void setParamUuid(String uuid) {
 
         m_paramUuid = uuid;
@@ -1011,10 +1024,10 @@ public class CmsChacc extends CmsDialog {
      * @param parents the parent resources to determine the connected resource
      * @return the resource name of the corresponding resource
      */
-    protected String getConnectedResource(CmsAccessControlEntry entry, Map parents) {
+    protected String getConnectedResource(CmsAccessControlEntry entry, Map<CmsUUID, String> parents) {
 
         CmsUUID resId = entry.getResource();
-        String resName = (String)parents.get(resId);
+        String resName = parents.get(resId);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(resName)) {
             return resName;
         }
@@ -1114,6 +1127,7 @@ public class CmsChacc extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods
@@ -1266,8 +1280,8 @@ public class CmsChacc extends CmsDialog {
             result.append(dialogBlockStart(key(Messages.GUI_PERMISSION_ADD_ACE_0)));
 
             // get all possible entry types
-            ArrayList options = new ArrayList();
-            ArrayList optionValues = new ArrayList();
+            ArrayList<String> options = new ArrayList<String>();
+            ArrayList<String> optionValues = new ArrayList<String>();
             for (int i = 0; i < (getTypes(false).length - (1 * (isRoleEditable() ? 0 : 1))); i++) {
                 options.add(getTypesLocalized()[i]);
                 optionValues.add(Integer.toString(i));
@@ -1321,16 +1335,16 @@ public class CmsChacc extends CmsDialog {
      * @param parents Map of parent resources needed to get the connected resources for the detailed view
      * @return StringBuffer with HTML code for all entries
      */
-    private StringBuffer buildInheritedList(ArrayList entries, Map parents) {
+    private StringBuffer buildInheritedList(ArrayList<CmsAccessControlEntry> entries, Map<CmsUUID, String> parents) {
 
         StringBuffer result = new StringBuffer(32);
         String view = getSettings().getPermissionDetailView();
 
         // display the long view
         if ("long".equals(view)) {
-            Iterator i = entries.iterator();
+            Iterator<CmsAccessControlEntry> i = entries.iterator();
             while (i.hasNext()) {
-                CmsAccessControlEntry curEntry = (CmsAccessControlEntry)i.next();
+                CmsAccessControlEntry curEntry = i.next();
                 // build the list with enabled extended view and resource name
                 result.append(buildPermissionEntryForm(curEntry, false, true, getConnectedResource(curEntry, parents)));
             }
@@ -1341,9 +1355,9 @@ public class CmsChacc extends CmsDialog {
                 CmsAccessControlList acList = getCms().getAccessControlList(
                     CmsResource.getParentFolder(getParamResource()),
                     false);
-                Iterator i = acList.getPrincipals().iterator();
+                Iterator<CmsUUID> i = acList.getPrincipals().iterator();
                 while (i.hasNext()) {
-                    CmsUUID principalId = (CmsUUID)i.next();
+                    CmsUUID principalId = i.next();
                     if (!principalId.equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID)) {
                         CmsPermissionSet permissions = acList.getPermissions(principalId);
                         // build the list with enabled extended view only
@@ -1629,11 +1643,11 @@ public class CmsChacc extends CmsDialog {
             result.append(key(Messages.GUI_PERMISSION_DENIED_0)).append("</span></td>\n");
             result.append("</tr>");
 
-            Iterator i = m_permissionKeys.iterator();
+            Iterator<String> i = m_permissionKeys.iterator();
 
             // show all possible permissions in the form
             while (i.hasNext()) {
-                String key = (String)i.next();
+                String key = i.next();
                 int value = CmsPermissionSet.getPermissionValue(key);
                 String keyMessage = key(key);
                 result.append("<tr>\n");
@@ -1841,10 +1855,10 @@ public class CmsChacc extends CmsDialog {
      * @param entries all access control entries for the resource
      * @return StringBuffer with HTML code for all entries
      */
-    private StringBuffer buildResourceList(ArrayList entries) {
+    private StringBuffer buildResourceList(ArrayList<CmsAccessControlEntry> entries) {
 
         StringBuffer result = new StringBuffer(256);
-        Iterator i = entries.iterator();
+        Iterator<CmsAccessControlEntry> i = entries.iterator();
         boolean hasEntries = i.hasNext();
 
         if (hasEntries || !getInheritOption()) {
@@ -1863,7 +1877,7 @@ public class CmsChacc extends CmsDialog {
 
             // list all entries
             while (i.hasNext()) {
-                CmsAccessControlEntry curEntry = (CmsAccessControlEntry)i.next();
+                CmsAccessControlEntry curEntry = i.next();
                 result.append(buildPermissionEntryForm(curEntry, getEditable(), false, null));
                 if (i.hasNext()) {
                     result.append(dialogSeparator());

@@ -93,9 +93,16 @@ public class CmsRenameImages extends CmsDialog {
     /** Request parameter name for the start count. */
     public static final String PARAM_STARTCOUNT = "startcount";
 
+    /** Dialog parameter. */
     private String m_paramPlaces;
+
+    /** Dialog parameter. */
     private String m_paramPrefix;
+
+    /** Dialog parameter. */
     private String m_paramRemovetitle;
+
+    /** Dialog parameter. */
     private String m_paramStartcount;
 
     /**
@@ -155,7 +162,7 @@ public class CmsRenameImages extends CmsDialog {
         try {
             int imageId = OpenCms.getResourceManager().getResourceType(CmsResourceTypeImage.getStaticTypeName()).getTypeId();
             CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireType(imageId);
-            List images = getCms().readResources(getParamResource(), filter, false);
+            List<CmsResource> images = getCms().readResources(getParamResource(), filter, false);
             count = images.size();
         } catch (CmsException e) {
             // ignore this exception
@@ -173,12 +180,12 @@ public class CmsRenameImages extends CmsDialog {
      */
     public String buildSelectPlaces(String htmlAttributes) {
 
-        List options = new ArrayList(4);
+        List<String> options = new ArrayList<String>(4);
         options.add(OPTION_DECIMALPLACES_1);
         options.add(OPTION_DECIMALPLACES_2);
         options.add(OPTION_DECIMALPLACES_3);
         options.add(OPTION_DECIMALPLACES_4);
-        List values = new ArrayList(4);
+        List<String> values = new ArrayList<String>(4);
         values.add("1");
         values.add("2");
         values.add("3");
@@ -293,6 +300,7 @@ public class CmsRenameImages extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods
@@ -343,7 +351,7 @@ public class CmsRenameImages extends CmsDialog {
         // get all image resources of the folder
         int imageId = OpenCms.getResourceManager().getResourceType(CmsResourceTypeImage.getStaticTypeName()).getTypeId();
         CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireType(imageId);
-        List images = getCms().readResources(getParamResource(), filter, false);
+        List<CmsResource> images = getCms().readResources(getParamResource(), filter, false);
 
         // determine start count
         int count = 1;
@@ -362,10 +370,10 @@ public class CmsRenameImages extends CmsDialog {
             folder += "/";
         }
 
-        Iterator i = images.iterator();
+        Iterator<CmsResource> i = images.iterator();
         // loop over all image resource to change
         while (i.hasNext()) {
-            CmsResource res = (CmsResource)i.next();
+            CmsResource res = i.next();
             String oldName = CmsResource.getName(res.getRootPath());
             CmsProperty titleProperty = getCms().readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TITLE, false);
             String oldTitle = titleProperty.getValue();

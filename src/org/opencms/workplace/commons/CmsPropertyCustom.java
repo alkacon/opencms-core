@@ -188,7 +188,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
         while (i.hasNext()) {
             String curProperty = i.next();
             if (getActiveProperties().containsKey(curProperty)) {
-                CmsProperty property = (CmsProperty)getActiveProperties().get(curProperty);
+                CmsProperty property = getActiveProperties().get(curProperty);
                 String propValue = property.getValue();
                 if (propValue != null) {
                     propValue = propValue.trim();
@@ -205,7 +205,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
         }
         // check if the navigation text property value has to be added
         if (showNavigation() && getActiveProperties().containsKey(CmsPropertyDefinition.PROPERTY_NAVTEXT)) {
-            CmsProperty property = (CmsProperty)getActiveProperties().get(CmsPropertyDefinition.PROPERTY_NAVTEXT);
+            CmsProperty property = getActiveProperties().get(CmsPropertyDefinition.PROPERTY_NAVTEXT);
             String propValue = property.getValue();
             if (propValue != null) {
                 propValue = propValue.trim();
@@ -388,7 +388,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
         }
         result.append(buildTableRowStart(propertyTitle));
         // the property is used, so create text field with checkbox and hidden field
-        CmsProperty currentProperty = (CmsProperty)getActiveProperties().get(propertyName);
+        CmsProperty currentProperty = getActiveProperties().get(propertyName);
         String propValue = "";
         if (currentProperty != null) {
             propValue = currentProperty.getValue();
@@ -691,7 +691,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
     protected void writeProperty(String propName, String propValue, String oldValue) throws CmsException {
 
         // get the current property object
-        CmsProperty currentProperty = (CmsProperty)getActiveProperties().get(propName);
+        CmsProperty currentProperty = getActiveProperties().get(propName);
         if (currentProperty == null) {
             // new property, create new property object
             currentProperty = new CmsProperty();

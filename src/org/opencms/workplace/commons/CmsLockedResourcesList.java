@@ -77,7 +77,7 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
     private I_CmsListResourceCollector m_collector;
 
     /** The parameter map for creating the ajax request in the independent action.  */
-    private Map m_lockParams;
+    private Map<String, String> m_lockParams;
 
     /**
      * Public constructor with JSP action element.<p>
@@ -87,7 +87,11 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
      * @param relativeTo the current folder
      * @param lockParams the parameter map for creating the ajax request in the independent action
      */
-    public CmsLockedResourcesList(CmsJspActionElement jsp, List lockedResources, String relativeTo, Map lockParams) {
+    public CmsLockedResourcesList(
+        CmsJspActionElement jsp,
+        List<String> lockedResources,
+        String relativeTo,
+        Map<String, String> lockParams) {
 
         super(jsp, LIST_ID, Messages.get().container(Messages.GUI_LOCKED_FILES_LIST_NAME_0));
         m_collector = new CmsLockedResourcesCollector(this, lockedResources);
@@ -102,12 +106,13 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
 
         m_lockParams = lockParams;
         getList().getMetadata().getItemDetailDefinition(LIST_DETAIL_OWN_LOCKS).setVisible(
-            Boolean.valueOf((String)getLockParams().get(CmsLock.PARAM_SHOWOWNLOCKS)).booleanValue());
+            Boolean.valueOf(getLockParams().get(CmsLock.PARAM_SHOWOWNLOCKS)).booleanValue());
     }
 
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() {
 
         throwListUnsupportedActionException();
@@ -116,6 +121,7 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() {
 
         throwListUnsupportedActionException();
@@ -124,6 +130,7 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#getCollector()
      */
+    @Override
     public I_CmsListResourceCollector getCollector() {
 
         return m_collector;
@@ -134,7 +141,7 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
      *
      * @return the parameter map for creating the ajax request in the independent action
      */
-    public Map getLockParams() {
+    public Map<String, String> getLockParams() {
 
         return m_lockParams;
     }
@@ -142,6 +149,7 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // no-details
@@ -150,6 +158,7 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -161,6 +170,7 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#isColumnVisible(int)
      */
+    @Override
     protected boolean isColumnVisible(int colFlag) {
 
         boolean isVisible = (colFlag == CmsUserSettings.FILELIST_TITLE);
@@ -175,13 +185,14 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         super.setColumns(metadata);
 
-        Iterator it = metadata.getColumnDefinitions().iterator();
+        Iterator<CmsListColumnDefinition> it = metadata.getColumnDefinitions().iterator();
         while (it.hasNext()) {
-            CmsListColumnDefinition colDefinition = (CmsListColumnDefinition)it.next();
+            CmsListColumnDefinition colDefinition = it.next();
             colDefinition.setSorteable(false);
             if (colDefinition.getId().equals(LIST_COLUMN_NAME)) {
                 colDefinition.removeDefaultAction(LIST_DEFACTION_OPEN);
@@ -195,6 +206,7 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
                     /**
                      * @see org.opencms.workplace.list.CmsListResourceProjStateAction#getIconPath()
                      */
+                    @Override
                     public String getIconPath() {
 
                         if (((Boolean)getItem().get(LIST_COLUMN_IS_RELATED)).booleanValue()) {
@@ -206,6 +218,7 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
                     /**
                      * @see org.opencms.workplace.list.CmsListResourceProjStateAction#getName()
                      */
+                    @Override
                     public CmsMessageContainer getName() {
 
                         if (((Boolean)getItem().get(LIST_COLUMN_IS_RELATED)).booleanValue()) {
@@ -230,6 +243,7 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         /**
@@ -250,6 +264,7 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
             /**
              * @see org.opencms.workplace.list.CmsListIndependentAction#buttonHtml(org.opencms.workplace.CmsWorkplace)
              */
+            @Override
             public String buttonHtml(CmsWorkplace wp) {
 
                 StringBuffer html = new StringBuffer(1024);
@@ -290,7 +305,7 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
              */
             protected String getRequestLink(CmsWorkplace wp, boolean showOwnLocks) {
 
-                Map params = ((CmsLockedResourcesList)wp).getLockParams();
+                Map<String, String> params = ((CmsLockedResourcesList)wp).getLockParams();
                 StringBuffer html = new StringBuffer(128);
                 html.append("javascript:{ajaxReportContent = ''; document.getElementById('ajaxreport').innerHTML = ajaxWaitMessage; makeRequest('");
                 html.append(wp.getJsp().link("/system/workplace/commons/report-locks.jsp"));
@@ -299,7 +314,7 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
                 if (params.get(CmsMultiDialog.PARAM_RESOURCELIST) != null) {
                     html.append(CmsMultiDialog.PARAM_RESOURCELIST);
                     html.append("=");
-                    html.append(CmsEncoder.escapeXml((String)params.get(CmsMultiDialog.PARAM_RESOURCELIST)));
+                    html.append(CmsEncoder.escapeXml(params.get(CmsMultiDialog.PARAM_RESOURCELIST)));
                     needsAmpersand = true;
                 }
                 if (params.get(CmsDialog.PARAM_RESOURCE) != null) {
@@ -308,7 +323,7 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
                     }
                     html.append(CmsDialog.PARAM_RESOURCE);
                     html.append("=");
-                    html.append(CmsEncoder.escapeXml((String)params.get(CmsDialog.PARAM_RESOURCE)));
+                    html.append(CmsEncoder.escapeXml(params.get(CmsDialog.PARAM_RESOURCE)));
                     needsAmpersand = true;
                 }
                 if (params.get(CmsLock.PARAM_INCLUDERELATED) != null) {
@@ -317,7 +332,7 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
                     }
                     html.append(CmsLock.PARAM_INCLUDERELATED);
                     html.append("=");
-                    html.append(CmsEncoder.escapeXml((String)params.get(CmsLock.PARAM_INCLUDERELATED)));
+                    html.append(CmsEncoder.escapeXml(params.get(CmsLock.PARAM_INCLUDERELATED)));
                 }
                 if (needsAmpersand) {
                     html.append("&");
@@ -333,6 +348,7 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
             /**
              * @see org.opencms.workplace.list.A_CmsListIndependentJsAction#jsCode(CmsWorkplace)
              */
+            @Override
             public String jsCode(CmsWorkplace wp) {
 
                 return getRequestLink(wp, false);
@@ -347,6 +363,7 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
             /**
              * @see org.opencms.workplace.list.A_CmsListIndependentJsAction#jsCode(CmsWorkplace)
              */
+            @Override
             public String jsCode(CmsWorkplace wp) {
 
                 return getRequestLink(wp, true);
@@ -371,6 +388,7 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // no LMAs, and remove default search action

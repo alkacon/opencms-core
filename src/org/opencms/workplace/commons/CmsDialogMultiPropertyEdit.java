@@ -134,7 +134,6 @@ public class CmsDialogMultiPropertyEdit extends CmsDialog {
      * 
      * @return the HTML for the dialog input form to comment the images
      */
-    @SuppressWarnings("unchecked")
     public String buildDialogForm() {
 
         StringBuffer result = new StringBuffer(16384);
@@ -218,7 +217,6 @@ public class CmsDialogMultiPropertyEdit extends CmsDialog {
      * 
      * @return the images of the gallery folder which are edited in the dialog form
      */
-    @SuppressWarnings("unchecked")
     protected List<CmsResource> getResources() {
 
         List<CmsResource> result = Collections.emptyList();
@@ -277,7 +275,6 @@ public class CmsDialogMultiPropertyEdit extends CmsDialog {
      * @return true, if the resources were successfully processed, otherwise false
      * @throws CmsException if commenting is not successful
      */
-    @SuppressWarnings("unchecked")
     protected boolean performDialogOperation() throws CmsException {
 
         // lock the folder

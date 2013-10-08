@@ -119,6 +119,7 @@ public class CmsGroupSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.tools.CmsToolDialog#dialogTitle()
      */
+    @Override
     public String dialogTitle() {
 
         // build title
@@ -144,6 +145,7 @@ public class CmsGroupSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() throws CmsRuntimeException {
 
         throwListUnsupportedActionException();
@@ -152,6 +154,7 @@ public class CmsGroupSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws CmsRuntimeException {
 
         throwListUnsupportedActionException();
@@ -223,6 +226,7 @@ public class CmsGroupSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // noop
@@ -235,42 +239,48 @@ public class CmsGroupSelectionList extends A_CmsListDialog {
      * 
      * @throws CmsException if womething goes wrong
      */
-    protected List getGroups() throws CmsException {
+    protected List<CmsGroup> getGroups() throws CmsException {
 
-        List ret = new ArrayList();
+        List<CmsGroup> groups = new ArrayList<CmsGroup>();
         if (getParamUser() != null) {
-            ret.addAll(getCms().getGroupsOfUser(getParamUser(), false));
+            groups.addAll(getCms().getGroupsOfUser(getParamUser(), false));
         } else {
-            ret.addAll(OpenCms.getRoleManager().getManageableGroups(getCms(), "", true));
+            groups.addAll(OpenCms.getRoleManager().getManageableGroups(getCms(), "", true));
         }
+        List<CmsGroup> result = new ArrayList<CmsGroup>();
         if (getParamFlags() != null) {
             int flags = Integer.parseInt(getParamFlags());
-            ret = CmsPrincipal.filterFlag(ret, flags);
+            for (CmsPrincipal p : CmsPrincipal.filterFlag(groups, flags)) {
+                if (p instanceof CmsGroup) {
+                    result.add((CmsGroup)p);
+                }
+            }
         }
         if ((getParamOufqn() != null) && !getParamOufqn().equals("null")) {
-            Iterator itTempRet = ret.iterator();
+            Iterator<CmsGroup> itTempRet = result.iterator();
             while (itTempRet.hasNext()) {
-                CmsGroup group = (CmsGroup)itTempRet.next();
+                CmsGroup group = itTempRet.next();
                 if (!group.getOuFqn().startsWith(getParamOufqn())) {
                     itTempRet.remove();
                 }
             }
         }
-        return ret;
+        return result;
     }
 
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
-    protected List getListItems() throws CmsException {
+    @Override
+    protected List<CmsListItem> getListItems() throws CmsException {
 
-        List ret = new ArrayList();
+        List<CmsListItem> ret = new ArrayList<CmsListItem>();
 
         // get content        
-        List groups = getGroups();
-        Iterator itGroups = groups.iterator();
+        List<CmsGroup> groups = getGroups();
+        Iterator<CmsGroup> itGroups = groups.iterator();
         while (itGroups.hasNext()) {
-            CmsGroup group = (CmsGroup)itGroups.next();
+            CmsGroup group = itGroups.next();
             CmsListItem item = getList().newItem(group.getId().toString());
             item.set(LIST_COLUMN_NAME, group.getName());
             item.set(LIST_COLUMN_DISPLAY, OpenCms.getWorkplaceManager().translateGroupName(group.getName(), true));
@@ -282,6 +292,7 @@ public class CmsGroupSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create column for icon display
@@ -315,6 +326,7 @@ public class CmsGroupSelectionList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.list.A_CmsListDirectJsAction#jsCode()
              */
+            @Override
             public String jsCode() {
 
                 return "window.opener.setGroupFormValue('"
@@ -332,6 +344,7 @@ public class CmsGroupSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         CmsListSearchAction searchAction = new CmsListSearchAction(metadata.getColumnDefinition(LIST_COLUMN_DISPLAY));
@@ -342,6 +355,7 @@ public class CmsGroupSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // no-op        
@@ -350,6 +364,7 @@ public class CmsGroupSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         try {

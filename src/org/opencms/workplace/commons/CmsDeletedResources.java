@@ -285,10 +285,10 @@ public class CmsDeletedResources extends CmsDialog {
 
             StringBuffer errors = new StringBuffer();
 
-            Iterator iter = getSelectedItems().iterator();
+            Iterator<String> iter = getSelectedItems().iterator();
             while (iter.hasNext()) {
-                 CmsUUID id = new CmsUUID((String)iter.next());
-                 try {
+                CmsUUID id = new CmsUUID(iter.next());
+                try {
                     getCms().restoreDeletedResource(id);
                 } catch (Exception e) {
                     errors.append(e.getLocalizedMessage());
@@ -344,10 +344,10 @@ public class CmsDeletedResources extends CmsDialog {
      * 
      * @return a list of resource ids of the current selected items
      */
-    public List getSelectedItems() {
+    public List<String> getSelectedItems() {
 
-        Iterator it = CmsStringUtil.splitAsList(getParamSelItems(), CmsHtmlList.ITEM_SEPARATOR, true).iterator();
-        List items = new ArrayList();
+        Iterator<?> it = CmsStringUtil.splitAsList(getParamSelItems(), CmsHtmlList.ITEM_SEPARATOR, true).iterator();
+        List<String> items = new ArrayList<String>();
         while (it.hasNext()) {
             String id = (String)it.next();
             items.add(id);
@@ -358,9 +358,10 @@ public class CmsDeletedResources extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#paramsAsHidden()
      */
+    @Override
     public String paramsAsHidden() {
 
-        List excludes = new ArrayList();
+        List<String> excludes = new ArrayList<String>();
         excludes.add(PARAM_READTREE);
         return paramsAsHidden(excludes);
     }
@@ -398,6 +399,7 @@ public class CmsDeletedResources extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsDialog#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         super.initWorkplaceRequestValues(settings, request);

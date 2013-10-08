@@ -38,11 +38,9 @@ import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.I_CmsListFormatter;
 
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -60,9 +58,6 @@ public class CmsNotResourceCategoriesList extends A_CmsResourceCategoriesList {
 
     /** list id constant. */
     public static final String LIST_ID = "lnrc";
-
-    /** a set of action id's to use for adding. */
-    protected static Set m_addActionIds = new HashSet();
 
     /**
      * Public constructor.<p>
@@ -99,6 +94,7 @@ public class CmsNotResourceCategoriesList extends A_CmsResourceCategoriesList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws CmsRuntimeException {
 
         if (getParamListAction().equals(LIST_ACTION_ADD)) {
@@ -121,6 +117,7 @@ public class CmsNotResourceCategoriesList extends A_CmsResourceCategoriesList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtmlStart()
      */
+    @Override
     protected String defaultActionHtmlStart() {
 
         return getList().listJs() + dialogContentStart(getParamTitle());
@@ -129,13 +126,18 @@ public class CmsNotResourceCategoriesList extends A_CmsResourceCategoriesList {
     /**
      * @see org.opencms.workplace.commons.A_CmsResourceCategoriesList#getCategories()
      */
-    protected List getCategories() throws CmsException {
+    @Override
+    protected List<CmsCategory> getCategories() throws CmsException {
 
-        List resourceRelations = getResourceCategories();
-        List result = getCategoryService().readCategories(getJsp().getCmsObject(), null, true, getParamResource());
-        Iterator itResourceRelations = resourceRelations.iterator();
+        List<CmsCategory> resourceRelations = getResourceCategories();
+        List<CmsCategory> result = getCategoryService().readCategories(
+            getJsp().getCmsObject(),
+            null,
+            true,
+            getParamResource());
+        Iterator<CmsCategory> itResourceRelations = resourceRelations.iterator();
         while (itResourceRelations.hasNext()) {
-            CmsCategory category = (CmsCategory)itResourceRelations.next();
+            CmsCategory category = itResourceRelations.next();
             if (result.contains(category)
                 && resourceRelations.containsAll(getCategoryService().readCategories(
                     getJsp().getCmsObject(),
@@ -151,6 +153,7 @@ public class CmsNotResourceCategoriesList extends A_CmsResourceCategoriesList {
     /**
      * @see org.opencms.workplace.commons.A_CmsResourceCategoriesList#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         super.setColumns(metadata);
@@ -160,6 +163,7 @@ public class CmsNotResourceCategoriesList extends A_CmsResourceCategoriesList {
             /**
              * @see org.opencms.workplace.list.I_CmsListFormatter#format(java.lang.Object, java.util.Locale)
              */
+            @Override
             public String format(Object data, Locale locale) {
 
                 CmsListColumnDefinition listColumnDefinition = getList().getMetadata().getColumnDefinition(
@@ -181,6 +185,7 @@ public class CmsNotResourceCategoriesList extends A_CmsResourceCategoriesList {
     /**
      * @see org.opencms.workplace.commons.A_CmsResourceCategoriesList#setStateActionCol(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setStateActionCol(CmsListMetadata metadata) {
 
         // create column for state change
@@ -196,6 +201,7 @@ public class CmsNotResourceCategoriesList extends A_CmsResourceCategoriesList {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isEnabled()
              */
+            @Override
             public boolean isEnabled() {
 
                 try {
