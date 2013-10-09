@@ -15,6 +15,9 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 9.0.0
+- Fixed potential memory when using Solr multi-core features by updating Solr to version 4.3 (@see http://wiki.apache.org/solr/LotsOfCores)
+
 OpenCms 8.9.0 (aka 9.0 RC) - September 30, 2013
 ! Improved "in place" editing of web pages for text and also for images and other content types.
 ! Enhanced support for different devices with preview and device specific content output control.
@@ -44,8 +47,8 @@ OpenCms 8.9.0 (aka 9.0 RC) - September 30, 2013
 - Updated Russian localization
 - Removed upload applet
 - Removed obsolete FCKEditor and EditArea
-- Updated SOLR and Lucene libraries
-- Improved SOLR search field mapping for multi-lingual XML contents that are using nested elements
+- Updated Solr and Lucene libraries
+- Improved Solr search field mapping for multi-lingual XML contents that are using nested elements
 - Improved text based language detection.
 * Fixed issue #23 where parsing the publish scheduled date failed due to a wrong locale
 * Fixed issue #61 where the removal of mapped properties failed
@@ -71,7 +74,7 @@ OpenCms 8.5.2 - July 10, 2013
 * Fixed issue #156 where newly created container pages from model pages did not have the right template property.
 * Fixed issue #159 where another resource was locked when creating a new one.
 * Fixed issue #167 where editing expired resources from direct edit caused errors.
-* Fixed issue #169 where SOLR rebuild doesn't update unmodified resources.
+* Fixed issue #169 where Solr rebuild doesn't update unmodified resources.
 * Fixed issue #170 where folders without default files did deliver a blank page instead of the 404 error code.
 * Fixed issue #173 where XSS was possible.
 * Fixed issue #175 where depending on the current date certain dates could not be set.
@@ -87,7 +90,7 @@ OpenCms 8.5.2 - July 10, 2013
 * Fixed issue where selecting "Undo changes" in the context menu for a JSP, the corresponding JSP in the RFS JSP repository is not deleted or updated.
 * Fixed issue with context menu for expired resources.
 * Fixed issue with determining the content CSS in the XML content editor. 
-* Fixed issue with memory leaks using SOLR.
+* Fixed issue with memory leaks using Solr.
 
 OpenCms 8.5.1 - February 7, 2013
 ! Improved file selector widget to show resource information.
