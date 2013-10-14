@@ -2,14 +2,14 @@
 
 <project name="OpenCms" default="bindist" basedir=".">
 	<property file="${basedir}/xbuild.properties" />
-	<property file="${basedir}/build-default.properties" /> 
+	<property file="${basedir}/build-default.properties" />
 	<property name="version.number" value="8.7.1" />
 	<property name="java.target.version" value="1.6" />
 	<property name="version.usecommitid" value="false" />
 
 	<property name="app.name" value="opencms" />
 	<property name="src.all.comps" value="lib,modules,src-components,src-gwt,src-modules,src-setup,test,webapp" />
-	
+
 
 	<property name="opencms.input" location="${basedir}" />
 	<property name="opencms.output" location="${basedir}/../BuildCms" />
@@ -21,9 +21,9 @@
 	<property name="opencms.output.jars-components" location="${opencms.output}/build/jars-components" />
 	<property name="opencms.output.warfiles" location="${opencms.output}/build/${app.name}" />
 	<property name="opencms.output.distfiles" location="${opencms.output}/zip" />
-	
-	<property name="databases" value="as400,db2,derby,empress,firebird,hsqldb,informix,ingres,interbase,intersystemscache,jdatastore,mssql,mysql,oracle,postgresql,sybase" /> 
-<!--	<property name="databases" value="mysql" /> -->
+
+	<property name="databases" value="as400,db2,derby,empress,firebird,hsqldb,informix,ingres,interbase,intersystemscache,jdatastore,mssql,mysql,oracle,postgresql,sybase" />
+	<!--	<property name="databases" value="mysql" /> -->
 
 	<property name="opencms.input.warfiles" location="${opencms.input}/webapp" />
 	<property name="opencms.input.webinf" location="${opencms.input.warfiles}/WEB-INF" />
@@ -65,17 +65,16 @@
 			<include name="**/*.jar" />
 		</fileset>
 	</path>
-	
+
 	<taskdef resource="net/sf/antcontrib/antlib.xml" loaderref="contrib">
 		<classpath>
 			<pathelement location="${opencms.input.libs.compile}/ant-contrib-1.0b1.jar" />
 		</classpath>
 	</taskdef>
 
-	<taskdef resource="checkstyletask.properties"
-		classpathref="opencms.input.libs.all"/>
+	<taskdef resource="checkstyletask.properties" classpathref="opencms.input.libs.all" />
 
-	<target name="init-components">
+	<target name="init-components" depends="gwt-classes">
 		<mkdir dir="${opencms.output.jars-components}" />
 		<timestampselector property="mostRecentComponent">
 			<path>
@@ -102,6 +101,58 @@
 				<pathelement location="${opencms.input.libs.runtime}/jug-lgpl-2.0.0.jar" />
 			</classpath>
 		</taskdef>
+	</target>
+
+	<target name="gwt-classes">
+		<outofdate>
+			<sourcefiles>
+				<fileset dir="${opencms.input}/src" erroronmissingdir="false">
+					<include name="**/google/gwt/user/client/**" />
+				</fileset>
+			</sourcefiles>
+			<targetfiles>
+				<fileset dir="${opencms.output}/build/classes-gwt-rpc" includes="**/*.class" />
+			</targetfiles>
+			<sequential>
+				<delete dir="${opencms.output}/build/classes-gwt-rpc" failonerror="false" />
+				<mkdir dir="${opencms.output}/build/classes-gwt-rpc" />
+				<javac srcdir="${opencms.input}/src" destdir="${opencms.output}/build/classes-gwt-rpc" debug="on" optimize="on" deprecation="on" includes="**/google/gwt/user/client/**" source="1.6" target="${java.target.version}" includeantruntime="false">
+					<classpath>
+						<fileset dir="${opencms.input.libs.compile}">
+							<include name="**/*.jar" />
+						</fileset>
+						<fileset dir="${opencms.input.libs.runtime}">
+							<include name="**/*.jar" />
+						</fileset>
+					</classpath>
+				</javac>
+			</sequential>
+		</outofdate>
+		<outofdate>
+			<sourcefiles>
+				<fileset dir="${opencms.input}/src-gwt" erroronmissingdir="false">
+					<exclude name="**/client**" />
+				</fileset>
+			</sourcefiles>
+			<targetfiles>
+				<fileset dir="${opencms.output}/build/classes-gwt" includes="**/*.class" />
+			</targetfiles>
+			<sequential>
+				<delete dir="${opencms.output}/build/classes-gwt" failonerror="false" />
+				<mkdir dir="${opencms.output}/build/classes-gwt" />
+				<javac srcdir="${opencms.input}/src-gwt" destdir="${opencms.output}/build/classes-gwt" debug="on" optimize="on" deprecation="on" excludes="**/client/**" source="1.6" target="${java.target.version}" includeantruntime="false">
+					<classpath>
+						<fileset dir="${opencms.input.libs.compile}">
+							<include name="**/*.jar" />
+						</fileset>
+						<fileset dir="${opencms.input.libs.runtime}">
+							<include name="**/*.jar" />
+						</fileset>
+						<pathelement path="${opencms.output}/build/classes-gwt-rpc" />
+					</classpath>
+				</javac>
+			</sequential>
+		</outofdate>
 	</target>
 
 	<target name="compile-components" unless="componentsUpToDate" description="Builds the OpenCms components">
@@ -131,7 +182,7 @@
 					 as ant properties are immutable we are not going to override any previous setting.  -->
 		<property name="version.revision" value="${version.number}" />
 	</target>
-	
+
 	<target name="init" depends="initrevision">
 		<!-- this is a comment -->
 
@@ -178,7 +229,7 @@
 		<delete dir="${opencms.output}/build" />
 		<delete dir="${opencms.output.distfiles}" />
 	</target>
-	
+
 	<target name="generate-schema">
 		<taskdef name="mappingtool" classname="org.apache.openjpa.jdbc.ant.MappingToolTask" />
 		<for list="${databases}" param="db">
@@ -193,7 +244,7 @@
 					<then>
 						<property file="${basedir}/webapp/setup/database/@{db}/database.properties" />
 						<echo message="DRIVER: ${@{db}.driver}" />
-		     			<mappingtool schemaAction="build" readSchema="false" sqlFile="${basedir}/webapp/setup/database/@{db}/create_tables_gen.sql" >
+						<mappingtool schemaAction="build" readSchema="false" sqlFile="${basedir}/webapp/setup/database/@{db}/create_tables_gen.sql">
 							<config ConnectionDriverName="${@{db}.driver}" propertiesFile="${basedir}/persistence.xml" />
 						</mappingtool>
 					</then>
@@ -360,7 +411,7 @@
 				<include name="**/*.jar" />
 			</fileset>
 		</copy>
-		
+
 		<property name="zip.update" value="${opencms.output}/updatezip" />
 		<delete dir="${zip.update}" />
 		<mkdir dir="${zip.update}/update/modules" />
@@ -406,7 +457,7 @@
 			</sequential>
 		</for>
 		<delete file="${opencms.output.distfiles}/opencms_upgrade_to_${version.revision}.zip" failonerror="false" />
-		
+
 		<zip zipfile="${opencms.output.distfiles}/opencms_upgrade_to_${version.revision}.zip" update="true">
 			<zipfileset dir="${opencms.input.webinf}" prefix="WEB-INF" includes="${updater.webinf.files}" />
 			<zipfileset dir="${opencms.input.webinf}/wsdl" prefix="WEB-INF/wsdl" includes="*" />
@@ -584,20 +635,17 @@
 		</if>
 
 	</target>
-	
-	<target name="checkstyle"
-	        description="Generates a report of code convention violations.">
 
-	  <checkstyle config="${basedir}/Checkstyle_OpenCms.xml"
-	              failureProperty="checkstyle.failure"
-	              failOnViolation="false">
-	    <formatter type="xml" tofile="checkstyle_report.xml"/>
-	  	<!-- excluding org.opencms.jsp.util.UAgentInfo -->
-	    <fileset dir="src" includes="**/*.java" excludes="**/UAgentInfo.java" />
-	  	<fileset dir="src-gwt" includes="**/*.java" excludes="**/super-scr/**/*.java" />
-	  </checkstyle>
+	<target name="checkstyle" description="Generates a report of code convention violations.">
 
-<!--	  <style in="checkstyle_report.xml" out="checkstyle_report.html" style="checkstyle.xsl"/> -->
+		<checkstyle config="${basedir}/Checkstyle_OpenCms.xml" failureProperty="checkstyle.failure" failOnViolation="false">
+			<formatter type="xml" tofile="checkstyle_report.xml" />
+			<!-- excluding org.opencms.jsp.util.UAgentInfo -->
+			<fileset dir="src" includes="**/*.java" excludes="**/UAgentInfo.java" />
+			<fileset dir="src-gwt" includes="**/*.java" excludes="**/super-scr/**/*.java" />
+		</checkstyle>
+
+		<!--	  <style in="checkstyle_report.xml" out="checkstyle_report.html" style="checkstyle.xsl"/> -->
 
 	</target>
 
@@ -671,7 +719,7 @@
 	<target name="unittests" depends="compile-tests" description="Runs the core Junit test cases">
 
 		<junit showoutput="yes" printsummary="yes" fork="yes" haltonfailure="no" haltonerror="no" maxmemory="1500m">
-			<jvmarg value="-XX:MaxPermSize=512m"/>
+			<jvmarg value="-XX:MaxPermSize=512m" />
 			<sysproperty key="test.data.path" value="${opencms.input}/test/data" />
 			<sysproperty key="test.webapp.path" value="${opencms.input}/webapp" />
 			<sysproperty key="test.build.folder" value="${opencms.output.tests}" />
@@ -704,7 +752,7 @@
 		<junit showoutput="yes" printsummary="yes" fork="yes" haltonfailure="no" haltonerror="no">
 			<sysproperty key="test.data.path" value="${opencms.input}/test/data" />
 			<sysproperty key="test.webapp.path" value="${opencms.input}/webapp" />
-		    <sysproperty key="test.build.folder" value="${opencms.output.tests}" />
+			<sysproperty key="test.build.folder" value="${opencms.output.tests}" />
 			<classpath>
 				<pathelement path="${opencms.output.tests}" />
 				<fileset dir="${opencms.output}/build">

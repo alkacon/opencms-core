@@ -468,7 +468,8 @@
 								<pathelement path="${opencms.input}/src" />
 								<pathelement path="${opencms.input}/src-gwt" />
 								<pathelement path="${opencms.input.gwt}" />
-								<pathelement path="${opencms.output.jars-components}/gwt-opencms.jar" />
+								<pathelement path="${opencms.output}/build/classes-gwt-rpc" />
+								<pathelement path="${opencms.output}/build/classes-gwt" />
 							</classpath>
 						</java>
 						<delete dir="${module.gwt.output}/../WEB-INF" failonerror="false" />
