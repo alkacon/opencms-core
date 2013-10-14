@@ -281,6 +281,7 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
 
         StringBuffer result = new StringBuffer(512);
         Map<String, String[]> params = CmsCollectionsGenericWrapper.map(getJsp().getRequest().getParameterMap());
+        params = new HashMap<String, String[]>(params);
         params.remove(CmsListExplorerFrameset.PARAM_PAGE);
         Iterator<Map.Entry<String, String[]>> it = params.entrySet().iterator();
         while (it.hasNext()) {
