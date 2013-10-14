@@ -98,6 +98,9 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         suite.addTest(new TestSolrFieldConfiguration("testLocaleDependenciesField"));
         suite.addTest(new TestSolrFieldConfiguration("testLuceneMigration"));
 
+        // this test case must be the last one
+        suite.addTest(new TestSolrFieldConfiguration("testIngnoreMaxRows"));
+
         TestSetup wrapper = new TestSetup(suite) {
 
             @Override
@@ -114,58 +117,6 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         };
 
         return wrapper;
-    }
-
-    /**
-     * @throws Throwable
-     */
-    public void testLanguageDetection() throws Throwable {
-
-        CmsObject cms = OpenCms.initCmsObject(getCmsObject());
-        // use a folder that only contains GERMAN content @see manifest.xml -> locale poperty
-        String folderName = "/folder1/subfolder12/subsubfolder121/";
-
-        List<CmsProperty> props = new ArrayList<CmsProperty>();
-        props.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_LOCALE, "de", "de"));
-        CmsResource master = importTestResource(cms, "org/opencms/search/solr/lang-detect-doc.pdf", folderName
-            + "lang-detect-doc.pdf", CmsResourceTypeBinary.getStaticTypeId(), props);
-
-        // publish the project and update the search index
-        OpenCms.getPublishManager().publishProject(cms, new CmsShellReport(cms.getRequestContext().getLocale()));
-        OpenCms.getPublishManager().waitWhileRunning();
-        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
-        // index.setLanguageDetection(true);
-        // is the default configured in opencms-search.xml 
-        CmsSolrQuery query = new CmsSolrQuery(cms, null);
-        query.setText("Language Detection Document");
-        // even if the property is set to German this document should be detected as English
-        // because the language inside the PDF is written in English
-        query.setLocales(Collections.singletonList(Locale.GERMAN));
-        CmsSolrResultList result = index.search(cms, query);
-        assertTrue(!result.contains(master));
-        query.setLocales(Collections.singletonList(Locale.ENGLISH));
-        result = index.search(cms, query);
-        assertTrue(result.contains(master));
-
-        // Now test the other way around: German locale property with English content
-        // Should be detected as German
-        // This is the OpenCms default behavior: property wins!
-        index.setLanguageDetection(false);
-        props.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_LOCALE, "de", "de"));
-        CmsResource master2 = importTestResource(cms, "org/opencms/search/solr/lang-detect-doc.pdf", folderName
-            + "lang-detect-doc2.pdf", CmsResourceTypeBinary.getStaticTypeId(), props);
-        // publish the project and update the search index
-        OpenCms.getPublishManager().publishProject(cms, new CmsShellReport(cms.getRequestContext().getLocale()));
-        OpenCms.getPublishManager().waitWhileRunning();
-        query.setLocales(Collections.singletonList(Locale.GERMAN));
-        result = index.search(cms, query);
-        assertTrue(result.contains(master2));
-        query.setLocales(Collections.singletonList(Locale.ENGLISH));
-        result = index.search(cms, query);
-        assertTrue(!result.contains(master2));
-
-        // restore configured value
-        index.setLanguageDetection(true);
     }
 
     /**
@@ -460,6 +411,74 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
                 }
             }
         }
+    }
+
+    /**
+     * @throws Throwable if something goes wrong
+     */
+    public void testIngnoreMaxRows() throws Throwable {
+
+        echo("Testing the ignore max rows argument.");
+        String query = "?fq=con_locales:*&fq=parent-folders:*&fl=path&rows=99999";
+        CmsSolrQuery squery = new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(query));
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
+        CmsSolrResultList result = index.search(getCmsObject(), squery, true);
+        int found = result.size();
+        assertTrue(
+            "The number of found documents must be greater than org.opencms.search.solr.CmsSolrIndex.ROWS_MAX",
+            found > CmsSolrIndex.ROWS_MAX);
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public void testLanguageDetection() throws Throwable {
+
+        CmsObject cms = OpenCms.initCmsObject(getCmsObject());
+        // use a folder that only contains GERMAN content @see manifest.xml -> locale poperty
+        String folderName = "/folder1/subfolder12/subsubfolder121/";
+
+        List<CmsProperty> props = new ArrayList<CmsProperty>();
+        props.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_LOCALE, "de", "de"));
+        CmsResource master = importTestResource(cms, "org/opencms/search/solr/lang-detect-doc.pdf", folderName
+            + "lang-detect-doc.pdf", CmsResourceTypeBinary.getStaticTypeId(), props);
+
+        // publish the project and update the search index
+        OpenCms.getPublishManager().publishProject(cms, new CmsShellReport(cms.getRequestContext().getLocale()));
+        OpenCms.getPublishManager().waitWhileRunning();
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
+        // index.setLanguageDetection(true);
+        // is the default configured in opencms-search.xml 
+        CmsSolrQuery query = new CmsSolrQuery(cms, null);
+        query.setText("Language Detection Document");
+        // even if the property is set to German this document should be detected as English
+        // because the language inside the PDF is written in English
+        query.setLocales(Collections.singletonList(Locale.GERMAN));
+        CmsSolrResultList result = index.search(cms, query);
+        assertTrue(!result.contains(master));
+        query.setLocales(Collections.singletonList(Locale.ENGLISH));
+        result = index.search(cms, query);
+        assertTrue(result.contains(master));
+
+        // Now test the other way around: German locale property with English content
+        // Should be detected as German
+        // This is the OpenCms default behavior: property wins!
+        index.setLanguageDetection(false);
+        props.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_LOCALE, "de", "de"));
+        CmsResource master2 = importTestResource(cms, "org/opencms/search/solr/lang-detect-doc.pdf", folderName
+            + "lang-detect-doc2.pdf", CmsResourceTypeBinary.getStaticTypeId(), props);
+        // publish the project and update the search index
+        OpenCms.getPublishManager().publishProject(cms, new CmsShellReport(cms.getRequestContext().getLocale()));
+        OpenCms.getPublishManager().waitWhileRunning();
+        query.setLocales(Collections.singletonList(Locale.GERMAN));
+        result = index.search(cms, query);
+        assertTrue(result.contains(master2));
+        query.setLocales(Collections.singletonList(Locale.ENGLISH));
+        result = index.search(cms, query);
+        assertTrue(!result.contains(master2));
+
+        // restore configured value
+        index.setLanguageDetection(true);
     }
 
     /**

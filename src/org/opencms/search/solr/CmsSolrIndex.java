@@ -120,7 +120,10 @@ public class CmsSolrIndex extends CmsSearchIndex {
     /** The solr exclude property. */
     public static final String PROPERTY_SEARCH_EXCLUDE_VALUE_SOLR = "solr";
 
-    /** A constant for debug formatting outpu. */
+    /** Indicates the maximum number of documents from the complete result set to return. */
+    public static final int ROWS_MAX = 50;
+
+    /** A constant for debug formatting output. */
     protected static final int DEBUG_PADDING_RIGHT = 50;
 
     /** The name for the parameters key of the response header. */
@@ -134,9 +137,6 @@ public class CmsSolrIndex extends CmsSearchIndex {
 
     /** The name of the key that is used for the query time. */
     private static final String QUERY_TIME_NAME = "QTime";
-
-    /** Indicates the maximum number of documents from the complete result set to return. */
-    private static final int ROWS_MAX = 50;
 
     /** A constant for UTF-8 charset. */
     private static final Charset UTF8 = Charset.forName("UTF-8");
