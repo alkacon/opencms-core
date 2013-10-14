@@ -347,6 +347,30 @@ div.inputField>div{
 	right:2px;
 }
 
+@external .mce-panel;
+@external .mce-caret;
+
+/**  Copied from skin.min.css in the TinyMCE editor and increased specificity. */ 
+.mce-panel.mce-panel { 
+	
+    background-color: #F0F0F0;
+    background-image: linear-gradient(to bottom, #FDFDFD, #DDDDDD) ;
+    background-repeat: repeat-x;
+    border: 0 solid #9E9E9E;
+}
+
+.mce-caret.mce-caret {
+    border-left: 4px solid rgba(0, 0, 0, 0);
+    border-right: 4px solid rgba(0, 0, 0, 0);
+    border-top: 4px solid #444444;
+    content: "";
+    display: inline-block;
+    height: 0;
+    vertical-align: top;
+    width: 0;
+}
+
+
 .widgetHolder{}
 .inActive{}
 .attributeValue{}
