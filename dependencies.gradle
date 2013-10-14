@@ -123,6 +123,7 @@ dependencies {
     distribution group: 'org.apache.lucene', name: 'lucene-grouping', version: '4.3.0'
     distribution group: 'org.apache.lucene', name: 'lucene-highlighter', version: '4.3.0'
     distribution group: 'org.apache.lucene', name: 'lucene-memory', version: '4.3.0'
+    distribution group: 'org.apache.lucene', name: 'lucene-misc', version: '4.3.0'
     distribution group: 'org.apache.lucene', name: 'lucene-queries', version: '4.3.0'
     distribution group: 'org.apache.lucene', name: 'lucene-queryparser', version: '4.3.0'
     distribution group: 'org.apache.lucene', name: 'lucene-spatial', version: '4.3.0'
