@@ -110,9 +110,7 @@
 					<include name="**/google/gwt/user/client/**" />
 				</fileset>
 			</sourcefiles>
-			<targetfiles>
-				<fileset dir="${opencms.output}/build/classes-gwt-rpc" includes="**/*.class" />
-			</targetfiles>
+			<targetfiles path="${opencms.output}/build/classes-gwt-rpc/com" />
 			<sequential>
 				<delete dir="${opencms.output}/build/classes-gwt-rpc" failonerror="false" />
 				<mkdir dir="${opencms.output}/build/classes-gwt-rpc" />
@@ -134,9 +132,7 @@
 					<exclude name="**/client**" />
 				</fileset>
 			</sourcefiles>
-			<targetfiles>
-				<fileset dir="${opencms.output}/build/classes-gwt" includes="**/*.class" />
-			</targetfiles>
+			<targetfiles path="${opencms.output}/build/classes-gwt/org" />
 			<sequential>
 				<delete dir="${opencms.output}/build/classes-gwt" failonerror="false" />
 				<mkdir dir="${opencms.output}/build/classes-gwt" />
