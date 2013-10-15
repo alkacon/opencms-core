@@ -745,7 +745,7 @@ tinyMCE.init({
     mode : "exact",
     elements : "tinymce_content",
     theme : "modern",
-    plugins : "autolink,lists,spellchecker,pagebreak,layer,table,save,hr,image,link,emoticons,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,template,wordcount,-opencms",
+    plugins : "anchor,charmap,code,textcolor,autolink,lists,spellchecker,pagebreak,layer,table,save,hr,image,link,emoticons,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,template,wordcount,-opencms",
     file_browser_callback : cmsTinyMceFileBrowser,
     entity_encoding: "raw",
 

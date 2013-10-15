@@ -38,8 +38,13 @@ import org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry;
 import org.opencms.gwt.client.I_CmsHasInit;
 import org.opencms.gwt.client.util.CmsMessages;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.editors.CmsTinyMceToolbarHelper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.user.client.Element;
 
 /**
@@ -59,6 +64,23 @@ public class CmsHtmlWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
     public static void initClass() {
 
         WidgetRegistry.getInstance().registerWidgetFactory(WIDGET_NAME, new CmsHtmlWidgetFactory());
+    }
+
+    /**
+     * Creates the TinyMCE toolbar config string from a Javascript config object.<p>
+     * 
+     * @param jso a Javascript array of toolbar items 
+     * 
+     * @return the TinyMCE toolbar config string 
+     */
+    protected static String createToolbar(JavaScriptObject jso) {
+
+        JsArray<?> jsItemArray = jso.<JsArray<?>> cast();
+        List<String> jsItemList = new ArrayList<String>();
+        for (int i = 0; i < jsItemArray.length(); i++) {
+            jsItemList.add(jsItemArray.get(i).toString());
+        }
+        return CmsTinyMceToolbarHelper.createTinyMceToolbarStringFromGenericToolbarItems(jsItemList);
     }
 
     /**
@@ -131,67 +153,13 @@ public class CmsHtmlWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
                                                                                 if (config.cmsGalleryUseThickbox) {
                                                                                 options.cmsGalleryUseThickbox = config.cmsGalleryUseThickbox;
                                                                                 }
-                                                                                options.plugins = "autolink,lists,pagebreak,layer,table,save,hr,image,link,emoticons,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,template,wordcount,advlist,code,-opencms";
+                                                                                options.plugins = "anchor,charmap,code,textcolor,autolink,lists,pagebreak,layer,table,save,hr,image,link,emoticons,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,template,wordcount,advlist,code,-opencms";
                                                                                 if (config.fullpage) {
                                                                                 options.plugins += ",fullpage";
                                                                                 }
 
                                                                                 if (config.toolbar_items) {
-                                                                                // assemble the toolbar
-
-                                                                                // translation map
-                                                                                var BUTTON_TRANSLATION = {
-                                                                                alignleft : "justifyleft",
-                                                                                aligncenter : "justifycenter",
-                                                                                alignright : "justifyright",
-                                                                                justify : "justifyfull",
-                                                                                style : "styleselect",
-                                                                                paste : "paste,pastetext,pasteword",
-                                                                                find : "search",
-                                                                                unorderedlist : "bullist",
-                                                                                orderedlist : "numlist",
-                                                                                editorlink : "link",
-                                                                                source : "code",
-                                                                                subscript : "sub",
-                                                                                superscript : "sup",
-                                                                                specialchar : "charmap",
-                                                                                spellcheck : "iespell",
-                                                                                fitwindow : "fullscreen",
-                                                                                imagegallery : "OcmsImageGallery",
-                                                                                downloadgallery : "OcmsDownloadGallery",
-                                                                                linkgallery : "OcmsLinkGallery",
-                                                                                htmlgallery : "OcmsHtmlGallery",
-                                                                                tablegallery : "OcmsTableGallery",
-                                                                                link : "link"
-                                                                                };
-
-                                                                                var toolbarGroup = "";
-                                                                                // iterate over all toolbar items and generate toobar groups
-                                                                                for ( var i = 0; i < config.toolbar_items.length; i++) {
-                                                                                var item = config.toolbar_items[i];
-                                                                                // ignore duplicate items
-                                                                                if (item != config.toolbar_items[i - 1]) {
-                                                                                // check for an item translation
-                                                                                if (BUTTON_TRANSLATION[item]) {
-                                                                                item = BUTTON_TRANSLATION[item];
-                                                                                }
-                                                                                // |,[,],- are group separators indicating to add the group and start a new one
-                                                                                if (item == "|" || item == "[" || item == "]"
-                                                                                || item == "-"
-                                                                                || i == config.toolbar_items.length - 1) {
-                                                                                // don't add empty groups
-                                                                                if (toolbarGroup != "") {
-                                                                                toolbarGroup += " |";
-                                                                                }
-                                                                                } else {
-                                                                                // add item to the group 
-                                                                                if (toolbarGroup != "") {
-                                                                                toolbarGroup += " ";
-                                                                                }
-                                                                                toolbarGroup += item;
-                                                                                }
-                                                                                }
-                                                                                }
+                                                                                    toolbarGroup = @org.opencms.ade.contenteditor.client.widgets.CmsHtmlWidgetFactory::createToolbar(Lcom/google/gwt/core/client/JavaScriptObject;)(config.toolbar_items);
 
                                                                                 options.toolbar1 = toolbarGroup;
 

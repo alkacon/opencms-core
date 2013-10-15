@@ -125,6 +125,9 @@
 	<source path="xml/content">
 		<include name="CmsXmlContentProperty.java" />
 	</source>
+	<source path="workplace/editors">
+		<include name="CmsTinyMceToolbarHelper.java" />
+	</source>
 	<generate-with class="org.opencms.gwt.rebind.rpc.CmsRpcServiceGenerator">
 		<when-type-assignable class="com.google.gwt.user.client.rpc.RemoteService" />
 	</generate-with> 
