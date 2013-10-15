@@ -27,6 +27,7 @@
 
 package org.opencms.workplace.list;
 
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
@@ -104,7 +105,7 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
     public String defaultActionHtml() {
 
         String params = allParamsAsRequest();
-        String titleUri = getJsp().getRequest().getParameter(PARAM_TITLE_URI);
+        String titleUri = CmsEncoder.escapeXml(getJsp().getRequest().getParameter(PARAM_TITLE_URI));
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(titleUri)) {
             titleUri = CmsToolManager.ADMINVIEW_ROOT_LOCATION + "/list-title.jsp";
         }
@@ -290,7 +291,7 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
                     result.append("<input type=\"hidden\" name=\"");
                     result.append(param);
                     result.append("\" value=\"");
-                    result.append(value[i]);
+                    result.append(CmsEncoder.encode(value[i], getCms().getRequestContext().getEncoding()));
                     result.append("\">\n");
                 }
             }

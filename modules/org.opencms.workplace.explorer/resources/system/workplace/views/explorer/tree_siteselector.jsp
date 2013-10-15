@@ -1,7 +1,8 @@
 <%@ page import="
 	org.opencms.workplace.*,
 	org.opencms.workplace.explorer.*,
-	org.opencms.jsp.*"
+	org.opencms.jsp.*,
+	org.opencms.i18n.CmsEncoder"
 %><%
 
 	CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
@@ -36,7 +37,7 @@ function changeSite() {
 <input type="hidden" name="<%= CmsTree.PARAM_SHOWSITESELECTOR %>" value="<%= wp.showSiteSelector() %>">
 <input type="hidden" name="<%= CmsTree.PARAM_RESOURCE %>" value="/">
 <%if (request.getParameter(CmsTree.PARAM_INTEGRATOR) != null) {%>
-<input type="hidden" name="<%=CmsTree.PARAM_INTEGRATOR%>" value="<%=request.getParameter(CmsTree.PARAM_INTEGRATOR)%>" />
+<input type="hidden" name="<%=CmsTree.PARAM_INTEGRATOR%>" value="<%=CmsEncoder.escapeXml(request.getParameter(CmsTree.PARAM_INTEGRATOR))%>" />
 <% }  %>
 <%= wp.getSiteSelector("name=\"treesite\" onchange=\"changeSite();\" style=\"width:250px;\"") %>
 </form>

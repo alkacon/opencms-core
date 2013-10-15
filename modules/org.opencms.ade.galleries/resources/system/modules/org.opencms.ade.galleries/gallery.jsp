@@ -1,4 +1,4 @@
-<%@page taglibs="c"  import="org.opencms.ade.galleries.CmsGalleryActionElement, org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants" taglibs="cms"%><%
+<%@page taglibs="c"  import="org.opencms.ade.galleries.CmsGalleryActionElement, org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants, org.opencms.util.CmsStringUtil, org.opencms.i18n.CmsEncoder" taglibs="cms"%><%
   CmsGalleryActionElement gallery = new CmsGalleryActionElement(pageContext, request, response);
 %><!DOCTYPE html>
 <html>
@@ -14,7 +14,8 @@
     <% if (gallery.isEditorMode()){ /* opened from rich text editor (FCKEditor, CKEditor...) include necessary scripts */ %>
 	<c:choose>
 	<c:when test="${!empty param.integrator}">
-	<script type="text/javascript" src="<cms:link>${param.integrator}</cms:link>"></script>
+	<c:set var="integrator"><%= CmsEncoder.escapeXml(request.getParameter("integrator")) %></c:set>
+	<script type="text/javascript" src="<cms:link>${integrator}</cms:link>"></script>
 	</c:when>
 	<c:otherwise>    
     <script type="text/javascript" src="<cms:link>/system/workplace/editors/fckeditor/plugins/galleries/integrator.js</cms:link>"></script>
@@ -22,8 +23,8 @@
     </c:choose>
     <% } else if (gallery.isWidgetMode()){ /* opened as widget include necessary scripts */ %>
     <script type="text/javascript">
-    	var <%= I_CmsGalleryProviderConstants.KEY_FIELD_ID %> = '<%= request.getParameter(I_CmsGalleryProviderConstants.KEY_FIELD_ID)%>';
-    	var <%= I_CmsGalleryProviderConstants.KEY_HASH_ID %> = '<%= request.getParameter(I_CmsGalleryProviderConstants.KEY_HASH_ID)%>';
+    	var <%= I_CmsGalleryProviderConstants.KEY_FIELD_ID %> = '<%= CmsStringUtil.escapeJavaScript(request.getParameter(I_CmsGalleryProviderConstants.KEY_FIELD_ID)) %>';
+    	var <%= I_CmsGalleryProviderConstants.KEY_HASH_ID %> = '<%= CmsStringUtil.escapeJavaScript(request.getParameter(I_CmsGalleryProviderConstants.KEY_HASH_ID)) %>';
     </script>
     <% } %>
   </head>
