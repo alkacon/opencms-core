@@ -1678,33 +1678,19 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      */
     private String getFunctionDetailContainerName(CmsResource parent) {
 
-        try {
-            CmsObject cms = getCmsObject();
-            CmsObject rootCms = OpenCms.initCmsObject(cms);
-            rootCms.getRequestContext().setSiteRoot("");
-            CmsProperty templateProp = cms.readPropertyObject(parent, CmsPropertyDefinition.PROPERTY_TEMPLATE, true);
-            String templateVal = templateProp.getValue();
-            if (templateVal == null) {
-                return null;
-            }
-            CmsResource templateRes;
-            try {
-                templateRes = cms.readResource(templateVal, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
-            } catch (CmsVfsResourceNotFoundException e) {
-                templateRes = rootCms.readResource(templateVal, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
-            }
-            CmsProperty containerInfoProp = cms.readPropertyObject(
-                templateRes,
-                CmsPropertyDefinition.PROPERTY_CONTAINER_INFO,
-                true);
-            String containerInfo = containerInfoProp.getValue() == null ? "" : containerInfoProp.getValue();
-            Map<String, String> attrs = CmsStringUtil.splitAsMap(containerInfo, "|", "="); //$NON-NLS-2$
-            String functionDetailContainerName = attrs.get(KEY_FUNCTION_DETAIL);
-            return functionDetailContainerName;
-        } catch (CmsException e) {
-            LOG.warn(e.getLocalizedMessage(), e);
+        CmsObject cms = getCmsObject();
+        String notFound = null;
+        String containerInfo = OpenCms.getTemplateContextManager().readPropertyFromTemplate(
+            cms,
+            parent,
+            CmsPropertyDefinition.PROPERTY_CONTAINER_INFO,
+            notFound);
+        if (containerInfo == notFound) {
             return null;
         }
+        Map<String, String> attrs = CmsStringUtil.splitAsMap(containerInfo, "|", "="); //$NON-NLS-2$
+        String functionDetailContainerName = attrs.get(KEY_FUNCTION_DETAIL);
+        return functionDetailContainerName;
     }
 
     /**

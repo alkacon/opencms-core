@@ -30,6 +30,7 @@ package org.opencms.loader;
 import org.opencms.ade.containerpage.Messages;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.shared.CmsClientVariantInfo;
@@ -282,6 +283,33 @@ public class CmsTemplateContextManager {
             }
         }
         return result;
+    }
+
+    /**
+     * Utility method which either reads a property from the template used for a specific resource, or from the template context provider used for the resource if available.<p>
+     * 
+     * @param cms the CMS context to use 
+     * @param res the resource from whose template or template context provider the property should be read 
+     * @param propertyName the property name 
+     * @param fallbackValue the fallback value
+     *  
+     * @return the property value 
+     */
+    public String readPropertyFromTemplate(CmsObject cms, CmsResource res, String propertyName, String fallbackValue) {
+
+        try {
+            CmsProperty templateProp = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TEMPLATE, true);
+            String templatePath = templateProp.getValue().trim();
+            if (hasPropertyPrefix(templatePath)) {
+                I_CmsTemplateContextProvider provider = getTemplateContextProvider(templatePath);
+                return provider.readCommonProperty(cms, propertyName, fallbackValue);
+            } else {
+                return cms.readPropertyObject(templatePath, propertyName, false).getValue(fallbackValue);
+            }
+        } catch (Exception e) {
+            LOG.error(e);
+            return fallbackValue;
+        }
     }
 
     /**

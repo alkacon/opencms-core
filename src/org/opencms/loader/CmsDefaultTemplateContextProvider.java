@@ -158,6 +158,15 @@ public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextPr
     }
 
     /**
+     * @see org.opencms.loader.I_CmsTemplateContextProvider#readCommonProperty(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
+     */
+    public String readCommonProperty(CmsObject cms, String propertyName, String fallbackValue) throws CmsException {
+
+        String templatePath = getContextMap().get("desktop").getTemplatePath();
+        return cms.readPropertyObject(templatePath, propertyName, false).getValue(fallbackValue);
+    }
+
+    /**
      * Gets the context map, either from a cache or from the VFS if it'S not already cached.<p>
      * 
      * @return the context map 
