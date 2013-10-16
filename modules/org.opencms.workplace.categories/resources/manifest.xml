@@ -24,9 +24,7 @@
 		<dateinstalled/>
 		<dependencies/>
 		<exportpoints/>
-		<resources>
-			<resource uri="/system/categories/"/>
-		</resources>
+		<resources/>
 		<parameters/>
 	</module>
 	<files>

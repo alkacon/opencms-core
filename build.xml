@@ -426,6 +426,8 @@
 							<equals arg1="@{module}" arg2="com.alkacon.opencms.v8.template3.demo" />
 							<equals arg1="@{module}" arg2="org.opencms.dev.demo.content" />
 							<equals arg1="@{module}" arg2="org.opencms.welcome" />
+							<equals arg1="@{module}" arg2="org.opencms.workplace.galleries" />
+							<equals arg1="@{module}" arg2="org.opencms.workplace.categories" />
 						</or>
 					</not>
 					<then>
