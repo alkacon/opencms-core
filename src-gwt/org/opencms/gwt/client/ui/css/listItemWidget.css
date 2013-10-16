@@ -158,6 +158,7 @@ div.itemIcon{
 	font-weight: bold;
     vertical-align: middle;
     white-space: nowrap;
+    display: inline;
 }
 .titleRow{}
 @if user.agent ie6 {
