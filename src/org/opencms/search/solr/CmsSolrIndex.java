@@ -132,6 +132,27 @@ public class CmsSolrIndex extends CmsSearchIndex {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSolrIndex.class);
 
+    /** Pseudo resource used for not permission checked indexes. */
+    private static final CmsResource PSEUDO_RES = new CmsResource(
+        null,
+        null,
+        null,
+        0,
+        false,
+        0,
+        null,
+        null,
+        0L,
+        null,
+        0L,
+        null,
+        0L,
+        0L,
+        0,
+        0,
+        0L,
+        0);
+
     /** The name of the key that is used for the result documents inside the Solr query response. */
     private static final String QUERY_RESPONSE_NAME = "response";
 
@@ -768,6 +789,10 @@ public class CmsSolrIndex extends CmsSearchIndex {
                         } else {
                             visibleHitCount--;
                         }
+                    } else {
+                        // if permission check is not required for this index,
+                        // add a pseudo resource together with document to the results
+                        allDocs.add(new CmsSearchResource(PSEUDO_RES, searchDoc));
                     }
                 } catch (Exception e) {
                     // should not happen, but if it does we want to go on with the next result nevertheless                        
