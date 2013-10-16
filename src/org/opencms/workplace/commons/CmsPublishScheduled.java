@@ -30,6 +30,7 @@ package org.opencms.workplace.commons;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsContextInfo;
@@ -42,6 +43,7 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceAction;
@@ -113,7 +115,6 @@ public class CmsPublishScheduled extends CmsDialog {
      * 
      * @see org.opencms.workplace.CmsDialog#actionCloseDialog()
      */
-    @SuppressWarnings("unchecked")
     @Override
     public void actionCloseDialog() throws JspException {
 
@@ -173,6 +174,27 @@ public class CmsPublishScheduled extends CmsDialog {
     public void setParamPublishscheduleddate(String paramPublishscheduleddate) {
 
         m_paramPublishscheduleddate = paramPublishscheduleddate;
+    }
+
+    /** 
+     * Creates the publish project's name for a given root path and publish date.<p>
+     * 
+     * @param rootPath the publish resource's root path 
+     * @param date the publish date
+     *  
+     * @return the publish project name 
+     */
+    protected String computeProjectName(String rootPath, Date date) {
+
+        // create the temporary project, which is deleted after publishing
+        // the publish scheduled date in project name
+        String dateTime = CmsDateUtil.getDateTime(date, DateFormat.SHORT, getLocale());
+        // the resource name to publish scheduled
+        String projectName = key(Messages.GUI_PUBLISH_SCHEDULED_PROJECT_NAME_2, new Object[] {rootPath, dateTime});
+        // the HTML encoding for slashes is necessary because of the slashes in english date time format
+        // in project names slahes are not allowed, because these are separators for organizaional units
+        projectName = projectName.replace("/", "&#47;");
+        return projectName;
     }
 
     /**
@@ -260,23 +282,32 @@ public class CmsPublishScheduled extends CmsDialog {
         // set the current user site to the admin cms object
         cmsAdmin.getRequestContext().setSiteRoot(cms.getRequestContext().getSiteRoot());
 
-        // create the temporary project, which is deleted after publishing
-        // the publish scheduled date in project name
-        String dateTime = CmsDateUtil.getDateTime(date, DateFormat.SHORT, getLocale());
-        // the resource name to publish scheduled
-        String projectName = key(Messages.GUI_PUBLISH_SCHEDULED_PROJECT_NAME_2, new Object[] {
-            getCms().getRequestContext().addSiteRoot(resource),
-            dateTime});
-        // the HTML encoding for slashes is necessary because of the slashes in english date time format
-        // in project names slahes are not allowed, because these are separators for organizaional units
-        projectName = projectName.replace("/", "&#47;");
-        // create the project
-        CmsProject tmpProject = cmsAdmin.createProject(
-            projectName,
-            "",
-            CmsRole.WORKPLACE_USER.getGroupName(),
-            CmsRole.PROJECT_MANAGER.getGroupName(),
-            CmsProject.PROJECT_TYPE_TEMPORARY);
+        String rootPath = getCms().getRequestContext().addSiteRoot(resource);
+        String projectName = computeProjectName(rootPath, date);
+        CmsProject tmpProject = null;
+        try {
+            // create the project
+            tmpProject = cmsAdmin.createProject(
+                projectName,
+                "",
+                CmsRole.WORKPLACE_USER.getGroupName(),
+                CmsRole.PROJECT_MANAGER.getGroupName(),
+                CmsProject.PROJECT_TYPE_TEMPORARY);
+        } catch (CmsException e) {
+            String resName = CmsResource.getName(rootPath);
+            if (resName.length() > 64) {
+                resName = resName.substring(0, 64) + "...";
+            }
+            // use UUID to make sure the project name is still unique 
+            projectName = computeProjectName(resName, date) + " [" + new CmsUUID() + "]";
+            // create the project
+            tmpProject = cmsAdmin.createProject(
+                projectName,
+                "",
+                CmsRole.WORKPLACE_USER.getGroupName(),
+                CmsRole.PROJECT_MANAGER.getGroupName(),
+                CmsProject.PROJECT_TYPE_TEMPORARY);
+        }
         // make the project invisible for all users
         tmpProject.setHidden(true);
         // write the project to the database
