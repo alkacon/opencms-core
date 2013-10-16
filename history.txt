@@ -16,7 +16,14 @@ Legend:
 - General comment
 
 OpenCms 9.0.0
-- Fixed potential memory when using Solr multi-core features by updating Solr to version 4.3 (@see http://wiki.apache.org/solr/LotsOfCores)
+- Fixed potential memory leak when using Solr multi-core features by updating Solr to version 4.3 (@see http://wiki.apache.org/solr/LotsOfCores)
+* Fixed problem with scheduled publishing failing for resources with long paths
+* Fixed problem with updater where categories were overwritten during update
+* Fixed missing TinyMCE button bar background in the inline editor
+* Fixed some missing TinyMCE buttons 
+* Fixed a problem with creating function detail pages when using the template selection mechanism
+* Fixed issues with detail contents not appearing in publish lists for the "This page" publish mode
+* Fixed some XSS issues in the workplace 
 
 OpenCms 8.9.0 (aka 9.0 RC) - September 30, 2013
 ! Improved "in place" editing of web pages for text and also for images and other content types.
@@ -57,6 +64,7 @@ OpenCms 8.9.0 (aka 9.0 RC) - September 30, 2013
 * Fixed issue #168 where the source code contained some spelling errors
 * Fixed issue #180 where database names where not validated during setup
 * Fixed issue #187 where sort by title did not work in the gallery dialogs
+ 
 
 OpenCms 8.5.2 - July 10, 2013
 ! Improved lock behavior for group editor.
