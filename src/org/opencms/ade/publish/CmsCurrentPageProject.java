@@ -136,12 +136,12 @@ public class CmsCurrentPageProject implements I_CmsVirtualProject {
 
             String containerpageId = m_params.get(CmsPublishOptions.PARAM_CONTAINERPAGE);
             String elementId = m_params.get(CmsPublishOptions.PARAM_CONTENT);
+            String detailId = m_params.get(CmsPublishOptions.PARAM_DETAIL);
             List<CmsUUID> startIds = new ArrayList<CmsUUID>();
-            if (CmsUUID.isValidUUID(containerpageId)) {
-                startIds.add(new CmsUUID(containerpageId));
-            }
-            if (CmsUUID.isValidUUID(elementId)) {
-                startIds.add(new CmsUUID(elementId));
+            for (String id : new String[] {containerpageId, elementId, detailId}) {
+                if (CmsUUID.isValidUUID(id)) {
+                    startIds.add(new CmsUUID(id));
+                }
             }
             return collectResources(startIds);
         }

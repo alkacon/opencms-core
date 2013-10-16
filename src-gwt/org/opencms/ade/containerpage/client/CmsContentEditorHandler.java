@@ -273,6 +273,9 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
         result.getPublishParameters().put(
             CmsPublishOptions.PARAM_CONTAINERPAGE,
             "" + CmsCoreProvider.get().getStructureId());
+        result.getPublishParameters().put(
+            CmsPublishOptions.PARAM_DETAIL,
+            "" + CmsContainerpageController.get().getData().getDetailId());
         result.getPublishParameters().put(CmsPublishOptions.PARAM_START_WITH_CURRENT_PAGE, "");
         return result;
     }

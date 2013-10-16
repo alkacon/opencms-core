@@ -1413,6 +1413,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         HashMap<String, String> params = Maps.newHashMap();
         params.put(CmsPublishOptions.PARAM_CONTAINERPAGE, "" + CmsCoreProvider.get().getStructureId());
         params.put(CmsPublishOptions.PARAM_START_WITH_CURRENT_PAGE, "");
+        params.put(CmsPublishOptions.PARAM_DETAIL, "" + m_controller.getData().getDetailId());
         CmsPublishDialog.showPublishDialog(params, new CloseHandler<PopupPanel>() {
 
             /**

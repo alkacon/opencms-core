@@ -45,6 +45,9 @@ public class CmsPublishOptions implements Serializable {
     /** Parameter name for the content structure id. */
     public static final String PARAM_CONTENT = "content";
 
+    /** Parameter name for the detail content structure id. */
+    public static final String PARAM_DETAIL = "detail";
+
     /** Parameter for indicating that the initial project should be the 'current page' virtual project. */
     public static final String PARAM_START_WITH_CURRENT_PAGE = "startWithCurrentPage";
 
