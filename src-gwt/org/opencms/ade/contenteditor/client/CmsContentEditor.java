@@ -231,6 +231,9 @@ public final class CmsContentEditor extends EditorBase {
     /** The undo button. */
     private CmsPushButton m_undoButton;
 
+    /** The undo redo event handler registration. */
+    private HandlerRegistration m_undoRedoHandlerRegistration;
+
     /**
      * Constructor.<p>
      */
@@ -821,13 +824,16 @@ public final class CmsContentEditor extends EditorBase {
     }
 
     /**
-     * Closes the editor.<p>
+     * @see com.alkacon.acacia.client.EditorBase#clearEditor()
      */
+    @Override
     protected void clearEditor() {
 
+        super.clearEditor();
         m_context = null;
-
-        removeEditOverlays();
+        if (m_undoRedoHandlerRegistration != null) {
+            m_undoRedoHandlerRegistration.removeHandler();
+        }
         if (m_toolbar != null) {
             m_toolbar.removeFromParent();
             m_toolbar = null;
@@ -839,7 +845,6 @@ public final class CmsContentEditor extends EditorBase {
         m_copyLocaleButton = null;
         m_openFormButton = null;
         m_saveButton = null;
-        m_entityId = null;
         m_onClose = null;
         m_locale = null;
         if (m_basePanel != null) {
@@ -1810,13 +1815,14 @@ public final class CmsContentEditor extends EditorBase {
         m_redoButton.setVisible(false);
         m_toolbar.addLeft(m_redoButton);
 
-        UndoRedoHandler.getInstance().addValueChangeHandler(new ValueChangeHandler<UndoRedoHandler.UndoRedoState>() {
+        m_undoRedoHandlerRegistration = UndoRedoHandler.getInstance().addValueChangeHandler(
+            new ValueChangeHandler<UndoRedoHandler.UndoRedoState>() {
 
-            public void onValueChange(ValueChangeEvent<UndoRedoState> event) {
+                public void onValueChange(ValueChangeEvent<UndoRedoState> event) {
 
-                setUndoRedoState(event.getValue());
-            }
-        });
+                    setUndoRedoState(event.getValue());
+                }
+            });
         m_openFormButton = createButton(
             Messages.get().key(Messages.GUI_TOOLBAR_OPEN_FORM_0),
             I_CmsButton.ButtonData.EDIT.getIconClass());
