@@ -88,6 +88,60 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
     }
 
     /**
+     * @see org.opencms.search.fields.CmsSearchFieldConfiguration#addAdditionalFields()
+     */
+    @Override
+    public void addAdditionalFields() {
+
+        addContentFields();
+        addLuceneFields();
+
+        CmsSolrField sfield = new CmsSolrField(CmsSearchField.FIELD_MIMETYPE, null, null, null, 0);
+        m_solrFields.put(sfield.getName(), sfield);
+
+        sfield = new CmsSolrField(CmsSearchField.FIELD_STATE, null, null, null, 0);
+        CmsSearchFieldMapping map = new CmsSearchFieldMapping(
+            CmsSearchFieldMappingType.ATTRIBUTE,
+            CmsSearchField.FIELD_STATE);
+        sfield.addMapping(map);
+        m_solrFields.put(sfield.getName(), sfield);
+
+        sfield = new CmsSolrField(CmsSearchField.FIELD_USER_LAST_MODIFIED, null, null, null, 0);
+        map = new CmsSearchFieldMapping(CmsSearchFieldMappingType.ATTRIBUTE, CmsSearchField.FIELD_USER_LAST_MODIFIED);
+        sfield.addMapping(map);
+        m_solrFields.put(sfield.getName(), sfield);
+
+        sfield = new CmsSolrField(CmsSearchField.FIELD_USER_CREATED, null, null, null, 0);
+        map = new CmsSearchFieldMapping(CmsSearchFieldMappingType.ATTRIBUTE, CmsSearchField.FIELD_USER_CREATED);
+        sfield.addMapping(map);
+        m_solrFields.put(sfield.getName(), sfield);
+
+        getFields().clear();
+        getFields().addAll(m_solrFields.values());
+    }
+
+    /**
+     * Appends the Solr specific search fields to the document.<p>
+     * 
+     * @see org.opencms.search.fields.I_CmsSearchFieldAppdender#appendFields(org.opencms.search.I_CmsSearchDocument, org.opencms.file.CmsObject, org.opencms.file.CmsResource, org.opencms.search.extractors.I_CmsExtractionResult, java.util.List, java.util.List)
+     */
+    @Override
+    public I_CmsSearchDocument appendFields(
+        I_CmsSearchDocument document,
+        CmsObject cms,
+        CmsResource resource,
+        I_CmsExtractionResult extractionResult,
+        List<CmsProperty> properties,
+        List<CmsProperty> propertiesSearched) {
+
+        String mimeType = OpenCms.getResourceManager().getMimeType(resource.getName(), null);
+        if (mimeType != null) {
+            document.addSearchField(m_solrFields.get(CmsSearchField.FIELD_MIMETYPE), mimeType);
+        }
+        return document;
+    }
+
+    /**
      * Returns all configured Solr fields.<p>
      * 
      * @return all configured Solr fields
@@ -95,16 +149,6 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
     public Map<String, CmsSolrField> getSolrFields() {
 
         return Collections.unmodifiableMap(m_solrFields);
-    }
-
-    /**
-     * Initializes the Solr field configuration.<p>
-     */
-    @Override
-    public void init() {
-
-        addContentFields();
-        addLuceneFields();
     }
 
     /**
@@ -197,6 +241,16 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
                     } else if (mapping.getDefaultValue() != null) {
                         // no mapping result found, but a default is configured
                         text.append("\n" + mapping.getDefaultValue());
+                    }
+                } else if (mapping.getStringValue(cms, resource, extractionResult, properties, propertiesSearched) != null) {
+                    String value = mapping.getStringValue(
+                        cms,
+                        resource,
+                        extractionResult,
+                        properties,
+                        propertiesSearched);
+                    if (value != null) {
+                        document.addSearchField(field, value);
                     }
                 }
             }
@@ -423,7 +477,7 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
      */
     private void addLuceneFields() {
 
-        for (CmsSearchField field : super.getFields()) {
+        for (CmsSearchField field : getFields()) {
             if (field instanceof CmsLuceneField) {
                 CmsSolrField solrField = new CmsSolrField((CmsLuceneField)field);
                 m_solrFields.put(solrField.getName(), solrField);

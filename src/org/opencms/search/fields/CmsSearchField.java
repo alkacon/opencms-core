@@ -113,6 +113,9 @@ public class CmsSearchField implements Serializable {
      */
     public static final String FIELD_META = "meta";
 
+    /** Name of the field that contains the mime type. */
+    public static final String FIELD_MIMETYPE = "mimetype";
+
     /** Name of the field that contains all VFS parent folders of a document (hardcoded). */
     public static final String FIELD_PARENT_FOLDERS = "parent-folders";
 
@@ -149,6 +152,9 @@ public class CmsSearchField implements Serializable {
     /** Name of the field that contains the lower-case title, untokenized, for sorting. */
     public static final String FIELD_SORT_TITLE = "sort-title";
 
+    /** Name of the field that contains the resource state. */
+    public static final String FIELD_STATE = "state";
+
     /** Name of the field that contains the file name suffix of the resource. */
     public static final String FIELD_SUFFIX = "suffix";
 
@@ -171,6 +177,12 @@ public class CmsSearchField implements Serializable {
 
     /** Name of the field that contains the type of the document. */
     public static final String FIELD_TYPE = "type";
+
+    /** Name of the field that contains the user created. */
+    public static final String FIELD_USER_CREATED = "userCreated";
+
+    /** Name of the field that contains the user last modified. */
+    public static final String FIELD_USER_LAST_MODIFIED = "userLastModified";
 
     /** Serial version UID. */
     private static final long serialVersionUID = 3185631015824549119L;
