@@ -104,7 +104,7 @@ public class CmsResourceWrapperSystemFolder extends A_CmsResourceWrapper {
             }
 
             // if accessing the system folder switch temporarily to the root site
-            if (resourcename.equals(CmsWorkplace.VFS_PATH_SYSTEM) || resourcename.equals("/")) {
+            if (resourcename.equals(CmsWorkplace.VFS_PATH_SYSTEM)) {
 
                 // set site root to the root folder
                 String siteRoot = cms.getRequestContext().getSiteRoot();
