@@ -27,6 +27,9 @@
 
 package org.opencms.jsp.util;
 
+import org.opencms.loader.CmsDefaultTemplateContextProvider;
+import org.opencms.loader.CmsTemplateContext;
+import org.opencms.loader.CmsTemplateContextManager;
 import org.opencms.util.CmsRequestUtil;
 
 import java.util.Arrays;
@@ -59,6 +62,13 @@ public class CmsJspDeviceSelectorDesktopMobileTablet implements I_CmsJspDeviceSe
      */
     public String getDeviceType(HttpServletRequest req) {
 
+        CmsTemplateContext templateContext = (CmsTemplateContext)(req.getAttribute(CmsTemplateContextManager.ATTR_TEMPLATE_CONTEXT));
+        if ((templateContext != null)
+            && templateContext.getProvider().getClass().equals(CmsDefaultTemplateContextProvider.class)) {
+            // only do this for the default template context provider, because we don't know whether other provider classes
+            // are used for devices or for something else and whether the keys are identical to the device types
+            return templateContext.getKey();
+        }
         m_userAgentInfo = new UAgentInfo(
             req.getHeader(CmsRequestUtil.HEADER_USER_AGENT),
             req.getHeader(CmsRequestUtil.HEADER_ACCEPT));

@@ -27,7 +27,7 @@
 
 package org.opencms.flex;
 
-import org.opencms.jsp.util.CmsJspDeviceSelector;
+import org.opencms.jsp.util.CmsJspDeviceSelectorDesktopMobileTablet;
 import org.opencms.jsp.util.I_CmsJspDeviceSelector;
 import org.opencms.main.CmsLog;
 
@@ -100,7 +100,7 @@ public class CmsFlexCacheConfiguration {
     public I_CmsJspDeviceSelector getDeviceSelector() {
 
         if (m_deviceSelector == null) {
-            m_deviceSelector = new CmsJspDeviceSelector();
+            m_deviceSelector = new CmsJspDeviceSelectorDesktopMobileTablet();
         }
         return m_deviceSelector;
     }
