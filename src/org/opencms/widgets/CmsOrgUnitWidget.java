@@ -31,6 +31,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsRole;
@@ -39,9 +40,12 @@ import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.content.I_CmsXmlContentHandler.DisplayType;
 import org.opencms.xml.types.A_CmsXmlContentValue;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Provides a OpenCms orgaizational unit selection widget, for use on a widget dialog.<p>
@@ -52,6 +56,9 @@ public class CmsOrgUnitWidget extends A_CmsWidget implements I_CmsADEWidget {
 
     /** Configuration parameter to set the role the current user must have in the selected ou, optional. */
     public static final String CONFIGURATION_ROLE = "role";
+
+    /** The logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsOrgUnitWidget.class);
 
     /** The role used in the popup window. */
     private CmsRole m_role;
@@ -118,27 +125,36 @@ public class CmsOrgUnitWidget extends A_CmsWidget implements I_CmsADEWidget {
         Locale contentLocale) {
 
         String result = "";
+
+        List<CmsOrganizationalUnit> ret = new ArrayList<CmsOrganizationalUnit>();
         try {
-            List<CmsOrganizationalUnit> foo;
-            if (m_role == null) {
-                result = "No entries have been found. ";
+            if (m_role != null) {
+                ret.addAll(OpenCms.getRoleManager().getOrgUnitsForRole(cms, m_role.forOrgUnit(""), true));
             } else {
-                foo = OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, m_role.getOuFqn(), true);
-
-                Iterator<CmsOrganizationalUnit> it = foo.iterator();
-                int i = 0;
-                while (it.hasNext()) {
-                    CmsOrganizationalUnit unit = it.next();
-                    if (i > 0) {
-                        result += "|";
-                    }
-                    result += unit.getName();
-
-                }
+                ret.addAll(OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, "", true));
             }
         } catch (CmsException e) {
-            // TODO: Auto-generated catch block
-            e.printStackTrace();
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        if (ret.isEmpty()) {
+            result = "No entries have been found. ";
+        } else {
+            Iterator<CmsOrganizationalUnit> it = ret.iterator();
+            boolean first = true;
+            while (it.hasNext()) {
+                CmsOrganizationalUnit unit = it.next();
+                if (!first) {
+                    result += "|";
+                }
+                first = false;
+                String value = "/" + unit.getName();
+                result += "/"
+                    + value
+                    + ":"
+                    + (CmsStringUtil.isNotEmptyOrWhitespaceOnly(unit.getDescription(messages.getLocale()))
+                    ? (unit.getDescription(messages.getLocale()) + ": ")
+                    : "") + value;
+            }
         }
         return result;
     }
