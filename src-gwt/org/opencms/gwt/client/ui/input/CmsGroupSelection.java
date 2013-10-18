@@ -94,6 +94,9 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
 
     }
 
+    /** A counter used for giving text box widgets ids. */
+    private static int idCounter;
+
     /** The widget type identifier for this widget. */
     private static final String WIDGET_TYPE = "vfsselection";
 
@@ -106,14 +109,18 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
     /** The handler registration. */
     protected HandlerRegistration m_previewHandlerRegistration;
 
+    /** The popup title. */
+    protected String m_title = org.opencms.gwt.client.Messages.get().key(
+        org.opencms.gwt.client.Messages.GUI_GALLERY_SELECT_DIALOG_TITLE_0);
+
     /** The default rows set. */
     int m_defaultRows;
 
-    /** A counter used for giving text box widgets ids. */
-    private static int idCounter;
-
     /** The root panel containing the other components of this widget. */
     Panel m_panel = new FlowPanel();
+
+    /** The container for the text area. */
+    CmsSelectionInput m_selectionInput;
 
     /** The internal text area widget used by this widget. */
     TextBox m_textBox;
@@ -124,27 +131,20 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
     /** The error display for this widget. */
     private CmsErrorWidget m_error = new CmsErrorWidget();
 
-    /** The button to to open the selection. */
-    private CmsPushButton m_openSelection;
+    /** The flag parameter. */
+    private Integer m_flags;
 
     /** The id for the windows. */
     private String m_id;
 
-    /** The container for the text area. */
-    CmsSelectionInput m_selectionInput;
-
-    /** The flag parameter. */
-    private Integer m_flags;
+    /** The button to to open the selection. */
+    private CmsPushButton m_openSelection;
 
     /** The ou parameter. */
     private String m_ouFqn;
 
     /** The user parameter. */
     private String m_userName;
-
-    /** The popup title. */
-    protected String m_title = org.opencms.gwt.client.Messages.get().key(
-        org.opencms.gwt.client.Messages.GUI_GALLERY_SELECT_DIALOG_TITLE_0);
 
     /**
      * Constructor.<p>
@@ -408,14 +408,24 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
      * @param title the title of the popup
      * */
     native void openNative(String url, String title) /*-{
-        $wnd
-                .open(
-                        url,
-                        title,
-                        'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=150,left=260,width=650,height=450');
-        var self = this;
-        $wnd.setGroupFormValue = function(value) {
-            self.@org.opencms.gwt.client.ui.input.CmsGroupSelection::setFormValueAsString(Ljava/lang/String;)(value);
-        };
-    }-*/;
+                                                     $wnd
+                                                     .open(
+                                                     url,
+                                                     title,
+                                                     'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=150,left=260,width=650,height=450');
+                                                     var self = this;
+                                                     $wnd.setGroupFormValue = function(value) {
+                                                     self.@org.opencms.gwt.client.ui.input.CmsGroupSelection::setValueFromNative(Ljava/lang/String;)(value);
+                                                     };
+                                                     }-*/;
+
+    /**
+     * Sets the widget value and fires the change event if necessary.<p>
+     * 
+     * @param value the value to set
+     */
+    private void setValueFromNative(String value) {
+
+        m_selectionInput.m_textbox.setValue(value, true);
+    }
 }
