@@ -27,13 +27,14 @@
 
 package org.opencms.jsp.util;
 
-import org.opencms.loader.CmsDefaultTemplateContextProvider;
 import org.opencms.loader.CmsTemplateContext;
 import org.opencms.loader.CmsTemplateContextManager;
 import org.opencms.util.CmsRequestUtil;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -63,10 +64,7 @@ public class CmsJspDeviceSelectorDesktopMobileTablet implements I_CmsJspDeviceSe
     public String getDeviceType(HttpServletRequest req) {
 
         CmsTemplateContext templateContext = (CmsTemplateContext)(req.getAttribute(CmsTemplateContextManager.ATTR_TEMPLATE_CONTEXT));
-        if ((templateContext != null)
-            && templateContext.getProvider().getClass().equals(CmsDefaultTemplateContextProvider.class)) {
-            // only do this for the default template context provider, because we don't know whether other provider classes
-            // are used for devices or for something else and whether the keys are identical to the device types
+        if ((templateContext != null) && isTemplateContextCompatible(templateContext)) {
             return templateContext.getKey();
         }
         m_userAgentInfo = new UAgentInfo(
@@ -98,6 +96,19 @@ public class CmsJspDeviceSelectorDesktopMobileTablet implements I_CmsJspDeviceSe
     public UAgentInfo getUserAgentInfo() {
 
         return m_userAgentInfo;
+    }
+
+    /**
+     * Checks if a template context is compatible with this device selector.<p>
+     * 
+     * @param templateContext the template context to check 
+     * 
+     * @return true if the template context is compatible 
+     */
+    protected boolean isTemplateContextCompatible(CmsTemplateContext templateContext) {
+
+        Set<String> contextKeys = new HashSet<String>(templateContext.getProvider().getAllContexts().keySet());
+        return contextKeys.equals(new HashSet<String>(TYPES));
     }
 
 }
