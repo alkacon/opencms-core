@@ -111,8 +111,7 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
                     cms.getRequestContext().getRootUri());
 
                 CmsFormatterConfiguration formatters = adeConfig.getFormatters(cms, resource);
-                CmsFormatterBean formatter = formatters.getFormatter(CmsFormatterBean.PREVIEW_TYPE, -1);
-
+                CmsFormatterBean formatter = formatters.getPreviewFormatter();
                 if (formatter != null) {
                     CmsObject tempCms = OpenCms.initCmsObject(cms);
                     tempCms.getRequestContext().setLocale(locale);

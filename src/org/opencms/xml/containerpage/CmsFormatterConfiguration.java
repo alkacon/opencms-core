@@ -38,11 +38,18 @@ import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
+
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Maps;
 
 /**
  * Represents a formatter configuration.<p>
@@ -53,6 +60,61 @@ import org.apache.commons.logging.Log;
  * @since 8.0.0
  */
 public final class CmsFormatterConfiguration {
+
+    /**
+     * This class is used to sort lists of formatter beans in order of importance.<p>
+     */
+    public static class FormatterComparator implements Comparator<CmsFormatterBean> {
+
+        /**
+         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+         */
+        public int compare(CmsFormatterBean first, CmsFormatterBean second) {
+
+            return ComparisonChain.start().compare(second.getRank(), first.getRank()).compare(
+                second.isTypeFormatter() ? 1 : 0,
+                first.isTypeFormatter() ? 1 : 0).compare(second.getMinWidth(), first.getMinWidth()).result();
+        }
+    }
+
+    /**
+     * Predicate which checks whether a formatter matches the given container type or width.<p>
+     */
+    private class MatchesTypeOrWidth implements Predicate<CmsFormatterBean> {
+
+        /** The container type. */
+        private String m_type;
+
+        /** The container width. */
+        private int m_width;
+
+        /** 
+         * Creates a new matcher instance.<p>
+         * 
+         * @param type the container type 
+         * @param width the container width 
+         */
+        public MatchesTypeOrWidth(String type, int width) {
+
+            m_type = type;
+            m_width = width;
+        }
+
+        /**
+         * @see com.google.common.base.Predicate#apply(java.lang.Object)
+         */
+        public boolean apply(CmsFormatterBean formatter) {
+
+            if (formatter.isMatchAll()) {
+                return true;
+            }
+            if (formatter.isTypeFormatter()) {
+                return formatter.getContainerTypes().contains(m_type);
+            } else {
+                return (formatter.getMinWidth() <= m_width) && (m_width <= formatter.getMaxWidth());
+            }
+        }
+    }
 
     /** The empty formatter configuration. */
     public static final CmsFormatterConfiguration EMPTY_CONFIGURATION = new CmsFormatterConfiguration(null, null);
@@ -66,20 +128,8 @@ public final class CmsFormatterConfiguration {
     /** All formatters that have been added to this configuration. */
     private List<CmsFormatterBean> m_allFormatters;
 
-    /** Indicates if the preview formatter has already been calculated. */
-    private boolean m_previewCalculated;
-
-    /** The formatter that is to be used for the preview in the ADE gallery GUI. */
-    private CmsFormatterBean m_previewFormatter;
-
-    /** Simple lookup cache for the search content attribute. */
-    private Map<CmsUUID, Boolean> m_searchContent;
-
-    /** The formatters for different container types. */
-    private Map<String, CmsFormatterBean> m_typeFormatters;
-
-    /** The formatters for different widths. */
-    private List<CmsFormatterBean> m_widthFormatters;
+    /** Cache for the searchContent option. */
+    private Map<CmsUUID, Boolean> m_searchContent = Maps.newHashMap();
 
     /**
      * Creates a new formatter configuration based on the given list of formatters.<p>
@@ -95,9 +145,6 @@ public final class CmsFormatterConfiguration {
         } else {
             m_allFormatters = new ArrayList<CmsFormatterBean>(formatters);
         }
-        m_widthFormatters = new ArrayList<CmsFormatterBean>(m_allFormatters.size());
-        m_typeFormatters = new HashMap<String, CmsFormatterBean>(m_allFormatters.size());
-        m_searchContent = new HashMap<CmsUUID, Boolean>();
         init(cms, m_adminCms);
     }
 
@@ -148,6 +195,22 @@ public final class CmsFormatterConfiguration {
     }
 
     /**
+     * Gets the formatters which are available for the given container type and width.<p>
+     * 
+     * @param containerTpe the container type 
+     * @param containerWidth the container width 
+     * 
+     * @return the list of available formatters  
+     */
+    public List<CmsFormatterBean> getAllMatchingFormatters(String containerTpe, int containerWidth) {
+
+        return new ArrayList<CmsFormatterBean>(Collections2.filter(m_allFormatters, new MatchesTypeOrWidth(
+            containerTpe,
+            containerWidth)));
+
+    }
+
+    /**
      * Selects the matching formatter for the provided type and width from this configuration.<p>
      * 
      * This method first tries to find the formatter for the provided container type. 
@@ -158,37 +221,12 @@ public final class CmsFormatterConfiguration {
      *  
      * @return the matching formatter, or <code>null</code> if none was found 
      */
-    public CmsFormatterBean getFormatter(String containerType, int containerWidth) {
+    public CmsFormatterBean getDefaultFormatter(final String containerType, final int containerWidth) {
 
-        if (this == EMPTY_CONFIGURATION) {
-            // the empty configuration has no formatters
-            return null;
-        }
-        if (CmsFormatterBean.isPreviewType(containerType)) {
-            // the preview formatter was requested
-            return getPreviewFormatter();
-        }
-        CmsFormatterBean result = m_typeFormatters.get(containerType);
-        if ((result == null) && (containerWidth > 0)) {
-            // in case we don't have found a type and width info is set, check for width formatters
-            for (CmsFormatterBean f : m_widthFormatters) {
-                // iterate all width containers and see if we have a fit
-                if ((f.getMinWidth() <= containerWidth) && (containerWidth <= f.getMaxWidth())) {
-                    // found a match
-                    if ((result == null) || (result.getMinWidth() < f.getMinWidth())) {
-                        result = f;
-                    }
-                }
-            }
-        }
-        if (result == null) {
-            for (CmsFormatterBean f : m_widthFormatters) {
-                if (f.isMatchAll()) {
-                    result = f;
-                }
-            }
-        }
-        return result;
+        Optional<CmsFormatterBean> result = Iterables.tryFind(m_allFormatters, new MatchesTypeOrWidth(
+            containerType,
+            containerWidth));
+        return result.orNull();
     }
 
     /**
@@ -200,38 +238,32 @@ public final class CmsFormatterConfiguration {
      */
     public CmsFormatterBean getPreviewFormatter() {
 
-        if (!m_previewCalculated) {
-            // preview formatter has not been calculated yet
-            CmsFormatterBean result = null;
-            if (this != EMPTY_CONFIGURATION) {
-                result = m_typeFormatters.get(CmsFormatterBean.PREVIEW_TYPE);
-                if (result == null) {
-                    // empty configuration will always return null
-                    result = getFormatter(CmsFormatterBean.WILDCARD_TYPE, CmsFormatterBean.PREVIEW_WIDTH);
-                    // check the width formatter if we have a matching width for the preview window
-                    if ((result == null) && !m_widthFormatters.isEmpty()) {
-                        // no width is matching, see if we have one with a BIGGER width (preview will have scrollbars)
-                        for (CmsFormatterBean f : m_widthFormatters) {
-                            // iterate all width containers and see if we have a fit
-                            if ((f.getMinWidth() >= CmsFormatterBean.PREVIEW_WIDTH)
-                                && (CmsFormatterBean.PREVIEW_WIDTH <= f.getMaxWidth())) {
-                                // found a match
-                                if ((result == null) || (result.getMinWidth() < f.getMinWidth())) {
-                                    result = f;
-                                }
-                            }
-                        }
-                    }
-                    if ((result == null) && !m_typeFormatters.isEmpty()) {
-                        // no luck with any width based formatter, let's just get the first type based formatter
-                        result = m_typeFormatters.values().iterator().next();
-                    }
+        Optional<CmsFormatterBean> result = Iterables.tryFind(m_allFormatters, new Predicate<CmsFormatterBean>() {
+
+            public boolean apply(CmsFormatterBean formatter) {
+
+                if (formatter.isTypeFormatter()) {
+                    return formatter.getContainerTypes().contains(CmsFormatterBean.PREVIEW_TYPE);
+                } else {
+                    return (formatter.getMinWidth() <= CmsFormatterBean.PREVIEW_WIDTH)
+                        && (CmsFormatterBean.PREVIEW_WIDTH <= formatter.getMaxWidth());
                 }
             }
-            m_previewCalculated = true;
-            m_previewFormatter = result;
+        });
+        if (!result.isPresent()) {
+            result = Iterables.tryFind(m_allFormatters, new Predicate<CmsFormatterBean>() {
+
+                public boolean apply(CmsFormatterBean formatter) {
+
+                    return !formatter.isTypeFormatter() && (formatter.getMaxWidth() >= CmsFormatterBean.PREVIEW_WIDTH);
+
+                }
+            });
         }
-        return m_previewFormatter;
+        if (!result.isPresent() && !m_allFormatters.isEmpty()) {
+            result = Optional.fromNullable(m_allFormatters.iterator().next());
+        }
+        return result.orNull();
     }
 
     /**
@@ -246,7 +278,7 @@ public final class CmsFormatterConfiguration {
      */
     public boolean hasFormatter(String containerType, int containerWidth) {
 
-        return getFormatter(containerType, containerWidth) != null;
+        return getDefaultFormatter(containerType, containerWidth) != null;
     }
 
     /**
@@ -256,10 +288,7 @@ public final class CmsFormatterConfiguration {
      */
     public boolean hasFormatters() {
 
-        if (EMPTY_CONFIGURATION == this) {
-            return false;
-        }
-        return (m_typeFormatters.size() > 0) || (m_widthFormatters.size() > 0);
+        return !m_allFormatters.isEmpty();
     }
 
     /**
@@ -311,6 +340,7 @@ public final class CmsFormatterConfiguration {
      */
     private void init(CmsObject userCms, CmsObject adminCms) {
 
+        List<CmsFormatterBean> filteredFormatters = new ArrayList<CmsFormatterBean>();
         for (CmsFormatterBean formatter : m_allFormatters) {
 
             if (formatter.getJspStructureId() == null) {
@@ -340,42 +370,13 @@ public final class CmsFormatterConfiguration {
             }
 
             if (formatter.getJspStructureId() != null) {
-                // if no structure id is available then the formatter JSP root path is invalid
-                String oldUri = null;
-                Object key;
-                if (formatter.isTypeFormatter()) {
-
-                    String type = formatter.getContainerType();
-                    key = type;
-                    CmsFormatterBean oldFormatter = m_typeFormatters.get(type);
-                    if (oldFormatter != null) {
-                        oldUri = oldFormatter.getJspRootPath();
-                    }
-                    m_typeFormatters.put(type, formatter);
-                } else {
-
-                    Integer minWidth = Integer.valueOf(formatter.getMinWidth());
-                    key = minWidth;
-                    int old = m_widthFormatters.lastIndexOf(formatter);
-                    if (old >= 0) {
-                        oldUri = m_widthFormatters.remove(old).getJspRootPath();
-                    }
-                    m_widthFormatters.add(formatter);
-                }
-                if (formatter.isPreviewFormatter()) {
-                    // this is a preview formatter, last one overwrites earlier one
-                    m_previewFormatter = formatter;
-                }
-                if (oldUri != null) {
-                    LOG.warn(Messages.get().getBundle().key(
-                        Messages.LOG_CONTENT_DEFINITION_DUPLICATE_FORMATTER_4,
-                        new Object[] {key, oldUri, formatter.getJspRootPath(), formatter.getLocation()}));
-                }
+                filteredFormatters.add(formatter);
+            } else {
+                LOG.warn("Invalid formatter: " + formatter.getJspRootPath());
             }
         }
-        m_allFormatters = Collections.unmodifiableList(m_allFormatters);
-        m_typeFormatters = Collections.unmodifiableMap(m_typeFormatters);
-        m_widthFormatters = Collections.unmodifiableList(m_widthFormatters);
+        Collections.sort(filteredFormatters, new FormatterComparator());
+        m_allFormatters = Collections.unmodifiableList(filteredFormatters);
     }
 
 }

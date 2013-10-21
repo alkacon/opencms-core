@@ -134,7 +134,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
         assertNotNull(formatterConfig);
         List<CmsFormatterBean> formatters = formatterConfig.getAllFormatters();
         assertEquals(1, formatters.size());
-        assertEquals("blah", formatters.get(0).getContainerType());
+        assertTrue(formatters.get(0).getContainerTypes().contains("blah"));
     }
 
     /**

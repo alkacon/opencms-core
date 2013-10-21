@@ -1080,7 +1080,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             containerType = container.getType();
         }
 
-        CmsFormatterBean formatter = formatters.getFormatter(containerType, containerWidth);
+        CmsFormatterBean formatter = formatters.getDefaultFormatter(containerType, containerWidth);
         CmsContainerElementBean newElementBean = null;
         if (formatter != null) {
             newElementBean = new CmsContainerElementBean(

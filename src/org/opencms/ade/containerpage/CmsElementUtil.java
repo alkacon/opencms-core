@@ -479,7 +479,7 @@ public class CmsElementUtil {
         CmsFormatterConfiguration configs) {
 
         String content = null;
-        CmsFormatterBean formatter = configs.getFormatter(container.getType(), container.getWidth());
+        CmsFormatterBean formatter = configs.getDefaultFormatter(container.getType(), container.getWidth());
         if (formatter != null) {
             try {
                 content = getElementContent(element, m_cms.readResource(formatter.getJspStructureId()), container);
