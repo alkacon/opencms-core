@@ -400,51 +400,15 @@ public class CmsSolrIndex extends CmsSearchIndex {
     }
 
     /**
-     * <h4>Performs a search on the Solr index</h4>
-     * 
-     * Returns a list of 'OpenCms resource documents' 
-     * ({@link CmsSearchResource}) encapsulated within the class  {@link CmsSolrResultList}.
-     * This list can be accessed exactly like an {@link List} which entries are 
-     * {@link CmsSearchResource} that extend {@link CmsResource} and holds the Solr 
-     * implementation of {@link I_CmsSearchDocument} as member. <b>This enables you to deal 
-     * with the resulting list as you do with well known {@link List} and work on it's entries
-     * like you do on {@link CmsResource}.</b>
-     * 
-     * <h4>What will be done with the Solr search result?</h4>
-     * <ul>
-     * <li>Although it can happen, that there are less results returned than rows were requested
-     * (imagine an index containing less documents than requested rows) we try to guarantee
-     * the requested amount of search results and to provide a working pagination with
-     * security check.</li>
-     * 
-     * <li>To be sure we get enough documents left even the permission check reduces the amount
-     * of found documents, the rows are multiplied by <code>'5'</code> and the current page 
-     * additionally the offset is added. The count of documents we don't have enough 
-     * permissions for grows with increasing page number, that's why we also multiply 
-     * the rows by the current page count.</li>
-     * 
-     * <li>Also make sure we perform the permission check for all found documents, so start with
-     * the first found doc.</li>
-     * </ul>
-     * 
-     * <b>NOTE:</b> If latter pages than the current one are containing protected documents the
-     * total hit count will be incorrect, because the permission check ends if we have 
-     * enough results found for the page to display. With other words latter pages than 
-     * the current can contain documents that will first be checked if those pages are 
-     * requested to be displayed, what causes a incorrect hit count.<p>
+     * Performs a search.<p>
      * 
      * @param cms the current OpenCms context
      * @param ignoreMaxRows <code>true</code> to return all all requested rows, <code>false</code> to use max rows
      * @param query the OpenCms Solr query
      * 
-     * @return the list of found documents
+     * @return the found documents
      * 
      * @throws CmsSearchException if something goes wrong
-     * 
-     * @see org.opencms.search.solr.CmsSolrResultList
-     * @see org.opencms.search.CmsSearchResource
-     * @see org.opencms.search.I_CmsSearchDocument
-     * @see org.opencms.search.solr.CmsSolrQuery
      */
     public CmsSolrResultList search(CmsObject cms, final CmsSolrQuery query, boolean ignoreMaxRows)
     throws CmsSearchException {
@@ -682,16 +646,52 @@ public class CmsSolrIndex extends CmsSearchIndex {
     }
 
     /**
-     * Performs the actual search.<p>
+     * <h4>Performs a search on the Solr index</h4>
+     * 
+     * Returns a list of 'OpenCms resource documents' 
+     * ({@link CmsSearchResource}) encapsulated within the class  {@link CmsSolrResultList}.
+     * This list can be accessed exactly like an {@link List} which entries are 
+     * {@link CmsSearchResource} that extend {@link CmsResource} and holds the Solr 
+     * implementation of {@link I_CmsSearchDocument} as member. <b>This enables you to deal 
+     * with the resulting list as you do with well known {@link List} and work on it's entries
+     * like you do on {@link CmsResource}.</b>
+     * 
+     * <h4>What will be done with the Solr search result?</h4>
+     * <ul>
+     * <li>Although it can happen, that there are less results returned than rows were requested
+     * (imagine an index containing less documents than requested rows) we try to guarantee
+     * the requested amount of search results and to provide a working pagination with
+     * security check.</li>
+     * 
+     * <li>To be sure we get enough documents left even the permission check reduces the amount
+     * of found documents, the rows are multiplied by <code>'5'</code> and the current page 
+     * additionally the offset is added. The count of documents we don't have enough 
+     * permissions for grows with increasing page number, that's why we also multiply 
+     * the rows by the current page count.</li>
+     * 
+     * <li>Also make sure we perform the permission check for all found documents, so start with
+     * the first found doc.</li>
+     * </ul>
+     * 
+     * <b>NOTE:</b> If latter pages than the current one are containing protected documents the
+     * total hit count will be incorrect, because the permission check ends if we have 
+     * enough results found for the page to display. With other words latter pages than 
+     * the current can contain documents that will first be checked if those pages are 
+     * requested to be displayed, what causes a incorrect hit count.<p>
      * 
      * @param cms the current OpenCms context
      * @param ignoreMaxRows <code>true</code> to return all all requested rows, <code>false</code> to use max rows
      * @param query the OpenCms Solr query
      * @param response the servlet response to write the query result to, may also be <code>null</code>
      * 
-     * @return the found documents
+     * @return the list of found documents
      * 
      * @throws CmsSearchException if something goes wrong
+     * 
+     * @see org.opencms.search.solr.CmsSolrResultList
+     * @see org.opencms.search.CmsSearchResource
+     * @see org.opencms.search.I_CmsSearchDocument
+     * @see org.opencms.search.solr.CmsSolrQuery
      */
     @SuppressWarnings("unchecked")
     private CmsSolrResultList search(
@@ -792,7 +792,9 @@ public class CmsSolrIndex extends CmsSearchIndex {
                     } else {
                         // if permission check is not required for this index,
                         // add a pseudo resource together with document to the results
-                        allDocs.add(new CmsSearchResource(PSEUDO_RES, searchDoc));
+                        resourceDocumentList.add(new CmsSearchResource(PSEUDO_RES, searchDoc));
+                        solrDocumentList.add(doc);
+                        maxScore = maxScore < searchDoc.getScore() ? searchDoc.getScore() : maxScore;
                     }
                 } catch (Exception e) {
                     // should not happen, but if it does we want to go on with the next result nevertheless                        
