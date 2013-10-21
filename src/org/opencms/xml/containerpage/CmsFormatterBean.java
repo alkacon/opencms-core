@@ -33,7 +33,8 @@ import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -44,6 +45,9 @@ import java.util.Set;
  * @since 8.0.0
  */
 public class CmsFormatterBean {
+
+    /** Default rank for formatters from formatter configuration files. */
+    public static final int DEFAULT_CONFIGURATION_RANK = 1000;
 
     /** Default rank for formatters defined in schema. */
     public static final int DEFAULT_SCHEMA_RANK = 10000;
@@ -61,7 +65,7 @@ public class CmsFormatterBean {
     private Set<String> m_containerTypes;
 
     /** CSS Head includes. */
-    private List<String> m_cssHeadIncludes = new ArrayList<String>();
+    private Set<String> m_cssHeadIncludes = new LinkedHashSet<String>();
 
     /** The id for this formatter. */
     private String m_id;
@@ -109,7 +113,7 @@ public class CmsFormatterBean {
     private boolean m_search;
 
     /** The settings. */
-    private Map<String, CmsXmlContentProperty> m_settings = new HashMap<String, CmsXmlContentProperty>();
+    private Map<String, CmsXmlContentProperty> m_settings = new LinkedHashMap<String, CmsXmlContentProperty>();
 
     /**
      * Constructor for creating a new formatter configuration with resource structure id.<p>
@@ -348,9 +352,9 @@ public class CmsFormatterBean {
      * 
      * @return the CSS head includes 
      */
-    public List<String> getCssHeadIncludes() {
+    public Set<String> getCssHeadIncludes() {
 
-        return Collections.unmodifiableList(m_cssHeadIncludes);
+        return Collections.unmodifiableSet(m_cssHeadIncludes);
     }
 
     /**
@@ -481,6 +485,16 @@ public class CmsFormatterBean {
     public String getResourceTypeName() {
 
         return m_resourceTypeName;
+    }
+
+    /**
+     * Gets the defined settings.<p>
+     * 
+     * @return the defined settings 
+     */
+    public Map<String, CmsXmlContentProperty> getSettings() {
+
+        return Collections.unmodifiableMap(m_settings);
     }
 
     /**
