@@ -109,7 +109,7 @@ public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextPr
      */
     public String getEditorStyleSheet(CmsObject cms, String editedResourcePath) {
 
-        String templatePath = getContextMap().get("desktop").getTemplatePath();
+        String templatePath = getAllContexts().get("desktop").getTemplatePath();
         String result = null;
         try {
             CmsProperty property = cms.readPropertyObject(templatePath, CmsPropertyDefinition.PROPERTY_TEMPLATE, true);
@@ -140,7 +140,7 @@ public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextPr
 
         I_CmsJspDeviceSelector selector = OpenCms.getSystemInfo().getDeviceSelector();
         String deviceType = selector.getDeviceType(request);
-        Map<String, CmsTemplateContext> contextMap = getContextMap();
+        Map<String, CmsTemplateContext> contextMap = getAllContexts();
         if (contextMap.containsKey(deviceType)) {
             return contextMap.get(deviceType);
         } else {
@@ -154,7 +154,7 @@ public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextPr
     public void initialize(CmsObject cms) {
 
         m_cms = cms;
-        getContextMap();
+        getAllContexts();
     }
 
     /**
@@ -162,7 +162,7 @@ public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextPr
      */
     public String readCommonProperty(CmsObject cms, String propertyName, String fallbackValue) throws CmsException {
 
-        String templatePath = getContextMap().get("desktop").getTemplatePath();
+        String templatePath = getAllContexts().get("desktop").getTemplatePath();
         return cms.readPropertyObject(templatePath, propertyName, false).getValue(fallbackValue);
     }
 
