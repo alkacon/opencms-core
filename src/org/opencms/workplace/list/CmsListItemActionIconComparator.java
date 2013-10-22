@@ -56,24 +56,27 @@ public class CmsListItemActionIconComparator implements I_CmsListItemComparator 
     /**
      * @see org.opencms.workplace.list.I_CmsListItemComparator#getComparator(java.lang.String, java.util.Locale)
      */
-    public Comparator getComparator(final String columnId, final Locale locale) {
+    public Comparator<CmsListItem> getComparator(final String columnId, final Locale locale) {
 
-        return new Comparator() {
+        return new Comparator<CmsListItem>() {
 
             /**
              * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
              */
-            public int compare(Object o1, Object o2) {
+            @SuppressWarnings({"unchecked", "rawtypes"})
+            public int compare(CmsListItem li1, CmsListItem li2) {
 
-                CmsListItem li1 = (CmsListItem)o1;
-                CmsListItem li2 = (CmsListItem)o2;
+                if (li1 == li2) {
+                    return 0;
+                }
+
                 CmsListColumnDefinition col = li1.getMetadata().getColumnDefinition(columnId);
                 if (col.getDirectActions().size() > 0) {
                     String i1 = null;
                     String i2 = null;
-                    Iterator it = col.getDirectActions().iterator();
+                    Iterator<I_CmsListDirectAction> it = col.getDirectActions().iterator();
                     while (it.hasNext()) {
-                        I_CmsListDirectAction action = (I_CmsListDirectAction)it.next();
+                        I_CmsListDirectAction action = it.next();
                         CmsListItem tmp = action.getItem();
                         action.setItem(li1);
                         if (action.isVisible()) {
@@ -95,14 +98,16 @@ public class CmsListItemActionIconComparator implements I_CmsListItemComparator 
                     }
                     return 0;
                 } else {
-                    Comparable c1 = (Comparable)((CmsListItem)o1).get(columnId);
-                    Comparable c2 = (Comparable)((CmsListItem)o2).get(columnId);
-                    if (c1 != null) {
-                        if (c2 == null) {
+
+                    Object o1 = li1.get(columnId);
+                    Object o2 = li2.get(columnId);
+
+                    if (o1 != null) {
+                        if (o2 == null) {
                             return 1;
                         }
-                        return c1.compareTo(c2);
-                    } else if (c2 != null) {
+                        return ((Comparable)o1).compareTo(o2);
+                    } else if (o2 != null) {
                         return -1;
                     }
                     return 0;

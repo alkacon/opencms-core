@@ -62,6 +62,7 @@ public class CmsListEditResourceAction extends CmsListDirectAction {
     /**
      * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getHelpText()
      */
+    @Override
     public CmsMessageContainer getHelpText() {
 
         CmsMessageContainer helptext = super.getHelpText();
@@ -78,6 +79,7 @@ public class CmsListEditResourceAction extends CmsListDirectAction {
     /**
      * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getIconPath()
      */
+    @Override
     public String getIconPath() {
 
         String iconpath = super.getIconPath();
@@ -94,6 +96,7 @@ public class CmsListEditResourceAction extends CmsListDirectAction {
     /**
      * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getName()
      */
+    @Override
     public CmsMessageContainer getName() {
 
         CmsMessageContainer name = super.getName();
@@ -110,6 +113,7 @@ public class CmsListEditResourceAction extends CmsListDirectAction {
     /**
      * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#isVisible()
      */
+    @Override
     public boolean isVisible() {
 
         if (getResourceName() != null) {
@@ -132,6 +136,7 @@ public class CmsListEditResourceAction extends CmsListDirectAction {
     /**
      * @see org.opencms.workplace.list.I_CmsListDirectAction#setItem(org.opencms.workplace.list.CmsListItem)
      */
+    @Override
     public void setItem(CmsListItem item) {
 
         m_resourceUtil = ((A_CmsListExplorerDialog)getWp()).getResourceUtil(item);

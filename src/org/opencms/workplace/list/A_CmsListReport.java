@@ -71,6 +71,7 @@ public abstract class A_CmsListReport extends CmsReport {
     /**
      * @see org.opencms.workplace.CmsDialog#actionCloseDialog()
      */
+    @Override
     public void actionCloseDialog() throws JspException {
 
         getSettings().setListObject(null);
@@ -117,6 +118,7 @@ public abstract class A_CmsListReport extends CmsReport {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods

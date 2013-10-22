@@ -151,7 +151,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
     private int m_blockingLocks = -1;
 
     /** The list of locked resources.  */
-    private List m_lockedResources;
+    private List<String> m_lockedResources;
 
     /** the filter to get all non blocking locks. */
     private CmsLockFilter m_nonBlockingFilter;
@@ -249,6 +249,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
      */
+    @Override
     public void addConfigurationParameter(String paramName, String paramValue) {
 
         // not implemented yet
@@ -444,14 +445,14 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
      */
     public String buildReport() throws JspException, ServletException, IOException {
 
-        List lockedResources;
+        List<String> lockedResources;
         if (Boolean.valueOf(getParamShowownlocks()).booleanValue()) {
             lockedResources = getLockedResources();
         } else {
-            lockedResources = new ArrayList(getBlockingLockedResources());
+            lockedResources = new ArrayList<String>(getBlockingLockedResources());
         }
         Collections.sort(lockedResources);
-        Map lockParams = new HashMap();
+        Map<String, String> lockParams = new HashMap<String, String>();
         if (getParamResource() != null) {
             lockParams.put(PARAM_RESOURCE, getParamResource());
         }
@@ -468,7 +469,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
         CmsLockedResourcesList list = new CmsLockedResourcesList(
             getJsp(),
             lockedResources,
-            CmsResource.getParentFolder((String)getResourceList().get(0)),
+            CmsResource.getParentFolder(getResourceList().get(0)),
             lockParams);
         list.actionDialog();
         list.getList().setBoxed(false);
@@ -519,12 +520,12 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
      * 
      * @return the locked Resources
      */
-    public Set getBlockingLockedResources() {
+    public Set<String> getBlockingLockedResources() {
 
-        Set blockingResources = new HashSet();
-        Iterator i = getResourceList().iterator();
+        Set<String> blockingResources = new HashSet<String>();
+        Iterator<String> i = getResourceList().iterator();
         while (i.hasNext()) {
-            String resName = (String)i.next();
+            String resName = i.next();
             try {
                 blockingResources.addAll(getCms().getLockedResources(resName, getBlockingFilter()));
             } catch (CmsException e) {
@@ -558,6 +559,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
+    @Override
     public CmsParameterConfiguration getConfiguration() {
 
         return CmsParameterConfiguration.EMPTY_PARAMETERS;
@@ -606,6 +608,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
     /**
      * @see org.opencms.workplace.I_CmsDialogHandler#getDialogHandler()
      */
+    @Override
     public String getDialogHandler() {
 
         return CmsDialogSelector.DIALOG_LOCK;
@@ -614,6 +617,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
     /**
      * @see org.opencms.workplace.I_CmsDialogHandler#getDialogUri(java.lang.String, CmsJspActionElement)
      */
+    @Override
     public String getDialogUri(String resource, CmsJspActionElement jsp) {
 
         switch (getDialogAction(jsp.getCmsObject())) {
@@ -634,14 +638,14 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
      *
      * @return all the locked Resources
      */
-    public List getLockedResources() {
+    public List<String> getLockedResources() {
 
         if (m_lockedResources == null) {
             // collect my locked resources
-            Set lockedResources = new HashSet();
-            Iterator i = getResourceList().iterator();
+            Set<String> lockedResources = new HashSet<String>();
+            Iterator<String> i = getResourceList().iterator();
             while (i.hasNext()) {
-                String resName = (String)i.next();
+                String resName = i.next();
                 try {
                     lockedResources.addAll(getCms().getLockedResources(resName, getNonBlockingFilter()));
                 } catch (CmsException e) {
@@ -655,10 +659,10 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
                 }
             }
             // get blocking resources needs the locked resources
-            m_lockedResources = new ArrayList(lockedResources);
+            m_lockedResources = new ArrayList<String>(lockedResources);
             lockedResources.addAll(getBlockingLockedResources());
             // create the locked resources list again, with the blocking locked resources
-            m_lockedResources = new ArrayList(lockedResources);
+            m_lockedResources = new ArrayList<String>(lockedResources);
             Collections.sort(m_lockedResources);
         }
         return m_lockedResources;
@@ -712,6 +716,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
      */
+    @Override
     public void initConfiguration() {
 
         // not implemented yet
@@ -794,6 +799,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods
@@ -854,6 +860,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
      * @return true, if the operation was performed, otherwise false
      * @throws CmsException if operation is not successful
      */
+    @Override
     protected boolean performDialogOperation() throws CmsException {
 
         //on multi resource operation display "please wait" screen
@@ -864,9 +871,9 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
         int dialogAction = getDialogAction(getCms());
 
         // now perform the operation on the resource(s)
-        Iterator i = getResourceList().iterator();
+        Iterator<String> i = getResourceList().iterator();
         while (i.hasNext()) {
-            String resName = (String)i.next();
+            String resName = i.next();
             try {
                 performSingleResourceOperation(resName, dialogAction);
             } catch (CmsException e) {
@@ -930,15 +937,15 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
      * @param filter the lock filter to use
      * @param lockedResources a set of site relative paths, of locked resources to exclude
      */
-    private void addLockedRelatedResources(String resName, CmsLockFilter filter, Set lockedResources) {
+    private void addLockedRelatedResources(String resName, CmsLockFilter filter, Set<String> lockedResources) {
 
         try {
             // get and iterate over all related resources
-            Iterator itRelations = getCms().getRelationsForResource(
+            Iterator<CmsRelation> itRelations = getCms().getRelationsForResource(
                 resName,
                 CmsRelationFilter.TARGETS.filterStrong().filterIncludeChildren()).iterator();
             while (itRelations.hasNext()) {
-                CmsRelation relation = (CmsRelation)itRelations.next();
+                CmsRelation relation = itRelations.next();
                 CmsResource target = null;
                 try {
                     target = relation.getTarget(getCms(), CmsResourceFilter.ALL);

@@ -829,21 +829,21 @@ public class CmsPreferences extends CmsTabDialog {
         if (htmlAttributes != null) {
             htmlAttributes += " name=\"" + PARAM_STARTGALLERY_PREFIX;
         }
-        Map galleriesTypes = OpenCms.getWorkplaceManager().getGalleries();
+        Map<String, A_CmsAjaxGallery> galleriesTypes = OpenCms.getWorkplaceManager().getGalleries();
         if (galleriesTypes != null) {
 
             // sort the galleries by localized name
-            Map localizedGalleries = new TreeMap();
-            for (Iterator i = galleriesTypes.keySet().iterator(); i.hasNext();) {
-                String currentGalleryType = (String)i.next();
+            Map<String, String> localizedGalleries = new TreeMap<String, String>();
+            for (Iterator<String> i = galleriesTypes.keySet().iterator(); i.hasNext();) {
+                String currentGalleryType = i.next();
                 String localizedName = CmsWorkplaceMessages.getResourceTypeName(this, currentGalleryType);
                 localizedGalleries.put(localizedName, currentGalleryType);
             }
 
-            for (Iterator i = localizedGalleries.entrySet().iterator(); i.hasNext();) {
-                Map.Entry entry = (Map.Entry)i.next();
+            for (Iterator<Map.Entry<String, String>> i = localizedGalleries.entrySet().iterator(); i.hasNext();) {
+                Map.Entry<String, String> entry = i.next();
                 // first: retrieve the gallery type
-                String currentGalleryType = (String)entry.getValue();
+                String currentGalleryType = entry.getValue();
                 // second: retrieve the gallery type id
                 int currentGalleryTypeId = 0;
                 try {
@@ -856,11 +856,11 @@ public class CmsPreferences extends CmsTabDialog {
                     continue;
                 }
                 // third: get the available galleries for this gallery type id
-                List availableGalleries = A_CmsAjaxGallery.getGalleries(currentGalleryTypeId, getCms());
+                List<CmsResource> availableGalleries = A_CmsAjaxGallery.getGalleries(currentGalleryTypeId, getCms());
 
                 // forth: fill the select box 
-                List options = new ArrayList(availableGalleries.size() + 2);
-                List values = new ArrayList(availableGalleries.size() + 2);
+                List<String> options = new ArrayList<String>(availableGalleries.size() + 2);
+                List<String> values = new ArrayList<String>(availableGalleries.size() + 2);
                 options.add(key(Messages.GUI_PREF_STARTGALLERY_PRESELECT_0));
                 values.add(INPUT_DEFAULT);
                 options.add(key(Messages.GUI_PREF_STARTGALLERY_NONE_0));
@@ -869,9 +869,9 @@ public class CmsPreferences extends CmsTabDialog {
                 String savedValue = computeStartGalleryPreselection(request, currentGalleryType);
                 int counter = 2;
                 int selectedIndex = 0;
-                Iterator iGalleries = availableGalleries.iterator();
+                Iterator<CmsResource> iGalleries = availableGalleries.iterator();
                 while (iGalleries.hasNext()) {
-                    CmsResource res = (CmsResource)iGalleries.next();
+                    CmsResource res = iGalleries.next();
                     String rootPath = res.getRootPath();
                     String sitePath = getCms().getSitePath(res);
                     // select the value
@@ -949,8 +949,8 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public String buildSelectView(String htmlAttributes) {
 
-        List options = new ArrayList();
-        List values = new ArrayList();
+        List<String> options = new ArrayList<String>();
+        List<String> values = new ArrayList<String>();
         int selectedIndex = 0;
 
         // loop through the vectors and fill the result vectors
@@ -959,11 +959,11 @@ public class CmsPreferences extends CmsTabDialog {
             Messages.GUI_LABEL_DIRECT_EDIT_VIEW_0), CmsWorkplace.VIEW_DIRECT_EDIT, Float.valueOf(100));
         list.add(directEditView);
 
-        Iterator i = list.iterator();
+        Iterator<CmsWorkplaceView> i = list.iterator();
         int count = -1;
         while (i.hasNext()) {
             count++;
-            CmsWorkplaceView view = (CmsWorkplaceView)i.next();
+            CmsWorkplaceView view = i.next();
 
             boolean visible = true;
             try {
@@ -1007,8 +1007,8 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public String buildSelectWorkplaceSearchResult(String htmlAttributes) {
 
-        List options = new ArrayList(3);
-        List values = new ArrayList(3);
+        List<String> options = new ArrayList<String>(3);
+        List<String> values = new ArrayList<String>(3);
         int checkedIndex = 0;
 
         // add all styles to the select box
@@ -1107,6 +1107,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @deprecated use {@link CmsCalendarWidget#calendarIncludes(java.util.Locale)}, this is just here so that old JSP still work
      */
+    @Deprecated
     public String calendarIncludes() {
 
         return CmsCalendarWidget.calendarIncludes(getLocale());
@@ -1127,6 +1128,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @deprecated use {@link CmsCalendarWidget#calendarInit(org.opencms.i18n.CmsMessages, String, String, String, boolean, boolean, boolean, String, boolean)}, this is just here so that old JSP still work
      */
+    @Deprecated
     public String calendarInit(
         String inputFieldId,
         String triggerButtonId,
@@ -1563,9 +1565,10 @@ public class CmsPreferences extends CmsTabDialog {
     /**
      * @see org.opencms.workplace.CmsTabDialog#getTabParameterOrder()
      */
-    public List getTabParameterOrder() {
+    @Override
+    public List<String> getTabParameterOrder() {
 
-        ArrayList orderList = new ArrayList(5);
+        ArrayList<String> orderList = new ArrayList<String>(5);
         orderList.add("tabwp");
         orderList.add("tabex");
         orderList.add("tabdi");
@@ -1578,9 +1581,10 @@ public class CmsPreferences extends CmsTabDialog {
     /**
      * @see org.opencms.workplace.CmsTabDialog#getTabs()
      */
-    public List getTabs() {
+    @Override
+    public List<String> getTabs() {
 
-        ArrayList tabList = new ArrayList(6);
+        ArrayList<String> tabList = new ArrayList<String>(6);
         tabList.add(key(Messages.GUI_PREF_PANEL_WORKPLACE_0));
         tabList.add(key(Messages.GUI_PREF_PANEL_EXPLORER_0));
         tabList.add(key(Messages.GUI_PREF_PANEL_DIALOGS_0));
@@ -2043,7 +2047,7 @@ public class CmsPreferences extends CmsTabDialog {
     /**
      * Sets the upload variant setting.<p>
      * 
-     * @param <code>"applet"</code>, <code>"basic"</code>, 
+     * @param value <code>"applet"</code>, <code>"basic"</code>, 
      * <code>"gwt"</code>, <code>"true"</code> or <code>"false"</code>
      */
     public void setParamTabWpUploadVariant(String value) {
@@ -2064,6 +2068,7 @@ public class CmsPreferences extends CmsTabDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // create an empty user settings object
@@ -2106,12 +2111,15 @@ public class CmsPreferences extends CmsTabDialog {
      * This overwrites the super method because of the possible dynamic editor selection entries.<p> 
      * 
      * @return the values of all parameter methods of this workplace class instance
+     * 
+     * @see org.opencms.workplace.CmsWorkplace#paramValues()
      */
-    protected Map paramValues() {
+    @Override
+    protected Map<String, Object> paramValues() {
 
-        Map map = super.paramValues();
+        Map<String, Object> map = super.paramValues();
         HttpServletRequest request = getJsp().getRequest();
-        Enumeration en = request.getParameterNames();
+        Enumeration<?> en = request.getParameterNames();
         while (en.hasMoreElements()) {
             String paramName = (String)en.nextElement();
             if (paramName.startsWith(PARAM_PREFERREDEDITOR_PREFIX) || paramName.startsWith(PARAM_STARTGALLERY_PREFIX)) {
@@ -2155,12 +2163,12 @@ public class CmsPreferences extends CmsTabDialog {
      */
     private String buildSelectButtonStyle(String htmlAttributes, int selectedIndex) {
 
-        List options = new ArrayList(3);
+        List<String> options = new ArrayList<String>(3);
         options.add(key(Messages.GUI_PREF_BUTTONSTYLE_IMG_0));
         options.add(key(Messages.GUI_PREF_BUTTONSTYLE_IMGTXT_0));
         options.add(key(Messages.GUI_PREF_BUTTONSTYLE_TXT_0));
         String[] vals = new String[] {"0", "1", "2"};
-        List values = new ArrayList(java.util.Arrays.asList(vals));
+        List<String> values = new ArrayList<String>(java.util.Arrays.asList(vals));
         return buildSelect(htmlAttributes, options, values, selectedIndex);
     }
 
@@ -2189,7 +2197,7 @@ public class CmsPreferences extends CmsTabDialog {
      * Returns the preferred editor preselection value either from the request, if not present, from the user settings.<p>
      * 
      * @param request the current http servlet request
-     * @param resourceType the preferred editors resource type
+     * @param galleryType the preferred gallery type
      * @return the preferred editor preselection value or null, if none found
      */
     private String computeStartGalleryPreselection(HttpServletRequest request, String galleryType) {

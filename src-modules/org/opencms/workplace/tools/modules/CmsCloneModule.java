@@ -56,8 +56,6 @@ import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.report.CmsLogReport;
-import org.opencms.search.replace.CmsSearchReplaceSettings;
-import org.opencms.search.replace.CmsSearchReplaceThread;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
@@ -66,7 +64,6 @@ import org.opencms.xml.CmsXmlException;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -78,7 +75,6 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.logging.Log;
@@ -297,14 +293,7 @@ public class CmsCloneModule extends CmsJspActionElement {
             replacePath(sourceModulePath, targetModulePath, allModuleResources);
 
             // search and replace paths
-            CmsSearchReplaceThread t = initializePathThread();
-            t.start();
-            t.join();
-
-            // search and replace module name
-            t = initializeNameThread();
-            t.start();
-            t.join();
+            replaceModuleName();
 
             // replace formatter paths
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_formatterTargetModule)
@@ -363,27 +352,6 @@ public class CmsCloneModule extends CmsJspActionElement {
             LOG.error(t.getMessage(), t);
             throw t;
         }
-    }
-
-    /**
-     * Returns <code>true</code> if form imput is selected, checked, on or yes.<p>
-     * 
-     * @param value the value to check
-     * 
-     * @return <code>true</code> if form imput is selected, checked, on or yes
-     */
-    private boolean isTrue(String value) {
-
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
-            if (Boolean.valueOf(value.toLowerCase()).booleanValue()
-                || value.toLowerCase().equals("on")
-                || value.toLowerCase().equals("yes")
-                || value.toLowerCase().equals("checked")
-                || value.toLowerCase().equals("selected")) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
@@ -1067,40 +1035,24 @@ public class CmsCloneModule extends CmsJspActionElement {
     }
 
     /**
-     * Initializes a thread to find and replace all occurrence of the module's package name.<p>
+     * Returns <code>true</code> if form imput is selected, checked, on or yes.<p>
      * 
-     * @return the thread
-     */
-    private CmsSearchReplaceThread initializeNameThread() {
-
-        CmsSearchReplaceSettings settings = new CmsSearchReplaceSettings();
-        settings.setPaths(new ArrayList<String>(Arrays.asList(new String[] {"/system/modules/" + m_packageName + "/"})));
-        settings.setProject(getCmsObject().getRequestContext().getCurrentProject().getName());
-        settings.setSearchpattern(m_sourceModuleName);
-        settings.setReplacepattern(m_packageName);
-        settings.setResources("/system/modules/" + m_packageName + "/");
-        HttpSession session = getRequest().getSession();
-        session.removeAttribute(CmsSearchReplaceSettings.ATTRIBUTE_NAME_SOURCESEARCH_RESULT_LIST);
-        return new CmsSearchReplaceThread(session, getCmsObject(), settings);
-    }
-
-    /**
-     * Initializes a thread to find and replace all occurrence of the module's path.<p>
+     * @param value the value to check
      * 
-     * @return the thread
+     * @return <code>true</code> if form imput is selected, checked, on or yes
      */
-    private CmsSearchReplaceThread initializePathThread() {
+    private boolean isTrue(String value) {
 
-        CmsSearchReplaceSettings settings = new CmsSearchReplaceSettings();
-        String[] paths = new String[] {CmsWorkplace.VFS_PATH_MODULES + m_packageName + "/"};
-        settings.setPaths(new ArrayList<String>(Arrays.asList(paths)));
-        settings.setProject(getCmsObject().getRequestContext().getCurrentProject().getName());
-        settings.setSearchpattern(m_sourceModuleName);
-        settings.setReplacepattern(m_packageName);
-        settings.setResources(CmsWorkplace.VFS_PATH_MODULES + m_packageName + "/");
-        HttpSession session = getRequest().getSession();
-        session.removeAttribute(CmsSearchReplaceSettings.ATTRIBUTE_NAME_SOURCESEARCH_RESULT_LIST);
-        return new CmsSearchReplaceThread(session, getCmsObject(), settings);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
+            if (Boolean.valueOf(value.toLowerCase()).booleanValue()
+                || value.toLowerCase().equals("on")
+                || value.toLowerCase().equals("yes")
+                || value.toLowerCase().equals("checked")
+                || value.toLowerCase().equals("selected")) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -1202,6 +1154,35 @@ public class CmsCloneModule extends CmsJspActionElement {
             content = content.replaceAll(formatterSourceFolder.getRootPath(), formatterTargetFolder.getRootPath());
             file.setContents(content.getBytes(encoding));
             getCmsObject().writeFile(file);
+        }
+    }
+
+    /**
+     * Initializes a thread to find and replace all occurrence of the module's path.<p>
+     * 
+     * @throws CmsException 
+     * @throws UnsupportedEncodingException 
+     */
+    private void replaceModuleName() throws CmsException, UnsupportedEncodingException {
+
+        CmsResourceFilter filter = CmsResourceFilter.ALL.addRequireFile().addExcludeState(CmsResource.STATE_DELETED).addRequireTimerange().addRequireVisible();
+        List<CmsResource> resources = getCmsObject().readResources(
+            CmsWorkplace.VFS_PATH_MODULES + m_packageName + "/",
+            filter);
+        for (CmsResource resource : resources) {
+            CmsFile file = getCmsObject().readFile(resource);
+            byte[] contents = file.getContents();
+            String encoding = CmsLocaleManager.getResourceEncoding(getCmsObject(), file);
+            String content = new String(contents, encoding);
+            Matcher matcher = Pattern.compile(m_sourceModuleName).matcher(content);
+            if (matcher.find()) {
+                contents = matcher.replaceAll(m_packageName).getBytes(encoding);
+                if (lockResource(getCmsObject(), file)) {
+                    file.setContents(contents);
+                    getCmsObject().writeFile(file);
+                    getCmsObject().unlockResource(getCmsObject().getSitePath(file));
+                }
+            }
         }
     }
 

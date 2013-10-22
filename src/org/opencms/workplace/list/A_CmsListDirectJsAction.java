@@ -52,6 +52,7 @@ public abstract class A_CmsListDirectJsAction extends CmsListDirectAction {
     /**
      * @see org.opencms.workplace.list.CmsListDirectAction#resolveOnClic(java.util.Locale)
      */
+    @Override
     protected String resolveOnClic(Locale locale) {
 
         String confirmationMessage = getConfirmationMessage().key(locale);

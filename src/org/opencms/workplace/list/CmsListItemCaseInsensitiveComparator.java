@@ -54,18 +54,20 @@ public class CmsListItemCaseInsensitiveComparator implements I_CmsListItemCompar
     /**
      * @see org.opencms.workplace.list.I_CmsListItemComparator#getComparator(java.lang.String, java.util.Locale)
      */
-    public Comparator getComparator(final String columnId, final Locale locale) {
+    public Comparator<CmsListItem> getComparator(final String columnId, final Locale locale) {
 
         final Collator collator = Collator.getInstance(locale);
-        return new Comparator() {
+
+        return new Comparator<CmsListItem>() {
 
             /**
              * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
              */
-            public int compare(Object o1, Object o2) {
+            @SuppressWarnings({"rawtypes", "unchecked"})
+            public int compare(CmsListItem o1, CmsListItem o2) {
 
-                Comparable c1 = (Comparable)((CmsListItem)o1).get(columnId);
-                Comparable c2 = (Comparable)((CmsListItem)o2).get(columnId);
+                Comparable c1 = (Comparable)o1.get(columnId);
+                Comparable c2 = (Comparable)o2.get(columnId);
                 if ((c1 instanceof String) && (c2 instanceof String)) {
                     return collator.compare(((String)c1).toUpperCase(), ((String)c2).toUpperCase());
                 } else if (c1 != null) {

@@ -63,7 +63,7 @@ public final class CmsListOrderEnum {
     private static final CmsListOrderEnum[] VALUE_ARRAY = {ORDER_ASCENDING, ORDER_DESCENDING, ORDER_NONE};
 
     /** List of ordering constants.     */
-    public static final List VALUES = Collections.unmodifiableList(Arrays.asList(VALUE_ARRAY));
+    public static final List<CmsListOrderEnum> VALUES = Collections.unmodifiableList(Arrays.asList(VALUE_ARRAY));
 
     /** Internal representation. */
     private final String m_order;
@@ -90,9 +90,9 @@ public final class CmsListOrderEnum {
      */
     public static CmsListOrderEnum valueOf(String value) throws CmsIllegalArgumentException {
 
-        Iterator iter = VALUES.iterator();
+        Iterator<CmsListOrderEnum> iter = VALUES.iterator();
         while (iter.hasNext()) {
-            CmsListOrderEnum target = (CmsListOrderEnum)iter.next();
+            CmsListOrderEnum target = iter.next();
             if (value.equals(target.getOrder())) {
                 return target;
             }
@@ -116,6 +116,7 @@ public final class CmsListOrderEnum {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         return m_order;

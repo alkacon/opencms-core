@@ -553,7 +553,7 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
 
         CmsSolrFieldConfiguration conf = (CmsSolrFieldConfiguration)index.getFieldConfiguration();
-        assertNotNull(conf.getSolrFields().get("meta_txt"));
+        assertNotNull(conf.getSolrFields().get("meta"));
         assertNotNull(conf.getSolrFields().get("description_txt"));
         assertNotNull(conf.getSolrFields().get("keywords_txt"));
         assertNotNull(conf.getSolrFields().get("special_txt"));
@@ -565,7 +565,7 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
 
         CmsSearchResource res = results.get(0);
         String value = "Sample article 1  (>>SearchEgg1<<)";
-        List<String> metaValue = res.getMultivaluedField("meta_txt");
+        List<String> metaValue = res.getMultivaluedField("meta");
         assertEquals(value, metaValue.get(0));
     }
 }

@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.search.replace;
+package org.opencms.workplace.tools.searchindex.sourcesearch;
 
 import org.opencms.util.CmsStringUtil;
 
@@ -45,6 +45,9 @@ public class CmsSearchReplaceSettings {
     /** The content search result list attribute name in the session. */
     public static final String ATTRIBUTE_NAME_SOURCESEARCH_RESULT_LIST = "sourcesearchResultList";
 
+    /** Constant for vfs. */
+    public static final String VFS = "vfs";
+
     /** The force replacement flag. */
     private boolean m_forceReplace;
 
@@ -57,6 +60,9 @@ public class CmsSearchReplaceSettings {
     /** The project to use. */
     private String m_project;
 
+    /** The search query to filter matching resources. */
+    private String m_query;
+
     /** The replace pattern. */
     private String m_replacepattern;
 
@@ -65,6 +71,15 @@ public class CmsSearchReplaceSettings {
 
     /** The search pattern. */
     private String m_searchpattern;
+
+    /** The source to retrive the resources from. */
+    private String m_source;
+
+    /** The resource type to use for replacement. */
+    private String[] m_types;
+
+    /** The Xpath to perform the replacement. */
+    private String m_xpath;
 
     /**
      * Bean constructor with cms object for path validation.<p>
@@ -97,6 +112,16 @@ public class CmsSearchReplaceSettings {
     public String getProject() {
 
         return m_project;
+    }
+
+    /**
+     * Returns the query.<p>
+     *
+     * @return the query
+     */
+    public String getQuery() {
+
+        return m_query;
     }
 
     /**
@@ -134,6 +159,46 @@ public class CmsSearchReplaceSettings {
     }
 
     /**
+     * Returns the source.<p>
+     *
+     * @return the source
+     */
+    public String getSource() {
+
+        return m_source;
+    }
+
+    /**
+     * Returns the type.<p>
+     *
+     * @return the type
+     */
+    public String getTypes() {
+
+        return m_types != null ? CmsStringUtil.arrayAsString(m_types, ",") : "";
+    }
+
+    /**
+     * Returns the type.<p>
+     *
+     * @return the type
+     */
+    public String[] getTypesArray() {
+
+        return m_types;
+    }
+
+    /**
+     * Returns the xpath.<p>
+     *
+     * @return the xpath
+     */
+    public String getXpath() {
+
+        return m_xpath;
+    }
+
+    /**
      * Returns the force replace flag, if <code>true</code> the replacement
      * will also be performed if the replacement String is empty.<p>
      * 
@@ -142,6 +207,21 @@ public class CmsSearchReplaceSettings {
     public boolean isForceReplace() {
 
         return m_forceReplace;
+    }
+
+    /**
+     * Returns <code>true</code> if Solr index is selected and a query was entered.<p>
+     * 
+     * @return <code>true</code> if Solr index is selected and a query was entered
+     */
+    public boolean isSolrSearch() {
+
+        if (VFS.equals(m_source)) {
+            // VFS search selected
+            return false;
+        }
+        // index selected and query entered --> Solr search else VFS
+        return (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_source) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_query));
     }
 
     /**
@@ -181,6 +261,16 @@ public class CmsSearchReplaceSettings {
     }
 
     /**
+     * Sets the query.<p>
+     *
+     * @param query the query to set
+     */
+    public void setQuery(String query) {
+
+        m_query = query;
+    }
+
+    /**
      * Sets the replace pattern.<p>
      * 
      * @param replacepattern the replace pattern
@@ -208,5 +298,44 @@ public class CmsSearchReplaceSettings {
     public void setSearchpattern(String searchpattern) {
 
         m_searchpattern = searchpattern;
+    }
+
+    /**
+     * Sets the source.<p>
+     *
+     * @param source the source to set
+     */
+    public void setSource(String source) {
+
+        m_source = source;
+    }
+
+    /**
+     * Sets the type.<p>
+     *
+     * @param types the type to set
+     */
+    public void setTypes(String types) {
+
+        m_types = CmsStringUtil.splitAsArray(types, ",");
+    }
+
+    /**
+     * Sets the xpath.<p>
+     *
+     * @param xpath the xpath to set
+     */
+    public void setXpath(String xpath) {
+
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(xpath)) {
+            xpath = xpath.trim();
+            if (xpath.startsWith("/")) {
+                xpath = xpath.substring(1);
+            }
+            if (xpath.endsWith("/")) {
+                xpath = xpath.substring(0, xpath.length() - 1);
+            }
+        }
+        m_xpath = xpath;
     }
 }

@@ -36,7 +36,6 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchIndex;
-import org.opencms.search.solr.CmsSolrIndex;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsInputWidget;
 import org.opencms.widgets.CmsSelectWidget;
@@ -67,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @since 9.0.0
  */
-public class CmsSourceSearchDialog extends CmsWidgetDialog {
+public class CmsSolrSearchDialog extends CmsWidgetDialog {
 
     /** Localized messages Keys prefix. */
     public static final String KEY_PREFIX = "sourcesearch";
@@ -78,15 +77,12 @@ public class CmsSourceSearchDialog extends CmsWidgetDialog {
     /** The widget mapped data container. */
     private CmsSearchReplaceSettings m_settings;
 
-    /** Signals whether Solr search is enabled or not. */
-    private boolean m_solrEnabled;
-
     /**
      * Public constructor with JSP action element.<p>
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsSourceSearchDialog(final CmsJspActionElement jsp) {
+    public CmsSolrSearchDialog(final CmsJspActionElement jsp) {
 
         super(jsp);
     }
@@ -98,7 +94,7 @@ public class CmsSourceSearchDialog extends CmsWidgetDialog {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsSourceSearchDialog(final PageContext context, final HttpServletRequest req, final HttpServletResponse res) {
+    public CmsSolrSearchDialog(final PageContext context, final HttpServletRequest req, final HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
 
@@ -138,11 +134,7 @@ public class CmsSourceSearchDialog extends CmsWidgetDialog {
         result.append(createWidgetErrorHeader());
         // create export file name block
         result.append(createWidgetBlockStart(key(org.opencms.workplace.tools.searchindex.Messages.GUI_SOURCESEARCH_ADMIN_TOOL_BLOCK_0)));
-        if (m_solrEnabled) {
-            result.append(createDialogRowsHtml(0, 7));
-        } else {
-            result.append(createDialogRowsHtml(0, 6));
-        }
+        result.append(createDialogRowsHtml(0, 7));
         result.append(createWidgetBlockEnd());
         // close table
         result.append(createWidgetTableEnd());
@@ -155,20 +147,16 @@ public class CmsSourceSearchDialog extends CmsWidgetDialog {
     @Override
     protected void defineWidgets() {
 
-        m_solrEnabled = isSolrEnabled();
-
         // initialize the settings object to use for the dialog
         initSettingsObject();
         setKeyPrefix(KEY_PREFIX);
         CmsVfsFileWidget vfsw = new CmsVfsFileWidget(false, getCms().getRequestContext().getSiteRoot());
         addWidget(new CmsWidgetDialogParameter(m_settings, "paths", "/", PAGES[0], vfsw, 1, 50));
-        addWidget(new CmsWidgetDialogParameter(m_settings, "types", "", PAGES[0], new CmsTypeComboWidget(), 0, 1));
-        addWidget(new CmsWidgetDialogParameter(m_settings, "xpath", "", PAGES[0], new CmsInputWidget(), 0, 1));
+        addWidget(new CmsWidgetDialogParameter(m_settings, "types", "", PAGES[0], new CmsTypeComboWidget(), 1, 1));
+        addWidget(new CmsWidgetDialogParameter(m_settings, "xpath", "", PAGES[0], new CmsInputWidget(), 1, 1));
         CmsSelectWidget indexOptions = new CmsSelectWidget(getSolrIndexOptions());
-        addWidget(new CmsWidgetDialogParameter(m_settings, "source", "", PAGES[0], indexOptions, 1, 1));
-        if (m_solrEnabled) {
-            addWidget(new CmsWidgetDialogParameter(m_settings, "query", "", PAGES[0], new CmsInputWidget(), 1, 1));
-        }
+        addWidget(new CmsWidgetDialogParameter(m_settings, "index", "", PAGES[0], indexOptions, 1, 1));
+        addWidget(new CmsWidgetDialogParameter(m_settings, "query", "", PAGES[0], new CmsInputWidget(), 1, 1));
         addWidget(new CmsWidgetDialogParameter(m_settings, "searchpattern", "", PAGES[0], new CmsInputWidget(), 1, 1));
         addWidget(new CmsWidgetDialogParameter(m_settings, "replacepattern", "", PAGES[0], new CmsInputWidget(), 1, 1));
         CmsSelectWidget projectOptions = new CmsSelectWidget(getProjectSelections());
@@ -269,28 +257,11 @@ public class CmsSourceSearchDialog extends CmsWidgetDialog {
             CmsSearchReplaceSettings.VFS,
             true,
             CmsSearchReplaceSettings.VFS.toUpperCase()));
-        if (OpenCms.getSearchManager().getSolrServerConfiguration().isEnabled()) {
-            for (CmsSearchIndex index : OpenCms.getSearchManager().getAllSolrIndexes()) {
-                if (CmsSearchIndex.REBUILD_MODE_OFFLINE.equals(index.getRebuildMode())) {
-                    result.add(new CmsSelectWidgetOption(index.getName(), false, index.getName()));
-                }
+        for (CmsSearchIndex index : OpenCms.getSearchManager().getAllSolrIndexes()) {
+            if (CmsSearchIndex.REBUILD_MODE_OFFLINE.equals(index.getRebuildMode())) {
+                result.add(new CmsSelectWidgetOption(index.getName(), false, index.getName()));
             }
         }
         return result;
-    }
-
-    /**
-     * Returns <code>true</code> if Solr search is enabled.<p>
-     * 
-     * @return <code>true</code> if Solr search is enabled
-     */
-    private boolean isSolrEnabled() {
-
-        boolean solrEnabled = OpenCms.getSearchManager().getSolrServerConfiguration().isEnabled();
-        CmsSolrIndex solrIndex = OpenCms.getSearchManager().getIndexSolr(CmsSolrIndex.DEFAULT_INDEX_NAME_OFFLINE);
-        if (solrEnabled && (solrIndex != null)) {
-            return true;
-        }
-        return false;
     }
 }

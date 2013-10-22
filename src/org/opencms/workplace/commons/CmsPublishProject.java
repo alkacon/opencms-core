@@ -161,11 +161,11 @@ public class CmsPublishProject extends CmsMultiDialog {
                 // if no exception is caused and "true" is returned publish operation was successful
                 if (isMultiOperation() || isFolder) {
                     // set request attribute to reload the explorer tree view
-                    List folderList = new ArrayList();
-                    folderList.add(CmsResource.getParentFolder((String)getResourceList().get(0)));
-                    Iterator it = getResourceList().iterator();
+                    List<String> folderList = new ArrayList<String>();
+                    folderList.add(CmsResource.getParentFolder(getResourceList().get(0)));
+                    Iterator<String> it = getResourceList().iterator();
                     while (it.hasNext()) {
-                        String res = (String)it.next();
+                        String res = it.next();
                         if (CmsResource.isFolder(res)) {
                             folderList.add(res);
                         }
@@ -219,6 +219,7 @@ public class CmsPublishProject extends CmsMultiDialog {
      * 
      * @return html code
      */
+    @Override
     public String buildLockConfirmationMessageJS() {
 
         StringBuffer html = new StringBuffer(512);
@@ -259,6 +260,7 @@ public class CmsPublishProject extends CmsMultiDialog {
      * 
      * @throws CmsException if something goes wrong
      */
+    @Override
     public String buildLockDialog() throws CmsException {
 
         CmsLockFilter nonBlockingFilter = CmsLockFilter.FILTER_ALL;
@@ -273,6 +275,7 @@ public class CmsPublishProject extends CmsMultiDialog {
     /**
      * @see org.opencms.workplace.CmsMultiDialog#buildLockHeaderBox()
      */
+    @Override
     public String buildLockHeaderBox() throws CmsException {
 
         if (isDirectPublish()) {
@@ -399,6 +402,7 @@ public class CmsPublishProject extends CmsMultiDialog {
     /**
      * @see org.opencms.workplace.CmsDialog#getParamFramename()
      */
+    @Override
     public String getParamFramename() {
 
         String fn = super.getParamFramename();
@@ -491,10 +495,10 @@ public class CmsPublishProject extends CmsMultiDialog {
         CmsPublishList publishList = null;
         if (isDirectPublish()) {
             // get the offline resource(s) in direct publish mode
-            List publishResources = new ArrayList(getResourceList().size());
-            Iterator i = getResourceList().iterator();
+            List<CmsResource> publishResources = new ArrayList<CmsResource>(getResourceList().size());
+            Iterator<String> i = getResourceList().iterator();
             while (i.hasNext()) {
-                String resName = (String)i.next();
+                String resName = i.next();
                 try {
                     publishResources.add(getCms().readResource(resName, CmsResourceFilter.ALL));
                 } catch (CmsException e) {
@@ -605,9 +609,9 @@ public class CmsPublishProject extends CmsMultiDialog {
         // flag to indicate that all resources are unlocked
         boolean unlocked = true;
 
-        Iterator i = getResourceList().iterator();
+        Iterator<String> i = getResourceList().iterator();
         while (i.hasNext()) {
-            String resName = (String)i.next();
+            String resName = i.next();
             try {
                 CmsLock lock = getCms().getLock(getCms().readResource(resName, CmsResourceFilter.ALL));
                 if (!lock.isUnlocked()) {
@@ -703,6 +707,7 @@ public class CmsPublishProject extends CmsMultiDialog {
     /**
      * @see org.opencms.workplace.CmsDialog#actionCloseDialog()
      */
+    @Override
     public void actionCloseDialog() throws JspException {
 
         CmsProgressThread thread = CmsProgressWidget.getProgressThread(getParamProgresskey());
@@ -717,6 +722,7 @@ public class CmsPublishProject extends CmsMultiDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods
@@ -842,6 +848,7 @@ public class CmsPublishProject extends CmsMultiDialog {
     /**
      * @see org.opencms.workplace.CmsMultiDialog#performDialogOperation()
      */
+    @Override
     protected boolean performDialogOperation() throws CmsException {
 
         CmsPublishList publishList = getSettings().getPublishList();
@@ -905,7 +912,7 @@ public class CmsPublishProject extends CmsMultiDialog {
 
         String relativeTo;
         if (isDirectPublish()) {
-            relativeTo = CmsResource.getParentFolder((String)getResourceList().get(0));
+            relativeTo = CmsResource.getParentFolder(getResourceList().get(0));
         } else {
             relativeTo = getCms().getRequestContext().getSiteRoot() + "/";
         }

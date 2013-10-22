@@ -112,6 +112,7 @@ public class CmsUserSelectionList extends A_CmsListDialog {
      * Public constructor.<p>
      * 
      * @param jsp an initialized JSP action element
+     * @param lazy signals whether lazy initialization should be used or not
      */
     public CmsUserSelectionList(CmsJspActionElement jsp, boolean lazy) {
 
@@ -143,6 +144,7 @@ public class CmsUserSelectionList extends A_CmsListDialog {
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
+     * @param lazy signals whether lazy initialization should be used or not
      */
     public CmsUserSelectionList(PageContext context, HttpServletRequest req, HttpServletResponse res, boolean lazy) {
 
@@ -152,6 +154,7 @@ public class CmsUserSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.tools.CmsToolDialog#dialogTitle()
      */
+    @Override
     public String dialogTitle() {
 
         // build title
@@ -175,6 +178,7 @@ public class CmsUserSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() throws CmsRuntimeException {
 
         throwListUnsupportedActionException();
@@ -183,6 +187,7 @@ public class CmsUserSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws CmsRuntimeException {
 
         throwListUnsupportedActionException();
@@ -231,6 +236,7 @@ public class CmsUserSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // noop
@@ -240,19 +246,22 @@ public class CmsUserSelectionList extends A_CmsListDialog {
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
     @Override
-    protected List getListItems() throws CmsException {
+    protected List<CmsListItem> getListItems() throws CmsException {
 
         if (!m_lazy) {
 
-            List ret = new ArrayList();
+            List<CmsListItem> ret = new ArrayList<CmsListItem>();
 
             // get content        
-            List users = getUsers();
-            Iterator itUsers = users.iterator();
+            List<CmsPrincipal> users = getUsers();
+            Iterator<CmsPrincipal> itUsers = users.iterator();
             while (itUsers.hasNext()) {
-                CmsUser user = (CmsUser)itUsers.next();
-                CmsListItem item = makeListItem(user);
-                ret.add(item);
+                CmsPrincipal prin = itUsers.next();
+                if (prin instanceof CmsUser) {
+                    CmsUser user = (CmsUser)prin;
+                    CmsListItem item = makeListItem(user);
+                    ret.add(item);
+                }
             }
 
             return ret;
@@ -327,9 +336,9 @@ public class CmsUserSelectionList extends A_CmsListDialog {
      * 
      * @throws CmsException if womething goes wrong
      */
-    protected List getUsers() throws CmsException {
+    protected List<CmsPrincipal> getUsers() throws CmsException {
 
-        List ret = new ArrayList();
+        List<CmsPrincipal> ret = new ArrayList<CmsPrincipal>();
         if (getParamGroup() != null) {
             ret.addAll(getCms().getUsersOfGroup(getParamGroup()));
         } else {
@@ -337,7 +346,7 @@ public class CmsUserSelectionList extends A_CmsListDialog {
         }
         if (getParamFlags() != null) {
             int flags = Integer.parseInt(getParamFlags());
-            return CmsPrincipal.filterFlag(ret, flags);
+            return new ArrayList<CmsPrincipal>(CmsPrincipal.filterFlag(ret, flags));
         }
         return ret;
     }
@@ -390,6 +399,7 @@ public class CmsUserSelectionList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.list.A_CmsListDirectJsAction#jsCode()
              */
+            @Override
             public String jsCode() {
 
                 return "window.opener.setUserFormValue('"

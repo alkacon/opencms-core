@@ -322,6 +322,7 @@ public class CmsDifferenceDialog extends A_CmsDiffViewDialog {
      * 
      * @see org.opencms.workplace.comparison.A_CmsDiffViewDialog#getCopySource()
      */
+    @Override
     protected String getCopySource() {
 
         return m_copySource;
@@ -331,6 +332,7 @@ public class CmsDifferenceDialog extends A_CmsDiffViewDialog {
      * 
      * @see org.opencms.workplace.comparison.A_CmsDiffViewDialog#getLinesBeforeSkip()
      */
+    @Override
     protected int getLinesBeforeSkip() {
 
         return 2;
@@ -340,6 +342,7 @@ public class CmsDifferenceDialog extends A_CmsDiffViewDialog {
      * 
      * @see org.opencms.workplace.comparison.A_CmsDiffViewDialog#getOriginalSource()
      */
+    @Override
     protected String getOriginalSource() {
 
         return m_originalSource;
@@ -349,6 +352,7 @@ public class CmsDifferenceDialog extends A_CmsDiffViewDialog {
      * 
      * @see org.opencms.workplace.comparison.A_CmsDiffViewDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() {
 
         // noop

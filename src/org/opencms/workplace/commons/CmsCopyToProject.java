@@ -120,8 +120,8 @@ public class CmsCopyToProject extends CmsDialog {
 
         try {
             String[] localizedObject = new String[] {getCms().getRequestContext().getCurrentProject().getName()};
-            List resources = getCms().readProjectResources(getCms().getRequestContext().getCurrentProject());
-            Iterator i = resources.iterator();
+            List<String> resources = getCms().readProjectResources(getCms().getRequestContext().getCurrentProject());
+            Iterator<String> i = resources.iterator();
             result.append(dialogBlockStart(key(Messages.GUI_COPYTOPROJECT_RESOURCES_0)));
             if (resources.size() > 0) {
                 // at least one resource in current project
@@ -130,7 +130,7 @@ public class CmsCopyToProject extends CmsDialog {
                 String siteRoot = getCms().getRequestContext().getSiteRoot();
                 while (i.hasNext()) {
                     // create resource list
-                    String resName = (String)i.next();
+                    String resName = i.next();
                     if (resName.startsWith(siteRoot)) {
                         // remove current site root from resource name
                         resName = resName.substring(siteRoot.length());
@@ -175,6 +175,7 @@ public class CmsCopyToProject extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods

@@ -121,6 +121,7 @@ public class CmsUndelete extends CmsMultiDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods
@@ -156,6 +157,7 @@ public class CmsUndelete extends CmsMultiDialog {
      * @return true, if the undelete operation is successful, otherwise false
      * @throws CmsException if undeletion is not successful
      */
+    @Override
     protected boolean performDialogOperation() throws CmsException {
 
         // check if the current resource is a folder for single operation
@@ -166,10 +168,10 @@ public class CmsUndelete extends CmsMultiDialog {
             return false;
         }
 
-        Iterator i = getResourceList().iterator();
+        Iterator<String> i = getResourceList().iterator();
         // iterate the resources to undelete
         while (i.hasNext()) {
-            String resName = (String)i.next();
+            String resName = i.next();
             try {
                 // lock resource if autolock is enabled
                 checkLock(resName);

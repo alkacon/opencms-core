@@ -47,7 +47,7 @@ import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.awt.Color;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -144,12 +144,12 @@ public class CmsCommentImages extends CmsDialog {
     public String buildDialogForm() {
 
         StringBuffer result = new StringBuffer(16384);
-        Iterator i = getImages().iterator();
+        Iterator<CmsResource> i = getImages().iterator();
 
         result.append("<div style=\"height: 450px; padding: 4px; overflow: auto;\">");
 
         while (i.hasNext()) {
-            CmsResource res = (CmsResource)i.next();
+            CmsResource res = i.next();
             String imageName = res.getName();
             String propertySuffix = "" + imageName.hashCode();
             result.append(dialogBlockStart(imageName));
@@ -240,7 +240,7 @@ public class CmsCommentImages extends CmsDialog {
      * 
      * @return the images of the gallery folder which are edited in the dialog form
      */
-    protected List getImages() {
+    protected List<CmsResource> getImages() {
 
         // get all image resources of the folder
         int imageId;
@@ -259,7 +259,7 @@ public class CmsCommentImages extends CmsDialog {
             if (LOG.isErrorEnabled()) {
                 LOG.error(e.getLocalizedMessage(getLocale()));
             }
-            return new ArrayList(0);
+            return Collections.emptyList();
         }
     }
 
@@ -285,6 +285,7 @@ public class CmsCommentImages extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods
@@ -324,10 +325,10 @@ public class CmsCommentImages extends CmsDialog {
         // lock the image gallery folder
         checkLock(getParamResource());
 
-        Iterator i = getImages().iterator();
+        Iterator<CmsResource> i = getImages().iterator();
         // loop over all image resources to change the properties
         while (i.hasNext()) {
-            CmsResource res = (CmsResource)i.next();
+            CmsResource res = i.next();
             String imageName = res.getName();
             String propertySuffix = "" + imageName.hashCode();
 

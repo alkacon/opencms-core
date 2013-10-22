@@ -63,6 +63,7 @@ public class CmsListResourceIconAction extends CmsListDirectAction {
     /**
      * @see org.opencms.workplace.list.CmsListDirectAction#buttonHtml(org.opencms.workplace.CmsWorkplace)
      */
+    @Override
     public String buttonHtml(CmsWorkplace wp) {
 
         if (!isVisible()) {
@@ -94,12 +95,14 @@ public class CmsListResourceIconAction extends CmsListDirectAction {
     /**
      * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
      */
+    @Override
     public String getIconPath() {
 
         try {
             int resourceType = Integer.parseInt(getItem().get(m_resColumnTypeId).toString());
             String typeName = OpenCms.getResourceManager().getResourceType(resourceType).getTypeName();
-            return CmsWorkplace.RES_PATH_FILETYPES + OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName).getIcon();
+            return CmsWorkplace.RES_PATH_FILETYPES
+                + OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName).getIcon();
         } catch (CmsException e) {
             return super.getIconPath();
         }

@@ -102,6 +102,7 @@ public abstract class A_CmsListSearchAction extends CmsListIndependentAction {
     /**
      * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#buttonHtml(CmsWorkplace)
      */
+    @Override
     public String buttonHtml(CmsWorkplace wp) {
 
         if (!isVisible()) {
@@ -138,6 +139,7 @@ public abstract class A_CmsListSearchAction extends CmsListIndependentAction {
     /**
      * @see org.opencms.workplace.list.A_CmsListAction#setListId(java.lang.String)
      */
+    @Override
     public void setListId(String listId) {
 
         super.setListId(listId);
@@ -174,6 +176,7 @@ public abstract class A_CmsListSearchAction extends CmsListIndependentAction {
             /**
              * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#buttonHtml(CmsWorkplace)
              */
+            @Override
             public String buttonHtml(CmsWorkplace wp) {
 
                 if (!isVisible()) {

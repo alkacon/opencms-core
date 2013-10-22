@@ -337,6 +337,8 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
 
         // success ?
         CmsFileUtil.purgeDirectory(new File(index.getPath()));
-        assertTrue(!new File(index.getPath()).exists());
+        assertTrue(
+            "The index folder must be deleted, otherwise some index lock may have prevent a successful purge.",
+            !new File(index.getPath()).exists());
     }
 }

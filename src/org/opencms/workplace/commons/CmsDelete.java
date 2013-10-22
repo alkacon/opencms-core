@@ -136,8 +136,8 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
                 // if no exception is caused and "true" is returned delete operation was successful
                 if (isMultiOperation() || isFolder) {
                     // set request attribute to reload the explorer tree view
-                    List folderList = new ArrayList(1);
-                    folderList.add(CmsResource.getParentFolder((String)getResourceList().get(0)));
+                    List<String> folderList = new ArrayList<String>(1);
+                    folderList.add(CmsResource.getParentFolder(getResourceList().get(0)));
                     getJsp().getRequest().setAttribute(REQUEST_ATTRIBUTE_RELOADTREE, folderList);
                 }
                 actionCloseDialog();
@@ -154,6 +154,7 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
      */
+    @Override
     public void addConfigurationParameter(String paramName, String paramValue) {
 
         // not implemented yet
@@ -256,6 +257,7 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
+    @Override
     public CmsParameterConfiguration getConfiguration() {
 
         return CmsParameterConfiguration.EMPTY_PARAMETERS;
@@ -264,6 +266,7 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
     /**
      * @see org.opencms.workplace.I_CmsDialogHandler#getDialogHandler()
      */
+    @Override
     public String getDialogHandler() {
 
         return CmsDialogSelector.DIALOG_DELETE;
@@ -272,6 +275,7 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
     /**
      * @see org.opencms.workplace.I_CmsDialogHandler#getDialogUri(java.lang.String, CmsJspActionElement)
      */
+    @Override
     public String getDialogUri(String resource, CmsJspActionElement jsp) {
 
         return URI_DELETE_DIALOG;
@@ -290,6 +294,7 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
      */
+    @Override
     public void initConfiguration() {
 
         // not implemented yet
@@ -322,6 +327,7 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods
@@ -360,6 +366,7 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
      * @return true, if the resource(s) was/were deleted, otherwise false
      * @throws CmsException if deletion is not successful
      */
+    @Override
     protected boolean performDialogOperation() throws CmsException {
 
         // check if the current resource is a folder for single operation
@@ -375,10 +382,10 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
         ? CmsResource.DELETE_REMOVE_SIBLINGS
         : CmsResource.DELETE_PRESERVE_SIBLINGS;
 
-        Iterator i = getResourceList().iterator();
+        Iterator<String> i = getResourceList().iterator();
         // iterate the resources to delete
         while (i.hasNext()) {
-            String resName = (String)i.next();
+            String resName = i.next();
             try {
                 performSingleDeleteOperation(resName, deleteOption);
             } catch (CmsException e) {

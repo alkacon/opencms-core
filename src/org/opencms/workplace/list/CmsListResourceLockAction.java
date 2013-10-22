@@ -49,6 +49,7 @@ public class CmsListResourceLockAction extends CmsListExplorerDirectAction {
     /**
      * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getHelpText()
      */
+    @Override
     public CmsMessageContainer getHelpText() {
 
         if (super.getHelpText() == null) {
@@ -60,6 +61,7 @@ public class CmsListResourceLockAction extends CmsListExplorerDirectAction {
     /**
      * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
      */
+    @Override
     public String getIconPath() {
 
         return getResourceUtil().getIconPathLock();
@@ -68,10 +70,11 @@ public class CmsListResourceLockAction extends CmsListExplorerDirectAction {
     /**
      * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getName()
      */
+    @Override
     public CmsMessageContainer getName() {
 
         if (super.getName() == null) {
-            if (! getResourceUtil().getLock().isUnlocked()) {
+            if (!getResourceUtil().getLock().isUnlocked()) {
                 return Messages.get().container(
                     Messages.GUI_EXPLORER_LIST_ACTION_LOCK_NAME_2,
                     getResourceUtil().getLockedByName(),

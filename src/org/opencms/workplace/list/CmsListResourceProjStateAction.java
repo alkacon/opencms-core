@@ -49,6 +49,7 @@ public class CmsListResourceProjStateAction extends CmsListExplorerDirectAction 
     /**
      * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getHelpText()
      */
+    @Override
     public CmsMessageContainer getHelpText() {
 
         if ((super.getHelpText() == null) || super.getHelpText().equals(EMPTY_MESSAGE)) {
@@ -60,6 +61,7 @@ public class CmsListResourceProjStateAction extends CmsListExplorerDirectAction 
     /**
      * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
      */
+    @Override
     public String getIconPath() {
 
         return getResourceUtil().getIconPathProjectState();
@@ -68,6 +70,7 @@ public class CmsListResourceProjStateAction extends CmsListExplorerDirectAction 
     /**
      * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getName()
      */
+    @Override
     public CmsMessageContainer getName() {
 
         if (super.getName() == null) {

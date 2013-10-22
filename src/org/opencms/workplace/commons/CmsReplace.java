@@ -97,10 +97,10 @@ public class CmsReplace extends CmsDialog {
 
         try {
             // get the file item from the multipart request
-            Iterator i = getMultiPartFileItems().iterator();
+            Iterator<FileItem> i = getMultiPartFileItems().iterator();
             FileItem fi = null;
             while (i.hasNext()) {
-                fi = (FileItem)i.next();
+                fi = i.next();
                 if (fi.getName() != null) {
                     // found the file object, leave iteration
                     break;
@@ -150,6 +150,7 @@ public class CmsReplace extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods

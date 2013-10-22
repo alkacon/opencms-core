@@ -57,6 +57,7 @@ public class CmsListExplorerDirectAction extends CmsListDirectAction {
     /**
      * @see org.opencms.workplace.list.CmsListDirectAction#buttonHtml(org.opencms.workplace.CmsWorkplace)
      */
+    @Override
     public String buttonHtml(CmsWorkplace wp) {
 
         if (!isVisible()) {
@@ -77,6 +78,7 @@ public class CmsListExplorerDirectAction extends CmsListDirectAction {
     /**
      * @see org.opencms.workplace.list.I_CmsListDirectAction#setItem(org.opencms.workplace.list.CmsListItem)
      */
+    @Override
     public void setItem(CmsListItem item) {
 
         m_resourceUtil = ((A_CmsListExplorerDialog)getWp()).getResourceUtil(item);
