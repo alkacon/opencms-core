@@ -391,10 +391,6 @@ if (wp.isHelpEnabled()) {
 	}
 }
 
-if (options.showElement("option.sourcecode", displayOptions)) {
-	grp.append(",code");
-}
-
 if(grp.length() > 0){
 	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
 }
