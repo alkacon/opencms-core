@@ -181,6 +181,9 @@ public class CmsSearchField implements Serializable {
     /** Name of the field that contains the user created. */
     public static final String FIELD_USER_CREATED = "userCreated";
 
+    /** Name of the field that contains the filename. */
+    public static final String FIELD_FILENAME = "filename";
+
     /** Name of the field that contains the user last modified. */
     public static final String FIELD_USER_LAST_MODIFIED = "userLastModified";
 
