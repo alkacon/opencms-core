@@ -590,8 +590,10 @@ public class CmsADEManager {
 
         CmsADEConfigData configData = lookupConfiguration(cms, rootPath);
         String basePath = configData.getBasePath();
-        if (basePath == null) {
-            return OpenCms.getSiteManager().getSiteRoot(rootPath);
+        String siteRoot = OpenCms.getSiteManager().getSiteRoot(rootPath);
+        if ((basePath == null) || !basePath.startsWith(siteRoot)) {
+            // the subsite root should always be below the site root
+            return siteRoot;
         } else {
             return basePath;
         }
