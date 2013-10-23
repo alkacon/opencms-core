@@ -80,6 +80,8 @@ import org.opencms.xml.CmsXmlGenericWrapper;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.containerpage.CmsFormatterBean;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
+import org.opencms.xml.containerpage.CmsSchemaFormatterBeanWrapper;
+import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.CmsXmlVarLinkValue;
 import org.opencms.xml.types.CmsXmlVfsFileValue;
@@ -105,6 +107,8 @@ import org.apache.commons.logging.Log;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+
+import com.google.common.collect.Lists;
 
 /**
  * Default implementation for the XML content handler, will be used by all XML contents that do not
@@ -676,10 +680,12 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      */
     public CmsFormatterConfiguration getFormatterConfiguration(CmsObject cms, CmsResource resource) {
 
-        if (m_formatterConfiguration == null) {
-            m_formatterConfiguration = CmsFormatterConfiguration.create(cms, m_formatters);
+        List<I_CmsFormatterBean> wrappers = Lists.newArrayList();
+        for (CmsFormatterBean formatter : m_formatters) {
+            CmsSchemaFormatterBeanWrapper wrapper = new CmsSchemaFormatterBeanWrapper(cms, formatter, this, resource);
+            wrappers.add(wrapper);
         }
-        return m_formatterConfiguration;
+        return CmsFormatterConfiguration.create(cms, wrappers);
     }
 
     /**

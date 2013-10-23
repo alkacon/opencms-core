@@ -50,8 +50,8 @@ import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
 import org.opencms.xml.containerpage.CmsDynamicFunctionBean;
 import org.opencms.xml.containerpage.CmsDynamicFunctionParser;
-import org.opencms.xml.containerpage.CmsFormatterBean;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
+import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContent;
 
 import java.util.List;
@@ -509,7 +509,7 @@ public final class CmsJspStandardContextBean {
                     if (formatterConfig == null) {
                         return "";
                     }
-                    CmsFormatterBean previewFormatter = formatterConfig.getPreviewFormatter();
+                    I_CmsFormatterBean previewFormatter = formatterConfig.getPreviewFormatter();
                     if (previewFormatter == null) {
                         return "";
                     }

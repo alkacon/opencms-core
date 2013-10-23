@@ -41,8 +41,8 @@ import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.xml.containerpage.CmsFormatterBean;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
+import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.ArrayList;
@@ -1078,10 +1078,10 @@ public class TestConfig extends OpenCmsTestCase {
         CmsTestConfigData config1 = new CmsTestConfigData("/", NO_TYPES, NO_PROPERTIES, NO_DETAILPAGES, NO_MODEL_PAGES);
         config1.initialize(rootCms());
         CmsFormatterConfiguration formatterConfig = config1.getFormatters("article1");
-        List<CmsFormatterBean> formatters = formatterConfig.getAllFormatters();
+        List<I_CmsFormatterBean> formatters = formatterConfig.getAllFormatters();
         assertEquals(2, formatters.size());
-        CmsFormatterBean formatter1 = formatters.get(0);
-        CmsFormatterBean formatter2 = formatters.get(1);
+        I_CmsFormatterBean formatter1 = formatters.get(0);
+        I_CmsFormatterBean formatter2 = formatters.get(1);
         assertEquals(1, formatter1.getMinWidth());
         assertEquals(2, formatter1.getMaxWidth());
         assertEquals(3, formatter2.getMinWidth());

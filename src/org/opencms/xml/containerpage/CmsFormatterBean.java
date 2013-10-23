@@ -44,7 +44,7 @@ import java.util.Set;
  * 
  * @since 8.0.0
  */
-public class CmsFormatterBean {
+public class CmsFormatterBean implements I_CmsFormatterBean {
 
     /** Default rank for formatters from formatter configuration files. */
     public static final int DEFAULT_CONFIGURATION_RANK = 1000;
@@ -351,162 +351,135 @@ public class CmsFormatterBean {
     }
 
     /**
-     * Returns the formatter container type.<p>
-     * 
-     * If this is "*", then the formatter is a width based formatter.<p>
-     * 
-     * @return the formatter container type 
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getContainerTypes()
      */
+    @Override
     public Set<String> getContainerTypes() {
 
         return m_containerTypes;
     }
 
     /**
-     * Gets the CSS head includes.<p>
-     * 
-     * @return the CSS head includes 
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getCssHeadIncludes()
      */
+    @Override
     public Set<String> getCssHeadIncludes() {
 
         return Collections.unmodifiableSet(m_cssHeadIncludes);
     }
 
     /**
-     * Returns the id of this formatter.<p>
-     * 
-     * This method may return null because the id is not always defined for formatters, e.g. for those formatters declared in a schema.<p> 
-     * 
-     * @return the formatter id 
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getId()
      */
+    @Override
     public String getId() {
 
         return m_id;
     }
 
     /**
-     * Gets the inline CSS snippets.<p>
-     * 
-     * @return the inline CSS snippets 
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getInlineCss()
      */
+    @Override
     public String getInlineCss() {
 
         return m_inlineCss;
     }
 
     /**
-     * Gets the inline JS snippets.<p>
-     * 
-     * @return the inline JS snippets 
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getInlineJavascript()
      */
+    @Override
     public String getInlineJavascript() {
 
         return m_inlineJavascript;
     }
 
     /**
-     * Gets the Javascript head includes.<p>
-     * 
-     * @return the head includes 
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getJavascriptHeadIncludes()
      */
+    @Override
     public List<String> getJavascriptHeadIncludes() {
 
         return Collections.unmodifiableList(m_javascriptHeadIncludes);
     }
 
     /**
-     * Returns the root path of the formatter JSP in the OpenCms VFS.<p>
-     * 
-     * @return the root path of the formatter JSP in the OpenCms VFS.<p>
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getJspRootPath()
      */
+    @Override
     public String getJspRootPath() {
 
         return m_jspRootPath;
     }
 
     /**
-     * Returns the structure id of the JSP resource for this formatter.<p>
-     * 
-     * @return the structure id of the JSP resource for this formatter
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getJspStructureId()
      */
+    @Override
     public CmsUUID getJspStructureId() {
 
         return m_jspStructureId;
     }
 
     /**
-     * Returns the location this formatter was defined in.<p>
-     * 
-     * This will be an OpenCms VFS root path, either to the XML schema XSD, or the
-     * configuration file this formatter was defined in, or to the JSP that 
-     * makes up this formatter.<p>
-     * 
-     * @return the location this formatter was defined in
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getLocation()
      */
+    @Override
     public String getLocation() {
 
         return m_location;
     }
 
     /**
-     * Returns the maximum formatter width.<p>
-     * 
-     * If this is not set, then {@link Integer#MAX_VALUE} is returned.<p>
-     *  
-     * @return the maximum formatter width 
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getMaxWidth()
      */
+    @Override
     public int getMaxWidth() {
 
         return m_maxWidth;
     }
 
     /**
-     * Returns the minimum formatter width.<p>
-     * 
-     * If this is not set, then <code>-1</code> is returned.<p>
-     * 
-     * @return the minimum formatter width
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getMinWidth()
      */
+    @Override
     public int getMinWidth() {
 
         return m_minWidth;
     }
 
     /**
-     * Gets the nice name for this formatter.<p>
-     * 
-     * @return the nice name for this formatter 
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getNiceName()
      */
+    @Override
     public String getNiceName() {
 
         return m_niceName;
     }
 
     /**
-     * Gets the rank.<p>
-     * 
-     * @return the rank 
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getRank()
      */
+    @Override
     public int getRank() {
 
         return m_rank;
     }
 
     /**
-     * Gets the resource type name.<p>
-     * 
-     * @return the resource type name 
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getResourceTypeName()
      */
+    @Override
     public String getResourceTypeName() {
 
         return m_resourceTypeName;
     }
 
     /**
-     * Gets the defined settings.<p>
-     * 
-     * @return the defined settings 
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getSettings()
      */
+    @Override
     public Map<String, CmsXmlContentProperty> getSettings() {
 
         return Collections.unmodifiableMap(m_settings);
@@ -521,63 +494,55 @@ public class CmsFormatterBean {
         return m_containerTypes.hashCode() ^ ((m_minWidth * 33) ^ m_maxWidth);
     }
 
-    /** 
-     * Returns true if the formatter is automatically enabled.<p>
-     * 
-     * @return true if the formatter is automatically enabled 
+    /**
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#isAutoEnabled()
      */
+    @Override
     public boolean isAutoEnabled() {
 
         return m_isAutoEnabled;
     }
 
     /**
-     * Returns true if the formatter is from a formatter configuration file.<p>
-     * 
-     * @return formatter f 
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#isFromFormatterConfigFile()
      */
+    @Override
     public boolean isFromFormatterConfigFile() {
 
         return m_isFromFormatterConfigFile;
     }
 
-    /** 
-     * Returns true if this formatter should match all type/width combinations.<p>
-     * 
-     * @return true if this formatter should match all type/width combinations 
+    /**
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#isMatchAll()
      */
+    @Override
     public boolean isMatchAll() {
 
         return m_matchAll;
     }
 
     /**
-     * Indicates if this formatter is to be used as preview in the ADE gallery GUI.
-     * 
-     * @return <code>true</code> if this formatter is to be used as preview in the ADE gallery GUI
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#isPreviewFormatter()
      */
+    @Override
     public boolean isPreviewFormatter() {
 
         return m_isPreviewFormatter;
     }
 
     /**
-     * Returns <code>true</code> in case an XML content formatted with this formatter should be included in the 
-     * online full text search.<p>
-     * 
-     * @return <code>true</code> in case an XML content formatted with this formatter should be included in the 
-     * online full text search
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#isSearchContent()
      */
+    @Override
     public boolean isSearchContent() {
 
         return m_search;
     }
 
     /**
-     * Returns <code>true</code> in case this formatter is based on type information.<p>
-     * 
-     * @return <code>true</code> in case this formatter is based on type information
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#isTypeFormatter()
      */
+    @Override
     public boolean isTypeFormatter() {
 
         return !m_containerTypes.isEmpty();
@@ -590,7 +555,7 @@ public class CmsFormatterBean {
      * 
      * @param jspStructureId the structure id of the JSP for this formatter
      */
-    void setJspStructureId(CmsUUID jspStructureId) {
+    public void setJspStructureId(CmsUUID jspStructureId) {
 
         // package visibility is wanted
         m_jspStructureId = jspStructureId;

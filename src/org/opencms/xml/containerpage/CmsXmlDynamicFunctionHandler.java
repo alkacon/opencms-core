@@ -33,7 +33,9 @@ import org.opencms.main.CmsException;
 import org.opencms.xml.content.CmsDefaultXmlContentHandler;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -70,7 +72,12 @@ public class CmsXmlDynamicFunctionHandler extends CmsDefaultXmlContentHandler {
         try {
             CmsDynamicFunctionParser parser = new CmsDynamicFunctionParser();
             CmsDynamicFunctionBean functionBean = parser.parseFunctionBean(cms, resource);
-            return functionBean.getFormatterConfiguration(cms);
+            List<CmsFormatterBean> formatters = functionBean.getFormatters();
+            List<I_CmsFormatterBean> wrappers = new ArrayList<I_CmsFormatterBean>();
+            for (CmsFormatterBean formatter : formatters) {
+                wrappers.add(new CmsSchemaFormatterBeanWrapper(cms, formatter, this, resource));
+            }
+            return CmsFormatterConfiguration.create(cms, wrappers);
         } catch (CmsException e) {
             return CmsFormatterConfiguration.EMPTY_CONFIGURATION;
         }

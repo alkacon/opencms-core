@@ -99,6 +99,7 @@ import org.opencms.xml.containerpage.CmsXmlContainerPage;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.containerpage.CmsXmlGroupContainer;
 import org.opencms.xml.containerpage.CmsXmlGroupContainerFactory;
+import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
@@ -1080,7 +1081,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             containerType = container.getType();
         }
 
-        CmsFormatterBean formatter = formatters.getDefaultFormatter(containerType, containerWidth);
+        I_CmsFormatterBean formatter = formatters.getDefaultFormatter(containerType, containerWidth);
         CmsContainerElementBean newElementBean = null;
         if (formatter != null) {
             newElementBean = new CmsContainerElementBean(

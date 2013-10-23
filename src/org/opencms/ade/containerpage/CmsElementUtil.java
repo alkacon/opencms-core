@@ -68,13 +68,13 @@ import org.opencms.xml.containerpage.CmsADESessionCache;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
-import org.opencms.xml.containerpage.CmsFormatterBean;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.containerpage.CmsGroupContainerBean;
 import org.opencms.xml.containerpage.CmsXmlContainerPage;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.containerpage.CmsXmlGroupContainer;
 import org.opencms.xml.containerpage.CmsXmlGroupContainerFactory;
+import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 
@@ -479,7 +479,7 @@ public class CmsElementUtil {
         CmsFormatterConfiguration configs) {
 
         String content = null;
-        CmsFormatterBean formatter = configs.getDefaultFormatter(container.getType(), container.getWidth());
+        I_CmsFormatterBean formatter = configs.getDefaultFormatter(container.getType(), container.getWidth());
         if (formatter != null) {
             try {
                 content = getElementContent(element, m_cms.readResource(formatter.getJspStructureId()), container);

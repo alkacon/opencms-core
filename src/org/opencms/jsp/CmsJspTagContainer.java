@@ -54,7 +54,6 @@ import org.opencms.xml.containerpage.CmsADESessionCache;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
-import org.opencms.xml.containerpage.CmsFormatterBean;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.containerpage.CmsGroupContainerBean;
 import org.opencms.xml.containerpage.CmsXmlContainerPage;
@@ -62,6 +61,7 @@ import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.containerpage.CmsXmlGroupContainer;
 import org.opencms.xml.containerpage.CmsXmlGroupContainerFactory;
 import org.opencms.xml.containerpage.CmsXmlInheritGroupContainerHandler;
+import org.opencms.xml.containerpage.I_CmsFormatterBean;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -669,7 +669,7 @@ public class CmsJspTagContainer extends TagSupport {
                 cms,
                 cms.getRequestContext().getRootUri());
             CmsFormatterConfiguration formatters = config.getFormatters(cms, detailContent);
-            CmsFormatterBean formatter = formatters.getDefaultFormatter(getType(), getContainerWidth());
+            I_CmsFormatterBean formatter = formatters.getDefaultFormatter(getType(), getContainerWidth());
             if (formatter != null) {
                 // create element bean
                 element = new CmsContainerElementBean(
@@ -935,7 +935,7 @@ public class CmsJspTagContainer extends TagSupport {
                     CmsFormatterConfiguration subelementFormatters = adeConfig.getFormatters(
                         cms,
                         subelement.getResource());
-                    CmsFormatterBean subelementFormatter = subelementFormatters.getDefaultFormatter(
+                    I_CmsFormatterBean subelementFormatter = subelementFormatters.getDefaultFormatter(
                         containerType,
                         containerWidth);
 
@@ -1010,7 +1010,7 @@ public class CmsJspTagContainer extends TagSupport {
                 } catch (CmsException e) {
                     // the formatter resource can not be found, try reading it form the configuration
                     CmsFormatterConfiguration elementFormatters = adeConfig.getFormatters(cms, element.getResource());
-                    CmsFormatterBean elementFormatterBean = elementFormatters.getDefaultFormatter(
+                    I_CmsFormatterBean elementFormatterBean = elementFormatters.getDefaultFormatter(
                         containerType,
                         containerWidth);
                     if (elementFormatterBean == null) {

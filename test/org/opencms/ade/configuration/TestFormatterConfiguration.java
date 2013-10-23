@@ -34,7 +34,7 @@ import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlEntityResolver;
-import org.opencms.xml.containerpage.CmsFormatterBean;
+import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
@@ -139,7 +139,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(getCmsObject());
         CmsXmlContent content = CmsXmlContentFactory.unmarshal(getCmsObject(), configData, "UTF-8", resolver);
         String dummyId = "dummyId";
-        CmsFormatterBean formatterBean = parser.parse(content, "dummy location", dummyId);
+        I_CmsFormatterBean formatterBean = parser.parse(content, "dummy location", dummyId);
 
         Set<String> expectedContainerTypes = new HashSet<String>(CmsStringUtil.splitAsList("foo,bar,baz", ","));
         assertEquals(expectedContainerTypes, formatterBean.getContainerTypes());
