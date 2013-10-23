@@ -53,6 +53,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -450,12 +451,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
         if (!(handler.getDraggable() instanceof CmsContainerPageElementPanel)) {
             // inserting element from menu
-            if ((elementData.getCssResources() != null) && !elementData.getCssResources().isEmpty()) {
-                // the element requires certain CSS resources, check if present and include if necessary
-                for (String cssResourceLink : elementData.getCssResources()) {
-                    CmsDomUtil.ensureStyleSheetIncluded(cssResourceLink);
-                }
-            }
+
         }
 
         if (m_controller.isGroupcontainerEditing()) {
@@ -465,6 +461,13 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 && elementData.getContents().containsKey(groupContainer.getContainerId())) {
                 Element helper = null;
                 Element placeholder = null;
+                Set<String> cssResources = elementData.getCssResources(groupContainer.getContainerId());
+                if ((cssResources != null) && !cssResources.isEmpty()) {
+                    // the element requires certain CSS resources, check if present and include if necessary
+                    for (String cssResourceLink : cssResources) {
+                        CmsDomUtil.ensureStyleSheetIncluded(cssResourceLink);
+                    }
+                }
                 try {
                     String htmlContent = elementData.getContents().get(groupContainer.getContainerId());
                     helper = CmsDomUtil.createElement(htmlContent);
@@ -510,6 +513,13 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                         }
                         placeholder = CmsDomUtil.clone(helper);
                     } else {
+                        Set<String> cssResources = elementData.getCssResources(container.getContainerId());
+                        if ((cssResources != null) && !cssResources.isEmpty()) {
+                            // the element requires certain CSS resources, check if present and include if necessary
+                            for (String cssResourceLink : cssResources) {
+                                CmsDomUtil.ensureStyleSheetIncluded(cssResourceLink);
+                            }
+                        }
                         try {
                             String htmlContent = elementData.getContents().get(container.getContainerId());
                             helper = CmsDomUtil.createElement(htmlContent);

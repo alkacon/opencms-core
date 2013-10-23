@@ -717,9 +717,6 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
             String propValue = entry.getValue();
             String type = "string";
             CmsXmlContentProperty configEntry = getPropertyConfig(propConfig, propName);
-            if ((configEntry == null) && !CmsTemplateContextInfo.SETTING.equals(propName)) {
-                continue; // ignore properties which are not configured anymore 
-            }
             if (configEntry != null) {
                 type = configEntry.getType();
             }

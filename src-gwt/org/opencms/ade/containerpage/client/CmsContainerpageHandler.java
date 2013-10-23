@@ -29,9 +29,9 @@ package org.opencms.ade.containerpage.client;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageController.ElementRemoveMode;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
+import org.opencms.ade.containerpage.client.ui.CmsElementSettingsDialog;
 import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElementPanel;
 import org.opencms.ade.containerpage.client.ui.CmsSmallElementsHandler;
-import org.opencms.ade.containerpage.client.ui.groupeditor.CmsInheritanceContainerEditor;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.publish.client.CmsPublishDialog;
@@ -43,7 +43,6 @@ import org.opencms.gwt.client.ui.A_CmsToolbarMenu;
 import org.opencms.gwt.client.ui.CmsAcceptDeclineCancelDialog;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
-import org.opencms.gwt.client.ui.CmsFieldSet;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsLockReportDialog;
 import org.opencms.gwt.client.ui.CmsModelSelectDialog;
@@ -60,17 +59,6 @@ import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler;
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.gwt.client.ui.input.CmsCheckBox;
-import org.opencms.gwt.client.ui.input.CmsMultiCheckBox;
-import org.opencms.gwt.client.ui.input.I_CmsFormField;
-import org.opencms.gwt.client.ui.input.form.A_CmsFormFieldPanel;
-import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
-import org.opencms.gwt.client.ui.input.form.CmsDialogFormHandler;
-import org.opencms.gwt.client.ui.input.form.CmsFieldsetFormFieldPanel;
-import org.opencms.gwt.client.ui.input.form.CmsForm;
-import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
-import org.opencms.gwt.client.ui.input.form.CmsInfoBoxFormFieldPanel;
-import org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler;
 import org.opencms.gwt.client.ui.resourceinfo.CmsResourceInfoDialog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Method;
@@ -81,13 +69,11 @@ import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsGwtConstants;
-import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsLockInfo;
 import org.opencms.gwt.shared.CmsModelResourceInfo;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -95,7 +81,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Maps;
@@ -105,8 +90,6 @@ import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Timer;
@@ -352,148 +335,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
             public void execute(final CmsContainerElementData elementBean) {
 
-                Map<String, String> settings = elementBean.getSettings();
-                Map<String, CmsXmlContentProperty> propertyConfig = elementBean.getSettingConfig();
-                final CmsTemplateContextInfo contextInfo = CmsContainerpageController.get().getData().getTemplateContextInfo();
-                final boolean useTemplateContext = contextInfo.shouldShowElementTemplateContextSelection();
-                if ((propertyConfig.size() == 0) && !useTemplateContext) {
-                    String message = Messages.get().key(Messages.GUI_NO_SETTINGS_0);
-                    String title = Messages.get().key(Messages.GUI_NO_SETTINGS_TITLE_0);
-                    (new CmsAlertDialog(title, message)).center();
-                    return;
-                }
-                if (useTemplateContext) {
-                    String templateContexts = settings.get(CmsTemplateContextInfo.SETTING);
-                    if (templateContexts == null) {
-                        templateContexts = CmsStringUtil.listAsString(
-                            new ArrayList<String>(
-                                CmsContainerpageController.get().getData().getTemplateContextInfo().getContextLabels().keySet()),
-                            "|");
-                    } else if (templateContexts.equals(CmsTemplateContextInfo.EMPTY_VALUE)) {
-                        // translate "none" to an empty selection
-                        templateContexts = "";
-                    }
-                    settings.put(CmsTemplateContextInfo.SETTING, templateContexts);
-                }
-
-                final CmsForm form = new CmsForm(false);
-                CmsListInfoBean infoBean = new CmsListInfoBean();
-                infoBean.setTitle(elementBean.getTitle());
-                infoBean.setSubTitle(elementBean.getSitePath());
-                infoBean.setResourceType(elementBean.getResourceType());
-                A_CmsFormFieldPanel formFieldPanel = null;
-                final boolean[] changedContext = new boolean[] {false};
-                CmsMultiCheckBox contextsWidget = null;
-                final CmsMultiCheckBox[] contextsWidgets = new CmsMultiCheckBox[] {null};
-                if (useTemplateContext) {
-                    String settingsLegend = org.opencms.ade.containerpage.client.Messages.get().key(
-                        org.opencms.ade.containerpage.client.Messages.GUI_SETTINGS_LEGEND_0);
-                    CmsFieldsetFormFieldPanel fieldSetPanel = new CmsFieldsetFormFieldPanel(infoBean, settingsLegend);
-                    formFieldPanel = fieldSetPanel;
-                    CmsFieldSet contextsFieldset = new CmsFieldSet();
-                    contextsFieldset.setLegend(contextInfo.getSettingDefinition().getNiceName());
-                    contextsFieldset.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
-                    contextsWidget = new CmsMultiCheckBox(CmsStringUtil.splitAsMap(
-                        contextInfo.getSettingDefinition().getWidgetConfiguration(),
-                        "|",
-                        ":"));
-                    for (CmsCheckBox checkbox : contextsWidget.getCheckboxes()) {
-                        Style checkboxStyle = checkbox.getElement().getStyle();
-                        checkbox.getButton().getElement().getStyle().setFontWeight(Style.FontWeight.NORMAL);
-                        checkboxStyle.setMarginTop(7, Style.Unit.PX);
-                    }
-                    contextsWidget.setFormValueAsString(settings.get(CmsTemplateContextInfo.SETTING));
-                    contextsWidgets[0] = contextsWidget;
-                    contextsWidget.addValueChangeHandler(new ValueChangeHandler<String>() {
-
-                        public void onValueChange(ValueChangeEvent<String> event) {
-
-                            changedContext[0] = true;
-                        }
-                    });
-
-                    contextsFieldset.add(contextsWidget);
-                    fieldSetPanel.getMainPanel().add(contextsFieldset);
-                } else {
-                    formFieldPanel = new CmsInfoBoxFormFieldPanel(infoBean);
-                }
-                form.setWidget(formFieldPanel);
-
-                I_CmsFormSubmitHandler submitHandler = new I_CmsFormSubmitHandler() {
-
-                    /**
-                     * @see org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler#onSubmitForm(org.opencms.gwt.client.ui.input.form.CmsForm, java.util.Map, java.util.Set)
-                     */
-                    public void onSubmitForm(
-                        CmsForm formParam,
-                        final Map<String, String> fieldValues,
-                        Set<String> editedFields) {
-
-                        if (CmsInheritanceContainerEditor.getInstance() != null) {
-                            CmsInheritanceContainerEditor.getInstance().onSettingsEdited();
-                        }
-                        if (useTemplateContext) {
-                            String newTemplateContexts = contextsWidgets[0].getFormValueAsString();
-                            if ((newTemplateContexts == null) || "".equals(newTemplateContexts)) {
-                                newTemplateContexts = CmsTemplateContextInfo.EMPTY_VALUE;
-                                // translate an empty selection to "none" 
-                            }
-                            fieldValues.put(CmsTemplateContextInfo.SETTING, newTemplateContexts);
-                        }
-                        final Map<String, String> filteredFieldValues = new HashMap<String, String>();
-                        for (Map.Entry<String, String> entry : fieldValues.entrySet()) {
-                            String key = entry.getKey();
-                            String value = entry.getValue();
-                            if ((value != null) && (value.length() > 0)) {
-                                filteredFieldValues.put(key, value);
-                            }
-                        }
-                        m_controller.reloadElementWithSettings(
-                            elementWidget,
-                            elementBean.getClientId(),
-                            filteredFieldValues,
-                            new AsyncCallback<CmsContainerPageElementPanel>() {
-
-                                public void onFailure(Throwable caught) {
-
-                                    // will not be executed
-                                }
-
-                                public void onSuccess(CmsContainerPageElementPanel result) {
-
-                                    if (changedContext[0]) {
-                                        // if the context multiselect box isn't displayed, of course it can't change values,
-                                        // and this code won't be executed.
-                                        CmsContainerpageController.get().handleChangeTemplateContext(
-                                            result,
-                                            filteredFieldValues.get(CmsTemplateContextInfo.SETTING));
-                                    }
-                                }
-
-                            });
-                    }
-
-                };
-                CmsDialogFormHandler formHandler = new CmsDialogFormHandler();
-                formHandler.setSubmitHandler(submitHandler);
-                form.setFormHandler(formHandler);
-                String title = Messages.get().key(Messages.GUI_PROPERTY_DIALOG_TITLE_0);
-                CmsFormDialog dialog = new CmsFormDialog(title, form);
-                formHandler.setDialog(dialog);
-                Map<String, I_CmsFormField> formFields = CmsBasicFormField.createFields(propertyConfig.values());
-                for (I_CmsFormField field : formFields.values()) {
-                    String fieldId = field.getId();
-                    String initialValue = settings.get(fieldId);
-                    if (initialValue == null) {
-                        CmsXmlContentProperty propDef = propertyConfig.get(fieldId);
-                        initialValue = propDef.getDefault();
-                    }
-                    form.addField(field, initialValue);
-                }
-                form.render();
-                if (dialog.getWidth() > 0) {
-                    form.getWidget().truncate("settings_truncation", dialog.getWidth() - 12);
-                }
+                CmsElementSettingsDialog dialog = new CmsElementSettingsDialog(m_controller, elementWidget, elementBean);
                 dialog.center();
             }
         });

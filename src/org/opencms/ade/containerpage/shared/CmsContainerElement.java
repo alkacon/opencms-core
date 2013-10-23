@@ -66,9 +66,7 @@ public class CmsContainerElement implements IsSerializable {
     /** Flag indicating a new element. */
     private boolean m_new;
 
-    /**
-     * Flag which controls whether the new editor is disabled for this element.<p>
-     */
+    /** Flag which controls whether the new editor is disabled for this element. */
     private boolean m_newEditorDisabled;
 
     /** The no edit reason. If empty editing is allowed. */

@@ -36,6 +36,7 @@ import org.opencms.ade.containerpage.inherited.CmsInheritedContainerState;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
+import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.ade.containerpage.shared.CmsInheritanceInfo;
 import org.opencms.ade.detailpage.CmsDetailPageResourceHandler;
 import org.opencms.file.CmsFile;
@@ -43,7 +44,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
-import org.opencms.jsp.CmsJspTagHeadIncludes;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.jsp.util.CmsJspStandardContextBean.TemplateBean;
 import org.opencms.loader.CmsTemplateContextManager;
@@ -108,6 +108,9 @@ public class CmsElementUtil {
 
     /** Static reference to the log. */
     private static final Log LOG = CmsLog.getLog(org.opencms.ade.containerpage.CmsElementUtil.class);
+
+    /** The ADE configuration data for the current page URI. */
+    private CmsADEConfigData m_adeConfig;
 
     /** The cms context. */
     private CmsObject m_cms;
@@ -216,10 +219,7 @@ public class CmsElementUtil {
         CmsContainerElementBean element = CmsADESessionCache.getCache(m_req, m_cms).getCacheContainerElement(elementId);
         element = element.clone();
         element.setTemporaryFile(elementFile);
-        CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(
-            m_cms,
-            m_cms.addSiteRoot(m_currentPageUri));
-        CmsFormatterConfiguration configs = adeConfig.getFormatters(m_cms, element.getResource());
+        CmsFormatterConfiguration configs = getFormatterConfiguration(element.getResource());
         return getContentByContainer(element, container, configs);
     }
 
@@ -235,10 +235,7 @@ public class CmsElementUtil {
         CmsContainerElementBean element,
         Collection<CmsContainer> containers) {
 
-        CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(
-            m_cms,
-            m_cms.addSiteRoot(m_currentPageUri));
-        CmsFormatterConfiguration configs = adeConfig.getFormatters(m_cms, element.getResource());
+        CmsFormatterConfiguration configs = getFormatterConfiguration(element.getResource());
         Map<String, String> result = new HashMap<String, String>();
         for (CmsContainer container : containers) {
             String content = getContentByContainer(element, container, configs);
@@ -281,11 +278,7 @@ public class CmsElementUtil {
             title = searchResult.getTitle();
         }
         elementData.setTitle(title);
-        Set<String> cssResources = new LinkedHashSet<String>();
-        for (String cssSitePath : CmsJspTagHeadIncludes.getCSSHeadIncludes(m_cms, element.getResource())) {
-            cssResources.add(OpenCms.getLinkManager().getOnlineLink(m_cms, cssSitePath));
-        }
-        elementData.setCssResources(cssResources);
+
         Map<String, CmsXmlContentProperty> settingConfig = CmsXmlContentPropertyHelper.getPropertyInfo(
             m_cms,
             element.getResource());
@@ -293,7 +286,10 @@ public class CmsElementUtil {
             m_cms,
             element.getIndividualSettings(),
             settingConfig));
-        elementData.setSettingConfig(new LinkedHashMap<String, CmsXmlContentProperty>(settingConfig));
+        CmsFormatterConfiguration formatterConfiguraton = getFormatterConfiguration(element.getResource());
+        Map<String, Map<String, CmsFormatterConfig>> formatters = new HashMap<String, Map<String, CmsFormatterConfig>>();
+
+        //   elementData.setSettingConfig(new LinkedHashMap<String, CmsXmlContentProperty>(settingConfig));
         Map<String, String> contents = new HashMap<String, String>();
         if (element.isGroupContainer(m_cms)) {
             Set<String> types = new HashSet<String>();
@@ -322,8 +318,10 @@ public class CmsElementUtil {
                     return null;
                 }
             } else {
+
                 // add formatter and content entries for the supported types
                 for (CmsContainer cnt : containersByName.values()) {
+
                     String type = cnt.getType();
                     if (groupContainer.getTypes().contains(type)) {
                         contents.put(cnt.getName(), "<div>should not be used</div>");
@@ -371,11 +369,40 @@ public class CmsElementUtil {
             elementData.setInheritanceInfos(inheritanceInfos);
             elementData.setInheritanceName(name);
         } else {
+            for (CmsContainer cnt : containers) {
+                Map<String, CmsFormatterConfig> containerFormatters = new LinkedHashMap<String, CmsFormatterConfig>();
+                for (CmsFormatterBean formatter : formatterConfiguraton.getAllMatchingFormatters(
+                    cnt.getType(),
+                    cnt.getWidth())) {
+                    String id = formatter.getId();
+                    if (id == null) {
+                        id = CmsFormatterConfig.SCHEMA_FORMATTER_ID;
+                    }
+                    String label = formatter.getNiceName();
+                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(label)) {
+                        label = id;
+                    }
+                    CmsFormatterConfig config = new CmsFormatterConfig(id);
+                    Set<String> cssResources = new LinkedHashSet<String>();
+                    for (String cssSitePath : formatter.getCssHeadIncludes()) {
+                        cssResources.add(OpenCms.getLinkManager().getOnlineLink(m_cms, cssSitePath));
+                    }
+                    config.setCssResources(cssResources);
+                    config.setLabel(label);
+                    config.setSettingConfig(new LinkedHashMap<String, CmsXmlContentProperty>(formatter.getSettings()));
+                    config.setJspRootPath(formatter.getJspRootPath());
+                    containerFormatters.put(id, config);
+                }
+
+                containerFormatters.put("generic_" + cnt.getName(), generateDummyFormatter("generic_" + cnt.getName()));
+                formatters.put(cnt.getName(), containerFormatters);
+            }
             // get the formatter configuration
             Map<String, String> contentsByName = getContentsByContainerName(element, containers);
             contents = contentsByName;
         }
         elementData.setContents(contents);
+        elementData.setFormatters(formatters);
         m_cms.getRequestContext().setLocale(requestLocale);
         return elementData;
     }
@@ -465,6 +492,23 @@ public class CmsElementUtil {
     }
 
     /**
+     * For testing only!!<p>
+     * @param id the id
+     * @return the config
+     */
+    private CmsFormatterConfig generateDummyFormatter(String id) {
+
+        CmsFormatterConfig result = new CmsFormatterConfig(id);
+        Set<String> css = new HashSet<String>();
+        css.add("CSS_FOR_" + id);
+        result.setCssResources(css);
+        result.setLabel(id);
+        Map<String, CmsXmlContentProperty> settings = new HashMap<String, CmsXmlContentProperty>();
+        result.setSettingConfig(settings);
+        return result;
+    }
+
+    /**
      * Returns the HTML content of the given element and container.<p>
      *  
      * @param element the element
@@ -548,6 +592,21 @@ public class CmsElementUtil {
         } finally {
             m_cms.getRequestContext().setUri(oldUri);
         }
+    }
+
+    /**
+     * Returns the formatter configuration for the given element resource.<p>
+     *  
+     * @param resource the element resource
+     * 
+     * @return the formatter configuration
+     */
+    private CmsFormatterConfiguration getFormatterConfiguration(CmsResource resource) {
+
+        if (m_adeConfig == null) {
+            m_adeConfig = OpenCms.getADEManager().lookupConfiguration(m_cms, m_cms.addSiteRoot(m_currentPageUri));
+        }
+        return m_adeConfig.getFormatters(m_cms, resource);
     }
 
     /**

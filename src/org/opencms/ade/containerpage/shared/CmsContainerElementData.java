@@ -32,6 +32,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -46,9 +47,6 @@ public class CmsContainerElementData extends CmsContainerElement {
 
     /** The contents by container type. */
     private Map<String, String> m_contents;
-
-    /** The required css resources. */
-    private Set<String> m_cssResources;
 
     /** The group-container description. */
     private String m_description;
@@ -68,9 +66,6 @@ public class CmsContainerElementData extends CmsContainerElement {
     /** The element navText property. */
     private String m_navText;
 
-    /** The setting for this container element. */
-    private Map<String, CmsXmlContentProperty> m_settingConfig;
-
     /** The settings for this container entry. */
     private Map<String, String> m_settings;
 
@@ -82,6 +77,78 @@ public class CmsContainerElementData extends CmsContainerElement {
 
     /** The supported container types of a group-container. */
     private Set<String> m_types;
+
+    /** The current formatter configuration. */
+    private CmsFormatterConfig m_formatterConfig;
+
+    /** The formatter configurations by container. */
+    private Map<String, Map<String, CmsFormatterConfig>> m_formatters;
+
+    /**
+     * Returns if there are alternative formatters available for the given container.<p>
+     * 
+     * @param containerName the container name
+     * 
+     * @return <code>true</code> if there are alternative formatters available for the given container
+     */
+    public boolean hasAlternativeFormatters(String containerName) {
+
+        return (m_formatters.get(containerName) != null) && (m_formatters.get(containerName).size() > 1);
+    }
+
+    /**
+     * Sets the current formatter configuration.<p>
+     *
+     * @param formatterConfig the current formatter configuration to set
+     */
+    public void setFormatterConfig(CmsFormatterConfig formatterConfig) {
+
+        m_formatterConfig = formatterConfig;
+    }
+
+    /**
+     * Sets the formatter configurations.<p>
+     *
+     * @param formatters the formatter configurations to set
+     */
+    public void setFormatters(Map<String, Map<String, CmsFormatterConfig>> formatters) {
+
+        m_formatters = formatters;
+    }
+
+    /**
+     * Returns the current formatter configuration.<p>
+     * 
+     * @param containerName the current container name
+     *
+     * @return the current formatter configuration
+     */
+    public CmsFormatterConfig getFormatterConfig(String containerName) {
+
+        String formatterId = getSettings().get(CmsFormatterConfig.FORMATTER_SETTINGS_KEY + containerName);
+        CmsFormatterConfig formatterConfig = null;
+        if ((formatterId != null)
+            && getFormatters().containsKey(containerName)
+            && getFormatters().get(containerName).containsKey(formatterId)) {
+            // if the settings contain the formatter id, use the matching config
+            formatterConfig = getFormatters().get(containerName).get(formatterId);
+        } else if (getFormatters().containsKey(containerName) && !getFormatters().get(containerName).isEmpty()) {
+            // otherwise use the first entry for the given container
+            formatterConfig = getFormatters().get(containerName).values().iterator().next();
+        }
+
+        return formatterConfig;
+    }
+
+    /**
+     * Returns the formatter configurations.<p>
+     *
+     * @return the formatter configurations
+     */
+    public Map<String, Map<String, CmsFormatterConfig>> getFormatters() {
+
+        return m_formatters;
+    }
 
     /**
      * Returns the contents.<p>
@@ -95,12 +162,15 @@ public class CmsContainerElementData extends CmsContainerElement {
 
     /**
      * Returns the required css resources.<p>
+     * 
+     * @param containerName the current container name 
      *
      * @return the required css resources
      */
-    public Set<String> getCssResources() {
+    public Set<String> getCssResources(String containerName) {
 
-        return m_cssResources;
+        CmsFormatterConfig formatterConfig = getFormatterConfig(containerName);
+        return formatterConfig != null ? formatterConfig.getCssResources() : Collections.<String> emptySet();
     }
 
     /**
@@ -124,9 +194,10 @@ public class CmsContainerElementData extends CmsContainerElement {
         if (m_settings != null) {
             for (Entry<String, String> settingEntry : m_settings.entrySet()) {
                 String settingKey = settingEntry.getKey();
-                if (m_settingConfig.containsKey(settingEntry.getKey())) {
-                    String niceName = m_settingConfig.get(settingEntry.getKey()).getNiceName();
-                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_settingConfig.get(settingEntry.getKey()).getNiceName())) {
+                if (m_formatterConfig.getSettingConfig().containsKey(settingEntry.getKey())) {
+                    String niceName = m_formatterConfig.getSettingConfig().get(settingEntry.getKey()).getNiceName();
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_formatterConfig.getSettingConfig().get(
+                        settingEntry.getKey()).getNiceName())) {
                         settingKey = niceName;
                     }
                 }
@@ -192,11 +263,16 @@ public class CmsContainerElementData extends CmsContainerElement {
     /**
      * Gets the setting configuration for this container element.<p>
      * 
+     * @param containerName the current container name
+     * 
      * @return the setting configuration map 
      */
-    public Map<String, CmsXmlContentProperty> getSettingConfig() {
+    public Map<String, CmsXmlContentProperty> getSettingConfig(String containerName) {
 
-        return m_settingConfig;
+        CmsFormatterConfig formatterConfig = getFormatterConfig(containerName);
+        return formatterConfig != null
+        ? formatterConfig.getSettingConfig()
+        : Collections.<String, CmsXmlContentProperty> emptyMap();
     }
 
     /**
@@ -257,7 +333,7 @@ public class CmsContainerElementData extends CmsContainerElement {
     @Override
     public boolean hasSettings() {
 
-        return !getSettingConfig().isEmpty();
+        return !m_formatterConfig.getSettingConfig().isEmpty();
     }
 
     /**
@@ -268,16 +344,6 @@ public class CmsContainerElementData extends CmsContainerElement {
     public void setContents(Map<String, String> contents) {
 
         m_contents = contents;
-    }
-
-    /**
-     * Sets the required css resources.<p>
-     *
-     * @param cssResources the required css resources to set
-     */
-    public void setCssResources(Set<String> cssResources) {
-
-        m_cssResources = cssResources;
     }
 
     /**
@@ -338,16 +404,6 @@ public class CmsContainerElementData extends CmsContainerElement {
     public void setNavText(String navText) {
 
         m_navText = navText;
-    }
-
-    /**
-     * Sets the setting configuration of this container element.<p>
-     * 
-     * @param settingConfig the new setting configuration 
-     */
-    public void setSettingConfig(Map<String, CmsXmlContentProperty> settingConfig) {
-
-        m_settingConfig = settingConfig;
     }
 
     /**
