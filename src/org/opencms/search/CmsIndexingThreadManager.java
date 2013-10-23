@@ -27,6 +27,7 @@
 
 package org.opencms.search;
 
+import org.opencms.db.CmsPublishedResource;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsLog;
@@ -133,6 +134,8 @@ public class CmsIndexingThreadManager {
         if (doc != null) {
             // write the document to the index
             indexer.updateResource(writer, res.getRootPath(), doc);
+        } else {
+            indexer.deleteResource(writer, new CmsPublishedResource(res));
         }
         if ((m_startedCounter % m_maxModificationsBeforeCommit) == 0) {
             try {
