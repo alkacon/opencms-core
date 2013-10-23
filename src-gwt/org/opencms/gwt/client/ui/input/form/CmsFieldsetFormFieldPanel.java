@@ -53,9 +53,6 @@ public class CmsFieldsetFormFieldPanel extends A_CmsFormFieldPanel {
     /** The main field set. */
     private CmsFieldSet m_fieldSet;
 
-    /** The panel containing the form field widgets. */
-    private FlowPanel m_fieldsetContents;
-
     /** The main panel .*/
     private FlowPanel m_panel;
 
@@ -74,8 +71,6 @@ public class CmsFieldsetFormFieldPanel extends A_CmsFormFieldPanel {
         m_panel.add(liWidget);
         m_fieldSet = new CmsFieldSet();
         m_fieldSet.setLegend(legend);
-        m_fieldsetContents = new FlowPanel();
-        m_fieldSet.add(m_fieldsetContents);
         m_fieldSet.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
         m_panel.add(m_fieldSet);
         initWidget(m_panel);
@@ -116,10 +111,10 @@ public class CmsFieldsetFormFieldPanel extends A_CmsFormFieldPanel {
     @Override
     public void renderFields(Collection<I_CmsFormField> fields) {
 
-        m_fieldsetContents.clear();
+        m_fieldSet.clear();
         for (I_CmsFormField field : fields) {
             CmsFormRow row = createRow(field);
-            m_fieldsetContents.add(row);
+            m_fieldSet.add(row);
         }
     }
 
@@ -128,9 +123,7 @@ public class CmsFieldsetFormFieldPanel extends A_CmsFormFieldPanel {
      */
     public void truncate(String textMetricsKey, int clientWidth) {
 
-        clientWidth -= 12;
         storeTruncation(textMetricsKey, clientWidth);
         truncatePanel(m_panel, textMetricsKey, clientWidth);
-        truncatePanel(m_fieldsetContents, textMetricsKey, clientWidth);
     }
 }

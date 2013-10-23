@@ -43,6 +43,7 @@ import org.opencms.gwt.client.ui.input.form.CmsDialogFormHandler;
 import org.opencms.gwt.client.ui.input.form.CmsFieldsetFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.CmsForm;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
+import org.opencms.gwt.client.ui.input.form.CmsFormRow;
 import org.opencms.gwt.client.ui.input.form.CmsInfoBoxFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler;
 import org.opencms.gwt.client.util.CmsDomUtil;
@@ -144,7 +145,10 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
                         onFormatterChange(event.getValue());
                     }
                 });
-                formatterFieldset.add(m_formatterSelect);
+                CmsFormRow row = new CmsFormRow();
+                row.getLabel().setText("Select the formatter");
+                row.getWidgetContainer().add(m_formatterSelect);
+                formatterFieldset.add(row);
             }
             if (m_contextInfo.shouldShowElementTemplateContextSelection()) {
                 String templateContexts = m_settings.get(CmsTemplateContextInfo.SETTING);
@@ -208,6 +212,18 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.input.form.CmsFormDialog#show()
+     */
+    @Override
+    public void show() {
+
+        super.show();
+        if (getWidth() > 0) {
+            getForm().getWidget().truncate("settings_truncation", getWidth() - 22);
+        }
+    }
+
+    /**
      * Returns if the template context has been changed.<p>
      * 
      * @return <code>true</code> if the template context has been changed
@@ -235,6 +251,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
      */
     void renderSettingsForm(Map<String, CmsXmlContentProperty> settingsConfig) {
 
+        getForm().removeGroup("");
         Map<String, I_CmsFormField> formFields = CmsBasicFormField.createFields(settingsConfig.values());
         for (I_CmsFormField field : formFields.values()) {
             String fieldId = field.getId();

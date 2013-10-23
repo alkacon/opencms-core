@@ -183,6 +183,11 @@ public class CmsFormRow extends Composite implements I_CmsTruncable {
             m_label.setWidth(labelWidth + "px");
             m_widgetContainer.setWidth(widgetContainerWidth + "px");
             m_widgetContainer.getElement().getStyle().setMarginLeft(labelWidth + OPENER_WIDTH, Unit.PX);
+            for (Widget widget : m_widgetContainer) {
+                if (widget instanceof I_CmsTruncable) {
+                    ((I_CmsTruncable)widget).truncate(textMetricsKey, widgetContainerWidth);
+                }
+            }
         }
     }
 
