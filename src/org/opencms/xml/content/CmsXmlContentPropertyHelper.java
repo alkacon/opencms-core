@@ -31,7 +31,6 @@ import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
-import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
@@ -318,18 +317,6 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
     }
 
     /**
-     * Returns true if the property name passed as a parameter is the name of a special system property.<p>
-     * 
-     * @param name the property name 
-     * 
-     * @return true if the property name is the name of a special property 
-     */
-    public static boolean isSpecialProperty(String name) {
-
-        return name.startsWith("#") || name.startsWith("*");
-    }
-
-    /**
      * Extends the given properties with the default values 
      * from the resource's property configuration.<p>
      * 
@@ -584,10 +571,7 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
         for (Map.Entry<String, String> property : properties.entrySet()) {
             String propName = property.getKey();
             String propValue = property.getValue();
-            boolean isSpecial = isSpecialProperty(propName);
-            if (!isSpecial
-                && !CmsTemplateContextInfo.SETTING.equals(propName)
-                && (!propertiesConf.containsKey(propName) || (propValue == null) || (propValue.length() == 0))) {
+            if ((propValue == null) || (propValue.length() == 0)) {
                 continue;
             }
             // only if the property is configured in the schema we will save it
@@ -596,9 +580,8 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
             // the property name
             propElement.addElement(CmsXmlContentProperty.XmlNode.Name.name()).addCDATA(propName);
             Element valueElement = propElement.addElement(CmsXmlContentProperty.XmlNode.Value.name());
-            String baseName = isSpecial ? propName.substring(1) : propName;
             boolean isVfs = false;
-            CmsXmlContentProperty propDef = propertiesConf.get(baseName);
+            CmsXmlContentProperty propDef = propertiesConf.get(propName);
             if (propDef != null) {
                 isVfs = CmsXmlContentProperty.PropType.isVfsList(propDef.getType());
             }
@@ -776,23 +759,6 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
     }
 
     /**
-     * Returns the base name of a given property name.<p>
-     * 
-     * If propName starts with a '#' character, the base name equals the part 
-     * after the '#', otherwise the base name is identical to propName.<p>
-     * 
-     * @param propName a property name 
-     * @return the base name of the property name 
-     */
-    protected static String getPropertyBaseName(String propName) {
-
-        if (isSpecialProperty(propName)) {
-            return propName.substring(1);
-        }
-        return propName;
-    }
-
-    /**
      * Helper method for accessing the property configuration for a single property.<p>
      * 
      * This method uses the base name of the property to access the property configuration,
@@ -807,7 +773,6 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
         Map<String, CmsXmlContentProperty> propertyConfig,
         String propName) {
 
-        return propertyConfig.get(getPropertyBaseName(propName));
+        return propertyConfig.get(propName);
     }
-
 }

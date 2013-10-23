@@ -445,7 +445,7 @@ public class CmsContainerpageUtil {
             elementData.getClientId(),
             elementData.getSitePath(),
             elementData.getNoEditReason(),
-            elementData.hasSettings(),
+            elementData.hasSettings(dragParent.getContainerId()),
             elementData.hasViewPermission(),
             elementData.hasWritePermission(),
             elementData.isReleasedAndNotExpired(),
@@ -490,7 +490,7 @@ public class CmsContainerpageUtil {
             elementData.getSitePath(),
             elementData.getResourceType(),
             elementData.getNoEditReason(),
-            elementData.hasSettings(),
+            elementData.hasSettings(dragParent.getContainerId()),
             elementData.hasViewPermission(),
             elementData.hasWritePermission(),
             elementData.isReleasedAndNotExpired());

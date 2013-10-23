@@ -371,7 +371,7 @@ public class CmsElementUtil {
         } else {
             for (CmsContainer cnt : containers) {
                 Map<String, CmsFormatterConfig> containerFormatters = new LinkedHashMap<String, CmsFormatterConfig>();
-                for (CmsFormatterBean formatter : formatterConfiguraton.getAllMatchingFormatters(
+                for (I_CmsFormatterBean formatter : formatterConfiguraton.getAllMatchingFormatters(
                     cnt.getType(),
                     cnt.getWidth())) {
                     String id = formatter.getId();
@@ -393,8 +393,6 @@ public class CmsElementUtil {
                     config.setJspRootPath(formatter.getJspRootPath());
                     containerFormatters.put(id, config);
                 }
-
-                containerFormatters.put("generic_" + cnt.getName(), generateDummyFormatter("generic_" + cnt.getName()));
                 formatters.put(cnt.getName(), containerFormatters);
             }
             // get the formatter configuration
@@ -488,23 +486,6 @@ public class CmsElementUtil {
 
         result.setReleasedAndNotExpired(elementBean.isReleasedAndNotExpired());
         result.setNoEditReason(noEditReason);
-        return result;
-    }
-
-    /**
-     * For testing only!!<p>
-     * @param id the id
-     * @return the config
-     */
-    private CmsFormatterConfig generateDummyFormatter(String id) {
-
-        CmsFormatterConfig result = new CmsFormatterConfig(id);
-        Set<String> css = new HashSet<String>();
-        css.add("CSS_FOR_" + id);
-        result.setCssResources(css);
-        result.setLabel(id);
-        Map<String, CmsXmlContentProperty> settings = new HashMap<String, CmsXmlContentProperty>();
-        result.setSettingConfig(settings);
         return result;
     }
 

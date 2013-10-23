@@ -154,9 +154,11 @@ public class CmsContainerElement implements IsSerializable {
     /**
      * Returns if the element may have settings.<p>
      *
+     * @param containerId the container id
+     * 
      * @return <code>true</code> if the element may have settings
      */
-    public boolean hasSettings() {
+    public boolean hasSettings(String containerId) {
 
         return m_hasSettings;
     }

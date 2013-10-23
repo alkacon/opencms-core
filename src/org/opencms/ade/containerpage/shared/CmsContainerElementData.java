@@ -78,9 +78,6 @@ public class CmsContainerElementData extends CmsContainerElement {
     /** The supported container types of a group-container. */
     private Set<String> m_types;
 
-    /** The current formatter configuration. */
-    private CmsFormatterConfig m_formatterConfig;
-
     /** The formatter configurations by container. */
     private Map<String, Map<String, CmsFormatterConfig>> m_formatters;
 
@@ -94,16 +91,6 @@ public class CmsContainerElementData extends CmsContainerElement {
     public boolean hasAlternativeFormatters(String containerName) {
 
         return (m_formatters.get(containerName) != null) && (m_formatters.get(containerName).size() > 1);
-    }
-
-    /**
-     * Sets the current formatter configuration.<p>
-     *
-     * @param formatterConfig the current formatter configuration to set
-     */
-    public void setFormatterConfig(CmsFormatterConfig formatterConfig) {
-
-        m_formatterConfig = formatterConfig;
     }
 
     /**
@@ -186,18 +173,20 @@ public class CmsContainerElementData extends CmsContainerElement {
     /**
      * Returns the individual element settings formated with nice-names to be used as additional-info.<p>
      * 
+     * @param containerId the container id 
+     * 
      * @return the settings list
      */
-    public List<CmsAdditionalInfoBean> getFormatedIndividualSettings() {
+    public List<CmsAdditionalInfoBean> getFormatedIndividualSettings(String containerId) {
 
         List<CmsAdditionalInfoBean> result = new ArrayList<CmsAdditionalInfoBean>();
-        if (m_settings != null) {
+        CmsFormatterConfig config = getFormatterConfig(containerId);
+        if ((m_settings != null) && (config != null)) {
             for (Entry<String, String> settingEntry : m_settings.entrySet()) {
                 String settingKey = settingEntry.getKey();
-                if (m_formatterConfig.getSettingConfig().containsKey(settingEntry.getKey())) {
-                    String niceName = m_formatterConfig.getSettingConfig().get(settingEntry.getKey()).getNiceName();
-                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_formatterConfig.getSettingConfig().get(
-                        settingEntry.getKey()).getNiceName())) {
+                if (config.getSettingConfig().containsKey(settingEntry.getKey())) {
+                    String niceName = config.getSettingConfig().get(settingEntry.getKey()).getNiceName();
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(config.getSettingConfig().get(settingEntry.getKey()).getNiceName())) {
                         settingKey = niceName;
                     }
                 }
@@ -208,7 +197,8 @@ public class CmsContainerElementData extends CmsContainerElement {
     }
 
     /**
-     * Returns the inheritance infos off all sub-items.
+     * Returns the inheritance infos off all sub-items.<p>
+     * 
      * @return the inheritance infos off all sub-items.
      */
     public List<CmsInheritanceInfo> getInheritanceInfos() {
@@ -328,12 +318,13 @@ public class CmsContainerElementData extends CmsContainerElement {
     }
 
     /**
-     * @see org.opencms.ade.containerpage.shared.CmsContainerElement#hasSettings()
+     * @see org.opencms.ade.containerpage.shared.CmsContainerElement#hasSettings(java.lang.String)
      */
     @Override
-    public boolean hasSettings() {
+    public boolean hasSettings(String containerId) {
 
-        return !m_formatterConfig.getSettingConfig().isEmpty();
+        CmsFormatterConfig config = getFormatterConfig(containerId);
+        return (config != null) && (!config.getSettingConfig().isEmpty() || hasAlternativeFormatters(containerId));
     }
 
     /**
