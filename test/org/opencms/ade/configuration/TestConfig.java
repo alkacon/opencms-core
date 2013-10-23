@@ -46,6 +46,7 @@ import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -1082,10 +1083,13 @@ public class TestConfig extends OpenCmsTestCase {
         assertEquals(2, formatters.size());
         I_CmsFormatterBean formatter1 = formatters.get(0);
         I_CmsFormatterBean formatter2 = formatters.get(1);
-        assertEquals(1, formatter1.getMinWidth());
-        assertEquals(2, formatter1.getMaxWidth());
-        assertEquals(3, formatter2.getMinWidth());
-        assertEquals(4, formatter2.getMaxWidth());
+        String widthConfig1 = formatter1.getMinWidth() + "_" + formatter1.getMaxWidth();
+        String widthConfig2 = formatter2.getMinWidth() + "_" + formatter2.getMaxWidth();
+        Set<String> widthConfigs = new HashSet<String>();
+        widthConfigs.add(widthConfig1);
+        widthConfigs.add(widthConfig2);
+        // ignore the order, just compare the set of width configurations 
+        assertEquals(new HashSet<String>(Arrays.asList("1_2", "3_4")), widthConfigs);
     }
 
     /**
