@@ -1192,13 +1192,18 @@ public class CmsResourceManager {
      * @param id a resource type id 
      * 
      * @return true if a matching resource type with the given name and id was found 
-     * 
-     * @throws CmsLoaderException if something goes wrong 
      */
-    public boolean matchResourceType(String name, int id) throws CmsLoaderException {
+    public boolean matchResourceType(String name, int id) {
 
         if (hasResourceType(name)) {
-            return getResourceType(name).getTypeId() == id;
+            try {
+                return getResourceType(name).getTypeId() == id;
+            } catch (Exception e) {
+                // should never happen because we already checked with hasResourceType, still have to 
+                // catch it so the compiler is happy 
+                LOG.error(e.getLocalizedMessage(), e);
+                return false;
+            }
         } else {
             return false;
         }

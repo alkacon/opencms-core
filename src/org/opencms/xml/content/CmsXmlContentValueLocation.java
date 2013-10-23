@@ -36,8 +36,13 @@ import org.opencms.xml.types.CmsXmlVfsFileValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+
+import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.Lists;
 
 /**
  * Represents the concrete location of an XML content value.<p>
@@ -120,13 +125,34 @@ public class CmsXmlContentValueLocation implements I_CmsXmlContentValueLocation 
     public List<I_CmsXmlContentValueLocation> getSubValues(String subPath) {
 
         List<I_CmsXmlContentValueLocation> result = new ArrayList<I_CmsXmlContentValueLocation>();
+        String requiredLastElement = CmsXmlUtils.getLastXpathElement(subPath);
         Locale locale = m_value.getLocale();
-        List<I_CmsXmlContentValue> subValues = m_value.getDocument().getValues(
+        List<I_CmsXmlContentValue> subValues = Lists.newArrayList(m_value.getDocument().getValues(
             CmsXmlUtils.concatXpath(m_value.getPath(), subPath),
-            locale);
+            locale));
+
+        Collections.sort(subValues, new Comparator<I_CmsXmlContentValue>() {
+
+            public int compare(I_CmsXmlContentValue firstValue, I_CmsXmlContentValue secondValue) {
+
+                String firstPath = CmsXmlUtils.removeXpathIndex(firstValue.getPath());
+                String secondPath = CmsXmlUtils.removeXpathIndex(secondValue.getPath());
+                int firstIndex = CmsXmlUtils.getXpathIndexInt(firstValue.getPath());
+                int secondIndex = CmsXmlUtils.getXpathIndexInt(secondValue.getPath());
+                int comparisonResult = ComparisonChain.start().compare(firstPath, secondPath).compare(firstIndex, secondIndex).result();
+                return comparisonResult;
+            }
+        });
+
         for (I_CmsXmlContentValue subValue : subValues) {
             if (subValue != null) {
-                result.add(new CmsXmlContentValueLocation(subValue));
+                // if subPath is the path of one option of a choice element, getValues() will, strangely,
+                // return all values of the choice, regardless of their name, so we need to check
+                // the name by hand 
+                String lastElement = CmsXmlUtils.getLastXpathElement(subValue.getPath());
+                if (lastElement.equals(requiredLastElement)) {
+                    result.add(new CmsXmlContentValueLocation(subValue));
+                }
             }
         }
         return result;

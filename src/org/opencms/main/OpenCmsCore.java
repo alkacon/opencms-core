@@ -116,6 +116,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -188,6 +189,9 @@ public final class OpenCmsCore {
 
     /** The event manager for the event handling. */
     private CmsEventManager m_eventManager;
+
+    /** The thread pool executor. */
+    private ScheduledThreadPoolExecutor m_executor;
 
     /** The set of configured export points. */
     private Set<CmsExportPoint> m_exportPoints;
@@ -463,6 +467,16 @@ public final class OpenCmsCore {
     protected CmsEventManager getEventManager() {
 
         return m_eventManager;
+    }
+
+    /** 
+     * Gets the thread pool executor.<p>
+     * 
+     * @return the thread pool executor 
+     */
+    protected ScheduledThreadPoolExecutor getExecutor() {
+
+        return m_executor;
     }
 
     /**
@@ -1118,6 +1132,7 @@ public final class OpenCmsCore {
         getSystemInfo().setNotificationProject(systemConfiguration.getNotificationProject());
         // set the scheduler manager
         m_scheduleManager = systemConfiguration.getScheduleManager();
+        m_executor = new ScheduledThreadPoolExecutor(2);
         // set resource init classes
         m_resourceInitHandlers = systemConfiguration.getResourceInitHandlers();
         // register request handler classes
@@ -1780,6 +1795,17 @@ public final class OpenCmsCore {
                         Messages.get().getBundle().key(Messages.LOG_ERROR_MODULE_SHUTDOWN_1, e.getMessage()),
                         e);
                 }
+
+                try {
+                    if (m_executor != null) {
+                        m_executor.shutdownNow();
+                    }
+                } catch (Throwable e) {
+                    CmsLog.INIT.error(
+                        Messages.get().getBundle().key(Messages.LOG_ERROR_MODULE_SHUTDOWN_1, e.getMessage()),
+                        e);
+                }
+
                 try {
                     if (m_scheduleManager != null) {
                         m_scheduleManager.shutDown();

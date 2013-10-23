@@ -76,6 +76,12 @@ public class CmsFormatterBean {
     /** Inline Javascript snippets. */
     private String m_inlineJavascript;
 
+    /** Is the formatter automatically enabled? */
+    private boolean m_isAutoEnabled;
+
+    /** Is the formatter from a formatter configuration file? */
+    private boolean m_isFromFormatterConfigFile;
+
     /** Indicates if this formatter is to be used as preview in the ADE gallery GUI. */
     private boolean m_isPreviewFormatter;
 
@@ -136,7 +142,8 @@ public class CmsFormatterBean {
      * @param rank
      * @param id
      * @param settings 
-     * 
+     * @param isFromConfigFile
+     * @param isAutoEnabled 
      */
     public CmsFormatterBean(
         Set<String> containerTypes,
@@ -156,7 +163,9 @@ public class CmsFormatterBean {
         String resourceTypeName,
         int rank,
         String id,
-        Map<String, CmsXmlContentProperty> settings) {
+        Map<String, CmsXmlContentProperty> settings,
+        boolean isFromConfigFile,
+        boolean isAutoEnabled) {
 
         m_jspRootPath = jspRootPath;
         m_jspStructureId = jspStructureId;
@@ -178,6 +187,8 @@ public class CmsFormatterBean {
         m_javascriptHeadIncludes.addAll(javascriptHeadIncludes);
         m_cssHeadIncludes.addAll(cssHeadIncludes);
         m_settings.putAll(settings);
+        m_isFromFormatterConfigFile = isFromConfigFile;
+        m_isAutoEnabled = isAutoEnabled;
     }
 
     /**
@@ -221,7 +232,9 @@ public class CmsFormatterBean {
             "",
             1000,
             null,
-            Collections.<String, CmsXmlContentProperty> emptyMap());
+            Collections.<String, CmsXmlContentProperty> emptyMap(),
+            false,
+            false);
 
         // TODO Auto-generated constructor stub
 
@@ -307,7 +320,9 @@ public class CmsFormatterBean {
             "",
             DEFAULT_SCHEMA_RANK,
             null,
-            Collections.<String, CmsXmlContentProperty> emptyMap());
+            Collections.<String, CmsXmlContentProperty> emptyMap(),
+            false,
+            false);
         m_matchAll = true;
     }
 
@@ -504,6 +519,26 @@ public class CmsFormatterBean {
     public int hashCode() {
 
         return m_containerTypes.hashCode() ^ ((m_minWidth * 33) ^ m_maxWidth);
+    }
+
+    /** 
+     * Returns true if the formatter is automatically enabled.<p>
+     * 
+     * @return true if the formatter is automatically enabled 
+     */
+    public boolean isAutoEnabled() {
+
+        return m_isAutoEnabled;
+    }
+
+    /**
+     * Returns true if the formatter is from a formatter configuration file.<p>
+     * 
+     * @return formatter f 
+     */
+    public boolean isFromFormatterConfigFile() {
+
+        return m_isFromFormatterConfigFile;
     }
 
     /** 

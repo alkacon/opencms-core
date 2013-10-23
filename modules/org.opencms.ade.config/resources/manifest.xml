@@ -152,6 +152,26 @@
 				<param name="schema">/system/modules/org.opencms.ade.config/schemas/module_config.xsd
 				</param>
 			</type>
+			
+			<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration"
+				name="formatter_config" id="308">
+				<properties>
+					<property>
+						<name>locale-available</name>
+						<value><![CDATA[en]]></value>
+					</property>
+					<property>
+						<name>locale</name>
+						<value><![CDATA[en]]></value>
+					</property>
+					<property>
+						<name>search.exclude</name>
+						<value>all</value>
+					</property>
+				</properties>
+				<param name="schema">/system/modules/org.opencms.ade.config/schemas/formatters/new_formatter.xsd
+				</param>
+			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration"
 				name="seo_file" id="305">
 				<properties>
@@ -526,6 +546,19 @@
 						permissions="+r+v+w+c" />
 				</accesscontrol>
 			</explorertype>
+			
+			<explorertype name="formatter_config" key="fileicon.formatter_config"
+				icon="module_config.png" bigicon="module_config_big.png" reference="xmlcontent">
+				<newresource page="otheroptions"
+					uri="newresource_xmlcontent.jsp?newresourcetype=formatter_config"
+					order="23" autosetnavigation="false" autosettitle="false"
+					info="desc.formatter_config" />
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER"
+						permissions="+r+v+w+c" />
+				</accesscontrol>
+			</explorertype>
+			
 			<explorertype name="inheritance_group" key="fileicon.inheritance_group"
 				icon="inheritancegroup.png" bigicon="inheritancegroup_big.png"
 				reference="xmlcontent">

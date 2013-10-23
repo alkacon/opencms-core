@@ -343,8 +343,17 @@ public class CmsXmlContentTypeManager {
         String maxOccrs = typeElement.attributeValue(CmsXmlContentDefinition.XSD_ATTRIBUTE_MAX_OCCURS);
         String minOccrs = typeElement.attributeValue(CmsXmlContentDefinition.XSD_ATTRIBUTE_MIN_OCCURS);
 
-        if (CmsStringUtil.isEmpty(elementName) || CmsStringUtil.isEmpty(typeName)) {
-            throw new CmsXmlException(Messages.get().container(Messages.ERR_INVALID_CD_SCHEMA_STRUCTURE_0));
+        if (CmsStringUtil.isEmpty(elementName)) {
+            throw new CmsXmlException(Messages.get().container(
+                Messages.ERR_EL_MISSING_ATTRIBUTE_2,
+                typeElement.getName(),
+                CmsXmlContentDefinition.XSD_ATTRIBUTE_NAME));
+        }
+        if (CmsStringUtil.isEmpty(typeName)) {
+            throw new CmsXmlException(Messages.get().container(
+                Messages.ERR_EL_MISSING_ATTRIBUTE_2,
+                typeElement.getName(),
+                CmsXmlContentDefinition.XSD_ATTRIBUTE_TYPE));
         }
 
         boolean simpleType = true;

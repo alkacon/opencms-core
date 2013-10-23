@@ -63,6 +63,7 @@ import org.opencms.xml.CmsXmlContentTypeManager;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -238,6 +239,16 @@ public final class OpenCms {
     public static CmsEventManager getEventManager() {
 
         return OpenCmsCore.getInstance().getEventManager();
+    }
+
+    /**
+     * Gets the thread pool executor.<p>
+     * 
+     * @return the thread pool executor 
+     */
+    public static ScheduledThreadPoolExecutor getExecutor() {
+
+        return OpenCmsCore.getInstance().getExecutor();
     }
 
     /**

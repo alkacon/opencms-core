@@ -205,6 +205,73 @@ public class CmsConfigurationReader {
     }
 
     /**
+     * Gets the string value of an XML content location.<p>
+     * 
+     * @param cms the CMS context to use 
+     * @param location an XML content location 
+     * 
+     * @return the string value of that XML content location 
+     */
+    public static String getString(CmsObject cms, I_CmsXmlContentValueLocation location) {
+
+        if (location == null) {
+            return null;
+        }
+        return location.asString(cms);
+    }
+
+    /**
+     * Helper method to parse a property.<p>
+     * 
+     * @param cms the CMS context to use 
+     * @param field the location of the parent value 
+     * 
+     * @return the parsed property configuration 
+     */
+    public static CmsPropertyConfig parseProperty(CmsObject cms, I_CmsXmlContentLocation field) {
+
+        String name = getString(cms, field.getSubValue(N_PROPERTY_NAME));
+        String widget = getString(cms, field.getSubValue(N_WIDGET));
+        String widgetConfig = getString(cms, field.getSubValue(N_WIDGET_CONFIG));
+        String ruleRegex = getString(cms, field.getSubValue(N_RULE_REGEX));
+        String ruleType = getString(cms, field.getSubValue(N_RULE_TYPE));
+        String default1 = getString(cms, field.getSubValue(N_DEFAULT));
+        String error = getString(cms, field.getSubValue(N_ERROR));
+        String niceName = getString(cms, field.getSubValue(N_DISPLAY_NAME));
+        String description = getString(cms, field.getSubValue(N_DESCRIPTION));
+        String preferFolder = getString(cms, field.getSubValue(N_PREFER_FOLDER));
+
+        String disabledStr = getString(cms, field.getSubValue(N_DISABLED));
+        boolean disabled = ((disabledStr != null) && Boolean.parseBoolean(disabledStr));
+
+        String orderStr = getString(cms, field.getSubValue(N_ORDER));
+        int order = I_CmsConfigurationObject.DEFAULT_ORDER;
+
+        try {
+            order = Integer.parseInt(orderStr);
+        } catch (NumberFormatException e) {
+            // noop 
+        }
+
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(
+            name,
+            "string",
+            widget,
+            widgetConfig,
+            ruleRegex,
+            ruleType,
+            default1,
+            niceName,
+            description,
+            error,
+            preferFolder);
+        // since these are real properties, using type vfslist makes no sense, so we always use the "string" type
+        CmsPropertyConfig propConfig = new CmsPropertyConfig(prop, disabled, order);
+        return propConfig;
+
+    }
+
+    /**
      * Returns the list of function references.<p>
      * 
      * @return the list of function references 
@@ -499,10 +566,7 @@ public class CmsConfigurationReader {
      */
     protected String getString(I_CmsXmlContentValueLocation location) {
 
-        if (location == null) {
-            return null;
-        }
-        return location.asString(m_cms);
+        return getString(m_cms, location);
     }
 
     /**
@@ -573,43 +637,7 @@ public class CmsConfigurationReader {
      */
     private void parseProperty(I_CmsXmlContentLocation field) {
 
-        String name = getString(field.getSubValue(N_PROPERTY_NAME));
-        String widget = getString(field.getSubValue(N_WIDGET));
-        String widgetConfig = getString(field.getSubValue(N_WIDGET_CONFIG));
-        String ruleRegex = getString(field.getSubValue(N_RULE_REGEX));
-        String ruleType = getString(field.getSubValue(N_RULE_TYPE));
-        String default1 = getString(field.getSubValue(N_DEFAULT));
-        String error = getString(field.getSubValue(N_ERROR));
-        String niceName = getString(field.getSubValue(N_DISPLAY_NAME));
-        String description = getString(field.getSubValue(N_DESCRIPTION));
-        String preferFolder = getString(field.getSubValue(N_PREFER_FOLDER));
-
-        String disabledStr = getString(field.getSubValue(N_DISABLED));
-        boolean disabled = ((disabledStr != null) && Boolean.parseBoolean(disabledStr));
-
-        String orderStr = getString(field.getSubValue(N_ORDER));
-        int order = I_CmsConfigurationObject.DEFAULT_ORDER;
-
-        try {
-            order = Integer.parseInt(orderStr);
-        } catch (NumberFormatException e) {
-            // noop 
-        }
-
-        CmsXmlContentProperty prop = new CmsXmlContentProperty(
-            name,
-            "string",
-            widget,
-            widgetConfig,
-            ruleRegex,
-            ruleType,
-            default1,
-            niceName,
-            description,
-            error,
-            preferFolder);
-        // since these are real properties, using type vfslist makes no sense, so we always use the "string" type
-        CmsPropertyConfig propConfig = new CmsPropertyConfig(prop, disabled, order);
+        CmsPropertyConfig propConfig = parseProperty(m_cms, field);
         m_propertyConfigs.add(propConfig);
     }
 

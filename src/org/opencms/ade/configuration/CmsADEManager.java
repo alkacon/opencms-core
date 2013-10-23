@@ -27,6 +27,8 @@
 
 package org.opencms.ade.configuration;
 
+import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCache;
+import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCacheState;
 import org.opencms.ade.containerpage.inherited.CmsContainerConfigurationCache;
 import org.opencms.ade.containerpage.inherited.CmsContainerConfigurationWriter;
 import org.opencms.ade.containerpage.inherited.CmsInheritedContainerState;
@@ -199,6 +201,9 @@ public class CmsADEManager {
     /** The offline inherited container configuration cache. */
     private CmsContainerConfigurationCache m_offlineContainerConfigurationCache;
 
+    /** The offline formatter bean cache. */
+    private CmsFormatterConfigurationCache m_offlineFormatterCache;
+
     /** The offline cache instance. */
     private CmsConfigurationCache m_onlineCache;
 
@@ -207,6 +212,9 @@ public class CmsADEManager {
 
     /** The online inherited container configuration cache. */
     private CmsContainerConfigurationCache m_onlineContainerConfigurationCache;
+
+    /** The online formatter bean cache. */
+    private CmsFormatterConfigurationCache m_onlineFormatterCache;
 
     /** ADE parameters. */
     private Map<String, String> m_parameters;
@@ -273,6 +281,19 @@ public class CmsADEManager {
     public CmsADECache getCache() {
 
         return m_cache;
+    }
+
+    /**
+     * Gets the cached formatter beans.<p>
+     * 
+     * @param online true if the Online project formatters should be returned, false for the Offline formatters
+     * 
+     * @return the formatter configuration cache state 
+     */
+    public CmsFormatterConfigurationCacheState getCachedFormatters(boolean online) {
+
+        CmsFormatterConfigurationCache cache = online ? m_onlineFormatterCache : m_offlineFormatterCache;
+        return cache.getState();
     }
 
     /**
@@ -687,6 +708,10 @@ public class CmsADEManager {
                 m_offlineCache.initialize();
                 m_onlineContainerConfigurationCache = new CmsContainerConfigurationCache(m_onlineCms, "online");
                 m_offlineContainerConfigurationCache = new CmsContainerConfigurationCache(m_offlineCms, "offline");
+                m_offlineFormatterCache = new CmsFormatterConfigurationCache(m_offlineCms, "offline formatters");
+                m_onlineFormatterCache = new CmsFormatterConfigurationCache(m_onlineCms, "online formatters");
+                m_offlineFormatterCache.reload();
+                m_onlineFormatterCache.reload();
                 CmsGlobalConfigurationCacheEventHandler handler = new CmsGlobalConfigurationCacheEventHandler(
                     m_onlineCms);
                 handler.addCache(m_offlineCache, m_onlineCache, "ADE configuration cache");
@@ -694,6 +719,7 @@ public class CmsADEManager {
                     m_offlineContainerConfigurationCache,
                     m_onlineContainerConfigurationCache,
                     "Inherited container cache");
+                handler.addCache(m_offlineFormatterCache, m_onlineFormatterCache, "formatter configuration cache");
                 OpenCms.getEventManager().addCmsEventListener(handler);
                 m_initStatus = Status.initialized;
             } catch (CmsException e) {

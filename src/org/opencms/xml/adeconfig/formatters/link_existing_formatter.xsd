@@ -1,0 +1,22 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+    <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
+    <xsd:element name="LinkExistingFormatters" type="OpenCmsLinkExistingFormatters" />
+    
+    <xsd:complexType name="OpenCmsLinkExistingFormatters">
+        <xsd:sequence>
+            <xsd:element name="LinkExistingFormatter" type="OpenCmsLinkExistingFormatter" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="OpenCmsLinkExistingFormatter">
+        <xsd:sequence>
+        	<xsd:element name="ReferenceFormatter" type="OpenCmsVfsFile"  />
+        </xsd:sequence>
+        <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
+    </xsd:complexType>
+   <xsd:annotation>
+        <xsd:appinfo>
+        <layouts>
+        </layouts>
+        </xsd:appinfo> 
+    </xsd:annotation>    
+</xsd:schema>
