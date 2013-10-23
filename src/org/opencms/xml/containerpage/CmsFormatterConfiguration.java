@@ -265,18 +265,28 @@ public final class CmsFormatterConfiguration {
      */
     public I_CmsFormatterBean getPreviewFormatter() {
 
-        Optional<I_CmsFormatterBean> result = Iterables.tryFind(m_allFormatters, new Predicate<I_CmsFormatterBean>() {
+        Optional<I_CmsFormatterBean> result;
+        result = Iterables.tryFind(m_allFormatters, new Predicate<I_CmsFormatterBean>() {
 
             public boolean apply(I_CmsFormatterBean formatter) {
 
-                if (formatter.isTypeFormatter()) {
-                    return formatter.getContainerTypes().contains(CmsFormatterBean.PREVIEW_TYPE);
-                } else {
-                    return (formatter.getMinWidth() <= CmsFormatterBean.PREVIEW_WIDTH)
-                        && (CmsFormatterBean.PREVIEW_WIDTH <= formatter.getMaxWidth());
-                }
+                return formatter.isPreviewFormatter();
             }
         });
+        if (!result.isPresent()) {
+            result = Iterables.tryFind(m_allFormatters, new Predicate<I_CmsFormatterBean>() {
+
+                public boolean apply(I_CmsFormatterBean formatter) {
+
+                    if (formatter.isTypeFormatter()) {
+                        return formatter.getContainerTypes().contains(CmsFormatterBean.PREVIEW_TYPE);
+                    } else {
+                        return (formatter.getMinWidth() <= CmsFormatterBean.PREVIEW_WIDTH)
+                            && (CmsFormatterBean.PREVIEW_WIDTH <= formatter.getMaxWidth());
+                    }
+                }
+            });
+        }
         if (!result.isPresent()) {
             result = Iterables.tryFind(m_allFormatters, new Predicate<I_CmsFormatterBean>() {
 
