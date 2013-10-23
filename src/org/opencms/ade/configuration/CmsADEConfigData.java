@@ -27,6 +27,7 @@
 
 package org.opencms.ade.configuration;
 
+import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCacheState;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -40,6 +41,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
+import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.I_CmsXmlContentHandler;
 
@@ -381,7 +383,17 @@ public class CmsADEConfigData {
                 && !typeConfig.getFormatterConfiguration().getAllFormatters().isEmpty()) {
                 return typeConfig.getFormatterConfiguration();
             }
-            return getFormattersFromSchema(cms, res);
+            CmsFormatterConfigurationCacheState formatterCacheState = OpenCms.getADEManager().getCachedFormatters(
+                cms.getRequestContext().getCurrentProject().isOnlineProject());
+            CmsFormatterConfiguration schemaFormatters = getFormattersFromSchema(cms, res);
+            List<I_CmsFormatterBean> formatters = new ArrayList<I_CmsFormatterBean>();
+            for (I_CmsFormatterBean formatter : schemaFormatters.getAllFormatters()) {
+                formatters.add(formatter);
+            }
+            for (I_CmsFormatterBean formatter : formatterCacheState.getFormattersForType(typeName, true)) {
+                formatters.add(formatter);
+            }
+            return CmsFormatterConfiguration.create(cms, formatters);
         } catch (CmsLoaderException e) {
             LOG.warn(e.getLocalizedMessage(), e);
             return null;
