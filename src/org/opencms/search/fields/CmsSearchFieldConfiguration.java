@@ -190,7 +190,7 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
     }
 
     /**
-     * Appends the Solr specific search fields to the document.<p>
+     * Appends the specific search fields to the document.<p>
      * 
      * @see org.opencms.search.fields.I_CmsSearchFieldAppdender#appendFields(org.opencms.search.I_CmsSearchDocument, org.opencms.file.CmsObject, org.opencms.file.CmsResource, org.opencms.search.extractors.I_CmsExtractionResult, java.util.List, java.util.List)
      */
