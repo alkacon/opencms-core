@@ -102,6 +102,9 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
         sfield = new CmsSolrField(CmsSearchField.FIELD_FILENAME, null, null, null, 0);
         m_solrFields.put(sfield.getName(), sfield);
 
+        sfield = new CmsSolrField(CmsSearchField.FIELD_VERSION, null, null, null, 0);
+        m_solrFields.put(sfield.getName(), sfield);
+
         sfield = new CmsSolrField(CmsSearchField.FIELD_STATE, null, null, null, 0);
         CmsSearchFieldMapping map = new CmsSearchFieldMapping(
             CmsSearchFieldMappingType.ATTRIBUTE,
@@ -143,6 +146,8 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
         }
 
         document.addSearchField(m_solrFields.get(CmsSearchField.FIELD_FILENAME), resource.getName());
+
+        document.addSearchField(m_solrFields.get(CmsSearchField.FIELD_VERSION), "" + resource.getVersion());
 
         return document;
     }

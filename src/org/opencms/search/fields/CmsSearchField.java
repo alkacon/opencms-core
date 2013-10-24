@@ -98,6 +98,9 @@ public class CmsSearchField implements Serializable {
     /** The name of the dynamic field that stores the shortened value of the content field in order to save performance. */
     public static final String FIELD_EXCERPT = "_excerpt";
 
+    /** Name of the field that contains the filename. */
+    public static final String FIELD_FILENAME = "filename";
+
     /** Name of the field that contains the documents structure id. */
     public static final String FIELD_ID = "id";
 
@@ -181,11 +184,11 @@ public class CmsSearchField implements Serializable {
     /** Name of the field that contains the user created. */
     public static final String FIELD_USER_CREATED = "userCreated";
 
-    /** Name of the field that contains the filename. */
-    public static final String FIELD_FILENAME = "filename";
-
     /** Name of the field that contains the user last modified. */
     public static final String FIELD_USER_LAST_MODIFIED = "userLastModified";
+
+    /** Name of the field that contains the latest version number of the resource. */
+    public static final String FIELD_VERSION = "version";
 
     /** Serial version UID. */
     private static final long serialVersionUID = 3185631015824549119L;
