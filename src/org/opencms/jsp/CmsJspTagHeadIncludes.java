@@ -27,6 +27,7 @@
 
 package org.opencms.jsp;
 
+import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.history.CmsHistoryResourceHandler;
@@ -39,11 +40,16 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlContentDefinition;
+import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
+import org.opencms.xml.containerpage.CmsFormatterBean;
+import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.containerpage.CmsXmlContainerPage;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
+import org.opencms.xml.containerpage.I_CmsFormatterBean;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -125,57 +131,6 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
             String[] values = new String[] {value};
             parameters.put(name, values);
         }
-    }
-
-    /**
-     * Returns the configured CSS head include resources.<p>
-     * 
-     * @param cms the current cms context
-     * @param resource the resource
-     * 
-     * @return the configured CSS head include resources
-     */
-    public static Set<String> getCSSHeadIncludes(CmsObject cms, CmsResource resource) {
-
-        if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
-            try {
-                CmsXmlContentDefinition contentDefinition = CmsXmlContentDefinition.getContentDefinitionForResource(
-                    cms,
-                    resource);
-                return contentDefinition.getContentHandler().getCSSHeadIncludes(cms, resource);
-            } catch (CmsException e) {
-                LOG.warn(e.getLocalizedMessage(), e);
-                // NOOP, use the empty set
-            }
-        }
-        return Collections.emptySet();
-    }
-
-    /**
-     * Returns the configured JavaScript head include resources.<p>
-     * 
-     * @param cms the current cms context
-     * @param resource the resource
-     * 
-     * @return the configured JavaScript head include resources
-     * 
-     * @throws CmsLoaderException if something goes wrong reading the resource type
-     */
-    public static Set<String> getJSHeadIncludes(CmsObject cms, CmsResource resource) throws CmsLoaderException {
-
-        I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
-        if (resType instanceof CmsResourceTypeXmlContent) {
-            try {
-                CmsXmlContentDefinition contentDefinition = CmsXmlContentDefinition.getContentDefinitionForResource(
-                    cms,
-                    resource);
-                return contentDefinition.getContentHandler().getJSHeadIncludes(cms, resource);
-            } catch (CmsException e) {
-                LOG.warn(e.getLocalizedMessage(), e);
-                // NOOP, use the empty set
-            }
-        }
-        return Collections.emptySet();
     }
 
     /**
@@ -325,22 +280,39 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
             }
         }
         if ((containerPage != null) && (containerPage.getElements() != null)) {
-            for (CmsContainerElementBean element : containerPage.getElements()) {
-                try {
-                    element.initResource(cms);
-                    cssIncludes.addAll(getCSSHeadIncludes(cms, element.getResource()));
-                } catch (CmsException e) {
-                    LOG.error(
-                        Messages.get().getBundle().key(Messages.ERR_READING_REQUIRED_RESOURCE_1, element.getSitePath()),
-                        e);
+            Map<CmsUUID, CmsFormatterBean> formatters = OpenCms.getADEManager().getCachedFormatters(
+                standardContext.isOnline()).getFormatters();
+            for (CmsContainerBean container : containerPage.getContainers().values()) {
+                for (CmsContainerElementBean element : container.getElements()) {
+                    String formatterConfigId = element.getSettings().get(
+                        CmsFormatterConfig.FORMATTER_SETTINGS_KEY + container.getName());
+                    if (CmsUUID.isValidUUID(formatterConfigId)
+                        && formatters.containsKey(new CmsUUID(formatterConfigId))) {
+                        cssIncludes.addAll(formatters.get(new CmsUUID(formatterConfigId)).getCssHeadIncludes());
+                    } else {
+                        try {
+                            element.initResource(cms);
+                            cssIncludes.addAll(getCSSHeadIncludes(cms, element.getResource()));
+                        } catch (CmsException e) {
+                            LOG.error(
+                                Messages.get().getBundle().key(
+                                    Messages.ERR_READING_REQUIRED_RESOURCE_1,
+                                    element.getSitePath()),
+                                e);
+                        }
+                    }
                 }
             }
         }
         if (standardContext.getDetailContentId() != null) {
             try {
                 CmsResource detailContent = cms.readResource(standardContext.getDetailContentId());
-                cssIncludes.addAll(getCSSHeadIncludes(cms, detailContent));
-
+                CmsFormatterConfiguration config = OpenCms.getADEManager().lookupConfiguration(
+                    cms,
+                    cms.getRequestContext().getRootUri()).getFormatters(cms, detailContent);
+                for (I_CmsFormatterBean formatter : config.getAllFormatters()) {
+                    cssIncludes.addAll(formatter.getCssHeadIncludes());
+                }
             } catch (CmsException e) {
                 LOG.error(
                     Messages.get().getBundle().key(
@@ -383,22 +355,39 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
             }
         }
         if ((containerPage != null) && (containerPage.getElements() != null)) {
-            for (CmsContainerElementBean element : containerPage.getElements()) {
-                try {
-                    element.initResource(cms);
-                    jsIncludes.addAll(getJSHeadIncludes(cms, element.getResource()));
-                } catch (CmsException e) {
-                    LOG.error(
-                        Messages.get().getBundle().key(Messages.ERR_READING_REQUIRED_RESOURCE_1, element.getSitePath()),
-                        e);
+            Map<CmsUUID, CmsFormatterBean> formatters = OpenCms.getADEManager().getCachedFormatters(
+                standardContext.isOnline()).getFormatters();
+            for (CmsContainerBean container : containerPage.getContainers().values()) {
+                for (CmsContainerElementBean element : container.getElements()) {
+                    String formatterConfigId = element.getSettings().get(
+                        CmsFormatterConfig.FORMATTER_SETTINGS_KEY + container.getName());
+                    if (CmsUUID.isValidUUID(formatterConfigId)
+                        && formatters.containsKey(new CmsUUID(formatterConfigId))) {
+                        jsIncludes.addAll(formatters.get(new CmsUUID(formatterConfigId)).getJavascriptHeadIncludes());
+                    } else {
+                        try {
+                            element.initResource(cms);
+                            jsIncludes.addAll(getJSHeadIncludes(cms, element.getResource()));
+                        } catch (CmsException e) {
+                            LOG.error(
+                                Messages.get().getBundle().key(
+                                    Messages.ERR_READING_REQUIRED_RESOURCE_1,
+                                    element.getSitePath()),
+                                e);
+                        }
+                    }
                 }
             }
         }
         if (standardContext.getDetailContentId() != null) {
             try {
                 CmsResource detailContent = cms.readResource(standardContext.getDetailContentId());
-                jsIncludes.addAll(getJSHeadIncludes(cms, detailContent));
-
+                CmsFormatterConfiguration config = OpenCms.getADEManager().lookupConfiguration(
+                    cms,
+                    cms.getRequestContext().getRootUri()).getFormatters(cms, detailContent);
+                for (I_CmsFormatterBean formatter : config.getAllFormatters()) {
+                    jsIncludes.addAll(formatter.getJavascriptHeadIncludes());
+                }
             } catch (CmsException e) {
                 LOG.error(
                     Messages.get().getBundle().key(
@@ -440,6 +429,57 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
             params = "?" + params.substring(1);
         }
         return params;
+    }
+
+    /**
+     * Returns the schema configured CSS head include resources.<p>
+     * 
+     * @param cms the current cms context
+     * @param resource the resource
+     * 
+     * @return the configured CSS head include resources
+     */
+    private Set<String> getCSSHeadIncludes(CmsObject cms, CmsResource resource) {
+
+        if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
+            try {
+                CmsXmlContentDefinition contentDefinition = CmsXmlContentDefinition.getContentDefinitionForResource(
+                    cms,
+                    resource);
+                return contentDefinition.getContentHandler().getCSSHeadIncludes(cms, resource);
+            } catch (CmsException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+                // NOOP, use the empty set
+            }
+        }
+        return Collections.emptySet();
+    }
+
+    /**
+     * Returns the schema configured JavaScript head include resources.<p>
+     * 
+     * @param cms the current cms context
+     * @param resource the resource
+     * 
+     * @return the configured JavaScript head include resources
+     * 
+     * @throws CmsLoaderException if something goes wrong reading the resource type
+     */
+    private Set<String> getJSHeadIncludes(CmsObject cms, CmsResource resource) throws CmsLoaderException {
+
+        I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
+        if (resType instanceof CmsResourceTypeXmlContent) {
+            try {
+                CmsXmlContentDefinition contentDefinition = CmsXmlContentDefinition.getContentDefinitionForResource(
+                    cms,
+                    resource);
+                return contentDefinition.getContentHandler().getJSHeadIncludes(cms, resource);
+            } catch (CmsException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+                // NOOP, use the empty set
+            }
+        }
+        return Collections.emptySet();
     }
 
     /**

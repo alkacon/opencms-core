@@ -285,6 +285,16 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
+     * Returns if the current project is the online project.<p>
+     * 
+     * @return <code>true</code> if the current project is the online project
+     */
+    public boolean isOnline() {
+
+        return m_cms.getRequestContext().getCurrentProject().isOnlineProject();
+    }
+
+    /**
      * Returns a caching hash specific to the element, it's properties and the current container width.<p>
      * 
      * @return the caching hash
