@@ -81,7 +81,7 @@ public class CmsSearchField implements Serializable {
     public static final String FIELD_DATE_LOOKUP_SUFFIX = "_lookup";
 
     /** The field name for the release date. */
-    public static final String FIELD_DATE_RELEASED = "relased";
+    public static final String FIELD_DATE_RELEASED = "released";
 
     /** The dependency type. */
     public static final String FIELD_DEPENDENCY_TYPE = "dependencyType";

@@ -258,7 +258,7 @@
    <field name="created"             type="date"         indexed="true"  stored="true"  required="true" />
    <field name="lastmodified"        type="date"         indexed="true"  stored="true"  required="true" />
    <field name="expired"             type="date"         indexed="true"  stored="true"  />
-   <field name="relased"             type="date"         indexed="true"  stored="true"  />
+   <field name="released"            type="date"         indexed="true"  stored="true"  />
    <field name="meta"                type="text_general" indexed="true"  stored="true"  multiValued="true" />
    <field name="content"             type="text_general" indexed="true"  stored="false" multiValued="true" />
    <field name="contentblob"         type="binary"       indexed="false" stored="true"  />
