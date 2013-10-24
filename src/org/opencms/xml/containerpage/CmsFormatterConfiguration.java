@@ -27,6 +27,7 @@
 
 package org.opencms.xml.containerpage;
 
+import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeJsp;
@@ -39,6 +40,7 @@ import org.opencms.util.CmsUUID;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -197,15 +199,15 @@ public final class CmsFormatterConfiguration {
     /**
      * Gets the formatters which are available for the given container type and width.<p>
      * 
-     * @param containerTpe the container type 
+     * @param containerType the container type 
      * @param containerWidth the container width 
      * 
      * @return the list of available formatters  
      */
-    public List<I_CmsFormatterBean> getAllMatchingFormatters(String containerTpe, int containerWidth) {
+    public List<I_CmsFormatterBean> getAllMatchingFormatters(String containerType, int containerWidth) {
 
         return new ArrayList<I_CmsFormatterBean>(Collections2.filter(m_allFormatters, new MatchesTypeOrWidth(
-            containerTpe,
+            containerType,
             containerWidth)));
 
     }
@@ -227,6 +229,31 @@ public final class CmsFormatterConfiguration {
             containerType,
             containerWidth));
         return result.orNull();
+    }
+
+    /**
+     * Returns the formatters available for selection for the given container type and width.<p>
+     * 
+     * @param containerType the container type 
+     * @param containerWidth the container width 
+     * 
+     * @return the list of available formatters  
+     */
+    public Map<String, I_CmsFormatterBean> getFormatterSelection(String containerType, int containerWidth) {
+
+        Map<String, I_CmsFormatterBean> result = new LinkedHashMap<String, I_CmsFormatterBean>();
+        boolean hasSchemaFormatter = false;
+        for (I_CmsFormatterBean formatter : Collections2.filter(m_allFormatters, new MatchesTypeOrWidth(
+            containerType,
+            containerWidth))) {
+            if (formatter.isFromFormatterConfigFile()) {
+                result.put(formatter.getId(), formatter);
+            } else if (!hasSchemaFormatter) {
+                hasSchemaFormatter = true;
+                result.put(CmsFormatterConfig.SCHEMA_FORMATTER_ID, formatter);
+            }
+        }
+        return result;
     }
 
     /**

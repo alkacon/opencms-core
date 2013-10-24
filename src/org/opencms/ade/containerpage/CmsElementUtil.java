@@ -371,13 +371,10 @@ public class CmsElementUtil {
         } else {
             for (CmsContainer cnt : containers) {
                 Map<String, CmsFormatterConfig> containerFormatters = new LinkedHashMap<String, CmsFormatterConfig>();
-                for (I_CmsFormatterBean formatter : formatterConfiguraton.getAllMatchingFormatters(
+                for (I_CmsFormatterBean formatter : formatterConfiguraton.getFormatterSelection(
                     cnt.getType(),
-                    cnt.getWidth())) {
+                    cnt.getWidth()).values()) {
                     String id = formatter.getId();
-                    if (id == null) {
-                        id = CmsFormatterConfig.SCHEMA_FORMATTER_ID;
-                    }
                     String label = formatter.getNiceName();
                     if (CmsStringUtil.isEmptyOrWhitespaceOnly(label)) {
                         label = id;
@@ -504,7 +501,17 @@ public class CmsElementUtil {
         CmsFormatterConfiguration configs) {
 
         String content = null;
-        I_CmsFormatterBean formatter = configs.getDefaultFormatter(container.getType(), container.getWidth());
+        I_CmsFormatterBean formatter;
+
+        String formatterId = element.getSettings().get(CmsFormatterConfig.FORMATTER_SETTINGS_KEY + container.getName());
+        if (formatterId != null) {
+            Map<String, I_CmsFormatterBean> formatters = configs.getFormatterSelection(
+                container.getType(),
+                container.getWidth());
+            formatter = formatters.get(formatterId);
+        } else {
+            formatter = configs.getDefaultFormatter(container.getType(), container.getWidth());
+        }
         if (formatter != null) {
             try {
                 content = getElementContent(element, m_cms.readResource(formatter.getJspStructureId()), container);
