@@ -55,6 +55,11 @@ div.optionBar{
 	max-width: none;
 }
 
+div.optionBar, div.optionBar *{
+	box-sizing: content-box;
+	-moz-box-sizing: content-box;
+}
+
 .toolbarSelection div.expired, .dragging div.expired, .toolbarAdd div.expired, .toolbarClipboard div.expired{
 	display: block;
 }

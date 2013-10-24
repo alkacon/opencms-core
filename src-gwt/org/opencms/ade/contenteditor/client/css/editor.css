@@ -41,6 +41,8 @@ body.integratedEditor{
 	max-height: none;
 	min-width: 0;
 	max-width: none;
+	box-sizing: content-box;
+	-moz-box-sizing: content-box;
 }
 
 @sprite .basePanel{
@@ -56,6 +58,8 @@ body.integratedEditor{
 	left:0;
 	right:0;
 	z-index: value("constants.css.zIndexPopup");
+	box-sizing: content-box;
+	-moz-box-sizing: content-box;
 }
 
 div.basePanel > div{
