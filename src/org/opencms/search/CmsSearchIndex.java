@@ -106,10 +106,10 @@ import org.apache.lucene.util.Version;
 public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
     /** A constant for the full qualified name of the CmsSearchIndex class. */
-    public static final String A_LEGACY_PARAM_PREFIX = "org.opencms.search.CmsSearchIndex";
+    public static final String A_PARAM_PREFIX = "org.opencms.search.CmsSearchIndex";
 
     /** Constant for additional parameter to enable optimized full index regeneration (default: false). */
-    public static final String BACKUP_REINDEXING = A_LEGACY_PARAM_PREFIX + ".useBackupReindexing";
+    public static final String BACKUP_REINDEXING = A_PARAM_PREFIX + ".useBackupReindexing";
 
     /** Look table to quickly zero-pad days / months in date Strings. */
     public static final String[] DATES = new String[] {
@@ -152,10 +152,13 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         CmsSearchField.FIELD_CONTENT};
 
     /** Constant for additional parameter to enable excerpt creation (default: true). */
-    public static final String EXCERPT = A_LEGACY_PARAM_PREFIX + ".createExcerpt";
+    public static final String EXCERPT = A_PARAM_PREFIX + ".createExcerpt";
 
     /** Constant for additional parameter for index content extraction. */
-    public static final String EXTRACT_CONTENT = A_LEGACY_PARAM_PREFIX + ".extractContent";
+    public static final String EXTRACT_CONTENT = A_PARAM_PREFIX + ".extractContent";
+
+    /** Constant for additional parameter to enable/disable language detection (default: false). */
+    public static final String IGNORE_EXPIRATION = A_PARAM_PREFIX + ".ignoreExpiration";
 
     /** Constant for additional parameter to enable/disable language detection (default: false). */
     public static final String LANGUAGEDETECTION = "search.solr.useLanguageDetection";
@@ -170,7 +173,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     public static final Version LUCENE_VERSION = Version.LUCENE_43;
 
     /** Constant for additional parameter for controlling how many hits are loaded at maximum (default: 1000). */
-    public static final String MAX_HITS = A_LEGACY_PARAM_PREFIX + ".maxHits";
+    public static final String MAX_HITS = A_PARAM_PREFIX + ".maxHits";
 
     /** Indicates how many hits are loaded at maximum by default. */
     public static final int MAX_HITS_DEFAULT = 5000;
@@ -179,10 +182,10 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     public static final int MAX_YEAR_RANGE = 12;
 
     /** Constant for additional parameter to enable permission checks (default: true). */
-    public static final String PERMISSIONS = A_LEGACY_PARAM_PREFIX + ".checkPermissions";
+    public static final String PERMISSIONS = A_PARAM_PREFIX + ".checkPermissions";
 
     /** Constant for additional parameter to set the thread priority during search. */
-    public static final String PRIORITY = A_LEGACY_PARAM_PREFIX + ".priority";
+    public static final String PRIORITY = A_PARAM_PREFIX + ".priority";
 
     /** Special value for the search.exclude property. */
     public static final String PROPERTY_SEARCH_EXCLUDE_VALUE_ALL = "all";
@@ -200,7 +203,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     public static final String REBUILD_MODE_OFFLINE = "offline";
 
     /** Constant for additional parameter to enable time range checks (default: true). */
-    public static final String TIME_RANGE = A_LEGACY_PARAM_PREFIX + ".checkTimeRange";
+    public static final String TIME_RANGE = A_PARAM_PREFIX + ".checkTimeRange";
 
     /** The document type name for XML contents. */
     public static final String TYPE_XMLCONTENT = "xmlcontent";
@@ -258,6 +261,12 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
     /** The name of the search field configuration used by this index. */
     private String m_fieldConfigurationName;
+
+    /** 
+     * Signals whether expiration dates should be ignored when checking permissions or not.<p>
+     * @see #IGNORE_EXPIRATION
+     */
+    private boolean m_ignoreExpiration;
 
     /** The Lucene index searcher to use. */
     private IndexSearcher m_indexSearcher;
@@ -496,6 +505,8 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             m_backupReindexing = Boolean.valueOf(value).booleanValue();
         } else if (LANGUAGEDETECTION.equals(key)) {
             m_languageDetection = Boolean.valueOf(value).booleanValue();
+        } else if (IGNORE_EXPIRATION.equals(key)) {
+            m_ignoreExpiration = Boolean.valueOf(value).booleanValue();
         } else if (PRIORITY.equals(key)) {
             m_priority = Integer.parseInt(value);
             if (m_priority < Thread.MIN_PRIORITY) {
@@ -1164,6 +1175,16 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
+     * Returns the ignoreExpiration.<p>
+     *
+     * @return the ignoreExpiration
+     */
+    public boolean isIgnoreExpiration() {
+
+        return m_ignoreExpiration;
+    }
+
+    /**
      * Returns the languageDetection.<p>
      *
      * @return the languageDetection
@@ -1174,9 +1195,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
-     * Returns <code>true</code> if a resource requires read permission to be incuded in the result list.<p>
+     * Returns <code>true</code> if a resource requires read permission to be included in the result list.<p>
      * 
-     * @return <code>true</code> if a resource requires read permission to be incuded in the result list
+     * @return <code>true</code> if a resource requires read permission to be included in the result list
      */
     public boolean isRequireViewPermission() {
 
@@ -1513,6 +1534,16 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     public void setFieldConfigurationName(String fieldConfigurationName) {
 
         m_fieldConfigurationName = fieldConfigurationName;
+    }
+
+    /**
+     * Sets the ignoreExpiration.<p>
+     *
+     * @param ignoreExpiration the ignoreExpiration to set
+     */
+    public void setIgnoreExpiration(boolean ignoreExpiration) {
+
+        m_ignoreExpiration = ignoreExpiration;
     }
 
     /**
@@ -2099,7 +2130,10 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         CmsResourceFilter filter = CmsResourceFilter.DEFAULT;
         if (isRequireViewPermission()) {
             filter = CmsResourceFilter.DEFAULT_ONLY_VISIBLE;
+        } else if (isIgnoreExpiration()) {
+            filter = CmsResourceFilter.IGNORE_EXPIRATION;
         }
+
         try {
             CmsObject clone = OpenCms.initCmsObject(cms);
             clone.getRequestContext().setSiteRoot("");

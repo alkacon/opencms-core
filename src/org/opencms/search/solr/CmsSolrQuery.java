@@ -158,6 +158,7 @@ public class CmsSolrQuery extends SolrQuery {
         }
         ensureParameters();
         ensureReturnFields();
+        ensureExpiration();
     }
 
     /**
@@ -526,6 +527,31 @@ public class CmsSolrQuery extends SolrQuery {
         }
         q += "}" + text;
         return q;
+    }
+
+    /**
+     * Ensures that expired and not yet released resources are not returned by default.<p>
+     */
+    private void ensureExpiration() {
+
+        boolean expirationDateSet = false;
+        boolean releaseDateSet = false;
+        if (getFilterQueries() != null) {
+            for (String fq : getFilterQueries()) {
+                if (fq.startsWith(CmsSearchField.FIELD_DATE_EXPIRED + ":")) {
+                    expirationDateSet = true;
+                }
+                if (fq.startsWith(CmsSearchField.FIELD_DATE_RELEASED + ":")) {
+                    releaseDateSet = true;
+                }
+            }
+        }
+        if (!expirationDateSet) {
+            addFilterQuery(CmsSearchField.FIELD_DATE_EXPIRED + ":[NOW TO *]");
+        }
+        if (!releaseDateSet) {
+            addFilterQuery(CmsSearchField.FIELD_DATE_RELEASED + ":[* TO NOW]");
+        }
     }
 
     /**
