@@ -251,7 +251,10 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
         List<String> barItems = getHtmlWidgetOption().getButtonBarShownItems();
         String toolbar = CmsTinyMceToolbarHelper.createTinyMceToolbarStringFromGenericToolbarItems(barItems);
         result.put("toolbar", toolbar);
-
+        String contextmenu = CmsTinyMceToolbarHelper.getContextMenuEntries(barItems);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(contextmenu)) {
+            result.put("contextmenu", contextmenu);
+        }
         return result;
     }
 }

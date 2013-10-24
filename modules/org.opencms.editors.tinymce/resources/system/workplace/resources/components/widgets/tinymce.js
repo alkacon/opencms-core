@@ -53,7 +53,7 @@ function initTinyMCE(options){
             theme: "modern",
             file_browser_callback: cmsTinyMceFileBrowser,
             setup: function(editor) { setupTinyMCE(editor); },
-            plugins: "anchor,charmap,code,textcolor,autolink,lists,pagebreak,layer,table,save,hr,image,link,emoticons,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,template,wordcount,advlist,-opencms",
+            plugins: "anchor,charmap,code,textcolor,autolink,lists,pagebreak,layer,table,save,hr,image,link,emoticons,insertdatetime,preview,media,searchreplace,print,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,template,wordcount,advlist,-opencms",
             menubar: false,
             toolbar_items_size: 'small',
             resize: false,
@@ -62,6 +62,9 @@ function initTinyMCE(options){
     // check for fullpage option
     if (options["fullpage"]){
         defaults["plugins"]+=",fullpage";
+    }
+    if (options["contextmenu"]){
+        defaults["plugins"]+=",contextmenu";
     }
     if (options["style_formats"]){
         try{

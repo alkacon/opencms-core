@@ -38,12 +38,11 @@ public class CmsTinyMCE extends CmsSimplePageEditor {
      * 
      * @param buttonString button names and block separators delimited by comma
      * 
-     * @return returns the javascript for the toolbar
+     * @return returns the toolbar buttons
      */
     public static String buildToolbar(String buttonString) {
 
         StringBuilder toolbar = new StringBuilder();
-        toolbar.append("toolbar: \"");
         String[] buttons = buttonString.split("\\,");
 
         String button;
@@ -51,7 +50,6 @@ public class CmsTinyMCE extends CmsSimplePageEditor {
             button = buttons[i];
             toolbar.append(button + " ");
         }
-        toolbar.append("\",");
         return toolbar.toString();
     }
 

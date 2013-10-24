@@ -142,6 +142,31 @@ public final class CmsTinyMceToolbarHelper {
     }
 
     /**
+     * Returns the context menu entries according to the configured tool-bar items.<p>
+     * 
+     * @param barItems the tool-bar items
+     * 
+     * @return the context menu entries
+     */
+    public static String getContextMenuEntries(List<String> barItems) {
+
+        String result = "";
+        if (barItems.contains("link")) {
+            result += translateButton("link");
+        }
+        if (barItems.contains("downloadgallery")) {
+            result += " " + translateButton("downloadgallery");
+        }
+        if (barItems.contains("imagegallery")) {
+            result += " " + translateButton("imagegallery");
+        }
+        if (barItems.contains("table")) {
+            result += " inserttable | cell row column deletetable";
+        }
+        return result.trim();
+    }
+
+    /**
      * Translates a generic button name to a TinyMCE-specific button name (or a comma-separated list of button names).<p>
      * 
      * @param cmsButtonName the generic button name 

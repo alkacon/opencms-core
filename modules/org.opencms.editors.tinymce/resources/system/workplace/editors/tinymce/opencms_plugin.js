@@ -43,16 +43,16 @@ function doShowCmsGalleries(editor, url) {
        height: height, 
        inline: "yes", 
        style:   "background-color: #1F232A; " +
-       		    "background-image: url('<%= cms.link("/system/workplace/resources/editors/tinymce/toolbar/dialogBackground.png") %>'); " +
-       		    "background-position: center top; " +
-       		    "background-repeat: repeat-x; " +
-       		    "border-color: #606161 black black; " +
-       		    "border-radius: 12px 12px 12px 12px; " +
-       		    "border-style: solid; " +
-       		    "border-width: 1px; " +
-       		    "box-shadow: 6px 6px 12px #666666; " +
-       		    "margin: 0; " +
-       		    "padding: 6px 5px 5px;"
+                "background-image: url('<%= cms.link("/system/workplace/resources/editors/tinymce/toolbar/dialogBackground.png") %>'); " +
+                "background-position: center top; " +
+                "background-repeat: repeat-x; " +
+                "border-color: #606161 black black; " +
+                "border-radius: 12px 12px 12px 12px; " +
+                "border-style: solid; " +
+                "border-width: 1px; " +
+                "box-shadow: 6px 6px 12px #666666; " +
+                "margin: 0; " +
+                "padding: 6px 5px 5px;"
    }, {});
    var closeButton=window.document.createElement("div");
    var currentEd=editor;
@@ -75,29 +75,6 @@ function doShowCmsGalleries(editor, url) {
    var windows= editor.windowManager.windows;
    windows[windows.length-1].getEl().appendChild(closeButton);
 }
-
-/**
- * Processes context menu items, e.g. by replacing built-in image options with OpenCms specific image options.
- */
-function filterContextMenu(sender, menu, element) {
-   var otherItems = {};
-   for (var itemName in menu.items) {
-      if (/^mce_/.test(itemName)) {
-         var item = menu.items[itemName];
-         if (item.settings) {
-            if (item.settings.cmd == 'mceAdvImage' || item.settings.cmd == 'mceImage') {
-               continue;
-            }
-         }
-      }
-      otherItems[itemName] = item;
-   }
-   menu.items = otherItems;
-   if (element.nodeName === 'IMG') {
-      menu.add({title : '<fmt:message key="GUI_IMAGE_GALLERY_TITLE_0" />', icon : 'image', cmd : 'cmsImageGallery'});
-   }
-};
-
 
 /**
  * Searches for a frame by the specified name. Will only return siblings or ancestors.<p>
@@ -437,10 +414,18 @@ tinymce.create('tinymce.opencms', {
          image: '<%= org.opencms.workplace.CmsWorkplace.getResourceUri("editors/tinymce/toolbar/oc-linkgallery.gif") %>',
          cmd : 'cmsLinkGallery'
       });
-      var editor=ed;
-      ed.on('init',function() {
-       //   editor.plugins.contextmenu.onContextMenu.add(filterContextMenu);
-      });
+      ed.addMenuItem('OcmsImageGallery', {
+         text: '<fmt:message key="GUI_IMAGE_GALLERY_TITLE_0" />',
+         context: 'tools',
+         icon: 'image',
+         cmd: "cmsImageGallery"
+       });
+      ed.addMenuItem('OcmsDownloadGallery', {
+          text: '<fmt:message key="GUI_DOWNLOAD_GALLERY_TITLE_0" />',
+          context: 'tools',
+          icon: 'browse',
+          cmd: "cmsDownloadGallery"
+       });
    },
 
    getInfo : function() {

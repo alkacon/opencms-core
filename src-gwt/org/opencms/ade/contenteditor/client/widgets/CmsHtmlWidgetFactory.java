@@ -84,6 +84,23 @@ public class CmsHtmlWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
     }
 
     /**
+     * Creates the TinyMCE toolbar config string from a Javascript config object.<p>
+     * 
+     * @param jso a Javascript array of toolbar items 
+     * 
+     * @return the TinyMCE toolbar config string 
+     */
+    protected static String createContextMenu(JavaScriptObject jso) {
+
+        JsArray<?> jsItemArray = jso.<JsArray<?>> cast();
+        List<String> jsItemList = new ArrayList<String>();
+        for (int i = 0; i < jsItemArray.length(); i++) {
+            jsItemList.add(jsItemArray.get(i).toString());
+        }
+        return CmsTinyMceToolbarHelper.getContextMenuEntries(jsItemList);
+    }
+
+    /**
      * @see com.alkacon.acacia.client.I_WidgetFactory#createFormWidget(java.lang.String)
      */
     public I_FormEditWidget createFormWidget(String configuration) {
@@ -153,7 +170,7 @@ public class CmsHtmlWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
                                                                                 if (config.cmsGalleryUseThickbox) {
                                                                                 options.cmsGalleryUseThickbox = config.cmsGalleryUseThickbox;
                                                                                 }
-                                                                                options.plugins = "anchor,charmap,code,textcolor,autolink,lists,pagebreak,layer,table,save,hr,image,link,emoticons,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,template,wordcount,advlist,code,-opencms";
+                                                                                options.plugins = "anchor,charmap,code,textcolor,autolink,lists,pagebreak,layer,table,save,hr,image,link,emoticons,insertdatetime,preview,media,searchreplace,print,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,template,wordcount,advlist,code,-opencms";
                                                                                 if (config.fullpage) {
                                                                                 options.plugins += ",fullpage";
                                                                                 }
@@ -162,7 +179,11 @@ public class CmsHtmlWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
                                                                                     toolbarGroup = @org.opencms.ade.contenteditor.client.widgets.CmsHtmlWidgetFactory::createToolbar(Lcom/google/gwt/core/client/JavaScriptObject;)(config.toolbar_items);
 
                                                                                 options.toolbar1 = toolbarGroup;
-
+                                                                                var contextmenu= @org.opencms.ade.contenteditor.client.widgets.CmsHtmlWidgetFactory::createContextMenu(Lcom/google/gwt/core/client/JavaScriptObject;)(config.toolbar_items);
+                                                                                if (contextmenu!=""){
+                                                                                    options.plugins+=",contextmenu";
+                                                                                    options.contextmenu=contextmenu;
+                                                                                }
                                                                                 if (config.tinyMceOptions) {
                                                                                 for ( var tinyMceOptionKey in config.tinyMceOptions) {
                                                                                 options[tinyMceOptionKey] = config.tinyMceOptions[tinyMceOptionKey];

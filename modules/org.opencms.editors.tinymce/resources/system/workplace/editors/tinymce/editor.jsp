@@ -733,18 +733,32 @@ function popupCloseAction(closeObj) {
 <script type="text/javascript" src="<cms:link>/system/workplace/editors/tinymce/opencms_plugin.js</cms:link>"></script>
 <script type="text/javascript">
 <!--
+var toolbarButtons="<%= CmsTinyMCE.buildToolbar(toolbar.toString())%>";
+var contextmenu="";
+if (toolbarButtons.indexOf("link")>0)
+    contextmenu+="link";
+if (toolbarButtons.indexOf("OcmsDownloadGallery")>0)
+    contextmenu+=" OcmsDownloadGallery";
+if (toolbarButtons.indexOf("OcmsImageGallery")>0)
+    contextmenu+=" OcmsImageGallery";
+if (toolbarButtons.indexOf("table")>0)
+    contextmenu+=" inserttable | cell row column deletetable"
+
+var plugins = "anchor,charmap,code,textcolor,autolink,lists,spellchecker,pagebreak,layer,table,save,hr,image,link,emoticons,insertdatetime,preview,media,searchreplace,print,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,template,wordcount,-opencms";
+if (contextmenu!="")
+    plugins+=",contextmenu"
+
 tinyMCE.init({
     // General options
     toolbar_items_size: 'small',
     mode : "exact",
     elements : "tinymce_content",
     theme : "modern",
-    plugins : "anchor,charmap,code,textcolor,autolink,lists,spellchecker,pagebreak,layer,table,save,hr,image,link,emoticons,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,template,wordcount,-opencms",
+    plugins : plugins,
+    contextmenu: contextmenu,
     file_browser_callback : cmsTinyMceFileBrowser,
     entity_encoding: "raw",
-
-    // Theme options
-    <%= CmsTinyMCE.buildToolbar(toolbar.toString())%>
+	toolbar: toolbarButtons,
 	toolbar_items_size: 'small',
     menubar:false,
     resize : false,
