@@ -71,8 +71,6 @@ if(grp.length() > 0){
 //Group
 grp = new StringBuilder() ;
 
-grp.append(",selectall") ;
-
 if (options.showElement("button.removeformat", displayOptions)) {
 	grp.append(",removeformat");
 }
