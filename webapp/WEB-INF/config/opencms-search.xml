@@ -278,6 +278,18 @@
 				</sources>
 				<param name="org.opencms.search.CmsSearchIndex.extractContent">false</param>
 			</index>
+			<!-- 
+			<index class="org.opencms.search.solr.CmsSolrIndex">
+				<name>Solr Gallery Index</name>
+				<rebuild>offline</rebuild>
+				<project>Offline</project> 
+				<locale>all</locale>
+				<configuration>solr_gallery_fields</configuration>
+				<sources>
+					<source>gallery_source_all</source>
+				</sources> 
+				<param name="org.opencms.search.CmsSearchIndex.extractContent">false</param>
+			</index> -->
 		</indexes>
 		<indexsources>
 			<indexsource>
@@ -360,6 +372,7 @@
 					<name>pdf</name>
 					<name>rtf</name>
 					<name>html</name>
+					<name>image</name>
 					<name>generic</name>
 					<name>msoffice-ole2</name>
 					<name>msoffice-ooxml</name>
