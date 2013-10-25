@@ -29,8 +29,6 @@ package org.opencms.workplace.tools.searchindex.sourcesearch;
 
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.report.I_CmsReportThread;
-import org.opencms.search.replace.CmsSearchReplaceSettings;
-import org.opencms.search.replace.CmsSearchReplaceThread;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.list.A_CmsListExplorerDialog;
 import org.opencms.workplace.list.A_CmsListReport;
@@ -125,6 +123,9 @@ public class CmsSourceSearchReport extends A_CmsListReport {
     public I_CmsReportThread initializeThread() {
 
         CmsSearchReplaceSettings settings = (CmsSearchReplaceSettings)((Map)getSettings().getDialogObject()).get(CmsSourceSearchDialog.class.getName());
+        if (settings == null) {
+            settings = (CmsSearchReplaceSettings)((Map)getSettings().getDialogObject()).get(CmsSourceSearchDialog.class.getName());
+        }
 
         // clear the matched file list in the session
         HttpSession session = getJsp().getJspContext().getSession();
