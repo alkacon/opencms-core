@@ -130,7 +130,8 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
                 CmsFieldSet formatterFieldset = new CmsFieldSet();
                 // insert as first field-set after the element info box
                 fieldSetPanel.getMainPanel().insert(formatterFieldset, 1);
-                formatterFieldset.setLegend("Formatters");
+                formatterFieldset.setLegend(org.opencms.ade.containerpage.client.Messages.get().key(
+                    org.opencms.ade.containerpage.client.Messages.GUI_FORMATTERS_LEGEND_0));
                 formatterFieldset.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
                 LinkedHashMap<String, String> formatters = new LinkedHashMap<String, String>();
                 for (CmsFormatterConfig formatter : m_elementBean.getFormatters().get(m_containerId).values()) {
@@ -146,7 +147,9 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
                     }
                 });
                 CmsFormRow row = new CmsFormRow();
-                row.getLabel().setText("Select the formatter");
+                row.getLabel().setText(
+                    org.opencms.ade.containerpage.client.Messages.get().key(
+                        org.opencms.ade.containerpage.client.Messages.GUI_SELECT_FORMATTER_LABEL_0));
                 row.getWidgetContainer().add(m_formatterSelect);
                 formatterFieldset.add(row);
             }
@@ -263,6 +266,10 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
             getForm().addField(field, initialValue);
         }
         getForm().render();
+        A_CmsFormFieldPanel formWidget = getForm().getWidget();
+        if (formWidget instanceof CmsFieldsetFormFieldPanel) {
+            ((CmsFieldsetFormFieldPanel)formWidget).getFieldSet().setVisible(!settingsConfig.isEmpty());
+        }
         if (getWidth() > 0) {
             getForm().getWidget().truncate("settings_truncation", getWidth() - 12);
         }

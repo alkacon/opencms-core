@@ -89,6 +89,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -373,10 +374,11 @@ public class CmsElementUtil {
                 Map<String, CmsFormatterConfig> containerFormatters = new LinkedHashMap<String, CmsFormatterConfig>();
                 boolean missesFormatterSetting = !elementData.getSettings().containsKey(
                     CmsFormatterConfig.getSettingsKeyForContainer(cnt.getName()));
-                for (I_CmsFormatterBean formatter : formatterConfiguraton.getFormatterSelection(
+                for (Entry<String, I_CmsFormatterBean> formatterEntry : formatterConfiguraton.getFormatterSelection(
                     cnt.getType(),
-                    cnt.getWidth()).values()) {
-                    String id = formatter.getId();
+                    cnt.getWidth()).entrySet()) {
+                    I_CmsFormatterBean formatter = formatterEntry.getValue();
+                    String id = formatterEntry.getKey();
                     if (missesFormatterSetting
                         && ((element.getFormatterId() == null) || element.getFormatterId().equals(
                             formatter.getJspStructureId()))) {
@@ -384,6 +386,9 @@ public class CmsElementUtil {
                         missesFormatterSetting = false;
                     }
                     String label = formatter.getNiceName();
+                    if (formatterEntry.getKey().equals(CmsFormatterConfig.SCHEMA_FORMATTER_ID)) {
+                        label = Messages.get().getBundle().key(Messages.GUI_SCHEMA_FORMATTER_LABEL_0);
+                    }
                     if (CmsStringUtil.isEmptyOrWhitespaceOnly(label)) {
                         label = id;
                     }
