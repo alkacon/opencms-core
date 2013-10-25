@@ -654,6 +654,68 @@ public class CmsJspTagContainer extends TagSupport {
     }
 
     /**
+     * Ensures the appropriate formatter configuration  ID is set in the element settings.<p>
+     * 
+     * @param cms the cms context
+     * @param element the element bean
+     * @param adeConfig the ADE configuration data
+     * @param containerType the container type
+     * @param containerWidth the container width
+     * 
+     * @return the formatter configuration bean, may be <code>null</code> if no formatter available or a schema formatter is used
+     */
+    private I_CmsFormatterBean ensureValidFormatterSettings(
+        CmsObject cms,
+        CmsContainerElementBean element,
+        CmsADEConfigData adeConfig,
+        String containerType,
+        int containerWidth) {
+
+        I_CmsFormatterBean formatterBean = null;
+        if ((element.getFormatterId() != null) && cms.existsResource(element.getFormatterId())) {
+
+            if (!element.getSettings().containsKey(CmsFormatterConfig.getSettingsKeyForContainer(getName()))) {
+                for (I_CmsFormatterBean formatter : adeConfig.getFormatters(cms, element.getResource()).getAllMatchingFormatters(
+                    containerType,
+                    containerWidth)) {
+                    if (element.getFormatterId().equals(formatter.getJspStructureId())) {
+                        String formatterConfigId = formatter.getId();
+                        if (formatterConfigId == null) {
+                            formatterConfigId = CmsFormatterConfig.SCHEMA_FORMATTER_ID;
+                        }
+                        element.getSettings().put(
+                            CmsFormatterConfig.getSettingsKeyForContainer(getName()),
+                            formatterConfigId);
+                        formatterBean = formatter;
+                    }
+                }
+            } else {
+                String formatterConfigId = element.getSettings().get(
+                    CmsFormatterConfig.getSettingsKeyForContainer(getName()));
+                if (CmsUUID.isValidUUID(formatterConfigId)) {
+                    formatterBean = OpenCms.getADEManager().getCachedFormatters(false).getFormatters().get(
+                        formatterConfigId);
+                }
+            }
+        } else {
+            formatterBean = adeConfig.getFormatters(cms, element.getResource()).getDefaultFormatter(
+                containerType,
+                containerWidth);
+            if (formatterBean != null) {
+                String formatterConfigId = formatterBean.getId();
+                if (formatterConfigId == null) {
+                    formatterConfigId = CmsFormatterConfig.SCHEMA_FORMATTER_ID;
+                }
+                element.getSettings().put(CmsFormatterConfig.getSettingsKeyForContainer(getName()), formatterConfigId);
+                element.setFormatterId(formatterBean.getJspStructureId());
+            } else {
+                element.setFormatterId(null);
+            }
+        }
+        return formatterBean;
+    }
+
+    /**
      * Generates the detail view element.<p>
      * 
      * @param cms the CMS context
@@ -972,10 +1034,12 @@ public class CmsJspTagContainer extends TagSupport {
                     printElementWrapperTagStart(isOnline, cms, subelement, false);
                     standardContext.setElement(subelement);
                     try {
+                        String formatterSitePath = cms.getRequestContext().removeSiteRoot(
+                            subElementFormatterConfig.getJspRootPath());
                         if (shouldShowSubElementInContext) {
                             CmsJspTagInclude.includeTagAction(
                                 pageContext,
-                                subElementFormatterConfig.getJspRootPath(),
+                                formatterSitePath,
                                 null,
                                 locale,
                                 false,
@@ -1084,68 +1148,6 @@ public class CmsJspTagContainer extends TagSupport {
             }
             return result;
         }
-    }
-
-    /**
-     * Ensures the appropriate formatter configuration  ID is set in the element settings.<p>
-     * 
-     * @param cms the cms context
-     * @param element the element bean
-     * @param adeConfig the ADE configuration data
-     * @param containerType the container type
-     * @param containerWidth the container width
-     * 
-     * @return the formatter configuration bean, may be <code>null</code> if no formatter available or a schema formatter is used
-     */
-    private I_CmsFormatterBean ensureValidFormatterSettings(
-        CmsObject cms,
-        CmsContainerElementBean element,
-        CmsADEConfigData adeConfig,
-        String containerType,
-        int containerWidth) {
-
-        I_CmsFormatterBean formatterBean = null;
-        if ((element.getFormatterId() != null) && cms.existsResource(element.getFormatterId())) {
-
-            if (!element.getSettings().containsKey(CmsFormatterConfig.getSettingsKeyForContainer(getName()))) {
-                for (I_CmsFormatterBean formatter : adeConfig.getFormatters(cms, element.getResource()).getAllMatchingFormatters(
-                    containerType,
-                    containerWidth)) {
-                    if (element.getFormatterId().equals(formatter.getJspStructureId())) {
-                        String formatterConfigId = formatter.getId();
-                        if (formatterConfigId == null) {
-                            formatterConfigId = CmsFormatterConfig.SCHEMA_FORMATTER_ID;
-                        }
-                        element.getSettings().put(
-                            CmsFormatterConfig.getSettingsKeyForContainer(getName()),
-                            formatterConfigId);
-                        formatterBean = formatter;
-                    }
-                }
-            } else {
-                String formatterConfigId = element.getSettings().get(
-                    CmsFormatterConfig.getSettingsKeyForContainer(getName()));
-                if (CmsUUID.isValidUUID(formatterConfigId)) {
-                    formatterBean = OpenCms.getADEManager().getCachedFormatters(false).getFormatters().get(
-                        formatterConfigId);
-                }
-            }
-        } else {
-            formatterBean = adeConfig.getFormatters(cms, element.getResource()).getDefaultFormatter(
-                containerType,
-                containerWidth);
-            if (formatterBean != null) {
-                String formatterConfigId = formatterBean.getId();
-                if (formatterConfigId == null) {
-                    formatterConfigId = CmsFormatterConfig.SCHEMA_FORMATTER_ID;
-                }
-                element.getSettings().put(CmsFormatterConfig.getSettingsKeyForContainer(getName()), formatterConfigId);
-                element.setFormatterId(formatterBean.getJspStructureId());
-            } else {
-                element.setFormatterId(null);
-            }
-        }
-        return formatterBean;
     }
 
     /**
