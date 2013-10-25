@@ -91,6 +91,9 @@ public class CmsFormatterBeanParser {
     public static final String N_CSS_LINK = "CssLink";
 
     /** Content value node name. */
+    public static final String N_DETAIL = "Detail";
+
+    /** Content value node name. */
     public static final String N_EXTRACT_CONTENT = "ExtractContent";
 
     /** Content value node name. */
@@ -252,6 +255,9 @@ public class CmsFormatterBeanParser {
         String searchableStr = getString(root, N_EXTRACT_CONTENT, "true");
         m_extractContent = Boolean.parseBoolean(searchableStr);
 
+        String isDetailStr = getString(root, N_DETAIL, "true");
+        boolean isDetail = Boolean.parseBoolean(isDetailStr);
+
         parseMatch(root);
         parseHeadIncludes(root);
         parseSettings(root);
@@ -275,7 +281,8 @@ public class CmsFormatterBeanParser {
             id,
             m_settings,
             true,
-            m_autoEnabled);
+            m_autoEnabled,
+            isDetail);
         return formatterBean;
     }
 

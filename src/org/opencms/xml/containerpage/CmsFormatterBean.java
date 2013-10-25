@@ -79,6 +79,9 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     /** Is the formatter automatically enabled? */
     private boolean m_isAutoEnabled;
 
+    /** True if this formatter can be used for detail views. */
+    private boolean m_isDetail;
+
     /** Is the formatter from a formatter configuration file? */
     private boolean m_isFromFormatterConfigFile;
 
@@ -144,6 +147,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
      * @param settings 
      * @param isFromConfigFile
      * @param isAutoEnabled 
+     * @param isDetail 
      */
     public CmsFormatterBean(
         Set<String> containerTypes,
@@ -165,7 +169,8 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
         String id,
         Map<String, CmsXmlContentProperty> settings,
         boolean isFromConfigFile,
-        boolean isAutoEnabled) {
+        boolean isAutoEnabled,
+        boolean isDetail) {
 
         m_jspRootPath = jspRootPath;
         m_jspStructureId = jspStructureId;
@@ -189,6 +194,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
         m_settings.putAll(settings);
         m_isFromFormatterConfigFile = isFromConfigFile;
         m_isAutoEnabled = isAutoEnabled;
+        m_isDetail = isDetail;
     }
 
     /**
@@ -234,7 +240,8 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
             null,
             Collections.<String, CmsXmlContentProperty> emptyMap(),
             false,
-            false);
+            false,
+            true);
 
         // TODO Auto-generated constructor stub
 
@@ -291,6 +298,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
         : Boolean.valueOf(searchContent).booleanValue();
 
         m_location = location;
+        m_rank = DEFAULT_SCHEMA_RANK;
     }
 
     /**
@@ -322,7 +330,8 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
             null,
             Collections.<String, CmsXmlContentProperty> emptyMap(),
             false,
-            false);
+            false,
+            true);
         m_matchAll = true;
     }
 
@@ -501,6 +510,14 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     public boolean isAutoEnabled() {
 
         return m_isAutoEnabled;
+    }
+
+    /**
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#isDetailFormatter()
+     */
+    public boolean isDetailFormatter() {
+
+        return m_isDetail;
     }
 
     /**

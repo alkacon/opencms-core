@@ -669,7 +669,7 @@ public class CmsJspTagContainer extends TagSupport {
                 cms,
                 cms.getRequestContext().getRootUri());
             CmsFormatterConfiguration formatters = config.getFormatters(cms, detailContent);
-            I_CmsFormatterBean formatter = formatters.getDefaultFormatter(getType(), getContainerWidth());
+            I_CmsFormatterBean formatter = formatters.getDetailFormatter(getType(), getContainerWidth());
             if (formatter != null) {
                 // create element bean
                 element = new CmsContainerElementBean(

@@ -25,6 +25,7 @@
         	<xsd:element name="HeadIncludeCss" type="OpenCmsHeadIncludeCss" minOccurs="0" maxOccurs="1"/>
         	<xsd:element name="HeadIncludeJs" type="OpenCmsHeadIncludeJavascript" minOccurs="0" maxOccurs="1" /> 
         	<xsd:element name="AutoEnabled" type="OpenCmsBoolean" />
+        	<xsd:element name="Detail" type="OpenCmsBoolean" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>
@@ -32,8 +33,8 @@
         <xsd:appinfo>
         <defaults>
 			<default element="Rank" value="1000" />
+			<default element="Detail" value="true" />
 		</defaults>
-        
         <layouts>
         	<layout element="Type" widget="org.opencms.widgets.CmsTypeComboWidget"  />
         </layouts>

@@ -164,6 +164,13 @@ public interface I_CmsFormatterBean {
     boolean isAutoEnabled();
 
     /**
+     * Returns true if the formatter can be used for detail views.<p>
+     * 
+     * @return true if the formatter can be used for detail views 
+     */
+    boolean isDetailFormatter();
+
+    /**
      * Returns true if the formatter is from a formatter configuration file.<p>
      * 
      * @return formatter f 

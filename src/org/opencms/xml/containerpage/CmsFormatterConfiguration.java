@@ -48,6 +48,7 @@ import org.apache.commons.logging.Log;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Iterables;
@@ -76,6 +77,20 @@ public final class CmsFormatterConfiguration {
             return ComparisonChain.start().compare(second.getRank(), first.getRank()).compare(
                 second.isTypeFormatter() ? 1 : 0,
                 first.isTypeFormatter() ? 1 : 0).compare(second.getMinWidth(), first.getMinWidth()).result();
+        }
+    }
+
+    /**
+     * Predicate which checks whether the given formatter is a detail formatter.<p>
+     */
+    public static class IsDetail implements Predicate<I_CmsFormatterBean> {
+
+        /**
+         * @see com.google.common.base.Predicate#apply(java.lang.Object)
+         */
+        public boolean apply(I_CmsFormatterBean formatter) {
+
+            return formatter.isDetailFormatter();
         }
     }
 
@@ -228,6 +243,24 @@ public final class CmsFormatterConfiguration {
         Optional<I_CmsFormatterBean> result = Iterables.tryFind(m_allFormatters, new MatchesTypeOrWidth(
             containerType,
             containerWidth));
+        return result.orNull();
+    }
+
+    /**
+     * Gets the detail formatter to use for the given type and container width.<p>
+     * 
+     * @param type the container type 
+     * @param containerWidth the container width 
+     * 
+     * @return the detail formatter to use 
+     */
+    public I_CmsFormatterBean getDetailFormatter(String type, int containerWidth) {
+
+        // detail formatters must still match the type or width 
+        Predicate<I_CmsFormatterBean> checkValidDetailFormatter = Predicates.and(new MatchesTypeOrWidth(
+            type,
+            containerWidth), new IsDetail());
+        Optional<I_CmsFormatterBean> result = Iterables.tryFind(m_allFormatters, checkValidDetailFormatter);
         return result.orNull();
     }
 
