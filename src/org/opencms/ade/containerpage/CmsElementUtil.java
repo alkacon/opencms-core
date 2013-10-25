@@ -394,7 +394,13 @@ public class CmsElementUtil {
                     }
                     config.setCssResources(cssResources);
                     config.setLabel(label);
-                    config.setSettingConfig(new LinkedHashMap<String, CmsXmlContentProperty>(formatter.getSettings()));
+                    Map<String, CmsXmlContentProperty> settingsConfig = new LinkedHashMap<String, CmsXmlContentProperty>(
+                        formatter.getSettings());
+                    settingsConfig = CmsXmlContentPropertyHelper.resolveMacrosForPropertyInfo(
+                        m_cms,
+                        element.getResource(),
+                        settingsConfig);
+                    config.setSettingConfig(settingsConfig);
                     config.setJspRootPath(formatter.getJspRootPath());
                     containerFormatters.put(id, config);
                 }
