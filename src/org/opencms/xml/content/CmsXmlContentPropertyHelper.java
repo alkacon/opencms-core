@@ -500,6 +500,30 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
     }
 
     /**
+     * Resolves macros in the given property information for the given resource (type) AND the current user.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param resource the resource
+     * @param propertiesConf the property information
+     * 
+     * @return the property information
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public static Map<String, CmsXmlContentProperty> resolveMacrosForPropertyInfo(
+        CmsObject cms,
+        CmsResource resource,
+        Map<String, CmsXmlContentProperty> propertiesConf) throws CmsException {
+
+        if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
+            I_CmsXmlContentHandler contentHandler = CmsXmlContentDefinition.getContentHandlerForResource(cms, resource);
+            CmsMacroResolver resolver = getMacroResolverForProperties(cms, contentHandler);
+            return resolveMacrosInProperties(propertiesConf, resolver);
+        }
+        return propertiesConf;
+    }
+
+    /**
      * Resolves macros in all properties in a map.<p>
      * 
      * @param properties the map of properties in which macros should be resolved 
