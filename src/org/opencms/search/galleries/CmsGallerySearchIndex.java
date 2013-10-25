@@ -261,22 +261,23 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
                 folders.addAll(params.getGalleries());
             }
             filter = appendPathFilter(searchCms, filter, folders);
-
-            String subsite = null;
-            if (params.getReferencePath() != null) {
-                subsite = OpenCms.getADEManager().getSubSiteRoot(
-                    cms,
-                    cms.getRequestContext().addSiteRoot(params.getReferencePath()));
-                if (subsite != null) {
-                    subsite = cms.getRequestContext().removeSiteRoot(subsite);
+            // only append scope filter if no no folders or galleries given
+            if (folders.isEmpty()) {
+                String subsite = null;
+                if (params.getReferencePath() != null) {
+                    subsite = OpenCms.getADEManager().getSubSiteRoot(
+                        cms,
+                        cms.getRequestContext().addSiteRoot(params.getReferencePath()));
+                    if (subsite != null) {
+                        subsite = cms.getRequestContext().removeSiteRoot(subsite);
+                    }
                 }
+                List<String> scopeFolders = getSearchRootsForScope(
+                    params.getScope(),
+                    cms.getRequestContext().getSiteRoot(),
+                    subsite);
+                filter = appendPathFilter(searchCms, filter, scopeFolders);
             }
-            List<String> scopeFolders = getSearchRootsForScope(
-                params.getScope(),
-                cms.getRequestContext().getSiteRoot(),
-                subsite);
-            filter = appendPathFilter(searchCms, filter, scopeFolders);
-
             // append category filter
             filter = appendCategoryFilter(searchCms, filter, params.getCategories());
             // append container type filter
