@@ -472,7 +472,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
     private I_CmsFormatterBean getFormatterBeanForElement(
         CmsContainerElementBean element,
         CmsContainerBean container,
-        Map<CmsUUID, CmsFormatterBean> formatters) {
+        Map<CmsUUID, I_CmsFormatterBean> formatters) {
 
         I_CmsFormatterBean result = null;
         String formatterConfigId = element.getSettings() != null ? element.getSettings().get(
