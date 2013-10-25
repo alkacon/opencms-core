@@ -45,7 +45,6 @@ import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
-import org.opencms.xml.containerpage.CmsFormatterBean;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.containerpage.CmsXmlContainerPage;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
@@ -280,7 +279,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
             }
         }
         if ((containerPage != null) && (containerPage.getElements() != null)) {
-            Map<CmsUUID, CmsFormatterBean> formatters = OpenCms.getADEManager().getCachedFormatters(
+            Map<CmsUUID, I_CmsFormatterBean> formatters = OpenCms.getADEManager().getCachedFormatters(
                 standardContext.isOnline()).getFormatters();
             for (CmsContainerBean container : containerPage.getContainers().values()) {
                 for (CmsContainerElementBean element : container.getElements()) {
@@ -355,7 +354,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
             }
         }
         if ((containerPage != null) && (containerPage.getElements() != null)) {
-            Map<CmsUUID, CmsFormatterBean> formatters = OpenCms.getADEManager().getCachedFormatters(
+            Map<CmsUUID, I_CmsFormatterBean> formatters = OpenCms.getADEManager().getCachedFormatters(
                 standardContext.isOnline()).getFormatters();
             for (CmsContainerBean container : containerPage.getContainers().values()) {
                 for (CmsContainerElementBean element : container.getElements()) {
