@@ -27,6 +27,7 @@
 		<exportpoints>
 			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/lib/" destination="WEB-INF/lib/"/>
 			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/webserver-templates/available-macros.txt" destination="WEB-INF/server-scripts/available-macros.txt"/>
+			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/webserver-templates/cron.sh" destination="WEB-INF/server-scripts/cron.sh"/>
 			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/webserver-templates/script.bat" destination="WEB-INF/server-scripts/script.bat"/>
 			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/webserver-templates/script.sh" destination="WEB-INF/server-scripts/script.sh"/>
 			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/webserver-templates/vhost-secure.template" destination="WEB-INF/server-scripts/vhost-secure.template"/>
@@ -171,6 +172,26 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[A list of available macros]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.tools.sites/webserver-templates/cron.sh</source>
+			<destination>system/modules/org.opencms.workplace.tools.sites/webserver-templates/cron.sh</destination>
+			<type>plain</type>
+			<uuidstructure>254721a9-3d85-11e3-acc0-919ad3557f10</uuidstructure>
+			<uuidresource>254721aa-3d85-11e3-acc0-919ad3557f10</uuidresource>
+			<datelastmodified>Fri, 25 Oct 2013 14:54:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Oct 2013 14:53:01 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Bash Script that reloads Apache that can be used for a cron job]]></value>
 				</property>
 			</properties>
 			<relations/>
