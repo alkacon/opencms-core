@@ -184,7 +184,7 @@ allModuleNames.split(',').each{ moduleName ->
     
     if (isExternal.toBoolean()){
         moduleFolder = file("${external_directories}/modules/${moduleName}")
-        srcGwtDir = "${external_directories}/src-gwt/"
+        srcGwtDir = file("${external_directories}/src-gwt/")
         moduleSrcFolder = file("${external_directories}/src-modules")
     }
     def propertyFile = file("${moduleFolder}/module.properties")
@@ -197,7 +197,7 @@ allModuleNames.split(',').each{ moduleName ->
         }
         if (moduleProperties['module.gwt']!=null){
             gwtModule = moduleProperties['module.gwt']
-            def moduleXml = (new XmlParser()).parse(srcGwtDir +gwtModule.replaceAll('\\.','/')+'.gwt.xml')
+            def moduleXml = (new XmlParser()).parse(srcGwtDir.toString()+"/" +gwtModule.replaceAll('\\.','/')+'.gwt.xml')
             gwtRename = moduleXml['@rename-to']
             if (gwtRename==null){
                 gwtRename=moduleName
