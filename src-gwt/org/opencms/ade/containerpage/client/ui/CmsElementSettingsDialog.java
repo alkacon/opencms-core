@@ -300,7 +300,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
         final boolean hasFormatterChanges;
         if (m_formatterSelect != null) {
             fieldValues.put(
-                CmsFormatterConfig.FORMATTER_SETTINGS_KEY + m_containerId,
+                CmsFormatterConfig.getSettingsKeyForContainer(m_containerId),
                 m_formatterSelect.getFormValueAsString());
             hasFormatterChanges = true;
         } else {

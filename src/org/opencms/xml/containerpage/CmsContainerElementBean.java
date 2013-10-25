@@ -66,7 +66,7 @@ public class CmsContainerElementBean implements Cloneable {
     private final CmsUUID m_elementId;
 
     /** The formatter's structure id. */
-    private final CmsUUID m_formatterId;
+    private CmsUUID m_formatterId;
 
     /** The configured properties. */
     private final Map<String, String> m_individualSettings;
@@ -521,6 +521,16 @@ public class CmsContainerElementBean implements Cloneable {
     public void setInheritanceInfo(CmsInheritanceInfo inheritanceInfo) {
 
         m_inheritanceInfo = inheritanceInfo;
+    }
+
+    /**
+     * Sets the formatter id.<p>
+     * 
+     * @param formatterId the formatter id
+     */
+    public void setFormatterId(CmsUUID formatterId) {
+
+        m_formatterId = formatterId;
     }
 
     /**

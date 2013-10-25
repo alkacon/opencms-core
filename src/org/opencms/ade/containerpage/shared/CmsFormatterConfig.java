@@ -39,11 +39,11 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class CmsFormatterConfig implements IsSerializable {
 
-    /** Key for the formatter configuration id setting. Append the container name to the key, to store container depending values. */
-    public static final String FORMATTER_SETTINGS_KEY = "formatterSettings#";
-
     /** Id used for schema based formatters. */
     public static final String SCHEMA_FORMATTER_ID = "schema_formatter";
+
+    /** Key for the formatter configuration id setting. Append the container name to the key, to store container depending values. */
+    private static final String FORMATTER_SETTINGS_KEY = "formatterSettings#";
 
     /** The required css resources. */
     private Set<String> m_cssResources;
@@ -64,6 +64,16 @@ public class CmsFormatterConfig implements IsSerializable {
     private Map<String, CmsXmlContentProperty> m_settingConfig;
 
     /**
+     * Constructor.<p>
+     * 
+     * @param id the formatter id
+     */
+    public CmsFormatterConfig(String id) {
+
+        m_id = id;
+    }
+
+    /**
      * Constructor for serialization only.<p>
      */
     protected CmsFormatterConfig() {
@@ -72,13 +82,15 @@ public class CmsFormatterConfig implements IsSerializable {
     }
 
     /**
-     * Constructor.<p>
+     * Returns the formatter configuration settings key for the given container name.<p>
      * 
-     * @param id the formatter id
+     * @param containerName the container name
+     * 
+     * @return the settings key
      */
-    public CmsFormatterConfig(String id) {
+    public static String getSettingsKeyForContainer(String containerName) {
 
-        m_id = id;
+        return FORMATTER_SETTINGS_KEY + containerName;
     }
 
     /**

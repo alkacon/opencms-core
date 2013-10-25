@@ -31,6 +31,7 @@ import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.containerpage.CmsContainerpageService;
 import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
+import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.history.CmsHistoryResourceHandler;
@@ -50,6 +51,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsADESessionCache;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
@@ -898,15 +900,21 @@ public class CmsJspTagContainer extends TagSupport {
         String containerType = getType();
         int containerWidth = getContainerWidth();
         element.initResource(cms);
-        // writing elements to the session cache to improve performance of the container-page editor in offline project
-        if (!isOnline) {
-            getSessionCache(cms).setCacheContainerElement(element.editorHash(), element);
-        }
         CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(
             cms,
             cms.getRequestContext().getRootUri());
         boolean isGroupContainer = element.isGroupContainer(cms);
         boolean isInheritedContainer = element.isInheritedContainer(cms);
+        I_CmsFormatterBean formatterConfig = null;
+        // writing elements to the session cache to improve performance of the container-page editor in offline project
+        if (!isOnline) {
+            if (!isGroupContainer && !isInheritedContainer) {
+                // ensure that the formatter configuration id is added to the element settings, so it will be persisted on save
+                formatterConfig = ensureValidFormatterSettings(cms, element, adeConfig, containerType, containerWidth);
+            }
+            getSessionCache(cms).setCacheContainerElement(element.editorHash(), element);
+        }
+
         if (isGroupContainer || isInheritedContainer) {
             if (alreadyFull) {
                 return false;
@@ -928,18 +936,27 @@ public class CmsJspTagContainer extends TagSupport {
                     if (isOnline && !shouldShowSubElementInContext) {
                         continue;
                     }
+                    I_CmsFormatterBean subElementFormatterConfig = null;
                     // writing elements to the session cache to improve performance of the container-page editor
                     if (!isOnline) {
+                        subElementFormatterConfig = ensureValidFormatterSettings(
+                            cms,
+                            subelement,
+                            adeConfig,
+                            containerType,
+                            containerWidth);
                         getSessionCache(cms).setCacheContainerElement(subelement.editorHash(), subelement);
                     }
-                    CmsFormatterConfiguration subelementFormatters = adeConfig.getFormatters(
-                        cms,
-                        subelement.getResource());
-                    I_CmsFormatterBean subelementFormatter = subelementFormatters.getDefaultFormatter(
-                        containerType,
-                        containerWidth);
+                    if (subElementFormatterConfig == null) {
+                        CmsFormatterConfiguration subelementFormatters = adeConfig.getFormatters(
+                            cms,
+                            subelement.getResource());
+                        subElementFormatterConfig = subelementFormatters.getDefaultFormatter(
+                            containerType,
+                            containerWidth);
+                    }
 
-                    if (subelementFormatter == null) {
+                    if (subElementFormatterConfig == null) {
                         if (LOG.isErrorEnabled()) {
                             LOG.error(new CmsIllegalStateException(Messages.get().container(
                                 Messages.ERR_XSD_NO_TEMPLATE_FORMATTER_3,
@@ -958,7 +975,7 @@ public class CmsJspTagContainer extends TagSupport {
                         if (shouldShowSubElementInContext) {
                             CmsJspTagInclude.includeTagAction(
                                 pageContext,
-                                subelementFormatter.getJspRootPath(),
+                                subElementFormatterConfig.getJspRootPath(),
                                 null,
                                 locale,
                                 false,
@@ -976,13 +993,13 @@ public class CmsJspTagContainer extends TagSupport {
                                 Messages.get().getBundle().key(
                                     Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
                                     subelement.getSitePath(),
-                                    subelementFormatter),
+                                    subElementFormatterConfig),
                                 e);
                         }
                         printElementErrorTag(
                             isOnline,
                             subelement.getSitePath(),
-                            subelementFormatter.getJspRootPath(),
+                            subElementFormatterConfig.getJspRootPath(),
                             e);
                     }
                     printElementWrapperTagEnd(isOnline, false);
@@ -1006,7 +1023,11 @@ public class CmsJspTagContainer extends TagSupport {
             } else {
                 String formatter = null;
                 try {
-                    formatter = cms.getSitePath(cms.readResource(element.getFormatterId()));
+                    if (formatterConfig != null) {
+                        formatter = cms.getRequestContext().removeSiteRoot(formatterConfig.getJspRootPath());
+                    } else {
+                        formatter = cms.getSitePath(cms.readResource(element.getFormatterId()));
+                    }
                 } catch (CmsException e) {
                     // the formatter resource can not be found, try reading it form the configuration
                     CmsFormatterConfiguration elementFormatters = adeConfig.getFormatters(cms, element.getResource());
@@ -1024,7 +1045,7 @@ public class CmsJspTagContainer extends TagSupport {
                         // skip this element, it has no formatter for this container type defined
                         return false;
                     }
-                    formatter = elementFormatterBean.getJspRootPath();
+                    formatter = cms.getRequestContext().removeSiteRoot(elementFormatterBean.getJspRootPath());
                 }
 
                 printElementWrapperTagStart(isOnline, cms, element, false);
@@ -1063,6 +1084,68 @@ public class CmsJspTagContainer extends TagSupport {
             }
             return result;
         }
+    }
+
+    /**
+     * Ensures the appropriate formatter configuration  ID is set in the element settings.<p>
+     * 
+     * @param cms the cms context
+     * @param element the element bean
+     * @param adeConfig the ADE configuration data
+     * @param containerType the container type
+     * @param containerWidth the container width
+     * 
+     * @return the formatter configuration bean, may be <code>null</code> if no formatter available or a schema formatter is used
+     */
+    private I_CmsFormatterBean ensureValidFormatterSettings(
+        CmsObject cms,
+        CmsContainerElementBean element,
+        CmsADEConfigData adeConfig,
+        String containerType,
+        int containerWidth) {
+
+        I_CmsFormatterBean formatterBean = null;
+        if ((element.getFormatterId() != null) && cms.existsResource(element.getFormatterId())) {
+
+            if (!element.getSettings().containsKey(CmsFormatterConfig.getSettingsKeyForContainer(getName()))) {
+                for (I_CmsFormatterBean formatter : adeConfig.getFormatters(cms, element.getResource()).getAllMatchingFormatters(
+                    containerType,
+                    containerWidth)) {
+                    if (element.getFormatterId().equals(formatter.getJspStructureId())) {
+                        String formatterConfigId = formatter.getId();
+                        if (formatterConfigId == null) {
+                            formatterConfigId = CmsFormatterConfig.SCHEMA_FORMATTER_ID;
+                        }
+                        element.getSettings().put(
+                            CmsFormatterConfig.getSettingsKeyForContainer(getName()),
+                            formatterConfigId);
+                        formatterBean = formatter;
+                    }
+                }
+            } else {
+                String formatterConfigId = element.getSettings().get(
+                    CmsFormatterConfig.getSettingsKeyForContainer(getName()));
+                if (CmsUUID.isValidUUID(formatterConfigId)) {
+                    formatterBean = OpenCms.getADEManager().getCachedFormatters(false).getFormatters().get(
+                        formatterConfigId);
+                }
+            }
+        } else {
+            formatterBean = adeConfig.getFormatters(cms, element.getResource()).getDefaultFormatter(
+                containerType,
+                containerWidth);
+            if (formatterBean != null) {
+                String formatterConfigId = formatterBean.getId();
+                if (formatterConfigId == null) {
+                    formatterConfigId = CmsFormatterConfig.SCHEMA_FORMATTER_ID;
+                }
+                element.getSettings().put(CmsFormatterConfig.getSettingsKeyForContainer(getName()), formatterConfigId);
+                element.setFormatterId(formatterBean.getJspStructureId());
+            } else {
+                element.setFormatterId(null);
+            }
+        }
+        return formatterBean;
     }
 
     /**

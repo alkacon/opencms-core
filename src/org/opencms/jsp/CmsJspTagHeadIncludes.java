@@ -283,21 +283,24 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                 standardContext.isOnline()).getFormatters();
             for (CmsContainerBean container : containerPage.getContainers().values()) {
                 for (CmsContainerElementBean element : container.getElements()) {
-                    String formatterConfigId = element.getSettings().get(
-                        CmsFormatterConfig.FORMATTER_SETTINGS_KEY + container.getName());
-                    if (CmsUUID.isValidUUID(formatterConfigId)
-                        && formatters.containsKey(new CmsUUID(formatterConfigId))) {
-                        cssIncludes.addAll(formatters.get(new CmsUUID(formatterConfigId)).getCssHeadIncludes());
+                    element.initResource(cms);
+                    if (element.isGroupContainer(cms) || element.isInheritedContainer(cms)) {
+                        // TODO: implement for element groups
                     } else {
-                        try {
-                            element.initResource(cms);
-                            cssIncludes.addAll(getCSSHeadIncludes(cms, element.getResource()));
-                        } catch (CmsException e) {
-                            LOG.error(
-                                Messages.get().getBundle().key(
-                                    Messages.ERR_READING_REQUIRED_RESOURCE_1,
-                                    element.getSitePath()),
-                                e);
+                        I_CmsFormatterBean formatter = getFormatterBeanForElement(element, container, formatters);
+                        if (formatter != null) {
+                            cssIncludes.addAll(formatter.getCssHeadIncludes());
+                        } else {
+                            try {
+                                element.initResource(cms);
+                                cssIncludes.addAll(getCSSHeadIncludes(cms, element.getResource()));
+                            } catch (CmsException e) {
+                                LOG.error(
+                                    Messages.get().getBundle().key(
+                                        Messages.ERR_READING_REQUIRED_RESOURCE_1,
+                                        element.getSitePath()),
+                                    e);
+                            }
                         }
                     }
                 }
@@ -358,21 +361,24 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                 standardContext.isOnline()).getFormatters();
             for (CmsContainerBean container : containerPage.getContainers().values()) {
                 for (CmsContainerElementBean element : container.getElements()) {
-                    String formatterConfigId = element.getSettings().get(
-                        CmsFormatterConfig.FORMATTER_SETTINGS_KEY + container.getName());
-                    if (CmsUUID.isValidUUID(formatterConfigId)
-                        && formatters.containsKey(new CmsUUID(formatterConfigId))) {
-                        jsIncludes.addAll(formatters.get(new CmsUUID(formatterConfigId)).getJavascriptHeadIncludes());
+                    element.initResource(cms);
+                    if (element.isGroupContainer(cms) || element.isInheritedContainer(cms)) {
+                        // TODO: implement for element groups
                     } else {
-                        try {
-                            element.initResource(cms);
-                            jsIncludes.addAll(getJSHeadIncludes(cms, element.getResource()));
-                        } catch (CmsException e) {
-                            LOG.error(
-                                Messages.get().getBundle().key(
-                                    Messages.ERR_READING_REQUIRED_RESOURCE_1,
-                                    element.getSitePath()),
-                                e);
+                        I_CmsFormatterBean formatter = getFormatterBeanForElement(element, container, formatters);
+                        if (formatter != null) {
+                            jsIncludes.addAll(formatter.getJavascriptHeadIncludes());
+                        } else {
+                            try {
+                                element.initResource(cms);
+                                jsIncludes.addAll(getJSHeadIncludes(cms, element.getResource()));
+                            } catch (CmsException e) {
+                                LOG.error(
+                                    Messages.get().getBundle().key(
+                                        Messages.ERR_READING_REQUIRED_RESOURCE_1,
+                                        element.getSitePath()),
+                                    e);
+                            }
                         }
                     }
                 }
@@ -452,6 +458,30 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
             }
         }
         return Collections.emptySet();
+    }
+
+    /**
+     * Returns the formatter configuration for the given element, will return <code>null</code> for schema formatters.<p>
+     * 
+     * @param element the element bean
+     * @param container the container bean
+     * @param formatters the formatter map
+     * 
+     * @return the formatter configuration bean
+     */
+    private I_CmsFormatterBean getFormatterBeanForElement(
+        CmsContainerElementBean element,
+        CmsContainerBean container,
+        Map<CmsUUID, CmsFormatterBean> formatters) {
+
+        I_CmsFormatterBean result = null;
+        String formatterConfigId = element.getSettings() != null ? element.getSettings().get(
+            CmsFormatterConfig.getSettingsKeyForContainer(container.getName())) : null;
+        if (CmsUUID.isValidUUID(formatterConfigId)) {
+            result = formatters.get(new CmsUUID(formatterConfigId));
+        }
+
+        return result;
     }
 
     /**
