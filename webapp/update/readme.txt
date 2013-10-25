@@ -102,7 +102,20 @@ The wizard will finish similar to the setup wizard. After the final confirmation
 the wizard will be locked again (in the opencms.properties file).
 
 
-6. Shutdown and restart your OpenCms servlet container
+
+6. Update Solr configuration
+
+During the update Solr will be disabled in the WEB-INF/config/opencms-search.xml.
+To update Solr you must update the 'schema.xml and' the 'solrconfig.xml' manually.
+The new default configuration files are located in the solr-update/ directory in 
+the WEB-INF folder of your application. If you are using the default configuration
+from the distribution, it is sufficient to copy the new configuration files to the
+WEB-INF/solr folder. Else if you have customized the Solr configuration you might 
+want to merge the 'schema.xml' and the 'solrconfig.xml' first. When you are done 
+set the attribute enabled to 'true' again (and restart the servelt container).
+
+
+7. Shutdown and restart your OpenCms servlet container
 
 Note: to be sure all jsp files work correctly please delete the servlet containers
 work directory (ie. ${TOMCAT_HOME}/work/Catalina/localhost/opencms/) and the 

@@ -505,6 +505,11 @@ task updater (dependsOn: setupJar, type: Zip){
         exclude 'update/empty.jar'
         exclude 'update/readme.txt'
     }
+	from ("${projectDir}/webapp/WEB-INF/solr/conf"){
+		into '/WEB-INF/solr-update/'
+        include 'schema.xml'
+        include 'solrconfig.xml'
+    }
     from "${projectDir}/webapp/update/readme.txt"
     from ("${projectDir}/webapp/WEB-INF"){
         into '/WEB-INF'
