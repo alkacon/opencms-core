@@ -60,6 +60,15 @@ public class CmsXmlContainerPageHandler extends CmsDefaultXmlContentHandler {
     }
 
     /**
+     * @see org.opencms.xml.content.CmsDefaultXmlContentHandler#hasModifiableFormatters()
+     */
+    @Override
+    public boolean hasModifiableFormatters() {
+
+        return false;
+    }
+
+    /**
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#resolveValidation(org.opencms.file.CmsObject, org.opencms.xml.types.I_CmsXmlContentValue, org.opencms.xml.content.CmsXmlContentErrorHandler)
      */
     @Override
@@ -119,17 +128,19 @@ public class CmsXmlContainerPageHandler extends CmsDefaultXmlContentHandler {
                     if (!res.isReleased(time)) {
                         if (errorHandler != null) {
                             // generate warning message
-                            errorHandler.addWarning(value, org.opencms.xml.content.Messages.get().getBundle(
-                                value.getLocale()).key(
-                                org.opencms.xml.content.Messages.GUI_XMLCONTENT_CHECK_WARNING_NOT_RELEASED_0));
+                            errorHandler.addWarning(
+                                value,
+                                org.opencms.xml.content.Messages.get().getBundle(value.getLocale()).key(
+                                    org.opencms.xml.content.Messages.GUI_XMLCONTENT_CHECK_WARNING_NOT_RELEASED_0));
                         }
                         return true;
                     } else if (res.isExpired(time)) {
                         if (errorHandler != null) {
                             // generate warning message
-                            errorHandler.addWarning(value, org.opencms.xml.content.Messages.get().getBundle(
-                                value.getLocale()).key(
-                                org.opencms.xml.content.Messages.GUI_XMLCONTENT_CHECK_WARNING_EXPIRED_0));
+                            errorHandler.addWarning(
+                                value,
+                                org.opencms.xml.content.Messages.get().getBundle(value.getLocale()).key(
+                                    org.opencms.xml.content.Messages.GUI_XMLCONTENT_CHECK_WARNING_EXPIRED_0));
                         }
                         return true;
                     }
@@ -138,8 +149,10 @@ public class CmsXmlContainerPageHandler extends CmsDefaultXmlContentHandler {
         } catch (CmsException e) {
             if (errorHandler != null) {
                 // generate error message
-                errorHandler.addError(value, org.opencms.xml.content.Messages.get().getBundle(value.getLocale()).key(
-                    org.opencms.xml.content.Messages.GUI_XMLCONTENT_CHECK_ERROR_0));
+                errorHandler.addError(
+                    value,
+                    org.opencms.xml.content.Messages.get().getBundle(value.getLocale()).key(
+                        org.opencms.xml.content.Messages.GUI_XMLCONTENT_CHECK_ERROR_0));
             }
             return true;
         }

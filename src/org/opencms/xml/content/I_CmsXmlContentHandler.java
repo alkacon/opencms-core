@@ -67,14 +67,14 @@ public interface I_CmsXmlContentHandler {
         /** The two column type. */
         column,
 
+        /** The default display type. */
+        none,
+
         /** The single line type. */
         singleline,
 
         /** The default wide display type. */
-        wide,
-
-        /** The default display type. */
-        none
+        wide
     }
 
     /** List of all allowed attribute mapping names, for fast lookup. */
@@ -366,6 +366,13 @@ public interface I_CmsXmlContentHandler {
      * @throws CmsXmlException if something goes wrong
      */
     I_CmsWidget getWidget(I_CmsXmlSchemaType value) throws CmsXmlException;
+
+    /**
+     * Returns true if the contents for this content handler have schema-based formatters which can be disabled or enabled.<p>
+     * 
+     * @return true if the contents for this content handler have schema-based formatters which can be disabled or enabled
+     */
+    boolean hasModifiableFormatters();
 
     /**
      * Initializes this content handler for the given XML content definition by

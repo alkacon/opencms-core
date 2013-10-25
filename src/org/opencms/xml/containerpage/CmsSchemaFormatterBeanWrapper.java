@@ -30,6 +30,7 @@ package org.opencms.xml.containerpage;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.I_CmsXmlContentHandler;
@@ -204,7 +205,12 @@ public class CmsSchemaFormatterBeanWrapper implements I_CmsFormatterBean {
      */
     public String getResourceTypeName() {
 
-        return m_wrappedFormatter.getResourceTypeName();
+        try {
+            return OpenCms.getResourceManager().getResourceType(m_elementResource).getTypeName();
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            return "xmlcontent";
+        }
     }
 
     /**

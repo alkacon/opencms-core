@@ -38,6 +38,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsFormatterBean;
+import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
@@ -89,7 +90,7 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
 
     /** The current data contained in the formatter cache.<p> This field is reassigned when formatters are changed, but the objects pointed to by this  field are immutable.<p> **/
     private CmsFormatterConfigurationCacheState m_state = new CmsFormatterConfigurationCacheState(
-        Collections.<CmsUUID, CmsFormatterBean> emptyMap());
+        Collections.<CmsUUID, I_CmsFormatterBean> emptyMap());
 
     /**
      * Creates a new formatter configuration cache instance.<p>
@@ -103,7 +104,7 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
     throws CmsException {
 
         m_cms = OpenCms.initCmsObject(cms);
-        Map<CmsUUID, CmsFormatterBean> noFormatters = Collections.emptyMap();
+        Map<CmsUUID, I_CmsFormatterBean> noFormatters = Collections.emptyMap();
         m_state = new CmsFormatterConfigurationCacheState(noFormatters);
         m_name = name;
     }
@@ -149,9 +150,9 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
             reload();
         } else {
             // normal case: incremental update 
-            Map<CmsUUID, CmsFormatterBean> formattersToUpdate = Maps.newHashMap();
+            Map<CmsUUID, I_CmsFormatterBean> formattersToUpdate = Maps.newHashMap();
             for (CmsUUID structureId : copiedIds) {
-                CmsFormatterBean formatterBean = readFormatter(structureId);
+                I_CmsFormatterBean formatterBean = readFormatter(structureId);
                 // formatterBean may be null here 
                 formattersToUpdate.put(structureId, formatterBean);
             }
@@ -169,9 +170,9 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
             int typeId = OpenCms.getResourceManager().getResourceType(TYPE_FORMATTER_CONFIG).getTypeId();
             CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(typeId);
             List<CmsResource> formatterResources = m_cms.readResources("/", filter);
-            Map<CmsUUID, CmsFormatterBean> newFormatters = Maps.newHashMap();
+            Map<CmsUUID, I_CmsFormatterBean> newFormatters = Maps.newHashMap();
             for (CmsResource formatterResource : formatterResources) {
-                CmsFormatterBean formatterBean = readFormatter(formatterResource.getStructureId());
+                I_CmsFormatterBean formatterBean = readFormatter(formatterResource.getStructureId());
                 if (formatterBean != null) {
                     newFormatters.put(formatterResource.getStructureId(), formatterBean);
                 }

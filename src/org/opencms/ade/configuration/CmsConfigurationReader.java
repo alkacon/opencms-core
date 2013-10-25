@@ -27,6 +27,7 @@
 
 package org.opencms.ade.configuration;
 
+import org.opencms.ade.configuration.formatters.CmsFormatterChangeSet;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -51,8 +52,10 @@ import org.opencms.xml.content.I_CmsXmlContentLocation;
 import org.opencms.xml.content.I_CmsXmlContentValueLocation;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
@@ -65,6 +68,9 @@ public class CmsConfigurationReader {
 
     /** The default locale for configuration objects. */
     public static final Locale DEFAULT_LOCALE = CmsLocaleManager.getLocale("en");
+
+    /** Node name for added formatters. */
+    public static final String N_ADD_FORMATTER = "AddFormatter";
 
     /** The create content locally node name. */
     public static final String N_CREATE_CONTENTS_LOCALLY = "CreateContentsLocally";
@@ -152,6 +158,9 @@ public class CmsConfigurationReader {
 
     /** The property name node name. */
     public static final String N_PROPERTY_NAME = "PropertyName";
+
+    /** Node name for removed formatters. */
+    public static final String N_REMOVE_FORMATTER = "RemoveFormatter";
 
     /** The resource type node name. */
     public static final String N_RESOURCE_TYPE = "ResourceType";
@@ -282,6 +291,21 @@ public class CmsConfigurationReader {
         return new ArrayList<CmsFunctionReference>(m_functionReferences);
     }
 
+    /** 
+     * Parses the formatters to add.<p>
+     * 
+     * @param node the parent node 
+     * @return the set of keys of the formatters to add 
+     */
+    public Set<String> parseAddFormatters(I_CmsXmlContentLocation node) {
+
+        Set<String> addFormatters = new HashSet<String>();
+        for (I_CmsXmlContentValueLocation addLoc : node.getSubValues(N_ADD_FORMATTER)) {
+            addFormatters.add(addLoc.asString(m_cms).trim());
+        }
+        return addFormatters;
+    }
+
     /**
      * Parses a configuration XML content and creates a configuration object from it.<p>
      * 
@@ -332,6 +356,7 @@ public class CmsConfigurationReader {
             parseFunctionReference(node);
         }
 
+        CmsFormatterChangeSet formatterChangeSet = parseFormatterChangeSet(root);
         boolean discardInheritedTypes = getBoolean(root, N_DISCARD_TYPES);
         boolean discardInheritedProperties = getBoolean(root, N_DISCARD_PROPERTIES);
         boolean discardInheritedModelPages = getBoolean(root, N_DISCARD_MODEL_PAGES);
@@ -348,7 +373,8 @@ public class CmsConfigurationReader {
             m_modelPageConfigs,
             m_functionReferences,
             discardInheritedModelPages,
-            createContentsLocally);
+            createContentsLocally,
+            formatterChangeSet);
         result.setResource(content.getFile());
         if (OpenCms.getResourceManager().getResourceType(content.getFile().getTypeId()).getTypeName().equals(
             CmsADEManager.MODULE_CONFIG_TYPE)) {
@@ -427,6 +453,21 @@ public class CmsConfigurationReader {
         CmsModelPageConfig modelPage = new CmsModelPageConfig(m_cms.readResource(page), isDefault, disabled);
         m_modelPageConfigs.add(modelPage);
 
+    }
+
+    /** 
+     * Parses the set of formatters to remove.<p>
+     * 
+     * @param node the parent node 
+     * @return the set of formatters to remove 
+     */
+    public Set<String> parseRemoveFormatters(I_CmsXmlContentLocation node) {
+
+        Set<String> removeFormatters = new HashSet<String>();
+        for (I_CmsXmlContentValueLocation removeLoc : node.getSubValues(N_REMOVE_FORMATTER)) {
+            removeFormatters.add(removeLoc.asString(m_cms).trim());
+        }
+        return removeFormatters;
     }
 
     /**
@@ -606,6 +647,21 @@ public class CmsConfigurationReader {
         String typeName = getString(node.getSubValue(N_TYPE));
         CmsDetailPageInfo detailPage = new CmsDetailPageInfo(id, page, typeName);
         m_detailPageConfigs.add(detailPage);
+    }
+
+    /**
+     * Parses the formatter change set.<p>
+     * 
+     * @param node the parent node 
+     * @return the formatter change set 
+     */
+    protected CmsFormatterChangeSet parseFormatterChangeSet(I_CmsXmlContentLocation node) {
+
+        Set<String> addFormatters = parseAddFormatters(node);
+        Set<String> removeFormatters = parseRemoveFormatters(node);
+        CmsFormatterChangeSet result = new CmsFormatterChangeSet();
+        result.initialize(removeFormatters, addFormatters);
+        return result;
     }
 
     /**

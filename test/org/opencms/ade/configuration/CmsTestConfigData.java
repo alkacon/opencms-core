@@ -27,6 +27,7 @@
 
 package org.opencms.ade.configuration;
 
+import org.opencms.ade.configuration.formatters.CmsFormatterChangeSet;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 
 import java.util.ArrayList;
@@ -66,7 +67,8 @@ public class CmsTestConfigData extends CmsADEConfigData {
             modelPages,
             new ArrayList<CmsFunctionReference>(),
             false,
-            false);
+            false,
+            new CmsFormatterChangeSet());
     }
 
     /**

@@ -98,4 +98,13 @@ public class CmsXmlDynamicFunctionHandler extends CmsDefaultXmlContentHandler {
         }
     }
 
+    /**
+     * @see org.opencms.xml.content.CmsDefaultXmlContentHandler#hasModifiableFormatters()
+     */
+    @Override
+    public boolean hasModifiableFormatters() {
+
+        return false;
+    }
+
 }

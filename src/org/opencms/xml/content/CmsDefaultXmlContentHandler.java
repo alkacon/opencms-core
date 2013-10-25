@@ -875,6 +875,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#hasModifiableFormatters()
+     */
+    public boolean hasModifiableFormatters() {
+
+        return (m_formatters != null) && (m_formatters.size() > 0);
+    }
+
+    /**
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#initialize(org.dom4j.Element, org.opencms.xml.CmsXmlContentDefinition)
      */
     public synchronized void initialize(Element appInfoElement, CmsXmlContentDefinition contentDefinition)
