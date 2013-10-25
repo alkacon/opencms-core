@@ -93,19 +93,19 @@ public class TestSolrSearch extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestSolrSearch.class.getName());
 
-        suite.addTest(new TestSolrSearch("testDocumentTypes"));
-        suite.addTest(new TestSolrSearch("testFolderName"));
-        suite.addTest(new TestSolrSearch("testIndexer"));
-        suite.addTest(new TestSolrSearch("testIndexGeneration"));
-        suite.addTest(new TestSolrSearch("testIssueWithSpecialFoldernames"));
-        suite.addTest(new TestSolrSearch("testLimitTimeRanges"));
-        suite.addTest(new TestSolrSearch("testLimitTimeRangesOptimized"));
-        suite.addTest(new TestSolrSearch("testLocaleRestriction"));
-        suite.addTest(new TestSolrSearch("testMultipleSearchRoots"));
+        //        suite.addTest(new TestSolrSearch("testDocumentTypes"));
+        //        suite.addTest(new TestSolrSearch("testFolderName"));
+        //        suite.addTest(new TestSolrSearch("testIndexer"));
+        //        suite.addTest(new TestSolrSearch("testIndexGeneration"));
+        //        suite.addTest(new TestSolrSearch("testIssueWithSpecialFoldernames"));
+        //        suite.addTest(new TestSolrSearch("testLimitTimeRanges"));
+        //        suite.addTest(new TestSolrSearch("testLimitTimeRangesOptimized"));
+        //        suite.addTest(new TestSolrSearch("testLocaleRestriction"));
+        //        suite.addTest(new TestSolrSearch("testMultipleSearchRoots"));
         suite.addTest(new TestSolrSearch("testQueryDefaults"));
         suite.addTest(new TestSolrSearch("testQueryParameterStrength"));
-        suite.addTest(new TestSolrSearch("testSortResults"));
-        suite.addTest(new TestSolrSearch("testXmlContent"));
+        //        suite.addTest(new TestSolrSearch("testSortResults"));
+        //        suite.addTest(new TestSolrSearch("testXmlContent"));
 
         suite.addTest(new TestSolrSearch("testAdvancedFacetting"));
         // suite.addTest(new TestSolrSearch("testAdvancedHighlighting"));
@@ -685,7 +685,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
     public void testQueryDefaults() throws Throwable {
 
         // test default query
-        String defaultQuery = "q=*:*&fl=*,score&qt=edismax&rows=10";
+        String defaultQuery = "q=*:*&fl=*,score&qt=edismax&rows=10&fq=expired:[NOW TO *]&fq=released:[* TO NOW]";
         CmsSolrQuery query = new CmsSolrQuery();
         assertEquals(defaultQuery, query.toString());
 
@@ -694,7 +694,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
         assertEquals(defaultQuery, query.toString());
 
         // test creating default query by String
-        String defaultContextQuery = "q=*:*&fl=*,score&qt=edismax&rows=10&fq=con_locales:\"en\"&fq=parent-folders:\"/sites/default/\"";
+        String defaultContextQuery = "q=*:*&fl=*,score&qt=edismax&rows=10&fq=con_locales:en&fq=parent-folders:\"/sites/default/\"&fq=expired:[NOW TO *]&fq=released:[* TO NOW]";
         query = new CmsSolrQuery(getCmsObject(), null);
         assertEquals(defaultContextQuery, query.toString());
 
@@ -712,8 +712,8 @@ public class TestSolrSearch extends OpenCmsTestCase {
      */
     public void testQueryParameterStrength() throws Throwable {
 
-        String defaultContextQuery = "q=*:*&fl=*,score&qt=edismax&rows=10&fq=con_locales:\"en\"&fq=parent-folders:\"/sites/default/\"";
-        String modifiedContextQuery = "q=*:*&fl=*,score&qt=edismax&rows=10&fq=con_locales:\"en\"&fq=parent-folders:\"/\"";
+        String defaultContextQuery = "q=*:*&fl=*,score&qt=edismax&rows=10&fq=con_locales:en&fq=parent-folders:\"/sites/default/\"&fq=expired:[NOW TO *]&fq=released:[* TO NOW]";
+        String modifiedContextQuery = "q=*:*&fl=*,score&qt=edismax&rows=10&fq=con_locales:en&fq=parent-folders:\"/\"&fq=expired:[NOW TO *]&fq=released:[* TO NOW]";
 
         // members should be stronger than request context
         CmsSolrQuery query = new CmsSolrQuery(getCmsObject(), null);
@@ -721,11 +721,11 @@ public class TestSolrSearch extends OpenCmsTestCase {
         query.setSearchRoots("/");
         assertEquals(
             modifiedContextQuery,
-            "q=*:*&fl=*,score&qt=edismax&rows=10&fq=con_locales:\"en\"&fq=parent-folders:\"/\"");
+            "q=*:*&fl=*,score&qt=edismax&rows=10&fq=con_locales:en&fq=parent-folders:\"/\"&fq=expired:[NOW TO *]&fq=released:[* TO NOW]");
         query.setLocales(Locale.GERMAN, Locale.FRENCH, Locale.ENGLISH);
         query.setLocales(Locale.GERMAN, Locale.FRENCH);
         assertEquals(
-            "q=*:*&fl=*,score&qt=edismax&rows=10&fq=parent-folders:\"/\"&fq=con_locales:(\"de\" OR \"fr\")",
+            "q=*:*&fl=*,score&qt=edismax&rows=10&fq=expired:[NOW TO *]&fq=released:[* TO NOW]&fq=parent-folders:\"/\"&fq=con_locales:(de OR fr)",
             query.toString());
 
         // parameters should be stronger than request context
@@ -735,7 +735,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
         // parameters should be stronger than request context and members
         query = new CmsSolrQuery(
             getCmsObject(),
-            CmsRequestUtil.createParameterMap("q=test&fq=parent-folders:\"/\"&fq=con_locales:\"fr\"&fl=content_fr&rows=50&qt=edismax&fq=type:v8news"));
+            CmsRequestUtil.createParameterMap("q=test&fq=parent-folders:\"/\"&fq=con_locales:fr&fl=content_fr&rows=50&qt=edismax&fq=type:v8news&fq=expired:[NOW TO *]&fq=released:[* TO NOW]"));
         query.setText("test");
         query.setTextSearchFields("pla");
         query.setLocales(Locale.GERMAN);
@@ -743,7 +743,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
         query.setRows(new Integer(1000));
         query.setRequestHandler("lucene");
         query.setResourceTypes("article");
-        String ex = "q={!q.op=OR qf=text_en}test&fl=pla,plub&qt=lucene&rows=1000&fq=parent-folders:\"/\"&fq=con_locales:\"de\"&fq=type:\"article\"";
+        String ex = "q={!q.op=OR qf=text_en}test&fl=pla,plub&qt=lucene&rows=1000&fq=parent-folders:\"/\"&fq=expired:[NOW TO *]&fq=released:[* TO NOW]&fq=con_locales:de&fq=type:article";
         assertEquals(ex, query.toString());
 
         assertEquals("article", CmsSolrQuery.getResourceType(query.getFilterQueries()));
