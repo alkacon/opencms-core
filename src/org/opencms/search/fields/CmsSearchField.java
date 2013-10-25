@@ -81,7 +81,7 @@ public class CmsSearchField implements Serializable {
     public static final String FIELD_DATE_LOOKUP_SUFFIX = "_lookup";
 
     /** The field name for the release date. */
-    public static final String FIELD_DATE_RELEASED = "relased";
+    public static final String FIELD_DATE_RELEASED = "released";
 
     /** The dependency type. */
     public static final String FIELD_DEPENDENCY_TYPE = "dependencyType";
@@ -98,6 +98,9 @@ public class CmsSearchField implements Serializable {
     /** The name of the dynamic field that stores the shortened value of the content field in order to save performance. */
     public static final String FIELD_EXCERPT = "_excerpt";
 
+    /** Name of the field that contains the filename. */
+    public static final String FIELD_FILENAME = "filename";
+
     /** Name of the field that contains the documents structure id. */
     public static final String FIELD_ID = "id";
 
@@ -112,6 +115,9 @@ public class CmsSearchField implements Serializable {
      * that is the values of the "Title", "Keywords" and "Description" properties (optional).
      */
     public static final String FIELD_META = "meta";
+
+    /** Name of the field that contains the mime type. */
+    public static final String FIELD_MIMETYPE = "mimetype";
 
     /** Name of the field that contains all VFS parent folders of a document (hardcoded). */
     public static final String FIELD_PARENT_FOLDERS = "parent-folders";
@@ -149,6 +155,9 @@ public class CmsSearchField implements Serializable {
     /** Name of the field that contains the lower-case title, untokenized, for sorting. */
     public static final String FIELD_SORT_TITLE = "sort-title";
 
+    /** Name of the field that contains the resource state. */
+    public static final String FIELD_STATE = "state";
+
     /** Name of the field that contains the file name suffix of the resource. */
     public static final String FIELD_SUFFIX = "suffix";
 
@@ -171,6 +180,15 @@ public class CmsSearchField implements Serializable {
 
     /** Name of the field that contains the type of the document. */
     public static final String FIELD_TYPE = "type";
+
+    /** Name of the field that contains the user created. */
+    public static final String FIELD_USER_CREATED = "userCreated";
+
+    /** Name of the field that contains the user last modified. */
+    public static final String FIELD_USER_LAST_MODIFIED = "userLastModified";
+
+    /** Name of the field that contains the latest version number of the resource. */
+    public static final String FIELD_VERSION = "version";
 
     /** Serial version UID. */
     private static final long serialVersionUID = 3185631015824549119L;
