@@ -792,7 +792,9 @@ public class CmsSolrIndex extends CmsSearchIndex {
                     } else {
                         // if permission check is not required for this index,
                         // add a pseudo resource together with document to the results
-                        allDocs.add(new CmsSearchResource(PSEUDO_RES, searchDoc));
+                        resourceDocumentList.add(new CmsSearchResource(PSEUDO_RES, searchDoc));
+                        solrDocumentList.add(doc);
+                        maxScore = maxScore < searchDoc.getScore() ? searchDoc.getScore() : maxScore;
                     }
                 } catch (Exception e) {
                     // should not happen, but if it does we want to go on with the next result nevertheless                        
