@@ -158,6 +158,7 @@ public class CmsSolrQuery extends SolrQuery {
         }
         ensureParameters();
         ensureReturnFields();
+        ensureExpiration();
     }
 
     /**
@@ -187,13 +188,14 @@ public class CmsSolrQuery extends SolrQuery {
     }
 
     /**
-     * Adds a filter query.<p>
+     * Creates and adds a filter query.<p>
      * 
-     * @param fieldName the field name
+     * @param fieldName the field name to create a filter query on
+     * @param vals the values that should match for the given field
      * @param all <code>true</code> to combine the given values with 'AND', <code>false</code> for 'OR'
-     * @param vals the values
+     * @param useQuotes <code>true</code> to surround the given values with double quotes, <code>false</code> otherwise
      */
-    public void addFilterQuery(String fieldName, boolean all, List<String> vals) {
+    public void addFilterQuery(String fieldName, List<String> vals, boolean all, boolean useQuotes) {
 
         if (getFilterQueries() != null) {
             for (String fq : getFilterQueries()) {
@@ -202,7 +204,7 @@ public class CmsSolrQuery extends SolrQuery {
                 }
             }
         }
-        addFilterQuery(createFilterQuery(fieldName, all, vals));
+        addFilterQuery(createFilterQuery(fieldName, vals, all, useQuotes));
     }
 
     /**
@@ -221,6 +223,38 @@ public class CmsSolrQuery extends SolrQuery {
     }
 
     /**
+     * @see java.lang.Object#clone()
+     */
+    @Override
+    public CmsSolrQuery clone() {
+
+        return new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(toString()));
+    }
+
+    /**
+     * Ensures that the initial request parameters will overwrite the member values.<p>
+     * 
+     * You can initialize the query with an HTTP request parameter then make some method calls 
+     * and finally re-ensure that the initial request parameters will overwrite the changes 
+     * made in the meanwhile.<p>
+     */
+    public void ensureParameters() {
+
+        // overwrite already set values with values from query String
+        if ((m_queryParameters != null) && !m_queryParameters.isEmpty()) {
+            for (Map.Entry<String, String[]> entry : m_queryParameters.entrySet()) {
+                if (!entry.getKey().equals(CommonParams.FQ)) {
+                    // add or replace all parameters from the query String
+                    setParam(entry.getKey(), entry.getValue());
+                } else {
+                    // special handling for filter queries
+                    replaceFilterQueries(entry.getValue());
+                }
+            }
+        }
+    }
+
+    /**
      * Sets the categories only if not set in the query parameters.<p>
      *
      * @param categories the categories to set
@@ -228,7 +262,7 @@ public class CmsSolrQuery extends SolrQuery {
     public void setCategories(List<String> categories) {
 
         if ((categories != null) && !categories.isEmpty()) {
-            addFilterQuery(CmsSearchField.FIELD_CATEGORY + "_exact", true, categories);
+            addFilterQuery(CmsSearchField.FIELD_CATEGORY + CmsSearchField.FIELD_DYNAMIC_EXACT, categories, true, true);
         }
     }
 
@@ -314,7 +348,7 @@ public class CmsSolrQuery extends SolrQuery {
                 localeStrings.add(locale.toString());
                 m_textSearchFields.add("text_" + locale);
             }
-            addFilterQuery(CmsSearchField.FIELD_CONTENT_LOCALES, false, localeStrings);
+            addFilterQuery(CmsSearchField.FIELD_CONTENT_LOCALES, localeStrings, false, false);
         }
     }
 
@@ -336,7 +370,7 @@ public class CmsSolrQuery extends SolrQuery {
     public void setResourceTypes(List<String> resourceTypes) {
 
         if ((resourceTypes != null) && !resourceTypes.isEmpty()) {
-            addFilterQuery(CmsSearchField.FIELD_TYPE, false, resourceTypes);
+            addFilterQuery(CmsSearchField.FIELD_TYPE, resourceTypes, false, false);
         }
     }
 
@@ -358,7 +392,7 @@ public class CmsSolrQuery extends SolrQuery {
     public void setSearchRoots(List<String> searchRoots) {
 
         if ((searchRoots != null) && !searchRoots.isEmpty()) {
-            addFilterQuery(CmsSearchField.FIELD_PARENT_FOLDERS, false, searchRoots);
+            addFilterQuery(CmsSearchField.FIELD_PARENT_FOLDERS, searchRoots, false, true);
         }
     }
 
@@ -426,33 +460,36 @@ public class CmsSolrQuery extends SolrQuery {
     }
 
     /**
-     * @see java.lang.Object#clone()
-     */
-    @Override
-    protected CmsSolrQuery clone() {
-
-        return new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(toString()));
-    }
-
-    /**
-     * Add the given values to any existing name.<p>
+     * Creates a filter query on the given field name.<p>
      * 
-     * @param fieldName the name of the field to add to the query
-     * @param all <code>true</code> for combining multiple values with 'AND' 
-     * @param vals List of value(s) added to the name
+     * Creates and adds a filter query.<p>
      * 
-     * @return this query
+     * @param fieldName the field name to create a filter query on
+     * @param vals the values that should match for the given field
+     * @param all <code>true</code> to combine the given values with 'AND', <code>false</code> for 'OR'
+     * @param useQuotes <code>true</code> to surround the given values with double quotes, <code>false</code> otherwise
+     * 
+     * @return a filter query String e.g. <code>fq=fieldname:val1</code>
      */
-    private String createFilterQuery(String fieldName, boolean all, List<String> vals) {
+    private String createFilterQuery(String fieldName, List<String> vals, boolean all, boolean useQuotes) {
 
         String filterQuery = null;
         if ((vals != null)) {
             if (vals.size() == 1) {
-                filterQuery = fieldName + ":\"" + vals.get(0) + "\"";
+                if (useQuotes) {
+                    filterQuery = fieldName + ":" + "\"" + vals.get(0) + "\"";
+                } else {
+                    filterQuery = fieldName + ":" + vals.get(0);
+                }
             } else if (vals.size() > 1) {
                 filterQuery = fieldName + ":(";
                 for (int j = 0; j < vals.size(); j++) {
-                    String val = "\"" + vals.get(j) + "\"";
+                    String val;
+                    if (useQuotes) {
+                        val = "\"" + vals.get(j) + "\"";
+                    } else {
+                        val = vals.get(j);
+                    }
                     filterQuery += val;
                     if (vals.size() > (j + 1)) {
                         if (all) {
@@ -493,21 +530,27 @@ public class CmsSolrQuery extends SolrQuery {
     }
 
     /**
-     * Ensures that the parameters will overwrite the member values.<p> 
+     * Ensures that expired and not yet released resources are not returned by default.<p>
      */
-    private void ensureParameters() {
+    private void ensureExpiration() {
 
-        // overwrite already set values with values from query String
-        if ((m_queryParameters != null) && !m_queryParameters.isEmpty()) {
-            for (Map.Entry<String, String[]> entry : m_queryParameters.entrySet()) {
-                if (!entry.getKey().equals(CommonParams.FQ)) {
-                    // add or replace all parameters from the query String
-                    setParam(entry.getKey(), entry.getValue());
-                } else {
-                    // special handling for filter queries
-                    replaceFilterQueries(entry.getValue());
+        boolean expirationDateSet = false;
+        boolean releaseDateSet = false;
+        if (getFilterQueries() != null) {
+            for (String fq : getFilterQueries()) {
+                if (fq.startsWith(CmsSearchField.FIELD_DATE_EXPIRED + ":")) {
+                    expirationDateSet = true;
+                }
+                if (fq.startsWith(CmsSearchField.FIELD_DATE_RELEASED + ":")) {
+                    releaseDateSet = true;
                 }
             }
+        }
+        if (!expirationDateSet) {
+            addFilterQuery(CmsSearchField.FIELD_DATE_EXPIRED + ":[NOW TO *]");
+        }
+        if (!releaseDateSet) {
+            addFilterQuery(CmsSearchField.FIELD_DATE_RELEASED + ":[* TO NOW]");
         }
     }
 
@@ -538,11 +581,14 @@ public class CmsSolrQuery extends SolrQuery {
     }
 
     /**
-     * Removes those filter queries from the Solr filter queries that restrict the same field.<p>
+     * Removes those filter queries that restrict the fields used in the given filter query Strings.<p>
      * 
-     * @param fqs the filter queries to remove
+     * Searches in the given Strings for a ":", then takes the field name part 
+     * and removes the already set filter queries queries that are matching the same field name.<p>
+     * 
+     * @param fqs the filter query Strings in the format <code>fq=fieldname:value</code> that should be removed
      */
-    private void replaceFilterQueries(String[] fqs) {
+    private void removeFilterQueries(String[] fqs) {
 
         // iterate over the given filter queries to remove
         for (String fq : fqs) {
@@ -554,14 +600,23 @@ public class CmsSolrQuery extends SolrQuery {
                 if (getFilterQueries() != null) {
                     for (String sfq : getFilterQueries()) {
                         if (sfq.startsWith(fieldName + ":")) {
-                            // there exists a filter query for exact the same field
-                            // remove it
+                            // there exists a filter query for exact the same field,  remove it
                             removeFilterQuery(sfq);
                         }
                     }
                 }
             }
         }
+    }
+
+    /**
+     * Removes the given filter queries, if already set and then adds the filter queries again.<p>
+     * 
+     * @param fqs the filter queries to remove
+     */
+    private void replaceFilterQueries(String[] fqs) {
+
+        removeFilterQueries(fqs);
         addFilterQuery(fqs);
     }
 }
