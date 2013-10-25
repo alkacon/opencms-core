@@ -494,6 +494,29 @@
 				<description>The Solr search index field configuration.</description>
 				<fields />
 			</fieldconfiguration>
+			<fieldconfiguration class="org.opencms.search.solr.CmsGallerySolrFieldConfiguration">
+				<name>solr_gallery_fields</name>
+				<description>The Solr gallery search index field configuration.</description>
+				<fields>
+					<field name="content" display="%(key.field.content)" store="compress" index="true" excerpt="true">
+						<mapping type="content" />
+					</field>
+					<field name="meta" store="false" index="true">
+						<mapping type="property">Title</mapping>
+						<mapping type="property">Description</mapping>
+						<mapping type="attribute">name</mapping>
+					</field>
+					<field name="searchExclude" store="true" index="untokenized">
+						<mapping type="property-search">search.exclude</mapping>
+					</field>
+					<field name="additionalInfo" store="true" index="false">
+						<mapping type="dynamic" class="org.opencms.search.galleries.CmsGallerySearchFieldMapping">additional_info</mapping>
+					</field>
+					<field name="containerTypes" store="true" index="true" analyzer="WhitespaceAnalyzer">
+						<mapping type="dynamic" class="org.opencms.search.galleries.CmsGallerySearchFieldMapping">container_types</mapping>
+					</field>
+				</fields>
+			</fieldconfiguration>
 		</fieldconfigurations>
 	</search>
 </opencms>
