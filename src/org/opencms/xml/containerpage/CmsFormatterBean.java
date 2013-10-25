@@ -365,7 +365,9 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     @Override
     public Set<String> getContainerTypes() {
 
-        return m_containerTypes;
+        return m_containerTypes == null
+        ? Collections.<String> emptySet()
+        : Collections.unmodifiableSet(m_containerTypes);
     }
 
     /**
@@ -500,7 +502,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     @Override
     public int hashCode() {
 
-        return m_containerTypes.hashCode() ^ ((m_minWidth * 33) ^ m_maxWidth);
+        return getContainerTypes().hashCode() ^ ((m_minWidth * 33) ^ m_maxWidth);
     }
 
     /**
@@ -562,7 +564,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     @Override
     public boolean isTypeFormatter() {
 
-        return !m_containerTypes.isEmpty();
+        return !getContainerTypes().isEmpty();
     }
 
     /**

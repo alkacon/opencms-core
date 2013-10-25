@@ -17,6 +17,7 @@
     </xsd:complexType>
    <xsd:annotation>
         <xsd:appinfo>
+        <resourcebundle name="org.opencms.xml.containerpage.messages"/>
         <layouts>
         	<layout element="JavascriptInline" widget="TextareaWidget" configuration="15" />
         </layouts>

@@ -117,7 +117,6 @@ public class CmsFormatterChangeSet {
                 m_updateSet.put(new CmsUUID(removeKey), Boolean.FALSE);
             } else if (removeKey.startsWith(PREFIX_TYPE)) {
                 m_typeUpdateSet.put(removePrefix(removeKey), Boolean.FALSE);
-
             }
         }
         for (String addKey : toAdd) {
