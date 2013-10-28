@@ -95,6 +95,21 @@ public final class CmsFormatterConfiguration {
     }
 
     /**
+     * Predicate to check whether the formatter is from a schema.<p>
+     */
+    public static class IsSchemaFormatter implements Predicate<I_CmsFormatterBean> {
+
+        /**
+         * @see com.google.common.base.Predicate#apply(java.lang.Object)
+         */
+        public boolean apply(I_CmsFormatterBean formatter) {
+
+            return !formatter.isFromFormatterConfigFile();
+
+        }
+    }
+
+    /**
      * Predicate which checks whether a formatter matches the given container type or width.<p>
      */
     private class MatchesTypeOrWidth implements Predicate<I_CmsFormatterBean> {
@@ -228,7 +243,7 @@ public final class CmsFormatterConfiguration {
     }
 
     /**
-     * Selects the matching formatter for the provided type and width from this configuration.<p>
+     * Selects the best matching formatter for the provided type and width from this configuration.<p>
      * 
      * This method first tries to find the formatter for the provided container type. 
      * If this fails, it returns the width based formatter that matched the container width.<p>
@@ -243,6 +258,22 @@ public final class CmsFormatterConfiguration {
         Optional<I_CmsFormatterBean> result = Iterables.tryFind(m_allFormatters, new MatchesTypeOrWidth(
             containerType,
             containerWidth));
+        return result.orNull();
+    }
+
+    /**
+     * Selects the best matching schema formatter for the provided type and width from this configuration.<p>
+     * 
+     * @param containerType the container type 
+     * @param containerWidth the container width
+     *  
+     * @return the matching formatter, or <code>null</code> if none was found 
+     */
+    public I_CmsFormatterBean getDefaultSchemaFormatter(final String containerType, final int containerWidth) {
+
+        Optional<I_CmsFormatterBean> result = Iterables.tryFind(
+            m_allFormatters,
+            Predicates.and(new IsSchemaFormatter(), new MatchesTypeOrWidth(containerType, containerWidth)));
         return result.orNull();
     }
 
