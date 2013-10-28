@@ -39,6 +39,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 /**
  * A bean containing formatter configuration data as strings.<p>
  * 
@@ -578,5 +580,14 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
 
         // package visibility is wanted
         m_jspStructureId = jspStructureId;
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+
+        return ToStringBuilder.reflectionToString(this);
     }
 }

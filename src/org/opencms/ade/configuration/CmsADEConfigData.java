@@ -45,7 +45,6 @@ import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContentProperty;
-import org.opencms.xml.content.I_CmsXmlContentHandler;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -930,10 +929,9 @@ public class CmsADEConfigData {
     protected CmsFormatterConfiguration getFormattersFromSchema(CmsObject cms, CmsResource res) {
 
         try {
-            I_CmsXmlContentHandler contentHandler = CmsXmlContentDefinition.getContentHandlerForResource(m_cms, res);
-            return contentHandler.getFormatterConfiguration(cms, res);
+            return OpenCms.getResourceManager().getResourceType(res.getTypeId()).getFormattersForResource(cms, res);
         } catch (CmsException e) {
-            LOG.warn(e.getLocalizedMessage(), e);
+            LOG.error(e.getLocalizedMessage(), e);
             return CmsFormatterConfiguration.EMPTY_CONFIGURATION;
         }
     }

@@ -27,15 +27,15 @@
 
 package org.opencms.search.documents;
 
+import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsIndexException;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.extractors.CmsExtractionResult;
 import org.opencms.search.extractors.I_CmsExtractionResult;
@@ -129,8 +129,8 @@ public class CmsDocumentContainerPage extends A_CmsVfsDocument {
 
                 // get the formatter configuration for this element
                 element.initResource(cms);
-                I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(element.getResource());
-                CmsFormatterConfiguration formatters = type.getFormattersForResource(cms, element.getResource());
+                CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(cms, file.getRootPath());
+                CmsFormatterConfiguration formatters = adeConfig.getFormatters(cms, element.getResource());
 
                 if (formatters.isSearchContent(element.getFormatterId())) {
                     // the content of this element must be included for the container page

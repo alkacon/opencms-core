@@ -27,6 +27,7 @@
 
 package org.opencms.ade.configuration.formatters;
 
+import org.opencms.main.CmsLog;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
 
@@ -34,6 +35,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.commons.logging.Log;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.ArrayListMultimap;
@@ -48,6 +51,9 @@ import com.google.common.collect.Multimaps;
  * Objects of this class are immutable, but have a method to create an updated copy.<p>
  */
 public class CmsFormatterConfigurationCacheState {
+
+    /** The log instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsFormatterConfigurationCacheState.class);
 
     /** The automatically enabled formatters. */
     private Map<CmsUUID, I_CmsFormatterBean> m_autoEnabledFormatters;
@@ -66,6 +72,10 @@ public class CmsFormatterConfigurationCacheState {
     public CmsFormatterConfigurationCacheState(Map<CmsUUID, I_CmsFormatterBean> formatters) {
 
         m_formatters = new HashMap<CmsUUID, I_CmsFormatterBean>(formatters);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Created new formatter configuration: ");
+            LOG.debug(m_formatters.toString());
+        }
     }
 
     /**

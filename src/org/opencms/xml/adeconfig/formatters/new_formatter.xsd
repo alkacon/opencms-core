@@ -35,6 +35,7 @@
         <defaults>
 			<default element="Rank" value="1000" />
 			<default element="Detail" value="true" />
+			<default element="SearchContent" value="true" />
 		</defaults>
 		<mappings>
 				<mapping element="NiceName" mapto="property:Title" />

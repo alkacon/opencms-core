@@ -94,9 +94,6 @@ public class CmsFormatterBeanParser {
     public static final String N_DETAIL = "Detail";
 
     /** Content value node name. */
-    public static final String N_EXTRACT_CONTENT = "ExtractContent";
-
-    /** Content value node name. */
     public static final String N_HEAD_INCLUDE_CSS = "HeadIncludeCss";
 
     /** Content value node name. */
@@ -118,10 +115,16 @@ public class CmsFormatterBeanParser {
     public static final String N_MAX_WIDTH = "MaxWidth";
 
     /** Content value node name. */
+    public static final String N_NICE_NAME = "NiceName";
+
+    /** Content value node name. */
     public static final String N_PREVIEW = "Preview";
 
     /** Content value node name. */
     public static final String N_RANK = "Rank";
+
+    /** Content value node name. */
+    public static final String N_SEARCH_CONTENT = "SearchContent";
 
     /** Content value node name. */
     public static final String N_SETTING = "Setting";
@@ -223,7 +226,7 @@ public class CmsFormatterBeanParser {
     throws CmsException, ParseException {
 
         Locale en = Locale.ENGLISH;
-        I_CmsXmlContentValue niceName = content.getValue("NiceName", en);
+        I_CmsXmlContentValue niceName = content.getValue(N_NICE_NAME, en);
         m_niceName = niceName != null ? niceName.getStringValue(m_cms) : null;
         CmsXmlContentRootLocation root = new CmsXmlContentRootLocation(content, en);
 
@@ -252,7 +255,7 @@ public class CmsFormatterBeanParser {
         String previewStr = getString(root, N_PREVIEW, "false");
         m_preview = Boolean.parseBoolean(previewStr);
 
-        String searchableStr = getString(root, N_EXTRACT_CONTENT, "true");
+        String searchableStr = getString(root, N_SEARCH_CONTENT, "true");
         m_extractContent = Boolean.parseBoolean(searchableStr);
 
         String isDetailStr = getString(root, N_DETAIL, "true");

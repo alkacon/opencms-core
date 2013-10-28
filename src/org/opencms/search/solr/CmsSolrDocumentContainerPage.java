@@ -27,10 +27,10 @@
 
 package org.opencms.search.solr;
 
+import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -132,9 +132,8 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
                     // check all elements in this container
                     // get the formatter configuration for this element
                     element.initResource(cms);
-                    I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(element.getResource());
-                    CmsFormatterConfiguration formatters = type.getFormattersForResource(cms, element.getResource());
-
+                    CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(cms, file.getRootPath());
+                    CmsFormatterConfiguration formatters = adeConfig.getFormatters(cms, element.getResource());
                     if ((formatters != null)
                         && (element.getFormatterId() != null)
                         && formatters.isSearchContent(element.getFormatterId())) {
