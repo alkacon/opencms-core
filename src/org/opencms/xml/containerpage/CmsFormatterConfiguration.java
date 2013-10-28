@@ -38,6 +38,7 @@ import org.opencms.security.CmsRole;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -293,6 +294,18 @@ public final class CmsFormatterConfiguration {
             containerWidth), new IsDetail());
         Optional<I_CmsFormatterBean> result = Iterables.tryFind(m_allFormatters, checkValidDetailFormatter);
         return result.orNull();
+    }
+
+    /**
+     * Gets all detail formatters.<p>
+     * 
+     * @return the detail formatters 
+     */
+    public Collection<I_CmsFormatterBean> getDetailFormatters() {
+
+        return Collections.<I_CmsFormatterBean> unmodifiableCollection(Collections2.filter(
+            m_allFormatters,
+            new IsDetail()));
     }
 
     /**
