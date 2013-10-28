@@ -38,6 +38,7 @@ import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.containerpage.shared.CmsCreateElementData;
+import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.ade.containerpage.shared.CmsGroupContainer;
 import org.opencms.ade.containerpage.shared.CmsGroupContainerSaveResult;
 import org.opencms.ade.containerpage.shared.CmsInheritanceContainer;
@@ -1081,7 +1082,21 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             containerType = container.getType();
         }
 
-        I_CmsFormatterBean formatter = formatters.getDefaultFormatter(containerType, containerWidth);
+        I_CmsFormatterBean formatter = null;
+        if (element.getSettings().containsKey(CmsFormatterConfig.getSettingsKeyForContainer(container.getName()))) {
+            String formatterConfigId = element.getSettings().get(
+                CmsFormatterConfig.getSettingsKeyForContainer(container.getName()));
+            if (CmsUUID.isValidUUID(formatterConfigId)) {
+                formatter = OpenCms.getADEManager().getCachedFormatters(false).getFormatters().get(
+                    new CmsUUID(formatterConfigId));
+            }
+            if (formatter == null) {
+                formatter = formatters.getDefaultSchemaFormatter(containerType, containerWidth);
+            }
+        }
+        if (formatter == null) {
+            formatter = formatters.getDefaultFormatter(containerType, containerWidth);
+        }
         CmsContainerElementBean newElementBean = null;
         if (formatter != null) {
             newElementBean = new CmsContainerElementBean(
