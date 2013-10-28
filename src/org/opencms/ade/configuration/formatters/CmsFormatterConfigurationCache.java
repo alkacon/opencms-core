@@ -176,8 +176,8 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
                 if (formatterBean != null) {
                     newFormatters.put(formatterResource.getStructureId(), formatterBean);
                 }
-                m_state = new CmsFormatterConfigurationCacheState(newFormatters);
             }
+            m_state = new CmsFormatterConfigurationCacheState(newFormatters);
         } catch (CmsException e) {
             LOG.warn(e.getLocalizedMessage(), e);
         }
