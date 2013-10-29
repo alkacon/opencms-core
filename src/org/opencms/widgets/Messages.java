@@ -113,6 +113,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_EDITOR_LABEL_IMAGE_PATH_0 = "GUI_EDITOR_LABEL_IMAGE_PATH_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_FORMATTER_EMPTY_SELECTION_0 = "GUI_FORMATTER_EMPTY_SELECTION_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_FALSE_0 = "GUI_LABEL_FALSE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -120,6 +123,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MULTISELECT_ACTIVATE_0 = "GUI_MULTISELECT_ACTIVATE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SCHEMA_FORMATTER_OPTION_1 = "GUI_SCHEMA_FORMATTER_OPTION_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_CREATE_HTMLWIDGET_INSTANCE_FAILED_1 = "LOG_CREATE_HTMLWIDGET_INSTANCE_FAILED_1";

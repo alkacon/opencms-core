@@ -45,6 +45,7 @@ import org.opencms.xml.content.CmsXmlContentFactory;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -110,8 +111,23 @@ public abstract class A_CmsFormatterWidget extends CmsSelectWidget {
         CmsSelectWidgetOption option = new CmsSelectWidgetOption(
             CmsFormatterChangeSet.keyForType(typeName),
             false,
-            "Schema: " + typeName);
+            getMessage(cms, Messages.GUI_SCHEMA_FORMATTER_OPTION_1, typeName));
         return option;
+    }
+
+    /**
+     * Gets a message string.<p>
+     * 
+     * @param cms the CMS context 
+     * @param message the message key  
+     * @param args the message arguments 
+     * 
+     * @return the message string 
+     */
+    static String getMessage(CmsObject cms, String message, Object... args) {
+
+        Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+        return Messages.get().getBundle(locale).key(message, args);
     }
 
     /** 
@@ -154,7 +170,6 @@ public abstract class A_CmsFormatterWidget extends CmsSelectWidget {
         I_CmsWidgetParameter param) {
 
         String path = getResourcePath(cms, widgetDialog);
-
         try {
             cms = OpenCms.initCmsObject(cms);
             cms.getRequestContext().setSiteRoot("");
@@ -164,7 +179,7 @@ public abstract class A_CmsFormatterWidget extends CmsSelectWidget {
             }
             Set<String> added = new HashSet<String>();
             List<CmsSelectWidgetOption> options = Lists.newArrayList();
-            options.add(new CmsSelectWidgetOption("", true, "-----"));
+            options.add(new CmsSelectWidgetOption("", true, getMessage(cms, Messages.GUI_FORMATTER_EMPTY_SELECTION_0)));
             List<CmsSelectWidgetOption> formatterOptions = getFormatterOptions(cms, adeConfig);
             options.addAll(formatterOptions);
             List<CmsSelectWidgetOption> typeOptions = getTypeOptions(cms, adeConfig);
@@ -205,4 +220,5 @@ public abstract class A_CmsFormatterWidget extends CmsSelectWidget {
             return null;
         }
     }
+
 }
