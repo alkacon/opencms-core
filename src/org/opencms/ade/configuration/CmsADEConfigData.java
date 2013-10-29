@@ -661,11 +661,10 @@ public class CmsADEConfigData {
         Set<String> result = new HashSet<String>();
         for (I_CmsResourceType type : OpenCms.getResourceManager().getResourceTypes()) {
             if (type instanceof CmsResourceTypeXmlContent) {
+                CmsXmlContentDefinition contentDef = null;
                 try {
-                    CmsXmlContentDefinition contentDef = CmsXmlContentDefinition.getContentDefinitionForType(
-                        m_cms,
-                        type.getTypeName());
-                    if (contentDef.getContentHandler().hasModifiableFormatters()) {
+                    contentDef = CmsXmlContentDefinition.getContentDefinitionForType(m_cms, type.getTypeName());
+                    if ((contentDef != null) && contentDef.getContentHandler().hasModifiableFormatters()) {
                         result.add(type.getTypeName());
                     }
                 } catch (Exception e) {
