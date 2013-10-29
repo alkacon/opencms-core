@@ -46,7 +46,7 @@ public class CmsFormatterChangeSet {
     /** A map which indicates whether schema formatters for a type (which is the key) should be added (value=true) or removed (value=False). */
     private Map<String, Boolean> m_typeUpdateSet = new HashMap<String, Boolean>();
 
-    /** A map which indicates whether a formater (whose id is the key) should be added (value=true) or removed (value= false). */
+    /** A map which indicates whether a formatter (whose id is the key) should be added (value=true) or removed (value= false). */
     private Map<CmsUUID, Boolean> m_updateSet = new HashMap<CmsUUID, Boolean>();
 
     /** 
@@ -86,20 +86,20 @@ public class CmsFormatterChangeSet {
 
     /**
      * Applies the changes (addition or removal of schema formatters) to a set of resource type names, 
-     * adding resource types for which schema formatters should be added and removes those for which 
+     * adding resource types for which schema formatters should be added and removing those for which 
      * schema formatters should be removed.<p>
      *  
-     * @param schemaTypes the set of types to apply the changes to 
+     * @param types the set of types to apply the changes to 
      */
-    public void applyToTypes(Set<String> schemaTypes) {
+    public void applyToTypes(Set<String> types) {
 
         for (Map.Entry<String, Boolean> typeUpdateEntry : m_typeUpdateSet.entrySet()) {
             String typeName = typeUpdateEntry.getKey();
             Boolean add = typeUpdateEntry.getValue();
             if (add.booleanValue()) {
-                schemaTypes.add(typeName);
+                types.add(typeName);
             } else {
-                schemaTypes.remove(typeName);
+                types.remove(typeName);
             }
         }
     }
