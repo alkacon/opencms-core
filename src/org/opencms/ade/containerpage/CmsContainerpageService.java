@@ -48,6 +48,7 @@ import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
 import org.opencms.ade.detailpage.CmsDetailPageResourceHandler;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -77,6 +78,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchResult;
@@ -745,6 +747,11 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     CmsResource parentRes = cms.createResource(
                         parentFolder,
                         OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.getStaticTypeName()).getTypeId());
+                    // set the search exclude property on parent folder
+                    cms.writePropertyObject(parentFolder, new CmsProperty(
+                        CmsPropertyDefinition.PROPERTY_SEARCH_EXCLUDE,
+                        CmsSearchIndex.PROPERTY_SEARCH_EXCLUDE_VALUE_ALL,
+                        null));
                     tryUnlock(parentRes);
                 }
                 containerpage = cms.createResource(
@@ -757,7 +764,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         } catch (Throwable e) {
             error(e);
         }
-
     }
 
     /**
