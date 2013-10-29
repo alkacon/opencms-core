@@ -326,7 +326,10 @@
  <copyField source="*_prop"    dest="*_exact" />
  <copyField source="path"      dest="path_hierarchy" /> 
  <copyField source="category"  dest="category_exact" />
- <copyField source="*_en"      dest="spell"/>
+
+ <copyField source="Title_prop" dest="spell"/>
+ <copyField source="content_de" dest="spell"/>
+ <copyField source="content_en" dest="spell"/>
 
  <uniqueKey>id</uniqueKey>
 

@@ -113,7 +113,7 @@
 	<requestHandler name="/spell" class="solr.SearchHandler"
 		startup="lazy">
 		<lst name="defaults">
-			<str name="df">text</str>
+			<str name="df">spell</str>
 			<str name="spellcheck.dictionary">default</str>
 			<str name="spellcheck">on</str>
 			<str name="spellcheck.extendedResults">true</str>
