@@ -1,4 +1,4 @@
-
+@import url("opencms_plugin.css");
 /* These rules are used for laying out TinyMCE's button toolbar rows next to each other, not as rows. */
 
 .mceIframeContainer, .mceIframeContainer iframe, #tinymce_content_tbl > tbody > tr:first-child + tr, #tinymce_content_tbl {

@@ -90,6 +90,10 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
         result.append("\n");
         // special TinyMCE widget functions
         result.append(getJSIncludeFile(CmsWorkplace.getSkinUri() + "components/widgets/tinymce.js"));
+        String pluginCssUri = OpenCms.getLinkManager().substituteLinkForRootPath(
+            cms,
+            "/system/workplace/editors/tinymce/opencms_plugin.css");
+        result.append("<link type='text/css' rel='stylesheet' href='" + pluginCssUri + "'>");
         String cssUri = CmsWorkplace.getSkinUri() + "components/widgets/tinymce.css";
         result.append("<link type='text/css' rel='stylesheet' href='" + cssUri + "'>");
         return result.toString();

@@ -42,36 +42,14 @@ function doShowCmsGalleries(editor, url) {
        width : width, 
        height: height, 
        inline: "yes", 
-       style:   "background-color: #1F232A; " +
-                "background-image: url('<%= cms.link("/system/workplace/resources/editors/tinymce/toolbar/dialogBackground.png") %>'); " +
-                "background-position: center top; " +
-                "background-repeat: repeat-x; " +
-                "border-color: #606161 black black; " +
-                "border-radius: 12px 12px 12px 12px; " +
-                "border-style: solid; " +
-                "border-width: 1px; " +
-                "box-shadow: 6px 6px 12px #666666; " +
-                "margin: 0; " +
-                "padding: 6px 5px 5px;"
+       classes: "opencmsDialog"
    }, {});
    var closeButton=window.document.createElement("div");
    var currentEd=editor;
    closeButton.onclick=function(){
        currentEd.windowManager.close();
    };
-   closeButton.setAttribute("style", 
-           "background-image: url('<%= cms.link("/system/workplace/resources/editors/tinymce/toolbar/dialogCloseImage.png") %>'); " +
-           "background-color: transparent; " +
-           "cursor: pointer; " +
-           "height: 23px; " +
-           "overflow: hidden; " +
-           "position: absolute; " +
-           "right: -11px; " +
-           "top: -12px; " +
-           "width: 23px; " +
-           "border: 0; " +
-           "margin: 0; " +
-           "padding: 0;");
+   closeButton.setAttribute("class", "closeButton");
    var windows= editor.windowManager.windows;
    windows[windows.length-1].getEl().appendChild(closeButton);
 }
