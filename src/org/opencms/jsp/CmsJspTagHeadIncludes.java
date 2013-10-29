@@ -94,6 +94,12 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
     /** The default include resources separated by '|'. */
     private String m_defaults;
 
+    /** The detail container type. */
+    private String m_detailType;
+
+    /** The detail container width. */
+    private String m_detailWidth;
+
     /** Map to save parameters to the include in. */
     private Map<String, String[]> m_parameterMap;
 
@@ -204,6 +210,26 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
     }
 
     /**
+     * Returns the detail container type.<p>
+     *
+     * @return the detail container type
+     */
+    public String getDetailtype() {
+
+        return m_detailType;
+    }
+
+    /**
+     * Returns the detail container width.<p>
+     *
+     * @return the detail container width
+     */
+    public String getDetailwidth() {
+
+        return m_detailWidth;
+    }
+
+    /**
      * Returns the type.<p>
      *
      * @return the type
@@ -231,6 +257,26 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
     public void setDefaults(String defaults) {
 
         m_defaults = defaults;
+    }
+
+    /**
+     * Sets the detail container type.<p>
+     *
+     * @param detailType the detail container type to set
+     */
+    public void setDetailtype(String detailType) {
+
+        m_detailType = detailType;
+    }
+
+    /**
+     * Sets the detail container width.<p>
+     *
+     * @param detailWidth the detail container width to set
+     */
+    public void setDetailwidth(String detailWidth) {
+
+        m_detailWidth = detailWidth;
     }
 
     /**
@@ -312,8 +358,21 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                 CmsFormatterConfiguration config = OpenCms.getADEManager().lookupConfiguration(
                     cms,
                     cms.getRequestContext().getRootUri()).getFormatters(cms, detailContent);
-                for (I_CmsFormatterBean formatter : config.getAllFormatters()) {
-                    cssIncludes.addAll(formatter.getCssHeadIncludes());
+                boolean requiresAllIncludes = true;
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getDetailtype())
+                    && CmsStringUtil.isNotEmptyOrWhitespaceOnly(getDetailwidth())) {
+                    try {
+                        int width = Integer.parseInt(getDetailwidth());
+                        cssIncludes.addAll(config.getDetailFormatter(getDetailtype(), width).getCssHeadIncludes());
+                        requiresAllIncludes = false;
+                    } catch (NumberFormatException ne) {
+                        // nothing to do, we will include CSS for all detail containers
+                    }
+                }
+                if (requiresAllIncludes) {
+                    for (I_CmsFormatterBean formatter : config.getDetailFormatters()) {
+                        cssIncludes.addAll(formatter.getCssHeadIncludes());
+                    }
                 }
             } catch (CmsException e) {
                 LOG.error(
@@ -390,8 +449,21 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                 CmsFormatterConfiguration config = OpenCms.getADEManager().lookupConfiguration(
                     cms,
                     cms.getRequestContext().getRootUri()).getFormatters(cms, detailContent);
-                for (I_CmsFormatterBean formatter : config.getAllFormatters()) {
-                    jsIncludes.addAll(formatter.getJavascriptHeadIncludes());
+                boolean requiresAllIncludes = true;
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getDetailtype())
+                    && CmsStringUtil.isNotEmptyOrWhitespaceOnly(getDetailwidth())) {
+                    try {
+                        int width = Integer.parseInt(getDetailwidth());
+                        jsIncludes.addAll(config.getDetailFormatter(getDetailtype(), width).getCssHeadIncludes());
+                        requiresAllIncludes = false;
+                    } catch (NumberFormatException ne) {
+                        // nothing to do, we will include JavaScript for all detail containers
+                    }
+                }
+                if (requiresAllIncludes) {
+                    for (I_CmsFormatterBean formatter : config.getDetailFormatters()) {
+                        jsIncludes.addAll(formatter.getJavascriptHeadIncludes());
+                    }
                 }
             } catch (CmsException e) {
                 LOG.error(

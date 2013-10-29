@@ -847,6 +847,16 @@
         	<required>false</required>
         	<rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+        	<name>detailtype</name>
+        	<required>false</required>
+        	<rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+        	<name>detailwidth</name>
+        	<required>false</required>
+        	<rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>
         
     <tag>
