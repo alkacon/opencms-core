@@ -355,9 +355,45 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
     void updateCss() {
 
         String formatterId = m_formatterSelect.getFormValueAsString();
-        Set<String> cssResources = m_elementBean.getFormatters().get(m_containerId).get(formatterId).getCssResources();
+        CmsFormatterConfig formatter = m_elementBean.getFormatters().get(m_containerId).get(formatterId);
+        Set<String> cssResources = formatter.getCssResources();
         for (String cssResource : cssResources) {
             CmsDomUtil.ensureStyleSheetIncluded(cssResource);
         }
+        if (formatter.hasInlineCss()) {
+            ensureInlineCss(formatterId, formatter.getInlineCss());
+        }
     }
+
+    /**
+     * Ensures the CSS snippet with the given ID is present.<p>
+     * 
+     * @param formatterId the ID
+     * @param cssContent the CSS snippet
+     */
+    private native void ensureInlineCss(String formatterId, String cssContent)/*-{
+                                                                              var styles = $wnd.document.styleSheets;
+                                                                              for ( var i = 0; i < styles.length; i++) {
+                                                                              // IE uses the owningElement property
+                                                                              var styleNode = styles[i].owningElement ? styles[i].owningElement
+                                                                              : styles[i].ownerNode;
+                                                                              if (styleNode != null && styleNode.rel == formatterId) {
+                                                                              // inline css is present
+                                                                              return;
+                                                                              }
+                                                                              }
+                                                                              // include inline css into head
+                                                                              var headID = $wnd.document.getElementsByTagName("head")[0];
+                                                                              var cssNode = $wnd.document.createElement('style');
+                                                                              cssNode.type = 'text/css';
+                                                                              cssNode.rel = formatterId;
+                                                                              if (cssNode.styleSheet) {
+                                                                              // in case of IE
+                                                                              cssNode.styleSheet.cssText = cssContent;
+                                                                              } else {
+                                                                              // otherwise
+                                                                              cssNode.appendChild(document.createTextNode(cssContent));
+                                                                              }
+                                                                              headID.appendChild(cssNode);
+                                                                              }-*/;
 }

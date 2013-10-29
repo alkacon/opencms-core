@@ -398,6 +398,7 @@ public class CmsElementUtil {
                         cssResources.add(OpenCms.getLinkManager().getOnlineLink(m_cms, cssSitePath));
                     }
                     config.setCssResources(cssResources);
+                    config.setInlineCss(formatter.getInlineCss());
                     config.setLabel(label);
                     Map<String, CmsXmlContentProperty> settingsConfig = new LinkedHashMap<String, CmsXmlContentProperty>(
                         formatter.getSettings());

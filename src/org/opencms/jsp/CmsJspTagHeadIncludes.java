@@ -55,6 +55,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -317,6 +318,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
         CmsContainerPageBean containerPage = standardContext.getPage();
 
         Set<String> cssIncludes = new LinkedHashSet<String>();
+        Map<String, String> inlineCss = new LinkedHashMap<String, String>();
         // add defaults
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_defaults)) {
             String[] defaults = m_defaults.split("\\|");
@@ -336,6 +338,9 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                         I_CmsFormatterBean formatter = getFormatterBeanForElement(element, container, formatters);
                         if (formatter != null) {
                             cssIncludes.addAll(formatter.getCssHeadIncludes());
+                            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(formatter.getInlineCss())) {
+                                inlineCss.put(formatter.getId(), formatter.getInlineCss());
+                            }
                         } else {
                             try {
                                 element.initResource(cms);
@@ -363,7 +368,11 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                     && CmsStringUtil.isNotEmptyOrWhitespaceOnly(getDetailwidth())) {
                     try {
                         int width = Integer.parseInt(getDetailwidth());
-                        cssIncludes.addAll(config.getDetailFormatter(getDetailtype(), width).getCssHeadIncludes());
+                        I_CmsFormatterBean formatter = config.getDetailFormatter(getDetailtype(), width);
+                        cssIncludes.addAll(formatter.getCssHeadIncludes());
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(formatter.getInlineCss())) {
+                            inlineCss.put(formatter.getId(), formatter.getInlineCss());
+                        }
                         requiresAllIncludes = false;
                     } catch (NumberFormatException ne) {
                         // nothing to do, we will include CSS for all detail containers
@@ -372,6 +381,9 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                 if (requiresAllIncludes) {
                     for (I_CmsFormatterBean formatter : config.getDetailFormatters()) {
                         cssIncludes.addAll(formatter.getCssHeadIncludes());
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(formatter.getInlineCss())) {
+                            inlineCss.put(formatter.getId(), formatter.getInlineCss());
+                        }
                     }
                 }
             } catch (CmsException e) {
@@ -384,13 +396,30 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
         }
         for (String cssUri : cssIncludes) {
             pageContext.getOut().print(
-                "<link href=\""
+                "\n<link href=\""
                     + CmsJspTagLink.linkTagAction(cssUri, req)
                     + generateReqParams()
                     + "\" rel=\"stylesheet\" type=\"text/css\">");
             if (shouldCloseTags()) {
                 pageContext.getOut().print("</link>");
             }
+        }
+        if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+            StringBuffer inline = new StringBuffer("\n<style type=\"text/css\">\n");
+            for (Entry<String, String> cssEntry : inlineCss.entrySet()) {
+                inline.append("\n// CSS for formatter '" + cssEntry.getKey() + "'\n");
+                inline.append(cssEntry.getValue()).append("\n\n");
+            }
+            inline.append("\n</style>\n");
+            pageContext.getOut().print(inline.toString());
+        } else {
+            StringBuffer inline = new StringBuffer();
+            for (Entry<String, String> cssEntry : inlineCss.entrySet()) {
+                inline.append("\n<style type=\"text/css\" rel=\"" + cssEntry.getKey() + "\">\n");
+                inline.append(cssEntry.getValue()).append("\n\n");
+                inline.append("\n</style>\n");
+            }
+            pageContext.getOut().print(inline.toString());
         }
     }
 

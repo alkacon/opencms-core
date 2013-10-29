@@ -27,6 +27,7 @@
 
 package org.opencms.ade.containerpage.shared;
 
+import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.Map;
@@ -151,6 +152,16 @@ public class CmsFormatterConfig implements IsSerializable {
     public Map<String, CmsXmlContentProperty> getSettingConfig() {
 
         return m_settingConfig;
+    }
+
+    /**
+     * Returns if the formatter has inline CSS.<p>
+     * 
+     * @return <code>true</code> if the formatter has inline CSS
+     */
+    public boolean hasInlineCss() {
+
+        return CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_inlineCss);
     }
 
     /**
