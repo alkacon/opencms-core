@@ -443,7 +443,7 @@ public class CmsADEConfigData {
             for (CmsFormatterChangeSet changeSet : getFormatterChangeSets()) {
                 changeSet.applyToTypes(types);
             }
-            if (!types.isEmpty()) {
+            if (types.contains(typeName)) {
                 for (I_CmsFormatterBean formatter : schemaFormatters.getAllFormatters()) {
                     formatters.add(formatter);
                 }
