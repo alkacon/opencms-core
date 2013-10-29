@@ -164,6 +164,7 @@ public abstract class A_CmsFormatterWidget extends CmsSelectWidget {
             }
             Set<String> added = new HashSet<String>();
             List<CmsSelectWidgetOption> options = Lists.newArrayList();
+            options.add(new CmsSelectWidgetOption("", true, "-----"));
             List<CmsSelectWidgetOption> formatterOptions = getFormatterOptions(cms, adeConfig);
             options.addAll(formatterOptions);
             List<CmsSelectWidgetOption> typeOptions = getTypeOptions(cms, adeConfig);
@@ -204,5 +205,4 @@ public abstract class A_CmsFormatterWidget extends CmsSelectWidget {
             return null;
         }
     }
-
 }
