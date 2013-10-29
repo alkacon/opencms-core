@@ -889,35 +889,6 @@ public class CmsADEConfigData {
     }
 
     /**
-     * Gets the formatter configuration for a given type.<p>
-     * 
-     * @param type the type for which to get the formatters 
-     * 
-     * @return the formatter configuration for that type 
-     */
-    protected CmsFormatterConfiguration getFormatters(String type) {
-
-        CmsResourceTypeConfig typeConfig = getResourceType(type);
-        if ((typeConfig == null)
-            || (typeConfig.getFormatterConfiguration() == null)
-            || (typeConfig.getFormatterConfiguration().getAllFormatters().isEmpty())) {
-            try {
-                CmsXmlContentDefinition contentDefinition = CmsXmlContentDefinition.getContentDefinitionForType(
-                    m_cms,
-                    type);
-                if (contentDefinition == null) {
-                    return null;
-                }
-                return contentDefinition.getContentHandler().getFormatterConfiguration(m_cms, null);
-            } catch (CmsException e) {
-                LOG.error(e.getLocalizedMessage(), e);
-                return null;
-            }
-        }
-        return typeConfig.getFormatterConfiguration();
-    }
-
-    /**
      * Gets the formatters from the schema.<p>
      * 
      * @param cms the current CMS context 

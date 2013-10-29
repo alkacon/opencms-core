@@ -42,7 +42,6 @@ import org.opencms.module.CmsModule;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsFormatterBean;
-import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -520,13 +519,11 @@ public class CmsConfigurationReader {
             CmsFormatterBean formatter = parseFormatter(typeName, formatterLoc);
             formatters.add(formatter);
         }
-        CmsFormatterConfiguration formatterConfig = CmsFormatterConfiguration.create(m_cms, formatters);
         CmsResourceTypeConfig typeConfig = new CmsResourceTypeConfig(
             typeName,
             disabled,
             folderOrName,
             namePattern,
-            formatterConfig,
             detailPagesDisabled,
             addDisabled,
             order);
@@ -641,12 +638,22 @@ public class CmsConfigurationReader {
     protected void parseDetailPage(I_CmsXmlContentLocation node) throws CmsException {
 
         I_CmsXmlContentValueLocation pageLoc = node.getSubValue(N_PAGE);
-        String page = pageLoc.asString(m_cms);
-        CmsResource detailPageRes = m_cms.readResource(page);
-        CmsUUID id = detailPageRes.getStructureId();
         String typeName = getString(node.getSubValue(N_TYPE));
-        CmsDetailPageInfo detailPage = new CmsDetailPageInfo(id, page, typeName);
-        m_detailPageConfigs.add(detailPage);
+        try {
+            String page = pageLoc.asString(m_cms);
+            CmsResource detailPageRes = m_cms.readResource(page);
+            CmsUUID id = detailPageRes.getStructureId();
+            CmsDetailPageInfo detailPage = new CmsDetailPageInfo(id, page, typeName);
+            m_detailPageConfigs.add(detailPage);
+        } catch (CmsVfsResourceNotFoundException e) {
+            CmsUUID structureId = pageLoc.asId(m_cms);
+            CmsResource detailPageRes = m_cms.readResource(structureId);
+            CmsDetailPageInfo detailPage = new CmsDetailPageInfo(
+                structureId,
+                m_cms.getSitePath(detailPageRes),
+                typeName);
+            m_detailPageConfigs.add(detailPage);
+        }
     }
 
     /**

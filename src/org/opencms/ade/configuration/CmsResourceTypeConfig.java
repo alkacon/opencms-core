@@ -45,7 +45,6 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
-import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.containerpage.CmsXmlDynamicFunctionHandler;
 
 import java.util.ArrayList;
@@ -78,9 +77,6 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     /** A reference to a folder of folder name. */
     private CmsFolderOrName m_folderOrName;
 
-    /** The formatter configuration. */
-    private CmsFormatterConfiguration m_formatterConfig;
-
     /** The name pattern .*/
     private String m_namePattern;
 
@@ -97,16 +93,10 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      * @param disabled true if this is a disabled configuration 
      * @param folder the folder reference 
      * @param pattern the name pattern 
-     * @param formatterConfig the formatter configuration 
      */
-    public CmsResourceTypeConfig(
-        String typeName,
-        boolean disabled,
-        CmsFolderOrName folder,
-        String pattern,
-        CmsFormatterConfiguration formatterConfig) {
+    public CmsResourceTypeConfig(String typeName, boolean disabled, CmsFolderOrName folder, String pattern) {
 
-        this(typeName, disabled, folder, pattern, formatterConfig, false, false, I_CmsConfigurationObject.DEFAULT_ORDER);
+        this(typeName, disabled, folder, pattern, false, false, I_CmsConfigurationObject.DEFAULT_ORDER);
     }
 
     /** 
@@ -116,7 +106,6 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      * @param disabled true if this is a disabled configuration 
      * @param folder the folder reference 
      * @param pattern the name pattern 
-     * @param formatterConfig the formatter configuration 
      * @param detailPagesDisabled true if detail page creation should be disabled for this type
      * @param addDisabled true if adding elements of this type via ADE should be disabled 
      * @param order the number used for sorting resource types from modules  
@@ -126,7 +115,6 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         boolean disabled,
         CmsFolderOrName folder,
         String pattern,
-        CmsFormatterConfiguration formatterConfig,
         boolean detailPagesDisabled,
         boolean addDisabled,
         int order) {
@@ -135,7 +123,6 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         m_disabled = disabled;
         m_folderOrName = folder;
         m_namePattern = pattern;
-        m_formatterConfig = formatterConfig;
         m_detailPagesDisabled = detailPagesDisabled;
         m_addDisabled = addDisabled;
         m_order = order;
@@ -148,18 +135,11 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      * @param disabled true if this is a disabled configuration 
      * @param folder the folder reference 
      * @param pattern the name pattern 
-     * @param formatterConfig the formatter configuration 
      * @param order the number used for sorting resource types from modules 
      */
-    public CmsResourceTypeConfig(
-        String typeName,
-        boolean disabled,
-        CmsFolderOrName folder,
-        String pattern,
-        CmsFormatterConfiguration formatterConfig,
-        int order) {
+    public CmsResourceTypeConfig(String typeName, boolean disabled, CmsFolderOrName folder, String pattern, int order) {
 
-        this(typeName, disabled, folder, pattern, formatterConfig, false, false, order);
+        this(typeName, disabled, folder, pattern, false, false, order);
     }
 
     /** 
@@ -480,18 +460,8 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
 
         CmsFolderOrName folderOrName = childConfig.m_folderOrName != null ? childConfig.m_folderOrName : m_folderOrName;
         String namePattern = childConfig.m_namePattern != null ? childConfig.m_namePattern : m_namePattern;
-        CmsFormatterConfiguration formatterConfig = childConfig.m_formatterConfig != null
-        ? childConfig.m_formatterConfig
-        : m_formatterConfig;
-        return new CmsResourceTypeConfig(
-            m_typeName,
-            false,
-            folderOrName,
-            namePattern,
-            formatterConfig,
-            isDetailPagesDisabled() || childConfig.isDetailPagesDisabled(),
-            childConfig.isAddDisabled(),
-            m_order);
+        return new CmsResourceTypeConfig(m_typeName, false, folderOrName, namePattern, isDetailPagesDisabled()
+            || childConfig.isDetailPagesDisabled(), childConfig.isAddDisabled(), m_order);
 
     }
 
@@ -507,7 +477,6 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             m_disabled,
             getFolderOrName(),
             m_namePattern,
-            m_formatterConfig,
             m_detailPagesDisabled,
             isAddDisabled(),
             m_order);
@@ -523,16 +492,6 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     protected CmsFolderOrName getFolderOrName() {
 
         return m_folderOrName;
-    }
-
-    /**
-     * Gets the formatter configuration of this resource type.<p>
-     * 
-     * @return the formatter configuration of this resource type 
-     */
-    protected CmsFormatterConfiguration getFormatterConfiguration() {
-
-        return m_formatterConfig;
     }
 
     /**
