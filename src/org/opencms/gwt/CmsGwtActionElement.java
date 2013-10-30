@@ -84,6 +84,25 @@ public class CmsGwtActionElement extends CmsJspActionElement {
     }
 
     /**
+     * Returns the script tag for the "*.nocache.js".<p>
+     * 
+     * @param moduleName the module name to get the script tag for
+     * @param moduleVersion the module version
+     * 
+     * @return the <code>"&lt;script&gt;"</code> tag for the "*.nocache.js".<p>
+     */
+    public static String createNoCacheScript(String moduleName, String moduleVersion) {
+
+        String result = "<script type=\"text/javascript\" src=\""
+            + CmsWorkplace.getResourceUri("ade/" + moduleName + "/" + moduleName + ".nocache.js");
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(moduleVersion)) {
+            result += "?version=" + moduleVersion;
+        }
+        result += "\"></script>";
+        return result;
+    }
+
+    /**
      * Serializes the result of the given method for RPC-prefetching.<p>
      * 
      * @param name the dictionary name 
@@ -171,25 +190,6 @@ public class CmsGwtActionElement extends CmsJspActionElement {
     public String createNoCacheScript(String moduleName) {
 
         return createNoCacheScript(moduleName, null);
-    }
-
-    /**
-     * Returns the script tag for the "*.nocache.js".<p>
-     * 
-     * @param moduleName the module name to get the script tag for
-     * @param moduleVersion the module version
-     * 
-     * @return the <code>"&lt;script&gt;"</code> tag for the "*.nocache.js".<p>
-     */
-    public String createNoCacheScript(String moduleName, String moduleVersion) {
-
-        String result = "<script type=\"text/javascript\" src=\""
-            + CmsWorkplace.getResourceUri("ade/" + moduleName + "/" + moduleName + ".nocache.js");
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(moduleVersion)) {
-            result += "?version=" + moduleVersion;
-        }
-        result += "\"></script>";
-        return result;
     }
 
     /**
