@@ -84,14 +84,14 @@ public class CmsADEConfigData {
     /** Should inherited types be discarded? */
     protected boolean m_discardInheritedTypes;
 
+    /** The configured formatter changes. */
+    protected CmsFormatterChangeSet m_formatterChangeSet;
+
     /** The base path of this configuration. */
     private String m_basePath;
 
     /** The cms context used for reading the configuration data. */
     private CmsObject m_cms;
-
-    /** The configured formatter changes. */
-    private CmsFormatterChangeSet m_formatterChangeSet;
 
     /** The list of configured function references. */
     private List<CmsFunctionReference> m_functionReferences = new ArrayList<CmsFunctionReference>();
@@ -277,8 +277,7 @@ public class CmsADEConfigData {
      */
     public Map<CmsUUID, I_CmsFormatterBean> getActiveFormatters() {
 
-        CmsFormatterConfigurationCacheState cacheState = OpenCms.getADEManager().getCachedFormatters(
-            m_cms.getRequestContext().getCurrentProject().isOnlineProject());
+        CmsFormatterConfigurationCacheState cacheState = getCachedFormatters();
         Map<CmsUUID, I_CmsFormatterBean> result = Maps.newHashMap(cacheState.getAutoEnabledFormatters());
         applyAllFormatterChanges(result, cacheState);
         return result;
@@ -329,6 +328,17 @@ public class CmsADEConfigData {
 
         checkInitialized();
         return m_basePath;
+    }
+
+    /**
+     * Gets the cached formatters.<p>
+     * 
+     * @return the cached formatters 
+     */
+    public CmsFormatterConfigurationCacheState getCachedFormatters() {
+
+        return OpenCms.getADEManager().getCachedFormatters(
+            m_cms.getRequestContext().getCurrentProject().isOnlineProject());
     }
 
     /**
@@ -434,8 +444,7 @@ public class CmsADEConfigData {
         try {
             I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(resTypeId);
             String typeName = resType.getTypeName();
-            CmsFormatterConfigurationCacheState formatterCacheState = OpenCms.getADEManager().getCachedFormatters(
-                cms.getRequestContext().getCurrentProject().isOnlineProject());
+            CmsFormatterConfigurationCacheState formatterCacheState = getCachedFormatters();
             CmsFormatterConfiguration schemaFormatters = getFormattersFromSchema(cms, res);
             List<I_CmsFormatterBean> formatters = new ArrayList<I_CmsFormatterBean>();
             Set<String> types = new HashSet<String>();
@@ -500,8 +509,7 @@ public class CmsADEConfigData {
      */
     public Map<CmsUUID, I_CmsFormatterBean> getInactiveFormatters() {
 
-        CmsFormatterConfigurationCacheState cacheState = OpenCms.getADEManager().getCachedFormatters(
-            m_cms.getRequestContext().getCurrentProject().isOnlineProject());
+        CmsFormatterConfigurationCacheState cacheState = getCachedFormatters();
         Map<CmsUUID, I_CmsFormatterBean> result = Maps.newHashMap(cacheState.getFormatters());
         result.keySet().removeAll(getActiveFormatters().keySet());
         return result;

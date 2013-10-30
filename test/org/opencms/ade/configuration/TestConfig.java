@@ -61,16 +61,16 @@ import com.google.common.collect.Lists;
 public class TestConfig extends OpenCmsTestCase {
 
     /** Empty detail page list. **/
-    protected static final List<CmsDetailPageInfo> NO_DETAILPAGES = Collections.<CmsDetailPageInfo> emptyList();
+    public static final List<CmsDetailPageInfo> NO_DETAILPAGES = Collections.<CmsDetailPageInfo> emptyList();
 
     /** Empty model page list. **/
-    protected static final List<CmsModelPageConfig> NO_MODEL_PAGES = Collections.<CmsModelPageConfig> emptyList();
+    public static final List<CmsModelPageConfig> NO_MODEL_PAGES = Collections.<CmsModelPageConfig> emptyList();
 
     /** Empty property definition list. **/
-    protected static final List<CmsPropertyConfig> NO_PROPERTIES = Collections.<CmsPropertyConfig> emptyList();
+    public static final List<CmsPropertyConfig> NO_PROPERTIES = Collections.<CmsPropertyConfig> emptyList();
 
     /** Empty resource type list. **/
-    protected static final List<CmsResourceTypeConfig> NO_TYPES = Collections.<CmsResourceTypeConfig> emptyList();
+    public static final List<CmsResourceTypeConfig> NO_TYPES = Collections.<CmsResourceTypeConfig> emptyList();
 
     /**
      * Test constructor.<p>

@@ -77,9 +77,9 @@ public class CmsFormatterChangeSet {
                 I_CmsFormatterBean addedFormatter = externalFormatters.getFormatters().get(key);
                 if (addedFormatter != null) {
                     formatters.put(key, addedFormatter);
-                } else {
-                    formatters.remove(key);
                 }
+            } else {
+                formatters.remove(key);
             }
         }
     }

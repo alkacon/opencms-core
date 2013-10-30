@@ -71,7 +71,7 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
     public static final String TYPE_FORMATTER_CONFIG = "formatter_config";
 
     /** The delay to use for updating the formatter cache, in seconds. */
-    public static final int UPDATE_DELAY_SECONDS = 7;
+    protected static int UPDATE_DELAY_SECONDS = 7;
 
     /** The logger for this class. */
     private static final Log LOG = CmsLog.getLog(CmsFormatterConfigurationCache.class);

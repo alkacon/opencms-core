@@ -922,6 +922,19 @@ public class CmsADEManager {
     }
 
     /**
+     * Waits until the formatter cache has finished updating itself.<p>
+     * 
+     * This method is only intended for use in test cases.
+     * 
+     * @param online true if we should wait for the online formatter cache,false for the offline cache 
+     */
+    public void waitForFormatterCache(boolean online) {
+
+        CmsFormatterConfigurationCache cache = online ? m_onlineFormatterCache : m_offlineFormatterCache;
+        cache.waitForUpdate();
+    }
+
+    /**
      * Creates an element from its serialized data.<p> 
      * 
      * @param data the serialized data
