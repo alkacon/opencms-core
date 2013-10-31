@@ -232,6 +232,9 @@ public class CmsFormatterBeanParser {
 
         I_CmsXmlContentValueLocation rankLoc = root.getSubValue(N_RANK);
         String rankStr = rankLoc.getValue().getStringValue(m_cms);
+        if (rankStr != null) {
+            rankStr = rankStr.trim();
+        }
         int rank;
         try {
             rank = Integer.parseInt(rankStr);
@@ -241,7 +244,7 @@ public class CmsFormatterBeanParser {
         m_rank = rank;
 
         String resType = getString(root, N_TYPE, null);
-        m_resourceType = resType;
+        m_resourceType = resType.trim();
 
         String autoEnabled = getString(root, N_AUTO_ENABLED, "false");
         m_autoEnabled = Boolean.parseBoolean(autoEnabled);
