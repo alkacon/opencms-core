@@ -204,6 +204,46 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
     }
 
     /**
+     * Tests default formatter selection.<p>
+     * 
+     * @throws Exception
+     */
+    public void testDefaultFormatterSelection() throws Exception {
+
+        I_CmsFormatterBean f1 = createWidthBasedFormatter("f1", 100, 100, 999);
+        I_CmsFormatterBean f2 = createWidthBasedFormatter("f2", 100, 200, 999);
+        I_CmsFormatterBean f3 = createWidthBasedFormatter("f3", 100, 300, 999);
+        I_CmsFormatterBean f4 = createWidthBasedFormatter("f4", 100, 301, 349);
+        CmsTestConfigData config = createConfig("/", f1, f2, f3, f4);
+        CmsFormatterConfiguration formatterConfig = config.getFormatters(getCmsObject(), m_exampleResourceA);
+        assertEquals(
+            "Widest formtter with width < 250 should have matched",
+            "f2",
+            formatterConfig.getDefaultFormatter("foo", 250).getNiceName());
+        assertEquals(
+            "Widest formatter with width < 350 and maxWidth >= 350 should have matched",
+            "f3",
+            formatterConfig.getDefaultFormatter("foo", 350).getNiceName());
+
+        I_CmsFormatterBean f5 = createTypeBasedFormatter("f5", 100, "foo");
+        config = createConfig("/", f1, f2, f3, f4, f5);
+        formatterConfig = config.getFormatters(getCmsObject(), m_exampleResourceA);
+        assertEquals(
+            "Type based formatter should have matched",
+            "f5",
+            formatterConfig.getDefaultFormatter("foo", 350).getNiceName());
+
+        I_CmsFormatterBean f6 = createWidthBasedFormatter("f6", 200, 200, 999);
+        config = createConfig("/", f1, f2, f3, f4, f5, f6);
+        formatterConfig = config.getFormatters(getCmsObject(), m_exampleResourceA);
+        assertEquals(
+            "Formatter with higher ranking should have matched",
+            "f6",
+            formatterConfig.getDefaultFormatter("foo", 350).getNiceName());
+
+    }
+
+    /**
      * Tests that the formatter cache is updated correctly.
      * 
      * @throws Exception
@@ -279,7 +319,6 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             delete("/system/formatter1.fc");
             delete("/system/formatter2.fc");
         }
-
     }
 
     /**
@@ -314,16 +353,28 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
         config2.setFormatterChangeSet(changeSet2);
 
         CmsFormatterConfiguration formatterConfig = config.getFormatters(cms, m_exampleResourceA);
-        assertEquals(names("f1"), getFormatterNames(formatterConfig.getAllFormatters()));
+        assertEquals(
+            "Schema formatters for TYPE_A should have been removed",
+            names("f1"),
+            getFormatterNames(formatterConfig.getAllFormatters()));
 
         CmsFormatterConfiguration formatterConfig2 = config2.getFormatters(cms, m_exampleResourceA);
-        assertEquals(names("f1", "s1", "s2"), getFormatterNames(formatterConfig2.getAllFormatters()));
+        assertEquals(
+            "Schema formatters for TYPE_A should have been added again.",
+            names("f1", "s1", "s2"),
+            getFormatterNames(formatterConfig2.getAllFormatters()));
 
         CmsFormatterConfiguration formatterConfig3 = config2.getFormatters(cms, m_exampleResourceB);
-        assertEquals(names("s3"), getFormatterNames(formatterConfig3.getAllFormatters()));
+        assertEquals(
+            "Schema formatters for TYPE_B should not be affected",
+            names("s3"),
+            getFormatterNames(formatterConfig3.getAllFormatters()));
 
         CmsFormatterConfiguration formatterConfig4 = config.getFormatters(cms, m_exampleResourceB);
-        assertEquals(names("s3"), getFormatterNames(formatterConfig4.getAllFormatters()));
+        assertEquals(
+            "Schema formatters for TYPE_B should not be affected",
+            names("s3"),
+            getFormatterNames(formatterConfig4.getAllFormatters()));
 
     }
 
@@ -511,6 +562,123 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             + "</NewFormatters>\n"
             + "";
         return xml;
+    }
+
+    /**
+     * Creates a formatter bean for matching by type.<p>
+     * 
+     * @param name
+     * @param rank1
+     * @param containerTypesArray
+     * 
+     * @return the created formatter bean 
+     */
+    private CmsFormatterBean createTypeBasedFormatter(String name, int rank1, String... containerTypesArray) {
+
+        Set<String> containerTypes = new HashSet<String>();
+        for (String cntType : containerTypesArray) {
+            containerTypes.add(cntType);
+        }
+        String jspRootPath = "/system/f1.jsp";
+        CmsUUID jspStructureId = null;
+        int minWidth = -1;
+        int maxWidth = 9999;
+        boolean preview = true;
+        boolean searchContent = true;
+        String location = "-- empty -- ";
+
+        List<String> cssHeadIncludes = Lists.newArrayList();
+        String inlineCss = "";
+        List<String> javascriptHeadIncludes = Lists.newArrayList();
+        String inlineJavascript = "";
+        String niceName = name;
+        String resourceTypeName = TYPE_A;
+        int rank = rank1;
+        String id = "" + CmsUUID.getConstantUUID(name);
+        Map<String, CmsXmlContentProperty> settings = Maps.newHashMap();
+        boolean isFromConfigFile = true;
+        boolean isAutoEnabled = true;
+        boolean isDetail = true;
+        CmsFormatterBean result = new CmsFormatterBean(
+            containerTypes,
+            jspRootPath,
+            jspStructureId,
+            minWidth,
+            maxWidth,
+            preview,
+            searchContent,
+            location,
+
+            cssHeadIncludes,
+            inlineCss,
+            javascriptHeadIncludes,
+            inlineJavascript,
+            niceName,
+            resourceTypeName,
+            rank,
+            id,
+            settings,
+            isFromConfigFile,
+            isAutoEnabled,
+            isDetail);
+
+        return result;
+    }
+
+    /**
+     * Creates a formatter bean for matching by width.<p>
+     * 
+     * @param name
+     * @param rank
+     * @param width
+     * @param maxWidth
+     * 
+     * @return the created formatter bean 
+     */
+    private CmsFormatterBean createWidthBasedFormatter(String name, int rank, int width, int maxWidth) {
+
+        Set<String> containerTypes = new HashSet<String>();
+        String jspRootPath = "/system/f1.jsp";
+        CmsUUID jspStructureId = null;
+        int minWidth = width;
+        boolean preview = true;
+        boolean searchContent = true;
+        String location = "-- empty -- ";
+
+        List<String> cssHeadIncludes = Lists.newArrayList();
+        String inlineCss = "";
+        List<String> javascriptHeadIncludes = Lists.newArrayList();
+        String inlineJavascript = "";
+        String niceName = name;
+        String resourceTypeName = TYPE_A;
+        String id = "" + CmsUUID.getConstantUUID(name);
+        Map<String, CmsXmlContentProperty> settings = Maps.newHashMap();
+        boolean isFromConfigFile = true;
+        boolean isAutoEnabled = true;
+        boolean isDetail = true;
+        CmsFormatterBean result = new CmsFormatterBean(
+            containerTypes,
+            jspRootPath,
+            jspStructureId,
+            minWidth,
+            maxWidth,
+            preview,
+            searchContent,
+            location,
+
+            cssHeadIncludes,
+            inlineCss,
+            javascriptHeadIncludes,
+            inlineJavascript,
+            niceName,
+            resourceTypeName,
+            rank,
+            id,
+            settings,
+            isFromConfigFile,
+            isAutoEnabled,
+            isDetail);
+        return result;
     }
 
     /**
