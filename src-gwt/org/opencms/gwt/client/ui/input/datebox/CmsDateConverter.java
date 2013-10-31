@@ -132,10 +132,11 @@ public final class CmsDateConverter {
 
         Date result;
         try {
-            result = Z_TIME_FORMAT.parse(time);
-            result.setYear(date.getYear());
-            result.setMonth(date.getMonth());
-            result.setDate(date.getDate());
+            Date timeAsDate = Z_TIME_FORMAT.parse(time);
+            result = new Date(date.getYear(), date.getMonth(), date.getDate());
+            result.setHours(timeAsDate.getHours());
+            result.setMinutes(timeAsDate.getMinutes());
+            result.setSeconds(timeAsDate.getSeconds());
         } catch (Exception e) {
             result = null;
         }
