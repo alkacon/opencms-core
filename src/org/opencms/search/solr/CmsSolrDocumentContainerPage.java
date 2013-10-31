@@ -37,6 +37,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.search.CmsIndexException;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.I_CmsSearchDocument;
+import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.search.documents.Messages;
 import org.opencms.search.extractors.CmsExtractionResult;
 import org.opencms.search.extractors.I_CmsExtractionResult;
@@ -139,7 +140,9 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
                         && formatters.isSearchContent(element.getFormatterId())) {
                         // the content of this element must be included for the container page
                         element.initResource(cms);
-                        all.add(super.extractContent(cms, element.getResource(), index));
+                        I_CmsDocumentFactory xmlFac = OpenCms.getSearchManager().getDocumentFactory(
+                            element.getResource());
+                        all.add(xmlFac.extractContent(cms, element.getResource(), index));
                     }
                 }
             }
