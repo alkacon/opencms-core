@@ -71,6 +71,9 @@ public class CmsConfigurationReader {
     /** Node name for added formatters. */
     public static final String N_ADD_FORMATTER = "AddFormatter";
 
+    /** Node name for the nested content with the added formatters. */
+    public static final String N_ADD_FORMATTERS = "AddFormatters";
+
     /** The create content locally node name. */
     public static final String N_CREATE_CONTENTS_LOCALLY = "CreateContentsLocally";
 
@@ -160,6 +163,9 @@ public class CmsConfigurationReader {
 
     /** Node name for removed formatters. */
     public static final String N_REMOVE_FORMATTER = "RemoveFormatter";
+
+    /** Node name for the nested content with the removed formatters. */
+    public static final String N_REMOVE_FORMATTERS = "RemoveFormatters";
 
     /** The resource type node name. */
     public static final String N_RESOURCE_TYPE = "ResourceType";
@@ -299,7 +305,7 @@ public class CmsConfigurationReader {
     public Set<String> parseAddFormatters(I_CmsXmlContentLocation node) {
 
         Set<String> addFormatters = new HashSet<String>();
-        for (I_CmsXmlContentValueLocation addLoc : node.getSubValues(N_ADD_FORMATTER)) {
+        for (I_CmsXmlContentValueLocation addLoc : node.getSubValues(N_ADD_FORMATTERS + "/" + N_ADD_FORMATTER)) {
             addFormatters.add(addLoc.asString(m_cms).trim());
         }
         return addFormatters;
@@ -463,7 +469,7 @@ public class CmsConfigurationReader {
     public Set<String> parseRemoveFormatters(I_CmsXmlContentLocation node) {
 
         Set<String> removeFormatters = new HashSet<String>();
-        for (I_CmsXmlContentValueLocation removeLoc : node.getSubValues(N_REMOVE_FORMATTER)) {
+        for (I_CmsXmlContentValueLocation removeLoc : node.getSubValues(N_REMOVE_FORMATTERS + "/" + N_REMOVE_FORMATTER)) {
             removeFormatters.add(removeLoc.asString(m_cms).trim());
         }
         return removeFormatters;
