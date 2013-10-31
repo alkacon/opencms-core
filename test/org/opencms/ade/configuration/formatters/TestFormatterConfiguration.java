@@ -57,7 +57,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import com.google.common.collect.Lists;
-import com.google.gwt.thirdparty.guava.common.collect.Maps;
+import com.google.common.collect.Maps;
 
 /**
  * Tests for formatter configurations.<p>
