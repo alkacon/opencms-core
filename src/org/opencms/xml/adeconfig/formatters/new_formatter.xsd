@@ -14,18 +14,18 @@
     
     <xsd:complexType name="OpenCmsNewFormatter">
         <xsd:sequence>
+        	<xsd:element name="NiceName" type="OpenCmsString" />
         	<xsd:element name="Type" type="OpenCmsString" />
     	    <xsd:element name="Jsp" type="OpenCmsVfsFile" />
-        	<xsd:element name="NiceName" type="OpenCmsString" />
         	<xsd:element name="Rank" type="OpenCmsString"/>
         	<xsd:element name="Match" type="OpenCmsChoiceTypeWidth" minOccurs="0" />
         	<xsd:element name="Preview" type="OpenCmsBoolean" />
         	<xsd:element name="SearchContent" type="OpenCmsBoolean" />
         	<xsd:element name="AutoEnabled" type="OpenCmsBoolean" />
         	<xsd:element name="Detail" type="OpenCmsBoolean" />
-        	<xsd:element name="Setting" type="OpenCmsFormatterSetting" minOccurs="0" maxOccurs="unbounded" />
         	<xsd:element name="HeadIncludeCss" type="OpenCmsHeadIncludeCss" minOccurs="0" maxOccurs="1"/>
-        	<xsd:element name="HeadIncludeJs" type="OpenCmsHeadIncludeJavascript" minOccurs="0" maxOccurs="1" /> 
+        	<xsd:element name="HeadIncludeJs" type="OpenCmsHeadIncludeJavascript" minOccurs="0" maxOccurs="1" />
+        	<xsd:element name="Setting" type="OpenCmsFormatterSetting" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>
@@ -44,6 +44,10 @@
         	<layout element="Type" widget="org.opencms.widgets.CmsTypeComboWidget"  />
         	<layout element="Jsp" widget="VfsFileWidget" configuration="searchtypes=jsp" />
         </layouts>
+        <tabs>
+			<tab element="NiceName" name="TabBasic" collapse="false" />
+			<tab element="Setting" name="TabSettings" collapse="false" />
+		</tabs>
         </xsd:appinfo> 
     </xsd:annotation>    
 </xsd:schema>

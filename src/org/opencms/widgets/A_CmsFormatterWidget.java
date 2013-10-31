@@ -38,6 +38,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -87,10 +88,10 @@ public abstract class A_CmsFormatterWidget extends CmsSelectWidget {
      */
     public static CmsSelectWidgetOption getWidgetOptionForFormatter(CmsObject cms, I_CmsFormatterBean formatter) {
 
-        String name = "["
+        String name = formatter.getNiceName()
+            + " ["
             + formatter.getResourceTypeName()
             + "]  "
-            + formatter.getNiceName()
             + " ("
             + formatter.getJspRootPath()
             + ")";
@@ -108,10 +109,17 @@ public abstract class A_CmsFormatterWidget extends CmsSelectWidget {
      */
     public static CmsSelectWidgetOption getWidgetOptionForType(CmsObject cms, String typeName) {
 
+        String niceTypeName = typeName;
+        try {
+            Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+            niceTypeName = CmsWorkplaceMessages.getResourceTypeName(locale, typeName);
+        } catch (Exception e) {
+            // resource type name will be used as a fallback
+        }
         CmsSelectWidgetOption option = new CmsSelectWidgetOption(
             CmsFormatterChangeSet.keyForType(typeName),
             false,
-            getMessage(cms, Messages.GUI_SCHEMA_FORMATTER_OPTION_1, typeName));
+            getMessage(cms, Messages.GUI_SCHEMA_FORMATTER_OPTION_1, niceTypeName));
         return option;
     }
 
