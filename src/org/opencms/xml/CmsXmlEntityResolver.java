@@ -80,7 +80,8 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
      */
     private static final String[][] LEGACY_TRANSLATIONS = {
         {"opencms://system/modules/org.opencms.ade.config/schemas/", "internal://org/opencms/xml/adeconfig/"},
-        {"opencms://system/modules/org.opencms.ade.containerpage/schemas/", "internal://org/opencms/xml/containerpage/"}};
+        {"opencms://system/modules/org.opencms.ade.containerpage/schemas/", "internal://org/opencms/xml/containerpage/"},
+        {"opencms://system/modules/org.opencms.ade.sitemap/schemas/", "internal://org/opencms/xml/adeconfig/sitemap/"}};
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsXmlEntityResolver.class);

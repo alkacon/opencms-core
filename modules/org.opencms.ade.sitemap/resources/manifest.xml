@@ -309,39 +309,6 @@
       <accesscontrol/>
     </file>
     <file>
-      <destination>system/modules/org.opencms.ade.sitemap/schemas</destination>
-      <type>folder</type>
-      <uuidstructure>fa5f2992-7734-11e0-89e5-d14bc4448678</uuidstructure>
-      <datelastmodified>Thu, 05 May 2011 16:30:24 GMT</datelastmodified>
-      <userlastmodified>Admin</userlastmodified>
-      <datecreated>Thu, 05 May 2011 16:30:24 GMT</datecreated>
-      <usercreated>Admin</usercreated>
-      <flags>0</flags>
-      <properties/>
-      <relations/>
-      <accesscontrol/>
-    </file>
-    <file>
-      <source>system/modules/org.opencms.ade.sitemap/schemas/redirect.xsd</source>
-      <destination>system/modules/org.opencms.ade.sitemap/schemas/redirect.xsd</destination>
-      <type>plain</type>
-      <uuidstructure>6fb30556-7735-11e0-89e5-d14bc4448678</uuidstructure>
-      <uuidresource>6fb30557-7735-11e0-89e5-d14bc4448678</uuidresource>
-      <datelastmodified>Thu, 05 May 2011 16:33:41 GMT</datelastmodified>
-      <userlastmodified>Admin</userlastmodified>
-      <datecreated>Thu, 05 May 2011 16:33:41 GMT</datecreated>
-      <usercreated>Admin</usercreated>
-      <flags>0</flags>
-      <properties>
-        <property>
-          <name>Title</name>
-          <value><![CDATA[redirect]]></value>
-        </property>
-      </properties>
-      <relations/>
-      <accesscontrol/>
-    </file>
-    <file>
       <destination>system/workplace</destination>
       <type>folder</type>
       <uuidstructure>825afce2-11b7-11db-91cd-fdbae480bac9</uuidstructure>
