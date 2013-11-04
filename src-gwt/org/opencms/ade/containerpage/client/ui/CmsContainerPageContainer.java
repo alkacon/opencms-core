@@ -209,6 +209,9 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     /** The overflowing element. */
     private Widget m_overflowingElement;
 
+    /** The cached highlighting position. */
+    private CmsPositionBean m_ownPosition;
+
     /** The drag and drop placeholder. */
     private Element m_placeholder;
 
@@ -291,7 +294,6 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
 
         if (m_overflowingElement != null) {
             add(m_overflowingElement);
-            //           m_overflowingElement.getElement().getStyle().clearDisplay();
         }
     }
 
@@ -300,15 +302,17 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
      */
     public boolean checkPosition(int x, int y, Orientation orientation) {
 
-        switch (orientation) {
-            case HORIZONTAL:
-                return CmsDomUtil.checkPositionInside(getElement(), x, -1);
-            case VERTICAL:
-                return CmsDomUtil.checkPositionInside(getElement(), -1, y);
-            case ALL:
-            default:
-                return CmsDomUtil.checkPositionInside(getElement(), x, y);
+        // ignore orientation
+        int scrollTop = getElement().getOwnerDocument().getScrollTop();
+        // use cached position
+        int relativeTop = (y + scrollTop) - m_ownPosition.getTop();
+        if ((relativeTop > 0) && (m_ownPosition.getHeight() > relativeTop)) {
+            // cursor is inside the height of the element, check horizontal position
+            int scrollLeft = getElement().getOwnerDocument().getScrollLeft();
+            int relativeLeft = (x + scrollLeft) - m_ownPosition.getLeft();
+            return (relativeLeft > 0) && (m_ownPosition.getWidth() > relativeLeft);
         }
+        return false;
     }
 
     /**
@@ -405,9 +409,9 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
                 CmsDomUtil.StyleValue.none.toString())) {
             getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().clearFix());
         }
-        m_highlighting = new CmsHighlightingBorder(
-            CmsPositionBean.getInnerDimensions(getElement()),
-            CmsHighlightingBorder.BorderColor.red);
+        // cache the position info, to be used during drag and drop
+        m_ownPosition = CmsPositionBean.getInnerDimensions(getElement(), 3, false);
+        m_highlighting = new CmsHighlightingBorder(m_ownPosition, CmsHighlightingBorder.BorderColor.red);
         RootPanel.get().add(m_highlighting);
     }
 
@@ -486,7 +490,9 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     public void refreshHighlighting() {
 
         if (m_highlighting != null) {
-            m_highlighting.setPosition(CmsPositionBean.getInnerDimensions(getElement(), 3, false));
+            // cache the position info, to be used during drag and drop
+            m_ownPosition = CmsPositionBean.getInnerDimensions(getElement(), 3, false);
+            m_highlighting.setPosition(m_ownPosition);
         }
     }
 
@@ -694,5 +700,6 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
             m_elementPositions.add(new ElementPositionInfo((Element)node));
         }
         m_requiresPositionUpdate = false;
+        m_ownPosition = CmsPositionBean.getInnerDimensions(getElement(), 3, false);
     }
 }
