@@ -43,7 +43,6 @@ import org.opencms.gwt.client.ui.input.form.CmsDialogFormHandler;
 import org.opencms.gwt.client.ui.input.form.CmsFieldsetFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.CmsForm;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
-import org.opencms.gwt.client.ui.input.form.CmsFormRow;
 import org.opencms.gwt.client.ui.input.form.CmsInfoBoxFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler;
 import org.opencms.gwt.client.util.CmsDomUtil;
@@ -107,7 +106,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
         CmsContainerPageElementPanel elementWidget,
         CmsContainerElementData elementBean) {
 
-        super(Messages.get().key(Messages.GUI_PROPERTY_DIALOG_TITLE_0), new CmsForm(false));
+        super(Messages.get().key(Messages.GUI_PROPERTY_DIALOG_TITLE_0), new CmsForm(false), 700);
         m_elementWidget = elementWidget;
         m_controller = controller;
         m_elementBean = elementBean;
@@ -134,10 +133,12 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
                     org.opencms.ade.containerpage.client.Messages.GUI_FORMATTERS_LEGEND_0));
                 formatterFieldset.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
                 LinkedHashMap<String, String> formatters = new LinkedHashMap<String, String>();
+                m_formatterSelect = new CmsSelectBox();
                 for (CmsFormatterConfig formatter : m_elementBean.getFormatters().get(m_containerId).values()) {
                     formatters.put(formatter.getId(), formatter.getLabel());
+                    m_formatterSelect.setTitle(formatter.getId(), formatter.getJspRootPath());
                 }
-                m_formatterSelect = new CmsSelectBox(formatters, false);
+                m_formatterSelect.setItems(formatters);
                 m_formatterSelect.selectValue(m_elementBean.getFormatterConfig(m_containerId).getId());
                 m_formatterSelect.addValueChangeHandler(new ValueChangeHandler<String>() {
 
@@ -146,12 +147,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
                         onFormatterChange(event.getValue());
                     }
                 });
-                CmsFormRow row = new CmsFormRow();
-                row.getLabel().setText(
-                    org.opencms.ade.containerpage.client.Messages.get().key(
-                        org.opencms.ade.containerpage.client.Messages.GUI_SELECT_FORMATTER_LABEL_0));
-                row.getWidgetContainer().add(m_formatterSelect);
-                formatterFieldset.add(row);
+                formatterFieldset.add(m_formatterSelect);
             }
             if (m_contextInfo.shouldShowElementTemplateContextSelection()) {
                 String templateContexts = m_settings.get(CmsTemplateContextInfo.SETTING);
