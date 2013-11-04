@@ -1511,7 +1511,14 @@ public final class CmsContainerpageController {
             Element elem = DOM.getElementById(cont.getContainerId());
             CmsContainerpageEditor.getZIndexManager().addContainer(cont.getContainerId(), elem);
         }
-        resetEditButtons();
+        // schedule to position the edit buttons after everything else has been initialized
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+            public void execute() {
+
+                resetEditButtons();
+            }
+        });
         Event.addNativePreviewHandler(new NativePreviewHandler() {
 
             public void onPreviewNativeEvent(NativePreviewEvent event) {
