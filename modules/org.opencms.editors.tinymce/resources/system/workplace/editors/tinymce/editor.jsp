@@ -61,7 +61,7 @@ if(grp.length() > 0){
 
 //Group
 grp = new StringBuilder() ;
-grp.append(",search,replace");
+grp.append(",searchreplace");
 
 if(grp.length() > 0){
 	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
@@ -85,7 +85,7 @@ if(grp.length() > 0){
 
 //Group
 grp = new StringBuilder() ;
-grp.append(",cut,copy,paste,pastetext,pasteword");
+grp.append(",cut,copy,paste,pastetext");
 
 if(grp.length() > 0){
 	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
@@ -166,9 +166,6 @@ if(grp.length() > 0){
 //Group
 grp = new StringBuilder() ;
 
-if (options.showElement("button.advhr", displayOptions)) {
-	grp.append(",advhr");
-}
 
 
 if (options.showElement("option.specialchars", displayOptions)) {
@@ -176,7 +173,7 @@ if (options.showElement("option.specialchars", displayOptions)) {
 }
 
 if (options.showElement("option.spellcheck", displayOptions)) {
-	grp.append(",iespell");
+	grp.append(",spellchecker");
 }
 
 
@@ -271,10 +268,10 @@ if (options.showElement("font.decoration", displayOptions)) {
 	}
 
 	if (options.showElement("button.sub", CmsStringUtil.TRUE, displayOptions)) {
-		grp.append(",sub");
+		grp.append(",subscript");
 	}
 	if (options.showElement("button.super", CmsStringUtil.TRUE, displayOptions)) {
-		grp.append(",sup");
+		grp.append(",superscript");
 	}
 }
 
@@ -288,16 +285,16 @@ grp = new StringBuilder() ;
 //determine if the text alignment buttons should be shown
 if (options.showElement("text.align", displayOptions)) {
 	if (options.showElement("button.alignleft", CmsStringUtil.TRUE, displayOptions)) {
-		grp.append(",justifyleft");
+		grp.append(",alignleft");
 	}
 	if (options.showElement("button.aligncenter", CmsStringUtil.TRUE, displayOptions)) {
-		grp.append(",justifycenter");
+		grp.append(",aligncenter");
 	}
 	if (options.showElement("button.alignright", CmsStringUtil.TRUE, displayOptions)) {
-		grp.append(",justifyright");
+		grp.append(",alignright");
 	}
 	if (options.showElement("button.justify", CmsStringUtil.TRUE, displayOptions)) {
-		grp.append(",justifyfull");
+		grp.append(",alignjustify");
 	}
 }
 
@@ -378,9 +375,6 @@ if (options.showElement("button.image", displayOptions)) {
 	grp.append(",image");
 }
 
-if (options.showElement("option.cleanup", displayOptions)) {
-	grp.append(",cleanup");
-}
 
 //determine if the help button should be shown
 if (wp.isHelpEnabled()) {
@@ -430,21 +424,8 @@ if(grp.length() > 0){
 //Group
 grp = new StringBuilder() ;
 
-if (options.showElement("button.insertlayer", displayOptions)) {
-	grp.append(",insertlayer");
-}
 
-if (options.showElement("button.moveforward", displayOptions)) {
-	grp.append(",moveforward");
-}
 
-if (options.showElement("button.movebackward", displayOptions)) {
-	grp.append(",movebackward");
-}
-
-if (options.showElement("button.absolute", displayOptions)) {
-	grp.append(",absolute");
-}
 
 if(grp.length() > 0){
 	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
@@ -453,44 +434,11 @@ if(grp.length() > 0){
 //Group
 grp = new StringBuilder() ;
 
-if (options.showElement("button.styleprops", displayOptions)) {
-	grp.append(",styleprops");
-}
 
 if(grp.length() > 0){
 	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
 }
 
-//Group
-grp = new StringBuilder() ;
-
-if (options.showElement("button.cite", displayOptions)) {
-	grp.append(",cite");
-}
-
-if (options.showElement("button.abbr", displayOptions)) {
-	grp.append(",abbr");
-}
-
-if (options.showElement("button.acronym", displayOptions)) {
-	grp.append(",acronym");
-}
-
-if (options.showElement("button.del", displayOptions)) {
-	grp.append(",del");
-}
-
-if (options.showElement("button.ins", displayOptions)) {
-	grp.append(",ins");
-}
-
-if (options.showElement("button.attribs", displayOptions)) {
-	grp.append(",attribs");
-}
-
-if(grp.length() > 0){
-	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
-}
 
 //Group
 grp = new StringBuilder() ;
@@ -744,7 +692,7 @@ if (toolbarButtons.indexOf("OcmsImageGallery")>0)
 if (toolbarButtons.indexOf("table")>0)
     contextmenu+=" inserttable | cell row column deletetable"
 
-var plugins = "anchor,charmap,code,textcolor,autolink,lists,spellchecker,pagebreak,layer,table,save,hr,image,link,emoticons,insertdatetime,preview,media,searchreplace,print,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,template,wordcount,-opencms";
+var plugins = "anchor,charmap,code,textcolor,autolink,lists,pagebreak,layer,table,save,hr,image,link,emoticons,insertdatetime,preview,media,searchreplace,print,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,template,wordcount,advlist,code,-opencms";
 if (contextmenu!="")
     plugins+=",contextmenu"
 
