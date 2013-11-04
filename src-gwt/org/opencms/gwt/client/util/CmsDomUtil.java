@@ -230,6 +230,9 @@ public final class CmsDomUtil {
         /** CSS Property. */
         borderStyle,
 
+        /** CSS property. */
+        boxSizing,
+
         /** CSS Property. */
         display,
 
