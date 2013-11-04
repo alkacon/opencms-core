@@ -942,12 +942,16 @@ public final class CmsContentEditor extends EditorBase {
      */
     void cancelEdit() {
 
+        // store the scroll position
+        int scrollTop = RootPanel.getBodyElement().getOwnerDocument().getScrollTop();
         unlockResource();
         if (m_onClose != null) {
             m_onClose.execute();
         }
         destroyForm(true);
         clearEditor();
+        // restore the scroll position
+        RootPanel.getBodyElement().getOwnerDocument().setScrollTop(scrollTop);
     }
 
     /**
@@ -1312,7 +1316,8 @@ public final class CmsContentEditor extends EditorBase {
     void saveAndExit() {
 
         boolean unlock = shouldUnlockAutomatically();
-
+        // store the scroll position
+        final int scrollTop = RootPanel.getBodyElement().getOwnerDocument().getScrollTop();
         saveAndDeleteEntities(m_changedEntityIds, m_deletedEntities, unlock, new Command() {
 
             public void execute() {
@@ -1322,6 +1327,8 @@ public final class CmsContentEditor extends EditorBase {
                     m_onClose.execute();
                 }
                 clearEditor();
+                // restore the scroll position
+                RootPanel.getBodyElement().getOwnerDocument().setScrollTop(scrollTop);
             }
         });
     }
