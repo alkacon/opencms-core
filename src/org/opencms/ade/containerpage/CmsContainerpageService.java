@@ -1105,10 +1105,12 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         }
         CmsContainerElementBean newElementBean = null;
         if (formatter != null) {
+            Map<String, String> settings = new HashMap<String, String>(element.getIndividualSettings());
+            settings.put(CmsFormatterConfig.getSettingsKeyForContainer(container.getName()), formatter.getId());
             newElementBean = new CmsContainerElementBean(
                 element.getId(),
                 formatter.getJspStructureId(),
-                element.getIndividualSettings(),
+                settings,
                 isCreateNew);
         }
         return newElementBean;
