@@ -19,8 +19,8 @@
             <xsd:element name="DiscardTypes" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
         	<xsd:element name="CreateContentsLocally" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
             <xsd:element name="ResourceType" type="OpenCmsADEType" minOccurs="0" maxOccurs="unbounded" />
-            <xsd:element name="RemoveFormatters" type="OpenCmsRemoveFormattersBlock" />
-            <xsd:element name="AddFormatters"    type="OpenCmsAddFormattersBlock" />
+            <xsd:element name="RemoveFormatters" type="OpenCmsRemoveFormattersBlock" minOccurs="0"/>
+            <xsd:element name="AddFormatters"    type="OpenCmsAddFormattersBlock" minOccurs="0"/>
             <xsd:element name="DiscardProperties" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
             <xsd:element name="Property" type="OpenCmsADEField" minOccurs="0" maxOccurs="unbounded" />
             <xsd:element name="DiscardModelPages" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />

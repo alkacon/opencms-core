@@ -535,15 +535,15 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             + "\n"
             + "<NewFormatters xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"opencms://system/modules/org.opencms.ade.config/schemas/formatters/new_formatter.xsd\">\n"
             + "  <NewFormatter language=\"en\">\n"
+            + "    <NiceName>"
+            + name
+            + "</NiceName>\n"
             + "    <Type><![CDATA["
             + type
             + "]]></Type>\n"
             + "    <Jsp>\n"
             + link(formatter)
             + "    </Jsp>\n"
-            + "    <NiceName>"
-            + name
-            + "</NiceName>\n"
             + "    <Rank>"
             + rank
             + "</Rank>\n"
