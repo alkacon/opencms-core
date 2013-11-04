@@ -51,9 +51,11 @@ import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.containerpage.CmsXmlDynamicFunctionHandler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
@@ -65,7 +67,9 @@ import org.apache.lucene.queries.FilterClause;
 import org.apache.lucene.queries.TermsFilter;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
@@ -129,6 +133,32 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
         super();
         setName(name);
         setRequireViewPermission(true);
+    }
+
+    /**
+     * Computes the search root folders for the given search parameters based on the search scope.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param params the current search parameters 
+     * 
+     * @return the search root folders based on the search scope 
+     */
+    public List<String> computeScopeFolders(CmsObject cms, CmsGallerySearchParameters params) {
+
+        String subsite = null;
+        if (params.getReferencePath() != null) {
+            subsite = OpenCms.getADEManager().getSubSiteRoot(
+                cms,
+                cms.getRequestContext().addSiteRoot(params.getReferencePath()));
+            if (subsite != null) {
+                subsite = cms.getRequestContext().removeSiteRoot(subsite);
+            }
+        }
+        List<String> scopeFolders = getSearchRootsForScope(
+            params.getScope(),
+            cms.getRequestContext().getSiteRoot(),
+            subsite);
+        return scopeFolders;
     }
 
     /**
@@ -261,29 +291,39 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
                 folders.addAll(params.getGalleries());
             }
             filter = appendPathFilter(searchCms, filter, folders);
-            // only append scope filter if no no folders or galleries given
-            if (folders.isEmpty()) {
-                String subsite = null;
-                if (params.getReferencePath() != null) {
-                    subsite = OpenCms.getADEManager().getSubSiteRoot(
-                        cms,
-                        cms.getRequestContext().addSiteRoot(params.getReferencePath()));
-                    if (subsite != null) {
-                        subsite = cms.getRequestContext().removeSiteRoot(subsite);
-                    }
-                }
-                List<String> scopeFolders = getSearchRootsForScope(
-                    params.getScope(),
-                    cms.getRequestContext().getSiteRoot(),
-                    subsite);
-                filter = appendPathFilter(searchCms, filter, scopeFolders);
-            }
+
             // append category filter
             filter = appendCategoryFilter(searchCms, filter, params.getCategories());
             // append container type filter
             filter = appendContainerTypeFilter(searchCms, filter, params.getContainerTypes());
             // append resource type filter
             filter = appendResourceTypeFilter(searchCms, filter, params.getResourceTypes());
+
+            // only append scope filter if no no folders or galleries given
+            if (folders.isEmpty()) {
+                if ((params.getResourceTypes() != null)
+                    && params.getResourceTypes().contains(CmsXmlDynamicFunctionHandler.TYPE_FUNCTION)) {
+                    Filter functionTypeFilter = getTermQueryFilter(
+                        CmsSearchField.FIELD_TYPE,
+                        CmsXmlDynamicFunctionHandler.TYPE_FUNCTION);
+                    List<String> searchRootsForOtherTypes = computeScopeFolders(cms, params);
+                    List<String> searchRootsForFunctions = new ArrayList<String>(searchRootsForOtherTypes);
+                    searchRootsForFunctions.add(CmsGallerySearchIndex.FOLDER_SYTEM_MODULES);
+
+                    // build a filter with two cases joined by OR:
+                    // CASE 1: document is a dynamic function => use search roots together with /system/modules
+                    // CASE 2: document is not a dynamic  function => use search roots as-is 
+
+                    BooleanFilter scopeFilter = filterOr(
+                        filterAnd(functionTypeFilter, createPathFilter(searchRootsForFunctions)),
+                        filterAnd(filterNot(functionTypeFilter), createPathFilter(searchRootsForOtherTypes)));
+                    filter.add(scopeFilter, Occur.MUST);
+                } else {
+                    List<String> scopeFolders = computeScopeFolders(cms, params);
+                    filter = appendPathFilter(searchCms, filter, scopeFolders);
+                }
+            }
+
             // append locale filter
             filter = appendLocaleFilter(searchCms, filter, params.getLocale());
             // append date last modified filter            
@@ -516,6 +556,23 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
     }
 
     /**
+     * Creates a search filter for the given search root paths.<p>
+     * 
+     * @param roots the search root paths
+     *  
+     * @return the filter which filters for the given search roots 
+     */
+    protected TermsFilter createPathFilter(Collection<String> roots) {
+
+        // complete the search root
+        List<Term> terms = new ArrayList<Term>();
+        for (String root : roots) {
+            extendPathFilter(terms, root);
+        }
+        return new TermsFilter(terms);
+    }
+
+    /**
      * Checks if the provided resource should be excluded from this search index.<p> 
      *
      * @param cms the OpenCms context used for building the search index
@@ -582,6 +639,52 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
             // Do nothing 
         }
         return null;
+    }
+
+    /**
+     * Creates a filter which represents the "AND" operation on two other filters.<p>
+     * 
+     * @param f1 the first filter 
+     * @param f2 the second filter 
+     * 
+     * @return the "AND" operation on the two filters 
+     */
+    private BooleanFilter filterAnd(Filter f1, Filter f2) {
+
+        BooleanFilter filter = new BooleanFilter();
+        filter.add(f1, Occur.MUST);
+        filter.add(f2, Occur.MUST);
+        return filter;
+    }
+
+    /**
+     * Creates a boolean filter for the negation of another filter.<p>
+     * 
+     * @param f1 the filter to negate
+     *  
+     * @return the negated filter 
+     */
+    private BooleanFilter filterNot(Filter f1) {
+
+        BooleanFilter filter = new BooleanFilter();
+        filter.add(f1, Occur.MUST_NOT);
+        return filter;
+    }
+
+    /** 
+     * Creates a boolean filter for the "OR" operation on two other filters.<p>
+     * 
+     * @param f1 the first filter 
+     * @param f2 the second filter
+     *  
+     * @return the composite filter 
+     */
+    private BooleanFilter filterOr(Filter f1, Filter f2) {
+
+        BooleanFilter filter = new BooleanFilter();
+        filter.add(f1, Occur.SHOULD);
+        filter.add(f2, Occur.SHOULD);
+        return filter;
     }
 
 }
