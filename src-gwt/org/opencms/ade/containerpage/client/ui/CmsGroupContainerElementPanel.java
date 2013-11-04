@@ -410,4 +410,16 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
         }
     }
 
+    /**
+     * @see org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel#updateOptionBarPosition()
+     */
+    @Override
+    public void updateOptionBarPosition() {
+
+        for (Widget widget : this) {
+            if (widget instanceof CmsContainerPageElementPanel) {
+                ((CmsContainerPageElementPanel)widget).updateOptionBarPosition();
+            }
+        }
+    }
 }

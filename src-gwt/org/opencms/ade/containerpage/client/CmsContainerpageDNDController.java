@@ -158,6 +158,12 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     /** The id of the dragged element. */
     protected String m_draggableId;
 
+    /** The current place holder index. */
+    private int m_currentIndex = -1;
+
+    /** The current drop target. */
+    private I_CmsDropTarget m_currentTarget;
+
     /** Map of current drag info beans. */
     private Map<I_CmsDropTarget, DragInfo> m_dragInfos;
 
@@ -222,6 +228,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     public boolean onDragStart(I_CmsDraggable draggable, I_CmsDropTarget target, final CmsDNDHandler handler) {
 
         installDragOverlay();
+        m_currentTarget = null;
+        m_currentIndex = -1;
         m_draggableId = draggable.getId();
         m_isNew = false;
         m_originalIndex = -1;
@@ -381,7 +389,9 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
      */
     public void onPositionedPlaceholder(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
 
-        updateHighlighting();
+        if (hasChangedPosition(target)) {
+            updateHighlighting();
+        }
     }
 
     /**
@@ -538,6 +548,23 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 }
             }
         }
+    }
+
+    /**
+     * Checks if the placeholder position has changed.<p>
+     * 
+     * @param target the current drop target
+     * 
+     * @return <code>true</code> if the placeholder position has changed
+     */
+    private boolean hasChangedPosition(I_CmsDropTarget target) {
+
+        if ((m_currentTarget != target) || (m_currentIndex != target.getPlaceholderIndex())) {
+            m_currentTarget = target;
+            m_currentIndex = target.getPlaceholderIndex();
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -781,6 +808,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 ((I_CmsDropContainer)target).removeHighlighting();
             }
         }
+        m_currentTarget = null;
+        m_currentIndex = -1;
         m_isNew = false;
         m_controller.getHandler().deactivateMenuButton();
         final List<I_CmsDropTarget> dragTargets = new ArrayList<I_CmsDropTarget>(m_dragInfos.keySet());
@@ -793,7 +822,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             public void execute() {
 
                 handler.clearTargets();
-                m_controller.resetEditableListButtons();
+                m_controller.resetEditButtons();
                 // in case of group editing, this will refresh the container position and size
                 for (I_CmsDropTarget target : dragTargets) {
                     if (target instanceof I_CmsDropContainer) {

@@ -201,6 +201,17 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
      */
     public Element getDragHelper(I_CmsDropTarget target) {
 
+        Style optionStyle = m_elementOptionBar.getElement().getStyle();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(optionStyle.getTop())) {
+            // in case the option bar has an especially set top offset, override the Y cursor offset
+            optionStyle.clearTop();
+            CmsContainerpageController.get().getDndHandler().setCursorOffsetY(12);
+        }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(optionStyle.getRight())) {
+            // in case the option bar has an especially set right offset, override the X cursor offset
+            optionStyle.clearRight();
+            CmsContainerpageController.get().getDndHandler().setCursorOffsetX(35);
+        }
         Element helper = CmsDomUtil.clone(getElement());
         target.getElement().appendChild(helper);
         // preparing helper styles
@@ -369,12 +380,12 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
     public void highlightElement() {
 
         if (m_highlighting == null) {
-            m_highlighting = new CmsHighlightingBorder(CmsPositionBean.generatePositionInfo(this), isNew()
+            m_highlighting = new CmsHighlightingBorder(CmsPositionBean.getInnerDimensions(getElement()), isNew()
             ? CmsHighlightingBorder.BorderColor.blue
             : CmsHighlightingBorder.BorderColor.red);
             RootPanel.get().add(m_highlighting);
         } else {
-            m_highlighting.setPosition(CmsPositionBean.generatePositionInfo(this));
+            m_highlighting.setPosition(CmsPositionBean.getInnerDimensions(getElement()));
         }
     }
 
@@ -521,12 +532,7 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
         }
         m_elementOptionBar = elementOptionBar;
         insert(m_elementOptionBar, 0);
-        if (isOptionbarIFrameCollision(m_elementOptionBar.getCalculatedWidth())) {
-            m_elementOptionBar.getElement().getStyle().setPosition(Position.RELATIVE);
-            int marginLeft = getElement().getOffsetWidth() - m_elementOptionBar.getCalculatedWidth();
-            m_elementOptionBar.getElement().getStyle().setMarginLeft(marginLeft, Unit.PX);
-        }
-
+        updateOptionBarPosition();
     }
 
     /**
@@ -783,27 +789,27 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
         // using own implementation as GWT won't do it properly on IE7-8
         CmsDomUtil.clearOpacity(getElement());
         getElement().getStyle().clearDisplay();
+        updateOptionBarPosition();
     }
 
     /**
      * Returns if the option bar position collides with any iframe child elements.<p>
      * 
-     * @param optionWidth the option bar witdh 
+     * @param optionTop the option bar absolute top 
+     * @param optionWidth the option bar width 
      * 
      * @return <code>true</code> if there are iframe child elements located no less than 25px below the upper edge of the element
      */
-    private boolean isOptionbarIFrameCollision(int optionWidth) {
+    private boolean isOptionbarIFrameCollision(int optionTop, int optionWidth) {
 
         if (RootPanel.getBodyElement().isOrHasChild(getElement())) {
-            int elementTop = getElement().getAbsoluteTop();
-
             NodeList<Element> frames = getElement().getElementsByTagName(CmsDomUtil.Tag.iframe.name());
             for (int i = 0; i < frames.getLength(); i++) {
                 int frameTop = frames.getItem(i).getAbsoluteTop();
                 int frameHeight = frames.getItem(i).getOffsetHeight();
                 int frameRight = frames.getItem(i).getAbsoluteRight();
-                if (((frameTop - elementTop) < 25)
-                    && (((frameTop + frameHeight) - elementTop) > 0)
+                if (((frameTop - optionTop) < 25)
+                    && (((frameTop + frameHeight) - optionTop) > 0)
                     && ((frameRight - getElement().getAbsoluteRight()) < optionWidth)) {
                     return true;
                 }
@@ -851,7 +857,34 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
             if (getWidgetIndex(m_elementOptionBar) >= 0) {
                 m_elementOptionBar.removeFromParent();
             }
-            if (isOptionbarIFrameCollision(m_elementOptionBar.getCalculatedWidth())) {
+            updateOptionBarPosition();
+            insert(m_elementOptionBar, 0);
+        }
+    }
+
+    /**
+     * Updates the option bar position.<p>
+     */
+    public void updateOptionBarPosition() {
+
+        // only if attached to the DOM
+        if (RootPanel.getBodyElement().isOrHasChild(getElement())) {
+            int absoluteTop = getElement().getAbsoluteTop();
+            int absoluteRight = getElement().getAbsoluteRight();
+            CmsPositionBean dimensions = CmsPositionBean.getInnerDimensions(getElement());
+            if (Math.abs(absoluteTop - dimensions.getTop()) > 20) {
+                absoluteTop = (dimensions.getTop() - absoluteTop) + 2;
+                m_elementOptionBar.getElement().getStyle().setTop(absoluteTop, Unit.PX);
+            } else {
+                m_elementOptionBar.getElement().getStyle().clearTop();
+            }
+            if (Math.abs(absoluteRight - dimensions.getLeft() - dimensions.getWidth()) > 20) {
+                absoluteRight = (absoluteRight - dimensions.getLeft() - dimensions.getWidth()) + 2;
+                m_elementOptionBar.getElement().getStyle().setRight(absoluteTop, Unit.PX);
+            } else {
+                m_elementOptionBar.getElement().getStyle().clearRight();
+            }
+            if (isOptionbarIFrameCollision(absoluteTop, m_elementOptionBar.getCalculatedWidth())) {
                 m_elementOptionBar.getElement().getStyle().setPosition(Position.RELATIVE);
                 int marginLeft = getElement().getClientWidth() - m_elementOptionBar.getCalculatedWidth();
                 if (marginLeft > 0) {
@@ -861,7 +894,6 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
                 m_elementOptionBar.getElement().getStyle().clearPosition();
                 m_elementOptionBar.getElement().getStyle().clearMarginLeft();
             }
-            insert(m_elementOptionBar, 0);
         }
     }
 }

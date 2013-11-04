@@ -800,7 +800,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
      */
     public void resetEditableListButtons() {
 
-        m_controller.resetEditableListButtons();
+        m_controller.resetEditButtons();
     }
 
     /**

@@ -247,7 +247,7 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
             m_highlighting = new CmsHighlightingBorder(m_position, CmsHighlightingBorder.BorderColor.red);
             RootPanel.get().add(m_highlighting);
         } else {
-            m_highlighting.setPosition(CmsPositionBean.generatePositionInfo(this));
+            m_highlighting.setPosition(CmsPositionBean.getInnerDimensions(getElement()));
         }
     }
 

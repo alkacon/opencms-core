@@ -455,7 +455,7 @@ public final class CmsContainerpageController {
                 getGroupcontainer().refreshHighlighting();
             }
             m_handler.updateClipboard(result);
-            resetEditableListButtons();
+            resetEditButtons();
             CmsContainerpageController.get().fireEvent(new CmsContainerpageEvent(EventType.elementEdited));
         }
     }
@@ -1511,7 +1511,7 @@ public final class CmsContainerpageController {
             Element elem = DOM.getElementById(cont.getContainerId());
             CmsContainerpageEditor.getZIndexManager().addContainer(cont.getContainerId(), elem);
         }
-        resetEditableListButtons();
+        resetEditButtons();
         Event.addNativePreviewHandler(new NativePreviewHandler() {
 
             public void onPreviewNativeEvent(NativePreviewEvent event) {
@@ -1852,7 +1852,7 @@ public final class CmsContainerpageController {
                             }
                         });
                     }
-                    resetEditableListButtons();
+                    resetEditButtons();
                     addToRecentList(newElement.getClientId(), new Runnable() {
 
                         public void run() {
@@ -1959,12 +1959,13 @@ public final class CmsContainerpageController {
     }
 
     /**
-     * Shows list collector direct edit buttons (old direct edit style), if present.<p>
+     * Resets all edit buttons an there positions.<p>
      */
-    public void resetEditableListButtons() {
+    public void resetEditButtons() {
 
         for (org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer container : m_targetContainers.values()) {
             container.showEditableListButtons();
+            container.updateOptionBars();
         }
     }
 
@@ -2334,7 +2335,7 @@ public final class CmsContainerpageController {
         };
         action.execute();
         if (visible) {
-            resetEditableListButtons();
+            resetEditButtons();
         }
     }
 
