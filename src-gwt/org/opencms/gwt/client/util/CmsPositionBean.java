@@ -158,7 +158,7 @@ public class CmsPositionBean {
      * 
      * @return the position info
      */
-    private static CmsPositionBean getInnerDimensions(Element panel, int levels, boolean includeSelf) {
+    public static CmsPositionBean getInnerDimensions(Element panel, int levels, boolean includeSelf) {
 
         boolean first = true;
         int top = 0;
@@ -166,7 +166,11 @@ public class CmsPositionBean {
         int bottom = 0;
         int right = 0;
         // if overflow is set to hidden, use the outer dimensions
-        if (!Overflow.HIDDEN.getCssName().equals(CmsDomUtil.getCurrentStyle(panel, Style.overflow))) {
+        // if there is a background color set, use the outer dimensions
+        String parentBackground = CmsDomUtil.getCurrentStyle(panel.getParentElement(), Style.backgroundColor);
+        String selfBackground = CmsDomUtil.getCurrentStyle(panel, Style.backgroundColor);
+        if (!Overflow.HIDDEN.getCssName().equals(CmsDomUtil.getCurrentStyle(panel, Style.overflow))
+            && ((parentBackground.equals(selfBackground) || "transparent".equals(selfBackground)))) {
             if (includeSelf) {
                 top = panel.getAbsoluteTop();
                 left = panel.getAbsoluteLeft();
