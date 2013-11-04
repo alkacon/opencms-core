@@ -31,6 +31,7 @@ import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Style;
 import org.opencms.gwt.client.util.CmsMoveAnimation;
+import org.opencms.gwt.client.util.CmsPositionBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -690,7 +691,8 @@ public class CmsDNDHandler implements MouseDownHandler {
                 clear();
             }
         };
-        showEndAnimation(callback, m_placeholder.getAbsoluteTop(), m_placeholder.getAbsoluteLeft());
+        CmsPositionBean placeholderPosition = CmsPositionBean.getInnerDimensions(m_placeholder);
+        showEndAnimation(callback, placeholderPosition.getTop(), placeholderPosition.getLeft());
     }
 
     /**
