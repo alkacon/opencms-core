@@ -129,7 +129,7 @@
 				<newresource uri="newresource.jsp?page=structurecontent"
 					order="15" autosetnavigation="false" autosettitle="false" />
 			</explorertype>
-			<explorertype name="xmlpage" key="fileicon.xmlpage"
+<!-- 		<explorertype name="xmlpage" key="fileicon.xmlpage"
 				icon="page.gif">
 				<newresource uri="newresource_xmlpage.jsp" order="20"
 					autosetnavigation="false" autosettitle="false" />
@@ -215,7 +215,7 @@
 							rule="nondeleted" />
 					</contextmenu>
 				</editoptions>
-			</explorertype>
+			</explorertype> -->
 			<explorertype name="plain" key="fileicon.plain" icon="plain.gif">
 				<newresource uri="newresource.jsp?newresourcetype=plain"
 					order="30" autosetnavigation="false" autosettitle="false" />
