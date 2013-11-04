@@ -173,6 +173,58 @@ public class CmsJspTagContainer extends TagSupport {
     }
 
     /**
+     * Returns the element group elements.<p>
+     * 
+     * @param cms the current cms context
+     * @param element group element
+     * @param req the servlet request
+     * @param containerType the container type
+     * 
+     * @return the elements of this group
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public static List<CmsContainerElementBean> getGroupContainerElements(
+        CmsObject cms,
+        CmsContainerElementBean element,
+        ServletRequest req,
+        String containerType) throws CmsException {
+
+        List<CmsContainerElementBean> subElements;
+        CmsXmlGroupContainer xmlGroupContainer = CmsXmlGroupContainerFactory.unmarshal(cms, element.getResource(), req);
+        CmsGroupContainerBean groupContainer = xmlGroupContainer.getGroupContainer(
+            cms,
+            cms.getRequestContext().getLocale());
+        if (!groupContainer.getTypes().contains(containerType)) {
+            //TODO: change message
+            throw new CmsIllegalStateException(Messages.get().container(
+                Messages.ERR_XSD_NO_TEMPLATE_FORMATTER_3,
+                element.getResource().getRootPath(),
+                OpenCms.getResourceManager().getResourceType(element.getResource()).getTypeName(),
+                containerType));
+        }
+        subElements = groupContainer.getElements();
+        return subElements;
+    }
+
+    /**
+     * Reads elements from an inherited container.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param element the element which references the inherited container
+     *  
+     * @return the container elements 
+     */
+
+    public static List<CmsContainerElementBean> getInheritedContainerElements(
+        CmsObject cms,
+        CmsContainerElementBean element) {
+
+        CmsResource resource = element.getResource();
+        return CmsXmlInheritGroupContainerHandler.loadInheritContainerElements(cms, resource);
+    }
+
+    /**
      * Creates a new data tag for the given container.<p>
      * 
      * @param container the container to get the data tag for
@@ -781,56 +833,6 @@ public class CmsJspTagContainer extends TagSupport {
             (HttpServletRequest)pageContext.getRequest(),
             (HttpServletResponse)pageContext.getResponse(),
             elementBean);
-    }
-
-    /**
-     * Returns the element group elements.<p>
-     * 
-     * @param cms the current cms context
-     * @param element group element
-     * @param req the servlet request
-     * @param containerType the container type
-     * 
-     * @return the elements of this group
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    private List<CmsContainerElementBean> getGroupContainerElements(
-        CmsObject cms,
-        CmsContainerElementBean element,
-        ServletRequest req,
-        String containerType) throws CmsException {
-
-        List<CmsContainerElementBean> subElements;
-        CmsXmlGroupContainer xmlGroupContainer = CmsXmlGroupContainerFactory.unmarshal(cms, element.getResource(), req);
-        CmsGroupContainerBean groupContainer = xmlGroupContainer.getGroupContainer(
-            cms,
-            cms.getRequestContext().getLocale());
-        if (!groupContainer.getTypes().contains(containerType)) {
-            //TODO: change message
-            throw new CmsIllegalStateException(Messages.get().container(
-                Messages.ERR_XSD_NO_TEMPLATE_FORMATTER_3,
-                element.getResource().getRootPath(),
-                OpenCms.getResourceManager().getResourceType(element.getResource()).getTypeName(),
-                containerType));
-        }
-        subElements = groupContainer.getElements();
-        return subElements;
-    }
-
-    /**
-     * Reads elements from an inherited container.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param element the element which references the inherited container
-     *  
-     * @return the container elements 
-     */
-
-    private List<CmsContainerElementBean> getInheritedContainerElements(CmsObject cms, CmsContainerElementBean element) {
-
-        CmsResource resource = element.getResource();
-        return CmsXmlInheritGroupContainerHandler.loadInheritContainerElements(cms, resource);
     }
 
     /**

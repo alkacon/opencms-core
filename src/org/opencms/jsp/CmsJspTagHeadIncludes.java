@@ -57,6 +57,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -331,28 +332,51 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                 standardContext.isOnline()).getFormatters();
             for (CmsContainerBean container : containerPage.getContainers().values()) {
                 for (CmsContainerElementBean element : container.getElements()) {
-                    element.initResource(cms);
-                    if (element.isGroupContainer(cms) || element.isInheritedContainer(cms)) {
-                        // TODO: implement for element groups
-                    } else {
-                        I_CmsFormatterBean formatter = getFormatterBeanForElement(element, container, formatters);
-                        if (formatter != null) {
-                            cssIncludes.addAll(formatter.getCssHeadIncludes());
-                            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(formatter.getInlineCss())) {
-                                inlineCss.put(formatter.getId(), formatter.getInlineCss());
+                    try {
+                        element.initResource(cms);
+                        if (element.isGroupContainer(cms) || element.isInheritedContainer(cms)) {
+                            List<CmsContainerElementBean> subElements;
+                            if (element.isGroupContainer(cms)) {
+                                subElements = CmsJspTagContainer.getGroupContainerElements(
+                                    cms,
+                                    element,
+                                    req,
+                                    container.getType());
+                            } else {
+                                subElements = CmsJspTagContainer.getInheritedContainerElements(cms, element);
+                            }
+                            for (CmsContainerElementBean subElement : subElements) {
+                                subElement.initResource(cms);
+                                I_CmsFormatterBean formatter = getFormatterBeanForElement(
+                                    subElement,
+                                    container,
+                                    formatters);
+                                if (formatter != null) {
+                                    cssIncludes.addAll(formatter.getCssHeadIncludes());
+                                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(formatter.getInlineCss())) {
+                                        inlineCss.put(formatter.getId(), formatter.getInlineCss());
+                                    }
+                                } else {
+                                    cssIncludes.addAll(getCSSHeadIncludes(cms, subElement.getResource()));
+                                }
                             }
                         } else {
-                            try {
-                                element.initResource(cms);
+                            I_CmsFormatterBean formatter = getFormatterBeanForElement(element, container, formatters);
+                            if (formatter != null) {
+                                cssIncludes.addAll(formatter.getCssHeadIncludes());
+                                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(formatter.getInlineCss())) {
+                                    inlineCss.put(formatter.getId(), formatter.getInlineCss());
+                                }
+                            } else {
                                 cssIncludes.addAll(getCSSHeadIncludes(cms, element.getResource()));
-                            } catch (CmsException e) {
-                                LOG.error(
-                                    Messages.get().getBundle().key(
-                                        Messages.ERR_READING_REQUIRED_RESOURCE_1,
-                                        element.getSitePath()),
-                                    e);
                             }
                         }
+                    } catch (CmsException e) {
+                        LOG.error(
+                            Messages.get().getBundle().key(
+                                Messages.ERR_READING_REQUIRED_RESOURCE_1,
+                                element.getSitePath()),
+                            e);
                     }
                 }
             }
@@ -405,13 +429,14 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
             }
         }
         if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
-            StringBuffer inline = new StringBuffer("\n<style type=\"text/css\">\n");
-            for (Entry<String, String> cssEntry : inlineCss.entrySet()) {
-                inline.append("\n// CSS for formatter '" + cssEntry.getKey() + "'\n");
-                inline.append(cssEntry.getValue()).append("\n\n");
+            if (!inlineCss.isEmpty()) {
+                StringBuffer inline = new StringBuffer("\n<style type=\"text/css\">\n");
+                for (Entry<String, String> cssEntry : inlineCss.entrySet()) {
+                    inline.append(cssEntry.getValue()).append("\n\n");
+                }
+                inline.append("\n</style>\n");
+                pageContext.getOut().print(inline.toString());
             }
-            inline.append("\n</style>\n");
-            pageContext.getOut().print(inline.toString());
         } else {
             StringBuffer inline = new StringBuffer();
             for (Entry<String, String> cssEntry : inlineCss.entrySet()) {
@@ -437,6 +462,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
         CmsJspStandardContextBean standardContext = getStandardContext(cms, req);
         CmsContainerPageBean containerPage = standardContext.getPage();
         Set<String> jsIncludes = new LinkedHashSet<String>();
+        Map<String, String> inlineJS = new LinkedHashMap<String, String>();
         // add defaults
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_defaults)) {
             String[] defaults = m_defaults.split("\\|");
@@ -449,25 +475,53 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                 standardContext.isOnline()).getFormatters();
             for (CmsContainerBean container : containerPage.getContainers().values()) {
                 for (CmsContainerElementBean element : container.getElements()) {
-                    element.initResource(cms);
-                    if (element.isGroupContainer(cms) || element.isInheritedContainer(cms)) {
-                        // TODO: implement for element groups
-                    } else {
-                        I_CmsFormatterBean formatter = getFormatterBeanForElement(element, container, formatters);
-                        if (formatter != null) {
-                            jsIncludes.addAll(formatter.getJavascriptHeadIncludes());
+                    try {
+                        element.initResource(cms);
+                        if (element.isGroupContainer(cms) || element.isInheritedContainer(cms)) {
+                            List<CmsContainerElementBean> subElements;
+                            if (element.isGroupContainer(cms)) {
+                                subElements = CmsJspTagContainer.getGroupContainerElements(
+                                    cms,
+                                    element,
+                                    req,
+                                    container.getType());
+                            } else {
+                                subElements = CmsJspTagContainer.getInheritedContainerElements(cms, element);
+                            }
+                            for (CmsContainerElementBean subElement : subElements) {
+                                subElement.initResource(cms);
+                                I_CmsFormatterBean formatter = getFormatterBeanForElement(
+                                    subElement,
+                                    container,
+                                    formatters);
+                                if (formatter != null) {
+                                    jsIncludes.addAll(formatter.getJavascriptHeadIncludes());
+                                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(formatter.getInlineJavascript())) {
+                                        inlineJS.put(formatter.getId(), formatter.getInlineJavascript());
+                                    }
+                                } else {
+
+                                    jsIncludes.addAll(getJSHeadIncludes(cms, subElement.getResource()));
+                                }
+                            }
                         } else {
-                            try {
-                                element.initResource(cms);
+                            I_CmsFormatterBean formatter = getFormatterBeanForElement(element, container, formatters);
+                            if (formatter != null) {
+                                jsIncludes.addAll(formatter.getJavascriptHeadIncludes());
+                                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(formatter.getInlineJavascript())) {
+                                    inlineJS.put(formatter.getId(), formatter.getInlineJavascript());
+                                }
+                            } else {
+
                                 jsIncludes.addAll(getJSHeadIncludes(cms, element.getResource()));
-                            } catch (CmsException e) {
-                                LOG.error(
-                                    Messages.get().getBundle().key(
-                                        Messages.ERR_READING_REQUIRED_RESOURCE_1,
-                                        element.getSitePath()),
-                                    e);
                             }
                         }
+                    } catch (CmsException e) {
+                        LOG.error(
+                            Messages.get().getBundle().key(
+                                Messages.ERR_READING_REQUIRED_RESOURCE_1,
+                                element.getSitePath()),
+                            e);
                     }
                 }
             }
@@ -508,6 +562,14 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                     + CmsJspTagLink.linkTagAction(jsUri, req)
                     + generateReqParams()
                     + "\"></script>");
+        }
+        if (!inlineJS.isEmpty()) {
+            StringBuffer inline = new StringBuffer("\n<script type=\"text/javascript\">\n");
+            for (Entry<String, String> jsEntry : inlineJS.entrySet()) {
+                inline.append(jsEntry.getValue()).append("\n\n");
+            }
+            inline.append("\n</script>\n");
+            pageContext.getOut().print(inline.toString());
         }
     }
 
