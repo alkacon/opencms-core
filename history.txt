@@ -17,6 +17,7 @@ Legend:
 
 OpenCms 9.0.0
 - Fixed potential memory leak when using Solr multi-core features by updating Solr to version 4.3 (@see http://wiki.apache.org/solr/LotsOfCores)
+- Changed default start view to 'Direct Edit' 
 * Fixed problem with scheduled publishing failing for resources with long paths
 * Fixed problem with updater where categories were overwritten during update
 * Fixed missing TinyMCE button bar background in the inline editor
