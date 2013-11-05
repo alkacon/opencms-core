@@ -169,25 +169,32 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      * Returns the RDF annotations required for in line editing.<p>
      * 
      * @param parentValue the parent XML content value
-     * @param childName the child attribute name
+     * @param childNames the child attribute names separated by '|'
      * 
      * @return the RDFA
      */
-    public static String getRdfaAttributes(I_CmsXmlContentValue parentValue, String childName) {
+    public static String getRdfaAttributes(I_CmsXmlContentValue parentValue, String childNames) {
 
-        I_CmsXmlSchemaType schemaType = parentValue.getContentDefinition().getSchemaType(
-            parentValue.getName() + "/" + childName);
         StringBuffer result = new StringBuffer();
-        if (schemaType != null) {
-            result.append("about=\"");
-            result.append(CmsContentDefinition.uuidToEntityId(
-                parentValue.getDocument().getFile().getStructureId(),
-                parentValue.getLocale().toString()));
-            result.append("/").append(parentValue.getPath());
-            result.append("\" property=\"");
-            result.append(getTypeUri(schemaType.getContentDefinition())).append("/").append(childName);
-            result.append("\"");
+        result.append("about=\"");
+        result.append(CmsContentDefinition.uuidToEntityId(
+            parentValue.getDocument().getFile().getStructureId(),
+            parentValue.getLocale().toString()));
+        result.append("/").append(parentValue.getPath());
+        result.append("\" ");
+        String[] children = childNames.split("\\|");
+        result.append("property=\"");
+        for (int i = 0; i < children.length; i++) {
+            I_CmsXmlSchemaType schemaType = parentValue.getContentDefinition().getSchemaType(
+                parentValue.getName() + "/" + children[i]);
+            if (schemaType != null) {
+                if (i > 0) {
+                    result.append(" ");
+                }
+                result.append(getTypeUri(schemaType.getContentDefinition())).append("/").append(children[i]);
+            }
         }
+        result.append("\"");
         return result.toString();
     }
 
