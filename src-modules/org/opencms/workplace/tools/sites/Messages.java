@@ -37,6 +37,9 @@ import org.opencms.i18n.I_CmsMessageBundle;
  */
 public final class Messages extends A_CmsMessageBundle {
 
+    /** Name of the used resource bundle. */
+    public static final String ERR_CREATING_SUB_SITEMAP_WRONG_CONFIG_FILE_TYPE_2 = "ERR_CREATING_SUB_SITEMAP_WRONG_CONFIG_FILE_TYPE_2";
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_FAVICON_FILE_1 = "ERR_INVALID_FAVICON_FILE_1";
 
@@ -45,6 +48,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SITES_WEBSERVER_1 = "ERR_SITES_WEBSERVER_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DEFAULT_MODEL_DESCRIPTION_1 = "GUI_DEFAULT_MODEL_DESCRIPTION_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DEFAULT_MODEL_TITLE_1 = "GUI_DEFAULT_MODEL_TITLE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DETAIL_SITE_ADMIN_TOOL_HELP_0 = "GUI_DETAIL_SITE_ADMIN_TOOL_HELP_0";
