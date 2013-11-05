@@ -40,7 +40,7 @@ public final class Messages {
     public static final String ERR_RESOURCE_ALREADY_LOCKED_BY_OTHER_USER_0 = "ERR_RESOURCE_ALREADY_LOCKED_BY_OTHER_USER_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_CHOICE_ADD_CHOICE_0 = "GUI_CHOICE_ADD_CHOICE_0"; //Acacia message: Add choice
+    public static final String GUI_CHOICE_ADD_CHOICE_1 = "GUI_CHOICE_ADD_CHOICE_1"; //Acacia message: Add choice {0}
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CONFIRM_DELETE_LOCALE_TEXT_0 = "GUI_CONFIRM_DELETE_LOCALE_TEXT_0";
@@ -127,19 +127,19 @@ public final class Messages {
     public static final String GUI_VALIDATION_ERROR_1 = "GUI_VALIDATION_ERROR_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_VIEW_ADD_0 = "GUI_VIEW_ADD_0"; //Acacia message: Add
+    public static final String GUI_VIEW_ADD_1 = "GUI_VIEW_ADD_1"; //Acacia message: Add {0}
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_VIEW_CLOSE_0 = "GUI_VIEW_CLOSE_0"; //Acacia message: Close
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_VIEW_DELETE_0 = "GUI_VIEW_DELETE_0"; //Acacia message: Delete
+    public static final String GUI_VIEW_DELETE_1 = "GUI_VIEW_DELETE_1"; //Acacia message: Delete {0}
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_VIEW_EDIT_0 = "GUI_VIEW_EDIT_0"; //Acacia message: Edit
+    public static final String GUI_VIEW_EDIT_1 = "GUI_VIEW_EDIT_1"; //Acacia message: Edit {0}
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_VIEW_MOVE_0 = "GUI_VIEW_MOVE_0"; //Acacia message: Move
+    public static final String GUI_VIEW_MOVE_1 = "GUI_VIEW_MOVE_1"; //Acacia message: Move {0}
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_VIEW_MOVE_DOWN_0 = "GUI_VIEW_MOVE_DOWN_0"; //Acacia message: Move down
