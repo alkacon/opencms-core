@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>8.9.0</opencms_version>
-		<createdate>Fri, 22 Feb 2013 14:56:48 GMT</createdate>
+		<createdate>Tue, 05 Nov 2013 17:04:09 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -22,7 +22,7 @@
 		<userinstalled/>
 		<dateinstalled/>
 		<dependencies>
-			<dependency name="org.opencms.workplace.administration" version="1.0" />
+			<dependency name="org.opencms.workplace.administration" version="1.0"/>
 		</dependencies>
 		<exportpoints>
 			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/lib/" destination="WEB-INF/lib/"/>
@@ -43,12 +43,12 @@
 		</resources>
 		<parameters>
 			<param name="configtemplate">/path/to/webserver/config.template</param>
-			<param name="securetemplate">/path/to/webserver/secure-config.template</param>
-			<param name="enableconfig">true</param>
 			<param name="createou">false</param>
-			<param name="oudescription">OU for: %(site)</param>
+			<param name="enableconfig">true</param>
 			<param name="filenameprefix">opencms</param>
 			<param name="loggingdir">/path/to/logging/folder/</param>
+			<param name="oudescription">OU for: %(site)</param>
+			<param name="securetemplate">/path/to/webserver/secure-config.template</param>
 			<param name="targetpath">/path/to/config/target/</param>
 			<param name="webserverscript">/path/to/webserver/script.sh</param>
 		</parameters>
@@ -57,10 +57,10 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>622b08c0-9b81-11e2-93b7-c1221e6a3a06</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<uuidstructure>39919a34-455f-11e3-9b7b-000c297c001d</uuidstructure>
+			<datelastmodified>Mon, 04 Nov 2013 14:41:44 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 02 Apr 2013 10:37:57 GMT</datecreated>
+			<datecreated>Mon, 04 Nov 2013 14:41:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -79,10 +79,10 @@
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
-			<uuidstructure>658c5c6c-9b81-11e2-93b7-c1221e6a3a06</uuidstructure>
-			<datelastmodified>Tue, 02 Apr 2013 10:38:03 GMT</datelastmodified>
+			<uuidstructure>3b7f1290-455f-11e3-9b7b-000c297c001d</uuidstructure>
+			<datelastmodified>Mon, 04 Nov 2013 14:41:47 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 02 Apr 2013 10:38:03 GMT</datecreated>
+			<datecreated>Mon, 04 Nov 2013 14:41:47 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -788,12 +788,17 @@
 			<destination>system/workplace/admin/sites/reports</destination>
 			<type>folder</type>
 			<uuidstructure>30fd3bf6-7b6d-11e2-ba12-13f7e154c8f7</uuidstructure>
-			<datelastmodified>Wed, 20 Feb 2013 14:52:47 GMT</datelastmodified>
+			<datelastmodified>Tue, 05 Nov 2013 16:59:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 20 Feb 2013 14:52:47 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Reports]]></value>
+				</property>
+			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -803,7 +808,7 @@
 			<type>jsp</type>
 			<uuidstructure>3d677cc8-7b6d-11e2-ba12-13f7e154c8f7</uuidstructure>
 			<uuidresource>3d677cc9-7b6d-11e2-ba12-13f7e154c8f7</uuidresource>
-			<datelastmodified>Wed, 20 Feb 2013 14:55:27 GMT</datelastmodified>
+			<datelastmodified>Tue, 05 Nov 2013 17:02:51 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 20 Feb 2013 14:53:08 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -815,11 +820,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:sites=%(param.sites)&editaction=remove&action=initial]]></value>
-				</property>
-				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.sites.CmsSitesToolHandler]]></value>
+					<value><![CDATA[params:sites=%(param.sites)|path:/sites/remove/report]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -835,7 +836,7 @@
 			<type>jsp</type>
 			<uuidstructure>bdbe5d02-96e6-11e2-8cf9-d723659840f0</uuidstructure>
 			<uuidresource>bdbe5d03-96e6-11e2-8cf9-d723659840f0</uuidresource>
-			<datelastmodified>Wed, 27 Mar 2013 14:02:22 GMT</datelastmodified>
+			<datelastmodified>Tue, 05 Nov 2013 17:02:38 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 27 Mar 2013 14:00:54 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -847,11 +848,11 @@
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:script=%(param.script)&action=initial]]></value>
+					<value><![CDATA[params:script=%(param.script)|path:/sites/webserver/report]]></value>
 				</property>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.sites.CmsSitesToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.sites.CmsSitesToolHandlerWebserver]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
