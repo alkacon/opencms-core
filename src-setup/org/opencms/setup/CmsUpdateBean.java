@@ -202,14 +202,8 @@ public class CmsUpdateBean extends CmsSetupBean {
             m_cms.getRequestContext().setCurrentProject(m_cms.createTempfileProject());
             if (!m_cms.existsResource("/shared")) {
                 m_cms.createResource("/shared", OpenCms.getResourceManager().getResourceType("folder").getTypeId());
-                CmsResource shared = m_cms.readResource("/shared");
-                OpenCms.getPublishManager().publishProject(
-                    m_cms,
-                    new CmsHtmlReport(m_cms.getRequestContext().getLocale(), m_cms.getRequestContext().getSiteRoot()),
-                    shared,
-                    false);
-                OpenCms.getPublishManager().waitWhileRunning();
             }
+
             try {
                 m_cms.lockResourceTemporary("/shared");
             } catch (CmsException e) {
@@ -217,6 +211,17 @@ public class CmsUpdateBean extends CmsSetupBean {
             }
             try {
                 m_cms.chacc("/shared", "group", "Users", "+v+w+r+i");
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+            CmsResource shared = m_cms.readResource("/shared");
+            try {
+                OpenCms.getPublishManager().publishProject(
+                    m_cms,
+                    new CmsHtmlReport(m_cms.getRequestContext().getLocale(), m_cms.getRequestContext().getSiteRoot()),
+                    shared,
+                    false);
+                OpenCms.getPublishManager().waitWhileRunning();
             } catch (CmsException e) {
                 LOG.error(e.getLocalizedMessage(), e);
             }
