@@ -492,12 +492,15 @@ public class CmsElementUtil {
         }
         result.setHasSettings(hasSettings(m_cms, elementBean.getResource()));
         CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
+
+        // although the addRequireVisible seems redundant, it is actually needed because of a weird bug
+        // in the default permission handler.
         result.setViewPermission(elementBean.isInMemoryOnly()
             || (m_cms.hasPermissions(
                 elementBean.getResource(),
                 CmsPermissionSet.ACCESS_VIEW,
                 false,
-                CmsResourceFilter.IGNORE_EXPIRATION) && settings.getAccess().getPermissions(
+                CmsResourceFilter.IGNORE_EXPIRATION.addRequireVisible()) && settings.getAccess().getPermissions(
                 m_cms,
                 elementBean.getResource()).requiresViewPermission()));
 

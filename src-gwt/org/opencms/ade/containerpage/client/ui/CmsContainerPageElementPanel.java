@@ -705,6 +705,9 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
      */
     public void updateOptionBarPosition() {
 
+        if (m_elementOptionBar == null) {
+            return;
+        }
         // only if attached to the DOM
         if (RootPanel.getBodyElement().isOrHasChild(getElement())) {
             int absoluteTop = getElement().getAbsoluteTop();
