@@ -379,7 +379,9 @@ div.selectBoxOpener {
     padding: 0px 15px 2px 0px;
     box-shadow: none;
     background:  value("constants.css.backgroundColorDialog");
+    margin-left: 5px; 
 }
+
 
 div.dataValue {
 	height: 20px;
