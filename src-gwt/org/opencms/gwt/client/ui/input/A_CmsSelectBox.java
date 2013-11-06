@@ -56,6 +56,8 @@ import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -186,6 +188,9 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
     /** The widget width for truncation. */
     private int m_widgetWidth;
 
+    /** Handler registration for the window resize handler. */
+    private HandlerRegistration m_windowResizeHandlerReg;
+
     /**
      * Creates a new select box.<p>
      */
@@ -245,6 +250,14 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
     }
 
     /**
+     * @see com.google.gwt.event.dom.client.HasFocusHandlers#addFocusHandler(com.google.gwt.event.dom.client.FocusHandler)
+     */
+    public HandlerRegistration addFocusHandler(FocusHandler handler) {
+
+        return addDomHandler(handler, FocusEvent.getType());
+    }
+
+    /**
      * Adds a new select option to the select box.<p>
      * 
      * @param cell the widget representing the select option 
@@ -261,14 +274,6 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
             m_firstValue = value;
         }
         initSelectCell(cell);
-    }
-
-    /**
-     * @see com.google.gwt.event.dom.client.HasFocusHandlers#addFocusHandler(com.google.gwt.event.dom.client.FocusHandler)
-     */
-    public HandlerRegistration addFocusHandler(FocusHandler handler) {
-
-        return addDomHandler(handler, FocusEvent.getType());
     }
 
     /**
@@ -522,6 +527,16 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
     protected abstract void initOpener();
 
     /**
+     * @see com.google.gwt.user.client.ui.Composite#onDetach()
+     */
+    @Override
+    protected void onDetach() {
+
+        super.onDetach();
+        removeWindowResizeHandler();
+    }
+
+    /**
      * Handles the focus event on the opener.<p>
      * 
      * @param event  
@@ -530,6 +545,23 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
     protected void onFocus(FocusEvent event) {
 
         CmsDomUtil.fireFocusEvent(this);
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.Widget#onLoad()
+     */
+    @Override
+    protected void onLoad() {
+
+        removeWindowResizeHandler();
+        m_windowResizeHandlerReg = Window.addResizeHandler(new ResizeHandler() {
+
+            public void onResize(ResizeEvent event) {
+
+                close();
+            }
+        });
+
     }
 
     /**
@@ -641,6 +673,17 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
         // m_selectBoxState.setValue(CSS.selectBoxOpen());
 
         m_previewHandlerRegistration = Event.addNativePreviewHandler(new ScrollEventPreviewHandler());
+    }
+
+    /**
+     * Deinstalls the window resize handler.<p>
+     */
+    protected void removeWindowResizeHandler() {
+
+        if (m_windowResizeHandlerReg != null) {
+            m_windowResizeHandlerReg.removeHandler();
+            m_windowResizeHandlerReg = null;
+        }
     }
 
     /**
