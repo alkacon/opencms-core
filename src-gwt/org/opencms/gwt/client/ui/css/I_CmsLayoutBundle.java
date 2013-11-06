@@ -390,6 +390,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the css class
          */
+        String colorSelectorWidget();
+
+        /** 
+         * Css class reader.<p>
+         * 
+         * @return the css class
+         */
         String sliderMap();
 
         /** 

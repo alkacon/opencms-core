@@ -21,6 +21,13 @@
 	box-sizing: content-box;
 	-moz-box-sizing: content-box;
 }
+
+.popup table { 
+	border-collapse: separate;
+	border-spacing: inherit;
+}
+
+
 .closePopup{
     position: absolute;
     right: -12px;

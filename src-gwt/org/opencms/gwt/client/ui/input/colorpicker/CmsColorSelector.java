@@ -121,7 +121,7 @@ public class CmsColorSelector extends Composite implements KeyPressHandler, Clic
         m_blue = 0;
 
         HorizontalPanel panel = new HorizontalPanel();
-        panel.setSpacing(5);
+        panel.addStyleName(I_CmsLayoutBundle.INSTANCE.colorSelectorCss().colorSelectorWidget());
         FlexTable table = new FlexTable();
 
         // Add the slider map
