@@ -64,7 +64,7 @@ public final class CmsADESessionCache {
     private Map<String, TemplateBean> m_templateBeanCache = new HashMap<String, TemplateBean>();
 
     /** The tool-bar visibility flag. */
-    private boolean m_toolbarVisible = true;
+    private boolean m_toolbarVisible;
 
     /**
      * Initializes the session cache.<p>
