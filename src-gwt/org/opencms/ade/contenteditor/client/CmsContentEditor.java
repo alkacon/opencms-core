@@ -341,6 +341,19 @@ public final class CmsContentEditor extends EditorBase {
     }
 
     /**
+     * Checks whether the given element is annotated for inline editing.<p>
+     * 
+     * @param element the element to check
+     * 
+     * @return <code>true</code> if the given element is annotated for inline editing
+     */
+    public static boolean isEditable(Element element) {
+
+        String property = element.getAttribute("property");
+        return (property != null) && property.startsWith("opencms://");
+    }
+
+    /**
      * Replaces the id's within about attributes of the given element and all it's children.<p>
      * 
      * @param element the element
@@ -376,10 +389,8 @@ public final class CmsContentEditor extends EditorBase {
         if (children.size() > 0) {
             for (Element child : children) {
                 if (editable) {
-                    child.setAttribute("contentEditable", "true");
                     child.addClassName(I_CmsLayoutBundle.INSTANCE.editorCss().inlineEditable());
                 } else {
-                    child.removeAttribute("contentEditable");
                     child.removeClassName(I_CmsLayoutBundle.INSTANCE.editorCss().inlineEditable());
                 }
             }

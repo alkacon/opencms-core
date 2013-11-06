@@ -27,6 +27,7 @@
 
 package org.opencms.ade.containerpage.client.ui;
 
+import com.alkacon.acacia.client.EditorBase;
 import com.alkacon.acacia.client.I_InlineFormParent;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageController;
@@ -62,6 +63,9 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Event.NativePreviewEvent;
+import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -402,25 +406,33 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
             if (m_editorClickHandlerRegistration != null) {
                 m_editorClickHandlerRegistration.removeHandler();
             }
-            m_editorClickHandlerRegistration = addClickHandler(new ClickHandler() {
+            m_editorClickHandlerRegistration = Event.addNativePreviewHandler(new NativePreviewHandler() {
 
-                public void onClick(ClickEvent event) {
+                public void onPreviewNativeEvent(NativePreviewEvent event) {
 
-                    // if another content is already being edited, don't start another editor
-                    if (controller.isContentEditing()) {
-                        return;
-                    }
-                    Element eventTarget = event.getNativeEvent().getEventTarget().cast();
-                    Element linkTag = CmsDomUtil.getAncestor(eventTarget, Tag.a);
-                    if (linkTag == null) {
-                        Element target = event.getNativeEvent().getEventTarget().cast();
-                        while ((target != null) && (target != getElement())) {
-                            if ("true".equals(target.getAttribute("contentEditable"))) {
-                                controller.getHandler().openEditorForElement(CmsContainerPageElementPanel.this, true);
-                                removeEditorHandler();
-                                break;
-                            } else {
-                                target = target.getParentElement();
+                    if (event.getTypeInt() == Event.ONCLICK) {
+                        // if another content is already being edited, don't start another editor
+                        if (controller.isContentEditing()) {
+                            return;
+                        }
+                        Element eventTarget = event.getNativeEvent().getEventTarget().cast();
+                        // check if the event target is a child 
+                        if (getElement().isOrHasChild(eventTarget)) {
+                            Element target = event.getNativeEvent().getEventTarget().cast();
+                            while ((target != null)
+                                && !target.getTagName().equalsIgnoreCase("a")
+                                && (target != getElement())) {
+                                if (CmsContentEditor.isEditable(target)) {
+                                    EditorBase.markForInlineFocus((com.google.gwt.user.client.Element)target);
+                                    controller.getHandler().openEditorForElement(
+                                        CmsContainerPageElementPanel.this,
+                                        true);
+                                    removeEditorHandler();
+                                    event.cancel();
+                                    break;
+                                } else {
+                                    target = target.getParentElement();
+                                }
                             }
                         }
                     }
@@ -689,6 +701,41 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
     }
 
     /**
+     * Updates the option bar position.<p>
+     */
+    public void updateOptionBarPosition() {
+
+        // only if attached to the DOM
+        if (RootPanel.getBodyElement().isOrHasChild(getElement())) {
+            int absoluteTop = getElement().getAbsoluteTop();
+            int absoluteRight = getElement().getAbsoluteRight();
+            CmsPositionBean dimensions = CmsPositionBean.getInnerDimensions(getElement());
+            if (Math.abs(absoluteTop - dimensions.getTop()) > 20) {
+                absoluteTop = (dimensions.getTop() - absoluteTop) + 2;
+                m_elementOptionBar.getElement().getStyle().setTop(absoluteTop, Unit.PX);
+            } else {
+                m_elementOptionBar.getElement().getStyle().clearTop();
+            }
+            if (Math.abs(absoluteRight - dimensions.getLeft() - dimensions.getWidth()) > 20) {
+                absoluteRight = (absoluteRight - dimensions.getLeft() - dimensions.getWidth()) + 2;
+                m_elementOptionBar.getElement().getStyle().setRight(absoluteTop, Unit.PX);
+            } else {
+                m_elementOptionBar.getElement().getStyle().clearRight();
+            }
+            if (isOptionbarIFrameCollision(absoluteTop, m_elementOptionBar.getCalculatedWidth())) {
+                m_elementOptionBar.getElement().getStyle().setPosition(Position.RELATIVE);
+                int marginLeft = getElement().getClientWidth() - m_elementOptionBar.getCalculatedWidth();
+                if (marginLeft > 0) {
+                    m_elementOptionBar.getElement().getStyle().setMarginLeft(marginLeft, Unit.PX);
+                }
+            } else {
+                m_elementOptionBar.getElement().getStyle().clearPosition();
+                m_elementOptionBar.getElement().getStyle().clearMarginLeft();
+            }
+        }
+    }
+
+    /**
      * Checks for changes in the list collector direct edit content.<p>
      */
     protected void checkForEditableChanges() {
@@ -723,6 +770,16 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
             }
         }
         return CmsDomUtil.getElementsByClass("cms-editable", Tag.div, getElement()).size() > m_editables.size();
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.Widget#onDetach()
+     */
+    @Override
+    protected void onDetach() {
+
+        super.onDetach();
+        removeEditorHandler();
     }
 
     /**
@@ -859,41 +916,6 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
             }
             updateOptionBarPosition();
             insert(m_elementOptionBar, 0);
-        }
-    }
-
-    /**
-     * Updates the option bar position.<p>
-     */
-    public void updateOptionBarPosition() {
-
-        // only if attached to the DOM
-        if (RootPanel.getBodyElement().isOrHasChild(getElement())) {
-            int absoluteTop = getElement().getAbsoluteTop();
-            int absoluteRight = getElement().getAbsoluteRight();
-            CmsPositionBean dimensions = CmsPositionBean.getInnerDimensions(getElement());
-            if (Math.abs(absoluteTop - dimensions.getTop()) > 20) {
-                absoluteTop = (dimensions.getTop() - absoluteTop) + 2;
-                m_elementOptionBar.getElement().getStyle().setTop(absoluteTop, Unit.PX);
-            } else {
-                m_elementOptionBar.getElement().getStyle().clearTop();
-            }
-            if (Math.abs(absoluteRight - dimensions.getLeft() - dimensions.getWidth()) > 20) {
-                absoluteRight = (absoluteRight - dimensions.getLeft() - dimensions.getWidth()) + 2;
-                m_elementOptionBar.getElement().getStyle().setRight(absoluteTop, Unit.PX);
-            } else {
-                m_elementOptionBar.getElement().getStyle().clearRight();
-            }
-            if (isOptionbarIFrameCollision(absoluteTop, m_elementOptionBar.getCalculatedWidth())) {
-                m_elementOptionBar.getElement().getStyle().setPosition(Position.RELATIVE);
-                int marginLeft = getElement().getClientWidth() - m_elementOptionBar.getCalculatedWidth();
-                if (marginLeft > 0) {
-                    m_elementOptionBar.getElement().getStyle().setMarginLeft(marginLeft, Unit.PX);
-                }
-            } else {
-                m_elementOptionBar.getElement().getStyle().clearPosition();
-                m_elementOptionBar.getElement().getStyle().clearMarginLeft();
-            }
         }
     }
 }
