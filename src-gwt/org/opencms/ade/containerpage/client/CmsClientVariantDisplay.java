@@ -53,6 +53,7 @@ public class CmsClientVariantDisplay {
         public VariantPopup() {
 
             super(true, true);
+            addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popup());
         }
 
         /**
