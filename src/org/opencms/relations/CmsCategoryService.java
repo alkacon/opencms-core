@@ -37,6 +37,7 @@ import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -60,14 +61,14 @@ public class CmsCategoryService {
     /** The centralized path for categories. */
     public static final String CENTRALIZED_REPOSITORY = "/system/categories/";
 
+    /** The folder for the local category repositories. */
+    public static final String REPOSITORY_BASE_FOLDER = "/.categories/";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsCategoryService.class);
 
     /** The singleton instance. */
     private static CmsCategoryService m_instance;
-
-    /** The folder for the local category repositories. */
-    private static final String REPOSITORY_BASE_FOLDER = "/_categories/";
 
     /**
      * Returns the singleton instance.<p>
@@ -316,24 +317,17 @@ public class CmsCategoryService {
      */
     public String getRepositoryBaseFolderName(CmsObject cms) {
 
-        try {
-            String value = cms.readPropertyObject(
-                CmsCategoryService.CENTRALIZED_REPOSITORY,
-                CmsPropertyDefinition.PROPERTY_DEFAULT_FILE,
-                false).getValue(CmsCategoryService.REPOSITORY_BASE_FOLDER);
-            if (!value.endsWith("/")) {
-                value += "/";
-            }
-            if (!value.startsWith("/")) {
-                value = "/" + value;
-            }
-            return value;
-        } catch (CmsException e) {
-            if (LOG.isErrorEnabled()) {
-                LOG.error(e.getLocalizedMessage(), e);
-            }
-            return CmsCategoryService.REPOSITORY_BASE_FOLDER;
+        String value = OpenCms.getWorkplaceManager().getCategoryFolder();
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
+            value = REPOSITORY_BASE_FOLDER;
         }
+        if (!value.endsWith("/")) {
+            value += "/";
+        }
+        if (!value.startsWith("/")) {
+            value = "/" + value;
+        }
+        return value;
     }
 
     /**

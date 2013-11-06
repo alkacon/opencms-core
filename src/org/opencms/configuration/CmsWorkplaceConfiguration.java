@@ -31,6 +31,7 @@ import org.opencms.db.CmsExportPoint;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsCategoryService;
 import org.opencms.util.CmsRfsFileViewer;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceCustomFoot;
@@ -158,6 +159,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
     /** The node name of the buttonstyle node. */
     public static final String N_BUTTONSTYLE = "buttonstyle";
+
+    /** The name of the category folder node. */
+    public static final String N_CATEGORYFOLDER = "categoryfolder";
 
     /** The name of the color node. */
     public static final String N_COLOR = "color";
@@ -881,6 +885,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
             "setEnableAdvancedPropertyTabs",
             0);
 
+        // add category folder rule
+        digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_CATEGORYFOLDER, "setCategoryFolder", 0);
+
         digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_GROUP_TRANSLATION, "setGroupTranslationClass", 1);
         digester.addCallParam("*/" + N_WORKPLACE + "/" + N_GROUP_TRANSLATION, 0, A_CLASS);
 
@@ -1116,6 +1123,13 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
             String.valueOf(m_workplaceManager.isDefaultPropertiesOnStructure()));
         workplaceElement.addElement(N_ENABLEADVANCEDPROPERTYTABS).setText(
             String.valueOf(m_workplaceManager.isEnableAdvancedPropertyTabs()));
+
+        // add <categoryfolder> node
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_workplaceManager.getCategoryFolder())
+            && !CmsCategoryService.REPOSITORY_BASE_FOLDER.equals(m_workplaceManager.getCategoryFolder())) {
+            workplaceElement.addElement(N_CATEGORYFOLDER).setText(
+                String.valueOf(m_workplaceManager.getCategoryFolder()));
+        }
 
         String groupTranslationClass = m_workplaceManager.getGroupTranslationClass();
         if (groupTranslationClass != null) {

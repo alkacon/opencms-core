@@ -25,6 +25,7 @@
 	enableusermanagement?, 	
 	defaultpropertiesonstructure,
 	enableadvancedpropertytabs,
+	categoryfolder?,
 	group-translation?,
 	maxfileuploadsize?, 
 	labeledfolders?,
@@ -295,6 +296,11 @@
 -->
 <!ELEMENT repositoryfolder EMPTY>
 <!ATTLIST repositoryfolder class CDATA #REQUIRED>
+
+<!--
+# name of the decentralized category folder. If not set, "/.categories/ is used.
+-->
+<!ELEMENT categoryfolder (#PCDATA)>
 
 <!--
 # Rfs file view settings:

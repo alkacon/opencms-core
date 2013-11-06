@@ -55,6 +55,7 @@ import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModuleManager;
+import org.opencms.relations.CmsCategoryService;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsPermissionViolationException;
@@ -128,6 +129,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
 
     /** Indicates if auto-locking of resources is enabled or disabled. */
     private boolean m_autoLockResources;
+
+    /** The name of the local category folder(s). */
+    private String m_categoryFolder;
 
     /** The customized workplace foot. */
     private CmsWorkplaceCustomFoot m_customFoot;
@@ -270,6 +274,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         m_labelSiteFolders = new ArrayList<String>();
         m_localizedFolders = new ArrayList<String>();
         m_autoLockResources = true;
+        m_categoryFolder = CmsCategoryService.REPOSITORY_BASE_FOLDER;
         m_xmlContentAutoCorrect = true;
         m_showUserGroupIcon = true;
         m_dialogHandler = new HashMap<String, I_CmsDialogHandler>();
@@ -673,6 +678,16 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     public String getAcaciaUnlock() {
 
         return m_acaciaUnlock;
+    }
+
+    /**
+     * Returns the name of the local category folder(s).<p>
+     * 
+     * @return the name of the local category folder(s)
+     */
+    public String getCategoryFolder() {
+
+        return m_categoryFolder;
     }
 
     /**
@@ -1554,6 +1569,16 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
             CmsLog.INIT.info(Messages.get().getBundle().key(
                 m_autoLockResources ? Messages.INIT_AUTO_LOCK_ENABLED_0 : Messages.INIT_AUTO_LOCK_DISABLED_0));
         }
+    }
+
+    /**
+     * Sets the name of the local category folder(s).<p>
+     * 
+     * @param categoryFolder the name of the local category folder(s)
+     */
+    public void setCategoryFolder(String categoryFolder) {
+
+        m_categoryFolder = categoryFolder;
     }
 
     /**
