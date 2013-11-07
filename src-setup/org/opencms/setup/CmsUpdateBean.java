@@ -151,6 +151,7 @@ public class CmsUpdateBean extends CmsSetupBean {
         super();
         m_modulesFolder = FOLDER_UPDATE + CmsSystemInfo.FOLDER_MODULES;
         m_logFile = CmsSystemInfo.FOLDER_WEBINF + CmsLog.FOLDER_LOGS + "update.log";
+
     }
 
     /**
@@ -471,6 +472,7 @@ public class CmsUpdateBean extends CmsSetupBean {
 
         try {
             super.init(webAppRfsPath, servletMapping, defaultWebApplication);
+            CmsUpdateInfo.INSTANCE.setAdeModuleVersion(getInstalledModules().get("org.opencms.ade.containerpage"));
 
             if (m_workplaceUpdateThread != null) {
                 if (m_workplaceUpdateThread.isAlive()) {
