@@ -429,7 +429,8 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, HasVa
             } else if (m_type.equals(TABLE)) {
                 basePath = "/system/workplace/galleries/tablegallery/index.jsp?dialogmode=widget&fieldid=" + m_id;
             } else if (m_type.equals(PRINCIPAL)) {
-                basePath = "/system/workplace/commons/principal_selection.jsp?dialogmode=widget&fieldid=" + m_id;
+                basePath = "/system/workplace/commons/principal_selection.jsp?dialogmode=widget&useparent=true&fieldid="
+                    + m_id;
             } else if (m_type.equals(GROUP)) {
                 basePath = "/system/workplace/commons/group_selection.jsp?type=groupwidget&fieldid=" + m_id;
             } else {
@@ -503,6 +504,7 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, HasVa
             } else if (m_type.equals(TABLE)) {
                 m_popup.getFrame().setSize("705px", "640px");
             } else if (m_type.equals(PRINCIPAL)) {
+                exportSetPrincipalFunction();
                 m_popup.getFrame().setSize("705px", "320px");
             } else {
                 m_popup.getFrame().setSize("705px", "485px");
@@ -525,4 +527,15 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, HasVa
             m_previewHandlerRegistration = Event.addNativePreviewHandler(new CloseEventPreviewHandler());
         }
     }
+
+    /**
+     * Exporting the set principal function to the window scope.<p>
+     */
+    private native void exportSetPrincipalFunction()/*-{
+                                                    var self=this;
+                                                    $wnd.setPrincipalFormValue = function(typeFlag, principal){
+                                                    self.@org.opencms.gwt.client.ui.input.CmsVfsSelection::setFormValueAsString(Ljava/lang/String;)(principal);
+                                                    self.@org.opencms.gwt.client.ui.input.CmsVfsSelection::close()();
+                                                    }
+                                                    }-*/;
 }
