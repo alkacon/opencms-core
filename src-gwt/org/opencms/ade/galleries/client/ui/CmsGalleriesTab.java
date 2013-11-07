@@ -51,6 +51,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.Lists;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.user.client.ui.Label;
@@ -222,6 +223,7 @@ public class CmsGalleriesTab extends A_CmsListTab {
 
             super(checkBox);
             m_galleryPath = gallerPath;
+            m_selectionHandlers.add(this);
         }
 
         /**
@@ -237,6 +239,24 @@ public class CmsGalleriesTab extends A_CmsListTab {
             }
 
         }
+
+        /**
+         * @see org.opencms.ade.galleries.client.ui.A_CmsListTab.A_SelectionHandler#selectBeforeGoingToResultTab()
+         */
+        @Override
+        protected void selectBeforeGoingToResultTab() {
+
+            for (SelectionHandler otherHandler : m_selectionHandlers) {
+                if ((otherHandler != this)
+                    && (otherHandler.getCheckBox() != null)
+                    && otherHandler.getCheckBox().isChecked()) {
+                    otherHandler.getCheckBox().setChecked(false);
+                    otherHandler.onSelectionChange();
+                }
+            }
+            getCheckBox().setChecked(true);
+            onSelectionChange();
+        }
     }
 
     /** The batch size for adding new elements to the tab.<p> */
@@ -250,6 +270,9 @@ public class CmsGalleriesTab extends A_CmsListTab {
 
     /** List of selected galleries. */
     protected List<String> m_selectedGalleries;
+
+    /** The selection handlers. */
+    List<SelectionHandler> m_selectionHandlers = Lists.newArrayList();
 
     /** Map of gallery folders by path. */
     private Map<String, CmsGalleryFolderBean> m_galleries;

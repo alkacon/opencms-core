@@ -42,10 +42,13 @@ import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.google.common.collect.Lists;
 
 /**
  * Provides the widget for the types tab.<p>
@@ -74,6 +77,7 @@ public class CmsTypesTab extends A_CmsListTab {
 
             super(checkBox);
             m_resourceType = resourceType;
+            m_selectionHandlers.add(this);
         }
 
         /**
@@ -88,10 +92,31 @@ public class CmsTypesTab extends A_CmsListTab {
                 getTabHandler().deselectType(m_resourceType);
             }
         }
+
+        /**
+         * @see org.opencms.ade.galleries.client.ui.A_CmsListTab.A_SelectionHandler#selectBeforeGoingToResultTab()
+         */
+        @Override
+        protected void selectBeforeGoingToResultTab() {
+
+            for (SelectionHandler otherHandler : m_selectionHandlers) {
+                if ((otherHandler != this)
+                    && (otherHandler.getCheckBox() != null)
+                    && otherHandler.getCheckBox().isChecked()) {
+                    otherHandler.getCheckBox().setChecked(false);
+                    otherHandler.onSelectionChange();
+                }
+            }
+            getCheckBox().setChecked(true);
+            onSelectionChange();
+        }
     }
 
     /** Text metrics key. */
     private static final String TM_TYPE_TAB = "TypeTab";
+
+    /** The list of selection handlers. */
+    List<SelectionHandler> m_selectionHandlers = Lists.newArrayList();
 
     /** The reference to the drag handler for the list elements. */
     private CmsDNDHandler m_dndHandler;
@@ -182,11 +207,13 @@ public class CmsTypesTab extends A_CmsListTab {
      * 
      * @param types the categories to deselect
      */
-    public void uncheckTypes(List<String> types) {
+    public void uncheckTypes(Collection<String> types) {
 
         for (String type : types) {
             CmsListItem item = (CmsListItem)m_scrollList.getItem(type);
-            item.getCheckBox().setChecked(false);
+            if (item != null) {
+                item.getCheckBox().setChecked(false);
+            }
         }
     }
 
