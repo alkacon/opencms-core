@@ -33,6 +33,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.i18n.CmsMultiMessages;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsException;
@@ -198,8 +199,11 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
         CmsMacroResolver resolver = new CmsMacroResolver();
         resolver.setCmsObject(cms);
         CmsUserSettings settings = new CmsUserSettings(cms.getRequestContext().getCurrentUser());
+        CmsMultiMessages multimessages = new CmsMultiMessages(settings.getLocale());
         CmsMessages messages = contentHandler.getMessages(settings.getLocale());
-        resolver.setMessages(messages);
+        multimessages.addMessages(messages);
+        multimessages.addMessages(OpenCms.getWorkplaceManager().getMessages(settings.getLocale()));
+        resolver.setMessages(multimessages);
         resolver.setKeepEmptyMacros(true);
         return resolver;
     }
