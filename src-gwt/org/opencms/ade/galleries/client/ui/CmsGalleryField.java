@@ -354,6 +354,17 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     }
 
     /**
+     * Returns the gallery popup.<p>
+     * 
+     * @return the gallery popup
+     */
+    public CmsGalleryPopup getPopup() {
+
+        return m_popup;
+
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#isEnabled()
      */
     @Override
@@ -594,6 +605,31 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     }
 
     /**
+     * Updates the upload target folder path.<p>
+     * 
+     * @param uploadTarget the upload target folder
+     */
+    protected void updateUploadTarget(String uploadTarget) {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(uploadTarget)) {
+            m_uploadTarget = m_configuration.getUploadFolder();
+        } else {
+            m_uploadTarget = uploadTarget;
+        }
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_uploadTarget)) {
+            // disable the upload button as no target folder is available
+            m_uploadButton.setVisible(false);
+            m_uploadDropZone.getStyle().setDisplay(Display.NONE);
+        } else {
+            // make sure the upload button is available
+            m_uploadButton.setVisible(true);
+            m_uploadDropZone.getStyle().clearDisplay();
+            ((CmsDialogUploadButtonHandler)m_uploadButton.getButtonHandler()).setTargetFolder(m_uploadTarget);
+            m_uploadButton.setTitle(Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_1, m_uploadTarget));
+        }
+    }
+
+    /**
      * Clears the info timer.<p>
      */
     void clearInfoTimer() {
@@ -624,31 +660,6 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
             }
         }
         fireResize();
-    }
-
-    /**
-     * Updates the upload target folder path.<p>
-     * 
-     * @param uploadTarget the upload target folder
-     */
-    protected void updateUploadTarget(String uploadTarget) {
-
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(uploadTarget)) {
-            m_uploadTarget = m_configuration.getUploadFolder();
-        } else {
-            m_uploadTarget = uploadTarget;
-        }
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_uploadTarget)) {
-            // disable the upload button as no target folder is available
-            m_uploadButton.setVisible(false);
-            m_uploadDropZone.getStyle().setDisplay(Display.NONE);
-        } else {
-            // make sure the upload button is available
-            m_uploadButton.setVisible(true);
-            m_uploadDropZone.getStyle().clearDisplay();
-            ((CmsDialogUploadButtonHandler)m_uploadButton.getButtonHandler()).setTargetFolder(m_uploadTarget);
-            m_uploadButton.setTitle(Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_1, m_uploadTarget));
-        }
     }
 
     /**

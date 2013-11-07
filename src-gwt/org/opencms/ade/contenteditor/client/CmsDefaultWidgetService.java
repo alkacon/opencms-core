@@ -32,6 +32,9 @@ import com.alkacon.acacia.client.widgets.FormWidgetWrapper;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 import com.alkacon.acacia.client.widgets.TinyMCEWidget;
 
+import org.opencms.ade.contenteditor.client.widgets.CmsFileWidget;
+import org.opencms.ade.contenteditor.client.widgets.CmsGalleryWidget;
+import org.opencms.ade.contenteditor.client.widgets.CmsImageGalleryWidget;
 import org.opencms.ade.contenteditor.client.widgets.CmsTextareaWidget;
 import org.opencms.ade.contenteditor.client.widgets.CmsTextboxWidget;
 import org.opencms.util.CmsStringUtil;
@@ -50,7 +53,6 @@ public class CmsDefaultWidgetService extends WidgetService {
         if (widget instanceof FormWidgetWrapper) {
             widget = ((FormWidgetWrapper)widget).getEditWidget();
         }
-
         if ((widget instanceof CmsTextareaWidget)
             || (widget instanceof CmsTextboxWidget)
             || (widget instanceof TinyMCEWidget)) {
@@ -59,6 +61,10 @@ public class CmsDefaultWidgetService extends WidgetService {
                 return false;
             }
             return CmsStringUtil.isEmptyOrWhitespaceOnly(value);
+        } else if ((widget instanceof CmsFileWidget)
+            || (widget instanceof CmsImageGalleryWidget)
+            || (widget instanceof CmsGalleryWidget)) {
+            return CmsStringUtil.isEmptyOrWhitespaceOnly(widget.getValue());
         }
         return false;
     }

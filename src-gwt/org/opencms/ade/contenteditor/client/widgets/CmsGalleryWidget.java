@@ -33,6 +33,7 @@ import org.opencms.ade.galleries.client.CmsGalleryConfigurationJSO;
 import org.opencms.ade.galleries.client.ui.CmsGalleryField;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.HasResizeHandlers;
@@ -150,6 +151,18 @@ public class CmsGalleryWidget extends Composite implements I_EditWidget, HasResi
     public void onAttachWidget() {
 
         super.onAttach();
+    }
+
+    /**
+     * @see com.alkacon.acacia.client.widgets.I_EditWidget#owns(com.google.gwt.dom.client.Element)
+     */
+    public boolean owns(Element element) {
+
+        return (m_linkSelect != null)
+            && (m_linkSelect.getPopup() != null)
+            && m_linkSelect.getPopup().isShowing()
+            && m_linkSelect.getPopup().getContainer().getElement().isOrHasChild(element);
+
     }
 
     /**

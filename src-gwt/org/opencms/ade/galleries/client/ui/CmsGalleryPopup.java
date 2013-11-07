@@ -37,6 +37,7 @@ import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
 
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
@@ -93,6 +94,16 @@ public class CmsGalleryPopup extends CmsPopup implements I_CmsGalleryHandler {
     public I_CmsAutoHider getAutoHideParent() {
 
         return this;
+    }
+
+    /**
+     * Returns the popup content.<p>
+     * 
+     * @return the popup content 
+     */
+    public Panel getContainer() {
+
+        return m_container;
     }
 
     /**

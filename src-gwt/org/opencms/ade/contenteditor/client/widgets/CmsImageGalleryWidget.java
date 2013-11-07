@@ -33,6 +33,7 @@ import org.opencms.ade.galleries.client.CmsGalleryConfigurationJSO;
 import org.opencms.ade.galleries.client.ui.CmsImageGalleryField;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.HasResizeHandlers;
@@ -140,6 +141,16 @@ public class CmsImageGalleryWidget extends Composite implements I_EditWidget, Ha
     }
 
     /**
+     * @see com.alkacon.acacia.client.widgets.I_EditWidget#owns(com.google.gwt.dom.client.Element)
+     */
+    public boolean owns(Element element) {
+
+        // TODO implement this in case we want the delete behavior for optional fields
+        return false;
+
+    }
+
+    /**
      * @see com.alkacon.acacia.client.widgets.I_EditWidget#setActive(boolean)
      */
     public void setActive(boolean active) {
@@ -183,4 +194,5 @@ public class CmsImageGalleryWidget extends Composite implements I_EditWidget, Ha
         }
 
     }
+
 }
