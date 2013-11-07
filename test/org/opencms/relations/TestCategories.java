@@ -272,10 +272,12 @@ public class TestCategories extends OpenCmsTestCase {
         // this will invalidate all local categories
         cms.writePropertyObject(CmsCategoryService.CENTRALIZED_REPOSITORY, new CmsProperty(
             CmsPropertyDefinition.PROPERTY_DEFAULT_FILE,
-            "_categories",
+            CmsCategoryService.REPOSITORY_BASE_FOLDER,
             null));
 
-        CmsCategory catB = CmsCategoryService.getInstance().getCategory(cms, cms.readResource("/_categories/b"));
+        CmsCategory catB = CmsCategoryService.getInstance().getCategory(
+            cms,
+            cms.readResource(CmsCategoryService.REPOSITORY_BASE_FOLDER + "b"));
 
         // assert the category list
         cats = CmsCategoryService.getInstance().readCategories(cms, null, true, "index.html");
@@ -307,7 +309,7 @@ public class TestCategories extends OpenCmsTestCase {
             + CmsCategoryService.getInstance().getRepositoryBaseFolderName(cms)
             + "c/", catC.getRootPath());
 
-        CmsResource resB = cms.readResource("/_categories/b");
+        CmsResource resB = cms.readResource(CmsCategoryService.REPOSITORY_BASE_FOLDER + "b");
         try {
             CmsCategoryService.getInstance().getCategory(cms, resB);
             fail("Category B should be invalid");
@@ -335,7 +337,7 @@ public class TestCategories extends OpenCmsTestCase {
             CmsRelationFilter.TARGETS.filterType(CmsRelationType.CATEGORY));
         assertEquals(2, relations.size());
         CmsResource resource = cms.readResource("index.html");
-        CmsResource resCatB = cms.readResource("_categories/b/");
+        CmsResource resCatB = cms.readResource(".categories/b/");
         assertTrue(relations.contains(new CmsRelation(
             resource.getStructureId(),
             resource.getRootPath(),
@@ -891,7 +893,7 @@ public class TestCategories extends OpenCmsTestCase {
                 }
             });
             cms.createResource("/publishRepair1", typeFolder);
-            String baseCategories = "/publishRepair1" + "/" + "_categories";
+            String baseCategories = "/publishRepair1" + "/" + ".categories";
             cms.createResource(baseCategories, typeFolder);
             cms.createResource(baseCategories + "/" + "publishRepair_cat1", typeFolder);
             String filePath = "/publishRepair1" + "/testpublishrepair.txt";
@@ -938,7 +940,7 @@ public class TestCategories extends OpenCmsTestCase {
                 }
             });
             cms.createResource("/publishRepair2", typeFolder);
-            String baseCategories = "/publishRepair2" + "/" + "_categories";
+            String baseCategories = "/publishRepair2" + "/" + ".categories";
             cms.createResource(baseCategories, typeFolder);
             cms.createResource(baseCategories + "/" + "publishRepair_cat2", typeFolder);
             String filePath = "/publishRepair2" + "/testpublishrepair.txt";

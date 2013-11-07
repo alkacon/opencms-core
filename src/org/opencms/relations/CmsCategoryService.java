@@ -317,7 +317,20 @@ public class CmsCategoryService {
      */
     public String getRepositoryBaseFolderName(CmsObject cms) {
 
-        String value = OpenCms.getWorkplaceManager().getCategoryFolder();
+        String value = "";
+        try {
+            value = cms.readPropertyObject(
+                CmsCategoryService.CENTRALIZED_REPOSITORY,
+                CmsPropertyDefinition.PROPERTY_DEFAULT_FILE,
+                false).getValue();
+        } catch (CmsException e) {
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
+            value = OpenCms.getWorkplaceManager().getCategoryFolder();
+        }
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
             value = REPOSITORY_BASE_FOLDER;
         }
