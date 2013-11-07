@@ -28,8 +28,11 @@
 package org.opencms.gwt.client.util;
 
 import org.opencms.gwt.client.util.CmsDomUtil.Style;
+import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Node;
+import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Position;
@@ -171,11 +174,23 @@ public class CmsPositionBean {
         String selfBackground = CmsDomUtil.getCurrentStyle(panel, Style.backgroundColor);
         if (!Overflow.HIDDEN.getCssName().equals(CmsDomUtil.getCurrentStyle(panel, Style.overflow))
             && ((parentBackground.equals(selfBackground) || "transparent".equals(selfBackground)))) {
+            if (!includeSelf) {
+                // check for any text content
+                NodeList<Node> children = panel.getChildNodes();
+                for (int i = 0; i < children.getLength(); i++) {
+                    if ((children.getItem(i).getNodeType() == Node.TEXT_NODE)
+                        && CmsStringUtil.isNotEmptyOrWhitespaceOnly(children.getItem(i).getNodeValue())) {
+                        includeSelf = true;
+                        break;
+                    }
+                }
+            }
             if (includeSelf) {
                 top = panel.getAbsoluteTop();
                 left = panel.getAbsoluteLeft();
                 bottom = top + panel.getOffsetHeight();
                 right = left + panel.getOffsetWidth();
+                first = false;
             }
             Element child = panel.getFirstChildElement();
             while (child != null) {
