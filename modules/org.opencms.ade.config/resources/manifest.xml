@@ -548,7 +548,7 @@
 			</explorertype>
 			
 			<explorertype name="formatter_config" key="fileicon.formatter_config"
-				icon="module_config.png" bigicon="module_config_big.png" reference="xmlcontent">
+				icon="formatter_config.png" bigicon="formatter_config_big.png" reference="xmlcontent">
 				<newresource page="otheroptions"
 					uri="newresource_xmlcontent.jsp?newresourcetype=formatter_config"
 					order="23" autosetnavigation="false" autosettitle="false"
@@ -1249,6 +1249,51 @@
 			<relations />
 			<accesscontrol />
 		</file>
+		
+		<file>
+			<source>system/workplace/resources/filetypes/formatter_config.png
+			</source>
+			<destination>system/workplace/resources/filetypes/formatter_config.png
+			</destination>
+			<type>image</type>
+			<uuidstructure>5d011d07-c390-4eee-a3e7-a1f3be8348a5</uuidstructure>
+			<uuidresource>93c70ec4-cf18-45f2-87db-bd157a2d087d</uuidresource>
+			<datelastmodified>Wed, 29 Jun 2011 08:48:09 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 29 Jun 2011 08:48:01 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations />
+			<accesscontrol />
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/formatter_config_big.png
+			</source>
+			<destination>system/workplace/resources/filetypes/formatter_config_big.png
+			</destination>
+			<type>image</type>
+			<uuidstructure>eb5a0089-8f53-4c56-b050-ad80e0319c3e</uuidstructure>
+			<uuidresource>b35e207c-1df5-48ad-bfd2-9a1fa36d7bc8</uuidresource>
+			<datelastmodified>Wed, 29 Jun 2011 08:48:20 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 29 Jun 2011 08:48:01 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:24,h:24]]></value>
+				</property>
+			</properties>
+			<relations />
+			<accesscontrol />
+		</file>
 		<file>
 			<source>system/workplace/resources/filetypes/sitemap_config.png
 			</source>
@@ -1271,6 +1316,8 @@
 			<relations />
 			<accesscontrol />
 		</file>
+		
+		
 		<file>
 			<source>system/workplace/resources/filetypes/sitemap_config_big.png
 			</source>
