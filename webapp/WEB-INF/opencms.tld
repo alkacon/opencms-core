@@ -1105,4 +1105,28 @@
             java.lang.String getNavigationUri(java.lang.Object)
         </function-signature>
     </function>
+    
+    <function>
+        <description>
+           Uses the 1st String as key to look up from the map that is passed as the 2nd String, and returns either the 
+           element found or the default value from the 3rd String. The map String must have the form "key1:value1|key2:value2" etc.
+        </description>    
+        <name>lookupDefault</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            java.lang.String lookup(java.lang.String, java.lang.String, java.lang.String)
+        </function-signature>
+    </function>    
+    
+    <function>
+        <description>
+           Uses the 1st String as key to look up from the map that is passed as the 2nd String, and returns either the 
+           element found or the empty String. The map String must have the form "key1:value1|key2:value2" etc.
+        </description>    
+        <name>lookup</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            java.lang.String lookup(java.lang.String, java.lang.String)
+        </function-signature>
+    </function>        
 </taglib>

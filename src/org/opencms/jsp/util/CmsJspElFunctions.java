@@ -417,6 +417,42 @@ public final class CmsJspElFunctions {
     }
 
     /**
+     * Looks up the given key from the map that is passed as a String, and returns either the 
+     * element found or the empty String.<p>
+     * 
+     * The map String must have the form <code>"key1:value1|key2:value2"</code> etc.<p>
+     * 
+     * @param key the key to look up
+     * @param map the map represented as a String
+     * @return the element found in the map with the given key, or the empty String
+     */
+    public static String lookup(String key, String map) {
+
+        return lookup(key, map, "");
+    }
+
+    /**
+     * Looks up the given key from the map that is passed as a String, and returns either the 
+     * element found or the default value.<p>
+     * 
+     * The map String must have the form <code>"key1:value1|key2:value2"</code> etc.<p>
+     * 
+     * @param key the key to look up
+     * @param map the map represented as a String
+     * @param defaultValue the default value
+     * @return the element found in the map with the given key, or the default value
+     */
+    public static String lookup(String key, String map, String defaultValue) {
+
+        Map<String, String> values = CmsStringUtil.splitAsMap(map, "|", ":");
+        String result = values.get(key);
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(result)) {
+            return defaultValue;
+        }
+        return result;
+    }
+
+    /**
      * Strips all HTML markup from the given input.<p>
      * 
      * <ul>
