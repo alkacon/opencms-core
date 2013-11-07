@@ -40,11 +40,11 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class CmsFormatterConfig implements IsSerializable {
 
+    /** Key for the formatter configuration id setting. Append the container name to the key, to store container depending values. */
+    public static final String FORMATTER_SETTINGS_KEY = "formatterSettings#";
+
     /** Id used for schema based formatters. */
     public static final String SCHEMA_FORMATTER_ID = "schema_formatter";
-
-    /** Key for the formatter configuration id setting. Append the container name to the key, to store container depending values. */
-    private static final String FORMATTER_SETTINGS_KEY = "formatterSettings#";
 
     /** The required css resources. */
     private Set<String> m_cssResources;

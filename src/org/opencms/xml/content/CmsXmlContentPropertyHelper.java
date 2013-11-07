@@ -27,6 +27,7 @@
 
 package org.opencms.xml.content;
 
+import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -36,6 +37,7 @@ import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.util.CmsMacroResolver;
@@ -44,6 +46,7 @@ import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlGenericWrapper;
 import org.opencms.xml.CmsXmlUtils;
+import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContentProperty.PropType;
 import org.opencms.xml.page.CmsXmlPage;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
@@ -59,6 +62,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 
@@ -330,10 +334,29 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
 
         Map<String, String> result = new HashMap<String, String>();
         if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
+            I_CmsFormatterBean formatter = null;
+            // check formatter configuration setting
+            for (Entry<String, String> property : properties.entrySet()) {
+                if (property.getKey().startsWith(CmsFormatterConfig.FORMATTER_SETTINGS_KEY)
+                    && CmsUUID.isValidUUID(property.getValue())) {
+                    formatter = OpenCms.getADEManager().getCachedFormatters(
+                        cms.getRequestContext().getCurrentProject().isOnlineProject()).getFormatters().get(
+                        new CmsUUID(property.getValue()));
+                    break;
+                }
+
+            }
+
             try {
-                Map<String, CmsXmlContentProperty> propertyConfig = CmsXmlContentDefinition.getContentHandlerForResource(
-                    cms,
-                    resource).getSettings(cms, resource);
+                Map<String, CmsXmlContentProperty> propertyConfig;
+                if (formatter != null) {
+                    propertyConfig = formatter.getSettings();
+                } else {
+                    // fall back to schema configuration
+                    propertyConfig = CmsXmlContentDefinition.getContentHandlerForResource(cms, resource).getSettings(
+                        cms,
+                        resource);
+                }
                 for (Map.Entry<String, CmsXmlContentProperty> entry : propertyConfig.entrySet()) {
                     CmsXmlContentProperty prop = entry.getValue();
                     result.put(entry.getKey(), getPropValueIds(cms, prop.getType(), prop.getDefault()));
