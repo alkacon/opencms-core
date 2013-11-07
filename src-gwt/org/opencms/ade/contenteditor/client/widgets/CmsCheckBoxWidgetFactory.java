@@ -31,6 +31,7 @@ import com.alkacon.acacia.client.I_WidgetFactory;
 import com.alkacon.acacia.client.widgets.FormWidgetWrapper;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 import com.alkacon.acacia.client.widgets.I_FormEditWidget;
+import com.alkacon.geranium.client.util.DomUtil;
 
 import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry;
@@ -42,6 +43,34 @@ import com.google.gwt.user.client.Element;
  * Factory to generate basic input widget.<p>
  */
 public class CmsCheckBoxWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
+
+    /** 
+     * Wrapper class for checkboxes, which is needed because the help text needs to be set on the check box widgets themselves.
+     */
+    class CheckboxWrapper extends FormWidgetWrapper {
+
+        /** The wrapped widget. */
+        private CmsCheckboxWidget m_checkBoxWidget;
+
+        /**
+         * Creates a new instance.<p>
+         */
+        public CheckboxWrapper() {
+
+            super(new CmsCheckboxWidget());
+            m_checkBoxWidget = (CmsCheckboxWidget)getEditWidget();
+        }
+
+        /**
+         * @see com.alkacon.acacia.client.widgets.FormWidgetWrapper#setWidgetInfo(java.lang.String, java.lang.String)
+         */
+        @Override
+        public void setWidgetInfo(String label, String help) {
+
+            super.setWidgetInfo(label, help);
+            m_checkBoxWidget.setTitle(DomUtil.stripHtml(help));
+        }
+    }
 
     /** The widget name. */
     private static final String WIDGET_NAME = "org.opencms.widgets.CmsCheckboxWidget";
@@ -59,7 +88,7 @@ public class CmsCheckBoxWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
      */
     public I_FormEditWidget createFormWidget(String configuration) {
 
-        FormWidgetWrapper wrapper = new FormWidgetWrapper(new CmsCheckboxWidget());
+        FormWidgetWrapper wrapper = new CheckboxWrapper();
         wrapper.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().checkBoxStyle());
         return wrapper;
 
