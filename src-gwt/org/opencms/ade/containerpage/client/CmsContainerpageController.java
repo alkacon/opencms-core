@@ -89,6 +89,8 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.AnchorElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Command;
@@ -97,6 +99,7 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.SerializationException;
@@ -585,6 +588,9 @@ public final class CmsContainerpageController {
     /** The container-page handler. */
     CmsContainerpageHandler m_handler;
 
+    /** The drag targets within this page. */
+    Map<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> m_targetContainers;
+
     /** The container page drag and drop controller. */
     private I_CmsDNDController m_cntDndController;
 
@@ -615,6 +621,9 @@ public final class CmsContainerpageController {
     /** The drag and drop handler. */
     private CmsDNDHandler m_dndHandler;
 
+    /** Edit button position timer. */
+    private Timer m_editButtonsPositionTimer;
+
     /** The currently editing group-container editor. */
     private A_CmsGroupEditor m_groupEditor;
 
@@ -630,11 +639,11 @@ public final class CmsContainerpageController {
     /** Flag if the container-page has changed. */
     private boolean m_pageChanged;
 
+    /** Timer to handle window resize. */
+    private Timer m_resizeTimer;
+
     /** Handler for small elements. */
     private CmsSmallElementsHandler m_smallElementsHandler;
-
-    /** The drag targets within this page. */
-    private Map<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> m_targetContainers;
 
     /**
      * Constructor.<p>
@@ -957,6 +966,7 @@ public final class CmsContainerpageController {
      */
     public void disableInlineEditing(CmsContainerPageElementPanel notThisOne) {
 
+        removeEditButtonsPositionTimer();
         if (isGroupcontainerEditing()) {
             for (Widget element : m_groupEditor.getGroupContainerWidget()) {
                 if ((element instanceof CmsContainerPageElementPanel) && (element != notThisOne)) {
@@ -1460,6 +1470,7 @@ public final class CmsContainerpageController {
      */
     public void hideEditableListButtons() {
 
+        removeEditButtonsPositionTimer();
         for (org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer container : m_targetContainers.values()) {
             container.hideEditableListButtons();
         }
@@ -1479,6 +1490,13 @@ public final class CmsContainerpageController {
         CmsContentEditorHandler contentEditorHandler,
         CmsContainerpageUtil containerpageUtil) {
 
+        Window.addResizeHandler(new ResizeHandler() {
+
+            public void onResize(ResizeEvent event) {
+
+                CmsContainerpageController.this.onResize();
+            }
+        });
         m_containerpageUtil = containerpageUtil;
         m_handler = handler;
         m_contentEditorHandler = contentEditorHandler;
@@ -1511,14 +1529,7 @@ public final class CmsContainerpageController {
             Element elem = DOM.getElementById(cont.getContainerId());
             CmsContainerpageEditor.getZIndexManager().addContainer(cont.getContainerId(), elem);
         }
-        // schedule to position the edit buttons after everything else has been initialized
-        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
-            public void execute() {
-
-                resetEditButtons();
-            }
-        });
+        resetEditButtons();
         Event.addNativePreviewHandler(new NativePreviewHandler() {
 
             public void onPreviewNativeEvent(NativePreviewEvent event) {
@@ -1777,6 +1788,7 @@ public final class CmsContainerpageController {
      */
     public void reInitInlineEditing() {
 
+        removeEditButtonsPositionTimer();
         if ((m_targetContainers == null) || getData().isUseClassicEditor()) {
             // if the target containers are not initialized yet or classic editor is set, don't do anything
             return;
@@ -1970,10 +1982,27 @@ public final class CmsContainerpageController {
      */
     public void resetEditButtons() {
 
-        for (org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer container : m_targetContainers.values()) {
-            container.showEditableListButtons();
-            container.updateOptionBars();
-        }
+        removeEditButtonsPositionTimer();
+        m_editButtonsPositionTimer = new Timer() {
+
+            /** Timer run counter. */
+            private int m_timerRuns;
+
+            @Override
+            public void run() {
+
+                for (org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer container : m_targetContainers.values()) {
+                    container.showEditableListButtons();
+                    container.updateOptionBars();
+                }
+
+                if (m_timerRuns > 3) {
+                    cancel();
+                }
+                m_timerRuns++;
+            }
+        };
+        m_editButtonsPositionTimer.scheduleRepeating(100);
     }
 
     /**
@@ -2320,6 +2349,7 @@ public final class CmsContainerpageController {
      */
     public void setToolbarVisible(final boolean visible) {
 
+        removeEditButtonsPositionTimer();
         CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
 
             /**
@@ -2376,6 +2406,7 @@ public final class CmsContainerpageController {
      */
     public void startEditingGroupcontainer(CmsGroupContainerElementPanel groupContainer, boolean isElementGroup) {
 
+        removeEditButtonsPositionTimer();
         if ((m_groupEditor == null)
             && (groupContainer.isNew() || CmsCoreProvider.get().lock(groupContainer.getStructureId()))) {
             if (isElementGroup) {
@@ -2473,6 +2504,7 @@ public final class CmsContainerpageController {
      */
     protected void deactivateOnClosing() {
 
+        removeEditButtonsPositionTimer();
         m_handler.deactivateCurrentButton();
         m_handler.disableToolbarButtons();
     }
@@ -2735,6 +2767,33 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Handles a window resize to reset highlighting and the edit button positions.<p>
+     */
+    void handleResize() {
+
+        m_resizeTimer = null;
+        resetEditButtons();
+    }
+
+    /**
+     * Call on window resize.<p>
+     */
+    void onResize() {
+
+        if (!isGroupcontainerEditing() && (m_resizeTimer == null)) {
+            m_resizeTimer = new Timer() {
+
+                @Override
+                public void run() {
+
+                    handleResize();
+                }
+            };
+            m_resizeTimer.schedule(300);
+        }
+    }
+
+    /**
      * Checks whether there are other references to a given container page element.<p>
      * 
      * @param element the element to check 
@@ -2906,6 +2965,17 @@ public final class CmsContainerpageController {
             }
         }
         return result;
+    }
+
+    /**
+     * Removes the edit buttons position timer.<p>
+     */
+    private void removeEditButtonsPositionTimer() {
+
+        if (m_editButtonsPositionTimer != null) {
+            m_editButtonsPositionTimer.cancel();
+            m_editButtonsPositionTimer = null;
+        }
     }
 
 }
