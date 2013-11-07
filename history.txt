@@ -26,7 +26,7 @@ OpenCms 9.0.0
 * Fixed issues with detail contents not appearing in publish lists for the "This page" publish mode
 * Fixed some XSS issues in the workplace 
 * Fixed problem with /shared having state 'changed' after update
-* Fixed date picker widget bug which sometimes caused the wrong month to be selected depending on the current date
+* Fixed date picker widget bug which sometimes caused the wrong month to be selected depending on the current date (github issue #194)
 * Fixed bug where the edit buttons still appeared for container elements for which the current user had no 'view' permission
 
 OpenCms 8.9.0 (aka 9.0 RC) - September 30, 2013
