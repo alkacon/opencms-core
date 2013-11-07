@@ -791,14 +791,8 @@
 					alias="ColorpickerWidget" />
 				<widget class="org.opencms.widgets.CmsComboWidget" alias="ComboWidget" />
 				<widget class="org.opencms.widgets.CmsDisplayWidget" alias="DisplayWidget" />
-				<widget class="org.opencms.widgets.CmsDownloadGalleryWidget"
-					alias="LegacyDownloadGalleryWidget" />
 				<widget class="org.opencms.widgets.CmsGroupWidget" alias="GroupWidget" />
-				<widget class="org.opencms.widgets.CmsHtmlGalleryWidget"
-					alias="HtmlGalleryWidget" />
 				<widget class="org.opencms.widgets.CmsHtmlWidget" alias="HtmlWidget" />
-				<widget class="org.opencms.widgets.CmsImageGalleryWidget"
-					alias="LegacyImageGalleryWidget" />
 				<widget class="org.opencms.widgets.CmsInputWidget" alias="StringWidget" />
 				<widget class="org.opencms.widgets.CmsInputWidgetPlaintext"
 					alias="StringWidgetPlaintext" />
@@ -817,8 +811,6 @@
 				<widget class="org.opencms.widgets.CmsSelectGroupWidget"
 					alias="GroupSelectorWidget" />
 				<widget class="org.opencms.widgets.CmsSelectWidget" alias="SelectorWidget" />
-				<widget class="org.opencms.widgets.CmsTableGalleryWidget"
-					alias="TableGalleryWidget" />
 				<widget class="org.opencms.widgets.CmsTextareaWidget" alias="TextareaWidget" />
 				<widget class="org.opencms.widgets.CmsTextareaWidgetPlaintext"
 					alias="TextareaWidgetPlaintext" />
