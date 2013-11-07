@@ -41,6 +41,7 @@ import org.opencms.repository.CmsRepositoryFilter;
 import org.opencms.repository.CmsRepositoryManager;
 import org.opencms.repository.I_CmsRepository;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.content.CmsXmlContent;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -213,6 +214,7 @@ public class CmsJlanRepository implements I_CmsRepository {
         newCms.getRequestContext().setCurrentProject(getProject());
         CmsObjectWrapper result = new CmsObjectWrapper(newCms, getWrappers());
         result.setAddByteOrderMark(m_addByteOrderMark);
+        result.getRequestContext().setAttribute(CmsXmlContent.AUTO_CORRECTION_ATTRIBUTE, Boolean.TRUE);
         return result;
     }
 
