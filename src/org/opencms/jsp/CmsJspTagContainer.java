@@ -196,12 +196,12 @@ public class CmsJspTagContainer extends TagSupport {
             cms,
             cms.getRequestContext().getLocale());
         if (!groupContainer.getTypes().contains(containerType)) {
-            //TODO: change message
-            throw new CmsIllegalStateException(Messages.get().container(
+            LOG.warn(new CmsIllegalStateException(Messages.get().container(
                 Messages.ERR_XSD_NO_TEMPLATE_FORMATTER_3,
                 element.getResource().getRootPath(),
                 OpenCms.getResourceManager().getResourceType(element.getResource()).getTypeName(),
-                containerType));
+                containerType)));
+            return Collections.emptyList();
         }
         subElements = groupContainer.getElements();
         return subElements;
@@ -412,9 +412,10 @@ public class CmsJspTagContainer extends TagSupport {
                     standardContext.setContainer(container);
                     // validate the type
                     if (!getType().equals(container.getType())) {
-                        throw new CmsIllegalStateException(Messages.get().container(
+                        container.setType(getType());
+                        LOG.warn(new CmsIllegalStateException(Messages.get().container(
                             Messages.LOG_WRONG_CONTAINER_TYPE_4,
-                            new Object[] {requestUri, locale, getName(), getType()}));
+                            new Object[] {requestUri, locale, getName(), getType()})));
                     }
 
                     // update the cache

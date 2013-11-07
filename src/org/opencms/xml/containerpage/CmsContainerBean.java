@@ -60,7 +60,7 @@ public class CmsContainerBean {
     private final String m_name;
 
     /** The container type. */
-    private final String m_type;
+    private String m_type;
 
     /** The container width set by the rendering container tag. */
     private String m_width;
@@ -200,6 +200,16 @@ public class CmsContainerBean {
     public void setMaxElements(int maxElements) {
 
         m_maxElements = maxElements;
+    }
+
+    /**
+     * Sets the container type.<p>
+     * 
+     * @param type the container type
+     */
+    public void setType(String type) {
+
+        m_type = type;
     }
 
     /**
