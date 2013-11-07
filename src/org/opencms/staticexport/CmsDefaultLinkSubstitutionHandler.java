@@ -399,18 +399,23 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                     String pathForMatchedSite = cms.getRequestContext().addSiteRoot(
                         OpenCms.getSiteManager().matchSite(matcher).getSiteRoot(),
                         path);
+                    String siteRootFromPath = OpenCms.getSiteManager().getSiteRoot(path);
                     String originalSiteRoot = cms.getRequestContext().getSiteRoot();
                     String selectedPath = pathForCurrentSite;
-                    try {
-                        cms.getRequestContext().setSiteRoot("");
-                        // the path for the current site normally is preferred, but if it doesn't exist and the path for the matched site
-                        // does exist, then use the path for the matched site 
-                        if (!cms.existsResource(pathForCurrentSite, CmsResourceFilter.ALL)
-                            && cms.existsResource(pathForMatchedSite, CmsResourceFilter.ALL)) {
-                            selectedPath = pathForMatchedSite;
+                    if (siteRootFromPath != null) {
+                        selectedPath = CmsStringUtil.joinPaths("/", path);
+                    } else {
+                        try {
+                            cms.getRequestContext().setSiteRoot("");
+                            // the path for the current site normally is preferred, but if it doesn't exist and the path for the matched site
+                            // does exist, then use the path for the matched site 
+                            if (!cms.existsResource(pathForCurrentSite, CmsResourceFilter.ALL)
+                                && cms.existsResource(pathForMatchedSite, CmsResourceFilter.ALL)) {
+                                selectedPath = pathForMatchedSite;
+                            }
+                        } finally {
+                            cms.getRequestContext().setSiteRoot(originalSiteRoot);
                         }
-                    } finally {
-                        cms.getRequestContext().setSiteRoot(originalSiteRoot);
                     }
                     return selectedPath + suffix;
                 } else {
