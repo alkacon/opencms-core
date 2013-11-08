@@ -27,6 +27,13 @@ OpenCms 9.0.0
 * Fixed some XSS issues in the workplace 
 * Fixed problem with /shared having state 'changed' after update
 * Fixed date picker widget bug which sometimes caused the wrong month to be selected depending on the current date (github issue #194)
+* Fixed issue where the principal widget failed to set the selected value
+* Fixed issue where some configurations of the OrgUnit widget failed to work
+* Fixed issue where the group select widget failed to fire the value change event
+* Fixed performance issue with the content editor undo/redo handler when editing large contents
+* Fixed issue where context menu entries in TinyMCE would not consider the widget configuration
+! Added multi-field annotation expression to EL for better inline edit support
+* Improved element and container highlighting during drag and drop
 * Fixed bug where the edit buttons still appeared for container elements for which the current user had no 'view' permission
 * Fixed a bug where in a chain of modified resources connected by strong links, some of the resources where not showing in the publish dialog in some cases.
 
