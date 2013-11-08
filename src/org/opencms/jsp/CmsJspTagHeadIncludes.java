@@ -421,7 +421,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
         for (String cssUri : cssIncludes) {
             pageContext.getOut().print(
                 "\n<link href=\""
-                    + CmsJspTagLink.linkTagAction(cssUri, req)
+                    + CmsJspTagLink.linkTagAction(cssUri.trim(), req)
                     + generateReqParams()
                     + "\" rel=\"stylesheet\" type=\"text/css\">");
             if (shouldCloseTags()) {
@@ -559,7 +559,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
         for (String jsUri : jsIncludes) {
             pageContext.getOut().print(
                 "<script type=\"text/javascript\" src=\""
-                    + CmsJspTagLink.linkTagAction(jsUri, req)
+                    + CmsJspTagLink.linkTagAction(jsUri.trim(), req)
                     + generateReqParams()
                     + "\"></script>");
         }
