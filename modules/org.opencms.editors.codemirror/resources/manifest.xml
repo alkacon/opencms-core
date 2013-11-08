@@ -3,7 +3,7 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>8.9.0</opencms_version>
+		<opencms_version>9.0.0</opencms_version>
 		<createdate>Fri, 28 Jun 2013 08:58:29 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
@@ -16,7 +16,7 @@
 		<description><![CDATA[<p>This module adds the Open Source text editor "CodeMirror" to the OpenCms Workplace.</p>
 <p>Install this module if you want a source code editor with syntax highlighting. The version of CodeMirror is 3.14</p>
 <p><i>&copy; 2013 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>8.9.0</version>
+		<version>9.0.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>

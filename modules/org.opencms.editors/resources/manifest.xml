@@ -3,28 +3,28 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>8.9.0</opencms_version>
+		<opencms_version>9.0.0</opencms_version>
 		<createdate>Tue, 20 Oct 2009 06:55:41 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
 	<module>
 		<name>org.opencms.editors</name>
-		<nicename><![CDATA[OpenCms 8 Common editors]]></nicename>
+		<nicename><![CDATA[OpenCms 9 Common editors]]></nicename>
 		<group>OpenCms Editors</group>
 		<class/>
 		<description><![CDATA[<p>This module contains the OpenCms Common Editing tools.</p>
 <p>This module is needed to be able to edit files in the OpenCms Workplace.</p>
 <p><i>(c) 2013 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>8.9.0</version>
+		<version>9.0.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 		<userinstalled/>
 		<dateinstalled/>
 		<dependencies>
-			<dependency name="org.opencms.workplace" version="8.9.0"/>
-			<dependency name="org.opencms.jquery" version="8.9.0"/>
+			<dependency name="org.opencms.workplace" version="9.0.0"/>
+			<dependency name="org.opencms.jquery" version="9.0.0"/>
 		</dependencies>
 		<exportpoints/>
 		<resources>

@@ -543,10 +543,10 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                     }
                     if (helper != null) {
                         prepareDragInfo(helper, placeholder, container, handler);
-                        container.highlightContainer();
                     }
                 }
             }
+            updateHighlighting();
         }
     }
 
@@ -649,6 +649,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         return !CmsUUID.isValidUUID(id);
     }
 
+    private static final int MINIMUM_CONTAINER_MARGIN = 10;
+
     /**
      * Sets styles of helper elements, appends the to the drop target and puts them into a drag info bean.<p>
      * 
@@ -658,6 +660,23 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
      * @param handler the drag and drop handler
      */
     private void prepareDragInfo(Element dragHelper, Element placeholder, I_CmsDropTarget target, CmsDNDHandler handler) {
+
+        String positioning = CmsDomUtil.getCurrentStyle(
+            target.getElement(),
+            org.opencms.gwt.client.util.CmsDomUtil.Style.position);
+        // set target relative, if not absolute or fixed
+        if (!Position.ABSOLUTE.getCssName().equals(positioning) && !Position.FIXED.getCssName().equals(positioning)) {
+            target.getElement().getStyle().setPosition(Position.RELATIVE);
+            // check for empty containers that don't have a minimum top and bottom margin to avoid containers overlapping
+            if (target.getElement().getFirstChildElement() == null) {
+                if (CmsDomUtil.getCurrentStyleInt(target.getElement(), CmsDomUtil.Style.marginTop) < MINIMUM_CONTAINER_MARGIN) {
+                    target.getElement().getStyle().setMarginTop(MINIMUM_CONTAINER_MARGIN, Unit.PX);
+                }
+                if (CmsDomUtil.getCurrentStyleInt(target.getElement(), CmsDomUtil.Style.marginBottom) < MINIMUM_CONTAINER_MARGIN) {
+                    target.getElement().getStyle().setMarginBottom(MINIMUM_CONTAINER_MARGIN, Unit.PX);
+                }
+            }
+        }
 
         target.getElement().appendChild(dragHelper);
         // preparing helper styles
@@ -676,15 +695,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             dragHelper.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElementBorder());
         }
         style.setDisplay(Display.NONE);
-
-        String positioning = CmsDomUtil.getCurrentStyle(
-            target.getElement(),
-            org.opencms.gwt.client.util.CmsDomUtil.Style.position);
-        // set target relative, if not absolute or fixed
-        if (!Position.ABSOLUTE.getCssName().equals(positioning) && !Position.FIXED.getCssName().equals(positioning)) {
-            target.getElement().getStyle().setPosition(Position.RELATIVE);
-        }
-        setMinHeight(target);
         m_dragInfos.put(target, new DragInfo(dragHelper, placeholder, width - 15, handler.getCursorOffsetY()));
         handler.addTarget(target);
 
@@ -748,36 +758,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     }
 
     /**
-     * Restores the minimum heights of containers.<p>
-     */
-    private void restoreMinHeights() {
-
-        for (CmsStyleSaver savedMinHeight : m_savedMinHeights) {
-            savedMinHeight.restore();
-        }
-        m_savedMinHeights.clear();
-    }
-
-    /**
-     * Saves the minimum height of a container and sets it to the current height.<p>
-     * 
-     * @param target the target container 
-     */
-    private void setMinHeight(I_CmsDropTarget target) {
-
-        if (target instanceof CmsContainerPageContainer) {
-            CmsContainerPageContainer cont = (CmsContainerPageContainer)target;
-            String realHeight = CmsDomUtil.getCurrentStyle(cont.getElement(), CmsDomUtil.Style.height);
-            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(realHeight)
-                && (Double.parseDouble(realHeight.replace("px", "")) > MIN_HEIGHT_THRESHOLD)) {
-                m_savedMinHeights.add(new CmsStyleSaver(cont.getElement(), "minHeight"));
-                Style style = cont.getElement().getStyle();
-                style.setProperty("minHeight", realHeight);
-            }
-        }
-    }
-
-    /**
      * Shows the draggable on it's original position.<p>
      * 
      * @param draggable the draggable
@@ -798,11 +778,11 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
         removeDragOverlay();
         CmsContainerpageEditor.getZIndexManager().stop();
-        restoreMinHeights();
         for (I_CmsDropTarget target : m_dragInfos.keySet()) {
-            if (Position.RELATIVE.getCssName().equals(target.getElement().getStyle().getPosition())) {
-                target.getElement().getStyle().clearPosition();
-            }
+            Style targetStyle = target.getElement().getStyle();
+            targetStyle.clearPosition();
+            targetStyle.clearMarginTop();
+            targetStyle.clearMarginBottom();
             m_dragInfos.get(target).getDragHelper().removeFromParent();
             if (target instanceof I_CmsDropContainer) {
                 ((I_CmsDropContainer)target).removeHighlighting();

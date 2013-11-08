@@ -3,26 +3,26 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>8.9.0</opencms_version>
+		<opencms_version>9.0.0</opencms_version>
 		<createdate>Mon, 25 Jun 2007 14:20:05 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
 	<module>
 		<name>org.opencms.workplace.tools.publishqueue</name>
-		<nicename><![CDATA[OpenCms 8 Publish queue]]></nicename>
+		<nicename><![CDATA[OpenCms 9 Publish queue]]></nicename>
 		<group>OpenCms Workplace</group>
 		<class/>
 		<description><![CDATA[<p>This module contains the tools for view the OpenCms publish queue.</p>
 <p><i>&copy; 2013 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>8.9.0</version>
+		<version>9.0.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
 		<userinstalled/>
 		<dateinstalled/>
 		<dependencies>
-			<dependency name="org.opencms.workplace.administration" version="8.9.0"/>
+			<dependency name="org.opencms.workplace.administration" version="9.0.0"/>
 		</dependencies>
 		<exportpoints>
 			<exportpoint uri="/system/modules/org.opencms.workplace.tools.publishqueue/lib/" destination="WEB-INF/lib/"/>

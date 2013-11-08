@@ -3,19 +3,19 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>8.7.0.88d4fbb8</opencms_version>
+		<opencms_version>9.0.0</opencms_version>
 		<createdate>Wed, 10 Jul 2013 13:08:33 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
 	<module>
 		<name>org.opencms.editors.tinymce</name>
-		<nicename><![CDATA[OpenCms 8 TinyMCE WYSIWYG editor plugin]]></nicename>
+		<nicename><![CDATA[OpenCms 9 TinyMCE WYSIWYG editor plugin]]></nicename>
 		<group>OpenCms Editors</group>
 		<class/>
 		<description><![CDATA[<p>This module contains TinyMCE editor for HTML pages and XML content.</p>
                               <p>The version of TinyMCE is 4.0.1</p>]]></description>
-		<version>8.9.0</version>
+		<version>9.0.0</version>
 		<authorname><![CDATA[OpenCms community]]></authorname>
 		<authoremail><![CDATA[opencms-dev@opencms.org]]></authoremail>
 		<datecreated/>
