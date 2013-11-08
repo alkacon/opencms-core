@@ -337,7 +337,7 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
         }
         List<CmsPublishResource> result = new ArrayList<CmsPublishResource>();
         for (CmsPublishResource res : publishResources) {
-            if (!relatedIds.contains(res.getId())) {
+            if (!relatedIds.contains(res.getId()) || (res.getRelated().size() > 0)) {
                 result.add(res);
             }
         }
