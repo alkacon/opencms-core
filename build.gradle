@@ -499,18 +499,27 @@ task war (dependsOn: [setupJar, allModules], type: Zip){
 }
 
 task updater (dependsOn: setupJar, type: Zip){
-    baseName 'opencms_upgrade_to'
+    baseName 'opencms-upgrade-to'
     from ("${projectDir}/webapp"){
         include 'update/**'
         exclude 'update/empty.jar'
         exclude 'update/readme.txt'
+        filter(ReplaceTokens, tokens: [
+            OPENCMS_VERSION_NUMBER: version_number,
+            OPENCMS_VERSION: product_name+' '+version_number
+        ])
     }
 	from ("${projectDir}/webapp/WEB-INF/solr/conf"){
 		into '/WEB-INF/solr-update/'
         include 'schema.xml'
         include 'solrconfig.xml'
     }
-    from "${projectDir}/webapp/update/readme.txt"
+    from ("${projectDir}/webapp/update/readme.txt"){
+        filter(ReplaceTokens, tokens: [
+            OPENCMS_VERSION_NUMBER: version_number,
+            OPENCMS_VERSION: product_name+' '+version_number
+        ])
+    }
     from ("${projectDir}/webapp/WEB-INF"){
         into '/WEB-INF'
         include 'opencms.tld'
@@ -565,6 +574,10 @@ task bindist (dependsOn: war, type: Zip){
         include 'install.html'
         include 'license.txt'
         include 'history.txt'
+        filter(ReplaceTokens, tokens: [
+            OPENCMS_VERSION_NUMBER: version_number,
+            OPENCMS_VERSION: product_name+' '+version_number
+        ])
     }
 }
 

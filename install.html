@@ -1,9 +1,9 @@
 <html>
 <head>
-<title>OpenCms 8.5.1 installation</title>
+<title>@OPENCMS_VERSION@ installation</title>
 </head>
 <body>
-<h1>OpenCms 8.5.1 installation</h1>
+<h1>@OPENCMS_VERSION@ installation</h1>
 <p>This page provides information on how to install OpenCms using 
 <a href="http://tomcat.apache.org" target="_blank" title="External link, opens in new window">Tomcat</a> and 
 <a href="http://www.mysql.com" target="_blank" title="External link, opens in new window">MySQL</a>. All installation parts are described as
@@ -12,7 +12,7 @@ work.</p>
 
 <ul>
 <li>
-<a href="#a1">Install the Java 2 SDK, version 5 or newer</a>
+<a href="#a1">Install the Java 2 SDK, version 6 or newer</a>
 </li>
 <li>
 <a href="#a2">Install Tomcat</a>
@@ -35,9 +35,9 @@ work.</p>
 </li>
 </ul>
 <h2>
-<a id="a1" name="a1"></a>Install the Java 2 SDK, version 1.5 or newer</h2>
+<a id="a1" name="a1"></a>Install the Java 2 SDK, version 1.6 or newer</h2>
 
-<p>Install the Java JDK, version 5 or newer (from Oracle 
+<p>Install the Java JDK, version 6 or newer (from Oracle 
 <code>
 <a  href="http://www.oracle.com/technetwork/java/javase/downloads/index.html" target="_blank" 
 title="External link, opens in new window">http://www.oracle.com/technetwork/java/javase/downloads/index.html</a></code>). For details on how to install these components on your operating system, see the
@@ -46,11 +46,11 @@ documentation that comes with them. You must install the Java
 <em>JRE</em> (Java Runtime Environment) that is also available from Oracle. The JRE is 
 <em>not</em> sufficient to run OpenCms!</p>
 <p>
-<strong>Important</strong>: OpenCms 8.5.1 was tested with Java 5 (1.5) and 6 (1.6).</p>
+<strong>Important</strong>: @OPENCMS_VERSION@ was tested with Java 6 (1.6) and 7 (1.7).</p>
 
 <h2>
 <a id="a2" name="a2"></a>Install Tomcat</h2>
-<p>OpenCms 8.5.1 requires a Servlet 2.4 / JSP 2.0 standards compliant container. 
+<p>@OPENCMS_VERSION@ requires a Servlet 2.4 / JSP 2.0 standards compliant container. 
 This release was tested with Tomcat 5.5.x, Tomcat 6.0.x. and Tomcat 7.0.x.</p>
 
 <p>Install Tomcat from 
@@ -93,7 +93,7 @@ On Windows-based systems MySQL has to be installed on the
 <code>%MYSQL_HOME%/bin/mysqld -install</code>.</p>
 
 <p>OpenCms can be used with MySQL 5.0, 5.1 and 5.5.</p>
-<p>Start the MySQL server by running the service (WIN32) or executing 
+<p>Start the MySQL server by running the service (WINDOWS) or executing 
 <code>%MYSQL_HOME%/bin/mysqld</code> (UNIX).</p>
 <p>Check that MySQL is running before you continue by starting the MySQL monitor (execute 
 <code>mysql</code> in your MySQL bin folder). The database works correctly if a MySQL prompt
