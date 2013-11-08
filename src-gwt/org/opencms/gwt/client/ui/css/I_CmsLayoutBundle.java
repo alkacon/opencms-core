@@ -1313,6 +1313,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return a CSS class
          **/
+        String titleDeleted();
+
+        /**
+         * CSS class accessor.<p>
+         * 
+         * @return a CSS class
+         **/
         String titleInput();
 
         /** 

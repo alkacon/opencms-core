@@ -238,3 +238,8 @@ li.dragging, div.dragging{
 	-ms-user-select: none;
 	user-select: none;
 }
+
+
+.itemContainer .titleDeleted { 
+	text-decoration: line-through; 
+}

@@ -1084,9 +1084,14 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
         }
 
         CmsResourceState resourceState = infoBean.getResourceState();
+
         if ((resourceState != null) && resourceState.isChanged()) {
             String title = Messages.get().key(Messages.GUI_UNPUBLISHED_CHANGES_TITLE_0);
             setTopRightIcon(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().changed(), title);
+        }
+
+        if ((resourceState != null) && resourceState.isDeleted()) {
+            m_title.addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().titleDeleted());
         }
 
         initAdditionalInfo(infoBean);

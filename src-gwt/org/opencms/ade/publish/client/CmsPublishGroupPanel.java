@@ -180,6 +180,7 @@ public class CmsPublishGroupPanel extends Composite {
         info.setSubTitle(resourceBean.getName());
         String stateLabel = org.opencms.gwt.client.Messages.get().key(
             org.opencms.gwt.client.Messages.GUI_RESOURCE_STATE_0);
+        info.setResourceState(resourceBean.getState());
         String stateName = CmsResourceStateUtil.getStateName(resourceBean.getState());
         // this can be null for the source resources of broken relations in the 'broken links' 
         // panel since these resources don't have to be new or deleted or changed
