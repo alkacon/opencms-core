@@ -148,11 +148,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         }
     }
 
-    /** The height value above which a container's min height will be set when the user starts dragging. */
-    public static final double MIN_HEIGHT_THRESHOLD = 50.0;
-
     /** The minimum margin set to empty containers. */
-    private static final int MINIMUM_CONTAINER_MARGIN = 8;
+    private static final int MINIMUM_CONTAINER_MARGIN = 10;
 
     /** The container page controller. */
     protected CmsContainerpageController m_controller;
@@ -423,6 +420,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
      */
     public void onTargetLeave(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
 
+        m_currentTarget = null;
+        m_currentIndex = -1;
         DragInfo info = m_dragInfos.get(m_initialDropTarget);
         if (info != null) {
             hideCurrentHelpers(handler);
@@ -787,7 +786,9 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         CmsContainerpageEditor.getZIndexManager().stop();
         for (I_CmsDropTarget target : m_dragInfos.keySet()) {
             Style targetStyle = target.getElement().getStyle();
-            targetStyle.clearPosition();
+            if (!(target instanceof CmsGroupContainerElementPanel)) {
+                targetStyle.clearPosition();
+            }
             targetStyle.clearMarginTop();
             targetStyle.clearMarginBottom();
             m_dragInfos.get(target).getDragHelper().removeFromParent();
