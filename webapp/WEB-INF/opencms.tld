@@ -650,7 +650,11 @@
         <attribute>
             <name>partialTag</name>
             <rtexprvalue>true</rtexprvalue>            
-        </attribute>     
+        </attribute>
+        <attribute>
+            <name>noDim</name>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>    
         <!-- The following attributes are only convenience attributes for easier HTML generation: -->
         <attribute>
             <name>alt</name>

@@ -113,6 +113,9 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
     private static final String SCALE_ATTR_MAXWIDTH = "maxWidth";
 
     /** Required image scaler attributes constant. */
+    private static final String SCALE_ATTR_NODIM = "nodim";
+
+    /** Required image scaler attributes constant. */
     private static final String SCALE_ATTR_PARTIALTAG = "partialtag";
 
     /** Required image scaler attributes constant. */
@@ -146,7 +149,8 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
         SCALE_ATTR_TYPE,
         SCALE_ATTR_WIDTH,
         SCALE_ATTR_MAXHEIGHT,
-        SCALE_ATTR_MAXWIDTH};
+        SCALE_ATTR_MAXWIDTH,
+        SCALE_ATTR_NODIM};
 
     /** Image scaler attribute list. */
     private static final List<String> SCALER_ATTRS_LIST = Arrays.asList(SCALER_ATTRS);
@@ -156,6 +160,9 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
 
     /** Map with additionally set image attributes not needed by the image scaler. */
     private Map<String, String> m_attributes;
+
+    /** Controls if the created HTML image tag contains height and width attributes. */
+    private boolean m_noDim;
 
     /** Controls if the created HTML image tag is a full or partial tag. */
     private boolean m_partialTag;
@@ -215,6 +222,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
      * @param scaler the image scaleing parameters 
      * @param attributes the additional image HTML attributes
      * @param partialTag if <code>true</code>, the opening <code>&lt;img</code> and closing <code> /&gt;</code> is omitted
+     * @param noDim if <code>true</code>, the <code>height</code> and <code>width</code> attributes are omitted
      * @param req the current request
      * 
      * @return the created &lt;img src&gt; tag content
@@ -226,6 +234,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
         CmsImageScaler scaler,
         Map<String, String> attributes,
         boolean partialTag,
+        boolean noDim,
         ServletRequest req) throws CmsException {
 
         CmsFlexController controller = CmsFlexController.getController(req);
@@ -265,7 +274,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
         result.append(OpenCms.getLinkManager().substituteLink(cms, imageLink));
         result.append("\"");
 
-        if (scaler.isValid()) {
+        if (!noDim && scaler.isValid()) {
             // append image width and height
             result.append(" width=\"");
             result.append(scaler.getWidth());
@@ -293,6 +302,29 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
             result.append(" />");
         }
         return result.toString();
+    }
+
+    /**
+     * Internal action method to create the tag content.<p>
+     * 
+     * @param src the image source
+     * @param scaler the image scaleing parameters 
+     * @param attributes the additional image HTML attributes
+     * @param partialTag if <code>true</code>, the opening <code>&lt;img</code> and closing <code> /&gt;</code> is omitted
+     * @param req the current request
+     * 
+     * @return the created &lt;img src&gt; tag content
+     * 
+     * @throws CmsException in case something goes wrong
+     */
+    public static String imageTagAction(
+        String src,
+        CmsImageScaler scaler,
+        Map<String, String> attributes,
+        boolean partialTag,
+        ServletRequest req) throws CmsException {
+
+        return imageTagAction(src, scaler, attributes, partialTag, false, req);
     }
 
     /**
@@ -332,7 +364,16 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
             case 9: // width
                 setWidth(value);
                 break;
-            default: // no a value used by the image scaler, treat as HTML attribute
+            case 10: // maxHeight
+                setMaxHeight(value);
+                break;
+            case 11: // maxWidth
+                setMaxWidth(value);
+                break;
+            case 12: // noDim
+                setNoDim(value);
+                break;
+            default: // not a value used by the image scaler, treat as HTML attribute
                 setAttribute(key, value);
         }
     }
@@ -352,7 +393,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
                 // create the HTML image tag 
                 String imageTag = null;
                 try {
-                    imageTag = imageTagAction(m_src, m_scaler, m_attributes, m_partialTag, req);
+                    imageTag = imageTagAction(m_src, m_scaler, m_attributes, m_partialTag, m_noDim, req);
                 } catch (CmsException e) {
                     // any issue accessing the VFS - just return an empty string 
                     // otherwise template layout will get mixed up with nasty exception messages
@@ -499,6 +540,17 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
     }
 
     /**
+     * Returns <code>"true"</code> if the created HTML image tag does not contain height and width attributes.<p>
+     *
+     * @return <code>"true"</code> if the created HTML image tag does not contain height and width attributes
+     */
+
+    public String getNoDim() {
+
+        return String.valueOf(m_noDim);
+    }
+
+    /**
      * Returns the background color used by the image scaler.<p>
      *
      * @return the background color used by the image scaler
@@ -638,6 +690,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
         m_attributes = null;
         m_scaler = new CmsImageScaler();
         m_partialTag = false;
+        m_noDim = false;
         m_src = null;
         super.release();
     }
@@ -764,6 +817,16 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
 
         setAttribute(ATTR_NAME, value);
 
+    }
+
+    /**
+     * Controls if the created HTML image tag contains height and width attributes.<p>
+     *
+     * @param noDim the value to set
+     */
+    public void setNoDim(String noDim) {
+
+        m_noDim = Boolean.valueOf(noDim).booleanValue();
     }
 
     /**
