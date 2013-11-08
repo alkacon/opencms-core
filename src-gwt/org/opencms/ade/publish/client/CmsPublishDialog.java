@@ -37,6 +37,7 @@ import org.opencms.ade.publish.shared.rpc.I_CmsPublishService;
 import org.opencms.ade.publish.shared.rpc.I_CmsPublishServiceAsync;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
+import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.util.CmsUUID;
@@ -118,8 +119,9 @@ public class CmsPublishDialog extends CmsPopup {
         @Override
         protected void onResponse(CmsWorkflowResponse result) {
 
+            stop(false);
             onReceiveStatus(result);
-            stop(true);
+
         }
     }
 
@@ -152,8 +154,9 @@ public class CmsPublishDialog extends CmsPopup {
         @Override
         protected void onResponse(List<CmsPublishGroup> result) {
 
-            onReceivePublishList(result);
             stop(false);
+            onReceivePublishList(result);
+
         }
     }
 
@@ -449,6 +452,10 @@ public class CmsPublishDialog extends CmsPopup {
         if (brokenResources.isSuccess()) {
             succeed();
             hide();
+            CmsNotification.get().send(
+                CmsNotification.Type.NORMAL,
+                org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_DONE_0));
+
         } else {
             m_failureMessage = brokenResources.getMessage();
             m_state = State.failure;
