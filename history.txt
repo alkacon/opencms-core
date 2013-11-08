@@ -16,27 +16,29 @@ Legend:
 - General comment
 
 OpenCms 9.0.0
-- Fixed potential memory leak when using Solr multi-core features by updating Solr to version 4.3 (@see http://wiki.apache.org/solr/LotsOfCores)
-- Changed default start view to 'Direct Edit' 
-* Fixed problem with scheduled publishing failing for resources with long paths
-* Fixed problem with updater where categories were overwritten during update
-* Fixed missing TinyMCE button bar background in the inline editor
-* Fixed some missing TinyMCE buttons 
-* Fixed a problem with creating function detail pages when using the template selection mechanism
-* Fixed issues with detail contents not appearing in publish lists for the "This page" publish mode
-* Fixed some XSS issues in the workplace 
-* Fixed problem with /shared having state 'changed' after update
-* Fixed date picker widget bug which sometimes caused the wrong month to be selected depending on the current date (github issue #194)
+! Improved configuration for content formaaters
+! Updated responsive demo template based on Bootstrap 3
+! Added multi-field annotation expression to EL for better inline edit support
+* Fixed potential memory leak when using Solr multi-core features by updating Solr to version 4.3 (@see http://wiki.apache.org/solr/LotsOfCores)
+* Fixed issue with scheduled publishing failing for resources with long paths
+* Fixed issue with updater where categories were overwritten during update
+* Fixed issue with missing TinyMCE button bar background in the inline editor
+* Fixed issue with missing TinyMCE buttons 
+* Fixed issue with creating function detail pages when using the template selection mechanism
+* Fixed issue with detail contents not appearing in publish lists for the "This page" publish mode
+* Fixed issue #186 regarding XSS vulnerabilities of the workplace 
+* Fixed issue with /shared having state 'changed' after update
+* Fixed issue #194 where the date picker widget sometimes selected the wrong moth depending on the current date
 * Fixed issue where the principal widget failed to set the selected value
 * Fixed issue where some configurations of the OrgUnit widget failed to work
 * Fixed issue where the group select widget failed to fire the value change event
-* Fixed performance issue with the content editor undo/redo handler when editing large contents
+* Fixed issue with the performance of the content editor undo/redo handler when editing large contents
 * Fixed issue where context menu entries in TinyMCE would not consider the widget configuration
-! Added multi-field annotation expression to EL for better inline edit support
-* Improved element and container highlighting during drag and drop
-* Fixed bug where the edit buttons still appeared for container elements for which the current user had no 'view' permission
-* Fixed a bug where in a chain of modified resources connected by strong links, some of the resources where not showing in the publish dialog in some cases.
-* Fixed a bug where links to a different site were not being set correctly when using the WYSIWYG editor 
+* Fixed issue with element and container highlighting during drag and drop
+* Fixed issue where the edit buttons still appeared for container elements for which the current user had no 'view' permission
+* Fixed issue where in a chain of modified resources connected by strong links, some of the resources where not showing in the publish dialog in some cases.
+* Fixed issue where links to a different site were not being set correctly when using the WYSIWYG editor 
+- Changed default start view to 'Direct Edit' 
 
 OpenCms 8.9.0 (aka 9.0 RC) - September 30, 2013
 ! Improved "in place" editing of web pages for text and also for images and other content types.
