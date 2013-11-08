@@ -185,9 +185,7 @@ public class CmsHtmlWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
                                                                                     options.contextmenu=contextmenu;
                                                                                 }
                                                                                 if (config.tinyMceOptions) {
-                                                                                for ( var tinyMceOptionKey in config.tinyMceOptions) {
-                                                                                options[tinyMceOptionKey] = config.tinyMceOptions[tinyMceOptionKey];
-                                                                                }
+                                                                                options.paste_as_text=config.tinyMceOptions.paste_text_sticky_default ? true : false;
                                                                                 }
                                                                                 }
 
