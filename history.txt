@@ -45,6 +45,7 @@ OpenCms 9.0.0
 - Removed no longer supported widgets 
 - Added additional fields to the Solr schema: state, userLastModified, userCreated, version, filename, search_exclude, mimetype, containerTypes
 
+
 OpenCms 8.9.0 (aka 9.0 RC) - September 30, 2013
 ! Improved "in place" editing of web pages for text and also for images and other content types.
 ! Enhanced support for different devices with preview and device specific content output control.
