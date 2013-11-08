@@ -400,7 +400,10 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     public void highlightContainer() {
 
         getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragging());
-
+        // remove any remaining highlighting
+        if (m_highlighting != null) {
+            m_highlighting.removeFromParent();
+        }
         // adding the 'clearFix' style to all targets containing floated elements
         // in some layouts this may lead to inappropriate clearing after the target, 
         // but it is still necessary as it forces the target to enclose it's floated content 

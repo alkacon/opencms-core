@@ -44,7 +44,6 @@ import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
-import org.opencms.gwt.client.util.CmsStyleSaver;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -152,6 +151,9 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     /** The height value above which a container's min height will be set when the user starts dragging. */
     public static final double MIN_HEIGHT_THRESHOLD = 50.0;
 
+    /** The minimum margin set to empty containers. */
+    private static final int MINIMUM_CONTAINER_MARGIN = 8;
+
     /** The container page controller. */
     protected CmsContainerpageController m_controller;
 
@@ -178,9 +180,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
     /** The original position of the draggable. */
     private int m_originalIndex;
-
-    /** Objects for restoring the min. heights of containers. */
-    private List<CmsStyleSaver> m_savedMinHeights = new ArrayList<CmsStyleSaver>();
 
     /**
      * Constructor.<p>
@@ -546,7 +545,17 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                     }
                 }
             }
-            updateHighlighting();
+            // add highlighting after all drag targets have been initialized
+            for (I_CmsDropTarget target : m_dragInfos.keySet()) {
+                if (target instanceof I_CmsDropContainer) {
+                    if (target == m_initialDropTarget) {
+                        // the initial target is already highlighted, update the position
+                        ((I_CmsDropContainer)target).refreshHighlighting();
+                    } else {
+                        ((I_CmsDropContainer)target).highlightContainer();
+                    }
+                }
+            }
         }
     }
 
@@ -648,8 +657,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         }
         return !CmsUUID.isValidUUID(id);
     }
-
-    private static final int MINIMUM_CONTAINER_MARGIN = 10;
 
     /**
      * Sets styles of helper elements, appends the to the drop target and puts them into a drag info bean.<p>
