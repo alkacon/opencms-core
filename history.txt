@@ -39,6 +39,9 @@ OpenCms 9.0.0
 * Fixed issue where in a chain of modified resources connected by strong links, some of the resources where not showing in the publish dialog in some cases.
 * Fixed issue where links to a different site were not being set correctly when using the WYSIWYG editor 
 - Changed default start view to 'Direct Edit' 
+* Fixed issue where the container page document factory was used for extracting content of elements, instead using the factory of the element itself.
+* Fixed issue where deleted resources were leftover in the search index. 
+- Added additional fields to the Solr schema: state, userLastModified, userCreated, version, filename, search_exclude, mimetype, containerTypes.
 
 OpenCms 8.9.0 (aka 9.0 RC) - September 30, 2013
 ! Improved "in place" editing of web pages for text and also for images and other content types.
