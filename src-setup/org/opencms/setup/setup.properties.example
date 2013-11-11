@@ -1,6 +1,6 @@
 setup.webapp.path=C:\dev\tomcat7\webapps\opencms
 setup.default.webapp=ROOT
-setup.install.components=workplace,bootstrap,devdemo
+setup.install.components=workplace,bootstrap
 
 db.product=mysql
 db.provider=sql
