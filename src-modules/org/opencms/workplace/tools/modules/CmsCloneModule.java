@@ -1180,7 +1180,6 @@ public class CmsCloneModule extends CmsJspActionElement {
                 if (lockResource(getCmsObject(), file)) {
                     file.setContents(contents);
                     getCmsObject().writeFile(file);
-                    getCmsObject().unlockResource(getCmsObject().getSitePath(file));
                 }
             }
         }
