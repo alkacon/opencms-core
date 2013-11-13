@@ -774,7 +774,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.sites.CmsSitesToolHandlerWebserver]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
