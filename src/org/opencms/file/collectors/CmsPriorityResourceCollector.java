@@ -222,6 +222,10 @@ public class CmsPriorityResourceCollector extends A_CmsResourceCollector {
 
         CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(data.getType()).addExcludeFlags(
             CmsResource.FLAG_TEMPFILE);
+        if (data.isExcludeTimerange() && !cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+            // include all not yet released and expired resources in an offline project
+            filter = filter.addExcludeTimerange();
+        }
         List<CmsResource> result = cms.readResources(foldername, filter, tree);
 
         // create priority comparator to use to sort the resources
@@ -249,6 +253,10 @@ public class CmsPriorityResourceCollector extends A_CmsResourceCollector {
 
         CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(data.getType()).addExcludeFlags(
             CmsResource.FLAG_TEMPFILE);
+        if (data.isExcludeTimerange() && !cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+            // include all not yet released and expired resources in an offline project
+            filter = filter.addExcludeTimerange();
+        }
         List<CmsResource> result = cms.readResources(foldername, filter, tree);
 
         // create priority comparator to use to sort the resources
@@ -278,6 +286,10 @@ public class CmsPriorityResourceCollector extends A_CmsResourceCollector {
 
         CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(data.getType()).addExcludeFlags(
             CmsResource.FLAG_TEMPFILE);
+        if (data.isExcludeTimerange() && !cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+            // include all not yet released and expired resources in an offline project
+            filter = filter.addExcludeTimerange();
+        }
 
         List<CmsResource> result = cms.readResources(foldername, filter, true);
         List<CmsResource> mapped = new ArrayList<CmsResource>();

@@ -43,8 +43,8 @@ import org.apache.commons.logging.Log;
  * Extended data structure for the collector, parsed from the collector parameters.<p>
  * 
  * The input data String must have the following format:<br>
- * <code>"{VFS URI}|{Resource type}|{Count}|{AddParam1}|{AddParam2}..."</code>, for example:<br>
- * <code>"/my/folder/|xmlcontent|5|p1|p2|p3|p4"</code>.<p>
+ * <code>"{VFS URI}|{Resource type}|{Count}|excludeTimerange|{AddParam1}|{AddParam2}..."</code>, for example:<br>
+ * <code>"/my/folder/|xmlcontent|5|excludeTimerange|p1|p2|p3|p4"</code> or <code>"/my/folder/|xmlcontent|5|p1|p2|p3|p4"</code>.<p>
  * 
  * This extends the basic {@link CmsCollectorData} by allowing to append additional 
  * parameters to the input String. The parameters can then be obtained by the collector 
@@ -76,7 +76,7 @@ public class CmsExtendedCollectorData extends CmsCollectorData {
      * 
      * The input data String must have the following format:<br>
      * <code>"{VFS URI}|{Resource type}|{Count}|{AddParam1}|{AddParam2}..."</code>, for example:<br>
-     * <code>"/my/folder/|xmlcontent|5|p1|p2|p3|p4"</code>.<p>
+     * <code>"/my/folder/|xmlcontent|5|excludeTimerange|p1|p2|p3|p4"</code> or <code>"/my/folder/|xmlcontent|5|p1|p2|p3|p4"</code>.<p>
      * 
      * @param data the data to parse
      */
@@ -126,7 +126,7 @@ public class CmsExtendedCollectorData extends CmsCollectorData {
                 try {
                     setCount(Integer.parseInt(count));
                 } catch (NumberFormatException e) {
-                    // bad number format used for type
+                    // bad number format used for count
                     throw new CmsRuntimeException(
                         Messages.get().container(Messages.ERR_COLLECTOR_PARAM_INVALID_1, data),
                         e);
@@ -134,7 +134,14 @@ public class CmsExtendedCollectorData extends CmsCollectorData {
             }
         }
         if (args.size() > 3) {
-            m_additionalParams = args.subList(3, args.size());
+            if (PARAM_EXCLUDETIMERANGE.equalsIgnoreCase(args.get(3))) {
+                setExcludeTimerange(true);
+                if (args.size() > 4) {
+                    m_additionalParams = args.subList(4, args.size());
+                }
+            } else {
+                m_additionalParams = args.subList(3, args.size());
+            }
         }
     }
 

@@ -186,6 +186,10 @@ public class CmsDateResourceCollector extends A_CmsResourceCollector {
 
         CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(data.getType()).addExcludeFlags(
             CmsResource.FLAG_TEMPFILE);
+        if (data.isExcludeTimerange() && !cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+            // include all not yet released and expired resources in an offline project
+            filter = filter.addExcludeTimerange();
+        }
         List<CmsResource> result = cms.readResources(foldername, filter, tree);
 
         // a special date comparator is used to sort the resources

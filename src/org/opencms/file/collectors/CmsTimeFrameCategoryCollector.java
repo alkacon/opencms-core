@@ -66,6 +66,7 @@ import java.util.List;
  *     resourceType=xmlcontent|
  *     resultLimit=10|
  *     sortDescending=true|
+ *     excludeTimerange=true|
  *     timeStart=2007-08-01 14:22:12|
  *     timeEnd=2007-08-01 14:22:12|
  *     propertyTime=collector.time|
@@ -108,6 +109,10 @@ import java.util.List;
  * <b>sortDescending</b><br/>
  * The value defines if the result is sorted in descending ("true") or ascending 
  * (anything else than "true") order. 
+ * </li>
+ * <li>
+ * <b>excludeTimeRange</b><br/>
+ * The value defines if the result should exclude the time range in an offline project. 
  * </li>
  * <li>
  * <b>timeStart</b><br/>
@@ -181,6 +186,10 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
      * <b>sortDescending</b><br/>
      * The value defines if the result is sorted in descending ("true") or ascending 
      * (anything else than "true") order. 
+     * </li>
+     * <li>
+     * <b>excludeTimeRange</b><br/>
+     * The value defines if the result should exclude the time range in an offline project. 
      * </li>
      * <li>
      * <b>timeStart</b><br/>
@@ -447,6 +456,8 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
                     m_categories = CmsStringUtil.splitAsList(value, ',');
                 } else if (PARAM_KEY_PPROPERTY_CATEGORIES.equals(key)) {
                     m_propertyCategories.setName(value);
+                } else if (PARAM_EXCLUDETIMERANGE.equalsIgnoreCase(key)) {
+                    setExcludeTimerange(new Boolean(value).booleanValue());
                 } else {
                     // nop, one could accept additional filter properties here...
                 }
@@ -562,6 +573,10 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
         String foldername = CmsResource.getFolderPath(data.getFileName());
         CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(data.getType()).addExcludeFlags(
             CmsResource.FLAG_TEMPFILE);
+        if (data.isExcludeTimerange() && !cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+            // include all not yet released and expired resources in an offline project
+            filter = filter.addExcludeTimerange();
+        }
         result = cms.readResources(foldername, filter, true);
 
         // Step 2: Time range filtering
