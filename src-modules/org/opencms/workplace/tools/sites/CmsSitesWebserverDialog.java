@@ -101,7 +101,7 @@ public class CmsSitesWebserverDialog extends CmsWidgetDialog {
     /** Sample files folder name. */
     public static final String TEMPLATE_FILES = "webserver-templates/";
 
-    /** */
+    /** The default file name of the secure server template configuration file. */
     private static final String DEFAULT_NAME_WEBSERVER_SECURE = "vhost-secure.template";
 
     /** The default parameter value. */
@@ -142,7 +142,7 @@ public class CmsSitesWebserverDialog extends CmsWidgetDialog {
     private static final String DEFAULT_PATH_TEMPLATE = MODULE_PATH + TEMPLATE_FILES + DEFAULT_NAME_WEBSERVER_CONFIG;
 
     /** The default target path for generated web server configuration files. */
-    private static final String PATH_WEBSERVER_CONFIG = PATH_WEBSERVER_SCRIPTS + "configs/";
+    private static final String PATH_WEBSERVER_CONFIG = PATH_WEBSERVER_SCRIPTS + "configs";
 
     /** The source file used as template for creating a web server configuration files. */
     private String m_configtemplate;
