@@ -738,7 +738,7 @@
 			<type>jsp</type>
 			<uuidstructure>8157855a-7cfe-11e2-a884-13f7e154c8f7</uuidstructure>
 			<uuidresource>8157855b-7cfe-11e2-a884-13f7e154c8f7</uuidresource>
-			<datelastmodified>Fri, 22 Feb 2013 14:48:21 GMT</datelastmodified>
+			<datelastmodified>Thu, 14 Nov 2013 09:41:17 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 22 Feb 2013 14:45:30 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -774,7 +774,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.sites.CmsSitesToolHandlerWebserver]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -836,7 +836,7 @@
 			<type>jsp</type>
 			<uuidstructure>bdbe5d02-96e6-11e2-8cf9-d723659840f0</uuidstructure>
 			<uuidresource>bdbe5d03-96e6-11e2-8cf9-d723659840f0</uuidresource>
-			<datelastmodified>Tue, 05 Nov 2013 17:02:38 GMT</datelastmodified>
+			<datelastmodified>Thu, 14 Nov 2013 09:34:23 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 27 Mar 2013 14:00:54 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -849,10 +849,6 @@
 				<property>
 					<name>admintoolhandler-args</name>
 					<value><![CDATA[params:script=%(param.script)|path:/sites/webserver/report]]></value>
-				</property>
-				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.sites.CmsSitesToolHandlerWebserver]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
