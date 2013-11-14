@@ -95,8 +95,8 @@ public class CmsSitesWebserverDialog extends CmsWidgetDialog {
     public static final String PARAM_WEBSERVER_SCRIPT = "webserverscript";
 
     /** The working directory for this tool. */
-    public static final String PATH_WEBSERVER_EXPORT = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebApplication(
-        "resources/webserver/");
+    public static final String PATH_WEBSERVER_SCRIPTS = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
+        "server-scripts/");
 
     /** Sample files folder name. */
     public static final String TEMPLATE_FILES = "webserver-templates/";
@@ -142,7 +142,7 @@ public class CmsSitesWebserverDialog extends CmsWidgetDialog {
     private static final String DEFAULT_PATH_TEMPLATE = MODULE_PATH + TEMPLATE_FILES + DEFAULT_NAME_WEBSERVER_CONFIG;
 
     /** The default target path for generated web server configuration files. */
-    private static final String PATH_WEBSERVER_CONFIG = PATH_WEBSERVER_EXPORT + "config";
+    private static final String PATH_WEBSERVER_CONFIG = PATH_WEBSERVER_SCRIPTS + "configs/";
 
     /** The source file used as template for creating a web server configuration files. */
     private String m_configtemplate;

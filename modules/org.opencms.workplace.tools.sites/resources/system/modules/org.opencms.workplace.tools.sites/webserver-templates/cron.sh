@@ -1,7 +1,7 @@
 #!/bin/bash
 
 find_webconfiguration () {
-        find /usr/local/tomcat/webapps/ROOT/WEB-INF/server-scripts/configs/ -name 'opencms_*' -exec cp {} /etc/apache2/sites-available/ \;
+        find /var/lib/tomcat/webapps/opencms/WEB-INF/server-scripts/configs/ -name 'opencms_*' -exec cp {} /etc/apache2/sites-available/ \;
 }
 
 
