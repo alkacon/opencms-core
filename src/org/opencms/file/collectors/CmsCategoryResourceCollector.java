@@ -401,7 +401,7 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
             CmsCategoryService service = CmsCategoryService.getInstance();
             while (itResources.hasNext()) {
                 resource = itResources.next();
-                Iterator<CmsCategory> itCategories = service.readResourceCategories(cms, cms.getSitePath(resource)).iterator();
+                Iterator<CmsCategory> itCategories = service.readResourceCategories(cms, resource).iterator();
                 while (itCategories.hasNext()) {
                     CmsCategory category = itCategories.next();
                     if (categoryTypes.contains(category.getPath())) {
