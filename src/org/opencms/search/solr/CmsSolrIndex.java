@@ -550,6 +550,39 @@ public class CmsSolrIndex extends CmsSearchIndex {
             q.setRequestHandler("/spell");
 
             QueryResponse queryResponse = m_solr.query(q);
+
+            List<CmsSearchResource> resourceDocumentList = new ArrayList<CmsSearchResource>();
+            SolrDocumentList solrDocumentList = new SolrDocumentList();
+            if (m_postProcessor != null) {
+                for (int i = 0; (i < queryResponse.getResults().size()); i++) {
+                    try {
+                        SolrDocument doc = queryResponse.getResults().get(i);
+                        CmsSolrDocument searchDoc = new CmsSolrDocument(doc);
+                        if (needsPermissionCheck(searchDoc)) {
+                            // only if the document is an OpenCms internal resource perform the permission check
+                            CmsResource resource = getResource(cms, searchDoc);
+                            if (resource != null) {
+                                // permission check performed successfully: the user has read permissions!
+                                if (m_postProcessor != null) {
+                                    doc = m_postProcessor.process(
+                                        cms,
+                                        resource,
+                                        (SolrInputDocument)searchDoc.getDocument());
+                                }
+                                resourceDocumentList.add(new CmsSearchResource(resource, searchDoc));
+                                solrDocumentList.add(doc);
+                            }
+                        }
+                    } catch (Exception e) {
+                        // should not happen, but if it does we want to go on with the next result nevertheless                        
+                        LOG.warn(Messages.get().getBundle().key(Messages.LOG_SOLR_ERR_RESULT_ITERATION_FAILED_0), e);
+                    }
+                }
+                queryResponse.getResponse().setVal(
+                    queryResponse.getResponse().indexOf(QUERY_RESPONSE_NAME, 0),
+                    solrDocumentList);
+            }
+
             // create and return the result
             core = m_solr instanceof EmbeddedSolrServer ? ((EmbeddedSolrServer)m_solr).getCoreContainer().getCore(
                 getName()) : null;
