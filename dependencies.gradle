@@ -48,7 +48,13 @@ dependencies {
     distribution group: 'com.alkacon', name: 'alkacon-diff', version: '0.9.2'
     distribution group: 'com.alkacon', name: 'acacia-editor-server', version: '2.0'
     distribution group: 'com.alkacon', name: 'vie-gwt-server', version: '2.0'
-    distribution group: 'org.safehaus.jug', name: 'jug', version: '2.0.0', classifier: 'lgpl' 
+    distribution(group: 'org.safehaus.jug', name: 'jug', version: '2.0.0'){
+        artifact {
+            name= 'jug'
+            type= 'jar'
+            classifier= 'lgpl'
+        }
+    } 
     
     // http://svn.alfresco.com/repos/alfresco-open-mirror/alfresco/HEAD/root/projects/alfresco-jlan/    
     // Revision r55007
