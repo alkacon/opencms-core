@@ -498,6 +498,9 @@
 				<name>solr_gallery_fields</name>
 				<description>The Solr gallery search index field configuration.</description>
 				<fields>
+					<field name="sort-title" display="sort-title" store="false" index="untokenized">
+						<mapping type="property">Title</mapping>
+					</field>
 					<field name="content" display="%(key.field.content)" store="compress" index="true" excerpt="true">
 						<mapping type="content" />
 					</field>

@@ -55,15 +55,7 @@ public class CmsGallerySolrFieldConfiguration extends CmsSolrFieldConfiguration 
      */
     public CmsGallerySolrFieldConfiguration() {
 
-        // Field used only for sorting by title, needs to be untokenized 
-        CmsLuceneField sortTitle = new CmsLuceneField(
-            CmsSearchField.FIELD_SORT_TITLE,
-            CmsSearchField.FIELD_SORT_TITLE,
-            false,
-            true);
-
-        sortTitle.setTokenized(false);
-        addField(sortTitle);
+        // nothing special to do here 
     }
 
     /**
