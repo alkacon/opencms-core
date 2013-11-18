@@ -128,8 +128,7 @@ public class TestCmsMail extends OpenCmsTestCase {
             mail.addTo(invalidMail);
             mail.setSubject("OpenCms TestCase HTML Mail");
             mail.setSmtpPort(SMTP_PORT);
-            String messageID = mail.send();
-            assertNull(messageID);
+            mail.send();
         } catch (EmailException e) {
             // Check if root cause was SendFailedException due to rejected mail by SMTP server
             assertTrue(e.getCause() instanceof SendFailedException);
