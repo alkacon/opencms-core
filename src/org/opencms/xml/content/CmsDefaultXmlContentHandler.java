@@ -119,6 +119,50 @@ import com.google.common.collect.Maps;
  */
 public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
+    /**
+     * Contains the visibility handler configuration for a content field path.<p>
+     */
+    protected static class VisibilityConfiguration {
+
+        /** The handler instance. */
+        private I_CmsXmlContentVisibilityHandler m_handler;
+
+        /** The handler configuration parameters. */
+        private String m_params;
+
+        /**
+         * Constructor.<p>
+         * 
+         * @param handler the handler instance
+         * @param params the handler configuration parameteres
+         */
+        protected VisibilityConfiguration(I_CmsXmlContentVisibilityHandler handler, String params) {
+
+            m_handler = handler;
+            m_params = params;
+        }
+
+        /**
+         * Returns the visibility handler instance.<p>
+         * 
+         * @return the handler instance
+         */
+        public I_CmsXmlContentVisibilityHandler getHandler() {
+
+            return m_handler;
+        }
+
+        /**
+         * Returns the visibility handler configuration parameters.<p>
+         * 
+         * @return the configuration parameters
+         */
+        public String getParams() {
+
+            return m_params;
+        }
+    }
+
     /** Constant for the "appinfo" element name itself. */
     public static final String APPINFO_APPINFO = "appinfo";
 
@@ -184,6 +228,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** Constant for the "nice-name" appinfo attribute name. */
     public static final String APPINFO_ATTR_NICE_NAME = "nice-name";
+
+    /** Constant for the "params" appinfo attribute name. */
+    public static final String APPINFO_ATTR_PARAMS = "params";
 
     /** Constant for the "preview" appinfo attribute name. */
     public static final String APPINFO_ATTR_PREVIEW = "preview";
@@ -352,6 +399,12 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** Constant for the "validationrules" appinfo element name. */
     public static final String APPINFO_VALIDATIONRULES = "validationrules";
 
+    /** Constant for the "visibilities" appinfo element name. */
+    public static final String APPINFO_VISIBILITIES = "visibilities";
+
+    /** Constant for the "visibility" appinfo element name. */
+    public static final String APPINFO_VISIBILITY = "visibility";
+
     /** Constant for the "xmlbundle" appinfo element name. */
     public static final String APPINFO_XMLBUNDLE = "xmlbundle";
 
@@ -486,6 +539,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** The elements to display in ncompact view. */
     private HashMap<String, DisplayType> m_displayTypes;
+
+    /** The visibility configurations by element path. */
+    private Map<String, VisibilityConfiguration> m_visibilityConfigurations;
 
     /**
      * Creates a new instance of the default XML content handler.<p>  
@@ -884,6 +940,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#hasVisibilityHandlers()
+     */
+    public boolean hasVisibilityHandlers() {
+
+        return (m_visibilityConfigurations != null) && !m_visibilityConfigurations.isEmpty();
+    }
+
+    /**
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#initialize(org.dom4j.Element, org.opencms.xml.CmsXmlContentDefinition)
      */
     public synchronized void initialize(Element appInfoElement, CmsXmlContentDefinition contentDefinition)
@@ -933,6 +997,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                     initTemplates(element, contentDefinition);
                 } else if (nodeName.equals(APPINFO_DEFAULTWIDGET)) {
                     initDefaultWidget(element);
+                } else if (nodeName.equals(APPINFO_VISIBILITIES)) {
+                    initVisibilities(element, contentDefinition);
                 }
             }
         }
@@ -1052,6 +1118,18 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         Boolean anno = m_searchSettings.get(CmsXmlUtils.removeXpath(value.getPath()));
         // if no annotation has been found, use default for value
         return (anno == null) ? value.isSearchable() : anno.booleanValue();
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#isVisibile(org.opencms.file.CmsObject, org.opencms.xml.types.I_CmsXmlSchemaType, java.lang.String, org.opencms.file.CmsResource)
+     */
+    public boolean isVisibile(CmsObject cms, I_CmsXmlSchemaType contentValue, String valuePath, CmsResource resource) {
+
+        if (hasVisibilityHandlers() && m_visibilityConfigurations.containsKey(valuePath)) {
+            VisibilityConfiguration config = m_visibilityConfigurations.get(valuePath);
+            return config.getHandler().isValueVisible(cms, contentValue, valuePath, config.getParams());
+        }
+        return true;
     }
 
     /**
@@ -2506,6 +2584,37 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                     regex,
                     message,
                     APPINFO_ATTR_TYPE_WARNING.equals(type));
+            }
+        }
+    }
+
+    /**
+     * Initializes the content visibility settings.<p>
+     * 
+     * @param root the visibilities appinfo element
+     * @param contentDefinition the content definition
+     */
+    protected void initVisibilities(Element root, CmsXmlContentDefinition contentDefinition) {
+
+        m_visibilityConfigurations = new HashMap<String, VisibilityConfiguration>();
+        List<Element> elements = new ArrayList<Element>(CmsXmlGenericWrapper.elements(root, APPINFO_VISIBILITY));
+        for (Element element : elements) {
+            try {
+                String elementName = element.attributeValue(APPINFO_ATTR_ELEMENT);
+                String handlerClassName = element.attributeValue(APPINFO_ATTR_CLASS);
+                String params = element.attributeValue(APPINFO_ATTR_PARAMS);
+                I_CmsXmlContentVisibilityHandler handler = null;
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(handlerClassName)) {
+
+                    Class<?> handlerClass = Class.forName(handlerClassName);
+                    handler = (I_CmsXmlContentVisibilityHandler)handlerClass.newInstance();
+                } else {
+                    handler = new CmsDefaultXmlContentVisibilityHandler();
+                }
+                m_visibilityConfigurations.put(elementName, new VisibilityConfiguration(handler, params));
+
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
     }

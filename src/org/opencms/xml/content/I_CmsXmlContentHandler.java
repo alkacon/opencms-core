@@ -383,6 +383,13 @@ public interface I_CmsXmlContentHandler {
     boolean hasModifiableFormatters();
 
     /**
+     * Returns if there are visibility handlers configured for this content type.<p>
+     * 
+     * @return <code>true</code> if there are visibility handlers configured for this content type
+     */
+    boolean hasVisibilityHandlers();
+
+    /**
      * Initializes this content handler for the given XML content definition by
      * analyzing the "appinfo" node.<p>
      * 
@@ -440,6 +447,18 @@ public interface I_CmsXmlContentHandler {
      * @return <code>true</code> in case the given value should be searchable
      */
     boolean isSearchable(I_CmsXmlContentValue value);
+
+    /**
+     * Returns if the given content field should be visible to the current user.<p>
+     * 
+     * @param cms the cms context
+     * @param schemaType the content value type
+     * @param valuePath the value path
+     * @param resource the edited resource
+     * 
+     * @return <code>true</code> if the given content field should be visible to the current user
+     */
+    boolean isVisibile(CmsObject cms, I_CmsXmlSchemaType schemaType, String valuePath, CmsResource resource);
 
     /**
      * Prepares the given XML content to be used after it was read from the OpenCms VFS.<p>
