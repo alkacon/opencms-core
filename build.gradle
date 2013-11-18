@@ -6,6 +6,7 @@ sourceCompatibility = java_target_version
 version = version_number
 buildDir = build_directory
 repositories {
+    mavenLocal()
     if (project.hasProperty('additional_repositories')){
         additional_repositories.split(';').each{ repo ->
             maven { url repo }
