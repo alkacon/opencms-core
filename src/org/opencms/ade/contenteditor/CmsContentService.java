@@ -27,6 +27,7 @@
 
 package org.opencms.ade.contenteditor;
 
+import com.alkacon.acacia.shared.AttributeConfiguration;
 import com.alkacon.acacia.shared.ContentDefinition;
 import com.alkacon.acacia.shared.Entity;
 import com.alkacon.acacia.shared.EntityHtml;
@@ -412,14 +413,39 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 CmsFile file = cms.readFile(resource);
                 CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
                 checkAutoCorrection(cms, content);
-                for (Entity entity : changedEntities) {
-                    String entityId = entity.getId();
-                    Locale contentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(entityId));
-                    if (content.hasLocale(contentLocale)) {
-                        content.removeLocale(contentLocale);
+                if (!changedEntities.isEmpty()) {
+
+                    for (Entity entity : changedEntities) {
+                        String entityId = entity.getId();
+                        Locale contentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(entityId));
+                        CmsContentTypeVisitor visitor = null;
+                        Entity originalEntity = null;
+                        if (content.getHandler().hasVisibilityHandlers()) {
+                            visitor = new CmsContentTypeVisitor(cms, file, contentLocale);
+                            visitor.visitTypes(content.getContentDefinition(), getWorkplaceLocale(cms));
+                        }
+                        if (content.hasLocale(contentLocale)) {
+                            if ((visitor != null) && visitor.hasInvisibleFields()) {
+                                // we need to add invisible content values to the entity before saving
+                                Element element = content.getLocaleNode(contentLocale);
+                                originalEntity = readEntity(
+                                    content,
+                                    element,
+                                    contentLocale,
+                                    entityId,
+                                    "",
+                                    getTypeUri(content.getContentDefinition()),
+                                    visitor,
+                                    true);
+                            }
+                            content.removeLocale(contentLocale);
+                        }
+                        content.addLocale(cms, contentLocale);
+                        if ((visitor != null) && visitor.hasInvisibleFields()) {
+                            transfereInvisibleValues(originalEntity, entity, visitor);
+                        }
+                        addEntityAttributes(cms, content, "", entity, contentLocale);
                     }
-                    content.addLocale(cms, contentLocale);
-                    addEntityAttributes(cms, content, "", entity, contentLocale);
                 }
                 for (String deleteId : deletedEntities) {
                     Locale contentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(deleteId));
@@ -559,6 +585,32 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
+     * Creates an entity object containing the default values configured for it's type.<p>
+     * 
+     * @param entityType the entity type
+     * @param visitor the type visitor holding the content type configuration
+     * 
+     * @return the created entity
+     */
+    protected Entity createDefaultValueEntity(I_Type entityType, CmsContentTypeVisitor visitor) {
+
+        Entity result = new Entity(null, entityType.getId());
+        for (String attributeName : entityType.getAttributeNames()) {
+            I_Type attributeType = visitor.getTypes().get(entityType.getAttributeTypeName(attributeName));
+            for (int i = 0; i < entityType.getAttributeMinOccurrence(attributeName); i++) {
+                if (attributeType.isSimpleType()) {
+                    result.addAttributeValue(
+                        attributeName,
+                        visitor.getAttributeConfigurations().get(attributeName).getDefaultValue());
+                } else {
+                    result.addAttributeValue(attributeName, createDefaultValueEntity(attributeType, visitor));
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
      * Decodes the newlink request parameter if possible.<p>
      * 
      * @param newLink the parameter to decode 
@@ -629,7 +681,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      * @param entityId the entity id
      * @param parentPath the parent path
      * @param typeName the entity type name
-     * @param registeredTypes the types used within the entity
+     * @param visitor the content type visitor
+     * @param includeInvisible include invisible attributes
      * 
      * @return the entity
      */
@@ -640,7 +693,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         String entityId,
         String parentPath,
         String typeName,
-        Map<String, I_Type> registeredTypes) {
+        CmsContentTypeVisitor visitor,
+        boolean includeInvisible) {
 
         String newEntityId = entityId + (CmsStringUtil.isNotEmptyOrWhitespaceOnly(parentPath) ? "/" + parentPath : "");
         Entity newEntity = new Entity(newEntityId, typeName);
@@ -648,14 +702,14 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
         @SuppressWarnings("unchecked")
         List<Element> elements = element.elements();
-        I_Type type = registeredTypes.get(typeName);
+        I_Type type = visitor.getTypes().get(typeName);
         boolean isChoice = type.isChoice();
         String choiceTypeName = null;
         // just needed for choice attributes
         Map<String, Integer> attributeCounter = null;
         if (isChoice) {
             choiceTypeName = type.getAttributeTypeName(Type.CHOICE_ATTRIBUTE_NAME);
-            type = registeredTypes.get(type.getAttributeTypeName(Type.CHOICE_ATTRIBUTE_NAME));
+            type = visitor.getTypes().get(type.getAttributeTypeName(Type.CHOICE_ATTRIBUTE_NAME));
             attributeCounter = new HashMap<String, Integer>();
         }
         int counter = 0;
@@ -667,8 +721,12 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         for (Element child : elements) {
             String attributeName = getAttributeName(child.getName(), typeName);
             String subTypeName = type.getAttributeTypeName(attributeName);
-            if (registeredTypes.get(subTypeName) == null) {
+            if (visitor.getTypes().get(subTypeName) == null) {
                 // in case there is no type configured for this element, the schema may have changed, skip the element
+                continue;
+            }
+            if (!includeInvisible && !visitor.getAttributeConfigurations().get(attributeName).isVisible()) {
+                // skip attributes marked as invisible, there content should not be transfered to the client
                 continue;
             }
             if (isChoice && (attributeCounter != null)) {
@@ -700,7 +758,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 newEntity.addAttributeValue(Type.CHOICE_ATTRIBUTE_NAME, result);
             }
             String path = parentPath + child.getName();
-            if (registeredTypes.get(subTypeName).isSimpleType()) {
+            if (visitor.getTypes().get(subTypeName).isSimpleType()) {
                 I_CmsXmlContentValue value = content.getValue(path, locale, counter);
                 result.addAttributeValue(attributeName, value.getStringValue(cms));
             } else {
@@ -711,7 +769,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     entityId,
                     path + "[" + (counter + 1) + "]",
                     subTypeName,
-                    registeredTypes);
+                    visitor,
+                    includeInvisible);
                 result.addAttributeValue(attributeName, subEntity);
 
             }
@@ -734,6 +793,103 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         CmsContentTypeVisitor visitor = new CmsContentTypeVisitor(getCmsObject(), null, locale);
         visitor.visitTypes(xmlContentDefinition, locale);
         return visitor.getTypes();
+    }
+
+    /**
+     * Transfers values marked as invisible from the original entity to the target entity.<p>
+     * 
+     * @param original the original entity
+     * @param target the target entiy
+     * @param visitor the type visitor holding the content type configuration
+     */
+    protected void transfereInvisibleValues(Entity original, Entity target, CmsContentTypeVisitor visitor) {
+
+        List<String> invisibleAttributes = new ArrayList<String>();
+        for (Entry<String, AttributeConfiguration> configEntry : visitor.getAttributeConfigurations().entrySet()) {
+            if (!configEntry.getValue().isVisible()) {
+                invisibleAttributes.add(configEntry.getKey());
+            }
+        }
+        transfereValues(original, target, invisibleAttributes, visitor, true);
+    }
+
+    /**
+     * Transfers values from the original entity to the given target entity.<p>
+     * 
+     * @param original the original entity
+     * @param target the target entity
+     * @param transferAttributes the attributes to consider for the value transfer
+     * @param visitor the type visitor holding the content type configuration
+     * @param considerDefaults if default values should be added according to minimum occurrence settings
+     */
+    protected void transfereValues(
+        I_Entity original,
+        I_Entity target,
+        List<String> transferAttributes,
+        CmsContentTypeVisitor visitor,
+        boolean considerDefaults) {
+
+        I_Type entityType = visitor.getTypes().get(target.getTypeName());
+        for (String attributeName : entityType.getAttributeNames()) {
+            I_Type attributeType = visitor.getTypes().get(entityType.getAttributeTypeName(attributeName));
+            if (transferAttributes.contains(attributeName)) {
+
+                target.removeAttribute(attributeName);
+                I_EntityAttribute attribute = original != null ? original.getAttribute(attributeName) : null;
+                if (attribute != null) {
+                    if (attributeType.isSimpleType()) {
+                        for (String value : attribute.getSimpleValues()) {
+                            target.addAttributeValue(attributeName, value);
+                        }
+                        if (considerDefaults) {
+                            for (int i = attribute.getValueCount(); i < entityType.getAttributeMinOccurrence(attributeName); i++) {
+                                target.addAttributeValue(
+                                    attributeName,
+                                    visitor.getAttributeConfigurations().get(attributeName).getDefaultValue());
+                            }
+                        }
+                    } else {
+                        for (I_Entity value : attribute.getComplexValues()) {
+                            target.addAttributeValue(attributeName, value);
+                        }
+                        if (considerDefaults) {
+                            for (int i = attribute.getValueCount(); i < entityType.getAttributeMinOccurrence(attributeName); i++) {
+                                target.addAttributeValue(
+                                    attributeName,
+                                    createDefaultValueEntity(attributeType, visitor));
+                            }
+                        }
+                    }
+                } else if (considerDefaults) {
+                    for (int i = 0; i < entityType.getAttributeMinOccurrence(attributeName); i++) {
+                        if (attributeType.isSimpleType()) {
+                            target.addAttributeValue(
+                                attributeName,
+                                visitor.getAttributeConfigurations().get(attributeName).getDefaultValue());
+                        } else {
+                            target.addAttributeValue(attributeName, createDefaultValueEntity(attributeType, visitor));
+                        }
+                    }
+                }
+            } else {
+                if (!attributeType.isSimpleType()) {
+                    I_EntityAttribute targetAttribute = target.getAttribute(attributeName);
+                    I_EntityAttribute originalAttribute = original != null
+                    ? original.getAttribute(attributeName)
+                    : null;
+                    if (targetAttribute != null) {
+                        for (int i = 0; i < targetAttribute.getComplexValues().size(); i++) {
+                            I_Entity subTarget = targetAttribute.getComplexValues().get(i);
+                            I_Entity subOriginal = (originalAttribute != null)
+                                && (originalAttribute.getComplexValues().size() > i)
+                            ? originalAttribute.getComplexValues().get(i)
+                            : null;
+                            transfereValues(subOriginal, subTarget, transferAttributes, visitor, considerDefaults);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -977,7 +1133,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             entityId,
             "",
             getTypeUri(content.getContentDefinition()),
-            visitor.getTypes());
+            visitor,
+            false);
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(
                 Messages.LOG_TAKE_READING_ENTITY_TIME_1,

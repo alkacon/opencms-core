@@ -29,6 +29,7 @@ package org.opencms.xml.content;
 
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -36,6 +37,7 @@ import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 
@@ -51,16 +53,22 @@ public class CmsDefaultXmlContentVisibilityHandler implements I_CmsXmlContentVis
     private static Log LOG = CmsLog.getLog(CmsDefaultXmlContentVisibilityHandler.class);
 
     /**
-     * @see org.opencms.xml.content.I_CmsXmlContentVisibilityHandler#isValueVisible(org.opencms.file.CmsObject, org.opencms.xml.types.I_CmsXmlSchemaType, java.lang.String, java.lang.String)
+     * @see org.opencms.xml.content.I_CmsXmlContentVisibilityHandler#isValueVisible(org.opencms.file.CmsObject, org.opencms.xml.types.I_CmsXmlSchemaType, java.lang.String, java.lang.String, org.opencms.file.CmsResource, java.util.Locale)
      */
-    public boolean isValueVisible(CmsObject cms, I_CmsXmlSchemaType value, String elementName, String params) {
+    public boolean isValueVisible(
+        CmsObject cms,
+        I_CmsXmlSchemaType value,
+        String elementName,
+        String params,
+        CmsResource resource,
+        Locale contentLocale) {
 
         CmsUser user = cms.getRequestContext().getCurrentUser();
         boolean result = false;
 
         try {
             List<CmsGroup> groups = cms.getGroupsOfUser(user.getName(), false);
-            String[] allowedGroups = params.split("|");
+            String[] allowedGroups = params.split("\\|");
             List<String> groupNames = new ArrayList<String>();
             for (CmsGroup group : groups) {
                 groupNames.add(group.getName());

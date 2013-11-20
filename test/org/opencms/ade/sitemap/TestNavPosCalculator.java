@@ -289,7 +289,7 @@ public class TestNavPosCalculator extends OpenCmsTestCase {
     }
 
     /** 
-     * Creates a dummy navigation entry 
+     * Creates a dummy navigation entry.<p>
      * 
      * @param name the name of the navigation entry 
      * @param navPos the navigation position

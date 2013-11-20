@@ -455,10 +455,16 @@ public interface I_CmsXmlContentHandler {
      * @param schemaType the content value type
      * @param valuePath the value path
      * @param resource the edited resource
+     * @param contentLocale the content locale
      * 
      * @return <code>true</code> if the given content field should be visible to the current user
      */
-    boolean isVisibile(CmsObject cms, I_CmsXmlSchemaType schemaType, String valuePath, CmsResource resource);
+    boolean isVisibile(
+        CmsObject cms,
+        I_CmsXmlSchemaType schemaType,
+        String valuePath,
+        CmsResource resource,
+        Locale contentLocale);
 
     /**
      * Prepares the given XML content to be used after it was read from the OpenCms VFS.<p>

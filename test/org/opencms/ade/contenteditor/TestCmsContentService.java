@@ -31,6 +31,8 @@ import com.alkacon.acacia.shared.Entity;
 import com.alkacon.vie.shared.I_Type;
 
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
@@ -40,14 +42,16 @@ import org.opencms.xml.content.CmsXmlContentFactory;
 import java.util.Locale;
 import java.util.Map;
 
-import junit.framework.TestCase;
+import junit.extensions.TestSetup;
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 import org.dom4j.Element;
 
 /**
  * Tests the content service for generating serializable XML content entities and type definitions and persisting those entities.<p>
  */
-public class TestCmsContentService extends TestCase {
+public class TestCmsContentService extends OpenCmsTestCase {
 
     /** The schema id. */
     private static final String SCHEMA_SYSTEM_ID_1 = "http://www.opencms.org/test1.xsd";
@@ -63,6 +67,39 @@ public class TestCmsContentService extends TestCase {
     }
 
     /**
+     * Test suite for this test class.<p>
+     * 
+     * @return the test suite
+     */
+    public static Test suite() {
+
+        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
+
+        TestSuite suite = new TestSuite();
+        suite.setName(TestCmsContentService.class.getName());
+
+        suite.addTest(new TestCmsContentService("testReadTypes"));
+        suite.addTest(new TestCmsContentService("testReadEntity"));
+
+        TestSetup wrapper = new TestSetup(suite) {
+
+            @Override
+            protected void setUp() {
+
+                setupOpenCms("simpletest", "/");
+            }
+
+            @Override
+            protected void tearDown() {
+
+                removeOpenCms();
+            }
+        };
+
+        return wrapper;
+    }
+
+    /**
      * Tests the read types method.<p>
      * 
      * @throws Exception if something fails 
@@ -72,11 +109,12 @@ public class TestCmsContentService extends TestCase {
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
         String baseTypeName = "OpenCmsMultitest";
         CmsContentService service = new CmsContentService();
+        service.setCms(getCmsObject());
         String content;
         // unmarshal content definition
         content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-definition-1.xsd", CmsEncoder.ENCODING_UTF_8);
         CmsXmlContentDefinition definition = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_1, resolver);
-        baseTypeName = service.getTypeUri(definition);
+        baseTypeName = CmsContentService.getTypeUri(definition);
         Map<String, I_Type> registeredTypes = service.readTypes(definition, new Locale("en"));
 
         assertFalse("Registered types should not be empty", registeredTypes.isEmpty());
@@ -94,25 +132,26 @@ public class TestCmsContentService extends TestCase {
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
         String baseTypeName = "OpenCmsMultitest";
         CmsContentService service = new CmsContentService();
+        service.setCms(getCmsObject());
         String content;
         // unmarshal content definition
         Locale locale = new Locale("en");
         content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-definition-1.xsd", CmsEncoder.ENCODING_UTF_8);
         CmsXmlContentDefinition definition = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_1, resolver);
-        baseTypeName = service.getTypeUri(definition);
-        Map<String, I_Type> registeredTypes = service.readTypes(definition, locale);
-
+        baseTypeName = CmsContentService.getTypeUri(definition);
         content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-1.xml", CmsEncoder.ENCODING_UTF_8);
         CmsXmlEntityResolver.cacheSystemId(
             SCHEMA_SYSTEM_ID_1,
             definition.getSchema().asXML().getBytes(CmsEncoder.ENCODING_UTF_8));
         // now create the XML content
         CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
+        CmsContentTypeVisitor visitor = new CmsContentTypeVisitor(getCmsObject(), null, locale);
+        visitor.visitTypes(definition, locale);
         Entity result = null;
 
         if (xmlcontent.hasLocale(locale)) {
             Element element = xmlcontent.getLocaleNode(locale);
-            result = service.readEntity(xmlcontent, element, locale, "myEntity", "", baseTypeName, registeredTypes);
+            result = service.readEntity(xmlcontent, element, locale, "myEntity", "", baseTypeName, visitor, true);
         }
         assertNotNull("Result should not be null", result);
         // TODO: check out the result some more to ensure success

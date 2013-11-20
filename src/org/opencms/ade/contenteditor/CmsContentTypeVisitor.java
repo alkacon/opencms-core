@@ -232,6 +232,9 @@ public class CmsContentTypeVisitor {
     /** The content resource. */
     private CmsFile m_file;
 
+    /** Indicates the visited content has fields that are configured to be invisible to the current user. */
+    private boolean m_hasInvisible;
+
     /** The content locale. */
     private Locale m_locale;
 
@@ -302,6 +305,16 @@ public class CmsContentTypeVisitor {
     public List<TabInfo> getTabInfos() {
 
         return m_tabInfos;
+    }
+
+    /**
+     * Returns if the visited content has invisible fields.<p>
+     * 
+     * @return <code>true</code>  if the visited content has invisible fields
+     */
+    public boolean hasInvisibleFields() {
+
+        return m_hasInvisible;
     }
 
     /**
@@ -590,13 +603,20 @@ public class CmsContentTypeVisitor {
             // may happen if no widget was set for the value
             CmsContentService.LOG.debug(e.getMessage(), e);
         }
+        // remove the leading slash from element path to check visibility
+        boolean visible = m_contentHandler.isVisibile(cms, schemaType, path.substring(1), m_file, m_locale);
+        if (!visible) {
+            // set the has invisible flag
+            m_hasInvisible = true;
+        }
         AttributeConfiguration result = new AttributeConfiguration(
             label,
             getHelp(schemaType),
             widgetName,
             widgetConfig,
             readDefaultValue(schemaType, path),
-            configuredType.name());
+            configuredType.name(),
+            visible);
         return new DisplayTypeEvaluator(result, configuredType, defaultType, rule);
     }
 

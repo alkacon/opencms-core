@@ -1121,13 +1121,24 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
-     * @see org.opencms.xml.content.I_CmsXmlContentHandler#isVisibile(org.opencms.file.CmsObject, org.opencms.xml.types.I_CmsXmlSchemaType, java.lang.String, org.opencms.file.CmsResource)
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#isVisibile(org.opencms.file.CmsObject, org.opencms.xml.types.I_CmsXmlSchemaType, java.lang.String, org.opencms.file.CmsResource, java.util.Locale)
      */
-    public boolean isVisibile(CmsObject cms, I_CmsXmlSchemaType contentValue, String valuePath, CmsResource resource) {
+    public boolean isVisibile(
+        CmsObject cms,
+        I_CmsXmlSchemaType contentValue,
+        String valuePath,
+        CmsResource resource,
+        Locale contentLocale) {
 
         if (hasVisibilityHandlers() && m_visibilityConfigurations.containsKey(valuePath)) {
             VisibilityConfiguration config = m_visibilityConfigurations.get(valuePath);
-            return config.getHandler().isValueVisible(cms, contentValue, valuePath, config.getParams());
+            return config.getHandler().isValueVisible(
+                cms,
+                contentValue,
+                valuePath,
+                config.getParams(),
+                resource,
+                contentLocale);
         }
         return true;
     }
