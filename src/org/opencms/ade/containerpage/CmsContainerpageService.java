@@ -624,7 +624,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     throws CmsException, CmsLoaderException {
 
         CmsObject cms = getCmsObject();
-        CmsResource elementResource = cms.readResource(structureId);
+        CmsResource elementResource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
         boolean hasWritePermissions = cms.hasPermissions(
             elementResource,
             CmsPermissionSet.ACCESS_WRITE,
