@@ -129,6 +129,12 @@ task componentsJar(type: Jar) {
     exclude '**/.gitignore'
 }
 
+if (project.hasProperty('tomcat_update_target') && file(tomcat_update_target).exists()){
+    task tomcatUpdate {
+        doFirst { println "All generated Jar files will be copied to the configured lib folder." }
+    }
+}
+
 task enhance << {
     ant.taskdef(
             name      : 'openjpaenhancer',
@@ -167,6 +173,16 @@ jar {
             OPENCMS_VERSION_NAME: version_number
         ])
         into '/org/opencms/main/'
+    }
+
+    doLast {
+        if (gradle.taskGraph.hasTask(tomcatUpdate)){
+            println "copying ${project.buildDir}/libs/${archiveName} to ${tomcat_update_target}"
+            copy {
+                from  "${project.buildDir}/libs/${archiveName}"
+                into tomcat_update_target
+            }
+        }
     }
 }
 
@@ -354,6 +370,16 @@ allModuleNames.split(',').each{ moduleName ->
                 println '======================================================'
                 println "Building ${moduleName}.jar including $modulePackages"
                 println '======================================================'
+            }
+
+            doLast {
+                if (gradle.taskGraph.hasTask(tomcatUpdate)){
+                    println "copying ${project.buildDir}/libs/${archiveName} to ${tomcat_update_target}"
+                    copy {
+                        from  "${project.buildDir}/libs/${archiveName}"
+                        into tomcat_update_target
+                    }
+                }
             }
         }
 
@@ -785,34 +811,34 @@ if (project.hasProperty('publish_repository')){
                             artifact.name.startsWith(filterName)
                         }
                         pom(filterName).project {
-                    name product_name
-                    description product_description
-                    packaging 'jar'
-                    groupId 'org.opencms'
-                    url 'http://www.opencms.org'
-                    scm {
-                        url 'scm:git@github.com:alkacon/opencms-core.git'
-                        connection 'scm:git@github.com:alkacon/opencms-core.git'
-                        developerConnection 'scm:git@github.com:alkacon/opencms-core.git'
-                    }
-                    licenses {
-                        license {
-                            name 'GNU Lesser General Public License'
-                            url 'http://www.gnu.org/licenses/lgpl.html'
-                            distribution 'repo'
+                            name product_name
+                            description product_description
+                            packaging 'jar'
+                            groupId 'org.opencms'
+                            url 'http://www.opencms.org'
+                            scm {
+                                url 'scm:git@github.com:alkacon/opencms-core.git'
+                                connection 'scm:git@github.com:alkacon/opencms-core.git'
+                                developerConnection 'scm:git@github.com:alkacon/opencms-core.git'
+                            }
+                            licenses {
+                                license {
+                                    name 'GNU Lesser General Public License'
+                                    url 'http://www.gnu.org/licenses/lgpl.html'
+                                    distribution 'repo'
+                                }
+                            }
+                            organization {
+                                name 'Alkacon Software'
+                                url 'http://www.alkacon.com'
+                            }
+                            developers {
+                                developer {
+                                    name 'Alkacon Software'
+                                    url 'http://www.alkacon.com'
+                                }
+                            }
                         }
-                    }
-                    organization {
-                        name 'Alkacon Software'
-                        url 'http://www.alkacon.com'
-                    }
-                    developers {
-                        developer {
-                            name 'Alkacon Software'
-                            url 'http://www.alkacon.com'
-                        }
-                    }
-                }
                         pom(filterName).whenConfigured {pom ->
                             // the jars depend on opencms-core, override anything else
                             pom.dependencies.clear()
