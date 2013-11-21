@@ -176,7 +176,7 @@ jar {
     }
 
     doLast {
-        if (gradle.taskGraph.hasTask(tomcatUpdate)){
+        if (tasks.findByPath('tomcatUpdate')!=null&&gradle.taskGraph.hasTask(tasks['tomcatUpdate'])){
             println "copying ${project.buildDir}/libs/${archiveName} to ${tomcat_update_target}"
             copy {
                 from  "${project.buildDir}/libs/${archiveName}"
@@ -373,7 +373,7 @@ allModuleNames.split(',').each{ moduleName ->
             }
 
             doLast {
-                if (gradle.taskGraph.hasTask(tomcatUpdate)){
+                if (tasks.findByPath('tomcatUpdate')!=null&&gradle.taskGraph.hasTask(tomcatUpdate)){
                     println "copying ${project.buildDir}/libs/${archiveName} to ${tomcat_update_target}"
                     copy {
                         from  "${project.buildDir}/libs/${archiveName}"
