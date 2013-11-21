@@ -109,6 +109,7 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 /**
  * Default implementation for the XML content handler, will be used by all XML contents that do not
@@ -955,6 +956,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         while (itLocales.hasNext()) {
             Locale locale = itLocales.next();
             List<String> removedNodes = new ArrayList<String>();
+            Map<String, I_CmsXmlContentValue> valuesToRemove = Maps.newHashMap();
             // iterate the values
             Iterator<I_CmsXmlContentValue> itValues = document.getValues(locale).iterator();
             while (itValues.hasNext()) {
@@ -1002,14 +1004,19 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                         }
                     }
                     value = document.getValue(parentPath, locale);
-                    // detach the value node from the XML document
-                    value.getElement().detach();
+                    // Doing the actual DOM modifications here would make the bookmarks for this locale invalid, 
+                    // so we delay it until later because we need the bookmarks for document.getValue() in the next loop iterations
+                    valuesToRemove.put(parentPath, value);
                     // mark node as deleted
                     removedNodes.add(parentPath);
                 }
             }
             if (!removedNodes.isEmpty()) {
                 needReinitialization = true;
+            }
+            for (I_CmsXmlContentValue valueToRemove : valuesToRemove.values()) {
+                // detach the value node from the XML document
+                valueToRemove.getElement().detach();
             }
         }
         if (needReinitialization) {
