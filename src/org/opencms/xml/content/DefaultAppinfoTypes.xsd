@@ -283,6 +283,7 @@
 		<xsd:sequence>
 			<xsd:element name="visibility" type="OpenCmsDefaultAppinfoVisibility" minOccurs="0" maxOccurs="unbounded" />
 		</xsd:sequence>
+		<xsd:attribute name="class" type="xsd:string" use="optional" />
 	</xsd:complexType>
 	
 	<xsd:complexType name="OpenCmsDefaultAppinfoVisibility">

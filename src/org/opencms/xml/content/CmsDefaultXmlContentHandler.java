@@ -31,11 +31,13 @@ import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.db.log.CmsLogEntry;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsFile;
+import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsListResourceBundle;
@@ -117,7 +119,7 @@ import com.google.common.collect.Maps;
  * 
  * @since 6.0.0 
  */
-public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
+public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_CmsXmlContentVisibilityHandler {
 
     /**
      * Contains the visibility handler configuration for a content field path.<p>
@@ -1118,6 +1120,47 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         Boolean anno = m_searchSettings.get(CmsXmlUtils.removeXpath(value.getPath()));
         // if no annotation has been found, use default for value
         return (anno == null) ? value.isSearchable() : anno.booleanValue();
+    }
+
+    /**
+     * Returns the content field visibilty.<p>
+     * 
+     * This implementation will be used as default if no other <link>org.opencms.xml.content.I_CmsXmlContentVisibilityHandler</link> is configured.<p>
+     * 
+     * Only users that are member in one of the specified groups will be allowed to view and edit the given content field.<p>
+     * The parameter should contain a '|' separated list of group names.<p>
+     * 
+     * @see org.opencms.xml.content.I_CmsXmlContentVisibilityHandler#isValueVisible(org.opencms.file.CmsObject, org.opencms.xml.types.I_CmsXmlSchemaType, java.lang.String, java.lang.String, org.opencms.file.CmsResource, java.util.Locale)
+     */
+    public boolean isValueVisible(
+        CmsObject cms,
+        I_CmsXmlSchemaType value,
+        String elementName,
+        String params,
+        CmsResource resource,
+        Locale contentLocale) {
+
+        CmsUser user = cms.getRequestContext().getCurrentUser();
+        boolean result = false;
+
+        try {
+            List<CmsGroup> groups = cms.getGroupsOfUser(user.getName(), false);
+            String[] allowedGroups = params.split("\\|");
+            List<String> groupNames = new ArrayList<String>();
+            for (CmsGroup group : groups) {
+                groupNames.add(group.getName());
+            }
+            for (int i = 0; i < allowedGroups.length; i++) {
+                if (groupNames.contains(allowedGroups[i])) {
+                    result = true;
+                    break;
+                }
+            }
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+
+        return result;
     }
 
     /**
@@ -2608,6 +2651,18 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     protected void initVisibilities(Element root, CmsXmlContentDefinition contentDefinition) {
 
         m_visibilityConfigurations = new HashMap<String, VisibilityConfiguration>();
+        String mainHandlerClassName = root.attributeValue(APPINFO_ATTR_CLASS);
+        // using self as the default visibility handler implementation
+        I_CmsXmlContentVisibilityHandler mainHandler = this;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(mainHandlerClassName)) {
+            try {
+                // in case there is a main handler configured, try to instanciate it
+                Class<?> handlerClass = Class.forName(mainHandlerClassName);
+                mainHandler = (I_CmsXmlContentVisibilityHandler)handlerClass.newInstance();
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
         List<Element> elements = new ArrayList<Element>(CmsXmlGenericWrapper.elements(root, APPINFO_VISIBILITY));
         for (Element element : elements) {
             try {
@@ -2620,7 +2675,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                     Class<?> handlerClass = Class.forName(handlerClassName);
                     handler = (I_CmsXmlContentVisibilityHandler)handlerClass.newInstance();
                 } else {
-                    handler = new CmsDefaultXmlContentVisibilityHandler();
+                    handler = mainHandler;
                 }
                 m_visibilityConfigurations.put(elementName, new VisibilityConfiguration(handler, params));
 
