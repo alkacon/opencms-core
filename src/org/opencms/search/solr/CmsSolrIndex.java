@@ -272,7 +272,11 @@ public class CmsSolrIndex extends CmsSearchIndex {
 
         try {
             SolrQuery query = new SolrQuery();
-            query.setQuery(fieldname + ":" + term);
+            if (CmsSearchField.FIELD_PATH.equals(fieldname)) {
+                query.setQuery(fieldname + ":\"" + term + "\"");
+            } else {
+                query.setQuery(fieldname + ":" + term);
+            }
             QueryResponse res = m_solr.query(query);
             if (res != null) {
                 SolrDocumentList sdl = m_solr.query(query).getResults();
