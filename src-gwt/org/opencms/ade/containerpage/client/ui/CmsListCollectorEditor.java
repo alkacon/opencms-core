@@ -83,6 +83,7 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
             top = 25;
         }
         style.setTop(top, Unit.PX);
+        updateExpiredOverlayPosition(parent);
     }
 
     /**

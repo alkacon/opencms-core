@@ -31,6 +31,7 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.editors.Messages;
@@ -40,6 +41,8 @@ import java.util.Random;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Provider for the OpenCms AdvancedDirectEdit.<p>
@@ -51,6 +54,9 @@ import javax.servlet.jsp.PageContext;
  * @since 8.0.0
  */
 public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsAdvancedDirectEditProvider.class);
 
     /** Indicates the permissions for the last element the was opened. */
     protected int m_lastPermissionMode;
@@ -223,6 +229,9 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
         editableData.put("hasDelete", params.getButtonSelection().isShowDelete());
         editableData.put("hasNew", params.getButtonSelection().isShowNew());
         editableData.put("newtitle", m_messages.key(Messages.GUI_EDITOR_TITLE_NEW_0));
+        editableData.put(
+            "unreleaseOrExpired",
+            !resourceInfo.getResource().isReleasedAndNotExpired(System.currentTimeMillis()));
         if (m_lastPermissionMode == 1) {
 
             try {
@@ -233,8 +242,7 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
                     editableData.put("noEditReason", noEditReason);
                 }
             } catch (CmsException e) {
-                // TODO: Auto-generated catch block
-                e.printStackTrace();
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
         StringBuffer result = new StringBuffer(512);

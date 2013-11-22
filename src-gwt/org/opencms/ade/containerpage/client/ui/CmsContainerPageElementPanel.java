@@ -606,7 +606,7 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
             getElement().addClassName(I_CmsLayoutBundle.INSTANCE.containerpageCss().expired());
             m_expiredOverlay = DOM.createDiv();
             m_expiredOverlay.setTitle("Expired resource");
-            m_expiredOverlay.addClassName(I_CmsLayoutBundle.INSTANCE.containerpageCss().expiredOverlay());
+            m_expiredOverlay.addClassName(I_CmsLayoutBundle.INSTANCE.containerpageCss().expiredListElementOverlay());
             getElement().appendChild(m_expiredOverlay);
         }
     }

@@ -127,6 +127,11 @@ public final class CmsEditFile implements I_CmsHasContextMenuCommand, I_CmsConte
 
                 // nothing to do
             }
+
+            public boolean isUnreleasedOrExpired() {
+
+                return false;
+            }
         };
 
         I_CmsContentEditorHandler handler = new I_CmsContentEditorHandler() {

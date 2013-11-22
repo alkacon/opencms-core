@@ -44,6 +44,7 @@ import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -136,6 +137,10 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
     protected CmsPushButton m_edit;
     /** The editable data. */
     protected CmsEditableDataJSO m_editableData;
+
+    /** The expired resources overlay element. */
+    protected Element m_expiredOverlay;
+
     /** Highlighting border for this element. */
     protected CmsHighlightingBorder m_highlighting;
 
@@ -206,6 +211,12 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
                     }
                 }
             }
+            if (m_editableData.isUnreleasedOrExpired()) {
+                m_expiredOverlay = DOM.createDiv();
+                m_expiredOverlay.setClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.directEditCss().expiredListElementOverlay());
+                m_markerTag.getParentElement().insertBefore(m_expiredOverlay, m_markerTag);
+            }
+
         } catch (Exception e) {
             throw new UnsupportedOperationException("Error while parsing editable tag information: " + e.getMessage());
         }
@@ -303,6 +314,8 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
             top -= (24 - m_position.getHeight()) / 2;
         }
         style.setTop(top, Unit.PX);
+
+        updateExpiredOverlayPosition(parent);
     }
 
     /**
@@ -342,6 +355,22 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
         }
         removeHighlighting();
         getElement().removeClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering());
+    }
+
+    /**
+     * Updates the position of the expired resources overlay if present.<p>
+     * 
+     * @param positioningParent the positioning parent element
+     */
+    protected void updateExpiredOverlayPosition(Element positioningParent) {
+
+        if (m_expiredOverlay != null) {
+            Style expiredStyle = m_expiredOverlay.getStyle();
+            expiredStyle.setHeight(m_position.getHeight() + 4, Unit.PX);
+            expiredStyle.setWidth(m_position.getWidth() + 4, Unit.PX);
+            expiredStyle.setTop(m_position.getTop() - positioningParent.getAbsoluteTop() - 2, Unit.PX);
+            expiredStyle.setLeft(m_position.getLeft() - positioningParent.getAbsoluteLeft() - 2, Unit.PX);
+        }
     }
 
 }

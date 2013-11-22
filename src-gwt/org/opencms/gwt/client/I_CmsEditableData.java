@@ -92,6 +92,13 @@ public interface I_CmsEditableData {
      */
     CmsUUID getStructureId();
 
+    /**
+     * Returns if the given resource is unreleased or expired.<p>
+     * 
+     * @return <code>true</code> if the given resource is unreleased or expired
+     */
+    boolean isUnreleasedOrExpired();
+
     /** 
      * Sets the site path.<p>
      * 

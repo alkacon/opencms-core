@@ -79,16 +79,22 @@ div.expired{
 	bottom: 2px;
 }
 
-@if user.agent ie6 {
-	.expired div.expiredOverlay, .hiddenElement div.hiddenElementOverlay {
-		filter: literal("alpha(opacity = 60)");
-	}
-} @elif user.agent ie8 {
-	.expired div.expiredOverlay, .hiddenElement div.hiddenElementOverlay {
+@sprite div.expiredListElementOverlay{
+	gwt-image: 'otherImages.invalidElement';
+	box-sizing: content-box;
+	-moz-box-sizing: content-box;
+	padding: 0px;
+	margin: 0px;
+	position: absolute;
+	z-index: 1;
+}
+
+@if user.agent ie8 {
+	.expired div.expiredOverlay, .hiddenElement div.hiddenElementOverlay, div.expiredListElementOverlay {
 		-ms-filter: "alpha(opacity = 60)";
 	}
 } @else {
-	.expired div.expiredOverlay, .hiddenElement div.hiddenElementOverlay {
+	.expired div.expiredOverlay, .hiddenElement div.hiddenElementOverlay, div.expiredListElementOverlay {
         opacity: 0.6;
 	}
 }
