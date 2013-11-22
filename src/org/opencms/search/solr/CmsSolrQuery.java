@@ -121,6 +121,9 @@ public class CmsSolrQuery extends SolrQuery {
     /** The facet date gap to use for date facets. */
     private String m_facetDateGap = DEFAULT_FACET_DATE_GAP;
 
+    /** Ignore expiration flag. */
+    private boolean m_ignoreExpiration;
+
     /** The parameters given by the 'query string'.  */
     private Map<String, String[]> m_queryParameters = new HashMap<String, String[]>();
 
@@ -228,7 +231,9 @@ public class CmsSolrQuery extends SolrQuery {
     @Override
     public CmsSolrQuery clone() {
 
-        return new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(toString()));
+        CmsSolrQuery sq = new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(toString()));
+        sq.m_ignoreExpiration = m_ignoreExpiration;
+        return sq;
     }
 
     /**
@@ -252,6 +257,22 @@ public class CmsSolrQuery extends SolrQuery {
                 }
             }
         }
+    }
+
+    /**
+     * Removes the expiration flag.
+     */
+    public void removeExpiration() {
+
+        if (getFilterQueries() != null) {
+            for (String fq : getFilterQueries()) {
+                if (fq.startsWith(CmsSearchField.FIELD_DATE_EXPIRED + ":")
+                    || fq.startsWith(CmsSearchField.FIELD_DATE_RELEASED + ":")) {
+                    removeFilterQuery(fq);
+                }
+            }
+        }
+        m_ignoreExpiration = true;
     }
 
     /**
