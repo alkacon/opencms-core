@@ -45,6 +45,7 @@ import org.opencms.util.CmsStringUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -62,7 +63,10 @@ public class CmsSolrCollector extends A_CmsResourceCollector {
     private static final List<String> COLLECTORS_LIST = Collections.unmodifiableList(Arrays.asList(COLLECTORS));
 
     /** The folder path to create the "create link" for. */
-    private static final String PARAM_CREATE_PATH = "createPath=";
+    private static final String PARAM_CREATE_PATH = "createPath";
+
+    /** A constant for a key. */
+    private static final String SOLR_PART = "solrPart";
 
     /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getCollectorNames()
@@ -81,15 +85,12 @@ public class CmsSolrCollector extends A_CmsResourceCollector {
         switch (COLLECTORS_LIST.indexOf(collectorName)) {
             case 0: // byQuery
             case 1: // byContext
-                int lastPipe = param.lastIndexOf('|');
-                if (lastPipe > 0) {
-                    int idx = param.indexOf(PARAM_CREATE_PATH, lastPipe);
-                    if (idx > 0) {
-                        String path = param.substring(idx + PARAM_CREATE_PATH.length());
-                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(path)) {
-                            return OpenCms.getResourceManager().getNameGenerator().getNewFileName(cms, path, 4);
-                        }
-                    }
+                Map<String, String> paramsAsMap = getParamsAsMap(param);
+                CmsSolrQuery q = new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(paramsAsMap.get(SOLR_PART)));
+                String type = CmsSolrQuery.getResourceType(q.getFilterQueries());
+                String path = paramsAsMap.get(PARAM_CREATE_PATH);
+                if ((type != null) && (path != null)) {
+                    return OpenCms.getResourceManager().getNameGenerator().getNewFileName(cms, path, 4);
                 }
                 return null;
             default:
@@ -109,21 +110,12 @@ public class CmsSolrCollector extends A_CmsResourceCollector {
             case 0: // byQuery
             case 1: // byContext
                 // check if the param supports resource creation
-                String solrParams = null;
-                if (param.indexOf('|') > 0) {
-                    solrParams = param.substring(0, param.indexOf('|'));
-                    CmsSolrQuery q = new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(solrParams));
-                    String type = CmsSolrQuery.getResourceType(q.getFilterQueries());
-                    int lastPipe = param.lastIndexOf('|');
-                    if (lastPipe > 0) {
-                        int idx = param.indexOf(PARAM_CREATE_PATH, lastPipe);
-                        if (idx > 0) {
-                            String path = param.substring(idx + PARAM_CREATE_PATH.length());
-                            if ((type != null) && (path != null)) {
-                                return param;
-                            }
-                        }
-                    }
+                Map<String, String> paramsAsMap = getParamsAsMap(param);
+                CmsSolrQuery q = new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(paramsAsMap.get(SOLR_PART)));
+                String type = CmsSolrQuery.getResourceType(q.getFilterQueries());
+                String path = paramsAsMap.get(PARAM_CREATE_PATH);
+                if ((type != null) && (path != null)) {
+                    return param;
                 }
                 return null;
             default:
@@ -157,12 +149,39 @@ public class CmsSolrCollector extends A_CmsResourceCollector {
     public List<CmsResource> getResults(CmsObject cms, String name, String param) throws CmsException {
 
         name = name == null ? COLLECTORS[1] : name;
-        if ((param != null) && (param.indexOf('|') != -1)) {
-            param = param.substring(0, param.indexOf('|'));
-        }
-        Map<String, String[]> pm = CmsRequestUtil.createParameterMap(param);
-        CmsSolrIndex index = CmsSearchManager.getIndexSolr(cms, pm);
+        Map<String, String> paramsAsMap = getParamsAsMap(param);
+        Map<String, String[]> pm = CmsRequestUtil.createParameterMap(paramsAsMap.get(SOLR_PART));
         CmsSolrQuery q = COLLECTORS_LIST.indexOf(name) == 0 ? new CmsSolrQuery(null, pm) : new CmsSolrQuery(cms, pm);
+        boolean excludeTimerange = Boolean.valueOf(paramsAsMap.get(CmsCollectorData.PARAM_EXCLUDETIMERANGE)).booleanValue();
+        if (excludeTimerange) {
+            q.removeExpiration();
+        }
+        CmsSolrIndex index = CmsSearchManager.getIndexSolr(cms, pm);
         return new ArrayList<CmsResource>(index.search(cms, q, true));
+    }
+
+    /**
+     * Splits the given parameter String into the query part and the cms specific arguments.<p>
+     *  
+     * @param param the parameter String to parse
+     * 
+     * @return a map containing the arguments
+     */
+    private Map<String, String> getParamsAsMap(String param) {
+
+        Map<String, String> result = new HashMap<String, String>();
+        if (param != null) {
+            int in = (param.indexOf('|'));
+            if (in != -1) {
+                String solrPart = param.substring(0, in);
+                String cmsPart = param.substring(in);
+                result = CmsStringUtil.splitAsMap(cmsPart, "|", "=");
+                result.put(SOLR_PART, solrPart);
+
+            } else {
+                result.put(SOLR_PART, param);
+            }
+        }
+        return result;
     }
 }
