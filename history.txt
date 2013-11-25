@@ -15,7 +15,10 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 9.0.0
+OpenCms 9.0.1 - xxxxxxxxx
+- Updated TinyMCE to version 4.0.11
+
+OpenCms 9.0.0 - November 8, 2013
 ! Improved configuration for content formatters
 ! Updated responsive demo template based on Bootstrap 3
 ! Added multi-field annotation expression to EL for better inline edit support

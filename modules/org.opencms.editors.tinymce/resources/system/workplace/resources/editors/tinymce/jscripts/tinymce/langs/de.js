@@ -56,7 +56,7 @@ tinymce.addI18n('de',{
 "Name": "Name",
 "Anchor": "Textmarke",
 "You have unsaved changes are you sure you want to navigate away?": "Die \u00c4nderungen wurden noch nicht gespeichert, sind Sie sicher, dass Sie diese Seite verlassen wollen?",
-"Restore last draft": "Zur\u00fcckholen den letzten Entwurf",
+"Restore last draft": "Letzten Entwurf wiederherstellen",
 "Special character": "Sonderzeichen",
 "Source code": "Quelltext",
 "Right to left": "Von rechts nach links",

@@ -23,7 +23,7 @@ tinymce.addI18n('sl_SI',{
 "Header 1": "Naslov 1",
 "Superscript": "Nadpisano",
 "Clear formatting": "Odstrani oblikovanje",
-"Font Sizes": "Velikosti tipografij",
+"Font Sizes": "Velikosti tipografije",
 "Subscript": "Podpisano",
 "Header 6": "Naslov 6",
 "Redo": "Ponovi",
