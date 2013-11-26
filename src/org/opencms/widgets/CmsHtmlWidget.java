@@ -305,7 +305,7 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
             Boolean pasteText = Boolean.valueOf(editorConfig.getParameters().get("paste_text"));
             JSONObject directOptions = new JSONObject();
             directOptions.put("paste_text_sticky_default", pasteText);
-            directOptions.put("paste_text_sticky", Boolean.TRUE);
+            directOptions.put("paste_text_sticky", pasteText);
             result.put("tinyMceOptions", directOptions);
 
         } catch (JSONException e) {

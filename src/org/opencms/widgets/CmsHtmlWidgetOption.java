@@ -89,13 +89,13 @@ public class CmsHtmlWidgetOption {
     public static final String BUTTONBAR_BLOCK_START = "[";
 
     /** The default editor widget button bar configuration. */
-    public static final String BUTTONBAR_DEFAULT = "[;undo;redo;-;find;replace;-;removeformat;-;cut;copy;paste;-;bold;italic;underline;strikethrough;-;subscript;superscript;];"
+    public static final String BUTTONBAR_DEFAULT = "[;undo;redo;-;find;replace;-;removeformat;-;paste;-;bold;italic;underline;strikethrough;-;subscript;superscript;];"
         + "[;alignleft;aligncenter;alignright;justify;-;orderedlist;unorderedlist;-;outdent;indent;];"
         + "[;source;-;formatselect;style;editorlink;link;anchor;unlink;];"
         + "[;imagegallery;downloadgallery;linkgallery;htmlgallery;tablegallery;-;table;-;specialchar;-;print;spellcheck;-;fitwindow;];"
         // additional buttons from TinyMCE
         + "[;abbr;absolute;acronym;advhr;attribs;backcolor;blockquote;cite;cleanup;del;emotions;fontselect;fontsizeselect;forecolor;hr"
-        + ";ins;insertdate;insertlayer;inserttime;ltr;media;movebackward;moveforward;newdocument;nonbreaking;pagebreak;pastetext;pasteword;rtl"
+        + ";ins;insertdate;insertlayer;inserttime;ltr;media;movebackward;moveforward;newdocument;nonbreaking;pagebreak;rtl"
         + ";styleprops;template;visualaid;visualchars;];";
 
     /** The default button bar configuration as List. */
