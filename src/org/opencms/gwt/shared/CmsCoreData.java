@@ -64,16 +64,21 @@ public class CmsCoreData implements IsSerializable {
         /** True if the user is a template developer. */
         private boolean m_isDeveloper;
 
+        /** The user name. */
+        private String m_name;
+
         /** 
          * Creates a new instance.<p>
          * 
+         * @param name the user name 
          * @param isAdmin true if the user is an administrator 
          * @param isDeveloper true if the user is a template developer 
          */
-        public UserInfo(boolean isAdmin, boolean isDeveloper) {
+        public UserInfo(String name, boolean isAdmin, boolean isDeveloper) {
 
             m_isDeveloper = isDeveloper;
             m_isAdmin = isAdmin;
+            m_name = name;
         }
 
         /**
@@ -82,6 +87,16 @@ public class CmsCoreData implements IsSerializable {
         protected UserInfo() {
 
             // empty 
+        }
+
+        /**
+         * Gets the user name.<p>
+         * 
+         * @return the user name 
+         */
+        public String getName() {
+
+            return m_name;
         }
 
         /**

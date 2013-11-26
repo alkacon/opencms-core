@@ -29,52 +29,45 @@ package org.opencms.ade.publish;
 
 import org.opencms.ade.publish.shared.CmsProjectBean;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
-import org.opencms.workflow.CmsDefaultWorkflowManager;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+
+import com.google.common.collect.Lists;
+
 /**
- * Wrapper to use real OpenCms projects through the I_CmsVirtualProject interface.<p>
+ * Virtual project for the "My changes" mode in the publish dialog.<p>
  */
-public class CmsRealProjectVirtualWrapper implements I_CmsVirtualProject {
+public class CmsMyChangesProject implements I_CmsVirtualProject {
 
     /** The project id. */
-    private CmsUUID m_projectId;
+    public static final CmsUUID ID = CmsUUID.getNullUUID();
 
-    /**
-     * Creates a new wrapper instance.<p>
-     * 
-     * @param id the project id 
-     */
-    public CmsRealProjectVirtualWrapper(CmsUUID id) {
+    /** The instance to use. */
+    public static final I_CmsVirtualProject INSTANCE = new CmsMyChangesProject();
 
-        m_projectId = id;
-
-    }
+    /** The logger for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsMyChangesProject.class);
 
     /**
      * @see org.opencms.ade.publish.I_CmsVirtualProject#getProjectBean(org.opencms.file.CmsObject, java.util.Map)
      */
     public CmsProjectBean getProjectBean(CmsObject cms, Map<String, String> params) {
 
-        try {
-            CmsProject project = cms.readProject(getProjectId());
-            CmsProjectBean result = CmsDefaultWorkflowManager.createProjectBeanFromProject(cms, project);
-            Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
-            String name = Messages.get().getBundle(locale).key(Messages.GUI_NORMAL_PROJECT_1, project.getName());
-            result.setDefaultGroupName(name);
-            return result;
-        } catch (CmsException e) {
-            return null;
-        }
+        Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+        String title = Messages.get().getBundle(locale).key(Messages.GUI_MYCHANGES_PROJECT_0);
+        CmsProjectBean bean = new CmsProjectBean(ID, 0, title, title);
+        bean.setRank(200);
+        bean.setDefaultGroupName("");
+        return bean;
     }
 
     /**
@@ -82,31 +75,20 @@ public class CmsRealProjectVirtualWrapper implements I_CmsVirtualProject {
      */
     public CmsUUID getProjectId() {
 
-        return m_projectId;
+        return ID;
     }
 
     /**
      * @see org.opencms.ade.publish.I_CmsVirtualProject#getResources(org.opencms.file.CmsObject, java.util.Map, java.lang.String)
      */
-    public List<CmsResource> getResources(CmsObject cms, Map<String, String> params, String workflowId)
-    throws CmsException {
+    public List<CmsResource> getResources(CmsObject cms, Map<String, String> params, String workflowId) {
 
-        List<CmsResource> rawResourceList = new ArrayList<CmsResource>();
-        CmsProject project = cms.getRequestContext().getCurrentProject();
         try {
-            project = cms.readProject(getProjectId());
+            return Lists.newArrayList(OpenCms.getPublishManager().getUsersPubList(cms));
         } catch (CmsException e) {
-            // ignore 
+            LOG.error(e.getLocalizedMessage(), e);
+            return Lists.newArrayList();
         }
-        // get the project publish list
-        CmsProject originalProject = cms.getRequestContext().getCurrentProject();
-        try {
-            cms.getRequestContext().setCurrentProject(project);
-            rawResourceList.addAll(OpenCms.getPublishManager().getPublishList(cms).getAllResources());
-        } finally {
-            cms.getRequestContext().setCurrentProject(originalProject);
-        }
-        return rawResourceList;
     }
 
     /**
@@ -114,7 +96,7 @@ public class CmsRealProjectVirtualWrapper implements I_CmsVirtualProject {
      */
     public boolean isAutoSelectable() {
 
-        return false;
+        return true;
     }
 
 }

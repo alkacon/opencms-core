@@ -816,7 +816,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         CmsRoleManager roleManager = OpenCms.getRoleManager();
         boolean isAdmin = roleManager.hasRole(cms, CmsRole.ADMINISTRATOR);
         boolean isDeveloper = roleManager.hasRole(cms, CmsRole.DEVELOPER);
-        UserInfo userInfo = new UserInfo(isAdmin, isDeveloper);
+        UserInfo userInfo = new UserInfo(cms.getRequestContext().getCurrentUser().getName(), isAdmin, isDeveloper);
         CmsCoreData data = new CmsCoreData(
             EDITOR_URI,
             EDITOR_BACKLINK_URI,

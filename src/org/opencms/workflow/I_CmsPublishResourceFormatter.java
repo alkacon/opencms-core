@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -25,40 +25,34 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.publish;
+package org.opencms.workflow;
 
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.ade.publish.CmsPublishRelationFinder.ResourceMap;
+import org.opencms.ade.publish.shared.CmsPublishOptions;
+import org.opencms.ade.publish.shared.CmsPublishResource;
+import org.opencms.main.CmsException;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import java.util.List;
 
 /**
- * Main test suite for the package <code>{@link org.opencms.workplace.editors.ade}</code>.<p>
- * 
- * @since 8.0.0
+ * 'Formats' a ResourceMap containing resources for publishing by creating a list of CmsPublishResource
+ * beans with the appropriate status informations to display. 
  */
-public final class AllTests {
+public interface I_CmsPublishResourceFormatter {
 
     /**
-     * Hide constructor to prevent generation of class instances.<p>
-     */
-    private AllTests() {
-
-        // empty
-    }
-
-    /**
-     * Returns the JUnit test suite for this package.<p>
+     * Gets the publish resource beans created by this formatter.<p>
      * 
-     * @return the JUnit test suite for this package
+     * @return the publish resource beans 
+     * @throws CmsException if something goes wrong 
      */
-    public static Test suite() {
+    List<CmsPublishResource> getPublishResources() throws CmsException;
 
-        TestSuite suite = new TestSuite("Tests for package " + AllTests.class.getPackage().getName());
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        //$JUnit-BEGIN$
-        suite.addTest(TestADEPublish.suite());
-        //$JUnit-END$
-        return suite;
-    }
+    /**
+     * 
+     * @param options
+     * @param resources
+     * @throws CmsException
+     */
+    void initialize(CmsPublishOptions options, ResourceMap resources) throws CmsException;
 }

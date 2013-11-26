@@ -1085,7 +1085,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
         CmsResourceState resourceState = infoBean.getResourceState();
 
-        if ((resourceState != null) && resourceState.isChanged()) {
+        if ((resourceState != null) && resourceState.isChanged() && infoBean.isMarkChangedState()) {
             String title = Messages.get().key(Messages.GUI_UNPUBLISHED_CHANGES_TITLE_0);
             setTopRightIcon(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().changed(), title);
         }

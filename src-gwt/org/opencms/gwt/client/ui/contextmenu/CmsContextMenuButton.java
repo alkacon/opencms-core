@@ -33,7 +33,7 @@ import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsLabel;
-import org.opencms.gwt.client.util.CmsCollectionUtil;
+import org.opencms.gwt.client.util.CmsClientCollectionUtil;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.util.CmsUUID;
 
@@ -151,7 +151,7 @@ public class CmsContextMenuButton extends CmsMenuButton {
      */
     public void showMenu(List<I_CmsContextMenuEntry> menuEntries) {
 
-        if (!CmsCollectionUtil.isEmptyOrNull(menuEntries)) {
+        if (!CmsClientCollectionUtil.isEmptyOrNull(menuEntries)) {
             // if there were entries found for the menu, create the menu
             m_menu = new CmsContextMenu(menuEntries, true, getPopup());
             // add the resize handler for the menu

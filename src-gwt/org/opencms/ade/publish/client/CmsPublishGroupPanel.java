@@ -29,7 +29,9 @@ package org.opencms.ade.publish.client;
 
 import org.opencms.ade.publish.client.CmsPublishItemStatus.Signal;
 import org.opencms.ade.publish.client.CmsPublishSelectPanel.CheckBoxUpdate;
+import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishResource;
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPreviewDialog;
@@ -124,6 +126,7 @@ public class CmsPublishGroupPanel extends Composite {
     /**
      * Constructs a new instance.<p>
      * 
+     * @param publishGroup the group for which to build the group panel 
      * @param title the title of the group
      * @param groupIndex the index of the group which this panel should render
      * @param selectionChangeHandler the handler for selection changes for publish resources
@@ -132,6 +135,7 @@ public class CmsPublishGroupPanel extends Composite {
      * @param showProblemsOnly if true, sets this panel into "show resources with problems only" mode
      */
     public CmsPublishGroupPanel(
+        CmsPublishGroup publishGroup,
         String title,
         int groupIndex,
         I_CmsPublishSelectionChangeHandler selectionChangeHandler,
@@ -147,7 +151,7 @@ public class CmsPublishGroupPanel extends Composite {
         m_controllersById = controllersById;
         m_panel.truncate(TM_PUBLISH_LIST, CmsPublishDialog.DIALOG_WIDTH);
         initSelectButtons();
-        if (groupIndex == 0) {
+        if ((groupIndex == 0) && publishGroup.isAutoSelectable()) {
             m_model.signalGroup(Signal.publish, 0);
         }
         m_showProblemsOnly = showProblemsOnly;
@@ -198,7 +202,15 @@ public class CmsPublishGroupPanel extends Composite {
             info.addAdditionalInfo(dateLabel, resourceBean.getDateLastModifiedString());
         }
 
+        info.setMarkChangedState(false);
         CmsListItemWidget itemWidget = new CmsListItemWidget(info);
+        String resourceUser = resourceBean.getUserLastModified();
+        String currentUser = CmsCoreProvider.get().getUserInfo().getName();
+        if (!resourceUser.equals(currentUser)) {
+            itemWidget.setTopRightIcon(
+                I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().changed(),
+                Messages.get().key(Messages.GUI_CHANGED_BY_USER_1, resourceBean.getUserLastModified()));
+        }
         for (int i = 0; i < NUM_BUTTON_SLOTS; i++) {
             SimplePanel panel = new SimplePanel();
             panel.getElement().getStyle().setWidth(20, Unit.PX);

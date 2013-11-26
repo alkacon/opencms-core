@@ -28,7 +28,6 @@
 package org.opencms.ade.publish;
 
 import org.opencms.ade.publish.shared.CmsProjectBean;
-import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
@@ -45,44 +44,14 @@ import java.util.Map;
 public interface I_CmsVirtualProject {
 
     /**
-     * Work context which is  used to actually work with a virtual project.<p>
-     */
-    public interface I_Context {
-
-        /**
-         * Gets the project bean.<p>
-         * 
-         * @return the project bean 
-         */
-        CmsProjectBean getProjectBean();
-
-        /**
-         * Gets the resources of the virtual project.<p>
-         * 
-         * @return the generated list of resources 
-         * 
-         * @throws CmsException if something goes wrong 
-         */
-        List<CmsResource> getResources() throws CmsException;
-
-        /**
-         * Sorts a list of publish resources before grouping.<p>
-         * 
-         * @param publishResources the publish resources to sort 
-         */
-        void preSort(List<CmsPublishResource> publishResources);
-
-    }
-
-    /**
-     * Creates a context object to work with this virtual project.<p>
+     * Gets the project bean.<p>
      * 
-     * @param cms the current CMS context 
-     * @param params the current publish parameters 
+     * @param cms the CMS context to use
+     * @param params the publish parameters 
      * 
-     * @return a new context based on the CmsObject and the publish parameters  
+     * @return the project bean 
      */
-    I_Context createContext(CmsObject cms, Map<String, String> params);
+    CmsProjectBean getProjectBean(CmsObject cms, Map<String, String> params);
 
     /**
      * Gets the project id.<p>
@@ -90,4 +59,24 @@ public interface I_CmsVirtualProject {
      * @return the project id 
      */
     CmsUUID getProjectId();
+
+    /**
+     * Gets the resources of the virtual project.<p>
+     * 
+     * @param cms the CMS context to use 
+     * @param params the publish parameters 
+     * @param workflowId the workflow id 
+     * 
+     * @return the generated list of resources 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    List<CmsResource> getResources(CmsObject cms, Map<String, String> params, String workflowId) throws CmsException;
+
+    /**
+     * Returns true if in this virtual project, resource groups should be able to be automatically selected by the GUI.<p>
+     * 
+     * @return true if resource groups should be auto-selectable 
+     */
+    boolean isAutoSelectable();
 }

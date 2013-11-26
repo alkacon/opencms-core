@@ -38,12 +38,12 @@ import java.util.Set;
  * 
  * @since 8.0.0
  */
-public final class CmsCollectionUtil {
+public final class CmsClientCollectionUtil {
 
     /**
      * Hide default constructor.<p>
      */
-    private CmsCollectionUtil() {
+    private CmsClientCollectionUtil() {
 
         // do nothing
     }

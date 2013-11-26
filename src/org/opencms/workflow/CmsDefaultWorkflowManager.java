@@ -27,23 +27,37 @@
 
 package org.opencms.workflow;
 
+import org.opencms.ade.publish.CmsCurrentPageProject;
+import org.opencms.ade.publish.CmsMyChangesProject;
 import org.opencms.ade.publish.CmsPublish;
+import org.opencms.ade.publish.CmsRealProjectVirtualWrapper;
+import org.opencms.ade.publish.I_CmsVirtualProject;
+import org.opencms.ade.publish.shared.CmsProjectBean;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.ade.publish.shared.CmsWorkflow;
 import org.opencms.ade.publish.shared.CmsWorkflowAction;
 import org.opencms.ade.publish.shared.CmsWorkflowResponse;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsRole;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.logging.Log;
+
+import com.google.common.collect.Maps;
 
 /**
  * The default implementation of the workflow manager interface, which offers only publish functionality.<p>
@@ -58,6 +72,67 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
 
     /** The name for the publish action. */
     public static final String WORKFLOW_PUBLISH = "WORKFLOW_PUBLISH";
+
+    /** The log instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsDefaultWorkflowManager.class);
+
+    /** The map of registered virtual  projects. */
+    protected Map<CmsUUID, I_CmsVirtualProject> m_virtualProjects = Maps.newHashMap();
+
+    /** 
+     * Constructor.<p>
+     */
+    public CmsDefaultWorkflowManager() {
+
+        m_virtualProjects.put(CmsCurrentPageProject.ID, CmsCurrentPageProject.INSTANCE);
+        m_virtualProjects.put(CmsMyChangesProject.ID, CmsMyChangesProject.INSTANCE);
+    }
+
+    /**
+     * Creates a project bean from a real project.<p>
+     * 
+     * @param cms the CMS context 
+     * @param project the project
+     *  
+     * @return the bean containing the project information 
+     */
+    public static CmsProjectBean createProjectBeanFromProject(CmsObject cms, CmsProject project) {
+
+        CmsProjectBean manProj = new CmsProjectBean(
+            project.getUuid(),
+            project.getType().getMode(),
+            org.opencms.ade.publish.Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).key(
+                org.opencms.ade.publish.Messages.GUI_NORMAL_PROJECT_1,
+                getOuAwareName(cms, project.getName())),
+            project.getDescription());
+        return manProj;
+    }
+
+    /**
+     * Returns the simple name if the ou is the same as the current user's ou.<p>
+     * 
+     * @param cms the CMS context 
+     * @param name the fully qualified name to check
+     * 
+     * @return the simple name if the ou is the same as the current user's ou
+     */
+    protected static String getOuAwareName(CmsObject cms, String name) {
+
+        String ou = CmsOrganizationalUnit.getParentFqn(name);
+        if (ou.equals(cms.getRequestContext().getCurrentUser().getOuFqn())) {
+            return CmsOrganizationalUnit.getSimpleName(name);
+        }
+        return CmsOrganizationalUnit.SEPARATOR + name;
+    }
+
+    /**
+     * @see org.opencms.workflow.I_CmsWorkflowManager#createFormatter(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsWorkflow, org.opencms.ade.publish.shared.CmsPublishOptions)
+     */
+    public I_CmsPublishResourceFormatter createFormatter(CmsObject cms, CmsWorkflow workflow, CmsPublishOptions options) {
+
+        CmsDefaultPublishResourceFormatter formatter = new CmsDefaultPublishResourceFormatter(cms);
+        return formatter;
+    }
 
     /**
      * @see org.opencms.workflow.I_CmsWorkflowManager#executeAction(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsWorkflowAction, org.opencms.ade.publish.shared.CmsPublishOptions, java.util.List)
@@ -94,15 +169,47 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
     }
 
     /**
-     * @see org.opencms.workflow.I_CmsWorkflowManager#getWorkflowPublishResources(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsWorkflow, org.opencms.ade.publish.shared.CmsPublishOptions)
+     * @see org.opencms.workflow.I_CmsWorkflowManager#getManageableProjects(org.opencms.file.CmsObject, java.util.Map)
      */
-    public List<CmsPublishResource> getWorkflowPublishResources(
-        CmsObject cms,
-        CmsWorkflow workflow,
-        CmsPublishOptions options) {
+    public List<CmsProjectBean> getManageableProjects(CmsObject cms, Map<String, String> params) {
 
-        CmsPublish publish = new CmsPublish(cms, options);
-        return publish.getPublishResourceBeans();
+        List<CmsProjectBean> manProjs = new ArrayList<CmsProjectBean>();
+
+        List<CmsProject> projects;
+        try {
+            projects = OpenCms.getOrgUnitManager().getAllManageableProjects(cms, "", true);
+        } catch (CmsException e) {
+            // should never happen
+            LOG.error(e.getLocalizedMessage(), e);
+            return manProjs;
+        }
+
+        for (CmsProject project : projects) {
+            CmsProjectBean manProj = createProjectBeanFromProject(cms, project);
+            manProjs.add(manProj);
+        }
+
+        for (I_CmsVirtualProject handler : m_virtualProjects.values()) {
+            CmsProjectBean projectBean = handler.getProjectBean(cms, params);
+            if (projectBean != null) {
+                manProjs.add(projectBean);
+            }
+
+        }
+
+        return manProjs;
+    }
+
+    /**
+     * @see org.opencms.workflow.I_CmsWorkflowManager#getRealOrVirtualProject(org.opencms.util.CmsUUID)
+     */
+    public I_CmsVirtualProject getRealOrVirtualProject(CmsUUID projectId) {
+
+        I_CmsVirtualProject project = m_virtualProjects.get(projectId);
+        if (project == null) {
+            project = new CmsRealProjectVirtualWrapper(projectId);
+        }
+        return project;
     }
 
     /**
@@ -110,8 +217,19 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
      */
     public List<CmsResource> getWorkflowResources(CmsObject cms, CmsWorkflow workflow, CmsPublishOptions options) {
 
-        CmsPublish publish = new CmsPublish(cms, options);
-        return publish.getPublishResources();
+        try {
+            List<CmsResource> rawResourceList = new ArrayList<CmsResource>();
+            I_CmsVirtualProject projectHandler = null;
+            projectHandler = getRealOrVirtualProject(options.getProjectId());
+            if (projectHandler != null) {
+                rawResourceList = projectHandler.getResources(cms, options.getParameters(), workflow.getId());
+                return rawResourceList;
+            }
+            return rawResourceList;
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            return Collections.emptyList();
+        }
     }
 
     /**

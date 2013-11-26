@@ -27,6 +27,7 @@
 
 package org.opencms.ade.publish;
 
+import org.opencms.ade.publish.CmsPublishRelationFinder.ResourceMap;
 import org.opencms.ade.publish.shared.CmsProjectBean;
 import org.opencms.ade.publish.shared.CmsPublishData;
 import org.opencms.ade.publish.shared.CmsPublishGroup;
@@ -46,13 +47,15 @@ import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.CmsVfsService;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workflow.I_CmsPublishResourceFormatter;
+import org.opencms.workflow.I_CmsWorkflowManager;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -62,7 +65,9 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.google.common.collect.ComparisonChain;
+import org.apache.commons.logging.Log;
+
+import com.google.common.collect.Lists;
 
 /**
  * The implementation of the publish service.<p>
@@ -77,6 +82,9 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
 
     /** The workflow id parameter name. */
     public static final String PARAM_WORKFLOW_ID = "workflowId";
+
+    /** The logger for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsPublishService.class);
 
     /** The version id for serialization. */
     private static final long serialVersionUID = 3852074177607037076L;
@@ -105,6 +113,21 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
             srv.clearThreadStorage();
         }
         return result;
+    }
+
+    /** 
+     * Wraps the project name in a message string.<p>
+     * 
+     * @param cms the CMS context 
+     * @param name the project name 
+     * 
+     * @return the message for the given project name 
+     */
+    public static String wrapProjectName(CmsObject cms, String name) {
+
+        return Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).key(
+            Messages.GUI_NORMAL_PROJECT_1,
+            name);
     }
 
     /**
@@ -143,7 +166,7 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
             String workflowId = getRequest().getParameter(PARAM_WORKFLOW_ID);
 
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(workflowId) || !workflows.containsKey(workflowId)) {
-                workflowId = getLastWorklowForUser();
+                workflowId = getLastWorkflowForUser();
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(workflowId) || !workflows.containsKey(workflowId)) {
                     workflowId = workflows.values().iterator().next().getId();
                 }
@@ -152,7 +175,7 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
             String projectParam = getRequest().getParameter(PARAM_PUBLISH_PROJECT_ID);
             boolean useCurrentPage = params.containsKey(CmsPublishOptions.PARAM_START_WITH_CURRENT_PAGE);
             CmsPublishOptions options = getCachedOptions();
-            List<CmsProjectBean> projects = getProjects(params);
+            List<CmsProjectBean> projects = OpenCms.getWorkflowManager().getManageableProjects(cms, params);
             boolean foundProject = false;
             CmsUUID selectedProject = null;
             if (useCurrentPage) {
@@ -199,25 +222,6 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
     }
 
     /**
-     * Gets a list of projects from the server.<p>
-     * 
-     * @param params the additional publish parameters 
-     * @return a list of projects 
-     * 
-     * @throws CmsRpcException if something goes wrong 
-     */
-    public List<CmsProjectBean> getProjects(Map<String, String> params) throws CmsRpcException {
-
-        List<CmsProjectBean> result = null;
-        try {
-            result = new CmsPublish(getCmsObject(), params).getManageableProjects();
-        } catch (Throwable e) {
-            error(e);
-        }
-        return result;
-    }
-
-    /**
      * @see org.opencms.ade.publish.shared.rpc.I_CmsPublishService#getResourceGroups(org.opencms.ade.publish.shared.CmsWorkflow,org.opencms.ade.publish.shared.CmsPublishOptions)
      */
     public List<CmsPublishGroup> getResourceGroups(CmsWorkflow workflow, CmsPublishOptions options)
@@ -227,52 +231,43 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
         CmsObject cms = getCmsObject();
         try {
             Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
-            List<CmsPublishResource> publishResources = OpenCms.getWorkflowManager().getWorkflowPublishResources(
-                cms,
-                workflow,
-                options);
-            for (CmsPublishResource publishResource : publishResources) {
+            I_CmsWorkflowManager workflowManager = OpenCms.getWorkflowManager();
+            I_CmsPublishResourceFormatter formatter = workflowManager.createFormatter(cms, workflow, options);
+            List<CmsResource> resources = workflowManager.getWorkflowResources(cms, workflow, options);
+            ResourceMap resourcesAndRelated = getResourcesAndRelated(
+                resources,
+                options.isIncludeRelated(),
+                options.isIncludeSiblings(),
+                (options.getProjectId() == null) || options.getProjectId().isNullUUID());
+            formatter.initialize(options, resourcesAndRelated);
+            List<CmsPublishResource> publishResources = formatter.getPublishResources();
+            for (CmsPublishResource publishResource : getPublishResourcesFlatList(publishResources)) {
                 checkPreview(publishResource);
             }
             A_CmsPublishGroupHelper<CmsPublishResource, CmsPublishGroup> groupHelper;
-            I_CmsVirtualProject.I_Context context = null;
+            boolean autoSelectable = true;
             if ((options.getProjectId() == null) || options.getProjectId().isNullUUID()) {
                 groupHelper = new CmsDefaultPublishGroupHelper(locale);
             } else {
-                I_CmsVirtualProject virtualProject = CmsPublish.getRealOrVirtualProject(options.getProjectId());
+                I_CmsVirtualProject virtualProject = OpenCms.getWorkflowManager().getRealOrVirtualProject(
+                    options.getProjectId());
                 String title = "";
-
                 if (virtualProject != null) {
-                    context = virtualProject.createContext(cms, options.getParameters());
-                    CmsProjectBean projectBean = context.getProjectBean();
+                    CmsProjectBean projectBean = virtualProject.getProjectBean(cms, options.getParameters());
                     title = projectBean.getDefaultGroupName();
                     if (title == null) {
                         title = "";
                     }
+                    autoSelectable = virtualProject.isAutoSelectable();
                 }
                 groupHelper = new CmsSinglePublishGroupHelper(locale, title);
             }
-            if (options.isIncludeRelated()) {
-                publishResources = eliminateRelatedResourcesFromTopLevel(publishResources);
-                for (CmsPublishResource pubRes : publishResources) {
-                    // sort nested related resources 
-                    Collections.sort(pubRes.getRelated(), new Comparator<CmsPublishResource>() {
-
-                        public int compare(CmsPublishResource first, CmsPublishResource second) {
-
-                            return ComparisonChain.start().compare(second.getSortDate(), first.getSortDate()).result();
-                        }
-                    });
-                }
-            } else {
-                removeRelatedResources(publishResources);
-            }
-
-            if (context != null) {
-                context.preSort(publishResources);
-            }
             results = groupHelper.getGroups(publishResources);
+            for (CmsPublishGroup group : results) {
+                group.setAutoSelectable(autoSelectable);
+            }
             setCachedOptions(options);
+            setLastWorkflowForUser(workflow.getId());
         } catch (Throwable e) {
             error(e);
         }
@@ -295,6 +290,29 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
             error(e);
         }
         return result;
+    }
+
+    /**
+     * Adds siblings to a set of publish resources.<p>
+     * 
+     * @param publishResources the set to which siblings should be added 
+     */
+    protected void addSiblings(Set<CmsResource> publishResources) {
+
+        List<CmsResource> toAdd = Lists.newArrayList();
+        for (CmsResource resource : publishResources) {
+            if (!resource.getState().isUnchanged()) {
+                try {
+                    List<CmsResource> changedSiblings = getCmsObject().readSiblings(
+                        resource,
+                        CmsResourceFilter.ALL_MODIFIED);
+                    toAdd.addAll(changedSiblings);
+                } catch (CmsException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+        }
+        publishResources.addAll(toAdd);
     }
 
     /**
@@ -321,30 +339,6 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
     }
 
     /**
-     * Removes publish resources from a list which are contained in the related resources of another entry in the list.<p>
-     * 
-     * @param publishResources the publish resource list from which the related resources should be eliminated 
-     * 
-     * @return the new list of publish resources 
-     */
-    private List<CmsPublishResource> eliminateRelatedResourcesFromTopLevel(List<CmsPublishResource> publishResources) {
-
-        Set<CmsUUID> relatedIds = new HashSet<CmsUUID>();
-        for (CmsPublishResource res : publishResources) {
-            for (CmsPublishResource related : res.getRelated()) {
-                relatedIds.add(related.getId());
-            }
-        }
-        List<CmsPublishResource> result = new ArrayList<CmsPublishResource>();
-        for (CmsPublishResource res : publishResources) {
-            if (!relatedIds.contains(res.getId()) || (res.getRelated().size() > 0)) {
-                result.add(res);
-            }
-        }
-        return result;
-    }
-
-    /**
      * Returns the cached publish options, creating it if it doesn't already exist.<p>
      * 
      * @return the cached publish options
@@ -366,10 +360,65 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
      * 
      * @return the workflow id
      */
-    private String getLastWorklowForUser() {
+    private String getLastWorkflowForUser() {
 
         CmsUser user = getCmsObject().getRequestContext().getCurrentUser();
         return (String)user.getAdditionalInfo(PARAM_WORKFLOW_ID);
+    }
+
+    /**
+     * Creates a list which contains all publish resources from a given list, as well as the related publish resources they contain.<p>
+     * 
+     * @param publishResources the original publish resource list
+     *  
+     * @return the flattened publish resource list 
+     */
+    private List<CmsPublishResource> getPublishResourcesFlatList(Collection<CmsPublishResource> publishResources) {
+
+        List<CmsPublishResource> result = new ArrayList<CmsPublishResource>();
+        for (CmsPublishResource pubRes : publishResources) {
+            result.add(pubRes);
+            result.addAll(pubRes.getRelated());
+        }
+        return result;
+    }
+
+    /**
+     * Gets the resource map containing the publish resources together with their related resources.<p>
+     * 
+     * @param resources the base list of publish resources 
+     * @param includeRelated flag to control whether related resources should be included 
+     * @param includeSiblings flag to control whether siblings should be included
+     * @param keepOriginalUnchangedResources flag which determines whether unchanged resources in the original resource list should be kept or removed  
+     * @return the resources together with their related resources
+     */
+    private ResourceMap getResourcesAndRelated(
+        List<CmsResource> resources,
+        boolean includeRelated,
+        boolean includeSiblings,
+        boolean keepOriginalUnchangedResources) {
+
+        Set<CmsResource> publishResources = new HashSet<CmsResource>();
+        publishResources.addAll(resources);
+        if (includeSiblings) {
+            addSiblings(publishResources);
+        }
+        ResourceMap result;
+        if (includeRelated) {
+            CmsPublishRelationFinder relationFinder = new CmsPublishRelationFinder(
+                getCmsObject(),
+                publishResources,
+                keepOriginalUnchangedResources);
+            result = relationFinder.getPublishRelatedResources();
+        } else {
+            result = new ResourceMap();
+            for (CmsResource resource : publishResources) {
+                if (keepOriginalUnchangedResources || !resource.getState().isUnchanged()) {
+                    result.put(resource, new HashSet<CmsResource>());
+                }
+            }
+        }
+        return result;
     }
 
     /**
@@ -393,18 +442,6 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
             }
         }
         return result;
-    }
-
-    /** 
-     * Removes the related resources from publish resources.<p>
-     * 
-     * @param publishResources the list of publish resources from which to remove related resource 
-     */
-    private void removeRelatedResources(List<CmsPublishResource> publishResources) {
-
-        for (CmsPublishResource resource : publishResources) {
-            resource.getRelated().clear();
-        }
     }
 
     /**

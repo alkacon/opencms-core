@@ -53,6 +53,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_GROUPNAME_SESSION_1 = "GUI_GROUPNAME_SESSION_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_MYCHANGES_PROJECT_0 = "GUI_MYCHANGES_PROJECT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_NORMAL_PROJECT_1 = "GUI_NORMAL_PROJECT_1";
 
     /** Message constant for key in the resource bundle. */

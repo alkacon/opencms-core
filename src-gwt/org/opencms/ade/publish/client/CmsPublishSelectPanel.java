@@ -362,13 +362,13 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
             workflowSelectorItems.put(workflow.getId(), workflow.getNiceName());
         }
         LinkedHashMap<String, String> projectSelectItems = new LinkedHashMap<String, String>();
-        CmsProjectBean myChangesDummyProject = new CmsProjectBean(
-            CmsUUID.getNullUUID(),
-            0,
-            messages.key(Messages.GUI_PUBLISH_DIALOG_MY_CHANGES_0),
-            null);
-        myChangesDummyProject.setRank(200);
-        projects.add(myChangesDummyProject);
+        //        CmsProjectBean myChangesDummyProject = new CmsProjectBean(
+        //            CmsUUID.getNullUUID(),
+        //            0,
+        //            messages.key(Messages.GUI_PUBLISH_DIALOG_MY_CHANGES_0),
+        //            null);
+        //        myChangesDummyProject.setRank(200);
+        //        projects.add(myChangesDummyProject);
         Collections.<CmsProjectBean> sort(projects);
 
         boolean foundOldProject = false;
@@ -414,12 +414,6 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         }
         m_cancelButton.setText(messages.key(Messages.GUI_PUBLISH_DIALOG_CANCEL_BUTTON_0));
         m_cancelButton.setUseMinWidth(true);
-        //        m_selectAll.setText(messages.key(Messages.GUI_PUBLISH_TOP_PANEL_ALL_BUTTON_0));
-        //        m_selectAll.setImageClass(I_CmsInputLayoutBundle.INSTANCE.inputCss().checkBoxImageChecked());
-        //        m_selectAll.setUseMinWidth(true);
-        //        m_selectNone.setText(messages.key(Messages.GUI_PUBLISH_TOP_PANEL_NONE_BUTTON_0));
-        //        m_selectNone.setImageClass(I_CmsInputLayoutBundle.INSTANCE.inputCss().checkBoxImageUnchecked());
-        //        m_selectNone.setUseMinWidth(true);
         m_noResources.setText(messages.key(Messages.GUI_PUBLISH_DIALOG_NO_RES_0));
         m_checkboxSiblings.setText(messages.key(Messages.GUI_PUBLISH_CHECKBOXES_SIBLINGS_0));
         m_checkboxRelated.setText(messages.key(Messages.GUI_PUBLISH_CHECKBOXES_REL_RES_0));
@@ -885,6 +879,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
         String header = group.getName();
         CmsPublishGroupPanel groupPanel = new CmsPublishGroupPanel(
+            group,
             header,
             currentIndex,
             this,
@@ -943,8 +938,8 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         m_noResources.setVisible(!visible);
         m_scrollPanel.setVisible(visible);
         m_topBar.getElement().getStyle().setVisibility(visible ? Visibility.VISIBLE : Visibility.HIDDEN);
-        m_checkboxSiblings.setVisible(visible);
-        m_checkboxRelated.setVisible(visible);
+        m_checkboxSiblings.setVisible(true);
+        m_checkboxRelated.setVisible(true);
     }
 
     /**

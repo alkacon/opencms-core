@@ -28,6 +28,7 @@
 package org.opencms.workflow;
 
 import org.opencms.ade.publish.CmsPublishService;
+import org.opencms.ade.publish.I_CmsVirtualProject;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.ade.publish.shared.CmsWorkflow;
@@ -48,6 +49,7 @@ import org.opencms.publish.CmsPublishEventAdapter;
 import org.opencms.publish.CmsPublishJobEnqueued;
 import org.opencms.publish.CmsPublishJobRunning;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -65,23 +67,36 @@ import org.apache.commons.logging.Log;
  */
 public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
 
-    /** The key for the 'release' workflow. */
-    public static final String WORKFLOW_RELEASE = "WORKFLOW_RELEASE";
-
     /** The release workflow action. */
     public static final String ACTION_RELEASE = "release";
-
-    /** The key for the configurable workflow project manager group. */
-    public static final String PARAM_WORKFLOW_PROJECT_MANAGER_GROUP = "workflowProjectManagerGroup";
 
     /** The parameter which points to the XML content used for notifications. */
     public static final String PARAM_NOTIFICATION_CONTENT = "notificationContent";
 
+    /** The key for the configurable workflow project manager group. */
+    public static final String PARAM_WORKFLOW_PROJECT_MANAGER_GROUP = "workflowProjectManagerGroup";
+
     /** The key for the configurable workflow project user group. */
     public static final String PARAM_WORKFLOW_PROJECT_USER_GROUP = "workflowProjectUserGroup";
 
+    /** The key for the 'release' workflow. */
+    public static final String WORKFLOW_RELEASE = "WORKFLOW_RELEASE";
+
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsExtendedWorkflowManager.class);
+
+    /**
+     * @see org.opencms.workflow.CmsDefaultWorkflowManager#createFormatter(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsWorkflow, org.opencms.ade.publish.shared.CmsPublishOptions)
+     */
+    @Override
+    public I_CmsPublishResourceFormatter createFormatter(CmsObject cms, CmsWorkflow workflow, CmsPublishOptions options) {
+
+        String workflowKey = workflow.getId();
+        boolean release = WORKFLOW_RELEASE.equals(workflowKey);
+        CmsExtendedPublishResourceFormatter formatter = new CmsExtendedPublishResourceFormatter(cms);
+        formatter.setRelease(release);
+        return formatter;
+    }
 
     /**
      * @see org.opencms.workflow.CmsDefaultWorkflowManager#executeAction(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsWorkflowAction, org.opencms.ade.publish.shared.CmsPublishOptions, java.util.List)
@@ -113,10 +128,23 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
                 return super.executeAction(userCms, action, options, resources);
             }
         } catch (CmsException e) {
-            LOG.info("workflow action failed");
-            LOG.info(e.getLocalizedMessage(), e);
+            LOG.error("workflow action failed");
+            LOG.error(e.getLocalizedMessage(), e);
             throw e;
         }
+    }
+
+    /**
+     * @see org.opencms.workflow.CmsDefaultWorkflowManager#getRealOrVirtualProject(org.opencms.util.CmsUUID)
+     */
+    @Override
+    public I_CmsVirtualProject getRealOrVirtualProject(CmsUUID projectId) {
+
+        I_CmsVirtualProject result = m_virtualProjects.get(projectId);
+        if (result == null) {
+            result = new CmsExtendedRealProjectWrapper(projectId);
+        }
+        return result;
     }
 
     /**
@@ -137,41 +165,6 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
     public String getWorkflowProjectUserGroup() {
 
         return getParameter(PARAM_WORKFLOW_PROJECT_USER_GROUP, OpenCms.getDefaultUsers().getGroupProjectmanagers());
-    }
-
-    /**
-     * @see org.opencms.workflow.CmsDefaultWorkflowManager#getWorkflowPublishResources(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsWorkflow, org.opencms.ade.publish.shared.CmsPublishOptions)
-     */
-    @Override
-    public List<CmsPublishResource> getWorkflowPublishResources(
-        CmsObject cms,
-        CmsWorkflow workflow,
-        CmsPublishOptions options) {
-
-        String workflowKey = workflow.getId();
-        if (WORKFLOW_RELEASE.equals(workflowKey)) {
-            CmsRelease release = new CmsRelease(cms, options);
-            return release.getPublishResourceBeans();
-        } else {
-            CmsExtendedPublish publish = new CmsExtendedPublish(cms, options);
-            return publish.getPublishResourceBeans();
-        }
-    }
-
-    /**
-     * @see org.opencms.workflow.CmsDefaultWorkflowManager#getWorkflowResources(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsWorkflow, org.opencms.ade.publish.shared.CmsPublishOptions)
-     */
-    @Override
-    public List<CmsResource> getWorkflowResources(CmsObject cms, CmsWorkflow workflow, CmsPublishOptions options) {
-
-        String workflowKey = workflow.getId();
-        if (WORKFLOW_RELEASE.equals(workflowKey)) {
-            CmsRelease release = new CmsRelease(cms, options);
-            return release.getPublishResources();
-        } else {
-            CmsExtendedPublish publish = new CmsExtendedPublish(cms, options);
-            return publish.getPublishResources();
-        }
     }
 
     /**

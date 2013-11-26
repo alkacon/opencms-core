@@ -53,7 +53,7 @@ import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.client.ui.CmsDeleteWarningDialog;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
-import org.opencms.gwt.client.util.CmsCollectionUtil;
+import org.opencms.gwt.client.util.CmsClientCollectionUtil;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsCategoryBean;
@@ -1607,12 +1607,12 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         preparedSearchObj.setReferencePath(m_dialogBean.getReferenceSitePath());
         // add the available types to the search object used for next search, 
         // if the criteria for types are empty
-        if (CmsCollectionUtil.isEmptyOrNull(m_searchObject.getTypes())) {
+        if (CmsClientCollectionUtil.isEmptyOrNull(m_searchObject.getTypes())) {
             // no galleries is selected, provide all available types
-            if (CmsCollectionUtil.isEmptyOrNull(m_searchObject.getGalleries())) {
+            if (CmsClientCollectionUtil.isEmptyOrNull(m_searchObject.getGalleries())) {
                 // additionally provide all available gallery folders if in 'widget' and 'editor' dialog-mode and no folder has been selected 
                 if (((m_dialogMode == I_CmsGalleryProviderConstants.GalleryMode.widget) || (m_dialogMode == I_CmsGalleryProviderConstants.GalleryMode.editor))
-                    && CmsCollectionUtil.isEmptyOrNull(m_searchObject.getFolders())) {
+                    && CmsClientCollectionUtil.isEmptyOrNull(m_searchObject.getFolders())) {
                     ArrayList<String> availableGalleries = new ArrayList<String>();
                     for (CmsGalleryFolderBean galleryPath : m_dialogBean.getGalleries()) {
                         availableGalleries.add(galleryPath.getPath());
@@ -1640,7 +1640,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
                     availableTypes.add(type.getType());
                 }
 
-                preparedSearchObj.setTypes(new ArrayList<String>(CmsCollectionUtil.intersection(
+                preparedSearchObj.setTypes(new ArrayList<String>(CmsClientCollectionUtil.intersection(
                     availableTypes,
                     galleryTypes)));
             }
