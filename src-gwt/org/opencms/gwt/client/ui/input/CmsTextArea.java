@@ -59,6 +59,7 @@ import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Panel;
@@ -99,6 +100,9 @@ I_HasResizeOnShow {
     /** The previous value. */
     private String m_previousValue;
 
+    /** A timer to schedule the widget size recalculation. */
+    private Timer m_updateSizeTimer;
+
     /**
      * Text area widgets for ADE forms.<p>
      */
@@ -126,7 +130,7 @@ I_HasResizeOnShow {
 
             public void onKeyUp(KeyUpEvent event) {
 
-                updateContentSize();
+                scheduleResize();
                 fireValueChangedEvent(false);
             }
 
@@ -160,16 +164,6 @@ I_HasResizeOnShow {
 
             }
         });
-    }
-
-    /**
-     * Shows the fade panel if the text area content exceeds the visible area.<p> 
-     */
-    protected void showFadePanelIfNeeded() {
-
-        if (m_defaultRows < m_textArea.getVisibleLines()) {
-            m_panel.add(m_fadePanel);
-        }
     }
 
     /**
@@ -438,11 +432,41 @@ I_HasResizeOnShow {
     }
 
     /**
+     * Schedules resizing the widget.<p>
+     */
+    protected void scheduleResize() {
+
+        if (m_updateSizeTimer != null) {
+            m_updateSizeTimer.cancel();
+        }
+        m_updateSizeTimer = new Timer() {
+
+            @Override
+            public void run() {
+
+                updateContentSize();
+            }
+        };
+        m_updateSizeTimer.schedule(300);
+    }
+
+    /**
+     * Shows the fade panel if the text area content exceeds the visible area.<p> 
+     */
+    protected void showFadePanelIfNeeded() {
+
+        if (m_defaultRows < m_textArea.getVisibleLines()) {
+            m_panel.add(m_fadePanel);
+        }
+    }
+
+    /**
      * Updates the text area height according to the current text content.<p>
      */
     protected void updateContentSize() {
 
         String string = m_textArea.getText();
+        int width = m_textArea.getOffsetWidth();
         String searchString = "\n";
         int occurences = 0;
         if (0 != searchString.length()) {
@@ -452,9 +476,9 @@ I_HasResizeOnShow {
                 occurences++;
             }
         }
-        String[] splittext = m_textArea.getText().split("\\n");
+        String[] splittext = string.split("\\n");
         for (int i = 0; i < splittext.length; i++) {
-            occurences += (splittext[i].length() * 6.77) / m_textArea.getOffsetWidth();
+            occurences += (splittext[i].length() * 6.77) / width;
         }
         int height = occurences + 1;
         if (m_defaultRows > height) {

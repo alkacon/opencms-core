@@ -33,6 +33,7 @@ import com.alkacon.geranium.client.I_HasResizeOnShow;
 
 import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsTextArea;
+import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -69,10 +70,15 @@ public class CmsTextareaWidget extends Composite implements I_EditWidget, HasRes
         // All composites must call initWidget() in their constructors.
         initWidget(m_textarea);
         int configheight = DEFAULT_ROWS_NUMBER;
-        try {
-            configheight = Integer.parseInt(config);
-        } catch (Exception e) {
-            // do something with this exception.
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(config)) {
+            try {
+                int rows = Integer.parseInt(config);
+                if (rows > 0) {
+                    configheight = rows;
+                }
+            } catch (Exception e) {
+                // nothing to do
+            }
         }
         m_textarea.setRows(configheight);
         m_textarea.getTextArea().setStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().textAreaBox());
@@ -172,8 +178,7 @@ public class CmsTextareaWidget extends Composite implements I_EditWidget, HasRes
      */
     public boolean owns(Element element) {
 
-        // TODO implement this in case we want the delete behavior for optional fields
-        return false;
+        return getElement().isOrHasChild(element);
 
     }
 
