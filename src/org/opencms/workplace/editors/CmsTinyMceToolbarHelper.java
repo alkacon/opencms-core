@@ -52,7 +52,7 @@ public final class CmsTinyMceToolbarHelper {
         + "|anchor:anchor|image:image|cleanup:cleanup|source:code|insertdate:insertdate|inserttime:inserttime|forecolor:forecolor|backcolor:backcolor"
         /* Row 3*/
         + "|table:table|hr:hr|removeformat:removeformat|visualaid:visualaid|subscript:subscript|superscript:superscript|specialchar:charmap"
-        + "|emotions:emoticons|spellcheck:iespell|media:media|print:print|ltr:ltr|rtl:rtl|fitwindow:fullscreen"
+        + "|emotions:emoticons|spellcheck:spellchecker|media:media|print:print|ltr:ltr|rtl:rtl|fitwindow:fullscreen"
         /* Row 4*/
         + "|insertlayer:insertlayer|moveforward:moveforward|movebackward:movebackward|absolute:absolute|styleprops:styleprops|cite:cite"
         + "|abbr:abbr|acronym:acronym|del:del|ins:ins|attribs:attribs|visualchars:visualchars|nonbreaking:nonbreaking|template:template"
