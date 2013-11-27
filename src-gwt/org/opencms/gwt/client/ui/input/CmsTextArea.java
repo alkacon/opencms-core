@@ -465,26 +465,29 @@ I_HasResizeOnShow {
      */
     protected void updateContentSize() {
 
-        String string = m_textArea.getText();
         int width = m_textArea.getOffsetWidth();
-        String searchString = "\n";
-        int occurences = 0;
-        if (0 != searchString.length()) {
-            for (int index = string.indexOf(searchString, 0); index != -1; index = string.indexOf(
-                searchString,
-                index + 1)) {
-                occurences++;
+        // sanity check: don't do anything, if the measured width doesn't make any sense
+        if (width > 10) {
+            String string = m_textArea.getText();
+            String searchString = "\n";
+            int occurences = 0;
+            if (0 != searchString.length()) {
+                for (int index = string.indexOf(searchString, 0); index != -1; index = string.indexOf(
+                    searchString,
+                    index + 1)) {
+                    occurences++;
+                }
             }
+            String[] splittext = string.split("\\n");
+            for (int i = 0; i < splittext.length; i++) {
+                occurences += (splittext[i].length() * 6.77) / width;
+            }
+            int height = occurences + 1;
+            if (m_defaultRows > height) {
+                height = m_defaultRows;
+            }
+            m_textArea.setVisibleLines(height);
+            m_textAreaContainer.onResizeDescendant();
         }
-        String[] splittext = string.split("\\n");
-        for (int i = 0; i < splittext.length; i++) {
-            occurences += (splittext[i].length() * 6.77) / width;
-        }
-        int height = occurences + 1;
-        if (m_defaultRows > height) {
-            height = m_defaultRows;
-        }
-        m_textArea.setVisibleLines(height);
-        m_textAreaContainer.onResizeDescendant();
     }
 }
