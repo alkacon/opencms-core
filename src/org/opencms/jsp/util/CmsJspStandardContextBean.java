@@ -44,6 +44,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
@@ -60,10 +61,8 @@ import java.util.Map;
 
 import javax.servlet.ServletRequest;
 
+import org.apache.commons.collections.Transformer;
 import org.apache.commons.logging.Log;
-
-import com.google.common.base.Function;
-import com.google.common.collect.MapMaker;
 
 /**
  * Allows convenient access to the most important OpenCms functions on a JSP page,
@@ -387,13 +386,12 @@ public final class CmsJspStandardContextBean {
         if (m_function != null) {
             return m_function;
         }
-        MapMaker mm = new MapMaker();
-        m_function = mm.makeComputingMap(new Function<String, Object>() {
+        Transformer transformer = new Transformer() {
 
-            public Object apply(String key) {
+            public Object transform(Object key) {
 
                 try {
-                    CmsDynamicFunctionBean dynamicFunction = readDynamicFunctionBean(key);
+                    CmsDynamicFunctionBean dynamicFunction = readDynamicFunctionBean((String)key);
                     CmsDynamicFunctionBeanWrapper wrapper = new CmsDynamicFunctionBeanWrapper(m_cms, dynamicFunction);
                     return wrapper;
 
@@ -401,7 +399,8 @@ public final class CmsJspStandardContextBean {
                     return new CmsDynamicFunctionBeanWrapper(m_cms, null);
                 }
             }
-        });
+        };
+        m_function = CmsCollectionsGenericWrapper.createLazyMap(transformer);
         return m_function;
 
     }
@@ -414,10 +413,9 @@ public final class CmsJspStandardContextBean {
      */
     public Map<String, String> getFunctionDetail() {
 
-        MapMaker mm = new MapMaker();
-        return mm.makeComputingMap(new Function<String, String>() {
+        Transformer transformer = new Transformer() {
 
-            public String apply(String key) {
+            public Object transform(Object key) {
 
                 String detailType = CmsDetailPageInfo.FUNCTION_PREFIX + key;
                 CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
@@ -438,7 +436,8 @@ public final class CmsJspStandardContextBean {
                     return "";
                 }
             }
-        });
+        };
+        return CmsCollectionsGenericWrapper.createLazyMap(transformer);
     }
 
     /**
@@ -449,12 +448,11 @@ public final class CmsJspStandardContextBean {
      */
     public Map<CmsJspContentAccessBean, CmsDynamicFunctionFormatWrapper> getFunctionFormatFromContent() {
 
-        MapMaker mm = new MapMaker();
-        return mm.makeComputingMap(new Function<CmsJspContentAccessBean, CmsDynamicFunctionFormatWrapper>() {
+        Transformer transformer = new Transformer() {
 
-            public CmsDynamicFunctionFormatWrapper apply(CmsJspContentAccessBean contentAccess) {
+            public Object transform(Object contentAccess) {
 
-                CmsXmlContent content = (CmsXmlContent)(contentAccess.getRawContent());
+                CmsXmlContent content = (CmsXmlContent)(((CmsJspContentAccessBean)contentAccess).getRawContent());
                 CmsDynamicFunctionParser parser = new CmsDynamicFunctionParser();
                 CmsDynamicFunctionBean functionBean = null;
                 try {
@@ -474,8 +472,8 @@ public final class CmsJspStandardContextBean {
                 CmsDynamicFunctionFormatWrapper wrapper = new CmsDynamicFunctionFormatWrapper(m_cms, format);
                 return wrapper;
             }
-        });
-
+        };
+        return CmsCollectionsGenericWrapper.createLazyMap(transformer);
     }
 
     /**
@@ -505,14 +503,13 @@ public final class CmsJspStandardContextBean {
      */
     public Map<String, String> getPreviewFormatter() {
 
-        MapMaker mm = new MapMaker();
-        return mm.makeComputingMap(new Function<String, String>() {
+        Transformer transformer = new Transformer() {
 
-            public String apply(String uri) {
+            public Object transform(Object uri) {
 
                 try {
-                    String rootPath = m_cms.getRequestContext().addSiteRoot(uri);
-                    CmsResource resource = m_cms.readResource(uri);
+                    String rootPath = m_cms.getRequestContext().addSiteRoot((String)uri);
+                    CmsResource resource = m_cms.readResource((CmsUUID)uri);
                     CmsADEManager adeManager = OpenCms.getADEManager();
                     CmsADEConfigData configData = adeManager.lookupConfiguration(m_cms, rootPath);
                     CmsFormatterConfiguration formatterConfig = configData.getFormatters(m_cms, resource);
@@ -533,7 +530,8 @@ public final class CmsJspStandardContextBean {
                     return "";
                 }
             }
-        });
+        };
+        return CmsCollectionsGenericWrapper.createLazyMap(transformer);
     }
 
     /**
