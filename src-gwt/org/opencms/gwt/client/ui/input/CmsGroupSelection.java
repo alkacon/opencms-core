@@ -98,7 +98,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
     private static int idCounter;
 
     /** The widget type identifier for this widget. */
-    private static final String WIDGET_TYPE = "vfsselection";
+    private static final String WIDGET_TYPE = "groupselection";
 
     /** The fade panel. */
     protected Panel m_fadePanel = new SimplePanel();
