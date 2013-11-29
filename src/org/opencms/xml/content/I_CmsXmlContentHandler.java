@@ -77,8 +77,16 @@ public interface I_CmsXmlContentHandler {
         wide
     }
 
+    /** Mapping name for the 'date expired' mapping. */
+    String ATTRIBUTE_DATEEXPIRED = "dateexpired";
+
+    /** Mapping name for the 'date released' mapping. */
+    String ATTRIBUTE_DATERELEASED = "datereleased";
+
     /** List of all allowed attribute mapping names, for fast lookup. */
-    List<String> ATTRIBUTES = Collections.unmodifiableList(Arrays.asList(new String[] {"datereleased", "dateexpired"}));
+    List<String> ATTRIBUTES = Collections.unmodifiableList(Arrays.asList(new String[] {
+        ATTRIBUTE_DATERELEASED,
+        ATTRIBUTE_DATEEXPIRED}));
 
     /** Prefix for attribute mappings. */
     String MAPTO_ATTRIBUTE = "attribute:";
