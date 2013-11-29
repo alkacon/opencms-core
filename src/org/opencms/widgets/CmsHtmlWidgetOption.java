@@ -89,7 +89,7 @@ public class CmsHtmlWidgetOption {
     public static final String BUTTONBAR_BLOCK_START = "[";
 
     /** The default editor widget button bar configuration. */
-    public static final String BUTTONBAR_DEFAULT = "[;undo;redo;-;find;replace;-;removeformat;-;paste;-;bold;italic;underline;strikethrough;-;subscript;superscript;];"
+    public static final String BUTTONBAR_DEFAULT = "[;undo;redo;-;find;replace;-;removeformat;-;pastetext;-;copy;paste;-;bold;italic;underline;strikethrough;-;subscript;superscript;];"
         + "[;alignleft;aligncenter;alignright;justify;-;orderedlist;unorderedlist;-;outdent;indent;];"
         + "[;source;-;formatselect;style;editorlink;link;anchor;unlink;];"
         + "[;imagegallery;downloadgallery;linkgallery;htmlgallery;tablegallery;-;table;-;specialchar;-;print;spellcheck;-;fitwindow;];"
@@ -227,9 +227,6 @@ public class CmsHtmlWidgetOption {
     /** Option for the "page break" button. */
     public static final String OPTION_PAGEBREAK = "pagebreak";
 
-    /** Option for the "paste text" button. */
-    public static final String OPTION_PASTETEXT = "pastetext";
-
     /** Option for the "paste from word" button. */
     public static final String OPTION_PASTEWORD = "pasteword";
 
@@ -310,7 +307,6 @@ public class CmsHtmlWidgetOption {
         OPTION_NEWDOCUMENT,
         OPTION_NONBREAKING,
         OPTION_PAGEBREAK,
-        OPTION_PASTETEXT,
         OPTION_PASTEWORD,
         OPTION_RTL,
         OPTION_STYLEPROPS,

@@ -47,7 +47,7 @@ public final class CmsTinyMceToolbarHelper {
         + "|aligncenter:aligncenter|alignright:alignright|justify:alignjustify|style:styleselect|formatselect:formatselect"
         + "|fontselect:fontselect|fontsizeselect:fontsizeselect"
         /* Row 2*/
-        + "|cut:cut|copy:copy|paste:paste,pastetext|pastetext:pastetext|find:searchreplace|replace:searchreplace|unorderedlist:bullist"
+        + "|cut:cut|copy:copy|paste:paste|pastetext:pastetext|find:searchreplace|replace:searchreplace|unorderedlist:bullist"
         + "|orderedlist:numlist|outdent:outdent|indent:indent|blockquote:blockquote|undo:undo|redo:redo|editorlink:link|unlink:unlink"
         + "|anchor:anchor|image:image|cleanup:cleanup|source:code|insertdate:insertdate|inserttime:inserttime|forecolor:forecolor|backcolor:backcolor"
         /* Row 3*/
