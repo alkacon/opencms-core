@@ -40,6 +40,9 @@ public final class Messages {
     public static final String GUI_UPLOAD_BUTTON_ADD_FILES_0 = "GUI_UPLOAD_BUTTON_ADD_FILES_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_BUTTON_NO_TARGET_0 = "GUI_UPLOAD_BUTTON_NO_TARGET_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_UPLOAD_BUTTON_OK_DISABLE_CHECKING_0 = "GUI_UPLOAD_BUTTON_OK_DISABLE_CHECKING_0";
 
     /** Message constant for key in the resource bundle. */
