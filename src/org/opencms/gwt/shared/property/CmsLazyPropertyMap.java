@@ -55,12 +55,13 @@ public class CmsLazyPropertyMap extends HashMap<String, CmsClientProperty> {
      * 
      * @return the property
      */
-    public CmsClientProperty get(String key) {
+    @Override
+    public CmsClientProperty get(Object key) {
 
         CmsClientProperty result = super.get(key);
         if (result == null) {
-            result = new CmsClientProperty(key, "", "");
-            put(key, result);
+            result = new CmsClientProperty((String)key, "", "");
+            put((String)key, result);
         }
         return result;
     }
