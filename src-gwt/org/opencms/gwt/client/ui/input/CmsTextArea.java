@@ -43,6 +43,7 @@ import java.util.Map;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
@@ -59,6 +60,7 @@ import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -93,6 +95,9 @@ I_HasResizeOnShow {
 
     /** The container for the text area. */
     CmsScrollPanel m_textAreaContainer = GWT.create(CmsScrollPanel.class);
+
+    /** Overlay to disable the text area. */
+    private Element m_disabledOverlay;
 
     /** The error display for this widget. */
     private CmsErrorWidget m_error = new CmsErrorWidget();
@@ -315,6 +320,18 @@ I_HasResizeOnShow {
         m_textArea.setEnabled(enabled);
         // hide / show resize handle
         m_textAreaContainer.setResizable(enabled);
+        if (enabled) {
+            if (m_disabledOverlay != null) {
+                m_disabledOverlay.removeFromParent();
+                m_disabledOverlay = null;
+            }
+        } else {
+            if (m_disabledOverlay == null) {
+                m_disabledOverlay = DOM.createDiv();
+                m_disabledOverlay.setClassName(I_CmsInputLayoutBundle.INSTANCE.inputCss().disableTextArea());
+                m_panel.getElement().appendChild(m_disabledOverlay);
+            }
+        }
     }
 
     /**
