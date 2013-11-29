@@ -129,7 +129,7 @@ public class CmsGwtActionElement extends CmsJspActionElement {
     public static String exportDictionary(String name, String data) {
 
         StringBuffer sb = new StringBuffer();
-        sb.append("<meta name=\"").append(name).append("\" content=\"").append(data).append("\" >");
+        sb.append("<meta name=\"").append(name).append("\" content=\"").append(data).append("\" />");
         return sb.toString();
     }
 
@@ -145,7 +145,7 @@ public class CmsGwtActionElement extends CmsJspActionElement {
 
         String escName = CmsEncoder.escapeXml(name);
         String escData = CmsEncoder.escapeXml(data);
-        return ("<meta name=\"" + escName + "\" content=\"" + escData + "\">");
+        return ("<meta name=\"" + escName + "\" content=\"" + escData + "\" />");
     }
 
     /**
@@ -228,9 +228,8 @@ public class CmsGwtActionElement extends CmsJspActionElement {
             Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject())).key(
                 Messages.ERR_NO_PERMUTATION_AVAILABLE_0)).append("';\n");
         wrapScript(sb);
-        // TODO: remove when GWT is compatible to IE10
-        // append meta tag to set the IE10 to IE9 compatibility mode
-        sb.append("<meta http-equiv=\"X-UA-Compatible\" content=\"IE=9\">");
+        // append meta tag to set the IE to standard document mode
+        sb.append("<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" />");
         String prefetchedData = exportDictionary(
             CmsCoreData.DICT_NAME,
             I_CmsCoreService.class.getMethod("prefetch"),

@@ -13,7 +13,7 @@
 <html>
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=<%= wp.getEncoding() %>">
-		<meta http-equiv="X-UA-Compatible" content="IE=9">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<title>(<%= wp.getSettings().getUser().getName() %>) - <%= wp.getParamEditorTitle() %></title>
 		<script type="text/javascript">
 		<!--
