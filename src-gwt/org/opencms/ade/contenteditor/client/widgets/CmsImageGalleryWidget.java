@@ -27,6 +27,7 @@
 
 package org.opencms.ade.contenteditor.client.widgets;
 
+import com.alkacon.acacia.client.css.I_LayoutBundle;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
 import org.opencms.ade.galleries.client.CmsGalleryConfigurationJSO;
@@ -62,7 +63,7 @@ public class CmsImageGalleryWidget extends Composite implements I_EditWidget, Ha
      */
     public CmsImageGalleryWidget(String openerTitle, String config) {
 
-        m_linkSelect = new CmsImageGalleryField(CmsGalleryConfigurationJSO.parseConfiguration(config));
+        m_linkSelect = new CmsImageGalleryField(CmsGalleryConfigurationJSO.parseConfiguration(config), true);
         m_linkSelect.setGalleryOpenerTitle(openerTitle);
         m_linkSelect.addValueChangeHandler(new ValueChangeHandler<String>() {
 
@@ -137,7 +138,7 @@ public class CmsImageGalleryWidget extends Composite implements I_EditWidget, Ha
      */
     public void onAttachWidget() {
 
-        super.onAttach();
+        onAttach();
     }
 
     /**
@@ -145,9 +146,7 @@ public class CmsImageGalleryWidget extends Composite implements I_EditWidget, Ha
      */
     public boolean owns(Element element) {
 
-        // TODO implement this in case we want the delete behavior for optional fields
-        return false;
-
+        return getElement().isOrHasChild(element);
     }
 
     /**
@@ -193,6 +192,20 @@ public class CmsImageGalleryWidget extends Composite implements I_EditWidget, Ha
             fireChangeEvent();
         }
 
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.Composite#onAttach()
+     */
+    @Override
+    protected void onAttach() {
+
+        super.onAttach();
+        // use the parent element with CSS class .widgetHolder as the upload drop zone to allow proper highlighting
+        Element dropZone = CmsDomUtil.getAncestor(getElement(), I_LayoutBundle.INSTANCE.form().widgetHolder());
+        if (dropZone != null) {
+            m_linkSelect.setDropZoneElement(dropZone);
+        }
     }
 
 }
