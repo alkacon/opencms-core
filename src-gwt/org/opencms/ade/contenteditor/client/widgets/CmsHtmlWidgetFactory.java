@@ -45,7 +45,7 @@ import java.util.List;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
-import com.google.gwt.user.client.Element;
+import com.google.gwt.dom.client.Element;
 
 /**
  * Factory to generate basic input widget.<p>
@@ -113,7 +113,7 @@ public class CmsHtmlWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
     }
 
     /**
-     * @see com.alkacon.acacia.client.I_WidgetFactory#createInlineWidget(java.lang.String, com.google.gwt.user.client.Element)
+     * @see com.alkacon.acacia.client.I_WidgetFactory#createInlineWidget(java.lang.String, com.google.gwt.dom.client.Element)
      */
     public I_EditWidget createInlineWidget(String configuration, Element element) {
 

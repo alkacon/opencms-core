@@ -77,7 +77,7 @@ public class CmsFileWidget extends Composite implements I_EditWidget, HasResizeH
      */
     public CmsFileWidget(String openerTitle, String config) {
 
-        m_linkSelect = new CmsGalleryField(CmsGalleryConfigurationJSO.parseConfiguration(config));
+        m_linkSelect = new CmsGalleryField(CmsGalleryConfigurationJSO.parseConfiguration(config), false);
         m_linkSelect.setGalleryOpenerTitle(openerTitle);
         m_linkSelect.addValueChangeHandler(new ValueChangeHandler<String>() {
 

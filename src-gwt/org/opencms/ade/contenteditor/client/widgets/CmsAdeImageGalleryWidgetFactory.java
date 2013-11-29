@@ -36,7 +36,7 @@ import org.opencms.ade.contenteditor.client.Messages;
 import org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry;
 import org.opencms.gwt.client.I_CmsHasInit;
 
-import com.google.gwt.user.client.Element;
+import com.google.gwt.dom.client.Element;
 
 /**
  * Factory to generate basic input widget.<p>
@@ -62,11 +62,12 @@ public class CmsAdeImageGalleryWidgetFactory implements I_WidgetFactory, I_CmsHa
         return new FormWidgetWrapper(new CmsGalleryWidget(
             Messages.get().key(Messages.GUI_IMAGE_GALLERY_OPEN_0),
             configuration,
+            true,
             true));
     }
 
     /**
-     * @see com.alkacon.acacia.client.I_WidgetFactory#createInlineWidget(java.lang.String, com.google.gwt.user.client.Element)
+     * @see com.alkacon.acacia.client.I_WidgetFactory#createInlineWidget(java.lang.String, com.google.gwt.dom.client.Element)
      */
     public I_EditWidget createInlineWidget(String configuration, Element element) {
 
