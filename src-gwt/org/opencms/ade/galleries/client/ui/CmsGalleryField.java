@@ -69,7 +69,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.DivElement;
-import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -91,7 +91,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.Composite;
@@ -186,11 +185,13 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     protected CmsUploadButton m_uploadButton;
 
     /** The upload drop zone. */
-    @UiField
-    protected DivElement m_uploadDropZone;
+    protected Element m_uploadDropZone;
 
     /** The upload target folder. */
     String m_uploadTarget;
+
+    /** Flag indicating uploads are allowed. */
+    private boolean m_allowUploads;
 
     /** The gallery service instance. */
     private I_CmsGalleryServiceAsync m_gallerySvc;
@@ -208,8 +209,9 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
      * Constructs a new gallery widget.<p>
      * 
      * @param configuration the gallery configuration 
+     * @param allowUploads states if the upload button should be enabled for this widget
      */
-    public CmsGalleryField(I_CmsGalleryConfiguration configuration) {
+    public CmsGalleryField(I_CmsGalleryConfiguration configuration, boolean allowUploads) {
 
         CmsDialogUploadButtonHandler buttonHandler = new CmsDialogUploadButtonHandler(
             new Supplier<I_CmsUploadContext>() {
@@ -234,30 +236,18 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         m_uploadButton = new CmsUploadButton(buttonHandler);
         m_uploadButton.setText(null);
         m_uploadButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
-        m_uploadButton.setImageClass(I_CmsImageBundle.INSTANCE.style().uploadIcon());
+        m_uploadButton.setImageClass(I_CmsImageBundle.INSTANCE.style().uploadSmallIcon());
+        m_uploadButton.removeStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
         m_main = uibinder.createAndBindUi(this);
         initWidget(m_main);
-        initUploadZone(m_uploadDropZone);
-        m_uploadDropZone.setTitle(org.opencms.ade.upload.client.Messages.get().key(
-            org.opencms.ade.upload.client.Messages.GUI_UPLOAD_DRAG_AND_DROP_ENABLED_0));
+        m_allowUploads = allowUploads;
+        if (m_allowUploads) {
+            m_fieldBox.addClassName(I_CmsLayoutBundle.INSTANCE.galleryFieldCss().hasUpload());
+        }
         m_configuration = configuration;
         I_CmsLayoutBundle.INSTANCE.galleryFieldCss().ensureInjected();
         m_opener.setButtonStyle(ButtonStyle.TRANSPARENT, null);
         m_opener.setImageClass(I_CmsImageBundle.INSTANCE.style().popupIcon());
-    }
-
-    /** 
-     * Constructs a new gallery widget.<p>
-     * 
-     * @param configuration the gallery configuration
-     * @param iconImage the icon image class 
-     */
-    public CmsGalleryField(I_CmsGalleryConfiguration configuration, String iconImage) {
-
-        this(configuration);
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(iconImage)) {
-            m_opener.setImageClass(I_CmsImageBundle.INSTANCE.style().popupIcon());
-        }
     }
 
     /**
@@ -275,7 +265,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
             public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
 
                 CmsGalleryConfigurationJSO conf = CmsGalleryConfigurationJSO.parseConfiguration(widgetParams.get("configuration"));
-                CmsGalleryField galleryField = new CmsGalleryField(conf);
+                CmsGalleryField galleryField = new CmsGalleryField(conf, false);
                 return galleryField;
             }
         });
@@ -389,6 +379,22 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     public void setAutoHideParent(I_CmsAutoHider autoHideParent) {
 
         // do nothing 
+    }
+
+    /**
+     * Sets the upload drop zone element.<p>
+     * 
+     * @param dropZone the upload drop zone element
+     */
+    public void setDropZoneElement(Element dropZone) {
+
+        if (m_allowUploads && (dropZone != null) && (m_uploadDropZone == null)) {
+            m_uploadDropZone = dropZone;
+            initUploadZone(m_uploadDropZone);
+            m_uploadDropZone.setTitle(org.opencms.ade.upload.client.Messages.get().key(
+                org.opencms.ade.upload.client.Messages.GUI_UPLOAD_DRAG_AND_DROP_ENABLED_0));
+            m_uploadDropZone.addClassName(I_CmsLayoutBundle.INSTANCE.galleryFieldCss().uploadDropZone());
+        }
     }
 
     /**
@@ -619,11 +625,9 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_uploadTarget)) {
             // disable the upload button as no target folder is available
             m_uploadButton.setVisible(false);
-            m_uploadDropZone.getStyle().setDisplay(Display.NONE);
         } else {
             // make sure the upload button is available
             m_uploadButton.setVisible(true);
-            m_uploadDropZone.getStyle().clearDisplay();
             ((CmsDialogUploadButtonHandler)m_uploadButton.getButtonHandler()).setTargetFolder(m_uploadTarget);
             m_uploadButton.setTitle(Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_1, m_uploadTarget));
         }
@@ -687,7 +691,9 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
      */
     void onDragOver() {
 
-        m_uploadDropZone.addClassName(I_CmsLayoutBundle.INSTANCE.galleryFieldCss().dropZoneHover());
+        if (m_uploadTarget != null) {
+            m_uploadDropZone.addClassName(I_CmsLayoutBundle.INSTANCE.galleryFieldCss().dropZoneHover());
+        }
     }
 
     /**
@@ -828,15 +834,17 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
                                                                                                    function dragleave(event) {
                                                                                                    event.stopPropagation();
                                                                                                    event.preventDefault();
-                                                                                                  self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::onDragOut()();
+                                                                                                   self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::onDragOut()();
                                                                                                    }
 
                                                                                                    function drop(event) {
                                                                                                    event.preventDefault();
+                                                                                                   self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::onDragOut()();
+                                                                                                   if (self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::m_uploadTarget!=null){
                                                                                                    var dt = event.dataTransfer;
                                                                                                    var files = dt.files;
-                                                                                                   self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::onDragOut()();
                                                                                                    self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::openUploadWithFiles(Lcom/google/gwt/core/client/JavaScriptObject;)(files);
+                                                                                                   }
                                                                                                    }
 
                                                                                                    element.addEventListener("dragover", dragover, false);

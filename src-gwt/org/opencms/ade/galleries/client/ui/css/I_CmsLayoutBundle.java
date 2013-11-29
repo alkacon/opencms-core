@@ -306,6 +306,12 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * 
          * @return the CSS class name
          */
+        String hasUpload();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String inputContainer();
 
         /** Access method.<p>
@@ -313,6 +319,12 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * @return the CSS class name
          */
         String opener();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String uploadButton();
 
         /** Access method.<p>
          * 

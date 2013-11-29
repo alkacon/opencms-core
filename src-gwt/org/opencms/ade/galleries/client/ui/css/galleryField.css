@@ -5,6 +5,9 @@ div>div.fader{
 	cursor: text;
 	top: 0px;
 }
+div.hasUpload > div.fader{
+	right: 40px;
+}
 .fieldBox{
 	border: 1px solid #bbbbbb;
 	position:relative;
@@ -27,14 +30,36 @@ div.inputContainer{
 	margin: 0px 21px 0px 4px;
 	padding: 0px;
 }
+.hasUpload > div.inputContainer{
+	margin-right: 41px;	
+}
+
 div.galleryField input[type="text"]:focus{
 	box-shadow: none;
     outline: none;
 }
-.opener{
+div.opener{
 	position: absolute;
 	right: 3px;
 	top: 1px;
+}
+div.uploadButton{
+	display:none;
+}
+div.hasUpload > div.uploadButton{
+	display: inline-block;
+	height: auto;
+	width: auto;
+	position: absolute;
+	top: 1px;
+	right: 24px;
+}
+
+div.fieldBox > div.uploadButton > input{
+	height: auto;
+	width: auto;
+	font-size: 200px;
+	line-height: 200px;	
 }
 .resourceInfo{
 	margin:3px 0px 0px 0px;
@@ -67,21 +92,7 @@ div.imagePreview > div{
 	background: white;
 	text-align: center;
 }
-div.imagePreview > div.cmsState{
-	height: auto;
-	width: auto;
-	border: 1px solid #bbbbbb;
-	border-radius: 3px;
-	position: absolute;
-	top: 5px;
-	right: 5px;
-}
-div.imagePreview > div.cmsState > input{
-	height: auto;
-	width: auto;
-	font-size: 200px;
-	line-height: 200px;	
-}
+
 div.imagePreview img {
 	margin: auto;
 }
@@ -90,18 +101,15 @@ div.imagePreview img {
 	display: block;	
 }
 
-div.imagePreview > div.uploadDropZone{
-	position: absolute;
-	top: 0px;
-	left: 0px;
-	bottom: 0px;
-	right: 0px;
-	background: transparent;
-}
-        
-div.imagePreview > div.uploadDropZone.dropZoneHover{
-	opacity: 0.5;
-	background: value("constants.css.textColorImportant");
+@def DROPZONE_GRADIENT literal("left, #ffa0ae 0%, #ffb2bc 81%, #e8d5d8 100%");  
+
+div.uploadDropZone.dropZoneHover{
+	background: value("constants.css.textColorImportant") !important;
+	background-image: literal("-moz-linear-gradient(")DROPZONE_GRADIENT literal(")") !important;
+	background-image: literal("-ms-linear-gradient(")DROPZONE_GRADIENT literal(")") !important;
+	background-image: literal("-webkit-linear-gradient(")DROPZONE_GRADIENT literal(")") !important;
+	background-image: literal("-o-linear-gradient(")DROPZONE_GRADIENT literal(")") !important;
+	background-image: literal("linear-gradient(")DROPZONE_GRADIENT literal(")") !important;
 }
 
 div.formats{

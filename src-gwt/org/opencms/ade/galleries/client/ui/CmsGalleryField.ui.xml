@@ -11,16 +11,14 @@
 <g:HTMLPanel styleName="{gallery.galleryFieldCss.galleryField} {main.generalCss.clearFix}">
 	<div class="{gallery.galleryFieldCss.imagePreview} {main.generalCss.cornerAll}">
 		<div ui:field="m_imagePreview"></div>
-		<div class="{gallery.galleryFieldCss.uploadDropZone}" ui:field="m_uploadDropZone"></div>
-		<upload:CmsUploadButton ui:field="m_uploadButton"/>
 	</div>
-	
 	<div ui:field="m_fieldBox" class="{gallery.galleryFieldCss.fieldBox} {input.inputCss.selectionInput} {main.generalCss.cornerAll}">
 		<div class="{gallery.galleryFieldCss.inputContainer}">
 			<input:CmsSimpleTextBox ui:field="m_textbox" />
 		</div>
-		<cms:CmsPushButton ui:field="m_opener" addStyleNames="{gallery.galleryFieldCss.opener}"/>
 		<g:Label ui:field="m_fader" styleName="{input.inputCss.fader}"/>
+		<upload:CmsUploadButton ui:field="m_uploadButton" addStyleNames="{gallery.galleryFieldCss.uploadButton}" />
+		<cms:CmsPushButton ui:field="m_opener" addStyleNames="{gallery.galleryFieldCss.opener}"/>
 	</div>
 	<g:FlowPanel ui:field="m_resourceInfoPanel" styleName="{gallery.galleryFieldCss.resourceInfo}" />
 </g:HTMLPanel>

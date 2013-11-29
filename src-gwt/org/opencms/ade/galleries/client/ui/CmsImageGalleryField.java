@@ -35,7 +35,6 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.CmsTextArea;
 import org.opencms.gwt.client.util.CmsDomUtil;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.LinkedHashMap;
@@ -86,10 +85,11 @@ public class CmsImageGalleryField extends CmsGalleryField {
      * Constructs a new gallery widget.<p>
      * 
      * @param configuration the gallery configuration
+     * @param allowUploads states if the upload button should be enabled for this widget
      */
-    public CmsImageGalleryField(I_CmsGalleryConfiguration configuration) {
+    public CmsImageGalleryField(I_CmsGalleryConfiguration configuration, boolean allowUploads) {
 
-        super(configuration);
+        super(configuration, allowUploads);
         setHasImage(true);
         m_descriptionArea = new CmsTextArea();
 
@@ -117,20 +117,6 @@ public class CmsImageGalleryField extends CmsGalleryField {
         generatesFormatSelection();
         m_resourceInfoPanel.setVisible(false);
         addStyleName(org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.galleryFieldCss().hasImage());
-    }
-
-    /** 
-     * Constructs a new gallery widget.<p>
-     * 
-     * @param configuration the gallery configuration
-     * @param iconImage the icon image class 
-     */
-    public CmsImageGalleryField(I_CmsGalleryConfiguration configuration, String iconImage) {
-
-        this(configuration);
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(iconImage)) {
-            m_opener.setImageClass(iconImage);
-        }
     }
 
     /**
