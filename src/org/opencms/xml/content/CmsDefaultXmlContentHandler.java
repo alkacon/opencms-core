@@ -1093,7 +1093,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         // resolve the file mappings
         content.resolveMappings(cms);
         // ensure all property or permission mappings of deleted optional values are removed
-        removeEmptyMappings(cms, content);
+        removeEmptyMappings(cms, file, content);
         // write categories (if there is a category widget present)
         file = writeCategories(cms, file, content);
         // return the result
@@ -2566,11 +2566,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      * Removes property values on resources for non-existing, optional elements.<p>
      * 
      * @param cms the current users OpenCms context
+     * @param file the file which is currently being prepared for writing
      * @param content the XML content to remove the property values for
-     * 
      * @throws CmsException in case of read/write errors accessing the OpenCms VFS
      */
-    protected void removeEmptyMappings(CmsObject cms, CmsXmlContent content) throws CmsException {
+    protected void removeEmptyMappings(CmsObject cms, CmsFile file, CmsXmlContent content) throws CmsException {
 
         List<CmsResource> siblings = null;
         CmsObject rootCms = null;
@@ -2592,8 +2592,10 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             }
             for (int v = mappings.size() - 1; v >= 0; v--) {
                 String mapping = mappings.get(v);
-                if (mapping.startsWith(MAPTO_PROPERTY_LIST) || mapping.startsWith(MAPTO_PROPERTY)) {
 
+                if (mapping.startsWith(MAPTO_ATTRIBUTE)
+                    || mapping.startsWith(MAPTO_PROPERTY_LIST)
+                    || mapping.startsWith(MAPTO_PROPERTY)) {
                     for (int i = 0; i < siblings.size(); i++) {
 
                         // get siblings filename and locale
@@ -2609,27 +2611,42 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                             continue;
                         }
 
-                        String property;
-                        boolean shared = false;
-                        if (mapping.startsWith(MAPTO_PROPERTY_LIST_INDIVIDUAL)) {
-                            property = mapping.substring(MAPTO_PROPERTY_LIST_INDIVIDUAL.length());
-                        } else if (mapping.startsWith(MAPTO_PROPERTY_LIST_SHARED)) {
-                            property = mapping.substring(MAPTO_PROPERTY_LIST_SHARED.length());
-                            shared = true;
-                        } else if (mapping.startsWith(MAPTO_PROPERTY_LIST)) {
-                            property = mapping.substring(MAPTO_PROPERTY_LIST.length());
-                        } else if (mapping.startsWith(MAPTO_PROPERTY_SHARED)) {
-                            property = mapping.substring(MAPTO_PROPERTY_SHARED.length());
-                            shared = true;
-                        } else if (mapping.startsWith(MAPTO_PROPERTY_INDIVIDUAL)) {
-                            property = mapping.substring(MAPTO_PROPERTY_INDIVIDUAL.length());
-                        } else {
-                            property = mapping.substring(MAPTO_PROPERTY.length());
+                        if (mapping.startsWith(MAPTO_PROPERTY_LIST) || mapping.startsWith(MAPTO_PROPERTY)) {
+
+                            String property;
+                            boolean shared = false;
+                            if (mapping.startsWith(MAPTO_PROPERTY_LIST_INDIVIDUAL)) {
+                                property = mapping.substring(MAPTO_PROPERTY_LIST_INDIVIDUAL.length());
+                            } else if (mapping.startsWith(MAPTO_PROPERTY_LIST_SHARED)) {
+                                property = mapping.substring(MAPTO_PROPERTY_LIST_SHARED.length());
+                                shared = true;
+                            } else if (mapping.startsWith(MAPTO_PROPERTY_LIST)) {
+                                property = mapping.substring(MAPTO_PROPERTY_LIST.length());
+                            } else if (mapping.startsWith(MAPTO_PROPERTY_SHARED)) {
+                                property = mapping.substring(MAPTO_PROPERTY_SHARED.length());
+                                shared = true;
+                            } else if (mapping.startsWith(MAPTO_PROPERTY_INDIVIDUAL)) {
+                                property = mapping.substring(MAPTO_PROPERTY_INDIVIDUAL.length());
+                            } else {
+                                property = mapping.substring(MAPTO_PROPERTY.length());
+                            }
+                            rootCms.writePropertyObject(filename, new CmsProperty(
+                                property,
+                                CmsProperty.DELETE_VALUE,
+                                shared ? CmsProperty.DELETE_VALUE : null));
+                        } else if (mapping.startsWith(MAPTO_ATTRIBUTE)) {
+                            if (mapping.equals(MAPTO_ATTRIBUTE + ATTRIBUTE_DATERELEASED)) {
+                                rootCms.setDateReleased(filename, CmsResource.DATE_RELEASED_DEFAULT, false);
+                                if (filename.equals(rootCms.getSitePath(file))) {
+                                    file.setDateReleased(CmsResource.DATE_RELEASED_DEFAULT);
+                                }
+                            } else if (mapping.equals(MAPTO_ATTRIBUTE + ATTRIBUTE_DATEEXPIRED)) {
+                                rootCms.setDateExpired(filename, CmsResource.DATE_EXPIRED_DEFAULT, false);
+                                if (filename.equals(rootCms.getSitePath(file))) {
+                                    file.setDateExpired(CmsResource.DATE_EXPIRED_DEFAULT);
+                                }
+                            }
                         }
-                        rootCms.writePropertyObject(filename, new CmsProperty(
-                            property,
-                            CmsProperty.DELETE_VALUE,
-                            shared ? CmsProperty.DELETE_VALUE : null));
                     }
                 } else if (mapping.startsWith(MAPTO_PERMISSION)) {
                     for (int i = 0; i < siblings.size(); i++) {
