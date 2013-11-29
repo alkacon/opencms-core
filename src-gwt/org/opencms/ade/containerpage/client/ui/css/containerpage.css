@@ -33,7 +33,7 @@ ul.clipboardList{
 }
 
 
-div.optionBar{
+.dragElement div.optionBar{
 	border: 1px solid transparent;
 	position: absolute;
 	top: 2px;
@@ -55,7 +55,7 @@ div.optionBar{
 	max-width: none;
 }
 
-div.optionBar, div.optionBar *{
+.dragElement div.optionBar, .dragElement div.optionBar *{
 	box-sizing: content-box;
 	-moz-box-sizing: content-box;
 }
@@ -125,7 +125,7 @@ div.toolbarToggle{
 	max-width: none;
 }
 
-.toolbarSelection .optionBar.cmsHovering{
+.toolbarSelection div.optionBar.cmsHovering{
 	height: auto;
 	border: 1px solid value("constants.css.borderColor");
 	border-radius: value("constants.css.borderRadius");
@@ -172,7 +172,7 @@ div.groupcontainerPlaceholder{
 	display: block;
 }
 
-.groupcontainerEditing .emptyGroupContainer, .toolbarSelection .dragging .optionBar.cmsHovering{
+.groupcontainerEditing .emptyGroupContainer, .toolbarSelection .dragging div.optionBar.cmsHovering{
 	background: transparent;
 	border: none;
 }
