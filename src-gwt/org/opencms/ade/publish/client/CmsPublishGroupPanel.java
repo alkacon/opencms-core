@@ -45,7 +45,6 @@ import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsTriStateCheckBox;
 import org.opencms.gwt.client.ui.input.CmsTriStateCheckBox.State;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
-import org.opencms.gwt.client.util.CmsResourceStateUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
@@ -182,15 +181,7 @@ public class CmsPublishGroupPanel extends Composite {
         CmsListInfoBean info = new CmsListInfoBean();
         info.setTitle(getTitle(resourceBean));
         info.setSubTitle(resourceBean.getName());
-        String stateLabel = org.opencms.gwt.client.Messages.get().key(
-            org.opencms.gwt.client.Messages.GUI_RESOURCE_STATE_0);
         info.setResourceState(resourceBean.getState());
-        String stateName = CmsResourceStateUtil.getStateName(resourceBean.getState());
-        // this can be null for the source resources of broken relations in the 'broken links' 
-        // panel since these resources don't have to be new or deleted or changed
-        if (stateName != null) {
-            info.addAdditionalInfo(stateLabel, stateName, CmsResourceStateUtil.getStateStyle(resourceBean.getState()));
-        }
         if (resourceBean.getUserLastModified() != null) {
             String userLabel = org.opencms.ade.publish.client.Messages.get().key(
                 org.opencms.ade.publish.client.Messages.GUI_LABEL_USER_LAST_MODIFIED_0);
