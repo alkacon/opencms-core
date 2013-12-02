@@ -17,6 +17,10 @@ Legend:
 
 OpenCms 9.0.1 - xxxxxxxxx
 - Updated TinyMCE to version 4.0.11
+! Added option to show expired or unreleased resources in content collector lists in the offline project
+- Enhanced gallery widget upload feature
+* Fixing issue with optional text-area widgets
+- Improved IE10/IE11 support to allow drag and drop in upload dialog
 
 OpenCms 9.0.0 - November 8, 2013
 ! Improved configuration for content formatters
