@@ -149,6 +149,7 @@ public class CmsElementUtil {
     throws CmsException {
 
         m_cms = OpenCms.initCmsObject(cms);
+        m_cms.getRequestContext().setRequestTime(cms.getRequestContext().getRequestTime());
         m_req = req;
 
         m_res = res;
