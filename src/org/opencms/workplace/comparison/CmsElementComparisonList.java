@@ -179,17 +179,20 @@ public class CmsElementComparisonList extends A_CmsListDialog {
      * 
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListIndepActions()
      */
+    @Override
     public void executeListIndepActions() {
 
         if (getParamListAction().equals(LIST_IACTION_COMPARE_ALL)) {
             // called if all elements are to be compared
-            Map params = new HashMap();
-            params.put(CmsHistoryList.PARAM_VERSION_1, getParamVersion1());
-            params.put(CmsHistoryList.PARAM_VERSION_2, getParamVersion2());
-            params.put(CmsHistoryList.PARAM_ID_1, getParamId1());
-            params.put(CmsHistoryList.PARAM_ID_2, getParamId2());
-            params.put(CmsPropertyComparisonList.PARAM_COMPARE, CmsResourceComparisonDialog.COMPARE_ALL_ELEMENTS);
-            params.put(PARAM_RESOURCE, getParamResource());
+            Map<String, String[]> params = new HashMap<String, String[]>();
+            params.put(CmsHistoryList.PARAM_VERSION_1, new String[] {getParamVersion1()});
+            params.put(CmsHistoryList.PARAM_VERSION_2, new String[] {getParamVersion2()});
+            params.put(CmsHistoryList.PARAM_ID_1, new String[] {getParamId1()});
+            params.put(CmsHistoryList.PARAM_ID_2, new String[] {getParamId2()});
+            params.put(
+                CmsPropertyComparisonList.PARAM_COMPARE,
+                new String[] {CmsResourceComparisonDialog.COMPARE_ALL_ELEMENTS});
+            params.put(PARAM_RESOURCE, new String[] {getParamResource()});
             // forward to the element difference screen
             try {
                 getToolManager().jspForwardTool(this, "/history/comparison/difference", params);
@@ -204,6 +207,7 @@ public class CmsElementComparisonList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() {
 
         throwListUnsupportedActionException();
@@ -212,16 +216,17 @@ public class CmsElementComparisonList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws IOException, ServletException {
 
-        Map params = new HashMap();
-        params.put(CmsHistoryList.PARAM_VERSION_1, getParamVersion1());
-        params.put(CmsHistoryList.PARAM_VERSION_2, getParamVersion2());
-        params.put(CmsHistoryList.PARAM_ID_1, getParamId1());
-        params.put(CmsHistoryList.PARAM_ID_2, getParamId2());
-        params.put(PARAM_LOCALE, getSelectedItem().get(LIST_COLUMN_LOCALE).toString());
-        params.put(PARAM_ELEMENT, getSelectedItem().get(LIST_COLUMN_ATTRIBUTE).toString());
-        params.put(PARAM_RESOURCE, getParamResource());
+        Map<String, String[]> params = new HashMap<String, String[]>();
+        params.put(CmsHistoryList.PARAM_VERSION_1, new String[] {getParamVersion1()});
+        params.put(CmsHistoryList.PARAM_VERSION_2, new String[] {getParamVersion2()});
+        params.put(CmsHistoryList.PARAM_ID_1, new String[] {getParamId1()});
+        params.put(CmsHistoryList.PARAM_ID_2, new String[] {getParamId2()});
+        params.put(PARAM_LOCALE, new String[] {getSelectedItem().get(LIST_COLUMN_LOCALE).toString()});
+        params.put(PARAM_ELEMENT, new String[] {getSelectedItem().get(LIST_COLUMN_ATTRIBUTE).toString()});
+        params.put(PARAM_RESOURCE, new String[] {getParamResource()});
         // forward to the element difference screen
         getToolManager().jspForwardTool(this, "/history/comparison/difference", params);
 
@@ -310,6 +315,7 @@ public class CmsElementComparisonList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // no-op
@@ -318,9 +324,10 @@ public class CmsElementComparisonList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
-    protected List getListItems() throws CmsException {
+    @Override
+    protected List<CmsListItem> getListItems() throws CmsException {
 
-        List result = new ArrayList();
+        List<CmsListItem> result = new ArrayList<CmsListItem>();
         CmsFile resource1 = CmsResourceComparisonDialog.readFile(
             getCms(),
             new CmsUUID(getParamId1()),
@@ -329,9 +336,9 @@ public class CmsElementComparisonList extends A_CmsListDialog {
             getCms(),
             new CmsUUID(getParamId2()),
             getParamVersion2());
-        Iterator diffs = new CmsXmlDocumentComparison(getCms(), resource1, resource2).getElements().iterator();
+        Iterator<CmsElementComparison> diffs = new CmsXmlDocumentComparison(getCms(), resource1, resource2).getElements().iterator();
         while (diffs.hasNext()) {
-            CmsElementComparison comparison = (CmsElementComparison)diffs.next();
+            CmsElementComparison comparison = diffs.next();
             String locale = comparison.getLocale().toString();
             String attribute = comparison.getName();
             CmsListItem item = getList().newItem(locale + attribute);
@@ -355,9 +362,10 @@ public class CmsElementComparisonList extends A_CmsListDialog {
                     item.set(LIST_COLUMN_STATUS, key(Messages.GUI_COMPARE_UNCHANGED_0));
                 }
             }
-            String value1 = CmsStringUtil.escapeHtml(CmsStringUtil.substitute(CmsStringUtil.trimToSize(
-                comparison.getVersion1(),
-                CmsPropertyComparisonList.TRIM_AT_LENGTH), "\n", ""));
+            String value1 = CmsStringUtil.escapeHtml(CmsStringUtil.substitute(
+                CmsStringUtil.trimToSize(comparison.getVersion1(), CmsPropertyComparisonList.TRIM_AT_LENGTH),
+                "\n",
+                ""));
 
             // formatting DateTime
             if (comparison instanceof CmsXmlContentElementComparison) {
@@ -372,9 +380,10 @@ public class CmsElementComparisonList extends A_CmsListDialog {
             }
             item.set(LIST_COLUMN_VERSION_1, value1);
 
-            String value2 = CmsStringUtil.escapeHtml(CmsStringUtil.substitute(CmsStringUtil.trimToSize(
-                comparison.getVersion2(),
-                CmsPropertyComparisonList.TRIM_AT_LENGTH), "\n", ""));
+            String value2 = CmsStringUtil.escapeHtml(CmsStringUtil.substitute(
+                CmsStringUtil.trimToSize(comparison.getVersion2(), CmsPropertyComparisonList.TRIM_AT_LENGTH),
+                "\n",
+                ""));
 
             // formatting DateTime
             if (comparison instanceof CmsXmlContentElementComparison) {
@@ -406,6 +415,7 @@ public class CmsElementComparisonList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create column for icon
@@ -418,6 +428,7 @@ public class CmsElementComparisonList extends A_CmsListDialog {
         // add state error action
         CmsListDirectAction addedAction = new CmsListDirectAction(CmsResourceComparison.TYPE_ADDED) {
 
+            @Override
             public boolean isVisible() {
 
                 String type = getItem().get(LIST_COLUMN_STATUS).toString();
@@ -432,6 +443,7 @@ public class CmsElementComparisonList extends A_CmsListDialog {
         // add state error action
         CmsListDirectAction removedAction = new CmsListDirectAction(CmsResourceComparison.TYPE_REMOVED) {
 
+            @Override
             public boolean isVisible() {
 
                 String type = getItem().get(LIST_COLUMN_STATUS).toString();
@@ -446,6 +458,7 @@ public class CmsElementComparisonList extends A_CmsListDialog {
         // add state error action
         CmsListDirectAction changedAction = new CmsListDirectAction(CmsResourceComparison.TYPE_CHANGED) {
 
+            @Override
             public boolean isVisible() {
 
                 String type = getItem().get(LIST_COLUMN_STATUS).toString();
@@ -460,6 +473,7 @@ public class CmsElementComparisonList extends A_CmsListDialog {
         // add state error action
         CmsListDirectAction unchangedAction = new CmsListDirectAction(CmsResourceComparison.TYPE_UNCHANGED) {
 
+            @Override
             public boolean isVisible() {
 
                 String type = getItem().get(LIST_COLUMN_STATUS).toString();
@@ -531,6 +545,7 @@ public class CmsElementComparisonList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         CmsListIndependentAction compare = new CmsListIndependentAction(LIST_IACTION_COMPARE_ALL);
@@ -550,6 +565,7 @@ public class CmsElementComparisonList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // no-op

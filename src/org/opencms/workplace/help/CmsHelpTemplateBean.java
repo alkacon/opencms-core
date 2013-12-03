@@ -659,11 +659,11 @@ public class CmsHelpTemplateBean extends CmsDialog {
         int helpLevel = CmsResource.getPathLevel(PATH_HELP);
 
         // get a list of all pages / subfolders in the help folder
-        List navList = getJsp().getNavigation().getNavigationTreeForFolder(currentUri, helpLevel, 99);
-        Iterator i = navList.iterator();
+        List<CmsJspNavElement> navList = getJsp().getNavigation().getNavigationTreeForFolder(currentUri, helpLevel, 99);
+        Iterator<CmsJspNavElement> i = navList.iterator();
 
         while (i.hasNext()) {
-            CmsJspNavElement nav = (CmsJspNavElement)i.next();
+            CmsJspNavElement nav = i.next();
             // calculate level to display
             int level = nav.getNavTreeLevel() - (helpLevel - 1);
             if (nav.getResourceName().equals(currentUri)
@@ -711,6 +711,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#checkRole()
      */
+    @Override
     protected void checkRole() throws CmsRoleViolationException {
 
         // needed since these pages are static exported
@@ -851,6 +852,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods
@@ -874,23 +876,27 @@ public class CmsHelpTemplateBean extends CmsDialog {
     }
 
     /**
-     * @param ressourceName a name of a ressource
-     * @return The given ressources name with additional request parameter concatenations of the 
-     *         current request on this <code>CmsDialog</code> 
+     * Attaches the resource name to the request as parameter.<p>
      * 
+     * @param resourceName a name of a resource
+     * 
+     * @return The given resource name with additional request parameter concatenations of the 
+     *         current request on this <code>CmsDialog</code> 
      */
-    private String attachRequestString(String ressourceName) {
+    private String attachRequestString(String resourceName) {
 
-        StringBuffer result = new StringBuffer(ressourceName);
+        StringBuffer result = new StringBuffer(resourceName);
         boolean firstParam = true;
-        if (ressourceName.indexOf('?') == -1) {
+        if (resourceName.indexOf('?') == -1) {
             // no params in uri yet?
             result.append('?');
         } else {
             firstParam = false;
         }
-        Map.Entry entry;
-        Iterator it = getJsp().getRequest().getParameterMap().entrySet().iterator();
+
+        @SuppressWarnings("unchecked")
+        Map<String, String[]> params = getJsp().getRequest().getParameterMap();
+        Iterator<Map.Entry<String, String[]>> it = params.entrySet().iterator();
         String[] values = null;
         while (it.hasNext()) {
             if (values == null) {
@@ -901,9 +907,9 @@ public class CmsHelpTemplateBean extends CmsDialog {
             } else {
                 result.append("&");
             }
-            entry = (Map.Entry)it.next();
+            Map.Entry<String, String[]> entry = it.next();
             result.append(entry.getKey().toString()).append('=');
-            values = (String[])entry.getValue();
+            values = entry.getValue();
             for (int i = 0; i < values.length; i++) {
                 result.append(values[i]);
                 if ((i + 1) < values.length) {

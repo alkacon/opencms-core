@@ -58,6 +58,7 @@ public class CmsListPrintIAction extends A_CmsListIndependentJsAction {
     /**
      * @see org.opencms.workplace.list.A_CmsListIndependentJsAction#jsCode(CmsWorkplace)
      */
+    @Override
     public String jsCode(CmsWorkplace wp) {
 
         String url = OpenCms.getLinkManager().substituteLink(

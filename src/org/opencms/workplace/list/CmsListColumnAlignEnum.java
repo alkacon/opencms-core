@@ -63,7 +63,7 @@ public final class CmsListColumnAlignEnum {
     private static final CmsListColumnAlignEnum[] VALUE_ARRAY = {ALIGN_LEFT, ALIGN_CENTER, ALIGN_RIGHT};
 
     /** List of mode constants. */
-    public static final List VALUES = Collections.unmodifiableList(Arrays.asList(VALUE_ARRAY));
+    public static final List<CmsListColumnAlignEnum> VALUES = Collections.unmodifiableList(Arrays.asList(VALUE_ARRAY));
 
     /** Internal representation. */
     private final String m_align;
@@ -90,9 +90,9 @@ public final class CmsListColumnAlignEnum {
      */
     public static CmsListColumnAlignEnum valueOf(String value) throws CmsIllegalArgumentException {
 
-        Iterator iter = VALUES.iterator();
+        Iterator<CmsListColumnAlignEnum> iter = VALUES.iterator();
         while (iter.hasNext()) {
-            CmsListColumnAlignEnum target = (CmsListColumnAlignEnum)iter.next();
+            CmsListColumnAlignEnum target = iter.next();
             if (value.equals(target.getAlign())) {
                 return target;
             }
@@ -116,6 +116,7 @@ public final class CmsListColumnAlignEnum {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         return m_align;

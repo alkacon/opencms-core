@@ -32,7 +32,7 @@ import java.util.Locale;
 /**
  * Comparison of two xml page elements.<p>
  */
-public class CmsElementComparison extends CmsAttributeComparison implements Comparable {
+public class CmsElementComparison extends CmsAttributeComparison implements Comparable<CmsElementComparison> {
 
     /** The element locale.<p> */
     private Locale m_locale;
@@ -52,15 +52,13 @@ public class CmsElementComparison extends CmsAttributeComparison implements Comp
     /**
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
-    public int compareTo(Object o) {
+    @Override
+    public int compareTo(CmsElementComparison diffItem) {
 
-        if (this == o) {
+        if (this == diffItem) {
             return 0;
         }
-        if (!(o instanceof CmsElementComparison)) {
-            return 0;
-        }
-        CmsElementComparison diffItem = (CmsElementComparison)o;
+
         // first compare by name
         if (getName().compareTo(diffItem.getName()) != 0) {
             return getName().compareTo(diffItem.getName());
@@ -73,6 +71,7 @@ public class CmsElementComparison extends CmsAttributeComparison implements Comp
      * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object o) {
 
         if (this == o) {
@@ -99,6 +98,7 @@ public class CmsElementComparison extends CmsAttributeComparison implements Comp
      * 
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_locale.hashCode() + getName().hashCode();

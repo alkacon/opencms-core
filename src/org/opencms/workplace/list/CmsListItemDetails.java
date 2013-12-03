@@ -68,6 +68,7 @@ public class CmsListItemDetails extends CmsListColumnDefinition {
     /**
      * @see org.opencms.workplace.list.CmsListColumnDefinition#setWp(org.opencms.workplace.list.A_CmsListDialog)
      */
+    @Override
     public void setWp(A_CmsListDialog wp) {
 
         super.setWp(wp);
@@ -140,6 +141,7 @@ public class CmsListItemDetails extends CmsListColumnDefinition {
      * 
      * @param listId the id of the list
      */
+    @Override
     public void setListId(String listId) {
 
         m_hideAction.setListId(listId);

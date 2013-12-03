@@ -140,6 +140,7 @@ public class CmsDeletedResourcesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() throws CmsRuntimeException {
 
         // noop
@@ -148,6 +149,7 @@ public class CmsDeletedResourcesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws CmsRuntimeException {
 
         // noop
@@ -156,6 +158,7 @@ public class CmsDeletedResourcesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // noop
@@ -164,14 +167,15 @@ public class CmsDeletedResourcesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
-    protected List getListItems() throws CmsException {
+    @Override
+    protected List<CmsListItem> getListItems() throws CmsException {
 
-        List ret = new ArrayList();
+        List<CmsListItem> ret = new ArrayList<CmsListItem>();
 
-        List list = getCms().readDeletedResources(m_resourcename, m_readTree);
-        Iterator iter = list.iterator();
+        List<I_CmsHistoryResource> list = getCms().readDeletedResources(m_resourcename, m_readTree);
+        Iterator<I_CmsHistoryResource> iter = list.iterator();
         while (iter.hasNext()) {
-            I_CmsHistoryResource res = (I_CmsHistoryResource)iter.next();
+            I_CmsHistoryResource res = iter.next();
 
             CmsListItem item = getList().newItem(res.getStructureId().toString());
             String resourcePath = getCms().getSitePath((CmsResource)res);
@@ -188,6 +192,7 @@ public class CmsDeletedResourcesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // add column icon
@@ -220,6 +225,7 @@ public class CmsDeletedResourcesList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.list.CmsListResourceIconAction#getIconPath()
              */
+            @Override
             public String getIconPath() {
 
                 return ICON_LIST_WARNING;
@@ -228,6 +234,7 @@ public class CmsDeletedResourcesList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 String path = (String)getItem().get(LIST_COLUMN_NAME);
@@ -250,6 +257,7 @@ public class CmsDeletedResourcesList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.list.I_CmsListFormatter#format(java.lang.Object, java.util.Locale)
              */
+            @Override
             public String format(Object data, Locale locale) {
 
                 String[] dataArray = CmsStringUtil.splitAsArray((String)data, "|");
@@ -313,6 +321,7 @@ public class CmsDeletedResourcesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // noop
@@ -321,6 +330,7 @@ public class CmsDeletedResourcesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // add restore multi action

@@ -91,7 +91,7 @@ public class CmsProgressWidget {
     private static final Log LOG = CmsLog.getLog(CmsProgressWidget.class);
 
     /** Map of running threads. */
-    private static Map m_threads = new HashMap();
+    private static Map<String, CmsProgressThread> m_threads = new HashMap<String, CmsProgressThread>();
 
     /** The color of the progress bar. */
     private String m_color;
@@ -169,7 +169,7 @@ public class CmsProgressWidget {
      */
     public static CmsProgressThread getProgressThread(String key) {
 
-        return (CmsProgressThread)m_threads.get(key);
+        return m_threads.get(key);
     }
 
     /**
@@ -201,7 +201,7 @@ public class CmsProgressWidget {
         try {
             CmsProgressThread thread;
             if (getProgressThread(getKey()) != null) {
-                thread = (CmsProgressThread)m_threads.get(getKey());
+                thread = m_threads.get(getKey());
 
                 if (thread.isAlive()) {
                     // wait the configured time until to update the progress the first time
@@ -222,8 +222,10 @@ public class CmsProgressWidget {
                 if (!thread.isAlive()) {
                     // is an error occurred in the execution of the thread?
                     if (thread.getError() != null) {
-                        return createError(Messages.get().getBundle(getJsp().getRequestContext().getLocale()).key(
-                            Messages.GUI_PROGRESS_ERROR_IN_THREAD_0), thread.getError());
+                        return createError(
+                            Messages.get().getBundle(getJsp().getRequestContext().getLocale()).key(
+                                Messages.GUI_PROGRESS_ERROR_IN_THREAD_0),
+                            thread.getError());
                     }
 
                     // return the result of the list created in the progress
@@ -253,8 +255,10 @@ public class CmsProgressWidget {
             if (LOG.isErrorEnabled()) {
                 LOG.error(Messages.get().getBundle().key(Messages.LOG_PROGRESS_ERROR_CALC_PROGRESS_0), t);
             }
-            return createError(Messages.get().getBundle(getJsp().getRequestContext().getLocale()).key(
-                Messages.GUI_PROGRESS_ERROR_CALCULATING_0), t);
+            return createError(
+                Messages.get().getBundle(getJsp().getRequestContext().getLocale()).key(
+                    Messages.GUI_PROGRESS_ERROR_CALCULATING_0),
+                t);
         }
     }
 
@@ -667,7 +671,7 @@ public class CmsProgressWidget {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().getBundle().key(Messages.LOG_PROGRESS_INTERRUPT_THREAD_1, getKey()));
                 }
-                Thread thread = (Thread)m_threads.get(getKey());
+                Thread thread = m_threads.get(getKey());
                 thread.interrupt();
             } else {
                 throw new CmsIllegalStateException(
@@ -678,16 +682,16 @@ public class CmsProgressWidget {
         // create the thread
         CmsProgressThread thread = new CmsProgressThread(list, getKey(), list.getLocale());
 
-        Map threadsAbandoned = new HashMap();
-        Map threadsAlive = new HashMap();
+        Map<String, CmsProgressThread> threadsAbandoned = new HashMap<String, CmsProgressThread>();
+        Map<String, CmsProgressThread> threadsAlive = new HashMap<String, CmsProgressThread>();
         synchronized (m_threads) {
 
             // clean up abandoned threads
-            for (Iterator iter = m_threads.entrySet().iterator(); iter.hasNext();) {
-                Map.Entry entry = (Map.Entry)iter.next();
-                CmsProgressThread value = (CmsProgressThread)entry.getValue();
+            for (Iterator<Map.Entry<String, CmsProgressThread>> iter = m_threads.entrySet().iterator(); iter.hasNext();) {
+                Map.Entry<String, CmsProgressThread> entry = iter.next();
+                CmsProgressThread value = entry.getValue();
 
-                if ((!value.isAlive()) && (System.currentTimeMillis() - value.getFinishTime() > CLEANUP_PERIOD)) {
+                if ((!value.isAlive()) && ((System.currentTimeMillis() - value.getFinishTime()) > CLEANUP_PERIOD)) {
                     threadsAbandoned.put(entry.getKey(), value);
                 } else {
                     threadsAlive.put(entry.getKey(), value);
@@ -702,9 +706,8 @@ public class CmsProgressWidget {
         }
 
         if (LOG.isDebugEnabled()) {
-            for (Iterator iter = threadsAbandoned.keySet().iterator(); iter.hasNext();) {
-                String key = (String)iter.next();
-                LOG.debug(Messages.get().getBundle().key(Messages.LOG_PROGRESS_CLEAN_UP_THREAD_1, key));
+            for (Iterator<String> iter = threadsAbandoned.keySet().iterator(); iter.hasNext();) {
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_PROGRESS_CLEAN_UP_THREAD_1, iter.next()));
             }
         }
     }

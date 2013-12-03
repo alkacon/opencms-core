@@ -832,6 +832,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
         query.setSearchRoots("/");
         assertEquals(
             modifiedContextQuery,
+
             "q=*:*&fl=*,score&qt=edismax&rows=10&fq=con_locales:en&fq=parent-folders:\"/\"&fq=expired:[NOW TO *]&fq=released:[* TO NOW]");
         query.setLocales(Locale.GERMAN, Locale.FRENCH, Locale.ENGLISH);
         query.setLocales(Locale.GERMAN, Locale.FRENCH);

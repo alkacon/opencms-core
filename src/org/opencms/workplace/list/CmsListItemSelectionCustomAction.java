@@ -76,6 +76,7 @@ public class CmsListItemSelectionCustomAction extends CmsListItemSelectionAction
     /**
      * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#buttonHtml(CmsWorkplace)
      */
+    @Override
     public String buttonHtml(CmsWorkplace wp) {
 
         if (!isVisible()) {
@@ -90,11 +91,11 @@ public class CmsListItemSelectionCustomAction extends CmsListItemSelectionAction
         if (!isEnabled()) {
             html += " disabled";
         }
-        
+
         if (getItem().getId().equals(getSelectedItemId())) {
             html += " checked";
         }
-        
+
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_attributes)) {
             html += m_attributes;
         }

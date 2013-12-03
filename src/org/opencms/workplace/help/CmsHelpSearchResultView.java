@@ -83,7 +83,7 @@ public class CmsHelpSearchResultView {
      * Avoids duplicate forms.</p>  
      * 
      */
-    private SortedMap m_formCache;
+    private SortedMap<String, String> m_formCache;
 
     /** The CmsJspActionElement to use. **/
     private CmsJspActionElement m_jsp;
@@ -99,7 +99,7 @@ public class CmsHelpSearchResultView {
     public CmsHelpSearchResultView(CmsJspActionElement action) {
 
         m_jsp = action;
-        this.m_formCache = new TreeMap();
+        m_formCache = new TreeMap<String, String>();
         try {
             m_onlineProject = m_jsp.getCmsObject().readProject(CmsProject.ONLINE_PROJECT_ID);
             m_offlineProject = m_jsp.getRequestContext().getCurrentProject();
@@ -138,10 +138,10 @@ public class CmsHelpSearchResultView {
         result.append("<h1>\n");
         result.append(messages.key(org.opencms.search.Messages.GUI_HELP_SEARCH_RESULT_TITLE_0));
         result.append("\n</h1>\n");
-        List searchResult;
+        List<CmsSearchResult> searchResult;
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(search.getQuery())) {
             search.setQuery("");
-            searchResult = new ArrayList();
+            searchResult = new ArrayList<CmsSearchResult>();
         } else {
             searchResult = search.getSearchResult();
         }
@@ -173,7 +173,7 @@ public class CmsHelpSearchResultView {
             result.append("\n");
             result.append("</p>\n<p>\n");
 
-            Iterator iterator = searchResult.iterator();
+            Iterator<CmsSearchResult> iterator = searchResult.iterator();
 
             try {
                 if (m_exportLinks) {
@@ -181,7 +181,7 @@ public class CmsHelpSearchResultView {
                 }
 
                 while (iterator.hasNext()) {
-                    CmsSearchResult entry = (CmsSearchResult)iterator.next();
+                    CmsSearchResult entry = iterator.next();
                     result.append("\n<div class=\"searchResult\"><a class=\"navhelp\" href=\"");
 
                     result.append(m_jsp.link(new StringBuffer(
@@ -215,17 +215,15 @@ public class CmsHelpSearchResultView {
                     result.append(messages.key(org.opencms.search.Messages.GUI_HELP_BUTTON_BACK_0));
                     result.append(" &lt;&lt;</a>&nbsp;&nbsp;\n");
                 }
-                Map pageLinks = search.getPageLinks();
-                Iterator i = pageLinks.keySet().iterator();
+                Map<Integer, String> pageLinks = search.getPageLinks();
+                Iterator<Integer> i = pageLinks.keySet().iterator();
                 while (i.hasNext()) {
-                    int pageNumber = ((Integer)i.next()).intValue();
-
+                    int pageNumber = i.next().intValue();
                     result.append(" ");
                     if (pageNumber != search.getSearchPage()) {
                         result.append("<a href=\"").append(
-                            getSearchPageLink(m_jsp.link(new StringBuffer(
-                                (String)pageLinks.get(new Integer(pageNumber))).append('&').append(
-                                CmsLocaleManager.PARAMETER_LOCALE).append("=").append(
+                            getSearchPageLink(m_jsp.link(new StringBuffer(pageLinks.get(new Integer(pageNumber))).append(
+                                '&').append(CmsLocaleManager.PARAMETER_LOCALE).append("=").append(
                                 m_jsp.getRequestContext().getLocale()).toString())));
                         result.append("\" target=\"_self\">").append(pageNumber).append("</a>\n");
                     } else {
@@ -246,7 +244,7 @@ public class CmsHelpSearchResultView {
         }
 
         // include the post forms for the page links: 
-        Iterator values = m_formCache.values().iterator();
+        Iterator<String> values = m_formCache.values().iterator();
         while (values.hasNext()) {
             result.append(values.next());
         }

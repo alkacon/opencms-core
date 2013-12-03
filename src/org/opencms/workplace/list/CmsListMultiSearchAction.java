@@ -87,9 +87,9 @@ public class CmsListMultiSearchAction extends CmsListSearchAction {
         // http://www.securityfocus.com/archive/1/490498: searchfilter cross site scripting vulnerability:
         html.append(CmsStringUtil.escapeJavaScript(CmsEncoder.escapeXml(searchFilter)));
         html.append("' >\n");
-        Iterator it = getColumns().iterator();
+        Iterator<CmsListColumnDefinition> it = getColumns().iterator();
         while (it.hasNext()) {
-            CmsListColumnDefinition colDef = (CmsListColumnDefinition)it.next();
+            CmsListColumnDefinition colDef = it.next();
             html.append("\t\t<input type='text' name='");
             html.append(SEARCH_COL_INPUT_ID).append(colDef.getId());
             html.append("' id='");
@@ -117,7 +117,7 @@ public class CmsListMultiSearchAction extends CmsListSearchAction {
         html.append("COLUMNS: [");
         it = getColumns().iterator();
         while (it.hasNext()) {
-            CmsListColumnDefinition colDef = (CmsListColumnDefinition)it.next();
+            CmsListColumnDefinition colDef = it.next();
             html.append("\"").append(colDef.getId()).append("\"");
             if (it.hasNext()) {
                 html.append(", ");
@@ -134,23 +134,23 @@ public class CmsListMultiSearchAction extends CmsListSearchAction {
      * @see org.opencms.workplace.list.CmsListSearchAction#filter(java.util.List, java.lang.String)
      */
     @Override
-    public List filter(List items, String searchFilter) {
+    public List<CmsListItem> filter(List<CmsListItem> items, String searchFilter) {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(searchFilter)) {
             return items;
         }
         Map<String, String> colVals = CmsStringUtil.splitAsMap(searchFilter, PARAM_DELIM, KEY_VAL_DELIM);
-        List res = new ArrayList();
-        Iterator itItems = items.iterator();
+        List<CmsListItem> res = new ArrayList<CmsListItem>();
+        Iterator<CmsListItem> itItems = items.iterator();
         while (itItems.hasNext()) {
-            CmsListItem item = (CmsListItem)itItems.next();
+            CmsListItem item = itItems.next();
             if (res.contains(item)) {
                 continue;
             }
             boolean matched = true;
-            Iterator itCols = getColumns().iterator();
+            Iterator<CmsListColumnDefinition> itCols = getColumns().iterator();
             while (matched && itCols.hasNext()) {
-                CmsListColumnDefinition col = (CmsListColumnDefinition)itCols.next();
+                CmsListColumnDefinition col = itCols.next();
                 if (item.get(col.getId()) == null) {
                     matched = false;
                     continue;

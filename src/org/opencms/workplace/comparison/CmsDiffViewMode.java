@@ -37,8 +37,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Wrapper class for the different types of diff modes.
- * <p>
+ * Wrapper class for the different types of diff modes.<p>
  * 
  * The possibles values are:<br>
  * <ul>
@@ -63,7 +62,7 @@ public final class CmsDiffViewMode implements Serializable {
     private static final CmsDiffViewMode[] VALUE_ARRAY = {ALL, DIFF_ONLY};
 
     /** List of mode constants. */
-    public static final List VALUES = Collections.unmodifiableList(Arrays.asList(VALUE_ARRAY));
+    public static final List<CmsDiffViewMode> VALUES = Collections.unmodifiableList(Arrays.asList(VALUE_ARRAY));
 
     /** uid for serialization. */
     private static final long serialVersionUID = -9107946096096683776L;
@@ -88,8 +87,7 @@ public final class CmsDiffViewMode implements Serializable {
     }
 
     /**
-     * Parses an string into an element of this enumeration.
-     * <p>
+     * Parses an string into an element of this enumeration.<p>
      * 
      * @param value the mode to parse
      * 
@@ -103,9 +101,9 @@ public final class CmsDiffViewMode implements Serializable {
         if (value == null) {
             return null;
         }
-        Iterator iter = VALUES.iterator();
+        Iterator<CmsDiffViewMode> iter = VALUES.iterator();
         while (iter.hasNext()) {
-            CmsDiffViewMode target = (CmsDiffViewMode)iter.next();
+            CmsDiffViewMode target = iter.next();
             if (value.equals(target.getMode())) {
                 return target;
             }
@@ -117,8 +115,7 @@ public final class CmsDiffViewMode implements Serializable {
     }
 
     /**
-     * Returns the mode string.
-     * <p>
+     * Returns the mode string.<p>
      * 
      * @return the mode string
      */
@@ -128,8 +125,7 @@ public final class CmsDiffViewMode implements Serializable {
     }
 
     /**
-     * Returns the name to show.
-     * <p>
+     * Returns the name to show.<p>
      * 
      * @return the name to show
      */
@@ -141,6 +137,7 @@ public final class CmsDiffViewMode implements Serializable {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         return m_mode;

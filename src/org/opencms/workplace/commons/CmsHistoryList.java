@@ -373,21 +373,25 @@ public class CmsHistoryList extends A_CmsListDialog {
         if (getParamListAction().equals(LIST_MACTION_COMPARE)) {
             CmsListItem item1 = getSelectedItems().get(0);
             CmsListItem item2 = getSelectedItems().get(1);
-            Map params = new HashMap();
-            if (((Comparable)item2.get(LIST_COLUMN_VERSION)).compareTo(item1.get(LIST_COLUMN_VERSION)) > 0) {
-                params.put(PARAM_VERSION_1, item1.get(LIST_COLUMN_VERSION));
-                params.put(PARAM_VERSION_2, item2.get(LIST_COLUMN_VERSION));
-                params.put(PARAM_ID_1, item1.get(LIST_COLUMN_STRUCTURE_ID));
-                params.put(PARAM_ID_2, item2.get(LIST_COLUMN_STRUCTURE_ID));
-            } else {
-                params.put(PARAM_VERSION_1, item2.get(LIST_COLUMN_VERSION));
-                params.put(PARAM_VERSION_2, item1.get(LIST_COLUMN_VERSION));
-                params.put(PARAM_ID_1, item2.get(LIST_COLUMN_STRUCTURE_ID));
-                params.put(PARAM_ID_2, item1.get(LIST_COLUMN_STRUCTURE_ID));
+            Map<String, String[]> params = new HashMap<String, String[]>();
+            if (item2.get(LIST_COLUMN_VERSION) instanceof CmsVersionWrapper) {
+                CmsVersionWrapper ver = (CmsVersionWrapper)item2.get(LIST_COLUMN_VERSION);
+                if (ver.compareTo(item1.get(LIST_COLUMN_VERSION)) > 0) {
+                    params.put(PARAM_VERSION_1, new String[] {item1.get(LIST_COLUMN_VERSION).toString()});
+                    params.put(PARAM_VERSION_2, new String[] {item2.get(LIST_COLUMN_VERSION).toString()});
+                    params.put(PARAM_ID_1, new String[] {item1.get(LIST_COLUMN_STRUCTURE_ID).toString()});
+                    params.put(PARAM_ID_2, new String[] {item2.get(LIST_COLUMN_STRUCTURE_ID).toString()});
+                }
             }
-            params.put(PARAM_ACTION, DIALOG_INITIAL);
-            params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
-            params.put(PARAM_RESOURCE, getParamResource());
+            if (params.isEmpty()) {
+                params.put(PARAM_VERSION_1, new String[] {item2.get(LIST_COLUMN_VERSION).toString()});
+                params.put(PARAM_VERSION_2, new String[] {item1.get(LIST_COLUMN_VERSION).toString()});
+                params.put(PARAM_ID_1, new String[] {item2.get(LIST_COLUMN_STRUCTURE_ID).toString()});
+                params.put(PARAM_ID_2, new String[] {item1.get(LIST_COLUMN_STRUCTURE_ID).toString()});
+            }
+            params.put(PARAM_ACTION, new String[] {DIALOG_INITIAL});
+            params.put(PARAM_STYLE, new String[] {CmsToolDialog.STYLE_NEW});
+            params.put(PARAM_RESOURCE, new String[] {getParamResource()});
             getToolManager().jspForwardTool(this, "/history/comparison", params);
         }
         refreshList();
@@ -613,7 +617,7 @@ public class CmsHistoryList extends A_CmsListDialog {
      */
     protected void performRestoreOperation() throws CmsException {
 
-        CmsUUID structureId = new CmsUUID((String)getSelectedItem().get(LIST_COLUMN_STRUCTURE_ID));
+        CmsUUID structureId = new CmsUUID(getSelectedItem().get(LIST_COLUMN_STRUCTURE_ID).toString());
         int version = Integer.parseInt(getSelectedItems().get(0).getId());
         if (version == CmsHistoryResourceHandler.PROJECT_OFFLINE_VERSION) {
             // it is not possible to restore the offline version

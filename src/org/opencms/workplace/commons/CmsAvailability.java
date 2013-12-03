@@ -111,14 +111,31 @@ public class CmsAvailability extends CmsMultiDialog {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsAvailability.class);
 
+    /** A parameter of this dialog. */
     private String m_paramEnablenotification;
+
+    /** A parameter of this dialog. */
     private String m_paramExpiredate;
+
+    /** A parameter of this dialog. */
     private String m_paramLeaveexpire;
+
+    /** A parameter of this dialog. */
     private String m_paramModifysiblings;
+
+    /** A parameter of this dialog. */
     private String m_paramNotificationinterval;
+
+    /** A parameter of this dialog. */
     private String m_paramRecursive;
+
+    /** A parameter of this dialog. */
     private String m_paramReleasedate;
+
+    /** A parameter of this dialog. */
     private String m_paramResetexpire;
+
+    /** A parameter of this dialog. */
     private String m_paramResetrelease;
 
     /**
@@ -147,6 +164,7 @@ public class CmsAvailability extends CmsMultiDialog {
      * 
      * @see org.opencms.workplace.CmsDialog#actionCloseDialog()
      */
+    @Override
     public void actionCloseDialog() throws JspException {
 
         // so that the explorer will be shown, if dialog is opened from e-mail
@@ -311,8 +329,8 @@ public class CmsAvailability extends CmsMultiDialog {
             // single resource operation, create list of responsibles
             StringBuffer result = new StringBuffer(512);
             result.append("<tr><td colspan=\"3\">");
-            List parentResources = new ArrayList();
-            Map responsibles = new HashMap();
+            List<CmsResource> parentResources = new ArrayList<CmsResource>();
+            Map<I_CmsPrincipal, String> responsibles = new HashMap<I_CmsPrincipal, String>();
             CmsObject cms = getCms();
             String resourceSitePath = cms.getRequestContext().removeSiteRoot(getParamResource());
             try {
@@ -324,14 +342,14 @@ public class CmsAvailability extends CmsMultiDialog {
                     LOG.info(e.getLocalizedMessage());
                 }
             }
-            Iterator i = parentResources.iterator();
+            Iterator<CmsResource> i = parentResources.iterator();
             while (i.hasNext()) {
-                CmsResource resource = (CmsResource)i.next();
+                CmsResource resource = i.next();
                 try {
                     String sitePath = cms.getRequestContext().removeSiteRoot(resource.getRootPath());
-                    Iterator entries = cms.getAccessControlEntries(sitePath, false).iterator();
+                    Iterator<CmsAccessControlEntry> entries = cms.getAccessControlEntries(sitePath, false).iterator();
                     while (entries.hasNext()) {
-                        CmsAccessControlEntry ace = (CmsAccessControlEntry)entries.next();
+                        CmsAccessControlEntry ace = entries.next();
                         if (ace.isResponsible()) {
                             I_CmsPrincipal principal = cms.lookupPrincipal(ace.getPrincipal());
                             if (principal != null) {
@@ -353,7 +371,7 @@ public class CmsAvailability extends CmsMultiDialog {
             } else {
                 // found responsibles, create list
                 result.append(dialogToggleStart(key(Messages.GUI_AVAILABILITY_RESPONSIBLES_0), "responsibles", false));
-                Collection parentFolders = new ArrayList(responsibles.values());
+                Collection<String> parentFolders = new ArrayList<String>(responsibles.values());
                 parentFolders.remove(null);
                 if (parentFolders.size() > 0) {
                     result.append("<table border=\"0\">\n<tr>\n\t<td>");
@@ -363,10 +381,10 @@ public class CmsAvailability extends CmsMultiDialog {
                     result.append("\" id=\"button\"/></td></tr></table>");
                 }
                 result.append(dialogWhiteBoxStart());
-                Iterator it = responsibles.entrySet().iterator();
+                Iterator<Map.Entry<I_CmsPrincipal, String>> it = responsibles.entrySet().iterator();
                 for (int j = 0; it.hasNext(); j++) {
-                    Map.Entry entry = (Map.Entry)it.next();
-                    I_CmsPrincipal principal = (I_CmsPrincipal)entry.getKey();
+                    Map.Entry<I_CmsPrincipal, String> entry = it.next();
+                    I_CmsPrincipal principal = entry.getKey();
                     String image = "user.png";
                     String localizedType = getLocalizedType(CmsAccessControlEntry.ACCESS_FLAGS_USER);
                     if (principal instanceof CmsGroup) {
@@ -386,7 +404,7 @@ public class CmsAvailability extends CmsMultiDialog {
                     result.append("</span><div class=\"hide\" id=\"inheritinfo");
                     result.append(j);
                     result.append("\"><div class=\"dialogpermissioninherit\">");
-                    String resourceName = (String)entry.getValue();
+                    String resourceName = entry.getValue();
                     if (CmsStringUtil.isNotEmpty(resourceName)) {
                         result.append(key(Messages.GUI_PERMISSION_INHERITED_FROM_1, new Object[] {resourceName}));
                     }
@@ -676,6 +694,7 @@ public class CmsAvailability extends CmsMultiDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods
@@ -714,6 +733,7 @@ public class CmsAvailability extends CmsMultiDialog {
      * @return true, if the operation was performed, otherwise false
      * @throws CmsException if modification is not successful
      */
+    @Override
     protected boolean performDialogOperation() throws CmsException {
 
         // check if the current resource is a folder for single operation
@@ -766,9 +786,9 @@ public class CmsAvailability extends CmsMultiDialog {
         boolean modifyRecursive = Boolean.valueOf(getParamRecursive()).booleanValue();
 
         // now iterate the resource(s)
-        Iterator i = getResourceList().iterator();
+        Iterator<String> i = getResourceList().iterator();
         while (i.hasNext()) {
-            String resName = (String)i.next();
+            String resName = i.next();
             try {
                 performSingleResourceAvailability(
                     resName,
@@ -797,7 +817,7 @@ public class CmsAvailability extends CmsMultiDialog {
         // now iterate the resource(s)
         i = getResourceList().iterator();
         while (i.hasNext()) {
-            String resName = (String)i.next();
+            String resName = i.next();
             try {
                 performSingleResourceNotification(resName, notificationEnabled, notificationInterval, modifySiblings);
             } catch (CmsException e) {
@@ -868,7 +888,7 @@ public class CmsAvailability extends CmsMultiDialog {
         int notificationInterval,
         boolean modifySiblings) throws CmsException {
 
-        List resources = new ArrayList();
+        List<CmsResource> resources = new ArrayList<CmsResource>();
         if (modifySiblings) {
             // modify all siblings of a resource
             resources = getCms().readSiblings(resName, CmsResourceFilter.IGNORE_EXPIRATION);
@@ -876,9 +896,9 @@ public class CmsAvailability extends CmsMultiDialog {
             // modify only resource without siblings
             resources.add(getCms().readResource(resName, CmsResourceFilter.IGNORE_EXPIRATION));
         }
-        Iterator i = resources.iterator();
+        Iterator<CmsResource> i = resources.iterator();
         while (i.hasNext()) {
-            CmsResource resource = (CmsResource)i.next();
+            CmsResource resource = i.next();
             String resourcePath = getCms().getRequestContext().removeSiteRoot(resource.getRootPath());
             // lock resource if auto lock is enabled
             checkLock(resourcePath);

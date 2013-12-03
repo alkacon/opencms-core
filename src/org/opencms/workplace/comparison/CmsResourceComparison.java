@@ -88,9 +88,12 @@ public class CmsResourceComparison {
      * 
      * @return a list of the compared attributes
      */
-    public static List compareAttributes(CmsObject cms, CmsResource resource1, CmsResource resource2) {
+    public static List<CmsAttributeComparison> compareAttributes(
+        CmsObject cms,
+        CmsResource resource1,
+        CmsResource resource2) {
 
-        List comparedAttributes = new ArrayList();
+        List<CmsAttributeComparison> comparedAttributes = new ArrayList<CmsAttributeComparison>();
         comparedAttributes.add(new CmsAttributeComparison(
             Messages.GUI_HISTORY_COLS_SIZE_0,
             String.valueOf(resource1.getLength()),
@@ -207,14 +210,14 @@ public class CmsResourceComparison {
      * 
      * @throws CmsException if something goes wrong
      */
-    public static List compareProperties(
+    public static List<CmsAttributeComparison> compareProperties(
         CmsObject cms,
         CmsResource resource1,
         String version1,
         CmsResource resource2,
         String version2) throws CmsException {
 
-        List properties1;
+        List<CmsProperty> properties1;
         if (resource1 instanceof I_CmsHistoryResource) {
             properties1 = cms.readHistoryPropertyObjects((I_CmsHistoryResource)resource1);
         } else {
@@ -231,7 +234,7 @@ public class CmsResourceComparison {
                 properties1 = cms.readPropertyObjects(resource1, false);
             }
         }
-        List properties2;
+        List<CmsProperty> properties2;
         if (resource2 instanceof I_CmsHistoryResource) {
             properties2 = cms.readHistoryPropertyObjects((I_CmsHistoryResource)resource2);
         } else {
@@ -248,17 +251,17 @@ public class CmsResourceComparison {
                 properties2 = cms.readPropertyObjects(resource2, false);
             }
         }
-        List comparedProperties = new ArrayList();
-        List removedProperties = new ArrayList(properties1);
+        List<CmsAttributeComparison> comparedProperties = new ArrayList<CmsAttributeComparison>();
+        List<CmsProperty> removedProperties = new ArrayList<CmsProperty>(properties1);
         removedProperties.removeAll(properties2);
-        List addedProperties = new ArrayList(properties2);
+        List<CmsProperty> addedProperties = new ArrayList<CmsProperty>(properties2);
         addedProperties.removeAll(properties1);
-        List retainedProperties = new ArrayList(properties2);
+        List<CmsProperty> retainedProperties = new ArrayList<CmsProperty>(properties2);
         retainedProperties.retainAll(properties1);
         CmsProperty prop;
-        Iterator i = addedProperties.iterator();
+        Iterator<CmsProperty> i = addedProperties.iterator();
         while (i.hasNext()) {
-            prop = (CmsProperty)i.next();
+            prop = i.next();
             comparedProperties.add(new CmsAttributeComparison(
                 prop.getName(),
                 "",
@@ -267,7 +270,7 @@ public class CmsResourceComparison {
         }
         i = removedProperties.iterator();
         while (i.hasNext()) {
-            prop = (CmsProperty)i.next();
+            prop = i.next();
             comparedProperties.add(new CmsAttributeComparison(
                 prop.getName(),
                 prop.getValue(),
@@ -276,9 +279,9 @@ public class CmsResourceComparison {
         }
         i = retainedProperties.iterator();
         while (i.hasNext()) {
-            prop = (CmsProperty)i.next();
-            String value1 = ((CmsProperty)properties1.get(properties1.indexOf(prop))).getValue();
-            String value2 = ((CmsProperty)properties2.get(properties2.indexOf(prop))).getValue();
+            prop = i.next();
+            String value1 = properties1.get(properties1.indexOf(prop)).getValue();
+            String value2 = properties2.get(properties2.indexOf(prop)).getValue();
             if (value1.equals(value2)) {
                 comparedProperties.add(new CmsAttributeComparison(
                     prop.getName(),

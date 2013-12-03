@@ -48,6 +48,7 @@ public class CmsTwoListsDialogsWOStart extends CmsTwoListsDialog {
     /**
      * @see org.opencms.workplace.list.CmsTwoListsDialog#defaultActionHtmlStart()
      */
+    @Override
     protected String defaultActionHtmlStart() {
 
         return getActiveWp().getList().listJs() + getActiveWp().dialogContentStart(getActiveWp().getParamTitle());

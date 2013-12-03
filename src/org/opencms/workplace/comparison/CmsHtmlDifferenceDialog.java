@@ -83,6 +83,7 @@ public class CmsHtmlDifferenceDialog extends CmsDifferenceDialog {
      * 
      * @throws Exception if writing to the JSP out fails
      */
+    @Override
     public void displayDialog() throws Exception {
 
         if (getAction() == ACTION_CANCEL) {
@@ -158,6 +159,7 @@ public class CmsHtmlDifferenceDialog extends CmsDifferenceDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         super.initWorkplaceRequestValues(settings, request);
@@ -171,6 +173,7 @@ public class CmsHtmlDifferenceDialog extends CmsDifferenceDialog {
      * 
      * @see org.opencms.workplace.comparison.A_CmsDiffViewDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() {
 
         // noop

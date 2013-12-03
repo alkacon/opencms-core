@@ -155,6 +155,7 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#actionDialog()
      */
+    @Override
     public void actionDialog() throws JspException, ServletException, IOException {
 
         if (getAction() == ACTION_OK) {
@@ -175,6 +176,7 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
      * 
      * @return the button row 
      */
+    @Override
     public String dialogButtons() {
 
         return dialogButtonsOkAdvancedCancel(
@@ -206,6 +208,7 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceTypeDialog#getParamSelectedType()
      */
+    @Override
     public String getParamSelectedType() {
 
         String item = super.getParamSelectedType();
@@ -228,6 +231,7 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
      * 
      * @return the html code to add directly before the list inside the form element
      */
+    @Override
     protected String customHtmlBeforeList() {
 
         StringBuffer result = new StringBuffer(256);
@@ -257,6 +261,7 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#customHtmlStart()
      */
+    @Override
     protected String customHtmlStart() {
 
         StringBuffer result = new StringBuffer(256);
@@ -282,12 +287,13 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
-    protected List getListItems() throws CmsException {
+    @Override
+    protected List<CmsListItem> getListItems() throws CmsException {
 
-        List ret = new ArrayList();
+        List<CmsListItem> ret = new ArrayList<CmsListItem>();
 
         // fill the list with available resource types if they are limited
-        List availableResTypes = new ArrayList();
+        List<String> availableResTypes = new ArrayList<String>();
         if (!m_advancedMode && m_limitedRestypes) {
             if (m_availableResTypes.indexOf(CmsNewResource.DELIM_PROPERTYVALUES) > -1) {
                 availableResTypes = CmsStringUtil.splitAsList(
@@ -309,7 +315,7 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
         CmsResource res = cms.readResource(getParamResource(), CmsResourceFilter.ALL);
 
         // get all available explorer type settings
-        List resTypes = OpenCms.getWorkplaceManager().getExplorerTypeSettings();
+        List<CmsExplorerTypeSettings> resTypes = OpenCms.getWorkplaceManager().getExplorerTypeSettings();
         boolean isFolder = res.isFolder();
 
         // loop through all visible resource types
@@ -317,9 +323,9 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
             boolean changeable = false;
 
             // get explorer type settings for current resource type
-            CmsExplorerTypeSettings settings = (CmsExplorerTypeSettings)resTypes.get(i);
+            CmsExplorerTypeSettings settings = resTypes.get(i);
 
-            // only if settings is a real resourcetype
+            // only if settings is a real resource type
             boolean isResourceType;
             I_CmsResourceType type = new CmsResourceTypePlain();
             try {
@@ -377,6 +383,7 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // first call of dialog

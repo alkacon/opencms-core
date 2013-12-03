@@ -28,11 +28,11 @@
 package org.opencms.workplace.commons;
 
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResource.CmsResourceCopyMode;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsException;
 import org.opencms.file.CmsVfsResourceAlreadyExistsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
-import org.opencms.file.CmsResource.CmsResourceCopyMode;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLockException;
 import org.opencms.main.CmsException;
@@ -83,9 +83,16 @@ public class CmsCopy extends CmsMultiDialog {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsCopy.class);
 
+    /** A parameter of this dialog. */
     private String m_paramCopymode;
+
+    /** A parameter of this dialog. */
     private String m_paramKeeprights;
+
+    /** A parameter of this dialog. */
     private String m_paramOverwrite;
+
+    /** A parameter of this dialog. */
     private String m_paramTarget;
 
     /**
@@ -122,7 +129,7 @@ public class CmsCopy extends CmsMultiDialog {
         CmsResource resource = null;
         try {
             boolean isFolder = false;
-            String source = (String)getResourceList().get(0);
+            String source = getResourceList().get(0);
             String target = CmsLinkManager.getAbsoluteUri(getParamTarget(), CmsResource.getParentFolder(source));
             if (!isMultiOperation()) {
                 resource = getCms().readResource(source, CmsResourceFilter.ALL);
@@ -155,7 +162,7 @@ public class CmsCopy extends CmsMultiDialog {
                 // if no exception is caused and "true" is returned copy operation was successful
                 if (isMultiOperation() || isFolder) {
                     // set request attribute to reload the explorer tree view
-                    List folderList = new ArrayList(1);
+                    List<String> folderList = new ArrayList<String>(1);
                     String targetParent = CmsResource.getParentFolder(target);
                     folderList.add(targetParent);
                     getJsp().getRequest().setAttribute(REQUEST_ATTRIBUTE_RELOADTREE, folderList);
@@ -380,6 +387,7 @@ public class CmsCopy extends CmsMultiDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods
@@ -415,6 +423,7 @@ public class CmsCopy extends CmsMultiDialog {
      * @return true, if the resource was copied, otherwise false
      * @throws CmsException if copying is not successful
      */
+    @Override
     protected boolean performDialogOperation() throws CmsException {
 
         // check if the current resource is a folder for single operation
@@ -461,10 +470,10 @@ public class CmsCopy extends CmsMultiDialog {
                 getCms().getRequestContext().setSiteRoot("/");
             }
 
-            Iterator i = getResourceList().iterator();
+            Iterator<String> i = getResourceList().iterator();
             // iterate the resources to copy
             while (i.hasNext()) {
-                String resName = (String)i.next();
+                String resName = i.next();
                 try {
                     performSingleCopyOperation(resName, target, sitePrefix, copyMode, overwrite);
                 } catch (CmsException e) {

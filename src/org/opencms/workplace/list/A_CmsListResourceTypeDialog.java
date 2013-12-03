@@ -89,38 +89,38 @@ public abstract class A_CmsListResourceTypeDialog extends A_CmsListDialog {
         /**
          * @see org.opencms.workplace.list.I_CmsListItemComparator#getComparator(java.lang.String, java.util.Locale)
          */
-        public Comparator getComparator(final String columnId, final Locale locale) {
+        @Override
+        public Comparator<CmsListItem> getComparator(final String columnId, final Locale locale) {
 
-            return new Comparator() {
+            return new Comparator<CmsListItem>() {
 
                 /**
                  * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
                  */
-                public int compare(Object o1, Object o2) {
+                @Override
+                public int compare(CmsListItem li1, CmsListItem li2) {
 
-                    if ((o1 == o2) || !(o1 instanceof CmsListItem) || !(o2 instanceof CmsListItem)) {
+                    if (li1 == li2) {
                         return 0;
                     }
-                    CmsListItem li1 = (CmsListItem)o1;
-                    CmsListItem li2 = (CmsListItem)o2;
 
-                    String id1 = li1.getId();
-                    String id2 = li2.getId();
+                    if (li1 == null) {
+                        return -1;
+                    } else if (li2 == null) {
+                        return 1;
+                    }
 
-                    CmsExplorerTypeSettings set1 = OpenCms.getWorkplaceManager().getExplorerTypeSetting(id1);
-                    CmsExplorerTypeSettings set2 = OpenCms.getWorkplaceManager().getExplorerTypeSetting(id2);
-
+                    CmsExplorerTypeSettings set1 = OpenCms.getWorkplaceManager().getExplorerTypeSetting(li1.getId());
+                    CmsExplorerTypeSettings set2 = OpenCms.getWorkplaceManager().getExplorerTypeSetting(li2.getId());
                     if (set1 == null) {
                         return -1;
                     } else if (set2 == null) {
                         return 1;
                     }
-                    
                     return set1.compareTo(set2);
                 }
             };
         }
-
     };
 
     /** Parameter which contains the selected resource type. */
@@ -193,6 +193,7 @@ public abstract class A_CmsListResourceTypeDialog extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#actionDialog()
      */
+    @Override
     public void actionDialog() throws JspException, ServletException, IOException {
 
         // set selected type
@@ -231,6 +232,7 @@ public abstract class A_CmsListResourceTypeDialog extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() throws CmsRuntimeException {
 
         // noop
@@ -239,6 +241,7 @@ public abstract class A_CmsListResourceTypeDialog extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws CmsRuntimeException {
 
         // noop
@@ -257,23 +260,24 @@ public abstract class A_CmsListResourceTypeDialog extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#paramsAsHidden()
      */
+    @Override
     public String paramsAsHidden() {
 
-        List excludes = new ArrayList();
-        return paramsAsHidden(excludes);
+        return paramsAsHidden(new ArrayList<String>());
     }
 
     /**
      * @see org.opencms.workplace.CmsWorkplace#paramsAsHidden(java.util.Collection)
      */
-    public String paramsAsHidden(Collection excludes) {
+    @Override
+    public String paramsAsHidden(Collection<String> excludes) {
 
         excludes.add(PARAM_SELECTED_TYPE);
         excludes.add(PARAM_SORT_COL);
         excludes.add(LIST_INDEPENDENT_ACTION);
         return super.paramsAsHidden(excludes);
     }
-    
+
     /**
      * Sets the paramSelectedType.<p>
      *
@@ -297,6 +301,7 @@ public abstract class A_CmsListResourceTypeDialog extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#customHtmlEnd()
      */
+    @Override
     protected String customHtmlEnd() {
 
         StringBuffer result = new StringBuffer(256);
@@ -311,6 +316,7 @@ public abstract class A_CmsListResourceTypeDialog extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#customHtmlStart()
      */
+    @Override
     protected String customHtmlStart() {
 
         StringBuffer result = new StringBuffer(256);
@@ -322,12 +328,12 @@ public abstract class A_CmsListResourceTypeDialog extends A_CmsListDialog {
         result.append(CmsWorkplace.getSkinUri());
         result.append("editors/xmlcontent/help.js'></script>\n");
 
-//        result.append("<style type='text/css'>\n");
-//        result.append(".evenrowbg {\n");
-//        result.append("\tbackground-color: InfoBackground;\n");
-//        result.append("\tcolor: InfoText;\n");
-//        result.append("}\n");
-//        result.append("</style>");
+        //        result.append("<style type='text/css'>\n");
+        //        result.append(".evenrowbg {\n");
+        //        result.append("\tbackground-color: InfoBackground;\n");
+        //        result.append("\tcolor: InfoText;\n");
+        //        result.append("}\n");
+        //        result.append("</style>");
 
         result.append("<form name='");
         result.append(getList().getId());
@@ -358,6 +364,7 @@ public abstract class A_CmsListResourceTypeDialog extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtmlContent()
      */
+    @Override
     protected String defaultActionHtmlContent() {
 
         StringBuffer result = new StringBuffer(2048);
@@ -368,17 +375,17 @@ public abstract class A_CmsListResourceTypeDialog extends A_CmsListDialog {
 
         result.append(dialogBlockStart(key(getList().getName().getKey())));
         result.append(dialogWhiteBoxStart());
-        
+
         // start scrollbox
         // result.append("<div style=\"overflow: auto; height: 150px; \">");
 
         getList().setWp(this);
         result.append(getList().listHtml());
-        
+
         // end scrollbox
         // result.append("</div>");
 
-        result.append(dialogWhiteBoxEnd());        
+        result.append(dialogWhiteBoxEnd());
         result.append(dialogBlockEnd());
 
         return result.toString();
@@ -387,13 +394,14 @@ public abstract class A_CmsListResourceTypeDialog extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // get listed resource types
-        List types = getList().getAllContent();
-        Iterator iter = types.iterator();
+        List<CmsListItem> types = getList().getAllContent();
+        Iterator<CmsListItem> iter = types.iterator();
         while (iter.hasNext()) {
-            CmsListItem item = (CmsListItem)iter.next();
+            CmsListItem item = iter.next();
             String resType = item.getId();
             StringBuffer description = new StringBuffer();
             if (detailId.equals(LIST_DETAIL_DESCRIPTION)) {
@@ -429,7 +437,7 @@ public abstract class A_CmsListResourceTypeDialog extends A_CmsListDialog {
                                     resultScaler = origImage;
                                 }
 
-                                Map attrs = new HashMap();
+                                Map<String, String> attrs = new HashMap<String, String>();
                                 attrs.put("align", "left");
                                 attrs.put("vspace", "5");
                                 attrs.put("hspace", "5");
@@ -456,6 +464,7 @@ public abstract class A_CmsListResourceTypeDialog extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // add column for radio button
@@ -492,6 +501,7 @@ public abstract class A_CmsListResourceTypeDialog extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // create list item detail: description
@@ -513,6 +523,7 @@ public abstract class A_CmsListResourceTypeDialog extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // noop

@@ -176,6 +176,7 @@ public class CmsTouch extends CmsMultiDialog {
      * 
      * @deprecated use {@link CmsCalendarWidget#calendarIncludes(java.util.Locale)}, this is just here so that old JSP still work
      */
+    @Deprecated
     public String calendarIncludes() {
 
         return CmsCalendarWidget.calendarIncludes(getLocale());
@@ -196,6 +197,7 @@ public class CmsTouch extends CmsMultiDialog {
      * 
      * @deprecated use {@link CmsCalendarWidget#calendarInit(org.opencms.i18n.CmsMessages, String, String, String, boolean, boolean, boolean, String, boolean)}, this is just here so that old JSP still work
      */
+    @Deprecated
     public String calendarInit(
         String inputFieldId,
         String triggerButtonId,
@@ -302,6 +304,7 @@ public class CmsTouch extends CmsMultiDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods
@@ -338,6 +341,7 @@ public class CmsTouch extends CmsMultiDialog {
      * @return true, if the resource was touched, otherwise false
      * @throws CmsException if touching is not successful
      */
+    @Override
     protected boolean performDialogOperation() throws CmsException {
 
         // on folder touch or multi resource operation display "please wait" screen, not for simple file copy
@@ -373,9 +377,9 @@ public class CmsTouch extends CmsMultiDialog {
         boolean touchContent = Boolean.valueOf(getParamContent()).booleanValue();
 
         // now touch the resource(s)
-        Iterator i = getResourceList().iterator();
+        Iterator<String> i = getResourceList().iterator();
         while (i.hasNext()) {
-            String resName = (String)i.next();
+            String resName = i.next();
             try {
                 touchSingleResource(resName, timeStamp, touchRecursive, correctDate, touchContent);
             } catch (CmsException e) {
@@ -419,9 +423,9 @@ public class CmsTouch extends CmsMultiDialog {
             if (sourceRes.isFile()) {
                 hardTouch(sourceRes);
             } else if (recursive) {
-                Iterator it = getCms().readResources(resourceName, CmsResourceFilter.ALL, true).iterator();
+                Iterator<CmsResource> it = getCms().readResources(resourceName, CmsResourceFilter.ALL, true).iterator();
                 while (it.hasNext()) {
-                    CmsResource subRes = (CmsResource)it.next();
+                    CmsResource subRes = it.next();
                     if (subRes.isFile()) {
                         hardTouch(subRes);
                     }

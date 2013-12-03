@@ -50,6 +50,7 @@ public class CmsListExplorerColumn extends CmsListColumnDefinition {
     /**
      * @see org.opencms.workplace.list.CmsListColumnDefinition#htmlCell(org.opencms.workplace.list.CmsListItem, boolean)
      */
+    @Override
     public String htmlCell(CmsListItem item, boolean isPrintable) {
 
         if (isPrintable) {
