@@ -344,6 +344,13 @@ public interface I_CmsXmlContentHandler {
     Map<String, CmsXmlContentProperty> getSettings(CmsObject cms, CmsResource resource);
 
     /**
+     * Returns the elements that require a synchronization across all locales.<p>
+     * 
+     * @return the element paths
+     */
+    List<String> getSynchronizations();
+
+    /**
      * Returns the tabs to be displayed in the editor.<p>
      * 
      * @return the tabs to be displayed in the editor
@@ -388,6 +395,13 @@ public interface I_CmsXmlContentHandler {
      * @return <code>true</code> if there are visibility handlers configured for this content type
      */
     boolean hasVisibilityHandlers();
+
+    /**
+     * Returns if there are locale synchronized elements configured.<p>
+     * 
+     * @return <code>true</code> if there are locale synchronized elements configured
+     */
+    boolean hasSynchronizedElements();
 
     /**
      * Initializes this content handler for the given XML content definition by

@@ -383,6 +383,12 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** Constant for the "solrfield" appinfo element name. */
     public static final String APPINFO_SOLR_FIELD = "solrfield";
 
+    /** Constant for the "synchronization" appinfo element name. */
+    public static final String APPINFO_SYNCHRONIZATION = "synchronization";
+
+    /** Constant for the "synchronizations" appinfo element name. */
+    public static final String APPINFO_SYNCHRONIZATIONS = "synchronizations";
+
     /** Constant for the "tab" appinfo element name. */
     public static final String APPINFO_TAB = "tab";
 
@@ -505,6 +511,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /** The configured settings for the formatters (as defined in the annotations). */
     protected Map<String, CmsXmlContentProperty> m_settings;
+
+    /** The configured locale synchronization elements. */
+    protected List<String> m_synchronizations;
 
     /** The configured tabs. */
     protected List<CmsXmlContentTab> m_tabs;
@@ -886,6 +895,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     }
 
     /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getSynchronizations()
+     */
+    public List<String> getSynchronizations() {
+
+        return Collections.unmodifiableList(m_synchronizations);
+    }
+
+    /**
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#getTabs()
      */
     public List<CmsXmlContentTab> getTabs() {
@@ -939,6 +956,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     public boolean hasModifiableFormatters() {
 
         return (m_formatters != null) && (m_formatters.size() > 0);
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#hasSynchronizedElements()
+     */
+    public boolean hasSynchronizedElements() {
+
+        return !m_synchronizations.isEmpty();
     }
 
     /**
@@ -1001,6 +1026,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                     initDefaultWidget(element);
                 } else if (nodeName.equals(APPINFO_VISIBILITIES)) {
                     initVisibilities(element, contentDefinition);
+                } else if (nodeName.equals(APPINFO_SYNCHRONIZATIONS)) {
+                    initSynchronizations(element, contentDefinition);
                 }
             }
         }
@@ -2065,6 +2092,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         m_allowedTemplates = new CmsDefaultSet<String>();
         m_allowedTemplates.setDefaultMembership(true);
         m_displayTypes = new HashMap<String, DisplayType>();
+        m_synchronizations = new ArrayList<String>();
     }
 
     /**
@@ -2540,6 +2568,21 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
                 m_settings.put(name, setting);
             }
+        }
+    }
+
+    /**
+     * Initializes the locale synchronizations elements.<p>
+     * 
+     * @param root the synchronizations element of the content schema appinfo.
+     * @param contentDefinition the content definition
+     */
+    protected void initSynchronizations(Element root, CmsXmlContentDefinition contentDefinition) {
+
+        List<Element> elements = new ArrayList<Element>(CmsXmlGenericWrapper.elements(root, APPINFO_SYNCHRONIZATION));
+        for (Element element : elements) {
+            String elementName = element.attributeValue(APPINFO_ATTR_ELEMENT);
+            m_synchronizations.add(elementName);
         }
     }
 
