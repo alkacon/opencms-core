@@ -21,7 +21,12 @@ OpenCms 9.0.1 - xxxxxxxxx
 - Enhanced gallery widget upload feature
 * Fixing issue with optional text-area widgets
 - Improved IE10/IE11 support to allow drag and drop in upload dialog
-- Fixed alias deletion for folders 
+- Fixed alias deletion for folders
+- Several improvements in the publish dialog 
+* Fixed problems with expired container elements not being displayed correctly in the Online project
+- If an optional content value which is mapped to dateReleased/dateExpired is removed, the corresponding attribute will be reset   
+- Added more options to the widget  combo box for formatter configurations 
+ 
 
 OpenCms 9.0.0 - November 8, 2013
 ! Improved configuration for content formatters
