@@ -1169,6 +1169,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             locale.toString(),
             contentLocales,
             availableLocales,
+            content.getContentDefinition().getContentHandler().getSynchronizations(),
             title,
             cms.getSitePath(file),
             typeName,

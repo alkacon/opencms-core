@@ -90,6 +90,9 @@ public class CmsContentDefinition extends ContentDefinition {
     /** The site path. */
     private String m_sitePath;
 
+    /** The elements that require a synchronization across all locales. */
+    private List<String> m_synchronizations;
+
     /** The content title. */
     private String m_title;
 
@@ -105,6 +108,7 @@ public class CmsContentDefinition extends ContentDefinition {
      * @param locale the content locale
      * @param contentLocales the content locales
      * @param availableLocales the available locales
+     * @param synchronizations the elements that require a synchronization across all locales
      * @param title the content title
      * @param sitePath the site path
      * @param resourceType the resource type name
@@ -121,6 +125,7 @@ public class CmsContentDefinition extends ContentDefinition {
         String locale,
         List<String> contentLocales,
         Map<String, String> availableLocales,
+        List<String> synchronizations,
         String title,
         String sitePath,
         String resourceType,
@@ -130,6 +135,7 @@ public class CmsContentDefinition extends ContentDefinition {
         super(entity, configurations, types, tabInfos, true, locale);
         m_contentLocales = contentLocales;
         m_availableLocales = availableLocales;
+        m_synchronizations = synchronizations;
         m_complexWidgetData = complexWidgetData;
         m_title = title;
         m_sitePath = sitePath;
@@ -343,6 +349,16 @@ public class CmsContentDefinition extends ContentDefinition {
     }
 
     /**
+     * Returns the elements that require a synchronization across all locales.<p>
+     * 
+     * @return the element paths
+     */
+    public List<String> getSynchronizations() {
+
+        return m_synchronizations;
+    }
+
+    /**
      * Returns the title.<p>
      *
      * @return the title
@@ -350,6 +366,16 @@ public class CmsContentDefinition extends ContentDefinition {
     public String getTitle() {
 
         return m_title;
+    }
+
+    /**
+     * Returns if there are locale synchronized elements configured.<p>
+     * 
+     * @return <code>true</code> if there are locale synchronized elements configured
+     */
+    public boolean hasSynchronizedElements() {
+
+        return !m_synchronizations.isEmpty();
     }
 
     /**

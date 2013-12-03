@@ -604,11 +604,14 @@ public class CmsContentTypeVisitor {
             CmsContentService.LOG.debug(e.getMessage(), e);
         }
         // remove the leading slash from element path to check visibility
-        boolean visible = m_contentHandler.isVisibile(cms, schemaType, path.substring(1), m_file, m_locale);
+        boolean visible = !m_contentHandler.hasVisibilityHandlers()
+            || m_contentHandler.isVisibile(cms, schemaType, path.substring(1), m_file, m_locale);
         if (!visible) {
             // set the has invisible flag
             m_hasInvisible = true;
         }
+        boolean localeSynchronized = m_contentHandler.hasSynchronizedElements()
+            && m_contentHandler.getSynchronizations().contains(path.substring(1));
         AttributeConfiguration result = new AttributeConfiguration(
             label,
             getHelp(schemaType),
@@ -616,7 +619,8 @@ public class CmsContentTypeVisitor {
             widgetConfig,
             readDefaultValue(schemaType, path),
             configuredType.name(),
-            visible);
+            visible,
+            localeSynchronized);
         return new DisplayTypeEvaluator(result, configuredType, defaultType, rule);
     }
 
