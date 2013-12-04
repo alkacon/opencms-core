@@ -284,16 +284,6 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
-     * Returns if the current project is the online project.<p>
-     * 
-     * @return <code>true</code> if the current project is the online project
-     */
-    public boolean isOnline() {
-
-        return m_cms.getRequestContext().getCurrentProject().isOnlineProject();
-    }
-
-    /**
      * Returns a caching hash specific to the element, it's properties and the current container width.<p>
      * 
      * @return the caching hash
@@ -509,7 +499,7 @@ public final class CmsJspStandardContextBean {
 
                 try {
                     String rootPath = m_cms.getRequestContext().addSiteRoot((String)uri);
-                    CmsResource resource = m_cms.readResource((CmsUUID)uri);
+                    CmsResource resource = m_cms.readResource((String)uri);
                     CmsADEManager adeManager = OpenCms.getADEManager();
                     CmsADEConfigData configData = adeManager.lookupConfiguration(m_cms, rootPath);
                     CmsFormatterConfiguration formatterConfig = configData.getFormatters(m_cms, resource);
@@ -646,6 +636,16 @@ public final class CmsJspStandardContextBean {
     public boolean isEdited() {
 
         return m_edited;
+    }
+
+    /**
+     * Returns if the current project is the online project.<p>
+     * 
+     * @return <code>true</code> if the current project is the online project
+     */
+    public boolean isOnline() {
+
+        return m_cms.getRequestContext().getCurrentProject().isOnlineProject();
     }
 
     /**
