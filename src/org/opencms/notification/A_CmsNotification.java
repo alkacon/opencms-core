@@ -85,6 +85,7 @@ public abstract class A_CmsNotification extends CmsHtmlMail {
         m_receiver = receiver;
 
         m_macroResolver = new CmsMacroResolver();
+        m_macroResolver.setCmsObject(cms);
     }
 
     /**
@@ -219,16 +220,24 @@ public abstract class A_CmsNotification extends CmsHtmlMail {
      */
     protected void appendHtmlHeader(StringBuffer buffer) {
 
-        buffer.append("<html><head><style type=\"text/css\">\n");
-        buffer.append("<!--\n");
-        buffer.append("body { font-family: Verdana, Arial, Helvetica, sans-serif; background-color:#ffefdb; }\n");
-        buffer.append("a { color:#b22222; text-decoration:none; }\n");
-        buffer.append("table { white-space: nowrap; font-size: x-small; }\n");
-        buffer.append("tr.trow1 { background-color: #cdc0b0; }\n");
-        buffer.append("tr.trow2 { background-color: #eedfcc; }\n");
-        buffer.append("tr.trow3 { background-color: #ffefdb; }\n");
-        buffer.append("--></style>\n");
-        buffer.append("</head><body><span style='font-size:8.0pt;'>");
+        buffer.append("<html>\r\n");
+        buffer.append("  <head>\r\n");
+        buffer.append("    <style type=\"text/css\">\r\n");
+        buffer.append("      body { font-family: Verdana, Arial, Helvetica, sans-serif; background-color:white; }\r\n");
+        buffer.append("      a { color:#b31b43; text-decoration:none; font-weight: bold; }\r\n");
+        buffer.append("      a:hover { color:#b31b43; text-decoration:underline; font-weight: bold; }\r\n");
+        buffer.append("      div.publish_link { margin: 20px 0; }\r\n");
+        buffer.append("      table { white-space: nowrap; font-size: small; }\r\n");
+        buffer.append("      tr.trow1 { background-color: #cdc0b0; }\r\n");
+        buffer.append("      tr.trow2 { background-color: #eedfcc; }\r\n");
+        buffer.append("      tr.trow3 { background-color: #ffefdb; }\r\n");
+        buffer.append("      th.rescol { border-width: 1px 0 2px 1px; border-style: solid; border-color: #222222; padding: 5px; }\r\n");
+        buffer.append("      th.titlecol { border-width: 1px 1px 2px 1px; border-style: solid; border-color: #222222; padding: 5px; }\r\n");
+        buffer.append("      td.rescol { border-width: 0 0 1px 1px; border-style: solid; border-color: #222222; padding: 5px; }\r\n");
+        buffer.append("      td.titlecol { border-width: 0 1px 1px 1px; border-style: solid; border-color: #222222; padding: 5px; }\r\n");
+        buffer.append("    </style>\r\n");
+        buffer.append("  </head>\r\n");
+        buffer.append("  <body>\r\n");
     }
 
     /**
@@ -238,7 +247,7 @@ public abstract class A_CmsNotification extends CmsHtmlMail {
      */
     protected void appenHtmlFooter(StringBuffer buffer) {
 
-        buffer.append("</span></body></html>");
+        buffer.append("  </body>\r\n" + "</html>");
     }
 
     /**

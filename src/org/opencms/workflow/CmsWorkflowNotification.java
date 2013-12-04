@@ -46,23 +46,24 @@ import org.apache.commons.mail.EmailException;
  */
 public class CmsWorkflowNotification extends A_CmsNotification {
 
-    /** The path of the notification XML content. */
-    private String m_notificationContent;
-
     /** The admin CMS context. */
     private CmsObject m_adminCms;
 
-    /** The user's cms context. */
-    private CmsObject m_userCms;
+    /** The publish link. */
+    private String m_link;
+
+    /** The path of the notification XML content. */
+    private String m_notificationContent;
 
     /** The workflow project. */
-    @SuppressWarnings("unused")
     private CmsProject m_project;
 
     /** The released resources. */
     private List<CmsResource> m_resources;
-    /** The publish link. */
-    private String m_link;
+
+    /** The user's cms context. */
+    @SuppressWarnings("unused")
+    private CmsObject m_userCms;
 
     /**
      * Creates a new workflow notification mail object.<p>
@@ -98,6 +99,7 @@ public class CmsWorkflowNotification extends A_CmsNotification {
         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(userAddress)) {
             setFrom(userAddress);
         }
+        addMacro("release.project", m_project.getName());
     }
 
     /**
@@ -140,38 +142,53 @@ public class CmsWorkflowNotification extends A_CmsNotification {
     protected String generateHtmlMsg() {
 
         StringBuffer buffer = new StringBuffer();
-        //----------INTRODUCTION LINE---------------------------------
-        buffer.append("<div class=\"user_line\">");
-        buffer.append(getMessage(Messages.GUI_MAIL_USER_LINE_1, m_userCms.getRequestContext().getCurrentUser().getName()));
-        buffer.append("</div>");
+
+        //---------PUBLISH LINK-----------------------------------------
+        buffer.append("    <div class=\"publish_link\">");
+        buffer.append(getMessage(Messages.GUI_MAIL_PUBLISH_LINK_1, m_link));
+        buffer.append("</div>\r\n");
 
         //----------RESOURCE TABLE-------------------------------------
-        buffer.append("<table border=\"1\" cellspacing=\"0\" cellpadding=\"4\" class=\"resource_table\">");
+        buffer.append("    <table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" class=\"resource_table\">\r\n");
         String[] tableHeaders = getResourceInfoHeaders();
-        buffer.append("<tr>");
+        buffer.append("      <tr>\r\n");
+        boolean first = true;
         for (String header : tableHeaders) {
-            buffer.append("<th>");
+            if (first) {
+                buffer.append("<th align=\"left\" class=\"rescol\">");
+                first = false;
+            } else {
+                buffer.append("<th align=\"left\" class=\"titlecol\">");
+            }
             buffer.append(header);
             buffer.append("</th>");
         }
-        buffer.append("</tr>");
+        buffer.append("</tr>\n");
 
+        first = true;
         for (CmsResource resource : m_resources) {
             String[] resourceInfos = getResourceInfo(resource);
-            buffer.append("<tr>");
+            buffer.append("      <tr>\r\n");
             for (String resourceInfo : resourceInfos) {
-                buffer.append("<td>");
+                if (first) {
+                    buffer.append("<td class=\"rescol\">");
+                    first = false;
+                } else {
+                    buffer.append("<td class=\"titlecol\">");
+                    first = true;
+                }
                 buffer.append(resourceInfo);
                 buffer.append("</td>");
             }
-            buffer.append("</tr>");
+            buffer.append("</tr>\n");
         }
         buffer.append("</table>");
 
         //---------PUBLISH LINK-----------------------------------------
-        buffer.append("<div class=\"publish_link\">");
+        buffer.append("    <div class=\"publish_link\">");
         buffer.append(getMessage(Messages.GUI_MAIL_PUBLISH_LINK_1, m_link));
-        buffer.append("</div>");
+        buffer.append("</div>\r\n");
+
         return buffer.toString();
     }
 
@@ -196,5 +213,4 @@ public class CmsWorkflowNotification extends A_CmsNotification {
 
         return m_notificationContent;
     }
-
 }
