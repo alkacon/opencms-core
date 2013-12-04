@@ -2313,6 +2313,7 @@ public final class OpenCmsCore {
             m_resourceManager.getFolderTranslator(),
             m_resourceManager.getFileTranslator(),
             contextInfo.getOuFqn());
+        context.setDetailResource(contextInfo.getDetailResource());
 
         // now initialize and return the CmsObject
         return new CmsObject(m_securityManager, context);

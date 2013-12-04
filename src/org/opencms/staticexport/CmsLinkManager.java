@@ -41,6 +41,7 @@ import org.opencms.security.CmsRoleViolationException;
 import org.opencms.site.CmsSite;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -277,11 +278,28 @@ public class CmsLinkManager {
      */
     public String getPermalink(CmsObject cms, String resourceName) {
 
+        return getPermalink(cms, resourceName, null);
+    }
+
+    /**
+     * Returns the perma link for the given resource and optional detail content.<p<
+     * 
+     * @param cms the CMS context to use 
+     * @param resourceName the page to generate the perma link for 
+     * @param detailContentId the structure id of the detail content (may be null) 
+     * 
+     * @return the perma link 
+     */
+    public String getPermalink(CmsObject cms, String resourceName, CmsUUID detailContentId) {
+
         String permalink = "";
         try {
             permalink = substituteLink(cms, CmsPermalinkResourceHandler.PERMALINK_HANDLER);
             String id = cms.readResource(resourceName, CmsResourceFilter.ALL).getStructureId().toString();
             permalink += id;
+            if (detailContentId != null) {
+                permalink += ":" + detailContentId;
+            }
             String ext = CmsFileUtil.getExtension(resourceName);
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ext)) {
                 permalink += ext;
@@ -298,6 +316,18 @@ public class CmsLinkManager {
             }
         }
         return permalink;
+    }
+
+    /**
+     * Returns the perma link for the current page based on the URI and detail content id stored in the CmsObject passed as a parameter.<p<
+     * 
+     * @param cms the CMS context to use to generate the permalink 
+     * 
+     * @return the permalink 
+     */
+    public String getPermalinkForCurrentPage(CmsObject cms) {
+
+        return getPermalink(cms, cms.getRequestContext().getUri(), cms.getRequestContext().getDetailContentId());
     }
 
     /**
