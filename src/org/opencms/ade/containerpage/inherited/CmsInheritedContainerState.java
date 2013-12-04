@@ -66,7 +66,6 @@ public class CmsInheritedContainerState {
      * @param cache the cache instance 
      * @param rootPath the root path 
      * @param name the name of the container configuration 
-     * @param locale the locale 
      */
     public void addConfigurations(CmsContainerConfigurationCache cache, String rootPath, String name) {
 
