@@ -288,9 +288,6 @@ public class CmsSourceSearchDialog extends CmsWidgetDialog {
 
         boolean solrEnabled = OpenCms.getSearchManager().getSolrServerConfiguration().isEnabled();
         CmsSolrIndex solrIndex = OpenCms.getSearchManager().getIndexSolr(CmsSolrIndex.DEFAULT_INDEX_NAME_OFFLINE);
-        if (solrEnabled && (solrIndex != null)) {
-            return true;
-        }
-        return false;
+        return solrEnabled && (solrIndex != null);
     }
 }
