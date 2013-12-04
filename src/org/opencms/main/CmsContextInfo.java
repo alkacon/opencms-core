@@ -29,6 +29,7 @@ package org.opencms.main;
 
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRequestContext;
+import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
@@ -52,6 +53,9 @@ public class CmsContextInfo {
 
     /** Localhost ip used in fallback cases. */
     public static final String LOCALHOST = "127.0.0.1";
+
+    /** The detail content resource, if available. */
+    private CmsResource m_detailResource;
 
     /** The encoding to create the context with. */
     private String m_encoding;
@@ -135,6 +139,7 @@ public class CmsContextInfo {
         setRemoteAddr(requestContext.getRemoteAddress());
         setRequestTime(requestContext.getRequestTime());
         setOuFqn(requestContext.getOuFqn());
+        setDetailResource(requestContext.getDetailResource());
     }
 
     /**
@@ -222,6 +227,16 @@ public class CmsContextInfo {
     public void freeze() {
 
         m_frozen = true;
+    }
+
+    /**
+     * Gets the detail content resource.<p>
+     * 
+     * @return the detail content resource 
+     */
+    public CmsResource getDetailResource() {
+
+        return m_detailResource;
     }
 
     /**
@@ -376,6 +391,16 @@ public class CmsContextInfo {
     public String getUserName() {
 
         return m_userName;
+    }
+
+    /**
+     * Sets the detail content resource.<p>
+     * 
+     * @param detailResource the detail content resource to set 
+     */
+    public void setDetailResource(CmsResource detailResource) {
+
+        m_detailResource = detailResource;
     }
 
     /**
