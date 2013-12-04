@@ -20,6 +20,7 @@ OpenCms 9.0.1 - xxxxxxxxx
 ! Added option to show expired or unreleased resources in content collector lists in the offline project
 - Enhanced gallery widget upload feature
 * Fixing issue with optional text-area widgets
+* Fixed issue #203 where opening the source code search result JSP causes an error.
 - Improved IE10/IE11 support to allow drag and drop in upload dialog
 - Fixed alias deletion for folders 
 
