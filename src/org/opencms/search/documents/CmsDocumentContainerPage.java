@@ -123,7 +123,7 @@ public class CmsDocumentContainerPage extends A_CmsVfsDocument {
             StringBuffer content = new StringBuffer();
             Map<String, String> items = new HashMap<String, String>();
 
-            CmsContainerPageBean containerBean = containerPage.getContainerPage(cms, locale);
+            CmsContainerPageBean containerBean = containerPage.getContainerPage(cms);
             for (CmsContainerElementBean element : containerBean.getElements()) {
                 // check all elements in this container
 

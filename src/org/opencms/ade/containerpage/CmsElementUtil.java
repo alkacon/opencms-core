@@ -175,7 +175,7 @@ public class CmsElementUtil {
             cms,
             m_cms.readResource(currentPageUri),
             req);
-        CmsContainerPageBean containerPage = xmlContainerPage.getContainerPage(cms, m_locale);
+        CmsContainerPageBean containerPage = xmlContainerPage.getContainerPage(cms);
         m_standardContext.setPage(containerPage);
     }
 
@@ -303,7 +303,7 @@ public class CmsElementUtil {
                 m_cms,
                 element.getResource(),
                 m_req);
-            CmsGroupContainerBean groupContainer = xmlGroupContainer.getGroupContainer(m_cms, m_locale);
+            CmsGroupContainerBean groupContainer = xmlGroupContainer.getGroupContainer(m_cms);
             // make sure to use the content title and not the property title
             elementData.setTitle(groupContainer.getTitle());
             elementData.setTypes(groupContainer.getTypes());

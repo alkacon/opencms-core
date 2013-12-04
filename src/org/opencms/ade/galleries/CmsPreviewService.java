@@ -136,7 +136,6 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
                     standardContext.setElement(element);
                     standardContext.setEdited(true);
                     standardContext.setPage(new CmsContainerPageBean(
-                        locale,
                         Collections.<CmsContainerBean> singletonList(containerBean)));
                     String encoding = response.getCharacterEncoding();
                     CmsTemplateLoaderFacade loaderFacade = new CmsTemplateLoaderFacade(

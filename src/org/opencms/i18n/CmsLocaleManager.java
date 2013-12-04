@@ -67,6 +67,9 @@ public class CmsLocaleManager implements I_CmsEventListener {
     /** Runtime property name for locale handler. */
     public static final String LOCALE_HANDLER = "class_locale_handler";
 
+    /** Locale to use for storing locale-independent XML contents. */
+    public static final Locale MASTER_LOCALE = Locale.ENGLISH;
+
     /** Request parameter to force encoding selection. */
     public static final String PARAMETER_ENCODING = "__encoding";
 

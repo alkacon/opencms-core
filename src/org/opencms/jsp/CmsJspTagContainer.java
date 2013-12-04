@@ -192,9 +192,7 @@ public class CmsJspTagContainer extends TagSupport {
 
         List<CmsContainerElementBean> subElements;
         CmsXmlGroupContainer xmlGroupContainer = CmsXmlGroupContainerFactory.unmarshal(cms, element.getResource(), req);
-        CmsGroupContainerBean groupContainer = xmlGroupContainer.getGroupContainer(
-            cms,
-            cms.getRequestContext().getLocale());
+        CmsGroupContainerBean groupContainer = xmlGroupContainer.getGroupContainer(cms);
         if (!groupContainer.getTypes().contains(containerType)) {
             LOG.warn(new CmsIllegalStateException(Messages.get().container(
                 Messages.ERR_XSD_NO_TEMPLATE_FORMATTER_3,
@@ -325,7 +323,7 @@ public class CmsJspTagContainer extends TagSupport {
                         pageResource = cms.readResource(requestUri);
                     }
                     CmsXmlContainerPage xmlContainerPage = CmsXmlContainerPageFactory.unmarshal(cms, pageResource, req);
-                    containerPage = xmlContainerPage.getContainerPage(cms, locale);
+                    containerPage = xmlContainerPage.getContainerPage(cms);
                     standardContext.setPage(containerPage);
                 }
                 CmsResource detailContent = standardContext.getDetailContent();
@@ -344,7 +342,7 @@ public class CmsJspTagContainer extends TagSupport {
                                     cms,
                                     cms.readResource(resourceName),
                                     req);
-                                detailOnlyPage = xmlContainerPage.getContainerPage(cms, locale);
+                                detailOnlyPage = xmlContainerPage.getContainerPage(cms);
                                 standardContext.setDetailOnlyPage(detailOnlyPage);
                                 container = detailOnlyPage.getContainers().get(m_name);
                             }

@@ -696,7 +696,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                 pageResource = cms.readResource(requestUri);
             }
             CmsXmlContainerPage xmlContainerPage = CmsXmlContainerPageFactory.unmarshal(cms, pageResource, req);
-            containerPage = xmlContainerPage.getContainerPage(cms, cms.getRequestContext().getLocale());
+            containerPage = xmlContainerPage.getContainerPage(cms);
             standardContext.setPage(containerPage);
         }
         return standardContext;

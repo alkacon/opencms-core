@@ -52,7 +52,7 @@ public class CmsResourceTypeXmlAdeConfiguration extends CmsResourceTypeXmlConten
         String resourcename,
         List<CmsProperty> properties) {
 
-        return CmsLocaleManager.getLocale("en");
+        return CmsLocaleManager.MASTER_LOCALE;
     }
 
 }

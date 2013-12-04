@@ -477,7 +477,7 @@ public class CmsADEManager {
         CmsContainerConfigurationCache cache = online
         ? m_onlineContainerConfigurationCache
         : m_offlineContainerConfigurationCache;
-        result.addConfigurations(cache, rootPath, name, cms.getRequestContext().getLocale());
+        result.addConfigurations(cache, rootPath, name);
         return result;
 
     }

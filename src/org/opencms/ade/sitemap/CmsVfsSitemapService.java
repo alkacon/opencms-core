@@ -801,43 +801,40 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         CmsUUID elementId,
         CmsUUID formatterId) throws CmsException {
 
-        List<Locale> pageLocales = page.getLocales();
-        for (Locale locale : pageLocales) {
-            CmsContainerPageBean bean = page.getContainerPage(cms, locale);
-            List<CmsContainerBean> containerBeans = new ArrayList<CmsContainerBean>();
-            Collection<CmsContainerBean> originalContainers = bean.getContainers().values();
-            if ((containerName == null) && !originalContainers.isEmpty()) {
-                CmsContainerBean firstContainer = originalContainers.iterator().next();
-                containerName = firstContainer.getName();
-            }
-            boolean foundContainer = false;
-            for (CmsContainerBean cntBean : originalContainers) {
-                boolean isDetailTarget = cntBean.getName().equals(containerName);
-                if (isDetailTarget && !foundContainer) {
-                    foundContainer = true;
-                    List<CmsContainerElementBean> newElems = new ArrayList<CmsContainerElementBean>();
-                    newElems.addAll(cntBean.getElements());
-                    CmsContainerElementBean newElement = new CmsContainerElementBean(
-                        elementId,
-                        formatterId,
-                        new HashMap<String, String>(),
-                        false);
-                    newElems.add(0, newElement);
-                    CmsContainerBean newCntBean = new CmsContainerBean(cntBean.getName(), cntBean.getType(), newElems);
-                    containerBeans.add(newCntBean);
-                } else {
-                    containerBeans.add(cntBean);
-                }
-            }
-            if (!foundContainer) {
-                throw new CmsException(Messages.get().container(
-                    Messages.ERR_NO_FUNCTION_DETAIL_CONTAINER_1,
-                    page.getFile().getRootPath()));
-            }
-            CmsContainerPageBean bean2 = new CmsContainerPageBean(locale, new ArrayList<CmsContainerBean>(
-                containerBeans));
-            page.writeContainerPage(cms, locale, bean2);
+        CmsContainerPageBean bean = page.getContainerPage(cms);
+        List<CmsContainerBean> containerBeans = new ArrayList<CmsContainerBean>();
+        Collection<CmsContainerBean> originalContainers = bean.getContainers().values();
+        if ((containerName == null) && !originalContainers.isEmpty()) {
+            CmsContainerBean firstContainer = originalContainers.iterator().next();
+            containerName = firstContainer.getName();
         }
+        boolean foundContainer = false;
+        for (CmsContainerBean cntBean : originalContainers) {
+            boolean isDetailTarget = cntBean.getName().equals(containerName);
+            if (isDetailTarget && !foundContainer) {
+                foundContainer = true;
+                List<CmsContainerElementBean> newElems = new ArrayList<CmsContainerElementBean>();
+                newElems.addAll(cntBean.getElements());
+                CmsContainerElementBean newElement = new CmsContainerElementBean(
+                    elementId,
+                    formatterId,
+                    new HashMap<String, String>(),
+                    false);
+                newElems.add(0, newElement);
+                CmsContainerBean newCntBean = new CmsContainerBean(cntBean.getName(), cntBean.getType(), newElems);
+                containerBeans.add(newCntBean);
+            } else {
+                containerBeans.add(cntBean);
+            }
+        }
+        if (!foundContainer) {
+            throw new CmsException(Messages.get().container(
+                Messages.ERR_NO_FUNCTION_DETAIL_CONTAINER_1,
+                page.getFile().getRootPath()));
+        }
+        CmsContainerPageBean bean2 = new CmsContainerPageBean(new ArrayList<CmsContainerBean>(containerBeans));
+        page.writeContainerPage(cms, bean2);
+
     }
 
     /**
@@ -1104,7 +1101,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         Locale contentLocale = page.getLocales().get(0);
         CmsObject cloneCms = OpenCms.initCmsObject(cms);
         cloneCms.getRequestContext().setLocale(contentLocale);
-        CmsContainerPageBean pageBean = page.getContainerPage(cms, contentLocale);
+        CmsContainerPageBean pageBean = page.getContainerPage(cms);
         boolean needsChanges = false;
         List<CmsContainerBean> updatedContainers = new ArrayList<CmsContainerBean>();
         for (CmsContainerBean container : pageBean.getContainers().values()) {
@@ -1134,8 +1131,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             updatedContainers.add(updatedContainer);
         }
         if (needsChanges) {
-            CmsContainerPageBean updatedPage = new CmsContainerPageBean(contentLocale, updatedContainers);
-            page.writeContainerPage(cms, contentLocale, updatedPage);
+            CmsContainerPageBean updatedPage = new CmsContainerPageBean(updatedContainers);
+            page.writeContainerPage(cms, updatedPage);
         }
     }
 

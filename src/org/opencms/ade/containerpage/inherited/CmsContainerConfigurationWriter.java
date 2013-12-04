@@ -140,7 +140,13 @@ public class CmsContainerConfigurationWriter {
             removeExistingEntry(cms, content, localeToRemoveEntryFrom, name);
         }
         CmsContainerConfiguration configuration = createConfigurationBean(newOrdering, elements, keys);
+
         Locale saveLocale = Locale.ENGLISH;
+        for (Locale locale : content.getLocales()) {
+            if (!saveLocale.equals(locale)) {
+                content.removeLocale(locale);
+            }
+        }
         if (!content.hasLocale(saveLocale)) {
             content.addLocale(cms, saveLocale);
         }

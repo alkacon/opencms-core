@@ -31,12 +31,15 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypeLocaleIndependentXmlContent;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkProcessor;
 import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.util.CmsMacroResolver;
@@ -584,6 +587,35 @@ public class CmsXmlContent extends A_CmsXmlDocument {
     public boolean isAutoCorrectionEnabled() {
 
         return m_autoCorrectionEnabled;
+    }
+
+    /**
+     * Checks if the content is locale independent.<p>
+     * 
+     * @return true if the content is locale independent 
+     */
+    public boolean isLocaleIndependent() {
+
+        CmsFile file = getFile();
+        if (CmsResourceTypeXmlContainerPage.isContainerPage(file)
+            || OpenCms.getResourceManager().matchResourceType(
+                CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME,
+                file.getTypeId())
+            || OpenCms.getResourceManager().matchResourceType(
+                CmsResourceTypeXmlContainerPage.INHERIT_CONTAINER_CONFIG_TYPE_NAME,
+                file.getTypeId())) {
+            return true;
+        }
+
+        try {
+            if (OpenCms.getResourceManager().getResourceType(file) instanceof CmsResourceTypeLocaleIndependentXmlContent) {
+                return true;
+            }
+        } catch (Exception e) {
+            // ignore
+        }
+        return false;
+
     }
 
     /**

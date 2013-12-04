@@ -710,10 +710,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#saveContainerpage(org.opencms.util.CmsUUID, java.util.List, java.lang.String)
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#saveContainerpage(org.opencms.util.CmsUUID, java.util.List)
      */
-    public void saveContainerpage(CmsUUID pageStructureId, List<CmsContainer> containers, String locale)
-    throws CmsRpcException {
+    public void saveContainerpage(CmsUUID pageStructureId, List<CmsContainer> containers) throws CmsRpcException {
 
         CmsObject cms = getCmsObject();
         try {
@@ -721,17 +720,16 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             CmsResource containerpage = cms.readResource(pageStructureId);
             ensureLock(containerpage);
             String containerpageUri = cms.getSitePath(containerpage);
-            Locale contentLocale = CmsLocaleManager.getLocale(locale);
-            saveContainers(cms, containerpage, containerpageUri, containers, contentLocale);
+            saveContainers(cms, containerpage, containerpageUri, containers);
         } catch (Throwable e) {
             error(e);
         }
     }
 
     /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#saveDetailContainers(java.lang.String, java.util.List, java.lang.String)
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#saveDetailContainers(java.lang.String, java.util.List)
      */
-    public void saveDetailContainers(String detailContainerResource, List<CmsContainer> containers, String locale)
+    public void saveDetailContainers(String detailContainerResource, List<CmsContainer> containers)
     throws CmsRpcException {
 
         CmsObject cms = getCmsObject();
@@ -759,8 +757,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     CmsResourceTypeXmlContainerPage.getContainerPageTypeId());
             }
             ensureLock(containerpage);
-            Locale contentLocale = CmsLocaleManager.getLocale(locale);
-            saveContainers(cms, containerpage, detailContainerResource, containers, contentLocale);
+            saveContainers(cms, containerpage, detailContainerResource, containers);
         } catch (Throwable e) {
             error(e);
         }
@@ -907,21 +904,20 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#syncSaveContainerpage(org.opencms.util.CmsUUID, java.util.List, java.lang.String)
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#syncSaveContainerpage(org.opencms.util.CmsUUID, java.util.List)
      */
-    public void syncSaveContainerpage(CmsUUID pageStructureId, List<CmsContainer> containers, String locale)
-    throws CmsRpcException {
+    public void syncSaveContainerpage(CmsUUID pageStructureId, List<CmsContainer> containers) throws CmsRpcException {
 
-        saveContainerpage(pageStructureId, containers, locale);
+        saveContainerpage(pageStructureId, containers);
     }
 
     /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#syncSaveDetailContainers(java.lang.String, java.util.List, java.lang.String)
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#syncSaveDetailContainers(java.lang.String, java.util.List)
      */
-    public void syncSaveDetailContainers(String detailContainerResource, List<CmsContainer> containers, String locale)
+    public void syncSaveDetailContainers(String detailContainerResource, List<CmsContainer> containers)
     throws CmsRpcException {
 
-        saveDetailContainers(detailContainerResource, containers, locale);
+        saveDetailContainers(detailContainerResource, containers);
     }
 
     /**
@@ -1190,9 +1186,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             if (elementData.isGroupContainer() || elementData.isInheritContainer()) {
                 // this is a group-container 
                 CmsResource elementRes = cms.readResource(element.getId());
-                List<CmsContainerElementBean> subElements = elementData.isGroupContainer() ? getGroupContainerElements(
-                    elementRes,
-                    locale) : getInheritedElements(elementRes, locale, uriParam);
+                List<CmsContainerElementBean> subElements = elementData.isGroupContainer()
+                ? getGroupContainerElements(elementRes)
+                : getInheritedElements(elementRes, locale, uriParam);
                 // adding all sub-items to the elements data
                 for (CmsContainerElementBean subElement : subElements) {
                     getSessionCache().setCacheContainerElement(subElement.editorHash(), subElement);
@@ -1256,20 +1252,18 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * Returns the sub-elements of this group container resource.<p>
      * 
      * @param resource the group container resource
-     * @param locale the requested locale
      * 
      * @return the sub-elements
      * 
      * @throws CmsException if something goes wrong reading the resource
      */
-    private List<CmsContainerElementBean> getGroupContainerElements(CmsResource resource, Locale locale)
-    throws CmsException {
+    private List<CmsContainerElementBean> getGroupContainerElements(CmsResource resource) throws CmsException {
 
         CmsXmlGroupContainer xmlGroupContainer = CmsXmlGroupContainerFactory.unmarshal(
             getCmsObject(),
             resource,
             getRequest());
-        CmsGroupContainerBean groupContainer = xmlGroupContainer.getGroupContainer(getCmsObject(), locale);
+        CmsGroupContainerBean groupContainer = xmlGroupContainer.getGroupContainer(getCmsObject());
         return groupContainer.getElements();
     }
 
@@ -1284,7 +1278,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     private Set<CmsUUID> getGroupElementIds(CmsXmlGroupContainer groupContainer, Locale locale) {
 
         Set<CmsUUID> idSet = new HashSet<CmsUUID>();
-        CmsGroupContainerBean groupContainerBean = groupContainer.getGroupContainer(getCmsObject(), locale);
+        CmsGroupContainerBean groupContainerBean = groupContainer.getGroupContainer(getCmsObject());
         if (groupContainerBean != null) {
             for (CmsContainerElementBean element : groupContainerBean.getElements()) {
                 idSet.add(element.getId());
@@ -1580,7 +1574,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * @param containerpage the container page resource
      * @param containerpageUri the container page site path
      * @param containers the container to save
-     * @param contentLocale the content locale
      * 
      * @throws CmsException if something goes wrong writing the file
      */
@@ -1588,17 +1581,16 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         CmsObject cms,
         CmsResource containerpage,
         String containerpageUri,
-        List<CmsContainer> containers,
-        Locale contentLocale) throws CmsException {
+        List<CmsContainer> containers) throws CmsException {
 
         List<CmsContainerBean> containerBeans = new ArrayList<CmsContainerBean>();
         for (CmsContainer container : containers) {
             CmsContainerBean containerBean = getContainerBeanToSave(container, containerpage);
             containerBeans.add(containerBean);
         }
-        CmsContainerPageBean page = new CmsContainerPageBean(contentLocale, containerBeans);
+        CmsContainerPageBean page = new CmsContainerPageBean(containerBeans);
         CmsXmlContainerPage xmlCnt = CmsXmlContainerPageFactory.unmarshal(cms, cms.readFile(containerpageUri));
-        xmlCnt.save(cms, contentLocale, page);
+        xmlCnt.save(cms, page);
     }
 
     /**
@@ -1615,6 +1607,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         CmsObject cms = getCmsObject();
         CmsFile file = cms.readFile(resource);
         CmsXmlContent document = CmsXmlContentFactory.unmarshal(cms, file);
+
         for (Locale docLocale : document.getLocales()) {
             document.removeLocale(docLocale);
         }

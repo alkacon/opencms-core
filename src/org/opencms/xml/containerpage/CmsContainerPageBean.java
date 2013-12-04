@@ -35,7 +35,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -60,9 +59,6 @@ public class CmsContainerPageBean {
     /** The container elements. */
     private transient List<CmsContainerElementBean> m_elements;
 
-    /** The locale. */
-    private final Locale m_locale;
-
     /** The container names in the right order. */
     private final List<String> m_names;
 
@@ -72,12 +68,10 @@ public class CmsContainerPageBean {
     /** 
      * Creates a new container page bean.<p> 
      * 
-     * @param locale the locale
      * @param containers the containers
      **/
-    public CmsContainerPageBean(Locale locale, List<CmsContainerBean> containers) {
+    public CmsContainerPageBean(List<CmsContainerBean> containers) {
 
-        m_locale = locale;
         // we want to preserve container order 
         Map<String, CmsContainerBean> cnts = new LinkedHashMap<String, CmsContainerBean>();
         Set<String> types = new HashSet<String>();
@@ -163,16 +157,6 @@ public class CmsContainerPageBean {
             }
         }
         return m_elements;
-    }
-
-    /**
-     * Returns the locale.<p>
-     *
-     * @return the locale
-     */
-    public Locale getLocale() {
-
-        return m_locale;
     }
 
     /**

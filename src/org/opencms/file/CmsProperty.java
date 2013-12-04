@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.RandomAccess;
@@ -424,7 +425,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
      */
     public static Map<String, CmsProperty> toObjectMap(Iterable<CmsProperty> properties) {
 
-        Map<String, CmsProperty> result = new HashMap<String, CmsProperty>();
+        Map<String, CmsProperty> result = new LinkedHashMap<String, CmsProperty>();
         for (CmsProperty property : properties) {
             result.put(property.getName(), property);
         }

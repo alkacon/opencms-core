@@ -127,7 +127,7 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
             Locale locale = index.getLocaleForResource(cms, resource, containerPage.getLocales());
 
             List<I_CmsExtractionResult> all = new ArrayList<I_CmsExtractionResult>();
-            CmsContainerPageBean containerBean = containerPage.getContainerPage(cms, locale);
+            CmsContainerPageBean containerBean = containerPage.getContainerPage(cms);
             if (containerBean != null) {
                 for (CmsContainerElementBean element : containerBean.getElements()) {
                     // check all elements in this container

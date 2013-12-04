@@ -2034,13 +2034,11 @@ public final class CmsContainerpageController {
                         getContainerpageService().saveDetailContainers(
                             getData().getDetailContainerPage(),
                             getPageContent(),
-                            getLocale(),
                             this);
                     } else {
                         getContainerpageService().saveContainerpage(
                             CmsCoreProvider.get().getStructureId(),
                             getPageContent(),
-                            getLocale(),
                             this);
                     }
                 }
@@ -2081,13 +2079,11 @@ public final class CmsContainerpageController {
                         getContainerpageService().saveDetailContainers(
                             getData().getDetailContainerPage(),
                             getPageContent(),
-                            getLocale(),
                             this);
                     } else {
                         getContainerpageService().saveContainerpage(
                             CmsCoreProvider.get().getStructureId(),
                             getPageContent(),
-                            getLocale(),
                             this);
                     }
                 }
@@ -2128,7 +2124,6 @@ public final class CmsContainerpageController {
                         getContainerpageService().saveDetailContainers(
                             getData().getDetailContainerPage(),
                             getPageContent(),
-                            getLocale(),
                             this);
                     } else if (lockContainerpage()) {
                         setLoadingMessage(org.opencms.gwt.client.Messages.get().key(
@@ -2137,7 +2132,6 @@ public final class CmsContainerpageController {
                         getContainerpageService().saveContainerpage(
                             CmsCoreProvider.get().getStructureId(),
                             getPageContent(),
-                            getLocale(),
                             this);
                     }
                 }
@@ -2727,13 +2721,11 @@ public final class CmsContainerpageController {
                         getContainerpageService().syncSaveDetailContainers(
                             getData().getDetailContainerPage(),
                             getPageContent(),
-                            getLocale(),
                             this);
                     } else {
                         getContainerpageService().syncSaveContainerpage(
                             CmsCoreProvider.get().getStructureId(),
                             getPageContent(),
-                            getLocale(),
                             this);
                     }
                 }

@@ -257,28 +257,20 @@ public interface I_CmsContainerpageServiceAsync {
      * 
      * @param pageStructureId the container page structure id
      * @param containers the container-page's containers
-     * @param locale the content locale
      * @param callback the call-back executed on response
      */
-    void saveContainerpage(
-        CmsUUID pageStructureId,
-        List<CmsContainer> containers,
-        String locale,
-        AsyncCallback<Void> callback);
+    void saveContainerpage(CmsUUID pageStructureId, List<CmsContainer> containers, AsyncCallback<Void> callback);
 
     /**
      * Saves the detail containers.<p>
      * 
      * @param detailContainerResource the detail container resource path
      * @param containers the container-page's containers
-     * @param locale the content locale
      * @param callback the call-back executed on response
      */
-    void saveDetailContainers(
-        String detailContainerResource,
-        List<CmsContainer> containers,
-        String locale,
-        AsyncCallback<Void> callback);
+    void saveDetailContainers(String detailContainerResource, List<CmsContainer> containers,
+
+    AsyncCallback<Void> callback);
 
     /**
      * Saves the favorite list.<p>
@@ -348,29 +340,24 @@ public interface I_CmsContainerpageServiceAsync {
      * 
      * @param pageStructureId the container page structure id
      * @param containers the container-page's containers
-     * @param locale the content locale
      * @param callback the call-back executed on response
      */
     @SynchronizedRpcRequest
-    void syncSaveContainerpage(
-        CmsUUID pageStructureId,
-        List<CmsContainer> containers,
-        String locale,
-        AsyncCallback<Void> callback);
+    void syncSaveContainerpage(CmsUUID pageStructureId, List<CmsContainer> containers,
+
+    AsyncCallback<Void> callback);
 
     /**
      * Saves the detail containers.<p>
      * 
      * @param detailContainerResource the detail container resource path
      * @param containers the container-page's containers
-     * @param locale the content locale
      * @param callback the call-back executed on response
      */
     @SynchronizedRpcRequest
     void syncSaveDetailContainers(
         String detailContainerResource,
         List<CmsContainer> containers,
-        String locale,
         AsyncCallback<Void> callback);
 
 }

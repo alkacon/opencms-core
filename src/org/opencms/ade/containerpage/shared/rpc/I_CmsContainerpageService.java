@@ -279,24 +279,20 @@ public interface I_CmsContainerpageService extends RemoteService {
      * 
      * @param pageStructureId the container page structure id
      * @param containers the container-page's containers
-     * @param locale the content locale
      * 
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    void saveContainerpage(CmsUUID pageStructureId, List<CmsContainer> containers, String locale)
-    throws CmsRpcException;
+    void saveContainerpage(CmsUUID pageStructureId, List<CmsContainer> containers) throws CmsRpcException;
 
     /**
      * Saves the detail containers.<p>
      * 
      * @param detailContainerResource the detail container resource path
      * @param containers the container-page's containers
-     * @param locale the content locale
      * 
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    void saveDetailContainers(String detailContainerResource, List<CmsContainer> containers, String locale)
-    throws CmsRpcException;
+    void saveDetailContainers(String detailContainerResource, List<CmsContainer> containers) throws CmsRpcException;
 
     /**
      * Saves the favorite list.<p>
@@ -372,23 +368,19 @@ public interface I_CmsContainerpageService extends RemoteService {
      * 
      * @param pageStructureId the container page structure id
      * @param containers the container-page's containers
-     * @param locale the content locale
      * 
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    void syncSaveContainerpage(CmsUUID pageStructureId, List<CmsContainer> containers, String locale)
-    throws CmsRpcException;
+    void syncSaveContainerpage(CmsUUID pageStructureId, List<CmsContainer> containers) throws CmsRpcException;
 
     /**
      * Saves the detail containers.<p>
      * 
      * @param detailContainerResource the detail container resource path
      * @param containers the container-page's containers
-     * @param locale the content locale
      * 
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    void syncSaveDetailContainers(String detailContainerResource, List<CmsContainer> containers, String locale)
-    throws CmsRpcException;
+    void syncSaveDetailContainers(String detailContainerResource, List<CmsContainer> containers) throws CmsRpcException;
 
 }
