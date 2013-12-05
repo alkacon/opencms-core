@@ -35,6 +35,7 @@ import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -76,6 +77,21 @@ public interface I_CmsContentServiceAsync extends I_ContentServiceAsync {
      * @param callback the asynchronous callback
      */
     void loadNewDefinition(String entityId, AsyncCallback<CmsContentDefinition> callback);
+
+    /**
+     * Loads new entity definition.<p>
+     * This will load the entity representation of a new locale node.<p>
+     * 
+     * @param entityId the entity id
+     * @param lastLocale the last edited locale
+     * @param editedEntities the edited entities
+     * @param callback the asynchronous callback
+     */
+    void loadOtherLocale(
+        String entityId,
+        String lastLocale,
+        Map<String, Entity> editedEntities,
+        AsyncCallback<CmsContentDefinition> callback);
 
     /**
      * Returns the content definition of the resource requested through parameter 'resource'.<p>

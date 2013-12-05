@@ -97,9 +97,30 @@ public class CmsContentDefinition extends ContentDefinition {
     private String m_title;
 
     /**
+     * Constructor for model file informations object.<p>
+     * 
+     * @param modelInfos the model file informations
+     * @param newLink the new link
+     * @param referenceId the reference resource structure id
+     * @param locale the locale
+     */
+    public CmsContentDefinition(
+        List<CmsModelResourceInfo> modelInfos,
+        String newLink,
+        CmsUUID referenceId,
+        String locale) {
+
+        super(null, null, null, null, null, true, locale);
+        m_modelInfos = modelInfos;
+        m_newLink = newLink;
+        m_referenceResourceId = referenceId;
+    }
+
+    /**
      * Constructor.<p>
      * 
-     * @param entity the entity
+     * @param entityId the entity id
+     * @param entities the locale specific entities of the content
      * @param configurations the attribute configurations
      * @param externalWidgetConfigurations the external widget configurations
      * @param complexWidgetData the complex widget configurations 
@@ -116,7 +137,8 @@ public class CmsContentDefinition extends ContentDefinition {
      * @param autoUnlock false if the editor should not unlock resources automatically in standalone mode 
      */
     public CmsContentDefinition(
-        Entity entity,
+        String entityId,
+        Map<String, Entity> entities,
         Map<String, AttributeConfiguration> configurations,
         Collection<CmsExternalWidgetConfiguration> externalWidgetConfigurations,
         Map<String, CmsComplexWidgetData> complexWidgetData,
@@ -132,7 +154,7 @@ public class CmsContentDefinition extends ContentDefinition {
         boolean performedAutocorrection,
         boolean autoUnlock) {
 
-        super(entity, configurations, types, tabInfos, true, locale);
+        super(entityId, entities, configurations, types, tabInfos, true, locale);
         m_contentLocales = contentLocales;
         m_availableLocales = availableLocales;
         m_synchronizations = synchronizations;
@@ -143,26 +165,6 @@ public class CmsContentDefinition extends ContentDefinition {
         m_externalWidgetConfigurations = new ArrayList<CmsExternalWidgetConfiguration>(externalWidgetConfigurations);
         m_performedAutocorrection = performedAutocorrection;
         m_autoUnlock = autoUnlock;
-    }
-
-    /**
-     * Constructor for model file informations object.<p>
-     * 
-     * @param modelInfos the model file informations
-     * @param newLink the new link
-     * @param referenceId the reference resource structure id
-     * @param locale the locale
-     */
-    public CmsContentDefinition(
-        List<CmsModelResourceInfo> modelInfos,
-        String newLink,
-        CmsUUID referenceId,
-        String locale) {
-
-        super(null, null, null, null, true, locale);
-        m_modelInfos = modelInfos;
-        m_newLink = newLink;
-        m_referenceResourceId = referenceId;
     }
 
     /**
@@ -246,6 +248,95 @@ public class CmsContentDefinition extends ContentDefinition {
     }
 
     /**
+     * Transfers values from the original entity to the given target entity.<p>
+     * 
+     * @param original the original entity
+     * @param target the target entity
+     * @param transferAttributes the attributes to consider for the value transfer
+     * @param entityTypes the entity types
+     * @param attributeConfigurations the attribute configurations
+     * @param considerDefaults if default values should be added according to minimum occurrence settings
+     */
+    public static void transfereValues(
+        I_Entity original,
+        I_Entity target,
+        List<String> transferAttributes,
+        Map<String, I_Type> entityTypes,
+        Map<String, AttributeConfiguration> attributeConfigurations,
+        boolean considerDefaults) {
+
+        I_Type entityType = entityTypes.get(target.getTypeName());
+        for (String attributeName : entityType.getAttributeNames()) {
+            I_Type attributeType = entityTypes.get(entityType.getAttributeTypeName(attributeName));
+            if (transferAttributes.contains(attributeName)) {
+
+                target.removeAttribute(attributeName);
+                I_EntityAttribute attribute = original != null ? original.getAttribute(attributeName) : null;
+                if (attribute != null) {
+                    if (attributeType.isSimpleType()) {
+                        for (String value : attribute.getSimpleValues()) {
+                            target.addAttributeValue(attributeName, value);
+                        }
+                        if (considerDefaults) {
+                            for (int i = attribute.getValueCount(); i < entityType.getAttributeMinOccurrence(attributeName); i++) {
+                                target.addAttributeValue(
+                                    attributeName,
+                                    attributeConfigurations.get(attributeName).getDefaultValue());
+                            }
+                        }
+                    } else {
+                        for (I_Entity value : attribute.getComplexValues()) {
+                            target.addAttributeValue(attributeName, value);
+                        }
+                        if (considerDefaults) {
+                            for (int i = attribute.getValueCount(); i < entityType.getAttributeMinOccurrence(attributeName); i++) {
+                                target.addAttributeValue(
+                                    attributeName,
+                                    createDefaultValueEntity(attributeType, entityTypes, attributeConfigurations));
+                            }
+                        }
+                    }
+                } else if (considerDefaults) {
+                    for (int i = 0; i < entityType.getAttributeMinOccurrence(attributeName); i++) {
+                        if (attributeType.isSimpleType()) {
+                            target.addAttributeValue(
+                                attributeName,
+                                attributeConfigurations.get(attributeName).getDefaultValue());
+                        } else {
+                            target.addAttributeValue(
+                                attributeName,
+                                createDefaultValueEntity(attributeType, entityTypes, attributeConfigurations));
+                        }
+                    }
+                }
+            } else {
+                if (!attributeType.isSimpleType()) {
+                    I_EntityAttribute targetAttribute = target.getAttribute(attributeName);
+                    I_EntityAttribute originalAttribute = original != null
+                    ? original.getAttribute(attributeName)
+                    : null;
+                    if (targetAttribute != null) {
+                        for (int i = 0; i < targetAttribute.getComplexValues().size(); i++) {
+                            I_Entity subTarget = targetAttribute.getComplexValues().get(i);
+                            I_Entity subOriginal = (originalAttribute != null)
+                                && (originalAttribute.getComplexValues().size() > i)
+                            ? originalAttribute.getComplexValues().get(i)
+                            : null;
+                            transfereValues(
+                                subOriginal,
+                                subTarget,
+                                transferAttributes,
+                                entityTypes,
+                                attributeConfigurations,
+                                considerDefaults);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * Returns the entity id according to the given UUID.<p>
      * 
      * @param uuid the UUID
@@ -256,6 +347,38 @@ public class CmsContentDefinition extends ContentDefinition {
     public static String uuidToEntityId(CmsUUID uuid, String locale) {
 
         return ENTITY_ID_PREFIX + locale + "/" + uuid.toString();
+    }
+
+    /**
+     * Creates an entity object containing the default values configured for it's type.<p>
+     * 
+     * @param entityType the entity type
+     * @param entityTypes the entity types
+     * @param attributeConfigurations the attribute configurations
+     * 
+     * @return the created entity
+     */
+    protected static Entity createDefaultValueEntity(
+        I_Type entityType,
+        Map<String, I_Type> entityTypes,
+        Map<String, AttributeConfiguration> attributeConfigurations) {
+
+        Entity result = new Entity(null, entityType.getId());
+        for (String attributeName : entityType.getAttributeNames()) {
+            I_Type attributeType = entityTypes.get(entityType.getAttributeTypeName(attributeName));
+            for (int i = 0; i < entityType.getAttributeMinOccurrence(attributeName); i++) {
+                if (attributeType.isSimpleType()) {
+                    result.addAttributeValue(
+                        attributeName,
+                        attributeConfigurations.get(attributeName).getDefaultValue());
+                } else {
+                    result.addAttributeValue(
+                        attributeName,
+                        createDefaultValueEntity(attributeType, entityTypes, attributeConfigurations));
+                }
+            }
+        }
+        return result;
     }
 
     /**

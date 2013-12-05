@@ -35,12 +35,12 @@ import com.alkacon.acacia.client.UndoRedoHandler.UndoRedoState;
 import com.alkacon.acacia.client.ValidationContext;
 import com.alkacon.acacia.client.ValueFocusHandler;
 import com.alkacon.acacia.client.css.I_LayoutBundle;
-import com.alkacon.acacia.shared.ContentDefinition;
 import com.alkacon.acacia.shared.TabInfo;
 import com.alkacon.acacia.shared.ValidationResult;
 import com.alkacon.vie.client.Entity;
 import com.alkacon.vie.client.Vie;
 import com.alkacon.vie.shared.I_Entity;
+import com.alkacon.vie.shared.I_Type;
 
 import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.ade.contenteditor.shared.CmsComplexWidgetData;
@@ -521,6 +521,48 @@ public final class CmsContentEditor extends EditorBase {
      * Loads the content definition for the given entity and executes the callback on success.<p>
      * 
      * @param entityId the entity id
+     * @param lastLocale the last edited locale
+     * @param editedEntities the changed entities
+     * @param callback the callback
+     */
+    public void loadOtherLocale(
+        final String entityId,
+        final String lastLocale,
+        final Map<String, com.alkacon.acacia.shared.Entity> editedEntities,
+        final I_CmsSimpleCallback<CmsContentDefinition> callback) {
+
+        CmsRpcAction<CmsContentDefinition> action = new CmsRpcAction<CmsContentDefinition>() {
+
+            @Override
+            public void execute() {
+
+                start(0, true);
+                getService().loadOtherLocale(entityId, lastLocale, editedEntities, this);
+            }
+
+            @Override
+            protected void onResponse(final CmsContentDefinition result) {
+
+                registerContentDefinition(result);
+                WidgetRegistry.getInstance().registerExternalWidgets(
+                    result.getExternalWidgetConfigurations(),
+                    new Command() {
+
+                        public void execute() {
+
+                            stop(false);
+                            callback.execute(result);
+                        }
+                    });
+            }
+        };
+        action.execute();
+    }
+
+    /**
+     * Loads the content definition for the given entity and executes the callback on success.<p>
+     * 
+     * @param entityId the entity id
      * @param newLink the new link
      * @param modelFileId  the model file id
      * @param callback the callback
@@ -713,14 +755,25 @@ public final class CmsContentEditor extends EditorBase {
     }
 
     /**
-     * @see com.alkacon.acacia.client.EditorBase#registerContentDefinition(com.alkacon.acacia.shared.ContentDefinition)
+     * Registers the given content definition.<p>
+     * 
+     * @param definition the content definition
      */
-    @Override
-    public void registerContentDefinition(ContentDefinition definition) {
+    public void registerContentDefinition(CmsContentDefinition definition) {
 
-        super.registerContentDefinition(definition);
-        CmsContentDefinition cmsDefinition = (CmsContentDefinition)definition;
-        for (Map.Entry<String, CmsComplexWidgetData> entry : cmsDefinition.getComplexWidgetData().entrySet()) {
+        getWidgetService().addConfigurations(definition.getConfigurations());
+        I_Type baseType = definition.getTypes().get(definition.getEntityTypeName());
+        m_vie.registerTypes(baseType, definition.getTypes());
+        for (I_Entity entity : definition.getEntities().values()) {
+            if (m_registeredEntities.contains(entity.getId())) {
+                Entity previousValue = (Entity)m_vie.getEntity(entity.getId());
+                m_vie.changeEntityContentValues(previousValue, entity);
+            } else {
+                m_vie.registerEntity(entity);
+                m_registeredEntities.add(entity.getId());
+            }
+        }
+        for (Map.Entry<String, CmsComplexWidgetData> entry : definition.getComplexWidgetData().entrySet()) {
             String attrName = entry.getKey();
             CmsComplexWidgetData widgetData = entry.getValue();
             getWidgetService().registerComplexWidgetAttribute(
@@ -1475,54 +1528,57 @@ public final class CmsContentEditor extends EditorBase {
         if (locale.equals(m_locale)) {
             return;
         }
+        String lastLocale = m_locale;
         m_locale = locale;
         m_basePanel.clear();
         destroyForm(false);
         m_entityId = getIdForLocale(locale);
         // if the content does not contain the requested locale yet, a new node will be created 
         final boolean addedNewLocale = !m_contentLocales.contains(locale);
-        if (!m_registeredEntities.contains(m_entityId)) {
-            if (addedNewLocale) {
-                loadNewDefinition(m_entityId, new I_CmsSimpleCallback<CmsContentDefinition>() {
+        if (addedNewLocale) {
+            loadNewDefinition(m_entityId, new I_CmsSimpleCallback<CmsContentDefinition>() {
 
-                    public void execute(final CmsContentDefinition contentDefinition) {
+                public void execute(final CmsContentDefinition contentDefinition) {
 
-                        registerContentDefinition(contentDefinition);
-                        CmsNotification.get().sendBlocking(
-                            CmsNotification.Type.NORMAL,
-                            org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_LOADING_0));
-                        WidgetRegistry.getInstance().registerExternalWidgets(
-                            contentDefinition.getExternalWidgetConfigurations(),
-                            new Command() {
+                    registerContentDefinition(contentDefinition);
+                    CmsNotification.get().sendBlocking(
+                        CmsNotification.Type.NORMAL,
+                        org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_LOADING_0));
+                    WidgetRegistry.getInstance().registerExternalWidgets(
+                        contentDefinition.getExternalWidgetConfigurations(),
+                        new Command() {
 
-                                public void execute() {
+                            public void execute() {
 
-                                    setContentDefinition(contentDefinition);
-                                    renderFormContent();
-                                    if (addedNewLocale) {
-                                        setChanged();
-                                    }
-                                    CmsNotification.get().hide();
+                                setContentDefinition(contentDefinition);
+                                renderFormContent();
+                                if (addedNewLocale) {
+                                    setChanged();
                                 }
-                            });
-                    }
-                });
-            } else {
-                loadDefinition(m_entityId, new I_CmsSimpleCallback<CmsContentDefinition>() {
-
-                    public void execute(CmsContentDefinition contentDefinition) {
-
-                        setContentDefinition(contentDefinition);
-                        renderFormContent();
-                        if (addedNewLocale) {
-                            setChanged();
-                        }
-                    }
-                });
-            }
+                                CmsNotification.get().hide();
+                            }
+                        });
+                }
+            });
         } else {
-            getWidgetService().addConfigurations(m_definitions.get(locale).getConfigurations());
-            renderFormContent();
+            Map<String, com.alkacon.acacia.shared.Entity> editedEntities = new HashMap<String, com.alkacon.acacia.shared.Entity>();
+            for (String entityId : m_registeredEntities) {
+                I_Entity entity = m_vie.getEntity(entityId);
+                if (entity != null) {
+                    editedEntities.put(entityId, com.alkacon.acacia.shared.Entity.serializeEntity(entity));
+                }
+            }
+            loadOtherLocale(m_entityId, lastLocale, editedEntities, new I_CmsSimpleCallback<CmsContentDefinition>() {
+
+                public void execute(CmsContentDefinition contentDefinition) {
+
+                    setContentDefinition(contentDefinition);
+                    renderFormContent();
+                    if (addedNewLocale) {
+                        setChanged();
+                    }
+                }
+            });
         }
     }
 

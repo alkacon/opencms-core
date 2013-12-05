@@ -238,6 +238,9 @@ public class CmsContentTypeVisitor {
     /** The content locale. */
     private Locale m_locale;
 
+    /** The locale synchronized attribute names. */
+    private List<String> m_localeSynchronizations;
+
     /** The messages. */
     private CmsMultiMessages m_messages;
 
@@ -377,6 +380,7 @@ public class CmsContentTypeVisitor {
         m_attributeConfigurations = new HashMap<String, AttributeConfiguration>();
         m_widgetConfigurations = new HashMap<String, CmsExternalWidgetConfiguration>();
         m_registeredTypes = new HashMap<String, I_Type>();
+        m_localeSynchronizations = new ArrayList<String>();
         m_tabInfos = collectTabInfos(xmlContentDefinition);
         readTypes(xmlContentDefinition, "");
     }
@@ -389,6 +393,16 @@ public class CmsContentTypeVisitor {
     protected Map<String, AttributeConfiguration> getAttributeConfigurations() {
 
         return m_attributeConfigurations;
+    }
+
+    /**
+     * Returns the locale synchronized attribute names.<p>
+     * 
+     * @return the locale synchronized attribute names
+     */
+    protected List<String> getLocaleSynchronizations() {
+
+        return m_localeSynchronizations;
     }
 
     /**
@@ -690,6 +704,9 @@ public class CmsContentTypeVisitor {
             DisplayType successor = ((i + 1) < evaluators.size()) ? evaluators.get(i + 1).getProposedType() : null;
             AttributeConfiguration evaluated = ev.getEvaluatedConfiguration(predecessor, successor);
             m_attributeConfigurations.put(ev.getAttributeName(), evaluated);
+            if (evaluated.isLocaleSynchronized()) {
+                m_localeSynchronizations.add(ev.getAttributeName());
+            }
             predecessor = DisplayType.valueOf(evaluated.getDisplayType());
         }
     }

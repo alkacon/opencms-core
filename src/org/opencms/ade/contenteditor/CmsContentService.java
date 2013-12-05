@@ -289,6 +289,152 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
+     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadOtherLocale(java.lang.String, java.lang.String, java.util.Map)
+     */
+    public CmsContentDefinition loadOtherLocale(String entityId, String lastLocale, Map<String, Entity> editedEntities)
+    throws CmsRpcException {
+
+        CmsContentDefinition definition = null;
+        try {
+            CmsObject cms = getCmsObject();
+            CmsUUID structureId = CmsContentDefinition.entityIdToUuid(entityId);
+            CmsResource resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+            Locale contentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(entityId));
+            CmsFile file = cms.readFile(resource);
+            CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
+
+            long timer = 0;
+            if (LOG.isDebugEnabled()) {
+                timer = System.currentTimeMillis();
+            }
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(entityId)) {
+                entityId = CmsContentDefinition.uuidToEntityId(file.getStructureId(), contentLocale.toString());
+            }
+            boolean performedAutoCorrection = checkAutoCorrection(cms, content);
+            if (performedAutoCorrection) {
+                content.initDocument();
+            }
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_TAKE_UNMARSHALING_TIME_1,
+                    "" + (System.currentTimeMillis() - timer)));
+            }
+            CmsContentTypeVisitor visitor = new CmsContentTypeVisitor(cms, file, contentLocale);
+            if (LOG.isDebugEnabled()) {
+                timer = System.currentTimeMillis();
+            }
+            visitor.visitTypes(content.getContentDefinition(), getWorkplaceLocale(cms));
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_TAKE_VISITING_TYPES_TIME_1,
+                    "" + (System.currentTimeMillis() - timer)));
+            }
+            if (!visitor.getLocaleSynchronizations().isEmpty() && (editedEntities.size() > 1)) {
+                // transfer locale synchronized values to all edited entities
+                Entity lastEdited = editedEntities.get(CmsContentDefinition.uuidToEntityId(
+                    file.getStructureId(),
+                    lastLocale));
+                for (Entity edited : editedEntities.values()) {
+                    if (edited.getId().equals(lastEdited.getId())) {
+                        continue;
+                    }
+                    CmsContentDefinition.transfereValues(
+                        lastEdited,
+                        edited,
+                        visitor.getLocaleSynchronizations(),
+                        visitor.getTypes(),
+                        visitor.getAttributeConfigurations(),
+                        false);
+                }
+
+            }
+            Entity entity = null;
+
+            if (editedEntities.containsKey(entityId)) {
+                entity = editedEntities.get(entityId);
+            } else {
+                if (!content.hasLocale(contentLocale)) {
+                    content.addLocale(cms, contentLocale);
+                }
+
+                Element element = content.getLocaleNode(contentLocale);
+                if (LOG.isDebugEnabled()) {
+                    timer = System.currentTimeMillis();
+                }
+                entity = readEntity(
+                    content,
+                    element,
+                    contentLocale,
+                    entityId,
+                    "",
+                    getTypeUri(content.getContentDefinition()),
+                    visitor,
+                    false);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_TAKE_READING_ENTITY_TIME_1,
+                        "" + (System.currentTimeMillis() - timer)));
+                }
+                if (!visitor.getLocaleSynchronizations().isEmpty()) {
+                    for (Entity edited : editedEntities.values()) {
+                        CmsContentDefinition.transfereValues(
+                            edited,
+                            entity,
+                            visitor.getLocaleSynchronizations(),
+                            visitor.getTypes(),
+                            visitor.getAttributeConfigurations(),
+                            false);
+                    }
+                }
+                editedEntities.put(entityId, entity);
+            }
+            List<String> contentLocales = new ArrayList<String>();
+            for (Locale locale : content.getLocales()) {
+                contentLocales.add(locale.toString());
+            }
+
+            Locale workplaceLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+            TreeMap<String, String> availableLocales = new TreeMap<String, String>();
+            for (Locale availableLocale : OpenCms.getLocaleManager().getAvailableLocales(cms, file)) {
+                availableLocales.put(availableLocale.toString(), availableLocale.getDisplayName(workplaceLocale));
+            }
+            String title = cms.readPropertyObject(file, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
+            try {
+                CmsGallerySearchResult searchResult = CmsGallerySearch.searchById(
+                    cms,
+                    file.getStructureId(),
+                    contentLocale);
+                title = searchResult.getTitle();
+            } catch (CmsException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
+            String typeName = OpenCms.getResourceManager().getResourceType(file.getTypeId()).getTypeName();
+            boolean autoUnlock = OpenCms.getWorkplaceManager().shouldAcaciaUnlock();
+
+            return new CmsContentDefinition(
+                entityId,
+                editedEntities,
+                visitor.getAttributeConfigurations(),
+                visitor.getWidgetConfigurations(),
+                visitor.getComplexWidgetData(),
+                visitor.getTypes(),
+                visitor.getTabInfos(),
+                contentLocale.toString(),
+                contentLocales,
+                availableLocales,
+                visitor.getLocaleSynchronizations(),
+                title,
+                cms.getSitePath(file),
+                typeName,
+                performedAutoCorrection,
+                autoUnlock);
+        } catch (Exception e) {
+            error(e);
+        }
+        return definition;
+    }
+
+    /**
      * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadDefinition(java.lang.String, java.lang.String, org.opencms.util.CmsUUID, java.lang.String)
      */
     public CmsContentDefinition loadDefinition(String entityId, String newLink, CmsUUID modelFileId, String editContext)
@@ -585,32 +731,6 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
-     * Creates an entity object containing the default values configured for it's type.<p>
-     * 
-     * @param entityType the entity type
-     * @param visitor the type visitor holding the content type configuration
-     * 
-     * @return the created entity
-     */
-    protected Entity createDefaultValueEntity(I_Type entityType, CmsContentTypeVisitor visitor) {
-
-        Entity result = new Entity(null, entityType.getId());
-        for (String attributeName : entityType.getAttributeNames()) {
-            I_Type attributeType = visitor.getTypes().get(entityType.getAttributeTypeName(attributeName));
-            for (int i = 0; i < entityType.getAttributeMinOccurrence(attributeName); i++) {
-                if (attributeType.isSimpleType()) {
-                    result.addAttributeValue(
-                        attributeName,
-                        visitor.getAttributeConfigurations().get(attributeName).getDefaultValue());
-                } else {
-                    result.addAttributeValue(attributeName, createDefaultValueEntity(attributeType, visitor));
-                }
-            }
-        }
-        return result;
-    }
-
-    /**
      * Decodes the newlink request parameter if possible.<p>
      * 
      * @param newLink the parameter to decode 
@@ -810,86 +930,13 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 invisibleAttributes.add(configEntry.getKey());
             }
         }
-        transfereValues(original, target, invisibleAttributes, visitor, true);
-    }
-
-    /**
-     * Transfers values from the original entity to the given target entity.<p>
-     * 
-     * @param original the original entity
-     * @param target the target entity
-     * @param transferAttributes the attributes to consider for the value transfer
-     * @param visitor the type visitor holding the content type configuration
-     * @param considerDefaults if default values should be added according to minimum occurrence settings
-     */
-    protected void transfereValues(
-        I_Entity original,
-        I_Entity target,
-        List<String> transferAttributes,
-        CmsContentTypeVisitor visitor,
-        boolean considerDefaults) {
-
-        I_Type entityType = visitor.getTypes().get(target.getTypeName());
-        for (String attributeName : entityType.getAttributeNames()) {
-            I_Type attributeType = visitor.getTypes().get(entityType.getAttributeTypeName(attributeName));
-            if (transferAttributes.contains(attributeName)) {
-
-                target.removeAttribute(attributeName);
-                I_EntityAttribute attribute = original != null ? original.getAttribute(attributeName) : null;
-                if (attribute != null) {
-                    if (attributeType.isSimpleType()) {
-                        for (String value : attribute.getSimpleValues()) {
-                            target.addAttributeValue(attributeName, value);
-                        }
-                        if (considerDefaults) {
-                            for (int i = attribute.getValueCount(); i < entityType.getAttributeMinOccurrence(attributeName); i++) {
-                                target.addAttributeValue(
-                                    attributeName,
-                                    visitor.getAttributeConfigurations().get(attributeName).getDefaultValue());
-                            }
-                        }
-                    } else {
-                        for (I_Entity value : attribute.getComplexValues()) {
-                            target.addAttributeValue(attributeName, value);
-                        }
-                        if (considerDefaults) {
-                            for (int i = attribute.getValueCount(); i < entityType.getAttributeMinOccurrence(attributeName); i++) {
-                                target.addAttributeValue(
-                                    attributeName,
-                                    createDefaultValueEntity(attributeType, visitor));
-                            }
-                        }
-                    }
-                } else if (considerDefaults) {
-                    for (int i = 0; i < entityType.getAttributeMinOccurrence(attributeName); i++) {
-                        if (attributeType.isSimpleType()) {
-                            target.addAttributeValue(
-                                attributeName,
-                                visitor.getAttributeConfigurations().get(attributeName).getDefaultValue());
-                        } else {
-                            target.addAttributeValue(attributeName, createDefaultValueEntity(attributeType, visitor));
-                        }
-                    }
-                }
-            } else {
-                if (!attributeType.isSimpleType()) {
-                    I_EntityAttribute targetAttribute = target.getAttribute(attributeName);
-                    I_EntityAttribute originalAttribute = original != null
-                    ? original.getAttribute(attributeName)
-                    : null;
-                    if (targetAttribute != null) {
-                        for (int i = 0; i < targetAttribute.getComplexValues().size(); i++) {
-                            I_Entity subTarget = targetAttribute.getComplexValues().get(i);
-                            I_Entity subOriginal = (originalAttribute != null)
-                                && (originalAttribute.getComplexValues().size() > i)
-                            ? originalAttribute.getComplexValues().get(i)
-                            : null;
-                            transfereValues(subOriginal, subTarget, transferAttributes, visitor, considerDefaults);
-                        }
-                    }
-                }
-            }
-        }
+        CmsContentDefinition.transfereValues(
+            original,
+            target,
+            invisibleAttributes,
+            visitor.getTypes(),
+            visitor.getAttributeConfigurations(),
+            true);
     }
 
     /**
@@ -1158,9 +1205,11 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         }
         String typeName = OpenCms.getResourceManager().getResourceType(file.getTypeId()).getTypeName();
         boolean autoUnlock = OpenCms.getWorkplaceManager().shouldAcaciaUnlock();
-
+        Map<String, Entity> entities = new HashMap<String, Entity>();
+        entities.put(entityId, entity);
         return new CmsContentDefinition(
-            entity,
+            entityId,
+            entities,
             visitor.getAttributeConfigurations(),
             visitor.getWidgetConfigurations(),
             visitor.getComplexWidgetData(),
@@ -1169,7 +1218,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             locale.toString(),
             contentLocales,
             availableLocales,
-            content.getContentDefinition().getContentHandler().getSynchronizations(),
+            visitor.getLocaleSynchronizations(),
             title,
             cms.getSitePath(file),
             typeName,
@@ -1325,4 +1374,5 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         file = cms.writeFile(file);
         return CmsXmlContentFactory.unmarshal(cms, file);
     }
+
 }
