@@ -2,7 +2,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'signing'
-sourceCompatibility = java_target_version
+
 version = version_number
 buildDir = build_directory
 repositories {
