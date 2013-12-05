@@ -382,8 +382,8 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
         // show error header once if there were validation errors
         result.append(createWidgetErrorHeader());
 
-        String title = m_site.getTitle() != null ? m_site.getTitle() : Messages.get().getBundle().key(
-            Messages.GUI_SITES_NEW_SITE_TITLE_0);
+        String title = m_site.getTitle() != null ? m_site.getTitle() : Messages.get().getBundle(
+            getCms().getRequestContext().getLocale()).key(Messages.GUI_SITES_NEW_SITE_TITLE_0);
 
         // only show the position if editing a site or creating a new site 
         int count = getParamEditaction() == null ? 4 : 5;
@@ -395,14 +395,18 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
         }
 
         // site info
-        result.append(dialogBlockStart(Messages.get().getBundle().key(Messages.GUI_SITES_DETAIL_INFO_1, title)));
+        result.append(dialogBlockStart(Messages.get().getBundle(getCms().getRequestContext().getLocale()).key(
+            Messages.GUI_SITES_DETAIL_INFO_1,
+            title)));
         result.append(createWidgetTableStart());
         result.append(createDialogRowsHtml(0, count));
         result.append(createWidgetTableEnd());
         result.append(dialogBlockEnd());
         if ((getParamEditaction() != null) || CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_site.getSecureUrl())) {
             // secure site
-            result.append(dialogBlockStart(Messages.get().getBundle().key(Messages.GUI_SITES_DETAIL_SECURE_1, title)));
+            result.append(dialogBlockStart(Messages.get().getBundle(getCms().getRequestContext().getLocale()).key(
+                Messages.GUI_SITES_DETAIL_SECURE_1,
+                title)));
             result.append(createWidgetTableStart());
             result.append(createDialogRowsHtml(++count, count + 2));
             result.append(createWidgetTableEnd());
@@ -413,7 +417,9 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
         // site aliases
         if ((DIALOG_EDIT.equals(getParamEditaction()) || DIALOG_NEW.equals(getParamEditaction()))
             || !m_site.getAliases().isEmpty()) {
-            result.append(dialogBlockStart(Messages.get().getBundle().key(Messages.GUI_SITES_DETAIL_ALIASES_1, title)));
+            result.append(dialogBlockStart(Messages.get().getBundle(getCms().getRequestContext().getLocale()).key(
+                Messages.GUI_SITES_DETAIL_ALIASES_1,
+                title)));
             result.append(createWidgetTableStart());
             if (DIALOG_EDIT.equals(getParamEditaction()) || DIALOG_NEW.equals(getParamEditaction())) {
                 result.append(createDialogRowsHtml(++count, count));
@@ -521,7 +527,11 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
                 CmsWidgetDialogParameter alias = new CmsWidgetDialogParameter(
                     aliasUrl,
                     aliasUrl,
-                    Messages.get().getBundle().key(Messages.GUI_SITES_DETAIL_LABEL_ALIAS_0) + " [" + (count + 1) + "]",
+                    Messages.get().getBundle(getCms().getRequestContext().getLocale()).key(
+                        Messages.GUI_SITES_DETAIL_LABEL_ALIAS_0)
+                        + " ["
+                        + (count + 1)
+                        + "]",
                     new CmsDisplayWidget(),
                     PAGES[0],
                     1,

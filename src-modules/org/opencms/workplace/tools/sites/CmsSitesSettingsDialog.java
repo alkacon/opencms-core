@@ -179,7 +179,8 @@ public class CmsSitesSettingsDialog extends CmsWidgetDialog {
 
         StringBuffer result = new StringBuffer(1024);
         result.append(createWidgetTableStart());
-        result.append(dialogBlockStart(Messages.get().getBundle().key(Messages.GUI_SITES_GENERAL_SETTINGS_0)));
+        result.append(dialogBlockStart(Messages.get().getBundle(getCms().getRequestContext().getLocale()).key(
+            Messages.GUI_SITES_GENERAL_SETTINGS_0)));
         result.append(createWidgetTableStart());
         result.append(createDialogRowsHtml(0, 2));
         result.append(createWidgetTableEnd());
