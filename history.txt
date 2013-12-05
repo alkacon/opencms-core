@@ -22,7 +22,9 @@ OpenCms 9.0.1 - xxxxxxxxx
 * Fixing issue with optional text-area widgets
 * Fixed issue #203 where opening the source code search result JSP causes an error.
 - Improved IE10/IE11 support to allow drag and drop in upload dialog
-- Fixed alias deletion for folders 
+- Fixed alias deletion for folders
+! Implemented feature request #204 type name translation for "formatter_config" files. 
+* Fixed issue #205 where message bundles were accessed without locale.
 
 OpenCms 9.0.0 - November 8, 2013
 ! Improved configuration for content formatters
