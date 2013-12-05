@@ -331,7 +331,8 @@ public class CmsSitesWebserverDialog extends CmsWidgetDialog {
         StringBuffer result = new StringBuffer(1024);
         result.append(createWidgetTableStart());
         result.append(createWidgetErrorHeader());
-        result.append(dialogBlockStart(Messages.get().getBundle().key(Messages.GUI_SITES_WEBSERVER_TITLE_0)));
+        result.append(dialogBlockStart(Messages.get().getBundle(getCms().getRequestContext().getLocale()).key(
+            Messages.GUI_SITES_WEBSERVER_TITLE_0)));
         result.append(createWidgetTableStart());
         result.append(createDialogRowsHtml(0, 5));
         result.append(createWidgetTableEnd());
