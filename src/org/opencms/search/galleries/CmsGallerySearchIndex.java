@@ -290,7 +290,12 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
             if (params.getGalleries() != null) {
                 folders.addAll(params.getGalleries());
             }
-            filter = appendPathFilter(searchCms, filter, folders);
+
+            if (!folders.isEmpty()) {
+                // appendPathFilter has some annoying default behavior for empty folder lists which conflicts with 
+                // the scope filter logic below
+                filter = appendPathFilter(searchCms, filter, folders);
+            }
 
             // append category filter
             filter = appendCategoryFilter(searchCms, filter, params.getCategories());
