@@ -31,7 +31,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.security.CmsPermissionViolationException;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.regex.Matcher;
@@ -137,9 +136,14 @@ public class CmsPermalinkResourceHandler implements I_CmsResourceInit {
                             CmsResource detailResource = cms.readResource(detailId);
                             String detailName = cms.getDetailName(detailResource, cms.getRequestContext().getLocale(), // the locale in the request context should be the locale of the container page 
                                 OpenCms.getLocaleManager().getDefaultLocales());
-                            CmsResource parentFolder = cms.readParentFolder(pageResource.getStructureId());
+                            CmsResource parentFolder;
+                            if (pageResource.isFile()) {
+                                parentFolder = cms.readParentFolder(pageResource.getStructureId());
+                            } else {
+                                parentFolder = pageResource;
+                            }
                             String baseLink = OpenCms.getLinkManager().substituteLink(cms, parentFolder);
-                            String redirectLink = CmsStringUtil.joinPaths(baseLink, detailName);
+                            String redirectLink = baseLink + (baseLink.endsWith("/") ? "" : "/") + detailName;
                             CmsResourceInitException resInitException = new CmsResourceInitException(getClass());
 
                             resInitException.setClearErrors(true);
