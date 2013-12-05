@@ -32,6 +32,7 @@
 package org.opencms.workplace.tools.modules;
 
 import org.opencms.ade.configuration.CmsADEManager;
+import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCache;
 import org.opencms.configuration.CmsConfigurationCopyResource;
 import org.opencms.configuration.Messages;
 import org.opencms.db.CmsExportPoint;
@@ -301,7 +302,7 @@ public class CmsCloneModule extends CmsJspActionElement {
                 replaceFormatterPaths(targetModule);
             }
 
-            adjustModuleConfig(targetModule, resTypeMap);
+            adjustConfigs(targetModule, resTypeMap);
 
             // publish the new module
             for (String res : targetModule.getResources()) {
@@ -677,7 +678,7 @@ public class CmsCloneModule extends CmsJspActionElement {
     }
 
     /**
-     * Adjusts the module configuration file.<p>
+     * Adjusts the module configuration file and the fromatter configurations.<p>
      * 
      * @param targetModule the target moodule
      * @param resTypeMap the resource type mapping
@@ -685,19 +686,32 @@ public class CmsCloneModule extends CmsJspActionElement {
      * @throws CmsException if something goes wrong
      * @throws UnsupportedEncodingException if the file content could not be read with the determined encoding
      */
-    private void adjustModuleConfig(CmsModule targetModule, Map<I_CmsResourceType, I_CmsResourceType> resTypeMap)
+    private void adjustConfigs(CmsModule targetModule, Map<I_CmsResourceType, I_CmsResourceType> resTypeMap)
     throws CmsException, UnsupportedEncodingException {
 
         String modPath = CmsWorkplace.VFS_PATH_MODULES + targetModule.getName() + "/" + CmsADEManager.CONFIG_FILE_NAME;
+        List<CmsResource> resources = new ArrayList<CmsResource>();
+
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_formatterTargetModule)
+            && !targetModule.getResourceTypes().isEmpty()) {
+            resources = getCmsObject().readResources(
+                CmsWorkplace.VFS_PATH_MODULES + m_formatterTargetModule,
+                CmsResourceFilter.requireType(OpenCms.getResourceManager().getResourceType(
+                    CmsFormatterConfigurationCache.TYPE_FORMATTER_CONFIG).getTypeId()));
+        }
         CmsResource config = getCmsObject().readResource(
             modPath,
             CmsResourceFilter.requireType(OpenCms.getResourceManager().getResourceType(CmsADEManager.MODULE_CONFIG_TYPE).getTypeId()));
-        CmsFile file = getCmsObject().readFile(config);
-        String encoding = CmsLocaleManager.getResourceEncoding(getCmsObject(), file);
-        String content = new String(file.getContents(), encoding);
-        for (Map.Entry<I_CmsResourceType, I_CmsResourceType> mapping : resTypeMap.entrySet()) {
-            content = content.replaceAll(mapping.getKey().getTypeName(), mapping.getValue().getTypeName());
+        resources.add(config);
+        for (CmsResource resource : resources) {
+            CmsFile file = getCmsObject().readFile(resource);
+            String encoding = CmsLocaleManager.getResourceEncoding(getCmsObject(), file);
+            String content = new String(file.getContents(), encoding);
+            for (Map.Entry<I_CmsResourceType, I_CmsResourceType> mapping : resTypeMap.entrySet()) {
+                content = content.replaceAll(mapping.getKey().getTypeName(), mapping.getValue().getTypeName());
+            }
             file.setContents(content.getBytes(encoding));
+            lockResource(getCmsObject(), file);
             getCmsObject().writeFile(file);
         }
     }
