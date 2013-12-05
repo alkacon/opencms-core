@@ -423,7 +423,9 @@ public class CmsADEConfigData {
         List<CmsFormatterChangeSet> result = Lists.newArrayList();
         while (currentConfig != null) {
             CmsFormatterChangeSet changes = currentConfig.getOwnFormatterChangeSet();
-            result.add(changes);
+            if (changes != null) {
+                result.add(changes);
+            }
             currentConfig = currentConfig.parent();
         }
         Collections.reverse(result);
@@ -450,7 +452,9 @@ public class CmsADEConfigData {
             Set<String> types = new HashSet<String>();
             types.add(typeName);
             for (CmsFormatterChangeSet changeSet : getFormatterChangeSets()) {
-                changeSet.applyToTypes(types);
+                if (changeSet != null) {
+                    changeSet.applyToTypes(types);
+                }
             }
             if (types.contains(typeName)) {
                 for (I_CmsFormatterBean formatter : schemaFormatters.getAllFormatters()) {

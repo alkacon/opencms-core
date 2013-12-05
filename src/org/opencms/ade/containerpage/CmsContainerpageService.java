@@ -904,6 +904,16 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
+     * Sets the session cache.<p>
+     * 
+     * @param cache the session cache 
+     */
+    public void setSessionCache(CmsADESessionCache cache) {
+
+        m_sessionCache = cache;
+    }
+
+    /**
      * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#syncSaveContainerpage(org.opencms.util.CmsUUID, java.util.List)
      */
     public void syncSaveContainerpage(CmsUUID pageStructureId, List<CmsContainer> containers) throws CmsRpcException {
