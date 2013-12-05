@@ -73,24 +73,17 @@ public interface I_CmsContentServiceAsync extends I_ContentServiceAsync {
      * Loads new entity definition.<p>
      * This will load the entity representation of a new locale node.<p>
      * 
-     * @param entityId the entity id/URI
-     * @param callback the asynchronous callback
-     */
-    void loadNewDefinition(String entityId, AsyncCallback<CmsContentDefinition> callback);
-
-    /**
-     * Loads new entity definition.<p>
-     * This will load the entity representation of a new locale node.<p>
-     * 
      * @param entityId the entity id
      * @param lastLocale the last edited locale
      * @param editedEntities the edited entities
+     * @param newLocale states if a new locale should be generated
      * @param callback the asynchronous callback
      */
     void loadOtherLocale(
         String entityId,
         String lastLocale,
         Map<String, Entity> editedEntities,
+        boolean newLocale,
         AsyncCallback<CmsContentDefinition> callback);
 
     /**

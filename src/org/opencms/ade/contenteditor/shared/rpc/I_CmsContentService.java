@@ -76,30 +76,22 @@ public interface I_CmsContentService extends I_ContentService {
     throws CmsRpcException;
 
     /**
-     * Loads new entity definition.<p>
-     * This will load the entity representation of a new locale node.<p>
-     * 
-     * @param entityId the entity id/URI
-     * 
-     * @return the content definition
-     * 
-     * @throws CmsRpcException if something goes wrong processing the request
-     */
-    CmsContentDefinition loadNewDefinition(String entityId) throws CmsRpcException;
-
-    /**
      * Loads another content locale with the given entity id.<p>
      * 
      * @param entityId the entity id
      * @param lastLocale the last edited locale
      * @param editedEntities the edited entities
+     * @param newLocale states if a new locale should be generated
      * 
      * @return the content definition
      * 
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    CmsContentDefinition loadOtherLocale(String entityId, String lastLocale, Map<String, Entity> editedEntities)
-    throws CmsRpcException;
+    CmsContentDefinition loadOtherLocale(
+        String entityId,
+        String lastLocale,
+        Map<String, Entity> editedEntities,
+        boolean newLocale) throws CmsRpcException;
 
     /**
      * Returns the content definition of the resource requested through parameter 'resource'.<p>

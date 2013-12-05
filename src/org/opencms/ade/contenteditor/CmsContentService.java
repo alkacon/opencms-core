@@ -289,10 +289,13 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
-     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadOtherLocale(java.lang.String, java.lang.String, java.util.Map)
+     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadOtherLocale(java.lang.String, java.lang.String, java.util.Map, boolean)
      */
-    public CmsContentDefinition loadOtherLocale(String entityId, String lastLocale, Map<String, Entity> editedEntities)
-    throws CmsRpcException {
+    public CmsContentDefinition loadOtherLocale(
+        String entityId,
+        String lastLocale,
+        Map<String, Entity> editedEntities,
+        boolean newLocale) throws CmsRpcException {
 
         CmsContentDefinition definition = null;
         try {
@@ -350,9 +353,13 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             }
             Entity entity = null;
 
-            if (editedEntities.containsKey(entityId)) {
+            if (editedEntities.containsKey(entityId) && !newLocale) {
                 entity = editedEntities.get(entityId);
             } else {
+                if (content.hasLocale(contentLocale) && newLocale) {
+                    // a new locale is requested, so remove the present one
+                    content.removeLocale(contentLocale);
+                }
                 if (!content.hasLocale(contentLocale)) {
                     content.addLocale(cms, contentLocale);
                 }
@@ -455,27 +462,6 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             result = loadDefinition(entityId);
         }
         return result;
-    }
-
-    /**
-     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadNewDefinition(java.lang.String)
-     */
-    public CmsContentDefinition loadNewDefinition(String entityId) throws CmsRpcException {
-
-        CmsContentDefinition definition = null;
-        try {
-            CmsUUID structureId = CmsContentDefinition.entityIdToUuid(entityId);
-            CmsResource resource = getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
-            Locale contentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(entityId));
-            definition = readContentDefinition(
-                resource,
-                CmsContentDefinition.uuidToEntityId(structureId, contentLocale.toString()),
-                contentLocale,
-                true);
-        } catch (Exception e) {
-            error(e);
-        }
-        return definition;
     }
 
     /**

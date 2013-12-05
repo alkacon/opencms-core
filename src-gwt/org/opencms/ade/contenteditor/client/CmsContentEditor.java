@@ -523,12 +523,14 @@ public final class CmsContentEditor extends EditorBase {
      * @param entityId the entity id
      * @param lastLocale the last edited locale
      * @param editedEntities the changed entities
+     * @param newLocale states if a new locale should be generated
      * @param callback the callback
      */
     public void loadOtherLocale(
         final String entityId,
         final String lastLocale,
         final Map<String, com.alkacon.acacia.shared.Entity> editedEntities,
+        final boolean newLocale,
         final I_CmsSimpleCallback<CmsContentDefinition> callback) {
 
         CmsRpcAction<CmsContentDefinition> action = new CmsRpcAction<CmsContentDefinition>() {
@@ -537,7 +539,7 @@ public final class CmsContentEditor extends EditorBase {
             public void execute() {
 
                 start(0, true);
-                getService().loadOtherLocale(entityId, lastLocale, editedEntities, this);
+                getService().loadOtherLocale(entityId, lastLocale, editedEntities, newLocale, this);
             }
 
             @Override
@@ -600,32 +602,6 @@ public final class CmsContentEditor extends EditorBase {
                             }
                         });
                 }
-            }
-        };
-        action.execute();
-    }
-
-    /**
-     * Loads the content definition for the given entity and executes the callback on success.<p>
-     * 
-     * @param entityId the entity id
-     * @param callback the callback
-     */
-    public void loadNewDefinition(final String entityId, final I_CmsSimpleCallback<CmsContentDefinition> callback) {
-
-        CmsRpcAction<CmsContentDefinition> action = new CmsRpcAction<CmsContentDefinition>() {
-
-            @Override
-            public void execute() {
-
-                getService().loadNewDefinition(entityId, this);
-            }
-
-            @Override
-            protected void onResponse(final CmsContentDefinition result) {
-
-                stop(false);
-                callback.execute(result);
             }
         };
         action.execute();
@@ -1080,14 +1056,6 @@ public final class CmsContentEditor extends EditorBase {
             if (!m_entityId.equals(targetId)) {
                 if (m_registeredEntities.contains(targetId)) {
                     unregistereEntity(targetId);
-                } else {
-                    loadNewDefinition(targetId, new I_CmsSimpleCallback<CmsContentDefinition>() {
-
-                        public void execute(CmsContentDefinition definition) {
-
-                            addContentDefinition(definition);
-                        }
-                    });
                 }
                 registerClonedEntity(m_entityId, targetId);
                 m_registeredEntities.add(targetId);
@@ -1535,40 +1503,19 @@ public final class CmsContentEditor extends EditorBase {
         m_entityId = getIdForLocale(locale);
         // if the content does not contain the requested locale yet, a new node will be created 
         final boolean addedNewLocale = !m_contentLocales.contains(locale);
-        if (addedNewLocale) {
-            loadNewDefinition(m_entityId, new I_CmsSimpleCallback<CmsContentDefinition>() {
-
-                public void execute(final CmsContentDefinition contentDefinition) {
-
-                    registerContentDefinition(contentDefinition);
-                    CmsNotification.get().sendBlocking(
-                        CmsNotification.Type.NORMAL,
-                        org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_LOADING_0));
-                    WidgetRegistry.getInstance().registerExternalWidgets(
-                        contentDefinition.getExternalWidgetConfigurations(),
-                        new Command() {
-
-                            public void execute() {
-
-                                setContentDefinition(contentDefinition);
-                                renderFormContent();
-                                if (addedNewLocale) {
-                                    setChanged();
-                                }
-                                CmsNotification.get().hide();
-                            }
-                        });
-                }
-            });
-        } else {
-            Map<String, com.alkacon.acacia.shared.Entity> editedEntities = new HashMap<String, com.alkacon.acacia.shared.Entity>();
-            for (String entityId : m_registeredEntities) {
-                I_Entity entity = m_vie.getEntity(entityId);
-                if (entity != null) {
-                    editedEntities.put(entityId, com.alkacon.acacia.shared.Entity.serializeEntity(entity));
-                }
+        Map<String, com.alkacon.acacia.shared.Entity> editedEntities = new HashMap<String, com.alkacon.acacia.shared.Entity>();
+        for (String entityId : m_registeredEntities) {
+            I_Entity entity = m_vie.getEntity(entityId);
+            if (entity != null) {
+                editedEntities.put(entityId, com.alkacon.acacia.shared.Entity.serializeEntity(entity));
             }
-            loadOtherLocale(m_entityId, lastLocale, editedEntities, new I_CmsSimpleCallback<CmsContentDefinition>() {
+        }
+        loadOtherLocale(
+            m_entityId,
+            lastLocale,
+            editedEntities,
+            addedNewLocale,
+            new I_CmsSimpleCallback<CmsContentDefinition>() {
 
                 public void execute(CmsContentDefinition contentDefinition) {
 
@@ -1579,7 +1526,6 @@ public final class CmsContentEditor extends EditorBase {
                     }
                 }
             });
-        }
     }
 
     /**
