@@ -496,7 +496,8 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
             CmsWidgetDialogParameter errorPage;
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_site.getErrorPage())) {
                 errorPage = new CmsWidgetDialogParameter(m_site, "errorPage", PAGES[0], new CmsDisplayWidget(
-                    Messages.get().container(Messages.GUI_SITES_ERROR_PAGE_NOT_AVAILABLE_0).key()));
+                    Messages.get().getBundle(getCms().getRequestContext().getLocale()).key(
+                        Messages.GUI_SITES_ERROR_PAGE_NOT_AVAILABLE_0)));
             } else {
                 errorPage = new CmsWidgetDialogParameter(m_site, "errorPage", PAGES[0], new CmsDisplayWidget());
             }
