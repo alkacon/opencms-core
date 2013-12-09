@@ -152,7 +152,13 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
                 cms.getRequestContext().addSiteRoot(params.getReferencePath()));
             if (subsite != null) {
                 subsite = cms.getRequestContext().removeSiteRoot(subsite);
+            } else if (LOG.isWarnEnabled()) {
+                LOG.warn(Messages.get().getBundle().key(
+                    Messages.LOG_GALLERIES_COULD_NOT_EVALUATE_SUBSITE_1,
+                    params.getReferencePath()));
             }
+        } else if (LOG.isWarnEnabled()) {
+            LOG.warn(Messages.get().getBundle().key(Messages.LOG_GALLERIES_NO_REFERENCE_PATH_PROVIDED_0));
         }
         List<String> scopeFolders = getSearchRootsForScope(
             params.getScope(),
@@ -239,8 +245,12 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
         if (scope.isIncludeSite()) {
             result.add(siteParam);
         }
-        if (scope.isIncludeSubSite() && (subSiteParam != null)) {
-            result.add(CmsStringUtil.joinPaths(siteParam, subSiteParam));
+        if (scope.isIncludeSubSite()) {
+            if (subSiteParam == null) {
+                result.add(siteParam);
+            } else {
+                result.add(CmsStringUtil.joinPaths(siteParam, subSiteParam));
+            }
         }
         if (scope.isIncludeShared()) {
             String sharedFolder = OpenCms.getSiteManager().getSharedFolder();

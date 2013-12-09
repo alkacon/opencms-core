@@ -260,6 +260,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_FIELDS_QUERY_1 = "LOG_FIELDS_QUERY_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_GALLERIES_COULD_NOT_EVALUATE_SUBSITE_1 = "LOG_GALLERIES_COULD_NOT_EVALUATE_SUBSITE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_GALLERIES_NO_REFERENCE_PATH_PROVIDED_0 = "LOG_GALLERIES_NO_REFERENCE_PATH_PROVIDED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_INDEX_ACCESS_FAILED_1 = "LOG_INDEX_ACCESS_FAILED_1";
 
     /** Message constant for key in the resource bundle. */
