@@ -37,8 +37,8 @@ import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsIndexException;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.documents.CmsDocumentXmlContent;
 import org.opencms.search.documents.Messages;
@@ -218,7 +218,7 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
      */
     protected List<Locale> getLocalesToStore(A_CmsXmlDocument content) {
 
-        if (isGroup(content)) {
+        if (isGroup(content) || CmsResourceTypeXmlContainerPage.isContainerPage(content.getFile())) {
             return OpenCms.getLocaleManager().getAvailableLocales();
         } else {
             return content.getLocales();
