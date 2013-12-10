@@ -28,7 +28,9 @@
 package org.opencms.widgets;
 
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.I_CmsRegexSubstitution;
 import org.opencms.workplace.galleries.CmsAjaxDownloadGallery;
 import org.opencms.workplace.galleries.CmsAjaxHtmlGallery;
 import org.opencms.workplace.galleries.CmsAjaxImageGallery;
@@ -41,6 +43,10 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import com.google.common.collect.Maps;
 
 /**
  * An option of a HTML type widget.<p>
@@ -322,6 +328,9 @@ public class CmsHtmlWidgetOption {
     /** The optional buttons that can be additionally added to the button bar as list. */
     public static final List<String> OPTIONAL_BUTTONS_LIST = Arrays.asList(OPTIONAL_BUTTONS);
 
+    /** Pattern used for matching embedded gallery configurations. */
+    public static final Pattern PATTERN_EMBEDDED_GALLERY_CONFIG = Pattern.compile("(?<![a-zA-Z0-9_])(imagegallery|downloadgallery)(\\{.*?\\})");
+
     /** Holds the global button bar configuration options to increase performance. */
     private static List<String> m_globalButtonBarOption;
 
@@ -345,6 +354,9 @@ public class CmsHtmlWidgetOption {
 
     /** The editor height. */
     private String m_editorHeight;
+
+    /** The embedded configuration  strings for galleries, if available. */
+    private Map<String, String> m_embeddedConfigurations = Maps.newHashMap();
 
     /** The format select options. */
     private String m_formatSelectOptions;
@@ -455,6 +467,32 @@ public class CmsHtmlWidgetOption {
         }
 
         return result.toString();
+    }
+
+    /**
+     * Parses and removes embedded gallery configuration strings.
+     * 
+     * @param configuration the configuration string to parse
+     *  
+     * @return a map containing both the string resulting from removing the embedded configurations, and the embedded configurations as a a map 
+     */
+    public static CmsPair<String, Map<String, String>> parseEmbeddedGalleryOptions(String configuration) {
+
+        final Map<String, String> galleryOptions = Maps.newHashMap();
+        String resultConfig = CmsStringUtil.substitute(
+            PATTERN_EMBEDDED_GALLERY_CONFIG,
+            configuration,
+            new I_CmsRegexSubstitution() {
+
+                public String substituteMatch(String string, Matcher matcher) {
+
+                    String galleryName = string.substring(matcher.start(1), matcher.end(1));
+                    String embeddedConfig = string.substring(matcher.start(2), matcher.end(2));
+                    galleryOptions.put(galleryName, embeddedConfig);
+                    return galleryName;
+                }
+            });
+        return CmsPair.create(resultConfig, galleryOptions);
     }
 
     /**
@@ -731,6 +769,16 @@ public class CmsHtmlWidgetOption {
     public String getEditorHeight() {
 
         return m_editorHeight;
+    }
+
+    /**
+     * Gets the embedded gallery configurations.<p>
+     * 
+     * @return the embedded gallery configurations 
+     */
+    public Map<String, String> getEmbeddedConfigurations() {
+
+        return m_embeddedConfigurations;
     }
 
     /**
@@ -1075,6 +1123,11 @@ public class CmsHtmlWidgetOption {
     protected void parseOptions(String configuration) {
 
         if (CmsStringUtil.isNotEmpty(configuration)) {
+
+            CmsPair<String, Map<String, String>> simplifiedStringAndGalleryOptions = parseEmbeddedGalleryOptions(configuration);
+            configuration = simplifiedStringAndGalleryOptions.getFirst();
+            m_embeddedConfigurations = simplifiedStringAndGalleryOptions.getSecond();
+
             List<String> options = CmsStringUtil.splitAsList(configuration, DELIMITER_OPTION, true);
             Iterator<String> i = options.iterator();
             while (i.hasNext()) {

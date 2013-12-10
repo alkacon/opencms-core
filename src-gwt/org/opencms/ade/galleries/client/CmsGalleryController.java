@@ -55,6 +55,7 @@ import org.opencms.gwt.client.ui.CmsDeleteWarningDialog;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.util.CmsClientCollectionUtil;
 import org.opencms.gwt.client.util.CmsDebugLog;
+import org.opencms.gwt.client.util.CmsJsUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsCategoryBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
@@ -75,6 +76,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -163,13 +165,20 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         m_handler = handler;
         m_eventBus = new SimpleEventBus();
         addValueChangeHandler(m_handler);
+        JavaScriptObject embeddedConfig = CmsJsUtil.getAttribute(CmsJsUtil.getWindow(), "embeddedConfiguration");
+        if (embeddedConfig != null) {
+            CmsGalleryConfigurationJSO config = embeddedConfig.cast();
+            m_handler.m_galleryDialog.setOverrideFormats(true);
+            m_handler.m_galleryDialog.setUseFormats(config.isUseFormats());
+            m_handler.m_galleryDialog.setImageFormats(config.getImageFormats());
+            m_handler.m_galleryDialog.setImageFormatNames(config.getImageFormatNames());
+        }
 
         // get initial search for gallery
         try {
             m_searchObject = (CmsGallerySearchBean)CmsRpcPrefetcher.getSerializedObjectFromDictionary(
                 getGalleryService(),
                 CmsGallerySearchBean.DICT_NAME);
-
             m_dialogBean = (CmsGalleryDataBean)CmsRpcPrefetcher.getSerializedObjectFromDictionary(
                 getGalleryService(),
                 CmsGalleryDataBean.DICT_NAME);

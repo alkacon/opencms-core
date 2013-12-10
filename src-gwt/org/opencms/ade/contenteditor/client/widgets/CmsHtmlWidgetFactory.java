@@ -73,14 +73,14 @@ public class CmsHtmlWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
      * 
      * @return the TinyMCE toolbar config string 
      */
-    protected static String createToolbar(JavaScriptObject jso) {
+    protected static String createContextMenu(JavaScriptObject jso) {
 
         JsArray<?> jsItemArray = jso.<JsArray<?>> cast();
         List<String> jsItemList = new ArrayList<String>();
         for (int i = 0; i < jsItemArray.length(); i++) {
             jsItemList.add(jsItemArray.get(i).toString());
         }
-        return CmsTinyMceToolbarHelper.createTinyMceToolbarStringFromGenericToolbarItems(jsItemList);
+        return CmsTinyMceToolbarHelper.getContextMenuEntries(jsItemList);
     }
 
     /**
@@ -90,14 +90,14 @@ public class CmsHtmlWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
      * 
      * @return the TinyMCE toolbar config string 
      */
-    protected static String createContextMenu(JavaScriptObject jso) {
+    protected static String createToolbar(JavaScriptObject jso) {
 
         JsArray<?> jsItemArray = jso.<JsArray<?>> cast();
         List<String> jsItemList = new ArrayList<String>();
         for (int i = 0; i < jsItemArray.length(); i++) {
             jsItemList.add(jsItemArray.get(i).toString());
         }
-        return CmsTinyMceToolbarHelper.getContextMenuEntries(jsItemList);
+        return CmsTinyMceToolbarHelper.createTinyMceToolbarStringFromGenericToolbarItems(jsItemList);
     }
 
     /**
@@ -140,6 +140,14 @@ public class CmsHtmlWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
                                                                                 // the browser call back function is defined in /system/workplace/editors/tinymce/opencms_plugin.js
                                                                                 file_browser_callback : $wnd.cmsTinyMceFileBrowser
                                                                                 };
+                                                                                if (config.downloadGalleryConfig) {
+                                                                                    options.downloadGalleryConfig = config.downloadGalleryConfig; 
+                                                                                }
+                                                                                
+                                                                                if (config.imageGalleryConfig) {
+                                                                                    options.imageGalleryConfig = config.imageGalleryConfig; 
+                                                                                }
+                                                                                
                                                                                 if (config.language) {
                                                                                 options.language = config.language;
                                                                                 }

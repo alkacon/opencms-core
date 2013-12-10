@@ -27,6 +27,7 @@
 
 package org.opencms.widgets;
 
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -45,14 +46,19 @@ import org.opencms.xml.content.I_CmsXmlContentHandler.DisplayType;
 import org.opencms.xml.types.A_CmsXmlContentValue;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
+
+import com.google.common.collect.Sets;
 
 /**
  * Provides a widget that creates a rich input field using the matching component, for use on a widget dialog.<p>
@@ -108,7 +114,13 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
         CmsResource resource,
         Locale contentLocale) {
 
-        return getJSONConfiguration(cms, resource).toString();
+        JSONObject result = getJSONConfiguration(cms, resource);
+        try {
+            addEmbeddedGalleryOptions(result, cms, schemaType, messages, resource, contentLocale);
+        } catch (JSONException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        return result.toString();
     }
 
     /**
@@ -223,11 +235,59 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
     }
 
     /**
+     * @param result the  JSON object to modify
+     * 
+     * For descriptions of the other  parameters, see the getConfiguration() method.<p> 
+     *   
+     * @param cms   
+     * @param schemaType  
+     * @param messages 
+     * @param resource 
+     * @param contentLocale 
+     * @throws JSONException 
+     * 
+     */
+    protected void addEmbeddedGalleryOptions(
+        JSONObject result,
+        CmsObject cms,
+        A_CmsXmlContentValue schemaType,
+        CmsMessages messages,
+        CmsResource resource,
+        Locale contentLocale) throws JSONException {
+
+        String embeddedImageGalleryOptions = getHtmlWidgetOption().getEmbeddedConfigurations().get("imagegallery");
+        String embeddedDownloadGalleryOptions = getHtmlWidgetOption().getEmbeddedConfigurations().get("downloadgallery");
+
+        if (embeddedDownloadGalleryOptions != null) {
+            CmsAdeDownloadGalleryWidget widget = new CmsAdeDownloadGalleryWidget();
+            widget.setConfiguration(embeddedDownloadGalleryOptions);
+            String downloadJsonString = widget.getConfiguration(
+                cms,
+                schemaType/*?*/,
+                messages,
+                resource,
+                contentLocale);
+
+            JSONObject downloadJsonObj = new JSONObject(downloadJsonString);
+            filterEmbeddedGalleryOptions(downloadJsonObj);
+            result.put("downloadGalleryConfig", downloadJsonObj);
+        }
+
+        if (embeddedImageGalleryOptions != null) {
+            CmsAdeImageGalleryWidget widget = new CmsAdeImageGalleryWidget();
+            widget.setConfiguration(embeddedImageGalleryOptions);
+            String imageJsonString = widget.getConfiguration(cms, schemaType/*?*/, messages, resource, contentLocale);
+            JSONObject imageJsonObj = new JSONObject(imageJsonString);
+            filterEmbeddedGalleryOptions(imageJsonObj);
+            result.put("imageGalleryConfig", imageJsonObj);
+        }
+    }
+
+    /**
      * Returns the WYSIWYG editor configuration as a JSON object.<p>
      * 
      * @param cms the OpenCms context
      * @param resource the edited resource
-     * 
      * @return the configuration
      */
     protected JSONObject getJSONConfiguration(CmsObject cms, CmsResource resource) {
@@ -307,11 +367,31 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
             directOptions.put("paste_text_sticky_default", pasteText);
             directOptions.put("paste_text_sticky", pasteText);
             result.put("tinyMceOptions", directOptions);
-
         } catch (JSONException e) {
             LOG.error(e.getLocalizedMessage(), e);
         }
         return result;
+    }
+
+    /**
+     * Removes all keys from the given JSON object which do not directly result from the embedded gallery configuration strings.<p>
+     * 
+     * @param json the JSON object to modify 
+     */
+    private void filterEmbeddedGalleryOptions(JSONObject json) {
+
+        Set<String> validKeys = Sets.newHashSet(Arrays.asList(
+            I_CmsGalleryProviderConstants.CONFIG_GALLERY_TYPES,
+            I_CmsGalleryProviderConstants.CONFIG_GALLERY_PATH,
+            I_CmsGalleryProviderConstants.CONFIG_USE_FORMATS,
+            I_CmsGalleryProviderConstants.CONFIG_IMAGE_FORMAT_NAMES,
+            I_CmsGalleryProviderConstants.CONFIG_IMAGE_FORMATS));
+
+        // delete all keys not listed above 
+        Set<String> toDelete = new HashSet<String>(Sets.difference(json.keySet(), validKeys));
+        for (String toDeleteKey : toDelete) {
+            json.remove(toDeleteKey);
+        }
     }
 
     /**

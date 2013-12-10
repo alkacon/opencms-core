@@ -1,4 +1,4 @@
-<%@ page import="org.opencms.jsp.*" %><%
+<%@ page import="org.opencms.jsp.*,org.opencms.util.*,java.util.*" %><%
 CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 %>
 
@@ -25,6 +25,26 @@ function GetAttribute( element, attName, valueIfNull )
    return ( oValue == null ? valueIfNull : oValue ) ;
 }
 
+<%
+String integratorArgsParam = request.getParameter("integratorArgs");
+if (integratorArgsParam == null) {
+    integratorArgsParam = ""; 
+}
+Map<String, String> integratorArgs = CmsStringUtil.splitAsMap(integratorArgsParam,  "|", ":");
+String mode = integratorArgs.get("mode");
+String embeddedConfigurationName=null;
+if ("imagegallery".equals(mode)) {
+    embeddedConfigurationName = "imageGalleryConfig";
+} else if ("downloadgallery".equals(mode)){
+    embeddedConfigurationName = "downloadGalleryConfig"; 
+}
+pageContext.setAttribute("embeddedConfigurationName", embeddedConfigurationName); 
+%>
+
+
+
+
+
 /**
  * The JavaScript functions of this file serve as an interface between the API of the TinyMCE and the gallery dialog.<p>
  *
@@ -39,17 +59,23 @@ function GetAttribute( element, attName, valueIfNull )
 var vfsPopupUri = "<%= cms.link("/system/modules/org.opencms.jquery/pages/imagePopup.html") %>";
 var showSelect = "true";
 
+
+
 /** The editor frame. */
 var parentDialog=window.parent;
 
 // remove loading overlay and get editor reference
 /** The editor instance. */
 var editor=parentDialog.tinymce.activeEditor;
+
+// this is used in CmsGalleryController
+window.embeddedConfiguration = editor.settings["${embeddedConfigurationName}"];
+
 var tinymce = parentDialog.tinymce;
 
 /** The fck editor configuration. */
 var editorConfig= {};
-
+ 
 /* Absolute path to the JSP that displays the image in original size. */
 var imagePopupUri = "<%= cms.link("/system/modules/org.opencms.jquery/pages/imagePopup.html") %>";
 

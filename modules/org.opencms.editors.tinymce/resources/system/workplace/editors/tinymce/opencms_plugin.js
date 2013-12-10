@@ -132,7 +132,7 @@ function getEditResource() {
  * 
  * @return <code>String</code> the dialog URL
  */ 
-function createGalleryDialogUrl(path, typesParam, integrator) {
+function createGalleryDialogUrl(path, typesParam, integrator, integratorArgs) {
    var resParam = "";
    var editFrame=window;
    if (typeof _editResource=='undefined'){
@@ -142,10 +142,8 @@ function createGalleryDialogUrl(path, typesParam, integrator) {
    if (editResource) {
       resParam = "&<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_REFERENCE_PATH%>=" + getEditResource(); 
    }
-   if (!integrator) {
-      integrator = "/system/workplace/editors/tinymce/integrator.js";
-   }
-   var integratorParam = "&integrator="+integrator; 
+   var integratorParam = "&integrator="+integrator+"&integratorArgs="+integratorArgs; 
+   
    var debugParam = "";   
    // uncomment the next line for debugging GWT code 
    //debugParam="&gwt.codesvr=localhost:9997";
@@ -170,8 +168,15 @@ function createGalleryDialogUrl(path, typesParam, integrator) {
    return "<%= cms.link("/system/modules/org.opencms.ade.galleries/gallery.jsp") %>?<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_GALLERY_MODE+"="+org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode.editor.name() %>" + searchParam + resParam + integratorParam + debugParam;
 }
 
+
+var DEFAULT_INTEGRATOR =  "/system/workplace/editors/tinymce/integrator.js";
 function imageGalleryDialogUrl() {
-   return createGalleryDialogUrl(getImageSelectionPath(), "image");
+    var editor = tinymce.activeEditor;
+   var result = createGalleryDialogUrl(getImageSelectionPath(), "image", DEFAULT_INTEGRATOR, "mode:imagegallery");
+   if (editor.settings.imageGalleryConfig) {
+       result += _paramsForEmbeddedOptions(editor.settings.imageGalleryConfig); 
+   }
+   return result;
 }
 
 
@@ -181,7 +186,25 @@ function imageGalleryDialogUrl() {
  * @return <code>String</code> the dialog URL
  */ 
 function downloadGalleryDialogUrl() {
-   return createGalleryDialogUrl(getDownloadSelectionPath(), "binary");
+    var editor = tinymce.activeEditor;
+   var result =createGalleryDialogUrl(getDownloadSelectionPath(), "binary", DEFAULT_INTEGRATOR, "mode:downloadgallery");
+   if (editor.settings.downloadGalleryConfig) {
+       result += _paramsForEmbeddedOptions(editor.settings.downloadGalleryConfig); 
+   }
+   return result; 
+}
+
+
+
+function _paramsForEmbeddedOptions(config) {
+    var result = ""; 
+    if (config.gallerytypes) {
+        result += "&gallerytypes=" + config.gallerytypes; 
+    }
+    if (config.gallerypath) {
+        result += "&gallerypath=" + config.gallerypath;
+    }
+    return result; 
 }
 
 function linkGalleryDialogUrl() {

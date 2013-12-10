@@ -129,6 +129,9 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     /** The command which should be executed when this widget is attached to the DOM. */
     private Command m_onAttachCommand;
 
+    /** Flag which indicates that the formats from this object should have priority. */
+    private boolean m_overrideFormats;
+
     /** The results tab. */
     private CmsResultsTab m_resultsTab;
 
@@ -516,6 +519,16 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     }
 
     /**
+     * Returns true if the formats from this dialog object should be prioritized by the format handler.<p>
+     * 
+     * @return the value of the 'override formats' flag 
+     */
+    public boolean isOverrideFormats() {
+
+        return m_overrideFormats;
+    }
+
+    /**
      * Returns the use formats flag.<p>
      *
      * @return the use formats flag
@@ -638,6 +651,16 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     public void setOnAttachCommand(Command onAttachCommand) {
 
         m_onAttachCommand = onAttachCommand;
+    }
+
+    /**
+     * Sets the 'override formats' flag, which tells the format handler to prioritize the formats from the gallery dialog object.<p>
+     * 
+     * @param overrideFormats the new value for the 'override formats' flag 
+     */
+    public void setOverrideFormats(boolean overrideFormats) {
+
+        m_overrideFormats = overrideFormats;
     }
 
     /**

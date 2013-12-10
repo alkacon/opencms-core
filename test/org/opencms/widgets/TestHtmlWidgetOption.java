@@ -27,41 +27,41 @@
 
 package org.opencms.widgets;
 
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.util.CmsPair;
+import org.opencms.util.CmsStringUtil;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import java.util.Map;
 
-/**
- * Main test suite for the package <code>{@link org.opencms.widgets}</code>.<p>
+import junit.framework.TestCase;
+
+/** 
+ * Test cases for the parsing of select widget options.<p>
  * 
- * 
- * @since 6.0
  */
-public final class AllTests {
+public class TestHtmlWidgetOption extends TestCase {
 
     /**
-     * Hide constructor to prevent generation of class instances.<p>
+     * Default JUnit constructor.<p>
+     * 
+     * @param arg0 JUnit parameters
      */
-    private AllTests() {
+    public TestHtmlWidgetOption(String arg0) {
 
-        // empty
+        super(arg0);
     }
 
     /**
-     * Returns the JUnit test suite for this package.<p>
-     * 
-     * @return the JUnit test suite for this package
+     * Tests parsing of the embedded gallery configuration.<p>
      */
-    public static Test suite() {
+    public void testParseEmbeddedGalleryOptions() {
 
-        TestSuite suite = new TestSuite("Tests for package " + AllTests.class.getPackage().getName());
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        //$JUnit-BEGIN$
-        suite.addTest(new TestSuite(TestSelectWidgetOption.class));
-        suite.addTest(new TestSuite(TestHtmlWidgetOption.class));
-        //$JUnit-END$
-        return suite;
+        String config = "imagegallery{foo},xyzzy,downloadgallery{bar},bbb,endswithimagegallery{ttt}";
+
+        CmsPair<String, Map<String, String>> result = CmsHtmlWidgetOption.parseEmbeddedGalleryOptions(config);
+        assertEquals("imagegallery,xyzzy,downloadgallery,bbb,endswithimagegallery{ttt}", result.getFirst());
+        Map<String, String> expected = CmsStringUtil.splitAsMap("imagegallery:{foo}|downloadgallery:{bar}", "|", ":");
+        assertEquals(expected, result.getSecond());
+
     }
 
 }
