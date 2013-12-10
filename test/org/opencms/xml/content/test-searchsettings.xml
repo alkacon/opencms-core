@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<TestSearchSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.opencms.org/xmlcontent-searchsettings.xsd">
+  <TestSearchSetting language="en">
+    <Title><![CDATA[Search Setting test]]></Title>
+    <ImageAlign><![CDATA[left]]></ImageAlign>
+    <Description><![CDATA[This is a test content for search settings]]></Description>
+    <Image>
+      <Path><![CDATA[/sites/default/]]></Path>
+      <Title><![CDATA[Image title]]></Title>
+      <Description><![CDATA[Image description]]></Description>
+      <ImageAlign><![CDATA[top-right]]></ImageAlign>
+    </Image>
+  </TestSearchSetting>
+</TestSearchSettings>
