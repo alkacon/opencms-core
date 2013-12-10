@@ -334,6 +334,19 @@ public interface I_CmsXmlContentHandler {
     Set<CmsSearchField> getSearchFields();
 
     /**
+     * Returns the search content settings defined in the annotation node of this XML content.<p>
+     * 
+     * A search setting defined within the xsd:annotaion node of an XML schema definition can look like:<p>
+     * <code>&lt;searchsetting element="Image/Align" searchContent="false"/&gt;</code><p>
+     * 
+     * The returned map contains the 'element' attribute value as keys and the 'searchContent' 
+     * attribute value as values.<p>
+     * 
+     * @return the search field settings for this XML content schema
+     */
+    Map<String, Boolean> getSearchSettings();
+
+    /**
      * Returns the element settings defined for the container page formatters.<p>
      * 
      * @param cms the current CMS context
