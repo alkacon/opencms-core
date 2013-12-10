@@ -251,7 +251,7 @@ public class CmsContentDefinition extends ContentDefinition {
                     List<String> values = attribute.getSimpleValues();
                     result = values.get(index);
                 }
-            } else if (attribute.getValueCount() > (index + 1)) {
+            } else if (attribute.getValueCount() > (index)) {
                 List<I_Entity> values = attribute.getComplexValues();
                 result = getValueForPath(values.get(index), path);
             }
