@@ -134,7 +134,6 @@ public class CmsADEManager {
 
     /** The name of the sitemap configuration file type. */
     public static final String CONFIG_FOLDER_TYPE = "content_folder";
-
     /** The path for sitemap configuration files relative from the base path. */
     public static final String CONFIG_SUFFIX = "/"
         + CmsADEManager.CONTENT_FOLDER_NAME
@@ -201,6 +200,9 @@ public class CmsADEManager {
     /** The offline inherited container configuration cache. */
     private CmsContainerConfigurationCache m_offlineContainerConfigurationCache;
 
+    /** The detail id cache for the Offline project. */
+    private CmsDetailNameCache m_offlineDetailIdCache;
+
     /** The offline formatter bean cache. */
     private CmsFormatterConfigurationCache m_offlineFormatterCache;
 
@@ -212,6 +214,9 @@ public class CmsADEManager {
 
     /** The online inherited container configuration cache. */
     private CmsContainerConfigurationCache m_onlineContainerConfigurationCache;
+
+    /** The Online project detail id cache. */
+    private CmsDetailNameCache m_onlineDetailIdCache;
 
     /** The online formatter bean cache. */
     private CmsFormatterConfigurationCache m_onlineFormatterCache;
@@ -322,6 +327,18 @@ public class CmsADEManager {
             throw new CmsException(Messages.get().container(Messages.ERR_READING_ELEMENT_FROM_REQUEST_0));
         }
         return element;
+    }
+
+    /**
+     * Gets the detail id cache for the Online or Offline projects.<p>
+     * 
+     * @param online if true, gets the Online project detail id 
+     *  
+     * @return the detail name cache 
+     */
+    public CmsDetailNameCache getDetailIdCache(boolean online) {
+
+        return online ? m_onlineDetailIdCache : m_offlineDetailIdCache;
     }
 
     /**
@@ -712,6 +729,12 @@ public class CmsADEManager {
                 m_onlineFormatterCache = new CmsFormatterConfigurationCache(m_onlineCms, "online formatters");
                 m_offlineFormatterCache.reload();
                 m_onlineFormatterCache.reload();
+
+                m_offlineDetailIdCache = new CmsDetailNameCache(m_offlineCms);
+                m_onlineDetailIdCache = new CmsDetailNameCache(m_onlineCms);
+                m_offlineDetailIdCache.initialize();
+                m_onlineDetailIdCache.initialize();
+
                 CmsGlobalConfigurationCacheEventHandler handler = new CmsGlobalConfigurationCacheEventHandler(
                     m_onlineCms);
                 handler.addCache(m_offlineCache, m_onlineCache, "ADE configuration cache");
@@ -720,6 +743,7 @@ public class CmsADEManager {
                     m_onlineContainerConfigurationCache,
                     "Inherited container cache");
                 handler.addCache(m_offlineFormatterCache, m_onlineFormatterCache, "formatter configuration cache");
+                handler.addCache(m_offlineDetailIdCache, m_onlineDetailIdCache, "Detail ID cache");
                 OpenCms.getEventManager().addCmsEventListener(handler);
                 m_initStatus = Status.initialized;
             } catch (CmsException e) {

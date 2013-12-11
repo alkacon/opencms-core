@@ -7848,6 +7848,25 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Reads the URL name mappings matching the given filter.<p>
+     * 
+     * @param dbc the DB context to use 
+     * @param filter the filter used to select the mapping entries 
+     * @return the entries matching the given filter 
+     * 
+     * @throws CmsDataAccessException if something goes wrong 
+     */
+    public List<CmsUrlNameMappingEntry> readUrlNameMappings(CmsDbContext dbc, CmsUrlNameMappingFilter filter)
+    throws CmsDataAccessException {
+
+        List<CmsUrlNameMappingEntry> entries = getVfsDriver(dbc).readUrlNameMappingEntries(
+            dbc,
+            dbc.currentProject().isOnlineProject(),
+            filter);
+        return entries;
+    }
+
+    /**
      * Reads the newest URL names of a resource for all locales.<p>
      *
      * @param dbc the database context

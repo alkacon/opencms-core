@@ -40,7 +40,9 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteMatcher;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.net.URI;
@@ -342,6 +344,25 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
      */
     public String getRootPath(CmsObject cms, String targetUri, String basePath) {
 
+        String result = getSimpleRootPath(cms, targetUri, basePath);
+        String detailRootPath = getDetailRootPath(cms, result);
+        if (detailRootPath != null) {
+            result = detailRootPath;
+        }
+        return result;
+
+    }
+
+    /**
+     * Gets the root path without taking into account detail page links.<p>
+     * 
+     * @param cms - see the getRootPath() method
+     * @param targetUri - see the getRootPath() method
+     * @param basePath - see the getRootPath() method
+     * @return - see the getRootPath() method
+     */
+    protected String getSimpleRootPath(CmsObject cms, String targetUri, String basePath) {
+
         if (cms == null) {
             // required by unit test cases
             return targetUri;
@@ -349,38 +370,19 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
 
         URI uri;
         String path;
-        String fragment;
-        String query;
-        String suffix;
+        String suffix = "";
 
         // malformed uri
         try {
             uri = new URI(targetUri);
             path = uri.getPath();
-
-            fragment = uri.getFragment();
-            if (fragment != null) {
-                fragment = "#" + fragment;
-            } else {
-                fragment = "";
-            }
-
-            query = uri.getQuery();
-            if (query != null) {
-                query = "?" + query;
-            } else {
-                query = "";
-            }
+            suffix = getSuffix(uri);
         } catch (Exception e) {
             if (LOG.isWarnEnabled()) {
                 LOG.warn(Messages.get().getBundle().key(Messages.LOG_MALFORMED_URI_1, targetUri), e);
             }
             return null;
         }
-
-        // concatenate query and fragment 
-        suffix = query.concat(fragment);
-
         // opaque URI
         if (uri.isOpaque()) {
             return null;
@@ -499,5 +501,61 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
 
         // URI without path (typically local link)
         return suffix;
+    }
+
+    /**
+     * Gets the suffix (query + fragment) of the URI.<p>
+     * 
+     * @param uri the URI 
+     * @return the suffix of the URI 
+     */
+    String getSuffix(URI uri) {
+
+        String fragment = uri.getFragment();
+        if (fragment != null) {
+            fragment = "#" + fragment;
+        } else {
+            fragment = "";
+        }
+
+        String query = uri.getQuery();
+        if (query != null) {
+            query = "?" + query;
+        } else {
+            query = "";
+        }
+        return query.concat(fragment);
+    }
+
+    /**
+     * Tries to interpret the given URI as a detail page URI and returns the detail content's root path if possible.<p>
+     * 
+     * If the given URI is not a detail URI, null will be returned.<p>
+     * 
+     * @param cms the CMS context to use 
+     * @param result the detail root path, or null if the given uri is not a detail page URI
+     *  
+     * @return the detail content root path 
+     */
+    private String getDetailRootPath(CmsObject cms, String result) {
+
+        if (result == null) {
+            return null;
+        }
+        try {
+            URI uri = new URI(result);
+            String path = uri.getPath();
+            String name = CmsFileUtil.removeTrailingSeparator(CmsResource.getName(path));
+            CmsUUID detailId = OpenCms.getADEManager().getDetailIdCache(
+                cms.getRequestContext().getCurrentProject().isOnlineProject()).getDetailId(name);
+            if (detailId == null) {
+                return null;
+            }
+            CmsResource detailResource = cms.readResource(detailId, CmsResourceFilter.ALL);
+            return detailResource.getRootPath() + getSuffix(uri);
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            return null;
+        }
     }
 }

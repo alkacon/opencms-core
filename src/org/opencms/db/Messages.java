@@ -190,6 +190,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_DB_OPERATION_0 = "ERR_DB_OPERATION_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_DB_OPERATION_1 = "ERR_DB_OPERATION_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_DELETE_GROUP_1 = "ERR_DELETE_GROUP_1";
 
     /** Message constant for key in the resource bundle. */
