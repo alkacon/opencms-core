@@ -33,6 +33,8 @@ import org.opencms.db.CmsResourceState;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.db.log.CmsLogEntry;
 import org.opencms.db.log.CmsLogFilter;
+import org.opencms.db.urlname.CmsUrlNameMappingEntry;
+import org.opencms.db.urlname.CmsUrlNameMappingFilter;
 import org.opencms.file.history.CmsHistoryPrincipal;
 import org.opencms.file.history.CmsHistoryProject;
 import org.opencms.file.history.I_CmsHistoryResource;
@@ -3222,6 +3224,19 @@ public final class CmsObject {
     public List<String> readStaticExportResources(int parameterResources, long timestamp) throws CmsException {
 
         return m_securityManager.readStaticExportResources(m_context, parameterResources, timestamp);
+    }
+
+    /**
+     * Reads the URL name mappings matching a given filter.<p>
+     * 
+     * @param filter the filter to match 
+     * @return the URL name mappings matching the filter 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public List<CmsUrlNameMappingEntry> readUrlNameMappings(CmsUrlNameMappingFilter filter) throws CmsException {
+
+        return m_securityManager.readUrlNameMappings(m_context, filter);
     }
 
     /**
