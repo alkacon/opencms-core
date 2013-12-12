@@ -887,6 +887,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     }
 
     /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getSearchSettings()
+     */
+    public Map<String, Boolean> getSearchSettings() {
+
+        return m_searchSettings;
+    }
+    
+    /**
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#getSettings(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
      */
     public Map<String, CmsXmlContentProperty> getSettings(CmsObject cms, CmsResource resource) {
@@ -1144,9 +1152,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     public boolean isSearchable(I_CmsXmlContentValue value) {
 
         // check for name configured in the annotations
-        Boolean anno = m_searchSettings.get(CmsXmlUtils.removeXpath(value.getPath()));
+        Boolean searchSetting = m_searchSettings.get(value.getName());
+        I_CmsXmlContentHandler rootHandler = value.getDocument().getContentDefinition().getContentHandler();
+        Boolean rootSearchSetting = rootHandler.getSearchSettings().get(CmsXmlUtils.removeXpath(value.getPath()));
+        if (rootSearchSetting != null) {
+            searchSetting = rootSearchSetting;
+        }
         // if no annotation has been found, use default for value
-        return (anno == null) ? value.isSearchable() : anno.booleanValue();
+        return (searchSetting == null) ? value.isSearchable() : searchSetting.booleanValue();
     }
 
     /**
