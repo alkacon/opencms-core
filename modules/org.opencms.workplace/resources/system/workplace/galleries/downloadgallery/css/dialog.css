@@ -23,8 +23,8 @@ button {
 }
 
 body {
-	color: WindowText;
-	background-color: Window;
+	color: #000000;
+	background-color: #ffffff;
 	margin: 0 4px;
 	padding: 0;
 }
@@ -85,9 +85,9 @@ img {
 
 #preview #imagename, #preview #htmlname, 
 #advancedhead, #galleryfolders div.head, #categoryfolders div.head  {
-	color: ButtonText;
-	background-color: ButtonFace;
-	border-bottom: 1px solid ButtonShadow;
+	color: #000000;
+	background-color: #dddddd;
+	border-bottom: 1px solid #999999;
 	padding: 6px 4px;
 	font-size: 12px;
 	font-weight: bold;
@@ -120,14 +120,14 @@ img {
 #preview #previewwrapper, #preview #previewdetailinfo {
 	height: 450px;
 	padding: 0 6px;
-	background-color: ButtonFace;
-	border-bottom: 1px solid ButtonShadow;
+	background-color: #dddddd;
+	border-bottom: 1px solid #999999;
 }
 
 #preview #previewwrapperhtml {
 	height: 550px;
 	background-color:window;
-	border-bottom: 1px solid ButtonShadow;
+	border-bottom: 1px solid #999999;
 }
 
 #preview #imgpreview {
@@ -143,7 +143,7 @@ img {
 
 #preview #imgdetails {
 	padding: 6px 4px;
-	border-bottom: 1px solid ButtonShadow;
+	border-bottom: 1px solid #999999;
 }
 
 #preview #imgdetails table.wrapper  {
@@ -187,7 +187,7 @@ img {
 }
 
 input.showborder, select.showborder {
-	border: 1px solid ButtonShadow;
+	border: 1px solid #999999;
 }
 
 #preview #dialogbuttons #cancelbutton {
@@ -195,7 +195,7 @@ input.showborder, select.showborder {
 }
 
 #preview, #galleries, #categories {
-	background-color: InfoBackground;
+	background-color: #f9f9f9;
 	overflow: hidden;
 }
 
@@ -209,8 +209,8 @@ input.showborder, select.showborder {
 #galleryfolderlist div, #categoryfolderlist div {
 	margin-bottom: 6px;
 	padding: 4px;
-	background-color: Window;
-	border: 1px solid ButtonShadow;
+	background-color: #ffffff;
+	border: 1px solid #999999;
 	cursor: pointer;
 }
 
@@ -226,13 +226,13 @@ input.showborder, select.showborder {
 	display: block;
 	font-size: 12px;
 	font-weight: bold;
-	color: InfoText;
+	color: #ffffff;
 	padding-bottom: 2px;
 }
 
 #galleryfolderlist div span.path, #categoryfolderlist div span.path {
 	display: block;
-	color: GrayText;
+	color: #999999;
 	font-size: 11px;
 	font-style: italic;
 	width: 100%;
@@ -241,7 +241,7 @@ input.showborder, select.showborder {
 
 #galleryfolderlist div:hover span.title, #categoryfolderlist div:hover span.title, #galleryfolderlist div:hover span.path, #categoryfolderlist div:hover span.path,
 #galleryfolderlist div.active span.title, #categoryfolderlist div.active span.title, #galleryfolderlist div.active span.path, #categoryfolderlist div.active span.path {
-	color: HighlightText;
+	color: #ffffff;
 }
 
 /* ----------------------------------------------------------------- */
@@ -256,8 +256,8 @@ input.showborder, select.showborder {
 #galleryitemlistinner div div, #categoryitemlistinner div div {
 	margin-bottom: 1px;
 	padding: 2px;
-	background-color: Window;
-	border: 1px solid ButtonShadow;
+	background-color: #ffffff;
+	border: 1px solid #999999;
 	cursor: pointer;
 }
 
@@ -274,13 +274,13 @@ input.showborder, select.showborder {
 	display: block;
 	font-size: 12px;
 	font-weight: bold;
-	color: InfoText;
+	color: #ffffff;
 	padding-bottom: 2px;
 }
 
 #galleryitemlistinner div div span.filename, #categoryitemlistinner div div span.filename {
 	display: block;
-	color: GrayText;
+	color: #999999;
 	font-size: 11px;
 	font-style: italic;
 	width: 100%;
@@ -292,7 +292,7 @@ input.showborder, select.showborder {
 #galleryitemlistinner div div.active span.title, #galleryitemlistinner div div.active span.filename,
 #categoryitemlistinner div div:hover span.title, #categoryitemlistinner div div:hover span.filename ,
 #categoryitemlistinner div div.active span.title, #categoryitemlistinner div div.active span.filename {
-	color: HighlightText;
+	color: #ffffff;
 }
 
 /* ----------------------------------------------------------------- */
@@ -395,8 +395,8 @@ input.showborder, select.showborder {
 }
  
 #galleryitemlist, #categoryitemlist {
-	background-color: ButtonFace;
-	border-bottom: 1px solid ButtonShadow; 
+	background-color: #dddddd;
+	border-bottom: 1px solid #999999; 
 	height: 486px; 		/* overwritten in editor.css */ 
 
 
@@ -407,14 +407,14 @@ input.showborder, select.showborder {
 }
 
 #galleryitemlist.withoutinfo, #categoryitemlist.withoutinfo {
-	background-color: ButtonFace;
-	border-bottom: 1px solid ButtonShadow; 
+	background-color: #dddddd;
+	border-bottom: 1px solid #999999; 
 	height: 570px;
 }
 
 #galleryitemlist.withinfo, #categoryitemlist.withinfo {
-	background-color: ButtonFace;
-	border-bottom: 1px solid ButtonShadow; 
+	background-color: #dddddd;
+	border-bottom: 1px solid #999999; 
 	height: 486px;		/* overwritten in editor.css */
 	
 }
@@ -425,12 +425,12 @@ input.showborder, select.showborder {
 	overflow: auto;
 	height: 415px;		/* overwritten in editor.css */
 	background-color: #D4D0C8;
-	border-top: 1px solid ButtonShadow;
+	border-top: 1px solid #999999;
 }
 
 #galleryname, #categoryname {
-	border-top: 1px solid ButtonShadow;
-	background-color: ButtonFace;
+	border-top: 1px solid #999999;
+	background-color: #dddddd;
 	padding: 6px 4px;
 	font-size: 12px;
 	font-weight: bold;
@@ -441,12 +441,12 @@ input.showborder, select.showborder {
 	font-size: 11px;
 	font-weight: normal;
 	padding-top: 2px;
-	color: Window;
+	color: #ffffff;
 }
 
 #galleryiteminfo, #categoryiteminfo {
-	background-color: InfoBackground;
-	color: InfoText;
+	background-color: #f9f9f9;
+	color: #ffffff;
 	padding: 6px 4px 0 4px;
 }
 
@@ -461,11 +461,11 @@ input.showborder, select.showborder {
 	z-index: 6;
 	filter: alpha(opacity=90);
 	opacity: 0.90;
-	background-color: InfoBackground; 
-	border-right: 1px solid ButtonShadow;
-	border-bottom: 1px solid ButtonShadow;
-	border-left: 1px solid ButtonShadow;
-	color: InfoText;
+	background-color: #f9f9f9; 
+	border-right: 1px solid #999999;
+	border-bottom: 1px solid #999999;
+	border-left: 1px solid #999999;
+	color: #ffffff;
 	display: none;
 }
 
@@ -474,9 +474,9 @@ input.showborder, select.showborder {
 	margin-top: 0;
 	position: relative;
 	z-index: 6;
-	background-color: ButtonFace;
+	background-color: #dddddd;
 	border: none;
-	color: InfoText;
+	color: #ffffff;
 	display: none;
 }
 
@@ -608,7 +608,7 @@ div.imgitem, div.imgitemhover, div.imgitemactive {
 }
 
 div.imgitem {
-	border: 1px solid Window;
+	border: 1px solid #ffffff;
 }
 
 div.imgitemhover {
@@ -666,9 +666,9 @@ span.changeiconlayer img {
 }
 
 #jHelperTipAttrContainer{ 
-	background: InfoBackground;
-	border: 1px solid ButtonShadow;
-	color: Infotext;
+	background: #f9f9f9;
+	border: 1px solid #999999;
+	color: #ffffff;
 	padding: 2px;
 	white-space: nowrap;
 	display: none;
@@ -702,15 +702,15 @@ span.stateinfochanged {
 }
 
 #itemgallery-pagination a, #itemcategory-pagination a {
-	border: 1px solid Window;
-	color: ThreeDShadow;
+	border: 1px solid #ffffff;
+	color: #999999;
 }
 
 #itemgallery-pagination a:hover, #itemcategory-pagination a:hover {
-	border: 1px solid ButtonShadow;
+	border: 1px solid #999999;
 }
 
 #itemgallery-pagination span.current, #itemcategory-pagination span.current {
-	border: 1px solid ButtonShadow;
-	color: Window;
+	border: 1px solid #999999;
+	color: #ffffff;
 }

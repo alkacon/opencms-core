@@ -90,7 +90,7 @@ public class CmsException extends Exception implements I_CmsThrowable {
             stacktrace = CmsStringUtil.escapeJavaScript(stacktrace);
             stacktrace = CmsEncoder.escapeXml(stacktrace);
             StringBuffer result = new StringBuffer(256);
-            result.append("<html><body style='background-color: Window; overflow: scroll;'><pre>");
+            result.append("<html><body style='background-color: #ffffff; overflow: scroll;'><pre>");
             result.append(stacktrace);
             result.append("</pre></body></html>");
             return result.toString();

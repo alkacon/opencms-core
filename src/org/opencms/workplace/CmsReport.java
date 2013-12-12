@@ -123,8 +123,8 @@ public class CmsReport extends CmsMultiDialog {
         }
         if (CmsStringUtil.isEmpty(contents)) {
             // css file not found, create default styles
-            result.append("body       { box-sizing: border-box; -moz-box-sizing: border-box; padding: 2px; margin: 0; color: WindowText; background-color: Window; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; }\n");
-            result.append("div.main   { box-sizing: border-box; -moz-box-sizing: border-box; color: WindowText; white-space: nowrap; }\n");
+            result.append("body       { box-sizing: border-box; -moz-box-sizing: border-box; padding: 2px; margin: 0; color: #000000; background-color: #ffffff; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; }\n");
+            result.append("div.main   { box-sizing: border-box; -moz-box-sizing: border-box; color: #000000; white-space: nowrap; }\n");
             result.append("span.head  { color: #000099; font-weight: bold; }\n");
             result.append("span.note  { color: #666666; }\n");
             result.append("span.ok    { color: #009900; }\n");
@@ -210,7 +210,7 @@ public class CmsReport extends CmsMultiDialog {
         result.append("'>\n");
         result.append(generateCssStyle(wp.getCms()));
         result.append("</head>\n");
-        result.append("<body style='background-color:Menu;'>\n");
+        result.append("<body style='background-color:#dddddd;'>\n");
         result.append("<div style='vertical-align:middle; height: 100%;'>\n");
         result.append("<table border='0' style='vertical-align:middle; height: 100%;'>\n");
         result.append("<tr><td width='40' align='center' valign='middle'><img name='report_img' src='");
