@@ -443,7 +443,11 @@ public class CmsFlexCacheKey {
                             str.append(s);
                             str.append("=");
                             Object value = keyAttrs.get(s);
-                            str.append(value.toString());
+                            if (value != null) {
+                                str.append(value.toString());
+                            } else {
+                                str.append(String.valueOf((Object)null));
+                            }
                             if (i.hasNext()) {
                                 str.append(",");
                             }
