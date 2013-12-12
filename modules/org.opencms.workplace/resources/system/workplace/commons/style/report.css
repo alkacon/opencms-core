@@ -1,4 +1,4 @@
-body       { box-sizing: border-box; -moz-box-sizing: border-box; padding: 2px; margin: 0; color: WindowText; background-color: Window; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; }
+body       { box-sizing: border-box; -moz-box-sizing: border-box; padding: 2px; margin: 0; color: #000000; background-color: #ffffff; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; }
 div.main   { box-sizing: border-box; -moz-box-sizing: border-box; color: #000000; white-space: nowrap; }
 span.head  { color: #000099; font-weight: bold; }
 span.note  { color: #666666; }

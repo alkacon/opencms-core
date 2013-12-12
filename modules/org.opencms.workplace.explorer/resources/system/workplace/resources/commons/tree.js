@@ -71,8 +71,8 @@ var treeHeadHtml2 =
     "}\n" +
     "</script>\n" +
     "<style type=\"text/css\">\n" +
-    "body  { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; padding: 2px 0px 0px 2px; margin: 0px; background-color: Window; }\n" +
-    "p, td { vertical-align: bottom; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; white-space: nowrap; color: WindowText; }\n" +
+    "body  { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; padding: 2px 0px 0px 2px; margin: 0px; background-color: #ffffff; }\n" +
+    "p, td { vertical-align: bottom; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; white-space: nowrap; color: #000000; }\n" +
     "a     { vertical-align: bottom; text-decoration: none; cursor: pointer; }\n" +
     "a.ig  { vertical-align: bottom; text-decoration: none; color: #888888; }\n" +
     "a.igi { vertical-align: bottom; text-decoration: underline; color: #000088; }\n" +

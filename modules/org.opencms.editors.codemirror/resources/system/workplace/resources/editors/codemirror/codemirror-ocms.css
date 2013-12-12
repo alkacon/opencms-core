@@ -9,7 +9,7 @@
 
 /* Editor appearance modifications */
 .CodeMirror {
-	background-color: Window;
+	background-color: #ffffff;
 }
 
 /* Initial editor font */
@@ -50,12 +50,12 @@
 	top: 35%; left: 50%;
 	width: 300px;
 	margin-left: -150px;
-	background: ButtonFace;
-	border: 1px solid ButtonShadow;
+	background: #dddddd;
+	border: 1px solid #999999;
 	z-index: 15;
 	padding: 2em;
 	overflow: hidden;
-	color: WindowText;
+	color: #000000;
 	font-family: Verdana Arial, Helvetica, sans-serif;
 	font-size: 12px;
 }
@@ -69,13 +69,13 @@
 }
 
 .CodeMirror-dialog input {
-	border: 1px solid ButtonShadow;
+	border: 1px solid #999999;
 	outline: none;
-	background: Window;
+	background: #ffffff;
 	width: 18em;
 	float: right;
 	margin-left: 1em;
-	color: WindowText;
+	color: #000000;
 }
 
 .CodeMirror-dialog button {

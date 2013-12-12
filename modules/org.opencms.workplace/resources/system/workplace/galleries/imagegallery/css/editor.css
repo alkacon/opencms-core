@@ -23,7 +23,7 @@ td {
 #preview #imgoptions {
 	height: 148px;
 	padding: 6px 4px;
-	border-bottom: 1px solid ButtonShadow;
+	border-bottom: 1px solid #999999;
 }
 
 #preview #imgdetails {
@@ -34,7 +34,7 @@ td {
 #preview #imgalignspacer {
 	margin-top: 18px;
 	padding: 6px 0;
-	border-top: 1px solid ButtonShadow;
+	border-top: 1px solid #999999;
 }
 
 #preview #imgalign {
@@ -51,8 +51,8 @@ td {
 }
 
 #advanced {
-	color: InfoText;
-	background-color: InfoBackground;
+	color: #ffffff;
+	background-color: #f9f9f9;
 }
 
 #advanced .head {
@@ -63,7 +63,7 @@ td {
 
 #advlink {
 	padding: 6px 4px 16px 4px;
-	border-bottom: 1px solid ButtonShadow;
+	border-bottom: 1px solid #999999;
 }
 
 #advattrs {

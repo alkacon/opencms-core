@@ -40,7 +40,7 @@
   background: none;
   background-color: transparent;
   vertical-align: middle;
-  color: #000000;
+  color: !<WindowText>!;
   cursor: auto;
   text-decoration: none;
 }
@@ -51,7 +51,7 @@
   background-color: transparent;
   cursor: hand;
   cursor: pointer;
-  color: #000000;
+  color: !<WindowText>!;
   text-decoration: none;
 }
 
@@ -67,7 +67,7 @@
 }
 
 .linkdisabled {
-  color: #999999;
+  color: !<GrayText>!;
   text-decoration: none;
   cursor: default;
 }
@@ -94,30 +94,30 @@
 .list th { 
   vertical-align: middle;
   text-align: center;
-  background-color: #dddddd; 
-  border-right: 1px solid #606161; 
-  border-top: 1px solid #ffffff; 
-  border-bottom: 1px solid #606161; 
-  border-left: 1px solid #ffffff; 
+  background-color:ThreedFace; 
+  border-right: 1px solid ThreedDarkShadow; 
+  border-top: 1px solid !<ThreeDHighlight>!; 
+  border-bottom: 1px solid ThreedDarkShadow; 
+  border-left: 1px solid !<ThreeDHighlight>!; 
 } 
 
 .list th a:link, 
 .list th a:visited, 
 .list th a:active {
-  color: #000000;
+  color: !<WindowText>!;
   text-decoration: none;
 }
 
 .evenrowbg {
-	background-color: #dddddd; 
+	background-color: !<ButtonFace>!; 
 }
 
 .oddrowbg {
-	background-color: #ffffff;
+	background-color: !<Window>!;
 }
 
 .evenrowbgnew {
-	background-color: #f9f9f9;
+	background-color: !<InfoBackground>!;
 }
 
 .misc {
@@ -140,7 +140,7 @@ td.listdetailhead {
 td.listdetailitem {
 	padding-left: 10px;
 	font-size: 10px;
-	color: #999999;
+	color: !<ThreeDShadow>!;
 }
 
 <% } %>
@@ -150,14 +150,14 @@ body {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
 	font-weight: normal;
-	color: #000000;
+	color: !<WindowText>!;
    <% if (style == NEW_ADMIN) { %>
-	background-color: #ffffff;     
+	background-color: !<Window>!;     
 	padding-bottom: 20px;
    <% } else {%>
 	padding: 0 12px;
 	margin: 0;
-	background-color: #dddddd; 
+	background-color: !<ThreeDFace>!; 
 	background-image: url(<%=CmsWorkplace.getSkinUri()%>admin/images/border.gif);
 	background-position: right;
 	background-repeat: repeat-y;
@@ -179,18 +179,18 @@ img {
 
 #loader td {
   padding: 0px;
-  background: #ffffff;
+  background: !<Window>!;
   border: 1px solid black;
 }
 
 #loader p {
-  border-top: 3px solid #ffffff;
-  border-left: 3px solid #ffffff;
-  border-right: 3px solid #999999;
-  border-bottom: 3px solid #999999;
+  border-top: 3px solid !<ThreeDHighlight>!;
+  border-left: 3px solid !<ThreeDHighlight>!;
+  border-right: 3px solid !<ThreeDShadow>!;
+  border-bottom: 3px solid !<ThreeDShadow>!;
   padding: 10px;
   margin: 0;
-  background: #dddddd;
+  background: !<ThreeDFace>!;
 }
 
 #loader img {
@@ -243,10 +243,10 @@ img {
 
 .navOpened,
 .navClosed {
-  border-top: 2px solid #ffffff;
-  border-left: 2px solid #ffffff;
-  border-right: 2px solid #999999;
-  border-bottom: 2px solid #999999;
+  border-top: 2px solid !<ThreeDHighlight>!;
+  border-left: 2px solid !<ThreeDHighlight>!;
+  border-right: 2px solid !<ThreeDShadow>!;
+  border-bottom: 2px solid !<ThreeDShadow>!;
 }
 
 #navArea .node img,
@@ -260,7 +260,7 @@ img {
 
 .navOpened {
   margin-bottom: 15px;
-  background-color: #1f232a;
+  background-color: !<ActiveCaption>!;
 }
 
 .navTitle,
@@ -271,12 +271,12 @@ img {
 }
 
 .titleBorder {
-   border: 3px solid #dddddd;  
-   border-bottom: 0px solid #dddddd; 
+   border: 3px solid !<ThreeDFace>!;  
+   border-bottom: 0px solid !<ThreeDFace>!; 
  }
 
 .treeBorder {
-   border: 3px solid #dddddd;  
+   border: 3px solid !<ThreeDFace>!;  
  }
 
 .navOpened .navTitle,
@@ -287,20 +287,20 @@ img {
 .navOpened .navTitle .titleText {
   font-weight: bold;
   vertical-align: middle;
-  color: #ffffff;
+  color: !<CaptionText>!;
 }
 
 .navOpened .navTitleOver .titleText {
   font-weight: bold;
   vertical-align: middle;
-  color: #dddddd;
+  color: !<InactiveCaptionText>!;
 }
 
 .navClosed {
   background-position: right;
   background-repeat: repeat-y;
   margin-bottom: 15px;
-  background-color: #999999;
+  background-color: !<InactiveCaption>!;
 }
 
 .navClosed .navTitle,
@@ -320,19 +320,19 @@ img {
 }
 
 .navClosed .navTitle .titleText {
-  color: #dddddd;
+  color: InactiveCaptionText;
 }
 
 .navClosed .navTitleOver .titleText {
-  color: #ffffff;
+  color: !<CaptionText>!;
 }
 
 div.tree {
   padding: 2px;
   padding-top: 3px;
   padding-bottom: 10px;
-  background-color: #ffffff; 
-  border: 1px solid #000000;
+  background-color: !<Window>!; 
+  border: 1px solid !<WindowText>!;
 }
 
 .navOpened .tree {
@@ -383,7 +383,7 @@ body, form {
 .pathbar {
    padding-top: 10px;
    padding-left: 10px;
-   background-color: #dddddd;
+   background-color: !<ThreeDFace>!;
 }
 
 .screenBody {
@@ -397,8 +397,8 @@ body, form {
 .screenTitle {
   margin: 0;
   vertical-align: middle;
-  background-color: #dddddd;
-  border-bottom: 1px solid #dddddd;
+  background-color: !<ThreeDFace>!;
+  border-bottom: 1px solid !<ActiveBorder>!;
 }
 
 .screenTitle td {
@@ -406,7 +406,7 @@ body, form {
   vertical-align: middle;
   font-size: 18px;
   font-family: Verdana, Arial, Helvetica, sans-serif;
-  color: #000000;
+  color: !<WindowText>!;
 }
 
 p, hr {
@@ -472,11 +472,11 @@ input, select, option, textarea {
 	visibility: hidden;
 	display: none;   
 	<% } else if(style == WORKPLACE) { %>
-	background-color: #1f232a;
+	background-color: !<ActiveCaption>!;
 	<% } %>
 	margin-bottom: 8px;
 	padding: 2px;
-	color: #ffffff;
+	color: !<CaptionText>!;
 	font-size: 12px;
 	font-weight: bold;
 	white-space: nowrap;	
@@ -491,17 +491,17 @@ table.dialog {
 	<% } else if(style == WORKPLACE) { %>
         margin: 20px auto;
 	width: 85%;
-	border-left: 1px solid #dddddd;
-	border-top: 1px solid #dddddd;
-	border-right: 1px solid #606161;
-	border-bottom: 1px solid #606161;
+	border-left: 1px solid !<ThreeDLightShadow>!;
+	border-top: 1px solid !<ThreeDLightShadow>!;
+	border-right: 1px solid ThreedDarkShadow;
+	border-bottom: 1px solid ThreedDarkShadow;
    <% } %>
 }
 
 body.dialogpopup {
 	margin: 0 auto;
 	<% if(!(style == NEW_ADMIN)) { %>
-	background-color: #dddddd;
+	background-color: !<ThreeDFace>!;
 	<% } %>
 }
 
@@ -509,17 +509,17 @@ body.dialogpopup {
 table.dialogbox {
 	width: 100%;
 	<% if(!(style == NEW_ADMIN)) { %>
-	background-color: #dddddd;
+	background-color: !<ThreeDFace>!;
 	<% } %>
 	<% if(style == NEW_ADMIN) { %>
 	padding-top: 10px;	
 	<% } %>
         <% if(style == WORKPLACE) { %>
-	background-color: #dddddd;
-	border-left: 1px solid #ffffff;
-	border-top: 1px solid #ffffff;
-	border-right: 1px solid #999999;
-	border-bottom: 1px solid #999999;
+	background-color: !<ThreeDFace>!;
+	border-left: 1px solid !<ThreeDHighlight>!;
+	border-top: 1px solid !<ThreeDHighlight>!;
+	border-right: 1px solid !<ThreeDShadow>!;
+	border-bottom: 1px solid !<ThreeDShadow>!;
 	padding-top: 1px;	
 	<% } %>
 }
@@ -528,9 +528,9 @@ table.dialogbox {
 .horseparator {
 	width: 100%;
 	<% if(!(style == NEW_ADMIN)) { %>
-	background-color: #ffffff;
+	background-color: !<ThreeDHighlight>!;
 	<% } %>
-	border-top: 1px solid #999999;
+	border-top: 1px solid !<ThreeDShadow>!;
 }
 
 body.dialog {
@@ -539,7 +539,7 @@ body.dialog {
 	padding: 0;
 	margin: 0;
 	<% if(style == POPUP) { %>
-	background-color: #dddddd;
+	background-color: !<ThreeDFace>!;
 	<% } %>
 }
 
@@ -580,7 +580,7 @@ img.button {
 
 /* Button - Link (href) style */
 a.button {
-	color: #000000;
+	color: !<ButtonText>!;
 	text-decoration: none;
 	cursor: pointer;
 }
@@ -594,26 +594,26 @@ span.norm {
 /* Button - Hover style */
 span.over {
 	display: block;
-	border-top: 1px solid #ffffff;
-	border-left: 1px solid #ffffff;
-	border-bottom: 1px solid #999999;
-	border-right: 1px solid #999999;
+	border-top: 1px solid !<ThreeDHighlight>!;
+	border-left: 1px solid !<ThreeDHighlight>!;
+	border-bottom: 1px solid !<ThreeDShadow>!;
+	border-right: 1px solid !<ThreeDShadow>!;
 }
 
 /* Button - Push style */
 span.push {
 	display: block;
-	border-top: 1px solid #999999;
-	border-left: 1px solid #999999;
-	border-bottom: 1px solid #ffffff;
-	border-right: 1px solid #ffffff;
+	border-top: 1px solid !<ThreeDShadow>!;
+	border-left: 1px solid !<ThreeDShadow>!;
+	border-bottom: 1px solid !<ThreeDHighlight>!;
+	border-right: 1px solid !<ThreeDHighlight>!;
 }
 
 /* Button - Disabled style */
 span.disabled {
 	display: block;
-	border: 1px solid #dddddd;
-	color: #999999;
+	border: 1px solid !<ThreeDFace>!;
+	color: !<GrayText>!;
 }
 
 /* Button - Tart tab */
@@ -621,10 +621,10 @@ span.starttab {
 	display: block;
 	height: 16px;
 	width: 1px;
-	border-top: 1px solid #ffffff;
-	border-left: 1px solid #ffffff;
-	border-bottom: 1px solid #999999;
-	border-right: 1px solid #999999;
+	border-top: 1px solid !<ThreeDHighlight>!;
+	border-left: 1px solid !<ThreeDHighlight>!;
+	border-bottom: 1px solid !<ThreeDShadow>!;
+	border-right: 1px solid !<ThreeDShadow>!;
 }
 
 /* Button - Separator */
@@ -633,9 +633,9 @@ span.separator {
 	height: 18px;
 	width: 0px;
 	border-top: 0px;
-	border-left: 1px solid #999999;
+	border-left: 1px solid !<ThreeDShadow>!;
 	border-bottom: 0px;
-	border-right: 1px solid #ffffff;
+	border-right: 1px solid !<ThreeDHighlight>!;
 }
 
 /* final button row of dialog window */
@@ -658,10 +658,10 @@ span.separator {
 
 .dialogcontent {
 	<% if(!(style == NEW_ADMIN)) { %>
-	border-left: 1px solid #ffffff;
-	border-top: 1px solid #ffffff;
-	border-right: 2px solid #999999;
-	border-bottom: 2px solid #999999;
+	border-left: 1px solid !<ThreeDHighlight>!;
+	border-top: 1px solid !<ThreeDHighlight>!;
+	border-right: 2px solid !<ThreeDShadow>!;
+	border-bottom: 2px solid !<ThreeDShadow>!;
 	margin: 8px;
 	padding: 15px;
 	<% } %>
@@ -685,34 +685,34 @@ fieldset.dialogblock {
 }
 
 fieldset.dialogblock span {
-	color: #000000;
+	color: !<WindowText>!;
 }
 
 /* outer border of white inner box */
 .dialoginnerboxborder {
-	border-left: 1px solid #999999;
-	border-top: 1px solid #999999;
-	border-right: 1px solid #ffffff;
-	border-bottom: 1px solid #ffffff;
+	border-left: 1px solid !<ThreeDShadow>!;
+	border-top: 1px solid !<ThreeDShadow>!;
+	border-right: 1px solid !<ThreeDHighlight>!;
+	border-bottom: 1px solid !<ThreeDHighlight>!;
 	padding: 0;
 }
 
 /* white inner box for dialogs */
 .dialoginnerbox {
    <% if(style != NEW_ADMIN) { %>
-	background-color: #ffffff;
+	background-color: !<Window>!;
    <% } %>
-	border-left: 1px solid #606161;
-	border-top: 1px solid #606161;
-	border-right: 1px solid #dddddd;
-	border-bottom: 1px solid #dddddd;
+	border-left: 1px solid ThreedDarkShadow;
+	border-top: 1px solid ThreedDarkShadow;
+	border-right: 1px solid !<ThreeDLightShadow>!;
+	border-bottom: 1px solid !<ThreeDLightShadow>!;
 	padding: 2px;
 }
 
 /* separator line */
 .dialogseparator {
-	border-top: 1px solid #999999;
-	border-bottom: 1px solid #ffffff;
+	border-top: 1px solid !<ThreeDShadow>!;
+	border-bottom: 1px solid !<ThreeDHighlight>!;
 	margin: 5px 0;
 }
 
@@ -732,7 +732,7 @@ input.dialogbutton {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
    <% if(style != NEW_ADMIN) { %>
-	background-color: #dddddd;
+	background-color: !<ButtonFace>!;
    <% } %>
 	width: 100px;
 	height: 20px;
@@ -749,8 +749,8 @@ input.dialogmarkedfield {
 
 /* row marked as selected */
 .dialogmarked {
-	background-color: #1f232a;
-	color: #ffffff;
+	background-color: !<ActiveCaption>!;
+	color: !<CaptionText>!;
 	display: block;
 	cursor: pointer;
 	white-space: nowrap;
@@ -829,22 +829,22 @@ div.dialogpermissioninherit {
 
 /* definitions for "tab-style" dialogs */
 .dialogtab {
-	border-top: 1px solid #ffffff;
-	border-left: 1px solid #ffffff;
-	border-right: 2px solid #999999;
-	background-color: #dddddd;
+	border-top: 1px solid !<ThreeDHighlight>!;
+	border-left: 1px solid !<ThreeDHighlight>!;
+	border-right: 2px solid !<ThreeDShadow>!;
+	background-color: !<ThreeDFace>!;
 	text-align: center;
 	color: #000;
 	white-space: nowrap;
 }
 
 .dialogtabactive {
-	border-top: 2px solid #ffffff;
-	border-left: 2px solid #ffffff;
-	border-right: 2px solid #999999;
-	background-color: #dddddd;
+	border-top: 2px solid !<ThreeDHighlight>!;
+	border-left: 2px solid !<ThreeDHighlight>!;
+	border-right: 2px solid !<ThreeDShadow>!;
+	background-color: !<ThreeDFace>!;
 	text-align: center;
-	color: #ffffff;
+	color: !<CaptionText>!;
 	font-weight: bold;
 	white-space: nowrap;
 }
@@ -857,31 +857,31 @@ div.dialogpermissioninherit {
 .dialogtabrow {
 	height: 1px;
 	<% if(!(style == NEW_ADMIN)) { %>
-	background-color: #ffffff;
+	background-color: !<ThreeDHighlight>!;
 	<% } %>
 }
 
 .dialogtabcontent {
-	border-left: 1px solid #ffffff;
-	border-right: 2px solid #999999;
-	border-bottom: 2px solid #999999;
+	border-left: 1px solid !<ThreeDHighlight>!;
+	border-right: 2px solid !<ThreeDShadow>!;
+	border-bottom: 2px solid !<ThreeDShadow>!;
 	padding: 15px;
 	margin-top: -1px;
 }
 
 a.tab {
-	color: #000000;
+	color: !<WindowText>!;
 	text-decoration: none;
 	display: block;
 	padding: 4px;
 }
 
 a.tab:hover {
-	color: #999999;
+	color: !<GrayText>!;
 }
 
 span.tabactive {
-	color: #000000;
+	color: !<WindowText>!;
 	text-decoration: none;
 	display: block;
 	padding: 4px;
@@ -889,7 +889,7 @@ span.tabactive {
 
 <% if(!(style == NEW_ADMIN)) { %>
 body.report {
-	background-color: #ffffff;
+	background-color: !<Window>!;
 }
 <% } %>
 
@@ -900,14 +900,14 @@ body.report {
 table.logindialog {
     margin: 20px auto;
 	width: 550px;
-	border-left: 1px solid #dddddd;
-	border-top: 1px solid #dddddd;
-	border-right: 1px solid #606161;
-	border-bottom: 1px solid #606161;
+	border-left: 1px solid !<ThreeDLightShadow>!;
+	border-top: 1px solid !<ThreeDLightShadow>!;
+	border-right: 1px solid ThreedDarkShadow;
+	border-bottom: 1px solid ThreedDarkShadow;
 }
 
 div.loginsecurity {
-	border-bottom: 1px solid #ffffff;
+	border-bottom: 1px solid !<ThreeDHighlight>!;
 	padding-bottom: 10px;
 	margin-bottom: 10px;
 }
@@ -915,7 +915,7 @@ div.loginsecurity {
 input.loginbutton {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
-	background-color: #dddddd;
+	background-color: !<ButtonFace>!;
 	width: 148px;
 	height: 23px;
 	padding: 0 5px;
@@ -930,15 +930,15 @@ input.loginbutton {
 	min-height: 100px;
 	max-height: 250px;
 	overflow: auto;
-	background-color: #f9f9f9;
-	border: 2px inset #dddddd;
+	background-color: !<InfoBackground>!;
+	border: 2px inset !<ButtonFace>!;
 }
 
 #ouSelId div {
 	margin-bottom: 6px;
 	padding: 4px;
-	background-color: #ffffff;
-	border: 1px solid #999999;
+	background-color: !<Window>!;
+	border: 1px solid !<ButtonShadow>!;
 	cursor: pointer;
 }
 
@@ -954,24 +954,24 @@ input.loginbutton {
 	display: block;
 	font-size: 12px;
 	font-weight: bold;
-	color: #ffffff;
+	color: !<InfoText>!;
 	padding-bottom: 2px;
 }
 
 #ouSelId div span.path {
 	display: block;
-	color: #999999;
+	color: !<GrayText>!;
 	font-size: 11px;
 	font-style: italic;
 	overflow: hidden;
 }
 
 #ouSelId div:hover span.name, #ouSelId div:hover span.path, #ouSelId div.active span.name, #ouSelId div.active span.path {
-	color: #ffffff;
+	color: !<HighlightText>!;
 }
 
 #ouSearchId input.inactive {
-	color: #999999;
+	color: !<GrayText>!;
 }
 
 .timewarp {
@@ -991,11 +991,11 @@ body.buttons-head {
 	font-size: 11px;
 	padding: 0px;
 	margin: 0px;
-	background-color: #dddddd;
-	border-top: 1px solid #ffffff;
-	border-left: 1px solid #ffffff;
-	border-bottom: 1px solid #999999;
-	border-right: 1px solid #999999;
+	background-color: !<ThreeDFace>!;
+	border-top: 1px solid !<ThreeDHighlight>!;
+	border-left: 1px solid !<ThreeDHighlight>!;
+	border-bottom: 1px solid !<ThreeDShadow>!;
+	border-right: 1px solid !<ThreeDShadow>!;
 }
 
 /* Body used for workplace foot (top_foot.html) */
@@ -1004,11 +1004,11 @@ body.buttons-foot {
 	font-size: 11px;
 	padding: 0px;
 	margin: 0px;
-	background-color: #dddddd;
-	border-top: 1px solid #dddddd;
-	border-left: 1px solid #ffffff;
-	border-bottom: 1px solid #999999;
-	border-right: 1px solid #999999;
+	background-color: !<ThreeDFace>!;
+	border-top: 1px solid !<ThreeDLightShadow>!;
+	border-left: 1px solid !<ThreeDHighlight>!;
+	border-bottom: 1px solid !<ThreeDShadow>!;
+	border-right: 1px solid !<ThreeDShadow>!;
 }
 
 /* ########## Dialog styles ########## */
@@ -1017,8 +1017,8 @@ body.dialogadmin {
 	margin-top: 0;
 	margin-left: auto;
 	margin-right: auto;
-	/*background-color: #ffffff;
-	border-top: 1px solid #606161;*/
+	/*background-color: !<Window>!;
+	border-top: 1px solid ThreedDarkShadow;*/
 }
 
 .texteditor {
@@ -1027,22 +1027,22 @@ body.dialogadmin {
 }
 
 .buttonbackground {
-	border-top: 1px solid #ffffff;
-	border-left: 1px solid #ffffff;
-	border-right: 1px solid #999999;
-	border-bottom: 1px solid #999999;
+	border-top: 1px solid !<ThreeDHighlight>!;
+	border-left: 1px solid !<ThreeDHighlight>!;
+	border-right: 1px solid !<ThreeDShadow>!;
+	border-bottom: 1px solid !<ThreeDShadow>!;
 	padding: 1px;
-	background-color: #dddddd;	
+	background-color: !<ThreeDFace>!;	
 }
 
 .editorbuttonbackground {<%
 	if (style == NEW_ADMIN) { %>
-	border-top: 1px solid #ffffff;
-	border-left: 1px solid #ffffff;
-	border-right: 1px solid #999999;
-	border-bottom: 1px solid #999999;
+	border-top: 1px solid !<ThreeDHighlight>!;
+	border-left: 1px solid !<ThreeDHighlight>!;
+	border-right: 1px solid !<ThreeDShadow>!;
+	border-bottom: 1px solid !<ThreeDShadow>!;
 	padding: 1px;
-	background-color: #dddddd;<% } %>
+	background-color: !<ThreeDFace>!;<% } %>
 }
 
 /* definitions for xmlcontent editor form */
@@ -1052,7 +1052,7 @@ body.dialogadmin {
 
 .xmlTableNested { 
 	width:100%;
-	border: 2px outset #ffffff;
+	border: 2px outset !<ThreeDHighlight>!;
 }
 
 .xmlTd    { 
@@ -1063,7 +1063,7 @@ body.dialogadmin {
 
 .xmlTdDisabled {
 	font-style: italic; 
-	border-right: 1px dotted #999999;
+	border-right: 1px dotted !<ThreeDShadow>!;
 	padding: 3px;
 }
 
@@ -1098,7 +1098,7 @@ body.dialogadmin {
 }
 
 .xmlInput { 
-	border: 1px solid #000000;<%
+	border: 1px solid !<WindowFrame>!;<%
 	if (style == NEW_ADMIN) { %>
 	margin: 0;
 	padding: 0;<% } %>
@@ -1110,42 +1110,42 @@ body.dialogadmin {
 
 .xmlInputSmall { 
 	width: 200px; 
-	border: 1px solid #000000; 
+	border: 1px solid !<WindowFrame>!; 
 }
 
 .xmlInputMedium { 
 	width: 400px;
-	border: 1px solid #000000;
+	border: 1px solid !<WindowFrame>!;
 }
 
 .xmlHtmlGallery {
 	overflow: auto;
-	border: 1px solid #000000;<%
+	border: 1px solid !<WindowFrame>!;<%
 	if (style == NEW_ADMIN) { %>
 	margin: 0;
 	padding: 0;<% } %>
 }
 
 .xmlButtons {
-	color: #000000; 
+	color: !<WindowText>!; 
 	position: absolute; 
 	top: 0px; 
 	left: 0px; 
 	width: 90px; 
-	border-top: 1px solid #ffffff;
-	border-left: 1px solid #ffffff;
-	border-right: 1px solid #999999;
-	border-bottom: 1px solid #999999;
+	border-top: 1px solid !<ThreeDHighlight>!;
+	border-left: 1px solid !<ThreeDHighlight>!;
+	border-right: 1px solid !<ThreeDShadow>!;
+	border-bottom: 1px solid !<ThreeDShadow>!;
 	padding: 2px;
-	background-color: #dddddd; 
+	background-color: !<ThreeDFace>!; 
 	visibility: hidden; 
 	font-size: 8pt;
 }
 
 div.xmlChoiceItem {
 	cursor: pointer;
-	background-color: #ffffff;
-	border: 1px solid #999999;
+	background-color: !<Window>!;
+	border: 1px solid !<ButtonShadow>!;
 	margin: 6px 0;
 	padding: 4px;
 	font-weight: bold;
@@ -1153,14 +1153,14 @@ div.xmlChoiceItem {
 
 div.xmlChoiceHelp {
 	padding-top: 2px;
-	color: #999999;
+	color: !<GrayText>!;
 	font-style: italic;
 	font-weight: normal;
 }
 
 div.xmlChoiceItem:hover, div.xmlChoiceItem:hover div.xmlChoiceHelp {
 	background-color: #a8adb4;
-	color: #ffffff;
+	color: !<HighlightText>!;
 }
 
 .textInput {<%
@@ -1178,8 +1178,8 @@ div.widgetcombo {
     padding: 0px;
     width: 300px;
     overflow: hidden;
-    border: 1px solid #000000; 
-    background-color: #ffffff;
+    border: 1px solid !<WindowFrame>!; 
+    background-color: !<Window>!;
     visibility: hidden;
 }
 
@@ -1191,14 +1191,14 @@ button.widgetcombobutton {
 div.widgetcombo a {
 	text-decoration: none;
 	display:block;
-	background-color: #ffffff;
-	color: #000000;
+	background-color: !<Window>!;
+	color: !<WindowText>!;
 	width: 100%;
 }
 
 div.widgetcombo a:hover {
-	background-color: #1f232a;
-	color: #ffffff;
+	background-color: !<Highlight>!;
+	color: !<HighlightText>!;
 }
 
 <% } 
@@ -1207,12 +1207,12 @@ div.widgetcombo a:hover {
    
 body, h1, h2, h3, h4, h5, h6, p, td, caption, th, ul, ol, dl, li, dd, dt {
 	font-family: Verdana, Arial, Helvetica, sans-serif; 
-	color: #000000; 
+	color: !<WindowText>!; 
 	font-size: 11px;
 }
 
 body { 
-	background-color: #ffffff;
+	background-color: !<Window>!;
 	margin: 0;
 	padding: 0;
 }
@@ -1253,8 +1253,8 @@ table.helpcontent {
 
 /* navigation cell */
 td.helpnav { 
-	background-color: #dddddd; 
-	border-right: 1px solid #999999; 
+	background-color: !<ThreeDFace>!; 
+	border-right: 1px solid !<ThreeDShadow>!; 
 	padding: 5px;
 	vertical-align: top;
 	width: 30%;
@@ -1262,7 +1262,7 @@ td.helpnav {
 
 /* content cell */
 td.helpcontent { 
-	background-color: #ffffff; 
+	background-color: !<Window>!; 
 	padding: 5px 5px 5px 15px; 
 	vertical-align: top;
 	width: 70%;
@@ -1272,13 +1272,13 @@ td.helpcontent {
 a.navhelphead, a.navhelphead:link, a.navhelphead:visited {
 	-moz-box-sizing: border-box; 
 	color: #000000;
-	background-color: #dddddd; 
+	background-color: !<ThreeDFace>!; 
 	width: 100%; 
 	margin-bottom: 5px; 
 	padding: 2px; 
 	display: block; 
 	text-align: left; 
-	border: 1px solid #000000;
+	border: 1px solid !<WindowFrame>!;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
 	text-decoration: none;
@@ -1324,7 +1324,7 @@ a.navhelp:hover, a.navhelp:active {
 .dialogerror {
 	color: #c03;
 	background-color: #f9f9f9;
-	border: 1px solid #999999;
+	border: 1px solid ThreeDShadow;
 	padding: 4px;
 	display:block;
 }
@@ -1333,7 +1333,7 @@ a.navhelp:hover, a.navhelp:active {
 	color: #000000; 
 	font-weight:bold;
 	background-color: #f9f9f9;
-	border: 1px solid #999999;
+	border: 1px solid ThreeDShadow;
 	padding: 4px;
 	margin-bottom:4px;
 	display:block;
@@ -1355,7 +1355,7 @@ a.navhelp:hover, a.navhelp:active {
 	color: #000000; 
 	font-weight:bold;
 	background-color: #f9f9f9;
-	border: 1px solid #999999;
+	border: 1px solid ThreeDShadow;
 	padding: 4px;
 	margin-bottom:4px;
 	display:block;
@@ -1417,14 +1417,14 @@ a.searchcategory:hover, a.searchcategory:active {
 %>
 
 .help { 
-    color: #ffffff; 
+    color: !<InfoText>!; 
     position: absolute; 
     top: 0px; 
     left: 0px; 
     padding: 5px; 
     width: 200px; 
-    border: 1px solid #000000; 
-    background-color: #f9f9f9; 
+    border: 1px solid !<WindowFrame>!; 
+    background-color: !<InfoBackground>!; 
     visibility: hidden; 
     font-size: 8pt; 
 } 
