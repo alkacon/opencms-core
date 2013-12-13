@@ -217,7 +217,7 @@ public class OpenCmsSolrHandler extends HttpServlet implements I_CmsRequestHandl
         if (m_index != null) {
             m_query = new CmsSolrQuery(m_cms, m_params);
         } else {
-            res.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
+            res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             String indexName = m_params.get(PARAM_CORE) != null
             ? m_params.get(PARAM_CORE)[0]
             : (m_params.get(PARAM_INDEX) != null ? m_params.get(PARAM_INDEX)[0] : null);
