@@ -40,9 +40,11 @@ import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.json.JSONObject;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
+import org.opencms.search.CmsSearchException;
 import org.opencms.search.CmsSearchResource;
 import org.opencms.search.documents.CmsDocumentDependency;
 import org.opencms.search.fields.CmsSearchField;
+import org.opencms.security.CmsRoleViolationException;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsRequestUtil;
@@ -97,6 +99,7 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         suite.addTest(new TestSolrFieldConfiguration("testLanguageDetection"));
         suite.addTest(new TestSolrFieldConfiguration("testLocaleDependenciesField"));
         suite.addTest(new TestSolrFieldConfiguration("testLuceneMigration"));
+        suite.addTest(new TestSolrFieldConfiguration("testOfflineIndexAccess"));
 
         // this test case must be the last one
         suite.addTest(new TestSolrFieldConfiguration("testIngnoreMaxRows"));
@@ -567,5 +570,36 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         String value = "Sample article 1  (>>SearchEgg1<<)";
         List<String> metaValue = res.getMultivaluedField("meta");
         assertEquals(value, metaValue.get(0));
+    }
+
+    /**
+     * Tests the access of Offline indexes.<p>
+     * 
+     * @throws Throwable if sth. goes wrong
+     */
+    public void testOfflineIndexAccess() throws Throwable {
+
+        echo("Testing offline index access with the guest user.");
+        CmsObject guest = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
+        CmsSolrIndex solrIndex = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
+        echo("First execute a search on the online index.");
+        solrIndex.search(guest, "q=*:*&rows=0");
+        echo("OK, search could be executed on the online index.");
+
+        echo("Now try to execute a search on the Solr Offline index.");
+        solrIndex = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_OFFLINE);
+        solrIndex.setEnabled(true);
+        try {
+            solrIndex.search(guest, "q=*:*&rows=0");
+        } catch (CmsSearchException e) {
+            assertTrue(
+                "The cause must be a CmsRoleViolationException",
+                e.getCause() instanceof CmsRoleViolationException);
+            if (!(e.getCause() instanceof CmsRoleViolationException)) {
+                throw e;
+            }
+        }
+        echo("OK, search could not be executed and the cause was a CmsRoleViolationException.");
+        solrIndex.setEnabled(false);
     }
 }

@@ -240,6 +240,18 @@
         <param name="search.solr.postProcessor">org.opencms.search.solr.CmsSolrLinkProcessor</param>
         <param name="search.solr.useLanguageDetection">true</param>
       </index>
+      <index class="org.opencms.search.solr.CmsSolrIndex">
+        <name>Solr Offline</name>
+        <rebuild>manual</rebuild>
+        <project>Offline</project>
+        <locale>all</locale>   
+        <configuration>solr_fields</configuration> 
+        <sources>
+          <source>solr_source</source>
+        </sources>
+        <param name="search.solr.postProcessor">org.opencms.search.solr.CmsSolrLinkProcessor</param>
+        <param name="search.solr.useLanguageDetection">true</param>
+      </index>
       <!-- 
 # Excluded for the default test cases in order to speed up testing
 # This is enabled in the special configuration found in the "org.opencms.search.gallery" test package
