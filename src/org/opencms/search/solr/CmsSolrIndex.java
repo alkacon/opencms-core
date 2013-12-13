@@ -34,6 +34,7 @@ package org.opencms.search.solr;
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
@@ -55,6 +56,8 @@ import org.opencms.search.I_CmsIndexWriter;
 import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.search.fields.CmsSearchField;
+import org.opencms.security.CmsRole;
+import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 
@@ -683,6 +686,31 @@ public class CmsSolrIndex extends CmsSearchIndex {
     }
 
     /**
+     * Checks if the current user is allowed to access non-online indexes.<p>
+     * 
+     * To access non-online indexes the current user must be a workplace user at least.<p>
+     * 
+     * @param cms the CMS object initialized with the current request context / user
+     * 
+     * @throws CmsSearchException thrown if the access is not permitted
+     */
+    private void checkOfflineAccess(CmsObject cms) throws CmsSearchException {
+
+        // If an offline index is being selected, check permissions
+        if (!CmsProject.ONLINE_PROJECT_NAME.equals(getProject())) {
+            // only if the user has the role Workplace user, he is allowed to access the Offline index
+            try {
+                OpenCms.getRoleManager().checkRole(cms, CmsRole.WORKPLACE_USER);
+            } catch (CmsRoleViolationException e) {
+                throw new CmsSearchException(Messages.get().container(
+                    Messages.LOG_SOLR_ERR_SEARCH_PERMISSION_VIOLATION_2,
+                    getName(),
+                    cms.getRequestContext().getCurrentUser()), e);
+            }
+        }
+    }
+
+    /**
      * <h4>Performs a search on the Solr index</h4>
      * 
      * Returns a list of 'OpenCms resource documents' 
@@ -736,6 +764,9 @@ public class CmsSolrIndex extends CmsSearchIndex {
         final CmsSolrQuery query,
         boolean ignoreMaxRows,
         ServletResponse response) throws CmsSearchException {
+
+        // check if the user is allowed to access this index
+        checkOfflineAccess(cms);
 
         int previousPriority = Thread.currentThread().getPriority();
         long startTime = System.currentTimeMillis();
