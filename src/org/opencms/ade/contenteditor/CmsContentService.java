@@ -1026,7 +1026,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         CmsObject cms = getCmsObject();
         for (Locale locale : content.getLocales()) {
             for (String elementPath : content.getContentDefinition().getContentHandler().getSynchronizations()) {
-                for (I_CmsXmlContentValue contentValue : content.getValuesByPath(elementPath, locale)) {
+                for (I_CmsXmlContentValue contentValue : content.getSimpleValuesBelowPath(elementPath, locale)) {
                     String valuePath = contentValue.getPath();
                     boolean skip = false;
                     for (String skipPath : skipPaths) {
@@ -1042,7 +1042,11 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                                 // in case the current value does not match the previously stored value,
                                 // remove it and add the parent path to the skipPaths list
                                 syncValues.remove(valuePath);
-                                skipPaths.add(CmsXmlUtils.removeLastXpathElement(valuePath));
+                                int pathLevelDiff = (CmsResource.getPathLevel(valuePath) - CmsResource.getPathLevel(elementPath)) + 1;
+                                for (int i = 0; i < pathLevelDiff; i++) {
+                                    valuePath = CmsXmlUtils.removeLastXpathElement(valuePath);
+                                }
+                                skipPaths.add(valuePath);
                             }
                         } else {
                             syncValues.put(valuePath, value);

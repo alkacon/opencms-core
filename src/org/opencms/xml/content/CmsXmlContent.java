@@ -43,6 +43,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkProcessor;
 import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.util.CmsMacroResolver;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
@@ -422,6 +423,26 @@ public class CmsXmlContent extends A_CmsXmlDocument {
     }
 
     /**
+     * Returns all simple type sub values.<p>
+     * 
+     * @param value the value
+     * 
+     * @return the simple type sub values
+     */
+    public List<I_CmsXmlContentValue> getAllSimpleSubValues(I_CmsXmlContentValue value) {
+
+        List<I_CmsXmlContentValue> result = new ArrayList<I_CmsXmlContentValue>();
+        for (I_CmsXmlContentValue subValue : getSubValues(value.getPath(), value.getLocale())) {
+            if (subValue.isSimpleType()) {
+                result.add(subValue);
+            } else {
+                result.addAll(getAllSimpleSubValues(subValue));
+            }
+        }
+        return result;
+    }
+
+    /**
      * Returns the list of choice options for the given xpath in the selected locale.<p>
      * 
      * In case the xpath does not select a nested choice content definition, 
@@ -512,6 +533,28 @@ public class CmsXmlContent extends A_CmsXmlDocument {
         }
         // language element was not found
         throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XMLCONTENT_MISSING_LOCALE_1, locale));
+    }
+
+    /**
+     * Returns all simple type values below a given path.<p>
+     * 
+     * @param elementPath the element path
+     * @param locale the content locale
+     * 
+     * @return the simple type values
+     */
+    public List<I_CmsXmlContentValue> getSimpleValuesBelowPath(String elementPath, Locale locale) {
+
+        List<I_CmsXmlContentValue> result = new ArrayList<I_CmsXmlContentValue>();
+        for (I_CmsXmlContentValue value : getValuesByPath(elementPath, locale)) {
+            if (value.isSimpleType()) {
+                result.add(value);
+            } else {
+                result.addAll(getAllSimpleSubValues(value));
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -1002,6 +1045,25 @@ public class CmsXmlContent extends A_CmsXmlDocument {
     }
 
     /**
+     * Ensures the parent values to the given path are created.<p>
+     * 
+     * @param cms the cms context
+     * @param valuePath the value path
+     * @param locale the content locale
+     */
+    private void ensureParentValues(CmsObject cms, String valuePath, Locale locale) {
+
+        if (valuePath.contains("/")) {
+            String parentPath = valuePath.substring(0, valuePath.lastIndexOf("/"));
+            if (!hasValue(parentPath, locale)) {
+                ensureParentValues(cms, parentPath, locale);
+                int index = CmsXmlUtils.getXpathIndexInt(parentPath) - 1;
+                addValue(cms, parentPath, locale, index);
+            }
+        }
+    }
+
+    /**
      * Removes all surplus values of locale independent fields in the other locales.<p>
      * 
      * @param elementPath the element path
@@ -1044,8 +1106,9 @@ public class CmsXmlContent extends A_CmsXmlDocument {
      * 
      * @param cms the cms context
      * @param value the value
+     * @param requiredParent the path to the required parent value
      */
-    private void setValueForOtherLocales(CmsObject cms, I_CmsXmlContentValue value) {
+    private void setValueForOtherLocales(CmsObject cms, I_CmsXmlContentValue value, String requiredParent) {
 
         if (!value.isSimpleType()) {
             throw new IllegalArgumentException();
@@ -1055,13 +1118,13 @@ public class CmsXmlContent extends A_CmsXmlDocument {
                 continue;
             }
             String valuePath = value.getPath();
-            if (hasValue(valuePath, locale)) {
-                I_CmsXmlContentValue localeValue = getValue(valuePath, locale);
-                localeValue.setStringValue(cms, value.getStringValue(cms));
-            } else {
-                String parentPath = CmsXmlUtils.removeLastXpathElement(valuePath);
-                if (hasValue(parentPath, locale)) {
-                    int index = CmsXmlUtils.getXpathIndexInt(valuePath);
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(requiredParent) || hasValue(requiredParent, locale)) {
+                ensureParentValues(cms, valuePath, locale);
+                if (hasValue(valuePath, locale)) {
+                    I_CmsXmlContentValue localeValue = getValue(valuePath, locale);
+                    localeValue.setStringValue(cms, value.getStringValue(cms));
+                } else {
+                    int index = CmsXmlUtils.getXpathIndexInt(valuePath) - 1;
                     I_CmsXmlContentValue localeValue = addValue(cms, valuePath, locale, index);
                     localeValue.setStringValue(cms, value.getStringValue(cms));
                 }
@@ -1097,7 +1160,14 @@ public class CmsXmlContent extends A_CmsXmlDocument {
                         List<I_CmsXmlContentValue> subValues = getValues(valuePath, sourceLocale);
                         removeSurplusValuesInOtherLocales(elementPath, subValues.size(), sourceLocale);
                         for (I_CmsXmlContentValue value : subValues) {
-                            setValueForOtherLocales(cms, value);
+                            if (value.isSimpleType()) {
+                                setValueForOtherLocales(cms, value, CmsXmlUtils.removeLastXpathElement(valuePath));
+                            } else {
+                                List<I_CmsXmlContentValue> simpleValues = getAllSimpleSubValues(value);
+                                for (I_CmsXmlContentValue simpleValue : simpleValues) {
+                                    setValueForOtherLocales(cms, simpleValue, parentValue.getPath());
+                                }
+                            }
                         }
                     } else {
                         removeValuesInOtherLocales(valuePath, sourceLocale);
@@ -1109,7 +1179,14 @@ public class CmsXmlContent extends A_CmsXmlDocument {
                 List<I_CmsXmlContentValue> subValues = getValues(elementPath, sourceLocale);
                 removeSurplusValuesInOtherLocales(elementPath, subValues.size(), sourceLocale);
                 for (I_CmsXmlContentValue value : subValues) {
-                    setValueForOtherLocales(cms, value);
+                    if (value.isSimpleType()) {
+                        setValueForOtherLocales(cms, value, null);
+                    } else {
+                        List<I_CmsXmlContentValue> simpleValues = getAllSimpleSubValues(value);
+                        for (I_CmsXmlContentValue simpleValue : simpleValues) {
+                            setValueForOtherLocales(cms, simpleValue, null);
+                        }
+                    }
                 }
             } else {
                 removeValuesInOtherLocales(elementPath, sourceLocale);
