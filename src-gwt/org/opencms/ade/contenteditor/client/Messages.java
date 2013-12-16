@@ -70,6 +70,12 @@ public final class Messages {
     public static final String GUI_LOCALE_DIALOG_OK_0 = "GUI_LOCALE_DIALOG_OK_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCALE_DIALOG_SYNCHRONIZE_0 = "GUI_LOCALE_DIALOG_SYNCHRONIZE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCALE_DIALOG_SYNCHRONIZE_TITLE_0 = "GUI_LOCALE_DIALOG_SYNCHRONIZE_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LOCALE_DIALOG_TITLE_0 = "GUI_LOCALE_DIALOG_TITLE_0";
 
     /** Message constant for key in the resource bundle. */

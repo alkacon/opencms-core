@@ -79,6 +79,7 @@ import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -1273,7 +1274,12 @@ public final class CmsContentEditor extends EditorBase {
      */
     void openCopyLocaleDialog() {
 
-        CmsCopyLocaleDialog dialog = new CmsCopyLocaleDialog(m_availableLocales, m_contentLocales, m_locale, this);
+        CmsCopyLocaleDialog dialog = new CmsCopyLocaleDialog(
+            m_availableLocales,
+            m_contentLocales,
+            m_locale,
+            m_definitions.get(m_locale).hasSynchronizedElements(),
+            this);
         dialog.center();
     }
 
@@ -1546,6 +1552,33 @@ public final class CmsContentEditor extends EditorBase {
                     }
                 }
             });
+    }
+
+    /**
+     * Synchronizes the locale independent fields to the other locales.<p>
+     */
+    void synchronizeCurrentLocale() {
+
+        m_basePanel.clear();
+        destroyForm(false);
+        m_entityId = getIdForLocale(m_locale);
+        Map<String, com.alkacon.acacia.shared.Entity> editedEntities = new HashMap<String, com.alkacon.acacia.shared.Entity>();
+        for (String entityId : m_registeredEntities) {
+            I_Entity entity = m_vie.getEntity(entityId);
+            if (entity != null) {
+                editedEntities.put(entityId, com.alkacon.acacia.shared.Entity.serializeEntity(entity));
+            }
+        }
+        ((CmsDefaultWidgetService)getWidgetService()).setSkipPaths(Collections.<String> emptyList());
+        loadOtherLocale(m_entityId, m_locale, editedEntities, false, new I_CmsSimpleCallback<CmsContentDefinition>() {
+
+            public void execute(CmsContentDefinition contentDefinition) {
+
+                setContentDefinition(contentDefinition);
+                renderFormContent();
+                setChanged();
+            }
+        });
     }
 
     /**
