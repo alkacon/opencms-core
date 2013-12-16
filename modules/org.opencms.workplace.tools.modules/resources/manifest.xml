@@ -38,6 +38,8 @@
             <resource uri="/system/workplace/admin/modules/modules_delete.jsp"/>
             <resource uri="/system/workplace/admin/modules/modules_edit.jsp"/>
             <resource uri="/system/workplace/admin/modules/modules_edit_parameters.jsp"/>
+            <resource uri="/system/workplace/admin/modules/modules_clone.jsp" />
+            <resource uri="/system/workplace/admin/modules/module-clone-action.jsp"/>
             <resource uri="/system/workplace/admin/modules/modules_edit_resources.jsp"/>
             <resource uri="/system/workplace/admin/modules/modules_export.jsp"/>
             <resource uri="/system/workplace/admin/modules/modules_import.jsp"/>
@@ -58,6 +60,7 @@
             <resource uri="/system/workplace/resources/tools/modules/icons/big/module_dependencies.png"/>
             <resource uri="/system/workplace/resources/tools/modules/icons/big/module_dependencies_add.png"/>
             <resource uri="/system/workplace/resources/tools/modules/icons/big/module_edit.png"/>
+            <resource uri="/system/workplace/resources/tools/modules/icons/big/module_clone.png"/>
             <resource uri="/system/workplace/resources/tools/modules/icons/big/module_export.png"/>
             <resource uri="/system/workplace/resources/tools/modules/icons/big/module_exportpoints.png"/>
             <resource uri="/system/workplace/resources/tools/modules/icons/big/module_exportpoints_add.png"/>
@@ -576,6 +579,29 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+		
+		<file>
+			<source>system/workplace/admin/modules/module-clone-action.jsp</source>
+			<destination>system/workplace/admin/modules/module-clone-action.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>d26e7803-9756-4820-a6e3-a4c81750c713</uuidstructure>
+			<uuidresource>2618d6d5-c420-4a5b-9f5d-0ae89c11c6ee</uuidresource>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
+		
 		<file>
 			<source>system/workplace/admin/modules/modules_delete.jsp</source>
 			<destination>system/workplace/admin/modules/modules_delete.jsp</destination>
@@ -728,6 +754,61 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+		
+		<file>
+			<source>system/workplace/admin/modules/modules_clone.jsp</source>
+			<destination>system/workplace/admin/modules/modules_clone.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>fa227343-9f7c-41dc-a3a2-524068d4fff6</uuidstructure>
+			<uuidresource>95b6f4cd-252f-45af-b84a-45596500579c</uuidresource>
+			<datelastmodified>Mon, 27 Mar 2013 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2013 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_CLONEMODULE_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/modules/icons/big/module_clone.png]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_MODULE_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_CLONEMODULE_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Clone module]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:module=${param.module}|path:/modules/edit/clonemodule]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.modules.CmsModulesToolHandler]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
+		
 		<file>
 			<source>system/workplace/admin/modules/modules_edit_resources.jsp</source>
 			<destination>system/workplace/admin/modules/modules_edit_resources.jsp</destination>
@@ -1419,6 +1500,28 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+		
+				<file>
+			<source>system/workplace/resources/tools/modules/icons/big/module_clone.png</source>
+			<destination>system/workplace/resources/tools/modules/icons/big/module_clone.png</destination>
+			<type>image</type>
+			<uuidstructure>ccbff2ee-9dab-420b-92fd-7abe32ae10a4</uuidstructure>
+			<uuidresource>52706ce8-a6e2-4097-9d2e-6e8d2ca89397</uuidresource>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
 		<file>
 			<source>system/workplace/resources/tools/modules/icons/big/module_export.png</source>
 			<destination>system/workplace/resources/tools/modules/icons/big/module_export.png</destination>

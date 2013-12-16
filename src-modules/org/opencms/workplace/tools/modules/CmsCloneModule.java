@@ -41,6 +41,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.A_CmsResourceType;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeUnknown;
@@ -699,10 +700,16 @@ public class CmsCloneModule extends CmsJspActionElement {
                 CmsResourceFilter.requireType(OpenCms.getResourceManager().getResourceType(
                     CmsFormatterConfigurationCache.TYPE_FORMATTER_CONFIG).getTypeId()));
         }
-        CmsResource config = getCmsObject().readResource(
-            modPath,
-            CmsResourceFilter.requireType(OpenCms.getResourceManager().getResourceType(CmsADEManager.MODULE_CONFIG_TYPE).getTypeId()));
-        resources.add(config);
+        try {
+            CmsResource config = getCmsObject().readResource(
+                modPath,
+                CmsResourceFilter.requireType(OpenCms.getResourceManager().getResourceType(
+                    CmsADEManager.MODULE_CONFIG_TYPE).getTypeId()));
+            resources.add(config);
+        } catch (CmsVfsResourceNotFoundException e) {
+            LOG.info(e.getLocalizedMessage(), e);
+        }
+
         for (CmsResource resource : resources) {
             CmsFile file = getCmsObject().readFile(resource);
             String encoding = CmsLocaleManager.getResourceEncoding(getCmsObject(), file);
