@@ -35,6 +35,7 @@ import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.util.CmsUUID;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -80,6 +81,7 @@ public interface I_CmsContentService extends I_ContentService {
      * 
      * @param entityId the entity id
      * @param lastLocale the last edited locale
+     * @param skipPaths the paths to skip during locale synchronization
      * @param editedEntities the edited entities
      * @param newLocale states if a new locale should be generated
      * 
@@ -90,6 +92,7 @@ public interface I_CmsContentService extends I_ContentService {
     CmsContentDefinition loadOtherLocale(
         String entityId,
         String lastLocale,
+        Collection<String> skipPaths,
         Map<String, Entity> editedEntities,
         boolean newLocale) throws CmsRpcException;
 
@@ -107,6 +110,8 @@ public interface I_CmsContentService extends I_ContentService {
      * 
      * @param changedEntities the changed entities
      * @param deletedEntities the entity id's to delete
+     * @param skipPaths the paths to skip during locale synchronization
+     * @param lastEditedLocale the last edited locale
      * @param clearOnSuccess  <code>true</code> to unlock resource after saving
      * 
      * @return the validation result in case of invalid entities
@@ -116,5 +121,7 @@ public interface I_CmsContentService extends I_ContentService {
     ValidationResult saveAndDeleteEntities(
         List<Entity> changedEntities,
         List<String> deletedEntities,
+        Collection<String> skipPaths,
+        String lastEditedLocale,
         boolean clearOnSuccess) throws CmsRpcException;
 }

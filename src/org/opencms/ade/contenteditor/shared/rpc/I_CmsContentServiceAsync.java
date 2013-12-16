@@ -34,6 +34,7 @@ import com.alkacon.acacia.shared.rpc.I_ContentServiceAsync;
 import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
 import org.opencms.util.CmsUUID;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -75,6 +76,7 @@ public interface I_CmsContentServiceAsync extends I_ContentServiceAsync {
      * 
      * @param entityId the entity id
      * @param lastLocale the last edited locale
+     * @param skipPaths the paths to skip during locale synchronization
      * @param editedEntities the edited entities
      * @param newLocale states if a new locale should be generated
      * @param callback the asynchronous callback
@@ -82,6 +84,7 @@ public interface I_CmsContentServiceAsync extends I_ContentServiceAsync {
     void loadOtherLocale(
         String entityId,
         String lastLocale,
+        Collection<String> skipPaths,
         Map<String, Entity> editedEntities,
         boolean newLocale,
         AsyncCallback<CmsContentDefinition> callback);
@@ -98,12 +101,16 @@ public interface I_CmsContentServiceAsync extends I_ContentServiceAsync {
      * 
      * @param changedEntities the changed entities
      * @param deletedEntities the entity id's to delete
+     * @param skipPaths the paths to skip during locale synchronization
+     * @param lastEditedLocale the last edited locale
      * @param clearOnSuccess  <code>true</code> to unlock resource after saving
      * @param callback the asynchronous callback
      */
     void saveAndDeleteEntities(
         List<Entity> changedEntities,
         List<String> deletedEntities,
+        Collection<String> skipPaths,
+        String lastEditedLocale,
         boolean clearOnSuccess,
         AsyncCallback<ValidationResult> callback);
 

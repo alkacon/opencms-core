@@ -90,8 +90,14 @@ public class CmsContentDefinition extends ContentDefinition {
     /** The site path. */
     private String m_sitePath;
 
+    /** The paths to skip during locale synchronization. */
+    private Collection<String> m_skipPaths;
+
     /** The elements that require a synchronization across all locales. */
     private List<String> m_synchronizations;
+
+    /** The locale synchronization values. */
+    private Map<String, String> m_syncValues;
 
     /** The content title. */
     private String m_title;
@@ -130,6 +136,8 @@ public class CmsContentDefinition extends ContentDefinition {
      * @param contentLocales the content locales
      * @param availableLocales the available locales
      * @param synchronizations the elements that require a synchronization across all locales
+     * @param syncValues the locale synchronization values
+     * @param skipPaths the paths to skip during locale synchronization
      * @param title the content title
      * @param sitePath the site path
      * @param resourceType the resource type name
@@ -148,6 +156,8 @@ public class CmsContentDefinition extends ContentDefinition {
         List<String> contentLocales,
         Map<String, String> availableLocales,
         List<String> synchronizations,
+        Map<String, String> syncValues,
+        Collection<String> skipPaths,
         String title,
         String sitePath,
         String resourceType,
@@ -158,6 +168,8 @@ public class CmsContentDefinition extends ContentDefinition {
         m_contentLocales = contentLocales;
         m_availableLocales = availableLocales;
         m_synchronizations = synchronizations;
+        m_syncValues = syncValues;
+        m_skipPaths = skipPaths;
         m_complexWidgetData = complexWidgetData;
         m_title = title;
         m_sitePath = sitePath;
@@ -472,6 +484,16 @@ public class CmsContentDefinition extends ContentDefinition {
     }
 
     /**
+     * Returns the paths to skip during locale synchronization.<p>
+     * 
+     * @return the paths to skip during locale synchronization
+     */
+    public Collection<String> getSkipPaths() {
+
+        return m_skipPaths;
+    }
+
+    /**
      * Returns the elements that require a synchronization across all locales.<p>
      * 
      * @return the element paths
@@ -479,6 +501,16 @@ public class CmsContentDefinition extends ContentDefinition {
     public List<String> getSynchronizations() {
 
         return m_synchronizations;
+    }
+
+    /**
+     * Returns the locale synchronization values.<p>
+     * 
+     * @return the locale synchronization values
+     */
+    public Map<String, String> getSyncValues() {
+
+        return m_syncValues;
     }
 
     /**

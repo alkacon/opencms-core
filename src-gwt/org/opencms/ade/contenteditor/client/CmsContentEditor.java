@@ -78,6 +78,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -125,6 +126,9 @@ public final class CmsContentEditor extends EditorBase {
 
     /** The in-line editor instance. */
     private static CmsContentEditor INSTANCE;
+
+    /** The current content locale. */
+    protected String m_locale;
 
     /** The on close call back. */
     protected Command m_onClose;
@@ -185,9 +189,6 @@ public final class CmsContentEditor extends EditorBase {
 
     /** Flag indicating the editor was opened as the stand alone version, not from within any other module. */
     private boolean m_isStandAlone;
-
-    /** The current content locale. */
-    private String m_locale;
 
     /** The locale select label. */
     private CmsLabel m_localeLabel;
@@ -521,50 +522,6 @@ public final class CmsContentEditor extends EditorBase {
      * Loads the content definition for the given entity and executes the callback on success.<p>
      * 
      * @param entityId the entity id
-     * @param lastLocale the last edited locale
-     * @param editedEntities the changed entities
-     * @param newLocale states if a new locale should be generated
-     * @param callback the callback
-     */
-    public void loadOtherLocale(
-        final String entityId,
-        final String lastLocale,
-        final Map<String, com.alkacon.acacia.shared.Entity> editedEntities,
-        final boolean newLocale,
-        final I_CmsSimpleCallback<CmsContentDefinition> callback) {
-
-        CmsRpcAction<CmsContentDefinition> action = new CmsRpcAction<CmsContentDefinition>() {
-
-            @Override
-            public void execute() {
-
-                start(0, true);
-                getService().loadOtherLocale(entityId, lastLocale, editedEntities, newLocale, this);
-            }
-
-            @Override
-            protected void onResponse(final CmsContentDefinition result) {
-
-                registerContentDefinition(result);
-                WidgetRegistry.getInstance().registerExternalWidgets(
-                    result.getExternalWidgetConfigurations(),
-                    new Command() {
-
-                        public void execute() {
-
-                            stop(false);
-                            callback.execute(result);
-                        }
-                    });
-            }
-        };
-        action.execute();
-    }
-
-    /**
-     * Loads the content definition for the given entity and executes the callback on success.<p>
-     * 
-     * @param entityId the entity id
      * @param newLink the new link
      * @param modelFileId  the model file id
      * @param callback the callback
@@ -602,6 +559,50 @@ public final class CmsContentEditor extends EditorBase {
                             }
                         });
                 }
+            }
+        };
+        action.execute();
+    }
+
+    /**
+     * Loads the content definition for the given entity and executes the callback on success.<p>
+     * 
+     * @param entityId the entity id
+     * @param lastLocale the last edited locale
+     * @param editedEntities the changed entities
+     * @param newLocale states if a new locale should be generated
+     * @param callback the callback
+     */
+    public void loadOtherLocale(
+        final String entityId,
+        final String lastLocale,
+        final Map<String, com.alkacon.acacia.shared.Entity> editedEntities,
+        final boolean newLocale,
+        final I_CmsSimpleCallback<CmsContentDefinition> callback) {
+
+        CmsRpcAction<CmsContentDefinition> action = new CmsRpcAction<CmsContentDefinition>() {
+
+            @Override
+            public void execute() {
+
+                start(0, true);
+                getService().loadOtherLocale(entityId, lastLocale, getSkipPaths(), editedEntities, newLocale, this);
+            }
+
+            @Override
+            protected void onResponse(final CmsContentDefinition result) {
+
+                registerContentDefinition(result);
+                WidgetRegistry.getInstance().registerExternalWidgets(
+                    result.getExternalWidgetConfigurations(),
+                    new Command() {
+
+                        public void execute() {
+
+                            stop(false);
+                            callback.execute(result);
+                        }
+                    });
             }
         };
         action.execute();
@@ -779,7 +780,13 @@ public final class CmsContentEditor extends EditorBase {
             public void execute() {
 
                 start(200, true);
-                getService().saveAndDeleteEntities(entities, deletedEntites, clearOnSuccess, this);
+                getService().saveAndDeleteEntities(
+                    entities,
+                    deletedEntites,
+                    getSkipPaths(),
+                    m_locale,
+                    clearOnSuccess,
+                    this);
             }
 
             @Override
@@ -964,6 +971,16 @@ public final class CmsContentEditor extends EditorBase {
     protected String getHtmlContextInfo() {
 
         return m_context.getHtmlContextInfo();
+    }
+
+    /**
+     * Returns the paths to be skipped when synchronizing locale independent fields.<p>
+     * 
+     * @return the paths to be skipped when synchronizing locale independent fields
+     */
+    protected Collection<String> getSkipPaths() {
+
+        return ((CmsDefaultWidgetService)getWidgetService()).getSkipPaths();
     }
 
     /**
@@ -1396,7 +1413,10 @@ public final class CmsContentEditor extends EditorBase {
         m_registeredEntities.add(definition.getEntityId());
         m_tabInfos = definition.getTabInfos();
         addContentDefinition(definition);
-        getWidgetService().addConfigurations(definition.getConfigurations());
+        CmsDefaultWidgetService service = (CmsDefaultWidgetService)getWidgetService();
+        service.addConfigurations(definition.getConfigurations());
+        service.setSyncValues(definition.getSyncValues());
+        service.setSkipPaths(definition.getSkipPaths());
         addEntityChangeHandler(definition.getEntityId(), new ValueChangeHandler<Entity>() {
 
             public void onValueChange(ValueChangeEvent<Entity> event) {

@@ -39,10 +39,80 @@ import org.opencms.ade.contenteditor.client.widgets.CmsTextareaWidget;
 import org.opencms.ade.contenteditor.client.widgets.CmsTextboxWidget;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.Collection;
+import java.util.Map;
+
 /**
  * Default OpenCms widget service implementation.<p>
  */
 public class CmsDefaultWidgetService extends WidgetService {
+
+    /** The paths to be skipped during locale synchronization. */
+    private Collection<String> m_skipPaths;
+
+    /** The locale synchronization values. */
+    private Map<String, String> m_syncValues;
+
+    /**
+     * @see com.alkacon.acacia.client.WidgetService#addChangedOrderPath(java.lang.String)
+     */
+    @Override
+    public void addChangedOrderPath(String attributePath) {
+
+        m_skipPaths.add(attributePath);
+    }
+
+    /**
+     * @see com.alkacon.acacia.client.WidgetService#getDefaultAttributeValue(java.lang.String, java.lang.String)
+     */
+    @Override
+    public String getDefaultAttributeValue(String attributeName, String simpleValuePath) {
+
+        if (!isSkipValue(simpleValuePath) && m_syncValues.containsKey(simpleValuePath)) {
+            return m_syncValues.get(simpleValuePath);
+        }
+        return super.getDefaultAttributeValue(attributeName, simpleValuePath);
+    }
+
+    /**
+     * Returns the paths to be skipped during locale synchronization.<p>
+     *
+     * @return the paths to be skipped during locale synchronization
+     */
+    public Collection<String> getSkipPaths() {
+
+        return m_skipPaths;
+    }
+
+    /**
+     * Returns the locale synchronization values.<p>
+     *
+     * @return the locale synchronization values
+     */
+    public Map<String, String> getSyncValues() {
+
+        return m_syncValues;
+    }
+
+    /**
+     * Sets the paths to be skipped during locale synchronization.<p>
+     *
+     * @param skipPaths the paths to be skipped during locale synchronization to set
+     */
+    public void setSkipPaths(Collection<String> skipPaths) {
+
+        m_skipPaths = skipPaths;
+    }
+
+    /**
+     * Sets the locale synchronization values.<p>
+     *
+     * @param syncValues the locale synchronization values to set
+     */
+    public void setSyncValues(Map<String, String> syncValues) {
+
+        m_syncValues = syncValues;
+    }
 
     /**
      * @see com.alkacon.acacia.client.WidgetService#shouldRemoveLastValueAfterUnfocus(com.alkacon.acacia.client.widgets.I_EditWidget)
@@ -65,6 +135,25 @@ public class CmsDefaultWidgetService extends WidgetService {
             || (widget instanceof CmsImageGalleryWidget)
             || (widget instanceof CmsGalleryWidget)) {
             return CmsStringUtil.isEmptyOrWhitespaceOnly(widget.getValue());
+        }
+        return false;
+    }
+
+    /**
+     * Returns if the given path should be skipped for locale synchronization.<p>
+     * 
+     * @param valuePath the value path
+     * 
+     * @return <code>true</code> if the given path should be skipped for locale synchronization
+     */
+    private boolean isSkipValue(String valuePath) {
+
+        if (m_skipPaths != null) {
+            for (String skipPath : m_skipPaths) {
+                if (valuePath.startsWith(skipPath)) {
+                    return true;
+                }
+            }
         }
         return false;
     }
