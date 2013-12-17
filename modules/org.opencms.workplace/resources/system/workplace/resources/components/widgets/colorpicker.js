@@ -87,7 +87,7 @@ function previewColor(fieldName) {
 		theField.style.color = '#000000';
 		theField.style.backgroundColor = '#FFFFFF';
 	} else if (isNaN(colorValue)) {
-		// a system color value like "#999999": 
+		// a system color value like "ThreeDShadow": 
 		if(((colorValue.indexOf("Text") > -1) && (colorValue.indexOf("Caption") < 0)) || (colorValue.indexOf("Frame") > -1)){
 			theField.style.color = '#FFFFFF';		
 		} else {
@@ -110,91 +110,91 @@ function validateColor(string) {                // return valid color code
 	string = string.toUpperCase();
 	// test if system color values are used: 
 	if("ACTIVEBORDER" == string) {
-	  return "#dddddd";
+	  return "ActiveBorder";
 	} 
 	if("ACTIVECAPTION" == string) {
-	  return "#1f232a";
+	  return "ActiveCaption";
 	} 
 	if("ACTIVECAPTIONTEXT" == string) {
-	  return "#1f232aText";
+	  return "ActiveCaptionText";
 	} 
 	if("APPWORKSPACE" == string) {
-	  return "#999999";
+	  return "AppWorkspace";
 	} 
 	if("BACKGROUND" == string) {
-	  return "#000000";
+	  return "Background";
 	} 
 	if("BUTTONFACE" == string) {
-	  return "#dddddd";
+	  return "ButtonFace";
 	} 
 	if("BUTTONHIGHLIGHT" == string) {
-	  return "#ffffff";
+	  return "ButtonHighlight";
 	} 
 	if("BUTTONSHADOW" == string) {
-	  return "#999999";
+	  return "ButtonShadow";
 	} 
 	if("BUTTONTEXT" == string) {
-	  return "#000000";
+	  return "ButtonText";
 	} 
 	if("CAPTIONTEXT" == string) {
-	  return "#ffffff";
+	  return "CaptionText";
 	} 
 	if("GRAYTEXT" == string) {
-	  return "#999999";
+	  return "GrayText";
 	} 
 	if("HIGHLIGHT" == string) {
-	  return "#1f232a";
+	  return "Highlight";
 	} 
 	if("HIGHLIGHTTEXT" == string) {
-	  return "#ffffff";
+	  return "HighlightText";
 	} 
 	if("INACTIVEBORDER" == string) {
-	  return "#dddddd";
+	  return "InactiveBorder";
 	} 
 	if("INACTIVECAPTION" == string) {
-	  return "#999999";
+	  return "InactiveCaption";
 	} 
 	if("INACTIVECAPTIONTEXT" == string) {
-	  return "#dddddd";
+	  return "InactiveCaptionText";
 	} 
-	if("#f9f9f9" == string) {
-	  return "#f9f9f9";
+	if("INFOBACKGROUND" == string) {
+	  return "InfoBackground";
 	} 
 	if("INFOTEXT" == string) {
-	  return "#ffffff";
+	  return "InfoText";
 	} 
 	if("MENUTEXT" == string) {
 	  return "MENUTEXT";
 	} 
 	if("MENU" == string) {
-	  return "#dddddd";
+	  return "Menu";
 	} 
 	if("SCROLLBAR" == string) {
-	  return "#dddddd";
+	  return "ScrollBar";
 	} 
-	if("ThreeDDarkShadow" == string) {
-	  return "#606161";
+	if("THREEDDARKSHADOW" == string) {
+	  return "ThreeDDarkShadow";
 	} 
-	if("#dddddd" == string) {
-	  return "#dddddd";
+	if("THREEDFACE" == string) {
+	  return "ThreeDFace";
 	} 
 	if("THREEDHIGHLIGHT" == string) {
-	  return "#ffffff";
+	  return "ThreeDHighlight";
 	} 
 	if("THREEDLIGHTSHADOW" == string) {
-	  return "#dddddd";
+	  return "ThreeDLightShadow";
 	} 
-	if("#999999" == string) {
-	  return "#999999";
+	if("THREEDSHADOW" == string) {
+	  return "ThreeDShadow";
 	} 
 	if("WINDOW" == string) {
 	  return "window";
 	} 
 	if("WINDOWFRAME" == string) {
-	  return "#000000";
+	  return "WindowFrame";
 	} 
 	if("WINDOWTEXT" == string) {
-	  return "#000000";
+	  return "WindowText";
 	} 
 
 	// parse for numeric rgb colors ('#123456'):
