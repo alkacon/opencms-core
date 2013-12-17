@@ -1,239 +1,120 @@
-body {
-    background-color: #FFFFFF;
-    font-family: Verdana,Arial,Helvetica,sans-serif;
-    font-size: 11px;
-    margin: 0;
-    padding: 0;
-}
+body { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; padding: 0px; margin: 0px; background-color: Window; }
+p, td { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; white-space: nowrap; }
 
-p, td {
-    font-family: Verdana,Arial,Helvetica,sans-serif;
-    font-size: 11px;
-    white-space: nowrap;
-}
+/* file list */
+td.t, td.t125, td.t100, td.t75 { white-space: nowrap; background-color:ThreedFace; border-right: 1px solid ThreedDarkShadow; border-top: 1px solid ThreeDHighlight; border-bottom: 1px solid ThreedDarkShadow; border-left: 1px solid ThreeDHighlight; }
+td.t125 { width: 125px; }
+td.t100 { width: 100px; }
+td.t75 { width: 75px; }
+a { text-decoration: none; cursor: pointer; }
+td.fc { color: #b40000; }
+a.fc { color: #b40000; }
+a.fci { text-decoration: underline; color: #000088; }
+td.fn { color: #0000aa; }
+a.fn { color: #0000aa; }
+a.fni { text-decoration: underline; color: #000088; }
+td.fd { color: #000000; text-decoration: line-through; }
+a.fd { color: #000000; text-decoration: line-through; }
+a.fdi { text-decoration: line-through underline; color: #000088; }
+td.fp { color: #888888; }
+a.fp { color: #888888; }
+a.fpi { text-decoration: underline; color: #000088; }
+td.nf { color:#000000; }
+a.nf { color:#000000; }
+a.nfi { text-decoration: underline; color: #000088; }
+.selected { background: ActiveCaption; color: CaptionText; }
+.unselected { background: Window; color:WindowText; }
 
-td.t, td.t125, td.t100, td.t75 {
-    background-color: #DDDDDD;
-    border-color: #FFFFFF #606161 #606161 #FFFFFF;
-    border-style: solid;
-    border-width: 1px;
-    white-space: nowrap;
-}
-
-td.t125 {
-    width: 125px;
-}
-
-td.t100 {
-    width: 100px;
-}
-
-td.t75 {
-    width: 75px;
-}
-
-a {
-    cursor: pointer;
-    text-decoration: none;
-}
-
-td.fc {
-    color: #B40000;
-}
-
-a.fc {
-    color: #B40000;
-}
-
-a.fci {
-    color: #000088;
-    text-decoration: underline;
-}
-
-td.fn {
-    color: #0000AA;
-}
-
-a.fn {
-    color: #0000AA;
-}
-
-a.fni {
-    color: #000088;
-    text-decoration: underline;
-}
-
-td.fd {
-    color: #000000;
-    text-decoration: line-through;
-}
-
-a.fd {
-    color: #000000;
-    text-decoration: line-through;
-}
-
-a.fdi {
-    color: #000088;
-    text-decoration: underline line-through;
-}
-
-td.fp {
-    color: #888888;
-}
-
-a.fp {
-    color: #888888;
-}
-
-a.fpi {
-    color: #000088;
-    text-decoration: underline;
-}
-
-td.nf {
-    color: #000000;
-}
-
-a.nf {
-    color: #000000;
-}
-
-a.nfi {
-    color: #000088;
-    text-decoration: underline;
-}
-
-.selected {
-    background: none repeat scroll 0 0 #DDDDDD;
-    color: #1F232A;
-}
-
-.unselected {
-    background: none repeat scroll 0 0 #FFFFFF;
-    color: #000000;
-}
-
-div.cmwrapper {
-    display: none;
-    left: 0;
-    position: absolute;
-    top: 0;
-    visibility: hidden;
-    width: 500px;
-}
-
-div.cmo {
-    background-color: #DDDDDD;
-    border-color: #000000;
-    border-style: solid;
-    border-width: 0;
-    width: 152px;
-}
+/* context menu */
+div.cmwrapper { position: absolute; top: 0px; left: 0px;  width: 500px; visibility: hidden; display: none; }
+div.cmo { width: 152px; background-color: ThreeDFace; border-left: 1px solid ThreeDFace; border-top: 1px solid ThreeDFace; border-bottom: 1px solid ThreedDarkShadow; border-right: 1px solid ThreedDarkShadow; filter:progid:DXImageTransform.Microsoft.Shadow(color=ThreeDShadow, Direction=135, Strength=3); }
 
 #menu {
-    background-color: #FFFFFF;
-    border-color: #000000;
-    border-style: solid;
-    border-width: 1px;
-    padding: 0;
-    width: 152px;
+	box-sizing: border-box; -moz-box-sizing: border-box;
+	padding: 0;
+	width: 152px;
+	background-color: ThreeDFace;
+	border-left: 1px solid ThreeDHighlight; border-top: 1px solid ThreeDHighlight; border-bottom: 1px solid ThreeDShadow; border-right: 1px solid ThreeDShadow;
 }
 
 #menu a {
-    display: block;
-    padding: 2px 0 2px 12px;
-    white-space: nowrap;
-    width: 140px;
+	display: block;
+	white-space: nowrap;
+	padding: 2px 0 2px 10px;
+	width: 140px;
 }
 
 #menu a {
-    text-decoration: none;
+	text-decoration: none;
 }
 
 #menu a, #menu a:visited {
-    color: #1F232A;
+	color: MenuText;
 }
 
 #menu a:hover {
-    background-color: #DDDDDD;
-    color: #1F232A;
+	color: CaptionText; background-color: ActiveCaption;
 }
 
 #menu a:active {
-    background-color: #606161;
-    color: #FFFFFF;
+	color: CaptionText; background-color: ActiveCaption;
 }
 
 #menu li {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
 }
 
 #menu ul li {
-    position: relative;
+	position: relative;
 }
 
 #menu li ul {
-    left: 153px;
-    position: absolute;
-    top: -2px;
+	position: absolute;
+	top:-2px;
+	left:152px;
 }
 
-* html #menu ul li {
-    float: left;
-    height: 1%;
-}
-
-* html #menu ul li a {
-    height: 1%;
-}
+/* Fix IE. Hide from IE Mac \*/
+* html #menu ul li{float:left;height:1%;}
+* html #menu ul li a{height:1%;}
+/* End */
 
 div#menu ul, div#menu ul ul, div#menu ul ul ul {
-    list-style-image: none;
-    margin: 0;
-    padding: 0;
-    width: 152px;
+	margin:0;
+	padding:0;
+	list-style-image: none;
+	width:150px;
 }
 
 div#menu ul ul, div#menu ul ul ul {
-    background-color: #FFFFFF;
-    border: 1px solid #000000;
-    visibility: hidden;
+	background-color: ThreeDFace;
+	border: 2px outset ThreeDHighlight;
+	filter:progid:DXImageTransform.Microsoft.Shadow(color=ThreeDShadow, Direction=135, Strength=3);
+	visibility: hidden;
 }
 
+/* expand items */
 #menu a.x, #menu a.x:visited {
-    background-image: url("../explorer/arrow_right.png");
-    background-position: 140px 2px;
-    background-repeat: no-repeat;
+	background-image: url(../explorer/arrow_right.png);	background-repeat: no-repeat; background-position: 140px 2px;
 }
 
-#menu a.ina, #menu a.ina:visited, #menu a.ina:active {
-    background-color: #FFFFFF;
-    color: #888888;
-    cursor: default;
+/* inactive items */
+#menu a.ina,  #menu a.ina:visited, #menu a.ina:active {
+	cursor: default; color: GrayText; background-color: ThreeDFace;
 }
-
 #menu a.ina:hover {
-    background-color: #DDDDDD;
-    color: #FFFFFF;
+	color: InactiveCaptionText; background-color: InactiveCaption;
 }
 
+/* separators */
 li.cmsep {
-    background-color: #BBBBBB;
-    display: block;
-    font-size: 0;
-    height: 1px;
-    line-height: 0;
-    margin: 2px;
-    padding: 0;
+	 display: block; padding: 0; margin: 2px; height: 2px; line-height: 0; font-size: 0px;
+	 border: 1px solid ThreeDFace;
+	 border-bottom: 1px solid ThreeDHighlight;
 }
 
 li.cmsep span {
-    border-bottom: 1px solid #999999;
-    font-size: 0;
-    height: 0;
-    margin: 0;
-    padding: 0;
+	display: block; margin: 0; padding: 0; height: 1px; font-size: 0px; border-bottom: 1px solid ThreeDShadow;
 }
