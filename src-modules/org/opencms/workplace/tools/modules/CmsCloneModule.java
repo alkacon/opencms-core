@@ -98,6 +98,9 @@ public class CmsCloneModule extends CmsJspActionElement {
     /** The action class used for the clone. */
     private String m_actionClass;
 
+    /** If 'true' resource types in all sites will be adjusted. */
+    private String m_applyChangesEverywhere;
+
     /** The author's email used for the clone. */
     private String m_authorEmail = "sales@alkacon.com";
 
@@ -106,9 +109,6 @@ public class CmsCloneModule extends CmsJspActionElement {
 
     /** Option to change the resource types (optional flag). */
     private String m_changeResourceTypes;
-
-    /** If 'true' resource types in all sites will be adjusted. */
-    private String m_changeResourceTypesEverywhere;
 
     /** Option to delete the source module after cloning (optional flag). */
     private String m_deleteModule;
@@ -130,6 +130,9 @@ public class CmsCloneModule extends CmsJspActionElement {
 
     /** The new module name used for the clone. */
     private String m_packageName = "my.company.template";
+
+    /** Flag that controls whether container pages should be rewritten. */
+    private boolean m_rewriteContainerPages;
 
     /** The name of the source module to be cloned. */
     private String m_sourceModuleName = "com.alkacon.bootstrap.formatters";
@@ -334,13 +337,15 @@ public class CmsCloneModule extends CmsJspActionElement {
             }
             // adjust container pages
             CmsObject cms = OpenCms.initCmsObject(getCmsObject());
-            if (isTrue(m_changeResourceTypesEverywhere)) {
+            if (isTrue(m_applyChangesEverywhere)) {
                 cms.getRequestContext().setSiteRoot("/");
             }
-            CmsResourceFilter f = CmsResourceFilter.requireType(CmsResourceTypeXmlContainerPage.getContainerPageTypeId());
-            List<CmsResource> allContainerPages = cms.readResources("/", f);
-            replacePath(sourceModulePath, targetModulePath, allContainerPages);
 
+            if (isRewriteContainerPages()) {
+                CmsResourceFilter f = CmsResourceFilter.requireType(CmsResourceTypeXmlContainerPage.getContainerPageTypeId());
+                List<CmsResource> allContainerPages = cms.readResources("/", f);
+                replacePath(sourceModulePath, targetModulePath, allContainerPages);
+            }
             // delete the old module
             if (isTrue(m_deleteModule)) {
                 OpenCms.getModuleManager().deleteModule(
@@ -415,7 +420,7 @@ public class CmsCloneModule extends CmsJspActionElement {
      */
     public String getChangeResourceTypesEverywhere() {
 
-        return m_changeResourceTypesEverywhere;
+        return m_applyChangesEverywhere;
     }
 
     /**
@@ -519,6 +524,16 @@ public class CmsCloneModule extends CmsJspActionElement {
     }
 
     /**
+     * Returns the rewriteContainerPages.<p>
+     *
+     * @return the rewriteContainerPages
+     */
+    public boolean isRewriteContainerPages() {
+
+        return m_rewriteContainerPages;
+    }
+
+    /**
      * Sets the action class.<p>
      *
      * @param actionClass the action class
@@ -526,6 +541,16 @@ public class CmsCloneModule extends CmsJspActionElement {
     public void setActionClass(String actionClass) {
 
         m_actionClass = actionClass;
+    }
+
+    /**
+     * Sets the changeResourceTypesEverywhere.<p>
+     *
+     * @param applyChangesEverywhere the changeResourceTypesEverywhere to set
+     */
+    public void setApplyChangesEverywhere(String applyChangesEverywhere) {
+
+        m_applyChangesEverywhere = applyChangesEverywhere;
     }
 
     /**
@@ -556,16 +581,6 @@ public class CmsCloneModule extends CmsJspActionElement {
     public void setChangeResourceTypes(String changeResourceTypes) {
 
         m_changeResourceTypes = changeResourceTypes;
-    }
-
-    /**
-     * Sets the changeResourceTypesEverywhere.<p>
-     *
-     * @param changeResourceTypesEverywhere the changeResourceTypesEverywhere to set
-     */
-    public void setChangeResourceTypesEverywhere(String changeResourceTypesEverywhere) {
-
-        m_changeResourceTypesEverywhere = changeResourceTypesEverywhere;
     }
 
     /**
@@ -636,6 +651,16 @@ public class CmsCloneModule extends CmsJspActionElement {
     public void setPackageName(String packageName) {
 
         m_packageName = packageName;
+    }
+
+    /**
+     * Sets the rewriteContainerPages.<p>
+     *
+     * @param rewriteContainerPages the rewriteContainerPages to set
+     */
+    public void setRewriteContainerPages(boolean rewriteContainerPages) {
+
+        m_rewriteContainerPages = rewriteContainerPages;
     }
 
     /**
@@ -723,30 +748,6 @@ public class CmsCloneModule extends CmsJspActionElement {
     }
 
     /**
-     * Replaces the source name with the target name within all the given resources.<p>
-     * 
-     * @param resources the resource to consider
-     * @param sourceName the source value
-     * @param targetName the target value
-     *  
-     * @throws CmsException if sth. goes wrong
-     * @throws UnsupportedEncodingException
-     */
-    private void replaceResourceTypeNames(List<CmsResource> resources, String sourceName, String targetName)
-    throws CmsException, UnsupportedEncodingException {
-
-        for (CmsResource resource : resources) {
-            CmsFile file = getCmsObject().readFile(resource);
-            String encoding = CmsLocaleManager.getResourceEncoding(getCmsObject(), file);
-            String content = new String(file.getContents(), encoding);
-            content = content.replaceAll(sourceName, targetName);
-            file.setContents(content.getBytes(encoding));
-            lockResource(getCmsObject(), file);
-            getCmsObject().writeFile(file);
-        }
-    }
-
-    /**
      * Adjusts the paths of the module resources from the source path to the target path.<p>
      * 
      * @param sourceModule the source module
@@ -795,7 +796,7 @@ public class CmsCloneModule extends CmsJspActionElement {
     throws CmsException, UnsupportedEncodingException {
 
         CmsObject clone = OpenCms.initCmsObject(getCmsObject());
-        if (isTrue(m_changeResourceTypesEverywhere)) {
+        if (isTrue(m_applyChangesEverywhere)) {
             clone.getRequestContext().setSiteRoot("/");
         }
 
@@ -858,9 +859,10 @@ public class CmsCloneModule extends CmsJspActionElement {
             iconPaths.put(expSetting.getIcon(), newIcon);
             iconPaths.put(expSetting.getBigIconIfAvailable(), newBigIcon);
             expSetting.setName(expSetting.getName().replaceFirst(m_sourceNamePrefix, m_targetNamePrefix));
-            expSetting.setNewResourcePage(expSetting.getNewResourcePage().replaceFirst(
-                m_sourceNamePrefix,
-                m_targetNamePrefix));
+            String newResourcePage = expSetting.getNewResourcePage();
+            if (newResourcePage != null) {
+                expSetting.setNewResourcePage(newResourcePage.replaceFirst(m_sourceNamePrefix, m_targetNamePrefix));
+            }
             expSetting.setKey(expSetting.getKey().replaceFirst(m_sourceNamePrefix, m_targetNamePrefix));
             expSetting.setIcon(expSetting.getIcon().replaceFirst(m_sourceNamePrefix, m_targetNamePrefix));
             expSetting.setBigIcon(expSetting.getBigIconIfAvailable().replaceFirst(
@@ -1237,15 +1239,15 @@ public class CmsCloneModule extends CmsJspActionElement {
      * 
      * @param sourceModulePath the search path
      * @param targetModulePath the replace path
-     * @param allModuleResources the resources
+     * @param resources the resources
      * 
      * @throws CmsException if something goes wrong
      * @throws UnsupportedEncodingException if the file content could not be read with the determined encoding 
      */
-    private void replacePath(String sourceModulePath, String targetModulePath, List<CmsResource> allModuleResources)
+    private void replacePath(String sourceModulePath, String targetModulePath, List<CmsResource> resources)
     throws CmsException, UnsupportedEncodingException {
 
-        for (CmsResource resource : allModuleResources) {
+        for (CmsResource resource : resources) {
             if (resource.isFile()) {
                 CmsFile file = getCmsObject().readFile(resource);
                 String encoding = CmsLocaleManager.getResourceEncoding(getCmsObject(), file);
@@ -1265,6 +1267,30 @@ public class CmsCloneModule extends CmsJspActionElement {
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Replaces the source name with the target name within all the given resources.<p>
+     * 
+     * @param resources the resource to consider
+     * @param sourceName the source value
+     * @param targetName the target value
+     *  
+     * @throws CmsException if sth. goes wrong
+     * @throws UnsupportedEncodingException
+     */
+    private void replaceResourceTypeNames(List<CmsResource> resources, String sourceName, String targetName)
+    throws CmsException, UnsupportedEncodingException {
+
+        for (CmsResource resource : resources) {
+            CmsFile file = getCmsObject().readFile(resource);
+            String encoding = CmsLocaleManager.getResourceEncoding(getCmsObject(), file);
+            String content = new String(file.getContents(), encoding);
+            content = content.replaceAll(sourceName, targetName);
+            file.setContents(content.getBytes(encoding));
+            lockResource(getCmsObject(), file);
+            getCmsObject().writeFile(file);
         }
     }
 

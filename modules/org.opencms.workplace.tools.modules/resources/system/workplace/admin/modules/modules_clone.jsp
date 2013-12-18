@@ -25,6 +25,14 @@
 		font-size: 12px; 
 	}
 	
+	fieldset {
+		margin:  10px; 
+	}
+	
+	legend {
+		font-weight: bold; 
+	}
+
 	.control-group {
 		margin: 5px;
 		clear: both;
@@ -39,13 +47,13 @@
 
 	<div>
 		<div class="headline">
-			<h1>Clone module <fmt:message key="clonemodule.title" /></h1>
+			<h1><fmt:message key="clonemodule.title" />: ${param.module}</h1>
 		</div>
 		<form class="form-horizontal" method="post" id="clone-module-form">
 			<!-- Select a Source Module  -->
 			
-			<fieldset>
-				<legend><fmt:message key="clonemodule.selectmodule" /></legend>
+			<fieldset style="display: none; ">
+				<legend><fmt:message key="clonemodule.selectmodule" /> </legend>
 				<div class="control-group">
 					<label class="control-label" for="sourceModuleName"><fmt:message key="clonemodule.sourcemodule" /></label>
 					<div class="controls">
@@ -63,16 +71,7 @@
 						</select>
 					</div>
 				</div>
-				<!-- Option to delete the source module after cloning -->
-				<div class="">
-					<div class="controls">
-						<label class="checkbox" for="deleteModule">
-							<input type="checkbox" value="true" 
-								<c:if test="${param.deleteModule}">checked</c:if> id="deleteModule" name="deleteModule">
-								 <fmt:message key="clonemodule.deletesource" />
-						</label>
-					</div>
-				</div>
+			
 			</fieldset>
 			<!-- Module Information -->
 			<fieldset>
@@ -184,17 +183,35 @@
 					<div class="controls">
 						<label class="checkbox" for="changeResourceTypes">
 							<input type="checkbox" value="true"
-								<c:if test="${param.changeResourceTypes}">checked</c:if> id="changeResourceTypes" name="changeResourceTypes">
+								<c:if test="${param.rewriteContainerPages}">checked</c:if> id="changeResourceTypes" name="changeResourceTypes">
 								<fmt:message key="clonemodule.changeresourcetypes" />
 						</label>
 					</div>
 					<div class="controls">
-						<label class="checkbox" for="changeResourceTypesEverywhere">
+						<label class="checkbox" for="rewriteContainerPages">
 							<input type="checkbox" value="true"
-								<c:if test="${param.changeResourceTypesEverywhere}">checked</c:if> id="changeResourceTypesEverywhere" name="changeResourceTypesEverywhere">
-								 <fmt:message key="clonemodule.changeresourcetypesinallsites" />
+								<c:if test="${param.rewriteContainerPages}">checked</c:if> id="rewriteContainerPages" name="rewriteContainerPages">
+								 <fmt:message key="clonemodule.rewriteContainerPages" />
 						</label>
 					</div>
+					<div class="controls">
+						<label class="checkbox" for="applyChangesEverywhere">
+							<input type="checkbox" value="true"
+								<c:if test="${param.applyChangesEverywhere}">checked</c:if> id="applyChangesEverywhere" name="applyChangesEverywhere">
+								 <fmt:message key="clonemodule.applyChangesEverywhere" />
+						</label>
+					</div>
+					
+						<!-- Option to delete the source module after cloning -->
+				
+					<div class="controls">
+						<label class="checkbox" for="deleteModule">
+							<input type="checkbox" value="true" 
+								<c:if test="${param.deleteModule}">checked</c:if> id="deleteModule" name="deleteModule">
+								 <fmt:message key="clonemodule.deletesource" />
+						</label>
+					</div>
+				
 				</div>
 			</fieldset>
 			<input type="hidden" name="submit" value="true">
