@@ -690,33 +690,56 @@ public class CmsCloneModule extends CmsJspActionElement {
     private void adjustConfigs(CmsModule targetModule, Map<I_CmsResourceType, I_CmsResourceType> resTypeMap)
     throws CmsException, UnsupportedEncodingException {
 
-        String modPath = CmsWorkplace.VFS_PATH_MODULES + targetModule.getName() + "/" + CmsADEManager.CONFIG_FILE_NAME;
-        List<CmsResource> resources = new ArrayList<CmsResource>();
+        String modPath = CmsWorkplace.VFS_PATH_MODULES + targetModule.getName() + "/";
 
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_formatterTargetModule)
-            && !targetModule.getResourceTypes().isEmpty()) {
-            resources = getCmsObject().readResources(
-                CmsWorkplace.VFS_PATH_MODULES + m_formatterTargetModule,
-                CmsResourceFilter.requireType(OpenCms.getResourceManager().getResourceType(
-                    CmsFormatterConfigurationCache.TYPE_FORMATTER_CONFIG).getTypeId()));
-        }
-        try {
-            CmsResource config = getCmsObject().readResource(
+        if (((m_sourceNamePrefix != null) && (m_targetNamePrefix != null))
+            || !m_sourceNamePrefix.equals(m_targetNamePrefix)) {
+            // replace resource type names in formatter configurations
+            List<CmsResource> resources = getCmsObject().readResources(
                 modPath,
                 CmsResourceFilter.requireType(OpenCms.getResourceManager().getResourceType(
+                    CmsFormatterConfigurationCache.TYPE_FORMATTER_CONFIG).getTypeId()));
+            String source = "<Type><!\\[CDATA\\[" + m_sourceNamePrefix;
+            String target = "<Type><!\\[CDATA\\[" + m_targetNamePrefix;
+            replaceResourceTypeNames(resources, source, target);
+            resources.clear();
+        }
+
+        // replace resource type names in module configuration
+        try {
+            CmsResource config = getCmsObject().readResource(
+                modPath + CmsADEManager.CONFIG_FILE_NAME,
+                CmsResourceFilter.requireType(OpenCms.getResourceManager().getResourceType(
                     CmsADEManager.MODULE_CONFIG_TYPE).getTypeId()));
-            resources.add(config);
+            for (Map.Entry<I_CmsResourceType, I_CmsResourceType> mapping : resTypeMap.entrySet()) {
+                replaceResourceTypeNames(
+                    Collections.singletonList(config),
+                    mapping.getKey().getTypeName(),
+                    mapping.getValue().getTypeName());
+            }
         } catch (CmsVfsResourceNotFoundException e) {
             LOG.info(e.getLocalizedMessage(), e);
         }
+    }
+
+    /**
+     * Replaces the source name with the target name within all the given resources.<p>
+     * 
+     * @param resources the resource to consider
+     * @param sourceName the source value
+     * @param targetName the target value
+     *  
+     * @throws CmsException if sth. goes wrong
+     * @throws UnsupportedEncodingException
+     */
+    private void replaceResourceTypeNames(List<CmsResource> resources, String sourceName, String targetName)
+    throws CmsException, UnsupportedEncodingException {
 
         for (CmsResource resource : resources) {
             CmsFile file = getCmsObject().readFile(resource);
             String encoding = CmsLocaleManager.getResourceEncoding(getCmsObject(), file);
             String content = new String(file.getContents(), encoding);
-            for (Map.Entry<I_CmsResourceType, I_CmsResourceType> mapping : resTypeMap.entrySet()) {
-                content = content.replaceAll(mapping.getKey().getTypeName(), mapping.getValue().getTypeName());
-            }
+            content = content.replaceAll(sourceName, targetName);
             file.setContents(content.getBytes(encoding));
             lockResource(getCmsObject(), file);
             getCmsObject().writeFile(file);
@@ -835,6 +858,9 @@ public class CmsCloneModule extends CmsJspActionElement {
             iconPaths.put(expSetting.getIcon(), newIcon);
             iconPaths.put(expSetting.getBigIconIfAvailable(), newBigIcon);
             expSetting.setName(expSetting.getName().replaceFirst(m_sourceNamePrefix, m_targetNamePrefix));
+            expSetting.setNewResourcePage(expSetting.getNewResourcePage().replaceFirst(
+                m_sourceNamePrefix,
+                m_targetNamePrefix));
             expSetting.setKey(expSetting.getKey().replaceFirst(m_sourceNamePrefix, m_targetNamePrefix));
             expSetting.setIcon(expSetting.getIcon().replaceFirst(m_sourceNamePrefix, m_targetNamePrefix));
             expSetting.setBigIcon(expSetting.getBigIconIfAvailable().replaceFirst(
