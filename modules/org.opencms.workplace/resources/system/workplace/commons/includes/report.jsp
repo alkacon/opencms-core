@@ -13,10 +13,10 @@
     String borderStyle = "";
     String borderSimpleStyle = "";
     if (! wp.useNewStyle()) {
-    	borderStyle = "2px inset ThreeDHighlight";
-    	borderSimpleStyle = "2px solid ThreeDFace";
+    	borderStyle = "2px inset /*begin-color ThreeDHighlight*/#ffffff/*end-color*/";
+    	borderSimpleStyle = "2px solid /*begin-color ThreeDFace*/#f0f0f0/*end-color*/";
     } else {
-    	borderStyle = "1px solid ThreeDShadow";
+    	borderStyle = "1px solid /*begin-color ThreeDShadow*/#999999/*end-color*/";
     	borderSimpleStyle = borderStyle;
     }
     String resourceParam = CmsDialog.PARAM_RESOURCE;
@@ -130,7 +130,7 @@ function continueReport() {
 // -->
 </script>
 
-    <%= wp.bodyStart("empty", "style=\"background-color:ThreeDFace;\" onLoad=\"init();\"") %><%= wp.bodyEnd() %>
+    <%= wp.bodyStart("empty", "style=\"background-color:/*begin-color ThreeDFace*/#f0f0f0/*end-color*/;\" onLoad=\"init();\"") %><%= wp.bodyEnd() %>
     <%= wp.htmlEnd() %>
 
 <%
@@ -268,7 +268,7 @@ var pageStartSimple =
     "<link rel='stylesheet' type='text/css' href='<%= wp.getStyleUri("workplace.css") %>'>\n" +
     cssStyle +
     "</head>\n" +
-    "<body style='background-color:Menu;'>\n" +   
+    "<body style='background-color:/*begin-color Menu*/#f0f0f0/*end-color*/;'>\n" +   
     "<div style='vertical-align:middle; height: 100%;'>\n"+
     "<table border='0' style='vertical-align:middle; height: 100%;'>\n" + 
     "<tr><td width='40' align='center' valign='middle'><img name='report_img' src='<%= CmsWorkplace.getSkinUri() %>commons/wait.gif' width='32' height='32' alt=''></td>\n" + 

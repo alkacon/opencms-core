@@ -927,7 +927,7 @@ if (options.showElement("option.cleanup", displayOptions)) {
 
 <tr>
 <td style="width:100%; height:100%;">
-<div id="textarea-container" class="cmsTinyMCE" style="width:100%; height:100%; background-color: Window;">
+<div id="textarea-container" class="cmsTinyMCE" style="width:100%; height:100%; background-color: /*begin-color Window*/#ffffff/*end-color*/;">
 <script language="javascript">
 document.write ('<textarea id="tinymce_content" name="tinymce_content" style="height:'+getEditorHeight()+'px; width:100%;"></textarea>');
 </script>

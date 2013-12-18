@@ -40,10 +40,10 @@ import org.opencms.util.CmsStringUtil;
 public class CmsWorkplaceCustomFoot {
 
     /** The default foot frame font color. */
-    public static final String DEFAUL_COLOR = "WindowText";
+    public static final String DEFAUL_COLOR = "/*begin-color WindowText*/#000000/*end-color*/";
 
     /** The default foot frame background color. */
-    public static final String DEFAULT_BACKGROUNDCOLOR = "ThreeDFace";
+    public static final String DEFAULT_BACKGROUNDCOLOR = "/*begin-color ThreeDFace*/#f0f0f0/*end-color*/";
 
     /** The default workplace foot text to display. */
     public static final String DEFAULT_TEXT = "%("

@@ -4,21 +4,21 @@
   position: relative;
   display: none;
   border: 1px solid;
-  border-color: ThreeDLightShadow ThreedDarkShadow ThreedDarkShadow ThreeDLightShadow;
+  border-color: /*begin-color ThreeDLightShadow*/#f0f0f0/*end-color*/ /*begin-color ThreedDarkShadow*/#606161/*end-color*/ /*begin-color ThreedDarkShadow*/#606161/*end-color*/ /*begin-color ThreeDLightShadow*/#f0f0f0/*end-color*/;
   font-size: 11px;
   cursor: default;
-  background: Window;
-  color: WindowText;
+  background: /*begin-color Window*/#ffffff/*end-color*/;
+  color: /*begin-color WindowText*/#000000/*end-color*/;
   font-family: tahoma,verdana,sans-serif;
 }
 
 .calendar table {
   border: 1px solid;
-  border-color: ThreeDHighlight ThreeDShadow ThreeDShadow ThreeDHighlight;
+  border-color: /*begin-color ThreeDHighlight*/#ffffff/*end-color*/ /*begin-color ThreeDShadow*/#999999/*end-color*/ /*begin-color ThreeDShadow*/#999999/*end-color*/ /*begin-color ThreeDHighlight*/#ffffff/*end-color*/;
   font-size: 11px;
   cursor: default;
-  background: Window;
-  color: WindowText;
+  background: /*begin-color Window*/#ffffff/*end-color*/;
+  color: /*begin-color WindowText*/#000000/*end-color*/;
   font-family: tahoma,verdana,sans-serif;
 }
 
@@ -28,20 +28,20 @@
   text-align: center;
   padding: 1px;
   border: 1px solid;
-  border-color: ButtonHighlight ButtonShadow ButtonShadow ButtonHighlight;
-  background: ButtonFace;
+  border-color: /*begin-color ButtonHighlight*/#ffffff/*end-color*/ /*begin-color ButtonShadow*/#999999/*end-color*/ /*begin-color ButtonShadow*/#999999/*end-color*/ /*begin-color ButtonHighlight*/#ffffff/*end-color*/;
+  background: /*begin-color ButtonFace*/#f0f0f0/*end-color*/;
 }
 
 .calendar .nav {
-  background: ButtonFace url(menuarrow.gif) no-repeat 100% 100%;
+  background: /*begin-color ButtonFace*/#f0f0f0/*end-color*/ url(menuarrow.gif) no-repeat 100% 100%;
 }
 
 .calendar thead .title { /* This holds the current "month, year" */
   font-weight: bold;
   padding: 1px;
-  border: 1px solid WindowText;
-  background: ActiveCaption;
-  color: CaptionText;
+  border: 1px solid /*begin-color WindowText*/#000000/*end-color*/;
+  background: /*begin-color ActiveCaption*/#1f232a/*end-color*/;
+  color: /*begin-color CaptionText*/#ffffff/*end-color*/;
   text-align: center;
 }
 
@@ -52,11 +52,11 @@
 }
 
 .calendar thead .name { /* Cells <TD> containing the day names */
-  border-bottom: 1px solid ButtonShadow;
+  border-bottom: 1px solid /*begin-color ButtonShadow*/#999999/*end-color*/;
   padding: 2px;
   text-align: center;
-  background: ButtonFace;
-  color: ButtonText;
+  background: /*begin-color ButtonFace*/#f0f0f0/*end-color*/;
+  color: /*begin-color ButtonText*/#000000/*end-color*/;
 }
 
 .calendar thead .weekend { /* How a weekend day name shows in header */
@@ -66,13 +66,13 @@
 .calendar thead .hilite { /* How do the buttons in header appear when hover */
   border: 2px solid;
   padding: 0px;
-  border-color: ButtonHighlight ButtonShadow ButtonShadow ButtonHighlight;
+  border-color: /*begin-color ButtonHighlight*/#ffffff/*end-color*/ /*begin-color ButtonShadow*/#999999/*end-color*/ /*begin-color ButtonShadow*/#999999/*end-color*/ /*begin-color ButtonHighlight*/#ffffff/*end-color*/;
 }
 
 .calendar thead .active { /* Active (pressed) buttons in header */
   border-width: 1px;
   padding: 2px 0px 0px 2px;
-  border-color: ButtonShadow ButtonHighlight ButtonHighlight ButtonShadow;
+  border-color: /*begin-color ButtonShadow*/#999999/*end-color*/ /*begin-color ButtonHighlight*/#ffffff/*end-color*/ /*begin-color ButtonHighlight*/#ffffff/*end-color*/ /*begin-color ButtonShadow*/#999999/*end-color*/;
 }
 
 /* The body part -- contains all the days in month. */
@@ -85,14 +85,14 @@
 
 .calendar table .wn {
   padding: 2px 3px 2px 2px;
-  border-right: 1px solid ButtonShadow;
-  background: ButtonFace;
-  color: ButtonText;
+  border-right: 1px solid /*begin-color ButtonShadow*/#999999/*end-color*/;
+  background: /*begin-color ButtonFace*/#f0f0f0/*end-color*/;
+  color: /*begin-color ButtonText*/#000000/*end-color*/;
 }
 
 .calendar tbody .rowhilite td {
-  background: Highlight;
-  color: HighlightText;
+  background: /*begin-color Highlight*/#1f232a/*end-color*/;
+  color: /*begin-color HighlightText*/#ffffff/*end-color*/;
 }
 
 .calendar tbody td.hilite { /* Hovered cells <TD> */
@@ -107,16 +107,16 @@
 .calendar tbody td.active { /* Active (pressed) cells <TD> */
   padding: 2px 2px 0px 2px;
   border: 1px solid;
-  border-color: ButtonShadow ButtonHighlight ButtonHighlight ButtonShadow;
+  border-color: /*begin-color ButtonShadow*/#999999/*end-color*/ /*begin-color ButtonHighlight*/#ffffff/*end-color*/ /*begin-color ButtonHighlight*/#ffffff/*end-color*/ /*begin-color ButtonShadow*/#999999/*end-color*/;
 }
 
 .calendar tbody td.selected { /* Cell showing selected date */
   font-weight: bold;
   border: 1px solid;
-  border-color: ButtonShadow ButtonHighlight ButtonHighlight ButtonShadow;
+  border-color: /*begin-color ButtonShadow*/#999999/*end-color*/ /*begin-color ButtonHighlight*/#ffffff/*end-color*/ /*begin-color ButtonHighlight*/#ffffff/*end-color*/ /*begin-color ButtonShadow*/#999999/*end-color*/;
   padding: 2px 2px 0px 2px;
-  background: ButtonFace;
-  color: ButtonText;
+  background: /*begin-color ButtonFace*/#f0f0f0/*end-color*/;
+  color: /*begin-color ButtonText*/#000000/*end-color*/;
 }
 
 .calendar tbody td.weekend { /* Cells showing weekend days */
@@ -128,7 +128,7 @@
   color: #00c;
 }
 
-.calendar tbody td.disabled { color: GrayText; }
+.calendar tbody td.disabled { color: /*begin-color GrayText*/#999999/*end-color*/; }
 
 .calendar tbody .emptycell { /* Empty cells (the best is to hide them) */
   visibility: hidden;
@@ -144,11 +144,11 @@
 }
 
 .calendar tfoot .ttip { /* Tooltip (status bar) cell <TD> */
-  background: ButtonFace;
+  background: /*begin-color ButtonFace*/#f0f0f0/*end-color*/;
   padding: 1px;
   border: 1px solid;
-  border-color: ButtonShadow ButtonHighlight ButtonHighlight ButtonShadow;
-  color: ButtonText;
+  border-color: /*begin-color ButtonShadow*/#999999/*end-color*/ /*begin-color ButtonHighlight*/#ffffff/*end-color*/ /*begin-color ButtonHighlight*/#ffffff/*end-color*/ /*begin-color ButtonShadow*/#999999/*end-color*/;
+  color: /*begin-color ButtonText*/#000000/*end-color*/;
   text-align: center;
 }
 
@@ -179,9 +179,9 @@
   left: 0px;
   cursor: default;
   border: 1px solid;
-  border-color: ButtonHighlight ButtonShadow ButtonShadow ButtonHighlight;
-  background: Menu;
-  color: MenuText;
+  border-color: /*begin-color ButtonHighlight*/#ffffff/*end-color*/ /*begin-color ButtonShadow*/#999999/*end-color*/ /*begin-color ButtonShadow*/#999999/*end-color*/ /*begin-color ButtonHighlight*/#ffffff/*end-color*/;
+  background: /*begin-color Menu*/#f0f0f0/*end-color*/;
+  color: /*begin-color MenuText*/#000000/*end-color*/;
   font-size: smaller;
   padding: 1px;
 }
@@ -202,15 +202,15 @@
 }
 
 .combo .hilite {
-  background: Highlight;
-  color: HighlightText;
+  background: /*begin-color Highlight*/#1f232a/*end-color*/;
+  color: /*begin-color HighlightText*/#ffffff/*end-color*/;
 }
 
 .calendar td.time {
-  border-top: 1px solid ButtonShadow;
+  border-top: 1px solid /*begin-color ButtonShadow*/#999999/*end-color*/;
   padding: 1px 0px;
   text-align: center;
-  background-color: ButtonFace;
+  background-color: /*begin-color ButtonFace*/#f0f0f0/*end-color*/;
 }
 
 .calendar td.time .hour,
@@ -218,9 +218,9 @@
 .calendar td.time .ampm {
   padding: 0px 3px 0px 4px;
   border: 1px solid;
-  border-color: ThreeDHighlight ThreeDShadow ThreeDShadow ThreeDHighlight;
+  border-color: /*begin-color ThreeDHighlight*/#ffffff/*end-color*/ /*begin-color ThreeDShadow*/#999999/*end-color*/ /*begin-color ThreeDShadow*/#999999/*end-color*/ /*begin-color ThreeDHighlight*/#ffffff/*end-color*/;
   font-weight: bold;
-  background-color: Menu;
+  background-color: /*begin-color Menu*/#f0f0f0/*end-color*/;
 }
 
 .calendar td.time .ampm {
@@ -234,13 +234,13 @@
 
 .calendar td.time span.hilite {
   border: 1px solid;
-  border-color: ThreeDHighlight ThreeDShadow ThreeDShadow ThreeDHighlight;
-  background-color: InactiveCaption;
-  color: Window;
+  border-color: /*begin-color ThreeDHighlight*/#ffffff/*end-color*/ /*begin-color ThreeDShadow*/#999999/*end-color*/ /*begin-color ThreeDShadow*/#999999/*end-color*/ /*begin-color ThreeDHighlight*/#ffffff/*end-color*/;
+  background-color: /*begin-color InactiveCaption*/#999999/*end-color*/;
+  color: /*begin-color Window*/#ffffff/*end-color*/;
 }
 
 .calendar td.time span.active {
-  border-color: ThreeDShadow ThreeDHighlight ThreeDHighlight ThreeDShadow;
-  background-color: WindowText;
-  color: Window;
+  border-color: /*begin-color ThreeDShadow*/#999999/*end-color*/ /*begin-color ThreeDHighlight*/#ffffff/*end-color*/ /*begin-color ThreeDHighlight*/#ffffff/*end-color*/ /*begin-color ThreeDShadow*/#999999/*end-color*/;
+  background-color: /*begin-color WindowText*/#000000/*end-color*/;
+  color: /*begin-color Window*/#ffffff/*end-color*/;
 }
