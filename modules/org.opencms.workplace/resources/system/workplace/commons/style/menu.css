@@ -40,7 +40,7 @@
   background: none;
   background-color: transparent;
   vertical-align: middle;
-  color: WindowText;
+  color: /*begin-color WindowText*/#000000/*end-color*/;
   cursor: auto;
   text-decoration: none;
 }
@@ -51,14 +51,14 @@
   background-color: transparent;
   cursor: hand;
   cursor: pointer;
-  color: WindowText;
+  color: /*begin-color WindowText*/#000000/*end-color*/;
   text-decoration: none;
 }
 
 .link:hover a,
 .link a:hover {
   text-decoration: underline;
-  color: #000088;
+  color: /*begin-color TextHover*/#b31b34/*end-color*/;
 }
 
 .link:hover img,
@@ -67,7 +67,7 @@
 }
 
 .linkdisabled {
-  color: GrayText;
+  color: /*begin-color GrayText*/#999999/*end-color*/;
   text-decoration: none;
   cursor: default;
 }
@@ -94,30 +94,30 @@
 .list th { 
   vertical-align: middle;
   text-align: center;
-  background-color:ThreedFace; 
-  border-right: 1px solid ThreedDarkShadow; 
-  border-top: 1px solid ThreeDHighlight; 
-  border-bottom: 1px solid ThreedDarkShadow; 
-  border-left: 1px solid ThreeDHighlight; 
+  background-color:/*begin-color ThreedFace*/#f0f0f0/*end-color*/; 
+  border-right: 1px solid /*begin-color ThreedDarkShadow*/#606161/*end-color*/; 
+  border-top: 1px solid /*begin-color ThreeDHighlight*/#ffffff/*end-color*/; 
+  border-bottom: 1px solid /*begin-color ThreedDarkShadow*/#606161/*end-color*/; 
+  border-left: 1px solid /*begin-color ThreeDHighlight*/#ffffff/*end-color*/; 
 } 
 
 .list th a:link, 
 .list th a:visited, 
 .list th a:active {
-  color: WindowText;
+  color: /*begin-color WindowText*/#000000/*end-color*/;
   text-decoration: none;
 }
 
 .evenrowbg {
-	background-color: ButtonFace; 
+	background-color: /*begin-color ButtonFace*/#f0f0f0/*end-color*/; 
 }
 
 .oddrowbg {
-	background-color: Window;
+	background-color: /*begin-color Window*/#ffffff/*end-color*/;
 }
 
 .evenrowbgnew {
-	background-color: InfoBackground;
+	background-color: /*begin-color InfoBackground*/#f9f9f9/*end-color*/;
 }
 
 .misc {
@@ -140,7 +140,7 @@ td.listdetailhead {
 td.listdetailitem {
 	padding-left: 10px;
 	font-size: 10px;
-	color: ThreeDShadow;
+	color: /*begin-color ThreeDShadow*/#999999/*end-color*/;
 }
 
 <% } %>
@@ -150,14 +150,14 @@ body {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
 	font-weight: normal;
-	color: WindowText;
+	color: /*begin-color WindowText*/#000000/*end-color*/;
    <% if (style == NEW_ADMIN) { %>
-	background-color: Window;     
+	background-color: /*begin-color Window*/#ffffff/*end-color*/;     
 	padding-bottom: 20px;
    <% } else {%>
 	padding: 0 12px;
 	margin: 0;
-	background-color: ThreeDFace; 
+	background-color: /*begin-color ThreeDFace*/#f0f0f0/*end-color*/; 
 	background-image: url(<%=CmsWorkplace.getSkinUri()%>admin/images/border.gif);
 	background-position: right;
 	background-repeat: repeat-y;
@@ -179,18 +179,18 @@ img {
 
 #loader td {
   padding: 0px;
-  background: Window;
+  background: /*begin-color Window*/#ffffff/*end-color*/;
   border: 1px solid black;
 }
 
 #loader p {
-  border-top: 3px solid ThreeDHighlight;
-  border-left: 3px solid ThreeDHighlight;
-  border-right: 3px solid ThreeDShadow;
-  border-bottom: 3px solid ThreeDShadow;
+  border-top: 3px solid /*begin-color ThreeDHighlight*/#ffffff/*end-color*/;
+  border-left: 3px solid /*begin-color ThreeDHighlight*/#ffffff/*end-color*/;
+  border-right: 3px solid /*begin-color ThreeDShadow*/#999999/*end-color*/;
+  border-bottom: 3px solid /*begin-color ThreeDShadow*/#999999/*end-color*/;
   padding: 10px;
   margin: 0;
-  background: ThreeDFace;
+  background: /*begin-color ThreeDFace*/#f0f0f0/*end-color*/;
 }
 
 #loader img {
@@ -243,10 +243,10 @@ img {
 
 .navOpened,
 .navClosed {
-  border-top: 2px solid ThreeDHighlight;
-  border-left: 2px solid ThreeDHighlight;
-  border-right: 2px solid ThreeDShadow;
-  border-bottom: 2px solid ThreeDShadow;
+  border-top: 2px solid /*begin-color ThreeDHighlight*/#ffffff/*end-color*/;
+  border-left: 2px solid /*begin-color ThreeDHighlight*/#ffffff/*end-color*/;
+  border-right: 2px solid /*begin-color ThreeDShadow*/#999999/*end-color*/;
+  border-bottom: 2px solid /*begin-color ThreeDShadow*/#999999/*end-color*/;
 }
 
 #navArea .node img,
@@ -260,7 +260,7 @@ img {
 
 .navOpened {
   margin-bottom: 15px;
-  background-color: ActiveCaption;
+  background-color: /*begin-color ActiveCaption*/#1f232a/*end-color*/;
 }
 
 .navTitle,
@@ -271,12 +271,12 @@ img {
 }
 
 .titleBorder {
-   border: 3px solid ThreeDFace;  
-   border-bottom: 0px solid ThreeDFace; 
+   border: 3px solid /*begin-color ThreeDFace*/#f0f0f0/*end-color*/;  
+   border-bottom: 0px solid /*begin-color ThreeDFace*/#f0f0f0/*end-color*/; 
  }
 
 .treeBorder {
-   border: 3px solid ThreeDFace;  
+   border: 3px solid /*begin-color ThreeDFace*/#f0f0f0/*end-color*/;  
  }
 
 .navOpened .navTitle,
@@ -287,20 +287,20 @@ img {
 .navOpened .navTitle .titleText {
   font-weight: bold;
   vertical-align: middle;
-  color: CaptionText;
+  color: /*begin-color CaptionText*/#ffffff/*end-color*/;
 }
 
 .navOpened .navTitleOver .titleText {
   font-weight: bold;
   vertical-align: middle;
-  color: InactiveCaptionText;
+  color: /*begin-color InactiveCaptionText*/#f0f0f0/*end-color*/;
 }
 
 .navClosed {
   background-position: right;
   background-repeat: repeat-y;
   margin-bottom: 15px;
-  background-color: InactiveCaption;
+  background-color: /*begin-color InactiveCaption*/#999999/*end-color*/;
 }
 
 .navClosed .navTitle,
@@ -320,19 +320,19 @@ img {
 }
 
 .navClosed .navTitle .titleText {
-  color: InactiveCaptiontext;
+  color: /*begin-color InactiveCaptiontext*/#f0f0f0/*end-color*/;
 }
 
 .navClosed .navTitleOver .titleText {
-  color: CaptionText;
+  color: /*begin-color CaptionText*/#ffffff/*end-color*/;
 }
 
 div.tree {
   padding: 2px;
   padding-top: 3px;
   padding-bottom: 10px;
-  background-color: Window; 
-  border: 1px solid WindowText;
+  background-color: /*begin-color Window*/#ffffff/*end-color*/; 
+  border: 1px solid /*begin-color WindowText*/#000000/*end-color*/;
 }
 
 .navOpened .tree {
@@ -383,7 +383,7 @@ body, form {
 .pathbar {
    padding-top: 10px;
    padding-left: 10px;
-   background-color: ThreeDFace;
+   background-color: /*begin-color ThreeDFace*/#f0f0f0/*end-color*/;
 }
 
 .screenBody {
@@ -397,8 +397,8 @@ body, form {
 .screenTitle {
   margin: 0;
   vertical-align: middle;
-  background-color: ThreeDFace;
-  border-bottom: 1px solid ActiveBorder;
+  background-color: /*begin-color ThreeDFace*/#f0f0f0/*end-color*/;
+  border-bottom: 1px solid /*begin-color ActiveBorder*/#f0f0f0/*end-color*/;
 }
 
 .screenTitle td {
@@ -406,7 +406,7 @@ body, form {
   vertical-align: middle;
   font-size: 18px;
   font-family: Verdana, Arial, Helvetica, sans-serif;
-  color: WindowText;
+  color: /*begin-color WindowText*/#000000/*end-color*/;
 }
 
 p, hr {
@@ -472,11 +472,11 @@ input, select, option, textarea {
 	visibility: hidden;
 	display: none;   
 	<% } else if(style == WORKPLACE) { %>
-	background-color: ActiveCaption;
+	background-color: /*begin-color ActiveCaption*/#1f232a/*end-color*/;
 	<% } %>
 	margin-bottom: 8px;
 	padding: 2px;
-	color: CaptionText;
+	color: /*begin-color CaptionText*/#ffffff/*end-color*/;
 	font-size: 12px;
 	font-weight: bold;
 	white-space: nowrap;	
@@ -491,17 +491,17 @@ table.dialog {
 	<% } else if(style == WORKPLACE) { %>
         margin: 20px auto;
 	width: 85%;
-	border-left: 1px solid ThreeDLightShadow;
-	border-top: 1px solid ThreeDLightShadow;
-	border-right: 1px solid ThreedDarkShadow;
-	border-bottom: 1px solid ThreedDarkShadow;
+	border-left: 1px solid /*begin-color ThreeDLightShadow*/#f0f0f0/*end-color*/;
+	border-top: 1px solid /*begin-color ThreeDLightShadow*/#f0f0f0/*end-color*/;
+	border-right: 1px solid /*begin-color ThreedDarkShadow*/#606161/*end-color*/;
+	border-bottom: 1px solid /*begin-color ThreedDarkShadow*/#606161/*end-color*/;
    <% } %>
 }
 
 body.dialogpopup {
 	margin: 0 auto;
 	<% if(!(style == NEW_ADMIN)) { %>
-	background-color: ThreeDFace;
+	background-color: /*begin-color ThreeDFace*/#f0f0f0/*end-color*/;
 	<% } %>
 }
 
@@ -509,17 +509,17 @@ body.dialogpopup {
 table.dialogbox {
 	width: 100%;
 	<% if(!(style == NEW_ADMIN)) { %>
-	background-color: ThreeDFace;
+	background-color: /*begin-color ThreeDFace*/#f0f0f0/*end-color*/;
 	<% } %>
 	<% if(style == NEW_ADMIN) { %>
 	padding-top: 10px;	
 	<% } %>
         <% if(style == WORKPLACE) { %>
-	background-color: ThreeDFace;
-	border-left: 1px solid ThreeDHighlight;
-	border-top: 1px solid ThreeDHighlight;
-	border-right: 1px solid ThreeDShadow;
-	border-bottom: 1px solid ThreeDShadow;
+	background-color: /*begin-color ThreeDFace*/#f0f0f0/*end-color*/;
+	border-left: 1px solid /*begin-color ThreeDHighlight*/#ffffff/*end-color*/;
+	border-top: 1px solid /*begin-color ThreeDHighlight*/#ffffff/*end-color*/;
+	border-right: 1px solid /*begin-color ThreeDShadow*/#999999/*end-color*/;
+	border-bottom: 1px solid /*begin-color ThreeDShadow*/#999999/*end-color*/;
 	padding-top: 1px;	
 	<% } %>
 }
@@ -528,9 +528,9 @@ table.dialogbox {
 .horseparator {
 	width: 100%;
 	<% if(!(style == NEW_ADMIN)) { %>
-	background-color: ThreeDHighlight;
+	background-color: /*begin-color ThreeDHighlight*/#ffffff/*end-color*/;
 	<% } %>
-	border-top: 1px solid ThreeDShadow;
+	border-top: 1px solid /*begin-color ThreeDShadow*/#999999/*end-color*/;
 }
 
 body.dialog {
@@ -539,7 +539,7 @@ body.dialog {
 	padding: 0;
 	margin: 0;
 	<% if(style == POPUP) { %>
-	background-color: ThreeDFace;
+	background-color: /*begin-color ThreeDFace*/#f0f0f0/*end-color*/;
 	<% } %>
 }
 
@@ -580,7 +580,7 @@ img.button {
 
 /* Button - Link (href) style */
 a.button {
-	color: ButtonText;
+	color: /*begin-color ButtonText*/#000000/*end-color*/;
 	text-decoration: none;
 	cursor: pointer;
 }
@@ -594,26 +594,26 @@ span.norm {
 /* Button - Hover style */
 span.over {
 	display: block;
-	border-top: 1px solid ThreeDHighlight;
-	border-left: 1px solid ThreeDHighlight;
-	border-bottom: 1px solid ThreeDShadow;
-	border-right: 1px solid ThreeDShadow;
+	border-top: 1px solid /*begin-color ThreeDHighlight*/#ffffff/*end-color*/;
+	border-left: 1px solid /*begin-color ThreeDHighlight*/#ffffff/*end-color*/;
+	border-bottom: 1px solid /*begin-color ThreeDShadow*/#999999/*end-color*/;
+	border-right: 1px solid /*begin-color ThreeDShadow*/#999999/*end-color*/;
 }
 
 /* Button - Push style */
 span.push {
 	display: block;
-	border-top: 1px solid ThreeDShadow;
-	border-left: 1px solid ThreeDShadow;
-	border-bottom: 1px solid ThreeDHighlight;
-	border-right: 1px solid ThreeDHighlight;
+	border-top: 1px solid /*begin-color ThreeDShadow*/#999999/*end-color*/;
+	border-left: 1px solid /*begin-color ThreeDShadow*/#999999/*end-color*/;
+	border-bottom: 1px solid /*begin-color ThreeDHighlight*/#ffffff/*end-color*/;
+	border-right: 1px solid /*begin-color ThreeDHighlight*/#ffffff/*end-color*/;
 }
 
 /* Button - Disabled style */
 span.disabled {
 	display: block;
-	border: 1px solid ThreeDFace;
-	color: GrayText;
+	border: 1px solid /*begin-color ThreeDFace*/#f0f0f0/*end-color*/;
+	color: /*begin-color GrayText*/#999999/*end-color*/;
 }
 
 /* Button - Tart tab */
@@ -621,10 +621,10 @@ span.starttab {
 	display: block;
 	height: 16px;
 	width: 1px;
-	border-top: 1px solid ThreeDHighlight;
-	border-left: 1px solid ThreeDHighlight;
-	border-bottom: 1px solid ThreeDShadow;
-	border-right: 1px solid ThreeDShadow;
+	border-top: 1px solid /*begin-color ThreeDHighlight*/#ffffff/*end-color*/;
+	border-left: 1px solid /*begin-color ThreeDHighlight*/#ffffff/*end-color*/;
+	border-bottom: 1px solid /*begin-color ThreeDShadow*/#999999/*end-color*/;
+	border-right: 1px solid /*begin-color ThreeDShadow*/#999999/*end-color*/;
 }
 
 /* Button - Separator */
@@ -633,12 +633,12 @@ span.separator {
 	height: 18px;
 	width: 0px;
 	border-top: 0px;
-	border-left: 1px solid ThreeDShadow;
+	border-left: 1px solid /*begin-color ThreeDShadow*/#999999/*end-color*/;
 	border-bottom: 0px;
-	border-right: 1px solid ThreeDHighlight;
+	border-right: 1px solid /*begin-color ThreeDHighlight*/#ffffff/*end-color*/;
 }
 
-/* final button row of dialog window */
+/* final button row of dialog window.*/
 .dialogbuttons {
 	padding: 3px 8px 5px;
 	text-align: center;
@@ -658,10 +658,10 @@ span.separator {
 
 .dialogcontent {
 	<% if(!(style == NEW_ADMIN)) { %>
-	border-left: 1px solid ThreeDHighlight;
-	border-top: 1px solid ThreeDHighlight;
-	border-right: 2px solid ThreeDShadow;
-	border-bottom: 2px solid ThreeDShadow;
+	border-left: 1px solid /*begin-color ThreeDHighlight*/#ffffff/*end-color*/;
+	border-top: 1px solid /*begin-color ThreeDHighlight*/#ffffff/*end-color*/;
+	border-right: 2px solid /*begin-color ThreeDShadow*/#999999/*end-color*/;
+	border-bottom: 2px solid /*begin-color ThreeDShadow*/#999999/*end-color*/;
 	margin: 8px;
 	padding: 15px;
 	<% } %>
@@ -685,34 +685,34 @@ fieldset.dialogblock {
 }
 
 fieldset.dialogblock span {
-	color: WindowText;
+	color: /*begin-color WindowText*/#000000/*end-color*/;
 }
 
 /* outer border of white inner box */
 .dialoginnerboxborder {
-	border-left: 1px solid ThreeDShadow;
-	border-top: 1px solid ThreeDShadow;
-	border-right: 1px solid ThreeDHighlight;
-	border-bottom: 1px solid ThreeDHighlight;
+	border-left: 1px solid /*begin-color ThreeDShadow*/#999999/*end-color*/;
+	border-top: 1px solid /*begin-color ThreeDShadow*/#999999/*end-color*/;
+	border-right: 1px solid /*begin-color ThreeDHighlight*/#ffffff/*end-color*/;
+	border-bottom: 1px solid /*begin-color ThreeDHighlight*/#ffffff/*end-color*/;
 	padding: 0;
 }
 
 /* white inner box for dialogs */
 .dialoginnerbox {
    <% if(style != NEW_ADMIN) { %>
-	background-color: Window;
+	background-color: /*begin-color Window*/#ffffff/*end-color*/;
    <% } %>
-	border-left: 1px solid ThreedDarkShadow;
-	border-top: 1px solid ThreedDarkShadow;
-	border-right: 1px solid ThreeDLightShadow;
-	border-bottom: 1px solid ThreeDLightShadow;
+	border-left: 1px solid /*begin-color ThreedDarkShadow*/#606161/*end-color*/;
+	border-top: 1px solid /*begin-color ThreedDarkShadow*/#606161/*end-color*/;
+	border-right: 1px solid /*begin-color ThreeDLightShadow*/#f0f0f0/*end-color*/;
+	border-bottom: 1px solid /*begin-color ThreeDLightShadow*/#f0f0f0/*end-color*/;
 	padding: 2px;
 }
 
 /* separator line */
 .dialogseparator {
-	border-top: 1px solid ThreeDShadow;
-	border-bottom: 1px solid ThreeDHighlight;
+	border-top: 1px solid /*begin-color ThreeDShadow*/#999999/*end-color*/;
+	border-bottom: 1px solid /*begin-color ThreeDHighlight*/#ffffff/*end-color*/;
 	margin: 5px 0;
 }
 
@@ -732,7 +732,7 @@ input.dialogbutton {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
    <% if(style != NEW_ADMIN) { %>
-	background-color: ButtonFace;
+	background-color: /*begin-color ButtonFace*/#f0f0f0/*end-color*/;
    <% } %>
 	width: 100px;
 	height: 20px;
@@ -749,8 +749,8 @@ input.dialogmarkedfield {
 
 /* row marked as selected */
 .dialogmarked {
-	background-color: ActiveCaption;
-	color: CaptionText;
+	background-color: /*begin-color ActiveCaption*/#1f232a/*end-color*/;
+	color: /*begin-color CaptionText*/#ffffff/*end-color*/;
 	display: block;
 	cursor: pointer;
 	white-space: nowrap;
@@ -829,22 +829,22 @@ div.dialogpermissioninherit {
 
 /* definitions for "tab-style" dialogs */
 .dialogtab {
-	border-top: 1px solid ThreeDHighlight;
-	border-left: 1px solid ThreeDHighlight;
-	border-right: 2px solid ThreeDShadow;
-	background-color: ThreeDFace;
+	border-top: 1px solid /*begin-color ThreeDHighlight*/#ffffff/*end-color*/;
+	border-left: 1px solid /*begin-color ThreeDHighlight*/#ffffff/*end-color*/;
+	border-right: 2px solid /*begin-color ThreeDShadow*/#999999/*end-color*/;
+	background-color: /*begin-color ThreeDFace*/#f0f0f0/*end-color*/;
 	text-align: center;
 	color: #000;
 	white-space: nowrap;
 }
 
 .dialogtabactive {
-	border-top: 2px solid ThreeDHighlight;
-	border-left: 2px solid ThreeDHighlight;
-	border-right: 2px solid ThreeDShadow;
-	background-color: ThreeDFace;
+	border-top: 2px solid /*begin-color ThreeDHighlight*/#ffffff/*end-color*/;
+	border-left: 2px solid /*begin-color ThreeDHighlight*/#ffffff/*end-color*/;
+	border-right: 2px solid /*begin-color ThreeDShadow*/#999999/*end-color*/;
+	background-color: /*begin-color ThreeDFace*/#f0f0f0/*end-color*/;
 	text-align: center;
-	color: CaptionText;
+	color: /*begin-color CaptionText*/#ffffff/*end-color*/;
 	font-weight: bold;
 	white-space: nowrap;
 }
@@ -857,31 +857,31 @@ div.dialogpermissioninherit {
 .dialogtabrow {
 	height: 1px;
 	<% if(!(style == NEW_ADMIN)) { %>
-	background-color: ThreeDHighlight;
+	background-color: /*begin-color ThreeDHighlight*/#ffffff/*end-color*/;
 	<% } %>
 }
 
 .dialogtabcontent {
-	border-left: 1px solid ThreeDHighlight;
-	border-right: 2px solid ThreeDShadow;
-	border-bottom: 2px solid ThreeDShadow;
+	border-left: 1px solid /*begin-color ThreeDHighlight*/#ffffff/*end-color*/;
+	border-right: 2px solid /*begin-color ThreeDShadow*/#999999/*end-color*/;
+	border-bottom: 2px solid /*begin-color ThreeDShadow*/#999999/*end-color*/;
 	padding: 15px;
 	margin-top: -1px;
 }
 
 a.tab {
-	color: WindowText;
+	color: /*begin-color WindowText*/#000000/*end-color*/;
 	text-decoration: none;
 	display: block;
 	padding: 4px;
 }
 
 a.tab:hover {
-	color: GrayText;
+	color: /*begin-color GrayText*/#999999/*end-color*/;
 }
 
 span.tabactive {
-	color: WindowText;
+	color: /*begin-color WindowText*/#000000/*end-color*/;
 	text-decoration: none;
 	display: block;
 	padding: 4px;
@@ -889,7 +889,7 @@ span.tabactive {
 
 <% if(!(style == NEW_ADMIN)) { %>
 body.report {
-	background-color: Window;
+	background-color: /*begin-color Window*/#ffffff/*end-color*/;
 }
 <% } %>
 
@@ -900,14 +900,14 @@ body.report {
 table.logindialog {
     margin: 20px auto;
 	width: 550px;
-	border-left: 1px solid ThreeDLightShadow;
-	border-top: 1px solid ThreeDLightShadow;
-	border-right: 1px solid ThreedDarkShadow;
-	border-bottom: 1px solid ThreedDarkShadow;
+	border-left: 1px solid /*begin-color ThreeDLightShadow*/#f0f0f0/*end-color*/;
+	border-top: 1px solid /*begin-color ThreeDLightShadow*/#f0f0f0/*end-color*/;
+	border-right: 1px solid /*begin-color ThreedDarkShadow*/#606161/*end-color*/;
+	border-bottom: 1px solid /*begin-color ThreedDarkShadow*/#606161/*end-color*/;
 }
 
 div.loginsecurity {
-	border-bottom: 1px solid ThreeDHighlight;
+	border-bottom: 1px solid /*begin-color ThreeDHighlight*/#ffffff/*end-color*/;
 	padding-bottom: 10px;
 	margin-bottom: 10px;
 }
@@ -915,7 +915,7 @@ div.loginsecurity {
 input.loginbutton {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
-	background-color: ButtonFace;
+	background-color: /*begin-color ButtonFace*/#f0f0f0/*end-color*/;
 	width: 148px;
 	height: 23px;
 	padding: 0 5px;
@@ -930,15 +930,15 @@ input.loginbutton {
 	min-height: 100px;
 	max-height: 250px;
 	overflow: auto;
-	background-color: InfoBackground;
-	border: 2px inset ButtonFace;
+	background-color: /*begin-color InfoBackground*/#f9f9f9/*end-color*/;
+	border: 2px inset /*begin-color ButtonFace*/#f0f0f0/*end-color*/;
 }
 
 #ouSelId div {
 	margin-bottom: 6px;
 	padding: 4px;
-	background-color: Window;
-	border: 1px solid ButtonShadow;
+	background-color: /*begin-color Window*/#ffffff/*end-color*/;
+	border: 1px solid /*begin-color ButtonShadow*/#999999/*end-color*/;
 	cursor: pointer;
 }
 
@@ -954,24 +954,24 @@ input.loginbutton {
 	display: block;
 	font-size: 12px;
 	font-weight: bold;
-	color: InfoText;
+	color: /*begin-color InfoText*/#ffffff/*end-color*/;
 	padding-bottom: 2px;
 }
 
 #ouSelId div span.path {
 	display: block;
-	color: GrayText;
+	color: /*begin-color GrayText*/#999999/*end-color*/;
 	font-size: 11px;
 	font-style: italic;
 	overflow: hidden;
 }
 
 #ouSelId div:hover span.name, #ouSelId div:hover span.path, #ouSelId div.active span.name, #ouSelId div.active span.path {
-	color: HighlightText;
+	color: /*begin-color HighlightText*/#ffffff/*end-color*/;
 }
 
 #ouSearchId input.inactive {
-	color: GrayText;
+	color: /*begin-color GrayText*/#999999/*end-color*/;
 }
 
 .timewarp {
@@ -991,11 +991,11 @@ body.buttons-head {
 	font-size: 11px;
 	padding: 0px;
 	margin: 0px;
-	background-color: ThreeDFace;
-	border-top: 1px solid ThreeDHighlight;
-	border-left: 1px solid ThreeDHighlight;
-	border-bottom: 1px solid ThreeDShadow;
-	border-right: 1px solid ThreeDShadow;
+	background-color: /*begin-color ThreeDFace*/#f0f0f0/*end-color*/;
+	border-top: 1px solid /*begin-color ThreeDHighlight*/#ffffff/*end-color*/;
+	border-left: 1px solid /*begin-color ThreeDHighlight*/#ffffff/*end-color*/;
+	border-bottom: 1px solid /*begin-color ThreeDShadow*/#999999/*end-color*/;
+	border-right: 1px solid /*begin-color ThreeDShadow*/#999999/*end-color*/;
 }
 
 /* Body used for workplace foot (top_foot.html) */
@@ -1004,11 +1004,11 @@ body.buttons-foot {
 	font-size: 11px;
 	padding: 0px;
 	margin: 0px;
-	background-color: ThreeDFace;
-	border-top: 1px solid ThreeDLightShadow;
-	border-left: 1px solid ThreeDHighlight;
-	border-bottom: 1px solid ThreeDShadow;
-	border-right: 1px solid ThreeDShadow;
+	background-color: /*begin-color ThreeDFace*/#f0f0f0/*end-color*/;
+	border-top: 1px solid /*begin-color ThreeDLightShadow*/#f0f0f0/*end-color*/;
+	border-left: 1px solid /*begin-color ThreeDHighlight*/#ffffff/*end-color*/;
+	border-bottom: 1px solid /*begin-color ThreeDShadow*/#999999/*end-color*/;
+	border-right: 1px solid /*begin-color ThreeDShadow*/#999999/*end-color*/;
 }
 
 /* ########## Dialog styles ########## */
@@ -1017,8 +1017,8 @@ body.dialogadmin {
 	margin-top: 0;
 	margin-left: auto;
 	margin-right: auto;
-	/*background-color: Window;
-	border-top: 1px solid ThreedDarkShadow;*/
+	/*background-color: /*begin-color Window*/#ffffff/*end-color*/;
+	border-top: 1px solid /*begin-color ThreedDarkShadow*/#606161/*end-color*/;*/
 }
 
 .texteditor {
@@ -1027,22 +1027,22 @@ body.dialogadmin {
 }
 
 .buttonbackground {
-	border-top: 1px solid ThreeDHighlight;
-	border-left: 1px solid ThreeDHighlight;
-	border-right: 1px solid ThreeDShadow;
-	border-bottom: 1px solid ThreeDShadow;
+	border-top: 1px solid /*begin-color ThreeDHighlight*/#ffffff/*end-color*/;
+	border-left: 1px solid /*begin-color ThreeDHighlight*/#ffffff/*end-color*/;
+	border-right: 1px solid /*begin-color ThreeDShadow*/#999999/*end-color*/;
+	border-bottom: 1px solid /*begin-color ThreeDShadow*/#999999/*end-color*/;
 	padding: 1px;
-	background-color: ThreeDFace;	
+	background-color: /*begin-color ThreeDFace*/#f0f0f0/*end-color*/;	
 }
 
 .editorbuttonbackground {<%
 	if (style == NEW_ADMIN) { %>
-	border-top: 1px solid ThreeDHighlight;
-	border-left: 1px solid ThreeDHighlight;
-	border-right: 1px solid ThreeDShadow;
-	border-bottom: 1px solid ThreeDShadow;
+	border-top: 1px solid /*begin-color ThreeDHighlight*/#ffffff/*end-color*/;
+	border-left: 1px solid /*begin-color ThreeDHighlight*/#ffffff/*end-color*/;
+	border-right: 1px solid /*begin-color ThreeDShadow*/#999999/*end-color*/;
+	border-bottom: 1px solid /*begin-color ThreeDShadow*/#999999/*end-color*/;
 	padding: 1px;
-	background-color: ThreeDFace;<% } %>
+	background-color: /*begin-color ThreeDFace*/#f0f0f0/*end-color*/;<% } %>
 }
 
 /* definitions for xmlcontent editor form */
@@ -1052,7 +1052,7 @@ body.dialogadmin {
 
 .xmlTableNested { 
 	width:100%;
-	border: 2px outset ThreeDHighlight;
+	border: 2px outset /*begin-color ThreeDHighlight*/#ffffff/*end-color*/;
 }
 
 .xmlTd    { 
@@ -1063,7 +1063,7 @@ body.dialogadmin {
 
 .xmlTdDisabled {
 	font-style: italic; 
-	border-right: 1px dotted ThreeDShadow;
+	border-right: 1px dotted /*begin-color ThreeDShadow*/#999999/*end-color*/;
 	padding: 3px;
 }
 
@@ -1098,7 +1098,7 @@ body.dialogadmin {
 }
 
 .xmlInput { 
-	border: 1px solid WindowFrame;<%
+	border: 1px solid /*begin-color WindowFrame*/#000000/*end-color*/;<%
 	if (style == NEW_ADMIN) { %>
 	margin: 0;
 	padding: 0;<% } %>
@@ -1110,42 +1110,42 @@ body.dialogadmin {
 
 .xmlInputSmall { 
 	width: 200px; 
-	border: 1px solid WindowFrame; 
+	border: 1px solid /*begin-color WindowFrame*/#000000/*end-color*/; 
 }
 
 .xmlInputMedium { 
 	width: 400px;
-	border: 1px solid WindowFrame;
+	border: 1px solid /*begin-color WindowFrame*/#000000/*end-color*/;
 }
 
 .xmlHtmlGallery {
 	overflow: auto;
-	border: 1px solid WindowFrame;<%
+	border: 1px solid /*begin-color WindowFrame*/#000000/*end-color*/;<%
 	if (style == NEW_ADMIN) { %>
 	margin: 0;
 	padding: 0;<% } %>
 }
 
 .xmlButtons {
-	color: WindowText; 
+	color: /*begin-color WindowText*/#000000/*end-color*/; 
 	position: absolute; 
 	top: 0px; 
 	left: 0px; 
 	width: 90px; 
-	border-top: 1px solid ThreeDHighlight;
-	border-left: 1px solid ThreeDHighlight;
-	border-right: 1px solid ThreeDShadow;
-	border-bottom: 1px solid ThreeDShadow;
+	border-top: 1px solid /*begin-color ThreeDHighlight*/#ffffff/*end-color*/;
+	border-left: 1px solid /*begin-color ThreeDHighlight*/#ffffff/*end-color*/;
+	border-right: 1px solid /*begin-color ThreeDShadow*/#999999/*end-color*/;
+	border-bottom: 1px solid /*begin-color ThreeDShadow*/#999999/*end-color*/;
 	padding: 2px;
-	background-color: ThreeDFace; 
+	background-color: /*begin-color ThreeDFace*/#f0f0f0/*end-color*/; 
 	visibility: hidden; 
 	font-size: 8pt;
 }
 
 div.xmlChoiceItem {
 	cursor: pointer;
-	background-color: Window;
-	border: 1px solid ButtonShadow;
+	background-color: /*begin-color Window*/#ffffff/*end-color*/;
+	border: 1px solid /*begin-color ButtonShadow*/#999999/*end-color*/;
 	margin: 6px 0;
 	padding: 4px;
 	font-weight: bold;
@@ -1153,14 +1153,14 @@ div.xmlChoiceItem {
 
 div.xmlChoiceHelp {
 	padding-top: 2px;
-	color: GrayText;
+	color: /*begin-color GrayText*/#999999/*end-color*/;
 	font-style: italic;
 	font-weight: normal;
 }
 
 div.xmlChoiceItem:hover, div.xmlChoiceItem:hover div.xmlChoiceHelp {
 	background-color: #a8adb4;
-	color: HighlightText;
+	color: /*begin-color HighlightText*/#ffffff/*end-color*/;
 }
 
 .textInput {<%
@@ -1178,8 +1178,8 @@ div.widgetcombo {
     padding: 0px;
     width: 300px;
     overflow: hidden;
-    border: 1px solid WindowFrame; 
-    background-color: Window;
+    border: 1px solid /*begin-color WindowFrame*/#000000/*end-color*/; 
+    background-color: /*begin-color Window*/#ffffff/*end-color*/;
     visibility: hidden;
 }
 
@@ -1191,14 +1191,14 @@ button.widgetcombobutton {
 div.widgetcombo a {
 	text-decoration: none;
 	display:block;
-	background-color: Window;
-	color: WindowText;
+	background-color: /*begin-color Window*/#ffffff/*end-color*/;
+	color: /*begin-color WindowText*/#000000/*end-color*/;
 	width: 100%;
 }
 
 div.widgetcombo a:hover {
-	background-color: Highlight;
-	color: HighlightText;
+	background-color: /*begin-color Highlight*/#1f232a/*end-color*/;
+	color: /*begin-color HighlightText*/#ffffff/*end-color*/;
 }
 
 <% } 
@@ -1207,12 +1207,12 @@ div.widgetcombo a:hover {
    
 body, h1, h2, h3, h4, h5, h6, p, td, caption, th, ul, ol, dl, li, dd, dt {
 	font-family: Verdana, Arial, Helvetica, sans-serif; 
-	color: WindowText; 
+	color: /*begin-color WindowText*/#000000/*end-color*/; 
 	font-size: 11px;
 }
 
 body { 
-	background-color: Window;
+	background-color: /*begin-color Window*/#ffffff/*end-color*/;
 	margin: 0;
 	padding: 0;
 }
@@ -1253,8 +1253,8 @@ table.helpcontent {
 
 /* navigation cell */
 td.helpnav { 
-	background-color: ThreeDFace; 
-	border-right: 1px solid ThreeDShadow; 
+	background-color: /*begin-color ThreeDFace*/#f0f0f0/*end-color*/; 
+	border-right: 1px solid /*begin-color ThreeDShadow*/#999999/*end-color*/; 
 	padding: 5px;
 	vertical-align: top;
 	width: 30%;
@@ -1262,7 +1262,7 @@ td.helpnav {
 
 /* content cell */
 td.helpcontent { 
-	background-color: Window; 
+	background-color: /*begin-color Window*/#ffffff/*end-color*/; 
 	padding: 5px 5px 5px 15px; 
 	vertical-align: top;
 	width: 70%;
@@ -1272,20 +1272,20 @@ td.helpcontent {
 a.navhelphead, a.navhelphead:link, a.navhelphead:visited {
 	-moz-box-sizing: border-box; 
 	color: #000000;
-	background-color: ThreeDFace; 
+	background-color: /*begin-color ThreeDFace*/#f0f0f0/*end-color*/; 
 	width: 100%; 
 	margin-bottom: 5px; 
 	padding: 2px; 
 	display: block; 
 	text-align: left; 
-	border: 1px solid WindowFrame;
+	border: 1px solid /*begin-color WindowFrame*/#000000/*end-color*/;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
 	text-decoration: none;
 }
 
 a.navhelphead:hover, a.navhelphead:active {
-	color: #000088;
+	color: /*begin-color TextHover*/#b31b34/*end-color*/;
 	text-decoration: underline;
 }
 
@@ -1297,7 +1297,7 @@ a.navhelp, a.navhelp:link, a.navhelp:visited {
 }
 
 a.navhelp:hover, a.navhelp:active {
-	color: #000088;
+	color: /*begin-color TextHover*/#b31b34/*end-color*/;
 	text-decoration: underline;
 }
 
@@ -1323,8 +1323,8 @@ a.navhelp:hover, a.navhelp:active {
 /* error messages style */
 .dialogerror {
 	color: #c03;
-	background-color: infobackground;
-	border: 1px solid threedshadow;
+	background-color: /*begin-color infobackground*/#f9f9f9/*end-color*/;
+	border: 1px solid /*begin-color threedshadow*/#999999/*end-color*/;
 	padding: 4px;
 	display:block;
 }
@@ -1332,8 +1332,8 @@ a.navhelp:hover, a.navhelp:active {
 .searchResult {
 	color: #000000; 
 	font-weight:bold;
-	background-color: infobackground;
-	border: 1px solid threedshadow;
+	background-color: /*begin-color infobackground*/#f9f9f9/*end-color*/;
+	border: 1px solid /*begin-color threedshadow*/#999999/*end-color*/;
 	padding: 4px;
 	margin-bottom:4px;
 	display:block;
@@ -1342,7 +1342,7 @@ a.navhelp:hover, a.navhelp:active {
 .searchExcerpt {
 	color: #999999; 
 	font-weight:normal;
-	background-color: infobackground;
+	background-color: /*begin-color infobackground*/#f9f9f9/*end-color*/;
 	border: 0;
 	padding: 4px;
 	display:block;
@@ -1354,8 +1354,8 @@ a.navhelp:hover, a.navhelp:active {
 .searchResult {
 	color: #000000; 
 	font-weight:bold;
-	background-color: infobackground;
-	border: 1px solid threedshadow;
+	background-color: /*begin-color infobackground*/#f9f9f9/*end-color*/;
+	border: 1px solid /*begin-color threedshadow*/#999999/*end-color*/;
 	padding: 4px;
 	margin-bottom:4px;
 	display:block;
@@ -1364,7 +1364,7 @@ a.navhelp:hover, a.navhelp:active {
 .searchExcerpt {
 	color: #999999; 
 	font-weight:normal;
-	background-color: infobackground;
+	background-color: /*begin-color infobackground*/#f9f9f9/*end-color*/;
 	border: 0;
 	padding: 4px;
 	display:block;
@@ -1377,7 +1377,7 @@ a.navhelp, a.navhelp:link, a.navhelp:visited {
 }
 
 a.navhelp:hover, a.navhelp:active {
-	color: #000088;
+	color: /*begin-color TextHover*/#b31b34/*end-color*/;
 	text-decoration: underline;
 }
 
@@ -1417,14 +1417,14 @@ a.searchcategory:hover, a.searchcategory:active {
 %>
 
 .help { 
-    color: InfoText; 
+    color: /*begin-color InfoText*/#ffffff/*end-color*/; 
     position: absolute; 
     top: 0px; 
     left: 0px; 
     padding: 5px; 
     width: 200px; 
-    border: 1px solid WindowFrame; 
-    background-color: InfoBackground; 
+    border: 1px solid /*begin-color WindowFrame*/#000000/*end-color*/; 
+    background-color: /*begin-color InfoBackground*/#f9f9f9/*end-color*/; 
     visibility: hidden; 
     font-size: 8pt; 
 } 

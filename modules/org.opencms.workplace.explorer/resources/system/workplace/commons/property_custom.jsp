@@ -170,7 +170,7 @@ function submitAdvanced() {
 function toggleNav() {
 	var checked = document.getElementById("enablenav").checked;
 	var disableField = false;
-	var inputStyle = "Window";
+	var inputStyle = /*begin-color Window*/"#ffffff"/*end-color*/;
 	if (checked == true && document.getElementById("enablenav").disabled == false) {
 		if (document.getElementById("<%= wp.PREFIX_HIDDEN %>NavText")) {
 			var hiddenValue = document.getElementById("<%= wp.PREFIX_HIDDEN %>NavText").value;
@@ -181,7 +181,7 @@ function toggleNav() {
 		}	
 	} else {
 		disableField = true;
-		inputStyle = "Menu";
+		inputStyle = /*begin-color Menu*/"#f0f0f0"/*end-color*/;
 		if (document.getElementById("<%= wp.PREFIX_USEPROPERTY %>NavText")) {
 			document.getElementById("<%= wp.PREFIX_USEPROPERTY %>NavText").checked = false;
 			toggleDelete('NavText');
