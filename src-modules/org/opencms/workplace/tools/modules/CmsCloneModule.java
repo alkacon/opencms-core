@@ -81,10 +81,46 @@ import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.base.Function;
+import com.google.common.base.Functions;
+
 /**
  * Clones a module.<p>
  */
 public class CmsCloneModule extends CmsJspActionElement {
+
+    /** 
+     * String replacement function.<p>
+     */
+    class ReplaceAll implements Function<String, String> {
+
+        /** Regex to match. */
+        private String m_from;
+
+        /** Replacement for the regex. */
+        private String m_to;
+
+        /**
+         * Creates a new instance.<p>
+         * 
+         * @param from the regex to match  
+         * @param to the replacement 
+         */
+        public ReplaceAll(String from, String to) {
+
+            m_from = from;
+            m_to = to;
+        }
+
+        /**
+         * @see com.google.common.base.Function#apply(java.lang.Object)
+         */
+        public String apply(String input) {
+
+            return input.replaceAll(m_from, m_to);
+        }
+
+    }
 
     /** The icon path. */
     public static final String ICON_PATH = CmsWorkplace.VFS_PATH_RESOURCES + CmsWorkplace.RES_PATH_FILETYPES;
@@ -726,7 +762,11 @@ public class CmsCloneModule extends CmsJspActionElement {
                     CmsFormatterConfigurationCache.TYPE_FORMATTER_CONFIG).getTypeId()));
             String source = "<Type><!\\[CDATA\\[" + m_sourceNamePrefix;
             String target = "<Type><!\\[CDATA\\[" + m_targetNamePrefix;
-            replaceResourceTypeNames(resources, source, target);
+            Function<String, String> replaceType = new ReplaceAll(source, target);
+
+            for (CmsResource resource : resources) {
+                transformResource(resource, replaceType);
+            }
             resources.clear();
         }
 
@@ -736,12 +776,19 @@ public class CmsCloneModule extends CmsJspActionElement {
                 modPath + CmsADEManager.CONFIG_FILE_NAME,
                 CmsResourceFilter.requireType(OpenCms.getResourceManager().getResourceType(
                     CmsADEManager.MODULE_CONFIG_TYPE).getTypeId()));
+            Function<String, String> substitution = Functions.identity();
+            // compose the substitution functions from simple substitution functions for each type 
             for (Map.Entry<I_CmsResourceType, I_CmsResourceType> mapping : resTypeMap.entrySet()) {
-                replaceResourceTypeNames(
-                    Collections.singletonList(config),
+                substitution = Functions.compose(new ReplaceAll(
                     mapping.getKey().getTypeName(),
-                    mapping.getValue().getTypeName());
+                    mapping.getValue().getTypeName()), substitution);
             }
+            // Either replace prefix in or prepend it to the folder name value 
+            Function<String, String> replaceFolderName = new ReplaceAll("(<Folder>[ \n]*<Name><!\\[CDATA\\[)("
+                + m_sourceNamePrefix
+                + ")?", "$1" + m_targetNamePrefix);
+            substitution = Functions.compose(replaceFolderName, substitution);
+            transformResource(config, substitution);
         } catch (CmsVfsResourceNotFoundException e) {
             LOG.info(e.getLocalizedMessage(), e);
         }
@@ -1271,30 +1318,6 @@ public class CmsCloneModule extends CmsJspActionElement {
     }
 
     /**
-     * Replaces the source name with the target name within all the given resources.<p>
-     * 
-     * @param resources the resource to consider
-     * @param sourceName the source value
-     * @param targetName the target value
-     *  
-     * @throws CmsException if sth. goes wrong
-     * @throws UnsupportedEncodingException
-     */
-    private void replaceResourceTypeNames(List<CmsResource> resources, String sourceName, String targetName)
-    throws CmsException, UnsupportedEncodingException {
-
-        for (CmsResource resource : resources) {
-            CmsFile file = getCmsObject().readFile(resource);
-            String encoding = CmsLocaleManager.getResourceEncoding(getCmsObject(), file);
-            String content = new String(file.getContents(), encoding);
-            content = content.replaceAll(sourceName, targetName);
-            file.setContents(content.getBytes(encoding));
-            lockResource(getCmsObject(), file);
-            getCmsObject().writeFile(file);
-        }
-    }
-
-    /**
      * Replaces the messages for the given resources.<p>
      * 
      * @param descKeys the replacement mapping
@@ -1316,6 +1339,27 @@ public class CmsCloneModule extends CmsJspActionElement {
             file.setContents(content.getBytes(encoding));
             getCmsObject().writeFile(file);
         }
+    }
+
+    /**
+     * Reads a file into a string, applies a transformation to the string, and writes the string back to the file.<p>
+     * 
+     * @param resource the resource to transform 
+     * @param transformation the transformation to apply 
+     * @throws CmsException if something goes wrong 
+     * @throws UnsupportedEncodingException in case the encoding is not supported 
+     */
+    private void transformResource(CmsResource resource, Function<String, String> transformation)
+    throws CmsException, UnsupportedEncodingException {
+
+        CmsFile file = getCmsObject().readFile(resource);
+        String encoding = CmsLocaleManager.getResourceEncoding(getCmsObject(), file);
+        String content = new String(file.getContents(), encoding);
+        content = transformation.apply(content);
+        file.setContents(content.getBytes(encoding));
+        lockResource(getCmsObject(), file);
+        getCmsObject().writeFile(file);
+
     }
 
 }
