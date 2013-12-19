@@ -28,7 +28,6 @@
 package org.opencms.xml.containerpage;
 
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.relations.CmsLink;
@@ -119,33 +118,10 @@ public class CmsXmlContainerPageHandler extends CmsDefaultXmlContentHandler {
         try {
             String sitePath = cms.getRequestContext().removeSiteRoot(link.getTarget());
             // validate the link for error
-            CmsResource res = cms.readResource(sitePath, CmsResourceFilter.IGNORE_EXPIRATION);
-            // ignore expiration for offline project
-            if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
-                // check the time range 
-                if (res != null) {
-                    long time = System.currentTimeMillis();
-                    if (!res.isReleased(time)) {
-                        if (errorHandler != null) {
-                            // generate warning message
-                            errorHandler.addWarning(
-                                value,
-                                org.opencms.xml.content.Messages.get().getBundle(value.getLocale()).key(
-                                    org.opencms.xml.content.Messages.GUI_XMLCONTENT_CHECK_WARNING_NOT_RELEASED_0));
-                        }
-                        return true;
-                    } else if (res.isExpired(time)) {
-                        if (errorHandler != null) {
-                            // generate warning message
-                            errorHandler.addWarning(
-                                value,
-                                org.opencms.xml.content.Messages.get().getBundle(value.getLocale()).key(
-                                    org.opencms.xml.content.Messages.GUI_XMLCONTENT_CHECK_WARNING_EXPIRED_0));
-                        }
-                        return true;
-                    }
-                }
-            }
+            cms.readResource(sitePath, CmsResourceFilter.IGNORE_EXPIRATION);
+
+            // we handle expiration in the cms:container tag, so don't validate it here 
+
         } catch (CmsException e) {
             if (errorHandler != null) {
                 // generate error message

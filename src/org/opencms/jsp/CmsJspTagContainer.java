@@ -965,6 +965,10 @@ public class CmsJspTagContainer extends TagSupport {
         String containerType = getType();
         int containerWidth = getContainerWidth();
         element.initResource(cms);
+        if (cms.getRequestContext().getCurrentProject().isOnlineProject()
+            && !element.getResource().isReleasedAndNotExpired(System.currentTimeMillis())) {
+            return false;
+        }
         CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(
             cms,
             cms.getRequestContext().getRootUri());
