@@ -29,6 +29,7 @@ OpenCms 9.0.1 - xxxxxxxxx
 ! Implemented feature request #204 type name translation for "formatter_config" files. 
 * Fixed issue #205 where message bundles were accessed without locale.
 * Fixed issue #203 where source search refers a not existing constant.
+- Links to exported resources pasted into the WYSIWYG editor will now be resolved to the corresponding internal links 
 
 OpenCms 9.0.0 - November 8, 2013
 ! Improved configuration for content formatters
