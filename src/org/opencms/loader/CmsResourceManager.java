@@ -60,7 +60,6 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.I_CmsHtmlConverter;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.CmsXmlContentDefinition;
-import org.opencms.xml.CmsXmlException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -602,22 +601,33 @@ public class CmsResourceManager {
      * 
      * @param cms the current CMS context 
      * @return the map from resource types to the forbidden contexts 
-     * 
-     * @throws CmsXmlException if something goes wrong 
      */
-    public Map<String, CmsDefaultSet<String>> getAllowedContextMap(CmsObject cms) throws CmsXmlException {
+    public Map<String, CmsDefaultSet<String>> getAllowedContextMap(CmsObject cms) {
 
         Map<String, CmsDefaultSet<String>> result = new HashMap<String, CmsDefaultSet<String>>();
         for (I_CmsResourceType resType : getResourceTypes()) {
             if (resType instanceof CmsResourceTypeXmlContent) {
-                String schema = ((CmsResourceTypeXmlContent)resType).getSchema();
-                if (schema != null) {
-                    CmsXmlContentDefinition contentDefinition = CmsXmlContentDefinition.unmarshal(cms, schema);
+                String schema = null;
+                try {
+                    schema = ((CmsResourceTypeXmlContent)resType).getSchema();
+                    if (schema != null) {
+                        CmsXmlContentDefinition contentDefinition = CmsXmlContentDefinition.unmarshal(cms, schema);
 
-                    CmsDefaultSet<String> allowedContexts = contentDefinition.getContentHandler().getAllowedTemplates();
-                    result.put(resType.getTypeName(), allowedContexts);
-                } else {
-                    LOG.info("No schema for XML type " + resType.getTypeName() + " / " + resType.getClass().getName());
+                        CmsDefaultSet<String> allowedContexts = contentDefinition.getContentHandler().getAllowedTemplates();
+                        result.put(resType.getTypeName(), allowedContexts);
+                    } else {
+                        LOG.info("No schema for XML type "
+                            + resType.getTypeName()
+                            + " / "
+                            + resType.getClass().getName());
+                    }
+                } catch (Exception e) {
+                    LOG.error("Error in getAllowedContextMap, schema="
+                        + schema
+                        + ", type="
+                        + resType.getTypeName()
+                        + ", "
+                        + e.getLocalizedMessage(), e);
                 }
             }
         }

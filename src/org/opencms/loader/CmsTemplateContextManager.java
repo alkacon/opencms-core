@@ -388,7 +388,7 @@ public class CmsTemplateContextManager {
 
         try {
             return OpenCms.getResourceManager().getAllowedContextMap(m_cms);
-        } catch (CmsException e) {
+        } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);
             return Collections.emptyMap();
         }
