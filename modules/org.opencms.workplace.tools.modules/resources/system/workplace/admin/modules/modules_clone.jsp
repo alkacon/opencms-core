@@ -1,10 +1,16 @@
 <%@page buffer="none" session="false" trimDirectiveWhitespaces="true"%>
-<%@ page import="org.opencms.workplace.tools.modules.*" %>
+<%@ page import="org.opencms.workplace.tools.modules.*,org.opencms.workplace.*,org.opencms.jsp.*,org.opencms.file.*,org.opencms.main.*" %>
 <%@ page import = "java.util.Map" %>
 <%@taglib prefix="cms" uri="http://www.opencms.org/taglib/cms"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%
+		CmsJspActionElement jsp = new CmsJspActionElement(pageContext, request, response);
+		CmsObject cms = jsp.getCmsObject();
+		pageContext.setAttribute("locale",OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
+%>
+<fmt:setLocale value="${locale}" />
 <cms:bundle basename="org.opencms.workplace.tools.modules.messages">
 <jsp:useBean id="cloneModule" scope="request" class="org.opencms.workplace.tools.modules.CmsCloneModule">
 	<jsp:setProperty name="cloneModule" property="*" />
