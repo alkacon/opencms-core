@@ -222,6 +222,9 @@ public class CmsSetupXmlManager {
         if (CmsUpdateInfo.INSTANCE.needToSetCategoryFolder()) {
             m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlSetCategoryFolder());
         }
+
+        m_plugins.add(new org.opencms.setup.xml.v9.CmsXmlCleanUpSearchConfiguration());
+
         setup();
     }
 
