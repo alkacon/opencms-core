@@ -27,6 +27,7 @@
 
 package org.opencms.configuration;
 
+import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
@@ -68,7 +69,7 @@ public class TestConfiguration extends OpenCmsTestCase {
     public void testLoadXmlConfiguration() throws Exception {
 
         // get the file name of the input resource
-        String inputFile = OpenCmsTestProperties.getResourcePathFromClassloader("org/opencms/configuration/");
+        String inputFile = CmsResource.getParentFolder(OpenCmsTestProperties.getResourcePathFromClassloader("org/opencms/configuration/opencms.xml"));
 
         // generate the configuration manager
         CmsConfigurationManager manager = new CmsConfigurationManager(inputFile);
