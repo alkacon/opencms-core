@@ -32,6 +32,7 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
 
@@ -491,6 +492,7 @@ public class CmsSetupXmlHelper {
 
         if (document != null) {
             try {
+                CmsXmlUtils.validateXmlStructure(document, CmsEncoder.ENCODING_UTF_8, new CmsXmlEntityResolver(null));
                 OutputStream out = new FileOutputStream(getFile(xmlFilename));
                 CmsXmlUtils.marshal(document, out, CmsEncoder.ENCODING_UTF_8);
             } catch (FileNotFoundException e) {

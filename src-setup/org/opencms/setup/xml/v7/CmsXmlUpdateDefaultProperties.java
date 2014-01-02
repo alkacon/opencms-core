@@ -37,7 +37,6 @@ import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypePointer;
-import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.setup.xml.A_CmsSetupXmlUpdate;
 import org.opencms.setup.xml.CmsSetupXmlHelper;
 import org.opencms.util.CmsStringUtil;
@@ -178,9 +177,6 @@ public class CmsXmlUpdateDefaultProperties extends A_CmsSetupXmlUpdate {
         keys.add(new Pair("downloadgallery", CmsPropertyDefinition.PROPERTY_TITLE));
         keys.add(new Pair(CmsResourceTypeImage.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_TITLE));
         keys.add(new Pair(CmsResourceTypeImage.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_DESCRIPTION));
-        keys.add(new Pair(CmsResourceTypeXmlPage.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_TITLE));
-        keys.add(new Pair(CmsResourceTypeXmlPage.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_DESCRIPTION));
-        keys.add(new Pair(CmsResourceTypeXmlPage.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_KEYWORDS));
         keys.add(new Pair("xmlcontent", CmsPropertyDefinition.PROPERTY_TITLE));
         keys.add(new Pair("xmlcontent", CmsPropertyDefinition.PROPERTY_DESCRIPTION));
         keys.add(new Pair("xmlcontent", CmsPropertyDefinition.PROPERTY_KEYWORDS));
