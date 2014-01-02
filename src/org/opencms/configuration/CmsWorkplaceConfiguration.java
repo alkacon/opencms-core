@@ -316,8 +316,8 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     /** The node name of the gallery preferences node. */
     public static final String N_GALLERIESPREFERENCES = "galleries-preferences";
 
-    /** The node name of the gallery upload folder handler node. */
-    public static final String N_REPOSITORY_FOLDER = "repositoryfolder";
+    /** Node name. */
+    public static final String N_GALLERY_DEFAULT_SCOPE = "gallery-default-scope";
 
     /** The node name of the group-translation node. */
     public static final String N_GROUP_TRANSLATION = "group-translation";
@@ -405,6 +405,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
     /** The node name of the report type node. */
     public static final String N_REPORTTYPE = "reporttype";
+
+    /** The node name of the gallery upload folder handler node. */
+    public static final String N_REPOSITORY_FOLDER = "repositoryfolder";
 
     /** The node name of the restrict explorer view node. */
     public static final String N_RESTRICTEXPLORERVIEW = "restrictexplorerview";
@@ -522,9 +525,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
     /** The name of the xmlcontentautocorrection node. */
     public static final String N_XMLCONTENTAUTOCORRECTION = "xmlcontentautocorrection";
-
-    /** Node name. */
-    private static final String N_GALLERY_DEFAULT_SCOPE = "gallery-default-scope";
 
     /** The configured workplace manager. */
     private CmsWorkplaceManager m_workplaceManager;
