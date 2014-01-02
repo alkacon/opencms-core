@@ -46,7 +46,7 @@ configurations {
 
     testCompile{
         transitive = false
-        extendsFrom compile
+        extendsFrom modulesCompile
     }
 
     testRuntime{ transitive = false }
@@ -110,17 +110,12 @@ sourceSets{
     }
     test {
         java.srcDir 'test'
-        java.srcDir 'src'
-        java.srcDir 'src-modules'
-        java.srcDir 'src-setup'
         resources.srcDir 'test'
         resources.srcDir 'src'
         resources.srcDir 'src-modules'
         resources.srcDir 'src-setup'
     }
 }
-// tests require to use the classes folder also for resources
-sourceSets.test.output.resourcesDir =sourceSets.test.output.classesDir
 
 task componentsJar(type: Jar) {
     from sourceSets.components.output
@@ -130,9 +125,7 @@ task componentsJar(type: Jar) {
 }
 
 if (project.hasProperty('tomcat_update_target') && file(tomcat_update_target).exists()){
-    task tomcatUpdate {
-        doFirst { println "All generated Jar files will be copied to the configured lib folder." }
-    }
+    task tomcatUpdate { doFirst { println "All generated Jar files will be copied to the configured lib folder." } }
 }
 
 task enhance << {
@@ -464,7 +457,6 @@ allModuleNames.split(',').each{ moduleName ->
                         '2',
                         '-style',
                         'obfuscated',
-                        '-compileReport',
                         '-extra',
                         extraDir,
                         '-strict'
@@ -655,16 +647,6 @@ task bindist (dependsOn: war, type: Zip){
     }
 }
 
-compileTestJava {
-    // adding the GWT messages classes to the test source as the client message bundles will be tested as well
-    def testSource=fileTree(dir: "${projectDir}/src-gwt", include: [
-        '**/*Messages.java',
-        '**/CmsDateTimeUtil.java'
-    ], exclude: '**/super-src/**')
-    testSource =testSource.plus(sourceSets.test.java)
-    source testSource
-}
-
 test {
     useJUnit()
     include 'org/opencms/test/AllTests*'
@@ -674,14 +656,37 @@ test {
     testClassesDir = sourceSets.test.output.classesDir
     systemProperties['test.data.path'] = "${projectDir}/test/data"
     systemProperties['test.webapp.path'] = "${projectDir}/webapp"
-    systemProperties['test.build.folder'] =sourceSets.test.output.classesDir
+    systemProperties['test.build.folder'] =sourceSets.test.output.resourcesDir
     maxHeapSize = max_heap_size
     jvmArgs '-XX:MaxPermSize=256m'
     testLogging.showStandardStreams = true
     ignoreFailures true
 }
 
+task testJar(dependsOn: compileTestJava, type: Jar) {
+    from sourceSets.test.output
+    baseName 'opencms-test'
+    exclude '**/.gitignore'
+    exclude '**/*.java'
+}
 
+task javadocTest(type: Javadoc, dependsOn: jar) {
+    source = sourceSets.test.allJava
+    classpath = project.sourceSets.test.compileClasspath
+    destinationDir = file("${buildDir}/docs/javadocTest")
+}
+
+task javadocJarTest(type: Jar, dependsOn: javadocTest) {
+    classifier = 'javadoc'
+    from "${buildDir}/docs/javadocTest"
+    baseName 'opencms-test'
+}
+
+task sourcesJarTest(type: Jar) {
+    from sourceSets.test.allSource
+    classifier = 'sources'
+    baseName 'opencms-test'
+}
 
 artifacts {
     archives jar
@@ -690,6 +695,9 @@ artifacts {
     archives setupJar
     archives javadocJarSetup
     archives sourcesJarSetup
+    archives testJar
+    archives javadocJarTest
+    archives sourcesJarTest
     tasks.each{ task ->
         if (task.name.startsWith("jar_org.opencms.")){
             def moduleName=task.baseName
@@ -718,7 +726,7 @@ if (project.hasProperty('publish_repository')){
                     authentication(userName: publish_user, password: publish_password)
                 }
                 addFilter('core'){artifact, file ->
-                    artifact.name=='opencms-core'
+                    artifact.name.contains('opencms-core')
                 }
                 pom('core').project {
                     name product_name
@@ -803,6 +811,53 @@ if (project.hasProperty('publish_repository')){
                     dependency.setVersion(version_number)
                     pom.dependencies.add(dependency)
                 }
+                addFilter('test'){artifact, file ->
+                    artifact.name.contains('opencms-test')
+                }
+                pom('test').project {
+                    name product_name
+                    description product_description
+                    packaging 'jar'
+                    groupId 'org.opencms'
+                    url 'http://www.opencms.org'
+                    scm {
+                        url 'scm:git@github.com:alkacon/opencms-core.git'
+                        connection 'scm:git@github.com:alkacon/opencms-core.git'
+                        developerConnection 'scm:git@github.com:alkacon/opencms-core.git'
+                    }
+                    licenses {
+                        license {
+                            name 'GNU Lesser General Public License'
+                            url 'http://www.gnu.org/licenses/lgpl.html'
+                            distribution 'repo'
+                        }
+                    }
+                    organization {
+                        name 'Alkacon Software'
+                        url 'http://www.alkacon.com'
+                    }
+                    developers {
+                        developer {
+                            name 'Alkacon Software'
+                            url 'http://www.alkacon.com'
+                        }
+                    }
+                }
+                pom('test').whenConfigured {pom ->
+                    // the test jar depends on opencms-core and opencms-setup, override anything else
+                    pom.dependencies.clear()
+                    // to avoid class loading problems
+                    def dependency = pom.model.class.classLoader.loadClass("org.apache.maven.model.Dependency").newInstance();
+                    dependency.setGroupId("org.opencms")
+                    dependency.setArtifactId("opencms-core")
+                    dependency.setVersion(version_number)
+                    pom.dependencies.add(dependency)
+                    dependency = pom.model.class.classLoader.loadClass("org.apache.maven.model.Dependency").newInstance();
+                    dependency.setGroupId("org.opencms")
+                    dependency.setArtifactId("opencms-setup")
+                    dependency.setVersion(version_number)
+                    pom.dependencies.add(dependency)
+                }
                 artifacts.each{ arch ->
                     def filterName=arch.name
                     if (filterName.startsWith("org.opencms")){
@@ -849,6 +904,194 @@ if (project.hasProperty('publish_repository')){
                             dependency.setVersion(version_number)
                             pom.dependencies.add(dependency)
                         }
+                    }
+                }
+            }
+        }
+    }
+}
+
+install {
+    repositories {
+        mavenInstaller {
+            addFilter('core'){artifact, file ->
+                artifact.name.contains('opencms-core')
+            }
+            pom('core').project {
+                name product_name
+                description product_description
+                packaging 'jar'
+                groupId 'org.opencms'
+                url 'http://www.opencms.org'
+                scm {
+                    url 'scm:git@github.com:alkacon/opencms-core.git'
+                    connection 'scm:git@github.com:alkacon/opencms-core.git'
+                    developerConnection 'scm:git@github.com:alkacon/opencms-core.git'
+                }
+                licenses {
+                    license {
+                        name 'GNU Lesser General Public License'
+                        url 'http://www.gnu.org/licenses/lgpl.html'
+                        distribution 'repo'
+                    }
+                }
+                organization {
+                    name 'Alkacon Software'
+                    url 'http://www.alkacon.com'
+                }
+                developers {
+                    developer {
+                        name 'Alkacon Software'
+                        url 'http://www.alkacon.com'
+                    }
+                }
+            }
+            pom('core').scopeMappings.addMapping(1, configurations.distribution, 'runtime')
+            // all dependencies are non transitive, as gradle is ignoring this setting when creating the pom, we have to manipulate the pom
+            pom('core').whenConfigured {pom ->
+                pom.dependencies.each { dependency ->
+                    // to avoid class loading problems
+                    def exclusion = pom.model.class.classLoader.loadClass("org.apache.maven.model.Exclusion").newInstance();
+                    exclusion.setGroupId('*')
+                    exclusion.setArtifactId('*')
+                    dependency.addExclusion(exclusion)
+
+                }
+            }
+            addFilter('setup'){artifact, file ->
+                artifact.name.contains('opencms-setup')
+            }
+            pom('setup').project {
+                name product_name
+                description product_description
+                packaging 'jar'
+                groupId 'org.opencms'
+                url 'http://www.opencms.org'
+                scm {
+                    url 'scm:git@github.com:alkacon/opencms-core.git'
+                    connection 'scm:git@github.com:alkacon/opencms-core.git'
+                    developerConnection 'scm:git@github.com:alkacon/opencms-core.git'
+                }
+                licenses {
+                    license {
+                        name 'GNU Lesser General Public License'
+                        url 'http://www.gnu.org/licenses/lgpl.html'
+                        distribution 'repo'
+                    }
+                }
+                organization {
+                    name 'Alkacon Software'
+                    url 'http://www.alkacon.com'
+                }
+                developers {
+                    developer {
+                        name 'Alkacon Software'
+                        url 'http://www.alkacon.com'
+                    }
+                }
+            }
+            pom('setup').whenConfigured {pom ->
+                // the setup jar depends on opencms-core, override anything else
+                pom.dependencies.clear()
+                // to avoid class loading problems
+                def dependency = pom.model.class.classLoader.loadClass("org.apache.maven.model.Dependency").newInstance();
+                dependency.setGroupId("org.opencms")
+                dependency.setArtifactId("opencms-core")
+                dependency.setVersion(version_number)
+                pom.dependencies.add(dependency)
+            }
+            addFilter('test'){artifact, file ->
+                artifact.name.contains('opencms-test')
+            }
+            pom('test').project {
+                name product_name
+                description product_description
+                packaging 'jar'
+                groupId 'org.opencms'
+                url 'http://www.opencms.org'
+                scm {
+                    url 'scm:git@github.com:alkacon/opencms-core.git'
+                    connection 'scm:git@github.com:alkacon/opencms-core.git'
+                    developerConnection 'scm:git@github.com:alkacon/opencms-core.git'
+                }
+                licenses {
+                    license {
+                        name 'GNU Lesser General Public License'
+                        url 'http://www.gnu.org/licenses/lgpl.html'
+                        distribution 'repo'
+                    }
+                }
+                organization {
+                    name 'Alkacon Software'
+                    url 'http://www.alkacon.com'
+                }
+                developers {
+                    developer {
+                        name 'Alkacon Software'
+                        url 'http://www.alkacon.com'
+                    }
+                }
+            }
+            pom('test').whenConfigured {pom ->
+                // the test jar depends on opencms-core and opencms-setup, override anything else
+                pom.dependencies.clear()
+                // to avoid class loading problems
+                def dependency = pom.model.class.classLoader.loadClass("org.apache.maven.model.Dependency").newInstance();
+                dependency.setGroupId("org.opencms")
+                dependency.setArtifactId("opencms-core")
+                dependency.setVersion(version_number)
+                pom.dependencies.add(dependency)
+                dependency = pom.model.class.classLoader.loadClass("org.apache.maven.model.Dependency").newInstance();
+                dependency.setGroupId("org.opencms")
+                dependency.setArtifactId("opencms-setup")
+                dependency.setVersion(version_number)
+                pom.dependencies.add(dependency)
+            }
+            artifacts.each{ arch ->
+                def filterName=arch.name
+                if (filterName.startsWith("org.opencms")){
+                    filterName=filterName.substring(0, filterName.lastIndexOf(".jar"))
+                    addFilter(filterName){artifact, file ->
+                        artifact.name.startsWith(filterName)
+                    }
+                    pom(filterName).project {
+                        name product_name
+                        description product_description
+                        packaging 'jar'
+                        groupId 'org.opencms'
+                        url 'http://www.opencms.org'
+                        scm {
+                            url 'scm:git@github.com:alkacon/opencms-core.git'
+                            connection 'scm:git@github.com:alkacon/opencms-core.git'
+                            developerConnection 'scm:git@github.com:alkacon/opencms-core.git'
+                        }
+                        licenses {
+                            license {
+                                name 'GNU Lesser General Public License'
+                                url 'http://www.gnu.org/licenses/lgpl.html'
+                                distribution 'repo'
+                            }
+                        }
+                        organization {
+                            name 'Alkacon Software'
+                            url 'http://www.alkacon.com'
+                        }
+                        developers {
+                            developer {
+                                name 'Alkacon Software'
+                                url 'http://www.alkacon.com'
+                            }
+                        }
+                    }
+                    pom(filterName).whenConfigured {pom ->
+                        // the jars depend on opencms-core, override anything else
+                        pom.dependencies.clear()
+                        // to avoid class loading problems
+                        def dependency = pom.model.class.classLoader.loadClass("org.apache.maven.model.Dependency").newInstance();
+                        dependency.setGroupId("org.opencms")
+                        dependency.setArtifactId("opencms-core")
+                        dependency.setVersion(version_number)
+                        pom.dependencies.add(dependency)
                     }
                 }
             }
