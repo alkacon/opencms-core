@@ -36,7 +36,6 @@ import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypePointer;
-import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.setup.xml.A_CmsXmlWorkplace;
 import org.opencms.setup.xml.CmsSetupXmlHelper;
 import org.opencms.util.CmsStringUtil;
@@ -83,37 +82,36 @@ public class CmsXmlUpdateDefaultPermissions extends A_CmsXmlWorkplace {
                     + "='???']";
                 if ((xpath.indexOf(CmsResourceTypeJsp.getStaticTypeName()) < 0) && (xpath.indexOf("XMLTemplate") < 0)) {
                     if (xpath.indexOf(CmsWorkplaceConfiguration.N_DEFAULTACCESSCONTROL) < 0) {
-                        changed = (0 < CmsSetupXmlHelper.setValue(document, CmsStringUtil.substitute(
-                            xp,
-                            "???",
-                            "DEFAULT"), null))
+                        changed = (0 < CmsSetupXmlHelper.setValue(
+                            document,
+                            CmsStringUtil.substitute(xp, "???", "DEFAULT"),
+                            null))
                             || changed;
-                        changed = (0 < CmsSetupXmlHelper.setValue(document, CmsStringUtil.substitute(
-                            xp,
-                            "???",
-                            "GROUP.Guests"), null))
+                        changed = (0 < CmsSetupXmlHelper.setValue(
+                            document,
+                            CmsStringUtil.substitute(xp, "???", "GROUP.Guests"),
+                            null))
                             || changed;
                     }
-                    changed = (0 < CmsSetupXmlHelper.setValue(document, CmsStringUtil.substitute(
-                        xp,
-                        "???",
-                        "GROUP.Administrators"), null))
+                    changed = (0 < CmsSetupXmlHelper.setValue(
+                        document,
+                        CmsStringUtil.substitute(xp, "???", "GROUP.Administrators"),
+                        null))
                         || changed;
                 }
-                changed = (0 < CmsSetupXmlHelper.setValue(document, CmsStringUtil.substitute(
-                    xp,
-                    "???",
-                    "GROUP.Projectmanagers"), null))
+                changed = (0 < CmsSetupXmlHelper.setValue(
+                    document,
+                    CmsStringUtil.substitute(xp, "???", "GROUP.Projectmanagers"),
+                    null))
                     || changed;
                 changed = (0 < CmsSetupXmlHelper.setValue(
                     document,
                     CmsStringUtil.substitute(xp, "???", "GROUP.Users"),
+                    null)) || changed;
+                changed = (0 < CmsSetupXmlHelper.setValue(
+                    document,
+                    CmsStringUtil.substitute(xp, "???", "GROUP.TestGroup"),
                     null))
-                    || changed;
-                changed = (0 < CmsSetupXmlHelper.setValue(document, CmsStringUtil.substitute(
-                    xp,
-                    "???",
-                    "GROUP.TestGroup"), null))
                     || changed;
                 if (CmsSetupXmlHelper.getValue(document, xpath + "/" + CmsWorkplaceConfiguration.N_ACCESSENTRY) == null) {
                     if ((xpath.indexOf(CmsResourceTypeJsp.getStaticTypeName()) < 0)
@@ -167,7 +165,6 @@ public class CmsXmlUpdateDefaultPermissions extends A_CmsXmlWorkplace {
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", "imagegallery"));
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", "downloadgallery"));
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", "xmlcontent"));
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypeXmlPage.getStaticTypeName()));
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypePlain.getStaticTypeName()));
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypeImage.getStaticTypeName()));
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypeJsp.getStaticTypeName()));

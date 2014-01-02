@@ -36,7 +36,6 @@ import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypePointer;
-import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.setup.xml.A_CmsXmlWorkplace;
 import org.opencms.setup.xml.CmsSetupXmlHelper;
 import org.opencms.util.CmsStringUtil;
@@ -173,8 +172,6 @@ public class CmsXmlAddContextMenuItems extends A_CmsXmlWorkplace {
 
             subs.put("${res}", "publishscheduledresource");
             subs.put("${etype}", "xmlcontent");
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), subs));
-            subs.put("${etype}", CmsResourceTypeXmlPage.getStaticTypeName());
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), subs));
             subs.put("${etype}", CmsResourceTypePlain.getStaticTypeName());
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), subs));
