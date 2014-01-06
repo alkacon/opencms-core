@@ -141,6 +141,9 @@ public class CmsPublish {
     /** The current user workplace locale. */
     protected final Locale m_workplaceLocale;
 
+    /** The relation validator instance. */
+    private CmsRelationPublishValidator m_relationValidator;
+
     /**
      * Creates a new instance.<p>
      * 
@@ -223,6 +226,7 @@ public class CmsPublish {
         }
 
         CmsRelationPublishValidator validator = new CmsRelationPublishValidator(m_cms, publishList);
+        m_relationValidator = validator;
         for (String resourceName : validator.keySet()) {
             CmsRelationValidatorInfoEntry infoEntry = validator.getInfoEntry(resourceName);
             try {
@@ -278,6 +282,16 @@ public class CmsPublish {
         }
 
         return resources;
+    }
+
+    /**
+     * Gets the relation validator instance.<p>
+     * 
+     * @return the relation validator 
+     */
+    public CmsRelationPublishValidator getRelationValidator() {
+
+        return m_relationValidator;
     }
 
     /**
