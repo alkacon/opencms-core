@@ -52,9 +52,15 @@ import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.logging.Log;
 
@@ -341,12 +347,80 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
     protected CmsWorkflowResponse actionPublish(
         CmsObject userCms,
         CmsPublishOptions options,
-        List<CmsResource> resources) throws CmsException {
+        final List<CmsResource> resources) throws CmsException {
 
-        CmsPublish publish = new CmsPublish(userCms, options);
-        List<CmsPublishResource> brokenResources = publish.getBrokenResources(resources);
-        if (brokenResources.size() == 0) {
-            publish.publishResources(resources);
+        final CmsPublish publish = new CmsPublish(userCms, options);
+
+        // use FutureTask to get the broken links, because we can then use a different thread if it takes too long 
+        final FutureTask<List<CmsPublishResource>> brokenResourcesGetter = new FutureTask<List<CmsPublishResource>>(
+            new Callable<List<CmsPublishResource>>() {
+
+                public List<CmsPublishResource> call() throws Exception {
+
+                    return publish.getBrokenResources(resources);
+                }
+            });
+
+        Thread brokenResourcesThread = new Thread(brokenResourcesGetter);
+        brokenResourcesThread.start();
+        try {
+            List<CmsPublishResource> brokenResources = brokenResourcesGetter.get(10, TimeUnit.SECONDS);
+            if (brokenResources.size() == 0) {
+                publish.publishResources(resources);
+                CmsWorkflowResponse response = new CmsWorkflowResponse(
+                    true,
+                    "",
+                    new ArrayList<CmsPublishResource>(),
+                    new ArrayList<CmsWorkflowAction>(),
+                    null);
+                return response;
+            } else {
+                String brokenResourcesLabel = getLabel(userCms, Messages.GUI_BROKEN_LINKS_0);
+                boolean canForcePublish = OpenCms.getWorkplaceManager().getDefaultUserSettings().isAllowBrokenRelations()
+                    || OpenCms.getRoleManager().hasRole(userCms, CmsRole.VFS_MANAGER);
+                List<CmsWorkflowAction> actions = new ArrayList<CmsWorkflowAction>();
+                if (canForcePublish) {
+                    String forceLabel = getLabel(userCms, Messages.GUI_WORKFLOW_ACTION_FORCE_PUBLISH_0);
+                    actions.add(new CmsWorkflowAction(ACTION_FORCE_PUBLISH, forceLabel, true, true));
+                }
+                CmsWorkflowResponse response = new CmsWorkflowResponse(
+                    false,
+                    brokenResourcesLabel,
+                    brokenResources,
+                    actions,
+                    null);
+                return response;
+            }
+        } catch (TimeoutException e) {
+            // Things are taking too long, do them in a different thread and just return "OK" to the client
+            Thread thread = new Thread() {
+
+                @SuppressWarnings("synthetic-access")
+                @Override
+                public void run() {
+
+                    LOG.info("Checking broken relations is taking too long, using a different thread for checking and publishing now.");
+                    try {
+                        // Make sure the computation is finished by calling get() without a timeout parameter 
+                        // We don't need the actual result of the get(), though; we just get the set of resource paths from the validator object  
+                        brokenResourcesGetter.get();
+                        List<CmsResource> resourcesToPublish = new ArrayList<CmsResource>(resources);
+                        Iterator<CmsResource> resIter = resourcesToPublish.iterator();
+                        while (resIter.hasNext()) {
+                            CmsResource currentRes = resIter.next();
+                            if (publish.getRelationValidator().keySet().contains(currentRes.getRootPath())) {
+                                resIter.remove();
+                                LOG.info("Excluding resource from publish list because relations would be broken: "
+                                    + currentRes.getRootPath());
+                            }
+                        }
+                        publish.publishResources(resourcesToPublish);
+                    } catch (Exception ex) {
+                        LOG.error(ex.getLocalizedMessage(), ex);
+                    }
+                }
+            };
+            thread.start();
             CmsWorkflowResponse response = new CmsWorkflowResponse(
                 true,
                 "",
@@ -354,22 +428,14 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
                 new ArrayList<CmsWorkflowAction>(),
                 null);
             return response;
-        } else {
-            String brokenResourcesLabel = getLabel(userCms, Messages.GUI_BROKEN_LINKS_0);
-            boolean canForcePublish = OpenCms.getWorkplaceManager().getDefaultUserSettings().isAllowBrokenRelations()
-                || OpenCms.getRoleManager().hasRole(userCms, CmsRole.VFS_MANAGER);
-            List<CmsWorkflowAction> actions = new ArrayList<CmsWorkflowAction>();
-            if (canForcePublish) {
-                String forceLabel = getLabel(userCms, Messages.GUI_WORKFLOW_ACTION_FORCE_PUBLISH_0);
-                actions.add(new CmsWorkflowAction(ACTION_FORCE_PUBLISH, forceLabel, true, true));
-            }
-            CmsWorkflowResponse response = new CmsWorkflowResponse(
-                false,
-                brokenResourcesLabel,
-                brokenResources,
-                actions,
-                null);
-            return response;
+        } catch (InterruptedException e) {
+            // shouldn't happen; log exception 
+            LOG.error(e.getLocalizedMessage());
+            return null;
+        } catch (ExecutionException e) {
+            // shouldn't happen; log exception 
+            LOG.error(e.getLocalizedMessage());
+            return null;
         }
     }
 }
