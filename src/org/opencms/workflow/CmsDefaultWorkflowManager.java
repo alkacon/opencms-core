@@ -33,6 +33,7 @@ import org.opencms.ade.publish.CmsPublish;
 import org.opencms.ade.publish.CmsRealProjectVirtualWrapper;
 import org.opencms.ade.publish.I_CmsVirtualProject;
 import org.opencms.ade.publish.shared.CmsProjectBean;
+import org.opencms.ade.publish.shared.CmsPublishListToken;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.ade.publish.shared.CmsWorkflow;
@@ -70,6 +71,12 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
     /** The publish workflow action. */
     public static final String ACTION_PUBLISH = "publish";
 
+    /** Default value for the maximum number of resources in the initial publish list. */
+    public static int DEFAULT_RESOURCE_LIMIT = 1000;
+
+    /** The parameter name for the resource limit. */
+    public static final String PARAM_RESOURCE_LIMIT = "resourceLimit";
+
     /** The name for the publish action. */
     public static final String WORKFLOW_PUBLISH = "WORKFLOW_PUBLISH";
 
@@ -78,6 +85,9 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
 
     /** The map of registered virtual  projects. */
     protected Map<CmsUUID, I_CmsVirtualProject> m_virtualProjects = Maps.newHashMap();
+
+    /** The number of resources in the initial publish list above which the resources are not being displayed to the user. */
+    private int m_resourceLimit = DEFAULT_RESOURCE_LIMIT;
 
     /** 
      * Constructor.<p>
@@ -132,6 +142,20 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
 
         CmsDefaultPublishResourceFormatter formatter = new CmsDefaultPublishResourceFormatter(cms);
         return formatter;
+    }
+
+    /**
+     * @see org.opencms.workflow.I_CmsWorkflowManager#executeAction(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsWorkflowAction, org.opencms.ade.publish.shared.CmsPublishListToken)
+     */
+    public CmsWorkflowResponse executeAction(CmsObject cms, CmsWorkflowAction action, CmsPublishListToken token)
+    throws CmsException {
+
+        if (action.getAction().equals(CmsWorkflowAction.ACTION_CANCEL)) {
+            // Don't need to get the resource list for canceling 
+            return new CmsWorkflowResponse(true, action.getAction(), null, null, null);
+        }
+        List<CmsResource> resources = getWorkflowResources(cms, token.getWorkflow(), token.getOptions());
+        return executeAction(cms, action, token.getOptions(), resources);
     }
 
     /**
@@ -194,10 +218,17 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
             if (projectBean != null) {
                 manProjs.add(projectBean);
             }
-
         }
 
         return manProjs;
+    }
+
+    /**
+     * @see org.opencms.workflow.I_CmsWorkflowManager#getPublishListToken(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsWorkflow, org.opencms.ade.publish.shared.CmsPublishOptions)
+     */
+    public CmsPublishListToken getPublishListToken(CmsObject cms, CmsWorkflow workflow, CmsPublishOptions options) {
+
+        return new CmsPublishListToken(workflow, options);
     }
 
     /**
@@ -210,6 +241,14 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
             project = new CmsRealProjectVirtualWrapper(projectId);
         }
         return project;
+    }
+
+    /**
+     * @see org.opencms.workflow.I_CmsWorkflowManager#getResourceLimit()
+     */
+    public int getResourceLimit() {
+
+        return m_resourceLimit;
     }
 
     /**
@@ -246,6 +285,21 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
         CmsWorkflow publishWorkflow = new CmsWorkflow(WORKFLOW_PUBLISH, workflowLabel, actions);
         result.put(WORKFLOW_PUBLISH, publishWorkflow);
         return result;
+    }
+
+    /**
+     * @see org.opencms.workflow.A_CmsWorkflowManager#initialize(org.opencms.file.CmsObject)
+     */
+    @Override
+    public void initialize(CmsObject adminCms) {
+
+        super.initialize(adminCms);
+        String resourceLimitStr = getParameter(PARAM_RESOURCE_LIMIT, "invalid").trim();
+        try {
+            m_resourceLimit = Integer.parseInt(resourceLimitStr);
+        } catch (NumberFormatException e) {
+            // ignore, resource limit will remain at the default setting  
+        }
     }
 
     /**

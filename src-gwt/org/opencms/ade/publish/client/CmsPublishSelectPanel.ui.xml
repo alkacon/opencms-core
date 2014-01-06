@@ -7,6 +7,11 @@
 	<ui:with field="res" type="org.opencms.ade.publish.client.I_CmsPublishLayoutBundle" />
 	<ui:with field="input" type="org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle" />
 	<ui:with field="main" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
+	<ui:style>
+		.tooManyResources {
+			padding: 40px;
+		}
+	</ui:style>
 	<g:FlowPanel styleName="{res.publishCss.selectPanel}">
 		<g:FlowPanel ui:field="m_selectorPanel" styleName="{res.publishCss.selectorPanel}">
 			<g:InlineLabel styleName="{res.publishCss.selectorLabel}" ui:field="m_workflowsLabel" />
@@ -17,6 +22,7 @@
 		<g:FlowPanel ui:field="m_topBar" styleName="{res.publishCss.topBar}">
 		</g:FlowPanel>
 		<g:Label ui:field="m_noResources" styleName="{res.publishCss.noResources}" />
+		<g:Label ui:field="m_tooManyResources" styleName="{style.tooManyResources}" />
 		<cms:CmsScrollPanel ui:field="m_scrollPanel" addStyleNames="{res.publishCss.scrollPanel} {main.generalCss.cornerAll}">
 			<g:FlowPanel ui:field="m_groupPanelContainer" styleName="{res.publishCss.groupPanel}"></g:FlowPanel>
 		</cms:CmsScrollPanel>

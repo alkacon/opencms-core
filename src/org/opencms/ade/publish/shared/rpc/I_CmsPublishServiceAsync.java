@@ -28,15 +28,14 @@
 package org.opencms.ade.publish.shared.rpc;
 
 import org.opencms.ade.publish.shared.CmsPublishData;
-import org.opencms.ade.publish.shared.CmsPublishGroup;
+import org.opencms.ade.publish.shared.CmsPublishGroupList;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.ade.publish.shared.CmsWorkflow;
 import org.opencms.ade.publish.shared.CmsWorkflowAction;
+import org.opencms.ade.publish.shared.CmsWorkflowActionParams;
 import org.opencms.ade.publish.shared.CmsWorkflowResponse;
-import org.opencms.util.CmsUUID;
 
 import java.util.HashMap;
-import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -48,17 +47,14 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public interface I_CmsPublishServiceAsync {
 
     /**
-     * Asynchronous version of {@link I_CmsPublishService#executeAction(List, List, CmsWorkflowAction)}.<p>
-     * 
-     * @param toPublish the resources to publish 
-     * @param toRemove the resources to remove
      * @param action the work flow action
+     * @param params the data on which to perform the workflow action 
+     * 
      * @param callback the result callback 
      */
     void executeAction(
-        List<CmsUUID> toPublish,
-        List<CmsUUID> toRemove,
         CmsWorkflowAction action,
+        CmsWorkflowActionParams params,
         AsyncCallback<CmsWorkflowResponse> callback);
 
     /**
@@ -76,9 +72,6 @@ public interface I_CmsPublishServiceAsync {
      * @param options the publish list options
      * @param callback the result callback
      */
-    void getResourceGroups(
-        CmsWorkflow workflow,
-        CmsPublishOptions options,
-        AsyncCallback<List<CmsPublishGroup>> callback);
+    void getResourceGroups(CmsWorkflow workflow, CmsPublishOptions options, AsyncCallback<CmsPublishGroupList> callback);
 
 }

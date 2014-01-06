@@ -76,6 +76,9 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_RESOURCE_PUBLISHED_BY_2 = "GUI_RESOURCE_PUBLISHED_BY_2";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOO_MANY_RESOURCES_2 = "GUI_TOO_MANY_RESOURCES_2";
+
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.publish.messages";
 

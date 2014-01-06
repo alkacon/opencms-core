@@ -29,6 +29,7 @@ package org.opencms.workflow;
 
 import org.opencms.ade.publish.I_CmsVirtualProject;
 import org.opencms.ade.publish.shared.CmsProjectBean;
+import org.opencms.ade.publish.shared.CmsPublishListToken;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.ade.publish.shared.CmsWorkflow;
 import org.opencms.ade.publish.shared.CmsWorkflowAction;
@@ -55,6 +56,19 @@ public interface I_CmsWorkflowManager {
      * @return the publish resource formatter to use 
      */
     I_CmsPublishResourceFormatter createFormatter(CmsObject cms, CmsWorkflow workflow, CmsPublishOptions options);
+
+    /**
+     * Executes a workflow action for a publish list token instead of a resource list.<p>
+     * 
+     * @param cms the CMS context to use 
+     * @param action the action to perform 
+     * @param token the publish list token to use 
+     * 
+     * @return the workflow response 
+     * @throws CmsException if something goes wrong 
+     */
+    CmsWorkflowResponse executeAction(CmsObject cms, CmsWorkflowAction action, CmsPublishListToken token)
+    throws CmsException;
 
     /**
      * Executes a workflow action in the context of the current user.<p>
@@ -92,12 +106,32 @@ public interface I_CmsWorkflowManager {
     Map<String, String> getParameters();
 
     /**
+     * Gets a publish list token for the given parameters which can be used later to reconstruct the publish list.<p>
+     * 
+     * @param cms the CMS context to use 
+     * @param workflow the workflow 
+     * @param options the publish options 
+     * 
+     * @return the publish list token 
+     */
+    CmsPublishListToken getPublishListToken(CmsObject cms, CmsWorkflow workflow, CmsPublishOptions options);
+
+    /**
      * Gets the virtual project object identified by the given id.<p>
      * 
      * @param projectId the virtual project id 
      * @return the virtual project object 
      */
     I_CmsVirtualProject getRealOrVirtualProject(CmsUUID projectId);
+
+    /**
+     * Gets the resource limit.<p>
+     * 
+     * Publish lists which exceed this limit (counted before adding any related resources, siblings etc.) are not displayed to the user.<p>
+     * 
+     * @return the resource limit 
+     */
+    int getResourceLimit();
 
     /**
      * Returns the resources for the given workflow and project.<p>
