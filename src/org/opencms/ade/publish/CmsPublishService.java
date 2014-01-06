@@ -31,11 +31,14 @@ import org.opencms.ade.publish.CmsPublishRelationFinder.ResourceMap;
 import org.opencms.ade.publish.shared.CmsProjectBean;
 import org.opencms.ade.publish.shared.CmsPublishData;
 import org.opencms.ade.publish.shared.CmsPublishGroup;
+import org.opencms.ade.publish.shared.CmsPublishGroupList;
+import org.opencms.ade.publish.shared.CmsPublishListToken;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.ade.publish.shared.CmsPublishResourceInfo;
 import org.opencms.ade.publish.shared.CmsWorkflow;
 import org.opencms.ade.publish.shared.CmsWorkflowAction;
+import org.opencms.ade.publish.shared.CmsWorkflowActionParams;
 import org.opencms.ade.publish.shared.CmsWorkflowResponse;
 import org.opencms.ade.publish.shared.rpc.I_CmsPublishService;
 import org.opencms.file.CmsObject;
@@ -131,20 +134,24 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
     }
 
     /**
-     * @see org.opencms.ade.publish.shared.rpc.I_CmsPublishService#executeAction(java.util.List, java.util.List, org.opencms.ade.publish.shared.CmsWorkflowAction)
+     * @see org.opencms.ade.publish.shared.rpc.I_CmsPublishService#executeAction(org.opencms.ade.publish.shared.CmsWorkflowAction, org.opencms.ade.publish.shared.CmsWorkflowActionParams)
      */
-    public CmsWorkflowResponse executeAction(List<CmsUUID> toPublish, List<CmsUUID> toRemove, CmsWorkflowAction action)
+    public CmsWorkflowResponse executeAction(CmsWorkflowAction action, CmsWorkflowActionParams params)
     throws CmsRpcException {
 
         CmsWorkflowResponse response = null;
         try {
             CmsObject cms = getCmsObject();
-            CmsPublishOptions options = getCachedOptions();
-            CmsPublish pub = new CmsPublish(cms, options);
-            List<CmsResource> publishResources = idsToResources(cms, toPublish);
-            pub.removeResourcesFromPublishList(toRemove);
-            response = OpenCms.getWorkflowManager().executeAction(cms, action, options, publishResources);
-
+            if (params.getToken() == null) {
+                CmsPublishOptions options = getCachedOptions();
+                CmsPublish pub = new CmsPublish(cms, options);
+                List<CmsResource> publishResources = idsToResources(cms, params.getPublishIds());
+                Set<CmsUUID> toRemove = new HashSet<CmsUUID>(params.getRemoveIds());
+                pub.removeResourcesFromPublishList(toRemove);
+                response = OpenCms.getWorkflowManager().executeAction(cms, action, options, publishResources);
+            } else {
+                response = OpenCms.getWorkflowManager().executeAction(cms, action, params.getToken());
+            }
         } catch (Throwable e) {
             error(e);
         }
@@ -224,7 +231,7 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
     /**
      * @see org.opencms.ade.publish.shared.rpc.I_CmsPublishService#getResourceGroups(org.opencms.ade.publish.shared.CmsWorkflow,org.opencms.ade.publish.shared.CmsPublishOptions)
      */
-    public List<CmsPublishGroup> getResourceGroups(CmsWorkflow workflow, CmsPublishOptions options)
+    public CmsPublishGroupList getResourceGroups(CmsWorkflow workflow, CmsPublishOptions options)
     throws CmsRpcException {
 
         List<CmsPublishGroup> results = null;
@@ -234,6 +241,17 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
             I_CmsWorkflowManager workflowManager = OpenCms.getWorkflowManager();
             I_CmsPublishResourceFormatter formatter = workflowManager.createFormatter(cms, workflow, options);
             List<CmsResource> resources = workflowManager.getWorkflowResources(cms, workflow, options);
+
+            if (resources.size() > workflowManager.getResourceLimit()) {
+                // too many resources, send a publish list token to the client which can be used later to restore the resource list 
+                CmsPublishListToken token = workflowManager.getPublishListToken(cms, workflow, options);
+                CmsPublishGroupList result = new CmsPublishGroupList(token);
+                result.setTooManyResourcesMessage(Messages.get().getBundle(locale).key(
+                    Messages.GUI_TOO_MANY_RESOURCES_2,
+                    "" + resources.size(),
+                    "" + OpenCms.getWorkflowManager().getResourceLimit()));
+                return result;
+            }
             ResourceMap resourcesAndRelated = getResourcesAndRelated(
                 resources,
                 options.isIncludeRelated(),
@@ -271,7 +289,9 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
         } catch (Throwable e) {
             error(e);
         }
-        return results;
+        CmsPublishGroupList groupList = new CmsPublishGroupList();
+        groupList.setGroups(results);
+        return groupList;
     }
 
     /**

@@ -28,16 +28,15 @@
 package org.opencms.ade.publish.shared.rpc;
 
 import org.opencms.ade.publish.shared.CmsPublishData;
-import org.opencms.ade.publish.shared.CmsPublishGroup;
+import org.opencms.ade.publish.shared.CmsPublishGroupList;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.ade.publish.shared.CmsWorkflow;
 import org.opencms.ade.publish.shared.CmsWorkflowAction;
+import org.opencms.ade.publish.shared.CmsWorkflowActionParams;
 import org.opencms.ade.publish.shared.CmsWorkflowResponse;
 import org.opencms.gwt.CmsRpcException;
-import org.opencms.util.CmsUUID;
 
 import java.util.HashMap;
-import java.util.List;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 
@@ -51,16 +50,14 @@ public interface I_CmsPublishService extends RemoteService {
     /**
      * Tries to publish a list of resources.<p>
      * 
-     * @param toPublish list of IDs of resources to publish
-     * @param toRemove list of IDs of resources to remove from the publish list
      * @param action the work flow action
+     * @param params the data on which to perform the workflow action 
      *  
      * @return the workflow response
      * 
      * @throws CmsRpcException  if something goes wrong
      */
-    CmsWorkflowResponse executeAction(List<CmsUUID> toPublish, List<CmsUUID> toRemove, CmsWorkflowAction action)
-    throws CmsRpcException;
+    CmsWorkflowResponse executeAction(CmsWorkflowAction action, CmsWorkflowActionParams params) throws CmsRpcException;
 
     /**
      * Returns the initial publish data.<p>
@@ -83,6 +80,6 @@ public interface I_CmsPublishService extends RemoteService {
      *  
      * @throws CmsRpcException if something goes wrong
      */
-    List<CmsPublishGroup> getResourceGroups(CmsWorkflow workflow, CmsPublishOptions options) throws CmsRpcException;
+    CmsPublishGroupList getResourceGroups(CmsWorkflow workflow, CmsPublishOptions options) throws CmsRpcException;
 
 }

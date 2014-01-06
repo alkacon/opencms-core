@@ -43,7 +43,7 @@ public class CmsPublishData implements IsSerializable {
     public static final String DICT_NAME = "org_opencms_ade_publish";
 
     /** The publish groups. */
-    private List<CmsPublishGroup> m_groups;
+    private CmsPublishGroupList m_groups;
 
     /** The publish options. */
     private CmsPublishOptions m_options;
@@ -69,7 +69,7 @@ public class CmsPublishData implements IsSerializable {
     public CmsPublishData(
         CmsPublishOptions options,
         List<CmsProjectBean> projects,
-        List<CmsPublishGroup> groups,
+        CmsPublishGroupList groups,
         Map<String, CmsWorkflow> workflows,
         String selectedWorkflowId) {
 
@@ -93,7 +93,7 @@ public class CmsPublishData implements IsSerializable {
      *
      * @return the publish groups
      */
-    public List<CmsPublishGroup> getGroups() {
+    public CmsPublishGroupList getGroups() {
 
         return m_groups;
     }

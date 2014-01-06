@@ -30,6 +30,7 @@ package org.opencms.ade.publish.client;
 import org.opencms.ade.publish.client.CmsPublishItemStatus.Signal;
 import org.opencms.ade.publish.shared.CmsProjectBean;
 import org.opencms.ade.publish.shared.CmsPublishGroup;
+import org.opencms.ade.publish.shared.CmsPublishGroupList;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.ade.publish.shared.CmsWorkflow;
@@ -278,6 +279,10 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     @UiField
     protected FlowPanel m_selectorPanel;
 
+    /** Label which is shown instead of the resource list when the resource list is too long. */
+    @UiField
+    protected Label m_tooManyResources;
+
     /** The top button bar. */
     @UiField
     protected Panel m_topBar;
@@ -302,16 +307,22 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     /** The current group panel. */
     private CmsPublishGroupPanel m_currentGroupPanel;
 
+    /** Indicates whether a previously selected project has been found. */
+    private boolean m_foundOldProject;
+
     /** The list of group panels for each publish list group. */
     private List<CmsPublishGroupPanel> m_groupPanels = new ArrayList<CmsPublishGroupPanel>();
-
     /** Flag indicating that the panel has been initialized. */
     private boolean m_initialized;
+
     /** Checkbox for selecting/deselecting all items. */
     private CmsTriStateCheckBox m_selectAll;
 
     /** Flag which indicates whether only resources with problems should be shown. */
     private boolean m_showProblemsOnly;
+
+    /** Indicates whether the resources are being shown (which is not done if the resource list is too long). */
+    private boolean m_showResources = true;
 
     /**
      * Creates a new instance.<p>
@@ -362,16 +373,9 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
             workflowSelectorItems.put(workflow.getId(), workflow.getNiceName());
         }
         LinkedHashMap<String, String> projectSelectItems = new LinkedHashMap<String, String>();
-        //        CmsProjectBean myChangesDummyProject = new CmsProjectBean(
-        //            CmsUUID.getNullUUID(),
-        //            0,
-        //            messages.key(Messages.GUI_PUBLISH_DIALOG_MY_CHANGES_0),
-        //            null);
-        //        myChangesDummyProject.setRank(200);
-        //        projects.add(myChangesDummyProject);
         Collections.<CmsProjectBean> sort(projects);
 
-        boolean foundOldProject = false;
+        m_foundOldProject = false;
         boolean selectedWorkflowProject = false;
         for (CmsProjectBean project : projects) {
             if (project.isWorkflowProject()) {
@@ -384,7 +388,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
                 // look if the project id from the last publish list is among the available projects.
                 // (this might not be the case if the project has been deleted in the meantime.)
                 if (project.getId().equals(publishOptions.getProjectId())) {
-                    foundOldProject = true;
+                    m_foundOldProject = true;
                 }
             }
         }
@@ -400,7 +404,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
         m_projectSelector.setItems(projectSelectItems);
         m_projectSelector.addStyleName(CSS.selector());
-        if (!publishOptions.getProjectId().isNullUUID() && foundOldProject) {
+        if (!publishOptions.getProjectId().isNullUUID() && m_foundOldProject) {
             m_projectSelector.setFormValueAsString(publishOptions.getProjectId().toString());
         }
 
@@ -585,6 +589,18 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     }
 
     /**
+     * Returns if the resource list is being shown.<p>
+     * 
+     * The resource list is now shown if it is too long.<p>
+     * 
+     * @return true if the resource list is being shown 
+     */
+    public boolean isShowResources() {
+
+        return m_showResources;
+    }
+
+    /**
      * @see org.opencms.ade.publish.client.I_CmsPublishSelectionChangeHandler#onChangePublishSelection()
      */
     public void onChangePublishSelection() {
@@ -610,40 +626,39 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
      * @param groups the new publish groups
      * @param newData true if the groups are new data which has been loaded  
      */
-    public void setGroups(List<CmsPublishGroup> groups, boolean newData) {
+    public void setGroupList(CmsPublishGroupList groups, boolean newData) {
 
-        m_model = new CmsPublishDataModel(groups, this);
-        m_model.setSelectionChangeAction(new Runnable() {
+        if (groups.getToken() == null) {
+            setShowResources(true, "");
+            setGroups(groups.getGroups(), newData);
+        } else {
+            setShowResources(false, groups.getTooManyResourcesMessage());
+        }
+    }
 
-            public void run() {
+    /**
+     * Sets the mode to either show resources, or only show a "too many resources" message.<p>
+     * In the latter case, the check boxes for the siblings/related resources will be deactivated.<p>
+     * 
+     * @param showResources true if the resource list should be shown, false if only the given message should be shown 
+     * @param tooManyResourcesMessage the message to show if there are too many resources to display 
+     */
+    public void setShowResources(boolean showResources, String tooManyResourcesMessage) {
 
-                onChangePublishSelection();
-            }
-        });
-        m_currentGroupIndex = 0;
-        m_currentGroupPanel = null;
-        m_problemsPanel.clear();
-        if (newData) {
-            m_showProblemsOnly = false;
-            m_checkboxProblems.setChecked(false);
+        m_showResources = showResources;
+        m_checkboxRelated.setEnabled(showResources);
+        m_checkboxRelated.setChecked(showResources && m_publishDialog.getPublishOptions().isIncludeRelated());
+        m_checkboxSiblings.setEnabled(showResources);
+        m_checkboxSiblings.setChecked(showResources && m_publishDialog.getPublishOptions().isIncludeSiblings());
+        m_groupPanelContainer.setVisible(showResources);
+        m_tooManyResources.setVisible(!showResources);
+        m_tooManyResources.setText(tooManyResourcesMessage);
+        m_selectAll.setVisible(showResources);
+        if (!showResources) {
             m_checkboxProblems.setVisible(false);
-            m_problemsPanel.setVisible(false);
+            m_noResources.setVisible(false);
+            m_scrollPanel.setVisible(false);
         }
-        m_groupPanels.clear();
-        m_groupPanelContainer.clear();
-        m_scrollPanel.onResizeDescendant();
-        enableActions(false);
-
-        int numGroups = groups.size();
-        setResourcesVisible(numGroups > 0);
-
-        if (numGroups == 0) {
-            return;
-        }
-
-        enableActions(true);
-        addMoreListItems();
-        showProblemCount(m_model.countProblems());
     }
 
     /**
@@ -653,7 +668,9 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
      */
     public boolean shouldEnablePublishButton() {
 
-        boolean enablePublishButton = (getResourcesToRemove().size() != 0) || (getResourcesToPublish().size() != 0);
+        boolean enablePublishButton = (getResourcesToRemove().size() != 0)
+            || (getResourcesToPublish().size() != 0)
+            || !m_showResources;
         return enablePublishButton;
 
     }
@@ -805,6 +822,9 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     @UiHandler("m_checkboxRelated")
     protected void onRelatedClick(ClickEvent event) {
 
+        if (!m_showResources) {
+            return;
+        }
         m_publishDialog.setIncludeRelated(m_checkboxRelated.isChecked());
         m_publishDialog.updateResourceList();
     }
@@ -819,6 +839,9 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     @UiHandler("m_checkboxSiblings")
     protected void onSiblingClick(ClickEvent event) {
 
+        if (!m_showResources) {
+            return;
+        }
         m_publishDialog.setIncludeSiblings(m_checkboxSiblings.isChecked());
         m_publishDialog.updateResourceList();
     }
@@ -846,6 +869,47 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
             m_actions = m_publishDialog.getSelectedWorkflow().getActions();
             m_publishDialog.updateResourceList();
         }
+    }
+
+    /** 
+     * Sets the publish groups.<p>
+     * 
+     * @param groups the list of publish groups 
+     * @param newData true if the data is new 
+     */
+    protected void setGroups(List<CmsPublishGroup> groups, boolean newData) {
+
+        m_model = new CmsPublishDataModel(groups, this);
+        m_model.setSelectionChangeAction(new Runnable() {
+
+            public void run() {
+
+                onChangePublishSelection();
+            }
+        });
+        m_currentGroupIndex = 0;
+        m_currentGroupPanel = null;
+        m_problemsPanel.clear();
+        if (newData) {
+            m_showProblemsOnly = false;
+            m_checkboxProblems.setChecked(false);
+            m_checkboxProblems.setVisible(false);
+            m_problemsPanel.setVisible(false);
+        }
+        m_groupPanels.clear();
+        m_groupPanelContainer.clear();
+        m_scrollPanel.onResizeDescendant();
+        enableActions(false);
+
+        int numGroups = groups.size();
+        setResourcesVisible(numGroups > 0);
+
+        if (numGroups == 0) {
+            return;
+        }
+        enableActions(true);
+        addMoreListItems();
+        showProblemCount(m_model.countProblems());
     }
 
     /**
