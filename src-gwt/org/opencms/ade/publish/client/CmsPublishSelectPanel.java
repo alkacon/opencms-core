@@ -227,6 +227,10 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     @UiField
     protected CmsPushButton m_cancelButton;
 
+    /** Checkbox for including the contents of folders in the direct publish case. */
+    @UiField
+    protected CmsCheckBox m_checkboxAddContents;
+
     /** The checkbox for the "show problems only" mode. */
     @UiField
     protected CmsCheckBox m_checkboxProblems;
@@ -307,11 +311,14 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     /** The current group panel. */
     private CmsPublishGroupPanel m_currentGroupPanel;
 
+    /** The id of the virtual project used for 'direct publish'. */
+    private CmsUUID m_directPublishId;
+
     /** Indicates whether a previously selected project has been found. */
     private boolean m_foundOldProject;
-
     /** The list of group panels for each publish list group. */
     private List<CmsPublishGroupPanel> m_groupPanels = new ArrayList<CmsPublishGroupPanel>();
+
     /** Flag indicating that the panel has been initialized. */
     private boolean m_initialized;
 
@@ -347,6 +354,19 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         m_actions = workflows.get(selectedWorkflowId).getActions();
         m_actionButtons = new ArrayList<CmsPushButton>();
         initWidget(UI_BINDER.createAndBindUi(this));
+        boolean enableAddContents = false;
+        try {
+            enableAddContents = Boolean.parseBoolean(publishOptions.getParameters().get(
+                CmsPublishOptions.PARAM_ENABLE_INCLUDE_CONTENTS));
+        } catch (Exception e) {
+            // ignore; enableAddContents remains the default value 
+        }
+        m_checkboxAddContents.setVisible(enableAddContents);
+        if (enableAddContents) {
+            m_directPublishId = publishOptions.getProjectId();
+        }
+        String addContentsText = Messages.get().key(Messages.GUI_CHECKBOX_ADD_CONTENT_0);
+        m_checkboxAddContents.setText(addContentsText);
         m_selectAll = new CmsTriStateCheckBox("");
         m_selectAll.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().alignCheckboxBottom());
         m_selectAll.getElement().getStyle().setMarginLeft(4, Style.Unit.PX);
@@ -634,6 +654,8 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         } else {
             setShowResources(false, groups.getTooManyResourcesMessage());
         }
+        boolean isDirectPublish = m_publishDialog.getPublishOptions().getProjectId().equals(m_directPublishId);
+        m_checkboxAddContents.setVisible(isDirectPublish);
     }
 
     /**
@@ -770,6 +792,18 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
         m_loading = false;
         onChangePublishSelection();
+    }
+
+    /**
+     * Event handler for the 'add contents' check box.<p>
+     * 
+     * @param event
+     */
+    @UiHandler("m_checkboxAddContents")
+    protected void onAddContentsClick(ClickEvent event) {
+
+        setAddContents(m_checkboxAddContents.isChecked());
+        m_publishDialog.updateResourceList();
     }
 
     /**
@@ -990,6 +1024,18 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         for (CmsPushButton button : m_actionButtons) {
             button.setEnabled(enable);
         }
+    }
+
+    /**
+     * Enables / disables the 'add contents' option in the publish options object.<p>
+     * 
+     * @param addContents true if folder contents should be added 
+     */
+    private void setAddContents(boolean addContents) {
+
+        m_publishDialog.getPublishOptions().getParameters().put(
+            CmsPublishOptions.PARAM_INCLUDE_CONTENTS,
+            "" + addContents);
     }
 
     /**

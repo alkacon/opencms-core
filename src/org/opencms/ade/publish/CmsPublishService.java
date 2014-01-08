@@ -56,6 +56,8 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workflow.I_CmsPublishResourceFormatter;
 import org.opencms.workflow.I_CmsWorkflowManager;
+import org.opencms.workplace.CmsDialog;
+import org.opencms.workplace.CmsMultiDialog;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -71,6 +73,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 /**
  * The implementation of the publish service.<p>
@@ -110,8 +113,9 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
         srv.setCms(CmsFlexController.getCmsObject(request));
         srv.setRequest(request);
         CmsPublishData result = null;
+        HashMap<String, String> params = Maps.newHashMap();
         try {
-            result = srv.getInitData(new HashMap<String, String>());
+            result = srv.getInitData(params);
         } finally {
             srv.clearThreadStorage();
         }
@@ -166,12 +170,14 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
         CmsPublishData result = null;
         CmsObject cms = getCmsObject();
         try {
+
+            String closeLink = getRequest().getParameter(CmsDialog.PARAM_CLOSELINK);
+
             Map<String, CmsWorkflow> workflows = OpenCms.getWorkflowManager().getWorkflows(cms);
             if (workflows.isEmpty()) {
                 throw new Exception("No workflow available for the current user");
             }
             String workflowId = getRequest().getParameter(PARAM_WORKFLOW_ID);
-
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(workflowId) || !workflows.containsKey(workflowId)) {
                 workflowId = getLastWorkflowForUser();
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(workflowId) || !workflows.containsKey(workflowId)) {
@@ -180,6 +186,14 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
             }
             setLastWorkflowForUser(workflowId);
             String projectParam = getRequest().getParameter(PARAM_PUBLISH_PROJECT_ID);
+            String filesParam = getRequest().getParameter(CmsMultiDialog.PARAM_RESOURCELIST);
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(filesParam)) {
+                filesParam = getRequest().getParameter(CmsDialog.PARAM_RESOURCE);
+            }
+            // need to put this into params here so that the virtual project for direct publishing is included in the result of getManageableProjects()
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(filesParam)) {
+                params.put(CmsPublishOptions.PARAM_FILES, filesParam);
+            }
             boolean useCurrentPage = params.containsKey(CmsPublishOptions.PARAM_START_WITH_CURRENT_PAGE);
             CmsPublishOptions options = getCachedOptions();
             List<CmsProjectBean> projects = OpenCms.getWorkflowManager().getManageableProjects(cms, params);
@@ -187,6 +201,10 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
             CmsUUID selectedProject = null;
             if (useCurrentPage) {
                 selectedProject = CmsCurrentPageProject.ID;
+                foundProject = true;
+            } else if (!CmsStringUtil.isEmptyOrWhitespaceOnly(filesParam)) {
+                params.put(CmsPublishOptions.PARAM_ENABLE_INCLUDE_CONTENTS, "true");
+                selectedProject = CmsDirectPublishProject.ID;
                 foundProject = true;
             } else {
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(projectParam) && CmsUUID.isValidUUID(projectParam)) {
@@ -222,6 +240,7 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
                 getResourceGroups(workflows.get(workflowId), options),
                 workflows,
                 workflowId);
+            result.setCloseLink(closeLink);
         } catch (Throwable e) {
             error(e);
         }
