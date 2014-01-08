@@ -289,7 +289,7 @@
 						<separator />
 						<entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp"
 							rule="copytoproject" />
-						<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp"
+						<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="/system/modules/org.opencms.ade.publish/direct_publish.jsp"
 							rule="directpublish" />
 						<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_SCHEDULED_0" uri="commons/publishscheduledresource.jsp"
 							rule="publishscheduled" />
@@ -456,7 +456,7 @@
 						<separator />
 						<entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp"
 							rule="copytoproject" />
-						<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp"
+						<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="/system/modules/org.opencms.ade.publish/direct_publish.jsp"
 							rule="directpublish" />
 						<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_SCHEDULED_0" uri="commons/publishscheduledresource.jsp"
 							rule="publishscheduled" />
