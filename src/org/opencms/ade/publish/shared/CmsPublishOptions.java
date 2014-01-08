@@ -48,6 +48,15 @@ public class CmsPublishOptions implements Serializable {
     /** Parameter name for the detail content structure id. */
     public static final String PARAM_DETAIL = "detail";
 
+    /** Parameter for enabling the 'add contents' check box. */
+    public static final String PARAM_ENABLE_INCLUDE_CONTENTS = "enable_include_contents";
+
+    /** The name of the parameter used for passing in the list of resources. */
+    public static final String PARAM_FILES = "files";
+
+    /** The name of the parameter which controls whether to add sub-resources of folders. */
+    public static final String PARAM_INCLUDE_CONTENTS = "include_contents";
+
     /** Parameter for indicating that the initial project should be the 'current page' virtual project. */
     public static final String PARAM_START_WITH_CURRENT_PAGE = "startWithCurrentPage";
 

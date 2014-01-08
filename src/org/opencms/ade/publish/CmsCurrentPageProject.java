@@ -57,9 +57,6 @@ public class CmsCurrentPageProject implements I_CmsVirtualProject {
     /** The uuid of this virtual project. */
     public static final CmsUUID ID = CmsUUID.getConstantUUID("currentpage");
 
-    /** A static instance of this class. */
-    public static final CmsCurrentPageProject INSTANCE = new CmsCurrentPageProject();
-
     /** The logger for this class. */
     static final Log LOG = CmsLog.getLog(CmsCurrentPageProject.class);
 

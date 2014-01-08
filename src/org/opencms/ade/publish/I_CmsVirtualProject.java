@@ -46,6 +46,8 @@ public interface I_CmsVirtualProject {
     /**
      * Gets the project bean.<p>
      * 
+     * Should return null if the virtual project is not available or applicable for the given parameters.<p>
+     * 
      * @param cms the CMS context to use
      * @param params the publish parameters 
      * 

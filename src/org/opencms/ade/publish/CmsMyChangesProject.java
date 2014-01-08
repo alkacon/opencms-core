@@ -51,9 +51,6 @@ public class CmsMyChangesProject implements I_CmsVirtualProject {
     /** The project id. */
     public static final CmsUUID ID = CmsUUID.getNullUUID();
 
-    /** The instance to use. */
-    public static final I_CmsVirtualProject INSTANCE = new CmsMyChangesProject();
-
     /** The logger for this class. */
     private static final Log LOG = CmsLog.getLog(CmsMyChangesProject.class);
 

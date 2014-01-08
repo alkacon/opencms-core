@@ -28,6 +28,7 @@
 package org.opencms.workflow;
 
 import org.opencms.ade.publish.CmsCurrentPageProject;
+import org.opencms.ade.publish.CmsDirectPublishProject;
 import org.opencms.ade.publish.CmsMyChangesProject;
 import org.opencms.ade.publish.CmsPublish;
 import org.opencms.ade.publish.CmsRealProjectVirtualWrapper;
@@ -100,8 +101,9 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
      */
     public CmsDefaultWorkflowManager() {
 
-        m_virtualProjects.put(CmsCurrentPageProject.ID, CmsCurrentPageProject.INSTANCE);
-        m_virtualProjects.put(CmsMyChangesProject.ID, CmsMyChangesProject.INSTANCE);
+        m_virtualProjects.put(CmsCurrentPageProject.ID, new CmsCurrentPageProject());
+        m_virtualProjects.put(CmsMyChangesProject.ID, new CmsMyChangesProject());
+        m_virtualProjects.put(CmsDirectPublishProject.ID, new CmsDirectPublishProject());
     }
 
     /**

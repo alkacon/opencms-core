@@ -29,7 +29,6 @@ package org.opencms.ade.publish.client;
 
 import org.opencms.ade.publish.client.CmsPublishDialog.State;
 import org.opencms.ade.publish.shared.CmsWorkflowAction;
-import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
 
@@ -49,21 +48,25 @@ import com.google.gwt.user.client.ui.Panel;
  */
 public class CmsPublishConfirmationDialog extends CmsPopup {
 
+    /** The link which is opened after the dialog is finished. */
+    private String m_closeLink;
+
     /** The panel which contains the dialog contents. */
     private Panel m_panel = new HorizontalPanel();
 
     /**
      * Creates a new publish confirmation dialog.<p>
      * 
-     * @param dialog the publish dialog instance 
+     * @param dialog the publish dialog instance
+     * @param closeLink the link to open after the dialog is finished  
      */
-    public CmsPublishConfirmationDialog(CmsPublishDialog dialog) {
+    public CmsPublishConfirmationDialog(CmsPublishDialog dialog, String closeLink) {
 
         super(400);
         setModal(true);
         setGlassEnabled(true);
         CmsPublishDialog.State state = dialog.getState();
-
+        m_closeLink = closeLink;
         String message = "-";
         if (state == State.success) {
             CmsWorkflowAction lastAction = dialog.getLastAction();
@@ -100,12 +103,12 @@ public class CmsPublishConfirmationDialog extends CmsPopup {
 
         CmsPushButton workplaceButton = new CmsPushButton();
         workplaceButton.setText(getMessage(Messages.GUI_CONFIRMATION_WORKPLACE_BUTTON_0));
-        final String workplaceUri = CmsCoreProvider.get().getDefaultWorkplaceLink();
         workplaceButton.addClickHandler(new ClickHandler() {
 
+            @SuppressWarnings("synthetic-access")
             public void onClick(ClickEvent e) {
 
-                Window.Location.assign(workplaceUri);
+                Window.Location.assign(m_closeLink);
             }
         });
         List<CmsPushButton> result = new ArrayList<CmsPushButton>();

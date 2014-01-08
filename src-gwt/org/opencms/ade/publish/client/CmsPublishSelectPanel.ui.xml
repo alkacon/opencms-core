@@ -33,6 +33,9 @@
 			<cmsi:CmsCheckBox ui:field="m_checkboxSiblings"></cmsi:CmsCheckBox>
 		</cms:CmsSimplePanel>
 		<cms:CmsSimplePanel addStyleNames="{res.publishCss.checkboxes} {input.inputCss.alignCheckboxBottom}">
+			<cmsi:CmsCheckBox ui:field="m_checkboxAddContents" /> 
+		</cms:CmsSimplePanel>
+		<cms:CmsSimplePanel addStyleNames="{res.publishCss.checkboxes} {input.inputCss.alignCheckboxBottom}">
 			<cmsi:CmsCheckBox ui:field="m_checkboxProblems"></cmsi:CmsCheckBox>
 		</cms:CmsSimplePanel>
 		<cms:CmsSimplePanel ui:field="m_problemsPanel" styleName="{res.publishCss.problemPanel} {input.inputCss.alignCheckboxBottom}" />

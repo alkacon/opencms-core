@@ -49,12 +49,15 @@ public final class Messages {
     public static final String GUI_CHANGED_BY_USER_1 = "GUI_CHANGED_BY_USER_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_CHECKBOX_ALL_0 = "GUI_CHECKBOX_ALL_0";
+    public static final String GUI_CHECKBOX_ADD_CONTENT_0 = "GUI_CHECKBOX_ADD_CONTENT_0";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CHECKBOX_ALL_0 = "GUI_CHECKBOX_ALL_0";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CHECKBOX_DESELECT_ALL_0 = "GUI_CHECKBOX_DESELECT_ALL_0";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CHECKBOX_NONE_0 = "GUI_CHECKBOX_NONE_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CHECKBOX_SELECT_ALL_0 = "GUI_CHECKBOX_SELECT_ALL_0";
 

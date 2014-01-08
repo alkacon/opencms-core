@@ -121,6 +121,40 @@
         </accessentry>
       </accesscontrol>
     </file>
+    
+        <file>
+      <source>system/modules/org.opencms.ade.publish/direct_publish.jsp</source>
+      <destination>system/modules/org.opencms.ade.publish/direct_publish.jsp</destination>
+      <type>jsp</type>
+      <uuidstructure>4794cb7c-0e03-4e48-b3fb-55f807c07e75</uuidstructure>
+      <uuidresource>385bcf53-98dd-40fc-b1bb-4c1365e99f2b</uuidresource>
+      <datelastmodified>Thu, 08 Dec 2011 08:18:04 GMT</datelastmodified>
+      <userlastmodified>Admin</userlastmodified>
+      <datecreated>Thu, 08 Dec 2011 08:18:04 GMT</datecreated>
+      <usercreated>Admin</usercreated>
+      <flags>0</flags>
+      <properties>
+        <property type="shared">
+          <name>export</name>
+          <value><![CDATA[false]]></value>
+        </property>
+      </properties>
+      <relations/>
+      <accesscontrol>
+        <accessentry>
+          <uuidprincipal>ALL_OTHERS</uuidprincipal>
+          <flags>132</flags>
+          <permissionset>
+            <allowed>0</allowed>
+            <denied>0</denied>
+          </permissionset>
+        </accessentry>
+      </accesscontrol>
+    </file>
+    
+    
+    
+    
     <file>
       <destination>system/modules/org.opencms.ade.publish/resources</destination>
       <type>folder</type>
