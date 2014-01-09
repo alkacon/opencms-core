@@ -1,6 +1,7 @@
 <%@ page import="
 	org.opencms.editors.codemirror.*,
 	org.opencms.jsp.*,
+	org.opencms.util.*,
 	org.opencms.workplace.*,
 	org.opencms.workplace.editors.*,
 	org.opencms.workplace.help.*"
@@ -25,14 +26,42 @@ break;
 case CmsEditor.ACTION_EXIT:
 //////////////////// ACTION: exit the editor without saving
 
-	wp.actionExit();
+	if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(wp.getParamCloseFunction()) && !"null".equals(wp.getParamCloseFunction())) {
+	    wp.actionClear(false);
+		%>
+		<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+		<html>
+			<head>
+				<script type="text/javascript">
+					<%= wp.getParamCloseFunction() %>
+				</script>
+			</head>
+		</html>
+		<%
+	} else {
+		wp.actionExit();
+	}
 
 break;
 case CmsEditor.ACTION_SAVEEXIT:
 //////////////////// ACTION: save the modified content and exit the editor
 
 	wp.actionSave();
-	wp.actionExit();
+	if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(wp.getParamCloseFunction()) && !"null".equals(wp.getParamCloseFunction())) {
+	    wp.actionClear(false);
+		%>
+		<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+		<html>
+			<head>
+				<script type="text/javascript">
+					<%= wp.getParamCloseFunction() %>
+				</script>
+			</head>
+		</html>
+		<%
+	} else {
+		wp.actionExit();
+	}
 
 break;
 case CmsEditor.ACTION_SAVE:
@@ -127,6 +156,19 @@ if (modeName.equals("text/html")) {
 
 	// the fold function to use
 	var foldFunc = CodeMirror.newFoldFunction(CodeMirror.<% if (mode.equals(CmsCodeMirror.HIGHLIGHT_TYPE_HTML) || mode.equals(CmsCodeMirror.HIGHLIGHT_TYPE_XML)) { out.print("tagRangeFinder"); } else { out.print("braceRangeFinder"); } %>);
+	
+	// the optional JS close function name to call
+	var callCloseFunction = false;
+	<%
+		if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(wp.getParamCloseFunction()) && !"null".equals(wp.getParamCloseFunction())) {
+			%>
+			callCloseFunction = true;
+			function editorCloseFunction() {
+				<%= wp.getParamCloseFunction() %>
+			}
+			<%
+		}
+	%>
 
 	// sets the document source code for later including into the editor
 	var content="<%= wp.getParamContent() %>";
@@ -202,6 +244,7 @@ if (modeName.equals("text/html")) {
 <input type="hidden" name="<%= CmsEditor.PARAM_DIRECTEDIT %>" value="<%= wp.getParamDirectedit() %>"/>
 <input type="hidden" name="<%= CmsEditor.PARAM_BACKLINK %>" value="<%= wp.getParamBacklink() %>"/>
 <input type="hidden" name="<%= CmsEditor.PARAM_MODIFIED %>" value="<%= wp.getParamModified() %>"/>
+<input type="hidden" name="<%= CmsCodeMirror.PARAM_CLOSEFUNCTION %>" value="<%= wp.getParamCloseFunction() %>"/>
 
 <%= wp.buttonBar(CmsWorkplace.HTML_START) %>
 <%= wp.buttonBarStartTab(0, 5) %>

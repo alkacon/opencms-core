@@ -38,14 +38,18 @@ function buttonAction(para) {
 		case 1:
 		{
 			_form.action.value = actionExit;
-			_form.target = "_top";
+			if (!callCloseFunction) {
+				_form.target = "_top";
+			}
 			_form.submit();
 			break;
 		}
 		case 2:
 		{
 			_form.action.value = actionSaveExit;
-			_form.target = "_top";
+			if (!callCloseFunction) {
+				_form.target = "_top";
+			}
 			_form.submit();
 			break;
 		}
