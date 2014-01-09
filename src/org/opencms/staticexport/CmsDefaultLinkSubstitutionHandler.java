@@ -545,6 +545,9 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
         try {
             URI uri = new URI(result);
             String path = uri.getPath();
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(path)) {
+                return null;
+            }
             String name = CmsFileUtil.removeTrailingSeparator(CmsResource.getName(path));
             CmsUUID detailId = OpenCms.getADEManager().getDetailIdCache(
                 cms.getRequestContext().getCurrentProject().isOnlineProject()).getDetailId(name);
