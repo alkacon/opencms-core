@@ -314,6 +314,12 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             // make absolute link relative, if relative links in export are required
             // and if the link does not point to another server
             if (useRelativeLinks && CmsStringUtil.isEmpty(serverPrefix)) {
+                // in case the current page is a detailpage, append another path level
+                if (cms.getRequestContext().getDetailContentId() != null) {
+                    uriBaseName = CmsStringUtil.joinPaths(
+                        CmsResource.getFolderPath(uriBaseName),
+                        cms.getRequestContext().getDetailContentId().toString() + "/index.html");
+                }
                 resultLink = CmsLinkManager.getRelativeUri(uriBaseName, resultLink);
             }
 
