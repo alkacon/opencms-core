@@ -27,9 +27,7 @@
 
 package org.opencms.ade.upload.client;
 
-import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
-
-import java.util.Collection;
+import java.util.List;
 
 /**
  * Interface with a method that should be called when an upload has finished.<p>
@@ -41,6 +39,6 @@ public interface I_CmsUploadContext {
      * 
      * @param uploadedFiles the uploaded files, or null if the upload was canceled
      */
-    void onUploadFinished(Collection<CmsFileInfo> uploadedFiles);
+    void onUploadFinished(List<String> uploadedFiles);
 
 }
