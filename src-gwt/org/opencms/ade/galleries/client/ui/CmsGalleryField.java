@@ -60,7 +60,6 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -222,10 +221,10 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
                     return new I_CmsUploadContext() {
 
                         @Override
-                        public void onUploadFinished(Collection<CmsFileInfo> uploadedFiles) {
+                        public void onUploadFinished(List<String> uploadedFiles) {
 
                             if ((uploadedFiles != null) && !uploadedFiles.isEmpty()) {
-                                setValue(m_uploadTarget + uploadedFiles.iterator().next().getFileName(), true);
+                                setValue(m_uploadTarget + uploadedFiles.iterator().next(), true);
                             }
                         }
 

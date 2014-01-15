@@ -32,9 +32,8 @@ import org.opencms.ade.upload.client.ui.CmsUploadDialogImpl;
 import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
-import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 
-import java.util.Collection;
+import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
@@ -72,7 +71,7 @@ public class CmsUpload extends A_CmsEntryPoint {
             A_CmsUploadDialog dialog = GWT.create(CmsUploadDialogImpl.class);
             dialog.setContext(new I_CmsUploadContext() {
 
-                public void onUploadFinished(Collection<CmsFileInfo> uploadedFiles) {
+                public void onUploadFinished(List<String> uploadedFiles) {
 
                     Window.Location.reload();
                 }
@@ -100,7 +99,7 @@ public class CmsUpload extends A_CmsEntryPoint {
                 A_CmsUploadDialog dialog = GWT.create(CmsUploadDialogImpl.class);
                 I_CmsUploadContext context = new I_CmsUploadContext() {
 
-                    public void onUploadFinished(Collection<CmsFileInfo> uploadedFiles) {
+                    public void onUploadFinished(List<String> uploadedFiles) {
 
                         String closeLink = getCloseLink() + "?resource=";
                         Window.Location.assign(CmsCoreProvider.get().link(closeLink));

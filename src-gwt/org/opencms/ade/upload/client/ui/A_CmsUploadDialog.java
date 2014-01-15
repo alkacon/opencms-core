@@ -122,11 +122,14 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
     /** The scroll panel. */
     protected CmsScrollPanel m_scrollPanel;
 
-    /** Stores all files that were added. */
-    private Map<String, CmsFileInfo> m_allFiles;
+    /** The uploaded file names. */
+    protected List<String> m_uploadedFiles;
 
     /** Signals that the upload dialog was canceled. */
     boolean m_canceled;
+
+    /** Stores all files that were added. */
+    private Map<String, CmsFileInfo> m_allFiles;
 
     /** Signals that the client currently loading. */
     private boolean m_clientLoading;
@@ -272,7 +275,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
             public void onClose(CloseEvent<PopupPanel> e) {
 
                 if (m_context != null) {
-                    m_context.onUploadFinished(m_canceled ? null : getFilesToUpload().values());
+                    m_context.onUploadFinished(m_uploadedFiles);
                 }
             }
         });
@@ -332,7 +335,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
             enableOKButton();
             removeDragAndDropMessage();
         }
-
+        m_uploadedFiles = null;
         // set the user info
         displayDialogInfo(Messages.get().key(Messages.GUI_UPLOAD_INFO_SELECTION_0), false);
         // set the selection summary
@@ -380,23 +383,34 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
                 m_contentLength = requestSize;
             }
             if (success) {
-                List<String> uploadedFilesList = new ArrayList<String>();
+                m_uploadedFiles = new ArrayList<String>();
+                List<String> uploadedFileIds = new ArrayList<String>();
                 displayDialogInfo(
                     org.opencms.gwt.client.Messages.get().key(
                         org.opencms.gwt.client.Messages.GUI_UPLOAD_INFO_FINISHING_0),
                     false);
-                JSONValue uploadedFilesVal = jsonObject.get(I_CmsUploadConstants.KEY_UPLOADED_FILES);
+                JSONValue uploadedFilesVal = jsonObject.get(I_CmsUploadConstants.KEY_UPLOADED_FILE_NAMES);
                 JSONValue uploadHook = jsonObject.get(I_CmsUploadConstants.KEY_UPLOAD_HOOK);
                 String hookUri = null;
                 if ((uploadHook != null) && (uploadHook.isString() != null)) {
                     hookUri = uploadHook.isString().stringValue();
-                    JSONArray uploadedFilesArray = uploadedFilesVal.isArray();
-                    if (uploadedFilesArray != null) {
-                        for (int i = 0; i < uploadedFilesArray.size(); i++) {
-                            JSONString entry = uploadedFilesArray.get(i).isString();
+                    JSONValue uploadedFileIdsVal = jsonObject.get(I_CmsUploadConstants.KEY_UPLOADED_FILES);
+                    JSONArray uploadedFileIdsArray = uploadedFileIdsVal.isArray();
+                    if (uploadedFileIdsArray != null) {
+                        for (int i = 0; i < uploadedFileIdsArray.size(); i++) {
+                            JSONString entry = uploadedFileIdsArray.get(i).isString();
                             if (entry != null) {
-                                uploadedFilesList.add(entry.stringValue());
+                                uploadedFileIds.add(entry.stringValue());
                             }
+                        }
+                    }
+                }
+                JSONArray uploadedFilesArray = uploadedFilesVal.isArray();
+                if (uploadedFilesArray != null) {
+                    for (int i = 0; i < uploadedFilesArray.size(); i++) {
+                        JSONString entry = uploadedFilesArray.get(i).isString();
+                        if (entry != null) {
+                            m_uploadedFiles.add(entry.stringValue());
                         }
                     }
                 }
@@ -413,13 +427,13 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
                         public void onClose(CloseEvent<PopupPanel> event) {
 
                             if (context != null) {
-                                context.onUploadFinished(getFilesToUpload().values());
+                                context.onUploadFinished(m_uploadedFiles);
                             }
                         }
                     };
 
                     String title = Messages.get().key(Messages.GUI_UPLOAD_HOOK_DIALOG_TITLE_0);
-                    CmsUploadHookDialog.openDialog(title, hookUri, uploadedFilesList, closeHandler);
+                    CmsUploadHookDialog.openDialog(title, hookUri, uploadedFileIds, closeHandler);
                 }
             } else {
                 String message = jsonObject.get(I_CmsUploadConstants.KEY_MESSAGE).isString().stringValue();
@@ -633,6 +647,14 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
     }
 
     /**
+     * Required to be called when the content has changed.<p> 
+     */
+    protected void doResize() {
+
+        m_scrollPanel.onResizeDescendant();
+    }
+
+    /**
      * Enables the OK button.<p>
      */
     protected void enableOKButton() {
@@ -778,14 +800,6 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
         } else {
             commit();
         }
-    }
-
-    /**
-     * Required to be called when the content has changed.<p> 
-     */
-    protected void doResize() {
-
-        m_scrollPanel.onResizeDescendant();
     }
 
     /**
