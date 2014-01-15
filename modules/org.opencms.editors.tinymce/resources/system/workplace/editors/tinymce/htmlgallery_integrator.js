@@ -34,8 +34,9 @@ function GetAttribute( element, attName, valueIfNull )
 }
 /* Initialize important variables from editor. */
 
-/** The parent window. */
-var dialog     = window.parent;
+/** The editor frame. */
+var parentDialog=window.parent;
+
 /** The editor instance. */
 var editor=parentDialog.tinymce.activeEditor;
 
