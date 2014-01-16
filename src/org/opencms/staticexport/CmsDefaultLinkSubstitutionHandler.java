@@ -392,24 +392,26 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             return null;
         }
 
+        CmsStaticExportManager exportManager = OpenCms.getStaticExportManager();
+        if (exportManager.isValidRfsName(path)) {
+            String originalSiteRoot = cms.getRequestContext().getSiteRoot();
+            String vfsName = null;
+            try {
+                cms.getRequestContext().setSiteRoot("");
+                vfsName = exportManager.getVfsName(cms, path);
+                if (vfsName != null) {
+                    return vfsName;
+                }
+            } finally {
+                cms.getRequestContext().setSiteRoot(originalSiteRoot);
+            }
+        }
+
         // absolute URI (i.e. URI has a scheme component like http:// ...)
         if (uri.isAbsolute()) {
             CmsSiteMatcher matcher = new CmsSiteMatcher(targetUri);
             if (OpenCms.getSiteManager().isMatching(matcher)) {
-                CmsStaticExportManager exportManager = OpenCms.getStaticExportManager();
-                if (exportManager.isValidRfsName(path)) {
-                    String originalSiteRoot = cms.getRequestContext().getSiteRoot();
-                    String vfsName = null;
-                    try {
-                        cms.getRequestContext().setSiteRoot("");
-                        vfsName = exportManager.getVfsName(cms, path);
-                        if (vfsName != null) {
-                            return vfsName;
-                        }
-                    } finally {
-                        cms.getRequestContext().setSiteRoot(originalSiteRoot);
-                    }
-                }
+
                 if (path.startsWith(OpenCms.getSystemInfo().getOpenCmsContext())) {
                     path = path.substring(OpenCms.getSystemInfo().getOpenCmsContext().length());
                 }
