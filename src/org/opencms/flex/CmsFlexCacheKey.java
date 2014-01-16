@@ -443,7 +443,7 @@ public class CmsFlexCacheKey {
                             str.append(s);
                             str.append("=");
                             Object value = keyAttrs.get(s);
-                            str.append(value.toString());
+                            str.append(value);
                             if (i.hasNext()) {
                                 str.append(",");
                             }
@@ -457,7 +457,7 @@ public class CmsFlexCacheKey {
                         str.append(entry.getKey());
                         str.append("=");
                         Object value = entry.getValue();
-                        str.append(value.toString());
+                        str.append(value);
                         if (i.hasNext()) {
                             str.append(",");
                         }
@@ -906,7 +906,7 @@ public class CmsFlexCacheKey {
         } catch (Exception e) {
             // any Exception here indicates a parsing error
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(Messages.LOG_FLEXCACHEKEY_PARSE_ERROR_1, e.toString()));
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_FLEXCACHEKEY_PARSE_ERROR_1, e.toString()), e);
             }
             m_parseError = true;
         }
