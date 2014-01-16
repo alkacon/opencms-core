@@ -111,7 +111,27 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>          
-    </tag>   
+    </tag>
+    
+    <tag>
+    	<description>
+    		This tag is used to generate a link to a PDF generated from an XML content given the path of the XML content.
+    	</description>
+    	<name>pdf</name>
+    	<tag-class>org.opencms.jsp.CmsJspTagPdf</tag-class>
+    	<body-content>JSP</body-content>
+    	<attribute>
+    		<name>format</name>
+    		<required>true</required>
+    		<rtexprvalue>true</rtexprvalue>
+    	</attribute>
+    	<attribute>
+    		<name>content</name>
+    		<required>true</required>
+    		<rtexprvalue>true</rtexprvalue>
+    	</attribute>
+    </tag>
+       
     
     <tag>
         <description>
