@@ -29,8 +29,12 @@ package org.opencms.pdftools;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.loader.CmsTemplateLoaderFacade;
 import org.opencms.main.OpenCms;
+import org.opencms.xml.containerpage.CmsContainerElementBean;
+
+import java.util.Collections;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -72,6 +76,14 @@ public final class CmsPdfFormatterUtils {
             content,
             jsp);
         CmsResource loaderRes = loaderFacade.getLoaderStartResource();
+        request.setAttribute(CmsJspStandardContextBean.ATTRIBUTE_CMS_OBJECT, cms);
+        CmsJspStandardContextBean context = CmsJspStandardContextBean.getInstance(request);
+        CmsContainerElementBean element = new CmsContainerElementBean(
+            content.getStructureId(),
+            jsp.getStructureId(),
+            Collections.<String, String> emptyMap(),
+            false);
+        context.setElement(element);
         return loaderFacade.getLoader().dump(
             cms,
             loaderRes,
