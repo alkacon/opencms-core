@@ -170,7 +170,7 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
         boolean releasedAndNotExpired,
         boolean disableNewEditor) {
 
-        super((com.google.gwt.user.client.Element)element);
+        super(element);
         m_clientId = clientId;
         m_sitePath = sitePath;
         m_noEditReason = noEditReason;
@@ -423,7 +423,7 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
                                 && !target.getTagName().equalsIgnoreCase("a")
                                 && (target != getElement())) {
                                 if (CmsContentEditor.isEditable(target)) {
-                                    EditorBase.markForInlineFocus((com.google.gwt.user.client.Element)target);
+                                    EditorBase.markForInlineFocus(target);
                                     controller.getHandler().openEditorForElement(
                                         CmsContainerPageElementPanel.this,
                                         true);
@@ -596,17 +596,17 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
 
         m_releasedAndNotExpired = releasedAndNotExpired;
         if (m_releasedAndNotExpired) {
-            getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.containerpageCss().expired());
+            removeStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().expired());
             if (m_expiredOverlay != null) {
                 m_expiredOverlay.removeFromParent();
                 m_expiredOverlay = null;
             }
 
         } else {
-            getElement().addClassName(I_CmsLayoutBundle.INSTANCE.containerpageCss().expired());
+            addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().expired());
             m_expiredOverlay = DOM.createDiv();
             m_expiredOverlay.setTitle("Expired resource");
-            m_expiredOverlay.addClassName(I_CmsLayoutBundle.INSTANCE.containerpageCss().expiredListElementOverlay());
+            m_expiredOverlay.addClassName(I_CmsLayoutBundle.INSTANCE.containerpageCss().expiredOverlay());
             getElement().appendChild(m_expiredOverlay);
         }
     }
@@ -653,7 +653,7 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
             if ((editables != null) && (editables.size() > 0)) {
                 for (Element editable : editables) {
                     CmsListCollectorEditor editor = new CmsListCollectorEditor(editable, m_clientId);
-                    add(editor, (com.google.gwt.user.client.Element)editable.getParentElement());
+                    add(editor, editable.getParentElement());
                     if (CmsDomUtil.hasDimension(editable.getParentElement())) {
                         editor.setPosition(CmsDomUtil.getEditablePosition(editable), getElement());
                     } else {
@@ -683,7 +683,7 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
                 for (Element editable : editables) {
                     if (!m_editables.containsKey(editable)) {
                         CmsListCollectorEditor editor = new CmsListCollectorEditor(editable, m_clientId);
-                        add(editor, (com.google.gwt.user.client.Element)editable.getParentElement());
+                        add(editor, editable.getParentElement());
                         if (CmsDomUtil.hasDimension(editable.getParentElement())) {
                             editor.setPosition(CmsDomUtil.getEditablePosition(editable), getElement());
                         } else {
