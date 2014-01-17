@@ -140,6 +140,8 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                 addEditingHistoryItem(true);
                 CmsEditorContext context = getEditorContext();
                 context.setHtmlContextInfo(getContextInfo(element));
+                // remove expired style before initializing the editor
+                element.setReleasedAndNotExpired(true);
                 CmsContentEditor.getInstance().openInlineEditor(
                     context,
                     new CmsUUID(serverId),
