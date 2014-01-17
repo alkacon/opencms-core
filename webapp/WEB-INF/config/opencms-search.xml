@@ -393,7 +393,7 @@
 		<fieldconfigurations>
 			<fieldconfiguration>
 				<name>standard</name>
-				<description>The standard OpenCms 8.0 search index field configuration.</description>
+				<description>The standard OpenCms search index field configuration.</description>
 				<fields>
 					<field name="content" display="%(key.field.content)" store="compress" index="true" excerpt="true">
 						<mapping type="content" />
