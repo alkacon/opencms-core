@@ -85,7 +85,7 @@ public class CmsFlowPanel extends ComplexPanel implements HasAllMouseHandlers {
     @UiConstructor
     public CmsFlowPanel(String tag) {
 
-        setElement(DOM.createElement(tag));
+        setElement((Element)DOM.createElement(tag));
     }
 
     /**
@@ -96,7 +96,7 @@ public class CmsFlowPanel extends ComplexPanel implements HasAllMouseHandlers {
     @Override
     public void add(Widget w) {
 
-        super.add(w, getElement());
+        super.add(w, (Element)getElement());
     }
 
     /**
@@ -155,7 +155,7 @@ public class CmsFlowPanel extends ComplexPanel implements HasAllMouseHandlers {
      */
     public void insert(Widget w, int beforeIndex) {
 
-        insert(w, getElement(), beforeIndex, true);
+        insert(w, (Element)getElement(), beforeIndex, true);
     }
 
 }

@@ -36,6 +36,7 @@ import org.opencms.util.CmsStringUtil;
 import java.util.Iterator;
 
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Position;
@@ -55,7 +56,6 @@ import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Window;
@@ -257,7 +257,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     private HandlerRegistration m_closingHandlerRegistration;
 
     /** The popup container element. */
-    private com.google.gwt.user.client.Element m_containerElement;
+    private Element m_containerElement;
 
     /** The content height correction, used when explicitly setting the dialog height. */
     private int m_contentHeightCorrection = 6;
@@ -542,7 +542,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
             } finally {
                 // Physical detach.
                 Element elem = w.getElement();
-                DOM.removeChild(DOM.getParent(elem), elem);
+                elem.removeFromParent();
             }
         }
         m_children = new WidgetCollection(this);
@@ -740,7 +740,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
         } finally {
             // Physical detach.
             Element elem = w.getElement();
-            DOM.removeChild(DOM.getParent(elem), elem);
+            elem.removeFromParent();
 
             // Logical detach.
             getChildren().remove(w);
@@ -1160,13 +1160,14 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     /**
      * @see com.google.gwt.user.client.ui.PopupPanel#getContainerElement()
      */
+    @SuppressWarnings("deprecation")
     @Override
     protected com.google.gwt.user.client.Element getContainerElement() {
 
         if (m_containerElement == null) {
             m_containerElement = super.getContainerElement();
         }
-        return m_containerElement;
+        return (com.google.gwt.user.client.Element)m_containerElement;
     }
 
     /**

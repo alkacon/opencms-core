@@ -30,6 +30,7 @@ package org.opencms.gwt.client.ui.input.form;
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -48,7 +49,7 @@ public class CmsSeparator extends Widget {
      */
     public CmsSeparator() {
 
-        setElement(DOM.createDiv());
+        setElement((Element)DOM.createDiv());
         setStyleName(CSS.separator());
     }
 }

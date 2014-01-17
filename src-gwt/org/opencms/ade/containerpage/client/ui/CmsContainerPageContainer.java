@@ -238,7 +238,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
         m_isDetailView = containerData.isDetailView();
         m_detailOnly = containerData.isDetailOnly();
         m_configuredWidth = containerData.getWidth();
-        getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragTarget());
+        addStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragTarget());
     }
 
     /**
@@ -247,7 +247,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     @Override
     public void add(Widget w) {
 
-        add(w, getElement());
+        add(w, (Element)getElement());
     }
 
     /**
@@ -423,7 +423,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
      */
     public void insert(Widget w, int beforeIndex) {
 
-        insert(w, getElement(), beforeIndex, true);
+        insert(w, (Element)getElement(), beforeIndex, true);
     }
 
     /**
@@ -508,8 +508,8 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
             m_highlighting.removeFromParent();
             m_highlighting = null;
         }
-        getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragging());
-        getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().clearFix());
+        removeStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragging());
+        removeStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().clearFix());
     }
 
     /**
@@ -591,7 +591,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
 
         // Use the contained widget's element as the composite's element,
         // effectively merging them within the DOM.
-        setElement(widget.getElement());
+        setElement((Element)widget.getElement());
 
         adopt(widget);
 

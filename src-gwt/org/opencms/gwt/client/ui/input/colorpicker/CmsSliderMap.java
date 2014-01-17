@@ -121,8 +121,7 @@ public final class CmsSliderMap extends HTML {
                 //$FALL-THROUGH$
             case Event.ONMOUSEMOVE:
                 if (m_capturedMouse) {
-                    DOM.eventPreventDefault(event);
-
+                    event.preventDefault();
                     float x = ((event.getClientX() - (m_colorUnderlay.getAbsoluteLeft())) + Window.getScrollLeft());
                     float y = ((event.getClientY() - (m_colorUnderlay.getAbsoluteTop())) + Window.getScrollTop());
 
