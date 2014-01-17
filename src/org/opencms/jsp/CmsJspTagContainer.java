@@ -960,15 +960,15 @@ public class CmsJspTagContainer extends TagSupport {
         if (isOnline && !showInContext) {
             return false;
         }
+        element.initResource(cms);
+        if (isOnline && !element.isReleasedAndNotExpired()) {
+            // do not render expired resources for the online project
+            return false;
+        }
         ServletRequest req = pageContext.getRequest();
         ServletResponse res = pageContext.getResponse();
         String containerType = getType();
         int containerWidth = getContainerWidth();
-        element.initResource(cms);
-        if (cms.getRequestContext().getCurrentProject().isOnlineProject()
-            && !element.getResource().isReleasedAndNotExpired(System.currentTimeMillis())) {
-            return false;
-        }
         CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(
             cms,
             cms.getRequestContext().getRootUri());
@@ -1002,7 +1002,7 @@ public class CmsJspTagContainer extends TagSupport {
                 try {
                     subelement.initResource(cms);
                     boolean shouldShowSubElementInContext = shouldShowInContext(subelement, context);
-                    if (isOnline && !shouldShowSubElementInContext) {
+                    if (isOnline && (!shouldShowSubElementInContext || !subelement.isReleasedAndNotExpired())) {
                         continue;
                     }
                     I_CmsFormatterBean subElementFormatterConfig = null;
