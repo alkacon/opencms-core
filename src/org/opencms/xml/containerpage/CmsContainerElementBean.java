@@ -408,28 +408,16 @@ public class CmsContainerElementBean implements Cloneable {
     public void initResource(CmsObject cms) throws CmsException {
 
         if (m_resource == null) {
-            if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
-                m_resource = cms.readResource(getId());
-                m_releasedAndNotExpired = true;
-            } else {
-                m_resource = cms.readResource(getId(), CmsResourceFilter.IGNORE_EXPIRATION);
-                m_releasedAndNotExpired = m_resource.isReleasedAndNotExpired(cms.getRequestContext().getRequestTime());
-            }
+            m_resource = cms.readResource(getId(), CmsResourceFilter.IGNORE_EXPIRATION);
+            m_releasedAndNotExpired = m_resource.isReleasedAndNotExpired(cms.getRequestContext().getRequestTime());
         } else if (!isInMemoryOnly()) {
             CmsUUID id = m_resource.getStructureId();
             if (id == null) {
                 id = getId();
             }
             // the resource object may have a wrong root path, e.g. if it was created before the resource was moved
-            if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
-                m_resource = cms.readResource(getId());
-                m_releasedAndNotExpired = true;
-            } else {
-                if (!isTemporaryContent()) {
-                    m_resource = cms.readResource(getId(), CmsResourceFilter.IGNORE_EXPIRATION);
-                }
-                m_releasedAndNotExpired = m_resource.isReleasedAndNotExpired(cms.getRequestContext().getRequestTime());
-            }
+            m_resource = cms.readResource(id, CmsResourceFilter.IGNORE_EXPIRATION);
+            m_releasedAndNotExpired = m_resource.isReleasedAndNotExpired(cms.getRequestContext().getRequestTime());
         }
         if (m_settings == null) {
             m_settings = CmsXmlContentPropertyHelper.mergeDefaults(cms, m_resource, m_individualSettings);
