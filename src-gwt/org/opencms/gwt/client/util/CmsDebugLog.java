@@ -29,13 +29,13 @@ package org.opencms.gwt.client.util;
 
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.BorderStyle;
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -87,10 +87,10 @@ public final class CmsDebugLog extends Composite {
      * @param message the message to log
      */
     public static native void consoleLog(String message) /*-{
-        if ($wnd.console) {
-            $wnd.console.log(message);
-        }
-    }-*/;
+                                                         if ($wnd.console) {
+                                                         $wnd.console.log(message);
+                                                         }
+                                                         }-*/;
 
     /**
      * Returns the debug log.<p>

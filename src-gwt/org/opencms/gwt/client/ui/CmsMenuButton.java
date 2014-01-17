@@ -42,7 +42,6 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiConstructor;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
@@ -162,7 +161,7 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
     public void disable(String disabledReason) {
 
         m_button.disable(disabledReason);
-        DOM.setElementPropertyBoolean(getElement(), "disabled", true);
+        getElement().setPropertyBoolean("disabled", true);
     }
 
     /**
@@ -171,7 +170,7 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
     public void enable() {
 
         m_button.enable();
-        DOM.setElementPropertyBoolean(getElement(), "disabled", false);
+        getElement().setPropertyBoolean("disabled", false);
     }
 
     /**
@@ -245,7 +244,7 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
             enable();
         } else {
             m_button.setEnabled(enabled);
-            DOM.setElementPropertyBoolean(getElement(), "disabled", true);
+            getElement().setPropertyBoolean("disabled", true);
         }
     }
 
@@ -325,7 +324,7 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
      */
     protected boolean isEnabled() {
 
-        return !DOM.getElementPropertyBoolean(getElement(), "disabled");
+        return !getElement().getPropertyBoolean("disabled");
     }
 
     /**

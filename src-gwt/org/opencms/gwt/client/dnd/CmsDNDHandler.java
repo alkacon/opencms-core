@@ -804,8 +804,8 @@ public class CmsDNDHandler implements MouseDownHandler {
         Element parentElement = m_dragHelper.getParentElement();
         int left = CmsDomUtil.getRelativeX(m_clientX, parentElement) - m_cursorOffsetX;
         int top = CmsDomUtil.getRelativeY(m_clientY, parentElement) - m_cursorOffsetY;
-        DOM.setStyleAttribute((com.google.gwt.user.client.Element)m_dragHelper, "left", left + "px");
-        DOM.setStyleAttribute((com.google.gwt.user.client.Element)m_dragHelper, "top", top + "px");
+        m_dragHelper.getStyle().setLeft(left, Unit.PX);
+        m_dragHelper.getStyle().setTop(top, Unit.PX);
     }
 
     /**

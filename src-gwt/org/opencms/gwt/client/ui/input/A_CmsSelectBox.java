@@ -379,7 +379,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
 
         close();
         m_enabled = enabled;
-        DOM.setElementPropertyBoolean(getElement(), "disabled", !enabled);
+        getElement().setPropertyBoolean("disabled", !enabled);
         m_openClose.setEnabled(enabled);
         if (enabled) {
             removeStyleName(CSS.selectBoxDisabled());

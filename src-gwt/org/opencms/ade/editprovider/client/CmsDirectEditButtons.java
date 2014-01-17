@@ -80,10 +80,7 @@ public class CmsDirectEditButtons extends A_CmsDirectEditButtons implements I_Cm
      * 
      * @param containerElement the parent container element
      */
-    public void setPosition(
-        CmsPositionBean position,
-        CmsPositionBean buttonsPosition,
-        com.google.gwt.user.client.Element containerElement) {
+    public void setPosition(CmsPositionBean position, CmsPositionBean buttonsPosition, Element containerElement) {
 
         m_position = position;
         Element parent = CmsDomUtil.getPositioningParent(getElement());

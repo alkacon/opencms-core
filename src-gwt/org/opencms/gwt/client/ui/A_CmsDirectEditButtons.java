@@ -299,7 +299,7 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
      * @param position the absolute position
      * @param containerElement the parent container element
      */
-    public void setPosition(CmsPositionBean position, com.google.gwt.user.client.Element containerElement) {
+    public void setPosition(CmsPositionBean position, Element containerElement) {
 
         m_position = position;
         Element parent = CmsDomUtil.getPositioningParent(getElement());

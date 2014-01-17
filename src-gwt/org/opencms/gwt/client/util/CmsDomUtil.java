@@ -559,9 +559,9 @@ public final class CmsDomUtil {
      * 
      * @return the cloned element
      */
-    public static com.google.gwt.user.client.Element clone(Element element) {
+    public static Element clone(Element element) {
 
-        com.google.gwt.user.client.Element elementClone = DOM.createElement(element.getTagName());
+        Element elementClone = DOM.createElement(element.getTagName());
         elementClone.setClassName(element.getClassName());
         elementClone.setInnerHTML(element.getInnerHTML());
         return elementClone;
@@ -580,7 +580,7 @@ public final class CmsDomUtil {
     }
 
     /**
-     * This method will create an {@link com.google.gwt.user.client.Element} for the given HTML. 
+     * This method will create an {@link com.google.gwt.dom.client.Element} for the given HTML. 
      * The HTML should have a single root tag, if not, the first tag will be used and all others discarded.<p>
      * Script-tags will be removed.<p>
      * 
@@ -590,16 +590,16 @@ public final class CmsDomUtil {
      * 
      * @throws Exception if something goes wrong 
      */
-    public static com.google.gwt.user.client.Element createElement(String html) throws Exception {
+    public static Element createElement(String html) throws Exception {
 
-        com.google.gwt.user.client.Element wrapperDiv = DOM.createDiv();
+        Element wrapperDiv = DOM.createDiv();
         wrapperDiv.setInnerHTML(html);
-        com.google.gwt.user.client.Element elementRoot = (com.google.gwt.user.client.Element)wrapperDiv.getFirstChildElement();
-        DOM.removeChild(wrapperDiv, elementRoot);
+        Element elementRoot = wrapperDiv.getFirstChildElement();
+        wrapperDiv.removeChild(elementRoot);
         // just in case we have a script tag outside the root HTML-tag
         while ((elementRoot != null) && (elementRoot.getTagName().toLowerCase().equals(Tag.script.name()))) {
-            elementRoot = (com.google.gwt.user.client.Element)wrapperDiv.getFirstChildElement();
-            DOM.removeChild(wrapperDiv, elementRoot);
+            elementRoot = wrapperDiv.getFirstChildElement();
+            wrapperDiv.removeChild(elementRoot);
         }
         if (elementRoot == null) {
             CmsDebugLog.getInstance().printLine(
@@ -608,7 +608,6 @@ public final class CmsDomUtil {
                 "Could not create element as the given HTML has no appropriate root element");
         }
         return elementRoot;
-
     }
 
     /**

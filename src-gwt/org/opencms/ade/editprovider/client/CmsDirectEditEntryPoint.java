@@ -261,10 +261,7 @@ public class CmsDirectEditEntryPoint extends A_CmsEntryPoint {
         RootPanel root = RootPanel.get();
         CmsDirectEditButtons result = new CmsDirectEditButtons(elem, null);
         root.add(result);
-        result.setPosition(
-            m_positions.get(elem.getId()),
-            m_buttonPositions.get(elem.getId()),
-            (com.google.gwt.user.client.Element)elem.getParentElement());
+        result.setPosition(m_positions.get(elem.getId()), m_buttonPositions.get(elem.getId()), elem.getParentElement());
         return result;
     }
 
@@ -286,7 +283,7 @@ public class CmsDirectEditEntryPoint extends A_CmsEntryPoint {
             buttons.setPosition(
                 m_positions.get(id),
                 m_buttonPositions.get(id),
-                (com.google.gwt.user.client.Element)buttons.getMarkerTag().getParentElement());
+                buttons.getMarkerTag().getParentElement());
         }
 
     }

@@ -33,6 +33,7 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsPositionBean;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -42,7 +43,6 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
@@ -313,8 +313,8 @@ public class CmsScrollBar extends FocusPanel implements I_DescendantResizeHandle
 
             // Mousewheel events
             case Event.ONMOUSEWHEEL:
-                int velocityY = DOM.eventGetMouseWheelVelocityY(event) * m_stepSize;
-                DOM.eventPreventDefault(event);
+                int velocityY = event.getMouseWheelVelocityY() * m_stepSize;
+                event.preventDefault();
                 CmsDebugLog.getInstance().printLine("Whell velocity: " + velocityY);
                 if (velocityY > 0) {
                     shiftDown(velocityY);
@@ -327,41 +327,41 @@ public class CmsScrollBar extends FocusPanel implements I_DescendantResizeHandle
             case Event.ONKEYDOWN:
                 if (!m_slidingKeyboard) {
                     int multiplier = 1;
-                    if (DOM.eventGetCtrlKey(event)) {
+                    if (event.getCtrlKey()) {
                         multiplier = m_stepSize;
                     }
 
-                    switch (DOM.eventGetKeyCode(event)) {
+                    switch (event.getKeyCode()) {
                         case KeyCodes.KEY_HOME:
-                            DOM.eventPreventDefault(event);
+                            event.preventDefault();
                             setValue(Integer.valueOf(0));
                             break;
                         case KeyCodes.KEY_END:
-                            DOM.eventPreventDefault(event);
+                            event.preventDefault();
                             setValue(Integer.valueOf(getMaximumVerticalScrollPosition()));
                             break;
                         case KeyCodes.KEY_PAGEUP:
-                            DOM.eventPreventDefault(event);
+                            event.preventDefault();
                             m_slidingKeyboard = true;
                             shiftUp(m_pageSize);
                             m_keyTimer.schedule(INITIALDELAY, true, m_pageSize);
                             break;
                         case KeyCodes.KEY_PAGEDOWN:
-                            DOM.eventPreventDefault(event);
+                            event.preventDefault();
                             m_slidingKeyboard = true;
 
                             shiftDown(m_pageSize);
                             m_keyTimer.schedule(INITIALDELAY, false, m_pageSize);
                             break;
                         case KeyCodes.KEY_UP:
-                            DOM.eventPreventDefault(event);
+                            event.preventDefault();
                             m_slidingKeyboard = true;
 
                             shiftUp(multiplier);
                             m_keyTimer.schedule(INITIALDELAY, true, multiplier);
                             break;
                         case KeyCodes.KEY_DOWN:
-                            DOM.eventPreventDefault(event);
+                            event.preventDefault();
                             m_slidingKeyboard = true;
 
                             shiftDown(multiplier);
@@ -384,7 +384,7 @@ public class CmsScrollBar extends FocusPanel implements I_DescendantResizeHandle
             case Event.ONMOUSEDOWN:
                 if (sliderClicked(event)) {
                     startMouseSliding(event);
-                    DOM.eventPreventDefault(event);
+                    event.preventDefault();
                 }
                 break;
             case Event.ONMOUSEUP:
