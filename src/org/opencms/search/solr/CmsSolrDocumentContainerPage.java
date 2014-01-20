@@ -140,8 +140,7 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
                         && formatters.isSearchContent(element.getFormatterId())) {
                         // the content of this element must be included for the container page
                         element.initResource(cms);
-                        I_CmsDocumentFactory xmlFac = OpenCms.getSearchManager().getDocumentFactory(
-                            element.getResource());
+                        I_CmsDocumentFactory xmlFac = index.getDocumentFactory(element.getResource());
                         all.add(xmlFac.extractContent(cms, element.getResource(), index));
                     }
                 }
