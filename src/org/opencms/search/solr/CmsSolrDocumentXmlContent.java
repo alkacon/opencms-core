@@ -97,11 +97,10 @@ public class CmsSolrDocumentXmlContent extends CmsDocumentXmlContent {
             StringBuffer locales = new StringBuffer();
             Locale resourceLocale = index.getLocaleForResource(cms, resource, xmlContent.getLocales());
             String defaultContent = null;
-            StringBuffer textContent = new StringBuffer();
 
             // loop over the locales of the content 
             for (Locale locale : xmlContent.getLocales()) {
-
+                StringBuffer textContent = new StringBuffer();
                 // store the locales of the content as space separated field
                 locales.append(locale.toString());
                 locales.append(' ');
