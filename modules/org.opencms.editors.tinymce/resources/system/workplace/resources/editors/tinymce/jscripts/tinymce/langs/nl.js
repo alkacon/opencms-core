@@ -23,7 +23,7 @@ tinymce.addI18n('nl',{
 "Header 1": "Kop 1",
 "Superscript": "Superscript",
 "Clear formatting": "Opmaak verwijderen",
-"Font Sizes": "Tekengrootte",
+"Font Sizes": "Letter grootte",
 "Subscript": "Subscript",
 "Header 6": "Kop 6",
 "Redo": "Opnieuw",
