@@ -300,6 +300,33 @@ public class CmsImageScaler {
     }
 
     /**
+     * Calculate the width and height of a source image if scaled inside the given box.<p>
+     *  
+     * @param sourceWidth the width of the source image
+     * @param sourceHeight the height of the source image
+     * @param boxWidth the width of the target box
+     * @param boxHeight the height of the target box
+     * 
+     * @return the width [0] and height [1] of the source image if scaled inside the given box
+     */
+    public static int[] calculateDimension(int sourceWidth, int sourceHeight, int boxWidth, int boxHeight) {
+
+        int[] result = new int[2];
+        if ((sourceWidth <= boxWidth) && (sourceHeight <= boxHeight)) {
+            result[0] = sourceWidth;
+            result[1] = sourceHeight;
+        } else {
+            float scaleWidth = (float)boxWidth / (float)sourceWidth;
+            float scaleHeight = (float)boxHeight / (float)sourceHeight;
+            float scale = Math.min(scaleHeight, scaleWidth);
+            result[0] = Math.round(sourceWidth * scale);
+            result[1] = Math.round(sourceHeight * scale);
+        }
+
+        return result;
+    }
+
+    /**
      * Adds a filter name to the list of filters that should be applied to the image.<p>
      * 
      * @param filter the filter name to add
@@ -1481,33 +1508,6 @@ public class CmsImageScaler {
                 break;
             }
         }
-        return result;
-    }
-
-    /**
-     * Calculate the width and height of a source image if scaled inside the given box.<p>
-     *  
-     * @param sourceWidth the width of the source image
-     * @param sourceHeight the height of the source image
-     * @param boxWidth the width of the target box
-     * @param boxHeight the height of the target box
-     * 
-     * @return the width [0] and height [1] of the source image if scaled inside the given box
-     */
-    private int[] calculateDimension(int sourceWidth, int sourceHeight, int boxWidth, int boxHeight) {
-
-        int[] result = new int[2];
-        if ((sourceWidth <= boxWidth) && (sourceHeight <= boxHeight)) {
-            result[0] = sourceWidth;
-            result[1] = sourceHeight;
-        } else {
-            float scaleWidth = (float)boxWidth / (float)sourceWidth;
-            float scaleHeight = (float)boxHeight / (float)sourceHeight;
-            float scale = Math.min(scaleHeight, scaleWidth);
-            result[0] = Math.round(sourceWidth * scale);
-            result[1] = Math.round(sourceHeight * scale);
-        }
-
         return result;
     }
 
