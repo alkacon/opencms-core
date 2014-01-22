@@ -6108,6 +6108,26 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/editors/codemirror/js/htmlembedded_modified.js</source>
+			<destination>system/workplace/resources/editors/codemirror/js/htmlembedded_modified.js</destination>
+			<type>plain</type>
+			<uuidstructure>5a158def-7e8c-11e3-8750-4d825589d8fe</uuidstructure>
+			<uuidresource>5a158df0-7e8c-11e3-8750-4d825589d8fe</uuidresource>
+			<datelastmodified>Thu, 16 Jan 2014 09:17:18 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Jan 2014 08:58:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Htmlembedded mode extended to handle JSP comments]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/editors/codemirror/js/lang-de.js</source>
 			<destination>system/workplace/resources/editors/codemirror/js/lang-de.js</destination>
 			<type>plain</type>

@@ -135,7 +135,7 @@ if (modeName.equals("text/html")) {
 <script src="<%= wp.getEditorResourceUri() %>dist/mode/javascript/javascript.js"></script>
 <script src="<%= wp.getEditorResourceUri() %>dist/mode/css/css.js"></script>
 <script src="<%= wp.getEditorResourceUri() %>dist/mode/htmlmixed/htmlmixed.js"></script>
-<script src="<%= wp.getEditorResourceUri() %>dist/mode/htmlembedded/htmlembedded.js"></script>
+<script src="<%= wp.getEditorResourceUri() %>js/htmlembedded_modified.js"></script>
 
 <script type="text/javascript">
 
