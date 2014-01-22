@@ -620,9 +620,11 @@ public class CmsModuleManager {
             }
 
             report.print(Messages.get().container(Messages.RPT_DELETE_MODULE_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);
-            report.println(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_ARGUMENT_HTML_ITAG_1,
-                moduleName), I_CmsReport.FORMAT_HEADLINE);
+            report.println(
+                org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_ARGUMENT_HTML_ITAG_1,
+                    moduleName),
+                I_CmsReport.FORMAT_HEADLINE);
 
             // move through all module resources and delete them
             for (int i = 0; i < module.getResources().size(); i++) {
@@ -781,9 +783,9 @@ public class CmsModuleManager {
                     try {
                         moduleAction = (I_CmsModuleAction)Class.forName(module.getActionClass()).newInstance();
                     } catch (Exception e) {
-                        CmsLog.INIT.info(Messages.get().getBundle().key(
-                            Messages.INIT_CREATE_INSTANCE_FAILED_1,
-                            module.getName()), e);
+                        CmsLog.INIT.info(
+                            Messages.get().getBundle().key(Messages.INIT_CREATE_INSTANCE_FAILED_1, module.getName()),
+                            e);
                     }
                 }
                 if (moduleAction != null) {
@@ -801,9 +803,11 @@ public class CmsModuleManager {
                         // initialize the module
                         moduleAction.initialize(adminCmsCopy, configurationManager, module);
                     } catch (Throwable t) {
-                        LOG.error(Messages.get().getBundle().key(
-                            Messages.LOG_INSTANCE_INIT_ERR_1,
-                            moduleAction.getClass().getName()), t);
+                        LOG.error(
+                            Messages.get().getBundle().key(
+                                Messages.LOG_INSTANCE_INIT_ERR_1,
+                                moduleAction.getClass().getName()),
+                            t);
                     }
                 }
             }
@@ -847,9 +851,11 @@ public class CmsModuleManager {
                 // shut down the module
                 moduleAction.shutDown(module);
             } catch (Throwable t) {
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.LOG_INSTANCE_SHUTDOWN_ERR_1,
-                    moduleAction.getClass().getName()), t);
+                LOG.error(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_INSTANCE_SHUTDOWN_ERR_1,
+                        moduleAction.getClass().getName()),
+                    t);
             }
         }
 
@@ -890,10 +896,6 @@ public class CmsModuleManager {
             LOG.info(Messages.get().getBundle().key(Messages.LOG_MOD_UPDATE_1, module.getName()));
         }
 
-        if (oldModule.getVersion().compareTo(module.getVersion()) == 0) {
-            // module version has not changed - auto increment version number
-            module.getVersion().increment();
-        }
         // indicate that the version number was recently updated
         module.getVersion().setUpdated(true);
 
