@@ -61,6 +61,7 @@ import org.opencms.search.solr.CmsSolrConfiguration;
 import org.opencms.search.solr.CmsSolrFieldConfiguration;
 import org.opencms.search.solr.CmsSolrIndex;
 import org.opencms.search.solr.CmsSolrIndexWriter;
+import org.opencms.search.solr.spellchecking.CmsSolrSpellchecker;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.A_CmsModeStringEnumeration;
@@ -2873,4 +2874,16 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             m_coreContainer = null;
         }
     }
+
+    /**
+     * Return singleton instance of the OpenCms spellchecker. 
+     * @param cms the cms object. 
+     * @return instance of CmsSolrSpellchecker.
+     */
+    public CmsSolrSpellchecker getCmsSolrSpellchecker(CmsObject cms) {
+
+        return CmsSolrSpellchecker.getInstance(m_coreContainer, m_coreContainer.getCore("spellcheck"));
+
+    }
+
 }

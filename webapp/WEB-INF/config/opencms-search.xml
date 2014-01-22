@@ -278,18 +278,6 @@
 				</sources>
 				<param name="org.opencms.search.CmsSearchIndex.extractContent">false</param>
 			</index>
-			<!-- 
-			<index class="org.opencms.search.solr.CmsSolrIndex">
-				<name>Solr Gallery Index</name>
-				<rebuild>offline</rebuild>
-				<project>Offline</project> 
-				<locale>all</locale>
-				<configuration>solr_gallery_fields</configuration>
-				<sources>
-					<source>gallery_source_all</source>
-				</sources> 
-				<param name="org.opencms.search.CmsSearchIndex.extractContent">false</param>
-			</index> -->
 		</indexes>
 		<indexsources>
 			<indexsource>
@@ -360,15 +348,14 @@
 				<name>solr_source</name>
 				<indexer class="org.opencms.search.CmsVfsIndexer" />
 				<resources>
-					<resource>/sites/</resource>
-					<resource>/shared/</resource>
-					<resource>/system/galleries/</resource>
+					<resource>/</resource>
 				</resources>
 				<documenttypes-indexed>
 					<name>xmlcontent-solr</name>
 					<name>containerpage-solr</name>
 					<name>xmlpage</name>
 					<name>text</name>
+					<name>jsp</name>
 					<name>pdf</name>
 					<name>rtf</name>
 					<name>html</name>
@@ -494,32 +481,7 @@
 				<description>The Solr search index field configuration.</description>
 				<fields />
 			</fieldconfiguration>
-			<fieldconfiguration class="org.opencms.search.solr.CmsGallerySolrFieldConfiguration">
-				<name>solr_gallery_fields</name>
-				<description>The Solr gallery search index field configuration.</description>
-				<fields>
-					<field name="sort-title" display="sort-title" store="false" index="untokenized">
-						<mapping type="property">Title</mapping>
-					</field>
-					<field name="content" display="%(key.field.content)" store="compress" index="true" excerpt="true">
-						<mapping type="content" />
-					</field>
-					<field name="meta" store="false" index="true">
-						<mapping type="property">Title</mapping>
-						<mapping type="property">Description</mapping>
-						<mapping type="attribute">name</mapping>
-					</field>
-					<field name="searchExclude" store="true" index="untokenized">
-						<mapping type="property-search">search.exclude</mapping>
-					</field>
-					<field name="additionalInfo" store="true" index="false">
-						<mapping type="dynamic" class="org.opencms.search.galleries.CmsGallerySearchFieldMapping">additional_info</mapping>
-					</field>
-					<field name="containerTypes" store="true" index="true" analyzer="WhitespaceAnalyzer">
-						<mapping type="dynamic" class="org.opencms.search.galleries.CmsGallerySearchFieldMapping">container_types</mapping>
-					</field>
-				</fields>
-			</fieldconfiguration>
 		</fieldconfigurations>
 	</search>
 </opencms>
+
