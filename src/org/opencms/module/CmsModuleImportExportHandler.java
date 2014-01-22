@@ -28,7 +28,6 @@
 package org.opencms.module;
 
 import org.opencms.configuration.CmsConfigurationException;
-import org.opencms.configuration.CmsModuleConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.types.I_CmsResourceType;
@@ -220,12 +219,6 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
 
         // generate module XML
         CmsModule module = OpenCms.getModuleManager().getModule(getModuleName());
-        if (!module.getVersion().isUpdated()) {
-            // increment version number if not recently updated
-            module.getVersion().increment();
-            // update the XML configuration
-            OpenCms.writeConfiguration(CmsModuleConfiguration.class);
-        }
         // reset update status so that all following exports auto-increment the number
         module.getVersion().setUpdated(false);
         Element moduleElement = CmsModuleXmlHandler.generateXml(module);
