@@ -35,6 +35,7 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.util.CmsJspContentAccessBean;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.I_CmsXmlDocument;
@@ -46,6 +47,8 @@ import java.util.Locale;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Implementation of the <code>&lt;cms:formatter var="..." val="..." /&gt;</code> tag, 
  * used to access and display XML content item information in a formatter.<p>
@@ -53,6 +56,9 @@ import javax.servlet.jsp.PageContext;
  * @since 8.0.0 
  */
 public class CmsJspTagFormatter extends CmsJspScopedVarBodyTagSuport {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsJspTagFormatter.class);
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -8232834808735187624L;
@@ -255,6 +261,7 @@ public class CmsJspTagFormatter extends CmsJspScopedVarBodyTagSuport {
             }
 
         } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
             m_controller.setThrowable(e, m_cms.getRequestContext().getUri());
             throw new JspException(e);
         }
