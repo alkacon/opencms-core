@@ -32,7 +32,9 @@ import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.ade.configuration.CmsFunctionReference;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.ade.detailpage.CmsDetailPageResourceHandler;
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexController;
@@ -45,6 +47,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsCollectionsGenericWrapper;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
@@ -54,6 +57,7 @@ import org.opencms.xml.containerpage.CmsDynamicFunctionParser;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContent;
+import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.util.List;
 import java.util.Locale;
@@ -557,6 +561,48 @@ public final class CmsJspStandardContextBean {
             templateBean = new TemplateBean("", "");
         }
         return templateBean;
+    }
+
+    /**
+     * Returns the title of a page delivered from OpenCms, usually used for the <code>&lt;title&gt;</code> tag of
+     * a HTML page.<p>
+     * 
+     * If no title information has been found, the empty String "" is returned.<p>
+     * 
+     * @return the title of the current page
+     */
+    public String getTitle() {
+
+        String result = null;
+        try {
+
+            if (isDetailRequest()) {
+                // this is a request to a detail page
+                CmsResource res = getDetailContent();
+                CmsFile file = m_cms.readFile(res);
+                CmsXmlContent content = CmsXmlContentFactory.unmarshal(m_cms, file);
+                result = content.getHandler().getTitleMapping(m_cms, content, m_cms.getRequestContext().getLocale());
+                if (result == null) {
+                    // title not found, maybe no mapping OR not available in the current locale
+                    // read the title of the detail resource as fall back (may contain mapping from another locale)
+                    result = m_cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
+                }
+            }
+            if (result == null) {
+                // read the title of the requested resource as fall back
+                result = m_cms.readPropertyObject(
+                    m_cms.getRequestContext().getUri(),
+                    CmsPropertyDefinition.PROPERTY_TITLE,
+                    true).getValue();
+            }
+        } catch (CmsException e) {
+            // NOOP, result will be an empty string
+        }
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(result)) {
+            result = "";
+        }
+
+        return result;
     }
 
     /**
