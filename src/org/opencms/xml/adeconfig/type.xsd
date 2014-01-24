@@ -30,6 +30,9 @@
 			<defaults>
 				<default element="Disabled" value="False"/>
 			</defaults>
+			<validationrules>
+				<validationrule element="NamePattern" regex=".*\%\(number\).*" message="%(key.err.namepattern.missung_number_macro)" />
+			</validationrules>
         </xsd:appinfo>
     </xsd:annotation>
 </xsd:schema>
