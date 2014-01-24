@@ -910,7 +910,7 @@ public class CmsImageScaler {
         m_height = -1;
         m_position = 0;
         m_type = 0;
-        m_color = Color.WHITE;
+        m_color = Simapi.COLOR_TRANSPARENT;
         m_cropX = -1;
         m_cropY = -1;
         m_cropWidth = -1;
@@ -1189,7 +1189,7 @@ public class CmsImageScaler {
         if (COLOR_TRANSPARENT.indexOf(value) == 0) {
             setColor(Simapi.COLOR_TRANSPARENT);
         } else {
-            setColor(CmsStringUtil.getColorValue(value, Color.WHITE, SCALE_PARAM_COLOR));
+            setColor(CmsStringUtil.getColorValue(value, Simapi.COLOR_TRANSPARENT, SCALE_PARAM_COLOR));
         }
     }
 
