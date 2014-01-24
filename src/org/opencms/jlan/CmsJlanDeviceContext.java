@@ -29,6 +29,7 @@ package org.opencms.jlan;
 
 import org.alfresco.jlan.server.filesys.DiskDeviceContext;
 import org.alfresco.jlan.server.filesys.FileSystem;
+import org.alfresco.jlan.server.filesys.SrvDiskInfo;
 
 /**
  * OpenCms implementation of the JLAN device context.<p>
@@ -52,6 +53,11 @@ public class CmsJlanDeviceContext extends DiskDeviceContext {
         setFilesystemAttributes(FileSystem.CasePreservedNames
             | FileSystem.UnicodeOnDisk
             | FileSystem.CaseSensitiveSearch);
+
+        // Need to set the disk information, even with arbitrary numbers, because not setting it will cause 
+        // a hanging dialog in Windows 7 when creating a copy of a file on the network share in the same folder
+        SrvDiskInfo diskInfo = new SrvDiskInfo(2560000, 64, 512, 2304000);
+        setDiskInformation(diskInfo);
     }
 
     /** 
