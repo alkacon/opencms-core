@@ -16,7 +16,7 @@
         <xsd:element name="Disabled" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
       	<xsd:element name="Folder" type="OpenCmsADEFolderChoice" minOccurs="0" maxOccurs="1" />
      	<xsd:element name="NamePattern" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
-      	<xsd:element name="DetailPagesDisabled" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />    	
+      	<xsd:element name="DetailPagesDisabled" type="OpenCmsBoolean" />    	
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>
@@ -28,7 +28,7 @@
 				<layout element="Disabled" widget="SelectorWidget" configuration="true:%(key.disabled.true)|*false:%(key.disabled.false)|add:%(key.disabled.add)" />
 			</layouts>
 			<defaults>
-				<default element="Disabled" value="False"/>
+				<default element="Disabled" value="true"/>
 			</defaults>
 			<validationrules>
 				<validationrule element="NamePattern" regex=".*\%\(number\).*" message="%(key.err.namepattern.missung_number_macro)" />
