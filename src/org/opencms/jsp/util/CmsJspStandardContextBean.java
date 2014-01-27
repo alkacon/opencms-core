@@ -40,6 +40,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.flex.CmsFlexRequest;
 import org.opencms.jsp.CmsJspBean;
+import org.opencms.jsp.CmsJspTagEditable;
 import org.opencms.jsp.Messages;
 import org.opencms.loader.CmsTemplateContextManager;
 import org.opencms.main.CmsException;
@@ -471,6 +472,27 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
+     * Checks if the current request should be direct edit enabled. 
+     * Online-, history-requests, previews and temporary files will not be editable.<p>
+     * 
+     * @return <code>true</code> if the current request should be direct edit enabled
+     */
+    public boolean getIsEditable() {
+
+        return CmsJspTagEditable.isEditableRequest(m_request);
+    }
+
+    /**
+     * Returns if the current project is the online project.<p>
+     * 
+     * @return <code>true</code> if the current project is the online project
+     */
+    public boolean getIsOnline() {
+
+        return m_cms.getRequestContext().getCurrentProject().isOnlineProject();
+    }
+
+    /**
      * Returns the current locale.<p>
      * 
      * @return the current locale
@@ -682,16 +704,6 @@ public final class CmsJspStandardContextBean {
     public boolean isEdited() {
 
         return m_edited;
-    }
-
-    /**
-     * Returns if the current project is the online project.<p>
-     * 
-     * @return <code>true</code> if the current project is the online project
-     */
-    public boolean isOnline() {
-
-        return m_cms.getRequestContext().getCurrentProject().isOnlineProject();
     }
 
     /**
