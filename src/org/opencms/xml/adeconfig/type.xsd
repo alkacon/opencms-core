@@ -16,7 +16,7 @@
         <xsd:element name="Disabled" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
       	<xsd:element name="Folder" type="OpenCmsADEFolderChoice" minOccurs="0" maxOccurs="1" />
      	<xsd:element name="NamePattern" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
-      	<xsd:element name="DetailPagesDisabled" type="OpenCmsBoolean" />    	
+      	<xsd:element name="DetailPagesDisabled" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />    	
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>
