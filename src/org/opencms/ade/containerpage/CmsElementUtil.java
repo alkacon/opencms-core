@@ -63,7 +63,6 @@ import org.opencms.workplace.editors.directedit.CmsDirectEditMode;
 import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
-import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.containerpage.CmsADESessionCache;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
@@ -481,9 +480,7 @@ public class CmsElementUtil {
         result.setResourceType(typeName);
         result.setNew(elementBean.isCreateNew());
         if (elementBean.isCreateNew()) {
-            CmsResourceTypeConfig typeConfig = OpenCms.getADEManager().lookupConfiguration(
-                m_cms,
-                m_cms.addSiteRoot(m_currentPageUri)).getResourceType(typeName);
+            CmsResourceTypeConfig typeConfig = getConfigData().getResourceType(typeName);
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(noEditReason)
                 && ((typeConfig == null) || !typeConfig.checkCreatable(m_cms))) {
                 String niceName = CmsWorkplaceMessages.getResourceTypeName(wpLocale, typeName);
@@ -607,6 +604,19 @@ public class CmsElementUtil {
     }
 
     /**
+     * Returns the ADE configuration data for the current URI.<p>
+     * 
+     * @return the ADE configuration data
+     */
+    private CmsADEConfigData getConfigData() {
+
+        if (m_adeConfig == null) {
+            m_adeConfig = OpenCms.getADEManager().lookupConfiguration(m_cms, m_cms.addSiteRoot(m_currentPageUri));
+        }
+        return m_adeConfig;
+    }
+
+    /**
      * Returns the formatter configuration for the given element resource.<p>
      *  
      * @param resource the element resource
@@ -615,10 +625,7 @@ public class CmsElementUtil {
      */
     private CmsFormatterConfiguration getFormatterConfiguration(CmsResource resource) {
 
-        if (m_adeConfig == null) {
-            m_adeConfig = OpenCms.getADEManager().lookupConfiguration(m_cms, m_cms.addSiteRoot(m_currentPageUri));
-        }
-        return m_adeConfig.getFormatters(m_cms, resource);
+        return getConfigData().getFormatters(m_cms, resource);
     }
 
     /**
@@ -636,10 +643,10 @@ public class CmsElementUtil {
         if (!CmsResourceTypeXmlContent.isXmlContent(resource)) {
             return false;
         }
-        Map<String, CmsXmlContentProperty> propConfig = CmsXmlContentDefinition.getContentHandlerForResource(
-            cms,
-            resource).getSettings(cms, resource);
-        return !propConfig.isEmpty();
+
+        CmsFormatterConfiguration formatters = getConfigData().getFormatters(m_cms, resource);
+        return (formatters.getAllFormatters().size() > 1)
+            || !CmsXmlContentPropertyHelper.getPropertyInfo(m_cms, resource).isEmpty();
     }
 
     /**
