@@ -279,35 +279,22 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
 
                 // search and replace
                 byte[] result = null;
-                try {
-
-                    boolean xpath = false;
-                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_settings.getXpath())
-                        && CmsResourceTypeXmlContent.isXmlContent(resource)) {
-                        xpath = true;
-                    }
-                    if (!xpath) {
-                        result = replaceInContent(cmsObject, report, file, contents, replace);
-                    } else {
-                        result = replaceInXml(cmsObject, file, replace, report);
-                    }
-
-                } catch (Exception e) {
-                    report.println(
-                        Messages.get().container(Messages.RPT_SOURCESEARCH_APPLY_PATTERN_ERROR_1, e),
-                        I_CmsReport.FORMAT_ERROR);
-                    m_errorSearch += 1;
-                    continue;
+                boolean xpath = false;
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_settings.getXpath())
+                    && CmsResourceTypeXmlContent.isXmlContent(resource)) {
+                    xpath = true;
+                }
+                if (!xpath) {
+                    result = replaceInContent(cmsObject, report, file, contents, replace);
+                } else {
+                    result = replaceInXml(cmsObject, file, replace, report);
                 }
 
-                // rewrite the content
                 if ((result != null) && (contents != null) && !contents.equals(result)) {
-                    if (!writeContent(cmsObject, report, file, result)) {
-                        continue;
-                    }
+                    // rewrite the content
+                    writeContent(cmsObject, report, file, result);
                 }
 
-                // handle exceptions
             } catch (Exception e) {
                 report.print(
                     org.opencms.report.Messages.get().container(Messages.RPT_SOURCESEARCH_COULD_NOT_READ_FILE_0),
@@ -318,7 +305,6 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
                 m_errorSearch += 1;
                 continue;
             }
-
         }
 
         // report results
@@ -433,7 +419,7 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
         if (matcher.find()) {
             // search pattern did match here, so take this file in the list with matches resources
             m_matchedResources.add(file);
-            report.print(Messages.get().container(Messages.RPT_SOURCESEARCH_MATCHED_0), I_CmsReport.FORMAT_OK);
+            report.println(Messages.get().container(Messages.RPT_SOURCESEARCH_MATCHED_0), I_CmsReport.FORMAT_OK);
             if (replace) {
                 return matcher.replaceAll(m_settings.getReplacepattern()).getBytes(encoding);
             }
@@ -503,7 +489,7 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
             throw e;
         }
         if (matched) {
-            report.print(Messages.get().container(Messages.RPT_SOURCESEARCH_MATCHED_0), I_CmsReport.FORMAT_OK);
+            report.println(Messages.get().container(Messages.RPT_SOURCESEARCH_MATCHED_0), I_CmsReport.FORMAT_OK);
         } else {
             report.println(Messages.get().container(Messages.RPT_SOURCESEARCH_NOT_MATCHED_0), I_CmsReport.FORMAT_NOTE);
         }
