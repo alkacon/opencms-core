@@ -259,6 +259,29 @@ public class CmsJspTagEditable extends BodyTagSupport {
     }
 
     /**
+     * Checks if the current request should be direct edit enabled. 
+     * Online-, history-requests and temporary files will not be editable.
+     * 
+     * @param req the servlet request
+     * 
+     * @return <code>true</code> if the current request should be direct edit enabled
+     */
+    public static boolean isEditableRequest(ServletRequest req) {
+
+        boolean result = true;
+        if (CmsHistoryResourceHandler.isHistoryRequest(req) || CmsJspTagEditable.isDirectEditDisabled(req)) {
+            // don't display direct edit buttons on an historical resource
+            result = false;
+        } else {
+            CmsFlexController controller = CmsFlexController.getController(req);
+            CmsObject cms = controller.getCmsObject();
+            result = !cms.getRequestContext().getCurrentProject().isOnlineProject()
+                && !CmsResource.isTemporaryFileName(cms.getRequestContext().getUri());
+        }
+        return result;
+    }
+
+    /**
      * Includes the "direct edit" start element that adds HTML for the editable area to 
      * the output page.<p>
      * 
@@ -306,29 +329,6 @@ public class CmsJspTagEditable extends BodyTagSupport {
         CmsDirectEditParams result = (CmsDirectEditParams)req.getAttribute(I_CmsDirectEditProvider.ATTRIBUTE_DIRECT_EDIT_PROVIDER_PARAMS);
         if (result != null) {
             req.removeAttribute(I_CmsDirectEditProvider.ATTRIBUTE_DIRECT_EDIT_PROVIDER_PARAMS);
-        }
-        return result;
-    }
-
-    /**
-     * Checks if the current request should be direct edit enabled. 
-     * Online-, history-requests and temporary files will not be editable.
-     * 
-     * @param req the servlet request
-     * 
-     * @return <code>true</code> if the current request should be direct edit enabled
-     */
-    protected static boolean isEditableRequest(ServletRequest req) {
-
-        boolean result = true;
-        if (CmsHistoryResourceHandler.isHistoryRequest(req) || CmsJspTagEditable.isDirectEditDisabled(req)) {
-            // don't display direct edit buttons on an historical resource
-            result = false;
-        } else {
-            CmsFlexController controller = CmsFlexController.getController(req);
-            CmsObject cms = controller.getCmsObject();
-            result = !cms.getRequestContext().getCurrentProject().isOnlineProject()
-                && !CmsResource.isTemporaryFileName(cms.getRequestContext().getUri());
         }
         return result;
     }
