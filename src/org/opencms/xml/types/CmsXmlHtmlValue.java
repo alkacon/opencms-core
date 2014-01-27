@@ -267,6 +267,7 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue {
         if (CmsHtmlConverter.isConversionEnabled(contentConversion)) {
             CmsHtmlConverter converter = new CmsHtmlConverter(encoding, contentConversion);
             finalValue = converter.convertToStringSilent(finalValue);
+            finalValue = fixNullCharacters(finalValue);
         }
         if (linkProcessor != null) {
             try {
@@ -298,6 +299,28 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue {
 
         // ensure the String value is re-calculated next time
         m_stringValue = null;
+    }
+
+    /**
+     * JTidy sometimes erroneouslsy produces HTML containing 'null' characters (Unicode code point 0), which are 
+     * invalid in an XML document. Until we find a way to prevent JTidy doing that, we remove the null characters 
+     * from the HTML, and log a warning.<p>
+     *
+     * @param jtidyOutput the JTidy output 
+     * @return the output with null characters removed 
+     */
+    protected String fixNullCharacters(String jtidyOutput) {
+
+        String outputWithoutNullChars = jtidyOutput.replaceAll("\u0000", "");
+        if (jtidyOutput.length() != outputWithoutNullChars.length()) {
+            String context = "";
+            if (m_document.getFile() != null) {
+                context = "(file=" + m_document.getFile().getRootPath() + ")";
+            }
+            LOG.warn("HTML cleanup produced invalid null characters in output. " + context);
+            LOG.debug("HTML cleanup output = " + jtidyOutput);
+        }
+        return outputWithoutNullChars;
     }
 
     /**
