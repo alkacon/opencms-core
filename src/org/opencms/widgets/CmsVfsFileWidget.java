@@ -542,7 +542,7 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
                 }
             }
             int startFolderIndex = configuration.indexOf(CONFIGURATION_STARTFOLDER);
-            if (searchTypesIndex != -1) {
+            if (startFolderIndex != -1) {
                 String startFolder = configuration.substring(startFolderIndex + CONFIGURATION_STARTFOLDER.length() + 1);
                 if (startFolder.contains("|")) {
                     m_startFolder = startFolder.substring(0, startFolder.indexOf("|"));
