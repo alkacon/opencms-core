@@ -269,13 +269,24 @@ public class CmsTemplateContextManager {
 
         providerName = providerName.trim();
         providerName = removePropertyPrefix(providerName);
+        String providerClassName = providerName;
+        String providerConfig = "";
+
+        // get provider configuration string if available
+        int separatorIndex = providerName.indexOf(",");
+        if (separatorIndex > 0) {
+            providerClassName = providerName.substring(0, separatorIndex);
+            providerConfig = providerName.substring(separatorIndex + 1);
+        }
+
         I_CmsTemplateContextProvider result = m_providerInstances.get(providerName);
         if (result == null) {
             try {
-                Class<?> providerClass = Class.forName(providerName);
+                Class<?> providerClass = Class.forName(providerClassName);
                 if (I_CmsTemplateContextProvider.class.isAssignableFrom(providerClass)) {
                     result = (I_CmsTemplateContextProvider)providerClass.newInstance();
-                    result.initialize(m_cms);
+                    result.initialize(m_cms, providerConfig);
+                    //note: we use the provider name as a key here, which includes configuration parameters
                     m_providerInstances.put(providerName, result);
                 }
             } catch (Throwable t) {

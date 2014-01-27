@@ -39,6 +39,8 @@ import org.opencms.jsp.util.I_CmsJspDeviceSelector;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsMacroResolver;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -74,11 +76,17 @@ public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextPr
     /** JSON attribute name. */
     public static final String A_WIDTH = "width";
 
+    /** The name for the configuration parameter which points to the template contexts configuration file. */
+    public static final String PARAM_CONFIGURATION = "configuration";
+
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDefaultTemplateContextProvider.class);
 
     /** The stored Cms context. */
     private CmsObject m_cms;
+
+    /** Map of configuration parameters for the provider instance. */
+    private Map<String, String> m_params;
 
     /** Default constructor. */
     public CmsDefaultTemplateContextProvider() {
@@ -101,7 +109,11 @@ public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextPr
      */
     public String getConfigurationPropertyPath() {
 
-        return "/system/shared/templatecontexts.json";
+        if (m_params.containsKey(PARAM_CONFIGURATION)) {
+            return m_params.get(PARAM_CONFIGURATION);
+        } else {
+            return "/system/shared/templatecontexts.json";
+        }
     }
 
     /**
@@ -149,11 +161,17 @@ public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextPr
     }
 
     /**
-     * @see org.opencms.loader.I_CmsTemplateContextProvider#initialize(org.opencms.file.CmsObject)
+     * @see org.opencms.loader.I_CmsTemplateContextProvider#initialize(org.opencms.file.CmsObject, java.lang.String)
      */
-    public void initialize(CmsObject cms) {
+    public void initialize(CmsObject cms, String config) {
 
         m_cms = cms;
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(config)) {
+            m_params = new HashMap<String, String>();
+        } else {
+            m_params = CmsStringUtil.splitAsMap(config, ",", "=");
+
+        }
         getAllContexts();
     }
 
@@ -208,6 +226,12 @@ public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextPr
         CmsResource resource = m_cms.readResource(path);
         CmsFile file = m_cms.readFile(resource);
         String fileContent = new String(file.getContents(), "UTF-8");
+        CmsMacroResolver resolver = new CmsMacroResolver();
+        resolver.setCmsObject(m_cms);
+        for (Map.Entry<String, String> param : m_params.entrySet()) {
+            resolver.addMacro(param.getKey(), param.getValue());
+        }
+        fileContent = resolver.resolveMacros(fileContent);
         JSONTokener tok = new JSONTokener(fileContent);
         tok.setOrdered(true);
         JSONObject root = new JSONObject(tok, true);

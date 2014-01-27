@@ -86,8 +86,9 @@ public interface I_CmsTemplateContextProvider {
      * Initializes the context provider using a CMS object.<p>
      * 
      * @param cms the current CMS context
+     * @param config the template context provider configuration 
      */
-    void initialize(CmsObject cms);
+    void initialize(CmsObject cms, String config);
 
     /**
      * Gets the value which should be used instead of a property which was read from the template resource.<p>
