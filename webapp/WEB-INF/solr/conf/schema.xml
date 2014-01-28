@@ -239,6 +239,7 @@
    <field name="id"                  type="uuid"         indexed="true"  stored="true"  /><!-- Unique identifier. -->
    <field name="timestamp"           type="date"         indexed="true"  stored="true"  default="NOW"/>
    <field name="path"                type="string"       indexed="true"  stored="true"  required="true" />
+   <field name="filename"            type="string"       indexed="true"  stored="true"  required="true" />
    <field name="path_hierarchy"      type="text_path"    indexed="true"  stored="false" required="true" /><!-- is copied -->
    <field name="parent-folders"      type="string"       indexed="true"  stored="false" required="true" multiValued="true" />
    <field name="type"                type="string"       indexed="true"  stored="true"  required="true" />
@@ -247,9 +248,8 @@
    <field name="userCreated"         type="string"       indexed="true"  stored="true" />
    <field name="version"             type="int"          indexed="true"  stored="true" />
    <field name="search_exclude"      type="boolean"      indexed="true"  stored="true" />
-      <field name="search_channel"      type="string"       indexed="true"  stored="true"  multiValued="true" />
    <field name="mimetype"            type="string"       indexed="true"  stored="true" />
-   <field name="container_types"     type="string"       indexed="true"  stored="true" />
+   <field name="containerTypes"      type="string"       indexed="true"  stored="true" />
    <field name="suffix"              type="string"       indexed="true"  stored="true" />
    <field name="size"                type="int"          indexed="true"  stored="true"  required="true" />
    <field name="res_locales"         type="string"       indexed="true"  stored="true"  required="true" multiValued="true" />
@@ -259,12 +259,12 @@
    <field name="lastmodified"        type="date"         indexed="true"  stored="true"  required="true" />
    <field name="expired"             type="date"         indexed="true"  stored="true"  />
    <field name="released"            type="date"         indexed="true"  stored="true"  />
-   <field name="meta"                type="text_general" indexed="true"  stored="false" multiValued="true" />
+   <field name="meta"                type="text_general" indexed="true"  stored="true"  multiValued="true" />
    <field name="content"             type="text_general" indexed="true"  stored="false" multiValued="true" />
    <field name="contentblob"         type="binary"       indexed="false" stored="true"  />
    <field name="category"            type="text_general" indexed="true"  stored="true"  multiValued="true" />
    <field name="category_exact"      type="string"       indexed="true"  stored="false" multiValued="true" termVectors="true" /><!-- is copied -->
-   <field name="additional_info"     type="string"       indexed="false" stored="true" />
+   <field name="additionalInfo"      type="string"       indexed="false" stored="true" />
    <field name="dependencyType"      type="string"       indexed="true"  stored="true" />
    <field name="place"               type="location"     indexed="true"  stored="true" />
    <field name="spell"               type="spell"        indexed="true"  stored="true"  multiValued="true"/>
@@ -334,4 +334,3 @@
  <uniqueKey>id</uniqueKey>
 
 </schema>
-
