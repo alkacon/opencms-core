@@ -21,6 +21,7 @@
 <html>
     <head>	
 	<script type="text/javascript" src="<cms:link>/system/modules/org.opencms.jquery/resources/packed/jquery.js</cms:link>"></script>
+	<link type="text/css" href="<cms:link>/system/workplace/commons/style/new_admin.css</cms:link>" rel="stylesheet" />
 	<style type="text/css">
 	.control-group label {
 		float: left;
