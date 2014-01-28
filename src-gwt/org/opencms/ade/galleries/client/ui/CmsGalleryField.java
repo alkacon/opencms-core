@@ -234,6 +234,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         buttonHandler.setIsTargetRootPath(false);
         m_uploadButton = new CmsUploadButton(buttonHandler);
         m_uploadButton.setText(null);
+        m_uploadButton.setTitle(Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_1, configuration.getUploadFolder()));
         m_uploadButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
         m_uploadButton.setImageClass(I_CmsImageBundle.INSTANCE.style().uploadSmallIcon());
         m_uploadButton.removeStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
