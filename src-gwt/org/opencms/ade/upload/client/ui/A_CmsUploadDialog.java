@@ -224,7 +224,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
      */
     public A_CmsUploadDialog() {
 
-        super(Messages.get().key(Messages.GUI_UPLOAD_DIALOG_TITLE_0));
+        super(Messages.get().key(Messages.GUI_UPLOAD_DIALOG_TITLE_1));
 
         I_CmsLayoutBundle.INSTANCE.uploadCss().ensureInjected();
         setModal(true);
@@ -471,6 +471,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
     public void setTargetFolder(String target) {
 
         m_targetFolder = target;
+        setCaption(Messages.get().key(Messages.GUI_UPLOAD_DIALOG_TITLE_1, m_targetFolder));
     }
 
     /**

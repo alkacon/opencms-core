@@ -52,7 +52,7 @@ public final class Messages {
     public static final String GUI_UPLOAD_CLIENT_LOADING_0 = "GUI_UPLOAD_CLIENT_LOADING_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_UPLOAD_DIALOG_TITLE_0 = "GUI_UPLOAD_DIALOG_TITLE_0";
+    public static final String GUI_UPLOAD_DIALOG_TITLE_1 = "GUI_UPLOAD_DIALOG_TITLE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UPLOAD_DRAG_AND_DROP_DISABLED_0 = "GUI_UPLOAD_DRAG_AND_DROP_DISABLED_0";
