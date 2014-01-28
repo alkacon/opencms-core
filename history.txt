@@ -31,6 +31,7 @@ OpenCms 9.0.1 - xxxxxxxxx
 * Fixed issue #203 where source search refers a not existing constant.
 - Links to exported resources pasted into the WYSIWYG editor will now be resolved to the corresponding internal links
 * Fixed a problem where copying a file on a network share inside the same folder on Windows 7 caused a hanging dialog  
+* Fixed a problem with generating secure links to detail pages 
 
 OpenCms 9.0.0 - November 8, 2013
 ! Improved configuration for content formatters

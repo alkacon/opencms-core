@@ -147,6 +147,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
         String targetSiteRoot = targetSite.getSiteRoot();
         String originalVfsName = vfsName;
         String detailPage = null;
+        CmsResource detailContent = null;
         try {
             String rootVfsName;
             if (!vfsName.startsWith(targetSiteRoot)
@@ -170,6 +171,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                 }
                 try {
                     CmsResource element = cms.readResource(vfsName);
+                    detailContent = element;
                     Locale locale = cms.getRequestContext().getLocale();
                     List<Locale> defaultLocales = OpenCms.getLocaleManager().getDefaultLocales();
                     vfsName = CmsStringUtil.joinPaths(
@@ -298,11 +300,23 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                     if (linkType != imageId) {
                         // check the secure property of the link
                         boolean secureRequest = exportManager.isSecureLink(cms, oriUri);
-                        boolean secureLink = exportManager.isSecureLink(
-                            cms,
-                            vfsName,
-                            targetSite.getSiteRoot(),
-                            secureRequest);
+
+                        boolean secureLink;
+                        if (detailContent == null) {
+                            secureLink = exportManager.isSecureLink(
+                                cms,
+                                vfsName,
+                                targetSite.getSiteRoot(),
+                                secureRequest);
+                        } else {
+                            secureLink = isDetailPageLinkSecure(
+                                cms,
+                                detailPage,
+                                detailContent,
+                                targetSite,
+                                secureRequest);
+
+                        }
                         // if we are on a normal server, and the requested resource is secure, 
                         // the server name has to be prepended                        
                         if (secureLink && (forceSecure || !secureRequest)) {
@@ -523,6 +537,41 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
 
         // URI without path (typically local link)
         return suffix;
+    }
+
+    /**
+     * Checks whether a link to a detail page should be secure.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param detailPage the detail page path 
+     * @param detailContent the detail content resource 
+     * @param targetSite the target site containing the detail page 
+     * @param secureRequest true if the currently running request is secure 
+     * 
+     * @return true if the link should be a secure link 
+     */
+    protected boolean isDetailPageLinkSecure(
+        CmsObject cms,
+        String detailPage,
+        CmsResource detailContent,
+        CmsSite targetSite,
+        boolean secureRequest) {
+
+        boolean result = false;
+        CmsStaticExportManager exportManager = OpenCms.getStaticExportManager();
+        try {
+            cms = OpenCms.initCmsObject(cms);
+            if (targetSite.getSiteRoot() != null) {
+                cms.getRequestContext().setSiteRoot(targetSite.getSiteRoot());
+            }
+            CmsResource defaultFile = cms.readDefaultFile(detailPage);
+            if (defaultFile != null) {
+                result = exportManager.isSecureLink(cms, defaultFile.getRootPath(), "", secureRequest);
+            }
+        } catch (Exception e) {
+            LOG.error("Error while checking whether detail page link should be secure: " + e.getLocalizedMessage(), e);
+        }
+        return result;
     }
 
     /**
