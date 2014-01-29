@@ -210,7 +210,7 @@ public final class CmsJspStandardContextBean {
     private CmsContainerPageBean m_page;
 
     /** The current request. */
-    private CmsFlexRequest m_request;
+    private ServletRequest m_request;
 
     /** The VFS content access bean. */
     private CmsJspVfsAccessBean m_vfsBean;
@@ -231,6 +231,7 @@ public final class CmsJspStandardContextBean {
     private CmsJspStandardContextBean(ServletRequest req) {
 
         CmsFlexController controller = CmsFlexController.getController(req);
+        m_request = req;
         CmsObject cms;
         if (controller != null) {
             cms = controller.getCmsObject();
@@ -477,7 +478,7 @@ public final class CmsJspStandardContextBean {
      * 
      * @return <code>true</code> if the current request should be direct edit enabled
      */
-    public boolean getIsEditable() {
+    public boolean getIsEditMode() {
 
         return CmsJspTagEditable.isEditableRequest(m_request);
     }
@@ -487,7 +488,7 @@ public final class CmsJspStandardContextBean {
      * 
      * @return <code>true</code> if the current project is the online project
      */
-    public boolean getIsOnline() {
+    public boolean getIsOnlineProject() {
 
         return m_cms.getRequestContext().getCurrentProject().isOnlineProject();
     }
