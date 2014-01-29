@@ -329,12 +329,12 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
         }
         if ((containerPage != null) && (containerPage.getElements() != null)) {
             Map<CmsUUID, I_CmsFormatterBean> formatters = OpenCms.getADEManager().getCachedFormatters(
-                standardContext.getIsOnline()).getFormatters();
+                standardContext.getIsOnlineProject()).getFormatters();
             for (CmsContainerBean container : containerPage.getContainers().values()) {
                 for (CmsContainerElementBean element : container.getElements()) {
                     try {
                         element.initResource(cms);
-                        if (!standardContext.getIsOnline()
+                        if (!standardContext.getIsOnlineProject()
                             || element.getResource().isReleasedAndNotExpired(cms.getRequestContext().getRequestTime())) {
                             if (element.isGroupContainer(cms) || element.isInheritedContainer(cms)) {
                                 List<CmsContainerElementBean> subElements;
@@ -349,7 +349,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                                 }
                                 for (CmsContainerElementBean subElement : subElements) {
                                     subElement.initResource(cms);
-                                    if (!standardContext.getIsOnline()
+                                    if (!standardContext.getIsOnlineProject()
                                         || subElement.getResource().isReleasedAndNotExpired(
                                             cms.getRequestContext().getRequestTime())) {
                                         I_CmsFormatterBean formatter = getFormatterBeanForElement(
@@ -482,12 +482,12 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
         }
         if ((containerPage != null) && (containerPage.getElements() != null)) {
             Map<CmsUUID, I_CmsFormatterBean> formatters = OpenCms.getADEManager().getCachedFormatters(
-                standardContext.getIsOnline()).getFormatters();
+                standardContext.getIsOnlineProject()).getFormatters();
             for (CmsContainerBean container : containerPage.getContainers().values()) {
                 for (CmsContainerElementBean element : container.getElements()) {
                     try {
                         element.initResource(cms);
-                        if (!standardContext.getIsOnline()
+                        if (!standardContext.getIsOnlineProject()
                             || element.getResource().isReleasedAndNotExpired(cms.getRequestContext().getRequestTime())) {
                             if (element.isGroupContainer(cms) || element.isInheritedContainer(cms)) {
                                 List<CmsContainerElementBean> subElements;
@@ -502,7 +502,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                                 }
                                 for (CmsContainerElementBean subElement : subElements) {
                                     subElement.initResource(cms);
-                                    if (!standardContext.getIsOnline()
+                                    if (!standardContext.getIsOnlineProject()
                                         || subElement.getResource().isReleasedAndNotExpired(
                                             cms.getRequestContext().getRequestTime())) {
                                         I_CmsFormatterBean formatter = getFormatterBeanForElement(
