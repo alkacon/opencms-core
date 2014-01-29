@@ -82,6 +82,9 @@ public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextPr
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDefaultTemplateContextProvider.class);
 
+    /** Cache for the template contexts. */
+    private CmsVfsMemoryObjectCache m_cache = new CmsVfsMemoryObjectCache();
+
     /** The stored Cms context. */
     private CmsObject m_cms;
 
@@ -192,18 +195,13 @@ public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextPr
     @SuppressWarnings("unchecked")
     private Map<String, CmsTemplateContext> getContextMap() {
 
-        Object cachedObj = CmsVfsMemoryObjectCache.getVfsMemoryObjectCache().getCachedObject(
-            m_cms,
-            getConfigurationPropertyPath());
+        Object cachedObj = m_cache.getCachedObject(m_cms, getConfigurationPropertyPath());
         if (cachedObj != null) {
             return (Map<String, CmsTemplateContext>)cachedObj;
         } else {
             try {
                 Map<String, CmsTemplateContext> map = initMap();
-                CmsVfsMemoryObjectCache.getVfsMemoryObjectCache().putCachedObject(
-                    m_cms,
-                    getConfigurationPropertyPath(),
-                    map);
+                m_cache.putCachedObject(m_cms, getConfigurationPropertyPath(), map);
                 return map;
             } catch (Exception e) {
                 LOG.error(e.getLocalizedMessage(), e);
