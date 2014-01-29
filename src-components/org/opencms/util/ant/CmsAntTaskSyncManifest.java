@@ -349,7 +349,13 @@ public class CmsAntTaskSyncManifest extends Task {
         if (destination.endsWith(".jpg") || destination.endsWith(".gif") || destination.endsWith(".png")) {
             return "image";
         }
-        if (destination.endsWith(".jar") || destination.endsWith(".class")) {
+        // use binary type for GWT specific files (*.cache.html, hosted.html, *.nocache.js, *.rpc) to avoid their content being indexed or editable
+        if (destination.endsWith(".jar")
+            || destination.endsWith(".class")
+            || destination.endsWith(".cache.html")
+            || destination.endsWith("hosted.html")
+            || destination.endsWith(".nocache.js")
+            || destination.endsWith(".rpc")) {
             return "binary";
         }
         if (destination.endsWith(".jsp")) {
@@ -362,7 +368,6 @@ public class CmsAntTaskSyncManifest extends Task {
             || destination.endsWith(".html")
             || destination.endsWith(".js")
             || destination.endsWith(".xml")
-            || destination.endsWith(".rpc")
             || destination.endsWith(".css")) {
             return "plain";
         }
