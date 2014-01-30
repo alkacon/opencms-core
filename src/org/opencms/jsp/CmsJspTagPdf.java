@@ -30,8 +30,12 @@ package org.opencms.jsp;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.pdftools.CmsPdfLink;
+
+import java.util.Locale;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.tagext.TagSupport;
@@ -50,22 +54,30 @@ public class CmsJspTagPdf extends TagSupport {
     /** The path of the JSP used to generate the XHTML for the content (which is used to generate the PDF). */
     private String m_format;
 
+    /** The locale attribute. */
+    private String m_locale;
+
     /**
      * The implementation of the tag.<p>
      *  
      * @param request the current request 
      * @param format the format path 
      * @param content the content path 
+     * @param localeStr the name of the locale to include in the PDF link 
      * 
      * @return the link to the PDF 
      * 
      * @throws CmsException if something goes wrong 
      */
-    public static String pdfTagAction(ServletRequest request, String format, String content) throws CmsException {
+    public static String pdfTagAction(ServletRequest request, String format, String content, String localeStr)
+    throws CmsException {
 
         CmsFlexController controller = CmsFlexController.getController(request);
-        CmsObject cms = controller.getCmsObject();
-
+        CmsObject cms = OpenCms.initCmsObject(controller.getCmsObject());
+        if (localeStr != null) {
+            Locale localeObj = CmsLocaleManager.getLocale(localeStr);
+            cms.getRequestContext().setLocale(localeObj);
+        }
         CmsResource formatterRes = cms.readResource(format);
         CmsResource contentRes = cms.readResource(content);
         CmsPdfLink pdfLink = new CmsPdfLink(cms, formatterRes, contentRes);
@@ -79,7 +91,7 @@ public class CmsJspTagPdf extends TagSupport {
     public int doStartTag() {
 
         try {
-            pageContext.getOut().print(pdfTagAction(pageContext.getRequest(), m_format, m_content));
+            pageContext.getOut().print(pdfTagAction(pageContext.getRequest(), m_format, m_content, m_locale));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -104,6 +116,16 @@ public class CmsJspTagPdf extends TagSupport {
     public void setFormat(String format) {
 
         m_format = format;
+    }
+
+    /** 
+     * Sets the locale to use for the PDF link.<p>
+     * 
+     * @param locale the locale to use 
+     */
+    public void setLocale(String locale) {
+
+        m_locale = locale;
     }
 
 }
