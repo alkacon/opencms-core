@@ -595,8 +595,10 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
                 "/system/modules/org.opencms.ade.publish/publish.jsp?"
                     + CmsPublishService.PARAM_PUBLISH_PROJECT_ID
                     + "="
-                    + workflowProject.getUuid());
-
+                    + workflowProject.getUuid()
+                    + "&"
+                    + CmsPublishService.PARAM_CONFIRM
+                    + "=true");
             CmsWorkflowNotification notification = new CmsWorkflowNotification(
                 m_adminCms,
                 userCms,

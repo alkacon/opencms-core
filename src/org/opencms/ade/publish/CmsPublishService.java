@@ -83,6 +83,9 @@ import com.google.common.collect.Maps;
  */
 public class CmsPublishService extends CmsGwtService implements I_CmsPublishService {
 
+    /** Name for the request parameter to control display of the confirmation dialog. */
+    public static final String PARAM_CONFIRM = "confirm";
+
     /** The publish project id parameter name. */
     public static final String PARAM_PUBLISH_PROJECT_ID = "publishProjectId";
 
@@ -172,6 +175,8 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
         try {
 
             String closeLink = getRequest().getParameter(CmsDialog.PARAM_CLOSELINK);
+            String confirmStr = getRequest().getParameter(PARAM_CONFIRM);
+            boolean confirm = Boolean.parseBoolean(confirmStr);
 
             Map<String, CmsWorkflow> workflows = OpenCms.getWorkflowManager().getWorkflows(cms);
             if (workflows.isEmpty()) {
@@ -241,6 +246,7 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
                 workflows,
                 workflowId);
             result.setCloseLink(closeLink);
+            result.setShowConfirmation(confirm);
         } catch (Throwable e) {
             error(e);
         }

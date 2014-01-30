@@ -63,12 +63,13 @@ public class CmsPublishEntryPoint extends A_CmsEntryPoint {
                 closeLink = CmsCoreProvider.get().getDefaultWorkplaceLink();
             }
             final String constCloseLink = closeLink;
+            final boolean confirm = initData.isShowConfirmation();
             CloseHandler<PopupPanel> closeHandler = new CloseHandler<PopupPanel>() {
 
                 public void onClose(CloseEvent<PopupPanel> event) {
 
                     CmsPublishDialog dialog = (CmsPublishDialog)(event.getTarget());
-                    if (dialog.hasSucceeded() || dialog.hasFailed()) {
+                    if (confirm && (dialog.hasSucceeded() || dialog.hasFailed())) {
                         CmsPublishConfirmationDialog confirmation = new CmsPublishConfirmationDialog(
                             dialog,
                             constCloseLink);

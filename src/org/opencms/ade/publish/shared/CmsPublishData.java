@@ -57,6 +57,9 @@ public class CmsPublishData implements IsSerializable {
     /** The currently selected workflow. */
     private String m_selectedWorkflowId;
 
+    /** Flag which controls whether the confirmation dialog should be shown before returning to the workplace. */
+    private boolean m_showConfirmation;
+
     /** The available work flow actions. */
     private Map<String, CmsWorkflow> m_workflows;
 
@@ -152,6 +155,16 @@ public class CmsPublishData implements IsSerializable {
     }
 
     /**
+     * Returns true if the confirmation dialog should be shown before returning to the workplace.<p>
+     * 
+     * @return true if the confirmation dialog is enabled 
+     */
+    public boolean isShowConfirmation() {
+
+        return m_showConfirmation;
+    }
+
+    /**
      * Sets the close link.<p>
      * 
      * @param closeLink the close link 
@@ -160,5 +173,15 @@ public class CmsPublishData implements IsSerializable {
 
         m_closeLink = closeLink;
 
+    }
+
+    /** 
+     * Enables or disables showing the confirmation dialog before returning to the workplace.<p>
+     * 
+     * @param confirm true if the confirmation dialog should be shown 
+     */
+    public void setShowConfirmation(boolean confirm) {
+
+        m_showConfirmation = confirm;
     }
 }
