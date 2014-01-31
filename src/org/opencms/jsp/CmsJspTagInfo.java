@@ -122,6 +122,90 @@ public class CmsJspTagInfo extends TagSupport {
     private String m_property;
 
     /**
+     * Returns the description of a page delivered from OpenCms, usually used for the <code>description</code> metatag of
+     * a HTML page.<p>
+     * 
+     * If no description information has been found, the empty String "" is returned.<p>
+     * 
+     * @param controller the current OpenCms request controller
+     * @param req the current request
+     * 
+     * @return the description of a page delivered from OpenCms
+     */
+    public static String getDescriptionInfo(CmsFlexController controller, HttpServletRequest req) {
+
+        String result = null;
+        CmsObject cms = controller.getCmsObject();
+
+        try {
+
+            CmsJspStandardContextBean contextBean = CmsJspStandardContextBean.getInstance(req);
+            if (contextBean.isDetailRequest()) {
+                // this is a request to a detail page
+                CmsResource res = contextBean.getDetailContent();
+                // read the description of the detail resource as fall back (may contain mapping from another locale)
+                result = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false).getValue();
+            }
+            if (result == null) {
+                // read the title of the requested resource as fall back
+                result = cms.readPropertyObject(
+                    cms.getRequestContext().getUri(),
+                    CmsPropertyDefinition.PROPERTY_DESCRIPTION,
+                    true).getValue();
+            }
+        } catch (CmsException e) {
+            // NOOP, result will be null
+        }
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(result)) {
+            result = "";
+        }
+
+        return result;
+    }
+
+    /**
+     * Returns the keywords of a page delivered from OpenCms, usually used for the <code>keywords</code> metatag of
+     * a HTML page.<p>
+     * 
+     * If no description information has been found, the empty String "" is returned.<p>
+     * 
+     * @param controller the current OpenCms request controller
+     * @param req the current request
+     * 
+     * @return the description of a page delivered from OpenCms
+     */
+    public static String getKeywordsInfo(CmsFlexController controller, HttpServletRequest req) {
+
+        String result = null;
+        CmsObject cms = controller.getCmsObject();
+
+        try {
+
+            CmsJspStandardContextBean contextBean = CmsJspStandardContextBean.getInstance(req);
+            if (contextBean.isDetailRequest()) {
+                // this is a request to a detail page
+                CmsResource res = contextBean.getDetailContent();
+                // read the keywords of the detail resource as fall back (may contain mapping from another locale)
+                result = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_KEYWORDS, false).getValue();
+            }
+            if (result == null) {
+                // read the title of the requested resource as fall back
+                result = cms.readPropertyObject(
+                    cms.getRequestContext().getUri(),
+                    CmsPropertyDefinition.PROPERTY_KEYWORDS,
+                    true).getValue();
+            }
+        } catch (CmsException e) {
+            // NOOP, result will be null
+        }
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(result)) {
+            result = "";
+        }
+
+        return result;
+    }
+
+    /**
      * Returns the title of a page delivered from OpenCms, usually used for the <code>&lt;title&gt;</code> tag of
      * a HTML page.<p>
      * 
@@ -156,90 +240,6 @@ public class CmsJspTagInfo extends TagSupport {
                 result = cms.readPropertyObject(
                     cms.getRequestContext().getUri(),
                     CmsPropertyDefinition.PROPERTY_TITLE,
-                    true).getValue();
-            }
-        } catch (CmsException e) {
-            // NOOP, result will be null
-        }
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(result)) {
-            result = "";
-        }
-
-        return result;
-    }
-    
-    /**
-     * Returns the description of a page delivered from OpenCms, usually used for the <code>description</code> metatag of
-     * a HTML page.<p>
-     * 
-     * If no description information has been found, the empty String "" is returned.<p>
-     * 
-     * @param controller the current OpenCms request controller
-     * @param req the current request
-     * 
-     * @return the description of a page delivered from OpenCms
-     */
-    public static String getDescriptionInfo(CmsFlexController controller, HttpServletRequest req) {
-
-        String result = null;
-        CmsObject cms = controller.getCmsObject();
-
-        try {
-
-            CmsJspStandardContextBean contextBean = CmsJspStandardContextBean.getInstance(req);
-            if (contextBean.isDetailRequest()) {
-            	// this is a request to a detail page
-                CmsResource res = contextBean.getDetailContent();
-            	// read the description of the detail resource as fall back (may contain mapping from another locale)
-                result = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false).getValue();
-            }
-            if (result == null) {
-                // read the title of the requested resource as fall back
-                result = cms.readPropertyObject(
-                    cms.getRequestContext().getUri(),
-                    CmsPropertyDefinition.PROPERTY_DESCRIPTION,
-                    true).getValue();
-            }
-        } catch (CmsException e) {
-            // NOOP, result will be null
-        }
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(result)) {
-            result = "";
-        }
-
-        return result;
-    }
-    
-    /**
-     * Returns the keywords of a page delivered from OpenCms, usually used for the <code>keywords</code> metatag of
-     * a HTML page.<p>
-     * 
-     * If no description information has been found, the empty String "" is returned.<p>
-     * 
-     * @param controller the current OpenCms request controller
-     * @param req the current request
-     * 
-     * @return the description of a page delivered from OpenCms
-     */
-    public static String getKeywordsInfo(CmsFlexController controller, HttpServletRequest req) {
-
-        String result = null;
-        CmsObject cms = controller.getCmsObject();
-
-        try {
-
-            CmsJspStandardContextBean contextBean = CmsJspStandardContextBean.getInstance(req);
-            if (contextBean.isDetailRequest()) {
-            	// this is a request to a detail page
-                CmsResource res = contextBean.getDetailContent();
-            	// read the keywords of the detail resource as fall back (may contain mapping from another locale)
-                result = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_KEYWORDS, false).getValue();
-            }
-            if (result == null) {
-                // read the title of the requested resource as fall back
-                result = cms.readPropertyObject(
-                    cms.getRequestContext().getUri(),
-                    CmsPropertyDefinition.PROPERTY_KEYWORDS,
                     true).getValue();
             }
         } catch (CmsException e) {
@@ -300,7 +300,7 @@ public class CmsJspTagInfo extends TagSupport {
             case 9: // opencms.request.locale
                 result = controller.getCmsObject().getRequestContext().getLocale().toString();
                 break;
-            case 10: // Invalid info property selected
+            case 10: // opencms.title
                 result = getTitleInfo(controller, req);
                 break;
             case 11: // opencms.description
