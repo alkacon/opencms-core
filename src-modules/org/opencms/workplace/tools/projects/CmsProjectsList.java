@@ -56,6 +56,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -194,15 +195,16 @@ public class CmsProjectsList extends A_CmsListDialog {
      * @throws CmsRuntimeException to signal that an action is not supported
      * 
      */
+    @Override
     public void executeListMultiActions() throws CmsRuntimeException {
 
         if (getParamListAction().equals(LIST_MACTION_DELETE)) {
             // execute the delete multiaction
-            List removedItems = new ArrayList();
+            List<String> removedItems = new ArrayList<String>();
             try {
-                Iterator itItems = getSelectedItems().iterator();
+                Iterator<CmsListItem> itItems = getSelectedItems().iterator();
                 while (itItems.hasNext()) {
-                    CmsListItem listItem = (CmsListItem)itItems.next();
+                    CmsListItem listItem = itItems.next();
                     CmsUUID pId = new CmsUUID(listItem.getId());
                     getCms().deleteProject(pId);
                     removedItems.add(listItem.getId());
@@ -213,9 +215,9 @@ public class CmsProjectsList extends A_CmsListDialog {
         } else if (getParamListAction().equals(LIST_MACTION_UNLOCK)) {
             // execute the unlock multiaction
             try {
-                Iterator itItems = getSelectedItems().iterator();
+                Iterator<CmsListItem> itItems = getSelectedItems().iterator();
                 while (itItems.hasNext()) {
-                    CmsListItem listItem = (CmsListItem)itItems.next();
+                    CmsListItem listItem = itItems.next();
                     CmsUUID pId = new CmsUUID(listItem.getId());
                     getCms().unlockProject(pId);
                 }
@@ -231,6 +233,7 @@ public class CmsProjectsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws IOException, ServletException {
 
         CmsUUID projectId = new CmsUUID(getSelectedItem().getId());
@@ -276,17 +279,18 @@ public class CmsProjectsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
-        List projects = getList().getAllContent();
-        Iterator itProjects = projects.iterator();
+        List<CmsListItem> projects = getList().getAllContent();
+        Iterator<CmsListItem> itProjects = projects.iterator();
         while (itProjects.hasNext()) {
-            CmsListItem item = (CmsListItem)itProjects.next();
+            CmsListItem item = itProjects.next();
             try {
                 if (detailId.equals(LIST_DETAIL_RESOURCES)) {
                     CmsProject project = getCms().readProject(new CmsUUID(item.getId()));
                     StringBuffer html = new StringBuffer(512);
-                    Iterator resources = getCms().readProjectResources(project).iterator();
+                    Iterator<String> resources = getCms().readProjectResources(project).iterator();
                     while (resources.hasNext()) {
                         html.append(resources.next().toString());
                         html.append("<br>");
@@ -302,14 +306,15 @@ public class CmsProjectsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
-    protected List getListItems() throws CmsException {
+    @Override
+    protected List<CmsListItem> getListItems() throws CmsException {
 
-        List ret = new ArrayList();
+        List<CmsListItem> ret = new ArrayList<CmsListItem>();
         // get content
-        List projects = OpenCms.getOrgUnitManager().getAllManageableProjects(getCms(), "", true);
-        Iterator itProjects = projects.iterator();
+        List<CmsProject> projects = OpenCms.getOrgUnitManager().getAllManageableProjects(getCms(), "", true);
+        Iterator<CmsProject> itProjects = projects.iterator();
         while (itProjects.hasNext()) {
-            CmsProject project = (CmsProject)itProjects.next();
+            CmsProject project = itProjects.next();
             CmsListItem item = getList().newItem(project.getUuid().toString());
             item.set(LIST_COLUMN_NAME, project.getSimpleName());
             item.set(LIST_COLUMN_DESCRIPTION, project.getDescription());
@@ -334,7 +339,7 @@ public class CmsProjectsList extends A_CmsListDialog {
             }
             item.set(LIST_COLUMN_CREATION, new Date(project.getDateCreated()));
             StringBuffer html = new StringBuffer(512);
-            Iterator resources = getCms().readProjectResources(project).iterator();
+            Iterator<String> resources = getCms().readProjectResources(project).iterator();
             while (resources.hasNext()) {
                 html.append(resources.next().toString());
                 html.append("<br>");
@@ -360,6 +365,7 @@ public class CmsProjectsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -371,6 +377,7 @@ public class CmsProjectsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create column for files
@@ -403,6 +410,7 @@ public class CmsProjectsList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 if (getItem() != null) {
@@ -428,6 +436,7 @@ public class CmsProjectsList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 if (getItem() != null) {
@@ -463,6 +472,7 @@ public class CmsProjectsList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 if (getItem() != null) {
@@ -474,7 +484,17 @@ public class CmsProjectsList extends A_CmsListDialog {
                 }
                 return super.isVisible();
             }
+
+            @Override
+            protected String resolveOnClic(Locale locale) {
+
+                String link = OpenCms.getLinkManager().substituteLink(
+                    getCms(),
+                    "/system/modules/org.opencms.ade.publish/publish.jsp?publishProjectId=" + getItem().getId());
+                return "window.location='" + link + "' + '&closelink='+encodeURI(window.location.href);";
+            }
         };
+
         publishEnabledAction.setName(Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_ENABLED_NAME_0));
         publishEnabledAction.setHelpText(Messages.get().container(
             Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_ENABLED_HELP_0));
@@ -489,6 +509,7 @@ public class CmsProjectsList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 if (getItem() != null) {
@@ -601,6 +622,7 @@ public class CmsProjectsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // add publishing info details
@@ -627,6 +649,7 @@ public class CmsProjectsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // add the unlock project multi action
