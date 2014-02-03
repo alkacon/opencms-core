@@ -34,6 +34,7 @@ import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
+import org.opencms.main.OpenCms;
 
 /**
  * ADE download gallery widget implementations.<p>
@@ -101,6 +102,13 @@ public class CmsAdeDownloadGalleryWidget extends A_CmsAdeGalleryWidget {
 
         JSONObject result = new JSONObject();
         result.put(I_CmsGalleryProviderConstants.CONFIG_TAB_CONFIG, "selectDoc");
+        String uploadFolder = OpenCms.getWorkplaceManager().getRepositoryFolderHandler().getRepositoryFolder(
+            cms,
+            resource,
+            GALLERY_NAME + "gallery");
+        if (uploadFolder != null) {
+            result.put(I_CmsGalleryProviderConstants.CONFIG_UPLOAD_FOLDER, uploadFolder);
+        }
         return result;
     }
 
