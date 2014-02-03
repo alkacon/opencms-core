@@ -11,6 +11,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.A_CmsHtmlWidget;
+import org.opencms.widgets.CmsHtmlWidget;
 import org.opencms.widgets.CmsHtmlWidgetOption;
 import org.opencms.widgets.I_CmsWidget;
 import org.opencms.widgets.I_CmsWidgetDialog;
@@ -28,7 +29,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 
 /**
@@ -231,8 +231,7 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
             String formatSelectOptions = getHtmlWidgetOption().getFormatSelectOptions();
             if (!CmsStringUtil.isEmpty(formatSelectOptions)
                 && !getHtmlWidgetOption().isButtonHidden(CmsHtmlWidgetOption.OPTION_FORMATSELECT)) {
-                formatSelectOptions = StringUtils.replace(formatSelectOptions, ";", ",");
-                result.put("block_formats", formatSelectOptions);
+                result.put("block_formats", CmsHtmlWidget.getTinyMceBlockFormats(formatSelectOptions));
             }
             result.put("entity_encoding", "raw");
         } catch (JSONException e) {
