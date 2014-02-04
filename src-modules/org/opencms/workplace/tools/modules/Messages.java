@@ -65,6 +65,15 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_READ_RESOURCE_1 = "ERR_READ_RESOURCE_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_RESOURCE_TYPE_ALREADY_EXISTS_1 = "ERR_RESOURCE_TYPE_ALREADY_EXISTS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_RESOURCE_TYPE_ID_ALREADY_IN_USE_1 = "ERR_RESOURCE_TYPE_ID_ALREADY_IN_USE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ADD_TYPES_LABEL_0 = "GUI_ADD_TYPES_LABEL_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CLONEMODULE_ADMIN_TOOL_HELP_0 = "GUI_CLONEMODULE_ADMIN_TOOL_HELP_0";
 
     /** Message constant for key in the resource bundle. */
