@@ -82,6 +82,7 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
     /** Template folder within the module. */
     public static final String PATH_TEMPLATES = "templates/";
 
+    /** The formatters folder within the module. */
     public static final String PATH_FORMATTERS = "formatters/";
 
     /** The module object that is edited on this dialog. */
@@ -115,11 +116,12 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
     /** 
      * Commits the edited module.<p>
      */
+    @Override
     public void actionCommit() {
 
         if (!hasCommitErrors()) {
             //check if we have to update an existing module or to create a new one
-            Set moduleNames = OpenCms.getModuleManager().getModuleNames();
+            Set<String> moduleNames = OpenCms.getModuleManager().getModuleNames();
             if (moduleNames.contains(m_module.getName())) {
                 // update the module information
                 try {
@@ -139,7 +141,7 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
 
         if (!hasCommitErrors()) {
             // refresh the list
-            Map objects = (Map)getSettings().getListObject();
+            Map<?, ?> objects = (Map<?, ?>)getSettings().getListObject();
             if (objects != null) {
                 objects.remove(CmsModulesList.class.getName());
             }
@@ -149,10 +151,11 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsDialog#getCancelAction()
      */
+    @Override
     public String getCancelAction() {
 
         // set the default action
-        setParamPage((String)getPages().get(0));
+        setParamPage(getPages().get(0));
 
         return DIALOG_SET;
     }
@@ -179,6 +182,7 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
     /**
      * Creates the list of widgets for this dialog.<p>
      */
+    @Override
     protected void defineWidgets() {
 
         initModule();
@@ -188,6 +192,7 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -196,6 +201,7 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -238,6 +244,7 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // set the dialog type
@@ -252,6 +259,7 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         String moduleName = getParamModule();
@@ -276,8 +284,8 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
     private CmsModule createModuleFolders(CmsModule module) throws CmsException {
 
         String modulePath = CmsWorkplace.VFS_PATH_MODULES + module.getName() + "/";
-        List exportPoints = module.getExportPoints();
-        List resources = module.getResources();
+        List<CmsExportPoint> exportPoints = module.getExportPoints();
+        List<String> resources = module.getResources();
 
         // set the createModuleFolder flag if any other flag is set
         if (module.isCreateClassesFolder()
@@ -323,7 +331,7 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
         }
 
         // check if we have to create the resources folder
-        if (module.isCreateTemplateFolder()) {
+        if (module.isCreateResourcesFolder()) {
             String path = modulePath + PATH_RESOURCES;
             getCms().createResource(path, folderId);
         }
