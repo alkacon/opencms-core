@@ -38,6 +38,8 @@
             <resource uri="/system/workplace/admin/modules/modules_delete.jsp"/>
             <resource uri="/system/workplace/admin/modules/modules_edit.jsp"/>
             <resource uri="/system/workplace/admin/modules/modules_edit_parameters.jsp"/>
+            <resource uri="/system/workplace/admin/modules/modules_add_type.jsp"/>
+			<resource uri="/system/workplace/admin/modules/add_type_report.jsp"/>
             <resource uri="/system/workplace/admin/modules/modules_clone.jsp" />
             <resource uri="/system/workplace/admin/modules/module-clone-action.jsp"/>
             <resource uri="/system/workplace/admin/modules/modules_edit_resources.jsp"/>
@@ -141,6 +143,135 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.tools.modules/samples</destination>
+			<type>folder</type>
+			<uuidstructure>70faae02-8cdb-11e3-955f-094876801169</uuidstructure>
+			<datelastmodified>Mon, 03 Feb 2014 13:59:47 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 03 Feb 2014 13:59:47 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.tools.modules/samples/sample-formatter-config.xml</source>
+			<destination>system/modules/org.opencms.workplace.tools.modules/samples/sample-formatter-config.xml</destination>
+			<type>formatter_config</type>
+			<uuidstructure>b885f4fa-8cdb-11e3-955f-094876801169</uuidstructure>
+			<uuidresource>b885f4fb-8cdb-11e3-955f-094876801169</uuidresource>
+			<datelastmodified>Mon, 03 Feb 2014 14:11:56 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 03 Feb 2014 14:01:47 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>locale</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>locale-available</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>search.exclude</name>
+					<value><![CDATA[all]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.tools.modules/samples/sample-formatter.jsp</source>
+			<destination>system/modules/org.opencms.workplace.tools.modules/samples/sample-formatter.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>99ac5017-8cdb-11e3-955f-094876801169</uuidstructure>
+			<uuidresource>99ac5018-8cdb-11e3-955f-094876801169</uuidresource>
+			<datelastmodified>Mon, 03 Feb 2014 14:00:55 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 03 Feb 2014 14:00:55 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.tools.modules/samples/sample-icon.png</source>
+			<destination>system/modules/org.opencms.workplace.tools.modules/samples/sample-icon.png</destination>
+			<type>image</type>
+			<uuidstructure>152fc737-8cec-11e3-955f-094876801169</uuidstructure>
+			<uuidresource>152fc738-8cec-11e3-955f-094876801169</uuidresource>
+			<datelastmodified>Mon, 03 Feb 2014 15:58:54 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 03 Feb 2014 15:58:54 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[sample-icon]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.tools.modules/samples/sample-icon_big.png</source>
+			<destination>system/modules/org.opencms.workplace.tools.modules/samples/sample-icon_big.png</destination>
+			<type>image</type>
+			<uuidstructure>1535baab-8cec-11e3-955f-094876801169</uuidstructure>
+			<uuidresource>1535baac-8cec-11e3-955f-094876801169</uuidresource>
+			<datelastmodified>Mon, 03 Feb 2014 15:58:54 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 03 Feb 2014 15:58:54 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[sample-icon_big]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:24,h:24]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.tools.modules/samples/sample-schema.xsd</source>
+			<destination>system/modules/org.opencms.workplace.tools.modules/samples/sample-schema.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>7e9d95e4-8cdb-11e3-955f-094876801169</uuidstructure>
+			<uuidresource>7e9d95e5-8cdb-11e3-955f-094876801169</uuidresource>
+			<datelastmodified>Mon, 03 Feb 2014 14:49:12 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 03 Feb 2014 14:00:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Sample resource type schema]]></value>
+				</property>
+			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -250,6 +381,30 @@
 				<property>
 					<name>default-file</name>
 					<value><![CDATA[index.jsp]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/modules/add_type_report.jsp</source>
+			<destination>system/workplace/admin/modules/add_type_report.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>f54c8eab-8a87-11e3-985a-094876801169</uuidstructure>
+			<uuidresource>f54c8eac-8a87-11e3-985a-094876801169</uuidresource>
+			<datelastmodified>Mon, 03 Feb 2014 11:54:20 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 31 Jan 2014 14:57:09 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Add resource type report]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -579,7 +734,58 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-		
+		<file>
+			<source>system/workplace/admin/modules/modules_add_type.jsp</source>
+			<destination>system/workplace/admin/modules/modules_add_type.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>f9fad316-88f0-11e3-9376-094876801169</uuidstructure>
+			<uuidresource>f9fad317-88f0-11e3-9376-094876801169</uuidresource>
+			<datelastmodified>Mon, 03 Feb 2014 11:55:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 29 Jan 2014 14:23:51 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_ADD_RESOURCE_TYPE_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/modules/icons/big/modules.png:tools/modules/icons/small/modules.png]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_MODULE_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3.5]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_ADD_RESOURCE_TYPE_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Add resource type]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:module=${param.module}&action=initial|path:/modules/edit/addtype]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.modules.CmsModulesToolHandler]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
 		<file>
 			<source>system/workplace/admin/modules/module-clone-action.jsp</source>
 			<destination>system/workplace/admin/modules/module-clone-action.jsp</destination>
