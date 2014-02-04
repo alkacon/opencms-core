@@ -1708,7 +1708,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     throws CmsXmlException {
 
         if (contentDefinition.getSchemaType(elementName) == null) {
-            throw new CmsXmlException(org.opencms.xml.types.Messages.get().container(
+            throw new CmsXmlException(Messages.get().container(
                 Messages.ERR_XMLCONTENT_INVALID_ELEM_SEARCHSETTINGS_1,
                 elementName));
         }
