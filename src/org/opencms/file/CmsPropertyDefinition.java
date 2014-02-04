@@ -104,8 +104,8 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
     /** Property to define the function detail container for a template. */
     public static final String PROPERTY_CONTAINER_INFO = "container.info";
 
-    /** Property to configure the value which should be used instead of the template path when selecting the template in the GUI. */
-    public static final String PROPERTY_TEMPLATE_SELECTVALUE = "template.selectvalue";
+    /** Property to configure the value which should be used instead of the template path when selecting the template in the GUI. Please note that this does not have to actually be a template provider configuration string, this is just the most common use case.  */
+    public static final String PROPERTY_TEMPLATE_PROVIDER = "template.provider";
 
     /** Property for the content conversion. */
     public static final String PROPERTY_CONTENT_CONVERSION = "content-conversion";

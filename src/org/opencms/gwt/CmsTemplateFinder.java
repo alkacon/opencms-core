@@ -51,6 +51,9 @@ import java.util.Map;
  */
 public class CmsTemplateFinder {
 
+    /** Macro which is used in template.provider property to be substituted with the template path. */
+    public static final String MACRO_TEMPLATEPATH = "templatepath";
+
     /** The cms context. */
     protected CmsObject m_cms;
 
@@ -126,14 +129,14 @@ public class CmsTemplateFinder {
         CmsProperty imageProp = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TEMPLATE_IMAGE, false);
         CmsProperty selectValueProp = cms.readPropertyObject(
             resource,
-            CmsPropertyDefinition.PROPERTY_TEMPLATE_SELECTVALUE,
+            CmsPropertyDefinition.PROPERTY_TEMPLATE_PROVIDER,
             false);
         String sitePath = cms.getSitePath(resource);
         String templateValue = sitePath;
         if (!selectValueProp.isNullProperty() && !CmsStringUtil.isEmptyOrWhitespaceOnly(selectValueProp.getValue())) {
             String selectValue = selectValueProp.getValue();
             CmsMacroResolver resolver = new CmsMacroResolver();
-            resolver.addMacro("path", sitePath);
+            resolver.addMacro(MACRO_TEMPLATEPATH, sitePath);
             templateValue = resolver.resolveMacros(selectValue);
         }
         return new CmsClientTemplateBean(titleProp.getValue(), descProp.getValue(), templateValue, imageProp.getValue());
