@@ -16,23 +16,42 @@ Legend:
 - General comment
 
 OpenCms 9.0.1 - xxxxxxxxx
-- Updated TinyMCE to version 4.0.12
 ! Added option to show expired or unreleased resources in content collector lists in the offline project
-- Enhanced gallery widget upload feature
+! Implemented feature request #204 type name translation for "formatter_config" files
+! Added properties 'keywords' and 'description' to cms info tag resolving issues #158 and #219
+! Added new administration dialog for resource type creation
+! Added an instance of the CmsJspStandardContextBean to the request context of every JSP
+! Added permalink support for detail pages
+! Added direct publish feature to content editor
+* Fixed issue #178 where the start folder configuration was ignored by the VfsFileWidget
+* Fixed issue #192 where HTML cleanup inserted invalid characters in some cases
+* Fixed issue #203 where source search refers a not existing constant
+* Fixed issue #205 where message bundles were accessed without locale
+* Fixed issue #208 with rare null pointer exceptions during flex key generation
+* Fixed issue #210 where localization of TinyMCE failed for some languages
+* Fixed issue #211 with missing JPA dependencies
+* Fixed issue #215 where container page content was not indexed correctly for SOLR indices
+* Fixed issue #217 where expired resources in container pages caused error messages in the log file
 * Fixing issue with optional text-area widgets
+* Fixed problems with expired container elements not being displayed correctly in the Online project
+* Fixed issue where 'resources' folder was not created within a module
+* Fixed issue where overflowing container elements remained hidden after drag and drop
+* Fixed issue where IE8+ browsers would not load updated resource versions
+* Fixed incorrect handling of the "formatselect.options" option in the HTML widget
+* Fixed a problem where copying a file on a network share inside the same folder on Windows 7 caused a hanging dialog  
+* Fixed a problem with generating secure links to detail pages
+- Updated TinyMCE to version 4.0.12
+- Enhanced gallery widget upload feature
 - Improved IE10/IE11 support to allow drag and drop in upload dialog
 - Fixed alias deletion for folders
 - Several improvements in the publish dialog 
-* Fixed problems with expired container elements not being displayed correctly in the Online project
+- Links to exported resources pasted into the WYSIWYG editor will now be resolved to the corresponding internal links
 - If an optional content value which is mapped to dateReleased/dateExpired is removed, the corresponding attribute will be reset   
 - Added more options to the widget  combo box for formatter configurations 
-! Implemented feature request #204 type name translation for "formatter_config" files. 
-* Fixed issue #205 where message bundles were accessed without locale.
-* Fixed issue #203 where source search refers a not existing constant.
-- Links to exported resources pasted into the WYSIWYG editor will now be resolved to the corresponding internal links
-* Fixed a problem where copying a file on a network share inside the same folder on Windows 7 caused a hanging dialog  
-* Fixed a problem with generating secure links to detail pages
 - Disabled CMS_LOG db logging by default 
+- Updated Russian localization
+- Improved gradle build script to generate additional artifacts, also added 'install' task
+_ Improved workplace theme for better support of alternative browsers and operating systems
 
 OpenCms 9.0.0 - November 8, 2013
 ! Improved configuration for content formatters
