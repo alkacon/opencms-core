@@ -58,6 +58,7 @@
             <resource uri="/system/workplace/resources/tools/modules/buttons/module_exportpoints.png"/>
             <resource uri="/system/workplace/resources/tools/modules/buttons/modules.png"/>
             <resource uri="/system/workplace/resources/tools/modules/icons/big/module_add.png"/>
+            <resource uri="/system/workplace/resources/tools/modules/icons/big/module_add_restype.png"/>
             <resource uri="/system/workplace/resources/tools/modules/icons/big/module_delete.png"/>
             <resource uri="/system/workplace/resources/tools/modules/icons/big/module_dependencies.png"/>
             <resource uri="/system/workplace/resources/tools/modules/icons/big/module_dependencies_add.png"/>
@@ -752,7 +753,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/modules/icons/big/modules.png:tools/modules/icons/small/modules.png]]></value>
+					<value><![CDATA[tools/modules/icons/big/module_add_restype.png]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -1618,6 +1619,30 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/modules/icons/big/module_add_restype.png</source>
+			<destination>system/workplace/resources/tools/modules/icons/big/module_add_restype.png</destination>
+			<type>image</type>
+			<uuidstructure>67690119-8da2-11e3-a497-094876801169</uuidstructure>
+			<uuidresource>6769011a-8da2-11e3-a497-094876801169</uuidresource>
+			<datelastmodified>Tue, 04 Feb 2014 13:44:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 04 Feb 2014 13:44:01 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[module_add_restype]]></value>
+				</property>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:32,h:32]]></value>
