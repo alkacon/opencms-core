@@ -202,6 +202,18 @@ public class CmsModuleAddResourceTypes extends CmsWidgetDialog {
     }
 
     /**
+     * @see org.opencms.workplace.CmsWorkplace#initMessages()
+     */
+    @Override
+    protected void initMessages() {
+
+        // add specific dialog resource bundle
+        addMessages(Messages.get().getBundleName());
+        // add default resource bundles
+        super.initMessages();
+    }
+
+    /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
     @Override
@@ -230,25 +242,13 @@ public class CmsModuleAddResourceTypes extends CmsWidgetDialog {
      */
     private int findNextTypeId() {
 
-        int result = (int)(10000 + Math.round(Math.random() * 1000));
+        int result = (int)(20000 + Math.round(Math.random() * 1000));
         for (I_CmsResourceType type : OpenCms.getResourceManager().getResourceTypes()) {
             if (type.getTypeId() >= result) {
                 result = type.getTypeId() + 1;
             }
         }
         return result;
-    }
-
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initMessages()
-     */
-    @Override
-    protected void initMessages() {
-
-        // add specific dialog resource bundle
-        addMessages(Messages.get().getBundleName());
-        // add default resource bundles
-        super.initMessages();
     }
 
     /**
