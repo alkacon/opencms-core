@@ -32,6 +32,7 @@ import org.opencms.ade.configuration.CmsPropertyConfig;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
+import org.opencms.relations.CmsLink;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsFormatterBean;
@@ -251,7 +252,8 @@ public class CmsFormatterBeanParser {
 
         I_CmsXmlContentValueLocation jspLoc = root.getSubValue(N_JSP);
         CmsXmlVfsFileValue jspValue = (CmsXmlVfsFileValue)(jspLoc.getValue());
-        CmsUUID jspID = jspValue.getLink(m_cms).getStructureId();
+        CmsLink link = jspValue.getLink(m_cms);
+        CmsUUID jspID = link.getStructureId();
         CmsResource formatterRes = m_cms.readResource(jspID);
         m_formatterResource = formatterRes;
 
