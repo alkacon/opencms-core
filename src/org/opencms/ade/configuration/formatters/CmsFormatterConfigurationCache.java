@@ -242,21 +242,23 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
     protected CmsFormatterBean readFormatter(CmsUUID structureId) {
 
         CmsFormatterBean formatterBean = null;
-        boolean fileWasRead = false;
+        CmsResource formatterRes = null;
         try {
-            CmsResource formatterRes = m_cms.readResource(structureId);
+            formatterRes = m_cms.readResource(structureId);
             CmsFile formatterFile = m_cms.readFile(formatterRes);
-            fileWasRead = true;
             CmsFormatterBeanParser parser = new CmsFormatterBeanParser(m_cms);
             CmsXmlContent content = CmsXmlContentFactory.unmarshal(m_cms, formatterFile);
             formatterBean = parser.parse(content, formatterRes.getRootPath(), "" + formatterRes.getStructureId());
         } catch (Exception e) {
 
-            if (!fileWasRead) {
+            if (formatterRes == null) {
                 // normal case if resources get deleted, should not be written to the error channel
                 LOG.info(e.getLocalizedMessage(), e);
             } else {
-                LOG.error(e.getLocalizedMessage(), e);
+                LOG.error("Error while trying to read formatter configuration "
+                    + formatterRes.getRootPath()
+                    + ":    "
+                    + e.getLocalizedMessage(), e);
             }
         }
         return formatterBean;
