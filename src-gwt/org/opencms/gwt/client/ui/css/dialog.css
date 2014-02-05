@@ -158,6 +158,8 @@ div.frameDialog div.popupButtonPanel {
     padding: 0px 5px 5px 5px;
     height: auto; 
     white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
     height: 25px;
     line-height: 25px;
 }
