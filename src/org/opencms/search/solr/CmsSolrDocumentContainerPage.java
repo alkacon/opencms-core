@@ -54,6 +54,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -200,7 +201,17 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
                 content.append(ex.getContent());
             }
             if (ex.getContentItems() != null) {
-                items.putAll(ex.getContentItems());
+                for (Entry<String, String> item : ex.getContentItems().entrySet()) {
+                    String key = item.getKey();
+                    String value = item.getValue();
+                    if (items.containsKey(key) && (items.get(key) != null)) {
+                        if (!items.get(key).equals(value)) {
+                            items.put(key, items.get(key) + " " + value);
+                        }
+                    } else {
+                        items.put(key, value);
+                    }
+                }
             }
             Set<CmsSearchField> mappedFields = conf.getXSDMappings(cms, resource);
             if (mappedFields != null) {
