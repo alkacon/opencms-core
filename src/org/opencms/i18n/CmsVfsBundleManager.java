@@ -378,6 +378,7 @@ public class CmsVfsBundleManager {
             CmsResourceBundleLoader.flushBundleCache(baseName, true);
         }
         m_bundleBaseNames.clear();
+        OpenCms.getWorkplaceManager().flushMessageCache();
     }
 
     /**

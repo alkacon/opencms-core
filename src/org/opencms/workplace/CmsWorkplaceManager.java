@@ -292,7 +292,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         m_galleries = new HashMap<String, A_CmsAjaxGallery>();
         m_menuRules = new ArrayList<CmsMenuRule>();
         m_menuRulesMap = new HashMap<String, CmsMenuRule>();
-        m_messages = new HashMap<Locale, CmsWorkplaceMessages>();
+        flushMessageCache();
         m_multiContextMenu = new CmsExplorerContextMenu();
         m_multiContextMenu.setMultiMenu(true);
         m_preEditorConditionDefinitions = new ArrayList<I_CmsPreEditorActionDefinition>();
@@ -566,8 +566,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
 
         switch (event.getType()) {
             case I_CmsEventListener.EVENT_CLEAR_CACHES:
-                // clear the cached message objects
-                m_messages = new HashMap<Locale, CmsWorkplaceMessages>();
+                flushMessageCache();
                 m_editorDisplayOptions.clearCache();
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().getBundle().key(Messages.LOG_EVENT_CLEAR_CACHES_0));
@@ -668,6 +667,15 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         }
 
         return temporaryFilename;
+    }
+
+    /**
+     * Flushes the cached workplace messages.<p>
+     */
+    public void flushMessageCache() {
+
+        // clear the cached message objects
+        m_messages = new HashMap<Locale, CmsWorkplaceMessages>();
     }
 
     /**
@@ -1436,8 +1444,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
             // configures the tool manager
             getToolManager().configure(cms);
 
-            // throw away all cached message objects
-            m_messages = new HashMap<Locale, CmsWorkplaceMessages>();
+            flushMessageCache();
 
             // register this object as event listener
             OpenCms.addCmsEventListener(this, new int[] {I_CmsEventListener.EVENT_CLEAR_CACHES});
