@@ -14,7 +14,7 @@
 		<group>OpenCms Editors</group>
 		<class />
 		<description><![CDATA[<p>This module contains TinyMCE editor for HTML pages and XML content.</p>
-                              <p>The version of TinyMCE is 4.0.12</p>]]></description>
+                              <p>The version of TinyMCE is 4.0.16</p>]]></description>
 		<version>9.0.1</version>
 		<authorname><![CDATA[OpenCms community]]></authorname>
 		<authoremail><![CDATA[opencms-dev@opencms.org]]></authoremail>
@@ -1150,6 +1150,26 @@
 			</properties>
 			<relations />
 			<accesscontrol />
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/gd.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/gd.js</destination>
+			<type>plain</type>
+			<uuidstructure>b5c1fbbc-8e55-11e3-b849-094876801169</uuidstructure>
+			<uuidresource>b5c1fbbd-8e55-11e3-b849-094876801169</uuidresource>
+			<datelastmodified>Wed, 05 Feb 2014 11:07:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 05 Feb 2014 11:07:32 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[gd]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/gl.js
