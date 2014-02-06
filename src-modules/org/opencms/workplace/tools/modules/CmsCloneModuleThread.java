@@ -422,6 +422,23 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
     }
 
     /**
+     * Manipulates a string by cutting of a prefix, if present, and adding a new prefix.
+     * 
+     * @param word the string to be manipulated
+     * @param oldPrefix the old prefix that should be replaced
+     * @param newPrefix the new prefix that is added
+     * @return the manipulated string
+     */
+    private String alterPrefix(String word, String oldPrefix, String newPrefix) {
+
+        if (word.startsWith(oldPrefix)) {
+            word.replaceFirst(oldPrefix, newPrefix);
+            return word;
+        }
+        return (newPrefix + word);
+    }
+
+    /**
      * Changes the resource types and the schema locations of existing content.<p>
      * 
      * @param resTypeMap a map containing the source types as keys and the target types as values
@@ -494,37 +511,46 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
         for (CmsExplorerTypeSettings expSetting : targetExplorerTypes) {
             descKeys.put(
                 expSetting.getKey(),
-                expSetting.getKey().replaceFirst(m_cloneInfo.getSourceNamePrefix(), m_cloneInfo.getTargetNamePrefix()));
-            String newIcon = expSetting.getIcon().replaceFirst(
+                alterPrefix(expSetting.getKey(), m_cloneInfo.getSourceNamePrefix(), m_cloneInfo.getTargetNamePrefix()));
+            String newIcon = alterPrefix(
+                expSetting.getIcon(),
                 m_cloneInfo.getSourceNamePrefix(),
                 m_cloneInfo.getTargetNamePrefix());
-            String newBigIcon = expSetting.getBigIconIfAvailable().replaceFirst(
+            String newBigIcon = alterPrefix(
+                expSetting.getBigIconIfAvailable(),
                 m_cloneInfo.getSourceNamePrefix(),
                 m_cloneInfo.getTargetNamePrefix());
             iconPaths.put(expSetting.getIcon(), newIcon);
             iconPaths.put(expSetting.getBigIconIfAvailable(), newBigIcon);
-            expSetting.setName(expSetting.getName().replaceFirst(
+            expSetting.setName(alterPrefix(
+                expSetting.getName(),
                 m_cloneInfo.getSourceNamePrefix(),
                 m_cloneInfo.getTargetNamePrefix()));
             String newResourcePage = expSetting.getNewResourcePage();
             if (newResourcePage != null) {
-                expSetting.setNewResourcePage(newResourcePage.replaceFirst(
+                expSetting.setNewResourcePage(alterPrefix(
+                    newResourcePage,
                     m_cloneInfo.getSourceNamePrefix(),
                     m_cloneInfo.getTargetNamePrefix()));
             }
-            expSetting.setKey(expSetting.getKey().replaceFirst(
+            expSetting.setKey(alterPrefix(
+                expSetting.getKey(),
                 m_cloneInfo.getSourceNamePrefix(),
                 m_cloneInfo.getTargetNamePrefix()));
-            expSetting.setIcon(expSetting.getIcon().replaceFirst(
+            expSetting.setIcon(alterPrefix(
+                expSetting.getIcon(),
                 m_cloneInfo.getSourceNamePrefix(),
                 m_cloneInfo.getTargetNamePrefix()));
-            expSetting.setBigIcon(expSetting.getBigIconIfAvailable().replaceFirst(
+            expSetting.setBigIcon(alterPrefix(
+                expSetting.getBigIconIfAvailable(),
                 m_cloneInfo.getSourceNamePrefix(),
                 m_cloneInfo.getTargetNamePrefix()));
-            expSetting.setNewResourceUri(expSetting.getNewResourceUri().replaceFirst(
+            expSetting.setNewResourceUri(alterPrefix(
+                expSetting.getNewResourceUri(),
                 m_cloneInfo.getSourceNamePrefix(),
                 m_cloneInfo.getTargetNamePrefix()));
-            expSetting.setInfo(expSetting.getInfo().replaceFirst(
+            expSetting.setInfo(alterPrefix(
+                expSetting.getInfo(),
                 m_cloneInfo.getSourceNamePrefix(),
                 m_cloneInfo.getTargetNamePrefix()));
         }
@@ -634,7 +660,8 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
 
                 targetResType.setAdditionalModuleResourceType(true);
                 targetResType.initConfiguration(
-                    sourceResType.getTypeName().replaceFirst(
+                    alterPrefix(
+                        sourceResType.getTypeName(),
                         m_cloneInfo.getSourceNamePrefix(),
                         m_cloneInfo.getTargetNamePrefix()),
                     newId + "",
