@@ -161,34 +161,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.workplace.tools.modules/samples/sample-formatter-config.xml</source>
-			<destination>system/modules/org.opencms.workplace.tools.modules/samples/sample-formatter-config.xml</destination>
-			<type>formatter_config</type>
-			<uuidstructure>b885f4fa-8cdb-11e3-955f-094876801169</uuidstructure>
-			<uuidresource>b885f4fb-8cdb-11e3-955f-094876801169</uuidresource>
-			<datelastmodified>Mon, 03 Feb 2014 14:11:56 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 03 Feb 2014 14:01:47 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>locale</name>
-					<value><![CDATA[en]]></value>
-				</property>
-				<property>
-					<name>locale-available</name>
-					<value><![CDATA[en]]></value>
-				</property>
-				<property>
-					<name>search.exclude</name>
-					<value><![CDATA[all]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>system/modules/org.opencms.workplace.tools.modules/samples/sample-formatter.jsp</source>
 			<destination>system/modules/org.opencms.workplace.tools.modules/samples/sample-formatter.jsp</destination>
 			<type>jsp</type>

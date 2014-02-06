@@ -30,6 +30,7 @@ package org.opencms.workplace.tools.modules;
 import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.ade.configuration.CmsConfigurationReader;
 import org.opencms.ade.configuration.formatters.CmsFormatterBeanParser;
+import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCache;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -99,9 +100,6 @@ public class CmsModuleAddResourceTypeThread extends A_CmsReportThread {
 
     /** Sample file. */
     private static final String SAMPLE_FORMATTER = "/system/modules/org.opencms.workplace.tools.modules/samples/sample-formatter.jsp";
-
-    /** Sample file. */
-    private static final String SAMPLE_FORMATTER_CONFIG = "/system/modules/org.opencms.workplace.tools.modules/samples/sample-formatter-config.xml";
 
     /** Sample file. */
     private static final String SAMPLE_ICON_BIG = "/system/modules/org.opencms.workplace.tools.modules/samples/sample-icon_big.png";
@@ -402,11 +400,15 @@ public class CmsModuleAddResourceTypeThread extends A_CmsReportThread {
         }
         String formatterConfig = CmsStringUtil.joinPaths(formatterFolder, m_resInfo.getName() + "-formatter-config.xml");
         if (!cms.existsResource(formatterConfig)) {
-            // copy the sample config file and adjust it according to the new resource type
-            cms.copyResource(SAMPLE_FORMATTER_CONFIG, formatterConfig, CmsResource.COPY_AS_NEW);
+
+            cms.createResource(
+                formatterConfig,
+                OpenCms.getResourceManager().getResourceType(CmsFormatterConfigurationCache.TYPE_FORMATTER_CONFIG).getTypeId());
             CmsFile configFile = cms.readFile(formatterConfig);
-            lockTemporary(configFile);
             CmsXmlContent configContent = CmsXmlContentFactory.unmarshal(cms, configFile);
+            if (!configContent.hasLocale(CmsConfigurationReader.DEFAULT_LOCALE)) {
+                configContent.addLocale(cms, CmsConfigurationReader.DEFAULT_LOCALE);
+            }
             I_CmsXmlContentValue typeValue = configContent.getValue(
                 CmsFormatterBeanParser.N_TYPE,
                 CmsConfigurationReader.DEFAULT_LOCALE);
@@ -424,6 +426,25 @@ public class CmsModuleAddResourceTypeThread extends A_CmsReportThread {
                     + (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_resInfo.getNiceName())
                     ? m_resInfo.getNiceName()
                     : m_resInfo.getName()));
+            // set matching container width to '-1' to fit everywhere
+            configContent.addValue(cms, CmsFormatterBeanParser.N_MATCH, CmsConfigurationReader.DEFAULT_LOCALE, 0);
+            configContent.addValue(
+                cms,
+                CmsFormatterBeanParser.N_MATCH + "/" + CmsFormatterBeanParser.N_WIDTH,
+                CmsConfigurationReader.DEFAULT_LOCALE,
+                0);
+            I_CmsXmlContentValue widthValue = configContent.getValue(CmsFormatterBeanParser.N_MATCH
+                + "/"
+                + CmsFormatterBeanParser.N_WIDTH
+                + "/"
+                + CmsFormatterBeanParser.N_WIDTH, CmsConfigurationReader.DEFAULT_LOCALE);
+            widthValue.setStringValue(cms, "-1");
+
+            // enable the formatter
+            I_CmsXmlContentValue enabledValue = configContent.getValue(
+                CmsFormatterBeanParser.N_AUTO_ENABLED,
+                CmsConfigurationReader.DEFAULT_LOCALE);
+            enabledValue.setStringValue(cms, Boolean.TRUE.toString());
             configFile.setContents(configContent.marshal());
             cms.writeFile(configFile);
         }
