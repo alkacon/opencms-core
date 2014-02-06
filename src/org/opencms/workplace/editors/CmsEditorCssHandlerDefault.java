@@ -29,6 +29,7 @@ package org.opencms.workplace.editors;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.loader.CmsTemplateContextManager;
 import org.opencms.loader.I_CmsTemplateContextProvider;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -93,7 +94,7 @@ public class CmsEditorCssHandlerDefault implements I_CmsEditorCssHandler {
             try {
                 templatePath = cms.readPropertyObject(editedResourcePath, CmsPropertyDefinition.PROPERTY_TEMPLATE, true).getValue(
                     "");
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(templatePath) && (templatePath.indexOf("/") < 0)) {
+                if (CmsTemplateContextManager.isProvider(templatePath)) {
                     I_CmsTemplateContextProvider provider = OpenCms.getTemplateContextManager().getTemplateContextProvider(
                         templatePath);
                     if (provider != null) {

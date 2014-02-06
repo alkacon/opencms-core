@@ -114,6 +114,22 @@ public class CmsTemplateContextManager {
     }
 
     /**
+     * Checks if a template property value refers to a  template context provider.<p>
+     * 
+     * @param templatePath the template property value 
+     * @return true if this value refers to a template context provider 
+     */
+    public static boolean isProvider(String templatePath) {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(templatePath)) {
+            return false;
+        }
+        templatePath = templatePath.trim();
+        return templatePath.startsWith(DYNAMIC_TEMPLATE_LEGACY_PREFIX)
+            || templatePath.startsWith(DYNAMIC_TEMPLATE_PREFIX);
+    }
+
+    /**
      * Removes the prefix which marks a property value as a dynamic template provider.<p>
      * 
      * @param propertyValue the value from which to remove the prefix 
