@@ -62,6 +62,15 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_ACTION_MODULES_DELETE_1 = "ERR_ACTION_MODULES_DELETE_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_CLONEMODULE_EMPTY_MODULE_NAME_0 = "ERR_CLONEMODULE_EMPTY_MODULE_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CLONEMODULE_EMPTY_PACKAGE_NAME_0 = "ERR_CLONEMODULE_EMPTY_PACKAGE_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CLONEMODULE_MODULE_ALREADY_EXISTS_1 = "ERR_CLONEMODULE_MODULE_ALREADY_EXISTS_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_RESOURCE_1 = "ERR_READ_RESOURCE_1";
 
     /** Message constant for key in the resource bundle. */
@@ -84,6 +93,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CLONEMODULE_ADMIN_TOOL_NAME_0 = "GUI_CLONEMODULE_ADMIN_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CLONEMODULE_AUTHOR_INFORMATION_0 = "GUI_CLONEMODULE_AUTHOR_INFORMATION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CLONEMODULE_MODULE_INFORMATION_0 = "GUI_CLONEMODULE_MODULE_INFORMATION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CLONEMODULE_TRANSLATION_OPTIONS_0 = "GUI_CLONEMODULE_TRANSLATION_OPTIONS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DELETEDEPENDENCIES_ADMIN_TOOL_HELP_0 = "GUI_DELETEDEPENDENCIES_ADMIN_TOOL_HELP_0";

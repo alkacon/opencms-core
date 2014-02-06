@@ -41,7 +41,7 @@
             <resource uri="/system/workplace/admin/modules/modules_add_type.jsp"/>
 			<resource uri="/system/workplace/admin/modules/add_type_report.jsp"/>
             <resource uri="/system/workplace/admin/modules/modules_clone.jsp" />
-            <resource uri="/system/workplace/admin/modules/module-clone-action.jsp"/>
+            <resource uri="/system/workplace/admin/modules/module-clone-report.jsp"/>
             <resource uri="/system/workplace/admin/modules/modules_edit_resources.jsp"/>
             <resource uri="/system/workplace/admin/modules/modules_export.jsp"/>
             <resource uri="/system/workplace/admin/modules/modules_import.jsp"/>
@@ -788,8 +788,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/modules/module-clone-action.jsp</source>
-			<destination>system/workplace/admin/modules/module-clone-action.jsp</destination>
+			<source>system/workplace/admin/modules/module-clone-report.jsp</source>
+			<destination>system/workplace/admin/modules/module-clone-report.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>d26e7803-9756-4820-a6e3-a4c81750c713</uuidstructure>
 			<uuidresource>2618d6d5-c420-4a5b-9f5d-0ae89c11c6ee</uuidresource>
