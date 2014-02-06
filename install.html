@@ -12,7 +12,7 @@ work.</p>
 
 <ul>
 <li>
-<a href="#a1">Install the Java 2 SDK, version 6 or newer</a>
+<a href="#a1">Install the Java SDK, version 6 or newer</a>
 </li>
 <li>
 <a href="#a2">Install Tomcat</a>
@@ -35,7 +35,7 @@ work.</p>
 </li>
 </ul>
 <h2>
-<a id="a1" name="a1"></a>Install the Java 2 SDK, version 1.6 or newer</h2>
+<a id="a1" name="a1"></a>Install the Java SDK, version 6 or newer</h2>
 
 <p>Install the Java JDK, version 6 or newer (from Oracle 
 <code>
@@ -51,7 +51,7 @@ documentation that comes with them. You must install the Java
 <h2>
 <a id="a2" name="a2"></a>Install Tomcat</h2>
 <p>@OPENCMS_VERSION@ requires a Servlet 2.4 / JSP 2.0 standards compliant container. 
-This release was tested with Tomcat 5.5.x, Tomcat 6.0.x. and Tomcat 7.0.x.</p>
+This release was tested with Tomcat 6.0.x. and Tomcat 7.0.x.</p>
 
 <p>Install Tomcat from 
 <code>
@@ -69,12 +69,7 @@ like the Apache Web Server
 opens in new window">http://httpd.apache.org</a></code>. 
 Please see the documentation available with the webserver on how to combine it with your
 servlet environment.</p>
-<p>
-<strong>Please note:</strong> There's an extended OpenCms documentation module available from
-Alkacon Software GmbH on the opencms.org website that describes how to setup OpenCms with Apache
-httpd and Tomcat using mod_proxy.</p>
-<p>
-<strong>Please note:</strong> On Linux systems, Tomcat's JVM has to be started with the command
+<p><strong>Please note:</strong> On Linux systems, Tomcat's JVM has to be started with the command
 line argument 
 <code>-Djava.awt.headless=true</code>.</p>
 <h2>
@@ -104,7 +99,7 @@ step.</p>
 <code>max_allowed_packet</code> located in the MySQL configuration file (usually called 
 
 <code>my.ini</code>). For OpenCms, the limit should be as high as possible, a setting of at least 
-<code>max_allowed_packet=16M</code> is recommended.</p>
+<code>max_allowed_packet=32M</code> is recommended.</p>
 <h2>
 <a id="a4" name="a4"></a>Deploy the 
 <code>opencms.war</code> file</h2>
