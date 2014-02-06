@@ -32,6 +32,7 @@ import org.opencms.ade.configuration.CmsPropertyConfig;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.relations.CmsLink;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -51,6 +52,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Parses formatter beans from formatter configuration XML contents.<p>
@@ -75,6 +78,9 @@ public class CmsFormatterBeanParser {
             super(message);
         }
     }
+
+    /** The logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsFormatterBeanParser.class);
 
     /** Content value node name. */
     public static final String N_AUTO_ENABLED = "AutoEnabled";
@@ -253,6 +259,11 @@ public class CmsFormatterBeanParser {
         I_CmsXmlContentValueLocation jspLoc = root.getSubValue(N_JSP);
         CmsXmlVfsFileValue jspValue = (CmsXmlVfsFileValue)(jspLoc.getValue());
         CmsLink link = jspValue.getLink(m_cms);
+        if (link == null) {
+            // JSP link is not set (for example because the formatter configuration has just been created)
+            LOG.info("JSP link is null in formatter configuration: " + content.getFile().getRootPath());
+            return null;
+        }
         CmsUUID jspID = link.getStructureId();
         CmsResource formatterRes = m_cms.readResource(jspID);
         m_formatterResource = formatterRes;

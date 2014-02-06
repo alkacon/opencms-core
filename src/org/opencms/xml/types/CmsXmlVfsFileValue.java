@@ -153,7 +153,7 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
      * 
      * @param cms the cms context, can be <code>null</code> but in this case no link check is performed
      * 
-     * @return the link object represented by this XML content value
+     * @return the link object represented by this XML content value (will return null for an empty link)
      */
     public CmsLink getLink(CmsObject cms) {
 
