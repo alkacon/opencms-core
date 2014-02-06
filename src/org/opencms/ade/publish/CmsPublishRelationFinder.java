@@ -125,9 +125,6 @@ public class CmsPublishRelationFinder {
     /** The original set of resources passed in the constructor. */
     private Set<CmsResource> m_originalResources;
 
-    /** Cache for parent folders. */
-    private Map<String, CmsResource> m_parentFolders = Maps.newHashMap();
-
     /** Cache for resources. */
     private Map<CmsUUID, CmsResource> m_resources = Maps.newHashMap();
 
@@ -164,7 +161,7 @@ public class CmsPublishRelationFinder {
         ResourceMap reachable = computeReachability(related);
         ResourceMap publishRelatedResources = getChangedResourcesReachableFromOriginalResources(reachable);
         removeNestedItemsFromTopLevel(publishRelatedResources);
-        addParentFolders(publishRelatedResources);
+        //addParentFolders(publishRelatedResources);
         removeUnchangedTopLevelResources(publishRelatedResources);
         return publishRelatedResources;
     }
@@ -198,36 +195,6 @@ public class CmsPublishRelationFinder {
         }
         for (CmsResource child : childrenOfUnchangedParents) {
             publishRelatedResources.put(child, new HashSet<CmsResource>());
-        }
-    }
-
-    /**
-     * Adds changed parent folders to a resource map.<p>
-     * 
-     * @param publishRelatedResources the resource map to modify 
-     */
-    private void addParentFolders(ResourceMap publishRelatedResources) {
-
-        Set<CmsResource> allResources = Sets.newHashSet();
-        for (CmsResource key : publishRelatedResources.keySet()) {
-            allResources.add(key);
-            for (CmsResource value : publishRelatedResources.get(key)) {
-                allResources.add(value);
-            }
-        }
-        Set<CmsResource> parentFoldersToAdd = Sets.newHashSet();
-        for (CmsResource resource : allResources) {
-            if (resource.isFile()) {
-                CmsResource parentFolder = getParentFolder(resource);
-                if ((parentFolder != null)
-                    && !parentFolder.getState().isUnchanged()
-                    && !allResources.contains(parentFolder)) {
-                    parentFoldersToAdd.add(parentFolder);
-                }
-            }
-        }
-        for (CmsResource parentFolder : parentFoldersToAdd) {
-            publishRelatedResources.put(parentFolder, new HashSet<CmsResource>());
         }
     }
 
@@ -329,28 +296,15 @@ public class CmsPublishRelationFinder {
                 }
             }
         }
-        return directlyRelatedResources;
-    }
-
-    /**
-     * Reads the parent folder of a resoruce, but will get the resource from a cache if it has been read before.<p>
-     * If an error occurs, null will be returned.
-     * 
-     * @param resource the resource for which to get the parent folder 
-     * @return the parent folder resource 
-     */
-    private CmsResource getParentFolder(CmsResource resource) {
-
-        CmsResource parentFolder = m_parentFolders.get(CmsResource.getParentFolder(resource.getRootPath()));
-        if (parentFolder == null) {
-            try {
-                parentFolder = m_cms.readParentFolder(resource.getStructureId());
-                m_parentFolders.put(parentFolder.getRootPath(), parentFolder);
-            } catch (CmsException e) {
-                LOG.error(e.getLocalizedMessage(), e);
+        try {
+            CmsResource parentFolder = m_cms.readParentFolder(currentResource.getStructureId());
+            if (parentFolder.getState().isNew() || currentResource.isFile()) {
+                directlyRelatedResources.add(parentFolder);
             }
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
         }
-        return parentFolder;
+        return directlyRelatedResources;
     }
 
     /** 
