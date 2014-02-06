@@ -199,6 +199,30 @@ jar {
     }
 }
 
+javadoc {
+    doLast {
+        copy {
+            from  "${projectDir}/doc/javadoc/logos"
+            into "${buildDir}/docs/javadoc"
+        }
+    }
+    options.addStringOption("sourcepath", "")
+    project.configure(options) {
+        memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
+        charSet = "UTF-8"
+        author="true"
+        version="true"
+        source= java_target_version
+        linkSource="false"
+        noDeprecatedList="false"
+        noDeprecated="false"
+        overview="${sourceSets.main.output.resourcesDir}/org/opencms/main/overview.html"
+        docTitle="OpenCms Core API, version $version_number"
+        windowTitle="OpenCms Core API, version $version_number"
+        header = "<script type=\"text/javascript\"> if (window.location.href.indexOf(\"overview-frame\") == -1) { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.alkacon.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logo_alkacon_100_t.gif\\\" /></a>\"); } else { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.opencms.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logo_opencms_100.gif\\\" /></a>\"); }</script>"
+    }
+}
+
 task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     from "${buildDir}/docs/javadoc"
@@ -231,16 +255,52 @@ task gwtJar(dependsOn: jar, type: Jar) {
     exclude '**/.gitignore'
 }
 
+task javadocModules(type: Javadoc, dependsOn: jar) {
+    doLast {
+    copy {
+        from  "${projectDir}/doc/javadoc/logos"
+        into "${buildDir}/docs/javadocModules"
+    }
+}
+options.addStringOption("sourcepath", "")
+project.configure(options) {
+    memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
+    charSet = "UTF-8"
+    author="true"
+    version="true"
+    source= java_target_version
+    linkSource="false"
+    noDeprecatedList="false"
+    noDeprecated="false"
+    docTitle="OpenCms Workplace Modules API, version $version_number"
+    windowTitle="OpenCms Workplace Modules API, version $version_number"
+    header = "<script type=\"text/javascript\"> if (window.location.href.indexOf(\"overview-frame\") == -1) { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.alkacon.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logo_alkacon_100_t.gif\\\" /></a>\"); } else { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.opencms.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logo_opencms_100.gif\\\" /></a>\"); }</script>"
+}
+source = sourceSets.modules.allJava
+classpath = project.sourceSets.modules.compileClasspath
+destinationDir = file("${buildDir}/docs/javadocModules")
+}
+
 task javadocGwt(type: Javadoc, dependsOn: jar) {
+        doLast {
+        copy {
+            from  "${projectDir}/doc/javadoc/logos"
+            into "${buildDir}/docs/javadocGwt"
+        }
+    }
     options.addStringOption("sourcepath", "")
     project.configure(options) {
         memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
         charSet = "UTF-8"
-        docTitle = 'OpenCms-GWT'
-        windowTitle = 'OpenCms-GWT'
-        header = '<b>OpenCms-GWT</b>'
-        author = "true"
-        use = "true"
+        author="true"
+        version="true"
+        source= java_target_version
+        linkSource="false"
+        noDeprecatedList="false"
+        noDeprecated="false"
+        docTitle="OpenCms GWT Components API, version $version_number"
+        windowTitle="OpenCms GWT Components API, version $version_number"
+        header = "<script type=\"text/javascript\"> if (window.location.href.indexOf(\"overview-frame\") == -1) { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.alkacon.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logo_alkacon_100_t.gif\\\" /></a>\"); } else { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.opencms.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logo_opencms_100.gif\\\" /></a>\"); }</script>"
     }
     source = sourceSets.gwt.allJava
     classpath = project.sourceSets.gwt.compileClasspath
@@ -282,6 +342,26 @@ task javadocSetup(type: Javadoc, dependsOn: jar) {
     source = sourceSets.setup.allJava
     classpath = project.sourceSets.setup.compileClasspath
     destinationDir = file("${buildDir}/docs/javadocSetup")
+    doLast {
+        copy {
+            from  "${projectDir}/doc/javadoc/logos"
+            into "${buildDir}/docs/javadocSetup"
+        }
+    }
+    options.addStringOption("sourcepath", "")
+    project.configure(options) {
+        memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
+        charSet = "UTF-8"
+        author="true"
+        version="true"
+        source= java_target_version
+        linkSource="false"
+        noDeprecatedList="false"
+        noDeprecated="false"
+        docTitle="OpenCms Setup API, version $version_number"
+        windowTitle="OpenCms Setup API, version $version_number"
+        header = "<script type=\"text/javascript\"> if (window.location.href.indexOf(\"overview-frame\") == -1) { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.alkacon.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logo_alkacon_100_t.gif\\\" /></a>\"); } else { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.opencms.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logo_opencms_100.gif\\\" /></a>\"); }</script>"
+    }
 }
 
 task javadocJarSetup(type: Jar, dependsOn: javadocSetup) {
@@ -607,6 +687,8 @@ task allModules(dependsOn: tasks.matching{ Task task -> task.name.startsWith('di
 task war (dependsOn: [setupJar, allModules], type: Zip){
 
     archiveName 'opencms.war'
+    baseName 'opencms-webapp'
+    extension 'war'
     from ("${projectDir}/webapp"){
         // exclude the database drivers
         exclude '**/setup/**/*.jar'
@@ -639,7 +721,13 @@ task war (dependsOn: [setupJar, allModules], type: Zip){
     }
     from ("${project.buildDir}/libs") {
         include '*.jar'
-        exclude 'opencms-components.jar'
+
+        exclude 'opencms-components*.jar'
+        exclude 'opencms-gwt*.jar'
+        exclude 'opencms-test*.jar'
+        exclude '*-sources.jar'
+        exclude '*-javadoc.jar'
+
         into '/WEB-INF/lib'
     }
     into ('/WEB-INF/lib') { from configurations.distribution }
@@ -772,6 +860,10 @@ artifacts {
     archives jar
     archives javadocJar
     archives sourcesJar
+    if (project.hasProperty('publish_repository')){
+        // do not include the war if only running the install task, it takes ages to build
+        archives war
+    }
     archives setupJar
     archives javadocJarSetup
     archives sourcesJarSetup
@@ -812,7 +904,7 @@ if (project.hasProperty('publish_repository')){
                     authentication(userName: publish_user, password: publish_password)
                 }
                 addFilter('core'){artifact, file ->
-                    artifact.name.contains('opencms-core')
+                    artifact.name.startsWith('opencms-core')
                 }
                 pom('core').project {
                     name product_name
@@ -855,9 +947,41 @@ if (project.hasProperty('publish_repository')){
 
                     }
                 }
+                addFilter('war'){artifact, file ->
+                    artifact.name.startsWith('opencms-webapp')
+                }
+                pom('war').project {
+                    name product_name
+                    description product_description
+                    packaging 'war'
+                    groupId 'org.opencms'
+                    url 'http://www.opencms.org'
+                    scm {
+                        url 'scm:git@github.com:alkacon/opencms-core.git'
+                        connection 'scm:git@github.com:alkacon/opencms-core.git'
+                        developerConnection 'scm:git@github.com:alkacon/opencms-core.git'
+                    }
+                    licenses {
+                        license {
+                            name 'GNU Lesser General Public License'
+                            url 'http://www.gnu.org/licenses/lgpl.html'
+                            distribution 'repo'
+                        }
+                    }
+                    organization {
+                        name 'Alkacon Software'
+                        url 'http://www.alkacon.com'
+                    }
+                    developers {
+                        developer {
+                            name 'Alkacon Software'
+                            url 'http://www.alkacon.com'
+                        }
+                    }
+                }
                 'setup,gwt,components,test'.split(",").each { groupName ->
                     addFilter(groupName){artifact, file ->
-                        artifact.name.contains("opencms-$groupName")
+                        artifact.name.startsWith("opencms-$groupName")
                     }
                     pom(groupName).project {
                         name product_name
@@ -957,7 +1081,7 @@ install {
     repositories {
         mavenInstaller {
             addFilter('core'){artifact, file ->
-                artifact.name.contains('opencms-core')
+                artifact.name.startsWith('opencms-core')
             }
             pom('core').project {
                 name product_name
@@ -1000,9 +1124,41 @@ install {
 
                 }
             }
+            addFilter('war'){artifact, file ->
+                artifact.name.startsWith('opencms-webapp')
+            }
+            pom('war').project {
+                name product_name
+                description product_description
+                packaging 'war'
+                groupId 'org.opencms'
+                url 'http://www.opencms.org'
+                scm {
+                    url 'scm:git@github.com:alkacon/opencms-core.git'
+                    connection 'scm:git@github.com:alkacon/opencms-core.git'
+                    developerConnection 'scm:git@github.com:alkacon/opencms-core.git'
+                }
+                licenses {
+                    license {
+                        name 'GNU Lesser General Public License'
+                        url 'http://www.gnu.org/licenses/lgpl.html'
+                        distribution 'repo'
+                    }
+                }
+                organization {
+                    name 'Alkacon Software'
+                    url 'http://www.alkacon.com'
+                }
+                developers {
+                    developer {
+                        name 'Alkacon Software'
+                        url 'http://www.alkacon.com'
+                    }
+                }
+            }
             'setup,gwt,components,test'.split(",").each { groupName ->
                 addFilter(groupName){artifact, file ->
-                    artifact.name.contains("opencms-$groupName")
+                    artifact.name.startsWith("opencms-$groupName")
                 }
                 pom(groupName).project {
                     name product_name
