@@ -183,6 +183,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
     }
 
+    /** Name of the configuration parameter to enable/disable logging to the CMS_LOG table. */
+    public static final String PARAM_LOG_TABLE_ENABLED = "log.table.enabled";
+
     /** Attribute login. */
     public static final String ATTRIBUTE_LOGIN = "A_LOGIN";
 
@@ -9183,8 +9186,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
             List<CmsLogEntry> log = new ArrayList<CmsLogEntry>(m_log);
             m_log.clear();
-
-            m_projectDriver.log(dbc, log);
+            String logTableEnabledStr = (String)OpenCms.getRuntimeProperty(PARAM_LOG_TABLE_ENABLED);
+            if (Boolean.parseBoolean(logTableEnabledStr)) { // defaults to 'false' if value not set 
+                m_projectDriver.log(dbc, log);
+            }
             CmsLogToPublishListChangeConverter converter = new CmsLogToPublishListChangeConverter();
             for (CmsLogEntry entry : log) {
                 converter.add(entry);

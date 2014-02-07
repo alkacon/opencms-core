@@ -15,22 +15,48 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 9.0.1 - xxxxxxxxx
-- Updated TinyMCE to version 4.0.12
-! Added option to show expired or unreleased resources in content collector lists in the offline project
-- Enhanced gallery widget upload feature
-* Fixing issue with optional text-area widgets
-* Fixed issue #203 where opening the source code search result JSP causes an error.
-- Improved IE10/IE11 support to allow drag and drop in upload dialog
-- Fixed alias deletion for folders
-! Implemented feature request #204 type name translation for "formatter_config" files. 
-* Fixed issue #205 where message bundles were accessed without locale.
+OpenCms 9.0.1 - February 6, 2014
+! New 'Add resource type' dialog added to the module management.
+! New 'Clone Module' dialog added to the module management.
+! Added option to show expired or unreleased resources in content collector lists in the offline project.
+! The 'Source search' administration tool has been greatly enhanced.
+! Detail pages now support permalinks.
+! Further improved the publish dialog with better detection of changed dependencies.
+! Added several improvements to the JSP EL context beans.
+! An instance of  CmsJspStandardContextBean is now automatically available on all JSPs.
+* Fixed issue with optional text-area widgets in the form editor.
+* Fixed issue with expired container elements not being displayed correctly in the online project.
+* Fixed issue where 'resources' folder was not created in a new module.
+* Fixed issue where overflowing container elements remain hidden after drag and drop.
+* Fixed issue where IE8+ browsers would not load updated resource versions.
+* Fixed issue with gallery upload in the editor not available if no image is selected.
+* Fixed issue with incorrect handling of the 'formatselect.options' option in the HTML widget.
+* Fixed issue where copying a file on a network share inside the same folder on Windows 7 caused a hanging dialog.
+* Fixed issue with generating secure links to detail pages.
+* Fixed issue with alias deletion for folders.
+* Fixed issue with content mappings to dateReleased / dateExpired attributes for deleted optional values not being reset.
+* Fixed issue with links to exported resources pasted in the content editor not being correctly resolved. 
+* Fixed issue #158 by adding properties 'keywords' and 'description' to the <cms:info> tag.
+* Fixed issue #178 where the start folder configuration was ignored by the VfsFileWidget.
+* Fixed issue #192 where HTML cleanup inserted invalid characters in some cases.
 * Fixed issue #203 where source search refers a not existing constant.
-! Embeddable configurations  for downloadgallery/imagegallery functions in the WYSIWYG editor
-! Permalink functionality for detail pages 
-- Made container pages locale-independent  
-- Links to exported resources pasted into the WYSIWYG editor will now be resolved to the corresponding internal links
-* Fixed a problem where copying a file on a network share inside the same folder on Windows 7 caused a hanging dialog  
+* Fixed issue #204 by allowing type name translation for 'formatter_config' files.
+* Fixed issue #205 where message bundles were accessed without locale.
+* Fixed issue #208 with rare null pointer exceptions during Flex cache key generation.
+* Fixed issue #210 where localization of TinyMCE failed for some languages.
+* Fixed issue #211 with missing JPA dependencies.
+* Fixed issue #215 where container page content was not indexed correctly for SOLR indices.
+* Fixed issue #217 where expired resources in container pages caused error messages in the log file.
+* Fixed issue #219 by adding properties 'keywords' and 'description' to the <cms:info> tag.
+- Demo template updated to Bootstrap 3.1.0.
+- The Bootstrap / JQuery resources from the demo template have been moved to a separate module.
+- TinyMCE editor updated to version 4.0.16.
+- Improved browser support for IE 10 and IE 11.
+- Added more options to the widget combo box for formatter configurations.
+- The classic workplace theme now uses fixed colors that work better in non-windows environments.
+- Updated Russian localization.
+- Disabled CMS_LOG database logging by default.
+- Improved Gradle build script to generate additional artifacts, also added 'install' task.
 
 OpenCms 9.0.0 - November 8, 2013
 ! Improved configuration for content formatters
