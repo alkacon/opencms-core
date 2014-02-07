@@ -48,6 +48,7 @@ import org.opencms.xml.types.A_CmsXmlContentValue;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -56,9 +57,9 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 /**
@@ -75,6 +76,12 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
 
     /** The editor widget to use depending on the current users settings, current browser and installed editors. */
     private I_CmsWidget m_editorWidget;
+
+    /** Labels for the default block format options. */
+    public static final Map<String, String> TINYMCE_DEFAULT_BLOCK_FORMAT_LABELS = Collections.unmodifiableMap(CmsStringUtil.splitAsMap(
+        "p:Paragraph|address:Address|pre:Pre|h1:Header 1|h2:Header 2|h3:Header 3|h4:Header 4|h5:Header 5|h6:Header 6",
+        "|",
+        ":"));
 
     /**
      * Creates a new html editing widget.<p>
@@ -103,6 +110,28 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
     public CmsHtmlWidget(String configuration) {
 
         super(configuration);
+    }
+
+    /**
+     * Gets the block format configuration string for TinyMCE from the configured format select options.<p>
+     *  
+     * @param formatSelectOptions the format select options 
+     * 
+     * @return the block_formats configuration 
+     */
+    public static String getTinyMceBlockFormats(String formatSelectOptions) {
+
+        String[] options = formatSelectOptions.split(";");
+        List<String> resultParts = Lists.newArrayList();
+        for (String option : options) {
+            String label = TINYMCE_DEFAULT_BLOCK_FORMAT_LABELS.get(option);
+            if (label == null) {
+                label = option;
+            }
+            resultParts.add(label + "=" + option);
+        }
+        String result = CmsStringUtil.listAsString(resultParts, ";");
+        return result;
     }
 
     /**
@@ -361,8 +390,7 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
             String formatSelectOptions = widgetOptions.getFormatSelectOptions();
             if (!CmsStringUtil.isEmpty(formatSelectOptions)
                 && !widgetOptions.isButtonHidden(CmsHtmlWidgetOption.OPTION_FORMATSELECT)) {
-                formatSelectOptions = StringUtils.replace(formatSelectOptions, ";", ",");
-                result.put("block_formats", formatSelectOptions);
+                result.put("block_formats", getTinyMceBlockFormats(formatSelectOptions));
             }
             CmsWorkplaceEditorConfiguration editorConfig = OpenCms.getWorkplaceManager().getWorkplaceEditorManager().getEditorConfiguration(
                 "tinymce");
