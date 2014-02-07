@@ -397,12 +397,30 @@ public final class CmsSolrSpellchecker {
         final JSONObject suggestions = new JSONObject();
         final Map<String, Suggestion> solrSuggestions = response.getSuggestionMap();
 
+        // Add suggestions to the response 
         for (final String key : solrSuggestions.keySet()) {
+
+            // Get suggestions as List
             final List<String> l = solrSuggestions.get(key).getAlternatives();
-            try {
-                suggestions.put(key, l);
-            } catch (JSONException e) {
-                LOG.debug("Exception while converting Solr spellcheckresponse to JSON. ");
+
+            // Indicator to ignore words that are erroneously marked as misspelled. 
+            boolean ignoreWord = false;
+
+            // Suggestions that are in the form "Xxxx" -> "xxxx" should be ignored.
+            if (Character.isUpperCase(key.charAt(0))) {
+                final String lowercaseKey = key.toLowerCase();
+                // If the suggestion list contains the lowercased word, ignore this entry.
+                if (l.contains(lowercaseKey)) {
+                    ignoreWord = true;
+                }
+            }
+
+            if (!ignoreWord) {
+                try {
+                    suggestions.put(key, l);
+                } catch (JSONException e) {
+                    LOG.debug("Exception while converting Solr spellcheckresponse to JSON. ");
+                }
             }
         }
 
