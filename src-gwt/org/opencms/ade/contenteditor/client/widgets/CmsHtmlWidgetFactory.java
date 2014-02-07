@@ -195,9 +195,10 @@ public class CmsHtmlWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
                                                                                 if (config.tinyMceOptions) {
                                                                                 options.paste_as_text=config.tinyMceOptions.paste_text_sticky_default ? true : false;
                                                                                 }
-                                                                                options.spellchecker_languages = "+English=en";
-                                                                                options.spellchecker_rpc_url = "/opencms/opencms/handleSolrDictionary";
-                                                                                
+                                                                                if (config.spellcheck_url){
+                                                                                options.spellchecker_languages = config.spellcheck_language;
+                                                                                options.spellchecker_rpc_url = config.spellcheck_url;
+                                                                                }
                                                                                 }
 
                                                                                 } catch (e) {

@@ -38,9 +38,50 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+
+/**
+ * Handles spell check requests.<p>
+ */
 public class OpenCmsSpellcheckHandler extends HttpServlet implements I_CmsRequestHandler {
 
-    private static final String[] HANDLER_NAMES = new String[] {"SolrDictionary"};
+    /** A constant for the optional 'baseUri' parameter. */
+    public static final String PARAM_BASE_URI = "baseUri";
+
+    /** A constant for the HTTP 'referer'. */
+    protected static final String HEADER_REFERER_KEY = "referer";
+
+    /** The spell check handler name. */
+    private static final String HANDLER_NAME = "SpellcheckDictionary";
+
+    /** The handler names used by this request handler. */
+    private static final String[] HANDLER_NAMES = new String[] {HANDLER_NAME};
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(OpenCmsSpellcheckHandler.class);
+
+    /** The serial version id. */
+    private static final long serialVersionUID = -6028091947126209813L;
+
+    /**
+     * Returns the path to the spell check handler.<p>
+     * 
+     * @return the path to the spell check handler
+     */
+    public static String getSpellcheckHandlerPath() {
+
+        return OpenCmsServlet.HANDLE_PATH + HANDLER_NAME;
+    }
+
+    /**
+     * Checks if the spell check request handler is configured.<p>
+     * 
+     * @return <code>true</code> if the spell check request handler is configured
+     */
+    public static boolean isSpellcheckingEnabled() {
+
+        return OpenCmsCore.getInstance().getRequestHandler(HANDLER_NAME) != null;
+    }
 
     /**
      * @see org.opencms.main.I_CmsRequestHandler#getHandlerNames()
@@ -62,8 +103,7 @@ public class OpenCmsSpellcheckHandler extends HttpServlet implements I_CmsReques
             CmsSolrSpellchecker dict = OpenCms.getSearchManager().getSolrDictionary(cms);
             dict.getSpellcheckingResult(res, req, cms);
         } catch (CmsException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.error(e.getLocalizedMessage(), e);
         }
     }
 
@@ -91,12 +131,6 @@ public class OpenCmsSpellcheckHandler extends HttpServlet implements I_CmsReques
         }
         return cms;
     }
-
-    /** A constant for the HTTP 'referer'. */
-    protected static final String HEADER_REFERER_KEY = "referer";
-
-    /** A constant for the optional 'baseUri' parameter. */
-    public static final String PARAM_BASE_URI = "baseUri";
 
     /**
      * Returns the base URI.<p>

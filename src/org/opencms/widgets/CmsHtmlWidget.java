@@ -38,6 +38,7 @@ import org.opencms.json.JSONObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.main.OpenCmsSpellcheckHandler;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.editors.CmsEditorDisplayOptions;
 import org.opencms.workplace.editors.CmsWorkplaceEditorConfiguration;
@@ -114,7 +115,7 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
         CmsResource resource,
         Locale contentLocale) {
 
-        JSONObject result = getJSONConfiguration(cms, resource);
+        JSONObject result = getJSONConfiguration(cms, resource, contentLocale);
         try {
             addEmbeddedGalleryOptions(result, cms, schemaType, messages, resource, contentLocale);
         } catch (JSONException e) {
@@ -288,9 +289,11 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
      * 
      * @param cms the OpenCms context
      * @param resource the edited resource
+     * @param contentLocale the edited content locale
+     * 
      * @return the configuration
      */
-    protected JSONObject getJSONConfiguration(CmsObject cms, CmsResource resource) {
+    protected JSONObject getJSONConfiguration(CmsObject cms, CmsResource resource, Locale contentLocale) {
 
         JSONObject result = new JSONObject();
 
@@ -307,7 +310,8 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
             result.put("fullpage", widgetOptions.isFullPage());
             List<String> toolbarItems = widgetOptions.getButtonBarShownItems();
             result.put("toolbar_items", toolbarItems);
-            result.put("language", OpenCms.getWorkplaceManager().getWorkplaceLocale(cms).getLanguage());
+            Locale workplaceLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+            result.put("language", workplaceLocale.getLanguage());
             String editorHeight = widgetOptions.getEditorHeight();
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(editorHeight)) {
                 editorHeight = editorHeight.replaceAll("px", "");
@@ -367,6 +371,19 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
             directOptions.put("paste_text_sticky_default", pasteText);
             directOptions.put("paste_text_sticky", pasteText);
             result.put("tinyMceOptions", directOptions);
+            // if spell checking is enabled, add the spell handler URL
+            if (OpenCmsSpellcheckHandler.isSpellcheckingEnabled()) {
+                result.put(
+                    "spellcheck_url",
+                    OpenCms.getLinkManager().substituteLinkForUnknownTarget(
+                        cms,
+                        OpenCmsSpellcheckHandler.getSpellcheckHandlerPath()));
+
+                result.put("spellcheck_language", "+"
+                    + contentLocale.getDisplayLanguage(workplaceLocale)
+                    + "="
+                    + contentLocale.getLanguage());
+            }
         } catch (JSONException e) {
             LOG.error(e.getLocalizedMessage(), e);
         }
