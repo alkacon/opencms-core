@@ -63,8 +63,9 @@ public final class CmsSpellcheckingModuleAction implements I_CmsModuleAction {
             public void run() {
 
                 // Although discouraged, use polling to make sure the indexing process does not start
-                // before OpenCms has reached runlevel 4
-                while ((OpenCms.getRunLevel() != OpenCms.RUNLEVEL_4_SERVLET_ACCESS)) {
+                // before OpenCms has reached runlevel 4 (Also, ignore if running on shell)
+                while ((OpenCms.getRunLevel() != OpenCms.RUNLEVEL_4_SERVLET_ACCESS)
+                    || (OpenCms.getRunLevel() != OpenCms.RUNLEVEL_3_SHELL_ACCESS)) {
                     try {
                         // Repeat check every ten seconds
                         Thread.sleep(10 * 1000);
@@ -74,14 +75,13 @@ public final class CmsSpellcheckingModuleAction implements I_CmsModuleAction {
                 }
 
                 // Check whether indexing is needed
-                if (CmsSpellcheckDictionaryIndexer.isUpdatingIndexNecessesary(adminCms)) {
-                    final CmsSolrSpellchecker spellchecker = OpenCms.getSearchManager().getCmsSolrSpellchecker(adminCms);
+                if (CmsSpellcheckDictionaryIndexer.updatingIndexNecessesary(adminCms)) {
+                    final CmsSolrSpellchecker spellchecker = OpenCms.getSearchManager().getSolrDictionary(adminCms);
                     spellchecker.parseAndAddDictionaries(adminCms);
                 }
             }
         };
 
-        // Make sure to not start this thread when OpenCms runs in shell level
         if (OpenCms.getRunLevel() != OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
             new Thread(r, "CmsSpellcheckingModuleIndexingThread").start();
         }

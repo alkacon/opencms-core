@@ -30,13 +30,22 @@ package org.opencms.search.solr.spellchecking;
 import org.opencms.json.JSONObject;
 
 /**
- * 
+ * Helper class that represents a spellchecking request. 
  */
-public class CmsSpellcheckingRequest {
+class CmsSpellcheckingRequest {
 
     /**
-     * @param q string array containing the words to check. 
-     * @param dictionary the language code of the dictionary to use.
+     * Constructor.
+     */
+    CmsSpellcheckingRequest() {
+
+    }
+
+    /**
+     * Constructor. 
+     * 
+     * @param q the string that contains the words that have to checked.
+     * @param dictionary the dictionary to use. 
      */
     CmsSpellcheckingRequest(String[] q, String dictionary) {
 
@@ -44,9 +53,11 @@ public class CmsSpellcheckingRequest {
     }
 
     /**
-     * @param q string array containing the words to check. 
-     * @param dictionary the language code of the dictionary to use. 
-     * @param id the id of the spellcheck query. 
+     * Constructor.
+     *  
+     * @param q the string that contains the words that have to checked.
+     * @param dictionary the dictionary to use. 
+     * @param id the Id of the request sent by tinyMce. 
      */
     CmsSpellcheckingRequest(String[] q, String dictionary, String id) {
 
@@ -65,95 +76,15 @@ public class CmsSpellcheckingRequest {
         return (null != m_dictionaryToUse) && (null != m_wordsToCheck);
     }
 
-    /**
-     * Returns the id.<p>
-     *
-     * @return the id
-     */
-    public String getId() {
-
-        return m_id;
-    }
-
-    /**
-     * Sets the id.<p>
-     *
-     * @param id the id to set
-     */
-    public void setId(String id) {
-
-        m_id = id;
-    }
-
-    /**
-     * Returns the dictionaryToUse.<p>
-     *
-     * @return the dictionaryToUse
-     */
-    public String getDictionaryToUse() {
-
-        return m_dictionaryToUse;
-    }
-
-    /**
-     * Sets the dictionaryToUse.<p>
-     *
-     * @param dictionaryToUse the dictionaryToUse to set
-     */
-    public void setDictionaryToUse(String dictionaryToUse) {
-
-        m_dictionaryToUse = dictionaryToUse;
-    }
-
-    /**
-     * Returns the wordsToCheck.<p>
-     *
-     * @return the wordsToCheck
-     */
-    public String[] getWordsToCheck() {
-
-        return m_wordsToCheck;
-    }
-
-    /**
-     * Sets the wordsToCheck.<p>
-     *
-     * @param wordsToCheck the wordsToCheck to set
-     */
-    public void setWordsToCheck(String[] wordsToCheck) {
-
-        m_wordsToCheck = wordsToCheck;
-    }
-
-    /**
-     * Returns the wordSuggestions.<p>
-     *
-     * @return the wordSuggestions
-     */
-    public JSONObject getWordSuggestions() {
-
-        return m_wordSuggestions;
-    }
-
-    /**
-     * Sets the wordSuggestions.<p>
-     *
-     * @param wordSuggestions the wordSuggestions to set
-     */
-    public void setWordSuggestions(JSONObject wordSuggestions) {
-
-        m_wordSuggestions = wordSuggestions;
-    }
-
-    /** ID. */
-    private String m_id;
+    /** The Id of the request sent by tinyMce. */
+    String m_id;
 
     /** The dictionary to use.  */
-    private String m_dictionaryToUse;
+    String m_dictionaryToUse;
 
     /** The string array that contains the words that have to checked. */
-    private String[] m_wordsToCheck;
+    String[] m_wordsToCheck;
 
     /** JSON object containing the computed suggestions for the checked words. */
-    private JSONObject m_wordSuggestions;
+    JSONObject m_wordSuggestions;
 }

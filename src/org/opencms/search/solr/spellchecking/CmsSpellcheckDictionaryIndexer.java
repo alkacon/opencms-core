@@ -68,16 +68,20 @@ public final class CmsSpellcheckDictionaryIndexer {
     /** The default directory that's holding the dictionary files. */
     public static final String DEFAULT_DICTIONARY_DIRECTORY = "/system/modules/org.opencms.search.solr/resources";
 
-    /** A regex pattern that applies to the Solr spellcheck directories. */
+    /** A regex pattern that applies to the Solr spellcheck directories. 
+     * Matching string example: "spellchecker_en" */
     public static final String INDEXES_REGEX = "spellchecker_[a-z]{2}";
 
-    /** A regex pattern that applies to custom dictionaries. */
+    /** A regex pattern that applies to custom dictionaries. 
+     * Matching string example: "custom_dict_en.txt" */
     public static final String CUSTOM_DICTIONARY = "custom_dict_[a-z]{2}.txt";
 
-    /** A regex pattern that applies to the naming of the dictionary files.  */
+    /** A regex pattern that applies to the naming of the dictionary files. 
+     * Matching string example: "dict_en.txt" */
     public static final String DICTIONARY_NAME_REGEX = "dict_[a-z]{2}.txt";
 
-    /** A regex pattern that applies to the naming of zipped dictionary files.  */
+    /** A regex pattern that applies to the naming of zipped dictionary files. 
+     * Matching string example: "dict_en.zip" */
     public static final String ZIP_NAME_REGEX = "dict_[a-z]{2}.zip";
 
     /** Maximum amount of entries while parsing the dictionary. This variable is needed
@@ -97,13 +101,13 @@ public final class CmsSpellcheckDictionaryIndexer {
      * @param cms The appropriate CmsObject instance. 
      * @return true, if the spellcheck indices have to be rebuilt, otherwise false
      */
-    public static boolean isUpdatingIndexNecessesary(CmsObject cms) {
+    public static boolean updatingIndexNecessesary(CmsObject cms) {
 
         // Set request to the offline project. 
         setCmsOfflineProject(cms);
 
         // Check whether the spellcheck index directories are empty.
-        // If they are, the index has to built obviously.  
+        // If they are, the index has to be built obviously.  
         if (isSolrSpellcheckIndexDirectoryEmpty()) {
             return true;
         }

@@ -178,14 +178,14 @@ public class CmsHtmlWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
                                                                                 if (config.cmsGalleryUseThickbox) {
                                                                                 options.cmsGalleryUseThickbox = config.cmsGalleryUseThickbox;
                                                                                 }
-                                                                                options.plugins = "anchor,charmap,code,textcolor,autolink,lists,pagebreak,layer,table,save,hr,image,link,emoticons,insertdatetime,preview,media,searchreplace,print,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,template,wordcount,advlist,code,-opencms";
+                                                                                options.plugins = "anchor,charmap,code,textcolor,autolink,lists,pagebreak,layer,table,save,hr,image,link,emoticons,insertdatetime,preview,media,searchreplace,print,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,template,wordcount,advlist,code,spellchecker,-opencms";
                                                                                 if (config.fullpage) {
                                                                                 options.plugins += ",fullpage";
                                                                                 }
 
                                                                                 if (config.toolbar_items) {
                                                                                     toolbarGroup = @org.opencms.ade.contenteditor.client.widgets.CmsHtmlWidgetFactory::createToolbar(Lcom/google/gwt/core/client/JavaScriptObject;)(config.toolbar_items);
-
+                                                                                    toolbarGroup+=",spellchecker";
                                                                                 options.toolbar1 = toolbarGroup;
                                                                                 var contextmenu= @org.opencms.ade.contenteditor.client.widgets.CmsHtmlWidgetFactory::createContextMenu(Lcom/google/gwt/core/client/JavaScriptObject;)(config.toolbar_items);
                                                                                 if (contextmenu!=""){
@@ -195,6 +195,9 @@ public class CmsHtmlWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
                                                                                 if (config.tinyMceOptions) {
                                                                                 options.paste_as_text=config.tinyMceOptions.paste_text_sticky_default ? true : false;
                                                                                 }
+                                                                                options.spellchecker_languages = "+English=en";
+                                                                                options.spellchecker_rpc_url = "/opencms/opencms/handleSolrDictionary";
+                                                                                
                                                                                 }
 
                                                                                 } catch (e) {

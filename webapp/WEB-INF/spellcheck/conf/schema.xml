@@ -18,7 +18,6 @@
 		<field name="entry_en" type="spell" indexed="true" stored="true" />
 		<field name="entry_es" type="spell" indexed="true" stored="true" />
 		<field name="entry_fr" type="spell" indexed="true" stored="true" />
-		<field name="entry_it" type="spell" indexed="true" stored="true" />
 		<field name="entry_ru" type="spell" indexed="true" stored="true" />
 	</fields>
 </schema>

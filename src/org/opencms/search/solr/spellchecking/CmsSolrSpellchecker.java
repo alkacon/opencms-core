@@ -105,6 +105,12 @@ public final class CmsSolrSpellchecker {
     /** Constant, defining the parameter name containing the language. */
     private static final String HTTP_PARAMETER_LANG = "lang";
 
+    /** Constant, defining the parameter name used to force rebuild the index. */
+    private static final String HTTP_PARAMTER_REBUILD = "rebuild";
+
+    /** Constant, defining the parameter name used to check and rebuild the index. */
+    private static final String HTTP_PARAMETER_CHECKREBUILD = "check";
+
     /**
      * Private constructor due to usage of the Singleton pattern. 
      *  
@@ -178,21 +184,23 @@ public final class CmsSolrSpellchecker {
             final JSONObject jsonRequest = new JSONObject(getRequestBody(servletRequest));
             cmsSpellcheckingRequest = parseJsonRequest(jsonRequest);
         } catch (Exception e) {
-            cmsSpellcheckingRequest = parseHttpRequest(servletRequest);
+            cmsSpellcheckingRequest = parseHttpRequest(servletRequest, cms);
         }
 
-        // Perform the actual spellchecking
-        final SpellCheckResponse spellCheckResponse = performSpellcheckQuery(cmsSpellcheckingRequest);
+        if ((null != cmsSpellcheckingRequest) && cmsSpellcheckingRequest.isInitialized()) {
+            // Perform the actual spellchecking
+            final SpellCheckResponse spellCheckResponse = performSpellcheckQuery(cmsSpellcheckingRequest);
 
-        /* 
-         * The field spellCheckResponse is null when exactly one correctly spelled word is passed to the spellchecker.
-         * In this case it's safe to return an empty JSON formatted map, as the passed word is correct. Otherwise, 
-         * convert the spellchecker response into a new JSON formatted map.
-         */
-        if (null == spellCheckResponse) {
-            cmsSpellcheckingRequest.setWordSuggestions(new JSONObject());
-        } else {
-            cmsSpellcheckingRequest.setWordSuggestions(getSuggestionsAsJsonObject(spellCheckResponse));
+            /* 
+             * The field spellCheckResponse is null when exactly one correctly spelled word is passed to the spellchecker.
+             * In this case it's safe to return an empty JSON formatted map, as the passed word is correct. Otherwise, 
+             * convert the spellchecker response into a new JSON formatted map.
+             */
+            if (null == spellCheckResponse) {
+                cmsSpellcheckingRequest.m_wordSuggestions = new JSONObject();
+            } else {
+                cmsSpellcheckingRequest.m_wordSuggestions = getConvertedResponseAsJson(spellCheckResponse);
+            }
         }
 
         // Send response back to the client
@@ -202,12 +210,12 @@ public final class CmsSolrSpellchecker {
     /**
      * Parses and adds dictionaries to the Solr index. 
      * 
-     * @param obj The OpenCms object. 
+     * @param cms The OpenCms object. 
      */
-    void parseAndAddDictionaries(CmsObject obj) {
+    void parseAndAddDictionaries(CmsObject cms) {
 
-        CmsSpellcheckDictionaryIndexer.parseAndAddZippedDictionaries(this.m_solrServer, obj);
-        CmsSpellcheckDictionaryIndexer.parseAndAddDictionaries(this.m_solrServer, obj);
+        CmsSpellcheckDictionaryIndexer.parseAndAddZippedDictionaries(this.m_solrServer, cms);
+        CmsSpellcheckDictionaryIndexer.parseAndAddDictionaries(this.m_solrServer, cms);
     }
 
     /**
@@ -281,9 +289,22 @@ public final class CmsSolrSpellchecker {
      * Parse parameters from this request using HTTP. 
      * 
      * @param req The ServletRequest containing all request parameters. 
+     * @param cms The OpenCms object. 
      * @return CmsSpellcheckingRequest object that contains parsed parameters. 
      */
-    private CmsSpellcheckingRequest parseHttpRequest(final ServletRequest req) {
+    private CmsSpellcheckingRequest parseHttpRequest(final ServletRequest req, final CmsObject cms) {
+
+        if ((null != cms) && !cms.getRequestContext().getCurrentUser().isGuestUser()) {
+            if (null != req.getParameter(HTTP_PARAMETER_CHECKREBUILD)) {
+                if (CmsSpellcheckDictionaryIndexer.updatingIndexNecessesary(cms)) {
+                    parseAndAddDictionaries(cms);
+                }
+            }
+
+            if (null != req.getParameter(HTTP_PARAMTER_REBUILD)) {
+                parseAndAddDictionaries(cms);
+            }
+        }
 
         final String q = req.getParameter(HTTP_PARAMETER_WORDS);
 
@@ -312,10 +333,11 @@ public final class CmsSolrSpellchecker {
      * @param cms The OpenCms object. 
      * @throws CmsPermissionViolationException
      */
-    @SuppressWarnings("unused")
     private void performPermissionCheck(CmsObject cms) throws CmsPermissionViolationException {
 
-        // TODO
+        if (cms.getRequestContext().getCurrentUser().isGuestUser()) {
+            throw new CmsPermissionViolationException(null);
+        }
     }
 
     /**
@@ -331,12 +353,12 @@ public final class CmsSolrSpellchecker {
             return null;
         }
 
-        final String[] wordsToCheck = request.getWordsToCheck();
+        final String[] wordsToCheck = request.m_wordsToCheck;
 
         final ModifiableSolrParams params = new ModifiableSolrParams();
         params.set("spellcheck", "true");
-        params.set("spellcheck.alternativeTermCount", wordsToCheck.length - 1);
-        params.set("spellcheck.dictionary", request.getDictionaryToUse());
+        params.set("spellcheck.dictionary", request.m_dictionaryToUse);
+        params.set("spellcheck.extendedResults", "true");
 
         // Build one string from array of words and use it as query. 
         final StringBuilder builder = new StringBuilder();
@@ -366,7 +388,7 @@ public final class CmsSolrSpellchecker {
      * @param response The SpellCheckResponse object containing the spellcheck results. 
      * @return The spellcheck suggestions as JSON object or null if something goes wrong. 
      */
-    private JSONObject getSuggestionsAsJsonObject(SpellCheckResponse response) {
+    private JSONObject getConvertedResponseAsJson(SpellCheckResponse response) {
 
         if (null == response) {
             return null;
@@ -388,34 +410,6 @@ public final class CmsSolrSpellchecker {
     }
 
     /**
-     * Returns the result of the performed spellcheck formatted in JSON. 
-     * 
-     * @param request The CmsSpellcheckingRequest.
-     * @return JSONObject that contains the result of the performed spellcheck.  
-     */
-    private JSONObject getJsonFormattedSpellcheckResult(CmsSpellcheckingRequest request) {
-
-        final JSONObject response = new JSONObject();
-        try {
-            if (null != request.getId()) {
-                response.put(JSON_ID, request.getId());
-            }
-
-            response.put(JSON_RESULT, request.getWordSuggestions());
-
-        } catch (JSONException e) {
-            try {
-                response.put(JSON_ERROR, true);
-                response.put(JSON_ID, "null");
-            } catch (JSONException ex) {
-                LOG.debug("Error while assembling spellcheck response in JSON format. ");
-            }
-        }
-
-        return response;
-    }
-
-    /**
      * Sends the JSON-formatted spellchecking results to the client. 
      * 
      * @param res The HttpServletResponse object. 
@@ -427,5 +421,33 @@ public final class CmsSolrSpellchecker {
         final PrintWriter pw = res.getWriter();
         final JSONObject response = getJsonFormattedSpellcheckResult(request);
         pw.println(response.toString());
+    }
+
+    /**
+     * Returns the result of the performed spellcheck formatted in JSON. 
+     * 
+     * @param request The CmsSpellcheckingRequest.
+     * @return JSONObject that contains the result of the performed spellcheck.  
+     */
+    private JSONObject getJsonFormattedSpellcheckResult(CmsSpellcheckingRequest request) {
+
+        final JSONObject response = new JSONObject();
+
+        try {
+            if (null != request.m_id) {
+                response.put(JSON_ID, request.m_id);
+            }
+
+            response.put(JSON_RESULT, request.m_wordSuggestions);
+
+        } catch (Exception e) {
+            try {
+                response.put(JSON_ERROR, true);
+            } catch (JSONException ex) {
+                LOG.debug("Error while assembling spellcheck response in JSON format. ");
+            }
+        }
+
+        return response;
     }
 }

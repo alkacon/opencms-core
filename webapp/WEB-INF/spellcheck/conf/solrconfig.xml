@@ -105,46 +105,47 @@
 			<str name="buildOnCommit">true</str>
 		</lst>
 		<lst name="spellchecker">
-                        <str name="classname">solr.IndexBasedSpellChecker</str>
-                        <str name="spellcheckIndexDir">./spellchecker_en</str>
-                        <str name="field">entry_en</str>
-                        <str name="name">en</str>
-                        <str name="buildOnCommit">true</str>
-                </lst>
-                <lst name="spellchecker">
-                        <str name="classname">solr.IndexBasedSpellChecker</str>
-                        <str name="spellcheckIndexDir">./spellchecker_fr</str>
-                        <str name="field">entry_fr</str>
-                        <str name="name">fr</str>
-                        <str name="buildOnCommit">true</str>
-                </lst>
-                <lst name="spellchecker">
-                        <str name="classname">solr.IndexBasedSpellChecker</str>
-                        <str name="spellcheckIndexDir">./spellchecker_es</str>
-                        <str name="field">entry_es</str>
-                        <str name="name">es</str>
-                        <str name="buildOnCommit">true</str>
-                </lst>
-                <lst name="spellchecker">
-                        <str name="classname">solr.IndexBasedSpellChecker</str>
-                        <str name="spellcheckIndexDir">./spellchecker_ru</str>
-                        <str name="field">entry_ru</str>
-                        <str name="name">ru</str>
-                        <str name="buildOnCommit">true</str>
-                </lst>
-                <lst name="spellchecker">
-                        <str name="classname">solr.IndexBasedSpellChecker</str>
-                        <str name="spellcheckIndexDir">./spellchecker_it</str>
-                        <str name="field">entry_it</str>
-                        <str name="name">it</str>
-                        <str name="buildOnCommit">true</str>
-                </lst>
+			<str name="classname">solr.IndexBasedSpellChecker</str>
+			<str name="spellcheckIndexDir">./spellchecker_en</str>
+			<str name="field">entry_en</str>
+			<str name="name">en</str>
+			<str name="buildOnCommit">true</str>
+		</lst>
+		<lst name="spellchecker">
+			<str name="classname">solr.IndexBasedSpellChecker</str>
+			<str name="spellcheckIndexDir">./spellchecker_fr</str>
+			<str name="field">entry_fr</str>
+			<str name="name">fr</str>
+			<str name="buildOnCommit">true</str>
+		</lst>
+		<lst name="spellchecker">
+			<str name="classname">solr.IndexBasedSpellChecker</str>
+			<str name="spellcheckIndexDir">./spellchecker_es</str>
+			<str name="field">entry_es</str>
+			<str name="name">es</str>
+			<str name="buildOnCommit">true</str>
+		</lst>
+		<lst name="spellchecker">
+			<str name="classname">solr.IndexBasedSpellChecker</str>
+			<str name="spellcheckIndexDir">./spellchecker_ru</str>
+			<str name="field">entry_ru</str>
+			<str name="name">ru</str>
+			<str name="buildOnCommit">true</str>
+		</lst>
+		<lst name="spellchecker">
+			<str name="classname">solr.IndexBasedSpellChecker</str>
+			<str name="spellcheckIndexDir">./spellchecker_it</str>
+			<str name="field">entry_it</str>
+			<str name="name">it</str>
+			<str name="buildOnCommit">true</str>
+		</lst>
 	</searchComponent>
-	
-	<requestHandler name="/spell" class="solr.SearchHandler" startup="lazy">
+
+	<requestHandler name="/spell" class="solr.SearchHandler"
+		startup="lazy">
 		<lst name="defaults">
 			<str name="echoParams">explicit</str>
-<!--			<str name="df">entry_de</str>-->
+			<!-- <str name="df">entry_de</str> -->
 			<str name="spellcheck.dictionary">en</str>
 			<str name="spellcheck">on</str>
 		</lst>

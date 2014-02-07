@@ -2876,11 +2876,13 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
-     * Return singleton instance of the OpenCms spellchecker. 
-     * @param cms the cms object. 
+     * Return singleton instance of the OpenCms spellchecker.<p>
+     * 
+     * @param cms the cms object.
+     *  
      * @return instance of CmsSolrSpellchecker.
      */
-    public CmsSolrSpellchecker getCmsSolrSpellchecker(CmsObject cms) {
+    public CmsSolrSpellchecker getSolrDictionary(CmsObject cms) {
 
         return CmsSolrSpellchecker.getInstance(m_coreContainer, m_coreContainer.getCore("spellcheck"));
 
