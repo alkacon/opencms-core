@@ -27,6 +27,7 @@
 
 package org.opencms.jsp;
 
+import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -67,6 +68,8 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
 import org.apache.commons.logging.Log;
+
+import com.google.common.collect.Lists;
 
 /**
  * This tag includes required CSS or JavaScript resources that are to be places in the HTML head.<p>
@@ -138,6 +141,42 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
             String[] values = new String[] {value};
             parameters.put(name, values);
         }
+    }
+
+    /**
+     * Gets the head includes for the given formatter bean.<p>
+     * 
+     * @param formatter the formatter bean 
+     * @param type the head include type 
+     * 
+     * @return the list of head includes 
+     */
+    protected static List<String> getHeadIncludes(I_CmsFormatterBean formatter, String type) {
+
+        if (TYPE_CSS.equals(type)) {
+            return Lists.newArrayList(formatter.getCssHeadIncludes());
+        } else if (TYPE_JAVASCRIPT.equals(type)) {
+            return formatter.getJavascriptHeadIncludes();
+        }
+        return null;
+    }
+
+    /**
+     * Gets the inline CSS/Javascrip for the given formatter bean.<p>
+     * 
+     * @param formatter the formatter bean 
+     * @param type the type (CSS or Javascript) 
+     * 
+     * @return the inline data for the given formatter bean 
+     */
+    protected static String getInlineData(I_CmsFormatterBean formatter, String type) {
+
+        if (TYPE_CSS.equals(type)) {
+            return formatter.getInlineCss();
+        } else if (TYPE_JAVASCRIPT.equals(type)) {
+            return formatter.getInlineJavascript();
+        }
+        return null;
     }
 
     /**
@@ -315,6 +354,8 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
      */
     public void tagCssAction(CmsObject cms, ServletRequest req) throws CmsException, IOException {
 
+        String includeType = TYPE_CSS;
+
         CmsJspStandardContextBean standardContext = getStandardContext(cms, req);
         CmsContainerPageBean containerPage = standardContext.getPage();
 
@@ -327,70 +368,14 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                 cssIncludes.add(defaults[i]);
             }
         }
-        if ((containerPage != null) && (containerPage.getElements() != null)) {
-            Map<CmsUUID, I_CmsFormatterBean> formatters = OpenCms.getADEManager().getCachedFormatters(
-                standardContext.getIsOnlineProject()).getFormatters();
-            for (CmsContainerBean container : containerPage.getContainers().values()) {
-                for (CmsContainerElementBean element : container.getElements()) {
-                    try {
-                        element.initResource(cms);
-                        if (!standardContext.getIsOnlineProject()
-                            || element.getResource().isReleasedAndNotExpired(cms.getRequestContext().getRequestTime())) {
-                            if (element.isGroupContainer(cms) || element.isInheritedContainer(cms)) {
-                                List<CmsContainerElementBean> subElements;
-                                if (element.isGroupContainer(cms)) {
-                                    subElements = CmsJspTagContainer.getGroupContainerElements(
-                                        cms,
-                                        element,
-                                        req,
-                                        container.getType());
-                                } else {
-                                    subElements = CmsJspTagContainer.getInheritedContainerElements(cms, element);
-                                }
-                                for (CmsContainerElementBean subElement : subElements) {
-                                    subElement.initResource(cms);
-                                    if (!standardContext.getIsOnlineProject()
-                                        || subElement.getResource().isReleasedAndNotExpired(
-                                            cms.getRequestContext().getRequestTime())) {
-                                        I_CmsFormatterBean formatter = getFormatterBeanForElement(
-                                            subElement,
-                                            container,
-                                            formatters);
-                                        if (formatter != null) {
-                                            cssIncludes.addAll(formatter.getCssHeadIncludes());
-                                            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(formatter.getInlineCss())) {
-                                                inlineCss.put(formatter.getId(), formatter.getInlineCss());
-                                            }
-                                        } else {
-                                            cssIncludes.addAll(getCSSHeadIncludes(cms, subElement.getResource()));
-                                        }
-                                    }
-                                }
-                            } else {
-                                I_CmsFormatterBean formatter = getFormatterBeanForElement(
-                                    element,
-                                    container,
-                                    formatters);
-                                if (formatter != null) {
-                                    cssIncludes.addAll(formatter.getCssHeadIncludes());
-                                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(formatter.getInlineCss())) {
-                                        inlineCss.put(formatter.getId(), formatter.getInlineCss());
-                                    }
-                                } else {
-                                    cssIncludes.addAll(getCSSHeadIncludes(cms, element.getResource()));
-                                }
-                            }
-                        }
-                    } catch (CmsException e) {
-                        LOG.error(
-                            Messages.get().getBundle().key(
-                                Messages.ERR_READING_REQUIRED_RESOURCE_1,
-                                element.getSitePath()),
-                            e);
-                    }
-                }
-            }
-        }
+        collectHeadIncludesForContainerElement(
+            cms,
+            req,
+            standardContext,
+            containerPage,
+            includeType,
+            cssIncludes,
+            inlineCss);
         if (standardContext.getDetailContentId() != null) {
             try {
                 CmsResource detailContent = cms.readResource(standardContext.getDetailContentId());
@@ -414,9 +399,10 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                 }
                 if (requiresAllIncludes) {
                     for (I_CmsFormatterBean formatter : config.getDetailFormatters()) {
-                        cssIncludes.addAll(formatter.getCssHeadIncludes());
-                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(formatter.getInlineCss())) {
-                            inlineCss.put(formatter.getId(), formatter.getInlineCss());
+                        cssIncludes.addAll(getHeadIncludes(formatter, includeType));
+                        String inlineIncludeData = getInlineData(formatter, includeType);
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(inlineIncludeData)) {
+                            inlineCss.put(formatter.getId(), inlineIncludeData);
                         }
                     }
                 }
@@ -471,6 +457,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
 
         CmsJspStandardContextBean standardContext = getStandardContext(cms, req);
         CmsContainerPageBean containerPage = standardContext.getPage();
+        String includeType = TYPE_JAVASCRIPT;
         Set<String> jsIncludes = new LinkedHashSet<String>();
         Map<String, String> inlineJS = new LinkedHashMap<String, String>();
         // add defaults
@@ -480,72 +467,14 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                 jsIncludes.add(defaults[i]);
             }
         }
-        if ((containerPage != null) && (containerPage.getElements() != null)) {
-            Map<CmsUUID, I_CmsFormatterBean> formatters = OpenCms.getADEManager().getCachedFormatters(
-                standardContext.getIsOnlineProject()).getFormatters();
-            for (CmsContainerBean container : containerPage.getContainers().values()) {
-                for (CmsContainerElementBean element : container.getElements()) {
-                    try {
-                        element.initResource(cms);
-                        if (!standardContext.getIsOnlineProject()
-                            || element.getResource().isReleasedAndNotExpired(cms.getRequestContext().getRequestTime())) {
-                            if (element.isGroupContainer(cms) || element.isInheritedContainer(cms)) {
-                                List<CmsContainerElementBean> subElements;
-                                if (element.isGroupContainer(cms)) {
-                                    subElements = CmsJspTagContainer.getGroupContainerElements(
-                                        cms,
-                                        element,
-                                        req,
-                                        container.getType());
-                                } else {
-                                    subElements = CmsJspTagContainer.getInheritedContainerElements(cms, element);
-                                }
-                                for (CmsContainerElementBean subElement : subElements) {
-                                    subElement.initResource(cms);
-                                    if (!standardContext.getIsOnlineProject()
-                                        || subElement.getResource().isReleasedAndNotExpired(
-                                            cms.getRequestContext().getRequestTime())) {
-                                        I_CmsFormatterBean formatter = getFormatterBeanForElement(
-                                            subElement,
-                                            container,
-                                            formatters);
-                                        if (formatter != null) {
-                                            jsIncludes.addAll(formatter.getJavascriptHeadIncludes());
-                                            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(formatter.getInlineJavascript())) {
-                                                inlineJS.put(formatter.getId(), formatter.getInlineJavascript());
-                                            }
-                                        } else {
-
-                                            jsIncludes.addAll(getJSHeadIncludes(cms, subElement.getResource()));
-                                        }
-                                    }
-                                }
-                            } else {
-                                I_CmsFormatterBean formatter = getFormatterBeanForElement(
-                                    element,
-                                    container,
-                                    formatters);
-                                if (formatter != null) {
-                                    jsIncludes.addAll(formatter.getJavascriptHeadIncludes());
-                                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(formatter.getInlineJavascript())) {
-                                        inlineJS.put(formatter.getId(), formatter.getInlineJavascript());
-                                    }
-                                } else {
-
-                                    jsIncludes.addAll(getJSHeadIncludes(cms, element.getResource()));
-                                }
-                            }
-                        }
-                    } catch (CmsException e) {
-                        LOG.error(
-                            Messages.get().getBundle().key(
-                                Messages.ERR_READING_REQUIRED_RESOURCE_1,
-                                element.getSitePath()),
-                            e);
-                    }
-                }
-            }
-        }
+        collectHeadIncludesForContainerElement(
+            cms,
+            req,
+            standardContext,
+            containerPage,
+            includeType,
+            jsIncludes,
+            inlineJS);
         if (standardContext.getDetailContentId() != null) {
             try {
                 CmsResource detailContent = cms.readResource(standardContext.getDetailContentId());
@@ -565,7 +494,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                 }
                 if (requiresAllIncludes) {
                     for (I_CmsFormatterBean formatter : config.getDetailFormatters()) {
-                        jsIncludes.addAll(formatter.getJavascriptHeadIncludes());
+                        jsIncludes.addAll(getHeadIncludes(formatter, includeType));
                     }
                 }
             } catch (CmsException e) {
@@ -590,6 +519,105 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
             }
             inline.append("\n</script>\n");
             pageContext.getOut().print(inline.toString());
+        }
+    }
+
+    /**
+     * Collects the head includes for a given container element.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param req the current request 
+     * @param standardContext the current standard context 
+     * @param containerPage the current container page 
+     * @param includeType the type of head includes (CSS or Javascript) 
+     * @param headincludes the set to which normal head includes should be added  
+     * @param inline the map to which inline head includes should be added 
+     */
+    protected void collectHeadIncludesForContainerElement(
+        CmsObject cms,
+        ServletRequest req,
+        CmsJspStandardContextBean standardContext,
+        CmsContainerPageBean containerPage,
+        String includeType,
+        Set<String> headincludes,
+        Map<String, String> inline) {
+
+        CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, cms.getRequestContext().getRootUri());
+        if ((containerPage != null) && (containerPage.getElements() != null)) {
+            Map<CmsUUID, I_CmsFormatterBean> formatters = OpenCms.getADEManager().getCachedFormatters(
+                standardContext.getIsOnlineProject()).getFormatters();
+            for (CmsContainerBean container : containerPage.getContainers().values()) {
+                for (CmsContainerElementBean element : container.getElements()) {
+
+                    try {
+                        element.initResource(cms);
+                        if (!standardContext.getIsOnlineProject()
+                            || element.getResource().isReleasedAndNotExpired(cms.getRequestContext().getRequestTime())) {
+                            if (element.isGroupContainer(cms) || element.isInheritedContainer(cms)) {
+                                List<CmsContainerElementBean> subElements;
+                                if (element.isGroupContainer(cms)) {
+                                    subElements = CmsJspTagContainer.getGroupContainerElements(
+                                        cms,
+                                        element,
+                                        req,
+                                        container.getType());
+                                } else {
+                                    subElements = CmsJspTagContainer.getInheritedContainerElements(cms, element);
+                                }
+                                for (CmsContainerElementBean subElement : subElements) {
+                                    subElement.initResource(cms);
+                                    if (!standardContext.getIsOnlineProject()
+                                        || subElement.getResource().isReleasedAndNotExpired(
+                                            cms.getRequestContext().getRequestTime())) {
+                                        I_CmsFormatterBean formatter = getFormatterBeanForElement(
+                                            cms,
+                                            config,
+                                            subElement,
+                                            container,
+                                            formatters);
+                                        if (formatter != null) {
+                                            headincludes.addAll(getHeadIncludes(formatter, includeType));
+                                            String inlineIncludeData = getInlineData(formatter, includeType);
+                                            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(inlineIncludeData)) {
+                                                inline.put(formatter.getId(), inlineIncludeData);
+                                            }
+                                        } else {
+
+                                            headincludes.addAll(getSchemaHeadIncludes(
+                                                cms,
+                                                subElement.getResource(),
+                                                includeType));
+                                        }
+                                    }
+                                }
+                            } else {
+                                I_CmsFormatterBean formatter = getFormatterBeanForElement(
+                                    cms,
+                                    config,
+                                    element,
+                                    container,
+                                    formatters);
+                                if (formatter != null) {
+                                    headincludes.addAll(getHeadIncludes(formatter, includeType));
+                                    String inlineIncludeData = getInlineData(formatter, includeType);
+                                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(inlineIncludeData)) {
+                                        inline.put(formatter.getId(), inlineIncludeData);
+                                    }
+                                } else {
+
+                                    headincludes.addAll(getSchemaHeadIncludes(cms, element.getResource(), includeType));
+                                }
+                            }
+                        }
+                    } catch (CmsException e) {
+                        LOG.error(
+                            Messages.get().getBundle().key(
+                                Messages.ERR_READING_REQUIRED_RESOURCE_1,
+                                element.getSitePath()),
+                            e);
+                    }
+                }
+            }
         }
     }
 
@@ -646,6 +674,8 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
     /**
      * Returns the formatter configuration for the given element, will return <code>null</code> for schema formatters.<p>
      * 
+     * @param cms the current CMS context 
+     * @param config the current sitemap configuration 
      * @param element the element bean
      * @param container the container bean
      * @param formatters the formatter map
@@ -653,9 +683,25 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
      * @return the formatter configuration bean
      */
     private I_CmsFormatterBean getFormatterBeanForElement(
+        CmsObject cms,
+        CmsADEConfigData config,
         CmsContainerElementBean element,
         CmsContainerBean container,
         Map<CmsUUID, I_CmsFormatterBean> formatters) {
+
+        int containerWidth = -1;
+        try {
+            containerWidth = Integer.parseInt(container.getWidth());
+        } catch (NumberFormatException e) {
+            // do nothing, set width to -1 
+        }
+        CmsJspTagContainer.ensureValidFormatterSettings(
+            cms,
+            element,
+            config,
+            container.getName(),
+            container.getType(),
+            containerWidth);
 
         I_CmsFormatterBean result = null;
         String formatterConfigId = element.getSettings() != null ? element.getSettings().get(
@@ -692,6 +738,27 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
             }
         }
         return Collections.emptySet();
+    }
+
+    /**
+     * Gets the head includes of a resource from the content definition.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param res the resource for which the head includes should be fetched  
+     * @param type the head include type (CSS or Javascript)
+     *  
+     * @return the set of schema head includes
+     *  
+     * @throws CmsLoaderException if something goes wrong 
+     */
+    private Set<String> getSchemaHeadIncludes(CmsObject cms, CmsResource res, String type) throws CmsLoaderException {
+
+        if (type.equals(TYPE_CSS)) {
+            return getCSSHeadIncludes(cms, res);
+        } else if (type.equals(TYPE_JAVASCRIPT)) {
+            return getJSHeadIncludes(cms, res);
+        }
+        return null;
     }
 
     /**
