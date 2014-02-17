@@ -39,10 +39,22 @@ if (project.hasProperty('external_directories')){
 }
 
 configurations {
+    
+    distribution {
+        description = 'libraries included into the opencms distribution'
+        transitive = false
+    }
+    
     compile {
         description = 'used to compile the opencms.jar and the modules jars'
         transitive = false
         extendsFrom distribution
+    }
+    
+    modulesCompile {
+        description = 'used to compile the modules classes'
+        transitive = false
+        extendsFrom compile
     }
 
     testCompile{
@@ -62,12 +74,6 @@ configurations {
         extendsFrom componentsCompile
     }
 
-    modulesCompile {
-        description = 'used to compile the modules classes'
-        transitive = false
-        extendsFrom compile
-    }
-
     gwtCompile {
         description = 'needed to generate the GWT JavaScript resources'
         transitive = false
@@ -77,11 +83,6 @@ configurations {
     setupCompile {
         transitive = false
         extendsFrom modulesCompile
-    }
-
-    distribution {
-        description = 'libraries included into the opencms distribution'
-        transitive = false
     }
 }
 
