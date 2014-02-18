@@ -111,6 +111,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_NOTIFICATIONS_SENT_TO_0 = "LOG_NOTIFICATIONS_SENT_TO_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MAIL_CHARSET_0 = "GUI_MAIL_CHARSET_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.notification.messages";
