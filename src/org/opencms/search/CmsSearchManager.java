@@ -34,6 +34,8 @@ import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsEvent;
@@ -44,6 +46,8 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.main.OpenCmsSolrHandler;
+import org.opencms.relations.CmsRelation;
+import org.opencms.relations.CmsRelationFilter;
 import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.scheduler.I_CmsScheduledJob;
@@ -229,10 +233,14 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
          *
          * @return the resources to index
          */
-        protected synchronized List<CmsPublishedResource> getResourcesToIndex() {
+        protected List<CmsPublishedResource> getResourcesToIndex() {
 
-            List<CmsPublishedResource> result = m_resourcesToIndex;
-            m_resourcesToIndex = new ArrayList<CmsPublishedResource>();
+            List<CmsPublishedResource> result;
+            synchronized (this) {
+                result = m_resourcesToIndex;
+                m_resourcesToIndex = new ArrayList<CmsPublishedResource>();
+            }
+            findRelatedContainerPages(m_adminCms, result);
             return result;
         }
 
@@ -720,6 +728,62 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
+     * Returns the Solr index configured with the parameters name.
+     * The parameters must contain a key/value pair with an existing 
+     * Solr index, otherwise <code>null</code> is returned.<p>
+     * 
+     * @param cms the current context
+     * @param params the parameter map
+     * 
+     * @return the best matching Solr index
+     */
+    public static final CmsSolrIndex getIndexSolr(CmsObject cms, Map<String, String[]> params) {
+
+        String indexName = null;
+        CmsSolrIndex index = null;
+        // try to get the index name from the parameters: 'core' or 'index'
+        if (params != null) {
+            indexName = params.get(OpenCmsSolrHandler.PARAM_CORE) != null
+            ? params.get(OpenCmsSolrHandler.PARAM_CORE)[0]
+            : (params.get(OpenCmsSolrHandler.PARAM_INDEX) != null
+            ? params.get(OpenCmsSolrHandler.PARAM_INDEX)[0]
+            : null);
+        }
+        if (indexName == null) {
+            // if no parameter is specified try to use the default online/offline indexes by context
+            indexName = cms.getRequestContext().getCurrentProject().isOnlineProject()
+            ? CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE
+            : CmsSolrIndex.DEFAULT_INDEX_NAME_OFFLINE;
+        }
+        // try to get the index
+        index = indexName != null ? OpenCms.getSearchManager().getIndexSolr(indexName) : null;
+        if (index == null) {
+            // index not found -> try to get the first configured Solr index from the config
+            List<CmsSolrIndex> solrs = OpenCms.getSearchManager().getAllSolrIndexes();
+            if ((solrs != null) && !solrs.isEmpty() && (solrs.size() == 1)) {
+                index = solrs.get(0);
+            }
+        }
+        return index;
+    }
+
+    /**
+     * Returns <code>true</code> if the index for the given name is a Lucene index, <code>false</code> otherwise.<p>
+     * 
+     * @param indexName the name of the index to check
+     * 
+     * @return <code>true</code> if the index for the given name is a Lucene index
+     */
+    public static boolean isLuceneIndex(String indexName) {
+
+        CmsSearchIndex i = OpenCms.getSearchManager().getIndex(indexName);
+        if (i instanceof CmsSolrIndex) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Returns an analyzer for the given class name.<p>
      * 
      * Since Lucene 3.0, many analyzers require a "version" parameter in the constructor and 
@@ -794,62 +858,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             }
         }
         return analyzer;
-    }
-
-    /**
-     * Returns the Solr index configured with the parameters name.
-     * The parameters must contain a key/value pair with an existing 
-     * Solr index, otherwise <code>null</code> is returned.<p>
-     * 
-     * @param cms the current context
-     * @param params the parameter map
-     * 
-     * @return the best matching Solr index
-     */
-    public static final CmsSolrIndex getIndexSolr(CmsObject cms, Map<String, String[]> params) {
-
-        String indexName = null;
-        CmsSolrIndex index = null;
-        // try to get the index name from the parameters: 'core' or 'index'
-        if (params != null) {
-            indexName = params.get(OpenCmsSolrHandler.PARAM_CORE) != null
-            ? params.get(OpenCmsSolrHandler.PARAM_CORE)[0]
-            : (params.get(OpenCmsSolrHandler.PARAM_INDEX) != null
-            ? params.get(OpenCmsSolrHandler.PARAM_INDEX)[0]
-            : null);
-        }
-        if (indexName == null) {
-            // if no parameter is specified try to use the default online/offline indexes by context
-            indexName = cms.getRequestContext().getCurrentProject().isOnlineProject()
-            ? CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE
-            : CmsSolrIndex.DEFAULT_INDEX_NAME_OFFLINE;
-        }
-        // try to get the index
-        index = indexName != null ? OpenCms.getSearchManager().getIndexSolr(indexName) : null;
-        if (index == null) {
-            // index not found -> try to get the first configured Solr index from the config
-            List<CmsSolrIndex> solrs = OpenCms.getSearchManager().getAllSolrIndexes();
-            if ((solrs != null) && !solrs.isEmpty() && (solrs.size() == 1)) {
-                index = solrs.get(0);
-            }
-        }
-        return index;
-    }
-
-    /**
-     * Returns <code>true</code> if the index for the given name is a Lucene index, <code>false</code> otherwise.<p>
-     * 
-     * @param indexName the name of the index to check
-     * 
-     * @return <code>true</code> if the index for the given name is a Lucene index
-     */
-    public static boolean isLuceneIndex(String indexName) {
-
-        CmsSearchIndex i = OpenCms.getSearchManager().getIndex(indexName);
-        if (i instanceof CmsSolrIndex) {
-            return false;
-        }
-        return true;
     }
 
     /**
@@ -1429,6 +1437,19 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     public Map<String, CmsSearchIndexSource> getSearchIndexSources() {
 
         return Collections.unmodifiableMap(m_indexSources);
+    }
+
+    /**
+     * Return singleton instance of the OpenCms spellchecker.<p>
+     * 
+     * @param cms the cms object.
+     *  
+     * @return instance of CmsSolrSpellchecker.
+     */
+    public CmsSolrSpellchecker getSolrDictionary(CmsObject cms) {
+
+        return CmsSolrSpellchecker.getInstance(m_coreContainer, m_coreContainer.getCore("spellcheck"));
+
     }
 
     /**
@@ -2218,6 +2239,67 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
+     * Collects the related containerpages to the resources that have been published.<p>
+     * 
+     * @param adminCms an OpenCms user context with Admin permissions
+     * @param updateResources the resources to be re-indexed
+     * 
+     * @return the updated list of resource to re-index
+     */
+    protected List<CmsPublishedResource> findRelatedContainerPages(
+        CmsObject adminCms,
+        List<CmsPublishedResource> updateResources) {
+
+        Set<CmsResource> elementGroups = new HashSet<CmsResource>();
+        Set<CmsResource> containerPages = new HashSet<CmsResource>();
+        for (CmsPublishedResource pubRes : updateResources) {
+            try {
+                if (OpenCms.getResourceManager().getResourceType(pubRes.getType()) instanceof CmsResourceTypeXmlContent) {
+                    CmsRelationFilter filter = CmsRelationFilter.relationsToStructureId(pubRes.getStructureId());
+                    filter.filterStrong();
+                    List<CmsRelation> relations = adminCms.readRelations(filter);
+                    for (CmsRelation relation : relations) {
+                        CmsResource res = relation.getSource(adminCms, CmsResourceFilter.ALL);
+                        if (CmsResourceTypeXmlContainerPage.isContainerPage(res)) {
+                            containerPages.add(res);
+                        } else if (OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName().equals(
+                            CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME)) {
+                            elementGroups.add(res);
+                        }
+                    }
+                }
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        for (CmsResource pubRes : elementGroups) {
+            try {
+                CmsRelationFilter filter = CmsRelationFilter.relationsToStructureId(pubRes.getStructureId());
+                filter.filterStrong();
+                List<CmsRelation> relations = adminCms.readRelations(filter);
+                for (CmsRelation relation : relations) {
+                    CmsResource res = relation.getSource(adminCms, CmsResourceFilter.ALL);
+                    if (CmsResourceTypeXmlContainerPage.isContainerPage(res)) {
+                        containerPages.add(res);
+                    }
+                }
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        // add all found container pages as published resource objects to the list
+        for (CmsResource page : containerPages) {
+            CmsPublishedResource pubCont = new CmsPublishedResource(page);
+            if (!updateResources.contains(pubCont)) {
+                // ensure container page is added only once
+                updateResources.add(pubCont);
+            }
+        }
+
+        return updateResources;
+    }
+
+    /**
      * Returns the set of names of all configured document types.<p>
      * 
      * @return the set of names of all configured document types
@@ -2440,6 +2522,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 }
             }
 
+            findRelatedContainerPages(adminCms, updateResources);
             if (!updateResources.isEmpty()) {
                 // sort the resource to update
                 Collections.sort(updateResources);
@@ -2873,19 +2956,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             }
             m_coreContainer = null;
         }
-    }
-
-    /**
-     * Return singleton instance of the OpenCms spellchecker.<p>
-     * 
-     * @param cms the cms object.
-     *  
-     * @return instance of CmsSolrSpellchecker.
-     */
-    public CmsSolrSpellchecker getSolrDictionary(CmsObject cms) {
-
-        return CmsSolrSpellchecker.getInstance(m_coreContainer, m_coreContainer.getCore("spellcheck"));
-
     }
 
 }
