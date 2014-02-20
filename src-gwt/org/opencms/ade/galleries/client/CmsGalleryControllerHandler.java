@@ -53,12 +53,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -302,16 +303,16 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
                 });
             }
         }
-        Timer timer = new Timer() {
+        if (!searchObj.isEmpty()) {
+            m_galleryDialog.enableSearchTab();
+        }
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
-            @Override
-            public void run() {
+            public void execute() {
 
                 m_galleryDialog.updateSizes();
             }
-        };
-        timer.schedule(1);
-
+        });
     }
 
     /**
