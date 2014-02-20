@@ -1338,6 +1338,12 @@ public final class OpenCmsCore {
         } catch (CmsException e) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_MANAGERS_0), e);
         }
+
+        try {
+            getEventManager().fireEvent(I_CmsEventListener.EVENT_CLEAR_CACHES);
+        } catch (Exception e) {
+            CmsLog.INIT.error("Problem with clearing caches after initialization: " + e.getLocalizedMessage(), e);
+        }
     }
 
     /**

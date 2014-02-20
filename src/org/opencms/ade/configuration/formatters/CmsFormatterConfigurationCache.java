@@ -89,7 +89,7 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
     private boolean m_scheduledUpdate;
 
     /** The current data contained in the formatter cache.<p> This field is reassigned when formatters are changed, but the objects pointed to by this  field are immutable.<p> **/
-    private CmsFormatterConfigurationCacheState m_state = new CmsFormatterConfigurationCacheState(
+    private volatile CmsFormatterConfigurationCacheState m_state = new CmsFormatterConfigurationCacheState(
         Collections.<CmsUUID, I_CmsFormatterBean> emptyMap());
 
     /**

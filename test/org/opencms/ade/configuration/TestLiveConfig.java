@@ -69,6 +69,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
      */
     public static Test suite() {
 
+        CmsConfigurationCache.DEBUG = true;
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
         return generateSetupTestWrapper(TestLiveConfig.class, "ade-config", "/");
     }
@@ -81,9 +82,12 @@ public class TestLiveConfig extends OpenCmsTestCase {
     public void testDeleted() throws Exception {
 
         try {
+
+            waitForUpdate(false);
             delete(getCmsObject().readResource("/.content/.config"));
             CmsObject offlineCms = getCmsObject();
-            checkResourceTypes(offlineCms, "/sites/default/today/events", "foldername", "d2");
+            waitForUpdate(false);
+            //checkResourceTypes(offlineCms, "/sites/default/today/events", "foldername", "d2");
             checkResourceTypes(offlineCms, "/sites/default/today/events/foo", "foldername", "d2");
             checkResourceTypes(offlineCms, "/sites/default/today/news", "foldername", "c3", "e3");
             checkResourceTypes(offlineCms, "/sites/default/today/news/foo", "foldername", "c3", "e3");
@@ -100,7 +104,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
     public void testDetailPage1() throws Exception {
 
         // root site 
-
+        waitForUpdate(false);
         CmsObject cms = rootCms();
         String detailPage = OpenCms.getADEManager().getDetailPageFinder().getDetailPage(
             cms,
@@ -181,6 +185,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
                 OpenCms.getADEManager().getModuleConfigurationType().getTypeId(),
                 data.getBytes(),
                 Collections.<CmsProperty> emptyList());
+            waitForUpdate(false);
             checkResourceTypes(cms, "/sites/default", "foldername", "a1", "b1", "c1", "m0");
         } finally {
             cms.lockResource(filename);
@@ -199,6 +204,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
             CmsObject cms = rootCms();
             cms.lockResource("/sites/default/today/events");
             cms.moveResource("/sites/default/today/events", "/sites/default/today/news/events");
+            OpenCms.getADEManager().getOfflineCache().getWaitHandleForUpdateTask().enter(0);
             checkResourceTypes(cms, "/sites/default/today/news", "foldername", "c3", "e3", "a1", "b1");
             checkResourceTypes(cms, "/sites/default/today/news/events/", "foldername", "d2", "c3", "e3", "a1");
         } finally {
@@ -251,11 +257,16 @@ public class TestLiveConfig extends OpenCmsTestCase {
         CmsObject cms = rootCms();
         CmsObject onlineCms = onlineCms();
         try {
+            waitForUpdate(false);
             checkResourceTypes(cms, "/sites/default/today", "foldername", "a1", "b1", "c1");
             cms.copyResource("/sites/default/today/news/.content", "sites/default/today/.content");
+            waitForUpdate(true);
+            waitForUpdate(false);
             checkResourceTypes(cms, "/sites/default/today", "foldername", "c3", "e3", "a1", "b1");
             checkResourceTypes(onlineCms, "/sites/default/today", "foldername", "a1", "b1", "c1");
             publish();
+            waitForUpdate(true);
+            waitForUpdate(false);
             checkResourceTypes(onlineCms, "/sites/default/today/", "foldername", "c3", "e3", "a1", "b1");
             checkResourceTypes(onlineCms, "/sites/default/today/events", "foldername", "d2", "c3", "e3", "a1");
         } finally {
@@ -273,12 +284,16 @@ public class TestLiveConfig extends OpenCmsTestCase {
         CmsObject cms = rootCms();
         CmsObject onlineCms = onlineCms();
         try {
+            waitForUpdate(false);
+            waitForUpdate(true);
             checkResourceTypes(cms, "/sites/default/today", "foldername", "a1", "b1", "c1");
             checkResourceTypes(onlineCms, "/sites/default/today", "foldername", "a1", "b1", "c1");
             cms.lockResource("/sites/default/.content");
             cms.deleteResource("/sites/default/.content", CmsResource.DELETE_PRESERVE_SIBLINGS);
+            waitForUpdate(true);
             checkResourceTypes(onlineCms, "/sites/default/today", "foldername", "a1", "b1", "c1");
             publish();
+            waitForUpdate(true);
             checkResourceTypes(onlineCms, "/sites/default/today/", "foldername");
         } finally {
             restoreFiles();
@@ -301,7 +316,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
             CmsDetailPageInfo info2 = new CmsDetailPageInfo(page2.getStructureId(), page2.getRootPath(), "bar");
             cms.lockResource("/sites/default/.content/.config");
             manager.saveDetailPages(cms, "/sites/default/today", list(info1, info2), new CmsUUID());
-
+            waitForUpdate(false);
             CmsADEConfigData configData = manager.lookupConfiguration(cms, "/sites/default/today/");
             List<CmsDetailPageInfo> detailPages = configData.getAllDetailPages();
             assertEquals("/sites/default/today/", detailPages.get(0).getUri());
@@ -343,13 +358,23 @@ public class TestLiveConfig extends OpenCmsTestCase {
                 OpenCms.getADEManager().getModuleConfigurationType().getTypeId(),
                 data.getBytes(),
                 Collections.<CmsProperty> emptyList());
-            String parentFolderType = OpenCms.getADEManager().getOfflineCache().getParentFolderType(
+            String parentFolderType = OpenCms.getADEManager().getOfflineCache().getState().getParentFolderType(
                 "/sites/default/.content/a1/foo");
             assertEquals("a", parentFolderType);
         } finally {
             cms.lockResource(filename);
             cms.deleteResource(filename, CmsResource.DELETE_PRESERVE_SIBLINGS);
         }
+    }
+
+    /**
+     * Waits until the configuration update task has been run.<p>
+     * 
+     * @param online true if we should wait for the Online task, false for the Offline task 
+     */
+    public void waitForUpdate(boolean online) {
+
+        OpenCms.getADEManager().getCache(online).getWaitHandleForUpdateTask().enter(0);
     }
 
     /**

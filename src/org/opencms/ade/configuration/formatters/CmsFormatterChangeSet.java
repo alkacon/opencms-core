@@ -49,6 +49,26 @@ public class CmsFormatterChangeSet {
     /** A map which indicates whether a formatter (whose id is the key) should be added (value=true) or removed (value= false). */
     private Map<CmsUUID, Boolean> m_updateSet = new HashMap<CmsUUID, Boolean>();
 
+    /**
+     * Creates an empty formatter change set.<p>
+     */
+    public CmsFormatterChangeSet() {
+
+        // do nothing
+    }
+
+    /** 
+     * Creates a new formatter change set.<p>
+     * 
+     * @param toRemove the formatter keys to remove 
+     * @param toAdd the formatter keys to add 
+     */
+    public CmsFormatterChangeSet(Collection<String> toRemove, Collection<String> toAdd) {
+
+        this();
+        initialize(toRemove, toAdd);
+    }
+
     /** 
      * Produces the key for a given resource type.<p>
      * 
@@ -110,7 +130,7 @@ public class CmsFormatterChangeSet {
      * @param toRemove the keys for the formatters to remove 
      * @param toAdd the keys for the formatters to add 
      */
-    public void initialize(Collection<String> toRemove, Collection<String> toAdd) {
+    private void initialize(Collection<String> toRemove, Collection<String> toAdd) {
 
         for (String removeKey : toRemove) {
             if (CmsUUID.isValidUUID(removeKey)) {

@@ -45,6 +45,7 @@ import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -882,10 +883,13 @@ public class TestConfig extends OpenCmsTestCase {
 
         CmsObject cms = rootCms();
         CmsConfigurationReader configReader = new CmsConfigurationReader(rootCms());
-        CmsADEConfigData configData = configReader.parseSitemapConfiguration(
+        CmsADEConfigDataInternal configDataInternal = configReader.parseSitemapConfiguration(
             "/",
             cms.readResource("/sites/default/test.config"));
-        configData.initialize(rootCms());
+        CmsADEConfigData configData = new CmsADEConfigData(configDataInternal, new CmsADEConfigCacheState(
+            cms,
+            new HashMap<CmsUUID, CmsADEConfigDataInternal>(),
+            new ArrayList<CmsADEConfigDataInternal>()));
         assertFalse(configData.isModuleConfiguration());
         assertEquals(1, configData.getResourceTypes().size());
         CmsResourceTypeConfig v8article = configData.getResourceType("v8article");
@@ -922,10 +926,13 @@ public class TestConfig extends OpenCmsTestCase {
 
         CmsObject cms = rootCms();
         CmsConfigurationReader configReader = new CmsConfigurationReader(rootCms());
-        CmsADEConfigData configData = configReader.parseSitemapConfiguration(
+        CmsADEConfigDataInternal configDataInternal = configReader.parseSitemapConfiguration(
             "/",
             cms.readResource("/sites/default/testmod.config"));
-        configData.initialize(rootCms());
+        CmsADEConfigData configData = new CmsADEConfigData(configDataInternal, new CmsADEConfigCacheState(
+            cms,
+            new HashMap<CmsUUID, CmsADEConfigDataInternal>(),
+            new ArrayList<CmsADEConfigDataInternal>()));
         assertTrue(configData.isModuleConfiguration());
         assertEquals(1, configData.getResourceTypes().size());
         CmsResourceTypeConfig anothertype = configData.getResourceType("anothertype");
