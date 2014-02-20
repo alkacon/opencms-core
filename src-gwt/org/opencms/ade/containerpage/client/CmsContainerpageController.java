@@ -2328,12 +2328,11 @@ public final class CmsContainerpageController {
      */
     public void setPageChanged(Runnable... nextActions) {
 
-        // the container page will be saved immediately
-        m_pageChanged = true;
-        saveContainerpage(nextActions);
-        //        if (!hasPageChanged()) {
-        //            setPageChanged(true, false);
-        //        }
+        if (!isGroupcontainerEditing()) {
+            // the container page will be saved immediately
+            m_pageChanged = true;
+            saveContainerpage(nextActions);
+        }
     }
 
     /**
