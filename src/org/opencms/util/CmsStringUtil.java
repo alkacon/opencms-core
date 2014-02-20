@@ -113,6 +113,9 @@ public final class CmsStringUtil {
     /** Pattern to determine the document number for suffixes like '_0001'. */
     public static final Pattern PATTERN_NUMBER_SUFFIX = Pattern.compile("(.*)_(\\d+)(\\.[^\\.^\\n]*)?$");
 
+    /** Pattern matching one or more slashes. */
+    public static final Pattern PATTERN_SLASHES = Pattern.compile("/+");
+
     /** The place holder end sign in the pattern. */
     public static final String PLACEHOLDER_END = "}";
 
@@ -1095,7 +1098,7 @@ public final class CmsStringUtil {
 
         String result = listAsString(paths, "/");
         // result may now contain multiple consecutive slashes, so reduce them to single slashes
-        result = result.replaceAll("/+", "/");
+        result = PATTERN_SLASHES.matcher(result).replaceAll("/");
         return result;
     }
 

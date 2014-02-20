@@ -320,7 +320,7 @@ public class CmsConfigurationReader {
      * @return the created configuration object with the data from the XML content 
      * @throws CmsException if something goes wrong 
      */
-    public CmsADEConfigData parseConfiguration(String basePath, CmsXmlContent content) throws CmsException {
+    public CmsADEConfigDataInternal parseConfiguration(String basePath, CmsXmlContent content) throws CmsException {
 
         m_detailPageConfigs = Lists.newArrayList();
         m_functionReferences = Lists.newArrayList();
@@ -329,7 +329,7 @@ public class CmsConfigurationReader {
         m_resourceTypeConfigs = Lists.newArrayList();
 
         if (!content.hasLocale(DEFAULT_LOCALE)) {
-            return CmsADEConfigData.emptyConfiguration(basePath);
+            return CmsADEConfigDataInternal.emptyConfiguration(basePath);
         }
         CmsXmlContentRootLocation root = new CmsXmlContentRootLocation(content, DEFAULT_LOCALE);
         for (I_CmsXmlContentValueLocation node : root.getSubValues(N_RESOURCE_TYPE)) {
@@ -368,7 +368,11 @@ public class CmsConfigurationReader {
 
         boolean createContentsLocally = getBoolean(root, N_CREATE_CONTENTS_LOCALLY);
 
-        CmsADEConfigData result = new CmsADEConfigData(
+        boolean isModuleConfig = OpenCms.getResourceManager().getResourceType(content.getFile().getTypeId()).getTypeName().equals(
+            CmsADEManager.MODULE_CONFIG_TYPE);
+        CmsADEConfigDataInternal result = new CmsADEConfigDataInternal(
+            content.getFile(),
+            isModuleConfig,
             basePath,
             m_resourceTypeConfigs,
             discardInheritedTypes,
@@ -380,11 +384,6 @@ public class CmsConfigurationReader {
             discardInheritedModelPages,
             createContentsLocally,
             formatterChangeSet);
-        result.setResource(content.getFile());
-        if (OpenCms.getResourceManager().getResourceType(content.getFile().getTypeId()).getTypeName().equals(
-            CmsADEManager.MODULE_CONFIG_TYPE)) {
-            result.setIsModuleConfig(true);
-        }
         return result;
     }
 
@@ -544,7 +543,8 @@ public class CmsConfigurationReader {
      * @return the parsed configuration data 
      * @throws CmsException if something goes wrong 
      */
-    public CmsADEConfigData parseSitemapConfiguration(String basePath, CmsResource configRes) throws CmsException {
+    public CmsADEConfigDataInternal parseSitemapConfiguration(String basePath, CmsResource configRes)
+    throws CmsException {
 
         LOG.info("Parsing configuration " + configRes.getRootPath());
         CmsFile configFile = m_cms.readFile(configRes);
@@ -557,16 +557,17 @@ public class CmsConfigurationReader {
      * 
      * @return the combined configuration object
      */
-    public CmsADEConfigData readModuleConfigurations() {
+    public List<CmsADEConfigDataInternal> readModuleConfigurations() {
 
-        List<CmsADEConfigData> configurations = new ArrayList<CmsADEConfigData>();
+        List<CmsADEConfigDataInternal> configurations = new ArrayList<CmsADEConfigDataInternal>();
         List<CmsModule> modules = OpenCms.getModuleManager().getAllInstalledModules();
+        long beginTime = System.currentTimeMillis();
         for (CmsModule module : modules) {
             String configPath = module.getConfigurationPath();
             try {
                 CmsResource configFile = m_cms.readResource(configPath);
                 LOG.info("Found module configuration " + configPath + " for module " + module.getName());
-                CmsADEConfigData config = parseSitemapConfiguration(null, configFile);
+                CmsADEConfigDataInternal config = parseSitemapConfiguration(null, configFile);
                 configurations.add(config);
             } catch (CmsVfsResourceNotFoundException e) {
                 // ignore 
@@ -580,7 +581,9 @@ public class CmsConfigurationReader {
                 LOG.error(e.getLocalizedMessage(), e);
             }
         }
-        return mergeConfigurations(configurations);
+        long endTime = System.currentTimeMillis();
+        LOG.debug("readModuleConfiguations took " + (endTime - beginTime) + "ms");
+        return configurations;
     }
 
     /**
@@ -612,26 +615,6 @@ public class CmsConfigurationReader {
     protected String getString(I_CmsXmlContentValueLocation location) {
 
         return getString(m_cms, location);
-    }
-
-    /**
-     * Merges a list of multiple configuration objects into a single configuration object.<p>
-     * 
-     * @param configurations the list of configuration objects.<p>
-     * 
-     * @return the merged configuration object 
-     */
-    protected CmsADEConfigData mergeConfigurations(List<CmsADEConfigData> configurations) {
-
-        if (configurations.isEmpty()) {
-            return new CmsADEConfigData();
-        }
-        for (int i = 0; i < (configurations.size() - 1); i++) {
-            configurations.get(i + 1).mergeParent(configurations.get(i));
-        }
-        CmsADEConfigData result = configurations.get(configurations.size() - 1);
-        result.processModuleOrdering();
-        return result;
     }
 
     /**
@@ -672,8 +655,7 @@ public class CmsConfigurationReader {
 
         Set<String> addFormatters = parseAddFormatters(node);
         Set<String> removeFormatters = parseRemoveFormatters(node);
-        CmsFormatterChangeSet result = new CmsFormatterChangeSet();
-        result.initialize(removeFormatters, addFormatters);
+        CmsFormatterChangeSet result = new CmsFormatterChangeSet(removeFormatters, addFormatters);
         return result;
     }
 

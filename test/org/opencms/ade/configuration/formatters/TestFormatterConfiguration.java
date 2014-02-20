@@ -161,10 +161,8 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
         CmsTestConfigData config = createConfig("/", f1, f2, f3);
         CmsTestConfigData config2 = createConfig("/invalid-name", f1, f2, f3);
         config2.setParent(config);
-        CmsFormatterChangeSet changeSet = new CmsFormatterChangeSet();
-        changeSet.initialize(
-            Collections.<String> emptyList(),
-            Arrays.asList("" + CmsUUID.getConstantUUID("f2"), "" + CmsUUID.getConstantUUID("f3")));
+        CmsFormatterChangeSet changeSet = new CmsFormatterChangeSet(Collections.<String> emptyList(), Arrays.asList(""
+            + CmsUUID.getConstantUUID("f2"), "" + CmsUUID.getConstantUUID("f3")));
         config2.setFormatterChangeSet(changeSet);
 
         CmsFormatterConfiguration formatterConfig = config2.getFormatters(getCmsObject(), m_exampleResourceA);
@@ -338,8 +336,9 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
         I_CmsFormatterBean s3 = createFormatter(TYPE_B, "s3", 1000, false);
 
         CmsTestConfigData config = createConfig("/", f1);
-        CmsFormatterChangeSet changeSet = new CmsFormatterChangeSet();
-        changeSet.initialize(Arrays.asList("type_" + TYPE_A), Collections.EMPTY_LIST);
+        CmsFormatterChangeSet changeSet = new CmsFormatterChangeSet(
+            Arrays.asList("type_" + TYPE_A),
+            Collections.EMPTY_LIST);
         config.setFormatterChangeSet(changeSet);
         CmsTestConfigData config2 = createConfig("/", f1);
         config2.setParent(config);
@@ -348,8 +347,8 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             currentConfig.registerSchemaFormatters(typeB, CmsFormatterConfiguration.create(cms, Arrays.asList(s3)));
         }
 
-        CmsFormatterChangeSet changeSet2 = new CmsFormatterChangeSet();
-        changeSet2.initialize(Collections.EMPTY_LIST, Arrays.asList("type_" + TYPE_A));
+        CmsFormatterChangeSet changeSet2 = new CmsFormatterChangeSet(Collections.EMPTY_LIST, Arrays.asList("type_"
+            + TYPE_A));
         config2.setFormatterChangeSet(changeSet2);
 
         CmsFormatterConfiguration formatterConfig = config.getFormatters(cms, m_exampleResourceA);
@@ -391,10 +390,9 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
         CmsTestConfigData config = createConfig("/", f1, f2, f3);
         CmsTestConfigData config2 = createConfig("/invalid-name", f1, f2, f3);
         config2.setParent(config);
-        CmsFormatterChangeSet changeSet = new CmsFormatterChangeSet();
-        changeSet.initialize(
-            Arrays.asList("" + CmsUUID.getConstantUUID("f2"), "" + CmsUUID.getConstantUUID("f3")),
-            Collections.<String> emptyList());
+        CmsFormatterChangeSet changeSet = new CmsFormatterChangeSet(Arrays.asList(
+            "" + CmsUUID.getConstantUUID("f2"),
+            "" + CmsUUID.getConstantUUID("f3")), Collections.<String> emptyList());
         config2.setFormatterChangeSet(changeSet);
 
         CmsFormatterConfiguration formatterConfig = config2.getFormatters(getCmsObject(), m_exampleResourceA);

@@ -272,10 +272,7 @@ public class CmsADEManager {
      */
     public List<CmsDetailPageInfo> getAllDetailPages(CmsObject cms) {
 
-        CmsConfigurationCache cache = cms.getRequestContext().getCurrentProject().isOnlineProject()
-        ? m_onlineCache
-        : m_offlineCache;
-        return cache.getAllDetailPages();
+        return getCacheState(isOnline(cms)).getAllDetailPages();
     }
 
     /**
@@ -352,9 +349,8 @@ public class CmsADEManager {
      */
     public String getDetailPage(CmsObject cms, String pageRootPath, String originPath) {
 
-        boolean online = cms.getRequestContext().getCurrentProject().isOnlineProject();
-        CmsConfigurationCache cache = online ? m_onlineCache : m_offlineCache;
-        String resType = cache.getParentFolderType(pageRootPath);
+        boolean online = isOnline(cms);
+        String resType = getCacheState(online).getParentFolderType(pageRootPath);
         if (resType == null) {
             return null;
         }
@@ -391,10 +387,8 @@ public class CmsADEManager {
      */
     public List<String> getDetailPages(CmsObject cms, String type) {
 
-        CmsConfigurationCache cache = cms.getRequestContext().getCurrentProject().isOnlineProject()
-        ? m_onlineCache
-        : m_offlineCache;
-        return cache.getDetailPages(type);
+        CmsConfigurationCache cache = isOnline(cms) ? m_onlineCache : m_offlineCache;
+        return cache.getState().getDetailPages(type);
     }
 
     /**
@@ -406,10 +400,7 @@ public class CmsADEManager {
      */
     public Set<String> getDetailPageTypes(CmsObject cms) {
 
-        CmsConfigurationCache cache = cms.getRequestContext().getCurrentProject().isOnlineProject()
-        ? m_onlineCache
-        : m_offlineCache;
-        return cache.getDetailPageTypes();
+        return getCacheState(isOnline(cms)).getDetailPageTypes();
     }
 
     /**
@@ -490,7 +481,7 @@ public class CmsADEManager {
             rootPath = CmsResource.getParentFolder(rootPath);
         }
         CmsInheritedContainerState result = new CmsInheritedContainerState();
-        boolean online = cms.getRequestContext().getCurrentProject().isOnlineProject();
+        boolean online = isOnline(cms);
         CmsContainerConfigurationCache cache = online
         ? m_onlineContainerConfigurationCache
         : m_offlineContainerConfigurationCache;
@@ -763,10 +754,7 @@ public class CmsADEManager {
      */
     public boolean isDetailPage(CmsObject cms, CmsResource resource) {
 
-        CmsConfigurationCache cache = cms.getRequestContext().getCurrentProject().isOnlineProject()
-        ? m_onlineCache
-        : m_offlineCache;
-        return cache.isDetailPage(cms, resource);
+        return getCacheState(isOnline(cms)).isDetailPage(cms, resource);
     }
 
     /**
@@ -804,12 +792,6 @@ public class CmsADEManager {
     public CmsADEConfigData lookupConfiguration(CmsObject cms, String rootPath) {
 
         CmsADEConfigData configData = internalLookupConfiguration(cms, rootPath);
-        if (configData == null) {
-            configData = new CmsADEConfigData();
-            configData.initialize(cms.getRequestContext().getCurrentProject().isOnlineProject()
-            ? m_onlineCms
-            : m_offlineCms);
-        }
         return configData;
     }
 
@@ -1023,6 +1005,30 @@ public class CmsADEManager {
     }
 
     /** 
+     * Gets the configuration cache instance.<p>
+     * 
+     * @param online true if you want the online cache, false for the offline cache 
+     * 
+     * @return the ADE configuration cache instance 
+     */
+    protected CmsConfigurationCache getCache(boolean online) {
+
+        return online ? m_onlineCache : m_offlineCache;
+    }
+
+    /**
+     * Gets the current ADE configuration cache state.<p>
+     * 
+     * @param online true if you want the online state, false for the offline state 
+     * 
+     * @return the configuration cache state 
+     */
+    protected CmsADEConfigCacheState getCacheState(boolean online) {
+
+        return (online ? m_onlineCache : m_offlineCache).getState();
+    }
+
+    /** 
      * Gets the offline cache.<p>
      * 
      * @return the offline configuration cache 
@@ -1085,13 +1091,21 @@ public class CmsADEManager {
      */
     protected CmsADEConfigData internalLookupConfiguration(CmsObject cms, String rootPath) {
 
-        boolean online = cms.getRequestContext().getCurrentProject().isOnlineProject();
-        CmsConfigurationCache cache = online ? m_onlineCache : m_offlineCache;
-        CmsADEConfigData result = cache.getSiteConfigData(rootPath);
-        if (result == null) {
-            result = cache.getModuleConfiguration();
-        }
-        return result;
+        boolean online = isOnline(cms);
+        CmsADEConfigCacheState state = getCacheState(online);
+        return state.lookupConfiguration(rootPath);
+    }
+
+    /** 
+     * Returns true if the project set in the CmsObject is the Online project.<p>
+     * 
+     * @param cms the CMS context to check 
+     * 
+     * @return true if the project set in the CMS context is the Online project 
+     */
+    private boolean isOnline(CmsObject cms) {
+
+        return cms.getRequestContext().getCurrentProject().isOnlineProject();
     }
 
     /**
