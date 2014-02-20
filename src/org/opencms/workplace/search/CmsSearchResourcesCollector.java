@@ -31,6 +31,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.search.CmsSearch;
 import org.opencms.search.CmsSearchParameters;
 import org.opencms.search.CmsSearchResult;
@@ -41,11 +42,13 @@ import org.opencms.workplace.list.A_CmsListResourceCollector;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.I_CmsListResourceCollector;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Collector for receiving CmsResources from a search result set.<p>
@@ -173,28 +176,34 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
         return Arrays.asList(COLLECTOR_NAME);
     }
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSearchResourcesCollector.class);
+
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceCollector#getResources(org.opencms.file.CmsObject, java.util.Map)
      */
     @Override
-    public List<CmsResource> getResources(CmsObject cms, Map<String, String> params) throws CmsException {
+    public List<CmsResource> getResources(CmsObject cms, Map<String, String> params) {
 
         List<CmsSearchResult> result = getSearchResults(params);
-        int count = getSearchBean(params).getSearchResultCount();
-        CmsResource[] resources = new CmsResource[count];
-        int from = (getSearchBean(params).getSearchPage() - 1) * getSearchBean(params).getMatchesPerPage();
-        int siteLen = cms.getRequestContext().getSiteRoot().length();
-
-        Iterator<CmsSearchResult> it = result.iterator();
-        while (it.hasNext()) {
-            CmsSearchResult sr = it.next();
-            CmsResource resource = cms.readResource(sr.getPath().substring(siteLen), CmsResourceFilter.ALL);
-            m_resCache.put(resource.getStructureId().toString(), resource);
-            m_srCache.put(resource.getStructureId().toString(), sr);
-            resources[from] = resource;
-            from++;
+        List<CmsResource> resources = new ArrayList<CmsResource>();
+        String siteRoot = cms.getRequestContext().getSiteRoot();
+        int siteLen = siteRoot.length();
+        for (CmsSearchResult sr : result) {
+            try {
+                String resultPath = sr.getPath();
+                if (resultPath.startsWith(siteRoot)) {
+                    resultPath = sr.getPath().substring(siteLen);
+                }
+                CmsResource resource = cms.readResource(resultPath, CmsResourceFilter.ALL);
+                m_resCache.put(resource.getStructureId().toString(), resource);
+                m_srCache.put(resource.getStructureId().toString(), sr);
+                resources.add(resource);
+            } catch (CmsException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
         }
-        return Arrays.asList(resources);
+        return resources;
     }
 
     /**
@@ -226,7 +235,7 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
      * @see org.opencms.workplace.list.A_CmsListResourceCollector#getInternalResources(org.opencms.file.CmsObject, java.util.Map)
      */
     @Override
-    protected List<CmsResource> getInternalResources(CmsObject cms, Map<String, String> params) throws CmsException {
+    protected List<CmsResource> getInternalResources(CmsObject cms, Map<String, String> params) {
 
         synchronized (this) {
             if (m_resources == null) {
