@@ -430,11 +430,10 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
      * @return the manipulated string
      */
     private String alterPrefix(String word, String oldPrefix, String newPrefix) {
-
-        if (word.startsWith(oldPrefix)) {
-            return word.replaceFirst(oldPrefix, newPrefix);
+        if (0 > word.indexOf(oldPrefix)) {
+        	return newPrefix + word;
         }
-        return (newPrefix + word);
+        return word.replaceFirst(oldPrefix, newPrefix);
     }
 
     /**
