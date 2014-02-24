@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -72,10 +72,10 @@ public class CmsCloneModuleInfo {
     private String m_sourceModuleName = "com.alkacon.bootstrap.formatters";
 
     /** The prefix that is used by the source module. */
-    private String m_sourceNamePrefix = "bs";
+    private String m_sourceNamePrefix = "bs-";
 
     /** The prefix that is used by the target module. */
-    private String m_targetNamePrefix = "my";
+    private String m_targetNamePrefix = "my-";
 
     /**
      * Returns the action class.<p>
