@@ -46,11 +46,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Maps;
 
 /**
@@ -91,6 +95,28 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
     /** The CMS context used for reading configuration data. */
     private CmsObject m_cms;
 
+    /** Cache for keeping track of which pages are detail pages. */
+    private LoadingCache<CmsResource, Boolean> m_detailPageIdCache = CacheBuilder.newBuilder().expireAfterWrite(
+        60,
+        TimeUnit.MINUTES).maximumSize(30000).concurrencyLevel(8).build(new CacheLoader<CmsResource, Boolean>() {
+
+        @SuppressWarnings("synthetic-access")
+        @Override
+        public Boolean load(CmsResource key) throws Exception {
+
+            if (m_state == null) {
+                // this can only happen before the ADE manager is initialized  
+                return Boolean.FALSE;
+            }
+            try {
+                return Boolean.valueOf(m_state.isDetailPage(m_cms, key));
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+                return Boolean.FALSE;
+            }
+        }
+    });
+
     /** A cache which stores resources' paths by their structure IDs. */
     private ConcurrentHashMap<CmsUUID, String> m_pathCache = new ConcurrentHashMap<CmsUUID, String>();
 
@@ -122,6 +148,7 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
         m_cms = cms;
         m_configType = configType;
         m_moduleConfigType = moduleConfigType;
+
     }
 
     /** 
@@ -145,6 +172,7 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
     public void clear() {
 
         m_updateSet.add(ID_UPDATE_ALL);
+        m_detailPageIdCache.invalidateAll();
     }
 
     /**
@@ -208,6 +236,29 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
                 performUpdate();
             }
         }, delay, delay, TimeUnit.MILLISECONDS);
+    }
+
+    /**
+     * Checks if the given resource is a detail page.<p>
+     * Delegates the actual work to the cache state, but also caches the result.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param resource the resource to check 
+     * @return true if the given resource is a detail page 
+     */
+    public boolean isDetailPage(CmsObject cms, CmsResource resource) {
+
+        try {
+            boolean result = m_detailPageIdCache.get(resource).booleanValue();
+            if (!result) {
+                // We want new detail pages to be available fast, so we don't cache negative results
+                m_detailPageIdCache.invalidate(resource);
+            }
+            return result;
+        } catch (ExecutionException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            return true;
+        }
     }
 
     /** 

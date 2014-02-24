@@ -754,7 +754,7 @@ public class CmsADEManager {
      */
     public boolean isDetailPage(CmsObject cms, CmsResource resource) {
 
-        return getCacheState(isOnline(cms)).isDetailPage(cms, resource);
+        return getCache(isOnline(cms)).isDetailPage(cms, resource);
     }
 
     /**
