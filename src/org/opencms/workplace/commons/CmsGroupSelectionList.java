@@ -247,25 +247,20 @@ public class CmsGroupSelectionList extends A_CmsListDialog {
         } else {
             groups.addAll(OpenCms.getRoleManager().getManageableGroups(getCms(), "", true));
         }
-        List<CmsGroup> result = new ArrayList<CmsGroup>();
         if (getParamFlags() != null) {
             int flags = Integer.parseInt(getParamFlags());
-            for (CmsPrincipal p : CmsPrincipal.filterFlag(groups, flags)) {
-                if (p instanceof CmsGroup) {
-                    result.add((CmsGroup)p);
-                }
-            }
+            CmsPrincipal.filterFlag(groups, flags);
         }
         if ((getParamOufqn() != null) && !getParamOufqn().equals("null")) {
-            Iterator<CmsGroup> itTempRet = result.iterator();
-            while (itTempRet.hasNext()) {
-                CmsGroup group = itTempRet.next();
+            Iterator<CmsGroup> groupsIter = groups.iterator();
+            while (groupsIter.hasNext()) {
+                CmsGroup group = groupsIter.next();
                 if (!group.getOuFqn().startsWith(getParamOufqn())) {
-                    itTempRet.remove();
+                    groupsIter.remove();
                 }
             }
         }
-        return result;
+        return groups;
     }
 
     /**
