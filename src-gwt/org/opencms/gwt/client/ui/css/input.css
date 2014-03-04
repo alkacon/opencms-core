@@ -1,4 +1,4 @@
-@external gwt-ToggleButton, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled;
+@external gwt-ToggleButton, gwt-SuggestBoxPopup, item-selected, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled;
 
 @external html-face;
 
@@ -256,9 +256,21 @@ div.textArea textarea{
 
 
 
-.selectBoxSelector div{
+.selectBoxSelector div, div.gwt-SuggestBoxPopup > div{
 	border-radius: value("constants.css.borderRadius");
 }
+
+div.gwt-SuggestBoxPopup{
+	border: 1px solid value("constants.css.borderColor");
+	border-top-width: 0px;
+	background-color: value("constants.css.backgroundColorDialog");
+	padding: 2px 0px;
+	z-index: value("constants.css.zIndexPopup");
+	border-bottom-left-radius: value("constants.css.borderRadius");
+	border-bottom-right-radius: value("constants.css.borderRadius");
+	margin-left: -5px;
+}
+
 
 div.error, .error {
 	text-align: left;
@@ -356,7 +368,7 @@ div.selectBoxCell, div.selectorPopup div.selectBoxSelector div.selectBoxCell{
 	font-size: value("constants.css.fontSize");
 }
 
-div.selectHover, div.selectorPopup.selectBoxSelector div.selectBoxCell.selectHover{
+div.selectHover, div.selectorPopup.selectBoxSelector div.selectBoxCell.selectHover, div.gwt-SuggestBoxPopup .item-selected{
 	background-color: value("constants.css.backgroundColorHighlight");
 }
 
