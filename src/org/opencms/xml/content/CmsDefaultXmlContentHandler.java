@@ -1204,9 +1204,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     }
 
     /**
-     * @see org.opencms.xml.content.I_CmsXmlContentHandler#isVisibile(org.opencms.file.CmsObject, org.opencms.xml.types.I_CmsXmlSchemaType, java.lang.String, org.opencms.file.CmsResource, java.util.Locale)
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#isVisible(org.opencms.file.CmsObject, org.opencms.xml.types.I_CmsXmlSchemaType, java.lang.String, org.opencms.file.CmsResource, java.util.Locale)
      */
-    public boolean isVisibile(
+    public boolean isVisible(
         CmsObject cms,
         I_CmsXmlSchemaType contentValue,
         String valuePath,

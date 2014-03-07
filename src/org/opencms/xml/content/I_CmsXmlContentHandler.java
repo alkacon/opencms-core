@@ -486,7 +486,7 @@ public interface I_CmsXmlContentHandler {
      * 
      * @return <code>true</code> if the given content field should be visible to the current user
      */
-    boolean isVisibile(
+    boolean isVisible(
         CmsObject cms,
         I_CmsXmlSchemaType schemaType,
         String valuePath,

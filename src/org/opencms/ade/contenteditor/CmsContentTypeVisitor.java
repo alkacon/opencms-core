@@ -619,7 +619,7 @@ public class CmsContentTypeVisitor {
         }
         // remove the leading slash from element path to check visibility
         boolean visible = !m_contentHandler.hasVisibilityHandlers()
-            || m_contentHandler.isVisibile(cms, schemaType, path.substring(1), m_file, m_locale);
+            || m_contentHandler.isVisible(cms, schemaType, path.substring(1), m_file, m_locale);
         if (!visible) {
             // set the has invisible flag
             m_hasInvisible = true;
