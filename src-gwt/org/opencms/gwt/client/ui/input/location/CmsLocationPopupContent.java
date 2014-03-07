@@ -27,8 +27,12 @@
 
 package org.opencms.gwt.client.ui.input.location;
 
+import org.opencms.gwt.client.Messages;
+import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.CmsSuggestBox;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
+
+import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -90,8 +94,8 @@ public class CmsLocationPopupContent extends Composite {
     Element m_mapCanvas;
 
     /** The mode field. */
-    @UiField
-    CmsTextBox m_modeField;
+    @UiField(provided = true)
+    CmsSelectBox m_modeField;
 
     /** The mode label. */
     @UiField
@@ -102,8 +106,8 @@ public class CmsLocationPopupContent extends Composite {
     Label m_sizeLabel;
 
     /** The map type field. */
-    @UiField
-    CmsTextBox m_typeField;
+    @UiField(provided = true)
+    CmsSelectBox m_typeField;
 
     /** The map type label. */
     @UiField
@@ -114,8 +118,8 @@ public class CmsLocationPopupContent extends Composite {
     CmsTextBox m_widthField;
 
     /** The zoom field. */
-    @UiField
-    CmsTextBox m_zoomField;
+    @UiField(provided = true)
+    CmsSelectBox m_zoomField;
 
     /** The zoom label. */
     @UiField
@@ -129,10 +133,22 @@ public class CmsLocationPopupContent extends Composite {
      * 
      * @param controller the location controller
      * @param addressOracle the address suggest oracle to use for the address suggest box
+     * @param modeItems the available map modes
+     * @param typeItems the available map types
+     * @param zoomItems the available zoom levels
      */
-    public CmsLocationPopupContent(CmsLocationController controller, SuggestOracle addressOracle) {
+    public CmsLocationPopupContent(
+        CmsLocationController controller,
+        SuggestOracle addressOracle,
+        Map<String, String> modeItems,
+        Map<String, String> typeItems,
+        Map<String, String> zoomItems) {
 
+        // create fields annotated as provided before running the ui-binder
         m_addressField = new CmsSuggestBox(addressOracle);
+        m_modeField = new CmsSelectBox(modeItems);
+        m_typeField = new CmsSelectBox(typeItems);
+        m_zoomField = new CmsSelectBox(zoomItems);
         initWidget(uiBinder.createAndBindUi(this));
         m_controller = controller;
         initLabels();
@@ -195,6 +211,17 @@ public class CmsLocationPopupContent extends Composite {
     }
 
     /**
+     * On type value change.<p>
+     * 
+     * @param event the change event
+     */
+    @UiHandler("m_typeField")
+    public void onTypeChange(ValueChangeEvent<String> event) {
+
+        m_controller.onTypeChange(event.getValue());
+    }
+
+    /**
      * On width value change.<p>
      * 
      * @param event the change event
@@ -230,6 +257,7 @@ public class CmsLocationPopupContent extends Composite {
         m_widthField.setFormValueAsString("" + value.getWidth());
         m_zoomField.setFormValueAsString("" + value.getZoom());
         m_modeField.setFormValueAsString(value.getMode());
+        m_typeField.setFormValueAsString(value.getType());
     }
 
     /**
@@ -251,7 +279,6 @@ public class CmsLocationPopupContent extends Composite {
         m_longitudeField.setTriggerChangeOnKeyPress(true);
         m_heightField.setTriggerChangeOnKeyPress(true);
         m_widthField.setTriggerChangeOnKeyPress(true);
-        m_zoomField.setTriggerChangeOnKeyPress(true);
     }
 
     /**
@@ -259,12 +286,12 @@ public class CmsLocationPopupContent extends Composite {
      */
     private void initLabels() {
 
-        m_addressLabel.setText("Address");
-        m_longitudeLabel.setText("Longitude");
-        m_latitudeLabel.setText("Latitude");
-        m_sizeLabel.setText("Size (widthxheight)");
-        m_zoomLabel.setText("Zoom");
-        m_typeLabel.setText("Type");
-        m_modeLabel.setText("Mode");
+        m_addressLabel.setText(Messages.get().key(Messages.GUI_LOCATION_ADDRESS_0));
+        m_longitudeLabel.setText(Messages.get().key(Messages.GUI_LOCATION_LONGITUDE_0));
+        m_latitudeLabel.setText(Messages.get().key(Messages.GUI_LOCATION_LATITUDE_0));
+        m_sizeLabel.setText(Messages.get().key(Messages.GUI_LOCATION_SIZE_0));
+        m_zoomLabel.setText(Messages.get().key(Messages.GUI_LOCATION_ZOOM_0));
+        m_typeLabel.setText(Messages.get().key(Messages.GUI_LOCATION_TYPE_0));
+        m_modeLabel.setText(Messages.get().key(Messages.GUI_LOCATION_MODE_0));
     }
 }

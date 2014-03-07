@@ -262,6 +262,57 @@ public final class Messages {
     public static final String GUI_LOADING_0 = "GUI_LOADING_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCATION_ADDRESS_0 = "GUI_LOCATION_ADDRESS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCATION_DIALOG_TITLE_0 = "GUI_LOCATION_DIALOG_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCATION_DISPLAY_3 = "GUI_LOCATION_DISPLAY_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCATION_DYNAMIC_0 = "GUI_LOCATION_DYNAMIC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCATION_HEIGHT_0 = "GUI_LOCATION_HEIGHT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCATION_HYBRID_0 = "GUI_LOCATION_HYBRID_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCATION_LATITUDE_0 = "GUI_LOCATION_LATITUDE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCATION_LONGITUDE_0 = "GUI_LOCATION_LONGITUDE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCATION_MODE_0 = "GUI_LOCATION_MODE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCATION_ROADMAP_0 = "GUI_LOCATION_ROADMAP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCATION_SATELLITE_0 = "GUI_LOCATION_SATELLITE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCATION_SIZE_0 = "GUI_LOCATION_SIZE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCATION_STATIC_0 = "GUI_LOCATION_STATIC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCATION_TERRAIN_0 = "GUI_LOCATION_TERRAIN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCATION_TYPE_0 = "GUI_LOCATION_TYPE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCATION_WIDTH_0 = "GUI_LOCATION_WIDTH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCATION_ZOOM_0 = "GUI_LOCATION_ZOOM_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LOCK_NOTIFICATION_2 = "GUI_LOCK_NOTIFICATION_2";
 
     /** Message constant for key in the resource bundle. */
@@ -529,9 +580,6 @@ public final class Messages {
     public static final String GUI_TOOLBAR_BACK_0 = "GUI_TOOLBAR_BACK_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_TOOLBAR_INHERITED_0 = "GUI_TOOLBAR_INHERITED_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_CLIPBOARD_0 = "GUI_TOOLBAR_CLIPBOARD_0";
 
     /** Message constant for key in the resource bundle. */
@@ -560,6 +608,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_INFO_0 = "GUI_TOOLBAR_INFO_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_INHERITED_0 = "GUI_TOOLBAR_INHERITED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_MOVE_IN_0 = "GUI_TOOLBAR_MOVE_IN_0";

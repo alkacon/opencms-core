@@ -27,52 +27,79 @@
 
 package org.opencms.gwt.client.ui.input.location;
 
+import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
+import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.input.CmsSimpleTextBox;
 
+import java.util.Map;
+import java.util.Map.Entry;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.HTMLPanel;
 
 /**
  * A google maps based location picker widget.<p>
  */
 public class CmsLocationPicker extends Composite implements HasValueChangeHandlers<String> {
 
+    /**
+     * @see com.google.gwt.uibinder.client.UiBinder
+     */
+    protected interface I_CmsLocationPickerUiBinder extends UiBinder<HTMLPanel, CmsLocationPicker> {
+        // GWT interface, nothing to do here
+    }
+
+    /** The ui-binder instance for this class. */
+    private static I_CmsLocationPickerUiBinder uiBinder = GWT.create(I_CmsLocationPickerUiBinder.class);
+
     /** The location picker controller. */
     CmsLocationController m_controller;
 
+    /** The location info panel. */
+    @UiField
+    Element m_locationInfoPanel;
+
+    /** The map preview element. */
+    @UiField
+    Element m_mapPreview;
+
     /** The popup opener button. */
-    private CmsPushButton m_openerButton;
+    @UiField(provided = true)
+    CmsPushButton m_openerButton;
 
     /** The value display. */
-    private Label m_valueDisplay;
+    @UiField
+    CmsSimpleTextBox m_textbox;
 
-    /** Constructor. */
-    public CmsLocationPicker() {
+    /**
+     * Constructor.<p>
+     *  
+     * @param configuration the widget configuration 
+     **/
+    public CmsLocationPicker(String configuration) {
 
-        FlowPanel main = new FlowPanel();
-        m_valueDisplay = new Label();
-        main.add(m_valueDisplay);
+        I_CmsLayoutBundle.INSTANCE.locationPickerCss().ensureInjected();
         m_openerButton = new CmsPushButton();
-        m_openerButton.setText("Pick");
-        main.add(m_openerButton);
-        initWidget(main);
-        m_controller = new CmsLocationController(this);
-
-        m_openerButton.addClickHandler(new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-
-                m_controller.openPopup();
-
-            }
-        });
+        m_openerButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        m_openerButton.setImageClass(I_CmsImageBundle.INSTANCE.style().popupIcon());
+        m_openerButton.setTitle(Messages.get().key(Messages.GUI_LOCATION_DIALOG_TITLE_0));
+        initWidget(uiBinder.createAndBindUi(this));
+        // disable input, the picker popup is used for editing the value
+        m_textbox.setEnabled(false);
+        m_controller = new CmsLocationController(this, configuration);
     }
 
     /**
@@ -126,10 +153,60 @@ public class CmsLocationPicker extends Composite implements HasValueChangeHandle
     /**
      * Displays the given value.<p>
      * 
-     * @param location the location value to display
+     * @param value the value to display
      */
-    protected void displayValue(CmsLocationValue location) {
+    protected void displayValue(String value) {
 
-        m_valueDisplay.setText(location.toJSONString());
+        m_textbox.setText(value);
+    }
+
+    /**
+     * Returns the map preview element.<p>
+     * 
+     * @return the map preview element
+     */
+    protected Element getMapPreview() {
+
+        return m_mapPreview;
+    }
+
+    /**
+     * Sets the location info to the info panel.<p>
+     * 
+     * @param infos the location info items
+     */
+    protected void setLocationInfo(Map<String, String> infos) {
+
+        StringBuffer infoHtml = new StringBuffer();
+        for (Entry<String, String> info : infos.entrySet()) {
+            infoHtml.append("<p><span>").append(info.getKey()).append(":</span>").append(info.getValue()).append("</p>");
+        }
+        m_locationInfoPanel.setInnerHTML(infoHtml.toString());
+    }
+
+    /**
+     * Sets the preview visible.<p>
+     * 
+     * @param visible <code>true</code> to set the preview visible
+     */
+    protected void setPreviewVisible(boolean visible) {
+
+        if (visible) {
+            addStyleName(I_CmsLayoutBundle.INSTANCE.locationPickerCss().hasPreview());
+        } else {
+            removeStyleName(I_CmsLayoutBundle.INSTANCE.locationPickerCss().hasPreview());
+        }
+    }
+
+    /**
+     * Opens the location popup.<p>
+     * 
+     * @param event the click event
+     */
+    @UiHandler("m_openerButton")
+    void onOpenerClick(ClickEvent event) {
+
+        m_openerButton.clearHoverState();
+        m_controller.openPopup();
     }
 }

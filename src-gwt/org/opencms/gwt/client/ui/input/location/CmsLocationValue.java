@@ -49,6 +49,10 @@ public final class CmsLocationValue extends JavaScriptObject {
      * @return the location object
      */
     public static native CmsLocationValue parse(String value)/*-{
+                                                             if (value.indexOf("{")!=0){
+                                                             // add curly braces if not present before parsing
+                                                             value="{"+value+"}";
+                                                             }
                                                              return JSON.parse(value);
                                                              }-*/;
 

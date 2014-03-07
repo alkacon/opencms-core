@@ -51,7 +51,7 @@ public class CmsLocationPickerWidget extends Composite implements I_EditWidget {
     private boolean m_active = true;
 
     /** The disabled textbox to show the value. */
-    private CmsLocationPicker m_locationPicker = new CmsLocationPicker();
+    private CmsLocationPicker m_locationPicker;
 
     /**
      * Creates a new display widget.<p>
@@ -60,6 +60,7 @@ public class CmsLocationPickerWidget extends Composite implements I_EditWidget {
      */
     public CmsLocationPickerWidget(String config) {
 
+        m_locationPicker = new CmsLocationPicker(config);
         initWidget(m_locationPicker);
     }
 

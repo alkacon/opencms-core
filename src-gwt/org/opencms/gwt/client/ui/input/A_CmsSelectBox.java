@@ -403,7 +403,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
      */
     public void setFormValue(Object value) {
 
-        setFormValue(value, true);
+        setFormValue(value, false);
     }
 
     /**

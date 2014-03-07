@@ -1440,6 +1440,99 @@ public interface I_CmsLayoutBundle extends ClientBundle {
         String plus();
     }
 
+    /** Location picker CSS. */
+    public interface I_CmsLocationPicker extends I_CmsLocationPickerBase {
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String fader();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String fields();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String hasPreview();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String inlineField();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String inputContainer();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String mainPanel();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String mapCanvas();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String opener();
+    }
+
+    /** Base location picker CSS. */
+    @Shared
+    public interface I_CmsLocationPickerBase extends CssResource {
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String displayBox();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String locationField();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String locationInfo();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String mapPreview();
+    }
+
     /** The menu button CSS. */
     public interface I_CmsMenuButton extends CssResource {
 
@@ -2363,6 +2456,14 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("listtree.css")
     I_CmsListTreeCss listTreeCss();
+
+    /** 
+     * Access method.<p>
+     * 
+     * @return the location picker CSS
+     */
+    @Source("locationPicker.css")
+    I_CmsLocationPicker locationPickerCss();
 
     /**
      * Access method.<p>

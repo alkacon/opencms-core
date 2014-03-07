@@ -41,7 +41,8 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
 
     /** The gallery widget CSS. */
     interface I_CmsGalleryWidgetsCss
-    extends I_Widgets, org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.I_CmsGalleryFieldBaseCss {
+    extends I_Widgets, I_CmsLocationPickerBase,
+    org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.I_CmsGalleryFieldBaseCss {
         // no additional CSS classes
     }
 

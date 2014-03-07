@@ -27,9 +27,15 @@
 
 package org.opencms.gwt.client.ui.input.location;
 
+import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.input.location.CmsLocationSuggestOracle.LocationSuggestion;
 import org.opencms.util.CmsStringUtil;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -41,8 +47,17 @@ import com.google.gwt.user.client.ui.SuggestOracle;
  */
 public class CmsLocationController {
 
+    /** Flag indicating the API is currently being loaded. */
+    private static boolean loadingApi;
+
     /** The URI of google maps API. */
     private static final String MAPS_URI = "https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false";
+
+    /** The callback to be executed once the API is loaded. */
+    private static List<Command> onApiReady = new ArrayList<Command>();
+
+    /** The parsed configuration JSON object. */
+    private JavaScriptObject m_config;
 
     /** The goe coder instance. */
     private JavaScriptObject m_geocoder;
@@ -53,48 +68,146 @@ public class CmsLocationController {
     /** The map marker. */
     private JavaScriptObject m_marker;
 
+    /** The picker widget. */
+    private CmsLocationPicker m_picker;
+
     /** The popup displaying the map. */
     private CmsPopup m_popup;
 
     /** The popup content widget. */
     private CmsLocationPopupContent m_popupContent;
 
-    /** The current location value. */
-    private CmsLocationValue m_value;
+    /** The preview map. */
+    private JavaScriptObject m_previewMap;
+
+    /** The preview map marker. */
+    private JavaScriptObject m_previewMarker;
 
     /** The previous value. */
     private CmsLocationValue m_previousValue;
 
-    /** The picker widget. */
-    private CmsLocationPicker m_picker;
+    /** The current location value. */
+    private CmsLocationValue m_value;
 
     /**
      * Constructor.<p>
      * 
      * @param picker the picker widget
+     * @param configuration the widget configuration
      */
-    public CmsLocationController(CmsLocationPicker picker) {
+    public CmsLocationController(CmsLocationPicker picker, String configuration) {
 
         m_picker = picker;
-        m_value = CmsLocationValue.parse("{\"address\": \"London\", \"lat\": 51.5001524, \"lng\": -0.1262362, \"height\": 300, \"width\": 400, \"mode\": \"\", \"zoom\": 8}");
+        m_value = CmsLocationValue.parse("{\"address\": \"London\", \"lat\": 51.5001524, \"lng\": -0.1262362, \"height\": 300, \"width\": 400, \"mode\": \"\", \"type\":\"roadmap\", \"zoom\": 8}");
         m_previousValue = m_value.cloneValue();
+        parseConfig(configuration);
     }
 
-    /** Sets the location value as string.
-     *  
-     * @param value the string representation of the location value (JSON)
-     **/
-    public void setStringValue(String value) {
+    /**
+     * Called once the API is loaded.<p>
+     */
+    private static void apiReady() {
 
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
-            m_value = CmsLocationValue.parse(value);
-            m_previousValue = m_value.cloneValue();
-            m_picker.displayValue(m_value);
-            if ((m_popup != null) && m_popup.isVisible()) {
-                m_popupContent.displayValues(m_value);
-                updateMarkerPosition();
+        loadingApi = false;
+        for (Command callback : onApiReady) {
+            callback.execute();
+        }
+        onApiReady.clear();
+    }
+
+    /**
+     * Returns the available map modes.<p>
+     * 
+     * @return the available map modes
+     */
+    private static Map<String, String> getModeItems() {
+
+        Map<String, String> modes = new LinkedHashMap<String, String>();
+        modes.put("dynamic", Messages.get().key(Messages.GUI_LOCATION_DYNAMIC_0));
+        modes.put("static", Messages.get().key(Messages.GUI_LOCATION_STATIC_0));
+        return modes;
+    }
+
+    /**
+     * Returns the available map types.<p>
+     * 
+     * @return the available map types
+     */
+    private static Map<String, String> getTypeItems() {
+
+        Map<String, String> types = new LinkedHashMap<String, String>();
+        types.put("roadmap", Messages.get().key(Messages.GUI_LOCATION_ROADMAP_0));
+        types.put("hybrid", Messages.get().key(Messages.GUI_LOCATION_HYBRID_0));
+        types.put("satellite", Messages.get().key(Messages.GUI_LOCATION_SATELLITE_0));
+        types.put("terrain", Messages.get().key(Messages.GUI_LOCATION_TERRAIN_0));
+        return types;
+    }
+
+    /**
+     * Returns the available zoom levels.<p>
+     * 
+     * @return the available zoom levels
+     */
+    private static Map<String, String> getZoomItems() {
+
+        Map<String, String> zoomItems = new LinkedHashMap<String, String>();
+        for (int i = 0; i < 21; i++) {
+            String value = String.valueOf(i);
+            zoomItems.put(value, value);
+        }
+        return zoomItems;
+    }
+
+    /**
+     * Returns if the google maps API is already loaded to the window context.<p>
+     * 
+     * @return <code>true</code>  if the google maps API is already loaded to the window context
+     */
+    private static native boolean isApiLoaded()/*-{
+                                               return $wnd.google !== undefined && $wnd.google.maps !== undefined
+                                               && $wnd.google.maps.Map !== undefined;
+                                               }-*/;
+
+    /**
+     * Loads the google maps API and initializes the map afterwards.<p>
+     */
+    private static native void loadApi()/*-{
+                                        $wnd.cmsLocationPickerApiReady = function() {
+                                        @org.opencms.gwt.client.ui.input.location.CmsLocationController::apiReady()();
+                                        }
+                                        var script = $wnd.document.createElement('script');
+                                        script.type = 'text/javascript';
+                                        script.src = @org.opencms.gwt.client.ui.input.location.CmsLocationController::MAPS_URI
+                                        + '&callback=cmsLocationPickerApiReady';
+                                        $wnd.document.body.appendChild(script);
+                                        }-*/;
+
+    /**
+     * Adds a callback to be executed once the API is ready. Will be executed right away if the API is already loaded.<p>
+     *  
+     * @param callback the callback
+     */
+    private static void onApiReady(Command callback) {
+
+        if (isApiLoaded()) {
+            callback.execute();
+        } else {
+            onApiReady.add(callback);
+            if (!loadingApi) {
+                loadingApi = true;
+                loadApi();
             }
         }
+    }
+
+    /**
+     * Returns the current location value.<p>
+     * 
+     * @return the location value
+     */
+    public CmsLocationValue getLocationValue() {
+
+        return m_value;
     }
 
     /**
@@ -107,14 +220,21 @@ public class CmsLocationController {
         return m_value.toJSONString();
     }
 
-    /**
-     * Returns the current location value.<p>
-     * 
-     * @return the location value
-     */
-    public CmsLocationValue getLocationValue() {
+    /** Sets the location value as string.
+     *  
+     * @param value the string representation of the location value (JSON)
+     **/
+    public void setStringValue(String value) {
 
-        return m_value;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
+            m_value = CmsLocationValue.parse(value);
+            m_previousValue = m_value.cloneValue();
+            displayValue();
+            if ((m_popup != null) && m_popup.isVisible()) {
+                m_popupContent.displayValues(m_value);
+                updateMarkerPosition();
+            }
+        }
     }
 
     /**
@@ -140,7 +260,7 @@ public class CmsLocationController {
                                                           }
                                                           var lat = results[0].geometry.location.lat();
                                                           var lng = results[0].geometry.location.lng();
-                                                          self.@org.opencms.gwt.client.ui.input.location.CmsLocationController::setPosition(FFZ)(lat,lng,true);
+                                                          self.@org.opencms.gwt.client.ui.input.location.CmsLocationController::setPosition(FFZZ)(lat,lng,true,false);
                                                           });
                                                           }-*/;
 
@@ -153,7 +273,7 @@ public class CmsLocationController {
 
         LocationSuggestion location = (LocationSuggestion)suggestion;
         m_value.setAddress(location.getDisplayString());
-        setPosition(location.getLatitude(), location.getLongitude(), true);
+        setPosition(location.getLatitude(), location.getLongitude(), true, false);
     }
 
     /**
@@ -175,6 +295,7 @@ public class CmsLocationController {
 
         m_value.setLatitude(latitude);
         updateMarkerPosition();
+        updateAddress();
     }
 
     /**
@@ -186,6 +307,7 @@ public class CmsLocationController {
 
         m_value.setLongitude(longitude);
         updateMarkerPosition();
+        updateAddress();
     }
 
     /**
@@ -197,6 +319,17 @@ public class CmsLocationController {
 
         m_value.setMode(mode);
     }
+
+    /**
+     * Called on map type change.<p>
+     * 
+     * @param type the map type
+     */
+    protected native void onTypeChange(String type)/*-{
+                                                   this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_value.type = type;
+                                                   this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_map
+                                                   .setMapTypeId(type);
+                                                   }-*/;
 
     /**
      * Called on width value change.<p>
@@ -216,36 +349,14 @@ public class CmsLocationController {
     protected native void onZoomChange(String zoom) /*-{
                                                     var z = parseInt(zoom);
                                                     if (!isNaN(z)) {
-                                                                                                        this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_value.zoom = z;
-                                                                                                        var map= this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_map;
-                                                                                                        map.setZoom(z);
-                                                                                                        var pos = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::getCurrentPosition()();
-                                                                                                        map.panTo(pos);
-                                                                                                        map.setCenter(pos);
+                                                    this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_value.zoom = z;
+                                                    var map = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_map;
+                                                    map.setZoom(z);
+                                                    var pos = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::getCurrentPosition()();
+                                                    map.panTo(pos);
+                                                    map.setCenter(pos);
                                                     }
                                                     }-*/;
-
-    /**
-     * Opens the location picker popup.<p>
-     */
-    void openPopup() {
-
-        if (m_popup == null) {
-            m_popup = new CmsPopup("Pick a location", 1250);
-            m_popupContent = new CmsLocationPopupContent(this, new CmsLocationSuggestOracle());
-            m_popup.setMainContent(m_popupContent);
-            m_popup.addDialogClose(new Command() {
-
-                public void execute() {
-
-                    fireChangeEventOnPicker(false);
-                }
-            });
-        }
-        m_popup.show();
-        updateForm();
-        initialize();
-    }
 
     /**
      * Fires the value change event for the location picker.<p>
@@ -257,9 +368,144 @@ public class CmsLocationController {
         String val = m_value.toJSONString();
         if (force || !val.equals(m_previousValue.toJSONString())) {
             m_previousValue = m_value.cloneValue();
-            m_picker.displayValue(m_value);
+            displayValue();
             ValueChangeEvent.fire(m_picker, val);
         }
+    }
+
+    /**
+     * Displays the map for the current location.<p>
+     */
+    native void initMap() /*-{
+                          if (this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_map == null) {
+                          var value = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_value;
+                          var type = (value.type == null || value.type == "") ? "roadmap"
+                          : value.type;
+                          var zoom = parseInt(value.zoom);
+                          if (isNaN(zoom)) {
+                          zoom = 8;
+                          }
+
+                          var mapOptions = {
+                          zoom : zoom,
+                          mapTypeId : type,
+                          center : new $wnd.google.maps.LatLng(-34.397, 150.644),
+                          streetViewControl: false
+                          };
+                          var popupContent = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_popupContent;
+                          var canvas = popupContent.@org.opencms.gwt.client.ui.input.location.CmsLocationPopupContent::getMapCanvas()();
+                          this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_map = new $wnd.google.maps.Map(
+                          canvas, mapOptions);
+                          this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_geocoder = new $wnd.google.maps.Geocoder();
+                          }
+                          this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::updateMarkerPosition()();
+                          }-*/;
+
+    /**
+     * Opens the location picker popup.<p>
+     */
+    void openPopup() {
+
+        if (m_popup == null) {
+            m_popup = new CmsPopup(Messages.get().key(Messages.GUI_LOCATION_DIALOG_TITLE_0), 1020);
+            m_popupContent = new CmsLocationPopupContent(
+                this,
+                new CmsLocationSuggestOracle(),
+                getModeItems(),
+                getTypeItems(),
+                getZoomItems());
+            m_popup.setMainContent(m_popupContent);
+            m_popup.addDialogClose(new Command() {
+
+                public void execute() {
+
+                    fireChangeEventOnPicker(false);
+                }
+            });
+        }
+        m_popup.center();
+        m_popup.show();
+        updateForm();
+        initialize();
+    }
+
+    /**
+     * Shows the map preview.<p>
+     */
+    native void showMapPreview() /*-{
+                                 var map = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_previewMap;
+                                 var value = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_value;
+                                 var pos = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::getCurrentPosition()();
+                                 var type = (value.type == null || value.type == "") ? "roadmap"
+                                 : value.type;
+                                 var zoom = parseInt(value.zoom);
+                                 if (isNaN(zoom)) {
+                                 zoom = 8;
+                                 }
+                                 if (map == null) {
+                                 var picker = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_picker;
+                                 var canvas = picker.@org.opencms.gwt.client.ui.input.location.CmsLocationPicker::getMapPreview()();
+                                 var mapOptions = {
+                                 zoom : zoom,
+                                 mapTypeId : type,
+                                 center : pos,
+                                 draggable : false,
+                                 disableDefaultUi : true,
+                                 disableDoubleClickZoom : true,
+                                 mapTypeControl : false,
+                                 zoomControl : false,
+                                 streetViewControl : false,
+                                 scrollwheel : false,
+                                 keyboardShortcuts :false
+                                 };
+                                 map = new $wnd.google.maps.Map(canvas, mapOptions);
+                                 this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_previewMap = map;
+                                 } else {
+                                 map.setZoom(zoom);
+                                 map.setMapTypeId(type);
+                                 map.panTo(pos);
+                                 map.setCenter(pos);
+                                 }
+                                 var marker = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_previewMarker;
+                                 if (marker == null) {
+                                 var marker = new $wnd.google.maps.Marker({
+                                 position : pos,
+                                 map : map,
+                                 draggable : false
+                                 });
+                                 this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_previewMarker = marker;
+                                 } else {
+                                 marker.setPosition(pos);
+                                 }
+
+                                 }-*/;
+
+    /**
+     * Displays the values within the picker widget.<p>
+     */
+    private void displayValue() {
+
+        m_picker.displayValue(m_value.getAddress());
+        Map<String, String> infos = new LinkedHashMap<String, String>();
+        infos.put(Messages.get().key(Messages.GUI_LOCATION_LATITUDE_0), m_value.getLatitudeString());
+        infos.put(Messages.get().key(Messages.GUI_LOCATION_LONGITUDE_0), m_value.getLongitudeString());
+        infos.put(Messages.get().key(Messages.GUI_LOCATION_SIZE_0), m_value.getWidth() + " x " + m_value.getHeight());
+        infos.put(Messages.get().key(Messages.GUI_LOCATION_TYPE_0), m_value.getType());
+        infos.put(Messages.get().key(Messages.GUI_LOCATION_MODE_0), m_value.getMode());
+        m_picker.setLocationInfo(infos);
+        m_picker.setPreviewVisible(true);
+        if (isApiLoaded()) {
+            showMapPreview();
+        } else {
+            onApiReady(new Command() {
+
+                public void execute() {
+
+                    showMapPreview();
+                }
+            });
+        }
+
     }
 
     /**
@@ -274,57 +520,46 @@ public class CmsLocationController {
                                                         }-*/;
 
     /**
+     * Returns the value display string.<p>
+     * 
+     * @return the value 
+     */
+    private String getDisplayString() {
+
+        return Messages.get().key(
+            Messages.GUI_LOCATION_DISPLAY_3,
+            m_value.getAddress(),
+            m_value.getLatitudeString(),
+            m_value.getLongitudeString());
+    }
+
+    /**
      * Initializes the location picker.<p>
      */
     private void initialize() {
 
-        if (isAPILoaded()) {
+        if (isApiLoaded()) {
             initMap();
         } else {
-            loadAPI();
+            onApiReady(new Command() {
+
+                public void execute() {
+
+                    initMap();
+                }
+            });
         }
     }
 
     /**
-     * Displays the map for the current location.<p>
-     */
-    private native void initMap() /*-{
-                                  var mapOptions = {
-                                  zoom : 8,
-                                  center : new $wnd.google.maps.LatLng(-34.397, 150.644)
-                                  };
-                                  var popupContent = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_popupContent;
-                                  var canvas = popupContent.@org.opencms.gwt.client.ui.input.location.CmsLocationPopupContent::getMapCanvas()();
-                                  this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_map = new $wnd.google.maps.Map(
-                                  canvas, mapOptions);
-                                  this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_geocoder = new $wnd.google.maps.Geocoder();
-                                  this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::updateMarkerPosition()();
-                                  }-*/;
-
-    /**
-     * Returns if the google maps API is already loaded to the window context.<p>
+     * Parses the configuration string.<p>
      * 
-     * @return <code>true</code>  if the google maps API is already loaded to the window context
+     * @param configuration the configuration
      */
-    private native boolean isAPILoaded()/*-{
-                                        return $wnd.google !== undefined && $wnd.google.maps !== undefined
-                                        && $wnd.google.maps.Map !== undefined;
-                                        }-*/;
-
-    /**
-     * Loads the google maps API and initializes the map afterwards.<p>
-     */
-    private native void loadAPI()/*-{
-                                 var self = this;
-                                 $wnd.showMap = function() {
-                                 self.@org.opencms.gwt.client.ui.input.location.CmsLocationController::initMap()();
-                                 }
-                                 var script = $wnd.document.createElement('script');
-                                 script.type = 'text/javascript';
-                                 script.src = @org.opencms.gwt.client.ui.input.location.CmsLocationController::MAPS_URI
-                                 + '&callback=showMap';
-                                 $wnd.document.body.appendChild(script);
-                                 }-*/;
+    private native void parseConfig(String configuration)/*-{
+                                                         this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config = JSON
+                                                         .parse(configuration);
+                                                         }-*/;
 
     /**
      * Sets the position values and updates the map view.<p>
@@ -332,8 +567,9 @@ public class CmsLocationController {
      * @param latitude the latitude
      * @param longitude the longitude
      * @param updateMap <code>true</code> to update the map
+     * @param updateAddress <code>true</code> to update the address from the new position data
      */
-    private void setPosition(float latitude, float longitude, boolean updateMap) {
+    private void setPosition(float latitude, float longitude, boolean updateMap, boolean updateAddress) {
 
         m_value.setLatitude(latitude);
         m_value.setLongitude(longitude);
@@ -341,7 +577,38 @@ public class CmsLocationController {
         if (updateMap) {
             updateMarkerPosition();
         }
+        if (updateAddress) {
+            updateAddress();
+        }
     }
+
+    /**
+     * Updates the address according to the current position data.<p>
+     */
+    private native void updateAddress()/*-{
+                                       var self = this;
+                                       var pos = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::getCurrentPosition()();
+                                       // try to evaluate the address from the current position
+                                       this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_geocoder
+                                       .geocode(
+                                       {
+                                       'latLng' : pos
+                                       },
+                                       function(results, status) {
+                                       var address = "";
+                                       // check that everything is ok
+                                       if (status == $wnd.google.maps.GeocoderStatus.OK
+                                       && results[0]
+                                       && results[0].formatted_address) {
+                                       // set the new address
+                                       address = results[0].formatted_address;
+                                       }
+                                       if (address != self.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_value.address) {
+                                       self.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_value.address = address;
+                                       self.@org.opencms.gwt.client.ui.input.location.CmsLocationController::updateForm()();
+                                       }
+                                       });
+                                       }-*/;
 
     /**
      * Displays the current location value within the popup form.<p>
@@ -357,7 +624,7 @@ public class CmsLocationController {
     private native void updateMarkerPosition()/*-{
                                               var map = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_map;
                                               var pos = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::getCurrentPosition()();
-                                              var marker=this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_marker;
+                                              var marker = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_marker;
                                               if (marker == null) {
                                               try {
                                               var marker = new $wnd.google.maps.Marker({
@@ -375,7 +642,7 @@ public class CmsLocationController {
                                               function() {
                                               var lat = marker.getPosition().lat();
                                               var lng = marker.getPosition().lng();
-                                              self.@org.opencms.gwt.client.ui.input.location.CmsLocationController::setPosition(FFZ)(lat,lng,false);
+                                              self.@org.opencms.gwt.client.ui.input.location.CmsLocationController::setPosition(FFZZ)(lat,lng,false,true);
                                               });
                                               } catch (e) {
                                               $wnd.alert(e);

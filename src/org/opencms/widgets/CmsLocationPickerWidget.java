@@ -79,7 +79,11 @@ public class CmsLocationPickerWidget extends A_CmsWidget implements I_CmsADEWidg
         CmsResource resource,
         Locale contentLocale) {
 
-        return getConfiguration();
+        String config = getConfiguration();
+        if (!config.startsWith("{")) {
+            config = "{" + config + "}";
+        }
+        return config;
     }
 
     /**
