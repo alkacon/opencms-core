@@ -644,9 +644,14 @@ public class CmsElementUtil {
             return false;
         }
 
-        CmsFormatterConfiguration formatters = getConfigData().getFormatters(m_cms, resource);
-        return (formatters.getAllFormatters().size() > 1)
+        List<I_CmsFormatterBean> allFormatters = getConfigData().getFormatters(m_cms, resource).getAllFormatters();
+        boolean result = (allFormatters.size() > 1)
             || !CmsXmlContentPropertyHelper.getPropertyInfo(m_cms, resource).isEmpty();
+        if (!result && (allFormatters.size() == 1)) {
+            result = (allFormatters.get(0).getSettings() != null) && (allFormatters.get(0).getSettings().size() > 0);
+        }
+        return result;
+
     }
 
     /**
