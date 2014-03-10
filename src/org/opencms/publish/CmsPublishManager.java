@@ -57,6 +57,16 @@ import java.util.Map;
  */
 public class CmsPublishManager {
 
+    /** 
+     * Enum for the different publish  list remove modes.<p>
+     */
+    public static enum PublishListRemoveMode {
+        /** Remove publish list entries for all users if a resource is published. */
+        allUsers,
+        /** Remove publish list entry for the current user if a resource is published. */
+        currentUser
+    }
+
     /** The default history size. */
     public static final int DEFAULT_HISTORY_SIZE = 100;
 
@@ -77,6 +87,9 @@ public class CmsPublishManager {
 
     /** The maximum size of the publish history. */
     private int m_publishHistorySize;
+
+    /** The publish list remove mode. */
+    private CmsPublishManager.PublishListRemoveMode m_publishListRemoveMode;
 
     /** Indicates if the publish queue is re-initialized on startup. */
     private boolean m_publishQueuePersistance;
@@ -353,6 +366,16 @@ public class CmsPublishManager {
         pubList.setUserPublishList(isUserPublishList);
 
         return m_securityManager.fillPublishList(cms.getRequestContext(), pubList);
+    }
+
+    /** 
+     * Gets the publish list remove mode.<p>
+     * 
+     * @return the publish list remove mode 
+     */
+    public CmsPublishManager.PublishListRemoveMode getPublishListRemoveMode() {
+
+        return m_publishListRemoveMode;
     }
 
     /**
@@ -633,6 +656,19 @@ public class CmsPublishManager {
             throw new CmsRuntimeException(Messages.get().container(Messages.ERR_CONFIG_FROZEN_0));
         }
         m_publishHistorySize = Integer.parseInt(publishHistorySize);
+    }
+
+    /** 
+     * Sets the publish list remove mode.<p>
+     * 
+     * @param publishListRemoveMode the publish list remove mode 
+     */
+    public void setPublishListRemoveMode(CmsPublishManager.PublishListRemoveMode publishListRemoveMode) {
+
+        if (m_frozen) {
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_CONFIG_FROZEN_0));
+        }
+        m_publishListRemoveMode = publishListRemoveMode;
     }
 
     /**

@@ -1303,6 +1303,7 @@ public final class OpenCmsCore {
             // initialize the publish manager
             m_publishManager.setPublishEngine(m_publishEngine);
             m_publishManager.setSecurityManager(m_securityManager);
+            m_publishManager.setPublishListRemoveMode(systemConfiguration.getPublishListRemoveMode());
             m_publishManager.initialize(initCmsObject(adminCms));
 
             // initialize the search manager

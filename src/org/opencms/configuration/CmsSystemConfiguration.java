@@ -78,6 +78,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.digester.Digester;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 
 import org.dom4j.Element;
@@ -352,6 +353,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The node name for the context project name. */
     public static final String N_PROJECT = "project";
 
+    /** The node name for the publish list remove mode. */
+    public static final String N_PUBLISH_LIST_REMOVE_MODE = "publish-list-remove-mode";
+
     /** The node name for the "publishhistory" section. */
     public static final String N_PUBLISHMANAGER = "publishmanager";
 
@@ -604,6 +608,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The permission handler. */
     private String m_permissionHandler;
+
+    /** The configured publish list remove mode. */
+    private String m_publishListRemoveMode;
 
     /** The configured publish manager. */
     private CmsPublishManager m_publishManager;
@@ -1206,6 +1213,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SUBSCRIPTIONMANAGER, 0, A_MAXVISITED);
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_SUBSCRIPTIONMANAGER, "setSubscriptionManager");
 
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_PUBLISH_LIST_REMOVE_MODE, "setPublishListRemoveMode", 1);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_PUBLISH_LIST_REMOVE_MODE, 0, A_MODE);
+
         String workflowXpath = "*/" + N_SYSTEM + "/" + N_WORKFLOW;
         digester.addObjectCreate(workflowXpath, CmsDefaultWorkflowManager.class.getName(), A_CLASS);
         digester.addObjectCreate(workflowXpath + "/" + N_PARAMETERS, LinkedHashMap.class);
@@ -1658,6 +1668,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
                 paramElem.addText(entry.getValue());
             }
         }
+
         if (m_userSessionMode != null) {
             Element userSessionElem = systemElement.addElement(N_USER_SESSION_MODE);
             userSessionElem.setText(m_userSessionMode.toString());
@@ -1666,6 +1677,11 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         if (m_credentialsResolverClass != null) {
             systemElement.addElement(N_CREDENTIALS_RESOLVER).setText(m_credentialsResolverClass);
         }
+
+        if (m_publishListRemoveMode != null) {
+            systemElement.addElement(N_PUBLISH_LIST_REMOVE_MODE).addAttribute(A_MODE, m_publishListRemoveMode);
+        }
+
         // return the system node
         return systemElement;
     }
@@ -1946,6 +1962,31 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     public String getPermissionHandler() {
 
         return m_permissionHandler;
+    }
+
+    /** 
+     * Returns the configured publish list remove mode, or a default value if there is no configured value or an erroneous configured value.<p>
+     * 
+     * @return the publish list remove mode
+     */
+    public CmsPublishManager.PublishListRemoveMode getPublishListRemoveMode() {
+
+        try {
+            // trim preserves null 
+            return CmsPublishManager.PublishListRemoveMode.valueOf(StringUtils.trim(m_publishListRemoveMode));
+        } catch (Exception e) {
+            return CmsPublishManager.PublishListRemoveMode.allUsers;
+        }
+    }
+
+    /** 
+     * Returns the configured publish list remove mode as a string, or null if no publish list remove mode has been configured.<p>
+     * 
+     * @return the publish list remove mode string from the configuration 
+     */
+    public String getPublishListRemoveModeStr() {
+
+        return m_publishListRemoveMode;
     }
 
     /**
@@ -2473,6 +2514,16 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
         OpenCms.getSystemInfo().getServletContainerSettings().setPreventResponseFlush(
             Boolean.valueOf(configValue).booleanValue());
+    }
+
+    /** 
+     * Sets the publish list remove mode.<p>
+     * 
+     * @param removeMode the publish list remove mode 
+     */
+    public void setPublishListRemoveMode(String removeMode) {
+
+        m_publishListRemoveMode = removeMode;
     }
 
     /**

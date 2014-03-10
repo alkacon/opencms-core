@@ -41,6 +41,7 @@
 	workflow?,
 	user-session-mode?,
 	credentials-resolver?
+	publish-list-remove-mode?
 	)>
 
 <!--
@@ -293,7 +294,17 @@ Each job can have an optional list of parameters.
 <!ATTLIST alias
 	server CDATA #REQUIRED
 	offset CDATA #IMPLIED>
-
+	
+<!--
+# Publish list remove mode.
+# This setting controls what happens to user publish lists when resources are published.
+# With the value "currentUser", the resource's user publish list entry for the current user is removed.
+# With the value "allUsers", the resource's user publish list entries for all users are removed. 
+-->
+<!ELEMENT publish-list-remove-mode EMPTY>
+<!ATTLIST publish-list-remove-mode 
+	mode (allUsers|currentUser) #REQUIRED>
+	
 <!--
 # Optional configuration that controls some additional information as key/value param pairs
 # Parameters and values are stored as OpenCms runtime properties.
@@ -537,7 +548,12 @@ Each job can have an optional list of parameters.
 # Provides the configuration parameters for the publish history and queue.
 # See the package org.opencms.publish for more details.
 -->
-<!ELEMENT publishmanager (history-size, queue-persistance?, queue-shutdowntime?)>
+<!ELEMENT publishmanager (history-size, queue-persistance?, queue-shutdowntime?, publish-list-delete-mode?)>
+
+
+<!ELEMENT publish-list-delete-mode (#PCDATA)>
+
+
 
 <!--
 # The size of the publish queue

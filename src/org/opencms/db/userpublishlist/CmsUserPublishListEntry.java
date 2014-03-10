@@ -46,7 +46,7 @@ public class CmsUserPublishListEntry {
     /**
      * Creates a new user publish list entry.<p>
      * 
-     * @param userId the user id of the owner of the entry  
+     * @param userId the user id of the owner of the entry (if this field is null, and this object is passed to a method which deletes user publsih list entries, this is interpreted as deleting user publish list entries for all users)
      * @param structureId  the structure id of the publish list entry resource 
      * @param dateChanged the date at which the publish list entry was updated
      */

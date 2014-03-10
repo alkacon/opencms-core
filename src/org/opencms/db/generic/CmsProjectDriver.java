@@ -636,11 +636,12 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
         try {
             conn = m_sqlManager.getConnection(dbc);
-            String sql = m_sqlManager.readQuery("C_USER_PUBLISH_LIST_DELETE_2");
+            String sql = m_sqlManager.readQuery("C_USER_PUBLISH_LIST_DELETE_3");
             stmt = m_sqlManager.getPreparedStatementForSql(conn, sql);
             for (CmsUserPublishListEntry entry : publishListDeletions) {
-                stmt.setString(1, entry.getUserId().toString());
-                stmt.setString(2, entry.getStructureId().toString());
+                stmt.setString(1, entry.getStructureId().toString());
+                stmt.setString(2, entry.getUserId() != null ? entry.getUserId().toString() : null);
+                stmt.setInt(3, entry.getUserId() == null ? 1 : 0);
                 stmt.addBatch();
             }
             stmt.executeBatch();

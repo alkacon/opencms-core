@@ -29,6 +29,8 @@ package org.opencms.db;
 
 import org.opencms.db.log.CmsLogEntry;
 import org.opencms.db.userpublishlist.CmsUserPublishListEntry;
+import org.opencms.main.OpenCms;
+import org.opencms.publish.CmsPublishManager;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsUUID;
 
@@ -44,12 +46,6 @@ import java.util.Map;
 public class CmsLogToPublishListChangeConverter {
 
     /**
-     * The state consists of a map from (user id, structure id) pairs to time stamps. Negative time stamps are used when
-     * the user publish list entry for the given key should be deleted.<p>
-     */
-    private Map<CmsPair<CmsUUID, CmsUUID>, Long> m_state = new HashMap<CmsPair<CmsUUID, CmsUUID>, Long>();
-
-    /**
      * The possible actions for a publish list entry.<p>
      */
     private enum Action {
@@ -59,6 +55,12 @@ public class CmsLogToPublishListChangeConverter {
         /** Update an entry. */
         update
     }
+
+    /**
+     * The state consists of a map from (user id, structure id) pairs to time stamps. Negative time stamps are used when
+     * the user publish list entry for the given key should be deleted.<p>
+     */
+    private Map<CmsPair<CmsUUID, CmsUUID>, Long> m_state = new HashMap<CmsPair<CmsUUID, CmsUUID>, Long>();
 
     /**
      * Feeds a log entry to the converter.<p>
@@ -81,15 +83,50 @@ public class CmsLogToPublishListChangeConverter {
     }
 
     /**
-     * Checks whether the given log entry should remove an entry from the publish list.<p>
+     * Gets the list of publish list entries which should be updated in the database.<p>
      * 
-     * @param entry the log entry 
-     *  
-     * @return true if the corresponding publish list entry should be removed 
+     * @return the list of publish list entries to update 
      */
-    protected boolean isDeleting(CmsLogEntry entry) {
+    public List<CmsUserPublishListEntry> getPublishListAdditions() {
 
-        return entry.getType().getId() <= 20;
+        return filterEntries(Action.update);
+    }
+
+    /**
+     * Gets the list of user publish list entries to delete.<p>
+     * 
+     * In the objects returned, only the structure id and user id fields are meaningful.<p>
+     * 
+     * @return the list of user publish list entries to delete
+     */
+    public List<CmsUserPublishListEntry> getPublishListDeletions() {
+
+        return filterEntries(Action.delete);
+    }
+
+    /**
+     * Gets all CmsUserPublishListEntry values from the internal state map whose action matches the parameter given.<p>
+     * 
+     * @param action an action constant  
+     * @return all CmsUserPublishListEntry values from the internal state map whose action matches the parameter given 
+     */
+    protected List<CmsUserPublishListEntry> filterEntries(Action action) {
+
+        boolean isDeleteAll = (action == Action.delete)
+            && (OpenCms.getPublishManager().getPublishListRemoveMode() == CmsPublishManager.PublishListRemoveMode.allUsers);
+        List<CmsUserPublishListEntry> result = new ArrayList<CmsUserPublishListEntry>();
+        for (Map.Entry<CmsPair<CmsUUID, CmsUUID>, Long> entry : m_state.entrySet()) {
+            CmsPair<CmsUUID, CmsUUID> key = entry.getKey();
+            Long value = entry.getValue();
+            Action valueAction = getAction(value.longValue());
+            if (valueAction.equals(action)) {
+                result.add(new CmsUserPublishListEntry(
+                    isDeleteAll ? null : key.getFirst(),
+                    key.getSecond(),
+                    value.longValue()));
+            }
+        }
+        return result;
     }
 
     /**
@@ -105,13 +142,15 @@ public class CmsLogToPublishListChangeConverter {
     }
 
     /**
-     * Gets the list of publish list entries which should be updated in the database.<p>
+     * Checks whether the given log entry should remove an entry from the publish list.<p>
      * 
-     * @return the list of publish list entries to update 
+     * @param entry the log entry 
+     *  
+     * @return true if the corresponding publish list entry should be removed 
      */
-    public List<CmsUserPublishListEntry> getPublishListAdditions() {
+    protected boolean isDeleting(CmsLogEntry entry) {
 
-        return filterEntries(Action.update);
+        return entry.getType().getId() <= 20;
     }
 
     /**
@@ -128,38 +167,6 @@ public class CmsLogToPublishListChangeConverter {
         } else {
             return Action.update;
         }
-    }
-
-    /**
-     * Gets all CmsUserPublishListEntry values from the internal state map whose action matches the parameter given.<p>
-     * 
-     * @param action an action constant  
-     * @return all CmsUserPublishListEntry values from the internal state map whose action matches the parameter given 
-     */
-    public List<CmsUserPublishListEntry> filterEntries(Action action) {
-
-        List<CmsUserPublishListEntry> result = new ArrayList<CmsUserPublishListEntry>();
-        for (Map.Entry<CmsPair<CmsUUID, CmsUUID>, Long> entry : m_state.entrySet()) {
-            CmsPair<CmsUUID, CmsUUID> key = entry.getKey();
-            Long value = entry.getValue();
-            Action valueAction = getAction(value.longValue());
-            if (valueAction.equals(action)) {
-                result.add(new CmsUserPublishListEntry(key.getFirst(), key.getSecond(), value.longValue()));
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Gets the list of user publish list entries to delete.<p>
-     * 
-     * In the objects returned, only the structure id and user id fields are meaningful.<p>
-     * 
-     * @return the list of user publish list entries to delete
-     */
-    public List<CmsUserPublishListEntry> getPublishListDeletions() {
-
-        return filterEntries(Action.delete);
     }
 
 }
