@@ -415,13 +415,14 @@ public class CmsLocationController {
     void openPopup() {
 
         if (m_popup == null) {
-            m_popup = new CmsPopup(Messages.get().key(Messages.GUI_LOCATION_DIALOG_TITLE_0), 1020);
+            m_popup = new CmsPopup(Messages.get().key(Messages.GUI_LOCATION_DIALOG_TITLE_0), hasMap() ? 1020 : 420);
             m_popupContent = new CmsLocationPopupContent(
                 this,
                 new CmsLocationSuggestOracle(this),
                 getModeItems(),
                 getTypeItems(),
                 getZoomItems());
+            setFieldVisibility();
             m_popup.setMainContent(m_popupContent);
             m_popup.addDialogClose(new Command() {
 
@@ -495,11 +496,21 @@ public class CmsLocationController {
 
         m_picker.displayValue(m_value.getAddress());
         Map<String, String> infos = new LinkedHashMap<String, String>();
-        infos.put(Messages.get().key(Messages.GUI_LOCATION_LATITUDE_0), m_value.getLatitudeString());
-        infos.put(Messages.get().key(Messages.GUI_LOCATION_LONGITUDE_0), m_value.getLongitudeString());
-        infos.put(Messages.get().key(Messages.GUI_LOCATION_SIZE_0), m_value.getWidth() + " x " + m_value.getHeight());
-        infos.put(Messages.get().key(Messages.GUI_LOCATION_TYPE_0), m_value.getType());
-        infos.put(Messages.get().key(Messages.GUI_LOCATION_MODE_0), m_value.getMode());
+        if (hasLatLng()) {
+            infos.put(Messages.get().key(Messages.GUI_LOCATION_LATITUDE_0), m_value.getLatitudeString());
+            infos.put(Messages.get().key(Messages.GUI_LOCATION_LONGITUDE_0), m_value.getLongitudeString());
+        }
+        if (hasSize()) {
+            infos.put(
+                Messages.get().key(Messages.GUI_LOCATION_SIZE_0),
+                m_value.getWidth() + " x " + m_value.getHeight());
+        }
+        if (hasType()) {
+            infos.put(Messages.get().key(Messages.GUI_LOCATION_TYPE_0), m_value.getType());
+        }
+        if (hasMode()) {
+            infos.put(Messages.get().key(Messages.GUI_LOCATION_MODE_0), m_value.getMode());
+        }
         m_picker.setLocationInfo(infos);
         m_picker.setPreviewVisible(true);
         if (isApiLoaded()) {
@@ -531,6 +542,68 @@ public class CmsLocationController {
     }
 
     /**
+     * Evaluates if the address field is configured.<p>
+     * 
+     * @return <code>true</code> if the address field is configured
+     */
+    private native boolean hasAddress()/*-{
+                                       return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit.indexOf('address')!=-1;
+                                       }-*/;
+
+    /**
+     * Evaluates if the lat. lng. fields are configured.<p>
+     * 
+     * @return <code>true</code> if the lat. lng. fields are configured
+     */
+    private native boolean hasLatLng()/*-{
+                                       return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit.indexOf('coords')!=-1;
+                                       }-*/;
+
+    /**
+     * Evaluates if the map field is configured.<p>
+     * 
+     * @return <code>true</code> if the map field is configured
+     */
+    private native boolean hasMap()/*-{
+                                   return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit.indexOf('map')!=-1;
+                                   }-*/;
+
+    /**
+     * Evaluates if the mode field is configured.<p>
+     * 
+     * @return <code>true</code> if the mode field is configured
+     */
+    private native boolean hasMode()/*-{
+                                    return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit.indexOf('mode')!=-1;}-*/;
+
+    /**
+     * Evaluates if the size fields are configured.<p>
+     * 
+     * @return <code>true</code> if the size fields are configured
+     */
+    private native boolean hasSize()/*-{
+                                    return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit.indexOf('size')!=-1;
+                                    }-*/;
+
+    /**
+     * Evaluates if the type field is configured.<p>
+     * 
+     * @return <code>true</code> if the type field is configured
+     */
+    private native boolean hasType()/*-{
+                                    return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit.indexOf('type')!=-1;
+                                    }-*/;
+
+    /**
+     * Evaluates if the zoom field is configured.<p>
+     * 
+     * @return <code>true</code> if the zoom field is configured
+     */
+    private native boolean hasZoom()/*-{
+                                    return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit.indexOf('zoom')!=-1;
+                                    }-*/;
+
+    /**
      * Initializes the location picker.<p>
      */
     private void initialize() {
@@ -557,6 +630,20 @@ public class CmsLocationController {
                                                          this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config = JSON
                                                          .parse(configuration);
                                                          }-*/;
+
+    /**
+     * Sets all editable fields visible.<p>
+     */
+    private void setFieldVisibility() {
+
+        m_popupContent.setMapVisible(hasMap());
+        m_popupContent.setAddressVisible(hasAddress());
+        m_popupContent.setLatLngVisible(hasLatLng());
+        m_popupContent.setSizeVisible(hasSize());
+        m_popupContent.setTypeVisible(hasType());
+        m_popupContent.setModeVisible(hasMode());
+        m_popupContent.setZoomVisible(hasZoom());
+    }
 
     /**
      * Sets the position values and updates the map view.<p>

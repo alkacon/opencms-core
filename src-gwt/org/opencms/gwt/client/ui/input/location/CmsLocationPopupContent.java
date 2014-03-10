@@ -36,6 +36,8 @@ import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -156,105 +158,6 @@ public class CmsLocationPopupContent extends Composite {
     }
 
     /**
-     * On address field value change.<p>
-     * 
-     * @param event the change event
-     */
-    @UiHandler("m_addressField")
-    public void onAddressChange(ValueChangeEvent<String> event) {
-
-        m_controller.onAddressChange(event.getValue());
-    }
-
-    /**
-     * On address suggest selection.<p>
-     * 
-     * @param event the selection event
-     */
-    @UiHandler("m_addressField")
-    public void onAddressSelection(SelectionEvent<SuggestOracle.Suggestion> event) {
-
-        m_controller.onAddressChange(event.getSelectedItem());
-    }
-
-    /**
-     * On height value change.<p>
-     * 
-     * @param event the change event
-     */
-    @UiHandler("m_heightField")
-    public void onHeightChange(ValueChangeEvent<String> event) {
-
-        m_controller.onHeightChange(event.getValue());
-    }
-
-    /**
-     * On latitude value change.<p>
-     * 
-     * @param event the change event
-     */
-    @UiHandler("m_latitudeField")
-    public void onLatitudeChange(ValueChangeEvent<String> event) {
-
-        m_controller.onLatitudeChange(event.getValue());
-    }
-
-    /**
-     * On longitude value change.<p>
-     * 
-     * @param event the change event
-     */
-    @UiHandler("m_longitudeField")
-    public void onLongitudeChange(ValueChangeEvent<String> event) {
-
-        m_controller.onLongitudeChange(event.getValue());
-    }
-
-    /**
-     * On mode value change.<p>
-     * 
-     * @param event the change event
-     */
-    @UiHandler("m_modeField")
-    public void onModeChange(ValueChangeEvent<String> event) {
-
-        m_controller.onModeChange(event.getValue());
-    }
-
-    /**
-     * On type value change.<p>
-     * 
-     * @param event the change event
-     */
-    @UiHandler("m_typeField")
-    public void onTypeChange(ValueChangeEvent<String> event) {
-
-        m_controller.onTypeChange(event.getValue());
-    }
-
-    /**
-     * On width value change.<p>
-     * 
-     * @param event the change event
-     */
-    @UiHandler("m_widthField")
-    public void onWidthChange(ValueChangeEvent<String> event) {
-
-        m_controller.onWidthChange(event.getValue());
-    }
-
-    /**
-     * On zoom value change.<p>
-     * 
-     * @param event the change event
-     */
-    @UiHandler("m_zoomField")
-    public void onZoomChange(ValueChangeEvent<String> event) {
-
-        m_controller.onZoomChange(event.getValue());
-    }
-
-    /**
      * Displays the location value fields.<p>
      * 
      * @param value the location value
@@ -279,6 +182,213 @@ public class CmsLocationPopupContent extends Composite {
     protected Element getMapCanvas() {
 
         return m_mapCanvas;
+    }
+
+    /**
+     * Sets the field visibility.<p>
+     * 
+     * @param visible <code>true</code> to show the field
+     */
+    protected void setAddressVisible(boolean visible) {
+
+        Style style = m_addressLabel.getElement().getParentElement().getStyle();
+        if (visible) {
+            style.clearDisplay();
+        } else {
+            style.setDisplay(Display.NONE);
+        }
+    }
+
+    /**
+     * Sets the field visibility.<p>
+     * 
+     * @param visible <code>true</code> to show the field
+     */
+    protected void setLatLngVisible(boolean visible) {
+
+        Style styleLat = m_latitudeLabel.getElement().getParentElement().getStyle();
+        Style styleLng = m_longitudeLabel.getElement().getParentElement().getStyle();
+        if (visible) {
+            styleLat.clearDisplay();
+            styleLng.clearDisplay();
+        } else {
+            styleLat.setDisplay(Display.NONE);
+            styleLng.setDisplay(Display.NONE);
+        }
+    }
+
+    /**
+     * Sets the field visibility.<p>
+     * 
+     * @param visible <code>true</code> to show the field
+     */
+    protected void setMapVisible(boolean visible) {
+
+        Style style = m_mapCanvas.getStyle();
+        if (visible) {
+            style.clearDisplay();
+        } else {
+            style.setDisplay(Display.NONE);
+        }
+    }
+
+    /**
+     * Sets the field visibility.<p>
+     * 
+     * @param visible <code>true</code> to show the field
+     */
+    protected void setModeVisible(boolean visible) {
+
+        Style style = m_modeLabel.getElement().getParentElement().getStyle();
+        if (visible) {
+            style.clearDisplay();
+        } else {
+            style.setDisplay(Display.NONE);
+        }
+    }
+
+    /**
+     * Sets the field visibility.<p>
+     * 
+     * @param visible <code>true</code> to show the field
+     */
+    protected void setSizeVisible(boolean visible) {
+
+        Style style = m_sizeLabel.getElement().getParentElement().getStyle();
+        if (visible) {
+            style.clearDisplay();
+        } else {
+            style.setDisplay(Display.NONE);
+        }
+    }
+
+    /**
+     * Sets the field visibility.<p>
+     * 
+     * @param visible <code>true</code> to show the field
+     */
+    protected void setTypeVisible(boolean visible) {
+
+        Style style = m_typeLabel.getElement().getParentElement().getStyle();
+        if (visible) {
+            style.clearDisplay();
+        } else {
+            style.setDisplay(Display.NONE);
+        }
+    }
+
+    /**
+     * Sets the field visibility.<p>
+     * 
+     * @param visible <code>true</code> to show the field
+     */
+    protected void setZoomVisible(boolean visible) {
+
+        Style style = m_zoomLabel.getElement().getParentElement().getStyle();
+        if (visible) {
+            style.clearDisplay();
+        } else {
+            style.setDisplay(Display.NONE);
+        }
+    }
+
+    /**
+     * On address field value change.<p>
+     * 
+     * @param event the change event
+     */
+    @UiHandler("m_addressField")
+    void onAddressChange(ValueChangeEvent<String> event) {
+
+        m_controller.onAddressChange(event.getValue());
+    }
+
+    /**
+     * On address suggest selection.<p>
+     * 
+     * @param event the selection event
+     */
+    @UiHandler("m_addressField")
+    void onAddressSelection(SelectionEvent<SuggestOracle.Suggestion> event) {
+
+        m_controller.onAddressChange(event.getSelectedItem());
+    }
+
+    /**
+     * On height value change.<p>
+     * 
+     * @param event the change event
+     */
+    @UiHandler("m_heightField")
+    void onHeightChange(ValueChangeEvent<String> event) {
+
+        m_controller.onHeightChange(event.getValue());
+    }
+
+    /**
+     * On latitude value change.<p>
+     * 
+     * @param event the change event
+     */
+    @UiHandler("m_latitudeField")
+    void onLatitudeChange(ValueChangeEvent<String> event) {
+
+        m_controller.onLatitudeChange(event.getValue());
+    }
+
+    /**
+     * On longitude value change.<p>
+     * 
+     * @param event the change event
+     */
+    @UiHandler("m_longitudeField")
+    void onLongitudeChange(ValueChangeEvent<String> event) {
+
+        m_controller.onLongitudeChange(event.getValue());
+    }
+
+    /**
+     * On mode value change.<p>
+     * 
+     * @param event the change event
+     */
+    @UiHandler("m_modeField")
+    void onModeChange(ValueChangeEvent<String> event) {
+
+        m_controller.onModeChange(event.getValue());
+    }
+
+    /**
+     * On type value change.<p>
+     * 
+     * @param event the change event
+     */
+    @UiHandler("m_typeField")
+    void onTypeChange(ValueChangeEvent<String> event) {
+
+        m_controller.onTypeChange(event.getValue());
+    }
+
+    /**
+     * On width value change.<p>
+     * 
+     * @param event the change event
+     */
+    @UiHandler("m_widthField")
+    void onWidthChange(ValueChangeEvent<String> event) {
+
+        m_controller.onWidthChange(event.getValue());
+    }
+
+    /**
+     * On zoom value change.<p>
+     * 
+     * @param event the change event
+     */
+    @UiHandler("m_zoomField")
+    void onZoomChange(ValueChangeEvent<String> event) {
+
+        m_controller.onZoomChange(event.getValue());
     }
 
     /**

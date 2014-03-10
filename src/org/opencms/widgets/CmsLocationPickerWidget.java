@@ -31,6 +31,8 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.json.JSONException;
+import org.opencms.json.JSONObject;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.I_CmsXmlContentHandler.DisplayType;
@@ -46,6 +48,9 @@ import java.util.Set;
  * @since 6.0.0 
  */
 public class CmsLocationPickerWidget extends A_CmsWidget implements I_CmsADEWidget {
+
+    /** The default widget configuration. */
+    private static final String DEFAULT_CONFIG = "{\"edit\":[\"map\", \"address\", \"coords\", \"size\", \"zoom\", \"type\", \"mode\"]}";
 
     /** Key post fix, so you can display different help text if used a "normal" widget, and a display widget. */
     private static final String DISABLED_POSTFIX = ".disabled";
@@ -80,8 +85,19 @@ public class CmsLocationPickerWidget extends A_CmsWidget implements I_CmsADEWidg
         Locale contentLocale) {
 
         String config = getConfiguration();
-        if (!config.startsWith("{")) {
-            config = "{" + config + "}";
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(config)) {
+            config = DEFAULT_CONFIG;
+        } else {
+            if (!config.startsWith("{")) {
+                config = "{" + config + "}";
+            }
+            try {
+                // make sure the configuration is a parsable JSON string
+                JSONObject conf = new JSONObject(config);
+                config = conf.toString();
+            } catch (JSONException e) {
+                config = DEFAULT_CONFIG;
+            }
         }
         return config;
     }
