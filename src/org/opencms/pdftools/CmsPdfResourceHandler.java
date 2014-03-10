@@ -30,6 +30,7 @@ package org.opencms.pdftools;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.wrapper.CmsWrappedResource;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsResourceInitException;
 import org.opencms.main.CmsRuntimeException;
@@ -241,7 +242,12 @@ public class CmsPdfResourceHandler implements I_CmsResourceInit {
         CmsResource pdf = linkObj.getPdfResource();
         CmsFile pdfFile = cms.readFile(pdf);
         CmsPdfThumbnailGenerator thumbnailGenerator = new CmsPdfThumbnailGenerator();
-        String cacheName = m_thumbnailCache.getCacheName(pdfFile, options + ";" + linkObj.getFormat());
+        // use a wrapped resource because we want the cache to store files with the correct (image file) extensions
+        CmsWrappedResource wrapperWithImageExtension = new CmsWrappedResource(pdfFile);
+        wrapperWithImageExtension.setRootPath(pdfFile.getRootPath() + "." + linkObj.getFormat());
+        String cacheName = m_thumbnailCache.getCacheName(wrapperWithImageExtension.getResource(), options
+            + ";"
+            + linkObj.getFormat());
         byte[] imageData = m_thumbnailCache.getCacheContent(cacheName);
         if (imageData == null) {
             imageData = thumbnailGenerator.generateThumbnail(

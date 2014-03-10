@@ -102,13 +102,18 @@ public class CmsPdfThumbnailGenerator {
             PdfPageData pageData = decoder.getPdfPageData();
             double aspectRatio = (pageData.getCropBoxWidth(1 + pageIndex) * 1.0)
                 / pageData.getCropBoxHeight(1 + pageIndex);
+            int rotation = pageData.getRotation(1 + pageIndex);
+            if ((rotation == 90) || (rotation == 270)) {
+                // landscape 
+                aspectRatio = 1 / aspectRatio;
+            }
 
             if ((boxWidth < 0) && (boxHeight < 0)) {
                 throw new IllegalArgumentException("At least one of width / height must be positive!");
             } else if ((boxWidth < 0) && (boxHeight > 0)) {
-                boxWidth = (int)Math.ceil(aspectRatio * boxHeight);
+                boxWidth = (int)Math.round(aspectRatio * boxHeight);
             } else if ((boxWidth > 0) && (boxHeight < 0)) {
-                boxHeight = (int)Math.ceil(boxWidth / aspectRatio);
+                boxHeight = (int)Math.round(boxWidth / aspectRatio);
             }
 
             // calculateDimensions only takes integers, but only their ratio matters, we multiply the box width with a big number 
@@ -119,12 +124,7 @@ public class CmsPdfThumbnailGenerator {
                 fakePixelHeight,
                 boxWidth,
                 boxHeight);
-
-            double widthInInches = pageFormat.getWidth() / POINTS_PER_INCH;
-            double dpi = unpaddedThumbnailDimensions[0] / widthInInches;
-            decoder.getDPIFactory().setDpi((float)dpi);
             decoder.decodePage(1 + pageIndex);
-
             BufferedImage pageImage = decoder.getPageAsImage(1 + pageIndex);
             BufferedImage paddedImage = new BufferedImage(boxWidth, boxHeight, BufferedImage.TYPE_3BYTE_BGR);
 
