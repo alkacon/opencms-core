@@ -46,34 +46,14 @@ public class CmsLocationSuggestOracle extends SuggestOracle {
         /** The address. */
         private String m_address;
 
-        /** The latitude. */
-        private float m_latitude;
-
-        /** The longitude. */
-        private float m_longitude;
-
         /**
          * Constructor.<p>
          * 
          * @param address the address
-         * @param latitude the latitude
-         * @param longitude the longitude
          */
-        public LocationSuggestion(String address, float latitude, float longitude) {
+        public LocationSuggestion(String address) {
 
             m_address = address;
-            m_latitude = latitude;
-            m_longitude = longitude;
-        }
-
-        /**
-         * Returns the address.<p>
-         * 
-         * @return the address
-         */
-        public String getAddress() {
-
-            return m_address;
         }
 
         /**
@@ -81,27 +61,7 @@ public class CmsLocationSuggestOracle extends SuggestOracle {
          */
         public String getDisplayString() {
 
-            return getAddress();
-        }
-
-        /**
-         * Returns the latitude.<p>
-         * 
-         * @return the latitude
-         */
-        public float getLatitude() {
-
-            return m_latitude;
-        }
-
-        /**
-         * Returns the longitude.<p>
-         * 
-         * @return the longitude
-         */
-        public float getLongitude() {
-
-            return m_longitude;
+            return m_address;
         }
 
         /**
@@ -109,29 +69,36 @@ public class CmsLocationSuggestOracle extends SuggestOracle {
          */
         public String getReplacementString() {
 
-            return getAddress();
+            return m_address;
         }
 
     }
 
+    /** The location controller. */
+    private CmsLocationController m_controller;
+
     /** The google geocoder instance. */
     private JavaScriptObject m_geocoder;
+
+    /**
+     * Constructor.<p>
+     * 
+     * @param controller the location controller
+     */
+    public CmsLocationSuggestOracle(CmsLocationController controller) {
+
+        m_controller = controller;
+    }
 
     /**
      * Adds a location suggestion to the list.<p>
      * 
      * @param suggestions the suggestions list
      * @param address the address
-     * @param latitude the latitude
-     * @param longitude the longitude
      */
-    private static void addSuggestion(
-        List<LocationSuggestion> suggestions,
-        String address,
-        float latitude,
-        float longitude) {
+    private static void addSuggestion(List<LocationSuggestion> suggestions, String address) {
 
-        suggestions.add(new LocationSuggestion(address, latitude, longitude));
+        suggestions.add(new LocationSuggestion(address));
     }
 
     /**
@@ -162,26 +129,31 @@ public class CmsLocationSuggestOracle extends SuggestOracle {
     @Override
     public native void requestSuggestions(final Request request, final Callback callback) /*-{
                                                                                           var query = request.@com.google.gwt.user.client.ui.SuggestOracle.Request::getQuery()();
+                                                                                          var controller=this.@org.opencms.gwt.client.ui.input.location.CmsLocationSuggestOracle::m_controller;
+                                                                                          var pos=controller.@org.opencms.gwt.client.ui.input.location.CmsLocationController::getCurrentPosition()();
                                                                                           if (this.@org.opencms.gwt.client.ui.input.location.CmsLocationSuggestOracle::m_geocoder == null) {
-                                                                                          this.@org.opencms.gwt.client.ui.input.location.CmsLocationSuggestOracle::m_geocoder = new $wnd.google.maps.Geocoder();
+                                                                                          this.@org.opencms.gwt.client.ui.input.location.CmsLocationSuggestOracle::m_geocoder = new $wnd.google.maps.places.AutocompleteService();
                                                                                           }
                                                                                           this.@org.opencms.gwt.client.ui.input.location.CmsLocationSuggestOracle::m_geocoder
-                                                                                          .geocode(
+                                                                                          .getPlacePredictions(
                                                                                           {
-                                                                                          'address' : query
+                                                                                          'input' : query,
+                                                                                          'location' : pos,
+                                                                                          'radius' : 10000
                                                                                           },
                                                                                           function(results, status) {
                                                                                           var suggestions = @org.opencms.gwt.client.ui.input.location.CmsLocationSuggestOracle::createSuggestList()();
                                                                                           // check to see if we have at least one valid address
                                                                                           if (results
-                                                                                          && (status == $wnd.google.maps.GeocoderStatus.OK)) {
+                                                                                          && (status == $wnd.google.maps.places.PlacesServiceStatus.OK)) {
                                                                                           for (var i = 0; i < results.length; i++) {
-                                                                                          var lat = results[i].geometry.location
-                                                                                          .lat();
-                                                                                          var lng = results[i].geometry.location
-                                                                                          .lng();
-                                                                                          var address = results[i].formatted_address;
-                                                                                          @org.opencms.gwt.client.ui.input.location.CmsLocationSuggestOracle::addSuggestion(Ljava/util/List;Ljava/lang/String;FF)(suggestions, address, lat, lng);
+                                                                                          var lat = 0; 
+                                                                                          //results[i].geometry.location.lat();
+                                                                                          var lng =0; 
+                                                                                          //results[i].geometry.location.lng();
+                                                                                          var address = results[i].description; 
+                                                                                          //results[i].formatted_address;
+                                                                                          @org.opencms.gwt.client.ui.input.location.CmsLocationSuggestOracle::addSuggestion(Ljava/util/List;Ljava/lang/String;)(suggestions, address);
                                                                                           }
                                                                                           }
                                                                                           @org.opencms.gwt.client.ui.input.location.CmsLocationSuggestOracle::respond(Lcom/google/gwt/user/client/ui/SuggestOracle$Request;Ljava/util/List;Lcom/google/gwt/user/client/ui/SuggestOracle$Callback;)(request, suggestions, callback);

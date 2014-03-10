@@ -29,7 +29,6 @@ package org.opencms.gwt.client.ui.input.location;
 
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsPopup;
-import org.opencms.gwt.client.ui.input.location.CmsLocationSuggestOracle.LocationSuggestion;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -51,7 +50,7 @@ public class CmsLocationController {
     private static boolean loadingApi;
 
     /** The URI of google maps API. */
-    private static final String MAPS_URI = "https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false";
+    private static final String MAPS_URI = "https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places";
 
     /** The callback to be executed once the API is loaded. */
     private static List<Command> onApiReady = new ArrayList<Command>();
@@ -238,6 +237,17 @@ public class CmsLocationController {
     }
 
     /**
+     * Return a maps API position object according the the current location value.<p>
+     * 
+     * @return the position object
+     */
+    protected native JavaScriptObject getCurrentPosition()/*-{
+                                                          var val = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_value;
+                                                          return new $wnd.google.maps.LatLng(val.lat, val.lng);
+
+                                                          }-*/;
+
+    /**
      * Called on address value change.<p>
      * 
      * @param address the new address
@@ -271,9 +281,7 @@ public class CmsLocationController {
      */
     protected void onAddressChange(SuggestOracle.Suggestion suggestion) {
 
-        LocationSuggestion location = (LocationSuggestion)suggestion;
-        m_value.setAddress(location.getDisplayString());
-        setPosition(location.getLatitude(), location.getLongitude(), true, false);
+        onAddressChange(suggestion.getDisplayString());
     }
 
     /**
@@ -410,7 +418,7 @@ public class CmsLocationController {
             m_popup = new CmsPopup(Messages.get().key(Messages.GUI_LOCATION_DIALOG_TITLE_0), 1020);
             m_popupContent = new CmsLocationPopupContent(
                 this,
-                new CmsLocationSuggestOracle(),
+                new CmsLocationSuggestOracle(this),
                 getModeItems(),
                 getTypeItems(),
                 getZoomItems());
@@ -507,17 +515,6 @@ public class CmsLocationController {
         }
 
     }
-
-    /**
-     * Return a maps API position object according the the current location value.<p>
-     * 
-     * @return the position object
-     */
-    private native JavaScriptObject getCurrentPosition()/*-{
-                                                        var val = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_value;
-                                                        return new $wnd.google.maps.LatLng(val.lat, val.lng);
-
-                                                        }-*/;
 
     /**
      * Returns the value display string.<p>
