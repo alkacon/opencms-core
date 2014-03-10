@@ -211,6 +211,17 @@ public class CmsLocationPopupContent extends Composite {
     }
 
     /**
+     * On mode value change.<p>
+     * 
+     * @param event the change event
+     */
+    @UiHandler("m_modeField")
+    public void onModeChange(ValueChangeEvent<String> event) {
+
+        m_controller.onModeChange(event.getValue());
+    }
+
+    /**
      * On type value change.<p>
      * 
      * @param event the change event
