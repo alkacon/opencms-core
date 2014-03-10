@@ -1151,14 +1151,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
      */
     public boolean isSearchable(I_CmsXmlContentValue value) {
 
-        // check for name configured in the annotations
+        // check for name configured in the search settings annotation
         Boolean searchSetting = m_searchSettings.get(value.getName());
-        I_CmsXmlContentHandler rootHandler = value.getDocument().getContentDefinition().getContentHandler();
-        Boolean rootSearchSetting = rootHandler.getSearchSettings().get(CmsXmlUtils.removeXpath(value.getPath()));
-        if (rootSearchSetting != null) {
-            searchSetting = rootSearchSetting;
-        }
-        // if no annotation has been found, use default for value
+        // if no search setting annotation has been found, use default for value
         return (searchSetting == null) ? value.isSearchable() : searchSetting.booleanValue();
     }
 
