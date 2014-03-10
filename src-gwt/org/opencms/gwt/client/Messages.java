@@ -274,9 +274,6 @@ public final class Messages {
     public static final String GUI_LOCATION_DYNAMIC_0 = "GUI_LOCATION_DYNAMIC_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_LOCATION_HEIGHT_0 = "GUI_LOCATION_HEIGHT_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_LOCATION_HYBRID_0 = "GUI_LOCATION_HYBRID_0";
 
     /** Message constant for key in the resource bundle. */
@@ -305,9 +302,6 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOCATION_TYPE_0 = "GUI_LOCATION_TYPE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_LOCATION_WIDTH_0 = "GUI_LOCATION_WIDTH_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOCATION_ZOOM_0 = "GUI_LOCATION_ZOOM_0";
