@@ -30,16 +30,19 @@ package org.opencms.pdftools;
 import org.opencms.loader.CmsImageScaler;
 
 import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.awt.print.PageFormat;
 import java.io.InputStream;
-import java.util.List;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.util.ImageIOUtil;
+
+import org.jpedal.PdfDecoder;
+import org.jpedal.fonts.FontMappings;
+import org.jpedal.objects.PdfPageData;
 
 /**
  * Class for generating thumbnails from PDF documents using the PDFBox library.<p>
@@ -51,6 +54,10 @@ public class CmsPdfThumbnailGenerator {
 
     /** Points per inch. */
     private static final float POINTS_PER_INCH = 72.0f;
+
+    static {
+        FontMappings.setFontReplacements();
+    }
 
     /** 
      * Generates the image data for a thumbnail from a PDF.<p>
@@ -66,7 +73,7 @@ public class CmsPdfThumbnailGenerator {
      * @param pdfInputStream the input stream for reading the PDF data 
      * @param boxWidth the width of the box in which the thumbnail should fit 
      * @param boxHeight the height of the box in which the thumbnail should fit 
-     * @param format the image format (png, jpg, gif) 
+     * @param imageFormat the image format (png, jpg, gif) 
      * @param pageIndex the index of the page for which to render the thumbnail (starting at 0)
      *  
      * @return the image data for the thumbnail, in the given image format 
@@ -76,73 +83,76 @@ public class CmsPdfThumbnailGenerator {
         InputStream pdfInputStream,
         int boxWidth,
         int boxHeight,
-        String format,
+        String imageFormat,
         int pageIndex) throws Exception {
 
-        try {
+        PdfDecoder decoder = new PdfDecoder(true);
 
-            PDDocument doc = PDDocument.load(pdfInputStream);
-            List<?> pages = doc.getDocumentCatalog().getAllPages();
-            if (pageIndex >= pages.size()) {
-                pageIndex = pages.size() - 1;
+        try {
+            decoder.openPdfFileFromInputStream(pdfInputStream, false);
+            int numPages = decoder.getPageCount();
+            if (pageIndex >= numPages) {
+                pageIndex = numPages - 1;
             } else if (pageIndex < 0) {
                 pageIndex = 0;
             }
-            PDPage page = (PDPage)pages.get(pageIndex);
-            BufferedImage pageThumbnail = generateThumbnailForPage(page, boxWidth, boxHeight);
+
+            PageFormat pageFormat = decoder.getPageFormat(1 + pageIndex);
+            // width/height are in points (1/72 of an inch) 
+            PdfPageData pageData = decoder.getPdfPageData();
+            double aspectRatio = (pageData.getCropBoxWidth(1 + pageIndex) * 1.0)
+                / pageData.getCropBoxHeight(1 + pageIndex);
+
+            if ((boxWidth < 0) && (boxHeight < 0)) {
+                throw new IllegalArgumentException("At least one of width / height must be positive!");
+            } else if ((boxWidth < 0) && (boxHeight > 0)) {
+                boxWidth = (int)Math.ceil(aspectRatio * boxHeight);
+            } else if ((boxWidth > 0) && (boxHeight < 0)) {
+                boxHeight = (int)Math.ceil(boxWidth / aspectRatio);
+            }
+
+            // calculateDimensions only takes integers, but only their ratio matters, we multiply the box width with a big number 
+            int fakePixelWidth = (int)(FAKE_PIXEL_MULTIPLIER * aspectRatio);
+            int fakePixelHeight = (FAKE_PIXEL_MULTIPLIER);
+            int[] unpaddedThumbnailDimensions = CmsImageScaler.calculateDimension(
+                fakePixelWidth,
+                fakePixelHeight,
+                boxWidth,
+                boxHeight);
+
+            double widthInInches = pageFormat.getWidth() / POINTS_PER_INCH;
+            double dpi = unpaddedThumbnailDimensions[0] / widthInInches;
+            decoder.getDPIFactory().setDpi((float)dpi);
+            decoder.decodePage(1 + pageIndex);
+
+            BufferedImage pageImage = decoder.getPageAsImage(1 + pageIndex);
+            BufferedImage paddedImage = new BufferedImage(boxWidth, boxHeight, BufferedImage.TYPE_3BYTE_BGR);
+
+            Graphics2D g = paddedImage.createGraphics();
+            int uw = unpaddedThumbnailDimensions[0];
+            int uh = unpaddedThumbnailDimensions[1];
+
+            // Scale to fit in  the box 
+            AffineTransformOp op = new AffineTransformOp(AffineTransform.getScaleInstance(
+                (uw * 1.0) / pageImage.getWidth(),
+                (uh * 1.0) / pageImage.getHeight()), AffineTransformOp.TYPE_BILINEAR);
+
+            g.setColor(Color.WHITE);
+            // Fill box image with white, then draw the image data for the PDF in the middle 
+            g.fillRect(0, 0, paddedImage.getWidth(), paddedImage.getHeight());
+            //g.drawImage(pageImage, (boxWidth - pageImage.getWidth()) / 2, (boxHeight - pageImage.getHeight()) / 2, null);
+            g.drawImage(pageImage, op, (boxWidth - uw) / 2, (boxHeight - uh) / 2);
+            BufferedImage pageThumbnail = paddedImage;
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            ImageIOUtil.writeImage(pageThumbnail, format, out);
+            ImageIOUtil.writeImage(pageThumbnail, imageFormat, out);
             byte[] imageData = out.toByteArray();
             return imageData;
         } finally {
+            if (decoder.isOpen()) {
+                decoder.closePdfFile();
+            }
             pdfInputStream.close();
+
         }
     }
-
-    /**
-     * Generates a thumbnail for a page object as a BufferedImage.<p>
-     * 
-     * @param page the page to render as a thumbnail 
-     * @param boxWidth the width of the box in which the thumbnail should fit 
-     * @param boxHeight the height of the box in which the thumbnail should fit 
-     * @return the image object representing the thumbnail 
-     * 
-     * @throws Exception if something goes wrong 
-     */
-    protected BufferedImage generateThumbnailForPage(PDPage page, int boxWidth, int boxHeight) throws Exception {
-
-        PDRectangle box = page.findCropBox();
-
-        double aspectRatio = box.getWidth() / box.getHeight();
-        if ((boxWidth < 0) && (boxHeight < 0)) {
-            throw new IllegalArgumentException("At least one of width / height must be positive!");
-        } else if ((boxWidth < 0) && (boxHeight > 0)) {
-            boxWidth = (int)Math.ceil(aspectRatio * boxHeight);
-        } else if ((boxWidth > 0) && (boxHeight < 0)) {
-            boxHeight = (int)Math.ceil(boxWidth / aspectRatio);
-        }
-
-        // calculateDimensions only takes integers, but only their ratio matters, we multiply the box width with a big number 
-        int fakePixelWidth = (int)(FAKE_PIXEL_MULTIPLIER * box.getWidth());
-        int fakePixelHeight = (int)(FAKE_PIXEL_MULTIPLIER * box.getHeight());
-        int[] unpaddedThumbnailDimensions = CmsImageScaler.calculateDimension(
-            fakePixelWidth,
-            fakePixelHeight,
-            boxWidth,
-            boxHeight);
-
-        float widthInInches = box.getWidth() / POINTS_PER_INCH;
-        int dpi = (int)(unpaddedThumbnailDimensions[0] / widthInInches);
-        // The PDFBox API only allows integers for DPI, so the actual dimensions of the rendered image 
-        // will be smaller than the dimensions from unpaddedThumbnailDimensions.
-        BufferedImage image = page.convertToImage(BufferedImage.TYPE_3BYTE_BGR, dpi);
-        BufferedImage paddedImage = new BufferedImage(boxWidth, boxHeight, BufferedImage.TYPE_3BYTE_BGR);
-        Graphics g = paddedImage.createGraphics();
-        g.setColor(Color.WHITE);
-        // Fill box image with white, then draw the image data for the PDF in the middle 
-        g.fillRect(0, 0, paddedImage.getWidth(), paddedImage.getHeight());
-        g.drawImage(image, (boxWidth - image.getWidth()) / 2, (boxHeight - image.getHeight()) / 2, null);
-        return paddedImage;
-    }
-
 }

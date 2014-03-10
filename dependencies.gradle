@@ -152,4 +152,5 @@ dependencies {
     distribution group: 'org.xhtmlrenderer', name: 'flying-saucer-pdf', version: '9.0.4'
     distribution group: 'com.lowagie', name: 'itext', version: '2.1.7'
     distribution files("lib/runtime/xhtml-dtds-1.0.jar")
+    distribution files("lib/runtime/jpedal_lgpl.jar")
 }
