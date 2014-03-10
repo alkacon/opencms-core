@@ -139,14 +139,14 @@ public class TestCmsXmlContentSearchSettings extends OpenCmsTestCase {
             "Image[1]/Description[1]"});
 
         List<String> nogoods = new ArrayList<String>();
-
+        I_CmsXmlContentHandler contentHandler = xmlContent.getHandler();
         // loop over locales
         for (Locale locale : xmlContent.getLocales()) {
             // loop over the available element paths of the current content locale
             List<String> paths = xmlContent.getNames(locale);
             for (String xpath : paths) {
                 I_CmsXmlContentValue value = xmlContent.getValue(xpath, locale);
-                if (value.getContentDefinition().getContentHandler().isSearchable(value)) {
+                if (contentHandler.isSearchable(value)) {
                     // value is search-able and the extraction is not empty, so added to the textual content
                     assertTrue("This value should be in the list of goods", goods.contains(value.getPath()));
                 } else {
