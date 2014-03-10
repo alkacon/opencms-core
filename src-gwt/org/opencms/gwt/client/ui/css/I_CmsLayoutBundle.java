@@ -1455,13 +1455,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String fields();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
         String hasPreview();
 
         /** 
@@ -1477,13 +1470,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String inputContainer();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String mainPanel();
 
         /** 
          * Access method.<p>
@@ -1517,6 +1503,20 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String locationField();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String locationFields();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String locationMainPanel();
 
         /** 
          * Access method.<p>

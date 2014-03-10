@@ -10,6 +10,12 @@
 	height: 18px;
 	font-size: 12px;
 }
+
+div.locationFields div.locationField > div:first-child{
+	border-color: #7788AA;
+	background: #FFFFFF;
+}
+
 .hasError .widget.galleryField .fieldBox, .hasError .widget.locationField .displayBox{
 	border-color: value("constants.css.borderColorHighlight");
 }
@@ -25,7 +31,7 @@
 .emptyValue .widget.galleryField div.imagePreview *, .emptyValue .widget.locationField div.mapPreview *{
 	visibility: hidden;
 }
-.widget.galleryField input[type="text"], .widget.locationField input[type="text"]{
+.widget.galleryField input[type="text"], .widget.locationField input[type="text"], div.locationFields div input[type="text"]{
 	font-family: value("constants.css.fontFamily");
 	border-radius: value("constants.css.borderRadius");
 	color: value("constants.css.textColor");
@@ -42,7 +48,7 @@
 }
 
 /** joined vendor prefix style, for better fall back behavior */
-.resourceInfo > div > div:first-child, div.locationInfo{
+.resourceInfo > div > div:first-child, div.locationInfo, div.locationMainPanel{
 	background-color: value("constants.css.gradientFormDialogColor");
 	background-image: value("constants.css.gradientFormDialogIE9");
 	background-image: literal("-moz-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");

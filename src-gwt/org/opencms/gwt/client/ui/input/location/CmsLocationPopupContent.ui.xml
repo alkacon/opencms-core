@@ -3,16 +3,16 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:cms="urn:import:org.opencms.gwt.client.ui.input">
 	<ui:with field="main" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
-	<g:HTMLPanel ui:field="m_panel" styleName="{main.locationPickerCss.mainPanel} {main.generalCss.clearFix}">
+	<g:HTMLPanel ui:field="m_panel" styleName="{main.locationPickerCss.locationMainPanel} {main.generalCss.clearFix}">
 		<div ui:field="m_mapCanvas" class="{main.locationPickerCss.mapCanvas}"></div>
-		<div  class="{main.locationPickerCss.fields}">
-			<p><g:Label ui:field="m_addressLabel" /><cms:CmsSuggestBox ui:field="m_addressField" /></p>
-			<p><g:Label ui:field="m_longitudeLabel" /><cms:CmsTextBox ui:field="m_longitudeField" /></p>
-			<p><g:Label ui:field="m_latitudeLabel" /><cms:CmsTextBox ui:field="m_latitudeField" /></p>
-			<p><g:Label ui:field="m_sizeLabel" /><cms:CmsTextBox ui:field="m_widthField" addStyleNames="{main.locationPickerCss.inlineField}" />&nbsp;x&nbsp;<cms:CmsTextBox ui:field="m_heightField" addStyleNames="{main.locationPickerCss.inlineField}" /></p>
-			<p><g:Label ui:field="m_zoomLabel" /><cms:CmsSelectBox ui:field="m_zoomField" /></p>
-			<p><g:Label ui:field="m_typeLabel" /><cms:CmsSelectBox ui:field="m_typeField" /></p>
-			<p><g:Label ui:field="m_modeLabel" /><cms:CmsSelectBox ui:field="m_modeField" /></p>
+		<div  class="{main.locationPickerCss.locationFields}">
+			<div><g:Label ui:field="m_addressLabel" /><div class="{main.locationPickerCss.locationField}"><cms:CmsSuggestBox ui:field="m_addressField" /></div></div>
+			<div><g:Label ui:field="m_longitudeLabel" /><cms:CmsTextBox ui:field="m_longitudeField" addStyleNames="{main.locationPickerCss.locationField}"/></div>
+			<div><g:Label ui:field="m_latitudeLabel" /><cms:CmsTextBox ui:field="m_latitudeField" addStyleNames="{main.locationPickerCss.locationField}"/></div>
+			<div><g:Label ui:field="m_sizeLabel" /><cms:CmsTextBox ui:field="m_widthField" addStyleNames="{main.locationPickerCss.inlineField} {main.locationPickerCss.locationField}" />&nbsp;x&nbsp;<cms:CmsTextBox ui:field="m_heightField" addStyleNames="{main.locationPickerCss.inlineField} {main.locationPickerCss.locationField}" /></div>
+			<div><g:Label ui:field="m_zoomLabel" /><cms:CmsSelectBox ui:field="m_zoomField" addStyleNames="{main.locationPickerCss.locationField}"/></div>
+			<div><g:Label ui:field="m_typeLabel" /><cms:CmsSelectBox ui:field="m_typeField" addStyleNames="{main.locationPickerCss.locationField}"/></div>
+			<div><g:Label ui:field="m_modeLabel" /><cms:CmsSelectBox ui:field="m_modeField" addStyleNames="{main.locationPickerCss.locationField}"/></div>
 		</div>
 	</g:HTMLPanel>
 </ui:UiBinder> 

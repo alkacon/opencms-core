@@ -1,20 +1,20 @@
-div.mainPanel div.mapCanvas {
+div.locationMainPanel div.mapCanvas {
 	float: left;
 	height: 400px;
 	width: 600px;
 }
 
-div.mainPanel div.fields {
+div.locationMainPanel div.locationFields {
 	float: left;
 	height: 400px;
 	width: 400px;
 }
 
-div.fields>p {
+div.locationFields>div {
 	margin: 5px;
 }
 
-div.fields div.inlineField {
+div.locationFields div.inlineField {
 	display: inline-block;
 	width: 60px;
 	vertical-align: middle;
