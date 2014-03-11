@@ -27,8 +27,8 @@
 
 package org.opencms.workflow;
 
-import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.ade.publish.shared.CmsWorkflow;
+import org.opencms.file.CmsResource;
 
 import java.util.List;
 
@@ -41,14 +41,14 @@ public class CmsWorkflowResources {
     private CmsWorkflow m_overrideWorkflow;
 
     /** The workflow resources. */
-    private List<CmsPublishResource> m_workflowResources;
+    private List<CmsResource> m_workflowResources;
 
     /** 
      * Creates new instance.<p>
      * 
      * @param workflowResources the workflow resources 
      */
-    public CmsWorkflowResources(List<CmsPublishResource> workflowResources) {
+    public CmsWorkflowResources(List<CmsResource> workflowResources) {
 
         this(workflowResources, null);
     }
@@ -59,7 +59,7 @@ public class CmsWorkflowResources {
      * @param workflowResources the workflow resources
      * @param overrideWorkflow the 
      */
-    public CmsWorkflowResources(List<CmsPublishResource> workflowResources, CmsWorkflow overrideWorkflow) {
+    public CmsWorkflowResources(List<CmsResource> workflowResources, CmsWorkflow overrideWorkflow) {
 
         m_workflowResources = workflowResources;
         m_overrideWorkflow = overrideWorkflow;
@@ -80,7 +80,7 @@ public class CmsWorkflowResources {
      *
      * @return the workflowResources
      */
-    public List<CmsPublishResource> getWorkflowResources() {
+    public List<CmsResource> getWorkflowResources() {
 
         return m_workflowResources;
     }

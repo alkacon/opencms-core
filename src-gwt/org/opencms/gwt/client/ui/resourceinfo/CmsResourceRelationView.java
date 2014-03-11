@@ -215,7 +215,11 @@ public class CmsResourceRelationView extends Composite {
                                 editableData.setElementLanguage(CmsCoreProvider.get().getLocale());
                                 editableData.setStructureId(currentRelationBean.getStructureId());
                                 editableData.setSitePath(currentRelationBean.getSitePath());
-                                FormElement form = CmsContentEditorDialog.generateForm(editableData, false, "_blank");
+                                FormElement form = CmsContentEditorDialog.generateForm(
+                                    editableData,
+                                    false,
+                                    "_blank",
+                                    null);
                                 RootPanel.get().getElement().appendChild(form);
                                 form.submit();
                                 if (m_popup != null) {
