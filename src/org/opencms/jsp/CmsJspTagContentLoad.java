@@ -102,6 +102,9 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
     /** Reference to the currently selected locale. */
     private Locale m_locale;
 
+    /** Post-create handler class. */
+    private String m_postCreateHandler;
+
     /**
      * Empty constructor, required for JSP tags.<p> 
      */
@@ -342,11 +345,14 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
                     directEditButtons = m_directEditFollowButtons;
                 }
 
-                m_directEditOpen = CmsJspTagEditable.startDirectEdit(pageContext, new CmsDirectEditParams(
+                CmsDirectEditParams params = new CmsDirectEditParams(
                     m_resourceName,
                     directEditButtons,
                     m_directEditMode,
-                    m_directEditLinkForNew));
+                    m_directEditLinkForNew);
+                params.setPostCreateHandler(m_postCreateHandler);
+                params.setId(m_contentInfoBean.getId());
+                m_directEditOpen = CmsJspTagEditable.startDirectEdit(pageContext, params);
             }
 
         } else {
@@ -419,6 +425,16 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
             m_locale = CmsLocaleManager.getLocale(locale);
             m_contentLocale = m_locale;
         }
+    }
+
+    /** 
+     * Sets the post-create handler class name.<p>
+     * 
+     * @param postCreateHandler the post-create handler class name 
+     */
+    public void setPostCreateHandler(String postCreateHandler) {
+
+        m_postCreateHandler = postCreateHandler;
     }
 
     /**

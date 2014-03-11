@@ -1056,22 +1056,26 @@ public final class CmsDomUtil {
             && !CmsDomUtil.hasClass("cms-editable", sibling)
             && !CmsDomUtil.hasClass("cms-editable-end", sibling)) {
             // only consider element nodes
+
             if ((sibling.getNodeType() == Node.ELEMENT_NODE)
                 && !sibling.getTagName().equalsIgnoreCase(Tag.script.name())) {
-                CmsPositionBean siblingPos = CmsPositionBean.generatePositionInfo(sibling);
-                result.setLeft(((result.getLeft() == dummy) || (siblingPos.getLeft() < result.getLeft()))
-                ? siblingPos.getLeft()
-                : result.getLeft());
-                result.setTop(((result.getTop() == dummy) || (siblingPos.getTop() < result.getTop()))
-                ? siblingPos.getTop()
-                : result.getTop());
-                result.setHeight(((result.getTop() + result.getHeight()) > (siblingPos.getTop() + siblingPos.getHeight()))
-                ? result.getHeight()
-                : (siblingPos.getTop() + siblingPos.getHeight()) - result.getTop());
-                result.setWidth(((result.getLeft() + result.getWidth()) > (siblingPos.getLeft() + siblingPos.getWidth()))
-                ? result.getWidth()
-                : (siblingPos.getLeft() + siblingPos.getWidth()) - result.getLeft());
+                if (!CmsDomUtil.hasClass("cms-editable-skip", sibling)) {
+                    CmsPositionBean siblingPos = CmsPositionBean.generatePositionInfo(sibling);
+                    result.setLeft(((result.getLeft() == dummy) || (siblingPos.getLeft() < result.getLeft()))
+                    ? siblingPos.getLeft()
+                    : result.getLeft());
+                    result.setTop(((result.getTop() == dummy) || (siblingPos.getTop() < result.getTop()))
+                    ? siblingPos.getTop()
+                    : result.getTop());
+                    result.setHeight(((result.getTop() + result.getHeight()) > (siblingPos.getTop() + siblingPos.getHeight()))
+                    ? result.getHeight()
+                    : (siblingPos.getTop() + siblingPos.getHeight()) - result.getTop());
+                    result.setWidth(((result.getLeft() + result.getWidth()) > (siblingPos.getLeft() + siblingPos.getWidth()))
+                    ? result.getWidth()
+                    : (siblingPos.getLeft() + siblingPos.getWidth()) - result.getLeft());
+                }
             }
+
             sibling = sibling.getNextSiblingElement();
         }
         if ((result.getTop() == dummy) && (result.getLeft() == dummy)) {

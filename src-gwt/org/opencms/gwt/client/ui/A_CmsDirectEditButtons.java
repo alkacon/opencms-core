@@ -29,6 +29,7 @@ package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.CmsEditableDataJSO;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.CmsNewLinkFunctionTable;
 import org.opencms.gwt.client.util.CmsPositionBean;
 import org.opencms.util.CmsStringUtil;
 
@@ -82,7 +83,7 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
                 onClickEdit();
             }
             if (source == m_new) {
-                onClickNew();
+                onClickNew(true);
             }
         }
 
@@ -173,6 +174,13 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
 
             String jsonText = editable.getAttribute("rel");
             m_editableData = CmsEditableDataJSO.parseEditableData(jsonText);
+            CmsNewLinkFunctionTable.INSTANCE.setHandler(m_editableData.getContextId(), new Runnable() {
+
+                public void run() {
+
+                    A_CmsDirectEditButtons.this.onClickNew(false);
+                }
+            });
 
             MouseHandler handler = new MouseHandler();
             addMouseOutHandler(handler);
@@ -341,8 +349,10 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
 
     /**
      * This method should be executed when the "new" direct edit button is clicked.<p>
+     * 
+     * @param askCreateMode true if the user should be asked for the 'content create mode'
      */
-    protected abstract void onClickNew();
+    protected abstract void onClickNew(boolean askCreateMode);
 
     /**
      * Removes the highlighting and option bar.<p>

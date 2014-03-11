@@ -62,7 +62,7 @@ public class CmsEditRedirectMenuEntry extends A_CmsSitemapMenuEntry {
         editableData.setElementLanguage("");
         editableData.setStructureId(getHoverbar().getEntry().getId());
         editableData.setSitePath(getHoverbar().getEntry().getSitePath());
-        CmsContentEditorDialog.get().openEditDialog(editableData, false, new I_CmsContentEditorHandler() {
+        CmsContentEditorDialog.get().openEditDialog(editableData, false, null, new I_CmsContentEditorHandler() {
 
             /**
              * @see org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler#onClose(java.lang.String, boolean)

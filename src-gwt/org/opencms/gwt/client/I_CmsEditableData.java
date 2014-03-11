@@ -36,6 +36,13 @@ import org.opencms.util.CmsUUID;
  */
 public interface I_CmsEditableData {
 
+    /** 
+     * Gets the collector context id.<p>
+     * 
+     * @return the collector context id 
+     */
+    String getContextId();
+
     /**
      * Returns the edit id.<p>
      * 
@@ -77,6 +84,13 @@ public interface I_CmsEditableData {
      * @return the no edit reason
      */
     String getNoEditReason();
+
+    /** 
+     * Gets the (fully qualified) name of the post-create handler class to use.<p>
+     * 
+     * @return the post-create handler class name 
+     */
+    String getPostCreateHandler();
 
     /**
      * Returns the site path.<p>

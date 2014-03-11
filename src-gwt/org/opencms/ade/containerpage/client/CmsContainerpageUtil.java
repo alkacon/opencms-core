@@ -373,7 +373,7 @@ public class CmsContainerpageUtil {
                     editableData.setStructureId(new CmsUUID(
                         CmsContainerpageController.getServerId(containerElement.getClientId())));
                     editableData.setSitePath(containerElement.getSitePath());
-                    getController().getContentEditorHandler().openDialog(editableData, false, null);
+                    getController().getContentEditorHandler().openDialog(editableData, false, null, null);
                     ((CmsPushButton)event.getSource()).clearHoverState();
                 }
             });

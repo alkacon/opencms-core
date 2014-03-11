@@ -106,6 +106,18 @@ public final class Messages {
     public static final String GUI_CLOSE_0 = "GUI_CLOSE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CREATE_MODE_ASK_0 = "GUI_CREATE_MODE_ASK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CREATE_MODE_BUTTON_COPY_0 = "GUI_CREATE_MODE_BUTTON_COPY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CREATE_MODE_BUTTON_NEW_0 = "GUI_CREATE_MODE_BUTTON_NEW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CREATE_MODE_CAPTION_0 = "GUI_CREATE_MODE_CAPTION_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_DATE_AM_0 = "GUI_DATE_AM_0";
 
     /** Message constant for key in the resource bundle. */
@@ -553,6 +565,7 @@ public final class Messages {
     public static final String GUI_SHOW_PREVIEW_0 = "GUI_SHOW_PREVIEW_0";
 
     /** Message constant for key in the resource bundle. */
+
     public static final String GUI_TARGETS_EMPTY_0 = "GUI_TARGETS_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */

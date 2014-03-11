@@ -525,12 +525,16 @@ public final class CmsContentEditor extends EditorBase {
      * @param entityId the entity id
      * @param newLink the new link
      * @param modelFileId  the model file id
+     * @param mode the content creation mode 
+     * @param postCreateHandler the post-create handler class name (optional) 
      * @param callback the callback
      */
     public void loadDefinition(
         final String entityId,
         final String newLink,
         final CmsUUID modelFileId,
+        final String mode,
+        final String postCreateHandler,
         final I_CmsSimpleCallback<CmsContentDefinition> callback) {
 
         CmsRpcAction<CmsContentDefinition> action = new CmsRpcAction<CmsContentDefinition>() {
@@ -539,7 +543,15 @@ public final class CmsContentEditor extends EditorBase {
             public void execute() {
 
                 start(0, true);
-                getService().loadDefinition(entityId, newLink, modelFileId, CmsCoreProvider.get().getUri(), this);
+
+                getService().loadDefinition(
+                    entityId,
+                    newLink,
+                    modelFileId,
+                    CmsCoreProvider.get().getUri(),
+                    mode,
+                    postCreateHandler,
+                    this);
             }
 
             @Override
@@ -617,6 +629,8 @@ public final class CmsContentEditor extends EditorBase {
      * @param elementId the element id
      * @param newLink the new link
      * @param modelFileId the model file id
+     * @param postCreateHandler the post-create handler class (optional)  
+     * @param mode the content creation mode 
      * @param onClose the command executed on dialog close
      */
     public void openFormEditor(
@@ -625,6 +639,8 @@ public final class CmsContentEditor extends EditorBase {
         String elementId,
         String newLink,
         CmsUUID modelFileId,
+        String postCreateHandler,
+        String mode,
         Command onClose) {
 
         m_onClose = onClose;
@@ -635,6 +651,8 @@ public final class CmsContentEditor extends EditorBase {
                 CmsContentDefinition.uuidToEntityId(structureId, locale),
                 newLink,
                 modelFileId,
+                mode,
+                postCreateHandler,
                 new I_CmsSimpleCallback<CmsContentDefinition>() {
 
                     public void execute(CmsContentDefinition contentDefinition) {
@@ -1304,6 +1322,8 @@ public final class CmsContentEditor extends EditorBase {
                     definition.getReferenceResourceId().toString(),
                     definition.getNewLink(),
                     modelStructureId,
+                    null,
+                    null,
                     m_onClose);
             }
         };

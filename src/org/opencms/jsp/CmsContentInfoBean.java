@@ -27,7 +27,9 @@
 
 package org.opencms.jsp;
 
+import org.opencms.ade.contenteditor.shared.CmsEditorConstants;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 /**
  * A container to store information about a collector's result.<p>
@@ -38,6 +40,9 @@ public class CmsContentInfoBean {
 
     /** The name under which the collector info is saved in the page context. */
     public static final String PAGE_CONTEXT_ATTRIBUTE_NAME = "CollectorInfo";
+
+    /** UUID identifying the content info instance. */
+    private String m_id = (new CmsUUID()).toString();
 
     /** The default locale (as String) that is used. */
     private String m_locale;
@@ -85,6 +90,16 @@ public class CmsContentInfoBean {
     }
 
     /**
+     * Gets an id which is common to all items in a collector list.<p>
+     * 
+     * @return the id identifying the collector list 
+     */
+    public String getId() {
+
+        return m_id;
+    }
+
+    /**
      * Returns the locale used by the content loader.<p>
      *
      * @return the locale used by the content loader
@@ -92,6 +107,26 @@ public class CmsContentInfoBean {
     public String getLocale() {
 
         return m_locale;
+    }
+
+    /** 
+     * Gets the javascript: link for creating and editing a new content.<p>
+     * 
+     * @return the javascript: link for creating and editing a new content 
+     */
+    public String getNewContentLink() {
+
+        return "javascript:" + getNewContentScript();
+    }
+
+    /** 
+     * Gets the Javascript for creating and editing a new content.<p>
+     * 
+     * @return the Javascript for creating and editing a new content
+     */
+    public String getNewContentScript() {
+
+        return CmsEditorConstants.FUNCTION_CREATE_NEW + "('" + m_id + "');";
     }
 
     /**
@@ -191,7 +226,7 @@ public class CmsContentInfoBean {
      */
     public boolean isFirstOnPage() {
 
-        return m_resultIndex == ((m_pageIndex - 1) * m_pageSize) + 1;
+        return m_resultIndex == (((m_pageIndex - 1) * m_pageSize) + 1);
     }
 
     /**
@@ -211,7 +246,7 @@ public class CmsContentInfoBean {
      */
     public boolean isLastOnPage() {
 
-        return (m_resultIndex == m_pageIndex * m_pageSize) || isLastResult();
+        return (m_resultIndex == (m_pageIndex * m_pageSize)) || isLastResult();
     }
 
     /**
@@ -256,7 +291,7 @@ public class CmsContentInfoBean {
 
             int middle = m_pageNavLength / 2;
             m_pageNavStartIndex = m_pageIndex - middle;
-            m_pageNavEndIndex = m_pageNavStartIndex + m_pageNavLength - 1;
+            m_pageNavEndIndex = (m_pageNavStartIndex + m_pageNavLength) - 1;
 
             if (m_pageNavStartIndex < 1) {
                 m_pageNavStartIndex = 1;
@@ -266,7 +301,7 @@ public class CmsContentInfoBean {
 
                 // adjust end index
                 m_pageNavEndIndex = m_pageCount;
-                m_pageNavStartIndex = m_pageNavEndIndex - m_pageNavLength + 1;
+                m_pageNavStartIndex = (m_pageNavEndIndex - m_pageNavLength) + 1;
 
                 if (m_pageNavStartIndex < 1) {
                     // adjust the start index again

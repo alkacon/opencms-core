@@ -52,6 +52,12 @@ public class CmsDirectEditParams {
     /** The edit target VFS resource name. */
     protected String m_resourceName;
 
+    /** ID to identify the contentload instance. */
+    private String m_id;
+
+    /** The post-create handler class name. */
+    private String m_postCreateHandler;
+
     /**
      * Creates a new direct edit parameter set usually used for including the head HTML.<p>
      * 
@@ -125,6 +131,16 @@ public class CmsDirectEditParams {
         return m_element;
     }
 
+    /** 
+     * Gets the ID for the contentload tag instance.<p>
+     * 
+     * @return the id 
+     */
+    public String getId() {
+
+        return m_id;
+    }
+
     /**
      * Returns the link to the current page useed when closing an editor or dialog.<p>
      *
@@ -176,6 +192,16 @@ public class CmsDirectEditParams {
     }
 
     /**
+     * Gets the post-create handler class name.<p>
+     * 
+     * @return the post-create handler class name 
+     */
+    public String getPostCreateHandler() {
+
+        return m_postCreateHandler;
+    }
+
+    /**
      * Returns the edit target VFS resource name.<p>
      *
      * @return the edit target VFS resource name
@@ -183,5 +209,25 @@ public class CmsDirectEditParams {
     public String getResourceName() {
 
         return m_resourceName;
+    }
+
+    /**
+     * Sets the ID for the contentload tag instance.<p>
+     * 
+     * @param id the id to set 
+     */
+    public void setId(String id) {
+
+        m_id = id;
+    }
+
+    /**
+     * Sets the post-create handler class name.<p>
+     * 
+     * @param postCreateHandler the post-create handler class name 
+     */
+    public void setPostCreateHandler(String postCreateHandler) {
+
+        m_postCreateHandler = postCreateHandler;
     }
 }

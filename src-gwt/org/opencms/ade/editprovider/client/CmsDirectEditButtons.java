@@ -27,14 +27,17 @@
 
 package org.opencms.ade.editprovider.client;
 
+import org.opencms.ade.contenteditor.shared.CmsEditorConstants;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.A_CmsDirectEditButtons;
+import org.opencms.gwt.client.ui.CmsCreateModeSelectionDialog;
 import org.opencms.gwt.client.ui.CmsDeleteWarningDialog;
 import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Method;
 import org.opencms.gwt.client.util.CmsDomUtil.Target;
 import org.opencms.gwt.client.util.CmsPositionBean;
+import org.opencms.util.CmsUUID;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,6 +47,7 @@ import com.google.gwt.dom.client.FormElement;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Direct edit buttons for the Toolbar direct edit provider.<p>
@@ -127,26 +131,46 @@ public class CmsDirectEditButtons extends A_CmsDirectEditButtons implements I_Cm
     @Override
     protected void onClickEdit() {
 
-        openEditDialog(false);
+        openEditDialog(false, null);
         removeHighlighting();
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.A_CmsDirectEditButtons#onClickNew()
+     * @see org.opencms.gwt.client.ui.A_CmsDirectEditButtons#onClickNew(boolean)
      */
     @Override
-    protected void onClickNew() {
+    protected void onClickNew(boolean askCreateMode) {
 
-        openEditDialog(true);
-        removeHighlighting();
+        if (!askCreateMode) {
+            openEditDialog(true, null);
+            removeHighlighting();
+        } else {
+
+            CmsUUID referenceId = m_editableData.getStructureId();
+            CmsCreateModeSelectionDialog.showDialog(referenceId, new AsyncCallback<String>() {
+
+                public void onFailure(Throwable caught) {
+
+                    // this is never called 
+
+                }
+
+                public void onSuccess(String result) {
+
+                    openEditDialog(true, result);
+                    removeHighlighting();
+                }
+            });
+        }
     }
 
     /**
      * Opens the content editor.<p>
      * 
      * @param isNew <code>true</code> to create and edit a new resource
+     * @param mode the content creation mode 
      */
-    protected void openEditDialog(boolean isNew) {
+    protected void openEditDialog(boolean isNew, String mode) {
 
         // create a form to submit a post request to the editor JSP
         Map<String, String> formValues = new HashMap<String, String>();
@@ -170,6 +194,14 @@ public class CmsDirectEditButtons extends A_CmsDirectEditButtons implements I_Cm
         formValues.put("redirect", "true");
         formValues.put("directedit", "true");
         formValues.put("editcontext", CmsCoreProvider.get().getUri());
+        String postCreateHandler = m_editableData.getPostCreateHandler();
+        if (postCreateHandler != null) {
+            formValues.put(CmsEditorConstants.PARAM_POST_CREATE_HANDLER, postCreateHandler);
+        }
+        if (mode != null) {
+            formValues.put(CmsEditorConstants.PARAM_MODE, mode);
+        }
+
         if (isNew) {
             formValues.put("newlink", m_editableData.getNewLink());
             formValues.put("editortitle", m_editableData.getNewTitle());

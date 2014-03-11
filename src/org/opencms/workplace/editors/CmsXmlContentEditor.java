@@ -198,6 +198,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     /** The set of help message IDs that have already been used. */
     private Set<String> m_helpMessageIds;
 
+    /** The content creation mode. */
+    private String m_mode;
+
     /** Indicates if an optional element is included in the form. */
     private boolean m_optionalElementPresent;
 
@@ -221,6 +224,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
     /** Parameter to indicate if a new XML content resource should be created. */
     private String m_paramNewLink;
+
+    /** The post-create handler class. */
+    private String m_postCreateHandler;
 
     /** The error handler for the xml content. */
     private CmsXmlContentErrorHandler m_validationHandler;
@@ -477,13 +483,14 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
         String newFileName = "";
         try {
-
             newFileName = A_CmsResourceCollector.createResourceForCollector(
                 getCms(),
                 m_paramNewLink,
                 getElementLocale(),
                 getParamResource(),
-                getParamModelFile());
+                getParamModelFile(),
+                getParamMode(),
+                getParamPostCreateHandler());
             // wipe out parameters for the editor to ensure proper operation
             setParamNewLink(null);
             setParamAction(null);
@@ -893,6 +900,16 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     }
 
     /**
+     * Returns the mode.<p>
+     *
+     * @return the mode
+     */
+    public String getParamMode() {
+
+        return m_mode;
+    }
+
+    /**
      * Returns the parameter that specifies the model file name.<p>
      * 
      * @return the parameter that specifies the model file name
@@ -910,6 +927,16 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     public String getParamNewLink() {
 
         return m_paramNewLink;
+    }
+
+    /**
+     * Returns the postCreateHandler.<p>
+     *
+     * @return the postCreateHandler
+     */
+    public String getParamPostCreateHandler() {
+
+        return m_postCreateHandler;
     }
 
     /**
@@ -1251,6 +1278,16 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         m_paramElementName = elementName;
     }
 
+    /** 
+     * Sets the content creation mode.<p>
+     * 
+     * @param mode the content creation mode 
+     */
+    public void setParamMode(String mode) {
+
+        m_mode = mode;
+    }
+
     /**
      * Sets the parameter that specifies the model file name.<p>
      * 
@@ -1269,6 +1306,16 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     public void setParamNewLink(String paramNewLink) {
 
         m_paramNewLink = CmsEncoder.decode(paramNewLink);
+    }
+
+    /** 
+     * Sets the post-create handler class name.<p>
+     * 
+     * @param handler the post-create handler class name 
+     */
+    public void setParamPostCreateHandler(String handler) {
+
+        m_postCreateHandler = handler;
     }
 
     /**

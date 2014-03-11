@@ -61,14 +61,17 @@ public interface I_CmsContentServiceAsync extends I_ContentServiceAsync {
      * @param modelFileId  the optional model file id
      * @param editContext the container page currently being edited (may be null)
      * 
+     * @param mode the content creation mode
+     * @param postCreateHandler the post-create handler class name 
      * @param callback the asynchronous callback
      */
-    void loadDefinition(
-        String entityId,
-        String newLink,
-        CmsUUID modelFileId,
-        String editContext,
-        AsyncCallback<CmsContentDefinition> callback);
+    void loadDefinition(String entityId, String newLink, CmsUUID modelFileId,
+
+    String editContext,
+
+    String mode, String postCreateHandler,
+
+    AsyncCallback<CmsContentDefinition> callback);
 
     /**
      * Loads new entity definition.<p>

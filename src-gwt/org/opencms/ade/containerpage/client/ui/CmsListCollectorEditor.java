@@ -29,14 +29,17 @@ package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageController;
 import org.opencms.gwt.client.ui.A_CmsDirectEditButtons;
+import org.opencms.gwt.client.ui.CmsCreateModeSelectionDialog;
 import org.opencms.gwt.client.ui.CmsDeleteWarningDialog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPositionBean;
+import org.opencms.util.CmsUUID;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Class to provide direct edit buttons within list collector elements.<p>
@@ -112,28 +115,53 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
     @Override
     protected void onClickEdit() {
 
-        openEditDialog(false);
+        openEditDialog(false, null);
         removeHighlighting();
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.A_CmsDirectEditButtons#onClickNew()
+     * @see org.opencms.gwt.client.ui.A_CmsDirectEditButtons#onClickNew(boolean)
      */
     @Override
-    protected void onClickNew() {
+    protected void onClickNew(boolean askCreateMode) {
 
-        openEditDialog(true);
-        removeHighlighting();
+        if (!askCreateMode) {
+            openEditDialog(true, null);
+            removeHighlighting();
+        } else {
+
+            CmsUUID referenceId = m_editableData.getStructureId();
+            CmsCreateModeSelectionDialog.showDialog(referenceId, new AsyncCallback<String>() {
+
+                public void onFailure(Throwable caught) {
+
+                    // is never called 
+
+                }
+
+                public void onSuccess(String result) {
+
+                    openEditDialog(true, result);
+                    removeHighlighting();
+                }
+            });
+        }
+
     }
 
     /**
      * Opens the content editor.<p>
      * 
      * @param isNew <code>true</code> to create and edit a new resource
+     * @param mode the content creation mode 
      */
-    protected void openEditDialog(boolean isNew) {
+    protected void openEditDialog(boolean isNew, String mode) {
 
-        CmsContainerpageController.get().getContentEditorHandler().openDialog(m_editableData, isNew, m_parentResourceId);
+        CmsContainerpageController.get().getContentEditorHandler().openDialog(
+            m_editableData,
+            isNew,
+            m_parentResourceId,
+            mode);
     }
 
     /**

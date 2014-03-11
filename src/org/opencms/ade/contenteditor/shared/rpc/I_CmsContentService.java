@@ -68,13 +68,20 @@ public interface I_CmsContentService extends I_ContentService {
      * @param newLink the new link
      * @param modelFileId  the optional model file id
      * @param editContext the container page currently being edited (may be null)
+     * @param mode the content creation mode
+     * @param postCreateHandler the post-create handler class name 
      * 
      * @return the content definition
      * 
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    CmsContentDefinition loadDefinition(String entityId, String newLink, CmsUUID modelFileId, String editContext)
-    throws CmsRpcException;
+    CmsContentDefinition loadDefinition(
+        String entityId,
+        String newLink,
+        CmsUUID modelFileId,
+        String editContext,
+        String mode,
+        String postCreateHandler) throws CmsRpcException;
 
     /**
      * Loads another content locale with the given entity id.<p>

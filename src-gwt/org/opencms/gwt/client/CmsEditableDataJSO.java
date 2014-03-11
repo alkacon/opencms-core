@@ -27,6 +27,7 @@
 
 package org.opencms.gwt.client;
 
+import org.opencms.ade.contenteditor.shared.CmsEditorConstants;
 import org.opencms.util.CmsUUID;
 
 import com.google.gwt.core.client.JavaScriptObject;
@@ -56,6 +57,14 @@ public final class CmsEditableDataJSO extends JavaScriptObject implements I_CmsE
     public static native CmsEditableDataJSO parseEditableData(String jsonText) /*-{
                                                                                return eval('(' + jsonText + ')');
                                                                                }-*/;
+
+    /**
+     * @see org.opencms.gwt.client.I_CmsEditableData#getContextId()
+     */
+    public String getContextId() {
+
+        return getString(CmsEditorConstants.ATTR_CONTEXT_ID);
+    }
 
     /**
      * @see org.opencms.gwt.client.I_CmsEditableData#getEditId()
@@ -102,6 +111,14 @@ public final class CmsEditableDataJSO extends JavaScriptObject implements I_CmsE
                                            else
                                            return null;
                                            }-*/;
+
+    /**
+     * @see org.opencms.gwt.client.I_CmsEditableData#getPostCreateHandler()
+     */
+    public String getPostCreateHandler() {
+
+        return getString(CmsEditorConstants.PARAM_POST_CREATE_HANDLER);
+    }
 
     /**
      * @see org.opencms.gwt.client.I_CmsEditableData#getSitePath()
@@ -159,6 +176,17 @@ public final class CmsEditableDataJSO extends JavaScriptObject implements I_CmsE
 
                                                     this.sitePath = sitePath;
                                                     }-*/;
+
+    /**
+     * Reads an attribute of the underlying Javascript object as a string.<p>
+     * 
+     * @param attribute the name of the attribute 
+     * 
+     * @return the string contained in the given attribute 
+     */
+    private native String getString(String attribute) /*-{
+                                                      return this[attribute]; 
+                                                      }-*/;
 
     /**
      * Returns the structure id as string.<p>

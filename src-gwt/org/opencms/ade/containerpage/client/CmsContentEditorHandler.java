@@ -118,13 +118,21 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
         m_handler.disableToolbarButtons();
         m_handler.deactivateCurrentButton();
         m_currentElementId = element.getId();
-        String serverId = CmsContainerpageController.getServerId(getCurrentElementId());
+        final String serverId = CmsContainerpageController.getServerId(getCurrentElementId());
+        final Runnable classicEdit = new Runnable() {
+
+            public void run() {
+
+                CmsEditableData editableData = new CmsEditableData();
+                editableData.setElementLanguage(CmsCoreProvider.get().getLocale());
+                editableData.setStructureId(new CmsUUID(serverId));
+                editableData.setSitePath(element.getSitePath());
+                CmsContentEditorDialog.get().openEditDialog(editableData, false, null, CmsContentEditorHandler.this);
+            }
+        };
+
         if (m_handler.m_controller.getData().isUseClassicEditor() || element.isNewEditorDisabled()) {
-            CmsEditableData editableData = new CmsEditableData();
-            editableData.setElementLanguage(CmsCoreProvider.get().getLocale());
-            editableData.setStructureId(new CmsUUID(serverId));
-            editableData.setSitePath(element.getSitePath());
-            CmsContentEditorDialog.get().openEditDialog(editableData, false, CmsContentEditorHandler.this);
+            classicEdit.run();
         } else {
             String editorLocale = CmsCoreProvider.get().getLocale();
 
@@ -150,10 +158,13 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                     onClose);
             } else {
                 addEditingHistoryItem(false);
+
                 CmsContentEditor.getInstance().openFormEditor(
                     getEditorContext(),
                     editorLocale,
                     serverId,
+                    null,
+                    null,
                     null,
                     null,
                     onClose);
@@ -167,10 +178,13 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
      * @param editableData the data of the element to edit
      * @param isNew <code>true</code> if a new resource should be created
      * @param dependingElementId the id of a depending element
+     * @param mode the element creation mode 
      */
     public void openDialog(
-
-    final I_CmsEditableData editableData, final boolean isNew, String dependingElementId) {
+        final I_CmsEditableData editableData,
+        final boolean isNew,
+        String dependingElementId,
+        String mode) {
 
         m_handler.disableToolbarButtons();
         m_handler.deactivateCurrentButton();
@@ -181,7 +195,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
         }
         m_dependingElementId = dependingElementId;
         if (m_handler.m_controller.getData().isUseClassicEditor()) {
-            CmsContentEditorDialog.get().openEditDialog(editableData, isNew, this);
+            CmsContentEditorDialog.get().openEditDialog(editableData, isNew, mode, this);
         } else {
             String newLink = null;
             if (isNew) {
@@ -197,6 +211,8 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                 editableData.getStructureId().toString(),
                 newLink,
                 null,
+                editableData.getPostCreateHandler(),
+                mode,
                 new Command() {
 
                     public void execute() {
@@ -235,12 +251,8 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
             };
             String editorLocale = CmsCoreProvider.get().getLocale();
             CmsContentEditor.getInstance().openFormEditor(
-                getEditorContext(),
-                editorLocale,
-                m_currentElementId,
-                null,
-                null,
-                onClose);
+
+            getEditorContext(), editorLocale, m_currentElementId, null, null, null, null, onClose);
         } else {
             closeContentEditor();
         }

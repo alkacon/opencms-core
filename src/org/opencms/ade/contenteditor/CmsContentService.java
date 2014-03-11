@@ -43,6 +43,7 @@ import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
+import org.opencms.ade.contenteditor.shared.CmsEditorConstants;
 import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -294,8 +295,13 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     /**
      * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadDefinition(java.lang.String, java.lang.String, org.opencms.util.CmsUUID, java.lang.String)
      */
-    public CmsContentDefinition loadDefinition(String entityId, String newLink, CmsUUID modelFileId, String editContext)
-    throws CmsRpcException {
+    public CmsContentDefinition loadDefinition(
+        String entityId,
+        String newLink,
+        CmsUUID modelFileId,
+        String editContext,
+        String mode,
+        String postCreateHandler) throws CmsRpcException {
 
         CmsContentDefinition result = null;
         getCmsObject().getRequestContext().setAttribute(CmsXmlContentEditor.ATTRIBUTE_EDITCONTEXT, editContext);
@@ -304,7 +310,13 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 CmsUUID structureId = CmsContentDefinition.entityIdToUuid(entityId);
                 CmsResource resource = getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
                 Locale contentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(entityId));
-                result = readContentDefnitionForNew(newLink, resource, modelFileId, contentLocale);
+                result = readContentDefnitionForNew(
+                    newLink,
+                    resource,
+                    modelFileId,
+                    contentLocale,
+                    mode,
+                    postCreateHandler);
             } catch (Throwable t) {
                 error(t);
             }
@@ -488,10 +500,21 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                         }
                         CmsUUID modelFileId = null;
                         String paramModelFile = getRequest().getParameter(CmsNewResourceXmlContent.PARAM_MODELFILE);
+
                         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(paramModelFile)) {
                             modelFileId = cms.readResource(paramModelFile).getStructureId();
                         }
-                        result = readContentDefnitionForNew(paramNewLink, resource, modelFileId, locale);
+
+                        String mode = getRequest().getParameter(CmsEditorConstants.PARAM_MODE);
+                        String postCreateHandler = getRequest().getParameter(
+                            CmsEditorConstants.PARAM_POST_CREATE_HANDLER);
+                        result = readContentDefnitionForNew(
+                            paramNewLink,
+                            resource,
+                            modelFileId,
+                            locale,
+                            mode,
+                            postCreateHandler);
                     } else {
 
                         CmsFile file = cms.readFile(resource);
@@ -1287,6 +1310,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      * @param referenceResource the reference resource
      * @param modelFileId the model file structure id
      * @param locale the content locale
+     * @param mode the content creation mode
+     * @param postCreateHandler the class name for the post-create handler 
      * 
      * @return the content definition
      * 
@@ -1296,7 +1321,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         String newLink,
         CmsResource referenceResource,
         CmsUUID modelFileId,
-        Locale locale) throws CmsException {
+        Locale locale,
+        String mode,
+        String postCreateHandler) throws CmsException {
 
         String sitePath = getCmsObject().getSitePath(referenceResource);
         String resourceType = OpenCms.getResourceManager().getResourceType(referenceResource.getTypeId()).getTypeName();
@@ -1327,7 +1354,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             newLink,
             locale,
             sitePath,
-            modelFile);
+            modelFile,
+            mode,
+            postCreateHandler);
         CmsResource resource = getCmsObject().readResource(newFileName, CmsResourceFilter.IGNORE_EXPIRATION);
         CmsContentDefinition contentDefinition = readContentDefinition(resource, null, locale);
         contentDefinition.setDeleteOnCancel(true);

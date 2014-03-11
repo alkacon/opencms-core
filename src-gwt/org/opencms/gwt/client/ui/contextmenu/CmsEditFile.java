@@ -83,6 +83,11 @@ public final class CmsEditFile implements I_CmsHasContextMenuCommand, I_CmsConte
 
         I_CmsEditableData editData = new I_CmsEditableData() {
 
+            public String getContextId() {
+
+                return "";
+            }
+
             public String getEditId() {
 
                 return null;
@@ -109,6 +114,11 @@ public final class CmsEditFile implements I_CmsHasContextMenuCommand, I_CmsConte
             }
 
             public String getNoEditReason() {
+
+                return null;
+            }
+
+            public String getPostCreateHandler() {
 
                 return null;
             }
@@ -156,7 +166,7 @@ public final class CmsEditFile implements I_CmsHasContextMenuCommand, I_CmsConte
                 timer.schedule(10);
             }
         };
-        CmsContentEditorDialog.get().openEditDialog(editData, false, handler);
+        CmsContentEditorDialog.get().openEditDialog(editData, false, null, handler);
     }
 
     /**

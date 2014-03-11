@@ -27,6 +27,7 @@
 
 package org.opencms.workplace.editors.directedit;
 
+import org.opencms.ade.contenteditor.shared.CmsEditorConstants;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
@@ -61,11 +62,11 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
     /** Indicates the permissions for the last element the was opened. */
     protected int m_lastPermissionMode;
 
-    /** The random number generator used for element ids. */
-    private Random m_random = new Random();
-
     /** True if the elements should be assigned randomly generated ids. */
     protected boolean m_useIds;
+
+    /** The random number generator used for element ids. */
+    private Random m_random = new Random();
 
     /**
      * Returns the end HTML for a disabled direct edit button.<p>
@@ -232,6 +233,10 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
         editableData.put(
             "unreleaseOrExpired",
             !resourceInfo.getResource().isReleasedAndNotExpired(System.currentTimeMillis()));
+        if (params.getId() != null) {
+            editableData.put(CmsEditorConstants.ATTR_CONTEXT_ID, params.getId().toString());
+        }
+        editableData.put(CmsEditorConstants.ATTR_POST_CREATE_HANDLER, params.getPostCreateHandler());
         if (m_lastPermissionMode == 1) {
 
             try {

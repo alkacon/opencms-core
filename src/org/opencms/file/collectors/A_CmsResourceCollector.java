@@ -27,6 +27,7 @@
 
 package org.opencms.file.collectors;
 
+import org.opencms.ade.contenteditor.shared.CmsEditorConstants;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -35,6 +36,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContent;
@@ -42,6 +44,9 @@ import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.util.List;
 import java.util.Locale;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
 
 /**
  * Provides some helpful base implementations for resource collector classes.<p>
@@ -53,6 +58,9 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
     /** The template file separator string for creating a new resource in direct edit mode,
      *  can be used to append an explicit template file name in {@link #getCreateParam(CmsObject, String, String)}. */
     public static final String SEPARATOR_TEMPLATEFILE = "::";
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(A_CmsResourceCollector.class);
 
     /** The collector order of this collector. */
     protected int m_order;
@@ -82,7 +90,8 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
      * @param locale the content locale
      * @param referenceResource the reference resource
      * @param modelFile the model file
-     * 
+     * @param mode the optional creation mode (can be null) 
+     * @param postCreateHandlerClass optional class name of class which is invoked after the content has been created (can be null) 
      * @return the new file name
      * 
      * @throws CmsException if something goes wrong
@@ -92,7 +101,9 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
         String newLink,
         Locale locale,
         String referenceResource,
-        String modelFile) throws CmsException {
+        String modelFile,
+        String mode,
+        String postCreateHandlerClass) throws CmsException {
 
         // get the collector used to create the new content
         int pos = newLink.indexOf('|');
@@ -138,6 +149,11 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
         }
         // IMPORTANT: calculation of the name MUST be done here so the file name is ensured to be valid
         newFileName = collector.getCreateLink(cms, collectorName, param);
+
+        boolean isCopy = StringUtils.equalsIgnoreCase(mode, CmsEditorConstants.MODE_COPY);
+        if (isCopy) {
+            modelFile = referenceResource;
+        }
         boolean useModelFile = false;
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(modelFile)) {
             cms.getRequestContext().setAttribute(CmsRequestContext.ATTRIBUTE_MODEL, modelFile);
@@ -152,8 +168,40 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
             // write the file with the updated content
             cloneCms.writeFile(newFile);
         }
+        I_CmsCollectorPostCreateHandler handler = getPostCreateHandler(postCreateHandlerClass);
+        handler.onCreate(cms, newFile, isCopy);
         return newFileName;
 
+    }
+
+    /**
+     * Instantiates a post-create handler given a class name (which may actually be null).<p>
+     * 
+     * If the given name is null or does not refer to a valid post-create handler class, a default implementation 
+     * will be returned.<p>
+     * 
+     * @param name the class name of the post-create handler class
+     * 
+     * @return a post-create handler instance 
+     */
+    private static I_CmsCollectorPostCreateHandler getPostCreateHandler(String name) {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(name)) {
+            return new CmsDefaultPostCreateHandler();
+        }
+        try {
+            Class<?> handlerClass = Class.forName(name);
+            if (I_CmsCollectorPostCreateHandler.class.isAssignableFrom(handlerClass)) {
+                I_CmsCollectorPostCreateHandler handler = (I_CmsCollectorPostCreateHandler)handlerClass.newInstance();
+                return handler;
+            } else {
+                LOG.error("Post-create handler class does not implement I_CmsPostCreateHandler: '" + name + "'");
+                return new CmsDefaultPostCreateHandler();
+            }
+        } catch (Exception e) {
+            LOG.error("Problem using post-create handler: '" + name + "'," + e.getLocalizedMessage(), e);
+            return new CmsDefaultPostCreateHandler();
+        }
     }
 
     /**
