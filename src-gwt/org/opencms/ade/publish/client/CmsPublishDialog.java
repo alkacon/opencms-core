@@ -145,7 +145,11 @@ public class CmsPublishDialog extends CmsPopup {
         public void execute() {
 
             start(0, true);
-            getService().getResourceGroups(getSelectedWorkflow(), getPublishOptions(), this);
+            CmsPublishOptions options = getPublishOptions();
+            boolean projectChanged = m_projectChanged;
+            m_projectChanged = false;
+
+            getService().getResourceGroups(getSelectedWorkflow(), options, projectChanged, this);
         }
 
         /**
@@ -166,23 +170,25 @@ public class CmsPublishDialog extends CmsPopup {
     /** The project map used by showPublishDialog. */
     public static Map<String, String> m_staticProjects;
 
-    /** The CSS bundle used for this widget. */
-    private static final I_CmsPublishCss CSS = I_CmsPublishLayoutBundle.INSTANCE.publishCss();
-
-    /** Flag indicating if the CSS has been initialized. */
-    private static boolean CSS_INITIALIZED;
-
     /** The index of the "broken links" panel. */
-    private static final int PANEL_BROKEN_LINKS = 1;
+    public static final int PANEL_BROKEN_LINKS = 1;
 
     /** The index of the publish selection panel. */
-    private static final int PANEL_SELECT = 0;
+    public static final int PANEL_SELECT = 0;
+
+    /** The CSS bundle used for this widget. */
+    private static final I_CmsPublishCss CSS = I_CmsPublishLayoutBundle.INSTANCE.publishCss();
+    /** Flag indicating if the CSS has been initialized. */
+    private static boolean CSS_INITIALIZED;
 
     /** The publish service instance. */
     private static I_CmsPublishServiceAsync SERVICE;
 
     /** The panel for selecting the resources to publish or remove from the publish list. */
     protected CmsPublishSelectPanel m_publishSelectPanel;
+
+    /** Flag to keep track of whether the user just changed the project. */
+    boolean m_projectChanged;
 
     /** The panel for showing the links that would be broken by publishing. */
     private CmsBrokenLinksPanel m_brokenLinksPanel;
@@ -241,7 +247,7 @@ public class CmsPublishDialog extends CmsPopup {
         m_panel.add(m_publishSelectPanel);
         m_panel.add(m_brokenLinksPanel);
         setMainContent(m_panel);
-        onReceivePublishList(initData.getGroups());
+        onReceivePublishList(initData.getGroupList());
     }
 
     /**
@@ -435,7 +441,7 @@ public class CmsPublishDialog extends CmsPopup {
      */
     public void onReceivePublishList(CmsPublishGroupList groups) {
 
-        m_publishSelectPanel.setGroupList(groups, true);
+        m_publishSelectPanel.setGroups(groups.getGroups(), true, groups.getOverrideWorkflowId());
         setPanel(PANEL_SELECT);
         if (!isVisible()) {
             center();
@@ -504,6 +510,14 @@ public class CmsPublishDialog extends CmsPopup {
             }
             m_brokenLinksPanel.updateTitle();
         }
+    }
+
+    /** 
+     * This is called when the user just changed the project.<p>
+     */
+    public void setProjectChanged() {
+
+        m_projectChanged = true;
     }
 
     /**

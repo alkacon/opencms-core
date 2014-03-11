@@ -47,8 +47,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public interface I_CmsPublishServiceAsync {
 
     /**
-     * @param action the work flow action
-     * @param params the data on which to perform the workflow action 
      * 
      * @param callback the result callback 
      */
@@ -66,12 +64,24 @@ public interface I_CmsPublishServiceAsync {
     void getInitData(HashMap<String, String> params, AsyncCallback<CmsPublishData> callback);
 
     /**
-     * Asynchronous version of {@link I_CmsPublishService#getResourceGroups(CmsWorkflow,CmsPublishOptions)}.<p>
+     * Asynchronous version of {@link I_CmsPublishService#getResourceGroups(CmsWorkflow,CmsPublishOptions,boolean)}.<p>
      * 
      * @param workflow the selected workflow 
      * @param options the publish list options
      * @param callback the result callback
+     * @param projectChanged indicates whether the reason we get the resource groups is because the user changed the project 
      */
-    void getResourceGroups(CmsWorkflow workflow, CmsPublishOptions options, AsyncCallback<CmsPublishGroupList> callback);
+    void getResourceGroups(
+        CmsWorkflow workflow,
+        CmsPublishOptions options,
+        boolean projectChanged,
+        AsyncCallback<CmsPublishGroupList> callback);
+
+    /**
+     * Asynchronous version of {@link I_CmsPublishService#getResourceOptions()}.<p>
+     * 
+     * @param callback the result callback
+     */
+    void getResourceOptions(AsyncCallback<CmsPublishOptions> callback);
 
 }

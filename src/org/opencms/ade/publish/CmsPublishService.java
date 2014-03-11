@@ -54,6 +54,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workflow.CmsWorkflowResources;
 import org.opencms.workflow.I_CmsPublishResourceFormatter;
 import org.opencms.workflow.I_CmsWorkflowManager;
 import org.opencms.workplace.CmsDialog;
@@ -172,6 +173,7 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
 
         CmsPublishData result = null;
         CmsObject cms = getCmsObject();
+        boolean canOverrideWorkflow = true;
         try {
 
             String closeLink = getRequest().getParameter(CmsDialog.PARAM_CLOSELINK);
@@ -188,6 +190,8 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(workflowId) || !workflows.containsKey(workflowId)) {
                     workflowId = workflows.values().iterator().next().getId();
                 }
+            } else {
+                canOverrideWorkflow = false;
             }
             setLastWorkflowForUser(workflowId);
             String projectParam = getRequest().getParameter(PARAM_PUBLISH_PROJECT_ID);
@@ -218,6 +222,10 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
                     for (CmsProjectBean project : projects) {
                         if (selectedProject.equals(project.getId())) {
                             foundProject = true;
+                            if (project.isWorkflowProject()) {
+                                canOverrideWorkflow = false;
+                                workflowId = OpenCms.getWorkflowManager().getWorkflowForWorkflowProject(selectedProject);
+                            }
                             break;
                         }
                     }
@@ -228,6 +236,10 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
                     for (CmsProjectBean project : projects) {
                         if (selectedProject.equals(project.getId())) {
                             foundProject = true;
+                            if (project.isWorkflowProject()) {
+                                canOverrideWorkflow = false;
+                                workflowId = OpenCms.getWorkflowManager().getWorkflowForWorkflowProject(selectedProject);
+                            }
                             break;
                         }
                     }
@@ -238,13 +250,12 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
             } else {
                 options.setProjectId(CmsUUID.getNullUUID());
             }
+
             options.setParameters(params);
-            result = new CmsPublishData(
+            result = new CmsPublishData(options, projects, getResourceGroups(
+                workflows.get(workflowId),
                 options,
-                projects,
-                getResourceGroups(workflows.get(workflowId), options),
-                workflows,
-                workflowId);
+                canOverrideWorkflow), workflows, workflowId);
             result.setCloseLink(closeLink);
             result.setShowConfirmation(confirm);
         } catch (Throwable e) {
@@ -254,18 +265,27 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
     }
 
     /**
-     * @see org.opencms.ade.publish.shared.rpc.I_CmsPublishService#getResourceGroups(org.opencms.ade.publish.shared.CmsWorkflow,org.opencms.ade.publish.shared.CmsPublishOptions)
+     * @see org.opencms.ade.publish.shared.rpc.I_CmsPublishService#getResourceGroups(org.opencms.ade.publish.shared.CmsWorkflow, org.opencms.ade.publish.shared.CmsPublishOptions, boolean)
      */
-    public CmsPublishGroupList getResourceGroups(CmsWorkflow workflow, CmsPublishOptions options)
+    public CmsPublishGroupList getResourceGroups(CmsWorkflow workflow, CmsPublishOptions options, boolean projectChanged)
     throws CmsRpcException {
 
         List<CmsPublishGroup> results = null;
         CmsObject cms = getCmsObject();
+        String overrideWorkflowId = null;
         try {
             Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
             I_CmsWorkflowManager workflowManager = OpenCms.getWorkflowManager();
             I_CmsPublishResourceFormatter formatter = workflowManager.createFormatter(cms, workflow, options);
-            List<CmsResource> resources = workflowManager.getWorkflowResources(cms, workflow, options);
+            CmsWorkflowResources workflowResources = workflowManager.getWorkflowResources(
+                cms,
+                workflow,
+                options,
+                projectChanged);
+            if (workflowResources.getOverrideWorkflow() != null) {
+                overrideWorkflowId = workflowResources.getOverrideWorkflow().getId();
+            }
+            List<CmsResource> resources = workflowResources.getWorkflowResources();
 
             if (resources.size() > workflowManager.getResourceLimit()) {
                 // too many resources, send a publish list token to the client which can be used later to restore the resource list 
@@ -314,9 +334,10 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
         } catch (Throwable e) {
             error(e);
         }
-        CmsPublishGroupList groupList = new CmsPublishGroupList();
-        groupList.setGroups(results);
-        return groupList;
+        CmsPublishGroupList wrapper = new CmsPublishGroupList();
+        wrapper.setOverrideWorkflowId(overrideWorkflowId);
+        wrapper.setGroups(results);
+        return wrapper;
     }
 
     /**

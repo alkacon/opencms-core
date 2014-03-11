@@ -105,6 +105,15 @@ public interface I_CmsWorkflowManager {
      */
     Map<String, String> getParameters();
 
+    /** 
+     * Gets the workflow id which should be used for a given workflow project.<p>
+     * 
+     * @param projectId the project id
+     *  
+     * @return the workflow id for the project 
+     */
+    String getWorkflowForWorkflowProject(CmsUUID projectId);
+
     /**
      * Gets a publish list token for the given parameters which can be used later to reconstruct the publish list.<p>
      * 
@@ -142,7 +151,11 @@ public interface I_CmsWorkflowManager {
      * 
      * @return the workflow resources
      */
-    List<CmsResource> getWorkflowResources(CmsObject cms, CmsWorkflow workflow, CmsPublishOptions options);
+    CmsWorkflowResources getWorkflowResources(
+        CmsObject cms,
+        CmsWorkflow workflow,
+        CmsPublishOptions options,
+        boolean projectChanged);
 
     /**
      * Returns the available workflows for the current user.<p>

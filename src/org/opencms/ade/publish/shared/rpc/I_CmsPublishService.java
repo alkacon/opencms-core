@@ -75,11 +75,22 @@ public interface I_CmsPublishService extends RemoteService {
      * 
      * @param workflow the selected workflow 
      * @param options the publish options for which the publish list should be fetched
+     * @param projectChanged indicates whether the reason we get the resource groups is because the user changed the project
      * 
      * @return the publish list groups 
      *  
      * @throws CmsRpcException if something goes wrong
      */
-    CmsPublishGroupList getResourceGroups(CmsWorkflow workflow, CmsPublishOptions options) throws CmsRpcException;
+    CmsPublishGroupList getResourceGroups(CmsWorkflow workflow, CmsPublishOptions options, boolean projectChanged)
+    throws CmsRpcException;
+
+    /**
+     * Retrieves the publish options.<p>
+     * 
+     * @return the publish options last used
+     * 
+     * @throws CmsRpcException if something goes wrong
+     */
+    CmsPublishOptions getResourceOptions() throws CmsRpcException;
 
 }

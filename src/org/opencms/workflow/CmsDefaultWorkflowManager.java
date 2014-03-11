@@ -162,13 +162,14 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
             // Don't need to get the resource list for canceling 
             return new CmsWorkflowResponse(true, action.getAction(), null, null, null);
         }
-        List<CmsResource> resources = getWorkflowResources(cms, token.getWorkflow(), token.getOptions());
+        List<CmsResource> resources = getWorkflowResources(cms, token.getWorkflow(), token.getOptions(), false).getWorkflowResources();
         return executeAction(cms, action, token.getOptions(), resources);
     }
 
     /**
      * @see org.opencms.workflow.I_CmsWorkflowManager#executeAction(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsWorkflowAction, org.opencms.ade.publish.shared.CmsPublishOptions, java.util.List)
      */
+    @Override
     public CmsWorkflowResponse executeAction(
         CmsObject userCms,
         CmsWorkflowAction action,
@@ -260,9 +261,19 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
     }
 
     /**
-     * @see org.opencms.workflow.I_CmsWorkflowManager#getWorkflowResources(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsWorkflow, org.opencms.ade.publish.shared.CmsPublishOptions)
+     * @see org.opencms.workflow.I_CmsWorkflowManager#getWorkflowForWorkflowProject(org.opencms.util.CmsUUID)
      */
-    public List<CmsResource> getWorkflowResources(CmsObject cms, CmsWorkflow workflow, CmsPublishOptions options) {
+    public String getWorkflowForWorkflowProject(CmsUUID projectId) {
+
+        return WORKFLOW_PUBLISH;
+    }
+
+    @Override
+    public CmsWorkflowResources getWorkflowResources(
+        CmsObject cms,
+        CmsWorkflow workflow,
+        CmsPublishOptions options,
+        boolean projectChanged) {
 
         try {
             List<CmsResource> rawResourceList = new ArrayList<CmsResource>();
@@ -270,12 +281,12 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
             projectHandler = getRealOrVirtualProject(options.getProjectId());
             if (projectHandler != null) {
                 rawResourceList = projectHandler.getResources(cms, options.getParameters(), workflow.getId());
-                return rawResourceList;
+                return new CmsWorkflowResources(rawResourceList);
             }
-            return rawResourceList;
+            return new CmsWorkflowResources(rawResourceList);
         } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);
-            return Collections.emptyList();
+            return new CmsWorkflowResources(Collections.<CmsResource> emptyList());
         }
     }
 

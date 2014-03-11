@@ -57,6 +57,9 @@ public class CmsPublishResourceInfo implements IsSerializable {
         WORKFLOW;
     }
 
+    /** Flag to hide the publish resource. */
+    private boolean m_hidden;
+
     /** The no preview available reason. */
     private String m_noPreviewReason;
 
@@ -76,6 +79,20 @@ public class CmsPublishResourceInfo implements IsSerializable {
 
         m_type = type;
         m_value = value;
+    }
+
+    /** 
+     * Creates a new publish resource additional information bean.<p> 
+     * 
+     * @param value the additional info
+     * @param type the additional info type
+     * @param hidden flag to hide the publish resource 
+     **/
+    public CmsPublishResourceInfo(String value, Type type, boolean hidden) {
+
+        m_type = type;
+        m_value = value;
+        m_hidden = hidden;
     }
 
     /**
@@ -134,6 +151,16 @@ public class CmsPublishResourceInfo implements IsSerializable {
     public boolean hasProblemType() {
 
         return m_type != null;
+    }
+
+    /**
+     * Returns true if the publish resource should be hidden.<p>
+     * 
+     * @return true if the publish resource should be hidden 
+     */
+    public boolean isHidden() {
+
+        return m_hidden;
     }
 
     /**

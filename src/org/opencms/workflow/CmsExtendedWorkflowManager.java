@@ -48,6 +48,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.publish.CmsPublishEventAdapter;
 import org.opencms.publish.CmsPublishJobEnqueued;
 import org.opencms.publish.CmsPublishJobRunning;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -165,6 +166,58 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
     public String getWorkflowProjectUserGroup() {
 
         return getParameter(PARAM_WORKFLOW_PROJECT_USER_GROUP, OpenCms.getDefaultUsers().getGroupProjectmanagers());
+    }
+
+    /**
+     * @see org.opencms.workflow.CmsDefaultWorkflowManager#getWorkflowResources(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsWorkflow, org.opencms.ade.publish.shared.CmsPublishOptions)
+     */
+    @Override
+    public CmsWorkflowResources getWorkflowResources(
+        CmsObject cms,
+        CmsWorkflow workflow,
+        CmsPublishOptions options,
+        boolean canOverrideWorkflow) {
+
+        String workflowKey = workflow.getId();
+        String overrideId = null;
+        if (WORKFLOW_RELEASE.equals(workflowKey)) {
+            List<CmsResource> result = super.getWorkflowResources(cms, workflow, options, canOverrideWorkflow).getWorkflowResources();
+            if (canOverrideWorkflow) {
+                boolean override = false;
+
+                for (CmsResource permCheckResource : result) {
+                    try {
+                        boolean canPublish = cms.hasPermissions(
+                            permCheckResource,
+                            CmsPermissionSet.ACCESS_DIRECT_PUBLISH);
+                        if (canPublish) {
+                            override = true;
+                        }
+                    } catch (Exception e) {
+                        LOG.error(
+                            "Can't check permissions for "
+                                + permCheckResource.getRootPath()
+                                + ":"
+                                + e.getLocalizedMessage(),
+                            e);
+                    }
+                    if (override) {
+                        List<CmsResource> resources = getWorkflowResources(
+                            cms,
+                            getWorkflows(cms).get(CmsDefaultWorkflowManager.WORKFLOW_PUBLISH),
+                            options,
+                            false).getWorkflowResources();
+                        result = resources;
+                        overrideId = WORKFLOW_PUBLISH;
+                    }
+                }
+            }
+            CmsWorkflowResources realResult = new CmsWorkflowResources(result, getWorkflows(cms).get(overrideId));
+            return realResult;
+        } else {
+            CmsWorkflowResources realResult = super.getWorkflowResources(cms, workflow, options, canOverrideWorkflow);
+            return realResult;
+        }
     }
 
     /**

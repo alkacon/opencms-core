@@ -645,12 +645,13 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
      * 
      * @param groups the new publish groups
      * @param newData true if the groups are new data which has been loaded  
+     * @param defaultWorkflow if not null, selects the given workflow 
      */
-    public void setGroupList(CmsPublishGroupList groups, boolean newData) {
+    public void setGroupList(CmsPublishGroupList groups, boolean newData, String defaultWorkflow) {
 
         if (groups.getToken() == null) {
             setShowResources(true, "");
-            setGroups(groups.getGroups(), newData);
+            setGroups(groups.getGroups(), newData, defaultWorkflow);
         } else {
             setShowResources(false, groups.getTooManyResourcesMessage());
         }
@@ -681,6 +682,18 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
             m_noResources.setVisible(false);
             m_scrollPanel.setVisible(false);
         }
+
+        enableActions(true);
+        addMoreListItems();
+        showProblemCount(m_model.countProblems());
+        onChangePublishSelection();
+        //        if (defaultWorkflow != null) {
+        //            m_workflowSelector.setFormValue(defaultWorkflow, false);
+        //            m_publishDialog.setWorkflowId(defaultWorkflow);
+        //            m_actions = m_publishDialog.getSelectedWorkflow().getActions();
+        //            m_publishDialog.setPanel(CmsPublishDialog.PANEL_SELECT);
+        //        }
+
     }
 
     /**
@@ -842,6 +855,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
         if (m_initialized) {
             m_publishDialog.setProjectId(new CmsUUID(event.getValue()));
+            m_publishDialog.setProjectChanged();
             m_publishDialog.updateResourceList();
         }
     }
@@ -911,7 +925,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
      * @param groups the list of publish groups 
      * @param newData true if the data is new 
      */
-    protected void setGroups(List<CmsPublishGroup> groups, boolean newData) {
+    protected void setGroups(List<CmsPublishGroup> groups, boolean newData, String defaultWorkflow) {
 
         m_model = new CmsPublishDataModel(groups, this);
         m_model.setSelectionChangeAction(new Runnable() {
@@ -944,6 +958,13 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         enableActions(true);
         addMoreListItems();
         showProblemCount(m_model.countProblems());
+
+        if (defaultWorkflow != null) {
+            m_workflowSelector.setFormValue(defaultWorkflow, false);
+            m_publishDialog.setWorkflowId(defaultWorkflow);
+            m_actions = m_publishDialog.getSelectedWorkflow().getActions();
+            m_publishDialog.setPanel(CmsPublishDialog.PANEL_SELECT);
+        }
     }
 
     /**
@@ -954,7 +975,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     protected void setProblemMode(boolean enabled) {
 
         m_showProblemsOnly = enabled;
-        setGroups(m_model.getGroups(), false);
+        setGroups(m_model.getGroups(), false, null);
     }
 
     /**

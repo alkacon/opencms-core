@@ -51,6 +51,9 @@ public class CmsPublishGroupList implements IsSerializable {
     /** The message to display if the publish list token is being used instead of the publish groups list. */
     private String m_tooManyResourcesMessage = "";
 
+    /** Workflow ID which, if not null, is used to override the workflow selected by default in the publish dialog. */
+    private String m_overrideWorkflowId;
+
     /**
      * Default constructor.<p>
      */
@@ -99,6 +102,19 @@ public class CmsPublishGroupList implements IsSerializable {
         return m_tooManyResourcesMessage;
     }
 
+    /* 
+    * Gets the override workflow id.<p>
+    * 
+    * If this is not null, this indicates that the publish groups were fetched for a different workflow than that selected by default
+    * in the publish dialog, and that the publish dialog should change its selected workflow accordingly.<p>
+    * 
+    * @return the override workflow id 
+    */
+    public String getOverrideWorkflowId() {
+
+        return m_overrideWorkflowId;
+    }
+
     /**
      * Sets the publish groups.<p>
      * 
@@ -117,6 +133,16 @@ public class CmsPublishGroupList implements IsSerializable {
     public void setTooManyResourcesMessage(String tooManyResourcesMessage) {
 
         m_tooManyResourcesMessage = tooManyResourcesMessage;
+    }
+
+    /** 
+     * Sets the Override workflow.<p>
+     * 
+     * @param id the id of the override workflow 
+     */
+    public void setOverrideWorkflowId(String id) {
+
+        m_overrideWorkflowId = id;
     }
 
 }

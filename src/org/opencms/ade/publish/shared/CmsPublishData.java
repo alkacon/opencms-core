@@ -45,7 +45,7 @@ public class CmsPublishData implements IsSerializable {
     /** The close link. */
     private String m_closeLink;
 
-    /** The publish groups. */
+    /** The publish group list. */
     private CmsPublishGroupList m_groups;
 
     /** The publish options. */
@@ -92,6 +92,16 @@ public class CmsPublishData implements IsSerializable {
     protected CmsPublishData() {
 
         // for serialization
+    }
+
+    /** 
+     * Gets the publish group list.<p>
+     * 
+     * @return the publish group list 
+     */
+    public CmsPublishGroupList getGroupList() {
+
+        return m_groups;
     }
 
     /**
