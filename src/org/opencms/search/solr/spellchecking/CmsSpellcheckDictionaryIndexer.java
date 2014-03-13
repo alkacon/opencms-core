@@ -66,7 +66,7 @@ public final class CmsSpellcheckDictionaryIndexer {
     private static final Log LOG = CmsLog.getLog(OpenCmsServlet.class);
 
     /** The default directory that's holding the dictionary files. */
-    public static final String DEFAULT_DICTIONARY_DIRECTORY = "/system/modules/org.opencms.search.solr/resources";
+    public static final String DEFAULT_DICTIONARY_DIRECTORY = "/system/modules/org.opencms.workplace.spellcheck/resources";
 
     /** A regex pattern that applies to the Solr spellcheck directories. 
      * Matching string example: "spellchecker_en" */
