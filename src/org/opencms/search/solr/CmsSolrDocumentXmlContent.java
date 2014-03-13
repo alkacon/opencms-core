@@ -97,10 +97,12 @@ public class CmsSolrDocumentXmlContent extends CmsDocumentXmlContent {
             StringBuffer locales = new StringBuffer();
             Locale resourceLocale = index.getLocaleForResource(cms, resource, xmlContent.getLocales());
             String defaultContent = null;
-            StringBuffer textContent = new StringBuffer();
 
             // loop over the locales of the content 
             for (Locale locale : xmlContent.getLocales()) {
+            	
+            	//Issues #230: Cleanup the variable for each iteration
+            	StringBuffer textContent = new StringBuffer();
 
                 // store the locales of the content as space separated field
                 locales.append(locale.toString());
@@ -109,7 +111,7 @@ public class CmsSolrDocumentXmlContent extends CmsDocumentXmlContent {
                 // loop over the available element paths of the current content locale
                 List<String> paths = xmlContent.getNames(locale);
                 for (String xpath : paths) {
-
+                	
                     // try to get the value extraction for the current element path
                     String extracted = null;
                     I_CmsXmlContentValue value = xmlContent.getValue(xpath, locale);
