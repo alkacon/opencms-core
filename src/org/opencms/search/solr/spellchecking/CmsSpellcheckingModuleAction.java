@@ -31,16 +31,22 @@ import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.db.CmsPublishList;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsEvent;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.module.I_CmsModuleAction;
 import org.opencms.report.I_CmsReport;
+
+import org.apache.commons.logging.Log;
 
 /**
  * ModuleAction implementation for the spellchecking component that waits with indexing
  * operations until runlevel 4 has been reached. 
  */
 public final class CmsSpellcheckingModuleAction implements I_CmsModuleAction {
+
+    /** The log object for this class. */
+    static final Log LOG = CmsLog.getLog(CmsSpellcheckingModuleAction.class);
 
     /**
      * @see org.opencms.main.I_CmsEventListener#cmsEvent(org.opencms.main.CmsEvent)
@@ -63,10 +69,13 @@ public final class CmsSpellcheckingModuleAction implements I_CmsModuleAction {
             public void run() {
 
                 // Although discouraged, use polling to make sure the indexing process does not start
-                // before OpenCms has reached runlevel 4 (Also, ignore if running on shell)
-                while ((OpenCms.getRunLevel() != OpenCms.RUNLEVEL_4_SERVLET_ACCESS)
-                    || (OpenCms.getRunLevel() != OpenCms.RUNLEVEL_3_SHELL_ACCESS)) {
+                // before OpenCms has reached runlevel 4
+                while (OpenCms.getRunLevel() != OpenCms.RUNLEVEL_4_SERVLET_ACCESS) {
                     try {
+                        // break if running the CmsShell
+                        if (OpenCms.getRunLevel() == OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
+                            break;
+                        }
                         // Repeat check every ten seconds
                         Thread.sleep(10 * 1000);
                     } catch (InterruptedException e) {
@@ -74,12 +83,14 @@ public final class CmsSpellcheckingModuleAction implements I_CmsModuleAction {
                     }
                 }
 
-                // Check whether indexing is needed
-                if (CmsSpellcheckDictionaryIndexer.updatingIndexNecessesary(adminCms)) {
-                    final CmsSolrSpellchecker spellchecker = OpenCms.getSearchManager().getSolrDictionary(adminCms);
+                // Check whether indexing is needed if not running the shell
+                if ((OpenCms.getRunLevel() != OpenCms.RUNLEVEL_3_SHELL_ACCESS)
+                    && CmsSpellcheckDictionaryIndexer.updatingIndexNecessesary(adminCms)) {
+                    CmsSolrSpellchecker spellchecker = OpenCms.getSearchManager().getSolrDictionary(adminCms);
                     spellchecker.parseAndAddDictionaries(adminCms);
                 }
             }
+
         };
 
         if (OpenCms.getRunLevel() != OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
