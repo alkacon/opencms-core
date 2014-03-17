@@ -163,11 +163,11 @@ if (project.hasProperty('tomcat_update_target') && file(tomcat_update_target).ex
 task enhance << {
     ant.taskdef(
             name      : 'openjpaenhancer',
-            classpath : configurations.modulesCompile.asPath,
+            classpath : sourceSets.modules.compileClasspath.asPath,
             classname : 'org.apache.openjpa.ant.PCEnhancerTask'
             )
 
-    ant.openjpaenhancer(classpath : configurations.modulesCompile.asPath){
+    ant.openjpaenhancer(classpath : sourceSets.modules.compileClasspath.asPath){
         fileset(dir: "${sourceSets.main.output.classesDir}/org/opencms/db/jpa/persistence"){ exclude(name: '*$*.class') }
         config(propertiesFile: "${projectDir}/webapp/WEB-INF/classes/META-INF/persistence.xml")
     }
