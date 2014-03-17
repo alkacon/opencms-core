@@ -650,8 +650,8 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     public void setGroupList(CmsPublishGroupList groups, boolean newData, String defaultWorkflow) {
 
         if (groups.getToken() == null) {
-            setShowResources(true, "");
             setGroups(groups.getGroups(), newData, defaultWorkflow);
+            setShowResources(true, "");
         } else {
             setShowResources(false, groups.getTooManyResourcesMessage());
         }

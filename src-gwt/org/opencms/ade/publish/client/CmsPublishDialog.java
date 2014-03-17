@@ -441,7 +441,7 @@ public class CmsPublishDialog extends CmsPopup {
      */
     public void onReceivePublishList(CmsPublishGroupList groups) {
 
-        m_publishSelectPanel.setGroups(groups.getGroups(), true, groups.getOverrideWorkflowId());
+        m_publishSelectPanel.setGroupList(groups, true, groups.getOverrideWorkflowId());
         setPanel(PANEL_SELECT);
         if (!isVisible()) {
             center();

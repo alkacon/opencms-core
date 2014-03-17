@@ -284,6 +284,7 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
                 projectChanged);
             if (workflowResources.getOverrideWorkflow() != null) {
                 overrideWorkflowId = workflowResources.getOverrideWorkflow().getId();
+                formatter = workflowManager.createFormatter(cms, workflowResources.getOverrideWorkflow(), options);
             }
             List<CmsResource> resources = workflowResources.getWorkflowResources();
 

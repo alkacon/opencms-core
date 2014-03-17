@@ -276,7 +276,7 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
         CmsObject cms,
         CmsWorkflow workflow,
         CmsPublishOptions options,
-        boolean projectChanged) {
+        boolean canOverride) {
 
         try {
             List<CmsResource> rawResourceList = new ArrayList<CmsResource>();

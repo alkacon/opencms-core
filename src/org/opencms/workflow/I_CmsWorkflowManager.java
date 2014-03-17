@@ -148,7 +148,7 @@ public interface I_CmsWorkflowManager {
      * @param cms the user cms context
      * @param workflow the workflow
      * @param options the resource options
-     * @param projectChanged flag to indicate whether the project was changed manually by the user
+     * @param canOverride flag to indicate whether the workflow manager should be able to override the selected workflow
      *
      * @return the workflow resources
      */
@@ -156,7 +156,7 @@ public interface I_CmsWorkflowManager {
         CmsObject cms,
         CmsWorkflow workflow,
         CmsPublishOptions options,
-        boolean projectChanged);
+        boolean canOverride);
 
     /**
      * Returns the available workflows for the current user.<p>
