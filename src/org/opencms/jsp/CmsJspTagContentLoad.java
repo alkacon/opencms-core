@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -52,17 +52,17 @@ import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.Tag;
 
 /**
- * Implementation of the <code>&lt;cms:contentload/&gt;</code> tag, 
+ * Implementation of the <code>&lt;cms:contentload/&gt;</code> tag,
  * used to access and display XML content item information from the VFS.<p>
- * 
+ *
  * Since version 7.0.2 it is also possible to store the results of the content load in the JSP context
  * using a {@link CmsJspContentLoadBean}. Using this bean the loaded XML content objects can be accessed
  * directly using the JSP EL and the JSTL. To use this feature, you need to add the <code>var</code> (and optionally
- * the <code>scope</code>) parameter to the content load tag. For example, if a parameter like 
- * <code>var="myVarName"</code> is provided, then the result of the content load is stored in the JSP 
+ * the <code>scope</code>) parameter to the content load tag. For example, if a parameter like
+ * <code>var="myVarName"</code> is provided, then the result of the content load is stored in the JSP
  * context variable <code>myVarName</code> with an instance of a {@link CmsJspContentLoadBean}.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_CmsXmlContentContainer {
 
@@ -74,10 +74,10 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
 
     /**
      * The locale to use for displaying the current content.<p>
-     * 
-     * Initially, this is equal to the locale set using <code>{@link #setLocale(String)}</code>. 
+     *
+     * Initially, this is equal to the locale set using <code>{@link #setLocale(String)}</code>.
      * However, the content locale may change in case a loaded XML content does not have the selected locale available.
-     * In this case the next default locale that is available in the content will be used as content locale.<p> 
+     * In this case the next default locale that is available in the content will be used as content locale.<p>
      */
     private Locale m_contentLocale;
 
@@ -106,7 +106,7 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
     private String m_postCreateHandler;
 
     /**
-     * Empty constructor, required for JSP tags.<p> 
+     * Empty constructor, required for JSP tags.<p>
      */
     public CmsJspTagContentLoad() {
 
@@ -114,15 +114,15 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
     }
 
     /**
-     * Constructor used when using <code>contentload</code> from scriptlet code.<p> 
-     * 
+     * Constructor used when using <code>contentload</code> from scriptlet code.<p>
+     *
      * @param container the parent content container (could be a preloader)
      * @param context the JSP page context
      * @param collectorName the collector name to use
      * @param collectorParam the collector param to use
-     * @param locale the locale to use 
+     * @param locale the locale to use
      * @param editable indicates if "direct edit" support is wanted
-     * 
+     *
      * @throws JspException in case something goes wrong
      */
     public CmsJspTagContentLoad(
@@ -138,17 +138,17 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
     }
 
     /**
-     * Constructor used when using <code>contentload</code> from scriptlet code.<p> 
-     * 
+     * Constructor used when using <code>contentload</code> from scriptlet code.<p>
+     *
      * @param container the parent content container (could be a preloader)
      * @param context the JSP page context
      * @param collectorName the collector name to use
      * @param collectorParam the collector param to use
      * @param pageIndex the display page index (may contain macros)
      * @param pageSize the display page size (may contain macros)
-     * @param locale the locale to use 
+     * @param locale the locale to use
      * @param editable indicates if "direct edit" support is wanted
-     * 
+     *
      * @throws JspException in case something goes wrong
      */
     public CmsJspTagContentLoad(
@@ -174,17 +174,17 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
     }
 
     /**
-     * Constructor used when using <code>contentload</code> from scriptlet code.<p> 
-     * 
+     * Constructor used when using <code>contentload</code> from scriptlet code.<p>
+     *
      * @param container the parent content container (could be a preloader)
      * @param context the JSP page context
      * @param collectorName the collector name to use
      * @param collectorParam the collector param to use
      * @param pageIndex the display page index (may contain macros)
      * @param pageSize the display page size (may contain macros)
-     * @param locale the locale to use 
+     * @param locale the locale to use
      * @param editMode indicates which "direct edit" mode is wanted
-     * 
+     *
      * @throws JspException in case something goes wrong
      */
     public CmsJspTagContentLoad(
@@ -240,7 +240,7 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
 
     /**
      * Returns the editable flag.<p>
-     * 
+     *
      * @return the editable flag
      */
     public String getEditable() {
@@ -309,7 +309,7 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
         }
 
         if (isPreloader()) {
-            // if in preload mode, no result is required            
+            // if in preload mode, no result is required
             return false;
         }
 
@@ -393,7 +393,7 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
 
     /**
      * Sets the editable mode.<p>
-     * 
+     *
      * @param mode the mode to set
      */
     public void setEditable(String mode) {
@@ -427,10 +427,10 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
         }
     }
 
-    /** 
+    /**
      * Sets the post-create handler class name.<p>
-     * 
-     * @param postCreateHandler the post-create handler class name 
+     *
+     * @param postCreateHandler the post-create handler class name
      */
     public void setPostCreateHandler(String postCreateHandler) {
 
@@ -439,7 +439,7 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
 
     /**
      * Load the next file name from the initialized list of file names.<p>
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected void doLoadNextFile() throws CmsException {
@@ -452,8 +452,8 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
         // upgrade the resource to a file
         CmsFile file = m_cms.readFile(m_resource);
 
-        // unmarshal the XML content from the resource, don't use unmarshal(CmsObject, CmsResource) 
-        // as no support for getting the historic version that has been cached by a CmsHistoryResourceHandler 
+        // unmarshal the XML content from the resource, don't use unmarshal(CmsObject, CmsResource)
+        // as no support for getting the historic version that has been cached by a CmsHistoryResourceHandler
         // will come from there!
         m_content = CmsXmlContentFactory.unmarshal(m_cms, file, pageContext.getRequest());
 
@@ -473,10 +473,10 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
     }
 
     /**
-     * Initializes this content load tag.<p> 
-     * 
+     * Initializes this content load tag.<p>
+     *
      * @param container the parent container (could be a preloader)
-     * 
+     *
      * @throws JspException in case something goes wrong
      */
     protected void init(I_CmsXmlContentContainer container) throws JspException {
@@ -571,7 +571,7 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
             m_contentInfoBean.initResultIndex();
 
             if (!isPreloader()) {
-                // not required when only preloading 
+                // not required when only preloading
                 m_collectorResult = CmsJspTagResourceLoad.limitCollectorResult(m_contentInfoBean, m_collectorResult);
                 m_contentInfoBean.initPageNavIndexes();
 

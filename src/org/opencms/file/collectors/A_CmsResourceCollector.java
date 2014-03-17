@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,8 +50,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Provides some helpful base implementations for resource collector classes.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
 
@@ -84,16 +84,16 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
 
     /**
      * Creates a new content collector resource.<p>
-     * 
+     *
      * @param cms the cms context
      * @param newLink the new resource link
      * @param locale the content locale
      * @param referenceResource the reference resource
      * @param modelFile the model file
-     * @param mode the optional creation mode (can be null) 
-     * @param postCreateHandlerClass optional class name of class which is invoked after the content has been created (can be null) 
+     * @param mode the optional creation mode (can be null)
+     * @param postCreateHandlerClass optional class name of class which is invoked after the content has been created (can be null)
      * @return the new file name
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public static String createResourceForCollector(
@@ -138,7 +138,7 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
             typeId = templateResource.getTypeId();
             CmsFile templateFile = cms.readFile(templateResource);
             CmsXmlContent template = CmsXmlContentFactory.unmarshal(cloneCms, templateFile);
-            // now create a new XML content based on the templates content definition            
+            // now create a new XML content based on the templates content definition
             newContent = CmsXmlContentFactory.createDocument(
                 cms,
                 locale,
@@ -176,13 +176,13 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
 
     /**
      * Instantiates a post-create handler given a class name (which may actually be null).<p>
-     * 
-     * If the given name is null or does not refer to a valid post-create handler class, a default implementation 
+     *
+     * If the given name is null or does not refer to a valid post-create handler class, a default implementation
      * will be returned.<p>
-     * 
+     *
      * @param name the class name of the post-create handler class
-     * 
-     * @return a post-create handler instance 
+     *
+     * @return a post-create handler instance
      */
     private static I_CmsCollectorPostCreateHandler getPostCreateHandler(String name) {
 
@@ -217,8 +217,8 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
 
     /**
      * Two collectors are considered to be equal if they are sharing the same
-     * implementation class.<p> 
-     * 
+     * implementation class.<p>
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -329,7 +329,7 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
 
     /**
      * Checks if the required parameters have been set.<p>
-     * 
+     *
      * @see #setDefaultCollectorName(String)
      * @see #setDefaultCollectorParam(String)
      */
@@ -345,14 +345,14 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
 
     /**
      * Returns the link to create a new XML content item in the folder pointed to by the parameter.<p>
-     * 
+     *
      * @param cms the current CmsObject
      * @param data the collector data to use
-     * 
+     *
      * @return the link to create a new XML content item in the folder
-     * 
+     *
      * @throws CmsException if something goes wrong
-     * 
+     *
      * @since 7.0.2
      */
     protected String getCreateInFolder(CmsObject cms, CmsCollectorData data) throws CmsException {
@@ -362,12 +362,12 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
 
     /**
      * Returns the link to create a new XML content item in the folder pointed to by the parameter.<p>
-     * 
+     *
      * @param cms the current CmsObject
      * @param param the folder name to use
-     * 
+     *
      * @return the link to create a new XML content item in the folder
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected String getCreateInFolder(CmsObject cms, String param) throws CmsException {
@@ -377,10 +377,10 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
 
     /**
      * Shrinks a List to fit a maximum size.<p>
-     * 
+     *
      * @param result a List
      * @param maxSize the maximum size of the List
-     * 
+     *
      * @return the reduced list
      */
     protected List<CmsResource> shrinkToFit(List<CmsResource> result, int maxSize) {

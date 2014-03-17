@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -52,10 +52,10 @@ import com.lowagie.text.Image;
 
 /**
  * This class is responsible for loading external resources while generating PDF from XHTML.
- * 
- * Resources will be loaded from the VFS. Additionally, if there are image scaler parameters in  an image 
+ *
+ * Resources will be loaded from the VFS. Additionally, if there are image scaler parameters in  an image
  * URI, the scaled image data will be returned. Please note that this class just reads the data from the linked
- * resources; it will not go through OpenCms's resource loaders, so you can't e.g. use a JSP as a dynamic stylesheet.  
+ * resources; it will not go through OpenCms's resource loaders, so you can't e.g. use a JSP as a dynamic stylesheet.
  */
 public class CmsPdfUserAgent extends NaiveUserAgent {
 
@@ -79,10 +79,10 @@ public class CmsPdfUserAgent extends NaiveUserAgent {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param cms the CMS context 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms the CMS context
+     *
+     * @throws CmsException if something goes wrong
      */
     public CmsPdfUserAgent(CmsObject cms)
     throws CmsException {
@@ -145,8 +145,8 @@ public class CmsPdfUserAgent extends NaiveUserAgent {
 
     /**
      * Gets the shared context.<p>
-     * 
-     * @return the shared context 
+     *
+     * @return the shared context
      */
     public SharedContext getSharedContext() {
 
@@ -159,14 +159,14 @@ public class CmsPdfUserAgent extends NaiveUserAgent {
     @Override
     public String resolveURI(String uri) {
 
-        // we want to pass the uri unchanged to the get... methods 
+        // we want to pass the uri unchanged to the get... methods
         return uri;
     }
 
     /**
      * Sets the shared context.<p>
-     * 
-     * @param sharedContext the shared context 
+     *
+     * @param sharedContext the shared context
      */
     public void setSharedContext(SharedContext sharedContext) {
 
@@ -175,9 +175,9 @@ public class CmsPdfUserAgent extends NaiveUserAgent {
 
     /**
      * Converts a byte array to an input stream, but returns null if the byte array is null.<p>
-     * 
-     * @param data the data 
-     * @return the input stream for the data, or null 
+     *
+     * @param data the data
+     * @return the input stream for the data, or null
      */
     ByteArrayInputStream getStream(byte[] data) {
 
@@ -190,9 +190,9 @@ public class CmsPdfUserAgent extends NaiveUserAgent {
 
     /**
      * Reads a file from the VFS.<p>
-     * 
-     * @param uriWithParams the 
-     * @return the file data 
+     *
+     * @param uriWithParams the
+     * @return the file data
      */
     private byte[] readFile(String uriWithParams) {
 
@@ -210,10 +210,10 @@ public class CmsPdfUserAgent extends NaiveUserAgent {
 
     /**
      * Reads an image from the VFS, scaling it if necessary.<p>
-     * 
+     *
      * @param uriWithParams the image uri, possible with scaling parameter
-     * 
-     * @return the image data 
+     *
+     * @return the image data
      */
     private byte[] readImage(String uriWithParams) {
 
@@ -244,8 +244,8 @@ public class CmsPdfUserAgent extends NaiveUserAgent {
 
     /**
      * Scales the image to output resolution.<p>
-     * 
-     * @param image the image to scale 
+     *
+     * @param image the image to scale
      */
     private void scaleToOutputResolution(Image image) {
 

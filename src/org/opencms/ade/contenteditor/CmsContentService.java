@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -102,7 +102,7 @@ import org.apache.commons.logging.Log;
 import org.dom4j.Element;
 
 /**
- * Service to provide entity persistence within OpenCms.<p>
+ * Service to provide entity persistence within OpenCms. <p>
  */
 public class CmsContentService extends CmsGwtService implements I_CmsContentService {
 
@@ -120,9 +120,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /**
      * Returns the entity attribute name representing the given content value.<p>
-     * 
+     *
      * @param contentValue the content value
-     * 
+     *
      * @return the attribute name
      */
     public static String getAttributeName(I_CmsXmlContentValue contentValue) {
@@ -132,10 +132,10 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /**
      * Returns the entity attribute name to use for this element.<p>
-     * 
+     *
      * @param elementName the element name
      * @param parentType the parent type
-     * 
+     *
      * @return the attribute name
      */
     public static String getAttributeName(String elementName, String parentType) {
@@ -145,9 +145,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /**
      * Returns the entity id to the given content value.<p>
-     * 
+     *
      * @param contentValue the content value
-     * 
+     *
      * @return the entity id
      */
     public static String getEntityId(I_CmsXmlContentValue contentValue) {
@@ -173,10 +173,10 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /**
      * Returns the RDF annotations required for in line editing.<p>
-     * 
+     *
      * @param parentValue the parent XML content value
      * @param childNames the child attribute names separated by '|'
-     * 
+     *
      * @return the RDFA
      */
     public static String getRdfaAttributes(I_CmsXmlContentValue parentValue, String childNames) {
@@ -206,11 +206,11 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /**
      * Returns the RDF annotations required for in line editing.<p>
-     * 
+     *
      * @param document the parent XML document
      * @param contentLocale the content locale
      * @param childName the child attribute name
-     * 
+     *
      * @return the RDFA
      */
     public static String getRdfaAttributes(I_CmsXmlDocument document, Locale contentLocale, String childName) {
@@ -231,9 +231,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /**
      * Returns the type URI.<p>
-     * 
+     *
      * @param xmlContentDefinition the type content definition
-     * 
+     *
      * @return the type URI
      */
     public static String getTypeUri(CmsXmlContentDefinition xmlContentDefinition) {
@@ -243,11 +243,11 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /**
      * Fetches the initial content definition.<p>
-     * 
+     *
      * @param request the current request
-     * 
+     *
      * @return the initial content definition
-     * 
+     *
      * @throws CmsRpcException if something goes wrong
      */
     public static CmsContentDefinition prefetch(HttpServletRequest request) throws CmsRpcException {
@@ -293,7 +293,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
-     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadDefinition(java.lang.String, java.lang.String, org.opencms.util.CmsUUID, java.lang.String)
+     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadDefinition(java.lang.String, java.lang.String, org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.lang.String)
      */
     public CmsContentDefinition loadDefinition(
         String entityId,
@@ -703,10 +703,10 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /**
      * Decodes the newlink request parameter if possible.<p>
-     * 
-     * @param newLink the parameter to decode 
-     * 
-     * @return the decoded value 
+     *
+     * @param newLink the parameter to decode
+     *
+     * @return the decoded value
      */
     protected String decodeNewLink(String newLink) {
 
@@ -730,9 +730,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /**
      * Returns the element name to the given element.<p>
-     * 
+     *
      * @param attributeName the attribute name
-     * 
+     *
      * @return the element name
      */
     protected String getElementName(String attributeName) {
@@ -746,7 +746,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     /**
      * Helper method to determine the encoding of the given file in the VFS,
      * which must be set using the "content-encoding" property.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param file the file which is to be checked
      * @return the encoding for the file
@@ -765,7 +765,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /**
      * Parses the element into an entity.<p>
-     * 
+     *
      * @param content the entity content
      * @param element the current element
      * @param locale the content locale
@@ -774,7 +774,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      * @param typeName the entity type name
      * @param visitor the content type visitor
      * @param includeInvisible include invisible attributes
-     * 
+     *
      * @return the entity
      */
     protected Entity readEntity(
@@ -873,11 +873,11 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     /**
      * Reads the types from the given content definition and adds the to the map of already registered
      * types if necessary.<p>
-     * 
+     *
      * @param xmlContentDefinition the XML content definition
      * @param locale the messages locale
-     * 
-     * @return the types of the given content definition 
+     *
+     * @return the types of the given content definition
      */
     protected Map<String, I_Type> readTypes(CmsXmlContentDefinition xmlContentDefinition, Locale locale) {
 
@@ -888,13 +888,13 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /**
      * Synchronizes the locale independent fields.<p>
-     * 
+     *
      * @param file the content file
      * @param content the XML content
      * @param skipPaths the paths to skip during locale synchronization
      * @param entities the edited entities
      * @param lastEdited the last edited locale
-     * 
+     *
      * @throws CmsXmlException if something goes wrong
      */
     protected void synchronizeLocaleIndependentFields(
@@ -920,7 +920,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /**
      * Transfers values marked as invisible from the original entity to the target entity.<p>
-     * 
+     *
      * @param original the original entity
      * @param target the target entiy
      * @param visitor the type visitor holding the content type configuration
@@ -944,7 +944,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /**
      * Adds the attribute values of the entity to the given XML content.<p>
-     * 
+     *
      * @param cms the current cms context
      * @param content the XML content
      * @param parentPath the parent path
@@ -1013,10 +1013,10 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /**
      * Check if automatic content correction is required. Returns <code>true</code> if the content was changed.<p>
-     * 
+     *
      * @param cms the cms context
      * @param content the content to check
-     * 
+     *
      * @return <code>true</code> if the content was changed
      * @throws CmsXmlException if the automatic content correction failed
      */
@@ -1036,7 +1036,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /**
      * Evaluates the values of the locale independent fields and the paths to skip during locale synchronization.<p>
-     * 
+     *
      * @param content the XML content
      * @param syncValues the map of synchronization values
      * @param skipPaths the list o paths to skip
@@ -1082,10 +1082,10 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /**
      * Returns the best available locale present in the given XML content, or the default locale.<p>
-     * 
+     *
      * @param resource the resource
      * @param content the XML content
-     * 
+     *
      * @return the locale
      */
     private Locale getBestAvailableLocale(CmsResource resource, CmsXmlContent content) {
@@ -1122,10 +1122,10 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /**
      * Returns the path elements for the given content value.<p>
-     * 
+     *
      * @param content the XML content
      * @param value the content value
-     * 
+     *
      * @return the path elements
      */
     private String[] getPathElements(CmsXmlContent content, I_CmsXmlContentValue value) {
@@ -1150,9 +1150,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /**
      * Returns the workplace locale.<p>
-     * 
-     * @param cms the current OpenCms context 
-     * 
+     *
+     * @param cms the current OpenCms context
+     *
      * @return the current users workplace locale
      */
     private Locale getWorkplaceLocale(CmsObject cms) {
@@ -1165,14 +1165,14 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /**
      * Reads the content definition for the given resource and locale.<p>
-     * 
+     *
      * @param file the resource file
      * @param content the XML content
      * @param entityId the entity id
      * @param locale the content locale
-     * 
+     *
      * @return the content definition
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     private CmsContentDefinition readContentDefinition(
@@ -1284,13 +1284,13 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /**
      * Reads the content definition for the given resource and locale.<p>
-     * 
+     *
      * @param resource the resource
      * @param entityId the entity id
      * @param locale the content locale
-     * 
+     *
      * @return the content definition
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     private CmsContentDefinition readContentDefinition(CmsResource resource, String entityId, Locale locale)
@@ -1305,16 +1305,16 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     /**
      * Creates a new resource according to the new link, or returns the model file informations
      * modelFileId is <code>null</code> but required.<p>
-     * 
+     *
      * @param newLink the new link
      * @param referenceResource the reference resource
      * @param modelFileId the model file structure id
      * @param locale the content locale
      * @param mode the content creation mode
-     * @param postCreateHandler the class name for the post-create handler 
-     * 
+     * @param postCreateHandler the class name for the post-create handler
+     *
      * @return the content definition
-     * 
+     *
      * @throws CmsException if creating the resource failed
      */
     private CmsContentDefinition readContentDefnitionForNew(
@@ -1365,12 +1365,12 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /**
      * Synchronizes the locale independent fields for the given entity.<p>
-     * 
+     *
      * @param file the content file
      * @param content the XML content
      * @param skipPaths the paths to skip during locale synchronization
      * @param entity the entity
-     * 
+     *
      * @throws CmsXmlException if something goes wrong
      */
     private void synchronizeLocaleIndependentForEntity(
@@ -1414,11 +1414,11 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /**
      * Validates the given XML content.<p>
-     *  
+     *
      * @param cms the cms context
      * @param structureId the structure id
      * @param content the XML content
-     * 
+     *
      * @return the validation result
      */
     private ValidationResult validateContent(CmsObject cms, CmsUUID structureId, CmsXmlContent content) {
@@ -1456,14 +1456,14 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /**
      * Writes the xml content to the vfs and re-initializes the member variables.<p>
-     * 
+     *
      * @param cms the cms context
      * @param file the file to write to
      * @param content the content
      * @param encoding the file encoding
-     * 
-     * @return the content 
-     * 
+     *
+     * @return the content
+     *
      * @throws CmsException if writing the file fails
      */
     private CmsXmlContent writeContent(CmsObject cms, CmsFile file, CmsXmlContent content, String encoding)
@@ -1477,7 +1477,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 org.opencms.workplace.editors.Messages.ERR_INVALID_CONTENT_ENC_1,
                 file.getRootPath()), e);
         }
-        // the file content might have been modified during the write operation    
+        // the file content might have been modified during the write operation
         file = cms.writeFile(file);
         return CmsXmlContentFactory.unmarshal(cms, file);
     }

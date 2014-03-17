@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,7 +34,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * A bean that contains both publish options and a map of projects.<p>
- * 
+ *
  * @since 8.0
  */
 public class CmsPublishData implements IsSerializable {
@@ -63,11 +63,11 @@ public class CmsPublishData implements IsSerializable {
     /** The available work flow actions. */
     private Map<String, CmsWorkflow> m_workflows;
 
-    /** 
+    /**
      * Creates a new instance.<p>
-     * 
-     * @param options the publish options 
-     * @param projects the map of projects 
+     *
+     * @param options the publish options
+     * @param projects the map of projects
      * @param groups the publish groups
      * @param workflows the available work flows
      * @param selectedWorkflowId the selected workflow id
@@ -94,24 +94,24 @@ public class CmsPublishData implements IsSerializable {
         // for serialization
     }
 
-    /** 
-     * Gets the publish group list.<p>
-     * 
-     * @return the publish group list 
-     */
-    public CmsPublishGroupList getGroupList() {
-
-        return m_groups;
-    }
-
     /**
      * Gets the close link to open when the dialog is finished.<p>
-     * 
-     * @return the close link 
+     *
+     * @return the close link
      */
     public String getCloseLink() {
 
         return m_closeLink;
+    }
+
+    /**
+     * Gets the publish group list.<p>
+     *
+     * @return the publish group list
+     */
+    public CmsPublishGroupList getGroupList() {
+
+        return m_groups;
     }
 
     /**
@@ -126,7 +126,7 @@ public class CmsPublishData implements IsSerializable {
 
     /**
      * Returns the publish options.<p>
-     * 
+     *
      * @return the publish options
      */
     public CmsPublishOptions getOptions() {
@@ -136,8 +136,8 @@ public class CmsPublishData implements IsSerializable {
 
     /**
      * Returns the list of projects.<p>
-     * 
-     * @return the list of projects 
+     *
+     * @return the list of projects
      */
     public List<CmsProjectBean> getProjects() {
 
@@ -146,7 +146,7 @@ public class CmsPublishData implements IsSerializable {
 
     /**
      * Returns the selected workflow.<p>
-     * 
+     *
      * @return the selected workflow
      */
     public String getSelectedWorkflowId() {
@@ -166,8 +166,8 @@ public class CmsPublishData implements IsSerializable {
 
     /**
      * Returns true if the confirmation dialog should be shown before returning to the workplace.<p>
-     * 
-     * @return true if the confirmation dialog is enabled 
+     *
+     * @return true if the confirmation dialog is enabled
      */
     public boolean isShowConfirmation() {
 
@@ -176,8 +176,8 @@ public class CmsPublishData implements IsSerializable {
 
     /**
      * Sets the close link.<p>
-     * 
-     * @param closeLink the close link 
+     *
+     * @param closeLink the close link
      */
     public void setCloseLink(String closeLink) {
 
@@ -185,10 +185,10 @@ public class CmsPublishData implements IsSerializable {
 
     }
 
-    /** 
+    /**
      * Enables or disables showing the confirmation dialog before returning to the workplace.<p>
-     * 
-     * @param confirm true if the confirmation dialog should be shown 
+     *
+     * @param confirm true if the confirmation dialog should be shown
      */
     public void setShowConfirmation(boolean confirm) {
 

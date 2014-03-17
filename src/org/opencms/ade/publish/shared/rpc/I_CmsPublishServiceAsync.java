@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,14 +41,17 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * The asynchronous interface to the publish service.<p>
- * 
+ *
  * @since 8.0.0
  */
 public interface I_CmsPublishServiceAsync {
 
     /**
-     * 
-     * @param callback the result callback 
+     * Executes a workflow action.<p>
+     *
+     * @param action the workflow action
+     * @param params the workflow parameters
+     * @param callback the result callback
      */
     void executeAction(
         CmsWorkflowAction action,
@@ -57,19 +60,19 @@ public interface I_CmsPublishServiceAsync {
 
     /**
      * Asynchronous version of {@link I_CmsPublishService#getInitData(HashMap)}.<p>
-     * 
-     * @param params the additional publish parameters  
+     *
+     * @param params the additional publish parameters
      * @param callback the result callback
      */
     void getInitData(HashMap<String, String> params, AsyncCallback<CmsPublishData> callback);
 
     /**
      * Asynchronous version of {@link I_CmsPublishService#getResourceGroups(CmsWorkflow,CmsPublishOptions,boolean)}.<p>
-     * 
-     * @param workflow the selected workflow 
+     *
+     * @param workflow the selected workflow
      * @param options the publish list options
      * @param callback the result callback
-     * @param projectChanged indicates whether the reason we get the resource groups is because the user changed the project 
+     * @param projectChanged indicates whether the reason we get the resource groups is because the user changed the project
      */
     void getResourceGroups(
         CmsWorkflow workflow,
@@ -79,7 +82,7 @@ public interface I_CmsPublishServiceAsync {
 
     /**
      * Asynchronous version of {@link I_CmsPublishService#getResourceOptions()}.<p>
-     * 
+     *
      * @param callback the result callback
      */
     void getResourceOptions(AsyncCallback<CmsPublishOptions> callback);

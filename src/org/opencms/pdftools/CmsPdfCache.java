@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,7 +34,7 @@ import org.opencms.main.OpenCms;
 
 /**
  * Cache class for storing generated PDFs in the RFS.<p>
- * 
+ *
  * This class stores all cached files in a single folder.
  */
 public class CmsPdfCache extends CmsVfsNameBasedDiskCache {
@@ -56,12 +56,12 @@ public class CmsPdfCache extends CmsVfsNameBasedDiskCache {
     @Override
     public String getCacheName(CmsResource resource, String parameters) {
 
-        // we want a 'flat' folder structure, so we create a fake resource with a path in which the slashes 
-        // from the original path have been transformed to underscores 
+        // we want a 'flat' folder structure, so we create a fake resource with a path in which the slashes
+        // from the original path have been transformed to underscores
         CmsWrappedResource wrapper = new CmsWrappedResource(resource);
         String fakePath = "/" + resource.getRootPath().replaceAll("/", "_");
-        // the extension doesn't really matter for the caching, but with an extension of PDF it's easier to look at the files in the cache folder with 
-        // file managers, so we replace the extension 
+        // the extension doesn't really matter for the caching, but with an extension of PDF it's easier to look at the files in the cache folder with
+        // file managers, so we replace the extension
         fakePath = fakePath.replaceFirst("\\.(?:html|xml)$", ".pdf");
         wrapper.setRootPath(fakePath);
         CmsResource fakeResource = wrapper.getResource();

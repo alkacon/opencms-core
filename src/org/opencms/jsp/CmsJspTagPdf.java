@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -59,15 +59,15 @@ public class CmsJspTagPdf extends TagSupport {
 
     /**
      * The implementation of the tag.<p>
-     *  
-     * @param request the current request 
-     * @param format the format path 
-     * @param content the content path 
-     * @param localeStr the name of the locale to include in the PDF link 
-     * 
-     * @return the link to the PDF 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param request the current request
+     * @param format the format path
+     * @param content the content path
+     * @param localeStr the name of the locale to include in the PDF link
+     *
+     * @return the link to the PDF
+     *
+     * @throws CmsException if something goes wrong
      */
     public static String pdfTagAction(ServletRequest request, String format, String content, String localeStr)
     throws CmsException {
@@ -100,8 +100,8 @@ public class CmsJspTagPdf extends TagSupport {
 
     /**
      * Setter for the content path.<p>
-     * 
-     * @param content the content path 
+     *
+     * @param content the content path
      */
     public void setContent(String content) {
 
@@ -110,18 +110,18 @@ public class CmsJspTagPdf extends TagSupport {
 
     /**
      * Setter for the format path.<p>
-     * 
-     * @param format the format path 
+     *
+     * @param format the format path
      */
     public void setFormat(String format) {
 
         m_format = format;
     }
 
-    /** 
+    /**
      * Sets the locale to use for the PDF link.<p>
-     * 
-     * @param locale the locale to use 
+     *
+     * @param locale the locale to use
      */
     public void setLocale(String locale) {
 

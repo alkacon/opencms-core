@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -56,8 +56,8 @@ public class CmsPdfThumbnailLink {
 
         /**
          * Creates a new instance.<p>
-         * 
-         * @param message the exception message 
+         *
+         * @param message the exception message
          */
         public ParseException(String message) {
 
@@ -102,12 +102,12 @@ public class CmsPdfThumbnailLink {
     /** The width. */
     private int m_width = -1;
 
-    /** 
+    /**
      * Creates a new thumbnail link for the given resource and options.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param pdfResource the PDF resource for which to create a thumbnail link 
-     * @param width thumbnail width 
+     *
+     * @param cms the current CMS context
+     * @param pdfResource the PDF resource for which to create a thumbnail link
+     * @param width thumbnail width
      * @param height thumbnail height
      * @param format the thumbnail image format (png, gif..,)
      */
@@ -123,13 +123,13 @@ public class CmsPdfThumbnailLink {
             "/" + MARKER + "/" + pdfResource.getStructureId() + "." + format);
     }
 
-    /** 
+    /**
      * Parses a thumbnail link object from the given link path and options.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param link the link 
-     * @param options the options 
-     * 
+     *
+     * @param cms the current CMS context
+     * @param link the link
+     * @param options the options
+     *
      * @throws ParseException
      * @throws CmsException
      */
@@ -171,8 +171,8 @@ public class CmsPdfThumbnailLink {
 
     /**
      * Gets the image format.<p>
-     * 
-     * @return the image format 
+     *
+     * @return the image format
      */
     public String getFormat() {
 
@@ -189,10 +189,10 @@ public class CmsPdfThumbnailLink {
         return m_height;
     }
 
-    /** 
+    /**
      * Gets the link, with the options appended as a request parameter.<p>
-     * 
-     * @return the link with the options 
+     *
+     * @return the link with the options
      */
     public String getLinkWithOptions() {
 
@@ -221,8 +221,8 @@ public class CmsPdfThumbnailLink {
 
     /**
      * Gets the PDF resource.<p>
-     * 
-     * @return the PDF resource 
+     *
+     * @return the PDF resource
      */
     CmsResource getPdfResource() {
 

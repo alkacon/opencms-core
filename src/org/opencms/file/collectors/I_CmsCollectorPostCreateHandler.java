@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,12 +36,12 @@ import org.opencms.file.CmsResource;
  */
 public interface I_CmsCollectorPostCreateHandler {
 
-    /** 
+    /**
      * This is called after the new content has been created (and possibly already been filled with content).<p>
-     * 
-     * @param cms the current user's CMS context 
-     * @param createdResource the resource which has been created 
-     * @param copyMode true if the user chose one of the elements in the collector list as a model 
+     *
+     * @param cms the current user's CMS context
+     * @param createdResource the resource which has been created
+     * @param copyMode true if the user chose one of the elements in the collector list as a model
      */
     void onCreate(CmsObject cms, CmsResource createdResource, boolean copyMode);
 }

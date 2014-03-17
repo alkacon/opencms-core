@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -52,11 +52,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 
 /**
- * This resource handler handles URLs of the form /pdflink/{locale}/{formatter-id}/{detailname} and format 
+ * This resource handler handles URLs of the form /pdflink/{locale}/{formatter-id}/{detailname} and format
  * the content identified by detailname using the JSP identified by formatter-id to generate XHTML which is then
  * converted to PDF and returned directly by this handler.<p>
- * 
- * In Online mode, the generated PDFs are cached on the real file system, while in Offline mode, the PDF data is always 
+ *
+ * In Online mode, the generated PDFs are cached on the real file system, while in Offline mode, the PDF data is always
  * generated on-the-fly.<p>
  */
 public class CmsPdfResourceHandler implements I_CmsResourceInit {
@@ -101,7 +101,7 @@ public class CmsPdfResourceHandler implements I_CmsResourceInit {
         // check if the resource was already found or the path starts with '/system/'
         boolean abort = (resource != null) || cms.getRequestContext().getUri().startsWith(CmsWorkplace.VFS_PATH_SYSTEM);
         if (abort) {
-            // skip in all cases above 
+            // skip in all cases above
             return resource;
         }
         if (response != null) {
@@ -123,14 +123,14 @@ public class CmsPdfResourceHandler implements I_CmsResourceInit {
                 LOG.warn(e.getLocalizedMessage(), e);
                 throw e;
             } catch (CmsPdfLink.CmsPdfLinkParseException e) {
-                // not a valid PDF link, just continue with the resource init chain 
+                // not a valid PDF link, just continue with the resource init chain
                 LOG.warn(e.getLocalizedMessage(), e);
                 return null;
             } catch (CmsPdfThumbnailLink.ParseException e) {
                 LOG.warn(e.getLocalizedMessage(), e);
                 return null;
             } catch (Exception e) {
-                // don't just return null, because we want a useful error message to be displayed 
+                // don't just return null, because we want a useful error message to be displayed
                 LOG.error(e.getLocalizedMessage(), e);
                 throw new CmsRuntimeException(Messages.get().container(
                     Messages.ERR_RESOURCE_INIT_ABORTED_1,
@@ -143,14 +143,14 @@ public class CmsPdfResourceHandler implements I_CmsResourceInit {
 
     /**
      * Handles a link for generating a PDF.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param request the servlet request 
-     * @param response the servlet response 
+     *
+     * @param cms the current CMS context
+     * @param request the servlet request
+     * @param response the servlet response
      * @param uri the current uri
-     *  
-     * @throws Exception if something goes wrong 
-     * @throws CmsResourceInitException if the resource initialization is cancelled 
+     *
+     * @throws Exception if something goes wrong
+     * @throws CmsResourceInitException if the resource initialization is cancelled
      */
     protected void handlePdfLink(CmsObject cms, HttpServletRequest request, HttpServletResponse response, String uri)
     throws Exception {
@@ -182,7 +182,7 @@ public class CmsPdfResourceHandler implements I_CmsResourceInit {
             if (LOG.isDebugEnabled()) {
                 logXhtmlOutput(formatter, content, xhtmlData);
             }
-            // Use the same CmsObject we used for executing the JSP, because the same site root is needed to resolve external resources like images  
+            // Use the same CmsObject we used for executing the JSP, because the same site root is needed to resolve external resources like images
             result = m_pdfConverter.convertXhtmlToPdf(cmsForJspExecution, xhtmlData, "opencms://" + uri);
             LOG.info("Converted XHTML to PDF, size=" + result.length);
             m_pdfCache.saveCacheFile(cacheName, result);
@@ -201,10 +201,10 @@ public class CmsPdfResourceHandler implements I_CmsResourceInit {
 
     /**
      * Logs the XHTML output.<p>
-     *  
-     * @param formatter the formatter 
-     * @param content the content resource 
-     * @param xhtmlData the XHTML data 
+     *
+     * @param formatter the formatter
+     * @param content the content resource
+     * @param xhtmlData the XHTML data
      */
     protected void logXhtmlOutput(CmsResource formatter, CmsResource content, byte[] xhtmlData) {
 
@@ -223,13 +223,13 @@ public class CmsPdfResourceHandler implements I_CmsResourceInit {
 
     /**
      * Handles a request for a PDF thumbnail.<p>
-     * 
-     * @param cms the current CMS context 
+     *
+     * @param cms the current CMS context
      * @param request the servlet request
      * @param response the servlet response
-     * @param uri the current uri 
-     * 
-     *  @throws Exception if something goes wrong 
+     * @param uri the current uri
+     *
+     *  @throws Exception if something goes wrong
      */
     private void handleThumbnailLink(CmsObject cms, HttpServletRequest request, HttpServletResponse response, String uri)
     throws Exception {

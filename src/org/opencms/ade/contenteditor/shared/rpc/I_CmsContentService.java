@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,28 +51,28 @@ public interface I_CmsContentService extends I_ContentService {
     String PARAM_BACKLINK = "backlink";
 
     /**
-     * Loads the content definition for a given entity.<p>
-     * 
+     * Loads the content definition for a given entity. <p>
+     *
      * @param entityId the entity id/URI
-     * 
+     *
      * @return the content definition
-     * 
+     *
      * @throws Exception if something goes wrong processing the request
      */
     CmsContentDefinition loadDefinition(String entityId) throws Exception;
 
     /**
      * Loads the content definition for a given entity.<p>
-     * 
+     *
      * @param entityId the entity id/URI
      * @param newLink the new link
      * @param modelFileId  the optional model file id
      * @param editContext the container page currently being edited (may be null)
      * @param mode the content creation mode
-     * @param postCreateHandler the post-create handler class name 
-     * 
+     * @param postCreateHandler the post-create handler class name
+     *
      * @return the content definition
-     * 
+     *
      * @throws CmsRpcException if something goes wrong processing the request
      */
     CmsContentDefinition loadDefinition(
@@ -85,15 +85,15 @@ public interface I_CmsContentService extends I_ContentService {
 
     /**
      * Loads another content locale with the given entity id.<p>
-     * 
+     *
      * @param entityId the entity id
      * @param lastLocale the last edited locale
      * @param skipPaths the paths to skip during locale synchronization
      * @param editedEntities the edited entities
      * @param newLocale states if a new locale should be generated
-     * 
+     *
      * @return the content definition
-     * 
+     *
      * @throws CmsRpcException if something goes wrong processing the request
      */
     CmsContentDefinition loadOtherLocale(
@@ -105,24 +105,24 @@ public interface I_CmsContentService extends I_ContentService {
 
     /**
      * Returns the content definition of the resource requested through parameter 'resource'.<p>
-     * 
+     *
      * @return the content definition
-     * 
+     *
      * @throws CmsRpcException if something goes wrong
      */
     CmsContentDefinition prefetch() throws CmsRpcException;
 
     /**
      * Saves and deletes the given entities. Returns a validation result in case of invalid entities.<p>
-     * 
+     *
      * @param changedEntities the changed entities
      * @param deletedEntities the entity id's to delete
      * @param skipPaths the paths to skip during locale synchronization
      * @param lastEditedLocale the last edited locale
      * @param clearOnSuccess  <code>true</code> to unlock resource after saving
-     * 
+     *
      * @return the validation result in case of invalid entities
-     * 
+     *
      * @throws CmsRpcException if something goes wrong processing the request
      */
     ValidationResult saveAndDeleteEntities(

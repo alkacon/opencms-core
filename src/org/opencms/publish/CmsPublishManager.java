@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -52,12 +52,12 @@ import java.util.Map;
 
 /**
  * This manager provide access to the publish engine runtime information.<p>
- * 
+ *
  * @since 6.5.5
  */
 public class CmsPublishManager {
 
-    /** 
+    /**
      * Enum for the different publish  list remove modes.<p>
      */
     public static enum PublishListRemoveMode {
@@ -111,7 +111,7 @@ public class CmsPublishManager {
 
     /**
      * Constructor used to create a pre-initialized instance.<p>
-     * 
+     *
      * @param historySize the size of the publish history
      * @param queuePersistance indicates if the queue is re-initialized on startup
      * @param queueShutdowntime the amount of time to wait for a publish job during shutdown
@@ -135,14 +135,14 @@ public class CmsPublishManager {
 
     /**
      * Aborts the given publish job.<p>
-     * 
+     *
      * @param cms the cms context
      * @param publishJob the publish job to abort
      * @param removeJob indicates if the job will be removed or added to history
-     * 
+     *
      * @throws CmsException if there is some problem during unlocking the resources
-     * @throws CmsSecurityException if the current user has not enough permissions 
-     * @throws CmsPublishException if the publish job can not been aborted 
+     * @throws CmsSecurityException if the current user has not enough permissions
+     * @throws CmsPublishException if the publish job can not been aborted
      */
     public void abortPublishJob(CmsObject cms, CmsPublishJobEnqueued publishJob, boolean removeJob)
     throws CmsException, CmsSecurityException, CmsPublishException {
@@ -159,7 +159,7 @@ public class CmsPublishManager {
 
     /**
      * Adds a publish listener to listen on publish events.<p>
-     * 
+     *
      * @param listener the publish listener to add
      */
     public void addPublishListener(I_CmsPublishEventListener listener) {
@@ -194,7 +194,7 @@ public class CmsPublishManager {
 
     /**
      * Returns the current running publish job.<p>
-     * 
+     *
      * @return the current running publish job
      */
     public CmsPublishJobRunning getCurrentPublishJob() {
@@ -207,11 +207,11 @@ public class CmsPublishManager {
 
     /**
      * Returns a publish job based on its publish history id.<p>
-     * 
+     *
      * The returned publish job may be an enqueued, running or finished publish job.<p>
-     * 
+     *
      * @param publishHistoryId the publish history id to search for
-     * 
+     *
      * @return the publish job with the given publish history id, or <code>null</code>
      */
     public CmsPublishJobBase getJobByPublishHistoryId(CmsUUID publishHistoryId) {
@@ -221,7 +221,7 @@ public class CmsPublishManager {
 
     /**
      * Returns the publish history list with already publish jobs.<p>
-     * 
+     *
      * @return a list of {@link CmsPublishJobFinished} objects
      */
     public List<CmsPublishJobFinished> getPublishHistory() {
@@ -231,9 +231,9 @@ public class CmsPublishManager {
 
     /**
      * Returns the publish history list with already publish jobs, filtered by the given user.<p>
-     * 
+     *
      * @param user the user to filter the jobs with
-     * 
+     *
      * @return a list of {@link CmsPublishJobFinished} objects
      */
     public List<CmsPublishJobFinished> getPublishHistory(CmsUser user) {
@@ -262,11 +262,11 @@ public class CmsPublishManager {
     /**
      * Returns a publish list with all new/changed/deleted resources of the current (offline)
      * project that actually get published.<p>
-     * 
+     *
      * @param cms the cms request context
-     * 
+     *
      * @return a publish list
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public CmsPublishList getPublishList(CmsObject cms) throws CmsException {
@@ -278,14 +278,14 @@ public class CmsPublishManager {
     /**
      * Returns a publish list with all new/changed/deleted resources of the current (offline)
      * project that actually get published for a direct publish of a single resource.<p>
-     * 
+     *
      * @param cms the cms request context
      * @param directPublishResource the resource which will be directly published
-     * @param directPublishSiblings <code>true</code>, if all eventual siblings of the direct 
+     * @param directPublishSiblings <code>true</code>, if all eventual siblings of the direct
      *                      published resource should also get published.
-     * 
+     *
      * @return a publish list
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public CmsPublishList getPublishList(CmsObject cms, CmsResource directPublishResource, boolean directPublishSiblings)
@@ -299,14 +299,14 @@ public class CmsPublishManager {
     /**
      * Returns a publish list with all new/changed/deleted resources of the current (offline)
      * project that actually get published for a direct publish of a List of resources.<p>
-     * 
+     *
      * @param cms the cms request context
      * @param directPublishResources the resources which will be directly published
-     * @param directPublishSiblings <code>true</code>, if all eventual siblings of the direct 
+     * @param directPublishSiblings <code>true</code>, if all eventual siblings of the direct
      *                      published resources should also get published.
-     * 
+     *
      * @return a publish list
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public CmsPublishList getPublishList(
@@ -320,15 +320,15 @@ public class CmsPublishManager {
     /**
      * Returns a publish list with all new/changed/deleted resources of the current (offline)
      * project that actually get published for a direct publish of a List of resources.<p>
-     * 
+     *
      * @param cms the cms request context
      * @param directPublishResources the {@link CmsResource} objects which will be directly published
-     * @param directPublishSiblings <code>true</code>, if all eventual siblings of the direct 
+     * @param directPublishSiblings <code>true</code>, if all eventual siblings of the direct
      *                      published resources should also get published.
      * @param publishSubResources indicates if sub-resources in folders should be published (for direct publish only)
-     * 
+     *
      * @return a publish list
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public CmsPublishList getPublishList(
@@ -345,15 +345,15 @@ public class CmsPublishManager {
 
     /**
      * Returns a publish list with all the given resources, filtered only by state.<p>
-     * 
+     *
      * @param cms the cms request context
      * @param directPublishResources the {@link CmsResource} objects which will be directly published
-     * @param directPublishSiblings <code>true</code>, if all eventual siblings of the direct 
+     * @param directPublishSiblings <code>true</code>, if all eventual siblings of the direct
      *                      published resources should also get published
      * @param isUserPublishList if true, the publish list consists of resources directly selected by the user to publish
-     * 
+     *
      * @return a publish list
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public CmsPublishList getPublishListAll(
@@ -368,10 +368,10 @@ public class CmsPublishManager {
         return m_securityManager.fillPublishList(cms.getRequestContext(), pubList);
     }
 
-    /** 
+    /**
      * Gets the publish list remove mode.<p>
-     * 
-     * @return the publish list remove mode 
+     *
+     * @return the publish list remove mode
      */
     public CmsPublishManager.PublishListRemoveMode getPublishListRemoveMode() {
 
@@ -380,7 +380,7 @@ public class CmsPublishManager {
 
     /**
      * Returns the queue with still waiting publish jobs.<p>
-     * 
+     *
      * @return a list of {@link CmsPublishJobEnqueued} objects
      */
     public List<CmsPublishJobEnqueued> getPublishQueue() {
@@ -390,7 +390,7 @@ public class CmsPublishManager {
 
     /**
      * Returns the amount of time in seconds the system will wait during shutdown for a running publish job.<p>
-     * 
+     *
      * @return the shutdown time for a running publish job
      */
     public int getPublishQueueShutdowntime() {
@@ -399,15 +399,15 @@ public class CmsPublishManager {
     }
 
     /**
-     * Returns a new publish list that contains the unpublished resources related 
-     * to all resources in the given publish list, the related resources exclude 
+     * Returns a new publish list that contains the unpublished resources related
+     * to all resources in the given publish list, the related resources exclude
      * all resources in the given publish list and also locked (by other users) resources.<p>
-     * 
+     *
      * @param cms the cms request context
      * @param publishList the publish list to exclude from result
-     * 
+     *
      * @return a new publish list that contains the related resources
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public CmsPublishList getRelatedResourcesToPublish(CmsObject cms, CmsPublishList publishList) throws CmsException {
@@ -420,10 +420,10 @@ public class CmsPublishManager {
 
     /**
      * Returns the content of the publish report assigned to the given publish job.<p>
-     * 
+     *
      * @param publishJob the published job
      * @return the content of the assigned publish report
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public byte[] getReportContents(CmsPublishJobFinished publishJob) throws CmsException {
@@ -433,11 +433,11 @@ public class CmsPublishManager {
 
     /**
      * Returns the current user's publish list.<p>
-     * 
+     *
      * @param cms the current cms context
-     * 
+     *
      * @return the current user's publish list
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public List<CmsResource> getUsersPubList(CmsObject cms) throws CmsException {
@@ -447,9 +447,9 @@ public class CmsPublishManager {
 
     /**
      * Initializes the publish manager and the publish engine finally.<p>
-     * 
+     *
      * @param cms an admin cms object
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public void initialize(CmsObject cms) throws CmsException {
@@ -460,8 +460,8 @@ public class CmsPublishManager {
 
     /**
      * Returns if the publish queue is persisted an will be re-initialized on startup.<p>
-     * 
-     * @return <code>true</code> if the publish queue is persisted 
+     *
+     * @return <code>true</code> if the publish queue is persisted
      */
     public boolean isPublishQueuePersistanceEnabled() {
 
@@ -470,9 +470,9 @@ public class CmsPublishManager {
 
     /**
      * Returns the working state, that is if no publish job
-     * is waiting to be processed and there is no current running 
+     * is waiting to be processed and there is no current running
      * publish job.<p>
-     * 
+     *
      * @return the working state
      */
     public boolean isRunning() {
@@ -482,13 +482,13 @@ public class CmsPublishManager {
 
     /**
      * Returns a new publish list that contains all resources of both given publish lists.<p>
-     * 
+     *
      * @param cms the cms request context
      * @param pubList1 the first publish list
      * @param pubList2 the second publish list
-     * 
+     *
      * @return a new publish list that contains all resources of both given publish lists
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public CmsPublishList mergePublishLists(CmsObject cms, CmsPublishList pubList1, CmsPublishList pubList2)
@@ -502,9 +502,9 @@ public class CmsPublishManager {
      *
      * @param cms the cms request context
      * @return the publish history id of the published project
-     * 
+     *
      * @throws Exception if something goes wrong
-     * 
+     *
      * @see CmsShellReport
      */
     public CmsUUID publishProject(CmsObject cms) throws Exception {
@@ -517,9 +517,9 @@ public class CmsPublishManager {
      *
      * @param cms the cms request context
      * @param report an instance of <code>{@link I_CmsReport}</code> to print messages
-     * 
+     *
      * @return the publish history id of the published project
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public CmsUUID publishProject(CmsObject cms, I_CmsReport report) throws CmsException {
@@ -529,15 +529,15 @@ public class CmsPublishManager {
 
     /**
      * Publishes the resources of a specified publish list.<p>
-     * 
+     *
      * @param cms the cms request context
      * @param report an instance of <code>{@link I_CmsReport}</code> to print messages
      * @param publishList a publish list
-     * 
+     *
      * @return the publish history id of the published project
-     * 
+     *
      * @throws CmsException if something goes wrong
-     * 
+     *
      * @see #getPublishList(CmsObject)
      * @see #getPublishList(CmsObject, CmsResource, boolean)
      * @see #getPublishList(CmsObject, List, boolean)
@@ -549,17 +549,17 @@ public class CmsPublishManager {
 
     /**
      * Direct publishes a specified resource.<p>
-     * 
+     *
      * @param cms the cms request context
      * @param report an instance of <code>{@link I_CmsReport}</code> to print messages
-     * @param directPublishResource a <code>{@link CmsResource}</code> that gets directly published; 
+     * @param directPublishResource a <code>{@link CmsResource}</code> that gets directly published;
      *                          or <code>null</code> if an entire project gets published.
-     * @param directPublishSiblings if a <code>{@link CmsResource}</code> that should get published directly is 
-     *                          provided as an argument, all eventual siblings of this resource 
+     * @param directPublishSiblings if a <code>{@link CmsResource}</code> that should get published directly is
+     *                          provided as an argument, all eventual siblings of this resource
      *                          get publish too, if this flag is <code>true</code>.
-     * 
+     *
      * @return the publish history id of the published project
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public CmsUUID publishProject(
@@ -573,16 +573,16 @@ public class CmsPublishManager {
 
     /**
      * Publishes a single resource, printing messages to a shell report.<p>
-     * 
+     *
      * The siblings of the resource will not be published.<p>
      *
      * @param cms the cms request context
      * @param resourcename the name of the resource to be published
-     * 
+     *
      * @return the publish history id of the published project
-     * 
+     *
      * @throws Exception if something goes wrong
-     * 
+     *
      * @see CmsShellReport
      */
     public CmsUUID publishResource(CmsObject cms, String resourcename) throws Exception {
@@ -592,14 +592,14 @@ public class CmsPublishManager {
 
     /**
      * Publishes a single resource.<p>
-     * 
+     *
      * @param cms the cms request context
      * @param resourcename the name of the resource to be published
      * @param publishSiblings if <code>true</code>, all siblings of the resource are also published
      * @param report the report to write the progress information to
-     * 
+     *
      * @return the publish history id of the published project
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public CmsUUID publishResource(CmsObject cms, String resourcename, boolean publishSiblings, I_CmsReport report)
@@ -611,7 +611,7 @@ public class CmsPublishManager {
 
     /**
      * Removes the given publish listener.<p>
-     * 
+     *
      * @param listener the publish listener to remove
      */
     public void removePublishListener(I_CmsPublishEventListener listener) {
@@ -621,10 +621,10 @@ public class CmsPublishManager {
 
     /**
      * Removes the given resource to the given user's publish list.<p>
-     * 
+     *
      * @param cms the current cms context
      * @param structureIds the collection of structure IDs to remove
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public void removeResourceFromUsersPubList(CmsObject cms, Collection<CmsUUID> structureIds) throws CmsException {
@@ -634,7 +634,7 @@ public class CmsPublishManager {
 
     /**
      * Sets the publish engine during initialization.<p>
-     * 
+     *
      * @param publishEngine the publish engine instance
      */
     public void setPublishEngine(CmsPublishEngine publishEngine) {
@@ -658,10 +658,10 @@ public class CmsPublishManager {
         m_publishHistorySize = Integer.parseInt(publishHistorySize);
     }
 
-    /** 
+    /**
      * Sets the publish list remove mode.<p>
-     * 
-     * @param publishListRemoveMode the publish list remove mode 
+     *
+     * @param publishListRemoveMode the publish list remove mode
      */
     public void setPublishListRemoveMode(CmsPublishManager.PublishListRemoveMode publishListRemoveMode) {
 
@@ -673,7 +673,7 @@ public class CmsPublishManager {
 
     /**
      * Sets if the publish queue is re-initialized on startup.<p>
-     * 
+     *
      * @param publishQueuePersistance the persistence flag, parsed as <code>boolean</code>
      */
     public void setPublishQueuePersistance(String publishQueuePersistance) {
@@ -686,7 +686,7 @@ public class CmsPublishManager {
 
     /**
      * Sets the publish queue shutdown time.
-     * 
+     *
      * @param publishQueueShutdowntime the shutdown time to set, parsed as <code>int</code>
      */
     public void setPublishQueueShutdowntime(String publishQueueShutdowntime) {
@@ -699,7 +699,7 @@ public class CmsPublishManager {
 
     /**
      * Sets the security manager during initialization.<p>
-     * 
+     *
      * @param securityManager the security manager
      */
     public void setSecurityManager(CmsSecurityManager securityManager) {
@@ -728,17 +728,17 @@ public class CmsPublishManager {
 
     /**
      * Validates the relations for the given resources.<p>
-     * 
+     *
      * @param cms the cms request context
      * @param publishList the publish list to validate against the online project
      * @param report a report to write the messages to
-     * 
-     * @return a map with lists of invalid links 
-     *          (<code>{@link org.opencms.relations.CmsRelation}}</code> objects) 
+     *
+     * @return a map with lists of invalid links
+     *          (<code>{@link org.opencms.relations.CmsRelation}}</code> objects)
      *          keyed by root paths
-     * 
+     *
      * TODO: change return value to List of CmsRelation
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public Map<String, List<CmsRelation>> validateRelations(
@@ -759,7 +759,7 @@ public class CmsPublishManager {
 
     /**
      * Waits until no publish jobs remain or the given max milliseconds.<p>
-     * 
+     *
      * @param ms the max milliseconds to wait
      */
     public void waitWhileRunning(long ms) {
@@ -787,7 +787,7 @@ public class CmsPublishManager {
 
     /**
      * Returns the currently used publish engine.<p>
-     * 
+     *
      * @return the publish engine
      */
     protected CmsPublishEngine getEngine() {

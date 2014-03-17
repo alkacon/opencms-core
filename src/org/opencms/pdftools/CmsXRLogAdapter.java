@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,8 +40,8 @@ import org.xhtmlrenderer.util.XRLogger;
 
 /**
  * Adaspter for sending xhtmlrenderer (flyingsaucer) log messages to the OpenCms log.<p>
- * 
- * The log channels to which the log messages are sent start with the prefix 'org.opencms.' so that no 
+ *
+ * The log channels to which the log messages are sent start with the prefix 'org.opencms.' so that no
  * change in the log configuration is needed to make error messages appear in the log.<p>
  */
 public class CmsXRLogAdapter implements XRLogger {
@@ -98,12 +98,12 @@ public class CmsXRLogAdapter implements XRLogger {
         throw new UnsupportedOperationException("setLevel not supported");
     }
 
-    /** 
+    /**
      * Gets the real logger name.<p>
-     * 
-     * @param xrLoggerName the XR logger name 
-     * 
-     * @return the real logger name 
+     *
+     * @param xrLoggerName the XR logger name
+     *
+     * @return the real logger name
      */
     private String getLoggerName(String xrLoggerName) {
 
@@ -117,11 +117,11 @@ public class CmsXRLogAdapter implements XRLogger {
 
     /**
      * Sends a log message to the commons-logging interface.<p>
-     * 
-     * @param level the log level 
-     * @param message the message 
-     * @param log the commons logging log object 
-     * @param e a throwable or null 
+     *
+     * @param level the log level
+     * @param message the message
+     * @param log the commons logging log object
+     * @param e a throwable or null
      */
     private void sendMessageToLogger(Level level, String message, Log log, Throwable e) {
 

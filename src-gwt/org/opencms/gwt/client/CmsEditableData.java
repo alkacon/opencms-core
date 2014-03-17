@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,12 +31,12 @@ import org.opencms.util.CmsUUID;
 
 /**
  * Bean holding data needed to open the xml content editor.<p>
- * 
+ *
  * @since 8.0.1
  */
 public class CmsEditableData implements I_CmsEditableData {
 
-    /** The context id, identifying the collector list instance. */
+    /** The context id, identifying the collector list  instance. */
     private String m_contextId;
 
     /** The edit id. */
@@ -133,7 +133,7 @@ public class CmsEditableData implements I_CmsEditableData {
         return m_noEditReason;
     }
 
-    /** 
+    /**
      * @see org.opencms.gwt.client.I_CmsEditableData#getPostCreateHandler()
      */
     public String getPostCreateHandler() {
@@ -165,11 +165,11 @@ public class CmsEditableData implements I_CmsEditableData {
         return m_unreleaseOrExpired;
     }
 
-    /* 
+    /**
      * Sets  the collector context id.<p>
-    * 
-    * @param id the collector context id 
-    */
+     *
+     * @param id the collector context id
+     */
     public void setContextId(String id) {
 
         m_contextId = id;
@@ -257,7 +257,7 @@ public class CmsEditableData implements I_CmsEditableData {
 
     /**
      * Sets the unreleased or expired flag.<p>
-     * 
+     *
      * @param unreleaseOrExpired the unreleased or expired flag
      */
     public void setUnreleaseOrExpired(boolean unreleaseOrExpired) {

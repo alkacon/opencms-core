@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -29,7 +29,7 @@ package org.opencms.workplace.editors.directedit;
 
 /**
  * A parameter set to start a direct edit element, for internal use only.<p>
- * 
+ *
  * @since 6.2.3
  */
 public class CmsDirectEditParams {
@@ -60,7 +60,7 @@ public class CmsDirectEditParams {
 
     /**
      * Creates a new direct edit parameter set usually used for including the head HTML.<p>
-     * 
+     *
      * @param linkForClose the link to the current page useed when closing an editor or dialog
      */
     public CmsDirectEditParams(String linkForClose) {
@@ -75,7 +75,7 @@ public class CmsDirectEditParams {
 
     /**
      * Creates a new direct edit parameter set usually used within a XML content load loop for a <code>xmlcontent</code>.<p>
-     * 
+     *
      * @param resourceName the edit target VFS resource name
      * @param options the direct edit options to display buttons for
      * @param linkForNew the link to create a new VFS resource of the edited type
@@ -97,7 +97,7 @@ public class CmsDirectEditParams {
 
     /**
      * Creates a new direct edit parameter set usually used within a <code>cms:include</code> call for a <code>xmlpage</code>.<p>
-     * 
+     *
      * @param resourceName the edit target VFS resource name
      * @param element the selected element in the target content
      */
@@ -131,10 +131,10 @@ public class CmsDirectEditParams {
         return m_element;
     }
 
-    /** 
+    /**
      * Gets the ID for the contentload tag instance.<p>
-     * 
-     * @return the id 
+     *
+     * @return the id
      */
     public String getId() {
 
@@ -183,7 +183,7 @@ public class CmsDirectEditParams {
 
     /**
      * Returns the direct edit mode.<p>
-     * 
+     *
      * @return the direct edit mode
      */
     public CmsDirectEditMode getMode() {
@@ -193,8 +193,8 @@ public class CmsDirectEditParams {
 
     /**
      * Gets the post-create handler class name.<p>
-     * 
-     * @return the post-create handler class name 
+     *
+     * @return the post-create handler class name
      */
     public String getPostCreateHandler() {
 
@@ -213,8 +213,8 @@ public class CmsDirectEditParams {
 
     /**
      * Sets the ID for the contentload tag instance.<p>
-     * 
-     * @param id the id to set 
+     *
+     * @param id the id to set
      */
     public void setId(String id) {
 
@@ -223,8 +223,8 @@ public class CmsDirectEditParams {
 
     /**
      * Sets the post-create handler class name.<p>
-     * 
-     * @param postCreateHandler the post-create handler class name 
+     *
+     * @param postCreateHandler the post-create handler class name
      */
     public void setPostCreateHandler(String postCreateHandler) {
 

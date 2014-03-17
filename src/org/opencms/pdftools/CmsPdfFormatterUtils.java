@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -54,15 +54,15 @@ public final class CmsPdfFormatterUtils {
 
     /**
      * Executes a JSP with a given content as input and returns the output of the JSP.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param request the current request 
-     * @param response the current response 
-     * @param jsp the jsp resource to execute 
+     *
+     * @param cms the current CMS context
+     * @param request the current request
+     * @param response the current response
+     * @param jsp the jsp resource to execute
      * @param content the content to render with the JSP
-     *  
+     *
      * @return the output of the JSP
-     * @throws Exception if something goes wrong 
+     * @throws Exception if something goes wrong
      */
     public static byte[] executeJsp(
         CmsObject cms,

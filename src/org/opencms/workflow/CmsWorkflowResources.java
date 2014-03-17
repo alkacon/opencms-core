@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,7 +33,7 @@ import org.opencms.file.CmsResource;
 import java.util.List;
 
 /**
- * Set of workflow resources, and an optional workflow  
+ * Set of workflow resources, and an optional workflow
  */
 public class CmsWorkflowResources {
 
@@ -43,10 +43,10 @@ public class CmsWorkflowResources {
     /** The workflow resources. */
     private List<CmsResource> m_workflowResources;
 
-    /** 
+    /**
      * Creates new instance.<p>
-     * 
-     * @param workflowResources the workflow resources 
+     *
+     * @param workflowResources the workflow resources
      */
     public CmsWorkflowResources(List<CmsResource> workflowResources) {
 
@@ -55,9 +55,9 @@ public class CmsWorkflowResources {
 
     /**
      * Creates new instance.<p>
-     * 
+     *
      * @param workflowResources the workflow resources
-     * @param overrideWorkflow the 
+     * @param overrideWorkflow the
      */
     public CmsWorkflowResources(List<CmsResource> workflowResources, CmsWorkflow overrideWorkflow) {
 
@@ -67,8 +67,8 @@ public class CmsWorkflowResources {
 
     /**
      * Gets the override workflow, or null.<p>
-     * 
-     * @return the override workflow, or null 
+     *
+     * @return the override workflow, or null
      */
     public CmsWorkflow getOverrideWorkflow() {
 

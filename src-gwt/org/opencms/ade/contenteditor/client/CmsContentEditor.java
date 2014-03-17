@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -271,7 +271,7 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Adds an entity change listener.<p>
-     * 
+     *
      * @param changeListener the change listener
      * @param changeScope the change scope
      */
@@ -299,7 +299,7 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Returns the currently edited entity.<p>
-     * 
+     *
      * @return the currently edited entity
      */
     public static Entity getEntity() {
@@ -318,7 +318,7 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Returns the in-line editor instance.<p>
-     * 
+     *
      * @return the in-line editor instance
      */
     public static CmsContentEditor getInstance() {
@@ -331,9 +331,9 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Returns if the given element or it's descendants are inline editable.<p>
-     * 
+     *
      * @param element the element
-     * 
+     *
      * @return <code>true</code> if the element has editable descendants
      */
     public static boolean hasEditable(Element element) {
@@ -344,9 +344,9 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Checks whether the given element is annotated for inline editing.<p>
-     * 
+     *
      * @param element the element to check
-     * 
+     *
      * @return <code>true</code> if the given element is annotated for inline editing
      */
     public static boolean isEditable(Element element) {
@@ -357,7 +357,7 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Replaces the id's within about attributes of the given element and all it's children.<p>
-     * 
+     *
      * @param element the element
      * @param oldId the old id
      * @param newId the new id
@@ -378,11 +378,11 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Sets all annotated child elements editable.<p>
-     * 
+     *
      * @param element the element
      * @param editable <code>true</code> to enable editing
-     * 
-     * @return <code>true</code> if the element had editable elements 
+     *
+     * @return <code>true</code> if the element had editable elements
      */
     public static boolean setEditable(Element element, boolean editable) {
 
@@ -403,7 +403,7 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Adds the change listener.<p>
-     * 
+     *
      * @param changeListener the change listener
      * @param changeScope the change scope
      */
@@ -422,7 +422,7 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Checks whether the add entity change listener method has been exported.<p>
-     *  
+     *
      * @return <code>true</code> if the add entity change listener method has been exported
      */
     private static native boolean isObserverExported()/*-{
@@ -436,7 +436,7 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Returns the current entity.<p>
-     * 
+     *
      * @return the current entity
      */
     private static native Entity nativeGetEntity()/*-{
@@ -485,7 +485,7 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Loads the content definition for the given entity and executes the callback on success.<p>
-     * 
+     *
      * @param entityId the entity id
      * @param callback the callback
      */
@@ -521,12 +521,12 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Loads the content definition for the given entity and executes the callback on success.<p>
-     * 
+     *
      * @param entityId the entity id
      * @param newLink the new link
      * @param modelFileId  the model file id
-     * @param mode the content creation mode 
-     * @param postCreateHandler the post-create handler class name (optional) 
+     * @param mode the content creation mode
+     * @param postCreateHandler the post-create handler class name (optional)
      * @param callback the callback
      */
     public void loadDefinition(
@@ -579,7 +579,7 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Loads the content definition for the given entity and executes the callback on success.<p>
-     * 
+     *
      * @param entityId the entity id
      * @param lastLocale the last edited locale
      * @param editedEntities the changed entities
@@ -623,14 +623,14 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Opens the content editor dialog.<p>
-     * 
-     * @param context the editor context 
+     *
+     * @param context the editor context
      * @param locale the content locale
      * @param elementId the element id
      * @param newLink the new link
      * @param modelFileId the model file id
-     * @param postCreateHandler the post-create handler class (optional)  
-     * @param mode the content creation mode 
+     * @param postCreateHandler the post-create handler class (optional)
+     * @param mode the content creation mode
      * @param onClose the command executed on dialog close
      */
     public void openFormEditor(
@@ -672,8 +672,8 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Renders the in-line editor for the given element.<p>
-     * 
-     * @param context the editor context 
+     *
+     * @param context the editor context
      * @param elementId the element id
      * @param locale the content locale
      * @param panel the element panel
@@ -701,8 +701,8 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Opens the form based editor. Used within the stand alone contenteditor.jsp.<p>
-     * 
-     * @param context the editor context 
+     *
+     * @param context the editor context
      */
     public void openStandAloneFormEditor(final CmsEditorContext context) {
 
@@ -741,7 +741,7 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Registers a deep copy of the source entity with the given target entity id.<p>
-     * 
+     *
      * @param sourceEntityId the source entity id
      * @param targetEntityId the target entity id
      */
@@ -752,7 +752,7 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Registers the given content definition.<p>
-     * 
+     *
      * @param definition the content definition
      */
     public void registerContentDefinition(CmsContentDefinition definition) {
@@ -781,7 +781,7 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Saves the given entities.<p>
-     * 
+     *
      * @param entities the entities to save
      * @param deletedEntites the deleted entity id's
      * @param clearOnSuccess <code>true</code> to clear the VIE instance on success
@@ -827,7 +827,7 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Saves the given entities.<p>
-     * 
+     *
      * @param entities the entities to save
      * @param deletedEntites the deleted entity id's
      * @param clearOnSuccess <code>true</code> to clear the VIE instance on success
@@ -851,7 +851,7 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Sets the show editor help flag to the user session.<p>
-     * 
+     *
      * @param show the show editor help flag
      */
     public void setShowEditorHelp(final boolean show) {
@@ -881,7 +881,7 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Removes the given entity from the entity VIE store.<p>
-     * 
+     *
      * @param entityId the entity id
      */
     public void unregistereEntity(String entityId) {
@@ -943,8 +943,8 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Gets the editor context.<p>
-     * 
-     * @return the editor context 
+     *
+     * @return the editor context
      */
     protected CmsEditorContext getContext() {
 
@@ -962,7 +962,7 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Returns the core RPC service.<p>
-     * 
+     *
      * @return the core service
      */
     protected I_CmsCoreServiceAsync getCoreService() {
@@ -975,7 +975,7 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Gets the entity id.<p>
-     * 
+     *
      * @return the entity id
      */
     protected String getEntityId() {
@@ -994,7 +994,7 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Returns the paths to be skipped when synchronizing locale independent fields.<p>
-     * 
+     *
      * @return the paths to be skipped when synchronizing locale independent fields
      */
     protected Collection<String> getSkipPaths() {
@@ -1004,7 +1004,7 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Adds a content definition to the internal store.<p>
-     * 
+     *
      * @param definition the definition to add
      */
     void addContentDefinition(CmsContentDefinition definition) {
@@ -1082,7 +1082,7 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Copies the current entity values to the given locales.<p>
-     * 
+     *
      * @param targetLocales the target locales
      */
     void copyLocales(Set<String> targetLocales) {
@@ -1158,7 +1158,7 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Disables the save buttons with the given message.<p>
-     * 
+     *
      * @param message the disabled message
      */
     void disableSave(String message) {
@@ -1181,7 +1181,7 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Handles validation changes.<p>
-     * 
+     *
      * @param validationContext the changed validation context
      */
     void handleValidationChange(ValidationContext validationContext) {
@@ -1205,7 +1205,7 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Hides the editor help bubbles.<p>
-     * 
+     *
      * @param hide <code>true</code> to hide the help bubbles
      */
     void hideHelpBubbles(boolean hide) {
@@ -1221,8 +1221,8 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Initializes the editor.<p>
-     * 
-     * @param context the editor context 
+     *
+     * @param context the editor context
      * @param contentDefinition the content definition
      * @param formParent the inline form parent panel, used for inline editing only
      * @param inline <code>true</code> to render the editor for inline editing
@@ -1278,7 +1278,7 @@ public final class CmsContentEditor extends EditorBase {
         m_redoButton.setVisible(true);
         m_basePanel = new FlowPanel();
         m_basePanel.addStyleName(I_CmsLayoutBundle.INSTANCE.editorCss().basePanel());
-        // insert base panel before the tool bar to keep the tool bar visible 
+        // insert base panel before the tool bar to keep the tool bar visible
         RootPanel.get().add(m_basePanel);
         if (m_isStandAlone) {
             RootPanel.getBodyElement().addClassName(I_CmsLayoutBundle.INSTANCE.editorCss().standAloneEditor());
@@ -1303,8 +1303,8 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Opens the model file select dialog.<p>
-     * 
-     * @param context the editor context 
+     *
+     * @param context the editor context
      * @param definition the content definition
      */
     void openModelSelectDialog(final CmsEditorContext context, final CmsContentDefinition definition) {
@@ -1361,7 +1361,7 @@ public final class CmsContentEditor extends EditorBase {
     }
 
     /**
-     * Saves the content and closes the editor.<p> 
+     * Saves the content and closes the editor.<p>
      */
     void save() {
 
@@ -1386,7 +1386,7 @@ public final class CmsContentEditor extends EditorBase {
     }
 
     /**
-     * Saves the content and closes the editor.<p> 
+     * Saves the content and closes the editor.<p>
      */
     void saveAndExit() {
 
@@ -1421,7 +1421,7 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Sets the content definition.<p>
-     * 
+     *
      * @param definition the content definition
      */
     void setContentDefinition(CmsContentDefinition definition) {
@@ -1472,7 +1472,7 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Enables and disabler the undo redo buttons according to the state.<p>
-     * 
+     *
      * @param state the undo redo state
      */
     void setUndoRedoState(UndoRedoState state) {
@@ -1491,8 +1491,8 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Returns true if the edited resource should be unlocked automatically after pressing Save/Exit.<p>
-     * 
-     * @return true if the edited resource should be unlocked automatically 
+     *
+     * @return true if the edited resource should be unlocked automatically
      */
     boolean shouldUnlockAutomatically() {
 
@@ -1505,13 +1505,13 @@ public final class CmsContentEditor extends EditorBase {
                 return m_autoUnlock;
             }
         }
-        // Container page case - always unlock 
+        // Container page case - always unlock
         return true;
     }
 
     /**
      * Shows the validation error dialog.<p>
-     * 
+     *
      * @param validationResult the validation result
      */
     void showValidationErrorDialog(ValidationResult validationResult) {
@@ -1534,7 +1534,7 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Switches to the selected locale. Will save changes first.<p>
-     * 
+     *
      * @param locale the locale to switch to
      */
     void switchLocale(final String locale) {
@@ -1547,7 +1547,7 @@ public final class CmsContentEditor extends EditorBase {
         m_basePanel.clear();
         destroyForm(false);
         m_entityId = getIdForLocale(locale);
-        // if the content does not contain the requested locale yet, a new node will be created 
+        // if the content does not contain the requested locale yet, a new node will be created
         final boolean addedNewLocale = !m_contentLocales.contains(locale);
         Map<String, com.alkacon.acacia.shared.Entity> editedEntities = new HashMap<String, com.alkacon.acacia.shared.Entity>();
         for (String entityId : m_registeredEntities) {
@@ -1635,7 +1635,7 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Adds the change listener to the observer.<p>
-     * 
+     *
      * @param changeListener the change listener
      * @param changeScope the change scope
      */
@@ -1665,10 +1665,10 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Creates a push button for the edit tool-bar.<p>
-     * 
+     *
      * @param title the button title
      * @param imageClass the image class
-     * 
+     *
      * @return the button
      */
     private CmsPushButton createButton(String title, String imageClass) {
@@ -1709,9 +1709,9 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Returns the entity id for the given locale.<p>
-     * 
+     *
      * @param locale the locale
-     * 
+     *
      * @return the entity id
      */
     private String getIdForLocale(String locale) {
@@ -1719,7 +1719,7 @@ public final class CmsContentEditor extends EditorBase {
         return CmsContentDefinition.uuidToEntityId(CmsContentDefinition.entityIdToUuid(m_entityId), locale);
     }
 
-    /** 
+    /**
      * Initializes the window closing handler to ensure the resource will be unlocked when leaving the editor.<p>
      */
     private void initClosingHandler() {
@@ -1967,7 +1967,7 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Sets the resource info to native window context variables.<p>
-     * 
+     *
      * @param sitePath the site path
      * @param locale the content locale
      */

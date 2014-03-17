@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -52,13 +52,13 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Class to provide direct edit buttons.<p>
- * 
+ *
  * @since 8.0.0
  */
 public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMouseOverHandlers, HasMouseOutHandlers {
 
     /**
-     * Button handler for this class.<p>
+     * Button handler for this  class.<p>
      */
     private class MouseHandler extends A_CmsHoverHandler implements ClickHandler {
 
@@ -97,7 +97,7 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
                 try {
                     activeBar.removeHighlightingAndBar();
                 } catch (Throwable t) {
-                    // ignore 
+                    // ignore
                 }
             }
             activeBar = null;
@@ -159,7 +159,7 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param editable the editable marker tag
      * @param parentId the parent element id
      */
@@ -272,7 +272,7 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
 
     /**
      * Returns if this edit button is still valid.<p>
-     * 
+     *
      * @return <code>true</code> if this edit button is valid
      */
     public boolean isValid() {
@@ -303,7 +303,7 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
 
     /**
      * Sets the position. Make sure the widget is attached to the DOM.<p>
-     * 
+     *
      * @param position the absolute position
      * @param containerElement the parent container element
      */
@@ -349,7 +349,7 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
 
     /**
      * This method should be executed when the "new" direct edit button is clicked.<p>
-     * 
+     *
      * @param askCreateMode true if the user should be asked for the 'content create mode'
      */
     protected abstract void onClickNew(boolean askCreateMode);
@@ -369,7 +369,7 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
 
     /**
      * Updates the position of the expired resources overlay if present.<p>
-     * 
+     *
      * @param positioningParent the positioning parent element
      */
     protected void updateExpiredOverlayPosition(Element positioningParent) {

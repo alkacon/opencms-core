@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
 
 /**
  * Creates scaled images, acting as it's own parameter container.<p>
- * 
+ *
  * @since 6.2.0
  */
 public class CmsImageScaler {
@@ -177,18 +177,18 @@ public class CmsImageScaler {
     }
 
     /**
-     * Creates a new image scaler initialized with the height and width of 
+     * Creates a new image scaler initialized with the height and width of
      * the given image contained in the byte array.<p>
-     * 
+     *
      * <b>Please note:</b>The image itself is not stored in the scaler, only the width and
      * height dimensions of the image. To actually scale an image, you need to use
-     * <code>{@link #scaleImage(CmsFile)}</code>. This constructor is commonly used only 
+     * <code>{@link #scaleImage(CmsFile)}</code>. This constructor is commonly used only
      * to extract the image dimensions, for example when creating a String value for
      * the <code>{@link CmsPropertyDefinition#PROPERTY_IMAGE_SIZE}</code> property.<p>
-     * 
+     *
      * In case the byte array can not be decoded to an image, or in case of other errors,
      * <code>{@link #isValid()}</code> will return <code>false</code>.<p>
-     * 
+     *
      * @param content the image to calculate the dimensions for
      * @param rootPath the root path of the resource (for error logging)
      */
@@ -201,7 +201,7 @@ public class CmsImageScaler {
             m_height = image.getHeight();
             m_width = image.getWidth();
         } catch (Exception e) {
-            // nothing we can do about this, keep the original properties            
+            // nothing we can do about this, keep the original properties
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.ERR_UNABLE_TO_EXTRACT_IMAGE_SIZE_1, rootPath), e);
             }
@@ -213,10 +213,10 @@ public class CmsImageScaler {
     /**
      * Creates a new image scaler by reading the property <code>{@link CmsPropertyDefinition#PROPERTY_IMAGE_SIZE}</code>
      * from the given resource.<p>
-     * 
+     *
      * In case of any errors reading or parsing the property,
      * <code>{@link #isValid()}</code> will return <code>false</code>.<p>
-     * 
+     *
      * @param cms the OpenCms user context to use when reading the property
      * @param res the resource to read the property from
      */
@@ -242,15 +242,15 @@ public class CmsImageScaler {
 
     /**
      * Creates a new image scaler based on the given HTTP request.<p>
-     * 
-     * The maximum scale size is checked in order to prevent DOS attacks. 
+     *
+     * The maximum scale size is checked in order to prevent DOS attacks.
      * Without this, it would be possible to request arbitrary huge images with a simple GET request,
      * which would result in Out-Of-Memory errors if the image is just requested large enough.<p>
-     * 
-     * The maximum blur size is checked since this operation is know to also cause memory issues 
-     * with large images. If the original image is larger then this, no blur is applied before 
+     *
+     * The maximum blur size is checked since this operation is know to also cause memory issues
+     * with large images. If the original image is larger then this, no blur is applied before
      * scaling down, which will result in a less optimal but still usable scale result.<p>
-     * 
+     *
      * @param request the HTTP request to read the parameters from
      * @param maxScaleSize the maximum scale size (width or height) for the image
      * @param maxBlurSize the maximum size of the image (width * height) to apply blur
@@ -274,7 +274,7 @@ public class CmsImageScaler {
 
     /**
      * Creates a new image scaler based on the given parameter String.<p>
-     * 
+     *
      * @param parameters the scale parameters to use
      */
     public CmsImageScaler(String parameters) {
@@ -287,7 +287,7 @@ public class CmsImageScaler {
 
     /**
      * Creates a new image scaler based on the given base scaler and the given width and height.<p>
-     * 
+     *
      * @param base the base scaler to initialize the values with
      * @param width the width to set for this scaler
      * @param height the height to set for this scaler
@@ -301,12 +301,12 @@ public class CmsImageScaler {
 
     /**
      * Calculate the width and height of a source image if scaled inside the given box.<p>
-     *  
+     *
      * @param sourceWidth the width of the source image
      * @param sourceHeight the height of the source image
      * @param boxWidth the width of the target box
      * @param boxHeight the height of the target box
-     * 
+     *
      * @return the width [0] and height [1] of the source image if scaled inside the given box
      */
     public static int[] calculateDimension(int sourceWidth, int sourceHeight, int boxWidth, int boxHeight) {
@@ -328,7 +328,7 @@ public class CmsImageScaler {
 
     /**
      * Adds a filter name to the list of filters that should be applied to the image.<p>
-     * 
+     *
      * @param filter the filter name to add
      */
     public void addFilter(String filter) {
@@ -391,7 +391,7 @@ public class CmsImageScaler {
 
     /**
      * Returns the crop area height.<p>
-     * 
+     *
      * Use {@link #setCropArea(int, int, int, int)} to set this value.<p>
      *
      * @return the crop area height
@@ -402,14 +402,14 @@ public class CmsImageScaler {
     }
 
     /**
-     * Returns a new image scaler that is a cropped rescaler from <code>this</code> cropped scaler 
+     * Returns a new image scaler that is a cropped rescaler from <code>this</code> cropped scaler
      * size to the given target scaler size.<p>
-     * 
+     *
      * @param target the image scaler that holds the target image dimensions
-     * 
-     * @return a new image scaler that is a cropped rescaler from <code>this</code> cropped scaler 
+     *
+     * @return a new image scaler that is a cropped rescaler from <code>this</code> cropped scaler
      *      size to the given target scaler size
-     *      
+     *
      * @see #getReScaler(CmsImageScaler)
      * @see #setCropArea(int, int, int, int)
      */
@@ -424,7 +424,7 @@ public class CmsImageScaler {
 
     /**
      * Returns the crop area width.<p>
-     * 
+     *
      * Use {@link #setCropArea(int, int, int, int)} to set this value.<p>
      *
      * @return the crop area width
@@ -436,7 +436,7 @@ public class CmsImageScaler {
 
     /**
      * Returns the crop area X start coordinate.<p>
-     * 
+     *
      * Use {@link #setCropArea(int, int, int, int)} to set this value.<p>
      *
      * @return the crop area X start coordinate
@@ -448,7 +448,7 @@ public class CmsImageScaler {
 
     /**
      * Returns the crop area Y start coordinate.<p>
-     * 
+     *
      * Use {@link #setCropArea(int, int, int, int)} to set this value.<p>
      *
      * @return the crop area Y start coordinate
@@ -459,15 +459,15 @@ public class CmsImageScaler {
     }
 
     /**
-     * Returns a new image scaler that is a down scale from the size of <code>this</code> scaler 
+     * Returns a new image scaler that is a down scale from the size of <code>this</code> scaler
      * to the given scaler size.<p>
-     * 
+     *
      * If no down scale from this to the given scaler is required according to
-     * {@link #isDownScaleRequired(CmsImageScaler)}, then <code>null</code> is returned.<p> 
-     * 
+     * {@link #isDownScaleRequired(CmsImageScaler)}, then <code>null</code> is returned.<p>
+     *
      * @param downScaler the image scaler that holds the down scaled target image dimensions
-     * 
-     * @return a new image scaler that is a down scale from the size of <code>this</code> scaler 
+     *
+     * @return a new image scaler that is a down scale from the size of <code>this</code> scaler
      *      to the given target scaler size, or <code>null</code>
      */
     public CmsImageScaler getDownScaler(CmsImageScaler downScaler) {
@@ -506,9 +506,9 @@ public class CmsImageScaler {
         return new CmsImageScaler(downScaler, downWidth, downHeight);
     }
 
-    /** 
-     * Returns the list of image filter names (Strings) to be applied to the image.<p> 
-     * 
+    /**
+     * Returns the list of image filter names (Strings) to be applied to the image.<p>
+     *
      * @return the list of image filter names (Strings) to be applied to the image
      */
     public List<String> getFilters() {
@@ -516,9 +516,9 @@ public class CmsImageScaler {
         return m_filters;
     }
 
-    /** 
-     * Returns the list of image filter names (Strings) to be applied to the image as a String.<p> 
-     * 
+    /**
+     * Returns the list of image filter names (Strings) to be applied to the image as a String.<p>
+     *
      * @return the list of image filter names (Strings) to be applied to the image as a String
      */
     public String getFiltersString() {
@@ -548,19 +548,19 @@ public class CmsImageScaler {
     /**
      * Returns the image type from the given file name based on the file suffix (extension)
      * and the available image writers.<p>
-     * 
-     * For example, for the file name "opencms.gif" the type is GIF, for 
-     * "opencms.jpg" is is "JPEG" etc.<p> 
-     * 
+     *
+     * For example, for the file name "opencms.gif" the type is GIF, for
+     * "opencms.jpg" is is "JPEG" etc.<p>
+     *
      * In case the input filename has no suffix, or there is no known image writer for the format defined
      * by the suffix, <code>null</code> is returned.<p>
-     * 
+     *
      * Any non-null result can be used if an image type input value is required.<p>
-     * 
+     *
      * @param filename the file name to get the type for
-     *  
-     * @return the image type from the given file name based on the suffix and the available image writers, 
-     *      or null if no image writer is available for the format 
+     *
+     * @return the image type from the given file name based on the suffix and the available image writers,
+     *      or null if no image writer is available for the format
      */
     public String getImageType(String filename) {
 
@@ -569,14 +569,14 @@ public class CmsImageScaler {
 
     /**
      * Returns the maximum image size (width * height) to apply image blurring when down scaling images.<p>
-     * 
-     * Image blurring is required to achieve the best results for down scale operations when the target image size 
-     * is 2 times or more smaller then the original image size. 
-     * This parameter controls the maximum size (width * height) of an 
+     *
+     * Image blurring is required to achieve the best results for down scale operations when the target image size
+     * is 2 times or more smaller then the original image size.
+     * This parameter controls the maximum size (width * height) of an
      * image that is blurred before it is down scaled. If the image is larger, no blurring is done.
-     * Image blurring is an expensive operation in both CPU usage and memory consumption. 
+     * Image blurring is an expensive operation in both CPU usage and memory consumption.
      * Setting the blur size to large may case "out of memory" errors.<p>
-     * 
+     *
      * @return the maximum image size (width * height) to apply image blurring when down scaling images
      */
     public int getMaxBlurSize() {
@@ -606,9 +606,9 @@ public class CmsImageScaler {
 
     /**
      * Returns the image pixel count, that is the image with multiplied by the image height.<p>
-     * 
+     *
      * If this scaler is not valid (see {@link #isValid()}) the result is undefined.<p>
-     * 
+     *
      * @return the image pixel count, that is the image with multiplied by the image height
      */
     public int getPixelCount() {
@@ -628,7 +628,7 @@ public class CmsImageScaler {
 
     /**
      * Returns the image saving quality in percent (0 - 100).<p>
-     * 
+     *
      * This is used only if applicable, for example when saving JPEG images.<p>
      *
      * @return the image saving quality in percent
@@ -644,10 +644,10 @@ public class CmsImageScaler {
      * Possible values are:<dl>
      * <dt>{@link Simapi#RENDER_QUALITY} (default)</dt>
      * <dd>Use best possible image processing - this may be slow sometimes.</dd>
-     * 
+     *
      * <dt>{@link Simapi#RENDER_SPEED}</dt>
      * <dd>Fastest image processing but worse results - use this for thumbnails or where speed is more important then quality.</dd>
-     * 
+     *
      * <dt>{@link Simapi#RENDER_MEDIUM}</dt>
      * <dd>Use default rendering hints from JVM - not recommended since it's almost as slow as the {@link Simapi#RENDER_QUALITY} mode.</dd></dl>
      *
@@ -659,16 +659,16 @@ public class CmsImageScaler {
     }
 
     /**
-     * Returns a new image scaler that is a rescaler from <code>this</code> scaler 
+     * Returns a new image scaler that is a rescaler from <code>this</code> scaler
      * size to the given target scaler size.<p>
-     * 
-     * The height of the target image is calculated in proportion 
-     * to the original image width. If the width of the the original image is not known, 
+     *
+     * The height of the target image is calculated in proportion
+     * to the original image width. If the width of the the original image is not known,
      * the target image width is calculated in proportion to the original image height.<p>
-     * 
+     *
      * @param target the image scaler that holds the target image dimensions
-     * 
-     * @return a new image scaler that is a rescaler from the <code>this</code> scaler 
+     *
+     * @return a new image scaler that is a rescaler from the <code>this</code> scaler
      *      size to the given target scaler size
      */
     public CmsImageScaler getReScaler(CmsImageScaler target) {
@@ -683,7 +683,7 @@ public class CmsImageScaler {
                 // ensure we have sensible values for maxWidth / minWidth even if one has not been set
                 float maxWidth = target.getMaxWidth() > 0 ? target.getMaxWidth() : height;
                 float maxHeight = target.getMaxHeight() > 0 ? target.getMaxHeight() : width;
-                // calculate the factor of the image and the 3 possible target dimensions 
+                // calculate the factor of the image and the 3 possible target dimensions
                 float scaleOfImage = (float)getWidth() / (float)getHeight();
                 float[] scales = new float[3];
                 scales[0] = (float)width / (float)height;
@@ -730,7 +730,7 @@ public class CmsImageScaler {
         if ((type == 1) && (!target.isValid())) {
             // "no upscale" has been requested, only one target dimension was given
             if ((target.getWidth() > 0) && (getWidth() < width)) {
-                // target width was given, target image should have this width 
+                // target width was given, target image should have this width
                 height = getHeight();
             } else if ((target.getHeight() > 0) && (getHeight() < height)) {
                 // target height was given, target image should have this height
@@ -747,9 +747,9 @@ public class CmsImageScaler {
 
     /**
      * Returns the type.<p>
-     * 
+     *
      * Possible values are:<dl>
-     * 
+     *
      * <dt>0 (default): Scale to exact target size with background padding</dt><dd><ul>
      * <li>enlarge image to fit in target size (if required)
      * <li>reduce image to fit in target size (if required)
@@ -782,14 +782,14 @@ public class CmsImageScaler {
      * <li>don't keep image aspect ratio / proportions intact
      * <li>the image will be scaled exactly to the given target size and likely will be loose proportions</ul></dd>
      * </dl>
-     * 
+     *
      * <dt>5: Scale and keep image proportions without enlargement, target size variable with optional max width and height</dt><dd><ul>
      * <li>dont't enlarge image
      * <li>reduce image to fit in target size (if required)
      * <li>keep image aspect ratio / proportions intact
      * <li>best fit into target width / height _OR_ width / maxHeight _OR_ maxWidth / height
      * <li>scaled image will not be padded or cropped, so target size is likely not the exact requested size</ul></dd>
-     * 
+     *
      * @return the type
      */
     public int getType() {
@@ -808,16 +808,16 @@ public class CmsImageScaler {
     }
 
     /**
-     * Returns a new image scaler that is a width based down scale from the size of <code>this</code> scaler 
+     * Returns a new image scaler that is a width based down scale from the size of <code>this</code> scaler
      * to the given scaler size.<p>
-     * 
+     *
      * If no down scale from this to the given scaler is required because the width of <code>this</code>
-     * scaler is not larger than the target width, then the image dimensions of <code>this</code> scaler 
+     * scaler is not larger than the target width, then the image dimensions of <code>this</code> scaler
      * are unchanged in the result scaler. No up scaling is done!<p>
-     * 
+     *
      * @param downScaler the image scaler that holds the down scaled target image dimensions
-     * 
-     * @return a new image scaler that is a down scale from the size of <code>this</code> scaler 
+     *
+     * @return a new image scaler that is a down scale from the size of <code>this</code> scaler
      *      to the given target scaler size
      */
     public CmsImageScaler getWidthScaler(CmsImageScaler downScaler) {
@@ -850,10 +850,10 @@ public class CmsImageScaler {
 
     /**
      * Returns <code>true</code> if all required parameters for image cropping are available.<p>
-     * 
-     * Required parameters are <code>"cx","cy"</code> (x, y start coordinate), 
+     *
+     * Required parameters are <code>"cx","cy"</code> (x, y start coordinate),
      * and <code>"ch","cw"</code> (crop height and width).<p>
-     * 
+     *
      * @return <code>true</code> if all required cropping parameters are available
      */
     public boolean isCropping() {
@@ -867,15 +867,15 @@ public class CmsImageScaler {
      *
      * If either <code>this</code> scaler or the given <code>downScaler</code> is invalid according to
      * {@link #isValid()}, then <code>false</code> is returned.<p>
-     * 
-     * The use case: <code>this</code> scaler represents an image (that is contains width and height of 
+     *
+     * The use case: <code>this</code> scaler represents an image (that is contains width and height of
      * an image). The <code>downScaler</code> represents the maximum wanted image. The scalers
      * are compared and if the image represented by <code>this</code> scaler is too large,
-     * <code>true</code> is returned. Image orientation is ignored, so for example an image with 600x800 pixel 
+     * <code>true</code> is returned. Image orientation is ignored, so for example an image with 600x800 pixel
      * will NOT be down scaled if the target size is 800x600 but kept unchanged.<p>
-     * 
+     *
      * @param downScaler the down scaler to compare this image scaler with
-     * 
+     *
      * @return <code>true</code> if this image scaler must be down scaled when compared to the
      *      given "down scale" image scaler
      */
@@ -911,9 +911,9 @@ public class CmsImageScaler {
 
     /**
      * Returns <code>true</code> if all required parameters are available.<p>
-     * 
+     *
      * Required parameters are <code>"h"</code> (height), and <code>"w"</code> (width).<p>
-     * 
+     *
      * @return <code>true</code> if all required parameters are available
      */
     public boolean isValid() {
@@ -923,12 +923,12 @@ public class CmsImageScaler {
 
     /**
      * Parses the given parameters and sets the internal scaler variables accordingly.<p>
-     * 
+     *
      * The parameter String must have a format like <code>"h:100,w:200,t:1"</code>,
      * that is a comma separated list of attributes followed by a colon ":", followed by a value.
      * As possible attributes, use the constants from this class that start with <code>SCALE_PARAM</Code>
      * for example {@link #SCALE_PARAM_HEIGHT} or {@link #SCALE_PARAM_WIDTH}.<p>
-     * 
+     *
      * @param parameters the parameters to parse
      */
     public void parseParameters(String parameters) {
@@ -1014,10 +1014,10 @@ public class CmsImageScaler {
 
     /**
      * Returns a scaled version of the given image byte content according this image scalers parameters.<p>
-     *  
+     *
      * @param content the image byte content to scale
      * @param rootPath the root path of the image file in the VFS
-     * 
+     *
      * @return a scaled version of the given image byte content according to the provided scaler parameters
      */
     public byte[] scaleImage(byte[] content, String rootPath) {
@@ -1050,7 +1050,7 @@ public class CmsImageScaler {
             String mimeType = OpenCms.getResourceManager().getMimeType(rootPath, null, null);
             // check if this is another known MIME type, if so DONT use it (images should not be named *.pdf)
             if (mimeType == null) {
-                // no MIME type found, use JPEG format to write images to the cache         
+                // no MIME type found, use JPEG format to write images to the cache
                 imageType = Simapi.TYPE_JPEG;
             }
         }
@@ -1144,7 +1144,7 @@ public class CmsImageScaler {
                         break;
                     case 5:
                         // scale and keep image proportions, target size variable, include maxWidth / maxHeight option
-                        // image proportions have already been calculated so should not be a problem, use 
+                        // image proportions have already been calculated so should not be a problem, use
                         // 'false' to make sure image size exactly matches height and width attributes of generated tag
                         if (((imageWidth != getWidth()) || (imageHeight != getHeight()))) {
                             image = scaler.resize(image, getWidth(), getHeight(), false);
@@ -1186,9 +1186,9 @@ public class CmsImageScaler {
 
     /**
      * Returns a scaled version of the given image file according this image scalers parameters.<p>
-     *  
+     *
      * @param file the image file to scale
-     * 
+     *
      * @return a scaled version of the given image file according to the provided scaler parameters
      */
     public byte[] scaleImage(CmsFile file) {
@@ -1222,7 +1222,7 @@ public class CmsImageScaler {
 
     /**
      * Sets the image crop area.<p>
-     * 
+     *
      * @param x the x coordinate for the crop
      * @param y the y coordinate for the crop
      * @param width the crop width
@@ -1238,7 +1238,7 @@ public class CmsImageScaler {
 
     /**
      * Sets the list of filters as a String.<p>
-     * 
+     *
      * @param value the list of filters to set
      */
     public void setFilters(String value) {
@@ -1272,10 +1272,10 @@ public class CmsImageScaler {
     }
 
     /**
-     * Sets the maximum image size (width * height) to apply image blurring when downscaling images.<p> 
-     * 
+     * Sets the maximum image size (width * height) to apply image blurring when downscaling images.<p>
+     *
      * @param maxBlurSize the maximum image blur size to set
-     * 
+     *
      * @see #getMaxBlurSize() for a more detailed description about this parameter
      */
     public void setMaxBlurSize(int maxBlurSize) {
@@ -1347,7 +1347,7 @@ public class CmsImageScaler {
      * Sets the image rendering mode constant.<p>
      *
      * @param renderMode the image rendering mode to set
-     * 
+     *
      * @see #getRenderMode() for a list of allowed values for the rendering mode
      */
     public void setRenderMode(int renderMode) {
@@ -1362,7 +1362,7 @@ public class CmsImageScaler {
      * Sets the scale type.<p>
      *
      * @param type the scale type to set
-     * 
+     *
      * @see #getType() for a detailed description of the possible values for the type
      */
     public void setType(int type) {
@@ -1388,9 +1388,9 @@ public class CmsImageScaler {
     /**
      * Creates a request parameter configured with the values from this image scaler, also
      * appends a <code>'?'</code> char as a prefix so that this may be directly appended to an image URL.<p>
-     * 
+     *
      * This can be appended to an image request in order to apply image scaling parameters.<p>
-     * 
+     *
      * @return a request parameter configured with the values from this image scaler
      */
     public String toRequestParam() {
@@ -1486,10 +1486,10 @@ public class CmsImageScaler {
 
     /**
      * Calculate the closest match of the given base float with the list of others.<p>
-     *  
+     *
      * @param base the base float to compare the other with
      * @param others the list of floats to compate to the base
-     * 
+     *
      * @return the array index of the closest match
      */
     private int calculateClosest(float base, float[] others) {
@@ -1535,10 +1535,10 @@ public class CmsImageScaler {
 
     /**
      * Initializes the crop area setting.<p>
-     * 
+     *
      * Only if all 4 required parameters have been set, the crop area is set accordingly.
      * Moreover, it is not required to specify the target image width and height when using crop,
-     * because these parameters can be calculated from the crop area.<p> 
+     * because these parameters can be calculated from the crop area.<p>
      */
     private void initCropArea() {
 
@@ -1558,7 +1558,7 @@ public class CmsImageScaler {
 
     /**
      * Copies all values from the given scaler into this scaler.<p>
-     * 
+     *
      * @param source the source scaler
      */
     private void initValuesFrom(CmsImageScaler source) {

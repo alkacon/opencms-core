@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,7 +44,7 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 
 /**
- * A context menu command for editing an XML content.<p>
+ * A context menu command for editing an XML content. <p>
  */
 public final class CmsEditFile implements I_CmsHasContextMenuCommand, I_CmsContextMenuCommand {
 
@@ -63,9 +63,9 @@ public final class CmsEditFile implements I_CmsHasContextMenuCommand, I_CmsConte
     }
 
     /**
-     * Returns the context menu command according to 
+     * Returns the context menu command according to
      * {@link org.opencms.gwt.client.ui.contextmenu.I_CmsHasContextMenuCommand}.<p>
-     * 
+     *
      * @return the context menu command
      */
     public static I_CmsContextMenuCommand getContextMenuCommand() {
@@ -75,9 +75,9 @@ public final class CmsEditFile implements I_CmsHasContextMenuCommand, I_CmsConte
 
     /**
      * Actually starts the XML content editor for a given file name.<p>
-     * 
-     * @param filename the file name 
-     * @param structureId the file structure id 
+     *
+     * @param filename the file name
+     * @param structureId the file structure id
      */
     public void doEdit(final String filename, final CmsUUID structureId) {
 
@@ -133,14 +133,14 @@ public final class CmsEditFile implements I_CmsHasContextMenuCommand, I_CmsConte
                 return structureId;
             }
 
-            public void setSitePath(String sitePath) {
-
-                // nothing to do
-            }
-
             public boolean isUnreleasedOrExpired() {
 
                 return false;
+            }
+
+            public void setSitePath(String sitePath) {
+
+                // nothing to do
             }
         };
 
@@ -153,7 +153,7 @@ public final class CmsEditFile implements I_CmsHasContextMenuCommand, I_CmsConte
                 }
 
                 // defer the window.location.reload until after the editor window has closed
-                // so we don't get another confirmation dialog 
+                // so we don't get another confirmation dialog
                 Timer timer = new Timer() {
 
                     @Override

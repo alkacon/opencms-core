@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,7 +41,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
- * A dialog used to select the create mode for new contents created from a collector list.<p>
+ * A  dialog used to select the create mode for new contents created from a collector list.<p>
  */
 public class CmsCreateModeSelectionDialog extends CmsPopup {
 
@@ -50,9 +50,9 @@ public class CmsCreateModeSelectionDialog extends CmsPopup {
 
     /**
      * Creates a new dialog instance.<p>
-     * 
-     * @param info the resource information for the selected collector list entry 
-     * @param createModeCallback the callback to call with the result 
+     *
+     * @param info the resource information for the selected collector list entry
+     * @param createModeCallback the callback to call with the result
      */
     public CmsCreateModeSelectionDialog(CmsListInfoBean info, AsyncCallback<String> createModeCallback) {
 
@@ -74,7 +74,7 @@ public class CmsCreateModeSelectionDialog extends CmsPopup {
 
     /**
      * Message accessor.<p>
-     * 
+     *
      * @return the message
      */
     public static String messageAskMode() {
@@ -84,7 +84,7 @@ public class CmsCreateModeSelectionDialog extends CmsPopup {
 
     /**
      * Message accessor.<p>
-     * 
+     *
      * @return the message
      */
     public static String messageCaption() {
@@ -94,7 +94,7 @@ public class CmsCreateModeSelectionDialog extends CmsPopup {
 
     /**
      * Message accessor.<p>
-     * 
+     *
      * @return the message
      */
     public static String messageCopy() {
@@ -104,7 +104,7 @@ public class CmsCreateModeSelectionDialog extends CmsPopup {
 
     /**
      * Message accessor.<p>
-     * 
+     *
      * @return the message
      */
     public static String messageNew() {
@@ -114,9 +114,9 @@ public class CmsCreateModeSelectionDialog extends CmsPopup {
 
     /**
      * Shows the dialog for the given collector list entry.<p>
-     * 
-     * @param referenceId the structure id of the collector list entry 
-     * @param createModeCallback the callback which should be called with the selected create mode 
+     *
+     * @param referenceId the structure id of the collector list entry
+     * @param createModeCallback the callback which should be called with the selected create mode
      */
     public static void showDialog(final CmsUUID referenceId, final AsyncCallback<String> createModeCallback) {
 
@@ -143,12 +143,12 @@ public class CmsCreateModeSelectionDialog extends CmsPopup {
 
     /**
      * Creates a button used to select a create mode.<p>
-     * 
-     * @param text the button text 
-     * @param color the button color 
+     *
+     * @param text the button text
+     * @param color the button color
      * @param result the create mode selected by the button
-     *  
-     * @return the newly created button 
+     *
+     * @return the newly created button
      */
     CmsPushButton createButton(String text, ButtonColor color, final String result) {
 

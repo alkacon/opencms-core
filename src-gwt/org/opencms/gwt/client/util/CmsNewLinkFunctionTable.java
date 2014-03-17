@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,7 +40,7 @@ public class CmsNewLinkFunctionTable {
     /** The global instance for this class. */
     public static final CmsNewLinkFunctionTable INSTANCE = new CmsNewLinkFunctionTable();
 
-    /** 
+    /**
      * The map from collector context ids to the corresponding actions.<p>
      */
     private Map<String, Runnable> m_createFunctions = new HashMap<String, Runnable>();
@@ -55,29 +55,29 @@ public class CmsNewLinkFunctionTable {
 
     /**
      * Static method for used to create a new element based on a collector's context id and open the editor for id.<p>
-     * 
-     * @param contextId the collector context id 
+     *
+     * @param contextId the collector context id
      */
     public static void createAndEditNewElementStatic(String contextId) {
 
         INSTANCE.createAndEditNewElement(contextId);
     }
 
-    /** 
+    /**
      * Helper method for logging.<p>
-     * 
-     * @param s the string to log 
+     *
+     * @param s the string to log
      */
     private static native void log(String s) /*-{
                                              if ($wnd.console.log) {
-                                             $wnd.console.log(s); 
-                                             } 
+                                             $wnd.console.log(s);
+                                             }
                                              }-*/;
 
     /**
      * Triggers creation and editing of a new element for the given collector, identified by its context id.<p>
-     * 
-     * @param contextId the context id of the collector 
+     *
+     * @param contextId the context id of the collector
      */
     public void createAndEditNewElement(String contextId) {
 
@@ -89,22 +89,22 @@ public class CmsNewLinkFunctionTable {
         }
     }
 
-    /** 
+    /**
      * Installs a Javascript function which can be used to create and edit a new element given the collector context id.<p>
-     * 
-     * @param functionName the name that should be used for the function 
+     *
+     * @param functionName the name that should be used for the function
      */
     public native void installFunction(String functionName) /*-{
                                                             $wnd[functionName] = function(s) {
-                                                            @org.opencms.gwt.client.util.CmsNewLinkFunctionTable::createAndEditNewElementStatic(Ljava/lang/String;)(s); 
-                                                            } 
+                                                            @org.opencms.gwt.client.util.CmsNewLinkFunctionTable::createAndEditNewElementStatic(Ljava/lang/String;)(s);
+                                                            }
                                                             }-*/;
 
-    /** 
+    /**
      * Sets the action which should be executed if cmsCreateAndEditNewElement is called with the given collector context id.<p>
-     * 
-     * @param contextId the collector context id 
-     * @param action the action to execute 
+     *
+     * @param contextId the collector context id
+     * @param action the action to execute
      */
     public void setHandler(String contextId, Runnable action) {
 

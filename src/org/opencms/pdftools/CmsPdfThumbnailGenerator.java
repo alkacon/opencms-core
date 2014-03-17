@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,7 +34,6 @@ import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-import java.awt.print.PageFormat;
 import java.io.InputStream;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
@@ -52,32 +51,29 @@ public class CmsPdfThumbnailGenerator {
     /** A multiplier used for the input to calculateDimensions. */
     private static final int FAKE_PIXEL_MULTIPLIER = 10000;
 
-    /** Points per inch. */
-    private static final float POINTS_PER_INCH = 72.0f;
-
     static {
         FontMappings.setFontReplacements();
     }
 
-    /** 
+    /**
      * Generates the image data for a thumbnail from a PDF.<p>
-     * 
+     *
      * The given width and height determine the box in which the thumbnail should fit.
      * The resulting image will always have these dimensions, even if the aspect ratio of the actual PDF
-     * page is different from the ratio of the given width and height. In this case, the size of the rendered 
+     * page is different from the ratio of the given width and height. In this case, the size of the rendered
      * page will be reduced, and the rest of the image will be filled with blank space.<p>
-     * 
+     *
      * If one of width or height is negative, then that dimension is chosen so the resulting aspect ratio is the
-     * aspect ratio of the PDF page.  
-     * 
-     * @param pdfInputStream the input stream for reading the PDF data 
-     * @param boxWidth the width of the box in which the thumbnail should fit 
-     * @param boxHeight the height of the box in which the thumbnail should fit 
-     * @param imageFormat the image format (png, jpg, gif) 
+     * aspect ratio of the PDF page.
+     *
+     * @param pdfInputStream the input stream for reading the PDF data
+     * @param boxWidth the width of the box in which the thumbnail should fit
+     * @param boxHeight the height of the box in which the thumbnail should fit
+     * @param imageFormat the image format (png, jpg, gif)
      * @param pageIndex the index of the page for which to render the thumbnail (starting at 0)
-     *  
-     * @return the image data for the thumbnail, in the given image format 
-     * @throws Exception if something goes wrong 
+     *
+     * @return the image data for the thumbnail, in the given image format
+     * @throws Exception if something goes wrong
      */
     public byte[] generateThumbnail(
         InputStream pdfInputStream,
@@ -97,14 +93,13 @@ public class CmsPdfThumbnailGenerator {
                 pageIndex = 0;
             }
 
-            PageFormat pageFormat = decoder.getPageFormat(1 + pageIndex);
-            // width/height are in points (1/72 of an inch) 
+            // width/height are in points (1/72 of an inch)
             PdfPageData pageData = decoder.getPdfPageData();
             double aspectRatio = (pageData.getCropBoxWidth(1 + pageIndex) * 1.0)
                 / pageData.getCropBoxHeight(1 + pageIndex);
             int rotation = pageData.getRotation(1 + pageIndex);
             if ((rotation == 90) || (rotation == 270)) {
-                // landscape 
+                // landscape
                 aspectRatio = 1 / aspectRatio;
             }
 
@@ -116,7 +111,7 @@ public class CmsPdfThumbnailGenerator {
                 boxHeight = (int)Math.round(boxWidth / aspectRatio);
             }
 
-            // calculateDimensions only takes integers, but only their ratio matters, we multiply the box width with a big number 
+            // calculateDimensions only takes integers, but only their ratio matters, we multiply the box width with a big number
             int fakePixelWidth = (int)(FAKE_PIXEL_MULTIPLIER * aspectRatio);
             int fakePixelHeight = (FAKE_PIXEL_MULTIPLIER);
             int[] unpaddedThumbnailDimensions = CmsImageScaler.calculateDimension(
@@ -132,13 +127,13 @@ public class CmsPdfThumbnailGenerator {
             int uw = unpaddedThumbnailDimensions[0];
             int uh = unpaddedThumbnailDimensions[1];
 
-            // Scale to fit in  the box 
+            // Scale to fit in  the box
             AffineTransformOp op = new AffineTransformOp(AffineTransform.getScaleInstance(
                 (uw * 1.0) / pageImage.getWidth(),
                 (uh * 1.0) / pageImage.getHeight()), AffineTransformOp.TYPE_BILINEAR);
 
             g.setColor(Color.WHITE);
-            // Fill box image with white, then draw the image data for the PDF in the middle 
+            // Fill box image with white, then draw the image data for the PDF in the middle
             g.fillRect(0, 0, paddedImage.getWidth(), paddedImage.getHeight());
             //g.drawImage(pageImage, (boxWidth - pageImage.getWidth()) / 2, (boxHeight - pageImage.getHeight()) / 2, null);
             g.drawImage(pageImage, op, (boxWidth - uw) / 2, (boxHeight - uh) / 2);

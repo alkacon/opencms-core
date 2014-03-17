@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,8 +33,8 @@ import org.opencms.util.CmsUUID;
 
 /**
  * A container to store information about a collector's result.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsContentInfoBean {
 
@@ -91,8 +91,8 @@ public class CmsContentInfoBean {
 
     /**
      * Gets an id which is common to all items in a collector list.<p>
-     * 
-     * @return the id identifying the collector list 
+     *
+     * @return the id identifying the collector list
      */
     public String getId() {
 
@@ -109,19 +109,19 @@ public class CmsContentInfoBean {
         return m_locale;
     }
 
-    /** 
+    /**
      * Gets the javascript: link for creating and editing a new content.<p>
-     * 
-     * @return the javascript: link for creating and editing a new content 
+     *
+     * @return the javascript: link for creating and editing a new content
      */
     public String getNewContentLink() {
 
         return "javascript:" + getNewContentScript();
     }
 
-    /** 
+    /**
      * Gets the Javascript for creating and editing a new content.<p>
-     * 
+     *
      * @return the Javascript for creating and editing a new content
      */
     public String getNewContentScript() {
@@ -131,7 +131,7 @@ public class CmsContentInfoBean {
 
     /**
      * Returns the number of pages of browse through the result list.<p>
-     * 
+     *
      * @return the number of pages of browse through the result list
      */
     public int getPageCount() {
@@ -141,7 +141,7 @@ public class CmsContentInfoBean {
 
     /**
      * Returns the index of the current page that gets displayed.<p>
-     * 
+     *
      * @return the index of the current page that gets displayed
      */
     public int getPageIndex() {
@@ -151,7 +151,7 @@ public class CmsContentInfoBean {
 
     /**
      * Returns the page index of the first element in the Google-like page navigation.<p>
-     * 
+     *
      * @return the page index of the first element in the Google-like page navigation
      */
     public int getPageNavEndIndex() {
@@ -161,7 +161,7 @@ public class CmsContentInfoBean {
 
     /**
      * Returns the page index of the last element in the Google-like page navigation.<p>
-     * 
+     *
      * @return page index of the last element in the Google-like page navigation
      */
     public int getPageNavLength() {
@@ -171,7 +171,7 @@ public class CmsContentInfoBean {
 
     /**
      * Returns the page index of the first element in the Google-like page navigation.<p>
-     * 
+     *
      * @return the page index of the first element in the Google-like page navigation
      */
     public int getPageNavStartIndex() {
@@ -181,7 +181,7 @@ public class CmsContentInfoBean {
 
     /**
      * Returns the size of a page.<p>
-     * 
+     *
      * @return the size of a page
      */
     public int getPageSize() {
@@ -191,7 +191,7 @@ public class CmsContentInfoBean {
 
     /**
      * Returns the index of the current resource that gets iterated in the result list.<p>
-     * 
+     *
      * @return the index of the current resource that gets iterated in the result list
      */
     public int getResultIndex() {
@@ -201,7 +201,7 @@ public class CmsContentInfoBean {
 
     /**
      * Returns the total size of the collector's result list.<p>
-     * 
+     *
      * @return the total size of the collector's result list
      */
     public int getResultSize() {
@@ -210,8 +210,8 @@ public class CmsContentInfoBean {
     }
 
     /**
-     * Returns true if there is no resource in the result list.<p> 
-     * 
+     * Returns true if there is no resource in the result list.<p>
+     *
      * @return true if there is no resource in the result list
      */
     public boolean isEmptyResult() {
@@ -221,7 +221,7 @@ public class CmsContentInfoBean {
 
     /**
      * Returns true if the current resource is the first resource on the current page.<p>
-     * 
+     *
      * @return true if the current resource is the first resource on the current page
      */
     public boolean isFirstOnPage() {
@@ -231,7 +231,7 @@ public class CmsContentInfoBean {
 
     /**
      * Returns true if the current resource is the first resource in the result list.<p>
-     * 
+     *
      * @return true if the current resource is the first resource in the result list
      */
     public boolean isFirstResult() {
@@ -241,7 +241,7 @@ public class CmsContentInfoBean {
 
     /**
      * Returns true if the current resource is the last resource on the current page.<p>
-     * 
+     *
      * @return true if the current resource is the last resource on the current page
      */
     public boolean isLastOnPage() {
@@ -251,7 +251,7 @@ public class CmsContentInfoBean {
 
     /**
      * Returns true if the current resource is the last resource in the result list.<p>
-     * 
+     *
      * @return true if the current resource is the last resource in the result list
      */
     public boolean isLastResult() {
@@ -326,7 +326,7 @@ public class CmsContentInfoBean {
 
     /**
      * Sets the number of pages of browse through the result list.<p>
-     * 
+     *
      * @param pageCount the number of pages of browse through the result list
      */
     void setPageCount(int pageCount) {
@@ -336,7 +336,7 @@ public class CmsContentInfoBean {
 
     /**
      * Sets the index of the current page that gets displayed as an int.<p>
-     * 
+     *
      * @param pageIndex the index of the current page that gets displayed as an int
      */
     void setPageIndex(int pageIndex) {
@@ -346,9 +346,9 @@ public class CmsContentInfoBean {
 
     /**
      * Sets the index of the current page that gets displayed as a string.<p>
-     * 
+     *
      * The specified string gets parsed into an int.<p>
-     * 
+     *
      * @param pageIndex the index of the current page that gets displayed as a string
      */
     void setPageIndexAsString(String pageIndex) {
@@ -366,7 +366,7 @@ public class CmsContentInfoBean {
 
     /**
      * Sets the page index of the last element in the Google-like page navigation.<p>
-     * 
+     *
      * @param index the page index of the last element in the Google-like page navigation
      */
     void setPageNavEndIndex(int index) {
@@ -376,7 +376,7 @@ public class CmsContentInfoBean {
 
     /**
      * Sets the number of page links in the Google-like page navigation.<p>
-     * 
+     *
      * @param length the number of page links in the Google-like page navigation
      */
     void setPageNavLength(int length) {
@@ -386,7 +386,7 @@ public class CmsContentInfoBean {
 
     /**
      * Sets number of page links in the Google-like page navigation as a string.<p>
-     * 
+     *
      * @param pageNavLength the number of page links in the Google-like page navigation
      */
     void setPageNavLengthAsString(String pageNavLength) {
@@ -404,7 +404,7 @@ public class CmsContentInfoBean {
 
     /**
      * Sets the page index of the first element in the Google-like page navigation.<p>
-     * 
+     *
      * @param index the page index of the first element in the Google-like page navigation
      */
     void setPageNavStartIndex(int index) {
@@ -414,7 +414,7 @@ public class CmsContentInfoBean {
 
     /**
      * Sets the size of a page as an int.<p>
-     * 
+     *
      * @param pageSize the size of a page as an int
      */
     void setPageSize(int pageSize) {
@@ -424,9 +424,9 @@ public class CmsContentInfoBean {
 
     /**
      * Sets the size of a page as a string.<p>
-     * 
+     *
      * The specified string gets parsed into an int.<p>
-     * 
+     *
      * @param pageSize the size of a page as a string
      */
     void setPageSizeAsString(String pageSize) {
@@ -444,7 +444,7 @@ public class CmsContentInfoBean {
 
     /**
      * Sets the total size of the collector's result list.<p>
-     * 
+     *
      * @param size the total size of the collector's result list
      */
     void setResultSize(int size) {

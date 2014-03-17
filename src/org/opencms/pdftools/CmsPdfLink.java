@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -88,11 +88,11 @@ public class CmsPdfLink {
 
     /**
      * Creates a new PDF link object based on the formatter and content resources and the locale of the current CMS context.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param formatter the formatter resource 
-     * @param content the content resource 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms the current CMS context
+     * @param formatter the formatter resource
+     * @param content the content resource
+     * @throws CmsException if something goes wrong
      */
     public CmsPdfLink(CmsObject cms, CmsResource formatter, CmsResource content)
     throws CmsException {
@@ -110,12 +110,12 @@ public class CmsPdfLink {
 
     /**
      * Creates a PDF link object by parsing it from a link string.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param link the link as a string 
-     * 
-     * @throws CmsPdfLinkParseException if the given link is not a PDF link 
-     * @throws CmsException if something else goes wrong 
+     *
+     * @param cms the current CMS context
+     * @param link the link as a string
+     *
+     * @throws CmsPdfLinkParseException if the given link is not a PDF link
+     * @throws CmsException if something else goes wrong
      */
     public CmsPdfLink(CmsObject cms, String link)
     throws CmsPdfLinkParseException, CmsException {
@@ -147,8 +147,8 @@ public class CmsPdfLink {
 
     /**
      * Gets the formatter resource.<p>
-     * 
-     * @return the formatter resource 
+     *
+     * @return the formatter resource
      */
     public CmsResource getFormatter() {
 

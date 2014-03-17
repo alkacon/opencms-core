@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,7 +34,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * Javascript overlay object holding data needed to edit a content collector list element.<p>
- * 
+ *
  * @since 8.0.0
  */
 public final class CmsEditableDataJSO extends JavaScriptObject implements I_CmsEditableData {
@@ -49,9 +49,9 @@ public final class CmsEditableDataJSO extends JavaScriptObject implements I_CmsE
 
     /**
      * Parses the given JSON text and returns the editable data object.<p>
-     * 
+     *
      * @param jsonText the JSON text to parse
-     * 
+     *
      * @return the data object
      */
     public static native CmsEditableDataJSO parseEditableData(String jsonText) /*-{
@@ -137,7 +137,7 @@ public final class CmsEditableDataJSO extends JavaScriptObject implements I_CmsE
 
     /**
      * Returns if the delete button should be present.<p>
-     * 
+     *
      * @return <code>true</code> if the delete button should be present
      */
     public native boolean hasDelete() /*-{
@@ -146,7 +146,7 @@ public final class CmsEditableDataJSO extends JavaScriptObject implements I_CmsE
 
     /**
      * Returns if the edit button should be present.<p>
-     * 
+     *
      * @return <code>true</code> if the edit button should be present
      */
     public native boolean hasEdit() /*-{
@@ -155,7 +155,7 @@ public final class CmsEditableDataJSO extends JavaScriptObject implements I_CmsE
 
     /**
      * Returns if the new button should be present.<p>
-     * 
+     *
      * @return <code>true</code> if the new button should be present
      */
     public native boolean hasNew() /*-{
@@ -179,18 +179,18 @@ public final class CmsEditableDataJSO extends JavaScriptObject implements I_CmsE
 
     /**
      * Reads an attribute of the underlying Javascript object as a string.<p>
-     * 
-     * @param attribute the name of the attribute 
-     * 
-     * @return the string contained in the given attribute 
+     *
+     * @param attribute the name of the attribute
+     *
+     * @return the string contained in the given attribute
      */
     private native String getString(String attribute) /*-{
-                                                      return this[attribute]; 
+                                                      return this[attribute];
                                                       }-*/;
 
     /**
      * Returns the structure id as string.<p>
-     * 
+     *
      * @return the structure id as string
      */
     private native String nativeGetStructureId() /*-{

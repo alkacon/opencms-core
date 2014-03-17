@@ -995,7 +995,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                         dbc.currentProject().getUuid(),
                         delFile.getStructureId(),
                         true);
-                    CmsFile offlineFile = new CmsFile(offlineResource); 
+                    CmsFile offlineFile = new CmsFile(offlineResource);
                     offlineFile.setContents(vfsDriver.readContent(
                         dbc,
                         dbc.currentProject().getUuid(),
@@ -2996,15 +2996,15 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
     /**
      * Implementation of reading the user publish list which uses the log table.<p>
-     * 
+     *
      * This is the old implementation of the user publish list and can get pretty slow.<p>
-     * 
-     * @param dbc the current database context 
-     * @param userId the id of the user for which we want the user publish list 
-     * 
+     *
+     * @param dbc the current database context
+     * @param userId the id of the user for which we want the user publish list
+     *
      * @return the publish list for the given user
-     * 
-     * @throws CmsDataAccessException if something goes wrong 
+     *
+     * @throws CmsDataAccessException if something goes wrong
      */
     protected List<CmsResource> getUsersPubListFromLog(CmsDbContext dbc, CmsUUID userId) throws CmsDataAccessException {
 

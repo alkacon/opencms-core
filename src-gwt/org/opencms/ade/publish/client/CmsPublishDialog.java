@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -57,18 +57,18 @@ import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
- * 
+ *
  * Main class for the publish dialog.<p>
- * 
+ *
  * This class is mostly responsible for the control flow and RPC calls of the publish dialog.
  * It delegates most of the actual GUI work to the {@link CmsPublishSelectPanel} and {@link CmsBrokenLinksPanel} classes.
- * 
+ *
  * @since 8.0.0
- * 
+ *
  */
 public class CmsPublishDialog extends CmsPopup {
 
-    /** 
+    /**
      * A type which represents the state of a publish action.<p>
      */
     public enum State {
@@ -90,8 +90,8 @@ public class CmsPublishDialog extends CmsPopup {
         /** If true, try to ignore broken links when publishing. */
         private CmsWorkflowAction m_action;
 
-        /** Creates a new instance of this action. 
-         * 
+        /** Creates a new instance of this action.
+         *
          * @param action the workflow action to execute
          */
         public CmsPublishAction(CmsWorkflowAction action) {
@@ -216,8 +216,8 @@ public class CmsPublishDialog extends CmsPopup {
 
     /**
      * Constructs a new publish dialog.<p>
-     * 
-     * @param initData the initial data 
+     *
+     * @param initData the initial data
      */
     public CmsPublishDialog(CmsPublishData initData) {
 
@@ -260,7 +260,7 @@ public class CmsPublishDialog extends CmsPopup {
 
     /**
      * Shows the publish dialog.<p>
-     * 
+     *
      * @param result the publish data
      * @param handler the dialog close handler
      */
@@ -277,9 +277,9 @@ public class CmsPublishDialog extends CmsPopup {
 
     /**
      * Convenience method which opens a publish dialog.<p>
-     * 
+     *
      * @param handler the close handler
-     * @param params the additional publish dialog parameters 
+     * @param params the additional publish dialog parameters
      */
     public static void showPublishDialog(final HashMap<String, String> params, final CloseHandler<PopupPanel> handler) {
 
@@ -309,7 +309,7 @@ public class CmsPublishDialog extends CmsPopup {
 
     /**
      * Returns the publish service instance.<p>
-     * 
+     *
      * @return the publish service instance
      */
     protected static I_CmsPublishServiceAsync getService() {
@@ -324,7 +324,7 @@ public class CmsPublishDialog extends CmsPopup {
 
     /**
      * Executes the specified action for the selected resources.<p>
-     * 
+     *
      * @param actionKey the workflow action
      */
     public void executeAction(CmsWorkflowAction actionKey) {
@@ -334,8 +334,8 @@ public class CmsPublishDialog extends CmsPopup {
 
     /**
      * Gets the failure message.<p>
-     * 
-     * @return the failure message 
+     *
+     * @return the failure message
      */
     public String getFailureMessage() {
 
@@ -344,8 +344,8 @@ public class CmsPublishDialog extends CmsPopup {
 
     /**
      * Gets the last workflow action.<p>
-     * 
-     * @return the last workflow action 
+     *
+     * @return the last workflow action
      */
     public CmsWorkflowAction getLastAction() {
 
@@ -354,7 +354,7 @@ public class CmsPublishDialog extends CmsPopup {
 
     /**
      * Returns the current publish options.<p>
-     * 
+     *
      * @return a publish options bean
      */
     public CmsPublishOptions getPublishOptions() {
@@ -364,8 +364,8 @@ public class CmsPublishDialog extends CmsPopup {
 
     /**
      * Gets the publish dialog state.<p>
-     * 
-     * @return the publish dialog state 
+     *
+     * @return the publish dialog state
      */
     public State getState() {
 
@@ -374,8 +374,8 @@ public class CmsPublishDialog extends CmsPopup {
 
     /**
      * Checks whether the publish dialog has failed.<p>
-     * 
-     * @return checks whether the publish dialog has succeeded 
+     *
+     * @return checks whether the publish dialog has succeeded
      */
     public boolean hasFailed() {
 
@@ -384,8 +384,8 @@ public class CmsPublishDialog extends CmsPopup {
 
     /**
      * Checks whether the publish dialog has succeeded.<p>
-     * 
-     * @return true if the publish dialog has succeeded 
+     *
+     * @return true if the publish dialog has succeeded
      */
     public boolean hasSucceeded() {
 
@@ -436,7 +436,7 @@ public class CmsPublishDialog extends CmsPopup {
 
     /**
      * Method which is called after the publish list has been received from the server.<p>
-     * 
+     *
      * @param groups the groups of the publish list
      */
     public void onReceivePublishList(CmsPublishGroupList groups) {
@@ -450,7 +450,7 @@ public class CmsPublishDialog extends CmsPopup {
 
     /**
      * Method which is called after the status from a publish action has arrived.<p>
-     * 
+     *
      * @param brokenResources the list of broken resources
      */
     public void onReceiveStatus(CmsWorkflowResponse brokenResources) {
@@ -472,7 +472,7 @@ public class CmsPublishDialog extends CmsPopup {
 
     /**
      * Sets the include related resources option.<p>
-     * 
+     *
      * @param includeRelated the include related option
      */
     public void setIncludeRelated(boolean includeRelated) {
@@ -482,7 +482,7 @@ public class CmsPublishDialog extends CmsPopup {
 
     /**
      * Sets the include sibling resources option.<p>
-     * 
+     *
      * @param includeSiblings the include siblings option
      */
     public void setIncludeSiblings(boolean includeSiblings) {
@@ -492,7 +492,7 @@ public class CmsPublishDialog extends CmsPopup {
 
     /**
      * Changes the currently active panel.<p>
-     * 
+     *
      * @param panelId the number of the panel to show
      */
     public void setPanel(int panelId) {
@@ -512,7 +512,7 @@ public class CmsPublishDialog extends CmsPopup {
         }
     }
 
-    /** 
+    /**
      * This is called when the user just changed the project.<p>
      */
     public void setProjectChanged() {
@@ -522,7 +522,7 @@ public class CmsPublishDialog extends CmsPopup {
 
     /**
      * Sets the selected project id.<p>
-     * 
+     *
      * @param projectId the project id
      */
     public void setProjectId(CmsUUID projectId) {
@@ -532,7 +532,7 @@ public class CmsPublishDialog extends CmsPopup {
 
     /**
      * Sets the selected workflow id.<p>
-     * 
+     *
      * @param workflowId the workflow id
      */
     public void setWorkflowId(String workflowId) {
@@ -562,7 +562,7 @@ public class CmsPublishDialog extends CmsPopup {
 
     /**
      * Returns the selected workflow.<p>
-     * 
+     *
      * @return the selected workflow
      */
     protected CmsWorkflow getSelectedWorkflow() {
@@ -572,8 +572,8 @@ public class CmsPublishDialog extends CmsPopup {
 
     /**
      * Gets the workflow action parameters to which the workflow action should be applied.<p>
-     * 
-     * @return the workflow action parameters 
+     *
+     * @return the workflow action parameters
      */
     protected CmsWorkflowActionParams getWorkflowActionParams() {
 
@@ -592,8 +592,8 @@ public class CmsPublishDialog extends CmsPopup {
 
     /**
      * Sets the last workflow action.<p>
-     * 
-     * @param action a workflow action 
+     *
+     * @param action a workflow action
      */
     protected void setLastAction(CmsWorkflowAction action) {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,11 +47,11 @@ import org.apache.commons.logging.Log;
 
 /**
  * Provider for the OpenCms AdvancedDirectEdit.<p>
- * 
+ *
  * Since OpenCms version 8.0.0.<p>
- * 
+ *
  * This provider DOES NOT support {@link CmsDirectEditMode#MANUAL} mode.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
@@ -70,7 +70,7 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
 
     /**
      * Returns the end HTML for a disabled direct edit button.<p>
-     * 
+     *
      * @return the end HTML for a disabled direct edit button
      */
     public String endDirectEditDisabled() {
@@ -80,7 +80,7 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
 
     /**
      * Returns the end HTML for an enabled direct edit button.<p>
-     * 
+     *
      * @return the end HTML for an enabled direct edit button
      */
     public String endDirectEditEnabled() {
@@ -90,8 +90,8 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
 
     /**
      * Generates a random element id.<p>
-     * 
-     * @return a random  element id 
+     *
+     * @return a random  element id
      */
     public synchronized String getRandomId() {
 
@@ -135,7 +135,7 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
     public boolean insertDirectEditStart(PageContext context, CmsDirectEditParams params) throws JspException {
 
         String content;
-        // check the direct edit permissions of the current user          
+        // check the direct edit permissions of the current user
         CmsDirectEditResourceInfo resourceInfo = getResourceInfo(params.getResourceName());
         // check the permission mode
         m_lastPermissionMode = resourceInfo.getPermissions().getPermission();
@@ -159,7 +159,7 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
 
     /**
      * Returns <code>false</code> because the default provider does not support manual button placement.<p>
-     * 
+     *
      * @see org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider#isManual(org.opencms.workplace.editors.directedit.CmsDirectEditMode)
      */
     @Override
@@ -180,10 +180,10 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
 
     /**
      * Returns the start HTML for a disabled direct edit button.<p>
-     * 
+     *
      * @param params the direct edit parameters
      * @param resourceInfo contains information about the resource to edit
-     * 
+     *
      * @return the start HTML for a disabled direct edit button
      */
     public String startDirectEditDisabled(CmsDirectEditParams params, CmsDirectEditResourceInfo resourceInfo) {
@@ -208,9 +208,9 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
      *
      * @param params the direct edit parameters
      * @param resourceInfo contains information about the resource to edit
-     * 
+     *
      * @return the start HTML for an enabled direct edit button
-     * @throws JSONException 
+     * @throws JSONException
      */
     public String startDirectEditEnabled(CmsDirectEditParams params, CmsDirectEditResourceInfo resourceInfo)
     throws JSONException {

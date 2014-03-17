@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -58,7 +58,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * XML content editor dialog.<p>
- * 
+ *
  * @since 8.0.0
  */
 public final class CmsContentEditorDialog {
@@ -103,12 +103,13 @@ public final class CmsContentEditorDialog {
 
     /**
      * Generates the form to post to the editor frame.<p>
-     * 
-     * @param editableData the data about the resource which should be edited 
-     * @param isNew true if the resource to be edited doesn'T already exist 
-     * @param target the target of the form to be created 
-     * 
-     * @return the form element which, when submitted, opens the editor 
+     *
+     * @param editableData the data about the resource which should be edited
+     * @param isNew true if the resource to be edited doesn'T already exist
+     * @param target the target of the form to be created
+     * @param mode the mode for creating new elements
+     *
+     * @return the form element which, when submitted, opens the editor
      */
     public static FormElement generateForm(I_CmsEditableData editableData, boolean isNew, String target, String mode) {
 
@@ -149,7 +150,7 @@ public final class CmsContentEditorDialog {
 
     /**
      * Returns the dialogs instance.<p>
-     * 
+     *
      * @return the dialog instance
      */
     public static CmsContentEditorDialog get() {
@@ -171,10 +172,10 @@ public final class CmsContentEditorDialog {
 
     /**
      * Opens the content editor dialog for the given element.<p>
-     * 
+     *
      * @param editableData the editable data
      * @param isNew <code>true</code> when creating a new resource
-     * @param mode the content creation mode 
+     * @param mode the content creation mode
      * @param editorHandler the editor handler
      */
     public void openEditDialog(
@@ -247,7 +248,7 @@ public final class CmsContentEditorDialog {
 
     /**
      * Returns the editable data.<p>
-     * 
+     *
      * @return the editable data
      */
     protected I_CmsEditableData getEditableData() {

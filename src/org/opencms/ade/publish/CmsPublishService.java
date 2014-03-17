@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -77,10 +77,10 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 /**
- * The implementation of the publish service.<p>
- * 
+ * The implementation of the publish service. <p>
+ *
  * @since 8.0.0
- * 
+ *
  */
 public class CmsPublishService extends CmsGwtService implements I_CmsPublishService {
 
@@ -104,11 +104,11 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
 
     /**
      * Fetches the publish data.<p>
-     * 
+     *
      * @param request the servlet request
-     * 
+     *
      * @return the publish data
-     * 
+     *
      * @throws CmsRpcException if something goes wrong
      */
     public static CmsPublishData prefetch(HttpServletRequest request) throws CmsRpcException {
@@ -126,13 +126,13 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
         return result;
     }
 
-    /** 
+    /**
      * Wraps the project name in a message string.<p>
-     * 
-     * @param cms the CMS context 
-     * @param name the project name 
-     * 
-     * @return the message for the given project name 
+     *
+     * @param cms the CMS context
+     * @param name the project name
+     *
+     * @return the message for the given project name
      */
     public static String wrapProjectName(CmsObject cms, String name) {
 
@@ -288,7 +288,7 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
             List<CmsResource> resources = workflowResources.getWorkflowResources();
 
             if (resources.size() > workflowManager.getResourceLimit()) {
-                // too many resources, send a publish list token to the client which can be used later to restore the resource list 
+                // too many resources, send a publish list token to the client which can be used later to restore the resource list
                 CmsPublishListToken token = workflowManager.getPublishListToken(cms, workflow, options);
                 CmsPublishGroupList result = new CmsPublishGroupList(token);
                 result.setTooManyResourcesMessage(Messages.get().getBundle(locale).key(
@@ -342,9 +342,9 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
 
     /**
      * Retrieves the publish options.<p>
-     * 
+     *
      * @return the publish options last used
-     * 
+     *
      * @throws CmsRpcException if something goes wrong
      */
     public CmsPublishOptions getResourceOptions() throws CmsRpcException {
@@ -360,8 +360,8 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
 
     /**
      * Adds siblings to a set of publish resources.<p>
-     * 
-     * @param publishResources the set to which siblings should be added 
+     *
+     * @param publishResources the set to which siblings should be added
      */
     protected void addSiblings(Set<CmsResource> publishResources) {
 
@@ -383,7 +383,7 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
 
     /**
      * Checks if there is any reason to deactivate the preview function.<p>
-     * 
+     *
      * @param publishResource the publish resource to check
      */
     private void checkPreview(CmsPublishResource publishResource) {
@@ -406,7 +406,7 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
 
     /**
      * Returns the cached publish options, creating it if it doesn't already exist.<p>
-     * 
+     *
      * @return the cached publish options
      */
     private CmsPublishOptions getCachedOptions() {
@@ -423,7 +423,7 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
 
     /**
      * Returns the id of the last used workflow for the current user.<p>
-     * 
+     *
      * @return the workflow id
      */
     private String getLastWorkflowForUser() {
@@ -434,10 +434,10 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
 
     /**
      * Creates a list which contains all publish resources from a given list, as well as the related publish resources they contain.<p>
-     * 
+     *
      * @param publishResources the original publish resource list
-     *  
-     * @return the flattened publish resource list 
+     *
+     * @return the flattened publish resource list
      */
     private List<CmsPublishResource> getPublishResourcesFlatList(Collection<CmsPublishResource> publishResources) {
 
@@ -451,11 +451,11 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
 
     /**
      * Gets the resource map containing the publish resources together with their related resources.<p>
-     * 
-     * @param resources the base list of publish resources 
-     * @param includeRelated flag to control whether related resources should be included 
+     *
+     * @param resources the base list of publish resources
+     * @param includeRelated flag to control whether related resources should be included
      * @param includeSiblings flag to control whether siblings should be included
-     * @param keepOriginalUnchangedResources flag which determines whether unchanged resources in the original resource list should be kept or removed  
+     * @param keepOriginalUnchangedResources flag which determines whether unchanged resources in the original resource list should be kept or removed
      * @return the resources together with their related resources
      */
     private ResourceMap getResourcesAndRelated(
@@ -489,11 +489,11 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
 
     /**
      * Converts a list of IDs to resources.<p>
-     * 
-     * @param cms the CmObject used for reading the resources 
+     *
+     * @param cms the CmObject used for reading the resources
      * @param ids the list of IDs
-     * 
-     * @return a list of resources 
+     *
+     * @return a list of resources
      */
     private List<CmsResource> idsToResources(CmsObject cms, List<CmsUUID> ids) {
 
@@ -512,7 +512,7 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
 
     /**
      * Saves the given options to the session.<p>
-     * 
+     *
      * @param options the options to save
      */
     private void setCachedOptions(CmsPublishOptions options) {
@@ -522,9 +522,9 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
 
     /**
      * Writes the id of the last used workflow to the current user.<p>
-     * 
+     *
      * @param workflowId the workflow id
-     * 
+     *
      * @throws CmsException if something goes wrong writing the user object
      */
     private void setLastWorkflowForUser(String workflowId) throws CmsException {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -65,7 +65,7 @@ import com.google.gwt.user.client.Window;
 
 /**
  * Utility class for the container-page editor.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsContainerpageUtil {
@@ -78,7 +78,7 @@ public class CmsContainerpageUtil {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param controller the container page controller
      * @param optionButtons the tool-bar option buttons
      */
@@ -90,7 +90,7 @@ public class CmsContainerpageUtil {
 
     /**
      * Adds an option bar to the given drag element.<p>
-     * 
+     *
      * @param element the element
      */
     public void addOptionBar(CmsContainerPageElementPanel element) {
@@ -107,7 +107,7 @@ public class CmsContainerpageUtil {
 
     /**
      * Transforms all contained elements into {@link CmsContainerPageElementPanel}.<p>
-     * 
+     *
      * @param container the container
      */
     public void consumeContainerElements(I_CmsDropContainer container) {
@@ -167,7 +167,7 @@ public class CmsContainerpageUtil {
                         // looking for the next marker that wraps the current element
                         Element endMarker = (Element)elementRoot.getNextSibling();
                         // only if the end marker node is not null and has neither the end-marker class or start-marker class
-                        // remove the current node and check the next sibling 
+                        // remove the current node and check the next sibling
                         while (!((endMarker == null) || ((endMarker.getNodeType() == Node.ELEMENT_NODE) && (CmsDomUtil.hasClass(
                             CmsContainerElement.CLASS_CONTAINER_ELEMENT_END_MARKER,
                             endMarker) || CmsDomUtil.hasClass(
@@ -219,7 +219,7 @@ public class CmsContainerpageUtil {
                     }
                 } else if (isGroupcontainerElement && (container instanceof CmsContainerPageContainer)) {
                     if (elementData == null) {
-                        // deserialization failed, remove whole group container 
+                        // deserialization failed, remove whole group container
                         Element sibling = child.getNextSiblingElement();
                         container.getElement().removeChild(child);
                         child = sibling;
@@ -233,9 +233,9 @@ public class CmsContainerpageUtil {
                     if (groupContainer.getWidgetCount() == 0) {
                         groupContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().emptyGroupContainer());
                     }
-                    // important: adding the option-bar only after the group-containers have been consumed 
+                    // important: adding the option-bar only after the group-containers have been consumed
                     if (!m_controller.isDetailPage() || container.isDetailView() || container.isDetailOnly()) {
-                        //only allow editing if either element of detail only container or not in detail view 
+                        //only allow editing if either element of detail only container or not in detail view
                         addOptionBar(groupContainer);
                     }
                     child = child.getNextSiblingElement();
@@ -252,9 +252,9 @@ public class CmsContainerpageUtil {
     /**
      * The method will create {@link CmsContainerPageContainer} object for all given containers
      * by converting the associated DOM elements. The contained elements will be transformed into {@link CmsContainerPageElementPanel}.<p>
-     * 
+     *
      * @param containers the container data
-     * 
+     *
      * @return the drag target containers
      */
     public Map<String, CmsContainerPageContainer> consumeContainers(Map<String, CmsContainerJso> containers) {
@@ -279,12 +279,12 @@ public class CmsContainerpageUtil {
 
     /**
      * Creates an drag container element.<p>
-     * 
-     * @param containerElement the container element data 
+     *
+     * @param containerElement the container element data
      * @param container the container parent
-     * 
+     *
      * @return the draggable element
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public CmsContainerPageElementPanel createElement(
@@ -317,13 +317,13 @@ public class CmsContainerpageUtil {
 
     /**
      * Creates a drag container element for group-container elements.<p>
-     * 
-     * @param containerElement the container element data 
+     *
+     * @param containerElement the container element data
      * @param subElements the sub-elements
      * @param container the drag parent
-     * 
+     *
      * @return the draggable element
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public CmsContainerPageElementPanel createGroupcontainerElement(
@@ -353,9 +353,9 @@ public class CmsContainerpageUtil {
 
     /**
      * Creates a list item.<p>
-     * 
+     *
      * @param containerElement the element data
-     * 
+     *
      * @return the list item widget
      */
     public CmsMenuListItem createListItem(final CmsContainerElementData containerElement) {
@@ -404,7 +404,7 @@ public class CmsContainerpageUtil {
 
     /**
      * Returns the container page controller.<p>
-     * 
+     *
      * @return the container page controller
      */
     protected CmsContainerpageController getController() {
@@ -414,7 +414,7 @@ public class CmsContainerpageUtil {
 
     /**
      * Displays the element parsing error dialog.<p>
-     * 
+     *
      * @param sitePath the element site path
      */
     private void alertParsingError(String sitePath) {
@@ -426,11 +426,11 @@ public class CmsContainerpageUtil {
 
     /**
      * Creates an drag container element.<p>
-     * 
+     *
      * @param element the DOM element
      * @param dragParent the drag parent
      * @param elementData the element data
-     * 
+     *
      * @return the draggable element
      */
     private CmsContainerPageElementPanel createElement(
@@ -470,11 +470,11 @@ public class CmsContainerpageUtil {
 
     /**
      * Creates a drag container element. This will not add an option-bar!<p>
-     * 
+     *
      * @param element the DOM element
      * @param dragParent the drag parent
      * @param elementData the element data
-     * 
+     *
      * @return the draggable element
      */
     private CmsGroupContainerElementPanel createGroupcontainer(

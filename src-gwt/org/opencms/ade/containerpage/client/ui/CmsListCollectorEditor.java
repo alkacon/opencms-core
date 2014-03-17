@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,16 +43,16 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Class to provide direct edit buttons within list collector elements.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param editable the editable element 
-     * @param parentId the parent id 
+     *
+     * @param editable the editable element
+     * @param parentId the parent id
      */
     public CmsListCollectorEditor(Element editable, String parentId) {
 
@@ -135,7 +135,7 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
 
                 public void onFailure(Throwable caught) {
 
-                    // is never called 
+                    // is never called
 
                 }
 
@@ -151,9 +151,9 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
 
     /**
      * Opens the content editor.<p>
-     * 
+     *
      * @param isNew <code>true</code> to create and edit a new resource
-     * @param mode the content creation mode 
+     * @param mode the content creation mode
      */
     protected void openEditDialog(boolean isNew, String mode) {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -59,7 +59,7 @@ public class CmsPdfConverter {
      */
     public CmsPdfConverter() {
 
-        // do nothing 
+        // do nothing
     }
 
     static {
@@ -71,14 +71,14 @@ public class CmsPdfConverter {
 
     /**
      * Converts XHTML data to a PDF document.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param xhtmlData the XHTML as a byte array 
-     * @param uri the uri to use for error messages in the XML parser 
-     * 
-     * @return the PDF data as a byte array 
-     * 
-     * @throws Exception if something goes wrong 
+     *
+     * @param cms the current CMS context
+     * @param xhtmlData the XHTML as a byte array
+     * @param uri the uri to use for error messages in the XML parser
+     *
+     * @return the PDF data as a byte array
+     *
+     * @throws Exception if something goes wrong
      */
     public byte[] convertXhtmlToPdf(CmsObject cms, byte[] xhtmlData, String uri) throws Exception {
 
@@ -96,10 +96,10 @@ public class CmsPdfConverter {
 
     /**
      * Reads an XHTML document from a byte array.<p>
-     * 
-     * @param xhtmlData the XHTML data 
-     * @return the document which was read from the data 
-     * 
+     *
+     * @param xhtmlData the XHTML data
+     * @return the document which was read from the data
+     *
      * @throws ParserConfigurationException
      * @throws SAXException
      * @throws IOException

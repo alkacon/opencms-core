@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,16 +51,16 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Direct edit buttons for the Toolbar direct edit provider.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsDirectEditButtons extends A_CmsDirectEditButtons implements I_CmsContentEditorHandler {
 
-    /** 
+    /**
      * Creates a new instance.<p>
-     * 
-     * @param editable the editable element 
-     * @param parentId the parent id 
+     *
+     * @param editable the editable element
+     * @param parentId the parent id
      */
     public CmsDirectEditButtons(Element editable, String parentId) {
 
@@ -78,10 +78,10 @@ public class CmsDirectEditButtons extends A_CmsDirectEditButtons implements I_Cm
 
     /**
      * Sets the position. Make sure the widget is attached to the DOM.<p>
-     * 
+     *
      * @param position the absolute position
-     * @param buttonsPosition the corrected position for the buttons 
-     * 
+     * @param buttonsPosition the corrected position for the buttons
+     *
      * @param containerElement the parent container element
      */
     public void setPosition(CmsPositionBean position, CmsPositionBean buttonsPosition, Element containerElement) {
@@ -151,7 +151,7 @@ public class CmsDirectEditButtons extends A_CmsDirectEditButtons implements I_Cm
 
                 public void onFailure(Throwable caught) {
 
-                    // this is never called 
+                    // this is never called
 
                 }
 
@@ -166,9 +166,9 @@ public class CmsDirectEditButtons extends A_CmsDirectEditButtons implements I_Cm
 
     /**
      * Opens the content editor.<p>
-     * 
+     *
      * @param isNew <code>true</code> to create and edit a new resource
-     * @param mode the content creation mode 
+     * @param mode the content creation mode
      */
     protected void openEditDialog(boolean isNew, String mode) {
 
@@ -186,8 +186,8 @@ public class CmsDirectEditButtons extends A_CmsDirectEditButtons implements I_Cm
         String backlink = CmsCoreProvider.get().getUri();
         if (Window.Location.getPath().endsWith(backlink)) {
             // CmsCoreProvider.get().getUri() is the request context uri from the time the direct edit provider
-            // includes are generated. In case the template has changed the request context uri before that point, 
-            // we don't append the request parameters, as they may be inappropriate for the new URI. 
+            // includes are generated. In case the template has changed the request context uri before that point,
+            // we don't append the request parameters, as they may be inappropriate for the new URI.
             backlink += Window.Location.getQueryString();
         }
         formValues.put("backlink", backlink);

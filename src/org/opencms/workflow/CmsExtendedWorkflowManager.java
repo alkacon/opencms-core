@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -150,8 +150,8 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
 
     /**
      * Gets the name of the group which should be used as the 'manager' group for newly created workflow projects.<p>
-     * 
-     * @return a group name 
+     *
+     * @return a group name
      */
     public String getWorkflowProjectManagerGroup() {
 
@@ -160,8 +160,8 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
 
     /**
      * Gets the name of the group which should be used as the 'user' group for newly created workflow projects.<p>
-     * 
-     * @return a group name 
+     *
+     * @return a group name
      */
     public String getWorkflowProjectUserGroup() {
 
@@ -169,7 +169,7 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
     }
 
     /**
-     * @see org.opencms.workflow.CmsDefaultWorkflowManager#getWorkflowResources(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsWorkflow, org.opencms.ade.publish.shared.CmsPublishOptions)
+     * @see org.opencms.workflow.CmsDefaultWorkflowManager#getWorkflowResources(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsWorkflow, org.opencms.ade.publish.shared.CmsPublishOptions, boolean)
      */
     @Override
     public CmsWorkflowResources getWorkflowResources(
@@ -278,13 +278,13 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
 
     /**
      * Implementation of the 'release' workflow action.<p>
-     * 
-     * @param userCms the current user's CMS context 
+     *
+     * @param userCms the current user's CMS context
      * @param resources the resources which should be released
-     *  
-     * @return the workflow response for this action 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @return the workflow response for this action
+     *
+     * @throws CmsException if something goes wrong
      */
     protected CmsWorkflowResponse actionRelease(CmsObject userCms, List<CmsResource> resources) throws CmsException {
 
@@ -330,11 +330,11 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
 
     /**
      * Checks that the parent folders of new resources which are released are either not new or are also released.<p>
-     *   
-     * @param userCms the user CMS context 
-     * @param resources the resources to check 
-     * 
-     * @throws CmsException if the check fails 
+     *
+     * @param userCms the user CMS context
+     * @param resources the resources to check
+     *
+     * @throws CmsException if the check fails
      */
     protected void checkNewParentsInList(CmsObject userCms, List<CmsResource> resources) throws CmsException {
 
@@ -363,10 +363,10 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
 
     /**
      * Cleans up empty workflow projects.<p>
-     * 
+     *
      * @param projects the workflow projects to clean up
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     protected void cleanupEmptyWorkflowProjects(List<CmsProject> projects) throws CmsException {
 
@@ -384,8 +384,8 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
 
     /**
      * Removes a project if there are no longer any resources which have been last modified in that project.<p>
-     * 
-     * @param project the project 
+     *
+     * @param project the project
      * @throws CmsException
      */
     protected void cleanupProjectIfEmpty(CmsProject project) throws CmsException {
@@ -398,11 +398,11 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
 
     /**
      * Ensures that the resources to be released are unlocked.<p>
-     * 
-     * @param project the project in which to operate 
+     *
+     * @param project the project in which to operate
      * @param resources the resources for which the locks should be removed
-     *  
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     protected void clearLocks(CmsProject project, List<CmsResource> resources) throws CmsException {
 
@@ -426,10 +426,10 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
 
     /**
      * Helper method to check whether a project exists.<p>
-     * 
-     * @param projectName the project name 
-     * 
-     * @return true if the project exists 
+     *
+     * @param projectName the project name
+     *
+     * @return true if the project exists
      */
     protected boolean existsProject(String projectName) {
 
@@ -443,10 +443,10 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
 
     /**
      * Generates the description for a new workflow project based on the user for whom it is created.<p>
-     * 
-     * @param userCms the user's current CMS context 
-     * 
-     * @return the workflow project description 
+     *
+     * @param userCms the user's current CMS context
+     *
+     * @return the workflow project description
      */
     protected String generateProjectDescription(CmsObject userCms) {
 
@@ -466,10 +466,10 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
 
     /**
      * Generates the name for a new workflow project based on the user for whom it is created.<p>
-     * 
-     * @param userCms the user's current CMS context 
-     * 
-     * @return the workflow project name 
+     *
+     * @param userCms the user's current CMS context
+     *
+     * @return the workflow project name
      */
     protected String generateProjectName(CmsObject userCms) {
 
@@ -482,11 +482,11 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
 
     /**
      * Generates the name for a new workflow project based on the user for whom it is created.<p>
-     * 
+     *
      * @param userCms the user's current CMS context
-     * @param shortTime if true, the short time format will be used, else the medium time format  
-     * 
-     * @return the workflow project name 
+     * @param shortTime if true, the short time format will be used, else the medium time format
+     *
+     * @return the workflow project name
      */
     protected String generateProjectName(CmsObject userCms, boolean shortTime) {
 
@@ -507,7 +507,7 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
 
     /**
      * Gets the list of recipients for the notifications.<p>
-     * 
+     *
      * @return the list of users which should be notified when resources are released
      */
     protected List<CmsUser> getNotificationMailRecipients() {
@@ -523,10 +523,10 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
         }
     }
 
-    /** 
+    /**
      * Gets the resource  notification content path.<p>
-     *   
-     * @return the resource notification content path  
+     *
+     * @return the resource notification content path
      */
     protected String getNotificationResource() {
 
@@ -539,10 +539,10 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
     /**
      * Helper method for generating the workflow response which should be sent when publishing the resources would break relations.<p>
      *
-     * @param userCms the user's CMS context 
+     * @param userCms the user's CMS context
      * @param publishResources the resources whose links would be broken
-     *  
-     * @return the workflow response 
+     *
+     * @return the workflow response
      */
     protected CmsWorkflowResponse getPublishBrokenRelationsResponse(
         CmsObject userCms,
@@ -560,8 +560,8 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
 
     /**
      * Gets the workflow response which should be sent when the resources have successfully been published.<p>
-     * 
-     * @return the successful workflow response 
+     *
+     * @return the successful workflow response
      */
     protected CmsWorkflowResponse getSuccessResponse() {
 
@@ -575,11 +575,11 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
 
     /**
      * Checks whether there are resources which have last been modified in a given project.<p>
-     * 
-     * @param project the project which should be checked 
-     * @return true if there are no resources which have been last modified inside the project 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param project the project which should be checked
+     * @return true if there are no resources which have been last modified inside the project
+     *
+     * @throws CmsException if something goes wrong
      */
     protected boolean isProjectEmpty(CmsProject project) throws CmsException {
 
@@ -589,11 +589,11 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
 
     /**
      * Checks whether the user for a given CMS context can manage workflow projects.<p>
-     * 
-     * @param userCms the user CMS Context 
-     * @return true if this user can manage workflow projects 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param userCms the user CMS Context
+     * @return true if this user can manage workflow projects
+     *
+     * @throws CmsException if something goes wrong
      */
     protected boolean isProjectManager(CmsObject userCms) throws CmsException {
 
@@ -606,8 +606,8 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
 
     /**
      * Handles finished publish jobs by removing projects of resources in the publish job if they are empty workflow projects.<p>
-     * 
-     * @param publishJob the finished published job 
+     *
+     * @param publishJob the finished published job
      */
     protected void onFinishPublishJob(CmsPublishJobRunning publishJob) {
 
@@ -620,21 +620,21 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
 
     /**
      * This is called when a publish job is started.<p>
-     * 
-     * @param publishJob the publish job being started 
+     *
+     * @param publishJob the publish job being started
      */
     protected void onStartPublishJob(CmsPublishJobEnqueued publishJob) {
 
-        // do nothing 
+        // do nothing
     }
 
     /**
      * Sends the notification for released resources.<p>
-     * 
-     * @param userCms the user's CMS context 
-     * @param recipient the OpenCms user to whom the notification should be sent 
-     * @param workflowProject the workflow project which 
-     * @param resources the resources which have been affected by a workflow action 
+     *
+     * @param userCms the user's CMS context
+     * @param recipient the OpenCms user to whom the notification should be sent
+     * @param workflowProject the workflow project which
+     * @param resources the resources which have been affected by a workflow action
      */
     protected void sendNotification(
         CmsObject userCms,

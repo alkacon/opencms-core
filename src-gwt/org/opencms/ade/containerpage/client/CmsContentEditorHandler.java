@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.History;
 
 /**
  * The container-page editor implementation of the XML content editor handler.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
@@ -68,7 +68,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param handler the container-page handler
      */
     public CmsContentEditorHandler(CmsContainerpageHandler handler) {
@@ -107,7 +107,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
 
     /**
      * Opens the XML content editor.<p>
-     * 
+     *
      * @param element the container element widget
      * @param inline <code>true</code> to open the in-line editor for the given element if available
      */
@@ -174,11 +174,11 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
 
     /**
      * Opens the XML content editor.<p>
-     * 
+     *
      * @param editableData the data of the element to edit
      * @param isNew <code>true</code> if a new resource should be created
      * @param dependingElementId the id of a depending element
-     * @param mode the element creation mode 
+     * @param mode the element creation mode
      */
     public void openDialog(
         final I_CmsEditableData editableData,
@@ -226,7 +226,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
 
     /**
      * Opens the content editor according to the history hash.<p>
-     * 
+     *
      * @param historyHash the history hash
      */
     public void openEditorForHistory(String historyHash) {
@@ -278,8 +278,8 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
 
     /**
      * Gets the editor context to use for the Acacia editor.<p>
-     * 
-     * @return the editor context 
+     *
+     * @return the editor context
      */
     CmsEditorContext getEditorContext() {
 
@@ -296,9 +296,9 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
 
     /**
      * Adds a history item for the opened editor.<p>
-     * Use the prihibitReturn flag to deny a return to the opened editor through the browser history. 
-     * Use this feature for inline editing or when opening the editor for new resources.<p> 
-     * 
+     * Use the prihibitReturn flag to deny a return to the opened editor through the browser history.
+     * Use this feature for inline editing or when opening the editor for new resources.<p>
+     *
      * @param prohibitReturn if <code>true</code> returning to the opened editor through the browser history is denied
      */
     private void addEditingHistoryItem(boolean prohibitReturn) {
@@ -314,9 +314,9 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
 
     /**
      * Returns the HTML context info for the given element.<p>
-     * 
-     * @param element the edited element 
-     * 
+     *
+     * @param element the edited element
+     *
      * @return the JSON string
      */
     private String getContextInfo(CmsContainerPageElementPanel element) {

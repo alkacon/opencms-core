@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -66,8 +66,8 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 
-/** 
- * Widget which shows which contents refer to a resource.<p> 
+/**
+ * Widget which shows which contents refer to a resource. <p>
  */
 public class CmsResourceRelationView extends Composite {
 
@@ -106,18 +106,18 @@ public class CmsResourceRelationView extends Composite {
     /** The resource status from which we get the related resources to display. */
     private CmsResourceStatusBean m_statusBean;
 
-    /** 
+    /**
      * Creates a new widget instance.<p>
-     * 
+     *
      * @param status the resource status from which we get the related resources to display.
-     * @param mode the display mode (display relation sources or targets)  
+     * @param mode the display mode (display relation sources or targets)
      */
     public CmsResourceRelationView(CmsResourceStatusBean status, Mode mode) {
 
         initWidget(m_panel);
         m_statusBean = status;
         m_mode = mode;
-        // wrap list info item in another panel to achieve layout uniformity with other similar widgets 
+        // wrap list info item in another panel to achieve layout uniformity with other similar widgets
         SimplePanel infoBoxPanel = new SimplePanel();
         infoBoxPanel.getElement().getStyle().setMarginTop(2, Style.Unit.PX);
         CmsListItemWidget infoWidget = new CmsListItemWidget(status.getListInfo());
@@ -163,8 +163,8 @@ public class CmsResourceRelationView extends Composite {
 
     /**
      * Sets the popup which contains this widget.<p>
-     * 
-     * @param popup the popup 
+     *
+     * @param popup the popup
      */
     public void setPopup(CmsPopup popup) {
 
@@ -251,8 +251,8 @@ public class CmsResourceRelationView extends Composite {
 
     /**
      * Gets the message to use for an empty relation list.<p>
-     * 
-     * @return the message to display for an empty relation list 
+     *
+     * @return the message to display for an empty relation list
      */
     private String getEmptyMessage() {
 
@@ -268,8 +268,8 @@ public class CmsResourceRelationView extends Composite {
 
     /**
      * Gets the label to use for the fieldset.<p>
-     * 
-     * @return the label for the fieldset 
+     *
+     * @return the label for the fieldset
      */
     private String getLegend() {
 
@@ -285,10 +285,10 @@ public class CmsResourceRelationView extends Composite {
 
     }
 
-    /** 
+    /**
      * Gets the relation beans to display.<p>
-     * 
-     * @return the list of relation beans to display 
+     *
+     * @return the list of relation beans to display
      */
     private ArrayList<CmsResourceStatusRelationBean> getRelationBeans() {
 

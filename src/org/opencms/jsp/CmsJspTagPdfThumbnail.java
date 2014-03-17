@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -58,16 +58,16 @@ public class CmsJspTagPdfThumbnail extends TagSupport {
 
     /**
      * The implementation of the tag.<p>
-     *  
+     *
      * @param request the current request
-     * @param file the path to the PDF 
-     * @param width the thumbnail width 
-     * @param height the thumbnail height 
-     * @param format the image format 
-     * 
-     * @throws CmsException if something goes wrong 
-     * 
-     * @return the link to the PDF thumbnail 
+     * @param file the path to the PDF
+     * @param width the thumbnail width
+     * @param height the thumbnail height
+     * @param format the image format
+     *
+     * @throws CmsException if something goes wrong
+     *
+     * @return the link to the PDF thumbnail
      */
     public static String pdfTagAction(ServletRequest request, String file, int width, int height, String format)
     throws CmsException {
@@ -95,8 +95,8 @@ public class CmsJspTagPdfThumbnail extends TagSupport {
 
     /**
      * Sets the path to the PDF.<p>
-     * 
-     * @param file the PDF path 
+     *
+     * @param file the PDF path
      */
     public void setFile(String file) {
 
@@ -105,8 +105,8 @@ public class CmsJspTagPdfThumbnail extends TagSupport {
 
     /**
      * Setter for the format path.<p>
-     * 
-     * @param format the format path 
+     *
+     * @param format the format path
      */
     public void setFormat(String format) {
 
