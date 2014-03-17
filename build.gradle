@@ -127,6 +127,7 @@ sourceSets.test.compileClasspath += files("$buildDir/classes/setup") { builtBy '
 sourceSets.test.compileClasspath += files("$buildDir/classes/modules") { builtBy 'modulesClasses' }
 sourceSets.test.compileClasspath += files("$buildDir/classes/gwt") { builtBy 'gwtClasses' }
 
+
 project.ext.componentsRuntimeClassPath=configurations.componentsRuntime
 componentsRuntimeClassPath += files("${project.buildDir}/libs/opencms-components.jar") { builtBy 'componentsJar' }
 
@@ -834,6 +835,10 @@ task bindist (dependsOn: war, type: Zip){
 
 
 test {
+    classpath += fileTree('webapp/setup/database'){ include '**/*.jar' }
+    classpath += files("$buildDir/classes/setup") { builtBy 'setupClasses' }
+    classpath += files("$buildDir/classes/modules") { builtBy 'modulesClasses' }
+    classpath += files("$buildDir/classes/gwt") { builtBy 'gwtClasses' }
     useJUnit()
     include 'org/opencms/test/AllTests*'
     // important: exclude all anonymous classes
