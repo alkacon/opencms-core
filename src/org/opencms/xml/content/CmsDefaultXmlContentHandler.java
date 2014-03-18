@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -116,8 +116,8 @@ import com.google.common.collect.Maps;
 /**
  * Default implementation for the XML content handler, will be used by all XML contents that do not
  * provide their own handler.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_CmsXmlContentVisibilityHandler {
 
@@ -134,7 +134,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param handler the handler instance
          * @param params the handler configuration parameteres
          */
@@ -146,7 +146,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
         /**
          * Returns the visibility handler instance.<p>
-         * 
+         *
          * @return the handler instance
          */
         public I_CmsXmlContentVisibilityHandler getHandler() {
@@ -156,7 +156,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
         /**
          * Returns the visibility handler configuration parameters.<p>
-         * 
+         *
          * @return the configuration parameters
          */
         public String getParams() {
@@ -555,7 +555,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     private Map<String, VisibilityConfiguration> m_visibilityConfigurations;
 
     /**
-     * Creates a new instance of the default XML content handler.<p>  
+     * Creates a new instance of the default XML content handler.<p>
      */
     public CmsDefaultXmlContentHandler() {
 
@@ -569,7 +569,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
         // the schema definition is located in 2 separates file for easier editing
         // 2 files are required in case an extended schema want to use the default definitions,
-        // but with an extended "appinfo" node 
+        // but with an extended "appinfo" node
         byte[] appinfoSchemaTypes;
         try {
             // first read the default types
@@ -707,7 +707,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         return getDefault(cms, value.getDocument() != null ? value.getDocument().getFile() : null, value, path, locale);
     }
 
-    /** 
+    /**
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#getDefaultComplexWidget()
      */
     public I_CmsComplexWidget getDefaultComplexWidget() {
@@ -775,11 +775,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /**
      * Returns the all mappings defined for the given element xpath.<p>
-     * 
+     *
      * @since 7.0.2
-     * 
+     *
      * @param elementName the element xpath to look up the mapping for
-     * 
+     *
      * @return the mapping defined for the given element xpath
      */
     public List<String> getMappings(String elementName) {
@@ -1065,7 +1065,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             while (itValues.hasNext()) {
                 I_CmsXmlContentValue value = itValues.next();
                 String path = value.getPath();
-                // check if this value has already been deleted by parent rules 
+                // check if this value has already been deleted by parent rules
                 boolean alreadyRemoved = false;
                 Iterator<String> itRemNodes = removedNodes.iterator();
                 while (itRemNodes.hasNext()) {
@@ -1107,7 +1107,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                         }
                     }
                     value = document.getValue(parentPath, locale);
-                    // Doing the actual DOM modifications here would make the bookmarks for this locale invalid, 
+                    // Doing the actual DOM modifications here would make the bookmarks for this locale invalid,
                     // so we delay it until later because we need the bookmarks for document.getValue() in the next loop iterations
                     valuesToRemove.put(parentPath, value);
                     // mark node as deleted
@@ -1123,15 +1123,15 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             }
         }
         if (needReinitialization) {
-            // re-initialize the XML content 
+            // re-initialize the XML content
             document.initDocument();
         }
     }
 
     /**
      * Returns true if the Acacia editor is disabled for this type.<p>
-     * 
-     * @return true if the acacia editor is disabled 
+     *
+     * @return true if the acacia editor is disabled
      */
     public boolean isAcaciaEditorDisabled() {
 
@@ -1151,20 +1151,25 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
      */
     public boolean isSearchable(I_CmsXmlContentValue value) {
 
-        // check for name configured in the search settings annotation
+        // check for name configured in the annotations
         Boolean searchSetting = m_searchSettings.get(value.getName());
-        // if no search setting annotation has been found, use default for value
+        I_CmsXmlContentHandler rootHandler = value.getDocument().getContentDefinition().getContentHandler();
+        Boolean rootSearchSetting = rootHandler.getSearchSettings().get(CmsXmlUtils.removeXpath(value.getPath()));
+        if (rootSearchSetting != null) {
+            searchSetting = rootSearchSetting;
+        }
+        // if no annotation has been found, use default for value
         return (searchSetting == null) ? value.isSearchable() : searchSetting.booleanValue();
     }
 
     /**
      * Returns the content field visibilty.<p>
-     * 
+     *
      * This implementation will be used as default if no other <link>org.opencms.xml.content.I_CmsXmlContentVisibilityHandler</link> is configured.<p>
-     * 
+     *
      * Only users that are member in one of the specified groups will be allowed to view and edit the given content field.<p>
      * The parameter should contain a '|' separated list of group names.<p>
-     * 
+     *
      * @see org.opencms.xml.content.I_CmsXmlContentVisibilityHandler#isValueVisible(org.opencms.file.CmsObject, org.opencms.xml.types.I_CmsXmlSchemaType, java.lang.String, java.lang.String, org.opencms.file.CmsResource, java.util.Locale)
      */
     public boolean isValueVisible(
@@ -1219,6 +1224,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                 contentLocale);
         }
         return true;
+
     }
 
     /**
@@ -1242,7 +1248,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             boolean autoCorrectionEnabled = (attribute != null) && ((Boolean)attribute).booleanValue();
             content.setAutoCorrectionEnabled(autoCorrectionEnabled);
         }
-        // validate the XML structure before writing the file if required                 
+        // validate the XML structure before writing the file if required
         if (!content.isAutoCorrectionEnabled()) {
             // an exception will be thrown if the structure is invalid
             content.validateXmlStructure(new CmsXmlEntityResolver(cms));
@@ -1285,7 +1291,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             throw new CmsXmlException(Messages.get().container(Messages.ERR_XMLCONTENT_RESOLVE_FILE_NOT_FOUND_0));
         }
 
-        // get the mappings for the element name        
+        // get the mappings for the element name
         List<String> mappings = getMappings(value.getPath());
         if (mappings == null) {
             // nothing to do if we have no mappings at all
@@ -1309,7 +1315,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         // since 7.0.2 multiple mappings are possible
         for (String mapping : mappings) {
 
-            // for multiple language mappings, we need to ensure 
+            // for multiple language mappings, we need to ensure
             // a) all siblings are handled
             // b) only the "right" locale is mapped to a sibling
             if (CmsStringUtil.isNotEmpty(mapping)) {
@@ -1318,7 +1324,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                     String filename = (siblings.get(i)).getRootPath();
                     Locale locale = OpenCms.getLocaleManager().getDefaultLocale(rootCms, filename);
                     if (mapping.startsWith(MAPTO_URLNAME)) {
-                        // should be written regardless of whether there is a sibling with the correct locale 
+                        // should be written regardless of whether there is a sibling with the correct locale
                         mapToUrlName = true;
                     }
                     if (!locale.equals(value.getLocale())) {
@@ -1487,7 +1493,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
                         boolean mapToShared;
                         int prefixLength;
-                        // check which mapping is used (shared or individual)                        
+                        // check which mapping is used (shared or individual)
                         if (mapping.startsWith(MAPTO_PROPERTY_SHARED)) {
                             mapToShared = true;
                             prefixLength = MAPTO_PROPERTY_SHARED.length();
@@ -1517,11 +1523,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                             i = 0;
                         }
                     } else if (mapping.startsWith(MAPTO_URLNAME)) {
-                        // we write the actual mappings later 
+                        // we write the actual mappings later
                         urlNameMappingResources.add(siblings.get(i));
                     } else if (mapping.startsWith(MAPTO_ATTRIBUTE)) {
 
-                        // this is an attribute mapping                        
+                        // this is an attribute mapping
                         String attribute = mapping.substring(MAPTO_ATTRIBUTE.length());
                         switch (ATTRIBUTES.indexOf(attribute)) {
                             case 0: // date released
@@ -1559,14 +1565,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                                 }
                                 break;
                             default:
-                                // ignore invalid / other mappings                                
+                                // ignore invalid / other mappings
                         }
                     }
                 }
             }
         }
         if (mapToUrlName) {
-            // now actually write the URL name mappings 
+            // now actually write the URL name mappings
             for (CmsResource resourceForUrlNameMapping : urlNameMappingResources) {
                 if (!CmsResource.isTemporaryFileName(resourceForUrlNameMapping.getRootPath())) {
                     I_CmsFileNameGenerator nameGen = OpenCms.getResourceManager().getNameGenerator();
@@ -1623,15 +1629,15 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     }
 
     /**
-     * Adds a check rule for a specified element.<p> 
-     * 
+     * Adds a check rule for a specified element.<p>
+     *
      * @param contentDefinition the XML content definition this XML content handler belongs to
-     * @param elementName the element name to add the rule to 
+     * @param elementName the element name to add the rule to
      * @param invalidate <code>false</code>, to disable link check /
      *                   <code>true</code> or <code>node</code>, to invalidate just the single node if the link is broken /
      *                   <code>parent</code>, if this rule will invalidate the whole parent node in nested content
      * @param type the relation type
-     * 
+     *
      * @throws CmsXmlException in case an unknown element name is used
      */
     protected void addCheckRule(
@@ -1696,11 +1702,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /**
      * Adds a configuration value for an element widget.<p>
-     * 
+     *
      * @param contentDefinition the XML content definition this XML content handler belongs to
      * @param elementName the element name to map
      * @param configurationValue the configuration value to use
-     * 
+     *
      * @throws CmsXmlException in case an unknown element name is used
      */
     protected void addConfiguration(
@@ -1719,11 +1725,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /**
      * Adds a default value for an element.<p>
-     * 
+     *
      * @param contentDefinition the XML content definition this XML content handler belongs to
      * @param elementName the element name to map
      * @param defaultValue the default value to use
-     * 
+     *
      * @throws CmsXmlException in case an unknown element name is used
      */
     protected void addDefault(CmsXmlContentDefinition contentDefinition, String elementName, String defaultValue)
@@ -1740,12 +1746,12 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     }
 
     /**
-     * Adds all needed default check rules recursively for the given schema type.<p> 
-     * 
+     * Adds all needed default check rules recursively for the given schema type.<p>
+     *
      * @param rootContentDefinition the root content definition
      * @param schemaType the schema type to check
      * @param elementPath the current element path
-     * 
+     *
      * @throws CmsXmlException if something goes wrong
      */
     protected void addDefaultCheckRules(
@@ -1782,11 +1788,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /**
      * Adds the given element to the compact view set.<p>
-     * 
+     *
      * @param contentDefinition the XML content definition this XML content handler belongs to
      * @param elementName the element name
      * @param displayType the display type to use for the element widget
-     * 
+     *
      * @throws CmsXmlException in case an unknown element name is used
      */
     protected void addDisplayType(CmsXmlContentDefinition contentDefinition, String elementName, DisplayType displayType)
@@ -1802,11 +1808,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /**
      * Adds an element mapping.<p>
-     * 
+     *
      * @param contentDefinition the XML content definition this XML content handler belongs to
      * @param elementName the element name to map
      * @param mapping the mapping to use
-     * 
+     *
      * @throws CmsXmlException in case an unknown element name is used
      */
     protected void addMapping(CmsXmlContentDefinition contentDefinition, String elementName, String mapping)
@@ -1836,7 +1842,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /**
      * Adds a Solr field for an element.<p>
-     * 
+     *
      * @param contentDefinition the XML content definition this XML content handler belongs to
      * @param field the Solr field
      */
@@ -1851,11 +1857,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /**
      * Adds a search setting for an element.<p>
-     * 
+     *
      * @param contentDefinition the XML content definition this XML content handler belongs to
      * @param elementName the element name to map
      * @param value the search setting value to store
-     * 
+     *
      * @throws CmsXmlException in case an unknown element name is used
      */
     protected void addSearchSetting(CmsXmlContentDefinition contentDefinition, String elementName, Boolean value)
@@ -1871,14 +1877,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     }
 
     /**
-     * Adds a validation rule for a specified element.<p> 
-     * 
+     * Adds a validation rule for a specified element.<p>
+     *
      * @param contentDefinition the XML content definition this XML content handler belongs to
-     * @param elementName the element name to add the rule to 
+     * @param elementName the element name to add the rule to
      * @param regex the validation rule regular expression
      * @param message the message in case validation fails (may be null)
      * @param isWarning if true, this rule is used for warnings, otherwise it's an error
-     * 
+     *
      * @throws CmsXmlException in case an unknown element name is used
      */
     protected void addValidationRule(
@@ -1908,12 +1914,12 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     }
 
     /**
-     * Adds a GUI widget for a specified element.<p> 
-     * 
+     * Adds a GUI widget for a specified element.<p>
+     *
      * @param contentDefinition the XML content definition this XML content handler belongs to
      * @param elementName the element name to map
      * @param widgetClassOrAlias the widget to use as GUI for the element (registered alias or class name)
-     * 
+     *
      * @throws CmsXmlException in case an unknown element name is used
      */
     protected void addWidget(CmsXmlContentDefinition contentDefinition, String elementName, String widgetClassOrAlias)
@@ -1962,10 +1968,10 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /**
      * Returns the default locale in the content of the given resource.<p>
-     * 
+     *
      * @param cms the cms context
      * @param resource the resource path to get the default locale for
-     * 
+     *
      * @return the default locale of the resource
      */
     protected Locale getLocaleForResource(CmsObject cms, String resource) {
@@ -1984,10 +1990,10 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /**
      * Returns the category reference path for the given value.<p>
-     * 
+     *
      * @param cms the cms context
      * @param value the xml content value
-     * 
+     *
      * @return the category reference path for the given value
      */
     protected String getReferencePath(CmsObject cms, I_CmsXmlContentValue value) {
@@ -2026,16 +2032,16 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     }
 
     /**
-     * Returns the validation message to be displayed if a certain rule was violated.<p> 
-     * 
+     * Returns the validation message to be displayed if a certain rule was violated.<p>
+     *
      * @param cms the current users OpenCms context
      * @param value the value to validate
      * @param regex the rule that was violated
      * @param valueStr the string value of the given value
      * @param matchResult if false, the rule was negated
      * @param isWarning if true, this validation indicate a warning, otherwise an error
-     * 
-     * @return the validation message to be displayed 
+     *
+     * @return the validation message to be displayed
      */
     protected String getValidationMessage(
         CmsObject cms,
@@ -2073,7 +2079,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     }
 
     /**
-     * Called when this content handler is initialized.<p> 
+     * Called when this content handler is initialized.<p>
      */
     protected void init() {
 
@@ -2105,11 +2111,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /**
     * Initializes the default values for this content handler.<p>
-    * 
-    * Using the default values from the appinfo node, it's possible to have more 
+    *
+    * Using the default values from the appinfo node, it's possible to have more
     * sophisticated logic for generating the defaults then just using the XML schema "default"
-    * attribute.<p> 
-    * 
+    * attribute.<p>
+    *
     * @param root the "defaults" element from the appinfo node of the XML content definition
     * @param contentDefinition the content definition the default values belong to
     * @throws CmsXmlException if something goes wrong
@@ -2129,10 +2135,10 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         }
     }
 
-    /** 
+    /**
      * Initializes the default complex widget.<p>
-     * 
-     * @param element the element in which the default complex widget is configured 
+     *
+     * @param element the element in which the default complex widget is configured
      */
     protected void initDefaultWidget(Element element) {
 
@@ -2147,13 +2153,13 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /**
      * Initializes the formatters for this content handler.<p>
-     * 
+     *
      * @param root the "formatters" element from the appinfo node of the XML content definition
      * @param contentDefinition the content definition the formatters belong to
      */
     protected void initFormatters(Element root, CmsXmlContentDefinition contentDefinition) {
 
-        // reading the include resources common for all formatters 
+        // reading the include resources common for all formatters
         Iterator<Element> itFormatter = CmsXmlGenericWrapper.elementIterator(root, APPINFO_FORMATTER);
         while (itFormatter.hasNext()) {
             // iterate all "formatter" elements in the "formatters" node
@@ -2181,7 +2187,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /**
      * Initializes the head includes for this content handler.<p>
-     * 
+     *
      * @param root the "headincludes" element from the appinfo node of the XML content definition
      * @param contentDefinition the content definition the head-includes belong to
      */
@@ -2204,27 +2210,27 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /**
     * Initializes the layout for this content handler.<p>
-    * 
-    * Unless otherwise instructed, the editor uses one specific GUI widget for each 
-    * XML value schema type. For example, for a {@link org.opencms.xml.types.CmsXmlStringValue} 
+    *
+    * Unless otherwise instructed, the editor uses one specific GUI widget for each
+    * XML value schema type. For example, for a {@link org.opencms.xml.types.CmsXmlStringValue}
     * the default widget is the {@link org.opencms.widgets.CmsInputWidget}.
-    * However, certain values can also use more then one widget, for example you may 
+    * However, certain values can also use more then one widget, for example you may
     * also use a {@link org.opencms.widgets.CmsCheckboxWidget} for a String value,
     * and as a result the Strings possible values would be eithe <code>"false"</code> or <code>"true"</code>,
     * but nevertheless be a String.<p>
     *
     * The widget to use can further be controlled using the <code>widget</code> attribute.
-    * You can specify either a valid widget alias such as <code>StringWidget</code>, 
+    * You can specify either a valid widget alias such as <code>StringWidget</code>,
     * or the name of a Java class that implements <code>{@link I_CmsWidget}</code>.<p>
-    * 
+    *
     * Configuration options to the widget can be passed using the <code>configuration</code>
     * attribute. You can specify any String as configuration. This String is then passed
-    * to the widget during initialization. It's up to the individual widget implementation 
+    * to the widget during initialization. It's up to the individual widget implementation
     * to interpret this configuration String.<p>
-    * 
+    *
     * @param root the "layouts" element from the appinfo node of the XML content definition
     * @param contentDefinition the content definition the layout belongs to
-    * 
+    *
     * @throws CmsXmlException if something goes wrong
     */
     protected void initLayouts(Element root, CmsXmlContentDefinition contentDefinition) throws CmsXmlException {
@@ -2253,11 +2259,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /**
      * Initializes the element mappings for this content handler.<p>
-     * 
+     *
      * Element mappings allow storing values from the XML content in other locations.
-     * For example, if you have an element called "Title", it's likely a good idea to 
+     * For example, if you have an element called "Title", it's likely a good idea to
      * store the value of this element also in the "Title" property of a XML content resource.<p>
-     * 
+     *
      * @param root the "mappings" element from the appinfo node of the XML content definition
      * @param contentDefinition the content definition the mappings belong to
      * @throws CmsXmlException if something goes wrong
@@ -2272,7 +2278,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             String elementName = element.attributeValue(APPINFO_ATTR_ELEMENT);
             String maptoName = element.attributeValue(APPINFO_ATTR_MAPTO);
             if ((elementName != null) && (maptoName != null)) {
-                // add the element mapping 
+                // add the element mapping
                 addMapping(contentDefinition, elementName, maptoName);
             }
         }
@@ -2280,7 +2286,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /**
      * Initializes the folder containing the model file(s) for this content handler.<p>
-     * 
+     *
      * @param root the "modelfolder" element from the appinfo node of the XML content definition
      * @param contentDefinition the content definition the model folder belongs to
      * @throws CmsXmlException if something goes wrong
@@ -2299,7 +2305,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /**
      * Initializes the preview location for this content handler.<p>
-     * 
+     *
      * @param root the "preview" element from the appinfo node of the XML content definition
      * @param contentDefinition the content definition the validation rules belong to
      * @throws CmsXmlException if something goes wrong
@@ -2318,17 +2324,17 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /**
      * Initializes the relation configuration for this content handler.<p>
-     * 
-     * OpenCms performs link checks for all OPTIONAL links defined in XML content values of type 
-     * OpenCmsVfsFile. However, for most projects in the real world a more fine-grained control 
-     * over the link check process is required. For these cases, individual relation behavior can 
+     *
+     * OpenCms performs link checks for all OPTIONAL links defined in XML content values of type
+     * OpenCmsVfsFile. However, for most projects in the real world a more fine-grained control
+     * over the link check process is required. For these cases, individual relation behavior can
      * be defined for the appinfo node.<p>
-     * 
+     *
      * Additional here can be defined an optional type for the relations, for instance.<p>
-     * 
+     *
      * @param root the "relations" element from the appinfo node of the XML content definition
      * @param contentDefinition the content definition the check rules belong to
-     * 
+     *
      * @throws CmsXmlException if something goes wrong
      */
     protected void initRelations(Element root, CmsXmlContentDefinition contentDefinition) throws CmsXmlException {
@@ -2355,11 +2361,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /**
      * Initializes the resource bundle to use for localized messages in this content handler.<p>
-     * 
+     *
      * @param root the "resourcebundle" element from the appinfo node of the XML content definition
      * @param contentDefinition the content definition the validation rules belong to
      * @param single if <code>true</code> we process the classic sinle line entry, otherwise it's the multiple line setting
-     * 
+     *
      * @throws CmsXmlException if something goes wrong
      */
     protected void initResourceBundle(Element root, CmsXmlContentDefinition contentDefinition, boolean single)
@@ -2466,15 +2472,15 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /**
      * Initializes the search exclusions values for this content handler.<p>
-     * 
+     *
      * For the full text search, the value of all elements in one locale of the XML content are combined
      * to one big text, which is referred to as the "content" in the context of the full text search.
-     * With this option, it is possible to hide certain elements from this "content" that does not make sense 
-     * to include in the full text search.<p>   
-     * 
+     * With this option, it is possible to hide certain elements from this "content" that does not make sense
+     * to include in the full text search.<p>
+     *
      * @param root the "searchsettings" element from the appinfo node of the XML content definition
      * @param contentDefinition the content definition the default values belong to
-     * 
+     *
      * @throws CmsXmlException if something goes wrong
      */
     protected void initSearchSettings(Element root, CmsXmlContentDefinition contentDefinition) throws CmsXmlException {
@@ -2536,7 +2542,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                         field.addMapping(createSearchFieldMapping(contentDefinition, mappingElement, locale));
                     }
 
-                    // if no mapping was defined yet, create a mapping for the element itself 
+                    // if no mapping was defined yet, create a mapping for the element itself
                     if ((field.getMappings() == null) || field.getMappings().isEmpty()) {
                         String param = CmsXmlUtils.concatXpath(locale.toString(), elementName);
                         CmsSearchFieldMapping map = new CmsSearchFieldMapping(CmsSearchFieldMappingType.ITEM, param);
@@ -2551,7 +2557,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /**
      * Initializes the element settings for this content handler.<p>
-     * 
+     *
      * @param root the "settings" element from the appinfo node of the XML content definition
      * @param contentDefinition the content definition the element settings belong to
      */
@@ -2581,7 +2587,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /**
      * Initializes the locale synchronizations elements.<p>
-     * 
+     *
      * @param root the synchronizations element of the content schema appinfo.
      * @param contentDefinition the content definition
      */
@@ -2596,7 +2602,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /**
      * Initializes the tabs for this content handler.<p>
-     * 
+     *
      * @param root the "tabs" element from the appinfo node of the XML content definition
      * @param contentDefinition the content definition the tabs belong to
      */
@@ -2621,7 +2627,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                 String collapseValue = element.attributeValue(APPINFO_ATTR_COLLAPSE, CmsStringUtil.TRUE);
                 String tabName = element.attributeValue(APPINFO_ATTR_NAME, elementName);
                 if (elementName != null) {
-                    // add the element tab 
+                    // add the element tab
                     m_tabs.add(new CmsXmlContentTab(elementName, Boolean.valueOf(collapseValue).booleanValue(), tabName));
                 }
             }
@@ -2636,9 +2642,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /**
      * Initializes the forbidden template contexts.<p>
-     * 
-     * @param root the root XML element 
-     * @param contentDefinition the content definition 
+     *
+     * @param root the root XML element
+     * @param contentDefinition the content definition
      */
     protected void initTemplates(Element root, CmsXmlContentDefinition contentDefinition) {
 
@@ -2656,14 +2662,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /**
      * Initializes the validation rules this content handler.<p>
-     * 
+     *
      * OpenCms always performs XML schema validation for all XML contents. However,
      * for most projects in the real world a more fine-grained control over the validation process is
      * required. For these cases, individual validation rules can be defined for the appinfo node.<p>
-     * 
+     *
      * @param root the "validationrules" element from the appinfo node of the XML content definition
      * @param contentDefinition the content definition the validation rules belong to
-     * 
+     *
      * @throws CmsXmlException if something goes wrong
      */
     protected void initValidationRules(Element root, CmsXmlContentDefinition contentDefinition) throws CmsXmlException {
@@ -2695,7 +2701,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /**
      * Initializes the content visibility settings.<p>
-     * 
+     *
      * @param root the visibilities appinfo element
      * @param contentDefinition the content definition
      */
@@ -2738,9 +2744,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /**
      * Returns the is-invalidate-parent flag for the given xpath.<p>
-     * 
+     *
      * @param xpath the path to get the check rule for
-     * 
+     *
      * @return the configured is-invalidate-parent flag for the given xpath
      */
     protected boolean isInvalidateParent(String xpath) {
@@ -2766,16 +2772,16 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /**
      * Returns the localized resource string for a given message key according to the configured resource bundle
      * of this content handler.<p>
-     * 
-     * If the key was not found in the configured bundle, or no bundle is configured for this 
+     *
+     * If the key was not found in the configured bundle, or no bundle is configured for this
      * content handler, the return value is
      * <code>"??? " + keyName + " ???"</code>.<p>
-     * 
-     * @param keyName the key for the desired string 
+     *
+     * @param keyName the key for the desired string
      * @param locale the locale to get the key from
-     * 
-     * @return the resource string for the given key 
-     * 
+     *
+     * @return the resource string for the given key
+     *
      * @see CmsMessages#formatUnknownKey(String)
      * @see CmsMessages#isUnknownKey(String)
      */
@@ -2790,7 +2796,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /**
      * Removes property values on resources for non-existing, optional elements.<p>
-     * 
+     *
      * @param cms the current users OpenCms context
      * @param file the file which is currently being prepared for writing
      * @param content the XML content to remove the property values for
@@ -2917,10 +2923,10 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /**
      * Validates if the given <code>appinfo</code> element node from the XML content definition schema
-     * is valid according the the capabilities of this content handler.<p> 
-     * 
+     * is valid according the the capabilities of this content handler.<p>
+     *
      * @param appinfoElement the <code>appinfo</code> element node to validate
-     *  
+     *
      * @throws CmsXmlException in case the element validation fails
      */
     protected void validateAppinfoElement(Element appinfoElement) throws CmsXmlException {
@@ -2931,20 +2937,20 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         // attach the default appinfo schema
         root.add(I_CmsXmlSchemaType.XSI_NAMESPACE);
         root.addAttribute(I_CmsXmlSchemaType.XSI_NAMESPACE_ATTRIBUTE_NO_SCHEMA_LOCATION, APPINFO_SCHEMA_SYSTEM_ID);
-        // append the content from the appinfo node in the content definition 
+        // append the content from the appinfo node in the content definition
         root.appendContent(appinfoElement);
         // now validate the document with the default appinfo schema
         CmsXmlUtils.validateXmlStructure(doc, CmsEncoder.ENCODING_UTF_8, new CmsXmlEntityResolver(null));
     }
 
     /**
-     * The errorHandler parameter is optional, if <code>null</code> is given a new error handler 
+     * The errorHandler parameter is optional, if <code>null</code> is given a new error handler
      * instance must be created.<p>
-     * 
+     *
      * @param cms the current OpenCms user context
      * @param value the value to resolve the validation rules for
      * @param errorHandler (optional) an error handler instance that contains previous error or warnings
-     * 
+     *
      * @return an error handler that contains all errors and warnings currently found
      */
     protected CmsXmlContentErrorHandler validateCategories(
@@ -3007,12 +3013,12 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     }
 
     /**
-     * Validates the given rules against the given value.<p> 
-     * 
+     * Validates the given rules against the given value.<p>
+     *
      * @param cms the current users OpenCms context
      * @param value the value to validate
      * @param errorHandler the error handler to use in case errors or warnings are detected
-     * 
+     *
      * @return if a broken link has been found
      */
     protected boolean validateLink(CmsObject cms, I_CmsXmlContentValue value, CmsXmlContentErrorHandler errorHandler) {
@@ -3036,7 +3042,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             // validate the link for error
             CmsResource res = null;
             CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(link.getTarget());
-            // the link target may be a root path for a resource in another site 
+            // the link target may be a root path for a resource in another site
             if (site != null) {
                 CmsObject rootCms = OpenCms.initCmsObject(cms);
                 rootCms.getRequestContext().setSiteRoot("");
@@ -3044,7 +3050,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             } else {
                 res = cms.readResource(sitePath, CmsResourceFilter.IGNORE_EXPIRATION);
             }
-            // check the time range 
+            // check the time range
             if (res != null) {
                 long time = System.currentTimeMillis();
                 if (!res.isReleased(time)) {
@@ -3080,14 +3086,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     }
 
     /**
-     * Validates the given rules against the given value.<p> 
-     * 
+     * Validates the given rules against the given value.<p>
+     *
      * @param cms the current users OpenCms context
      * @param value the value to validate
      * @param errorHandler the error handler to use in case errors or warnings are detected
      * @param rules the rules to validate the value against
      * @param isWarning if true, this validation should be stored as a warning, otherwise as an error
-     * 
+     *
      * @return the updated error handler
      */
     protected CmsXmlContentErrorHandler validateValue(
@@ -3157,15 +3163,15 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /**
      * Checks the default XML schema validation rules.<p>
-     * 
+     *
      * These rules should only be tested if this is not a test for warnings.<p>
-     * 
+     *
      * @param cms the current users OpenCms context
      * @param value the value to validate
      * @param valueStr the string value of the given value
      * @param errorHandler the error handler to use in case errors or warnings are detected
      * @param isWarning if true, this validation should be stored as a warning, otherwise as an error
-     * 
+     *
      * @return the updated error handler
      */
     protected CmsXmlContentErrorHandler validateValue(
@@ -3191,13 +3197,13 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /**
      * Writes the categories if a category widget is present.<p>
-     * 
+     *
      * @param cms the cms context
      * @param file the file
      * @param content the xml content to set the categories for
-     * 
+     *
      * @return the perhaps modified file
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected CmsFile writeCategories(CmsObject cms, CmsFile file, CmsXmlContent content) throws CmsException {
@@ -3301,13 +3307,13 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /**
      * Creates a search field mapping for the given mapping element and the locale.<p>
-     * @param contentDefinition 
-     * 
+     * @param contentDefinition
+     *
      * @param element the mapping element configured in the schema
      * @param locale the locale
-     * 
+     *
      * @return the created search field mapping
-     * 
+     *
      * @throws CmsXmlException if the dynamic field class could not be found
      */
     private I_CmsSearchFieldMapping createSearchFieldMapping(
@@ -3359,11 +3365,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /**
      * Parses a boolean from a string and returns a default value if the string couldn't be parsed.<p>
-     *  
-     * @param text the text from which to get the boolean value 
+     *
+     * @param text the text from which to get the boolean value
      * @param defaultValue the value to return if parsing fails
-     *  
-     * @return the parsed boolean 
+     *
+     * @return the parsed boolean
      */
     private boolean safeParseBoolean(String text, boolean defaultValue) {
 

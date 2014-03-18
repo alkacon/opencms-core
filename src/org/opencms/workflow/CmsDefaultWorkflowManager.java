@@ -366,7 +366,6 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
         final List<CmsResource> resources) throws CmsException {
 
         final CmsPublish publish = new CmsPublish(userCms, options);
-
         // use FutureTask to get the broken links, because we can then use a different thread if it takes too long
         final FutureTask<List<CmsPublishResource>> brokenResourcesGetter = new FutureTask<List<CmsPublishResource>>(
             new Callable<List<CmsPublishResource>>() {

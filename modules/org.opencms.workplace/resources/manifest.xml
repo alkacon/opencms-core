@@ -15,7 +15,7 @@
 		<class>org.opencms.workplace.CmsWorkplaceAction</class>
 		<description><![CDATA[<p>This module contains the OpenCms Workplace base files.</p>
 <p>It includes common used dialogs and style sheets, that are needed by any workplace module.</p>
-<p><i>&copy; 2013 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+<p><i>&copy; 2014 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
 		<version>9.4.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
@@ -165,7 +165,7 @@
 			<resource uri="/system/workplace/resources/filetypes/xml_big.png"/>
 			<resource uri="/system/workplace/resources/filetypes/document_big.png"/>
 			<resource uri="/system/workplace/resources/filetypes/document.png"/>
-			
+
 			<resource uri="/system/workplace/views/top_foot.jsp"/>
 			<resource uri="/system/workplace/views/top_fs.jsp"/>
 			<resource uri="/system/workplace/views/workplace.jsp"/>
@@ -794,7 +794,7 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-		
+
 		<file>
 			<destination>system/workplace/commons</destination>
 			<type>folder</type>
@@ -7344,7 +7344,7 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-		
+
 				<file>
 			<source>system/workplace/resources/filetypes/document.png</source>
 			<destination>system/workplace/resources/filetypes/document.png</destination>
@@ -7385,17 +7385,17 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+
+
+
+
+
+
+
+
+
+
+
 		<file>
 			<source>system/workplace/resources/filetypes/unknown_file.png</source>
 			<destination>system/workplace/resources/filetypes/unknown_file.png</destination>

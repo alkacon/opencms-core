@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -101,7 +101,7 @@ import org.apache.commons.logging.Log;
 
 /**
  * Utility class to generate the element data objects used within the container-page editor.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsElementUtil {
@@ -136,14 +136,14 @@ public class CmsElementUtil {
 
     /**
      * Creates a new instance.<p>
-     * 
+     *
      * @param cms the cms context
      * @param currentPageUri the current page uri
      * @param detailContentId the detail content structure id
      * @param req the http request
      * @param res the http response
      * @param locale the content locale
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public CmsElementUtil(
@@ -180,7 +180,7 @@ public class CmsElementUtil {
 
     /**
      * Creates a new instance.<p>
-     * 
+     *
      * @param cms the cms context
      * @param currentPageUri the current page uri
      * @param detailContentId the detail content structure id
@@ -188,7 +188,7 @@ public class CmsElementUtil {
      * @param req the http request
      * @param res the http response
      * @param locale the content locale
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public CmsElementUtil(
@@ -207,11 +207,11 @@ public class CmsElementUtil {
 
     /**
      * Returns the HTML content for the given resource and container.<p>
-     * 
+     *
      * @param elementFile the element resource file
      * @param elementId the element id
      * @param container the container
-     * 
+     *
      * @return the HTML content
      */
     public String getContentByContainer(CmsFile elementFile, String elementId, CmsContainer container) {
@@ -225,10 +225,10 @@ public class CmsElementUtil {
 
     /**
      * Returns the rendered element content for all the given containers.
-     *  
+     *
      * @param element the element to render
      * @param containers the containers the element appears in
-     *  
+     *
      * @return a map from container names to rendered page contents
      */
     public Map<String, String> getContentsByContainerName(
@@ -249,12 +249,12 @@ public class CmsElementUtil {
 
     /**
      * Returns the data for an element.<p>
-     * 
+     *
      * @param element the resource
-     * @param containers the containers on the current container page 
-     * 
+     * @param containers the containers on the current container page
+     *
      * @return the data for an element
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public CmsContainerElementData getElementData(CmsContainerElementBean element, Collection<CmsContainer> containers)
@@ -423,12 +423,12 @@ public class CmsElementUtil {
 
     /**
      * Sets the data to the given container element.<p>
-     * 
+     *
      * @param elementBean the element bean
      * @param result the container element to set the data to
-     * 
+     *
      * @return the container element
-     *  
+     *
      * @throws CmsException if something goes wrong
      */
     public CmsContainerElement setElementInfo(CmsContainerElementBean elementBean, CmsContainerElement result)
@@ -507,12 +507,25 @@ public class CmsElementUtil {
     }
 
     /**
+     * Returns the ADE configuration data for the current URI.<p>
+     *
+     * @return the ADE configuration data
+     */
+    private CmsADEConfigData getConfigData() {
+
+        if (m_adeConfig == null) {
+            m_adeConfig = OpenCms.getADEManager().lookupConfiguration(m_cms, m_cms.addSiteRoot(m_currentPageUri));
+        }
+        return m_adeConfig;
+    }
+
+    /**
      * Returns the HTML content of the given element and container.<p>
-     *  
+     *
      * @param element the element
      * @param container the container
      * @param configs the formatter configurations
-     * 
+     *
      * @return the HTML content
      */
     private String getContentByContainer(
@@ -547,17 +560,17 @@ public class CmsElementUtil {
     }
 
     /**
-     * Returns the content of an element when rendered with the given formatter.<p> 
-     * 
+     * Returns the content of an element when rendered with the given formatter.<p>
+     *
      * @param element the element bean
      * @param formatter the formatter uri
-     * @param container the container for which the element content should be retrieved 
-     * 
+     * @param container the container for which the element content should be retrieved
+     *
      * @return generated html code
-     * 
+     *
      * @throws CmsException if an cms related error occurs
      * @throws ServletException if a jsp related error occurs
-     * 
+     *
      * @throws IOException if a jsp related error occurs
      */
     private String getElementContent(CmsContainerElementBean element, CmsResource formatter, CmsContainer container)
@@ -590,7 +603,7 @@ public class CmsElementUtil {
             m_standardContext.setContainer(containerBean);
             m_standardContext.setElement(element);
             m_standardContext.setEdited(true);
-            // to enable 'old' direct edit features for content-collector-elements, 
+            // to enable 'old' direct edit features for content-collector-elements,
             // set the direct-edit-provider-attribute in the request
             I_CmsDirectEditProvider eb = new CmsAdvancedDirectEditProvider();
             eb.init(m_cms, CmsDirectEditMode.TRUE, element.getSitePath());
@@ -604,23 +617,10 @@ public class CmsElementUtil {
     }
 
     /**
-     * Returns the ADE configuration data for the current URI.<p>
-     * 
-     * @return the ADE configuration data
-     */
-    private CmsADEConfigData getConfigData() {
-
-        if (m_adeConfig == null) {
-            m_adeConfig = OpenCms.getADEManager().lookupConfiguration(m_cms, m_cms.addSiteRoot(m_currentPageUri));
-        }
-        return m_adeConfig;
-    }
-
-    /**
      * Returns the formatter configuration for the given element resource.<p>
-     *  
+     *
      * @param resource the element resource
-     * 
+     *
      * @return the formatter configuration
      */
     private CmsFormatterConfiguration getFormatterConfiguration(CmsResource resource) {
@@ -630,13 +630,13 @@ public class CmsElementUtil {
 
     /**
      * Helper method for checking whether there are properties defined for a given content element.<p>
-     * 
-     * @param cms the CmsObject to use for VFS operations 
-     * @param resource the resource for which it should be checked whether it has properties 
-     * 
-     * @return true if the resource has properties defined 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms the CmsObject to use for VFS operations
+     * @param resource the resource for which it should be checked whether it has properties
+     *
+     * @return true if the resource has properties defined
+     *
+     * @throws CmsException if something goes wrong
      */
     private boolean hasSettings(CmsObject cms, CmsResource resource) throws CmsException {
 
@@ -645,15 +645,20 @@ public class CmsElementUtil {
         }
 
         CmsFormatterConfiguration formatters = getConfigData().getFormatters(m_cms, resource);
-        return (formatters.getAllFormatters().size() > 1)
+        boolean result = (formatters.getAllFormatters().size() > 1)
             || !CmsXmlContentPropertyHelper.getPropertyInfo(m_cms, resource).isEmpty();
+        if (!result && (formatters.getAllFormatters().size() == 1)) {
+            result = (formatters.getAllFormatters().get(0).getSettings() != null)
+                && (formatters.getAllFormatters().get(0).getSettings().size() > 0);
+        }
+        return result;
     }
 
     /**
      * Parses the given request parameters string into a parameter map.<p>
-     * 
+     *
      * @param requestParameters the request parameters to parse
-     * 
+     *
      * @return the parameter map
      */
     private Map<String, Object> parseRequestParameters(String requestParameters) {
@@ -680,11 +685,11 @@ public class CmsElementUtil {
         return parameterMap;
     }
 
-    /** 
+    /**
      * Removes all script tags from given input.<p>
-     * 
+     *
      * @param input the input to remove script tags from
-     * 
+     *
      * @return the cleaned input
      */
     private String removeScriptTags(String input) {

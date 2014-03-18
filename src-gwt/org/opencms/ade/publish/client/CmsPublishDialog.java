@@ -247,7 +247,7 @@ public class CmsPublishDialog extends CmsPopup {
         m_panel.add(m_publishSelectPanel);
         m_panel.add(m_brokenLinksPanel);
         setMainContent(m_panel);
-        onReceivePublishList(initData.getGroupList());
+        onReceivePublishList(initData.getGroups());
     }
 
     /**

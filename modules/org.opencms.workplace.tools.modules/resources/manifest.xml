@@ -14,7 +14,7 @@
 		<group>OpenCms Workplace</group>
 		<class/>
 		<description><![CDATA[<p>This module contains administration tools for managing the OpenCms modules.</p>
-<p><i>&copy; 2013 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+<p><i>&copy; 2014 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
 		<version>9.4.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
@@ -779,8 +779,8 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-		
-		
+
+
 		<file>
 			<source>system/workplace/admin/modules/modules_delete.jsp</source>
 			<destination>system/workplace/admin/modules/modules_delete.jsp</destination>
@@ -933,7 +933,7 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-		
+
 		<file>
 			<source>system/workplace/admin/modules/modules_clone.jsp</source>
 			<destination>system/workplace/admin/modules/modules_clone.jsp</destination>
@@ -986,8 +986,8 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-		
-		
+
+
 		<file>
 			<source>system/workplace/admin/modules/modules_edit_resources.jsp</source>
 			<destination>system/workplace/admin/modules/modules_edit_resources.jsp</destination>
@@ -1703,7 +1703,7 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-		
+
 				<file>
 			<source>system/workplace/resources/tools/modules/icons/big/module_clone.png</source>
 			<destination>system/workplace/resources/tools/modules/icons/big/module_clone.png</destination>
@@ -1724,7 +1724,7 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-		
+
 		<file>
 			<source>system/workplace/resources/tools/modules/icons/big/module_export.png</source>
 			<destination>system/workplace/resources/tools/modules/icons/big/module_export.png</destination>

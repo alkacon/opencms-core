@@ -739,6 +739,10 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
     public void setClassName(String className) {
 
         checkFrozen();
+        if (className != null) {
+            // remove leading or trailing white space
+            className = className.trim();
+        }
         if (!CmsStringUtil.isValidJavaClassName(className)) {
             CmsMessageContainer message = Messages.get().container(Messages.ERR_BAD_JOB_CLASS_NAME_1, className);
             if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) {

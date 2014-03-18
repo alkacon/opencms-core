@@ -66,6 +66,7 @@ public interface I_CmsWorkflowManager {
      *
      * @return the workflow response
      * @throws CmsException if something goes wrong
+
      */
     CmsWorkflowResponse executeAction(CmsObject cms, CmsWorkflowAction action, CmsPublishListToken token)
     throws CmsException;

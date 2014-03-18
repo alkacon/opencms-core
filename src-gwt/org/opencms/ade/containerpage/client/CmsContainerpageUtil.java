@@ -219,7 +219,6 @@ public class CmsContainerpageUtil {
                     }
                 } else if (isGroupcontainerElement && (container instanceof CmsContainerPageContainer)) {
                     if (elementData == null) {
-                        // deserialization failed, remove whole group container
                         Element sibling = child.getNextSiblingElement();
                         container.getElement().removeChild(child);
                         child = sibling;

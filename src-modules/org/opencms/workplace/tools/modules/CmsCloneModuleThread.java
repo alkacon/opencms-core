@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -78,11 +78,11 @@ import com.google.common.base.Function;
 import com.google.common.base.Functions;
 
 /**
- * The report thread to clone a module.<p> 
+ * The report thread to clone a module.<p>
  */
 public class CmsCloneModuleThread extends A_CmsReportThread {
 
-    /** 
+    /**
      * String replacement function.<p>
      */
     class ReplaceAll implements Function<String, String> {
@@ -95,9 +95,9 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
 
         /**
          * Creates a new instance.<p>
-         * 
-         * @param from the regex to match  
-         * @param to the replacement 
+         *
+         * @param from the regex to match
+         * @param to the replacement
          */
         public ReplaceAll(String from, String to) {
 
@@ -129,7 +129,7 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param cms the cms context
      * @param cloneInfo the clone module information
      */
@@ -142,7 +142,7 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
 
     /**
      * Returns a list of all module names.<p>
-     * 
+     *
      * @return a list of all module names
      */
     public List<String> getAllModuleNames() {
@@ -321,7 +321,7 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
 
     /**
      * Returns <code>true</code> if the module has been created successful.<p>
-     * 
+     *
      * @return <code>true</code> if the module has been created successful
      */
     public boolean success() {
@@ -331,10 +331,10 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
 
     /**
      * Adjusts the module configuration file and the formatter configurations.<p>
-     * 
+     *
      * @param targetModule the target module
      * @param resTypeMap the resource type mapping
-     * 
+     *
      * @throws CmsException if something goes wrong
      * @throws UnsupportedEncodingException if the file content could not be read with the determined encoding
      */
@@ -367,13 +367,16 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
                 CmsResourceFilter.requireType(OpenCms.getResourceManager().getResourceType(
                     CmsADEManager.MODULE_CONFIG_TYPE).getTypeId()));
             Function<String, String> substitution = Functions.identity();
-            // compose the substitution functions from simple substitution functions for each type 
+            // compose the substitution functions from simple substitution functions for each type
+
             for (Map.Entry<I_CmsResourceType, I_CmsResourceType> mapping : resTypeMap.entrySet()) {
                 substitution = Functions.compose(new ReplaceAll(
                     mapping.getKey().getTypeName(),
                     mapping.getValue().getTypeName()), substitution);
             }
-            // Either replace prefix in or prepend it to the folder name value 
+
+            // Either replace prefix in or prepend it to the folder name value
+
             Function<String, String> replaceFolderName = new ReplaceAll("(<Folder>[ \n]*<Name><!\\[CDATA\\[)("
                 + m_cloneInfo.getSourceNamePrefix()
                 + ")?", "$1" + m_cloneInfo.getTargetNamePrefix());
@@ -386,7 +389,7 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
 
     /**
      * Adjusts the paths of the module resources from the source path to the target path.<p>
-     * 
+     *
      * @param sourceModule the source module
      * @param targetModule the target module
      * @param sourcePathPart the path part of the source module
@@ -423,7 +426,7 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
 
     /**
      * Manipulates a string by cutting of a prefix, if present, and adding a new prefix.
-     * 
+     *
      * @param word the string to be manipulated
      * @param oldPrefix the old prefix that should be replaced
      * @param newPrefix the new prefix that is added
@@ -432,17 +435,16 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
     private String alterPrefix(String word, String oldPrefix, String newPrefix) {
 
         if (word.startsWith(oldPrefix)) {
-            word.replaceFirst(oldPrefix, newPrefix);
-            return word;
+            return word.replaceFirst(oldPrefix, newPrefix);
         }
         return (newPrefix + word);
     }
 
     /**
      * Changes the resource types and the schema locations of existing content.<p>
-     * 
+     *
      * @param resTypeMap a map containing the source types as keys and the target types as values
-     * 
+     *
      * @throws CmsException if something goes wrong
      * @throws UnsupportedEncodingException if the file content could not be read with the determined encoding
      */
@@ -482,9 +484,9 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
 
     /**
      * Copies the explorer type icons.<p>
-     * 
+     *
      * @param iconPaths the path to the location where the icons are located
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     private void cloneExplorerTypeIcons(Map<String, String> iconPaths) throws CmsException {
@@ -500,7 +502,7 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
 
     /**
      * Copies the explorer type definitions.<p>
-     * 
+     *
      * @param targetModule the target module
      * @param iconPaths the path to the location where the icons are located
      * @param descKeys a map that contains a mapping of the explorer type definitions messages
@@ -558,7 +560,7 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
 
     /**
      * Clones the export points of the module and adjusts its paths.<p>
-     * 
+     *
      * @param sourceModule the source module
      * @param targetModule the target module
      * @param sourcePathPart the source path part
@@ -582,13 +584,13 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
 
     /**
      * Clones/copies the resource types.<p>
-     * 
+
      * @param sourceModule the source module
      * @param targetModule the target module
      * @param sourcePathPart the source path part
      * @param targetPathPart the target path part
      * @param keys the map where to put in the messages of the resource type
-     * 
+     *
      * @return a map with source resource types as key and the taregt resource types as value
      */
     private Map<I_CmsResourceType, I_CmsResourceType> cloneResourceTypes(
@@ -690,11 +692,11 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
 
     /**
      * Creates the target folder for the module clone.<p>
-     * 
+     *
      * @param targetModule the target module
      * @param sourceClassesPath the source module class path
      * @param targetBaseClassesPath the 'classes' folder of the target module
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     private void createTargetClassesFolder(
@@ -724,11 +726,11 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
 
     /**
      * Deletes the temporarily copied classes files.<p>
-     * 
+     *
      * @param targetModulePath the target module path
      * @param sourcePathPart the path part of the source module
      * @param targetPathPart the target path part
-     *  
+     *
      * @throws CmsException if something goes wrong
      */
     private void deleteSourceClassesFolder(String targetModulePath, String sourcePathPart, String targetPathPart)
@@ -769,9 +771,9 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
 
     /**
      * Returns <code>true</code> if form input is selected, checked, on or yes.<p>
-     * 
+     *
      * @param value the value to check
-     * 
+     *
      * @return <code>true</code> if form input is selected, checked, on or yes
      */
     private boolean isTrue(String value) {
@@ -790,12 +792,12 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
 
     /**
      * Locks the current resource.<p>
-     * 
-     * @param cms the current CmsObject 
+     *
+     * @param cms the current CmsObject
      * @param cmsResource the resource to lock
-     * 
+     *
      * @return <code>true</code> if the given resource was locked was successfully
-     * 
+     *
      * @throws CmsException if some goes wrong
      */
     private boolean lockResource(CmsObject cms, CmsResource cmsResource) throws CmsException {
@@ -820,7 +822,7 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
                 cms.getRequestContext().getCurrentProject())) {
             // prove is current lock from current user but not in current project
             // file is locked by current user but not in current project
-            // change the lock 
+
             cms.changeLock(cms.getSitePath(cmsResource));
         } else if ((lock != null) && lock.isUnlocked()) {
             // lock resource from current user in current project
@@ -841,13 +843,12 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
 
     /**
      * Renames the vfs resource bundle files within the target module according to the new module's name.<p>
-     * 
+     *
      * @param resources the vfs resource bundle files
      * @param targetModule the target module
      * @param name the package name of the source module
-     * 
+     *
      * @return a list of all xml vfs bundles within the given module
-     * 
      * @throws CmsException if something gows wrong
      */
     private List<CmsResource> renameXmlVfsBundles(List<CmsResource> resources, CmsModule targetModule, String name)
@@ -866,11 +867,11 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
 
     /**
      * Replaces the referenced formatters within the new XSD files with the new formatter paths.<p>
-     * 
+     *
      * @param targetModule the target module
-     * 
+     *
      * @throws CmsException if something goes wrong
-     * @throws UnsupportedEncodingException if the file content could not be read with the determined encoding 
+     * @throws UnsupportedEncodingException if the file content could not be read with the determined encoding
      */
     private void replaceFormatterPaths(CmsModule targetModule) throws CmsException, UnsupportedEncodingException {
 
@@ -892,9 +893,10 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
 
     /**
      * Initializes a thread to find and replace all occurrence of the module's path.<p>
-     * 
-     * @throws CmsException 
-     * @throws UnsupportedEncodingException 
+     *
+     * @throws CmsException
+     * @throws UnsupportedEncodingException
+
      */
     private void replaceModuleName() throws CmsException, UnsupportedEncodingException {
 
@@ -920,13 +922,13 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
 
     /**
      * Replaces the paths within all the given resources and removes all UUIDs by an regex.<p>
-     * 
+     *
      * @param sourceModulePath the search path
      * @param targetModulePath the replace path
      * @param resources the resources
-     * 
+     *
      * @throws CmsException if something goes wrong
-     * @throws UnsupportedEncodingException if the file content could not be read with the determined encoding 
+     * @throws UnsupportedEncodingException if the file content could not be read with the determined encoding
      */
     private void replacePath(String sourceModulePath, String targetModulePath, List<CmsResource> resources)
     throws CmsException, UnsupportedEncodingException {
@@ -956,12 +958,13 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
 
     /**
      * Replaces the messages for the given resources.<p>
-     * 
+     *
      * @param descKeys the replacement mapping
      * @param resources the resources to consult
-     * 
+     *
      * @throws CmsException if something goes wrong
-     * @throws UnsupportedEncodingException if the file content could not be read with the determined encoding 
+     * @throws UnsupportedEncodingException if the file content could not be read with the determined encoding
+
      */
     private void replacesMessages(Map<String, String> descKeys, List<CmsResource> resources)
     throws CmsException, UnsupportedEncodingException {
@@ -980,11 +983,11 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
 
     /**
      * Reads a file into a string, applies a transformation to the string, and writes the string back to the file.<p>
-     * 
-     * @param resource the resource to transform 
-     * @param transformation the transformation to apply 
-     * @throws CmsException if something goes wrong 
-     * @throws UnsupportedEncodingException in case the encoding is not supported 
+     *
+     * @param resource the resource to transform
+     * @param transformation the transformation to apply
+     * @throws CmsException if something goes wrong
+     * @throws UnsupportedEncodingException in case the encoding is not supported
      */
     private void transformResource(CmsResource resource, Function<String, String> transformation)
     throws CmsException, UnsupportedEncodingException {

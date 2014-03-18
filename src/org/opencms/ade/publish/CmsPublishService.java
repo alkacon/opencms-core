@@ -179,7 +179,6 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
             String closeLink = getRequest().getParameter(CmsDialog.PARAM_CLOSELINK);
             String confirmStr = getRequest().getParameter(PARAM_CONFIRM);
             boolean confirm = Boolean.parseBoolean(confirmStr);
-
             Map<String, CmsWorkflow> workflows = OpenCms.getWorkflowManager().getWorkflows(cms);
             if (workflows.isEmpty()) {
                 throw new Exception("No workflow available for the current user");

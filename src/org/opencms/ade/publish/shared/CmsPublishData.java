@@ -105,16 +105,6 @@ public class CmsPublishData implements IsSerializable {
     }
 
     /**
-     * Gets the publish group list.<p>
-     *
-     * @return the publish group list
-     */
-    public CmsPublishGroupList getGroupList() {
-
-        return m_groups;
-    }
-
-    /**
      * Returns the publish groups.<p>
      *
      * @return the publish groups
