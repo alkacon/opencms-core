@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -57,7 +57,7 @@ public class TestCmsXmlContentSearchSettings extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestCmsXmlContentSearchSettings(String arg0) {
@@ -67,7 +67,7 @@ public class TestCmsXmlContentSearchSettings extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -87,7 +87,7 @@ public class TestCmsXmlContentSearchSettings extends OpenCmsTestCase {
             @Override
             protected void tearDown() {
 
-                // noop            
+                // noop
             }
         };
 
@@ -96,7 +96,7 @@ public class TestCmsXmlContentSearchSettings extends OpenCmsTestCase {
 
     /**
      * Test unmarshalling an XML content from a String.<p>
-     * 
+     *
      * @throws Exception in case something goes wrong
      */
     public void testSearchSettings() throws Exception {
@@ -139,7 +139,9 @@ public class TestCmsXmlContentSearchSettings extends OpenCmsTestCase {
             "Image[1]/Description[1]"});
 
         List<String> nogoods = new ArrayList<String>();
+
         I_CmsXmlContentHandler contentHandler = xmlContent.getHandler();
+
         // loop over locales
         for (Locale locale : xmlContent.getLocales()) {
             // loop over the available element paths of the current content locale
@@ -161,10 +163,10 @@ public class TestCmsXmlContentSearchSettings extends OpenCmsTestCase {
 
     /**
      * Read the given file and cache it's contents as XML schema with the given system id.
-     * 
+     *
      * @param fileName the file name to read
      * @param systemId the XML schema system id to use
-     * 
+     *
      * @throws IOException in case of errors reading the file
      */
     private void cacheXmlSchema(String fileName, String systemId) throws IOException {

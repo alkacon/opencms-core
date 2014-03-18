@@ -30,11 +30,14 @@ package org.opencms.i18n;
 import org.opencms.cache.CmsVfsMemoryObjectCache;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.xml.content.CmsVfsBundleLoaderXml;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -249,7 +252,12 @@ public class CmsVfsResourceBundle extends ResourceBundle implements I_CmsResourc
         if (data == null) {
             return Collections.emptyMap();
         }
-        Map<String, String> bundleForLocale = data.get(m_parameters.getLocale());
+        List<Locale> available = new ArrayList<Locale>(data.keySet());
+        Locale bestMatchingLocale = OpenCms.getLocaleManager().getBestMatchingLocale(
+            getLocale(),
+            OpenCms.getLocaleManager().getDefaultLocales(),
+            available);
+        Map<String, String> bundleForLocale = data.get(bestMatchingLocale);
         if (bundleForLocale == null) {
             return Collections.emptyMap();
         } else {

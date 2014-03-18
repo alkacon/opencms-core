@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -64,10 +64,10 @@ import com.google.common.collect.Sets;
 
 /**
  * Provides a widget that creates a rich input field using the matching component, for use on a widget dialog.<p>
- * 
+ *
  * The matching component is determined by checking the installed editors for the best matching component to use.<p>
- * 
- * @since 6.0.1 
+ *
+ * @since 6.0.1
  */
 public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
 
@@ -94,7 +94,7 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
 
     /**
      * Creates a new html editing widget with the given configuration.<p>
-     * 
+     *
      * @param configuration the configuration to use
      */
     public CmsHtmlWidget(CmsHtmlWidgetOption configuration) {
@@ -104,7 +104,7 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
 
     /**
      * Creates a new html editing widget with the given configuration.<p>
-     * 
+     *
      * @param configuration the configuration to use
      */
     public CmsHtmlWidget(String configuration) {
@@ -114,10 +114,10 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
 
     /**
      * Gets the block format configuration string for TinyMCE from the configured format select options.<p>
-     *  
-     * @param formatSelectOptions the format select options 
-     * 
-     * @return the block_formats configuration 
+     *
+     * @param formatSelectOptions the format select options
+     *
+     * @return the block_formats configuration
      */
     public static String getTinyMceBlockFormats(String formatSelectOptions) {
 
@@ -266,16 +266,16 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
 
     /**
      * @param result the  JSON object to modify
-     * 
-     * For descriptions of the other  parameters, see the getConfiguration() method.<p> 
-     *   
-     * @param cms   
-     * @param schemaType  
-     * @param messages 
-     * @param resource 
-     * @param contentLocale 
-     * @throws JSONException 
-     * 
+     *
+     * For descriptions of the other  parameters, see the getConfiguration() method.<p>
+     *
+     * @param cms
+     * @param schemaType
+     * @param messages
+     * @param resource
+     * @param contentLocale
+     * @throws JSONException
+     *
      */
     protected void addEmbeddedGalleryOptions(
         JSONObject result,
@@ -315,11 +315,11 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
 
     /**
      * Returns the WYSIWYG editor configuration as a JSON object.<p>
-     * 
+     *
      * @param cms the OpenCms context
      * @param resource the edited resource
      * @param contentLocale the edited content locale
-     * 
+     *
      * @return the configuration
      */
     protected JSONObject getJSONConfiguration(CmsObject cms, CmsResource resource, Locale contentLocale) {
@@ -420,8 +420,8 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
 
     /**
      * Removes all keys from the given JSON object which do not directly result from the embedded gallery configuration strings.<p>
-     * 
-     * @param json the JSON object to modify 
+     *
+     * @param json the JSON object to modify
      */
     private void filterEmbeddedGalleryOptions(JSONObject json) {
 
@@ -432,7 +432,7 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
             I_CmsGalleryProviderConstants.CONFIG_IMAGE_FORMAT_NAMES,
             I_CmsGalleryProviderConstants.CONFIG_IMAGE_FORMATS));
 
-        // delete all keys not listed above 
+        // delete all keys not listed above
         Set<String> toDelete = new HashSet<String>(Sets.difference(json.keySet(), validKeys));
         for (String toDeleteKey : toDelete) {
             json.remove(toDeleteKey);
@@ -441,7 +441,7 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
 
     /**
      * Returns the editor widget to use depending on the current users settings, current browser and installed editors.<p>
-     * 
+     *
      * @param cms the current CmsObject
      * @param widgetDialog the dialog where the widget is used on
      * @return the editor widget to use depending on the current users settings, current browser and installed editors

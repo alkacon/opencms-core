@@ -44,7 +44,6 @@ import java.util.List;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
-import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.ComplexPanel;
@@ -273,7 +272,6 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
                 if (!isDummy) {
                     index++;
                     if (index >= m_maxElements) {
-                        widget.getElement().getStyle().setDisplay(Display.NONE);
                         if (overflowElement == null) {
                             overflowElement = widget;
                         }

@@ -15,7 +15,7 @@
 		<class/>
 		<description><![CDATA[<p>This module contains the German language localization files for the OpenCms workplace.</p>
 <p>Install this module if you want to use the german version of the OpenCms Workplace.</p>
-<p><i>(c) 2013 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+<p><i>&copy; 2014 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
 		<version>9.4.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
@@ -196,8 +196,8 @@
 			<properties/>
 			<relations/>
 			<accesscontrol/>
-		</file>		
-		
+		</file>
+
 		<file>
 			<destination>system/workplace/locales/de/messages/org/opencms/ade/config</destination>
 			<type>folder</type>
@@ -211,7 +211,7 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-		
+
 		<file>
 			<source>system/workplace/locales/de/messages/org/opencms/ade/config/workplace_de.properties</source>
 			<destination>system/workplace/locales/de/messages/org/opencms/ade/config/workplace_de.properties</destination>
@@ -232,19 +232,19 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+
+
+
+
+
+
+
+
+
+
+
+
+
 		<file>
 			<source>system/workplace/locales/de/messages/org/opencms/ade/containerpage/clientmessages_de.properties</source>
 			<destination>system/workplace/locales/de/messages/org/opencms/ade/containerpage/clientmessages_de.properties</destination>
@@ -473,7 +473,7 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-		
+
 		<file>
 			<destination>system/workplace/locales/de/messages/org/opencms/ade/postupload</destination>
 			<type>folder</type>
@@ -502,7 +502,7 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-		
+
 		<file>
 			<source>system/workplace/locales/de/messages/org/opencms/ade/upload/messages_de.properties</source>
 			<destination>system/workplace/locales/de/messages/org/opencms/ade/upload/messages_de.properties</destination>
@@ -1007,11 +1007,11 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-		
-		
-		
-		
-		
+
+
+
+
+
 		<file>
 			<destination>system/workplace/locales/de/messages/org/opencms/gwt/seo</destination>
 			<type>folder</type>
@@ -1025,7 +1025,7 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-		
+
 		<file>
 			<source>system/workplace/locales/de/messages/org/opencms/gwt/seo/clientmessages_de.properties</source>
 			<destination>system/workplace/locales/de/messages/org/opencms/gwt/seo/clientmessages_de.properties</destination>
@@ -1041,13 +1041,13 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-		
-		
-		
-		
-		
-		
-		
+
+
+
+
+
+
+
 		<file>
 			<destination>system/workplace/locales/de/messages/org/opencms/i18n</destination>
 			<type>folder</type>
@@ -3313,8 +3313,8 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-		
-		
+
+
 		<file>
 			<source>system/workplace/locales/de/messages/org/opencms/xml/containerpage/messages_de.properties</source>
 			<destination>system/workplace/locales/de/messages/org/opencms/xml/containerpage/messages_de.properties</destination>
@@ -3371,7 +3371,7 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-		
+
 		<file>
 			<source>system/workplace/locales/de/messages/org/opencms/workflow/messages_de.properties</source>
 			<destination>system/workplace/locales/de/messages/org/opencms/workflow/messages_de.properties</destination>
@@ -3387,7 +3387,7 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-		
+
 		<file>
 			<destination>system/workplace/locales/de/messages/org/opencms/xml/content</destination>
 			<type>folder</type>

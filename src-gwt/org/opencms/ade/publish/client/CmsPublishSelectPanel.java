@@ -682,18 +682,10 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
             m_noResources.setVisible(false);
             m_scrollPanel.setVisible(false);
         }
-
         enableActions(true);
         addMoreListItems();
         showProblemCount(m_model.countProblems());
         onChangePublishSelection();
-        //        if (defaultWorkflow != null) {
-        //            m_workflowSelector.setFormValue(defaultWorkflow, false);
-        //            m_publishDialog.setWorkflowId(defaultWorkflow);
-        //            m_actions = m_publishDialog.getSelectedWorkflow().getActions();
-        //            m_publishDialog.setPanel(CmsPublishDialog.PANEL_SELECT);
-        //        }
-
     }
 
     /**
@@ -917,6 +909,47 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
             m_actions = m_publishDialog.getSelectedWorkflow().getActions();
             m_publishDialog.updateResourceList();
         }
+    }
+
+    /**
+     * Sets the publish groups.<p>
+     *
+     * @param groups the list of publish groups
+     * @param newData true if the data is new
+     */
+    protected void setGroups(List<CmsPublishGroup> groups, boolean newData) {
+
+        m_model = new CmsPublishDataModel(groups, this);
+        m_model.setSelectionChangeAction(new Runnable() {
+
+            public void run() {
+
+                onChangePublishSelection();
+            }
+        });
+        m_currentGroupIndex = 0;
+        m_currentGroupPanel = null;
+        m_problemsPanel.clear();
+        if (newData) {
+            m_showProblemsOnly = false;
+            m_checkboxProblems.setChecked(false);
+            m_checkboxProblems.setVisible(false);
+            m_problemsPanel.setVisible(false);
+        }
+        m_groupPanels.clear();
+        m_groupPanelContainer.clear();
+        m_scrollPanel.onResizeDescendant();
+        enableActions(false);
+
+        int numGroups = groups.size();
+        setResourcesVisible(numGroups > 0);
+
+        if (numGroups == 0) {
+            return;
+        }
+        enableActions(true);
+        addMoreListItems();
+        showProblemCount(m_model.countProblems());
     }
 
     /**

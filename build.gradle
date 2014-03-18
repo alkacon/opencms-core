@@ -118,6 +118,7 @@ sourceSets{
         resources.srcDir 'src-setup'
     }
 }
+
 // adding generated dependencies during configuration phase to avoid build path problems in IDE
 sourceSets.modules.compileClasspath += files("$buildDir/classes/main") { builtBy 'compileJava' }
 sourceSets.setup.compileClasspath += files("$buildDir/classes/main") { builtBy 'compileJava' }
@@ -831,7 +832,6 @@ task bindist (dependsOn: war, type: Zip){
         ])
     }
 }
-
 
 
 test {

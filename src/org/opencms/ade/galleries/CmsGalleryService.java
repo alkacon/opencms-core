@@ -1044,23 +1044,18 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
         I_CmsResourceType contentType = getResourceManager().getResourceType(typeName);
         for (I_CmsResourceType galleryType : contentType.getGalleryTypes()) {
-            try {
-                if (galleryTypeInfos.containsKey(galleryType.getTypeName())) {
-                    CmsGalleryTypeInfo typeInfo = galleryTypeInfos.get(galleryType.getTypeName());
-                    typeInfo.addContentType(contentType);
-                } else {
-                    CmsGalleryTypeInfo typeInfo;
 
-                    typeInfo = new CmsGalleryTypeInfo(
-                        galleryType,
-                        contentType,
-                        getGalleriesByType(galleryType.getTypeId()));
+            if (galleryTypeInfos.containsKey(galleryType.getTypeName())) {
+                CmsGalleryTypeInfo typeInfo = galleryTypeInfos.get(galleryType.getTypeName());
+                typeInfo.addContentType(contentType);
+            } else {
+                CmsGalleryTypeInfo typeInfo;
 
-                    galleryTypeInfos.put(galleryType.getTypeName(), typeInfo);
-                }
-            } catch (CmsException e) {
-                logError(e);
+                typeInfo = new CmsGalleryTypeInfo(galleryType, contentType, getGalleriesByType(galleryType.getTypeId()));
+
+                galleryTypeInfos.put(galleryType.getTypeName(), typeInfo);
             }
+
         }
     }
 
@@ -1529,37 +1524,53 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * 
      * @return the list of galleries
      * 
-     * @throws CmsException if something goes wrong
      */
-    private List<CmsResource> getGalleriesByType(int galleryTypeId) throws CmsException {
+    private List<CmsResource> getGalleriesByType(int galleryTypeId) {
 
         List<CmsResource> galleries = new ArrayList<CmsResource>();
-        galleries = getCmsObject().readResources(
-            "/",
-            CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(galleryTypeId));
+
+        // We swallow errors in this method because we don't  want a failure to read some folders (e.g. because of permission problems) to 
+        // cause an empty gallery list as a result 
+
+        try {
+            galleries.addAll(getCmsObject().readResources(
+                "/",
+                CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(galleryTypeId)));
+        } catch (Exception e) {
+            LOG.error("Could not read site galleries: " + e.getLocalizedMessage(), e);
+        }
 
         String siteRoot = getCmsObject().getRequestContext().getSiteRoot();
         // if the current site is NOT the root site - add all other galleries from the system path
-        if (!siteRoot.equals("")) {
-            List<CmsResource> systemGalleries = null;
-            // get the galleries in the /system/ folder
-            systemGalleries = getCmsObject().readResources(
-                CmsWorkplace.VFS_PATH_SYSTEM,
-                CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(galleryTypeId));
-            if (systemGalleries != null) {
-                // add the found system galleries to the result
-                galleries.addAll(systemGalleries);
+
+        try {
+            if (!siteRoot.equals("")) {
+                List<CmsResource> systemGalleries = null;
+                // get the galleries in the /system/ folder
+                systemGalleries = getCmsObject().readResources(
+                    CmsWorkplace.VFS_PATH_SYSTEM,
+                    CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(galleryTypeId));
+                if (systemGalleries != null) {
+                    // add the found system galleries to the result
+                    galleries.addAll(systemGalleries);
+                }
             }
+        } catch (Exception e) {
+            LOG.error("Could not read system galleries: " + e.getLocalizedMessage(), e);
         }
 
-        if (!OpenCms.getSiteManager().isSharedFolder(siteRoot)) {
-            String shared = OpenCms.getSiteManager().getSharedFolder();
-            List<CmsResource> sharedGalleries = getCmsObject().readResources(
-                shared,
-                CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(galleryTypeId));
-            if (sharedGalleries != null) {
-                galleries.addAll(sharedGalleries);
+        try {
+            if (!OpenCms.getSiteManager().isSharedFolder(siteRoot)) {
+                String shared = OpenCms.getSiteManager().getSharedFolder();
+                List<CmsResource> sharedGalleries = getCmsObject().readResources(
+                    shared,
+                    CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(galleryTypeId));
+                if (sharedGalleries != null) {
+                    galleries.addAll(sharedGalleries);
+                }
             }
+        } catch (Exception e) {
+            LOG.error("Could not read shared galleries: " + e.getLocalizedMessage(), e);
         }
         return galleries;
     }

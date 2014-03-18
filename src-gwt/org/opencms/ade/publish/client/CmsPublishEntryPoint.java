@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * The entry point for the publish module.
- * 
+ *
  * @since 8.0.0
  */
 public class CmsPublishEntryPoint extends A_CmsEntryPoint {
@@ -75,9 +75,9 @@ public class CmsPublishEntryPoint extends A_CmsEntryPoint {
                             constCloseLink);
                         confirmation.center();
                     } else {
-                        // 'cancel' case 
+                        // 'cancel' case
                         CmsJsUtil.closeWindow();
-                        // in case the window isn't successfully closed, go to the workplace 
+                        // in case the window isn't successfully closed, go to the workplace
                         Window.Location.assign(constCloseLink);
                     }
                 }

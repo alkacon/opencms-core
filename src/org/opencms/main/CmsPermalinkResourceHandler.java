@@ -46,11 +46,11 @@ import org.apache.commons.logging.Log;
  *
  * The permalink must have following format:<br>
  * <code>/${CONTEXT}/${SERVLET}/permalink/${UUID}.${EXT}</code><p>
- * 
+ *
  * for example:<br>
  * <code>/opencms/opencms/permalink/a7b5d298-b3ab-11d8-b3e3-514d35713fed.html</code><p>
- * 
- * @since 6.3 
+ *
+ * @since 6.3
  */
 public class CmsPermalinkResourceHandler implements I_CmsResourceInit {
 
@@ -89,7 +89,7 @@ public class CmsPermalinkResourceHandler implements I_CmsResourceInit {
     public CmsResource initResource(CmsResource resource, CmsObject cms, HttpServletRequest req, HttpServletResponse res)
     throws CmsResourceInitException, CmsPermissionViolationException {
 
-        // only do something if the resource was not found 
+        // only do something if the resource was not found
         if (resource == null) {
             String uri = cms.getRequestContext().getUri();
             // check if the resource starts with the PERMALINK_HANDLER
@@ -126,7 +126,7 @@ public class CmsPermalinkResourceHandler implements I_CmsResourceInit {
                 matcher = m_detailPattern.matcher(uri);
                 // detail page permalink. Handle the cases 'getI18NInfo' and 'showResource' differently:
                 // In the 'showResource' case, we do a redirect to the real detail page URL
-                // In the 'getI18NInfo' case, we return the container page so the locale in the CmsRequestContext is set correctly for the 'showResource' case 
+                // In the 'getI18NInfo' case, we return the container page so the locale in the CmsRequestContext is set correctly for the 'showResource' case
                 if (matcher.find()) {
                     try {
                         CmsUUID pageId = new CmsUUID(matcher.group(1));
@@ -134,7 +134,7 @@ public class CmsPermalinkResourceHandler implements I_CmsResourceInit {
                         CmsResource pageResource = cms.readResource(pageId);
                         if (res != null) {
                             CmsResource detailResource = cms.readResource(detailId);
-                            String detailName = cms.getDetailName(detailResource, cms.getRequestContext().getLocale(), // the locale in the request context should be the locale of the container page 
+                            String detailName = cms.getDetailName(detailResource, cms.getRequestContext().getLocale(), // the locale in the request context should be the locale of the container page
                                 OpenCms.getLocaleManager().getDefaultLocales());
                             CmsResource parentFolder;
                             if (pageResource.isFile()) {

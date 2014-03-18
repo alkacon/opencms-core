@@ -40,7 +40,7 @@ Broadcast message tool in the 'Administration' view to inform users before the
 server is shut down.
 
 
-2. Extract the OpenCms upgrade file 'opencms-upgrade-to-9.0.0.zip' to 
+2. Extract the OpenCms upgrade file 'opencms-upgrade-to-@OPENCMS_VERSION@.zip' to 
    your web application directory
 
 If you extracted the file to an external directory, copy the folders 'update'
