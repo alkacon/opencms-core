@@ -41,12 +41,12 @@ import com.google.gwt.user.client.ui.Widget;
 public class CmsCreateModeSelectionView extends Composite {
 
     /** UiBinder interface. */
-    interface CmsCreateModeSelectionViewUiBinder extends UiBinder<Widget, CmsCreateModeSelectionView> {
+    interface I_CmsCreateModeSelectionViewUiBinder extends UiBinder<Widget, CmsCreateModeSelectionView> {
         // empty interface
     }
 
     /** UiBinder instance. */
-    private static CmsCreateModeSelectionViewUiBinder uiBinder = GWT.create(CmsCreateModeSelectionViewUiBinder.class);
+    private static I_CmsCreateModeSelectionViewUiBinder uiBinder = GWT.create(I_CmsCreateModeSelectionViewUiBinder.class);
 
     /** UiBinder widget. */
     @UiField
