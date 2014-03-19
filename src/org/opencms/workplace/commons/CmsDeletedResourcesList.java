@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,6 +31,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.list.A_CmsListDialog;
@@ -52,12 +53,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Generates the list of deleted resources to be used by ajax in the dialog.<p>
- * 
+ *
  * @since 6.9.1
  */
 public class CmsDeletedResourcesList extends A_CmsListDialog {
+
+    /** Log instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsDeletedResourcesList.class);
 
     /** Standard list button location. */
     public static final String ICON_LIST_WARNING = "list/warning.png";
@@ -103,7 +109,7 @@ public class CmsDeletedResourcesList extends A_CmsListDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param resourcename the name of the resource to display deleted entries for
      * @param readTree display deleted resources for the subtree
@@ -180,6 +186,7 @@ public class CmsDeletedResourcesList extends A_CmsListDialog {
             CmsListItem item = getList().newItem(res.getStructureId().toString());
             String resourcePath = getCms().getSitePath((CmsResource)res);
             item.set(LIST_COLUMN_NAME, m_resourcename + "|" + resourcePath);
+            LOG.info("deleted resource list, name = " + m_resourcename + "|" + resourcePath);
             item.set(LIST_COLUMN_DELETION_DATE, new Date(res.getDateLastModified()));
             item.set(LIST_COLUMN_VERSION, String.valueOf(res.getVersion()));
             item.set(LIST_COLUMN_TYPEID, String.valueOf(res.getTypeId()));
@@ -257,6 +264,7 @@ public class CmsDeletedResourcesList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.list.I_CmsListFormatter#format(java.lang.Object, java.util.Locale)
              */
+            @SuppressWarnings("synthetic-access")
             @Override
             public String format(Object data, Locale locale) {
 
@@ -265,6 +273,7 @@ public class CmsDeletedResourcesList extends A_CmsListDialog {
                 String resourcePath = dataArray[1];
 
                 String orgResourcePath = resourcePath;
+                LOG.info("deleted resource list: formatting '" + data + "'");
 
                 while (CmsStringUtil.isNotEmptyOrWhitespaceOnly(resourcePath)) {
 
@@ -272,21 +281,40 @@ public class CmsDeletedResourcesList extends A_CmsListDialog {
                         getCms().readResource(getCms().getRequestContext().removeSiteRoot(resourcePath));
                         break;
                     } catch (CmsException e) {
+                        LOG.info("deleted resource list: could not read resource "
+                            + getCms().getRequestContext().removeSiteRoot(resourcePath)
+                            + " ["
+                            + resourcePath
+                            + "] ", e);
                         resourcePath = CmsResource.getParentFolder(resourcePath);
                     }
                 }
-
-                if (resourcePath != null) {
-                    resourcePath = resourcePath.substring(resourceName.length());
-                } else {
+                try {
+                    if (resourcePath != null) {
+                        resourcePath = resourcePath.substring(resourceName.length());
+                    } else {
+                        resourcePath = "";
+                    }
+                    orgResourcePath = orgResourcePath.substring(resourceName.length());
+                } catch (Exception e) {
+                    LOG.error("Path inconsistency in deleted resource list: data='"
+                        + data
+                        + "' resourcePath='"
+                        + resourcePath
+                        + "' resourceName='"
+                        + resourceName
+                        + "' siteRoot='"
+                        + getCms().getRequestContext().getSiteRoot()
+                        + "' ", e);
                     resourcePath = "";
                 }
-                orgResourcePath = orgResourcePath.substring(resourceName.length());
 
                 StringBuffer ret = new StringBuffer();
                 ret.append(resourcePath);
                 ret.append("<span style=\"color:#0000aa;\">");
-                ret.append(orgResourcePath.substring(resourcePath.length()));
+                ret.append(orgResourcePath.startsWith(resourcePath)
+                ? orgResourcePath.substring(resourcePath.length())
+                : orgResourcePath);
                 ret.append("</span>");
 
                 return ret.toString();
