@@ -37,6 +37,8 @@ import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EntryType;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
+import org.opencms.ade.sitemap.shared.CmsGalleryFolderEntry;
+import org.opencms.ade.sitemap.shared.CmsGalleryType;
 import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange.ChangeType;
@@ -59,6 +61,7 @@ import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypeFolderExtended;
 import org.opencms.file.types.CmsResourceTypeFolderSubSitemap;
 import org.opencms.file.types.CmsResourceTypeUnknownFolder;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
@@ -107,6 +110,7 @@ import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.explorer.CmsExplorerTypeAccess;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
+import org.opencms.workplace.galleries.A_CmsAjaxGallery;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.containerpage.CmsContainerBean;
@@ -268,6 +272,39 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#createNewGalleryFolder(java.lang.String, java.lang.String, java.lang.String, int)
+     */
+    public CmsGalleryFolderEntry createNewGalleryFolder(
+        String parentFolder,
+        String folderName,
+        String title,
+        int folderTypeId) throws CmsRpcException {
+
+        CmsObject cms = getCmsObject();
+        CmsGalleryFolderEntry folderEntry = null;
+        try {
+            if (!cms.existsResource(parentFolder, CmsResourceFilter.IGNORE_EXPIRATION)) {
+                CmsResource parent = cms.createResource(parentFolder, CmsResourceTypeFolder.getStaticTypeId());
+                tryUnlock(parent);
+            }
+            String folderPath = CmsStringUtil.joinPaths(parentFolder, folderName);
+
+            CmsResource galleryFolder = cms.createResource(
+                folderPath,
+                folderTypeId,
+                null,
+                Collections.singletonList(new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, title, null)));
+            folderEntry = readGalleryFolderEntry(
+                galleryFolder,
+                OpenCms.getResourceManager().getResourceType(galleryFolder).getTypeName());
+            tryUnlock(galleryFolder);
+        } catch (CmsException e) {
+            error(e);
+        }
+        return folderEntry;
+    }
+
+    /**
      * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#createSubSitemap(org.opencms.util.CmsUUID)
      */
     public CmsSitemapChange createSubSitemap(CmsUUID entryId) throws CmsRpcException {
@@ -374,6 +411,40 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             error(e);
         }
         return entry;
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#getGalleryData(java.lang.String)
+     */
+    public Map<CmsGalleryType, List<CmsGalleryFolderEntry>> getGalleryData(String entryPointUri) {
+
+        List<String> subSitePaths = OpenCms.getADEManager().getSubSitePaths(
+            getCmsObject(),
+            getCmsObject().getRequestContext().addSiteRoot(entryPointUri));
+        CmsObject cms = getCmsObject();
+        List<CmsGalleryType> galleryTypes = collectGalleryTypes();
+        Map<CmsGalleryType, List<CmsGalleryFolderEntry>> result = new HashMap<CmsGalleryType, List<CmsGalleryFolderEntry>>();
+        for (CmsGalleryType type : galleryTypes) {
+            List<CmsGalleryFolderEntry> galleries = new ArrayList<CmsGalleryFolderEntry>();
+            try {
+                List<CmsResource> galleryFolders = cms.readResources(
+                    entryPointUri,
+                    CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(type.getTypeId()));
+                for (CmsResource folder : galleryFolders) {
+                    try {
+                        if (!isInSubsite(subSitePaths, folder.getRootPath())) {
+                            galleries.add(readGalleryFolderEntry(folder, type.getTypeName()));
+                        }
+                    } catch (CmsException ex) {
+                        log(ex.getLocalizedMessage(), ex);
+                    }
+                }
+            } catch (CmsException e) {
+                log(e.getLocalizedMessage(), e);
+            }
+            result.put(type, galleries);
+        }
+        return result;
     }
 
     /**
@@ -960,6 +1031,61 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         result.setResourceType(typeName);
         result.setTitle(title);
         result.setSubTitle(description);
+        return result;
+    }
+
+    /**
+     * Returns all available gallery folder resource types.<p>
+     * 
+     * @return the gallery folder resource types
+     */
+    private List<CmsGalleryType> collectGalleryTypes() {
+
+        Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject());
+        Map<String, List<String>> galleryContentTypes = new HashMap<String, List<String>>();
+        List<CmsGalleryType> result = new ArrayList<CmsGalleryType>();
+        for (I_CmsResourceType resourceType : OpenCms.getResourceManager().getResourceTypes()) {
+            if (resourceType instanceof CmsResourceTypeFolderExtended) {
+                // found a configured extended folder resource type
+                CmsResourceTypeFolderExtended galleryType = (CmsResourceTypeFolderExtended)resourceType;
+                String folderClassName = galleryType.getFolderClassName();
+                if (CmsStringUtil.isNotEmpty(folderClassName)) {
+                    // only process this as a gallery if the folder name is not empty
+                    try {
+                        // check, if the folder class is a subclass of A_CmsGallery
+                        if (A_CmsAjaxGallery.class.isAssignableFrom(Class.forName(folderClassName))) {
+                            CmsGalleryType gallery = new CmsGalleryType();
+                            gallery.setTypeId(resourceType.getTypeId());
+                            gallery.setTypeName(resourceType.getTypeName());
+                            gallery.setNiceName(CmsWorkplaceMessages.getResourceTypeName(
+                                wpLocale,
+                                resourceType.getTypeName()));
+                            gallery.setDescription(CmsWorkplaceMessages.getResourceTypeDescription(
+                                wpLocale,
+                                resourceType.getTypeName()));
+                            result.add(gallery);
+                        }
+                    } catch (Exception e) {
+                        this.log(e.getLocalizedMessage(), e);
+                    }
+                }
+            } else {
+                List<I_CmsResourceType> galleryTypes = resourceType.getGalleryTypes();
+                if ((galleryTypes != null) && !galleryTypes.isEmpty()) {
+                    for (I_CmsResourceType galleryType : galleryTypes) {
+                        List<String> typeList = galleryContentTypes.get(galleryType.getTypeName());
+                        if (typeList == null) {
+                            typeList = new ArrayList<String>();
+                            galleryContentTypes.put(galleryType.getTypeName(), typeList);
+                        }
+                        typeList.add(resourceType.getTypeName());
+                    }
+                }
+            }
+        }
+        for (CmsGalleryType galleryType : result) {
+            galleryType.setContentTypeNames(galleryContentTypes.get(galleryType.getTypeName()));
+        }
         return result;
     }
 
@@ -2027,6 +2153,26 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
+     * Returns if the given path is located below one of the given sub site paths.<p>
+     * 
+     * @param subSitePaths the sub site root paths
+     * @param path the root path to check
+     * 
+     * @return <code>true</code> if the given path is located below one of the given sub site paths
+     */
+    private boolean isInSubsite(List<String> subSitePaths, String path) {
+
+        boolean result = false;
+        for (String subSite : subSitePaths) {
+            if (path.startsWith(subSite)) {
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
+
+    /**
      * Returns if the given type id matches the xml-redirect resource type.<p>
      *
      * @param typeId the resource type id
@@ -2180,6 +2326,27 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 tryUnlock(entryFolder);
             }
         }
+    }
+
+    /**
+     * Reads the gallery folder properties.<p>
+     * 
+     * @param folder the folder resource
+     * @param typeName the  resource type name
+     * 
+     * @return the folder entry data
+     * 
+     * @throws CmsException if the folder properties can not be read
+     */
+    private CmsGalleryFolderEntry readGalleryFolderEntry(CmsResource folder, String typeName) throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        CmsGalleryFolderEntry folderEntry = new CmsGalleryFolderEntry();
+        folderEntry.setResourceType(typeName);
+        folderEntry.setSitePath(cms.getSitePath(folder));
+        folderEntry.setStructureId(folder.getStructureId());
+        folderEntry.setOwnProperties(getClientProperties(cms, folder, false));
+        return folderEntry;
     }
 
     /**
@@ -2360,6 +2527,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         }
         boolean isDefault = isDefaultFile(ownResource);
         clientEntry.setId(ownResource.getStructureId());
+        clientEntry.setResourceTypeId(ownResource.getTypeId());
         clientEntry.setFolderDefaultPage(isDefault);
         if (navElement.getResource().isFolder()) {
             entryFolder = navElement.getResource();

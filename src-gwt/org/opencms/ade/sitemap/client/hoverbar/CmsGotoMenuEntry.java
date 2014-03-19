@@ -27,6 +27,7 @@
 
 package org.opencms.ade.sitemap.client.hoverbar;
 
+import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 
 /**
@@ -63,6 +64,6 @@ public class CmsGotoMenuEntry extends A_CmsSitemapMenuEntry {
     @Override
     public void onShow(CmsHoverbarShowEvent event) {
 
-        // nothing to do
+        setVisible(!CmsSitemapView.getInstance().isGalleryMode());
     }
 }

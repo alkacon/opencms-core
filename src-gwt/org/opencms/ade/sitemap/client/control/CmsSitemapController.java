@@ -33,6 +33,8 @@ import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
+import org.opencms.ade.sitemap.shared.CmsGalleryFolderEntry;
+import org.opencms.ade.sitemap.shared.CmsGalleryType;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange.ChangeType;
 import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
@@ -108,6 +110,9 @@ public class CmsSitemapController implements I_CmsSitemapController {
     /** The sitemap entries by path. */
     private Map<String, CmsClientSitemapEntry> m_entriesByPath;
 
+    /** The gallery type names by id. */
+    private Map<Integer, CmsGalleryType> m_galleryTypes;
+
     /** The set of names of hidden properties. */
     private Set<String> m_hiddenProperties;
 
@@ -130,6 +135,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
         m_entriesById = new HashMap<CmsUUID, CmsClientSitemapEntry>();
         m_entriesByPath = new HashMap<String, CmsClientSitemapEntry>();
+        m_galleryTypes = new HashMap<Integer, CmsGalleryType>();
         try {
             m_data = (CmsSitemapData)CmsRpcPrefetcher.getSerializedObjectFromDictionary(
                 getService(),
@@ -319,6 +325,42 @@ public class CmsSitemapController implements I_CmsSitemapController {
         data.addModified(newEntry);
         change.setClipBoardData(data);
         commitChange(change, null);
+    }
+
+    /**
+     * Creates a new gallery folder of the given type.<p>
+     * 
+     * @param parentId the parent folder id
+     * @param galleryTypeId the folder type id
+     * @param folderName the folder name
+     * @param title the folder title
+     */
+    public void createNewGallery(
+        final CmsUUID parentId,
+        final int galleryTypeId,
+        final String folderName,
+        final String title) {
+
+        final String parentFolder = parentId != null ? getEntryById(parentId).getSitePath() : CmsStringUtil.joinPaths(
+            m_data.getRoot().getSitePath(),
+            CmsSitemapView.GALLERIES_FOLDER_NAME);
+
+        CmsRpcAction<CmsGalleryFolderEntry> action = new CmsRpcAction<CmsGalleryFolderEntry>() {
+
+            @Override
+            public void execute() {
+
+                getService().createNewGalleryFolder(parentFolder, folderName, title, galleryTypeId, this);
+            }
+
+            @Override
+            protected void onResponse(CmsGalleryFolderEntry result) {
+
+                CmsSitemapView.getInstance().displayNewGallery(result);
+
+            }
+        };
+        action.execute();
     }
 
     /**
@@ -792,6 +834,18 @@ public class CmsSitemapController implements I_CmsSitemapController {
     }
 
     /**
+     * Returns the gallery type with the given id.<p>
+     * 
+     * @param typeId the type id
+     * 
+     * @return the gallery type
+     */
+    public CmsGalleryType getGalleryType(Integer typeId) {
+
+        return m_galleryTypes.get(typeId);
+    }
+
+    /**
      * Gets the value for a property which a sitemap entry would inherit if it didn't have its own properties.<p>
      * 
      * @param entry the sitemap entry 
@@ -1035,6 +1089,68 @@ public class CmsSitemapController implements I_CmsSitemapController {
     public void leaveEditor(String target) {
 
         Window.Location.assign(CmsCoreProvider.get().link(target));
+    }
+
+    /**
+     * Loads all available galleries for the current sub site.<p>
+     */
+    public void loadGalleries() {
+
+        CmsRpcAction<Map<CmsGalleryType, List<CmsGalleryFolderEntry>>> action = new CmsRpcAction<Map<CmsGalleryType, List<CmsGalleryFolderEntry>>>() {
+
+            @Override
+            public void execute() {
+
+                start(500, false);
+                getService().getGalleryData(m_data.getRoot().getSitePath(), this);
+            }
+
+            @Override
+            protected void onResponse(Map<CmsGalleryType, List<CmsGalleryFolderEntry>> result) {
+
+                storeGalleryTypes(result.keySet());
+                CmsSitemapView.getInstance().displayGalleries(result);
+                stop(false);
+            }
+        };
+        action.execute();
+    }
+
+    /**
+     * Loads all entries on the given path.<p>
+     * 
+     * @param sitePath the site path
+     */
+    public void loadPath(final String sitePath) {
+
+        if (getEntry(sitePath) != null) {
+            updateEntry(sitePath);
+        } else {
+            String parentPath = CmsResource.getParentFolder(sitePath);
+            CmsClientSitemapEntry entry = getEntry(parentPath);
+            while (entry == null) {
+                parentPath = CmsResource.getParentFolder(parentPath);
+                entry = getEntry(parentPath);
+            }
+            getChildren(
+                entry.getId(),
+                CmsSitemapTreeItem.getItemById(entry.getId()).isOpen(),
+                new AsyncCallback<CmsClientSitemapEntry>() {
+
+                    public void onFailure(Throwable caught) {
+
+                        // nothing to do
+                    }
+
+                    public void onSuccess(CmsClientSitemapEntry result) {
+
+                        // check if target entry is loaded
+                        if (getEntry(sitePath) == null) {
+                            loadPath(sitePath);
+                        }
+                    }
+                });
+        }
     }
 
     /**
@@ -1556,6 +1672,19 @@ public class CmsSitemapController implements I_CmsSitemapController {
         }
         for (CmsClientSitemapEntry child : entry.getSubEntries()) {
             recomputeProperties(child);
+        }
+    }
+
+    /**
+     * Store the gallery type information.<p>
+     * 
+     * @param galleryTypes the gallery types
+     */
+    void storeGalleryTypes(Collection<CmsGalleryType> galleryTypes) {
+
+        m_galleryTypes.clear();
+        for (CmsGalleryType type : galleryTypes) {
+            m_galleryTypes.put(new Integer(type.getTypeId()), type);
         }
     }
 

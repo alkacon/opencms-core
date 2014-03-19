@@ -27,27 +27,33 @@
 
 package org.opencms.ade.sitemap.client.hoverbar;
 
+import org.opencms.ade.galleries.client.ui.CmsGalleryPopup;
+import org.opencms.ade.galleries.shared.CmsGalleryConfiguration;
+import org.opencms.ade.galleries.shared.CmsGalleryTabConfiguration;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 
+import java.util.List;
+
 /**
- * The context menu entry for "bumping" a detail page, i.e. making it the default detail page for its type.<p>
+ * Sitemap context menu create gallery entry.<p>
  * 
  * @since 8.0.0
  */
-public class CmsBumpDetailPageMenuEntry extends A_CmsSitemapMenuEntry {
+public class CmsOpenGalleryMenuEntry extends A_CmsSitemapMenuEntry {
 
     /**
      * Constructor.<p>
      * 
      * @param hoverbar the hoverbar 
      */
-    public CmsBumpDetailPageMenuEntry(CmsSitemapHoverbar hoverbar) {
+    public CmsOpenGalleryMenuEntry(CmsSitemapHoverbar hoverbar) {
 
         super(hoverbar);
-        setLabel(Messages.get().key(Messages.GUI_HOVERBAR_MAKE_DEFAULT_0));
+        setLabel(Messages.get().key(Messages.GUI_HOVERBAR_OPEN_GALLERY_0));
         setActive(true);
     }
 
@@ -58,7 +64,17 @@ public class CmsBumpDetailPageMenuEntry extends A_CmsSitemapMenuEntry {
 
         CmsSitemapController controller = getHoverbar().getController();
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
-        controller.bump(entry);
+
+        CmsGalleryConfiguration configuration = new CmsGalleryConfiguration();
+        List<String> typeNames = controller.getGalleryType(new Integer(entry.getResourceTypeId())).getContentTypeNames();
+        configuration.setSearchTypes(typeNames);
+        configuration.setResourceTypes(typeNames);
+        configuration.setGalleryMode(GalleryMode.adeView);
+        configuration.setTabConfiguration(CmsGalleryTabConfiguration.resolve("selectDoc"));
+        configuration.setReferencePath(entry.getSitePath());
+        configuration.setStartFolder(entry.getSitePath());
+        CmsGalleryPopup dialog = new CmsGalleryPopup(null, configuration);
+        dialog.center();
     }
 
     /**
@@ -67,14 +83,10 @@ public class CmsBumpDetailPageMenuEntry extends A_CmsSitemapMenuEntry {
     @Override
     public void onShow(CmsHoverbarShowEvent event) {
 
-        CmsSitemapController controller = getHoverbar().getController();
-        CmsClientSitemapEntry entry = getHoverbar().getEntry();
-        boolean show = !CmsSitemapView.getInstance().isGalleryMode()
-            && (entry != null)
-            && controller.isDetailPage(entry)
-            && controller.getData().canEditDetailPages()
-            && !controller.getDetailPageTable().isDefaultDetailPage(entry.getId());
-        setVisible(show);
-
+        if (CmsSitemapView.getInstance().isGalleryMode()) {
+            setVisible(true);
+        } else {
+            setVisible(false);
+        }
     }
 }

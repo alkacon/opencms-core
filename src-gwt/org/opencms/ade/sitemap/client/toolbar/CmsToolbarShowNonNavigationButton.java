@@ -30,29 +30,76 @@ package org.opencms.ade.sitemap.client.toolbar;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.CmsSitemapView.EditorMode;
 import org.opencms.ade.sitemap.client.Messages;
-import org.opencms.gwt.client.ui.CmsToggleButton;
+import org.opencms.gwt.client.ui.CmsMenuButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
-import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
+import org.opencms.gwt.client.ui.I_CmsButton.Size;
+import org.opencms.gwt.client.ui.contextmenu.CmsContextMenu;
+import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuCloseHandler;
+import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.FlexTable;
 
 /**
  * The sitemap toolbar change sitemap editor mode button.<p>
  * 
  * @since 8.0.0
  */
-public class CmsToolbarShowNonNavigationButton extends CmsToggleButton {
+public class CmsToolbarShowNonNavigationButton extends CmsMenuButton {
+
+    /** The context menu entries. */
+    private List<I_CmsContextMenuEntry> m_entries;
+
+    /** The main content widget. */
+    private FlexTable m_menuPanel;
 
     /**
      * Constructor.<p>
      */
     public CmsToolbarShowNonNavigationButton() {
 
-        setImageClass(I_CmsButton.ButtonData.SITEMAP.getIconClass());
-        setTitle(Messages.get().key(Messages.GUI_NON_NAVIGATION_BUTTON_TITLE_0));
-        setButtonStyle(ButtonStyle.IMAGE, null);
+        super(null, I_CmsButton.ButtonData.SITEMAP.getIconClass());
+        setTitle(Messages.get().key(Messages.GUI_SELECT_VIEW_0));
+        m_menuPanel = new FlexTable();
+        // set a style name for the menu table
+        m_menuPanel.getElement().addClassName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().menuPanel());
+        m_button.setSize(Size.small);
+        // set the widget
+        setMenuWidget(m_menuPanel);
+        getPopup().addAutoHidePartner(getElement());
+        getPopup().setWidth(0);
+        m_entries = new ArrayList<I_CmsContextMenuEntry>();
+        m_entries.add(new A_CmsSitemapModeEntry(Messages.get().key(Messages.GUI_ONLY_NAVIGATION_BUTTON_TITLE_0)) {
 
+            public void execute() {
+
+                CmsSitemapView.getInstance().setEditorMode(EditorMode.navigation);
+            }
+        });
+        m_entries.add(new A_CmsSitemapModeEntry(Messages.get().key(Messages.GUI_NON_NAVIGATION_BUTTON_TITLE_0)) {
+
+            public void execute() {
+
+                CmsSitemapView.getInstance().setEditorMode(EditorMode.vfs);
+            }
+        });
+        m_entries.add(new A_CmsSitemapModeEntry(Messages.get().key(Messages.GUI_ONLY_GALLERIES_BUTTON_TITLE_0)) {
+
+            public void execute() {
+
+                CmsSitemapView.getInstance().setEditorMode(EditorMode.galleries);
+            }
+        });
+
+        CmsContextMenu menu = new CmsContextMenu(m_entries, false, getPopup());
+        m_menuPanel.setWidget(0, 0, menu);
+        // add the close handler for the menu
+        getPopup().addCloseHandler(new CmsContextMenuCloseHandler(menu));
         addClickHandler(new ClickHandler() {
 
             /**
@@ -60,35 +107,12 @@ public class CmsToolbarShowNonNavigationButton extends CmsToggleButton {
              */
             public void onClick(ClickEvent event) {
 
-                showNonNavigationResources(isDown());
+                if (!isOpen()) {
+                    openMenu();
+                } else {
+                    closeMenu();
+                }
             }
         });
     }
-
-    /**
-     * @see org.opencms.gwt.client.ui.CmsToggleButton#setDown(boolean)
-     */
-    @Override
-    public void setDown(boolean down) {
-
-        super.setDown(down);
-        showNonNavigationResources(down);
-    }
-
-    /**
-     * Shows all non navigation resources.<p>
-     * 
-     * @param show <code>true</code> to show the resources
-     */
-    protected void showNonNavigationResources(boolean show) {
-
-        if (show) {
-            CmsSitemapView.getInstance().setEditorMode(EditorMode.vfs);
-            setTitle(Messages.get().key(Messages.GUI_ONLY_NAVIGATION_BUTTON_TITLE_0));
-        } else {
-            CmsSitemapView.getInstance().setEditorMode(EditorMode.navigation);
-            setTitle(Messages.get().key(Messages.GUI_NON_NAVIGATION_BUTTON_TITLE_0));
-        }
-    }
-
 }

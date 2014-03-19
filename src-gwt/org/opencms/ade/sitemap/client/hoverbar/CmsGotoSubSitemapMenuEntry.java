@@ -27,6 +27,7 @@
 
 package org.opencms.ade.sitemap.client.hoverbar;
 
+import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
@@ -67,6 +68,11 @@ public class CmsGotoSubSitemapMenuEntry extends A_CmsSitemapMenuEntry {
 
         CmsSitemapController controller = getHoverbar().getController();
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
-        setVisible((entry != null) && entry.isSubSitemapType() && !controller.isRoot(entry.getSitePath()));
+        boolean show = !CmsSitemapView.getInstance().isGalleryMode()
+            && (entry != null)
+            && entry.isSubSitemapType()
+            && !controller.isRoot(entry.getSitePath());
+        setVisible(show);
+
     }
 }

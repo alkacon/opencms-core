@@ -235,6 +235,21 @@ public final class Messages {
     public static final String GUI_FUNCTION_TAB_TITLE_0 = "GUI_FUNCTION_TAB_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_CREATE_0 = "GUI_GALLERIES_CREATE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_CREATE_DIALOG_TITLE_1 = "GUI_GALLERIES_CREATE_DIALOG_TITLE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_LABEL_FOLDER_NAME_0 = "GUI_GALLERIES_LABEL_FOLDER_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_LABEL_TITLE_0 = "GUI_GALLERIES_LABEL_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_TYPES_TAB_0 = "GUI_GALLERIES_TYPES_TAB_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_HOVERBAR_AVAILABILITY_0 = "GUI_HOVERBAR_AVAILABILITY_0";
 
     /** Message constant for key in the resource bundle. */
@@ -269,6 +284,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HOVERBAR_NEW_0 = "GUI_HOVERBAR_NEW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HOVERBAR_OPEN_GALLERY_0 = "GUI_HOVERBAR_OPEN_GALLERY_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HOVERBAR_PARENT_0 = "GUI_HOVERBAR_PARENT_0";
@@ -340,6 +358,9 @@ public final class Messages {
     public static final String GUI_NEW_ENTRY_TITLE_0 = "GUI_NEW_ENTRY_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEW_GALLERY_VALIDATION_0 = "GUI_NEW_GALLERY_VALIDATION_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_NEW_PAGES_TAB_DESCRIPTION_0 = "GUI_NEW_PAGES_TAB_DESCRIPTION_0";
 
     /** Message constant for key in the resource bundle. */
@@ -353,6 +374,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NON_NAVIGATION_BUTTON_TITLE_0 = "GUI_NON_NAVIGATION_BUTTON_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ONLY_GALLERIES_BUTTON_TITLE_0 = "GUI_ONLY_GALLERIES_BUTTON_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ONLY_NAVIGATION_BUTTON_TITLE_0 = "GUI_ONLY_NAVIGATION_BUTTON_TITLE_0";
@@ -395,6 +419,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SELECT_MODEL_TITLE_0 = "GUI_SELECT_MODEL_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SELECT_VIEW_0 = "GUI_SELECT_VIEW_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITEMAP_0 = "GUI_SITEMAP_0";

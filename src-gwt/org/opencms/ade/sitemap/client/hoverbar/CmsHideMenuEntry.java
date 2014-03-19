@@ -27,6 +27,7 @@
 
 package org.opencms.ade.sitemap.client.hoverbar;
 
+import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
@@ -67,7 +68,9 @@ public class CmsHideMenuEntry extends A_CmsSitemapMenuEntry {
 
         CmsSitemapController controller = getHoverbar().getController();
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
-        boolean show = entry.isInNavigation() && !entry.isHiddenNavigationEntry();
+        boolean show = !CmsSitemapView.getInstance().isGalleryMode()
+            && entry.isInNavigation()
+            && !entry.isHiddenNavigationEntry();
         setVisible(show);
         if (show && !entry.isEditable()) {
             setActive(false);
@@ -76,5 +79,6 @@ public class CmsHideMenuEntry extends A_CmsSitemapMenuEntry {
             setActive(true);
             setDisabledReason(null);
         }
+
     }
 }

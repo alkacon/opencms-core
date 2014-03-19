@@ -28,12 +28,16 @@
 package org.opencms.ade.sitemap.client.toolbar;
 
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
+import org.opencms.ade.sitemap.shared.CmsGalleryType;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsToggleButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
 import org.opencms.gwt.client.ui.CmsToolbarContextButton;
 import org.opencms.gwt.client.ui.I_CmsToolbarButton;
 
+import java.util.Collection;
+
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Widget;
@@ -47,6 +51,9 @@ public class CmsSitemapToolbar extends CmsToolbar {
 
     /** The context menu button. */
     private CmsToolbarContextButton m_contextMenuButton;
+
+    /** The new galleries menu button. */
+    private CmsToolbarNewGalleryButton m_newGalleryMenuButton;
 
     /** The new menu button. */
     private CmsToolbarNewButton m_newMenuButton;
@@ -64,6 +71,12 @@ public class CmsSitemapToolbar extends CmsToolbar {
             addLeft(new CmsToolbarClipboardButton(this, controller));
             addLeft(m_newMenuButton);
         }
+
+        m_newGalleryMenuButton = new CmsToolbarNewGalleryButton(this, controller);
+        if (controller.isEditable()) {
+            addLeft(m_newGalleryMenuButton);
+        }
+
         addLeft(new CmsToolbarShowNonNavigationButton());
         ClickHandler clickHandler = new ClickHandler() {
 
@@ -84,6 +97,8 @@ public class CmsSitemapToolbar extends CmsToolbar {
         m_contextMenuButton.addClickHandler(clickHandler);
         addRight(m_contextMenuButton);
         addRight(new CmsToolbarGoBackButton(this, controller));
+
+        setGalleriesMode(false);
     }
 
     /**
@@ -123,6 +138,32 @@ public class CmsSitemapToolbar extends CmsToolbar {
             }
             ((I_CmsToolbarActivatable)w).onActivation(widget);
         }
+    }
+
+    /**
+     * Sets the galleries mode.<p>
+     * 
+     * @param isGalleriesMode <code>true</code> if in galleries mode
+     */
+    public void setGalleriesMode(boolean isGalleriesMode) {
+
+        if (isGalleriesMode) {
+            m_newGalleryMenuButton.getElement().getStyle().clearDisplay();
+            m_newMenuButton.getElement().getStyle().setDisplay(Display.NONE);
+        } else {
+            m_newMenuButton.getElement().getStyle().clearDisplay();
+            m_newGalleryMenuButton.getElement().getStyle().setDisplay(Display.NONE);
+        }
+    }
+
+    /**
+     * Sets the available gallery types.<p>
+     * 
+     * @param galleryTypes the gallery types
+     */
+    public void setGalleryTypes(Collection<CmsGalleryType> galleryTypes) {
+
+        m_newGalleryMenuButton.setGalleryTypes(galleryTypes);
     }
 
     /**

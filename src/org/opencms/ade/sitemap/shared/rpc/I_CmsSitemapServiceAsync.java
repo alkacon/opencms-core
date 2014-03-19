@@ -28,6 +28,8 @@
 package org.opencms.ade.sitemap.shared.rpc;
 
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsGalleryFolderEntry;
+import org.opencms.ade.sitemap.shared.CmsGalleryType;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.gwt.shared.alias.CmsAliasEditValidationReply;
@@ -40,6 +42,7 @@ import org.opencms.gwt.shared.alias.CmsRewriteAliasValidationRequest;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
@@ -54,6 +57,22 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapServiceAsync
  */
 public interface I_CmsSitemapServiceAsync {
+
+    /**
+     * Creates a new gallery folder.<p>
+     * 
+     * @param parentFolder the parent folder path
+     * @param folderName the gallery folder name
+     * @param title the title property
+     * @param folderTypeId the resource type id
+     * @param callback the async callback
+     */
+    void createNewGalleryFolder(
+        String parentFolder,
+        String folderName,
+        String title,
+        int folderTypeId,
+        AsyncCallback<CmsGalleryFolderEntry> callback);
 
     /**
      * Creates a sub-sitemap of the given sitemap starting from the given entry.<p>
@@ -87,6 +106,14 @@ public interface I_CmsSitemapServiceAsync {
      * @param callback the async callback
      */
     void getChildren(String entryPointUri, CmsUUID entryId, int levels, AsyncCallback<CmsClientSitemapEntry> callback);
+
+    /**
+     * Returns the gallery data to this sub site.<p>
+     * 
+     * @param entryPointUri the sub site folder
+     * @param callback the async callback
+     */
+    void getGalleryData(String entryPointUri, AsyncCallback<Map<CmsGalleryType, List<CmsGalleryFolderEntry>>> callback);
 
     /**
      * Merges a sub-sitemap into it's parent sitemap.<p>

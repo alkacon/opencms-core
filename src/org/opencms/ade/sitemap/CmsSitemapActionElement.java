@@ -27,6 +27,7 @@
 
 package org.opencms.ade.sitemap;
 
+import org.opencms.ade.galleries.CmsGalleryActionElement;
 import org.opencms.ade.publish.CmsPublishActionElement;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
@@ -97,6 +98,7 @@ public class CmsSitemapActionElement extends CmsGwtActionElement {
         sb.append(export());
         sb.append(new CmsPublishActionElement(getJspContext(), getRequest(), getResponse()).export());
         sb.append(new CmsUploadActionElement(getJspContext(), getRequest(), getResponse()).export());
+        sb.append(new CmsGalleryActionElement(getJspContext(), getRequest(), getResponse()).exportWidget());
         sb.append(createNoCacheScript(
             GWT_MODULE_NAME,
             OpenCms.getModuleManager().getModule(CMS_MODULE_NAME).getVersion().toString()));

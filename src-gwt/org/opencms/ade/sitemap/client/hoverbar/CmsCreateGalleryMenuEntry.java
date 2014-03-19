@@ -30,24 +30,25 @@ package org.opencms.ade.sitemap.client.hoverbar;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
+import org.opencms.ade.sitemap.client.ui.CmsCreateGalleryDialog;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 
 /**
- * The context menu entry for "bumping" a detail page, i.e. making it the default detail page for its type.<p>
+ * Sitemap context menu create gallery entry.<p>
  * 
  * @since 8.0.0
  */
-public class CmsBumpDetailPageMenuEntry extends A_CmsSitemapMenuEntry {
+public class CmsCreateGalleryMenuEntry extends A_CmsSitemapMenuEntry {
 
     /**
      * Constructor.<p>
      * 
      * @param hoverbar the hoverbar 
      */
-    public CmsBumpDetailPageMenuEntry(CmsSitemapHoverbar hoverbar) {
+    public CmsCreateGalleryMenuEntry(CmsSitemapHoverbar hoverbar) {
 
         super(hoverbar);
-        setLabel(Messages.get().key(Messages.GUI_HOVERBAR_MAKE_DEFAULT_0));
+        setLabel(Messages.get().key(Messages.GUI_GALLERIES_CREATE_0));
         setActive(true);
     }
 
@@ -56,9 +57,10 @@ public class CmsBumpDetailPageMenuEntry extends A_CmsSitemapMenuEntry {
      */
     public void execute() {
 
-        CmsSitemapController controller = getHoverbar().getController();
-        CmsClientSitemapEntry entry = getHoverbar().getEntry();
-        controller.bump(entry);
+        final CmsSitemapController controller = getHoverbar().getController();
+        final CmsClientSitemapEntry entry = getHoverbar().getEntry();
+        CmsCreateGalleryDialog dialog = new CmsCreateGalleryDialog(controller, entry.getResourceTypeId(), entry.getId());
+        dialog.center();
     }
 
     /**
@@ -67,14 +69,10 @@ public class CmsBumpDetailPageMenuEntry extends A_CmsSitemapMenuEntry {
     @Override
     public void onShow(CmsHoverbarShowEvent event) {
 
-        CmsSitemapController controller = getHoverbar().getController();
-        CmsClientSitemapEntry entry = getHoverbar().getEntry();
-        boolean show = !CmsSitemapView.getInstance().isGalleryMode()
-            && (entry != null)
-            && controller.isDetailPage(entry)
-            && controller.getData().canEditDetailPages()
-            && !controller.getDetailPageTable().isDefaultDetailPage(entry.getId());
-        setVisible(show);
-
+        if (CmsSitemapView.getInstance().isGalleryMode()) {
+            setVisible(true);
+        } else {
+            setVisible(false);
+        }
     }
 }

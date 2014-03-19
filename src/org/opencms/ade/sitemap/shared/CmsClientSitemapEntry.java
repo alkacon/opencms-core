@@ -153,6 +153,9 @@ public class CmsClientSitemapEntry implements IsSerializable {
     /** The resource state. */
     private CmsResourceState m_resourceState;
 
+    /** The resource type id. */
+    private int m_resourceTypeId;
+
     /** The resource type name. */
     private String m_resourceTypeName;
 
@@ -393,6 +396,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public CmsResourceState getResourceState() {
 
         return m_resourceState;
+    }
+
+    /**
+     * Returns the resource type id.<p>
+     * 
+     * @return the resource type id
+     */
+    public int getResourceTypeId() {
+
+        return m_resourceTypeId;
     }
 
     /**
@@ -914,6 +927,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public void setResourceState(CmsResourceState resourceState) {
 
         m_resourceState = resourceState;
+    }
+
+    /**
+     * Sets the resource type id.<p>
+     * 
+     * @param resourceTypeId the resource type id
+     */
+    public void setResourceTypeId(int resourceTypeId) {
+
+        m_resourceTypeId = resourceTypeId;
     }
 
     /**

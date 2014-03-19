@@ -107,9 +107,8 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
             addTab(createTab(m_newElementsList), Messages.get().key(Messages.GUI_NEW_PAGES_TAB_TITLE_0));
         }
         m_specialList = new CmsList<I_CmsListItem>();
-        CmsSitemapController controller = CmsSitemapView.getInstance().getController();
-        if (controller.getData().canEditDetailPages()) {
-            for (CmsNewResourceInfo typeInfo : controller.getData().getResourceTypeInfos()) {
+        if (getController().getData().canEditDetailPages()) {
+            for (CmsNewResourceInfo typeInfo : getController().getData().getResourceTypeInfos()) {
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(typeInfo.getCreateParameter())) {
                     CmsCreatableListItem item = makeDetailPageItem(typeInfo);
                     m_specialList.add(item);
@@ -124,7 +123,7 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
         m_functionList = new CmsList<I_CmsListItem>();
         m_functionList.add(makeRedirectItem());
         m_functionList.add(makeNavigationLevelItem());
-        for (CmsNewResourceInfo typeInfo : controller.getData().getResourceTypeInfos()) {
+        for (CmsNewResourceInfo typeInfo : getController().getData().getResourceTypeInfos()) {
             if (!CmsStringUtil.isEmptyOrWhitespaceOnly(typeInfo.getCreateParameter())) {
                 CmsCreatableListItem item = makeDetailPageItem(typeInfo);
                 m_functionList.add(item);

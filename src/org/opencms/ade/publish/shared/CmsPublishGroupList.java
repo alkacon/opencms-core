@@ -82,14 +82,14 @@ public class CmsPublishGroupList implements IsSerializable {
         return m_groups;
     }
 
-    /*
-    * Gets the override workflow id.<p>
-    *
-    * If this is not null, this indicates that the publish groups were fetched for a different workflow than that selected by default
-    * in the publish dialog, and that the publish dialog should change its selected workflow accordingly.<p>
-    *
-    * @return the override workflow id
-    */
+    /**
+     * Gets the override workflow id.<p>
+     *
+     * If this is not null, this indicates that the publish groups were fetched for a different workflow than that selected by default
+     * in the publish dialog, and that the publish dialog should change its selected workflow accordingly.<p>
+     *
+     * @return the override workflow id
+     */
     public String getOverrideWorkflowId() {
 
         return m_overrideWorkflowId;

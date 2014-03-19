@@ -82,8 +82,10 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton {
         //getPopupContent().setModal(true);
         m_entries = new ArrayList<I_CmsContextMenuEntry>();
         m_entries.add(new CmsGotoMenuEntry(hoverbar));
+        m_entries.add(new CmsOpenGalleryMenuEntry(hoverbar));
         m_entries.add(new CmsEditRedirectMenuEntry(hoverbar));
         m_entries.add(new CmsEditMenuEntry(hoverbar));
+        m_entries.add(new CmsCreateGalleryMenuEntry(hoverbar));
         m_entries.add(new CmsResourceInfoMenuEntry(hoverbar));
         m_entries.add(new CmsAvailabilityMenuEntry(hoverbar));
         m_entries.add(new CmsLockReportMenuEntry(hoverbar));

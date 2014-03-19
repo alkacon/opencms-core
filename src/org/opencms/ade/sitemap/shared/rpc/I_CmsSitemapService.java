@@ -28,6 +28,8 @@
 package org.opencms.ade.sitemap.shared.rpc;
 
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsGalleryFolderEntry;
+import org.opencms.ade.sitemap.shared.CmsGalleryType;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.gwt.CmsRpcException;
@@ -41,6 +43,7 @@ import org.opencms.gwt.shared.alias.CmsRewriteAliasValidationRequest;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
@@ -55,6 +58,21 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapServiceAsync
  */
 public interface I_CmsSitemapService extends RemoteService {
+
+    /**
+     * Creates a new gallery folder.<p>
+     * 
+     * @param parentFolder the parent folder path
+     * @param folderName the gallery folder name
+     * @param title the title property
+     * @param folderTypeId the resource type id
+     * 
+     * @return the new gallery folder data
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    CmsGalleryFolderEntry createNewGalleryFolder(String parentFolder, String folderName, String title, int folderTypeId)
+    throws CmsRpcException;
 
     /**
      * Creates a sub-sitemap of the given sitemap starting from the given entry.<p>
@@ -98,6 +116,17 @@ public interface I_CmsSitemapService extends RemoteService {
      * @throws CmsRpcException if something goes wrong 
      */
     CmsClientSitemapEntry getChildren(String entryPointUri, CmsUUID entryId, int levels) throws CmsRpcException;
+
+    /**
+     * Returns the gallery data to this sub site.<p>
+     * 
+     * @param entryPointUri the sub site folder
+     * 
+     * @return the gallery data to this sub site
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    Map<CmsGalleryType, List<CmsGalleryFolderEntry>> getGalleryData(String entryPointUri) throws CmsRpcException;
 
     /**
      * Merges a sub-sitemap into it's parent sitemap.<p>

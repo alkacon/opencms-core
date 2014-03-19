@@ -608,6 +608,28 @@ public class CmsADEManager {
     }
 
     /**
+     * Returns all sub sites below the given path.<p>
+     * 
+     * @param cms the cms context
+     * @param subSiteRoot the sub site root path
+     * 
+     * @return the sub site root paths
+     */
+    public List<String> getSubSitePaths(CmsObject cms, String subSiteRoot) {
+
+        List<String> result = new ArrayList<String>();
+        String normalizedRootPath = CmsStringUtil.joinPaths("/", subSiteRoot, "/");
+        CmsADEConfigCacheState state = getCacheState(isOnline(cms));
+        Set<String> siteConfigurationPaths = state.getSiteConfigurationPaths();
+        for (String path : siteConfigurationPaths) {
+            if ((path.length() > normalizedRootPath.length()) && path.startsWith(normalizedRootPath)) {
+                result.add(path);
+            }
+        }
+        return result;
+    }
+
+    /**
      * Tries to get the subsite root for a given resource root path.<p>
      * 
      * @param cms the current CMS context 

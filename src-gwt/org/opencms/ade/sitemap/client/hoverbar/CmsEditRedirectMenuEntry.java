@@ -27,6 +27,7 @@
 
 package org.opencms.ade.sitemap.client.hoverbar;
 
+import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EntryType;
@@ -82,7 +83,10 @@ public class CmsEditRedirectMenuEntry extends A_CmsSitemapMenuEntry {
     public void onShow(CmsHoverbarShowEvent event) {
 
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
-        boolean show = (entry != null) && (entry.getEntryType() == EntryType.redirect);
+        boolean show = !CmsSitemapView.getInstance().isGalleryMode()
+            && (entry != null)
+            && (entry.getEntryType() == EntryType.redirect);
         setVisible(show);
+
     }
 }

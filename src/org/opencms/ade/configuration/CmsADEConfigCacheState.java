@@ -221,6 +221,16 @@ public class CmsADEConfigCacheState {
         return type;
     }
 
+    /**
+     * Returns the root paths to all configured sites and sub sites.<p>
+     * 
+     * @return the root paths to all configured sites and sub sites
+     */
+    public Set<String> getSiteConfigurationPaths() {
+
+        return m_siteConfigurationsByPath.keySet();
+    }
+
     /** 
      * Looks up the sitemap configuration for a root path.<p>
      * @param rootPath the root path for which to look up the configuration

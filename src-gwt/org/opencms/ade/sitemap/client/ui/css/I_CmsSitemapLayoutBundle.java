@@ -79,6 +79,24 @@ public interface I_CmsSitemapLayoutBundle extends org.opencms.gwt.client.ui.css.
          * @return the CSS class name
          */
         String root();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String inputBox();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String inputLabel();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String inputRow();
     }
 
     /** The bundle instance. */

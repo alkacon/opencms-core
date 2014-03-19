@@ -27,6 +27,7 @@
 
 package org.opencms.ade.sitemap.client.hoverbar;
 
+import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
@@ -67,7 +68,9 @@ public class CmsRemoveMenuEntry extends A_CmsSitemapMenuEntry {
 
         CmsSitemapController controller = getHoverbar().getController();
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
-        boolean show = !controller.isRoot(entry.getSitePath()) && entry.isInNavigation();
+        boolean show = !CmsSitemapView.getInstance().isGalleryMode()
+            && !controller.isRoot(entry.getSitePath())
+            && entry.isInNavigation();
         setVisible(show);
         if (show && !entry.isEditable()) {
             setActive(false);
