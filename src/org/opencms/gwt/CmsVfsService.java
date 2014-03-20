@@ -1571,7 +1571,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         try {
             cms.getRequestContext().setSiteRoot("");
             String parentPath = CmsResource.getParentFolder(resource.getRootPath());
-            CmsResource parent = cms.readResource(parentPath);
+            CmsResource parent = cms.readResource(parentPath, CmsResourceFilter.IGNORE_EXPIRATION);
             List<CmsProperty> parentProperties = cms.readPropertyObjects(parent, true);
             List<CmsProperty> ownProperties = cms.readPropertyObjects(resource, false);
             result.setOwnProperties(convertProperties(ownProperties));
