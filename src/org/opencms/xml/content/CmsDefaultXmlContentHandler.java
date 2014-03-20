@@ -1151,12 +1151,21 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
      */
     public boolean isSearchable(I_CmsXmlContentValue value) {
 
+        String path = CmsXmlUtils.removeXpath(value.getPath());
         // check for name configured in the annotations
-        Boolean searchSetting = m_searchSettings.get(value.getName());
-        I_CmsXmlContentHandler rootHandler = value.getDocument().getContentDefinition().getContentHandler();
-        Boolean rootSearchSetting = rootHandler.getSearchSettings().get(CmsXmlUtils.removeXpath(value.getPath()));
-        if (rootSearchSetting != null) {
-            searchSetting = rootSearchSetting;
+        Boolean searchSetting = m_searchSettings.get(path);
+        // if no search setting is found within the root handler, move the path upwards to look for other configurations
+        if (searchSetting == null) {
+            String[] pathElements = path.split("/");
+            I_CmsXmlSchemaType type = value.getDocument().getContentDefinition().getSchemaType(pathElements[0]);
+            for (int i = 1; i < pathElements.length; i++) {
+                type = ((CmsXmlNestedContentDefinition)type).getNestedContentDefinition().getSchemaType(pathElements[i]);
+                String subPath = getSubPath(pathElements, i);
+                searchSetting = type.getContentDefinition().getContentHandler().getSearchSettings().get(subPath);
+                if (searchSetting != null) {
+                    break;
+                }
+            }
         }
         // if no annotation has been found, use default for value
         return (searchSetting == null) ? value.isSearchable() : searchSetting.booleanValue();
@@ -3361,6 +3370,26 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             fieldMapping.setDefaultValue(element.attributeValue(APPINFO_ATTR_DEFAULT));
         }
         return fieldMapping;
+    }
+
+    /**
+     * Utility method to return a path fragment.<p>
+     * 
+     * @param pathElements the path elements
+     * @param begin the begin index
+     * 
+     * @return the path
+     */
+    private String getSubPath(String[] pathElements, int begin) {
+
+        String result = "";
+        for (int i = begin; i < pathElements.length; i++) {
+            result += pathElements[i] + "/";
+        }
+        if (result.length() > 0) {
+            result = result.substring(0, result.length() - 1);
+        }
+        return result;
     }
 
     /**
