@@ -39,18 +39,18 @@ if (project.hasProperty('external_directories')){
 }
 
 configurations {
-    
+
     distribution {
         description = 'libraries included into the opencms distribution'
         transitive = false
     }
-    
+
     compile {
         description = 'used to compile the opencms.jar and the modules jars'
         transitive = false
         extendsFrom distribution
     }
-    
+
     modulesCompile {
         description = 'used to compile the modules classes'
         transitive = false
@@ -119,6 +119,19 @@ sourceSets{
     }
 }
 
+// adding generated dependencies during configuration phase to avoid build path problems in IDE
+sourceSets.modules.compileClasspath += files("$buildDir/classes/main") { builtBy 'compileJava' }
+sourceSets.setup.compileClasspath += files("$buildDir/classes/main") { builtBy 'compileJava' }
+sourceSets.gwt.compileClasspath += files("$buildDir/classes/main") { builtBy 'compileJava' }
+sourceSets.test.compileClasspath += fileTree('webapp/setup/database'){ include '**/*.jar' }
+sourceSets.test.compileClasspath += files("$buildDir/classes/setup") { builtBy 'setupClasses' }
+sourceSets.test.compileClasspath += files("$buildDir/classes/modules") { builtBy 'modulesClasses' }
+sourceSets.test.compileClasspath += files("$buildDir/classes/gwt") { builtBy 'gwtClasses' }
+
+
+project.ext.componentsRuntimeClassPath=configurations.componentsRuntime
+componentsRuntimeClassPath += files("${project.buildDir}/libs/opencms-components.jar") { builtBy 'componentsJar' }
+
 task componentsJar(type: Jar) {
     from sourceSets.components.output
     baseName 'opencms-components'
@@ -152,11 +165,11 @@ if (project.hasProperty('tomcat_update_target') && file(tomcat_update_target).ex
 task enhance << {
     ant.taskdef(
             name      : 'openjpaenhancer',
-            classpath : configurations.modulesCompile.asPath,
+            classpath : sourceSets.modules.compileClasspath.asPath,
             classname : 'org.apache.openjpa.ant.PCEnhancerTask'
             )
 
-    ant.openjpaenhancer(classpath : configurations.modulesCompile.asPath){
+    ant.openjpaenhancer(classpath : sourceSets.modules.compileClasspath.asPath){
         fileset(dir: "${sourceSets.main.output.classesDir}/org/opencms/db/jpa/persistence"){ exclude(name: '*$*.class') }
         config(propertiesFile: "${projectDir}/webapp/WEB-INF/classes/META-INF/persistence.xml")
     }
@@ -259,33 +272,33 @@ task gwtJar(dependsOn: jar, type: Jar) {
 
 task javadocModules(type: Javadoc, dependsOn: jar) {
     doLast {
-    copy {
-        from  "${projectDir}/doc/javadoc/logos"
-        into "${buildDir}/docs/javadocModules/logos"
+        copy {
+            from  "${projectDir}/doc/javadoc/logos"
+            into "${buildDir}/docs/javadocModules/logos"
+        }
     }
-}
-options.addStringOption("sourcepath", "")
-project.configure(options) {
-    memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
-    charSet = "UTF-8"
-    author="true"
-    version="true"
-    source= java_target_version
-    linkSource="false"
-    noDeprecatedList="false"
-    noDeprecated="false"
-    docTitle="OpenCms Workplace Modules API, version $version_number"
-    windowTitle="OpenCms Workplace Modules API, version $version_number"
-    stylesheetFile= file("${projectDir}/doc/javadoc/stylesheet.css")
+    options.addStringOption("sourcepath", "")
+    project.configure(options) {
+        memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
+        charSet = "UTF-8"
+        author="true"
+        version="true"
+        source= java_target_version
+        linkSource="false"
+        noDeprecatedList="false"
+        noDeprecated="false"
+        docTitle="OpenCms Workplace Modules API, version $version_number"
+        windowTitle="OpenCms Workplace Modules API, version $version_number"
+        stylesheetFile= file("${projectDir}/doc/javadoc/stylesheet.css")
         header = "<script type=\"text/javascript\"> if (window.location.href.indexOf(\"overview-frame\") == -1) { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.alkacon.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/Alkacon.png\\\" /></a>\"); } else { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.opencms.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/OpenCms.png\\\" /></a>\"); }</script>"
-}
-source = sourceSets.modules.allJava
-classpath = project.sourceSets.modules.compileClasspath
-destinationDir = file("${buildDir}/docs/javadocModules")
+    }
+    source = sourceSets.modules.allJava
+    classpath = project.sourceSets.modules.compileClasspath
+    destinationDir = file("${buildDir}/docs/javadocModules")
 }
 
 task javadocGwt(type: Javadoc, dependsOn: jar) {
-        doLast {
+    doLast {
         copy {
             from  "${projectDir}/doc/javadoc/logos"
             into "${buildDir}/docs/javadocGwt/logos"
@@ -482,7 +495,7 @@ allModuleNames.split(',').each{ moduleName ->
             def syncedManifest="${project.buildDir}/extra/${moduleName}/manifest.xml"
             from syncedManifest
             doFirst{
-                ant.taskdef(resource: 'org/opencms/util/ant/taskdefs.properties', classpath: configurations.componentsRuntime.asPath)
+                ant.taskdef(resource: 'org/opencms/util/ant/taskdefs.properties', classpath: componentsRuntimeClassPath.asPath)
                 ant.syncmanifest(
                         srcmanifestfile: "${moduleFolder}/resources/manifest.xml",
                         dstmanifestfile: syncedManifest,
@@ -514,7 +527,7 @@ allModuleNames.split(',').each{ moduleName ->
             sourceSets[moduleName].resources.includes.add(pack.replaceAll('\\.','/')+'/**')
         }
 
-        sourceSets[moduleName].compileClasspath=configurations.modulesCompile
+        sourceSets[moduleName].compileClasspath=sourceSets.modules.compileClasspath
 
         task "jar_$moduleName" (type: Jar) {
             manifest {
@@ -821,6 +834,10 @@ task bindist (dependsOn: war, type: Zip){
 }
 
 test {
+    classpath += fileTree('webapp/setup/database'){ include '**/*.jar' }
+    classpath += files("$buildDir/classes/setup") { builtBy 'setupClasses' }
+    classpath += files("$buildDir/classes/modules") { builtBy 'modulesClasses' }
+    classpath += files("$buildDir/classes/gwt") { builtBy 'gwtClasses' }
     useJUnit()
     include 'org/opencms/test/AllTests*'
     // important: exclude all anonymous classes

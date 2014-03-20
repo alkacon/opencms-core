@@ -26,26 +26,6 @@ dependencies {
     componentsCompile group: 'jaxen', name: 'jaxen', version: '1.1.1'
     componentsCompile group: 'org.safehaus.jug', name: 'jug', version: '2.0.0', classifier: 'lgpl'
     
-    componentsRuntime files("$buildDir/libs/opencms-components.jar") {
-         builtBy 'componentsJar'
-    }
-    
-    modulesCompile files("$buildDir/classes/main") {
-        builtBy 'compileJava'
-    }
-    
-    testCompile fileTree('webapp/setup/database'){
-        include '**/*.jar'
-    }
-    testCompile files("$buildDir/classes/setup") {
-        builtBy 'setupClasses'
-    }
-    testCompile files("$buildDir/classes/modules") {
-        builtBy 'modulesClasses'
-    }
-    testCompile files("$buildDir/classes/gwt") {
-        builtBy 'gwtClasses'
-    }
     testCompile group: 'dumbster', name: 'dumbster', version: '1.6'
     testCompile group: 'com.google.gwt', name: 'gwt-user', version: '2.6.0'
     testCompile group: 'junit', name: 'junit', version: '4.11'
