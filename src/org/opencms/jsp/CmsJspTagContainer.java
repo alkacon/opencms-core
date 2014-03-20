@@ -200,13 +200,23 @@ public class CmsJspTagContainer extends TagSupport {
                 if (CmsUUID.isValidUUID(formatterConfigId)) {
                     formatterBean = OpenCms.getADEManager().getCachedFormatters(
                         cms.getRequestContext().getCurrentProject().isOnlineProject()).getFormatters().get(
-                        formatterConfigId);
+                        new CmsUUID(formatterConfigId));
                 }
             }
         } else {
-            formatterBean = adeConfig.getFormatters(cms, element.getResource()).getDefaultFormatter(
-                containerType,
-                containerWidth);
+            if (element.getSettings().containsKey(settingsKey)) {
+                String formatterConfigId = element.getSettings().get(settingsKey);
+                if (CmsUUID.isValidUUID(formatterConfigId)) {
+                    formatterBean = OpenCms.getADEManager().getCachedFormatters(
+                        cms.getRequestContext().getCurrentProject().isOnlineProject()).getFormatters().get(
+                        new CmsUUID(formatterConfigId));
+                }
+            }
+            if (formatterBean == null) {
+                formatterBean = adeConfig.getFormatters(cms, element.getResource()).getDefaultFormatter(
+                    containerType,
+                    containerWidth);
+            }
             if (formatterBean != null) {
                 String formatterConfigId = formatterBean.getId();
                 if (formatterConfigId == null) {
@@ -1024,6 +1034,17 @@ public class CmsJspTagContainer extends TagSupport {
                             containerType,
                             containerWidth);
                         getSessionCache(cms).setCacheContainerElement(subelement.editorHash(), subelement);
+                    } else {
+                        // group elements store the formatter info in their settings only
+                        String settingsKey = CmsFormatterConfig.getSettingsKeyForContainer(getName());
+                        if (subelement.getSettings().containsKey(settingsKey)) {
+                            String formatterConfigId = subelement.getSettings().get(settingsKey);
+                            if (CmsUUID.isValidUUID(formatterConfigId)) {
+                                subElementFormatterConfig = OpenCms.getADEManager().getCachedFormatters(
+                                    cms.getRequestContext().getCurrentProject().isOnlineProject()).getFormatters().get(
+                                    new CmsUUID(formatterConfigId));
+                            }
+                        }
                     }
                     if (subElementFormatterConfig == null) {
                         CmsFormatterConfiguration subelementFormatters = adeConfig.getFormatters(
