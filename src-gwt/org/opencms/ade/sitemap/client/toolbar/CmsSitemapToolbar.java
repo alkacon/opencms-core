@@ -77,7 +77,7 @@ public class CmsSitemapToolbar extends CmsToolbar {
             addLeft(m_newGalleryMenuButton);
         }
 
-        addLeft(new CmsToolbarShowNonNavigationButton());
+        addLeft(new CmsToolbarChooseEditorModeButton());
         ClickHandler clickHandler = new ClickHandler() {
 
             /**

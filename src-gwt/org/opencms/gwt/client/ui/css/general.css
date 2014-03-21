@@ -75,6 +75,7 @@ div.header{
 	width: value("constants.css.toolbarWidth");
 	padding: 10px 0px;
 	margin: 0px auto 10px;
+	position: relative;
 }
 
 /** joined vendor prefix style, for better fall back behavior */
@@ -102,6 +103,16 @@ div.header > div{
 div.header p{
 	font-size: value("constants.css.fontSize");
 	margin: 8px 0px;
+}
+
+div.header div.headerButtons{
+	position: absolute;
+	top: 10px;
+	right: 20px;
+}
+
+div.header div.headerButtons > div{
+	float: right;
 }
 
 .textSmall, div.textSmall{

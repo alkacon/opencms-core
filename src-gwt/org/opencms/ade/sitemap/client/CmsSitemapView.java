@@ -45,6 +45,7 @@ import org.opencms.ade.sitemap.shared.CmsGalleryFolderEntry;
 import org.opencms.ade.sitemap.shared.CmsGalleryType;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
+import org.opencms.ade.sitemap.shared.CmsSitemapData.EditorMode;
 import org.opencms.ade.sitemap.shared.CmsSitemapInfo;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.A_CmsEntryPoint;
@@ -55,6 +56,8 @@ import org.opencms.gwt.client.ui.CmsInfoHeader;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsListItemWidget.Background;
 import org.opencms.gwt.client.ui.CmsNotification;
+import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
 import org.opencms.gwt.client.ui.tree.CmsTree;
@@ -80,6 +83,8 @@ import java.util.Map;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -92,16 +97,6 @@ import com.google.gwt.user.client.ui.Widget;
  * @since 8.0.0
  */
 public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
-
-    /** The sitemap editor modes. */
-    public enum EditorMode {
-        /** The galleries mode. */
-        galleries,
-        /** The navigation mode. */
-        navigation,
-        /** The VFS mode. */
-        vfs
-    }
 
     /**
      * The sitemap tree open handler.<p>
@@ -276,18 +271,11 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
                 Collections.<Widget> singleton(createButton));
             createButton.setHoverbar(hoverbar);
             m_galleryTypeItems.put(type.getTypeName(), typeItem);
-            if (!type.getTypeName().equals(DOWNLOAD_GALLERY_TYPE)
-                && !type.getTypeName().equals(IMAGE_GALLERY_TYPE)
-                && galleries.get(type).isEmpty()) {
-                // hide all empty gallery types that not of imgaegallery or downloadgallery type
+            if (galleries.get(type).isEmpty()) {
+                // hide all empty gallery types
                 typeItem.getElement().getStyle().setDisplay(Display.NONE);
             } else {
-                for (CmsGalleryFolderEntry galleryFolder : galleries.get(type)) {
-                    CmsGalleryTreeItem folderItem = new CmsGalleryTreeItem(galleryFolder);
-                    CmsSitemapHoverbar.installOn(m_controller, folderItem, galleryFolder.getStructureId());
-                    typeItem.addChild(folderItem);
-                    m_galleryTreeItems.put(galleryFolder.getStructureId(), folderItem);
-                }
+                addGalleryEntries(typeItem, galleries.get(type));
             }
             m_galleryTree.addItem(typeItem);
         }
@@ -320,7 +308,13 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         CmsGalleryTreeItem typeItem = m_galleryTypeItems.get(galleryFolder.getResourceType());
         CmsGalleryTreeItem folderItem = new CmsGalleryTreeItem(galleryFolder);
         CmsSitemapHoverbar.installOn(m_controller, folderItem, galleryFolder.getStructureId());
-        typeItem.addChild(folderItem);
+        if ((parentItem != null) && m_galleryTreeItems.containsKey(parentItem.getEntryId())) {
+            CmsGalleryTreeItem galleryParent = m_galleryTreeItems.get(parentItem.getEntryId());
+            galleryParent.addChild(folderItem);
+            galleryParent.setOpen(true);
+        } else {
+            typeItem.addChild(folderItem);
+        }
         m_galleryTreeItems.put(galleryFolder.getStructureId(), folderItem);
         typeItem.setOpen(true);
         // in case the type item had been hidden
@@ -622,6 +616,25 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
             info.getSiteLocale(),
             CmsIconUtil.getResourceIconClasses(m_controller.getData().getRoot().getResourceTypeName(), false));
         header.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapCss().pageCenter());
+
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_controller.getData().getParentSitemap())) {
+            CmsPushButton goToParentButton = new CmsPushButton();
+            goToParentButton.setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarParent());
+            goToParentButton.setTitle(Messages.get().key(Messages.GUI_HOVERBAR_PARENT_0));
+            goToParentButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+            goToParentButton.addClickHandler(new ClickHandler() {
+
+                /**
+                 * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+                 */
+                public void onClick(ClickEvent event) {
+
+                    getController().gotoParentSitemap();
+                }
+            });
+            header.addButtonTopRight(goToParentButton);
+        }
+
         rootPanel.add(header);
         final FlowPanel page = new FlowPanel();
         page.setStyleName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapCss().page());
@@ -663,6 +676,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
                 initiateTreeItems(page, loadingLabel);
             }
         });
+        setEditorMode(m_controller.getData().getEditorMode());
     }
 
     /**
@@ -707,7 +721,10 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
                     break;
                 default:
             }
-            getRootItem().updateEditorMode();
+            // check if the tree has been drawn yet
+            if (m_tree.getWidgetCount() > 0) {
+                getRootItem().updateEditorMode();
+            }
             m_toolbar.setGalleriesMode(isGalleryMode());
         }
     }
@@ -765,7 +782,6 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         rootItem.onFinishLoading();
         rootItem.setOpen(true);
         m_tree.addItem(rootItem);
-        setEditorMode(EditorMode.navigation);
         m_controller.addPropertyUpdateHandler(new CmsStatusIconUpdateHandler());
         m_controller.recomputeProperties();
         rootItem.updateSitePath();
@@ -783,6 +799,23 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
             m_openHandler.setInitializing(false);
         }
         page.remove(loadingLabel);
+    }
+
+    /**
+     * Adds the gallery tree items to the parent.<p>
+     * 
+     * @param parent the parent item
+     * @param galleries the gallery folder entries
+     */
+    private void addGalleryEntries(CmsGalleryTreeItem parent, List<CmsGalleryFolderEntry> galleries) {
+
+        for (CmsGalleryFolderEntry galleryFolder : galleries) {
+            CmsGalleryTreeItem folderItem = new CmsGalleryTreeItem(galleryFolder);
+            CmsSitemapHoverbar.installOn(m_controller, folderItem, galleryFolder.getStructureId());
+            parent.addChild(folderItem);
+            m_galleryTreeItems.put(galleryFolder.getStructureId(), folderItem);
+            addGalleryEntries(folderItem, galleryFolder.getSubGalleries());
+        }
     }
 
     /**

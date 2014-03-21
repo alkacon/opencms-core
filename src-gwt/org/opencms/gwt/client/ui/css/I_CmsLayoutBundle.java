@@ -872,6 +872,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String headerButtons();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String hideOverlay();
 
         /** 

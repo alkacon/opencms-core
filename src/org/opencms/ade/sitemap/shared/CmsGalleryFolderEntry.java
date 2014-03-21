@@ -30,6 +30,7 @@ package org.opencms.ade.sitemap.shared;
 import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.util.CmsUUID;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -54,6 +55,24 @@ public class CmsGalleryFolderEntry implements IsSerializable {
 
     /** The sub galleries. */
     private List<CmsGalleryFolderEntry> m_subGalleries;
+
+    /**
+     * Constructor.<p>
+     */
+    public CmsGalleryFolderEntry() {
+
+        m_subGalleries = new ArrayList<CmsGalleryFolderEntry>();
+    }
+
+    /**
+     * Adds a sub gallery.<p>
+     * 
+     * @param gallery the gallery to add
+     */
+    public void addSubGallery(CmsGalleryFolderEntry gallery) {
+
+        m_subGalleries.add(gallery);
+    }
 
     /**
      * Returns the own properties.<p>

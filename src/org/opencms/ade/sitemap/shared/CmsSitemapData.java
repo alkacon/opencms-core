@@ -45,8 +45,21 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class CmsSitemapData implements IsSerializable {
 
+    /** The sitemap editor modes. */
+    public enum EditorMode {
+        /** The galleries mode. */
+        galleries,
+        /** The navigation mode. */
+        navigation,
+        /** The VFS mode. */
+        vfs
+    }
+
     /** Name of the used js variable. */
     public static final String DICT_NAME = "org_opencms_ade_sitemap";
+
+    /** The editor mode parameter name. */
+    public static final String PARAM_EDITOR_MODE = "editormode";
 
     /** The URL of the JSP used to import aliases. */
     private String m_aliasImportUrl;
@@ -77,6 +90,9 @@ public class CmsSitemapData implements IsSerializable {
 
     /** Flag to control the display of the toolbar. */
     private boolean m_displayToolbar;
+
+    /** The editor mode. */
+    private EditorMode m_editorMode;
 
     /** The export RFS prefix. */
     private String m_exportRfsPrefix;
@@ -167,6 +183,7 @@ public class CmsSitemapData implements IsSerializable {
      * @param canEditAliases flag to indicate whether the current user can edit the alias table 
      * @param createNewFoldersForSubsitemaps flag to control whether new folders should be created for subsitemaps 
      * @param subsitemapTypeInfos the type information beans for the available subsitemap folder types 
+     * @param editorMode the editor mode
      */
     public CmsSitemapData(
         Map<String, CmsClientTemplateBean> templates,
@@ -195,7 +212,8 @@ public class CmsSitemapData implements IsSerializable {
         String aliasImportUrl,
         boolean canEditAliases,
         boolean createNewFoldersForSubsitemaps,
-        List<CmsListInfoBean> subsitemapTypeInfos) {
+        List<CmsListInfoBean> subsitemapTypeInfos,
+        EditorMode editorMode) {
 
         m_templates = templates;
         m_properties = properties;
@@ -224,6 +242,7 @@ public class CmsSitemapData implements IsSerializable {
         m_canEditAliases = canEditAliases;
         m_createNewFolderForSubsitemap = createNewFoldersForSubsitemaps;
         m_sitemapFolderTypeInfos = subsitemapTypeInfos;
+        m_editorMode = editorMode;
     }
 
     /**
@@ -305,6 +324,16 @@ public class CmsSitemapData implements IsSerializable {
     public CmsDetailPageTable getDetailPageTable() {
 
         return m_detailPageTable;
+    }
+
+    /**
+     * Returns the editor mode.<p>
+     * 
+     * @return the editor mode
+     */
+    public EditorMode getEditorMode() {
+
+        return m_editorMode;
     }
 
     /**

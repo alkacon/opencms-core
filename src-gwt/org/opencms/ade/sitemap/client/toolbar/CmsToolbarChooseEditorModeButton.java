@@ -28,8 +28,8 @@
 package org.opencms.ade.sitemap.client.toolbar;
 
 import org.opencms.ade.sitemap.client.CmsSitemapView;
-import org.opencms.ade.sitemap.client.CmsSitemapView.EditorMode;
 import org.opencms.ade.sitemap.client.Messages;
+import org.opencms.ade.sitemap.shared.CmsSitemapData.EditorMode;
 import org.opencms.gwt.client.ui.CmsMenuButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.Size;
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.ui.FlexTable;
  * 
  * @since 8.0.0
  */
-public class CmsToolbarShowNonNavigationButton extends CmsMenuButton {
+public class CmsToolbarChooseEditorModeButton extends CmsMenuButton {
 
     /** The context menu entries. */
     private List<I_CmsContextMenuEntry> m_entries;
@@ -61,7 +61,7 @@ public class CmsToolbarShowNonNavigationButton extends CmsMenuButton {
     /**
      * Constructor.<p>
      */
-    public CmsToolbarShowNonNavigationButton() {
+    public CmsToolbarChooseEditorModeButton() {
 
         super(null, I_CmsButton.ButtonData.SITEMAP.getIconClass());
         setTitle(Messages.get().key(Messages.GUI_SELECT_VIEW_0));

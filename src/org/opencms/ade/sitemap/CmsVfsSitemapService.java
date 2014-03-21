@@ -44,6 +44,7 @@ import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange.ChangeType;
 import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
+import org.opencms.ade.sitemap.shared.CmsSitemapData.EditorMode;
 import org.opencms.ade.sitemap.shared.CmsSitemapInfo;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
 import org.opencms.configuration.CmsDefaultUserSettings;
@@ -421,30 +422,74 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         List<String> subSitePaths = OpenCms.getADEManager().getSubSitePaths(
             getCmsObject(),
             getCmsObject().getRequestContext().addSiteRoot(entryPointUri));
-        CmsObject cms = getCmsObject();
         List<CmsGalleryType> galleryTypes = collectGalleryTypes();
         Map<CmsGalleryType, List<CmsGalleryFolderEntry>> result = new HashMap<CmsGalleryType, List<CmsGalleryFolderEntry>>();
         for (CmsGalleryType type : galleryTypes) {
-            List<CmsGalleryFolderEntry> galleries = new ArrayList<CmsGalleryFolderEntry>();
+            List<CmsGalleryFolderEntry> galleries = null;
             try {
-                List<CmsResource> galleryFolders = cms.readResources(
-                    entryPointUri,
-                    CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(type.getTypeId()));
-                for (CmsResource folder : galleryFolders) {
-                    try {
-                        if (!isInSubsite(subSitePaths, folder.getRootPath())) {
-                            galleries.add(readGalleryFolderEntry(folder, type.getTypeName()));
-                        }
-                    } catch (CmsException ex) {
-                        log(ex.getLocalizedMessage(), ex);
-                    }
-                }
+                galleries = getGalleriesForType(entryPointUri, type, subSitePaths);
             } catch (CmsException e) {
                 log(e.getLocalizedMessage(), e);
             }
             result.put(type, galleries);
         }
         return result;
+    }
+
+    /**
+     * Returns the galleries of the given sub site for the requested gallery type.<p>
+     * 
+     * @param entryPointUri the sub site entry point
+     * @param galleryType the gallery type
+     * @param subSitePaths the sub site paths
+     * 
+     * @return the gallery folder entries
+     * 
+     * @throws CmsException if reading the resources fails
+     */
+    private List<CmsGalleryFolderEntry> getGalleriesForType(
+        String entryPointUri,
+        CmsGalleryType galleryType,
+        List<String> subSitePaths) throws CmsException {
+
+        List<CmsGalleryFolderEntry> galleries = new ArrayList<CmsGalleryFolderEntry>();
+        List<CmsResource> galleryFolders = getCmsObject().readResources(
+            entryPointUri,
+            CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(galleryType.getTypeId()));
+        for (CmsResource folder : galleryFolders) {
+            try {
+                if (!isInSubsite(subSitePaths, folder.getRootPath())) {
+                    galleries.add(readGalleryFolderEntry(folder, galleryType.getTypeName()));
+                }
+            } catch (CmsException ex) {
+                log(ex.getLocalizedMessage(), ex);
+            }
+        }
+        // create a tree structure
+        Collections.sort(galleries, new Comparator<CmsGalleryFolderEntry>() {
+
+            public int compare(CmsGalleryFolderEntry o1, CmsGalleryFolderEntry o2) {
+
+                return o1.getSitePath().compareTo(o2.getSitePath());
+            }
+        });
+        List<CmsGalleryFolderEntry> galleryTree = new ArrayList<CmsGalleryFolderEntry>();
+        for (int i = 0; i < galleries.size(); i++) {
+            boolean isSubGallery = false;
+            if (i > 0) {
+                for (int j = i - 1; j >= 0; j--) {
+                    if (galleries.get(i).getSitePath().startsWith(galleries.get(j).getSitePath())) {
+                        galleries.get(j).addSubGallery(galleries.get(i));
+                        isSubGallery = true;
+                        break;
+                    }
+                }
+            }
+            if (!isSubGallery) {
+                galleryTree.add(galleries.get(i));
+            }
+        }
+        return galleryTree;
     }
 
     /**
@@ -592,6 +637,17 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             boolean canEditAliases = OpenCms.getAliasManager().hasPermissionsForMassEdit(cms, siteRoot);
             List<CmsListInfoBean> subsitemapFolderTypeInfos = collectSitemapTypeInfos(cms, configData);
 
+            // evaluate the editor mode
+            EditorMode editorMode = EditorMode.navigation;
+            String modeParam = getRequest().getParameter(CmsSitemapData.PARAM_EDITOR_MODE);
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(modeParam)) {
+                try {
+                    editorMode = EditorMode.valueOf(modeParam);
+                } catch (Exception e) {
+                    // ignore
+                }
+            }
+
             result = new CmsSitemapData(
                 (new CmsTemplateFinder(cms)).getTemplates(),
                 propertyConfig,
@@ -619,7 +675,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 aliasImportUrl,
                 canEditAliases,
                 OpenCms.getWorkplaceManager().getDefaultUserSettings().getSubsitemapCreationMode() == CmsDefaultUserSettings.SubsitemapCreationMode.createfolder,
-                subsitemapFolderTypeInfos);
+                subsitemapFolderTypeInfos,
+                editorMode);
         } catch (Throwable e) {
             error(e);
         }

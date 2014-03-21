@@ -11,5 +11,6 @@
 			<div><b><span ui:field="m_siteHost"></span></b>&nbsp;<span ui:field="m_locale"></span></div>
 		</div>
 		<div style="float:none; clear:left; height:0px;"></div>
+		<div ui:field="m_buttonBar" class="{resources.generalCss.headerButtons}"></div>
 	</g:HTMLPanel>
 </ui:UiBinder> 

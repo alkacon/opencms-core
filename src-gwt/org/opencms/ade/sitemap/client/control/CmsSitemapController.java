@@ -1232,6 +1232,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
         Map<String, String> parameter = new HashMap<String, String>();
         parameter.put(CmsCoreData.PARAM_PATH, sitePath);
         parameter.put(CmsCoreData.PARAM_RETURNCODE, getData().getReturnCode());
+        parameter.put(CmsSitemapData.PARAM_EDITOR_MODE, CmsSitemapView.getInstance().getEditorMode().toString());
         FormElement form = CmsDomUtil.generateHiddenForm(
             CmsCoreProvider.get().link(CmsCoreProvider.get().getUri()),
             Method.post,
