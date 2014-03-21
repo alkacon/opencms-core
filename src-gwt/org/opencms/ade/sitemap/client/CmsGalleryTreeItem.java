@@ -34,11 +34,17 @@ import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.property.CmsClientProperty;
+import org.opencms.util.CmsUUID;
+
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Tree item for the gallery view.<p>
  */
 public class CmsGalleryTreeItem extends CmsTreeItem {
+
+    /** The folder entry id. */
+    private CmsUUID m_entryId;
 
     /**
      * Constructor.<p>
@@ -48,6 +54,7 @@ public class CmsGalleryTreeItem extends CmsTreeItem {
     public CmsGalleryTreeItem(CmsGalleryFolderEntry galleryFolder) {
 
         super(true, createListWidget(galleryFolder));
+        m_entryId = galleryFolder.getStructureId();
     }
 
     /**
@@ -92,5 +99,56 @@ public class CmsGalleryTreeItem extends CmsTreeItem {
         CmsListItemWidget result = new CmsListItemWidget(infoBean);
         result.setIcon(CmsIconUtil.getResourceIconClasses(galleryType.getTypeName(), null, false));
         return result;
+    }
+
+    /**
+     * Returns the folder entry id.<p>
+     * 
+     * @return the folder entry id
+     */
+    public CmsUUID getEntryId() {
+
+        return m_entryId;
+    }
+
+    /**
+     * Returns the site path.<p>
+     * 
+     * @return the site path
+     */
+    public String getSitePath() {
+
+        // the site path is displayed as the sub title
+        return getListItemWidget().getSubtitleLabel();
+    }
+
+    /**
+     * Updates the site path info.<p>
+     * 
+     * @param sitePath the new site path
+     */
+    public void updateSitePath(String sitePath) {
+
+        String oldPath = getSitePath();
+        getListItemWidget().setSubtitleLabel(sitePath);
+        for (Widget child : getChildren()) {
+            ((CmsGalleryTreeItem)child).updateParentPath(sitePath, oldPath);
+        }
+    }
+
+    /**
+     * Updates the site path info.<p>
+     * 
+     * @param newParentPath the new parent path
+     * @param oldParentPath the previous parent path
+     */
+    private void updateParentPath(String newParentPath, String oldParentPath) {
+
+        String oldPath = getSitePath();
+        String newPath = oldPath.replaceFirst(oldParentPath, newParentPath);
+        getListItemWidget().setSubtitleLabel(newPath);
+        for (Widget child : getChildren()) {
+            ((CmsGalleryTreeItem)child).updateParentPath(newPath, oldPath);
+        }
     }
 }

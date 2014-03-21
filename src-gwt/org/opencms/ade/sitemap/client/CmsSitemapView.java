@@ -53,11 +53,13 @@ import org.opencms.gwt.client.CmsPingTimer;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.CmsInfoHeader;
+import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsListItemWidget.Background;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
+import org.opencms.gwt.client.ui.I_CmsListItem;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
 import org.opencms.gwt.client.ui.tree.CmsTree;
@@ -77,8 +79,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -86,6 +90,7 @@ import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -664,6 +669,13 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         page.add(m_tree);
 
         m_galleryTree = new CmsTree<CmsGalleryTreeItem>();
+        m_galleryTree.addOpenHandler(new OpenHandler<CmsGalleryTreeItem>() {
+
+            public void onOpen(OpenEvent<CmsGalleryTreeItem> event) {
+
+                ensureEntriesLoaded(event.getTarget());
+            }
+        });
         m_galleryTreeItems = new HashMap<CmsUUID, CmsGalleryTreeItem>();
         m_galleryTypeItems = new HashMap<String, CmsGalleryTreeItem>();
         page.add(m_galleryTree);
@@ -756,6 +768,27 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         for (CmsClientSitemapEntry entry : entries.values()) {
             CmsSitemapTreeItem item = CmsSitemapTreeItem.getItemById(entry.getId());
             item.updateEntry(entry);
+        }
+    }
+
+    /**
+     * Makes sure corresponding sitemap entries are loaded when the gallery tree is opened.<p>
+     *  
+     * @param parent the parent gallery tree item
+     */
+    protected void ensureEntriesLoaded(CmsGalleryTreeItem parent) {
+
+        CmsList<? extends I_CmsListItem> children = parent.getChildren();
+        Set<String> parentPaths = new HashSet<String>();
+        for (Widget listItem : children) {
+            CmsGalleryTreeItem treeItem = (CmsGalleryTreeItem)listItem;
+            CmsUUID entryId = treeItem.getEntryId();
+            if (m_controller.getEntryById(entryId) == null) {
+                parentPaths.add(CmsResource.getParentFolder(treeItem.getSitePath()));
+            }
+        }
+        for (String parentPath : parentPaths) {
+            m_controller.loadPath(parentPath);
         }
     }
 
@@ -860,10 +893,10 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
                             widget.setTitleLabel(mod.getValue());
                         }
                     }
-                    String oldPath = widget.getSubtitleLabel();
+                    String oldPath = changeItem.getSitePath();
                     if (!oldPath.endsWith("/" + change.getName())) {
                         String newPath = CmsResource.getParentFolder(oldPath) + change.getName() + "/";
-                        widget.setSubtitleLabel(newPath);
+                        changeItem.updateSitePath(newPath);
                     }
 
                 }
