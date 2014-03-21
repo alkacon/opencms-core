@@ -27,6 +27,7 @@
 
 package org.opencms.ade.sitemap.client;
 
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsGalleryFolderEntry;
 import org.opencms.ade.sitemap.shared.CmsGalleryType;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
@@ -43,6 +44,41 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class CmsGalleryTreeItem extends CmsTreeItem {
 
+    /**
+     * List item widget that displays additional infos dynamically.<p>
+     */
+    protected class CmsGalleryListItemWidget extends CmsListItemWidget {
+
+        /**
+         * Constructor.<p>
+         * 
+         * @param infoBean the data to display
+         */
+        public CmsGalleryListItemWidget(CmsListInfoBean infoBean) {
+
+            super(infoBean);
+            ensureOpenCloseAdditionalInfo();
+        }
+
+        /**
+         * @see org.opencms.gwt.client.ui.CmsListItemWidget#setAdditionalInfoVisible(boolean)
+         */
+        @Override
+        public void setAdditionalInfoVisible(boolean visible) {
+
+            if (visible && !m_openClose.isDown()) {
+                CmsClientSitemapEntry entry = CmsSitemapView.getInstance().getController().getEntryById(getEntryId());
+                if (entry != null) {
+                    initAdditionalInfo(CmsSitemapTreeItem.getInfoBean(entry, false));
+                } else {
+                    return;
+                }
+            }
+            super.setAdditionalInfoVisible(visible);
+        }
+
+    }
+
     /** The folder entry id. */
     private CmsUUID m_entryId;
 
@@ -53,7 +89,8 @@ public class CmsGalleryTreeItem extends CmsTreeItem {
      */
     public CmsGalleryTreeItem(CmsGalleryFolderEntry galleryFolder) {
 
-        super(true, createListWidget(galleryFolder));
+        super(true);
+        initContent(createListWidget(galleryFolder));
         m_entryId = galleryFolder.getStructureId();
     }
 
@@ -64,41 +101,8 @@ public class CmsGalleryTreeItem extends CmsTreeItem {
      */
     public CmsGalleryTreeItem(CmsGalleryType galleryType) {
 
-        super(true, createListWidget(galleryType));
-    }
-
-    /**
-     * Creates the list item widget for the given folder.<p>
-     * 
-     * @param galleryFolder the gallery folder
-     * 
-     * @return the list item widget
-     */
-    private static CmsListItemWidget createListWidget(CmsGalleryFolderEntry galleryFolder) {
-
-        String title = galleryFolder.getOwnProperties().get(CmsClientProperty.PROPERTY_TITLE).getStructureValue();
-        CmsListInfoBean infoBean = new CmsListInfoBean(title, galleryFolder.getSitePath(), null);
-        CmsListItemWidget result = new CmsListItemWidget(infoBean);
-        result.setIcon(CmsIconUtil.getResourceIconClasses(
-            galleryFolder.getResourceType(),
-            galleryFolder.getSitePath(),
-            false));
-        return result;
-    }
-
-    /**
-     * Creates the list item widget for the given type.<p>
-     * 
-     * @param galleryType the gallery type
-     * 
-     * @return the list item widget
-     */
-    private static CmsListItemWidget createListWidget(CmsGalleryType galleryType) {
-
-        CmsListInfoBean infoBean = new CmsListInfoBean(galleryType.getNiceName(), galleryType.getDescription(), null);
-        CmsListItemWidget result = new CmsListItemWidget(infoBean);
-        result.setIcon(CmsIconUtil.getResourceIconClasses(galleryType.getTypeName(), null, false));
-        return result;
+        super(true);
+        initContent(createListWidget(galleryType));
     }
 
     /**
@@ -134,6 +138,40 @@ public class CmsGalleryTreeItem extends CmsTreeItem {
         for (Widget child : getChildren()) {
             ((CmsGalleryTreeItem)child).updateParentPath(sitePath, oldPath);
         }
+    }
+
+    /**
+     * Creates the list item widget for the given folder.<p>
+     * 
+     * @param galleryFolder the gallery folder
+     * 
+     * @return the list item widget
+     */
+    private CmsListItemWidget createListWidget(CmsGalleryFolderEntry galleryFolder) {
+
+        String title = galleryFolder.getOwnProperties().get(CmsClientProperty.PROPERTY_TITLE).getStructureValue();
+        CmsListInfoBean infoBean = new CmsListInfoBean(title, galleryFolder.getSitePath(), null);
+        CmsListItemWidget result = new CmsGalleryListItemWidget(infoBean);
+        result.setIcon(CmsIconUtil.getResourceIconClasses(
+            galleryFolder.getResourceType(),
+            galleryFolder.getSitePath(),
+            false));
+        return result;
+    }
+
+    /**
+     * Creates the list item widget for the given type.<p>
+     * 
+     * @param galleryType the gallery type
+     * 
+     * @return the list item widget
+     */
+    private CmsListItemWidget createListWidget(CmsGalleryType galleryType) {
+
+        CmsListInfoBean infoBean = new CmsListInfoBean(galleryType.getNiceName(), galleryType.getDescription(), null);
+        CmsListItemWidget result = new CmsListItemWidget(infoBean);
+        result.setIcon(CmsIconUtil.getResourceIconClasses(galleryType.getTypeName(), null, false));
+        return result;
     }
 
     /**

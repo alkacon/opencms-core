@@ -311,8 +311,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
             m_controller.loadPath(parent);
         }
         CmsGalleryTreeItem typeItem = m_galleryTypeItems.get(galleryFolder.getResourceType());
-        CmsGalleryTreeItem folderItem = new CmsGalleryTreeItem(galleryFolder);
-        CmsSitemapHoverbar.installOn(m_controller, folderItem, galleryFolder.getStructureId());
+        CmsGalleryTreeItem folderItem = createGalleryFolderItem(galleryFolder);
         if ((parentItem != null) && m_galleryTreeItems.containsKey(parentItem.getEntryId())) {
             CmsGalleryTreeItem galleryParent = m_galleryTreeItems.get(parentItem.getEntryId());
             galleryParent.addChild(folderItem);
@@ -843,8 +842,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
     private void addGalleryEntries(CmsGalleryTreeItem parent, List<CmsGalleryFolderEntry> galleries) {
 
         for (CmsGalleryFolderEntry galleryFolder : galleries) {
-            CmsGalleryTreeItem folderItem = new CmsGalleryTreeItem(galleryFolder);
-            CmsSitemapHoverbar.installOn(m_controller, folderItem, galleryFolder.getStructureId());
+            CmsGalleryTreeItem folderItem = createGalleryFolderItem(galleryFolder);
             parent.addChild(folderItem);
             m_galleryTreeItems.put(galleryFolder.getStructureId(), folderItem);
             addGalleryEntries(folderItem, galleryFolder.getSubGalleries());
@@ -907,6 +905,20 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
             default:
                 // nothing to do    
         }
+    }
+
+    /**
+     * Create a gallery folder tree item.<p>
+     * 
+     * @param galleryFolder the gallery folder
+     * 
+     * @return the tree item
+     */
+    private CmsGalleryTreeItem createGalleryFolderItem(CmsGalleryFolderEntry galleryFolder) {
+
+        CmsGalleryTreeItem folderItem = new CmsGalleryTreeItem(galleryFolder);
+        CmsSitemapHoverbar.installOn(m_controller, folderItem, galleryFolder.getStructureId());
+        return folderItem;
     }
 
     /**
