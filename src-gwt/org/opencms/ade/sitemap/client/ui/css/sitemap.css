@@ -34,15 +34,13 @@ div.page{
 	overflow: hidden;
 }
 .inputLabel{
-	font-weight: bold;
 	vertical-align: middle;
 	width: 150px;
+	float: left;
+	padding-top: 5px;
 }
 .inputBox{
 	vertical-align: middle;
-	width: 300px;
-}
-
-.inputBox, .inputLabel{
-	display: inline-block;
+	width: 350px;
+	float: right;
 }

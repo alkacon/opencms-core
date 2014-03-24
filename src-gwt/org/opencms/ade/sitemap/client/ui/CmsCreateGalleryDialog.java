@@ -29,16 +29,21 @@ package org.opencms.ade.sitemap.client.ui;
 
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapLayoutBundle;
+import org.opencms.ade.sitemap.shared.CmsGalleryType;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonColor;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
+import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
+import org.opencms.gwt.client.ui.input.form.CmsFieldsetFormFieldPanel;
+import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -51,11 +56,17 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class CmsCreateGalleryDialog extends CmsPopup {
 
+    /** The dialog width. */
+    private static final int DIALOG_WIDTH = 530;
+
+    /** The text metrics key. */
+    private static final String METRICS_KEY = "CREATE_NEW_GALLERY_DIALOG";
+
     /** The controller. */
     private CmsSitemapController m_controller;
 
     /** The dialog content panel. */
-    private FlowPanel m_dialogContent;
+    private CmsFieldsetFormFieldPanel m_dialogContent;
 
     /** The folder name input. */
     private CmsTextBox m_folderNameInput;
@@ -82,14 +93,18 @@ public class CmsCreateGalleryDialog extends CmsPopup {
     public CmsCreateGalleryDialog(CmsSitemapController controller, int resourceTypeId, CmsUUID parentId) {
 
         super(org.opencms.ade.sitemap.client.Messages.get().key(
-            org.opencms.ade.sitemap.client.Messages.GUI_GALLERIES_CREATE_DIALOG_TITLE_1,
-            controller.getGalleryType(new Integer(resourceTypeId)).getNiceName()), 465);
+            org.opencms.ade.sitemap.client.Messages.GUI_GALLERIES_CREATE_0), DIALOG_WIDTH);
         m_resourceTypeId = resourceTypeId;
         m_parentId = parentId;
         m_controller = controller;
-        m_dialogContent = new FlowPanel();
+        CmsGalleryType type = m_controller.getGalleryType(new Integer(resourceTypeId));
+        CmsListInfoBean listInfo = new CmsListInfoBean(type.getNiceName(), type.getDescription(), null);
+        listInfo.setResourceType(type.getTypeName());
+        m_dialogContent = new CmsFieldsetFormFieldPanel(listInfo, null);
+        m_dialogContent.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().highTextBoxes());
+        m_dialogContent.getFieldSet().setOpenerVisible(false);
+        m_dialogContent.getFieldSet().getElement().getStyle().setMarginTop(4, Style.Unit.PX);
         setMainContent(m_dialogContent);
-
         m_folderNameInput = new CmsTextBox();
         m_folderNameInput.setTriggerChangeOnKeyPress(true);
         m_folderNameInput.addValueChangeHandler(new ValueChangeHandler<String>() {
@@ -142,6 +157,7 @@ public class CmsCreateGalleryDialog extends CmsPopup {
         });
         addButton(m_okButton);
         setOkEnabled(false);
+        m_dialogContent.truncate(METRICS_KEY, DIALOG_WIDTH - 20);
     }
 
     /**
@@ -187,7 +203,7 @@ public class CmsCreateGalleryDialog extends CmsPopup {
         row.add(labelWidget);
         inputWidget.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapCss().inputBox());
         row.add(inputWidget);
-        m_dialogContent.add(row);
+        m_dialogContent.getFieldSet().add(row);
     }
 
 }

@@ -238,9 +238,6 @@ public final class Messages {
     public static final String GUI_GALLERIES_CREATE_0 = "GUI_GALLERIES_CREATE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_GALLERIES_CREATE_DIALOG_TITLE_1 = "GUI_GALLERIES_CREATE_DIALOG_TITLE_1";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERIES_LABEL_FOLDER_NAME_0 = "GUI_GALLERIES_LABEL_FOLDER_NAME_0";
 
     /** Message constant for key in the resource bundle. */
