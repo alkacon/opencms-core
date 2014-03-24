@@ -106,6 +106,9 @@ public final class Messages {
     public static final String GUI_CLOSE_0 = "GUI_CLOSE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CONFIRM_REVERT_TITLE_0 = "GUI_CONFIRM_REVERT_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CREATE_MODE_ASK_0 = "GUI_CREATE_MODE_ASK_0";
 
     /** Message constant for key in the resource bundle. */
@@ -242,6 +245,36 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERY_SELECT_DIALOG_TITLE_0 = "GUI_GALLERY_SELECT_DIALOG_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_COLUMN_PATH_0 = "GUI_HISTORY_COLUMN_PATH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_DIALOG_TEXT_0 = "GUI_HISTORY_DIALOG_TEXT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_DIALOG_TITLE_0 = "GUI_HISTORY_DIALOG_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_MODIFICATION_DATE_0 = "GUI_HISTORY_MODIFICATION_DATE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_MODIFICATION_USER_0 = "GUI_HISTORY_MODIFICATION_USER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_NO_VERSIONS_0 = "GUI_HISTORY_NO_VERSIONS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_PREVIEW_HELP_0 = "GUI_HISTORY_PREVIEW_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_PUBLISH_DATE_0 = "GUI_HISTORY_PUBLISH_DATE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_REVERT_CONFIRMATION_0 = "GUI_HISTORY_REVERT_CONFIRMATION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_REVERT_HELP_0 = "GUI_HISTORY_REVERT_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ICON_TITLE_EXPORT_0 = "GUI_ICON_TITLE_EXPORT_0";

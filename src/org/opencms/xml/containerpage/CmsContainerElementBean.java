@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,7 +51,7 @@ import java.util.Map;
 
 /**
  * One element of a container in a container page.<p>
- * 
+ *
  * @since 8.0
  */
 public class CmsContainerElementBean implements Cloneable {
@@ -93,8 +93,8 @@ public class CmsContainerElementBean implements Cloneable {
     private boolean m_temporaryContent;
 
     /**
-     * Creates a new container page element bean.<p> 
-     *  
+     * Creates a new container page element bean.<p>
+     *
      * @param elementId the element's structure id
      * @param formatterId the formatter's structure id, could be <code>null</code>
      * @param individualSettings the element settings as a map of name/value pairs
@@ -123,7 +123,7 @@ public class CmsContainerElementBean implements Cloneable {
 
     /**
      * Cloning constructor.<p>
-     * 
+     *
      * @param createNew create new flag
      * @param elementId element id
      * @param formatterId formatter id
@@ -164,10 +164,10 @@ public class CmsContainerElementBean implements Cloneable {
 
     /**
      * Clones the given element bean with a different set of settings.<p>
-     * 
+     *
      * @param source the element to clone
      * @param settings the new settings
-     * 
+     *
      * @return the element bean
      */
     public static CmsContainerElementBean cloneWithSettings(CmsContainerElementBean source, Map<String, String> settings) {
@@ -195,15 +195,15 @@ public class CmsContainerElementBean implements Cloneable {
     /**
      * Creates an element bean for the given resource type.<p>
      * <b>The represented resource will be in memory only and not in the VFS!!!.</b><p>
-     * 
-     * @param cms the CMS context 
+     *
+     * @param cms the CMS context
      * @param resourceType the resource type
      * @param targetFolder the parent folder of the resource
      * @param individualSettings the element settings as a map of name/value pairs
      * @param locale the locale to use
-     * 
+     *
      * @return the created element bean
-     * @throws CmsException 
+     * @throws CmsException
      * @throws IllegalArgumentException if the resource type not instance of {@link org.opencms.file.types.CmsResourceTypeXmlContent}
      */
     public static CmsContainerElementBean createElementForResourceType(
@@ -226,7 +226,7 @@ public class CmsContainerElementBean implements Cloneable {
         byte[] content = new byte[0];
         String schema = ((CmsResourceTypeXmlContent)resourceType).getSchema();
         if (schema != null) {
-            // must set URI of OpenCms user context to parent folder of created resource, 
+            // must set URI of OpenCms user context to parent folder of created resource,
             // in order to allow reading of properties for default values
             CmsObject newCms = OpenCms.initCmsObject(cms);
             newCms.getRequestContext().setUri(targetFolder);
@@ -290,7 +290,7 @@ public class CmsContainerElementBean implements Cloneable {
 
     /**
      * Returns the ADE client editor has value.<p>
-     * 
+     *
      * @return the ADE client editor has value
      */
     public String editorHash() {
@@ -332,7 +332,7 @@ public class CmsContainerElementBean implements Cloneable {
 
     /**
      * Returns the settings of this element.<p>
-     * 
+     *
      * @return the settings of this element
      */
     public Map<String, String> getIndividualSettings() {
@@ -342,7 +342,7 @@ public class CmsContainerElementBean implements Cloneable {
 
     /**
      * Returns the inheritance info.<p>
-     * 
+     *
      * @return the inheritance info or <code>null</code> if not available
      */
     public CmsInheritanceInfo getInheritanceInfo() {
@@ -352,11 +352,11 @@ public class CmsContainerElementBean implements Cloneable {
 
     /**
      * Returns the resource of this element.<p>
-     * 
+     *
      * It is required to call {@link #initResource(CmsObject)} before this method can be used.<p>
-     * 
+     *
      * @return the resource of this element
-     * 
+     *
      * @see #initResource(CmsObject)
      */
     public CmsResource getResource() {
@@ -367,7 +367,7 @@ public class CmsContainerElementBean implements Cloneable {
     /**
      * Returns the element settings including default values for settings not set.<p>
      * Will return <code>null</code> if the element bean has not been initialized with {@link #initResource(org.opencms.file.CmsObject)}.<p>
-     * 
+     *
      * @return the element settings
      */
     public Map<String, String> getSettings() {
@@ -377,11 +377,11 @@ public class CmsContainerElementBean implements Cloneable {
 
     /**
      * Returns the site path of the resource of this element.<p>
-     * 
+     *
      * It is required to call {@link #initResource(CmsObject)} before this method can be used.<p>
-     * 
+     *
      * @return the site path of the resource of this element
-     * 
+     *
      * @see #initResource(CmsObject)
      */
     public String getSitePath() {
@@ -400,9 +400,9 @@ public class CmsContainerElementBean implements Cloneable {
 
     /**
      * Initializes the resource and the site path of this element.<p>
-     * 
-     * @param cms the CMS context 
-     * 
+     *
+     * @param cms the CMS context
+     *
      * @throws CmsException if something goes wrong reading the element resource
      */
     public void initResource(CmsObject cms) throws CmsException {
@@ -428,7 +428,7 @@ public class CmsContainerElementBean implements Cloneable {
 
     /**
      * Returns if a new element should be created replacing the given one on first edit of a container-page.<p>
-     * 
+     *
      * @return <code>true</code> if a new element should be created replacing the given one on first edit of a container-page
      */
     public boolean isCreateNew() {
@@ -438,12 +438,12 @@ public class CmsContainerElementBean implements Cloneable {
 
     /**
      * Tests whether this element refers to a group container.<p>
-     * 
+     *
      * @param cms the CmsObject used for VFS operations
-     *  
+     *
      * @return <code>true</code> if the container element refers to a group container
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public boolean isGroupContainer(CmsObject cms) throws CmsException {
 
@@ -456,12 +456,12 @@ public class CmsContainerElementBean implements Cloneable {
 
     /**
      * Returns whether this element refers to an inherited container element.<p>
-     *  
+     *
      * @param cms the CmsObject used for VFS operations
-     * 
+     *
      * @return <code>true</code> if the container element refers to an inherited container
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public boolean isInheritedContainer(CmsObject cms) throws CmsException {
 
@@ -473,7 +473,7 @@ public class CmsContainerElementBean implements Cloneable {
 
     /**
      * Returns if the represented resource is in memory only and not persisted in the VFS.<p>
-     * 
+     *
      * @return <code>true</code> if the represented resource is in memory only and not persisted in the VFS
      */
     public boolean isInMemoryOnly() {
@@ -483,7 +483,7 @@ public class CmsContainerElementBean implements Cloneable {
 
     /**
      * Returns if the element resource is released and not expired.<p>
-     * 
+     *
      * @return <code>true</code> if the element resource is released and not expired
      */
     public boolean isReleasedAndNotExpired() {
@@ -493,7 +493,7 @@ public class CmsContainerElementBean implements Cloneable {
 
     /**
      * Returns if the element resource contains temporary file content.<p>
-     * 
+     *
      * @return <code>true</code> if the element resource contains temporary file content
      */
     public boolean isTemporaryContent() {
@@ -502,18 +502,8 @@ public class CmsContainerElementBean implements Cloneable {
     }
 
     /**
-     * Sets the inheritance info for this element.<p>
-     * 
-     * @param inheritanceInfo the inheritance info
-     */
-    public void setInheritanceInfo(CmsInheritanceInfo inheritanceInfo) {
-
-        m_inheritanceInfo = inheritanceInfo;
-    }
-
-    /**
      * Sets the formatter id.<p>
-     * 
+     *
      * @param formatterId the formatter id
      */
     public void setFormatterId(CmsUUID formatterId) {
@@ -522,8 +512,29 @@ public class CmsContainerElementBean implements Cloneable {
     }
 
     /**
-     * Sets the element resource as a temporary file.<p>
+     * Sets a historical file.<p>
      * 
+     * @param file the historical file 
+     */
+    public void setHistoryFile(CmsFile file) {
+
+        m_resource = file;
+        m_inMemoryOnly = true;
+    }
+
+    /**
+     * Sets the inheritance info for this element.<p>
+     *
+     * @param inheritanceInfo the inheritance info
+     */
+    public void setInheritanceInfo(CmsInheritanceInfo inheritanceInfo) {
+
+        m_inheritanceInfo = inheritanceInfo;
+    }
+
+    /**
+     * Sets the element resource as a temporary file.<p>
+     *
      * @param elementFile the temporary file
      */
     public void setTemporaryFile(CmsFile elementFile) {
@@ -543,8 +554,8 @@ public class CmsContainerElementBean implements Cloneable {
 
     /**
      * Gets the hash code for the element settings.<p>
-     * 
-     * @return the hash code for the element settings 
+     *
+     * @return the hash code for the element settings
      */
     private String getSettingsHash() {
 

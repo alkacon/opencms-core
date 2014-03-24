@@ -137,6 +137,38 @@
 	vertical-align: middle;
 }
 
+@sprite .tablePreviewIcon:hover {
+	gwt-image: "icons.previewIconActive";
+	display: inline-block;
+	vertical-align: middle;
+	cursor: pointer;
+}
+
+@sprite .tablePreviewIcon {
+	gwt-image: "icons.previewIconDeactivated";
+	display: inline-block;
+	vertical-align: middle;
+	cursor: pointer;
+}
+
+@sprite .tableReplaceIcon {
+	gwt-image: "icons.replaceIconDeactivated";
+	display: inline-block;
+	vertical-align: middle;
+	cursor: pointer;
+}
+
+@sprite .tableReplaceIcon:hover {
+	gwt-image: "icons.replaceIcon";
+	display: inline-block;
+	vertical-align: middle;
+	cursor: pointer;
+}
+
+
+
+
+
 @sprite .cmsState-up .checkIcon, .cmsState-down-disabled .checkIcon, .cmsState-up-disabled .checkIcon {
 	gwt-image: "icons.checkIconDeactivated";
 	display: inline-block;
@@ -245,15 +277,15 @@
 }
 
 @sprite div.warningIcon, span.warningIcon{
-	gwt-image: "warningSmallImage"; 
+	gwt-image: "warningSmallImage";
 }
 
 @sprite table tr td.warningBigIcon, div.warningBigIcon, span.warningBigIcon{
-	gwt-image: "warningBigImage"; 
+	gwt-image: "warningBigImage";
 }
 
 @sprite div.directoryIcon, span.directoryIcon{
-	gwt-image: "directorySmallImage"; 
+	gwt-image: "directorySmallImage";
 }
 
 @sprite div.imageSearchIcon, span.imageSearchIcon{

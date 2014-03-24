@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,26 +42,26 @@ import java.util.RandomAccess;
 
 /**
  * Represents a property (meta-information) mapped to a VFS resource.<p>
- * 
+ *
  * A property is an object that contains three string values: a name, a property value which is mapped
  * to the structure record of a resource, and a property value which is mapped to the resource
  * record of a resource. A property object is valid if it has both values or just one value set.
  * Each property needs at least a name and one value set.<p>
- * 
+ *
  * A property value mapped to the structure record of a resource is significant for a single
  * resource (sibling). A property value mapped to the resource record of a resource is significant
- * for all siblings of a resource record. This is possible by getting the "compound value" 
- * (see {@link #getValue()}) of a property in case a property object has both values set. The compound 
- * value of a property object is the value mapped to the structure record, because it's structure 
- * value is more significant than it's resource value. This allows to set a property only one time 
+ * for all siblings of a resource record. This is possible by getting the "compound value"
+ * (see {@link #getValue()}) of a property in case a property object has both values set. The compound
+ * value of a property object is the value mapped to the structure record, because it's structure
+ * value is more significant than it's resource value. This allows to set a property only one time
  * on the resource record, and the property takes effect on all siblings of this resource record.<p>
- * 
- * The ID of the structure or resource record where a property value is mapped to is represented by 
- * the "PROPERTY_MAPPING_ID" table attribute in the database. The "PROPERTY_MAPPING_TYPE" table 
+ *
+ * The ID of the structure or resource record where a property value is mapped to is represented by
+ * the "PROPERTY_MAPPING_ID" table attribute in the database. The "PROPERTY_MAPPING_TYPE" table
  * attribute (see {@link #STRUCTURE_RECORD_MAPPING} and {@link #RESOURCE_RECORD_MAPPING})
  * determines whether the value of the "PROPERTY_MAPPING_ID" attribute of the current row is
  * a structure or resource record ID.<p>
- * 
+ *
  * Property objects are written to the database using {@link org.opencms.file.CmsObject#writePropertyObject(String, CmsProperty)}
  * or {@link org.opencms.file.CmsObject#writePropertyObjects(String, List)}, no matter
  * whether you want to save a new (non-existing) property, update an existing property, or delete an
@@ -71,7 +71,7 @@ import java.util.RandomAccess;
  * remain unchanged in the database when a property object is written. As for example you want to
  * update just the structure value of a property, you would set the structure value to the new string,
  * and the resource value to null (which is already the case by default).<p>
- * 
+ *
  * Use {@link #setAutoCreatePropertyDefinition(boolean)} to set a boolean flag whether a missing property
  * definition should be created implicitly for a resource type when a property is written to the database.
  * The default value for this flag is <code>false</code>. Thus, you receive a CmsException if you try
@@ -79,8 +79,8 @@ import java.util.RandomAccess;
  * this resource type. It is not a good style to set {@link #setAutoCreatePropertyDefinition(boolean)}
  * on true to make writing properties to the database work in any case, because then you will loose
  * control about which resource types support which property definitions.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsProperty implements Serializable, Cloneable, Comparable<CmsProperty> {
 
@@ -145,7 +145,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
     private static final long serialVersionUID = 93613508924212782L;
 
     /**
-     * Boolean flag to decide if the property definition for this property should be created 
+     * Boolean flag to decide if the property definition for this property should be created
      * implicitly on any write operation if doesn't exist already.<p>
      */
     private boolean m_autoCreatePropertyDefinition;
@@ -190,13 +190,13 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Creates a new CmsProperty object using the provided values.<p>
-     *
+     * 
      * If the property definition does not exist for the resource type it
      * is automatically created when this property is written.
      * 
      * @param name the name of the property definition
      * @param structureValue the value to write as structure property
-     * @param resourceValue the value to write as resource property 
+     * @param resourceValue the value to write as resource property
      */
     public CmsProperty(String name, String structureValue, String resourceValue) {
 
@@ -206,13 +206,13 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
     /**
      * Creates a new CmsProperty object using the provided values.<p>
      * 
-     * If <code>null</code> is supplied for the resource or structure value, this 
+     * If <code>null</code> is supplied for the resource or structure value, this
      * value will not be available for this property.<p>
      * 
      * @param name the name of the property definition
      * @param structureValue the value to write as structure property, or <code>null</code>
      * @param resourceValue the value to write as resource property , or <code>null</code>
-     * @param autoCreatePropertyDefinition if <code>true</code>, the property definition for this property will be 
+     * @param autoCreatePropertyDefinition if <code>true</code>, the property definition for this property will be
      *      created implicitly on any write operation if it doesn't exist already
      */
     public CmsProperty(String name, String structureValue, String resourceValue, boolean autoCreatePropertyDefinition) {
@@ -233,14 +233,14 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
     }
 
     /**
-     * Searches in a list for the first occurrence of a {@link CmsProperty} object with the given name.<p> 
-     *
-     * To check if the "null property" has been returned if a property was 
-     * not found, use {@link #isNullProperty()} on the result.<p> 
-     *
+     * Searches in a list for the first occurrence of a {@link CmsProperty} object with the given name.<p>
+     * 
+     * To check if the "null property" has been returned if a property was
+     * not found, use {@link #isNullProperty()} on the result.<p>
+     * 
      * @param name a property name
      * @param list a list of {@link CmsProperty} objects
-     * @return the index of the first occurrence of the name in they specified list, 
+     * @return the index of the first occurrence of the name in they specified list,
      *      or {@link CmsProperty#getNullProperty()} if the name is not found
      */
     public static final CmsProperty get(String name, List<CmsProperty> list) {
@@ -350,7 +350,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
     }
 
     /**
-     * Transforms a Map of String values into a list of 
+     * Transforms a Map of String values into a list of
      * {@link CmsProperty} objects with the property name set from the
      * Map key, and the structure value set from the Map value.<p>
      * 
@@ -419,9 +419,9 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
     /**
      * Stores a collection of properties in a map, with the property names as keys.<p>
      * 
-     * @param properties the properties to store in the map 
+     * @param properties the properties to store in the map
      * 
-     * @return the map with the property names as keys and the property objects as values 
+     * @return the map with the property names as keys and the property objects as values
      */
     public static Map<String, CmsProperty> toObjectMap(Iterable<CmsProperty> properties) {
 
@@ -432,8 +432,24 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
         return result;
     }
 
+    /** 
+     * Wraps a null value into a null property, and returns all other values unchanged.<p>
+     * 
+     * @param prop the value to wrap
+     *  
+     * @return a wrapped null property, or the original prop if it wasn't null 
+     */
+    public static CmsProperty wrapIfNull(CmsProperty prop) {
+
+        if (prop == null) {
+            return getNullProperty();
+        } else {
+            return prop;
+        }
+    }
+
     /**
-     * Checks if the property definition for this property will be 
+     * Checks if the property definition for this property will be
      * created implicitly on any write operation if doesn't already exist.<p>
      * 
      * @return <code>true</code>, if the property definition for this property will be created implicitly on any write operation
@@ -445,7 +461,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Creates a clone of this property.<p>
-     *  
+     * 
      * @return a clone of this property
      * 
      * @see #cloneAsProperty()
@@ -486,9 +502,9 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
      * Compares this property to another Object.<p>
      * 
      * @param obj the other object to be compared
-     * @return if the argument is a property object, returns zero if the name of the argument is equal to the name of this property object, 
-     *      a value less than zero if the name of this property is lexicographically less than the name of the argument, 
-     *      or a value greater than zero if the name of this property is lexicographically greater than the name of the argument 
+     * @return if the argument is a property object, returns zero if the name of the argument is equal to the name of this property object,
+     *      a value less than zero if the name of this property is lexicographically less than the name of the argument,
+     *      or a value greater than zero if the name of this property is lexicographically greater than the name of the argument
      */
     public int compareTo(CmsProperty obj) {
 
@@ -503,7 +519,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
      * 
      * Two property objects are equal if their names are equal.<p>
      * 
-     * In case you want to compare the values as well as the name, 
+     * In case you want to compare the values as well as the name,
      * use {@link #isIdentical(CmsProperty)} instead.<p>
      * 
      * @param obj another object
@@ -660,7 +676,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
      * Returns the compound value of this property, or a specified default value,
      * if both the structure and resource values are null.<p>
      * 
-     * In other words, this method returns the defaultValue if this property object 
+     * In other words, this method returns the defaultValue if this property object
      * is the null property (see {@link CmsProperty#getNullProperty()}).<p>
      * 
      * @param defaultValue a default value which is returned if both the structure and resource values are <code>null</code>
@@ -702,7 +718,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
      * Returns the compound value of this property, split as a list, or a specified default value list,
      * if both the structure and resource values are null.<p>
      * 
-     * In other words, this method returns the defaultValue if this property object 
+     * In other words, this method returns the defaultValue if this property object
      * is the null property (see {@link CmsProperty#getNullProperty()}).<p>
      * 
      * @param defaultValue a default value list which is returned if both the structure and resource values are <code>null</code>
@@ -746,7 +762,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
      * Returns the compound value of this property as a map, or a specified default value map,
      * if both the structure and resource values are null.<p>
      * 
-     * In other words, this method returns the defaultValue if this property object 
+     * In other words, this method returns the defaultValue if this property object
      * is the null property (see {@link CmsProperty#getNullProperty()}).<p>
      * 
      * @param defaultValue a default value map which is returned if both the structure and resource values are <code>null</code>
@@ -770,9 +786,9 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
     /**
      * Returns the hash code of the property, which is based only on the property name, not on the values.<p>
      * 
-     * The resource and structure values are not taken into consideration for the hashcode generation 
+     * The resource and structure values are not taken into consideration for the hashcode generation
      * because the {@link #equals(Object)} implementation also does not take these into consideration.<p>
-     *
+     * 
      * @return the hash code of the property
      * 
      * @see java.lang.Object#hashCode()
@@ -809,7 +825,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Returns <code>true</code> if this property is frozen, that is read only.<p>
-     *
+     * 
      * @return <code>true</code> if this property is frozen, that is read only
      */
     public boolean isFrozen() {
@@ -820,7 +836,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
     /**
      * Tests if a given CmsProperty is identical to this CmsProperty object.<p>
      * 
-     * The property object are identical if their name, structure and 
+     * The property object are identical if their name, structure and
      * resource values are all equals.<p>
      * 
      * @param property another property object
@@ -865,7 +881,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
     }
 
     /**
-     * Sets the boolean flag to decide if the property definition for this property should be 
+     * Sets the boolean flag to decide if the property definition for this property should be
      * created implicitly on any write operation if doesn't exist already.<p>
      * 
      * @param value true, if the property definition for this property should be created implicitly on any write operation
@@ -878,10 +894,10 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Sets the frozen state of the property, if set to <code>true</code> then this property is read only.<p>
-     *
-     * If the property is already frozen, then setting the frozen state to <code>true</code> again is allowed, 
+     * 
+     * If the property is already frozen, then setting the frozen state to <code>true</code> again is allowed,
      * but setting the value to <code>false</code> causes a <code>{@link CmsRuntimeException}</code>.<p>
-     *
+     * 
      * @param frozen the frozen state to set
      */
     public void setFrozen(boolean frozen) {
@@ -1023,7 +1039,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
     }
 
     /**
-     * Sets the value of this property as either shared or 
+     * Sets the value of this property as either shared or
      * individual value.<p>
      * 
      * If the given type equals {@link CmsProperty#TYPE_SHARED} then
@@ -1069,7 +1085,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
     }
 
     /**
-     * Checks if this property is frozen, that is read only.<p> 
+     * Checks if this property is frozen, that is read only.<p>
      */
     private void checkFrozen() {
 
@@ -1228,4 +1244,5 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
         return CmsStringUtil.substitute(value, String.valueOf(delimiter), delimiterReplacement);
     }
+
 }

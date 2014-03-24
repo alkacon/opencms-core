@@ -8,25 +8,25 @@
 	<ui:with field="m" type="org.opencms.gwt.client.ui.resourceinfo.CmsResourceInfoMessages" />
 	<ui:style>
 		.fieldset {
-			margin-top: 10px; 
+			margin-top: 10px;
 			margin-bottom: 5px;
-		  
+
 		}
-		
+
 		.line {
 			margin-top:5px;
 			margin-bottom: 5px;
 		}
-		
+
 		.infobox {
-			margin-top: 2px; 
+			margin-top: 2px;
 		}
-		
+
 		.main {
-			overflow: hidden; 
+			overflow: hidden;
 		}
-		
-		
+
+
 	</ui:style>
 	<g:FlowPanel addStyleNames="{style.main}">
 		<g:SimplePanel addStyleNames="{style.infobox}" ui:field="m_infoBoxContainer"></g:SimplePanel>
@@ -53,4 +53,4 @@
 		</cms:CmsFieldSet>
 	</g:FlowPanel>
 
-</ui:UiBinder> 
+</ui:UiBinder>

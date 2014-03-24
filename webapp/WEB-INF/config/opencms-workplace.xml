@@ -1078,6 +1078,7 @@
 						<entry key="GUI_EXPLORER_CONTEXT_HISTORY_0"
 							uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory"
 							rule="nondeleted" />
+
 						<entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0"
 							uri="/system/modules/org.opencms.ade.properties/pages/properties.jsp"
 							rule="nondeleted" />
@@ -1099,6 +1100,7 @@
 							rule="containerpage-no-different-site" />
 						<entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsRestore" rule="ade-undochanges" />
+						<entry key="GUI_EXPLORER_CONTEXT_ADVANCED_HISTORY_0" name="org.opencms.gwt.client.ui.contextmenu.CmsHistory" rule="containerpage"/>
 						<entry key="GUI_EXPLORER_CONTEXT_SHOW_WORKPLACE_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsShowWorkplace"
 							rule="editprovider" />

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -98,7 +98,7 @@ public class CmsResourceInfoView extends Composite {
 
     }
 
-    /** 
+    /**
      * The uiBinder interface for this widget.<p>
      */
     interface I_CmsResourceInfoViewUiBinder extends UiBinder<Widget, CmsResourceInfoView> {
@@ -210,14 +210,18 @@ public class CmsResourceInfoView extends Composite {
     @UiField
     protected HasText m_userLastModified;
 
+    /** Resource status bean. */
+    private CmsResourceStatusBean m_status;
+
     /**
      * Creates a new widget instance.<p>
-     * 
+     *
      * @param status the resource information to display
      */
     public CmsResourceInfoView(CmsResourceStatusBean status) {
 
         initWidget(uiBinder.createAndBindUi(this));
+        m_status = status;
         CmsListItemWidget infoBox = new CmsListItemWidget(status.getListInfo());
         infoBox.addButton(new CmsContextMenuButton(status.getStructureId(), new ContextMenuHandler()));
         m_infoBoxContainer.add(new CmsListItem(infoBox));
@@ -262,11 +266,11 @@ public class CmsResourceInfoView extends Composite {
 
     /**
      * Helper method to generate the HTML for a span with a CSS class and some text.<p>
-     * 
-     * @param className the CSS class 
+     *
+     * @param className the CSS class
      * @param text the text
-     *  
-     * @return the HTML for the span 
+     *
+     * @return the HTML for the span
      */
     private String makeSpan(String className, String text) {
 
