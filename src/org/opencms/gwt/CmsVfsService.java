@@ -313,6 +313,67 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
+     * Loads the data needed for editing the properties of a resource.<p>
+     * 
+     * @param cms the CMS context 
+     * @param id the structure id of the resource 
+     * @return the data needed for editing the properties 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public static CmsPropertiesBean loadPropertyData(CmsObject cms, CmsUUID id) throws CmsException {
+
+        String originalSiteRoot = cms.getRequestContext().getSiteRoot();
+        CmsPropertiesBean result = new CmsPropertiesBean();
+        CmsResource resource = cms.readResource(id, CmsResourceFilter.IGNORE_EXPIRATION);
+        boolean hasPermissions = cms.hasPermissions(
+            resource,
+            CmsPermissionSet.ACCESS_WRITE,
+            false,
+            CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsLock lock = cms.getLock(resource);
+        boolean lockedByOtherUser = !lock.isUnlocked() && !lock.isOwnedBy(cms.getRequestContext().getCurrentUser());
+        result.setReadOnly(!hasPermissions || lockedByOtherUser);
+        result.setFolder(resource.isFolder());
+        result.setContainerPage(CmsResourceTypeXmlContainerPage.isContainerPage(resource));
+        String sitePath = cms.getSitePath(resource);
+        Map<String, CmsXmlContentProperty> propertyConfig = OpenCms.getADEManager().lookupConfiguration(
+            cms,
+            resource.getRootPath()).getPropertyConfigurationAsMap();
+        Map<String, CmsXmlContentProperty> defaultProperties = internalGetDefaultProperties(
+            cms,
+            Collections.singletonList(resource.getStructureId())).get(resource.getStructureId());
+        Map<String, CmsXmlContentProperty> mergedConfig = new LinkedHashMap<String, CmsXmlContentProperty>();
+        mergedConfig.putAll(defaultProperties);
+        mergedConfig.putAll(propertyConfig);
+        propertyConfig = mergedConfig;
+        result.setPropertyDefinitions(new LinkedHashMap<String, CmsXmlContentProperty>(propertyConfig));
+        try {
+            cms.getRequestContext().setSiteRoot("");
+            String parentPath = CmsResource.getParentFolder(resource.getRootPath());
+            CmsResource parent = cms.readResource(parentPath, CmsResourceFilter.IGNORE_EXPIRATION);
+            List<CmsProperty> parentProperties = cms.readPropertyObjects(parent, true);
+            List<CmsProperty> ownProperties = cms.readPropertyObjects(resource, false);
+            result.setOwnProperties(convertProperties(ownProperties));
+            result.setInheritedProperties(convertProperties(parentProperties));
+            result.setPageInfo(getPageInfo(cms, resource));
+            List<CmsPropertyDefinition> propDefs = cms.readAllPropertyDefinitions();
+            List<String> propNames = new ArrayList<String>();
+            for (CmsPropertyDefinition propDef : propDefs) {
+                propNames.add(propDef.getName());
+            }
+            CmsTemplateFinder templateFinder = new CmsTemplateFinder(cms);
+            result.setTemplates(templateFinder.getTemplates());
+            result.setAllProperties(propNames);
+            result.setStructureId(id);
+            result.setSitePath(sitePath);
+            return result;
+        } finally {
+            cms.getRequestContext().setSiteRoot(originalSiteRoot);
+        }
+    }
+
+    /**
      * Processes a file path, which may have macros in it, so it can be opened by the XML content editor.<p>
      *
      * @param cms the current CMS context
@@ -330,6 +391,82 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         }
         String path = resolver.resolveMacros(pathWithMacros).replaceAll("/+", "/");
         return path;
+    }
+
+    /**
+     * Converts CmsProperty objects to CmsClientProperty objects.<p>
+     * 
+     * @param properties a list of server-side properties 
+     * 
+     * @return a map of client-side properties 
+     */
+    protected static Map<String, CmsClientProperty> convertProperties(List<CmsProperty> properties) {
+
+        Map<String, CmsClientProperty> result = new HashMap<String, CmsClientProperty>();
+        for (CmsProperty prop : properties) {
+            CmsClientProperty clientProp = new CmsClientProperty(
+                prop.getName(),
+                prop.getStructureValue(),
+                prop.getResourceValue());
+            clientProp.setOrigin(prop.getOrigin());
+            result.put(clientProp.getName(), clientProp);
+        }
+        return result;
+    }
+
+    /**
+     * Helper method to get the default property configuration for the given resource type.<p>
+     * 
+     * @param typeName the name of the resource type 
+     * 
+     * @return the default property configuration for the given type 
+     */
+    protected static Map<String, CmsXmlContentProperty> getDefaultPropertiesForType(String typeName) {
+
+        Map<String, CmsXmlContentProperty> propertyConfig = new LinkedHashMap<String, CmsXmlContentProperty>();
+        CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
+        if (explorerType != null) {
+            List<String> defaultProps = explorerType.getProperties();
+            for (String propName : defaultProps) {
+                CmsXmlContentProperty property = new CmsXmlContentProperty(
+                    propName,
+                    "string",
+                    "string",
+                    "",
+                    "",
+                    "",
+                    "",
+                    null,
+                    "",
+                    "",
+                    "false");
+                propertyConfig.put(propName, property);
+            }
+        }
+        return propertyConfig;
+    }
+
+    /**
+     * Internal method for computing the default property configurations for a list of structure ids.<p>
+     * 
+     * @param cms the cms context 
+     * @param structureIds the structure ids for which we want the default property configurations 
+     * @return a map from the given structure ids to their default property configurations 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    protected static Map<CmsUUID, Map<String, CmsXmlContentProperty>> internalGetDefaultProperties(
+        CmsObject cms,
+        List<CmsUUID> structureIds) throws CmsException {
+
+        Map<CmsUUID, Map<String, CmsXmlContentProperty>> result = Maps.newHashMap();
+        for (CmsUUID structureId : structureIds) {
+            CmsResource resource = cms.readResource(structureId, CmsResourceFilter.ALL);
+            String typeName = OpenCms.getResourceManager().getResourceType(resource).getTypeName();
+            Map<String, CmsXmlContentProperty> propertyConfig = getDefaultPropertiesForType(typeName);
+            result.put(structureId, propertyConfig);
+        }
+        return result;
     }
 
     /**
@@ -489,7 +626,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     throws CmsRpcException {
 
         try {
-            return internalGetDefaultProperties(structureIds);
+            return internalGetDefaultProperties(getCmsObject(), structureIds);
         } catch (Throwable e) {
             error(e);
             return null;
@@ -879,7 +1016,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
         CmsObject cms = getCmsObject();
         try {
-            return internalLoadPropertyData(cms, id);
+            return loadPropertyData(cms, id);
         } catch (Throwable e) {
             error(e);
         }
@@ -1080,27 +1217,6 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
-     * Converts CmsProperty objects to CmsClientProperty objects.<p>
-     *
-     * @param properties a list of server-side properties
-     *
-     * @return a map of client-side properties
-     */
-    protected Map<String, CmsClientProperty> convertProperties(List<CmsProperty> properties) {
-
-        Map<String, CmsClientProperty> result = new HashMap<String, CmsClientProperty>();
-        for (CmsProperty prop : properties) {
-            CmsClientProperty clientProp = new CmsClientProperty(
-                prop.getName(),
-                prop.getStructureValue(),
-                prop.getResourceValue());
-            clientProp.setOrigin(prop.getOrigin());
-            result.put(clientProp.getName(), clientProp);
-        }
-        return result;
-    }
-
-    /**
      * Creates a "broken link" bean based on a resource.<p>
      *
      * @param resource the resource
@@ -1119,38 +1235,6 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         String path = cms.getSitePath(resource);
         String subtitle = path;
         return new CmsBrokenLinkBean(title, subtitle, typeName);
-    }
-
-    /**
-     * Helper method to get the default property configuration for the given resource type.<p>
-     *
-     * @param typeName the name of the resource type
-     *
-     * @return the default property configuration for the given type
-     */
-    protected Map<String, CmsXmlContentProperty> getDefaultPropertiesForType(String typeName) {
-
-        Map<String, CmsXmlContentProperty> propertyConfig = new LinkedHashMap<String, CmsXmlContentProperty>();
-        CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
-        if (explorerType != null) {
-            List<String> defaultProps = explorerType.getProperties();
-            for (String propName : defaultProps) {
-                CmsXmlContentProperty property = new CmsXmlContentProperty(
-                    propName,
-                    "string",
-                    "string",
-                    "",
-                    "",
-                    "",
-                    "",
-                    null,
-                    "",
-                    "",
-                    "false");
-                propertyConfig.put(propName, property);
-            }
-        }
-        return propertyConfig;
     }
 
     /**
@@ -1718,66 +1802,6 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             }
         }
         return result;
-    }
-
-    /**
-     * Loads the data needed for editing the properties of a resource.<p>
-     *
-     * @param cms the CMS context
-     * @param id the structure id of the resource
-     * @return the data needed for editing the properties
-     *
-     * @throws CmsException if something goes wrong
-     */
-    private CmsPropertiesBean internalLoadPropertyData(CmsObject cms, CmsUUID id) throws CmsException {
-
-        String originalSiteRoot = cms.getRequestContext().getSiteRoot();
-        CmsPropertiesBean result = new CmsPropertiesBean();
-        CmsResource resource = cms.readResource(id, CmsResourceFilter.IGNORE_EXPIRATION);
-        boolean hasPermissions = cms.hasPermissions(
-            resource,
-            CmsPermissionSet.ACCESS_WRITE,
-            false,
-            CmsResourceFilter.IGNORE_EXPIRATION);
-        CmsLock lock = cms.getLock(resource);
-        boolean lockedByOtherUser = !lock.isUnlocked() && !lock.isOwnedBy(cms.getRequestContext().getCurrentUser());
-        result.setReadOnly(!hasPermissions || lockedByOtherUser);
-        result.setFolder(resource.isFolder());
-        result.setContainerPage(CmsResourceTypeXmlContainerPage.isContainerPage(resource));
-        String sitePath = cms.getSitePath(resource);
-        Map<String, CmsXmlContentProperty> propertyConfig = OpenCms.getADEManager().lookupConfiguration(
-            cms,
-            resource.getRootPath()).getPropertyConfigurationAsMap();
-        Map<String, CmsXmlContentProperty> defaultProperties = internalGetDefaultProperties(
-            Collections.singletonList(resource.getStructureId())).get(resource.getStructureId());
-        Map<String, CmsXmlContentProperty> mergedConfig = new LinkedHashMap<String, CmsXmlContentProperty>();
-        mergedConfig.putAll(defaultProperties);
-        mergedConfig.putAll(propertyConfig);
-        propertyConfig = mergedConfig;
-        result.setPropertyDefinitions(new LinkedHashMap<String, CmsXmlContentProperty>(propertyConfig));
-        try {
-            cms.getRequestContext().setSiteRoot("");
-            String parentPath = CmsResource.getParentFolder(resource.getRootPath());
-            CmsResource parent = cms.readResource(parentPath, CmsResourceFilter.IGNORE_EXPIRATION);
-            List<CmsProperty> parentProperties = cms.readPropertyObjects(parent, true);
-            List<CmsProperty> ownProperties = cms.readPropertyObjects(resource, false);
-            result.setOwnProperties(convertProperties(ownProperties));
-            result.setInheritedProperties(convertProperties(parentProperties));
-            result.setPageInfo(getPageInfo(resource));
-            List<CmsPropertyDefinition> propDefs = cms.readAllPropertyDefinitions();
-            List<String> propNames = new ArrayList<String>();
-            for (CmsPropertyDefinition propDef : propDefs) {
-                propNames.add(propDef.getName());
-            }
-            CmsTemplateFinder templateFinder = new CmsTemplateFinder(cms);
-            result.setTemplates(templateFinder.getTemplates());
-            result.setAllProperties(propNames);
-            result.setStructureId(id);
-            result.setSitePath(sitePath);
-            return result;
-        } finally {
-            cms.getRequestContext().setSiteRoot(originalSiteRoot);
-        }
     }
 
     /**
