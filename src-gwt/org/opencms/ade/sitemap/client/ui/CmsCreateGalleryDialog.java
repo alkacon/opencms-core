@@ -28,7 +28,6 @@
 package org.opencms.ade.sitemap.client.ui;
 
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
-import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapLayoutBundle;
 import org.opencms.ade.sitemap.shared.CmsGalleryType;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsPopup;
@@ -36,6 +35,7 @@ import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonColor;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.form.CmsFieldsetFormFieldPanel;
@@ -57,7 +57,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class CmsCreateGalleryDialog extends CmsPopup {
 
     /** The dialog width. */
-    private static final int DIALOG_WIDTH = 530;
+    private static final int DIALOG_WIDTH = 600;
 
     /** The text metrics key. */
     private static final String METRICS_KEY = "CREATE_NEW_GALLERY_DIALOG";
@@ -197,11 +197,11 @@ public class CmsCreateGalleryDialog extends CmsPopup {
     private void addInputRow(String label, Widget inputWidget) {
 
         FlowPanel row = new FlowPanel();
-        row.setStyleName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapCss().inputRow());
+        row.setStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().simpleFormRow());
         CmsLabel labelWidget = new CmsLabel(label);
-        labelWidget.setStyleName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapCss().inputLabel());
+        labelWidget.setStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().simpleFormLabel());
         row.add(labelWidget);
-        inputWidget.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapCss().inputBox());
+        inputWidget.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().simpleFormInputBox());
         row.add(inputWidget);
         m_dialogContent.getFieldSet().add(row);
     }

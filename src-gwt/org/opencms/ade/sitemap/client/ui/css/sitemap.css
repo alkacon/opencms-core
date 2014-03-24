@@ -28,19 +28,3 @@ div.page{
 	width: value("constants.css.toolbarWidth");
 	margin: 0px auto;
 }
-
-.inputRow{
-	height: 25px;
-	overflow: hidden;
-}
-.inputLabel{
-	vertical-align: middle;
-	width: 150px;
-	float: left;
-	padding-top: 5px;
-}
-.inputBox{
-	vertical-align: middle;
-	width: 350px;
-	float: right;
-}

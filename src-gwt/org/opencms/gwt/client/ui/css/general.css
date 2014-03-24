@@ -219,3 +219,19 @@ div.header div.headerButtons > div{
 	max-width: none;
 }
 
+div.simpleFormRow{
+	height: 25px;
+	overflow: hidden;
+}
+div.simpleFormLabel{
+	vertical-align: middle;
+	width: 25%;
+	float: left;
+	padding-top: 5px;
+}
+div.simpleFormInputBox{
+	vertical-align: middle;
+	width: 70%;
+	float: right;
+}
+

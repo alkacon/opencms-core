@@ -907,6 +907,27 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String simpleFormInputBox();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String simpleFormLabel();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String simpleFormRow();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String textBig();
 
         /** 
@@ -1523,14 +1544,14 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String locationMainPanel();
+        String locationInfo();
 
         /** 
          * Access method.<p>
          * 
          * @return the CSS class name
          */
-        String locationInfo();
+        String locationMainPanel();
 
         /** 
          * Access method.<p>
