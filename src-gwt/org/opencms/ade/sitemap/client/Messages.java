@@ -370,6 +370,9 @@ public final class Messages {
     public static final String GUI_NO_EDIT_NOTIFICATION_1 = "GUI_NO_EDIT_NOTIFICATION_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_NO_GALLERIES_AVAILABLE_0 = "GUI_NO_GALLERIES_AVAILABLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_NON_NAVIGATION_BUTTON_TITLE_0 = "GUI_NON_NAVIGATION_BUTTON_TITLE_0";
 
     /** Message constant for key in the resource bundle. */

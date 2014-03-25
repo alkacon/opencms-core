@@ -30,6 +30,7 @@ package org.opencms.ade.sitemap.client;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsGalleryFolderEntry;
 import org.opencms.ade.sitemap.shared.CmsGalleryType;
+import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.shared.CmsIconUtil;
@@ -149,7 +150,15 @@ public class CmsGalleryTreeItem extends CmsTreeItem {
      */
     private CmsListItemWidget createListWidget(CmsGalleryFolderEntry galleryFolder) {
 
-        String title = galleryFolder.getOwnProperties().get(CmsClientProperty.PROPERTY_TITLE).getStructureValue();
+        String title;
+        if (galleryFolder.getOwnProperties().containsKey(CmsClientProperty.PROPERTY_TITLE)) {
+            title = galleryFolder.getOwnProperties().get(CmsClientProperty.PROPERTY_TITLE).getStructureValue();
+        } else {
+            title = CmsResource.getName(galleryFolder.getSitePath());
+            if (title.endsWith("/")) {
+                title = title.substring(0, title.length() - 1);
+            }
+        }
         CmsListInfoBean infoBean = new CmsListInfoBean(title, galleryFolder.getSitePath(), null);
         CmsListItemWidget result = new CmsGalleryListItemWidget(infoBean);
         result.setIcon(CmsIconUtil.getResourceIconClasses(

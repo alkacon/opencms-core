@@ -192,6 +192,9 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
     /** The registered tree items. */
     private Map<CmsUUID, CmsSitemapTreeItem> m_treeItems;
 
+    /** Label to display to no galleries in this sub site message. */
+    private Label m_noGalleriesLabel;
+
     /**
      * Returns the instance.<p>
      *
@@ -265,6 +268,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
             }
         });
         m_toolbar.setGalleryTypes(types);
+        boolean hasGalleries = false;
         for (CmsGalleryType type : types) {
             CmsGalleryTreeItem typeItem = new CmsGalleryTreeItem(type);
             CmsHoverbarCreateGalleryButton createButton = new CmsHoverbarCreateGalleryButton(
@@ -281,6 +285,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
                 typeItem.getElement().getStyle().setDisplay(Display.NONE);
             } else {
                 addGalleryEntries(typeItem, galleries.get(type));
+                hasGalleries = true;
             }
             m_galleryTree.addItem(typeItem);
         }
@@ -291,8 +296,12 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         if (m_galleryTypeItems.containsKey(IMAGE_GALLERY_TYPE)) {
             m_galleryTree.insertItem(m_galleryTypeItems.get(IMAGE_GALLERY_TYPE), 0);
         }
-
         m_galleryTree.truncate(TM_SITEMAP, 920);
+        if (hasGalleries) {
+            m_noGalleriesLabel.getElement().getStyle().setDisplay(Display.NONE);
+        } else {
+            m_noGalleriesLabel.getElement().getStyle().clearDisplay();
+        }
     }
 
     /**
@@ -678,7 +687,9 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         m_galleryTreeItems = new HashMap<CmsUUID, CmsGalleryTreeItem>();
         m_galleryTypeItems = new HashMap<String, CmsGalleryTreeItem>();
         page.add(m_galleryTree);
-
+        m_noGalleriesLabel = new Label(Messages.get().key(Messages.GUI_NO_GALLERIES_AVAILABLE_0));
+        m_noGalleriesLabel.getElement().getStyle().setDisplay(Display.NONE);
+        page.add(m_noGalleriesLabel);
         // draw tree items 
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
@@ -715,18 +726,21 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
             switch (m_editorMode) {
                 case galleries:
                     m_tree.getElement().getStyle().setDisplay(Display.NONE);
+                    m_noGalleriesLabel.getElement().getStyle().clearDisplay();
                     m_galleryTree.getElement().getStyle().clearDisplay();
                     getController().loadGalleries();
                     break;
                 case navigation:
                     m_tree.getElement().getStyle().clearDisplay();
                     m_galleryTree.getElement().getStyle().setDisplay(Display.NONE);
+                    m_noGalleriesLabel.getElement().getStyle().setDisplay(Display.NONE);
                     m_toolbar.setNewEnabled(true, null);
                     m_inNavigationStyle.setValue(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().navMode());
                     break;
                 case vfs:
                     m_tree.getElement().getStyle().clearDisplay();
                     m_galleryTree.getElement().getStyle().setDisplay(Display.NONE);
+                    m_noGalleriesLabel.getElement().getStyle().setDisplay(Display.NONE);
                     m_toolbar.setNewEnabled(false, Messages.get().key(Messages.GUI_TOOLBAR_NEW_DISABLE_0));
                     m_inNavigationStyle.setValue(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().vfsMode());
                     break;
