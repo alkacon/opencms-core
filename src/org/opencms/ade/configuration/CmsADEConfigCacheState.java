@@ -60,6 +60,9 @@ public class CmsADEConfigCacheState {
     /** The CMS context used for VFS operations. */
     private CmsObject m_cms;
 
+    /** Cached detail page types. */
+    private volatile Set<String> m_detailPageTypes;
+
     /** The cached content types for folders. */
     private Map<String, String> m_folderTypes = new HashMap<String, String>();
 
@@ -184,13 +187,17 @@ public class CmsADEConfigCacheState {
      */
     public Set<String> getDetailPageTypes() {
 
+        if (m_detailPageTypes != null) {
+            return m_detailPageTypes;
+        }
         Set<String> result = new HashSet<String>();
         for (CmsADEConfigDataInternal configData : m_siteConfigurationsByPath.values()) {
-            List<CmsDetailPageInfo> detailPageInfos = wrap(configData).getAllDetailPages(false);
+            List<CmsDetailPageInfo> detailPageInfos = configData.getOwnDetailPages();
             for (CmsDetailPageInfo info : detailPageInfos) {
                 result.add(info.getType());
             }
         }
+        m_detailPageTypes = result;
         return result;
     }
 
@@ -332,11 +339,20 @@ public class CmsADEConfigCacheState {
         }
         String normalizedPath = CmsStringUtil.joinPaths("/", path, "/");
         List<String> prefixes = new ArrayList<String>();
-        for (String key : m_siteConfigurationsByPath.keySet()) {
-            if (normalizedPath.startsWith(CmsStringUtil.joinPaths("/", key, "/"))) {
-                prefixes.add(key);
+
+        List<String> parents = new ArrayList<String>();
+        String currentPath = normalizedPath;
+        while (currentPath != null) {
+            parents.add(currentPath);
+            currentPath = CmsResource.getParentFolder(currentPath);
+        }
+
+        for (String parent : parents) {
+            if (m_siteConfigurationsByPath.containsKey(parent)) {
+                prefixes.add(parent);
             }
         }
+
         if (prefixes.size() == 0) {
             return null;
         }
