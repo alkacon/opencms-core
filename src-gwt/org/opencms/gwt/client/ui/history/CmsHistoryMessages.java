@@ -99,6 +99,16 @@ public class CmsHistoryMessages {
      *
      * @return the message string
      */
+    public static String columnSize() {
+
+        return Messages.get().key(Messages.GUI_HISTORY_COLUMN_SIZE_0);
+    }
+
+    /**
+     * Message accessor.<p>
+     *
+     * @return the message string
+     */
     public static String columnUserLastModified() {
 
         return Messages.get().key(Messages.GUI_HISTORY_MODIFICATION_USER_0);
@@ -143,6 +153,26 @@ public class CmsHistoryMessages {
     public static String noHistoryVersions() {
 
         return Messages.get().key(Messages.GUI_HISTORY_NO_VERSIONS_0);
+    }
+
+    /**
+     * Message accessor.<p>
+     *
+     * @return the message string
+     */
+    public static String offline() {
+
+        return Messages.get().key(Messages.GUI_HISTORY_OFFLINE_0);
+    }
+
+    /**
+     * Message accessor.<p>
+     *
+     * @return the message string
+     */
+    public static String online() {
+
+        return Messages.get().key(Messages.GUI_HISTORY_OFFLINE_0);
     }
 
     /**

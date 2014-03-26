@@ -37,6 +37,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResource.CmsResourceUndoMode;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.history.CmsHistoryProject;
 import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.file.types.CmsResourceTypeBinary;
@@ -53,6 +54,8 @@ import org.opencms.gwt.shared.CmsDeleteResourceBean;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsHistoryResourceBean;
 import org.opencms.gwt.shared.CmsHistoryResourceCollection;
+import org.opencms.gwt.shared.CmsHistoryVersion;
+import org.opencms.gwt.shared.CmsHistoryVersion.OfflineOnline;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsListInfoBean.LockIcon;
 import org.opencms.gwt.shared.CmsLockReportInfo;
@@ -532,16 +535,26 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
-     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#getHistoryPreviewInfo(org.opencms.util.CmsUUID, java.lang.String, int)
+     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#getHistoryPreviewInfo(org.opencms.util.CmsUUID, java.lang.String, org.opencms.gwt.shared.CmsHistoryVersion)
      */
-    public CmsPreviewInfo getHistoryPreviewInfo(CmsUUID structureId, String locale, int version) throws CmsRpcException {
+    public CmsPreviewInfo getHistoryPreviewInfo(CmsUUID structureId, String locale, CmsHistoryVersion versionBean)
+    throws CmsRpcException {
 
         try {
             CmsObject cms = getCmsObject();
-            CmsResource previewResource = (CmsResource)(cms.readResource(structureId, version));
+            CmsResource previewResource = null;
+            if (versionBean.getVersionNumber() != null) {
+                previewResource = (CmsResource)(cms.readResource(structureId, versionBean.getVersionNumber().intValue()));
+            } else if (versionBean.isOffline()) {
+                previewResource = cms.readResource(structureId, CmsResourceFilter.ALL);
+            } else if (versionBean.isOnline()) {
+                CmsProject online = cms.readProject(CmsProject.ONLINE_PROJECT_ID);
+                cms = OpenCms.initCmsObject(cms);
+                cms.getRequestContext().setCurrentProject(online);
+                previewResource = cms.readResource(structureId, CmsResourceFilter.ALL);
+            }
             CmsFile previewFile = cms.readFile(previewResource);
-
-            return getPreviewInfo(previewFile, CmsLocaleManager.getLocale(locale));
+            return getPreviewInfo(cms, previewFile, CmsLocaleManager.getLocale(locale));
         } catch (Exception e) {
             error(e);
             return null; // return statement will never be reached
@@ -607,6 +620,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         CmsPreviewInfo result = null;
         try {
             result = getPreviewInfo(
+                getCmsObject(),
                 getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION),
                 CmsLocaleManager.getLocale(locale));
         } catch (Exception e) {
@@ -624,6 +638,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         CmsPreviewInfo result = null;
         try {
             result = getPreviewInfo(
+                getCmsObject(),
                 getCmsObject().readResource(sitePath, CmsResourceFilter.IGNORE_EXPIRATION),
                 CmsLocaleManager.getLocale(locale));
         } catch (Exception e) {
@@ -659,9 +674,40 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             CmsObject cms = getCmsObject();
             CmsResource resource = cms.readResource(structureId, CmsResourceFilter.ALL);
             List<I_CmsHistoryResource> versions = cms.readAllAvailableVersions(resource);
-            for (I_CmsHistoryResource historyRes : versions) {
-                CmsHistoryResourceBean historyBean = createHistoryResourceBean(cms, historyRes);
-                result.add(historyBean);
+            if (!resource.getState().isUnchanged()) {
+                result.add(createHistoryResourceBean(cms, resource, true, -1));
+            }
+            int maxVersion = 0;
+
+            if (versions.isEmpty()) {
+                try {
+                    CmsProject online = cms.readProject(CmsProject.ONLINE_PROJECT_ID);
+                    CmsObject onlineCms = OpenCms.initCmsObject(cms);
+                    onlineCms.getRequestContext().setCurrentProject(online);
+                    CmsResource onlineResource = onlineCms.readResource(structureId, CmsResourceFilter.ALL);
+                    CmsHistoryResourceBean onlineResBean = createHistoryResourceBean(
+                        onlineCms,
+                        onlineResource,
+                        false,
+                        0);
+                    result.add(onlineResBean);
+                } catch (CmsVfsResourceNotFoundException e) {
+                    LOG.info(e.getLocalizedMessage(), e);
+                } catch (Exception e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            } else {
+                for (I_CmsHistoryResource historyRes : versions) {
+                    maxVersion = Math.max(maxVersion, historyRes.getVersion());
+                }
+                for (I_CmsHistoryResource historyRes : versions) {
+                    CmsHistoryResourceBean historyBean = createHistoryResourceBean(
+                        cms,
+                        (CmsResource)historyRes,
+                        false,
+                        maxVersion);
+                    result.add(historyBean);
+                }
             }
             CmsListInfoBean info = getPageInfo(structureId);
             result.setContentInfo(info);
@@ -1204,22 +1250,22 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
      * 
      * @param cms the current CMS context
      * @param historyRes the historical resource
+     * @param offline true if this resource was read from the offline project
+     * @param maxVersion the largest version number found  
      *  
      * @return the bean representing the historical resource  
      * @throws CmsException if something goes wrong 
      */
-    private CmsHistoryResourceBean createHistoryResourceBean(CmsObject cms, I_CmsHistoryResource historyRes)
-    throws CmsException {
+    private CmsHistoryResourceBean createHistoryResourceBean(
+        CmsObject cms,
+        CmsResource historyRes,
+        boolean offline,
+        int maxVersion) throws CmsException {
 
         CmsHistoryResourceBean result = new CmsHistoryResourceBean();
-        List<CmsProperty> historyProperties = cms.readHistoryPropertyObjects(historyRes);
-        Map<String, CmsProperty> historyPropertyMap = CmsProperty.toObjectMap(historyProperties);
-        CmsProperty titleProp = CmsProperty.wrapIfNull(historyPropertyMap.get(CmsPropertyDefinition.PROPERTY_TITLE));
-        CmsProperty descProp = CmsProperty.wrapIfNull(historyPropertyMap.get(CmsPropertyDefinition.PROPERTY_DESCRIPTION));
+
         Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         result.setStructureId(historyRes.getStructureId());
-        result.setTitle(titleProp.getValue());
-        result.setDescription(descProp.getValue());
         result.setRootPath(historyRes.getRootPath());
         result.setDateLastModified(formatDate(historyRes.getDateLastModified(), locale));
         CmsUUID userId = historyRes.getUserLastModified();
@@ -1231,12 +1277,30 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             LOG.warn(e.getLocalizedMessage(), e);
         }
         result.setUserLastModified(userName);
-        int publishTag = historyRes.getPublishTag();
-        CmsHistoryProject project = cms.readHistoryProject(publishTag);
-        long publishDate = project.getPublishingDate();
-        result.setDatePublished(formatDate(publishDate, locale));
+        result.setSize(historyRes.getLength());
+        if (historyRes instanceof I_CmsHistoryResource) {
+            int publishTag = ((I_CmsHistoryResource)historyRes).getPublishTag();
+            CmsHistoryProject project = cms.readHistoryProject(publishTag);
+            long publishDate = project.getPublishingDate();
+            result.setDatePublished(formatDate(publishDate, locale));
+            int version = ((I_CmsHistoryResource)historyRes).getVersion();
+            result.setVersion(new CmsHistoryVersion(Integer.valueOf(historyRes.getVersion()), maxVersion == version
+            ? OfflineOnline.online
+            : null));
 
-        result.setVersion(historyRes.getVersion());
+            List<CmsProperty> historyProperties = cms.readHistoryPropertyObjects((I_CmsHistoryResource)historyRes);
+            Map<String, CmsProperty> historyPropertyMap = CmsProperty.toObjectMap(historyProperties);
+            CmsProperty titleProp = CmsProperty.wrapIfNull(historyPropertyMap.get(CmsPropertyDefinition.PROPERTY_TITLE));
+            CmsProperty descProp = CmsProperty.wrapIfNull(historyPropertyMap.get(CmsPropertyDefinition.PROPERTY_DESCRIPTION));
+            result.setTitle(titleProp.getValue());
+            result.setDescription(descProp.getValue());
+        } else {
+            if (offline) {
+                result.setVersion(new CmsHistoryVersion(null, OfflineOnline.offline));
+            } else {
+                result.setVersion(new CmsHistoryVersion(null, OfflineOnline.online));
+            }
+        }
         return result;
     }
 
@@ -1509,14 +1573,14 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     /**
      * Returns the preview info for the given resource.<p>
      *
+     *@param cms the CMS context 
      * @param resource the resource
      * @param locale the requested locale
      *
      * @return the preview info
      */
-    private CmsPreviewInfo getPreviewInfo(CmsResource resource, Locale locale) {
+    private CmsPreviewInfo getPreviewInfo(CmsObject cms, CmsResource resource, Locale locale) {
 
-        CmsObject cms = getCmsObject();
         String title = "";
         try {
             CmsProperty titleProperty = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false);

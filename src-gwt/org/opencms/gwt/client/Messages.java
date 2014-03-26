@@ -250,6 +250,9 @@ public final class Messages {
     public static final String GUI_HISTORY_COLUMN_PATH_0 = "GUI_HISTORY_COLUMN_PATH_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_COLUMN_SIZE_0 = "GUI_HISTORY_COLUMN_SIZE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_HISTORY_DIALOG_TEXT_0 = "GUI_HISTORY_DIALOG_TEXT_0";
 
     /** Message constant for key in the resource bundle. */
@@ -263,6 +266,12 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HISTORY_NO_VERSIONS_0 = "GUI_HISTORY_NO_VERSIONS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_OFFLINE_0 = "GUI_HISTORY_OFFLINE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_ONLINE_0 = "GUI_HISTORY_ONLINE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HISTORY_PREVIEW_HELP_0 = "GUI_HISTORY_PREVIEW_HELP_0";

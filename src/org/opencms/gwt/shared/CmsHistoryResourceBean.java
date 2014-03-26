@@ -48,6 +48,9 @@ public class CmsHistoryResourceBean implements IsSerializable {
     /** The root path.<p> */
     private String m_rootPath;
 
+    /** The size. */
+    private int m_size;
+
     /** The structure id. */
     private CmsUUID m_structureId;
 
@@ -59,8 +62,8 @@ public class CmsHistoryResourceBean implements IsSerializable {
      */
     private String m_userLastModified;
 
-    /** The version number. */
-    private int m_version;
+    /** The version. */
+    private CmsHistoryVersion m_version;
 
     /**
      * Creates a new instance.<p>
@@ -110,6 +113,16 @@ public class CmsHistoryResourceBean implements IsSerializable {
     }
 
     /**
+     * Gets the size.<p>
+     * 
+     * @return the size 
+     */
+    public int getSize() {
+
+        return m_size;
+    }
+
+    /**
      * Returns the structureId.<p>
      *
      * @return the structureId
@@ -144,7 +157,7 @@ public class CmsHistoryResourceBean implements IsSerializable {
      *
      * @return the version
      */
-    public int getVersion() {
+    public CmsHistoryVersion getVersion() {
 
         return m_version;
     }
@@ -190,6 +203,16 @@ public class CmsHistoryResourceBean implements IsSerializable {
     }
 
     /**
+     * Sets the size.<p>
+     * 
+     * @param size the size 
+     */
+    public void setSize(int size) {
+
+        m_size = size;
+    }
+
+    /**
      * Sets the structure id
      * @param structureId the structure id to set
      */
@@ -223,7 +246,7 @@ public class CmsHistoryResourceBean implements IsSerializable {
      *
      * @param version the version to set
      */
-    public void setVersion(int version) {
+    public void setVersion(CmsHistoryVersion version) {
 
         m_version = version;
     }

@@ -31,6 +31,7 @@ import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsDeleteResourceBean;
 import org.opencms.gwt.shared.CmsHistoryResourceCollection;
+import org.opencms.gwt.shared.CmsHistoryVersion;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsLockReportInfo;
 import org.opencms.gwt.shared.CmsPrepareEditResponse;
@@ -203,7 +204,8 @@ public interface I_CmsVfsService extends RemoteService {
      *
      * @throws CmsRpcException if something goes wrong
      */
-    CmsPreviewInfo getHistoryPreviewInfo(CmsUUID structureId, String locale, int version) throws CmsRpcException;
+    CmsPreviewInfo getHistoryPreviewInfo(CmsUUID structureId, String locale, CmsHistoryVersion version)
+    throws CmsRpcException;
 
     /**
      * Returns the lock report info.<p>

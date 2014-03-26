@@ -83,7 +83,7 @@ public class CmsHistory implements I_CmsHasContextMenuCommand, I_CmsContextMenuC
             protected void onResponse(CmsHistoryResourceCollection result) {
 
                 stop(false);
-                final CmsPopup popup = new CmsPopup(CmsHistoryMessages.dialogTitle(), 1100);
+                final CmsPopup popup = new CmsPopup(CmsHistoryMessages.dialogTitle(), 1150);
                 popup.addDialogClose(null);
                 CmsResourceHistoryView view = new CmsResourceHistoryView(result, handler);
                 handler.setPostRevertAction(new Runnable() {
@@ -135,7 +135,7 @@ public class CmsHistory implements I_CmsHasContextMenuCommand, I_CmsContextMenuC
                                 start(200, true);
                                 CmsCoreProvider.getVfsService().restoreResource(
                                     structureId,
-                                    historyRes.getVersion(),
+                                    historyRes.getVersion().getVersionNumber().intValue(),
                                     this);
                             }
 

@@ -33,9 +33,13 @@ import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.shared.CmsHistoryResourceBean;
 import org.opencms.gwt.shared.CmsHistoryResourceCollection;
 
+import com.google.common.base.Predicate;
+import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.ActionCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.safehtml.client.SafeHtmlTemplates;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.IdentityColumn;
@@ -50,6 +54,34 @@ import com.google.gwt.view.client.ProvidesKey;
  */
 public class CmsResourceHistoryTable extends CellTable<CmsHistoryResourceBean> {
 
+    /** The templates used by this cell. */
+    static interface Templates extends SafeHtmlTemplates {
+
+        /**
+         * Template for the button HTML.<p>
+         *
+         * @param title the button title
+         * @param cssClass the button CSS class
+         *
+         * @return the HTML for the button
+         */
+        @Template("<span class=\"{1}\" title=\"{0}\"></span>")
+        SafeHtml button(String title, String cssClass);
+
+        /**
+         * Template for a span with a title.<p>
+         * 
+         * @param text the span text 
+         * @param title the span title 
+         * 
+         * @return the HTML for the span 
+         */
+        @Template("<span title=\"{1}\">{0}</span>")
+        SafeHtml textSpanWithTitle(String text, String title);
+    }
+
+    /** The template instance. */
+    static Templates templates = GWT.create(Templates.class);
     /** Handler instance for performing actions on the table entries. */
     private I_CmsHistoryActionHandler m_handler;
 
@@ -80,6 +112,7 @@ public class CmsResourceHistoryTable extends CellTable<CmsHistoryResourceBean> {
         addPreviewColumn();
         addRevertColumn();
         addPathColumn();
+        addSizeColumn();
         addModificationDateColumn();
         addUserLastModifiedColumn();
         addPublishDateColumn();
@@ -157,7 +190,16 @@ public class CmsResourceHistoryTable extends CellTable<CmsHistoryResourceBean> {
 
                     m_handler.showPreview(historyRes);
                 }
+            },
+            new Predicate<CmsHistoryResourceBean>() {
+
+                public boolean apply(CmsHistoryResourceBean bean) {
+
+                    return true;
+
+                }
             });
+
         addColumn(CmsHistoryMessages.columnPreview(), 30, new IdentityColumn<CmsHistoryResourceBean>(previewCell));
     }
 
@@ -171,7 +213,10 @@ public class CmsResourceHistoryTable extends CellTable<CmsHistoryResourceBean> {
             @Override
             public String getValue(CmsHistoryResourceBean historyRes) {
 
-                return historyRes.getPublishDate().getDateText();
+                if (historyRes.getPublishDate() != null) {
+                    return historyRes.getPublishDate().getDateText();
+                }
+                return "-";
             }
         });
     }
@@ -191,8 +236,33 @@ public class CmsResourceHistoryTable extends CellTable<CmsHistoryResourceBean> {
 
                     m_handler.revert(historyRes);
                 }
+            },
+            new Predicate<CmsHistoryResourceBean>() {
+
+                public boolean apply(CmsHistoryResourceBean bean) {
+
+                    return bean.getVersion().getVersionNumber() != null;
+
+                }
             });
         addColumn(CmsHistoryMessages.columnReplace(), 30, new IdentityColumn<CmsHistoryResourceBean>(replaceCell));
+    }
+
+    /**
+     * Adds a table column.<p>
+     */
+    private void addSizeColumn() {
+
+        Column<CmsHistoryResourceBean, ?> col = new TextColumn<CmsHistoryResourceBean>() {
+
+            @Override
+            public String getValue(CmsHistoryResourceBean historyRes) {
+
+                return "" + historyRes.getSize();
+            }
+        };
+        addColumn(col, CmsHistoryMessages.columnSize());
+        setColumnWidth(col, 100, Unit.PX);
     }
 
     /**
@@ -215,14 +285,8 @@ public class CmsResourceHistoryTable extends CellTable<CmsHistoryResourceBean> {
      */
     private void addVersionColumn() {
 
-        addColumn(CmsHistoryMessages.columnVersion(), 30, new TextColumn<CmsHistoryResourceBean>() {
-
-            @Override
-            public String getValue(CmsHistoryResourceBean historyRes) {
-
-                return "" + historyRes.getVersion();
-            }
-        });
+        AbstractCell<CmsHistoryResourceBean> cell = new CmsVersionCell();
+        addColumn(CmsHistoryMessages.columnVersion(), 40, new IdentityColumn<CmsHistoryResourceBean>(cell));
     }
 
 }

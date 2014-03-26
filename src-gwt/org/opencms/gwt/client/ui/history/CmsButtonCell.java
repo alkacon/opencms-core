@@ -27,10 +27,8 @@
 
 package org.opencms.gwt.client.ui.history;
 
+import com.google.common.base.Predicate;
 import com.google.gwt.cell.client.ActionCell;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.safehtml.client.SafeHtmlTemplates;
-import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 
 /**
@@ -40,23 +38,8 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
  */
 public class CmsButtonCell<T> extends ActionCell<T> {
 
-    /** The templates used by this cell. */
-    static interface Templates extends SafeHtmlTemplates {
-
-        /**
-         * Template for the button HTML.<p>
-         *
-         * @param title the button title
-         * @param cssClass the button CSS class
-         *
-         * @return the HTML for the button
-         */
-        @Template("<span class=\"{1}\" title=\"{0}\"></span>")
-        SafeHtml button(String title, String cssClass);
-    }
-
-    /** The template instance. */
-    private static Templates templates = GWT.create(Templates.class);
+    /** Function to check whether the button should be available. */
+    private Predicate<T> m_checkActive;
 
     /** The value for the CSS class of the button. */
     private String m_cssClass;
@@ -70,12 +53,26 @@ public class CmsButtonCell<T> extends ActionCell<T> {
      * @param title the value for the title attribute of the button
      * @param cssClass the value for the CSS class of the button
      * @param delegate the delegate which should be called when the button is clicked
+     * @param checkActive a predicate to check whether the button should be active 
      */
-    public CmsButtonCell(String title, String cssClass, ActionCell.Delegate<T> delegate) {
+    public CmsButtonCell(
+        String title,
+        String cssClass,
+        final ActionCell.Delegate<T> delegate,
+        final Predicate<T> checkActive) {
 
-        super("", delegate);
+        super("", new ActionCell.Delegate<T>() {
+
+            public void execute(T object) {
+
+                if (checkActive.apply(object)) {
+                    delegate.execute(object);
+                }
+            }
+        });
         m_title = title;
         m_cssClass = cssClass;
+        m_checkActive = checkActive;
     }
 
     /**
@@ -84,6 +81,8 @@ public class CmsButtonCell<T> extends ActionCell<T> {
     @Override
     public void render(com.google.gwt.cell.client.Cell.Context context, T value, SafeHtmlBuilder sb) {
 
-        sb.append(templates.button(m_title, m_cssClass));
+        if (m_checkActive.apply(value)) {
+            sb.append(CmsResourceHistoryTable.templates.button(m_title, m_cssClass));
+        }
     }
 }

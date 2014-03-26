@@ -1093,6 +1093,8 @@
 							rule="containerpage-no-different-site" />
 						<entry key="GUI_EXPLORER_CONTEXT_LOCK_REPORT_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsLockReport" rule="containerpage" />
+						<entry key="GUI_EXPLORER_CONTEXT_ADVANCED_HISTORY_0" 
+							name="org.opencms.gwt.client.ui.contextmenu.CmsHistory" rule="containerpage"/>
 						<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsCategories" rule="containerpage-no-different-site" />
 						<entry key="GUI_EXPLORER_CONTEXT_DELETE_0"
@@ -1100,7 +1102,6 @@
 							rule="containerpage-no-different-site" />
 						<entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsRestore" rule="ade-undochanges" />
-						<entry key="GUI_EXPLORER_CONTEXT_ADVANCED_HISTORY_0" name="org.opencms.gwt.client.ui.contextmenu.CmsHistory" rule="containerpage"/>
 						<entry key="GUI_EXPLORER_CONTEXT_SHOW_WORKPLACE_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsShowWorkplace"
 							rule="editprovider" />

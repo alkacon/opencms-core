@@ -30,6 +30,7 @@ package org.opencms.gwt.shared.rpc;
 import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsDeleteResourceBean;
 import org.opencms.gwt.shared.CmsHistoryResourceCollection;
+import org.opencms.gwt.shared.CmsHistoryVersion;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsLockReportInfo;
 import org.opencms.gwt.shared.CmsPrepareEditResponse;
@@ -179,7 +180,7 @@ public interface I_CmsVfsServiceAsync {
     void getHistoryPreviewInfo(
         CmsUUID structureId,
         String locale,
-        int version,
+        CmsHistoryVersion version,
         AsyncCallback<CmsPreviewInfo> resultCallback);
 
     /**
