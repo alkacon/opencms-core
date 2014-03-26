@@ -209,6 +209,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_AUTHENTICATE_PROPERTY_2 = "LOG_AUTHENTICATE_PROPERTY_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_SCRYPT_PARAMETERS_1 = "LOG_SCRYPT_PARAMETERS_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_INIT_CONFIG_CALLED_1 = "LOG_INIT_CONFIG_CALLED_1";
 
     /** Message constant for key in the resource bundle. */
@@ -221,14 +224,6 @@ public final class Messages extends A_CmsMessageBundle {
     private static final I_CmsMessageBundle INSTANCE = new Messages();
 
     /**
-     * Hides the public constructor for this utility class.<p>
-     */
-    private Messages() {
-
-        // hide the constructor
-    }
-
-    /**
      * Returns an instance of this localized message accessor.<p>
      * 
      * @return an instance of this localized message accessor
@@ -236,6 +231,14 @@ public final class Messages extends A_CmsMessageBundle {
     public static I_CmsMessageBundle get() {
 
         return INSTANCE;
+    }
+
+    /**
+     * Hides the public constructor for this utility class.<p>
+     */
+    private Messages() {
+
+        // hide the constructor
     }
 
     /**

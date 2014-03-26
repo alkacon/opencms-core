@@ -1425,27 +1425,32 @@ public class CmsUserDriver implements I_CmsUserDriver {
      * @see org.opencms.db.I_CmsUserDriver#readUser(org.opencms.db.CmsDbContext, java.lang.String, java.lang.String, String)
      */
     public CmsUser readUser(CmsDbContext dbc, String userFqn, String password, String remoteAddress)
-    throws CmsDataAccessException, CmsPasswordEncryptionException {
+    throws CmsDataAccessException {
 
         PreparedStatement stmt = null;
         ResultSet res = null;
         CmsUser user = null;
         Connection conn = null;
+
         try {
             conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_READ_WITH_PWD_3");
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_READ_BY_NAME_2");
             stmt.setString(1, CmsOrganizationalUnit.getSimpleName(userFqn));
             stmt.setString(2, CmsOrganizationalUnit.SEPARATOR + CmsOrganizationalUnit.getParentFqn(userFqn));
-            stmt.setString(3, OpenCms.getPasswordHandler().digest(password));
             res = stmt.executeQuery();
 
-            // create new Cms user object
+            boolean success = false;
+            // create the user object
             if (res.next()) {
                 user = internalCreateUser(dbc, res);
+                // validate the password stored for the user
+                success = OpenCms.getPasswordHandler().checkPassword(password, user.getPassword(), true);
+
                 while (res.next()) {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
-            } else {
+            }
+            if (!success) {
                 CmsMessageContainer message = org.opencms.db.Messages.get().container(
                     org.opencms.db.Messages.ERR_UNKNOWN_USER_1,
                     userFqn);
@@ -1462,6 +1467,7 @@ public class CmsUserDriver implements I_CmsUserDriver {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
 
+        @SuppressWarnings("null")
         Map<String, Object> info = readUserInfos(dbc, user.getId());
         user.setAdditionalInfo(info);
         return user;
@@ -2004,7 +2010,7 @@ public class CmsUserDriver implements I_CmsUserDriver {
         Connection conn = null;
 
         // if the login attribute is set, do only update the last login information of this user
-        // otherweise write the complete user data
+        // otherwise write the complete user data
         if (CmsStringUtil.isNotEmpty(att_login)) {
 
             try {
@@ -2283,7 +2289,7 @@ public class CmsUserDriver implements I_CmsUserDriver {
             dbc,
             CmsUUID.getConstantUUID(guestUser),
             guestUser,
-            OpenCms.getPasswordHandler().digest(""),
+            OpenCms.getPasswordHandler().digest((new CmsUUID()).toString()),
             " ",
             " ",
             " ",

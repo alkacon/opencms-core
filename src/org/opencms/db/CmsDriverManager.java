@@ -4589,7 +4589,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      *
      * @return the set of groups which constitute the role
      *
-     * @throws CmsException
+     * @throws CmsException if something goes wrong 
      */
     public Set<CmsGroup> getRoleGroups(CmsDbContext dbc, String roleGroupName, boolean directUsersOnly)
     throws CmsException {
@@ -4607,7 +4607,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      *
      * @return the set of groups which constitute the role
      *
-     * @throws CmsException
+     * @throws CmsException if something goes wrong 
      */
     public Set<CmsGroup> getRoleGroupsImpl(
         CmsDbContext dbc,
@@ -5509,6 +5509,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
             password);
         newUser.getAdditionalInfo().putAll(additionalInfosForRepositories);
         getUserDriver(dbc).writeUser(dbc, newUser);
+        // check if we need to update the password
+        if (!OpenCms.getPasswordHandler().checkPassword(password, newUser.getPassword(), false)
+            && OpenCms.getPasswordHandler().checkPassword(password, newUser.getPassword(), true)) {
+            // the password does not check with the current hash algorithm but with the fall back, update the password
+            getUserDriver(dbc).writePassword(dbc, userName, password, password);
+        }
 
         // update cache
         m_monitor.cacheUser(newUser);
