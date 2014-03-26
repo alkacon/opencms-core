@@ -15,9 +15,11 @@
     <uri>http://www.opencms.org/taglib/cms</uri>
 
 	<tag>
-      <description>
-          Loads a resource bundle to be used by its tag body
-      </description>
+      <description><![CDATA[
+          <p>Loads a resource bundle to be used by its tag body.</p>
+          <p>Replaces the <code>&lt;fmt:bundle basename=""&gt;</code> tag which is not capable of using OpenCms resource bundles.</p>
+ 		  <p>You can use <code>&lt;fmt:message key=""&gt;</code> tags inside the body of the <code>&lt;cms:bundle basename=""&gt;</code> tag as usual.</p>
+      ]]></description>
       <name>bundle</name>
       <tag-class>org.opencms.jsp.CmsJspTagBundle</tag-class>
       <body-content>JSP</body-content>
@@ -35,10 +37,11 @@
           <rtexprvalue>true</rtexprvalue>
       </attribute>
       <attribute>
-          <description>
+          <description><![CDATA[
             Prefix to be prepended to the value of the message
-            key of any nested &lt;fmt:message&gt; action.
-          </description>
+            key of any nested &lt;fmt:message&gt; action.<br />
+            <em>Currently not supported.</em>
+          ]]></description>
           <name>prefix</name>
           <required>false</required>
           <rtexprvalue>true</rtexprvalue>
@@ -47,25 +50,75 @@
 
     <tag>
         <description>
-            This tag enables read access to the current files OpenCms properties.
+            This tag enables read access to a file's OpenCms properties.
         </description>
         <name>property</name>
         <tag-class>org.opencms.jsp.CmsJspTagProperty</tag-class>
         <body-content>empty</body-content>
         <attribute>
+        	<description><![CDATA[
+        		This attribute specifies the property name.
+        	]]></description>
             <name>name</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+        	<description><![CDATA[
+           	This attribute allows you to specify where to search for the property.<BR>            
+            The following values are supported: 
+            </P>
+        		<DL>
+     					<DT><b>uri</b> (default)</DT>
+     					<DD>  Look up  the property on the file with the 
+					     uri requested by the user.</DD>
+					     <DT><b>search.uri</b> or <b>search</b></DT>
+					     <DD>Look up the property by also checking all parent folders for the property, 
+					     starting with the file with uri requested by the user and 
+					     going "upward" if the property was not found there.</DD>
+					     <DT><b>element.uri</b></DT>
+					     <DD>Look up the property on the currently 
+					     processed sub - element. This is useful in templates or other pages that 
+					     consist of many elements.</DD>
+					     <DT><b>search.element.uri</b></DT>
+					     <DD>Look up the property by also checking all parent folders for the 
+					     property, starting with the file with the currently processed sub - 
+					     element and going "upward" if the property was not found there.</DD>
+					     <DT><b>sitemap</b></DT> 
+					     <DD>reads from the current sitemap entry</DD> 
+					     <DT><b>search.sitemap</b></DT> 
+					     <DD>Look up the property by also checking all parent sitemap entries 
+					     for the property, starting with the current sitemap entry and 
+					     going "upward" if the property was not found there.</DD>
+					     <DT><b>container</b></DT> 
+					     <DD>reads from the current container element</DD> 
+					     <DT><B>{some-file-uri}</B></DT>
+					     <DD>Look up the property on that exact file 
+					     uri in the OpenCms VFS,<EM> fallback if no other valid option is 
+					     selected for the file attribute.</EM></DD>
+				     </DL>
+	       	]]></description>
             <name>file</name>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+        	<description><![CDATA[
+        	  This attribute allows you to escape HTML code in the returned value.<BR>
+        	  The following values are supported:
+        	  <DL>
+        	    <DT><b>false</b> (default)</DT>
+        	    <DD>HTML is not escaped.</DD>
+        	    <DT><b>true</b></DT>
+        	    <DD>HTML is escaped.</DD>
+        	  </DL>
+        	]]></description>
             <name>escapeHtml</name>
             <rtexprvalue>true</rtexprvalue>
         </attribute>         
         <attribute>
+        	<description><![CDATA[
+        	  The value returned if the property is not found for the specified file.
+        	]]></description>        
             <name>default</name>
             <rtexprvalue>true</rtexprvalue>
         </attribute> 
@@ -79,6 +132,38 @@
         <tag-class>org.opencms.jsp.CmsJspTagUser</tag-class>
         <body-content>empty</body-content>
         <attribute>
+          	<description><![CDATA[
+          	  The attribute allows to specify which information about the user should be printed<BR>
+          	  The following values are supported:
+          	  <DL>
+          	    <DT><b>name</b></DT>
+          	    <DD></DD>
+          	    <DT><b>firstname</b></DT>
+          	    <DD></DD>
+          	    <DT><b>lastname</b></DT>
+          	    <DD></DD>
+          	    <DT><b>email</b></DT>
+          	    <DD></DD>
+          	    <DT><b>street</b></DT>
+          	    <DD></DD>
+          	    <DT><b>zip</b></DT>
+          	    <DD></DD>
+          	    <DT><b>city</b></DT>
+          	    <DD></DD>
+          	    <DT><b>description</b></DT>
+          	    <DD></DD>
+          	    <DT><b>group</b></DT>
+          	    <DD></DD>
+          	    <DT><b>currentgroup</b></DT>
+          	    <DD></DD>
+          	    <DT><b>defaultgroup</b></DT>
+          	    <DD></DD>
+          	    <DT><b>otherstuff</b></DT>
+          	    <DD></DD>
+          	    <DT><b>institution</b></DT>
+          	    <DD></DD>
+          	  </DL>          	  
+          	]]></description>        
             <name>property</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>            
@@ -93,6 +178,50 @@
         <tag-class>org.opencms.jsp.CmsJspTagInfo</tag-class>
         <body-content>empty</body-content>
         <attribute>
+          <description><![CDATA[
+            The information that should be returned.
+            Possible values are:
+            <DL>
+            <DT><b>opencms.version</b></DT>
+            <DD>OpenCms version number, e.g., "9.0.1".</DD>
+            <DT><b>opencms.url</b></DT>
+            <DD>Complete Url of the requested page, including the host name, e.g., "http://localhost:8080/opencms/opencms/mypage/index.html".</DD>
+            <DT><b>opencms.uri</b></DT>
+            <DD>Uri of the requested page without host name, e.g., "/opencms/opencms/mypage/index.html".</DD>
+            <DT><b>opencms.webapp</b></DT>
+            <DD>Name of the OpenCms webapplication, e.g., "opencms".</DD>
+            <DT><b>opencms.webbasepath</b></DT>
+            <DD>System path to the web application, e.g., "C:\Java\Tomcat\webapps\opencms\".</DD>
+            <DT><b>opencms.request.uri</b></DT>
+            <DD>Currently requested URI in the OpenCms VFS, e.g., "/mypage/index.html"</DD>
+            <DT><b>opencms.request.element.uri</b></DT>
+            <DD>OpenCms VFS URI of the currently processed element, which might be a sub-element included in a template or the URI of the formatter used for a container element, e.g., "/system/modules/org.opencms.welcome/formatters/welcome.jsp".</DD>
+            <DT><b>opencms.request.folder</b></DT>
+            <DD>OpenCms VFS parent folder of the requested resource, e.g., "/mypage/".</DD>
+            <DT><b>opencms.request.encoding</b></DT>
+            <DD>The character encoding set for the currently requested resource, e.g., "UTF-8".</DD>
+            <DT><b>opencms.request.locale</b></DT>
+            <DD>Locale used for the current request, e.g., "en".</DD>
+            <DT><b>opencms.title</b></DT>
+            <DD>
+              The title of the document that should be used for the HTML title tag. 
+              This is useful for container detail pages, in which case it will return the Title of the detail, not the container page.
+              Otherwise it just returns the value of the Title property.
+            </DD>
+            <DT><b>opencms.description</b></DT>
+            <DD>
+              The description of the document that should be used for the HTML description meta-info. 
+              This is useful for container detail pages, in which case it will return the Description of the detail, not the container page.
+              Otherwise it just returns the value of the Description property.
+            </DD>
+            <DT><b>opencms.keywords</b></DT>
+            <DD>
+              The keywords of the document that should be used for the HTML keywords meta-info. 
+              This is useful for container detail pages, in which case it will return the Keywords of the detail, not the container page.
+              Otherwise it just returns the value of the Keywords property.
+            </DD>            
+            </DL>
+          ]]></description>        
             <name>property</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>            
@@ -100,19 +229,29 @@
     </tag>     
             
     <tag>
-        <description>
-            This tag is used to wrap URLs for the OpenCms static export.
-        </description>
+        <description><![CDATA[
+            The tag adjusts the links to the OpenCms VFS provided in the tag's body (including request parameters).
+            Links MUST be adjusted to work correctly, because resources might be statically exported and also absolute pathes to resources that are not exported must be extended by the prefix "/{webapp name}/opencms".<P>
+            Example: <code>&lt;cms:link&gt;/vfslink/to/my/index.html&lt/cms:link&gt;</code></P>
+            <em>Note that the tag is necessary for all links given as arguments to "normal" HTML tags.
+                For OpenCms specific tags, links are sometimes adjusted anyway and thus the tag must not be used.
+            </em>
+        ]]></description>
         <name>link</name>
         <tag-class>org.opencms.jsp.CmsJspTagLink</tag-class>
         <body-content>JSP</body-content>    
         <attribute>
+             <description><![CDATA[
+                Change the Uri of the current request context to the provided value.</P>
+                This is useful if links to detail pages (e.g., <code>... href="&lt;cms:link baseUri="..."&gt;${elem.filename}&lt;/cms:link&gt;" ...</code>) have to be set in content that is loaded on demand via AJAX. 
+                Otherwise, in this use case the wrong or even no detail page may be found.
+            ]]></description>
             <name>baseUri</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>          
-    </tag>
-    
+    </tag>   
+
     <tag>
     	<description>
     		This tag is used to generate a link to a PDF generated from an XML content given the path of the XML content.
@@ -167,132 +306,300 @@
     </tag>
     
     <tag>
-        <description>
-            This tag is used to decorate HTML.
-        </description>
+        <description><![CDATA[
+            This tag is used to decorate HTML.</P>
+            The code in the body of the tag is decorated according to the given configuration file and locale.</P>
+            A template for the config file is found at <code>/system/shared/decoration/configuration.xml</code>.</P>
+            Look up the documentation for more information.
+        ]]></description>
         <name>decorate</name>
         <tag-class>org.opencms.jsp.CmsJspTagDecorate</tag-class>
         <body-content>JSP</body-content>
         <attribute>
+            <description><![CDATA[
+              Uri of the configuration file for the decoration.
+            ]]></description>
             <name>file</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>  
         <attribute>
+            <description><![CDATA[
+              The local to be used for the decoration.</P>
+              Default: The locale of the current request context.
+            ]]></description>
             <name>locale</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute> 
         <attribute>
+            <description><![CDATA[
+              Comma-separated list of upper case tag names for which missing closing tags will not be corrected automatically.</P>
+              Default: Empty list.
+            ]]></description>
             <name>noAutoCloseTags</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute> 
     </tag>       
    <tag>
-        <description>
-            This tag is used to decorate HTML with custom A_CmsConfiguredHtmlParser implementations given in the parserClass attribute.
-        </description>
+        <description><![CDATA[
+            This tag is used to postprocess HTML via custom HtmlParser extending org.opencms.jsp.parse.A_CmsConfiguredHtmlParser.</P>
+            The "output" HTML of the JSP code in the tag's body becomes processed by the configured parser.
+        ]]></description>
         <name>parse</name>
         <tag-class>org.opencms.jsp.CmsJspTagParse</tag-class>
         <body-content>JSP</body-content>
         <attribute>
+            <description><![CDATA[
+              The fully qualified name of the Html parser (extending org.opencms.jsp.parse.A_CmsConfiguredHtmlParser) that should be used.
+            ]]></description>
             <name>parserClass</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>  
         <attribute>
+            <description><![CDATA[
+              The value is directly passed to the Html parser and can be used for it's configuration.
+            ]]></description>
             <name>param</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute> 
         <attribute>
+            <description><![CDATA[
+              List of tag names that should not be auto-corrected if closing tags are missing.</P>
+              Default: The empty list.
+            ]]></description>
             <name>noAutoCloseTags</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute> 
     </tag>       
     <tag>
-        <description>
-            This tag allows conditional display of template elements.
-        </description>
+        <description><![CDATA[
+            This tag allows to split JSPs in several elements and use <code>&lt;cms:include&gt;</code> to include special elements.</P>
+            Note that from the included JSPs, code not in the body of any <code>&lt;cms:element&gt;</code> tag will always be included.
+        ]]></description>
         <name>template</name>
         <tag-class>org.opencms.jsp.CmsJspTagTemplate</tag-class>
         <body-content>JSP</body-content>
         <attribute>
+            <description><![CDATA[
+              Name of the section in the body of <code>&lt;cms:element&gt;</code>.
+            ]]></description>
             <name>element</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>  
         <attribute>
+            <description><![CDATA[
+              <em>Deprecated.</em>
+            ]]></description>
             <name>ifexists</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+            <description><![CDATA[
+              <em>Deprecated.</em>
+            ]]></description>
             <name>ifexistsone</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+            <description><![CDATA[
+              <em>Deprecated.</em>
+            ]]></description>
             <name>ifexistsall</name>
             <rtexprvalue>true</rtexprvalue>                        
         </attribute>
         <attribute>
+            <description><![CDATA[
+              <em>Deprecated.</em>
+            ]]></description>
             <name>ifexistsnone</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>       
     </tag>
     
     <tag>
-        <description>
+        <description><![CDATA[
             This tag loads XML content items from the OpenCms VFS.
-        </description> 
+            It is in particular useful to iterate over a list of collected content.
+            For each content the code in the body is executed once.</P>
+            Use <code>&lt;cms:contentaccess&gt;</code> to access loaded contents.
+        ]]></description> 
         <name>contentload</name>
         <tag-class>org.opencms.jsp.CmsJspTagContentLoad</tag-class>
         <body-content>JSP</body-content>
         <attribute>
+          <description><![CDATA[
+            The collector used to collect resources.
+            OpenCms provides several predefined collectors via the classes located in the package <code>org.opencms.file.collectors</code>.</P>
+            Maybe the most important collectors are provided by the class <code>CmsSolrCollector</code>:</P>
+            <DL>
+              <DT><b>byQuery</b></DT>
+              <DD>Executes exactly the query provided via the attribute <code>param</code></DD>
+              <DT><b>byContext</b></DT>
+              <DD>Executes the query provided via the attribute <code>param</code>, but additionally taking the request context into account.</DD>
+            </DL>
+            Other standard collectors are:
+            <DL>
+              <DT><b>allInFolder</b><DT>
+              <DD>Returns all resources of the requested type in a folder. Folder and type are specified via the attribute <code>param</code></DD>
+              <DT><b>allInSubTree</b><DT>
+              <DD>Returns all resources of the requested type in a sub-tree. The root folder of the sub tree and the type or resources are specified via the attribute <code>param</code></DD>
+            </DL>
+            These two standard collectors can also sort the collected entries in different forms.
+            Therefore, append the way of sorting to the collector's names.
+            Sorting can be specified by the following collector names, where "<b>xxx</b>" has to be replaced either by "allInFolder" or "allInSubTree": 
+            <DL>
+              <DT><b>xxxNavPos</b><DT>
+              <DD>Sort the resources ascending via the <code>NavPos</code> property.</DD>
+              <DT><b>xxxDateReleasedDesc</b><DT>
+              <DD>Sort the resources descending via their <code>DateReleased</code> attribute.</DD>
+              <DT><b>xxxPriorityTitleDesc</b><DT>
+              <DD>Sort the resources descending via their <code>collector.priority</code> property.
+                  Resources with the same priority are sorted lexicographically ascending via the <code>Title</code> property.
+              </DD>
+              <DT><b>xxxPriorityDateAsc</b><DT>
+              <DD>Sort the resources descending via their <code>collector.priority</code> property.
+                  Resources with the same priority are sorted ascending via the <code>collector.date</code> property.
+              </DD>
+              <DT><b>xxxPriorityDateDesc</b><DT>
+              <DD>Sort the resources descending via their <code>collector.priority</code> property.
+                  Resources with the same priority are sorted descending via the <code>collector.date</code> property.
+              </DD>
+            </DL>
+            There are many more collectors already shipped with OpenCms.
+            For Documentation, lookup either the JavaDoc or the source code of the classes in the package <code>org.opencms.file.collectors</code>.</P>
+            To implement your own collector, extend the abstract class <code>A_CmsResourceCollector</code> and configure your collector in the <code>opencms-vfs.xml</code>.
+          ]]></description>             
             <name>collector</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>    
         <attribute>
+          <description><![CDATA[
+            Configures the collector set via the attribute <code>collector</code>.<BR>
+            The allowed values depend on the chosen collectors.
+            Consult the documentation for more information.
+          ]]></description>             
             <name>param</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+          <description><![CDATA[
+            <em>Deprecated. Not evaluated anymore.</em>
+          ]]></description>                         
             <name>property</name>
-            <rtexprvalue>true</rtexprvalue>            
+            <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description><![CDATA[
+              Choose if direct edit is supported.
+              The following values are allowed:
+              <DL>
+                <DT><b>false</b> (default)</DT>
+                <DD>Direct edit is disabled.</DD>
+                <DT><b>true</b></DT>
+                <DD>Direct edit is enabled. If at least one content is collected, contents can be added, edited and deleted via direct edit.</DD>
+              </DL>
+            ]]></description>                         
             <name>editable</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>    
         <attribute>
+            <description><![CDATA[
+              Choose if an element can be added if no content is collected.
+              The attribute is independent of the attribute <code>editable</code>.
+              The following values are allowed:
+              <DL>
+                <DT><b>false</b> (default)</DT>
+                <DD>Disables adding a new content via direct edit, if none is found.</DD>
+                <DT><b>true</b></DT>
+                <DD>Enables adding a new content via direct edit, if none is found.</DD>
+              </DL>              
+            ]]></description>                         
             <name>editEmpty</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+            <description><![CDATA[
+              A page number (starting at 1).
+              If set, &lt;cms:contentload&gt; iterates only over the contents of the given page.</P>
+              <em>Note:</em> The attribute has to be used in combination with <code>pageSize</code>.
+            ]]></description>                         
             <name>pageIndex</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute> 
         <attribute>
             <name>pageSize</name>
+            <description><![CDATA[
+              Specifies the number of results shown per page.</P>
+              <em>Note:</em>The attribute has to be used in combination with <code>pageIndex</code>.
+            ]]></description>                         
             <rtexprvalue>true</rtexprvalue>            
         </attribute>  
         <attribute>
+            <description><![CDATA[
+              Specifies the number of pages shown in the page navigation.
+              It influences the values the properties <code>pageNavLength</code>, <code>pageNavStartIndex</code> and <code>pageNavEndIndex</code> of the org.opencms.jsp.CmsContentInfoBean object made available via <code>&lt;cms:contentinfo&gt;</code>
+            ]]></description>                         
             <name>pageNavLength</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>        
         <attribute>
+            <description><![CDATA[
+              Preload content to make information on the content available.
+              A preload is more efficient then a complete load.
+              A typical use case is:
+              <pre><code>
+ 	              &lt;cms:contentload collector="allInFolder" param="/demo/.content/textblocks/tb_%(number).xml|bs-textblock" preload="true"&gt;<BR />
+            		  &nbsp;&nbsp;&lt;cms:contentinfo var="info" /&gt;<BR />
+            		  &nbsp;&nbsp;Number of results: ${info.resultSize}<BR />
+        		      &nbsp;&nbsp;&lt;c:if test="${info.resultSize > 0}"&gt;<BR />
+            		  	&nbsp;&nbsp;&nbsp;&nbsp;&lt;cms:contentload&gt;<BR />
+        				    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;cms:contentinfo var="info" /&gt;<BR />
+        				    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;cms:contentaccess var="content" /&gt;<BR />
+          			  	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The title of the content: ${content.value.Title} (${info.resultIndex}/${info.resultSize})&lt;br /&gt;<BR />
+    			          &nbsp;&nbsp;&nbsp;&nbsp;&lt;/cms:contentload&gt;<BR />
+              		&nbsp;&nbsp;&lt;/c:if&gt;<BR />
+                &lt;/cms:contentload&gt;
+              </code></pre>
+            ]]></description>                         
             <name>preload</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+            <description><![CDATA[
+              Use in combination with the attribute <code>var</var> to define the locale in which content is accessed.</P>
+              Default: The locale defined in the request context.
+            ]]></description>                         
             <name>locale</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+            <description><![CDATA[
+              Name of the exported variable that provides access to all XML contents loaded via <code>&lt;cms:contentload&gt;</code>. </P>
+              The exported variable has type org.opencms.jsp.util.CmsJspContentLoadBean.
+            ]]></description>                         
             <name>var</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+            <description><![CDATA[
+              The scope, where the variable exposed via <code>var</code> is placed.<BR>
+              The following values are supported:
+              <DL>
+                <DT><b>page</b> (default)</DT>
+                <DD>Place the objects that are exported via variables in the page scope.</DD>
+                <DT><b>request</b></DT>
+                <DD>Place the objects that are exported via variables in the request scope.</DD>
+                <DT><b>session</b></DT>
+                <DD>Place the objects that are exported via variables in the session scope.</DD>
+                <DT><b>application</b></DT>
+                <DD>Place the objects that are exported via variables in the application scope.</DD>
+              </DL>
+            ]]></description>
             <name>scope</name>
             <required>false</required>            
             <rtexprvalue>true</rtexprvalue>            
@@ -305,9 +612,10 @@
     </tag>    
         
     <tag>
-        <description>
+        <description><![CDATA[
+            <em>Deprecated.</em></P>
             This tag provides access to individual XML content node element values.
-        </description>              
+        ]]></description>              
         <name>contentshow</name>
         <tag-class>org.opencms.jsp.CmsJspTagContentShow</tag-class>
         <body-content>empty</body-content>
@@ -326,49 +634,106 @@
     </tag>  
     
     <tag>
-        <description>
-            This tag provides access to individual XML content node element values.
-        </description>              
+        <description><![CDATA[
+            This tag provides access to information about the XML contents collected via <code>&lt;cms:contentload&gt;</code>.
+            It has to be used in the body of <code>&lt;cms:contentload&gt;</code>.</P>
+            Typically, the tag is employed to build up a page navigation or, 
+            when using the surrounding <code>&lt;cms:contentload&gt;</code> with the attribute <code>preload="true"</code>, to get information about the number of contents collected.
+        ]]></description>              
         <name>contentinfo</name>
         <tag-class>org.opencms.jsp.CmsJspTagContentInfo</tag-class>
         <body-content>empty</body-content>
         <attribute>
+            <description><![CDATA[
+              Name of the exported scoped variable that provides access to information about the XML contents loaded via <code>&lt;cms:contentload&gt;</code>. 
+              The variable's visibility is limited to the body of the surrounding <code>&lt;cms:contentload&gt;</code> tag.</P>
+              The exported variable has type org.opencms.jsp.util.CmsContentInfoBean.
+            ]]></description>            
             <name>var</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+            <description><![CDATA[
+              <P><em>Deprecated. There is no need to use this attribute since JSP 2.0 standard. Just use EL outside of the tag.</em></P>
+              The string or EL expression, the tag is replaced with.<BR>
+              For example, if the attribute <code>var</code> is set to <code>info</code>, providing <code>${info.resultSize}</code> as value for <code>value</code>,
+              the number of results collected by the surrounding <code>&lt;cms:contentload&gt;</code> is displayed.</P>
+              Warning: might not work properly for the first execution of the tag.              
+            ]]></description>
             <name>value</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+            <description><![CDATA[
+              The scope, where the exposed variables are placed.<BR>
+              The following values are supported:
+              <DL>
+                <DT><b>page</b> (default)</DT>
+                <DD>Place the object that is exported via a variable in the page scope.</DD>
+                <DT><b>request</b></DT>
+                <DD>Place the object that is exported via a variable in the request scope.</DD>
+                <DT><b>session</b></DT>
+                <DD>Place the object that is exported via a variable in the session scope.</DD>
+                <DT><b>application</b></DT>
+                <DD>Place the object that is exported via a variable in the application scope.</DD>
+              </DL>           
+            ]]></description>        
             <name>scope</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>        
     </tag>      
     
     <tag>
-        <description>
-            This tag provides access to the content for the JSP EL.
-        </description>              
+        <description><![CDATA[
+            This tag provides access to an XML content.</P>
+            It has to be used in the body of <code>&lt;cms:contentload&gt;</code>.
+        ]]></description>              
         <name>contentaccess</name>
         <tag-class>org.opencms.jsp.CmsJspTagContentAccess</tag-class>
         <body-content>empty</body-content>
         <attribute>
+            <description><![CDATA[
+              Name of the exported scoped variable that provides access to the XML content currently loaded via <code>&lt;cms:contentload&gt;</code>. 
+              The variable's visibility is limited to the body of the surrounding <code>&lt;cms:contentload&gt;</code> tag.</P>
+              The exported variable has type org.opencms.jsp.util.CmsJspContentAccessBean.
+            ]]></description>
             <name>var</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+            <description><![CDATA[
+              Name of the exported scoped variable that provides direct access to the value map of the currently loaded XML content. 
+              The same object can be access via the <code>.value</code> property of the variable exported via the <code>var</code> attribute.
+            ]]></description>
             <name>val</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+            <description><![CDATA[
+              The scope, where the exposed variables are placed.<BR>
+              The following values are supported:
+              <DL>
+                <DT><b>page</b> (default)</DT>
+                <DD>Place the objects that are exported via variables in the page scope.</DD>
+                <DT><b>request</b></DT>
+                <DD>Place the objects that are exported via variables in the request scope.</DD>
+                <DT><b>session</b></DT>
+                <DD>Place the objects that are exported via variables in the session scope.</DD>
+                <DT><b>application</b></DT>
+                <DD>Place the objects that are exported via variables in the application scope.</DD>
+              </DL>
+            ]]></description>            
             <name>scope</name>
             <required>false</required>            
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+            <description><![CDATA[
+              The locale that identifies which language specific version of the content is accessed.</P>
+              Default: The locale set in the request context.
+            ]]></description>        
             <name>locale</name>
             <required>false</required>            
             <rtexprvalue>true</rtexprvalue>            
@@ -376,9 +741,10 @@
     </tag>    
     
     <tag>
-        <description>
+        <description><![CDATA[
+            <em>Deprecated.</em> </P>
             This tag allows looping through XML content node element values.
-        </description>              
+        ]]></description>              
         <name>contentloop</name>
         <tag-class>org.opencms.jsp.CmsJspTagContentLoop</tag-class>
         <body-content>JSP</body-content>
@@ -389,75 +755,127 @@
     </tag>   
     
     <tag>
-        <description>
+        <description><![CDATA[
+            <em>Deprecated. Use properties of org.opencms.jsp.util.CmsJspContentAccessBean via the EL instead.</em></P>
             This tag provides conditional logic for checking the element of a XML content.
-        </description>              
+            The body of the tag is only processed if the conditions specified by the attributes and their values all evaluate to true.</P>
+            The tag has to be used in the body of <code>&lt;cms:contentload&gt;</code>.
+        ]]></description>              
         <name>contentcheck</name>
         <tag-class>org.opencms.jsp.CmsJspTagContentCheck</tag-class>
         <body-content>JSP</body-content>
         <attribute>
+            <description><![CDATA[
+              A synonym for the attribute <code>ifexistsone</code>.
+            ]]></description>              
             <name>ifexists</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+            <description><![CDATA[
+              Given a comma separated list of node names, it is checked if those nodes exist in the XML content.<BR>
+              The condition evaluates to true if at least one node exists.
+            ]]></description>              
             <name>ifexistsone</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+            <description><![CDATA[
+              Given a comma separated list of node names, it is checked if those nodes exist in the XML content.<BR>
+              The condition evaluates to true if all nodes exists.
+            ]]></description>              
             <name>ifexistsall</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+            <description><![CDATA[
+              Given a comma separated list of node names, it is checked if those nodes exist in the XML content.<BR>
+              The condition evaluates to true if none of the nodes exist.
+            ]]></description>              
             <name>ifexistsnone</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+            <description><![CDATA[
+              The locale used to select the language version of the XML content that is checked.</P>
+              Default: The locale set in the request context.
+            ]]></description>              
             <name>locale</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
     </tag>
     
     <tag>
-        <description>
-            This tag loads resources from the OpenCms VFS.
-        </description> 
+        <description><![CDATA[
+            This tag loads resources from the OpenCms VFS. 
+            It is used similar to <code>&lt;cms:contentload&gt;</code>, but loads <em>all</em> kind of OpenCms resources.</P>
+            Use <code>&lt;cms:resourceaccess&gt;</code> to access loaded resources.
+        ]]></description> 
         <name>resourceload</name>
         <tag-class>org.opencms.jsp.CmsJspTagResourceLoad</tag-class>
         <body-content>JSP</body-content>
         <attribute>
+            <description><![CDATA[
+              See <code>&lt;cms:contentload&gt;</code>.
+            ]]></description> 
             <name>collector</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>    
         <attribute>
+            <description><![CDATA[
+              See <code>&lt;cms:contentload&gt;</code>.
+            ]]></description> 
             <name>param</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+            <description><![CDATA[
+              See <code>&lt;cms:contentload&gt;</code>.
+            ]]></description> 
             <name>property</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>   
         <attribute>
+            <description><![CDATA[
+              See <code>&lt;cms:contentload&gt;</code>.
+            ]]></description> 
             <name>pageIndex</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute> 
         <attribute>
+            <description><![CDATA[
+              See <code>&lt;cms:contentload&gt;</code>.
+            ]]></description> 
             <name>pageSize</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>  
         <attribute>
+            <description><![CDATA[
+              See <code>&lt;cms:contentload&gt;</code>.
+            ]]></description> 
             <name>pageNavLength</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>        
         <attribute>
+            <description><![CDATA[
+              See <code>&lt;cms:contentload&gt;</code>.
+            ]]></description> 
             <name>preload</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+            <description><![CDATA[
+              Name of the exported variable that provides access to all respources loaded via <code>&lt;cms:resourceload&gt;</code>. </P>
+              The exported variable has type org.opencms.jsp.util.CmsJspRespourceLoadBean.
+            ]]></description> 
             <name>var</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+            <description><![CDATA[
+              See <code>&lt;cms:contentload&gt;</code>.
+            ]]></description> 
             <name>scope</name>
             <required>false</required>            
             <rtexprvalue>true</rtexprvalue>            
@@ -465,18 +883,38 @@
     </tag>
     
     <tag>
-        <description>
-            This tag provides access the the resources for the JSP EL.
-        </description>              
+        <description><![CDATA[
+            This tag provides access OpenCms resources.
+            It has to be used in the body of <code>&lt;cms:resourceload&gt;</code>.
+        ]]></description>              
         <name>resourceaccess</name>
         <tag-class>org.opencms.jsp.CmsJspTagResourceAccess</tag-class>
         <body-content>empty</body-content>
         <attribute>
+            <description><![CDATA[
+              Name of the exported scoped variable that provides access to resource currently loaded via <code>&lt;cms:resourceload&gt;</code>. 
+              The variable's visibility is limited to the body of the surrounding <code>&lt;cms:resourceload&gt;</code> tag.</P>
+              The exported variable has type org.opencms.jsp.util.CmsJspResourceAccessBean.
+            ]]></description>              
             <name>var</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+            <description><![CDATA[
+              The scope, where the exposed variables are placed.<BR>
+              The following values are supported:
+              <DL>
+                <DT><b>page</b> (default)</DT>
+                <DD>Place the objects that are exported via variables in the page scope.</DD>
+                <DT><b>request</b></DT>
+                <DD>Place the objects that are exported via variables in the request scope.</DD>
+                <DT><b>session</b></DT>
+                <DD>Place the objects that are exported via variables in the session scope.</DD>
+                <DT><b>application</b></DT>
+                <DD>Place the objects that are exported via variables in the application scope.</DD>
+              </DL>
+            ]]></description>            
             <name>scope</name>
             <required>false</required>            
             <rtexprvalue>true</rtexprvalue>            
@@ -533,118 +971,195 @@
     </tag>
 
     <tag>
-        <description>
-            This tag is used to read values from the OpenCms workplace language files.
-        </description>
+        <description><![CDATA[
+            This tag is used to read values from the OpenCms workplace message bundles.</P>
+            Place the key in the tag's body and the value for the locale of the current request context is returned.
+        ]]></description>
         <name>label</name>
         <tag-class>org.opencms.jsp.CmsJspTagLabel</tag-class>
         <body-content>scriptless</body-content>
     </tag>            
     
     <tag>
-        <description>
-            This tag is used for including OpenCms Subelements in a page.
+        <description><![CDATA[
+            This tag is used for including OpenCms subelements in a page.
             It is similar to the "include" JSP directive.
-            It loads the input at runtime, not at compile - time.
-        </description>
+            But, in contrast, it loads the input at runtime, not at compile time.</P>
+            In the body of the tag, the <code>&lt;cms:param&gt;</code> tag can be used to pass parameters to the included file.</P>
+            You could also specify the file to include in the tag's body.</P>
+            <em>Note that all Uris should be given as absolute or relative pathes without web application or servlet path, nor wrapped by a <code>&lt;cms:link&gt;</code>.</em>
+        ]]></description>
         <name>include</name>
         <tag-class>org.opencms.jsp.CmsJspTagInclude</tag-class>
         <tei-class>org.opencms.jsp.CmsJspTagIncludeTEI</tei-class>
         <body-content>JSP</body-content>
         <attribute>
+            <description><![CDATA[
+              Synonym for <code>file</code>.
+            ]]></description>
             <name>page</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>        
         <attribute>
+            <description><![CDATA[
+              Uri of the file that should be included.
+            ]]></description>
             <name>file</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>        
         <attribute>
+            <description><![CDATA[
+              Specify a property of the current JSP that provides the Uri of the file that should be included.
+            ]]></description>
             <name>property</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>        
         <attribute>
+            <description><![CDATA[
+              Specify the file to include via an attribute of the servlet request and provide the attribute's name via this tag-attribute.
+            ]]></description>
             <name>attribute</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>        
         <attribute>
+            <description><![CDATA[
+              A suffix, appended to the specified file that should be included.</P>
+              <em>Can only be used in combination with the attributes <code>property</code> or <code>attribute</code>.</em>
+            ]]></description>
             <name>suffix</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>     
         <attribute>
+            <description><![CDATA[
+              The element to select form the included (JSP) file.
+            ]]></description>
             <name>element</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+            <description><![CDATA[
+              <em>Deprecated.</em> Flag to indicate if the included (JSP) file is editable.
+            ]]></description>
             <name>editable</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+            <description><![CDATA[
+              Flag to indicate if the included file should be cacheable in the Flex Cache.</P>
+              Default: "true".
+            ]]></description>
             <name>cacheable</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>                    
     </tag>        
 
     <tag>
-        <description>
-            This tag is used to enable the direct editing within a template.
-        </description>
+        <description><![CDATA[
+            This tag is used to enable the direct edit functionality.</P>
+            It is placed in the header of a none-container-page template for most use cases.</P>
+            An exeception is the use with attribute <code>editEmpty</code>, which is the last none-deprecated use case.</P>
+            
+            <em>Note that most of the functionality is now done by <code>&lt;enable-ade&gt;</code> for container page templates.</em>            
+        ]]></description>
         <name>editable</name>
         <tag-class>org.opencms.jsp.CmsJspTagEditable</tag-class>
         <body-content>JSP</body-content>
         <attribute>
+            <description><![CDATA[
+              <em>Deprecated.</em></P>
+              Specifies the edit provider class.
+            ]]></description>
             <name>provider</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>        
         <attribute>
+            <description><![CDATA[
+              <em>Deprecated.</em></P>
+            ]]></description>
             <name>file</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+            <description><![CDATA[
+              <em>Deprecated.</em></P>
+              Specifies the mode for the edit provider class.
+            ]]></description>
             <name>mode</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>    
         <attribute>
+            <description><![CDATA[
+              Use the tag with this attribute inside of <code>cms:contentload</code> when content is preloaded to enable adding content if no content is collected yet.</P>
+              Possible values are:
+              <DL>
+                <DT><b>false</b> (default)</DT>
+                <DD>
+                  Disables adding a new content via direct edit, if none is found.<BR>
+                  (You do not have to use the tag at all to reach this setting.)
+                </DD>
+                <DT><b>true</b></DT>
+                <DD>Enables adding a new content via direct edit, if none is found.</DD>
+              </DL>              
+            ]]></description>
             <name>editEmpty</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
     </tag>
     
     <tag>
-        <description>
-            This tag is used to output different HTML for various device types
-        </description>
+        <description><![CDATA[
+            This tag is used to output different HTML for various device types.</P>
+            The body of the tag is only included if the device where the output is rendered matches a device listed via the <code>type</code> attribute.</P>
+            <em>Hint:</em> You might want to use a template context provider instead of the tag to adjust your web site to multiple devices.</P>
+        ]]></description>
         <name>device</name>
         <tag-class>org.opencms.jsp.CmsJspTagDevice</tag-class>
         <body-content>JSP</body-content>
         <attribute>
+            <description><![CDATA[
+              A list of device types for which the body content should be included.<BR />
+              Currently supported device types are:
+              <DL>
+                <DT><b>desktop</b></DT>
+                <DT><b>mobile</b></DT>
+                <DT><b>tablet</b></DT>
+              </DL>
+              The device that sends the current request is identified via browser information.
+            ]]></description>
             <name>type</name>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
 
     <tag>
-        <description>
-            This tag is used to enable the advanced direct editing within a template.
-        </description>
+        <description><![CDATA[
+            This tag is used to enable the advanced direct editing within a template.</P>
+            Just place <code>&lt;cms:enable-ade /&gt;</code> in the head section of your template.
+        ]]></description>
         <name>enable-ade</name>
         <tag-class>org.opencms.jsp.CmsJspTagEnableAde</tag-class>
         <body-content>JSP</body-content>
     </tag>
 
     <tag>
-        <description>
+        <description><![CDATA[
             Adds a parameter to the outer tag (if supported).
-        </description>
+        ]]></description>
         <name>param</name>
         <tag-class>org.opencms.jsp.CmsJspTagParam</tag-class>
         <body-content>JSP</body-content>
         <attribute>
+            <description><![CDATA[
+              Name of the parameter.
+            ]]></description>
             <name>name</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description><![CDATA[
+              Value of the parameter. Can alternatively be given in the tag's body.
+            ]]></description>
             <name>value</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -652,145 +1167,359 @@
     </tag>      
     
     <tag>
-        <description>
+        <description><![CDATA[
             This tag allows using the OpenCms native image scaling mechanism.
             It generates the HTML required to include the selected image, adding the
-            required image scaling parameters.
-        </description>
+            required image scaling parameters.</P>
+            The following image formats are supported: BMP, GIF, JPEG, PNG, PNM, TIFF.
+            <em>
+              Note: Picture scaling is by default only enabled for target size with width and height &lt;=1500.
+              The size can be changed in the image scaler configuration in the file <code>opencms-vfs.xml</code> in the body of the tag <code>&lt;loader&gt;</code>.
+              Also other options for the image scaler are set there.
+            </em>
+        ]]></description>
         <name>img</name>
         <tag-class>org.opencms.jsp.CmsJspTagImage</tag-class>
         <body-content>JSP</body-content>
         <!-- These attributes are used to control the image scaling process: -->
         <attribute>
+            <description><![CDATA[
+              Uri of the image's source file.</P>
+              <em>Note: The uri will be adjusted by OpenCms automatically, so do not use <code>&lt;cms:link&gt;</code>.</em>
+            ]]></description>
             <name>src</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>        
         <attribute>
+            <description><![CDATA[
+              A natural number specifying the target width, i.e., the value of the <code>width</code> attribute set in the generated HTML <code>&lt;img&gt;</code> tag.
+            ]]></description>
             <name>width</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>        
         <attribute>
+            <description><![CDATA[
+              A natural number specifying the target height, i.e., the value of the <code>height</code> attribute set in the generated HTML <code>&lt;img&gt;</code> tag.
+            ]]></description>
             <name>height</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>        
         <attribute>
+            <description><![CDATA[
+              <em>Deprecated</em></P>
+              A natural number specifying the maximal width of an image scaled with <code>scaleType="5"</code>.<BR>
+              For other scale types the attribute is ignored.
+            ]]></description>
             <name>maxWidth</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>        
         <attribute>
+            <description><![CDATA[
+              <em>Deprecated</em></P>
+              A natural number specifying the maximal height of an image scaled with <code>scaleType="5"</code>.<BR>
+              For other scale types the attribute is ignored.
+            ]]></description>
             <name>maxHeight</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>  
         <attribute>
+            <description><![CDATA[
+              Set the scale type used for the image.<BR>
+              The following values are supported:
+              <DL>
+                <DT><b>0</b> (default)</DT>
+                <DD>
+                  <em>Scale to exact target size with background padding:</em><BR>
+                  The image is scaled (enlarged or shrinked) to fit completely into the given target size (height/width) without changing aspect ratio.
+                  If attributes <code>height</code> and <code>width</code> are both specified, potentially arising space is filled up in the color defined via the attribute <code>scaleColor</code>.<BR>
+                  If neither <code>height</code> or <code>width</code> are specified the image is shown in its original size.
+                </DD>
+                <DT><b>1</b></DT>
+                <DD>
+                  <em>Thumbnail generation mode</em><BR>
+                  Works like mode 0, but images are never enlarged.
+                </DD>
+                <DT><b>2</b></DT>
+                <DD>
+                  <em>Scale to exact target size with cropping</em><BR>
+                  The image is scaled (enlarged or shrinked) to fill the complete target area and match height or width exactly.
+                  The aspect ratio is not changed.
+                  Overlapping parts of the image are cropped.
+                </DD>
+                <DT><b>3</b></DT>
+                <DD>
+                  Works like mode 4.
+                </DD>
+                <DT><b>4</b></DT>
+                <DD>
+                  <em>Scale to the exact target size ignoring the aspect ratio.</em><BR>
+                  If width and height are given both, the image is scaled exactly to that sizes.
+                  If at least one of the sizes is not explicitely specified, the aspect ratio is kept.
+                </DD>
+                <DT><b>5</b></DT>
+                <DD><em>Deprecated. Not supported anymore. Behaves similar to 1. </DD>
+              </DL>
+            ]]></description>
             <name>scaleType</name>
             <rtexprvalue>true</rtexprvalue>
         </attribute>   
         <attribute>
+            <description><![CDATA[
+              Specify how the original image is placed if cropped or padded.
+              The following values are supported:
+              <DL>
+                <DT><b>0</b> (default)</DT>
+                <DD>center</DD>
+                <DT><b>1</b></DT>
+                <DD>lower left</DD>
+                <DT><b>2</b></DT>
+                <DD>lower right</DD>
+                <DT><b>3</b></DT>
+                <DD>lower middle</DD>
+                <DT><b>4</b></DT>
+                <DD>center left</DD>
+                <DT><b>5</b></DT>
+                <DD>center right</DD>
+                <DT><b>6</b></DT>
+                <DD>upper middle</DD>
+                <DT><b>7</b></DT>
+                <DD>upper left</DD>
+                <DT><b>8</b></DT>
+                <DD>upper right</DD>
+              </DL>
+            ]]></description>
             <name>scalePosition</name>
             <rtexprvalue>true</rtexprvalue>
         </attribute>     
         <attribute>
+            <description><![CDATA[
+              Specify filters applied to the image (and also to a possibly present padding).<BR>
+              The following values can be given as colon (":") separated list:
+              <DL>
+                <DT><b>shadow</b></DT>
+                <DD>Adds a shadow effect to the image.</DD>
+                <DT><b>grayscale</b></DT>
+                <DD>Renders the image in grayscale.</DD>
+              </DL>
+            ]]></description>
             <name>scaleFilter</name>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description><![CDATA[
+              An non-negative integer specifying the scale quality in percent.<BR>
+              Allowed are values between 0 and 100, where 0 is a special value to use the default quality.
+              The value has only influence on image formats that support a quality setting, e.g. JPEG.</P>
+              Default: 0.
+            ]]></description>
             <name>scaleQuality</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+            <description><![CDATA[
+              The color used as backgroud if padding is neccessary.
+              The following values are supported:
+              <DL>
+                <DT><b>transparent</b> (default)</DT>
+                <DD>
+                  Transparent background, if supported by the image type, e.g. for PNG.
+                  If transparent background is not supported, e.g. by JPEG, the value defaults to white (FFFFFF).
+                </DD>
+                <DT><b>000000 - FFFFFF</b></DT>
+                <DD>Hexadecimal RGB color code.</DD>
+              </DT>
+            ]]></description>
             <name>scaleColor</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+            <description><![CDATA[
+              Set the image processing mode.<BR>
+              The following values are supported:
+              <DL>
+                <DT><b>0</b> (default)</DT>
+                <DD>
+                  <em>Quality.</em>
+                  Best possible image processing. Might be slow.
+                </DD>
+                <DT><b>1</b></DT>
+                <DD>
+                  <em>Medium.</em>
+                  Use default JVM settings. Almost as slow as quality mode. Not recommended.
+                </DD>
+                <DT><b>2</b></DT>
+                <DD>
+                  <em>Speed.</em>
+                  Fast image processing. But quality might be not as good as in quality mode.<BR>
+                  The setting is recommended for thumbnail generation.
+                </DD>
+            ]]></description>
             <name>scaleRendermode</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>        
         <attribute>
+            <description><![CDATA[
+              Specify if only parameters for the HTML <code>&lt;img&gt;</code> tag should be generated, or the whole tag.
+              The following values are supported:
+              <DL>
+                <DT><b>false</b> (default)</DT>
+                <DD>Generate the whole HTML <code>&lt;img&gt;</code> tag.</DD>
+                <DT><b>true</b></DT>
+                <DD>Generate only the parameters specified via <code>&lt;cms:img&gt;</code>.
+                    These are at least <code>src</code>, <code>width</code>, <code>height</code>.
+                </DD>
+              </DL>
+            ]]></description>
             <name>partialTag</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+            <description><![CDATA[
+              Controls if the attributes <code>width</code> and <code>height</code> are created.
+              The following values are supported:
+              <DL>
+                <DT><b>false</b> (default)</DT>
+                <DD>Attributes <code>width</code> and <code>height</code> are created.</DD>
+                <DT><b>true</b></DT>
+                <DD>Attributes <code>width</code> and <code>height</code> are not created.</DD>
+              </DL>
+            ]]></description>
             <name>noDim</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>    
         <!-- The following attributes are only convenience attributes for easier HTML generation: -->
         <attribute>
+            <description><![CDATA[
+              Attribute is set unchanged for the generated (partial) tag.
+            ]]></description>
             <name>alt</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+            <description><![CDATA[
+              Attribute is set unchanged for the generated (partial) tag.              
+            ]]></description>
             <name>align</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+            <description><![CDATA[
+              Attribute is set unchanged for the generated (partial) tag.
+            ]]></description>
             <name>border</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+            <description><![CDATA[
+              The value is set as the value of the <code>class</code> attribute in the generated (partial) tag.
+            ]]></description>
             <name>cssclass</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>                            
         <attribute>
+            <description><![CDATA[
+              Attribute is set unchanged for the generated (partial) tag.
+            ]]></description>
             <name>hspace</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>  
         <attribute>
+            <description><![CDATA[
+              Attribute is set unchanged for the generated (partial) tag.
+            ]]></description>
             <name>vspace</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>  
         <attribute>
+            <description><![CDATA[
+              Attribute is set unchanged for the generated (partial) tag.
+            ]]></description>
             <name>id</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>  
         <attribute>
+            <description><![CDATA[
+              Attribute is set unchanged for the generated (partial) tag.
+            ]]></description>
             <name>longdesc</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>  
         <attribute>
+            <description><![CDATA[
+              Attribute is set unchanged for the generated (partial) tag.
+            ]]></description>
             <name>name</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>  
         <attribute>
+            <description><![CDATA[
+              Attribute is set unchanged for the generated (partial) tag.
+            ]]></description>
             <name>style</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>  
         <attribute>
+            <description><![CDATA[
+              Attribute is set unchanged for the generated (partial) tag.
+            ]]></description>
             <name>title</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>                                    
         <attribute>
+            <description><![CDATA[
+              Attribute is set unchanged for the generated (partial) tag.
+            ]]></description>
             <name>usemap</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>                         
     </tag>    
     
     <tag>
-        <description>
-            This tag can be used to write JSP code from a JSP to files in the static export.
-        </description>
+        <description><![CDATA[
+            This tag can be used to write JSP code from a JSP to files in the static export.</P>
+            Code in the tag's body is not processed by OpenCms.
+        ]]></description>
         <name>export</name>
         <tag-class>org.opencms.jsp.CmsJspTagExport</tag-class>
         <body-content>tagdependent</body-content>  
     </tag>    
 
     <tag>
-        <description>
-            This tag allows to include jquery and some jquery plugins code and style sheets.
-        </description>
+        <description><![CDATA[
+            This tag allows to include jquery and some jquery plugins code and style sheets that are shipped with OpenCms.<BR>
+            The tag will include the unpacked version of JQuery in the offline project (for better debug facilities) and the packed version in the online project (for better performance).</P>
+            Use the tag in the HTML head section of your template.
+        ]]></description>
         <name>jquery</name>
         <tag-class>org.opencms.jsp.CmsJspTagJQuery</tag-class>
         <body-content>empty</body-content>
         <attribute>
+            <description><![CDATA[
+              The javascript file to include.
+            ]]></description>
             <name>js</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+            <description><![CDATA[
+              The css file to include.
+            ]]></description>
             <name>css</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+            <description><![CDATA[
+              Flag to enable dynamic inclusion of required jQuery files.
+              Possible values are:
+          	  <DL>
+          	    <DT><b>false</b> (default)</DT>
+          	    <DD>Dynamic inclusion is disabled.</DD>
+          	    <DT><b>true</b></DT>
+        	      <DD>Dynamic inclusion is enabled.</DD>
+        	    </DL>
+            ]]></description>
             <name>dynamic</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>            
@@ -805,41 +1534,91 @@
         <tag-class>org.opencms.jsp.CmsJspTagContainer</tag-class>
         <body-content>empty</body-content>
         <attribute>
+        	<description><![CDATA[
+        	  A unique name for the container that is used to identify it in a container page.
+        	]]></description>        
             <name>name</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+        	<description><![CDATA[
+        		A type assigned to the container, e.g. "content" or "top-wide" or "left".</P>
+        		The type can be used to select the formatter that is used to render a content in the container.
+        	]]></description>
             <name>type</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>        
         <attribute>
+        	<description><![CDATA[
+        		The maximal number of elements that can be placed in the container.</P>
+        		Default: 100.
+        	]]></description>
             <name>maxElements</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+        	<description><![CDATA[
+        		A virtual width of the container.</P>
+        		The given width does not have to match the actual width of the container, but its good practice to choose the actual width in pixels.
+        		The value can be used to select the formatter for elements dropped into the container, or even to adjust a formatters behavior.</P>
+        		 Default: -1
+        	]]></description>
         	<name>width</name>
         	<required>false</required>
         	<rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+        	<description><![CDATA[
+        		This attribute defines the tag that the <code>&lt;cms:container&gt;</code>-tag is translated to.<BR>
+            Values should have the the form:</P>
+            <DL>
+              <DT><code><b>&lt;{tag-name}&gt;</b></code></DT>
+              <DD> <code>tag-name</code> is a name of a valid HTML tag.</DD>
+            </DL>
+            Default: <code>&lt;div&gt;</code>
+        	]]></description>
         	<name>tag</name>
         	<required>false</required>
         	<rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+        	<description><![CDATA[
+        		A space separated list of CSS-class names that are inserted as value of the "class"-attribute in the tag to which the <code>&lt;cms:container&gt;</code>-tag is translated to.</P>
+        		Default: Empty list
+        	]]></description>
         	<name>tagClass</name>
         	<required>false</required>
         	<rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+        	<description><![CDATA[
+        	  This attribute defines if on a detail page the detail content should be shown in the container.<BR>
+        	  The following values are supported:
+        	  <DL>
+        	    <DT><b>false</b> (default)</DT>
+        	    <DD>Detail contents are never shown in the container.</DD>
+        	    <DT><b>true</b></DT>
+        	    <DD>If a suitable formatter exists, the detail content is shown in the container.</DD>
+        	  </DL>
+        	]]></description>
         	<name>detailview</name>
         	<required>false</required>
         	<rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+        	<description><![CDATA[
+        	  This attribute defines if the container is visible only on detail pages and if so, if the shown elements are specific to the actual detail content.<BR>
+        	  The following values are supported:
+        	  <DL>
+        	    <DT><b>false</b> (default)</DT>
+        	    <DD>The container is shown on every page.</DD>
+        	    <DT><b>true</b></DT>
+        	    <DD>The container is visible only on detail pages.</DD>
+        	  </DL>
+        	]]></description>
         	<name>detailonly</name>
         	<required>false</required>
         	<rtexprvalue>true</rtexprvalue>
@@ -847,33 +1626,50 @@
     </tag>        
     
     <tag>
-        <description>
-            This tag loads single XML content items for ADE formatters.
-        </description> 
+      	<description><![CDATA[
+            This tag loads single XML content items.
+       	]]></description>
         <name>formatter</name>
         <tag-class>org.opencms.jsp.CmsJspTagFormatter</tag-class>
         <body-content>JSP</body-content>
         <attribute>
+          	<description><![CDATA[
+              Name of the exported scoped variable that provides access to the loaded XML content. 
+              The variable's visibility is limited to the body of <code>&lt;cms:formatter&gt;</code> tag.</P>
+              The exported variable has type org.opencms.jsp.util.CmsJspContentAccessBean.          	  
+           	]]></description>
             <name>var</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+          	<description><![CDATA[
+              Name of the exported scoped variable that provides direct access to the value map of the currently loaded XML content. 
+              The same object can be access via the <code>.value</code> property of the variable exported via the <code>var</code> attribute.          	  
+           	]]></description>
             <name>val</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+          	<description><![CDATA[
+              Name of the exported scoped variable that provides direct access to the rdfa map of the currently loaded XML content.
+              The same object can be access via the <code>.rdfa</code> property of the variable exported via the <code>var</code> attribute.</P>
+              Via rdfa, inline editing is configured. Look up the documentation for "inline editing" for more information.
+           	]]></description>
             <name>rdfa</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+          	<description><![CDATA[
+              The locale that identifies which language specific version of the content is accessed.</P>
+              Default: The locale set in the request context.          	  
+           	]]></description>
         	<name>locale</name>
         	<required>false</required>
         	<rtexprvalue>true</rtexprvalue>
-        </attribute>
-              
+        </attribute>              
     </tag>   
     
     <tag>
@@ -886,35 +1682,68 @@
     </tag>
         
     <tag>
-        <description>
-            This tag includes required css or javascript resources, place in html/head.
-            Required resources can be configured in the resource type schema.
-            Set attribute type to 'css' to include css resources or to 'javascript' to include java-script resources.
-        </description> 
+        <description><![CDATA[
+            This tag enables content-dependent dynamic inclusion of css/javascript resources on a containerpage.</P>
+            It should be placed in the HTML head-section of a container page template.</P>
+            If dynamic inclusion is enabled, resources required by a special formatter that are configured in its formatter_config, are included on demand.
+        ]]></description> 
         <name>headincludes</name>
         <tag-class>org.opencms.jsp.CmsJspTagHeadIncludes</tag-class>
         <body-content>JSP</body-content>
         <attribute>
+            <description><![CDATA[
+              The type of resources that can be included dynamically.<BR>
+              The following values are supported:
+              <DL>
+                <DT><b>css</b></DT>
+                <DD>Allow to include css styles, or links to style files, dynamically.</DD>
+                <DT><b>javascript</b></DT>
+                <DD>Allow to include javascript code, or links to script files, dynamically.</DD>
+               </DL>
+            ]]></description> 
             <name>type</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>     
         <attribute>
+            <description><![CDATA[
+              A pipe ("|") separated list of css/javascript files that should be included by default.
+            ]]></description> 
         	<name>defaults</name>
         	<required>false</required>
         	<rtexprvalue>true</rtexprvalue> 
         </attribute>
         <attribute>
+            <description><![CDATA[
+              Configure if the HTML tags generated by <code>&lt;cms:headincludes&gt;</code> should also be closed if closing is not mandatory.<BR />
+              The following values are supported:
+              <DL>
+                <DT><b>false</b> (default)</DT>
+                <DD>Generated tags are only closed if mandatory.</DD>
+                <DT><b>true</b></DT>
+                <DD>All generated tags are closed.</DD>
+               </DL>
+            ]]></description> 
         	<name>closetags</name>
         	<required>false</required>
         	<rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description><![CDATA[
+              Type of the detail container. <BR>
+              Telling the type here will allow to load includes from the most suitable detail formatter if more than one detail formatter is present for a content type.</P>
+              Use the same value as set for the <code>type</code> attribute an the detail container.
+            ]]></description> 
         	<name>detailtype</name>
         	<required>false</required>
         	<rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description><![CDATA[
+              Width of the detail container. <BR>
+              Telling the width here will allow to load includes from the most suitable detail formatter if more than one detail formatter is present for a content type.</P>
+              Use the same value as set for the <code>width</code> attribute an the detail container.
+            ]]></description> 
         	<name>detailwidth</name>
         	<required>false</required>
         	<rtexprvalue>true</rtexprvalue>
@@ -922,38 +1751,92 @@
     </tag>
         
     <tag>
-        <description>
-            This tag provides access to the navigation information.
-        </description> 
+        <description><![CDATA[
+            This tag provides access to a list of elements that should be shown in the navigation, i.e., elements where at least one of the properties <code>NavText</code> or <code>NavPos</code> are set. 
+            The tag is the standard tool to build up dynamic page navigations.
+        ]]></description> 
         <name>navigation</name>
         <tag-class>org.opencms.jsp.CmsJspTagNavigation</tag-class>
         <body-content>empty</body-content>
         <attribute>
+            <description><![CDATA[
+              Name of the exported variable that holds a suitably initialized org.opencms.jsp.util.CmsJspNavigationBean object.
+              The object in particular provides a list of navigation elements (of type org.opencms.jsp.CmsJspNavElement), available via the property <code>items</code>.
+            ]]></description>
             <name>var</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+            <description><![CDATA[
+              Type of the navigation for which the entries should be collected. 
+              The type influences the collected navigation elements.
+              Supported types are:
+              <DL>
+              <DT><b>breadCrumb</b></DT>
+              <DD>
+                Navigation elements for the folders from a specified startLevel (default: 0) up to and endLevel.</P>
+                The endLevel can have values between the startLevel and the maximal endLevel, 
+                that is either the specified resource's level (if <code>true</code> is set as value for the <code>param</code> attribute), 
+                or the specified resource's level minus 1 (if <code>false</code> is set as value for the <code>param</code> attribute).
+                The default endLevel is the maximal endLevel.
+              </DD>
+              <DT><b>forFolder</b></DT>
+              <DD>
+                Navigation elements for all (navigable) elements in the specified folder.
+              </DD>
+              <DT><b>forResource</b></DT>
+              <DD>
+                Navigation element for the specified resource (as singleton list).
+              </DD>
+              <DT><b>forSite</b></DT>
+              <DD>
+                Navigation elements for all (navigable) resources of the current site.</P>
+                Optionally, an endLevel can be specified and an other top-folder than "/" can be specified via the attribute <code>resource</code>.</P>
+                <em>Note: If a folder has no navigation properties, the subfolders are not included, too.</em>
+              </DD>
+              <DT><b>treeForFolder</b></DT>
+              <DD>
+                Navigation elements for (navigable) resources in the between startLevel and endLevel.</P>
+                Not all resources are shown, the elements are collected according to the specified resource, i.e., only elements from "sublevels" on the path to this resource are collected.
+              </DD>
+              </DL>
+            ]]></description>
             <name>type</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+            <description><![CDATA[
+              Absolute start level for the navigation, used for different navigation types.</P>
+              Default: Depends on the navigation type.
+            ]]></description>
             <name>startLevel</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>  
         <attribute>
+            <description><![CDATA[
+              Absolute end level for the navigation, used for different navigation types.</P>
+              Default: Depends on the navigation type.
+            ]]></description>
             <name>endLevel</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>    
         <attribute>
+            <description><![CDATA[
+              A resource, typically a folder, relative to which the navigation should be build.</P>
+              Default: The resource found under the request uri.
+            ]]></description>
             <name>resource</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+            <description><![CDATA[
+              Allows configuration for navigations of type "breadCrumb", see description of this navigation type.</P>
+            ]]></description>
             <name>param</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>            
@@ -961,22 +1844,41 @@
     </tag>     
                     
     <tag>
-        <description>
-            Provides access to the settings of an ADE container element.
-        </description>
+        <description><![CDATA[
+            Provides access to the settings of an ADE container element.</P>
+            The tag is replaced with the value of the requested setting.</P>
+            Useful, e.g., to adjust formatters to element settings.
+        ]]></description>
         <name>elementsetting</name>
         <tag-class>org.opencms.jsp.CmsJspTagElementSetting</tag-class>
         <body-content>empty</body-content>
         <attribute>
+            <description><![CDATA[
+              Name of the setting to read.
+            ]]></description>
             <name>name</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description><![CDATA[
+        	  This attribute allows you to escape HTML code in the returned value.<BR>
+        	  The following values are supported:
+        	  </P>
+        	  <DL>
+        	    <DT><b>false</b> (default)</DT>
+        	    <DD>HTML is not escaped.</DD>
+        	    <DT><b>true</b></DT>
+        	    <DD>HTML is escaped.</DD>
+        	  </DL>
+            ]]></description>
             <name>escapeHtml</name>
             <rtexprvalue>true</rtexprvalue>
         </attribute>         
         <attribute>
+            <description><![CDATA[
+              The returned default value, if the setting is not available for the current element.
+            ]]></description>
             <name>default</name>
             <rtexprvalue>true</rtexprvalue>
         </attribute> 
@@ -984,22 +1886,31 @@
     
      <tag>
     	<description>
-    		Enables automatic parameter escaping for the current flex request. 
+    		Enables automatic parameter escaping for a Flex Request. 
     	</description>
     	<name>secureparams</name>
     	<tag-class>org.opencms.jsp.CmsJspTagSecureParams</tag-class>
     	<body-content>empty</body-content>
     	<attribute>
+        <description><![CDATA[    	
+    	    Comma-separated list of parameters for which XML characters will not be escaped
+        ]]></description>    	
     		<name>allowXml</name>
     		<required>false</required>
     		<rtexprvalue>true</rtexprvalue>
     	</attribute>
     	<attribute>
+        <description><![CDATA[    	
+    	    Comma-separated list of parameters for which HTML characters will not be escaped
+        ]]></description>    	
     		<name>allowHtml</name>
     		<required>false</required>
     		<rtexprvalue>true</rtexprvalue>
     	</attribute>
     	<attribute>
+        <description><![CDATA[    	
+    	    Uri of the AntiSamy policy file.
+        ]]></description>    	
     		<name>policy</name>
     		<required>false</required>
     		<rtexprvalue>true</rtexprvalue>
@@ -1008,9 +1919,11 @@
     
               
     <function>
-        <description>
-            Provides simple access to a OpenCms JSP / EL content vfs access bean.
-        </description>
+        <description><![CDATA[
+            Provides simple access to a org.opencms.jsp.util.CmsJspVfsAccessBean.</P>
+            The argument object must in some way be suitable to extract a suitable instance of the org.opencms.file.CmsObject.</P>
+            Hint: Easy access to the vfs access bean is also provided via <code>${cms.vfs}</code>.
+        ]]></description>
         <name>vfs</name>
         <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
         <function-signature>
@@ -1019,10 +1932,12 @@
     </function>
     
     <function>
-        <description>
-            Allows conversion of Long values to Dates.
-            Can also handle Strings that represent a Long or a Date.
-        </description>
+        <description><![CDATA[
+            <P>Allows conversion of Long values to Dates.
+            Can also handle Strings that represent a Long or a Date.</P>
+            <P>Example:</P>
+            <code>&lt;fmt:formatDate value="${cms:convertDate(value.Date)}" dateStyle="SHORT" timeStyle="SHORT" type="both" /&gt;</code>
+        ]]></description>
         <name>convertDate</name>
         <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
         <function-signature>
@@ -1032,8 +1947,8 @@
     
     <function>
         <description>
-            Returns a list of attribute values specified by the attribute name
-            of the items of the given list.
+            Takes a list of Java beans as first argument and a property name for a property of these beans as second argument.
+            The function returns a list where for each given bean the specified property is returned, i.e., for each bean, bean.property is returned.
         </description>
         <name>convertList</name>
         <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
@@ -1043,9 +1958,9 @@
     </function>
     
     <function>
-        <description>
-            Returns the current OpenCms user context from the page context.
-        </description>
+        <description><![CDATA[
+            Returns the current OpenCms user context from the page context when <code>pageContext</code> is given as argument.
+        ]]></description>
         <name>getCmsObject</name>
         <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
         <function-signature>
@@ -1090,7 +2005,7 @@
     
     <function>
         <description>
-            Returns a substring of the input, which is not longer then the given int value.
+            Returns a prefix of the String argument, that is not longer then the given int value.
         </description>    
         <name>trimToSize</name>
         <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
@@ -1113,7 +2028,7 @@
     
     <function>
         <description>
-            Returns the value of a parameter from a String that is formatted for a GET request.
+          Given an URL as String, formatted for a GET request, as first argument and a request parameter name as second parameter, the value of this request parameter in the first argument is returned.
         </description>    
         <name>getRequestParam</name>
         <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
@@ -1124,7 +2039,7 @@
     
     <function>
         <description>
-            Returns the link without parameters from a String that is formatted for a GET request.
+            Returns the link, that is given as argument of type String and formatted for a GET request, without parameters.
         </description>    
         <name>getRequestLink</name>
         <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
