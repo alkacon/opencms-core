@@ -1077,7 +1077,7 @@ public class CmsPreferences extends CmsTabDialog {
 
         // loop through the vectors and fill the result vectors
         List<CmsWorkplaceView> list = new ArrayList<CmsWorkplaceView>(OpenCms.getWorkplaceManager().getViews());
-        CmsWorkplaceView directEditView = new CmsWorkplaceView(Messages.get().getBundle().key(
+        CmsWorkplaceView directEditView = new CmsWorkplaceView(Messages.get().getBundle(getLocale()).key(
             Messages.GUI_LABEL_DIRECT_EDIT_VIEW_0), CmsWorkplace.VIEW_DIRECT_EDIT, Float.valueOf(100));
         list.add(directEditView);
 
