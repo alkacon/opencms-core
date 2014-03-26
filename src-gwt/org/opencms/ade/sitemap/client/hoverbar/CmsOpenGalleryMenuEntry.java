@@ -72,7 +72,7 @@ public class CmsOpenGalleryMenuEntry extends A_CmsSitemapMenuEntry {
         configuration.setGalleryMode(GalleryMode.adeView);
         configuration.setTabConfiguration(CmsGalleryTabConfiguration.resolve("selectDoc"));
         configuration.setReferencePath(entry.getSitePath());
-        configuration.setStartFolder(entry.getSitePath());
+        configuration.setGalleryPath(entry.getSitePath());
         CmsGalleryPopup dialog = new CmsGalleryPopup(null, configuration);
         dialog.center();
     }
