@@ -687,7 +687,8 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         m_galleryTreeItems = new HashMap<CmsUUID, CmsGalleryTreeItem>();
         m_galleryTypeItems = new HashMap<String, CmsGalleryTreeItem>();
         page.add(m_galleryTree);
-        m_noGalleriesLabel = new Label(Messages.get().key(Messages.GUI_NO_GALLERIES_AVAILABLE_0));
+        m_noGalleriesLabel = new Label();
+        m_noGalleriesLabel.getElement().setInnerHTML(Messages.get().key(Messages.GUI_NO_GALLERIES_AVAILABLE_0));
         m_noGalleriesLabel.getElement().getStyle().setDisplay(Display.NONE);
         page.add(m_noGalleriesLabel);
         // draw tree items 
