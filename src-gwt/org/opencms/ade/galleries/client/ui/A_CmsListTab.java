@@ -31,6 +31,7 @@ import org.opencms.ade.galleries.client.Messages;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.I_CmsGalleryDialogCss;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
+import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.upload.client.I_CmsUploadContext;
 import org.opencms.ade.upload.client.ui.CmsDialogUploadButtonHandler;
@@ -40,6 +41,7 @@ import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsListItem;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
+import org.opencms.gwt.client.ui.externallink.CmsEditExternalLinkDialog;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
@@ -64,6 +66,8 @@ import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -73,6 +77,7 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -421,6 +426,45 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
         m_scrollList.clearList();
         onContentChange();
+    }
+
+    /**
+     * Generates a button to create new external link resources.<p>
+     * 
+     * @param parentPath the parent folder site path
+     * 
+     * @return the button widget
+     */
+    protected CmsPushButton createNewExternalLinkButton(final String parentPath) {
+
+        CmsResourceTypeBean typeInfo = getTabHandler().getTypeInfo(CmsEditExternalLinkDialog.POINTER_RESOURCE_TYPE_NAME);
+        CmsPushButton createNewButton = null;
+        if (typeInfo != null) {
+            final String niceName = typeInfo.getTitle();
+            final String description = typeInfo.getDescription();
+            createNewButton = new CmsPushButton(I_CmsImageBundle.INSTANCE.style().addIcon());
+            createNewButton.setTitle(org.opencms.gwt.client.Messages.get().key(
+                org.opencms.gwt.client.Messages.GUI_CREATE_NEW_LINK_DIALOG_TITLE_0));
+            createNewButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+            createNewButton.addClickHandler(new ClickHandler() {
+
+                public void onClick(ClickEvent event) {
+
+                    CmsEditExternalLinkDialog dialog = CmsEditExternalLinkDialog.showNewLinkDialog(
+                        niceName,
+                        description,
+                        parentPath);
+                    dialog.addCloseHandler(new CloseHandler<PopupPanel>() {
+
+                        public void onClose(CloseEvent<PopupPanel> closeEvent) {
+
+                            getTabHandler().updateIndex();
+                        }
+                    });
+                }
+            });
+        }
+        return createNewButton;
     }
 
     /**

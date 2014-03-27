@@ -121,6 +121,9 @@ public final class Messages {
     public static final String GUI_CREATE_MODE_CAPTION_0 = "GUI_CREATE_MODE_CAPTION_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CREATE_NEW_LINK_DIALOG_TITLE_0 = "GUI_CREATE_NEW_LINK_DIALOG_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_DATE_AM_0 = "GUI_DATE_AM_0";
 
     /** Message constant for key in the resource bundle. */
@@ -221,6 +224,27 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DONE_0 = "GUI_DONE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDIT_LINK_DIALOG_TITLE_0 = "GUI_EDIT_LINK_DIALOG_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDIT_LINK_LABEL_FILE_NAME_0 = "GUI_EDIT_LINK_LABEL_FILE_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDIT_LINK_LABEL_LINK_0 = "GUI_EDIT_LINK_LABEL_LINK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDIT_LINK_LABEL_TITLE_0 = "GUI_EDIT_LINK_LABEL_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDIT_LINK_NO_CHANGES_0 = "GUI_EDIT_LINK_NO_CHANGES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDIT_LINK_NO_FILE_NAME_0 = "GUI_EDIT_LINK_NO_FILE_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDIT_LINK_NO_LINK_0 = "GUI_EDIT_LINK_NO_LINK_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_CLOSE_CAPTION_0 = "GUI_EDITOR_CLOSE_CAPTION_0";

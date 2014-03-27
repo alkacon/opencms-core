@@ -31,6 +31,7 @@ import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsDeleteResourceBean;
 import org.opencms.gwt.shared.CmsHistoryResourceCollection;
 import org.opencms.gwt.shared.CmsHistoryVersion;
+import org.opencms.gwt.shared.CmsExternalLinkInfoBean;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsLockReportInfo;
 import org.opencms.gwt.shared.CmsPrepareEditResponse;
@@ -59,6 +60,22 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * @since 8.0.0
  */
 public interface I_CmsVfsServiceAsync {
+
+    /**
+     * Creates a new external link resource.<p>
+     * 
+     * @param title the title
+     * @param link the link
+     * @param resourceName the name of the link resource to create
+     * @param parentFolderPath the parent folder site path
+     * @param callback the async callback  
+     */
+    void createNewExternalLink(
+        String title,
+        String link,
+        String resourceName,
+        String parentFolderPath,
+        AsyncCallback<Void> callback);
 
     /**
      * Creates a property definition.<p>
@@ -281,6 +298,14 @@ public interface I_CmsVfsServiceAsync {
     void getSitePath(CmsUUID structureId, AsyncCallback<String> callback);
 
     /**
+     * Loads the external link info.<p>
+     * 
+     * @param structureId the external link structure id
+     * @param callback the callback
+     */
+    void loadLinkInfo(CmsUUID structureId, AsyncCallback<CmsExternalLinkInfoBean> callback);
+
+    /**
      * Load the data necessary to edit the properties of a resource.<p>
      *
      * @param id the structure id of a resource
@@ -325,6 +350,17 @@ public interface I_CmsVfsServiceAsync {
      * @param callback the async callback
      */
     void saveAliases(CmsUUID structureId, List<CmsAliasBean> aliases, AsyncCallback<Void> callback);
+
+    /**
+     * Saves the external link.<p>
+     * 
+     * @param structureId the link structure id
+     * @param title the link title
+     * @param link the link
+     * @param fileName the file name
+     * @param callback the asynchronous callback 
+     */
+    void saveExternalLink(CmsUUID structureId, String title, String link, String fileName, AsyncCallback<Void> callback);
 
     /**
      * Saves a set of property changes.<p>

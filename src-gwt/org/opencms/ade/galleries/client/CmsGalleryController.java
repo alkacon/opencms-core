@@ -599,6 +599,25 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     }
 
     /**
+     * Returns the gallery folder info to the given path.<p>
+     * 
+     * @param galleryPath the gallery folder path
+     * 
+     * @return the gallery folder info
+     */
+    public CmsGalleryFolderBean getGalleryInfo(String galleryPath) {
+
+        CmsGalleryFolderBean result = null;
+        for (CmsGalleryFolderBean folderBean : getAvailableGalleries()) {
+            if (folderBean.getPath().equals(galleryPath)) {
+                result = folderBean;
+                break;
+            }
+        }
+        return result;
+    }
+
+    /**
      * Gets the option which should be preselected for the site selector, or null.<p>
      * 
      * @param siteRoot the site root 
@@ -779,6 +798,25 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     public String getTreeToken() {
 
         return m_treeToken;
+    }
+
+    /**
+     * Returns the resource type info for the given resource type name.<p>
+     * 
+     * @param typeName the resource type name
+     * 
+     * @return the type info
+     */
+    public CmsResourceTypeBean getTypeInfo(String typeName) {
+
+        CmsResourceTypeBean result = null;
+        for (CmsResourceTypeBean typeBean : m_dialogBean.getTypes()) {
+            if (typeBean.getType().equals(typeName)) {
+                result = typeBean;
+                break;
+            }
+        }
+        return result;
     }
 
     /**

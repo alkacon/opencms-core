@@ -30,6 +30,7 @@ package org.opencms.gwt.shared.rpc;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsDeleteResourceBean;
+import org.opencms.gwt.shared.CmsExternalLinkInfoBean;
 import org.opencms.gwt.shared.CmsHistoryResourceCollection;
 import org.opencms.gwt.shared.CmsHistoryVersion;
 import org.opencms.gwt.shared.CmsListInfoBean;
@@ -59,6 +60,19 @@ import com.google.gwt.user.client.rpc.RemoteService;
  * @since 8.0.0
  */
 public interface I_CmsVfsService extends RemoteService {
+
+    /**
+     * Creates a new external link resource.<p>
+     * 
+     * @param title the title
+     * @param link the link
+     * @param resourceName the name of the link resource to create
+     * @param parentFolderPath the parent folder site path
+     * 
+     * @throws CmsRpcException if something goes wrong
+     */
+    void createNewExternalLink(String title, String link, String resourceName, String parentFolderPath)
+    throws CmsRpcException;
 
     /**
      * Creates a new property definition.<p>
@@ -334,6 +348,17 @@ public interface I_CmsVfsService extends RemoteService {
     String getSitePath(CmsUUID structureId) throws CmsRpcException;
 
     /**
+     * Loads the external link info.<p>
+     * 
+     * @param structureId the external link structure id
+     * 
+     * @return the external link info
+     * 
+     * @throws CmsRpcException if something goes wrong
+     */
+    CmsExternalLinkInfoBean loadLinkInfo(CmsUUID structureId) throws CmsRpcException;
+
+    /**
      * Load the data necessary to edit the properties of a resource.<p>
      *
      * @param id the structure id of a resource
@@ -384,6 +409,18 @@ public interface I_CmsVfsService extends RemoteService {
      * @throws CmsRpcException
      */
     void saveAliases(CmsUUID structureId, List<CmsAliasBean> aliases) throws CmsRpcException;
+
+    /**
+     * Saves the external link.<p>
+     * 
+     * @param structureId the link structure id
+     * @param title the link title
+     * @param link the link
+     * @param fileName the file name
+     * 
+     * @throws CmsRpcException if something goes wrong
+     */
+    void saveExternalLink(CmsUUID structureId, String title, String link, String fileName) throws CmsRpcException;
 
     /**
      * Saves  a set of property changes.<p>

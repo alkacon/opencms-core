@@ -32,6 +32,7 @@ import org.opencms.ade.galleries.client.CmsResultsTabHandler;
 import org.opencms.ade.galleries.client.I_CmsGalleryHandler;
 import org.opencms.ade.galleries.client.Messages;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
@@ -39,9 +40,11 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams
 import org.opencms.ade.upload.client.ui.CmsDialogUploadButtonHandler;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsList;
+import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsListItem;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuButton;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler;
+import org.opencms.gwt.client.ui.externallink.CmsEditExternalLinkDialog;
 import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
 import org.opencms.gwt.client.ui.input.upload.I_CmsUploadButtonHandler;
 import org.opencms.gwt.client.util.CmsDebugLog;
@@ -57,6 +60,7 @@ import java.util.Set;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -255,6 +259,9 @@ public class CmsResultsTab extends A_CmsListTab {
 
     /** The context menu handler. */
     private CmsContextMenuHandler m_contextMenuHandler;
+
+    /** The button to create new external link resources. */
+    private CmsPushButton m_createNewButton;
 
     /** The optional dnd manager. */
     private CmsDNDHandler m_dndHandler;
@@ -696,20 +703,36 @@ public class CmsResultsTab extends A_CmsListTab {
         if (searchObj.getFolders() != null) {
             targets.addAll(searchObj.getFolders());
         }
+        if (m_createNewButton != null) {
+            m_createNewButton.removeFromParent();
+            m_createNewButton = null;
+        }
         if (m_uploadButton == null) {
             m_uploadButton = createUploadButtonForTarget("", false);
             m_uploadButton.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().resultTabUpload());
             m_tab.insert(m_uploadButton, 0);
+        } else {
+            m_uploadButton.getElement().getStyle().clearDisplay();
         }
-        String uploadTarget = null;
         if (targets.size() == 1) {
-            uploadTarget = targets.iterator().next();
-            I_CmsUploadButtonHandler handler = m_uploadButton.getButtonHandler();
-            if (handler instanceof CmsDialogUploadButtonHandler) {
-                ((CmsDialogUploadButtonHandler)handler).setTargetFolder(uploadTarget);
+            CmsGalleryFolderBean galleryFolder = getTabHandler().getGalleryInfo(targets.iterator().next());
+            if ((galleryFolder != null)
+                && CmsEditExternalLinkDialog.LINK_GALLERY_RESOURCE_TYPE_NAME.equals(galleryFolder.getType())) {
+                m_createNewButton = createNewExternalLinkButton(targets.iterator().next());
+                if (m_createNewButton != null) {
+                    m_createNewButton.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().resultTabUpload());
+                    m_tab.insert(m_createNewButton, 0);
+                }
+                m_uploadButton.getElement().getStyle().setDisplay(Display.NONE);
+            } else {
+                String uploadTarget = targets.iterator().next();
+                I_CmsUploadButtonHandler handler = m_uploadButton.getButtonHandler();
+                if (handler instanceof CmsDialogUploadButtonHandler) {
+                    ((CmsDialogUploadButtonHandler)handler).setTargetFolder(uploadTarget);
+                }
+                m_uploadButton.enable();
+                m_uploadButton.setTitle(Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_1, uploadTarget));
             }
-            m_uploadButton.enable();
-            m_uploadButton.setTitle(Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_1, uploadTarget));
         } else {
             m_uploadButton.disable(Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TARGET_UNSPECIFIC_0));
         }

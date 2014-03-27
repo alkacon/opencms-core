@@ -27,7 +27,9 @@
 
 package org.opencms.ade.galleries.client;
 
+import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
+import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
 import org.opencms.util.CmsUUID;
 
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -75,6 +77,30 @@ public abstract class A_CmsTabHandler implements CloseHandler<PopupPanel> {
      * Clears the search parameters of this tab.<p>
      */
     public abstract void clearParams();
+
+    /**
+     * Returns the gallery folder info to the given path.<p>
+     * 
+     * @param galleryPath the gallery folder path
+     * 
+     * @return the gallery folder info
+     */
+    public CmsGalleryFolderBean getGalleryInfo(String galleryPath) {
+
+        return m_controller.getGalleryInfo(galleryPath);
+    }
+
+    /**
+     * Returns the resource type info for the given resource type name.<p>
+     * 
+     * @param typeName the resource type name
+     * 
+     * @return the type info
+     */
+    public CmsResourceTypeBean getTypeInfo(String typeName) {
+
+        return m_controller.getTypeInfo(typeName);
+    }
 
     /**
      * Execute when the upload dialog is closed.<p> 

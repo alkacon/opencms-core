@@ -36,7 +36,9 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTab
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsSimpleListItem;
+import org.opencms.gwt.client.ui.externallink.CmsEditExternalLinkDialog;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.client.util.CmsScrollToBottomHandler;
@@ -470,7 +472,14 @@ public class CmsGalleriesTab extends A_CmsListTab {
             checkBox.setChecked(true);
         }
         if (galleryInfo.isEditable()) {
-            listItemWidget.addButton(createUploadButtonForTarget(galleryInfo.getPath(), false));
+            if (CmsEditExternalLinkDialog.LINK_GALLERY_RESOURCE_TYPE_NAME.equals(galleryInfo.getType())) {
+                CmsPushButton createExternalLink = createNewExternalLinkButton(galleryInfo.getPath());
+                if (createExternalLink != null) {
+                    listItemWidget.addButton(createExternalLink);
+                }
+            } else {
+                listItemWidget.addButton(createUploadButtonForTarget(galleryInfo.getPath(), false));
+            }
         }
         listItemWidget.addButton(createSelectButton(selectionHandler));
         CmsTreeItem treeItem = new CmsTreeItem(forTree, checkBox, listItemWidget);
