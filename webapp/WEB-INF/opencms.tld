@@ -922,48 +922,110 @@
     </tag>
 
     <tag>
-        <description>
-            This tag performs user tracking actions like visit resources or subscribe/unsubscribe.
-        </description>
+        <description><![CDATA[
+            Multi-purpose tag for tracking resource visits and subscription management.
+        ]]></description>
         <name>usertracking</name>
         <tag-class>org.opencms.jsp.CmsJspTagUserTracking</tag-class>
         <body-content>empty</body-content>
         <attribute>
+        	<description><![CDATA[
+        		The action to perform.<BR>
+				The following values are supported: 
+				<DL>
+	                <DT><b>visit</b> (default)</DT>
+	                <DD>
+	                	Mark a resource as visited by a user.<BR>
+						Do <em>not</em> specify the attribute <code>group</code> here.
+	                </DD>
+	                <DT><b>subscribe</b></DT>
+	                <DD>
+	                	Subscribe a resource for a user or a group.<BR>
+						If neither <code>group</code> nor <code>user</code> are given, the resource is subscribed for the current user.<BR>
+						If <code>group</code> is given, you can simultaneously subscribe the resource for a user by either setting <code>currentuser</code> or <code>user</code>.
+	                </DD>
+	                <DT><b>unsubscribe</b></DT>
+	                <DD>
+	                	Unsubscribe a resource for a user or a group.<BR>
+						If neither <code>group</code> nor <code>user</code> are given, the resource is unsubscribed for the current user.<BR>
+						If <code>group</code> is given, you can simultaneously unsubscribe the resource for a user by either setting <code>currentuser</code> or <code>user</code>. 
+	                </DD>
+	                <DT><b>checkvisited</b></DT>
+	                <DD>
+	                	Check if a user has visited a resource.<BR>
+						If neither <code>group</code> nor <code>user</code> are given, the check is performed for the current user.<BR>
+						If the resource was visited, the tag evaluates to <code>true</code>, otherwise to <code>false</code>. 
+	                </DD>
+	                <DT><b>checksubscribed</b></DT>
+	                <DD>
+	                	Check if a resource is subscribed by a group or user.<BR>
+						If neither <code>group</code>, <code>user</code> nor <code>currentuser</code> it is checked, if the resource is subscribed any group or user.
+	                </DD>	                
+              	</DL>
+        	]]></description>
             <name>action</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+        	<description><![CDATA[
+        		If set to <code>true</code>, and no other user is specified via user, the requested action is performed for the current user.
+        	]]></description>        
             <name>currentuser</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+        	<description><![CDATA[
+        		Specifies the resource for which the action should be performed. 
+        		The resource can also be a folder.</P>
+				<em>Default</em>: Resource with the current request URI.
+        	]]></description>        
             <name>file</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+        	<description><![CDATA[
+        		Specify a user group (via its name) for which the action is performed.
+        	]]></description>        
             <name>group</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+        	<description><![CDATA[
+        		If set to <code>true</code>, subscriptions of a user that exist indirectly via his group memberships are checked additionally to his direct subscriptions. 
+        		Otherwise, only his direct subscriptions are checked.</P>
+				<em>Default</em>: <code>false</code>
+        	]]></description>        
             <name>includegroups</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+        	<description><![CDATA[
+        		If set to <code>true</code>, visits are only tracked in the online project.</P>
+				<em>Default</em>: <code>false</code>
+        	]]></description>        
             <name>online</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+        	<description><![CDATA[
+        		Used for the actions <code>checkvisited</code> and <code>checksubscription</code>.<BR>
+				If set to <code>true</code> it is checked if the specified resource, or, if it is a folder, 
+				any of the resources in the folder (or its subfolders) is visited or subscribed.
+        	]]></description>        
             <name>subfolder</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+        	<description><![CDATA[
+        		Specify the user (via the login name) for which the action is performed.
+        	]]></description>        
             <name>user</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>            
