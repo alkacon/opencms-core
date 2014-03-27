@@ -729,6 +729,8 @@ public class CmsResultsTab extends A_CmsListTab {
                 I_CmsUploadButtonHandler handler = m_uploadButton.getButtonHandler();
                 if (handler instanceof CmsDialogUploadButtonHandler) {
                     ((CmsDialogUploadButtonHandler)handler).setTargetFolder(uploadTarget);
+                    // in case the upload target is a folder the root path is used
+                    ((CmsDialogUploadButtonHandler)handler).setIsTargetRootPath(searchObj.getFolders().size() == 1);
                 }
                 m_uploadButton.enable();
                 m_uploadButton.setTitle(Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_1, uploadTarget));
