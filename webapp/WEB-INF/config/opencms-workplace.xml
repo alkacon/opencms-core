@@ -728,6 +728,9 @@
 						<entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0"
 							uri="/system/modules/org.opencms.ade.properties/pages/properties.jsp"
 							rule="nondeleted" />
+						<entry key="GUI_EXPLORER_CONTEXT_EDITLINK_0"
+							name="org.opencms.gwt.client.ui.contextmenu.CmsEditExternalLink" 
+							rule="containerpage-no-different-site" />
 					</contextmenu>
 				</editoptions>
 			</explorertype>
@@ -986,6 +989,7 @@
 					uri="newresource.jsp?newresourcetype=linkgallery" order="30"
 					autosetnavigation="false" autosettitle="false" info="desc.linkgallery" />
 			</explorertype>
+			<!-- The HTML gallery and the table gallery type have been deprecated. The required resources will be removed in future OpenCms versions. 
 			<explorertype name="htmlgallery" key="fileicon.htmlgallery"
 				icon="htmlgallery.gif" bigicon="htmlgallery_big.png" reference="classicgallery">
 				<newresource page="extendedfolder"
@@ -998,6 +1002,7 @@
 					uri="newresource.jsp?newresourcetype=tablegallery" order="50"
 					autosetnavigation="false" autosettitle="false" info="desc.tablegallery" />
 			</explorertype>
+			-->
 			<explorertype name="xmlcontent" key="fileicon.xmlcontent"
 				icon="xmlcontent.gif" bigicon="xmlcontent_big.png">
 				<newresource page="structurecontent"
