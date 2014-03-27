@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="lib" path="lib/compile/servlet-api.jar"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="src-components"/>
 	<classpathentry excluding="org/opencms/gwt/client/super_src/" kind="src" path="src-gwt"/>
 	<classpathentry kind="src" path="src-modules"/>
 	<classpathentry kind="src" path="src-setup"/>
 	<classpathentry excluding="META-INF/|data/|ehcache.xml" kind="src" path="test"/>
-	<classpathentry exported="true" kind="con" path="org.springsource.ide.eclipse.gradle.classpathcontainer"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="con" path="org.springsource.ide.eclipse.gradle.classpathcontainer"/>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
