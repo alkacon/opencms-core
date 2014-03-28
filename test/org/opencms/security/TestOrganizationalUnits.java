@@ -145,33 +145,6 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
     }
 
     /**
-     * Returns the list of associated resource root paths.<p>
-     * 
-     * @param cms the cms context
-     * @param ou the organizational unit to get the resources for
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    private void assertOrgUnitResources(CmsObject cms, CmsOrganizationalUnit ou) throws CmsException {
-
-        List resourceList = new ArrayList();
-        Iterator itResources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou.getName()).iterator();
-        while (itResources.hasNext()) {
-            CmsResource resource = (CmsResource)itResources.next();
-            resourceList.add(resource.getRootPath());
-        }
-        List relations = cms.getRelationsForResource(
-            cms.getSitePath(cms.readResource(ou.getId())),
-            CmsRelationFilter.TARGETS);
-        assertEquals(relations.size(), resourceList.size());
-        Iterator itRelations = relations.iterator();
-        while (itRelations.hasNext()) {
-            CmsRelation relation = (CmsRelation)itRelations.next();
-            assertTrue(resourceList.contains(relation.getTargetPath()));
-        }
-    }
-
-    /**
      * Tests ou creation with illegal name.<p>
      * 
      * @throws Throwable if something goes wrong
@@ -1628,5 +1601,32 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         OpenCms.getOrgUnitManager().removeResourceFromOrgUnit(cms, ou.getName(), "/");
         // check resources
         assertTrue(OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou.getName()).isEmpty());
+    }
+
+    /**
+     * Returns the list of associated resource root paths.<p>
+     * 
+     * @param cms the cms context
+     * @param ou the organizational unit to get the resources for
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private void assertOrgUnitResources(CmsObject cms, CmsOrganizationalUnit ou) throws CmsException {
+
+        List resourceList = new ArrayList();
+        Iterator itResources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou.getName()).iterator();
+        while (itResources.hasNext()) {
+            CmsResource resource = (CmsResource)itResources.next();
+            resourceList.add(resource.getRootPath());
+        }
+        List relations = cms.getRelationsForResource(
+            cms.getSitePath(cms.readResource(ou.getId())),
+            CmsRelationFilter.TARGETS);
+        assertEquals(relations.size(), resourceList.size());
+        Iterator itRelations = relations.iterator();
+        while (itRelations.hasNext()) {
+            CmsRelation relation = (CmsRelation)itRelations.next();
+            assertTrue(resourceList.contains(relation.getTargetPath()));
+        }
     }
 }
