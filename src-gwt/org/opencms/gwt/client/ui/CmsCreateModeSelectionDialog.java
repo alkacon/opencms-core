@@ -70,6 +70,7 @@ public class CmsCreateModeSelectionDialog extends CmsPopup {
         CmsPushButton newButton = createButton(messageNew(), ButtonColor.BLUE, null);
         addButton(copyButton);
         addButton(newButton);
+        addDialogClose(null);
     }
 
     /**
