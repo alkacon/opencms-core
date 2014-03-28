@@ -63,6 +63,7 @@ public class CmsComboWidget extends Composite implements I_EditWidget {
 
     /**
      * Constructs an CmsComboWidget with the in XSD schema declared configuration.<p>
+     * 
      * @param config The configuration string given from OpenCms XSD.
      */
     public CmsComboWidget(String config) {

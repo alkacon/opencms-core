@@ -96,7 +96,8 @@ public class CmsTextboxWidget extends Composite implements I_EditWidget {
 
     /**
      * Creates a new display widget.<p>
-     * @param config 
+     * 
+     * @param config the widget configuration 
      */
     public CmsTextboxWidget(String config) {
 
@@ -324,7 +325,7 @@ public class CmsTextboxWidget extends Composite implements I_EditWidget {
     @UiHandler("m_textbox")
     void onTextboxValueChange(ValueChangeEvent<String> event) {
 
-        fireChangeEvent();
+        fireValueChange(false);
     }
 
     /**

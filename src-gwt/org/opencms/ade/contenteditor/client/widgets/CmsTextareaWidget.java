@@ -63,7 +63,8 @@ public class CmsTextareaWidget extends Composite implements I_EditWidget, HasRes
 
     /**
      * Creates a new display widget.<p>
-     * @param config 
+     * 
+     * @param config the widget configuration string 
      */
     public CmsTextareaWidget(String config) {
 
