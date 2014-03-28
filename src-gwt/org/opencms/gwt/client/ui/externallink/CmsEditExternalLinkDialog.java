@@ -58,14 +58,14 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public final class CmsEditExternalLinkDialog extends CmsPopup implements ValueChangeHandler<String> {
 
-    /** The dialog width. */
-    private static final int DIALOG_WIDTH = 600;
+    /** The link gallery resource type name. */
+    public static final String LINK_GALLERY_RESOURCE_TYPE_NAME = "linkgallery";
 
     /** The pointer resource type name. */
     public static final String POINTER_RESOURCE_TYPE_NAME = "pointer";
 
-    /** The link gallery resource type name. */
-    public static final String LINK_GALLERY_RESOURCE_TYPE_NAME = "linkgallery";
+    /** The dialog width. */
+    private static final int DIALOG_WIDTH = 600;
 
     /** The text metrics key. */
     private static final String METRICS_KEY = "CREATE_NEW_GALLERY_DIALOG";
@@ -75,6 +75,9 @@ public final class CmsEditExternalLinkDialog extends CmsPopup implements ValueCh
 
     /** The link info bean. */
     CmsExternalLinkInfoBean m_linkInfo;
+
+    /** The parent folder path. */
+    String m_parentFolderPath;
 
     /** The pointer resource structure id. */
     CmsUUID m_structureId;
@@ -97,8 +100,11 @@ public final class CmsEditExternalLinkDialog extends CmsPopup implements ValueCh
     /** The OK button. */
     private CmsPushButton m_okButton;
 
-    /** The parent folder path. */
-    String m_parentFolderPath;
+    /** The previous link. */
+    private String m_previousLink;
+
+    /** The previous link title. */
+    private String m_previousTitle;
 
     /**
      * Constructor.<p>
@@ -206,10 +212,7 @@ public final class CmsEditExternalLinkDialog extends CmsPopup implements ValueCh
                 message = Messages.get().key(Messages.GUI_EDIT_LINK_NO_LINK_0);
             }
         } else {
-            if (((m_linkInfo.getLink() == null) && CmsStringUtil.isEmpty(m_linkContent.getFormValueAsString()))
-                || m_linkContent.getFormValueAsString().equals(m_linkInfo.getLink())
-                || ((m_linkInfo.getTitle() == null) && CmsStringUtil.isEmpty(m_linkTitle.getFormValueAsString()))
-                || m_linkTitle.getFormValueAsString().equals(m_linkInfo.getTitle())) {
+            if ((m_linkContent.getFormValueAsString().equals(m_previousLink) && (m_linkTitle.getFormValueAsString().equals(m_previousTitle)))) {
                 enableOk = false;
                 message = Messages.get().key(Messages.GUI_EDIT_LINK_NO_CHANGES_0);
             } else if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_linkContent.getFormValueAsString())) {
@@ -238,6 +241,8 @@ public final class CmsEditExternalLinkDialog extends CmsPopup implements ValueCh
     protected void initContent(CmsExternalLinkInfoBean linkInfo) {
 
         m_linkInfo = linkInfo;
+        m_previousLink = m_linkInfo.getLink() != null ? m_linkInfo.getLink() : "";
+        m_previousTitle = m_linkInfo.getTitle() != null ? m_linkInfo.getTitle() : "";
         m_dialogContent = new CmsFieldsetFormFieldPanel(m_linkInfo, null);
         m_dialogContent.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().highTextBoxes());
         m_dialogContent.getFieldSet().setOpenerVisible(false);
@@ -251,14 +256,14 @@ public final class CmsEditExternalLinkDialog extends CmsPopup implements ValueCh
         }
 
         m_linkTitle = new CmsTextBox();
-        m_linkTitle.setFormValueAsString(m_linkInfo.getTitle());
+        m_linkTitle.setFormValueAsString(m_previousTitle);
         m_linkTitle.setTriggerChangeOnKeyPress(true);
         m_linkTitle.addValueChangeHandler(this);
         addInputRow(Messages.get().key(Messages.GUI_EDIT_LINK_LABEL_TITLE_0), m_linkTitle);
         m_linkContent = new CmsTextBox();
         m_linkContent.setTriggerChangeOnKeyPress(true);
         m_linkContent.addValueChangeHandler(this);
-        m_linkContent.setFormValueAsString(m_linkInfo.getLink());
+        m_linkContent.setFormValueAsString(m_previousLink);
         addInputRow(Messages.get().key(Messages.GUI_EDIT_LINK_LABEL_LINK_0), m_linkContent);
         this.addDialogClose(null);
 

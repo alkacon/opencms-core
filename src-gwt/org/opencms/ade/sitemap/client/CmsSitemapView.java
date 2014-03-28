@@ -60,6 +60,7 @@ import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsListItem;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
 import org.opencms.gwt.client.ui.tree.CmsTree;
@@ -688,6 +689,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         m_galleryTypeItems = new HashMap<String, CmsGalleryTreeItem>();
         page.add(m_galleryTree);
         m_noGalleriesLabel = new Label();
+        m_noGalleriesLabel.setStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().textMedium());
         m_noGalleriesLabel.getElement().setInnerHTML(Messages.get().key(Messages.GUI_NO_GALLERIES_AVAILABLE_0));
         m_noGalleriesLabel.getElement().getStyle().setDisplay(Display.NONE);
         page.add(m_noGalleriesLabel);
