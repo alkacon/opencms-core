@@ -6159,20 +6159,41 @@ public final class CmsDriverManager implements I_CmsEventListener {
             List<CmsUrlNameMappingEntry> entries = vfsDriver.readUrlNameMappingEntries(
                 dbc,
                 false,
-                CmsUrlNameMappingFilter.ALL.filterStructureId(res.getStructureId()).filterState(
-                    CmsUrlNameMappingEntry.MAPPING_STATUS_NEW));
+                CmsUrlNameMappingFilter.ALL.filterStructureId(res.getStructureId()).filterStates(
+                    CmsUrlNameMappingEntry.MAPPING_STATUS_NEW,
+                    CmsUrlNameMappingEntry.MAPPING_STATUS_REPLACE_ON_PUBLISH));
+
+            boolean isReplaceOnPublish = false;
+            for (CmsUrlNameMappingEntry entry : entries) {
+                isReplaceOnPublish |= entry.getState() == CmsUrlNameMappingEntry.MAPPING_STATUS_REPLACE_ON_PUBLISH;
+            }
+
             if (!entries.isEmpty()) {
+
                 long now = System.currentTimeMillis();
+                if (isReplaceOnPublish) {
+                    vfsDriver.deleteUrlNameMappingEntries(
+                        dbc,
+                        true,
+                        CmsUrlNameMappingFilter.ALL.filterStructureId(res.getStructureId()));
+                    vfsDriver.deleteUrlNameMappingEntries(
+                        dbc,
+                        false,
+                        CmsUrlNameMappingFilter.ALL.filterStructureId(res.getStructureId()));
+                }
+
                 for (CmsUrlNameMappingEntry entry : entries) {
                     CmsUrlNameMappingFilter nameFilter = CmsUrlNameMappingFilter.ALL.filterName(entry.getName());
-                    vfsDriver.deleteUrlNameMappingEntries(dbc, true, nameFilter);
-                    vfsDriver.deleteUrlNameMappingEntries(dbc, false, nameFilter);
+                    if (!isReplaceOnPublish) { // we already handled the other case above
+                        vfsDriver.deleteUrlNameMappingEntries(dbc, true, nameFilter);
+                        vfsDriver.deleteUrlNameMappingEntries(dbc, false, nameFilter);
+                    }
                     CmsUrlNameMappingEntry newEntry = new CmsUrlNameMappingEntry(
                         entry.getName(),
                         entry.getStructureId(),
-                        CmsUrlNameMappingEntry.MAPPING_STATUS_PUBLISHED,
-                        now,
-                        entry.getLocale());
+                        entry.getState() == CmsUrlNameMappingEntry.MAPPING_STATUS_NEW
+                        ? CmsUrlNameMappingEntry.MAPPING_STATUS_PUBLISHED
+                        : CmsUrlNameMappingEntry.MAPPING_STATUS_REPLACE_ON_PUBLISH_PUBLISHED, now, entry.getLocale());
                     vfsDriver.addUrlNameMappingEntry(dbc, true, newEntry);
                     vfsDriver.addUrlNameMappingEntry(dbc, false, newEntry);
                 }
@@ -9930,16 +9951,21 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param nameSeq the sequence of URL name candidates
      * @param structureId the structure id to which the url name should be mapped
      * @param locale the locale for which the mapping should be written
+     * @param replaceOnPublish name mappings for which this is set will replace all other mappings for the same resource on publishing
      *
      * @return the actual name which was mapped to the structure id
      *
      * @throws CmsDataAccessException if something goes wrong
      */
-    public String writeUrlNameMapping(CmsDbContext dbc, Iterator<String> nameSeq, CmsUUID structureId, String locale)
-    throws CmsDataAccessException {
+    public String writeUrlNameMapping(
+        CmsDbContext dbc,
+        Iterator<String> nameSeq,
+        CmsUUID structureId,
+        String locale,
+        boolean replaceOnPublish) throws CmsDataAccessException {
 
         String bestName = findBestNameForUrlNameMapping(dbc, nameSeq, structureId, locale);
-        addOrReplaceUrlNameMapping(dbc, bestName, structureId, locale);
+        addOrReplaceUrlNameMapping(dbc, bestName, structureId, locale, replaceOnPublish);
         return bestName;
     }
 
@@ -9982,23 +10008,26 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param name the URL name of the mapping
      * @param structureId the structure id of the mapping
      * @param locale the locale of the mapping
+     * @param replaceOnPublish if the mapping shoudl replace previous URL name mappings when published 
      *
      * @throws CmsDataAccessException if something goes wrong
      */
-    protected void addOrReplaceUrlNameMapping(CmsDbContext dbc, String name, CmsUUID structureId, String locale)
-    throws CmsDataAccessException {
+    protected void addOrReplaceUrlNameMapping(
+        CmsDbContext dbc,
+        String name,
+        CmsUUID structureId,
+        String locale,
+        boolean replaceOnPublish) throws CmsDataAccessException {
 
         getVfsDriver(dbc).deleteUrlNameMappingEntries(
             dbc,
             false,
-            CmsUrlNameMappingFilter.ALL.filterStructureId(structureId).filterLocale(locale).filterState(
-                CmsUrlNameMappingEntry.MAPPING_STATUS_NEW));
-        CmsUrlNameMappingEntry newEntry = new CmsUrlNameMappingEntry(
-            name,
-            structureId,
-            CmsUrlNameMappingEntry.MAPPING_STATUS_NEW,
-            System.currentTimeMillis(),
-            locale);
+            CmsUrlNameMappingFilter.ALL.filterStructureId(structureId).filterLocale(locale).filterStates(
+                CmsUrlNameMappingEntry.MAPPING_STATUS_NEW,
+                CmsUrlNameMappingEntry.MAPPING_STATUS_REPLACE_ON_PUBLISH));
+        CmsUrlNameMappingEntry newEntry = new CmsUrlNameMappingEntry(name, structureId, replaceOnPublish
+        ? CmsUrlNameMappingEntry.MAPPING_STATUS_REPLACE_ON_PUBLISH
+        : CmsUrlNameMappingEntry.MAPPING_STATUS_NEW, System.currentTimeMillis(), locale);
         getVfsDriver(dbc).addUrlNameMappingEntry(dbc, false, newEntry);
     }
 
@@ -11285,7 +11314,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             List<CmsProperty> properties = vfsDriver.readPropertyObjects(dbc, onlineProject, onlineResource);
 
             if (offlineResource != null) {
-                // bug fix 1020: delete all properties (included shared),
+                // bug fix 1020: delete all properties (inclum_rejectStructureIdded shared),
                 // shared properties will be recreated by the next call of #createResource(...)
                 vfsDriver.deletePropertyObjects(
                     dbc,
@@ -11335,8 +11364,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
             vfsDriver.deleteUrlNameMappingEntries(
                 dbc,
                 false,
-                CmsUrlNameMappingFilter.ALL.filterStructureId(res.getStructureId()).filterState(
-                    CmsUrlNameMappingEntry.MAPPING_STATUS_NEW));
+                CmsUrlNameMappingFilter.ALL.filterStructureId(res.getStructureId()).filterStates(
+                    CmsUrlNameMappingEntry.MAPPING_STATUS_NEW,
+                    CmsUrlNameMappingEntry.MAPPING_STATUS_REPLACE_ON_PUBLISH));
             // restore the state to unchanged
             res.setState(newState);
             m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), res, UPDATE_ALL, false);

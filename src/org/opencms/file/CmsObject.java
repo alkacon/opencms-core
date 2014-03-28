@@ -3845,14 +3845,19 @@ public final class CmsObject {
      * @param nameSeq an iterator for generating names for the mapping
      * @param structureId the structure id to which the name should be mapped
      * @param locale the locale of the mapping
-     *
+     * @param replaceOnPublish if the mapping should replace previous mappings when published 
+     *   
      * @return the name which was actually mapped to the structure id
      *
      * @throws CmsException if something goes wrong
      */
-    public String writeUrlNameMapping(Iterator<String> nameSeq, CmsUUID structureId, String locale) throws CmsException {
+    public String writeUrlNameMapping(
+        Iterator<String> nameSeq,
+        CmsUUID structureId,
+        String locale,
+        boolean replaceOnPublish) throws CmsException {
 
-        return m_securityManager.writeUrlNameMapping(m_context, nameSeq, structureId, locale);
+        return m_securityManager.writeUrlNameMapping(m_context, nameSeq, structureId, locale, replaceOnPublish);
     }
 
     /**
@@ -3864,14 +3869,16 @@ public final class CmsObject {
      * @param name the base name for the mapping
      * @param structureId the structure id to which the name should be mapped
      * @param locale the locale of the mapping
-     *
+     * @param replaceOnPublish mappings for which this is set will replace older mappings on publish
+     *   
      * @return the URL name that was actually used for the mapping
      *
      * @throws CmsException if something goes wrong
      */
-    public String writeUrlNameMapping(String name, CmsUUID structureId, String locale) throws CmsException {
+    public String writeUrlNameMapping(String name, CmsUUID structureId, String locale, boolean replaceOnPublish)
+    throws CmsException {
 
-        return writeUrlNameMapping(new CmsNumberSuffixNameSequence(name), structureId, locale);
+        return writeUrlNameMapping(new CmsNumberSuffixNameSequence(name), structureId, locale, replaceOnPublish);
     }
 
     /**

@@ -67,8 +67,17 @@ public class CmsUrlNameMappingEntry {
     /** The state for mapping entries which have been published. */
     public static final int MAPPING_STATUS_PUBLISHED = 1;
 
+    /** State which indicates that all previous mappings should be replace on publish. */
+    public static final int MAPPING_STATUS_REPLACE_ON_PUBLISH = 2;
+
+    /** State which indicates that all previous mappings have been replaced on publish. */
+    public static final int MAPPING_STATUS_REPLACE_ON_PUBLISH_PUBLISHED = 3;
+
     /** The date on which the mapping entry was last changed. */
     protected long m_dateChanged;
+
+    /** The locale of the mapping. */
+    protected String m_locale;
 
     /** The name to which the mapping entry belongs. */
     protected String m_name;
@@ -78,9 +87,6 @@ public class CmsUrlNameMappingEntry {
 
     /** The structure id to which the name is mapped. */
     protected CmsUUID m_structureId;
-
-    /** The locale of the mapping. */
-    protected String m_locale;
 
     /**
      * Creates a new URL name mapping entry.<p>

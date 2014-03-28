@@ -206,6 +206,9 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
     /** Property for the resource title. */
     public static final String PROPERTY_TITLE = "Title";
 
+    /** Name of the property used to control whether mapped URL names should replace previous URL names. */
+    public static final String PROPERTY_URLNAME_REPLACE = "urlname.replace";
+
     /** Property for the visible method in the administration view. */
     public static final String PROPERTY_VISIBLE = "visiblemethod";
 

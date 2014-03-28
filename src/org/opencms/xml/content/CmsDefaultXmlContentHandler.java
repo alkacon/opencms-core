@@ -45,7 +45,6 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.i18n.CmsMultiMessages;
 import org.opencms.i18n.CmsResourceBundleLoader;
-import org.opencms.loader.I_CmsFileNameGenerator;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -448,6 +447,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /** The attribute name for the "prefer folder" option for properties. */
     private static final String APPINFO_ATTR_PREFERFOLDER = "PreferFolder";
+
+    /** Attribute name for the context used for resolving content mappings. */
+    private static final String ATTR_MAPPING_RESOLUTION_CONTEXT = "MAPPING_RESOLUTION_CONTEXT";
 
     /** The node name for the default complex widget configuration. */
     private static final Object APPINFO_DEFAULTWIDGET = "defaultwidget";
@@ -1273,9 +1275,15 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         file = content.correctXmlStructure(cms);
         content.setFile(file);
         // resolve the file mappings
+        CmsMappingResolutionContext mappingContext = new CmsMappingResolutionContext();
+        mappingContext.setCmsObject(cms);
+        // pass the mapping context as a request context attribute to preserve interface compatibility 
+        cms.getRequestContext().setAttribute(ATTR_MAPPING_RESOLUTION_CONTEXT, mappingContext);
         content.resolveMappings(cms);
+        cms.getRequestContext().removeAttribute(ATTR_MAPPING_RESOLUTION_CONTEXT);
         // ensure all property or permission mappings of deleted optional values are removed
         removeEmptyMappings(cms, file, content);
+        mappingContext.commitUrlNameMappings();
         // write categories (if there is a category widget present)
         file = writeCategories(cms, file, content);
         // return the result
@@ -1293,6 +1301,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             // it's just the nested schema value itself that does not support mapping
             return;
         }
+        CmsMappingResolutionContext context = (CmsMappingResolutionContext)(cms.getRequestContext().getAttribute(ATTR_MAPPING_RESOLUTION_CONTEXT));
 
         // get the original VFS file from the content
         CmsFile file = content.getFile();
@@ -1581,18 +1590,15 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             }
         }
         if (mapToUrlName) {
-            // now actually write the URL name mappings
             for (CmsResource resourceForUrlNameMapping : urlNameMappingResources) {
                 if (!CmsResource.isTemporaryFileName(resourceForUrlNameMapping.getRootPath())) {
-                    I_CmsFileNameGenerator nameGen = OpenCms.getResourceManager().getNameGenerator();
                     String mappedName = value.getStringValue(cms);
                     if (!CmsStringUtil.isEmptyOrWhitespaceOnly(mappedName)) {
                         mappedName = mappedName.trim();
-                        Iterator<String> nameSeq = nameGen.getUrlNameSequence(mappedName);
-                        cms.writeUrlNameMapping(
-                            nameSeq,
-                            resourceForUrlNameMapping.getStructureId(),
-                            value.getLocale().toString());
+                        context.addUrlNameMapping(
+                            mappedName,
+                            value.getLocale(),
+                            resourceForUrlNameMapping.getStructureId());
                     }
                 }
             }

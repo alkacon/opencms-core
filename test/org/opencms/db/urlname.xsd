@@ -1,0 +1,30 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+    <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
+    
+    <!-- internal://org/opencms/db/urlname.xsd -->
+      
+    <xsd:element name="UrlNameTests" type="OpenCmsUrlNameTests" />
+
+    <xsd:complexType name="OpenCmsUrlNameTests">
+        <xsd:sequence>
+            <xsd:element name="UrlNameTest" type="OpenCmsUrlNameTest" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="OpenCmsUrlNameTest">
+        <xsd:sequence>
+        	<xsd:element name="Title" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+        	<xsd:element name="Replace" type="OpenCmsString" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
+    </xsd:complexType>
+    
+    <xsd:annotation>
+		<xsd:appinfo>
+			<mappings>
+				<mapping element="Title" mapto="urlName" />
+				<mapping element="Replace" mapto="property:urlname.replace" />
+			</mappings>
+		</xsd:appinfo>
+	</xsd:annotation>  
+</xsd:schema>

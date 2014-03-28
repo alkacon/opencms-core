@@ -6728,6 +6728,7 @@ public final class CmsSecurityManager {
      * @param nameSeq the sequence of URL name candidates
      * @param structureId the structure id which should be mapped to the name
      * @param locale the locale for the mapping
+     * @param replaceOnPublish mappings for which this is set will replace all other mappings for the same resource on publishing 
      *
      * @return the name which was actually mapped to the structure id
      *
@@ -6737,11 +6738,12 @@ public final class CmsSecurityManager {
         CmsRequestContext context,
         Iterator<String> nameSeq,
         CmsUUID structureId,
-        String locale) throws CmsException {
+        String locale,
+        boolean replaceOnPublish) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            return m_driverManager.writeUrlNameMapping(dbc, nameSeq, structureId, locale);
+            return m_driverManager.writeUrlNameMapping(dbc, nameSeq, structureId, locale, replaceOnPublish);
         } catch (Exception e) {
             CmsMessageContainer message = Messages.get().container(
                 Messages.ERR_ADD_URLNAME_MAPPING_2,
