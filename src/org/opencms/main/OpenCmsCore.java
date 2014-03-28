@@ -1172,6 +1172,7 @@ public final class OpenCmsCore {
         getSystemInfo().setMailSettings(systemConfiguration.getMailSettings());
         // set HTTP authentication settings
         getSystemInfo().setHttpAuthenticationSettings(systemConfiguration.getHttpAuthenticationSettings());
+        getSystemInfo().setRestrictDetailContents(systemConfiguration.isRestrictDetailContents());
 
         // set content notification settings
         getSystemInfo().setNotificationTime(systemConfiguration.getNotificationTime());

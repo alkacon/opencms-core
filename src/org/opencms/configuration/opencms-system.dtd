@@ -41,7 +41,8 @@
 	workflow?,
 	user-session-mode?,
 	credentials-resolver?,
-	publish-list-remove-mode?
+	publish-list-remove-mode?,
+	restrict-detail-contents?
 	)>
 
 <!--
@@ -665,10 +666,13 @@ Each job can have an optional list of parameters.
 <!ATTLIST workflow class CDATA #REQUIRED>
 
 
+
 <!ELEMENT user-session-mode (#PCDATA)>
 <!ELEMENT credentials-resolver (#PCDATA)>
 
-
-
-
-
+<!--
+# Restrict detail contents: If set to 'true', will not allow detail contents
+# from one proper site to be rendered in a detail page from another proper site.
+# If this is not set explicitly, defaults to 'true'. 
+-->
+<!ELEMENT restrict-detail-contents (#PCDATA) >

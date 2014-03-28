@@ -129,6 +129,9 @@ public class CmsSystemInfo {
     /** The absolute path to the persistence.xml file (in the "real" file system). */
     private String m_persistenceFileRfsPath;
 
+    /** True if detail contents are restricted to detail pages from the same site. */
+    private boolean m_restrictDetailContents;
+
     /** The name of the OpenCms server. */
     private String m_serverName;
 
@@ -589,6 +592,16 @@ public class CmsSystemInfo {
     }
 
     /**
+     * Return true if detail contents are restricted to detail pages from the same site.<p>
+     * 
+     * @return true if detail contents are restricted to detail pages from the same site 
+     */
+    public boolean isRestrictDetailContents() {
+
+        return m_restrictDetailContents;
+    }
+
+    /**
      * Sets the project in which time stamps for the content notification are read.<p>
      * 
      * @param notificationProject the project in which time stamps for the content notification are read
@@ -677,6 +690,16 @@ public class CmsSystemInfo {
     protected void setMailSettings(CmsMailSettings mailSettings) {
 
         m_mailSettings = mailSettings;
+    }
+
+    /**
+     * Sets the value of the 'restrict detail contents' option.<p>
+     * 
+     * @param restrictDetailContents the new value for the option 
+     */
+    protected void setRestrictDetailContents(boolean restrictDetailContents) {
+
+        m_restrictDetailContents = restrictDetailContents;
     }
 
     /**

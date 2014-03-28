@@ -392,6 +392,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The node name for the resource init classes. */
     public static final String N_RESOURCEINITHANDLER = "resourceinithandler";
 
+    /** Node name for the restrict-detail-contents option. */
+    public static final String N_RESTRICT_DETAIL_CONTENTS = "restrict-detail-contents";
+
     /** the result cache node. */
     public static final String N_RESULTCACHE = "resultcache";
 
@@ -620,6 +623,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** A list of instantiated resource init handler classes. */
     private List<I_CmsResourceInit> m_resourceInitHandlers;
+
+    /** Value of the restrict-detail-contents option. */
+    private String m_restrictDetailContents;
 
     /** The runtime info factory. */
     private I_CmsDbContextFactory m_runtimeInfoFactory;
@@ -1230,6 +1236,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
         String credentialsResolverPath = "*/" + N_SYSTEM + "/" + N_CREDENTIALS_RESOLVER;
         digester.addCallMethod(credentialsResolverPath, "setCredentialsResolver", 0);
+
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_RESTRICT_DETAIL_CONTENTS, "setRestrictDetailContents", 1);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_RESTRICT_DETAIL_CONTENTS, 0);
+
     }
 
     /**
@@ -1680,6 +1690,11 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
         if (m_publishListRemoveMode != null) {
             systemElement.addElement(N_PUBLISH_LIST_REMOVE_MODE).addAttribute(A_MODE, m_publishListRemoveMode);
+        }
+
+        if (m_restrictDetailContents != null) {
+            Element restrictDetailContentsElem = systemElement.addElement(N_RESTRICT_DETAIL_CONTENTS);
+            restrictDetailContentsElem.addText(m_restrictDetailContents);
         }
 
         // return the system node
@@ -2193,6 +2208,17 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         return m_historyEnabled;
     }
 
+    /** 
+     * Returns true if detail contents are restricted to detail pages from the same site.<p>
+     * 
+     * @return true if detail contents are restricted to detail pages from the same site 
+     */
+    public boolean isRestrictDetailContents() {
+
+        return (m_restrictDetailContents == null) || Boolean.parseBoolean(m_restrictDetailContents.trim());
+
+    }
+
     /**
      * Sets the cache settings for ADE.<p>
      *
@@ -2555,6 +2581,16 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     public void setRequestErrorPageAttribute(String configValue) {
 
         OpenCms.getSystemInfo().getServletContainerSettings().setRequestErrorPageAttribute(configValue);
+    }
+
+    /**
+     * Sets the 'restrict detail contents' option.<p>
+     * 
+     * @param restrictDetailContents the value of the option 
+     */
+    public void setRestrictDetailContents(String restrictDetailContents) {
+
+        m_restrictDetailContents = restrictDetailContents;
     }
 
     /**
