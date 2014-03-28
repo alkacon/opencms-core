@@ -48,16 +48,21 @@ import junit.framework.TestSuite;
 /**
  * Tests the OpenCms system roles.<p>
  */
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class TestRoles extends OpenCmsTestCase {
 
     /**
-     * Default JUnit constructor.<p>
+     * Check the given message.<p>
      * 
-     * @param arg0 JUnit parameters
+     * @param message the message to check
      */
-    public TestRoles(String arg0) {
+    private static void checkMessage(String message) {
 
-        super(arg0);
+        System.out.println(message);
+        // check if a key could not be resolved
+        assertFalse(message.indexOf(CmsMessages.UNKNOWN_KEY_EXTENSION) >= 0);
+        // very simple check if message still containes unresolved '{n}'
+        assertFalse(message.indexOf('{') >= 0);
     }
 
     /**
@@ -98,44 +103,13 @@ public class TestRoles extends OpenCmsTestCase {
     }
 
     /**
-     * Check the given message.<p>
+     * Default JUnit constructor.<p>
      * 
-     * @param message the message to check
+     * @param arg0 JUnit parameters
      */
-    private static void checkMessage(String message) {
+    public TestRoles(String arg0) {
 
-        System.out.println(message);
-        // check if a key could not be resolved
-        assertFalse(message.indexOf(CmsMessages.UNKNOWN_KEY_EXTENSION) >= 0);
-        // very simple check if message still containes unresolved '{n}'
-        assertFalse(message.indexOf('{') >= 0);
-    }
-
-    /**
-     * Tests role delegating.<p>
-     * 
-     * @throws Exception if the test fails
-     */
-    public void testRoleDelegating() throws Exception {
-
-        echo("Testing role delegating");
-        CmsObject cms = getCmsObject();
-
-        CmsRoleManager roleMan = OpenCms.getRoleManager();
-
-        CmsUser user = cms.createUser("testUser", "testUser", "testUser", null);
-        roleMan.addUserToRole(cms, CmsRole.ACCOUNT_MANAGER.forOrgUnit(""), user.getName());
-
-        cms.loginUser(user.getName(), "testUser");
-        CmsUser u2 = cms.createUser("testUser2", "testUser2", "testUser2", null);
-
-        try {
-            roleMan.addUserToRole(cms, CmsRole.DEVELOPER.forOrgUnit(""), u2.getName());
-            fail("it should not be possible to delegate a role you do not have");
-        } catch (CmsRoleViolationException e) {
-            // ok, ignore
-        }
-        roleMan.addUserToRole(cms, CmsRole.ACCOUNT_MANAGER.forOrgUnit(""), u2.getName());
+        super(arg0);
     }
 
     /**
@@ -161,7 +135,13 @@ public class TestRoles extends OpenCmsTestCase {
         assertFalse(roleMan.getManageableUsers(cms, "", false).isEmpty());
         assertFalse(roleMan.getOrgUnitsForRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(""), false).isEmpty());
 
-        assertFalse(roleMan.getRolesOfUser(cms, cms.getRequestContext().getCurrentUser().getName(), "", true, false, false).isEmpty());
+        assertFalse(roleMan.getRolesOfUser(
+            cms,
+            cms.getRequestContext().getCurrentUser().getName(),
+            "",
+            true,
+            false,
+            false).isEmpty());
         assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ROOT_ADMIN, true, false).contains(
             cms.getRequestContext().getCurrentUser()));
         assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(""), true, true).isEmpty());
@@ -223,6 +203,33 @@ public class TestRoles extends OpenCmsTestCase {
         assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ROOT_ADMIN, true, false).contains(cms.readUser("Admin")));
         assertFalse(roleMan.getUsersOfRole(cms, CmsRole.ROOT_ADMIN, true, false).contains(
             cms.getRequestContext().getCurrentUser()));
+    }
+
+    /**
+     * Tests role delegating.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testRoleDelegating() throws Exception {
+
+        echo("Testing role delegating");
+        CmsObject cms = getCmsObject();
+
+        CmsRoleManager roleMan = OpenCms.getRoleManager();
+
+        CmsUser user = cms.createUser("testUser", "testUser", "testUser", null);
+        roleMan.addUserToRole(cms, CmsRole.ACCOUNT_MANAGER.forOrgUnit(""), user.getName());
+
+        cms.loginUser(user.getName(), "testUser");
+        CmsUser u2 = cms.createUser("testUser2", "testUser2", "testUser2", null);
+
+        try {
+            roleMan.addUserToRole(cms, CmsRole.DEVELOPER.forOrgUnit(""), u2.getName());
+            fail("it should not be possible to delegate a role you do not have");
+        } catch (CmsRoleViolationException e) {
+            // ok, ignore
+        }
+        roleMan.addUserToRole(cms, CmsRole.ACCOUNT_MANAGER.forOrgUnit(""), u2.getName());
     }
 
     /**

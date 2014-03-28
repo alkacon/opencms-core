@@ -33,6 +33,7 @@ import static org.junit.Assert.assertNotEquals;
 import org.opencms.db.CmsLoginMessage;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
@@ -65,6 +66,7 @@ public class TestLoginAndPasswordHandler extends OpenCmsTestCase {
         suite.setName(TestLoginAndPasswordHandler.class.getName());
 
         suite.addTest(new TestLoginAndPasswordHandler("testSCrypt"));
+        suite.addTest(new TestLoginAndPasswordHandler("testUserDefaultPasswords"));
         suite.addTest(new TestLoginAndPasswordHandler("testCheckPasswordDigest"));
         suite.addTest(new TestLoginAndPasswordHandler("testPasswordConvesion"));
         suite.addTest(new TestLoginAndPasswordHandler("testLoginUser"));
@@ -312,7 +314,10 @@ public class TestLoginAndPasswordHandler extends OpenCmsTestCase {
         assertEquals(
             "Password of user 'test1' not as expected",
             testUser.getPassword(),
-            OpenCms.getPasswordHandler().digest(testData, I_CmsPasswordHandler.DIGEST_TYPE_MD5, "UTF-8"));
+            OpenCms.getPasswordHandler().digest(
+                testData,
+                I_CmsPasswordHandler.DIGEST_TYPE_MD5,
+                CmsEncoder.ENCODING_UTF_8));
 
         // now login the user, this should update the password to the new hash algorithm
         cms.loginUser(testData, testData);
@@ -468,7 +473,76 @@ public class TestLoginAndPasswordHandler extends OpenCmsTestCase {
         // change password back, otherwise further tests would fail      
         cms.setPassword(adminUsername, "password2", "admin");
 
-        // verify that the password was changed
+        // verify that the password was changed to the expected default
         cms.loginUser(adminUsername, "admin");
+    }
+
+    /**
+     * Tests if the user passwords are imported / set correctly.<p>
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public void testUserDefaultPasswords() throws Exception {
+
+        CmsObject cms = getCmsObject();
+
+        echo("Testing the user import.");
+        I_CmsPasswordHandler passwordHandler = OpenCms.getPasswordHandler();
+        CmsUser user;
+
+        // check if passwords will be converted
+        echo("Testing passwords of imported users");
+
+        // check the admin user
+        user = cms.readUser(OpenCms.getDefaultUsers().getUserAdmin());
+        assertTrue(
+            "Admin user password does not check",
+            passwordHandler.checkPassword("admin", user.getPassword(), false));
+
+        // check the guest user
+        user = cms.readUser(OpenCms.getDefaultUsers().getUserGuest());
+        assertFalse(
+            "Guest user password does check with old default (empty String) but should fail becasue it is now a random UUID",
+            passwordHandler.checkPassword("", user.getPassword(), true));
+        try {
+            SCryptUtil.check("{random-value}", user.getPassword());
+        } catch (IllegalArgumentException e) {
+            fail("Guest user password not a valid SCrypt password");
+        }
+
+        // check the export user
+        user = cms.readUser(OpenCms.getDefaultUsers().getUserExport());
+        try {
+            SCryptUtil.check("{random-value}", user.getPassword());
+        } catch (IllegalArgumentException e) {
+            fail("Export user password not a valid SCrypt password");
+        }
+
+        // check the deleted resource user
+        user = cms.readUser(OpenCms.getDefaultUsers().getUserDeletedResource());
+        try {
+            // check should fail, but if we get an exception then the password does not have the right format
+            SCryptUtil.check("{random-value}", user.getPassword());
+        } catch (IllegalArgumentException e) {
+            fail("Deleted resource user password not a valid SCrypt password");
+        }
+
+        // check the test1 user
+        user = cms.readUser("test1");
+        assertFalse(
+            "test1 user password does check with default SCrypt but should fail becasuse it is encoded in MD5",
+            passwordHandler.checkPassword("test1", user.getPassword(), false));
+        assertTrue(
+            "test1 user password does not check with fallback to MD5",
+            passwordHandler.checkPassword("test1", user.getPassword(), true));
+
+        // check the test2 user
+        user = cms.readUser("test2");
+        assertFalse(
+            "test2 user password does check with default SCrypt but should fail becasuse it is encoded in MD5",
+            passwordHandler.checkPassword("test2", user.getPassword(), false));
+        assertTrue(
+            "test2 user password does not check with fallback to MD5",
+            passwordHandler.checkPassword("test2", user.getPassword(), true));
     }
 }

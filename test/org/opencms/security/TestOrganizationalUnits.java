@@ -62,17 +62,8 @@ import junit.framework.TestSuite;
 /**
  * Unit tests for operations with organizational units.<p>
  */
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class TestOrganizationalUnits extends OpenCmsTestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     * 
-     * @param arg0 JUnit parameters
-     */
-    public TestOrganizationalUnits(String arg0) {
-
-        super(arg0);
-    }
 
     /**
      * Returns all organizational unit dependent roles.<p>
@@ -141,6 +132,43 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         };
 
         return wrapper;
+    }
+
+    /**
+     * Default JUnit constructor.<p>
+     * 
+     * @param arg0 JUnit parameters
+     */
+    public TestOrganizationalUnits(String arg0) {
+
+        super(arg0);
+    }
+
+    /**
+     * Returns the list of associated resource root paths.<p>
+     * 
+     * @param cms the cms context
+     * @param ou the organizational unit to get the resources for
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private void assertOrgUnitResources(CmsObject cms, CmsOrganizationalUnit ou) throws CmsException {
+
+        List resourceList = new ArrayList();
+        Iterator itResources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou.getName()).iterator();
+        while (itResources.hasNext()) {
+            CmsResource resource = (CmsResource)itResources.next();
+            resourceList.add(resource.getRootPath());
+        }
+        List relations = cms.getRelationsForResource(
+            cms.getSitePath(cms.readResource(ou.getId())),
+            CmsRelationFilter.TARGETS);
+        assertEquals(relations.size(), resourceList.size());
+        Iterator itRelations = relations.iterator();
+        while (itRelations.hasNext()) {
+            CmsRelation relation = (CmsRelation)itRelations.next();
+            assertTrue(resourceList.contains(relation.getTargetPath()));
+        }
     }
 
     /**
@@ -1600,32 +1628,5 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         OpenCms.getOrgUnitManager().removeResourceFromOrgUnit(cms, ou.getName(), "/");
         // check resources
         assertTrue(OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou.getName()).isEmpty());
-    }
-
-    /**
-     * Returns the list of associated resource root paths.<p>
-     * 
-     * @param cms the cms context
-     * @param ou the organizational unit to get the resources for
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    private void assertOrgUnitResources(CmsObject cms, CmsOrganizationalUnit ou) throws CmsException {
-
-        List resourceList = new ArrayList();
-        Iterator itResources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou.getName()).iterator();
-        while (itResources.hasNext()) {
-            CmsResource resource = (CmsResource)itResources.next();
-            resourceList.add(resource.getRootPath());
-        }
-        List relations = cms.getRelationsForResource(
-            cms.getSitePath(cms.readResource(ou.getId())),
-            CmsRelationFilter.TARGETS);
-        assertEquals(relations.size(), resourceList.size());
-        Iterator itRelations = relations.iterator();
-        while (itRelations.hasNext()) {
-            CmsRelation relation = (CmsRelation)itRelations.next();
-            assertTrue(resourceList.contains(relation.getTargetPath()));
-        }
     }
 }
