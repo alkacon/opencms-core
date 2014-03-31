@@ -367,6 +367,50 @@ public abstract class CmsWorkplace {
     }
 
     /**
+     * Returns the start site from the given workplace settings.<p>
+     * 
+     * @param cms the cms context
+     * @param settings the workplace settings
+     * 
+     * @return the start site root
+     */
+    public static String getStartSiteRoot(CmsObject cms, CmsWorkplaceSettings settings) {
+
+        String currentSite = cms.getRequestContext().getSiteRoot();
+        String startSiteRoot = settings.getUserSettings().getStartSite();
+        if (startSiteRoot.endsWith("/")) {
+            // remove trailing slash
+            startSiteRoot = startSiteRoot.substring(0, startSiteRoot.length() - 1);
+        }
+        if (CmsStringUtil.isNotEmpty(startSiteRoot)
+            && (OpenCms.getSiteManager().getSiteForSiteRoot(startSiteRoot) == null)) {
+            // this is not the root site and the site is not in the list
+            startSiteRoot = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartSite();
+            if (startSiteRoot.endsWith("/")) {
+                // remove trailing slash
+                startSiteRoot = startSiteRoot.substring(0, startSiteRoot.length() - 1);
+            }
+        }
+        boolean access = false;
+
+        cms.getRequestContext().setSiteRoot(startSiteRoot);
+        try {
+            // check access to the site
+            access = cms.existsResource("/", CmsResourceFilter.ONLY_VISIBLE);
+
+            if (!access) {
+                List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(cms, true);
+                if (sites.size() > 0) {
+                    startSiteRoot = sites.get(0).getSiteRoot();
+                }
+            }
+        } finally {
+            cms.getRequestContext().setSiteRoot(currentSite);
+        }
+        return startSiteRoot;
+    }
+
+    /**
      * Returns the path to the cascading stylesheets.<p>
      * 
      * @param jsp the JSP context
@@ -544,50 +588,6 @@ public abstract class CmsWorkplace {
     }
 
     /**
-     * Returns the start site from the given workplace settings.<p>
-     * 
-     * @param cms the cms context
-     * @param settings the workplace settings
-     * 
-     * @return the start site root
-     */
-    public static String getStartSiteRoot(CmsObject cms, CmsWorkplaceSettings settings) {
-
-        String currentSite = cms.getRequestContext().getSiteRoot();
-        String startSiteRoot = settings.getUserSettings().getStartSite();
-        if (startSiteRoot.endsWith("/")) {
-            // remove trailing slash
-            startSiteRoot = startSiteRoot.substring(0, startSiteRoot.length() - 1);
-        }
-        if (CmsStringUtil.isNotEmpty(startSiteRoot)
-            && (OpenCms.getSiteManager().getSiteForSiteRoot(startSiteRoot) == null)) {
-            // this is not the root site and the site is not in the list
-            startSiteRoot = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartSite();
-            if (startSiteRoot.endsWith("/")) {
-                // remove trailing slash
-                startSiteRoot = startSiteRoot.substring(0, startSiteRoot.length() - 1);
-            }
-        }
-        boolean access = false;
-
-        cms.getRequestContext().setSiteRoot(startSiteRoot);
-        try {
-            // check access to the site
-            access = cms.existsResource("/", CmsResourceFilter.ONLY_VISIBLE);
-
-            if (!access) {
-                List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(cms, true);
-                if (sites.size() > 0) {
-                    startSiteRoot = sites.get(0).getSiteRoot();
-                }
-            }
-        } finally {
-            cms.getRequestContext().setSiteRoot(currentSite);
-        }
-        return startSiteRoot;
-    }
-
-    /**
      * Returns <code>true</code> if the given resource is a temporary file.<p>
      * 
      * A resource is considered a temporary file it is a file where the
@@ -617,6 +617,28 @@ public abstract class CmsWorkplace {
 
         // save the workplace settings in the session
         session.setAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS, settings);
+    }
+
+    /**
+     * Auxiliary method for initialization of messages.<p>
+     * 
+     * @param messages the {@link CmsMessages} to add
+     */
+    protected void addMessages(CmsMessages messages) {
+
+        if (messages != null) {
+            m_messages.addMessages(messages);
+        }
+    }
+
+    /**
+     * Auxiliary method for initialization of messages.<p>
+     * 
+     * @param bundleName the resource bundle name to add
+     */
+    protected void addMessages(String bundleName) {
+
+        addMessages(new CmsMessages(bundleName, getLocale()));
     }
 
     /**
@@ -654,7 +676,6 @@ public abstract class CmsWorkplace {
 
         StringBuffer retValue = new StringBuffer(512);
         HttpServletRequest request = getJsp().getRequest();
-        @SuppressWarnings("unchecked")
         Iterator<String> paramNames = request.getParameterMap().keySet().iterator();
         while (paramNames.hasNext()) {
             String paramName = paramNames.next();
@@ -665,6 +686,40 @@ public abstract class CmsWorkplace {
             }
         }
         return retValue.toString();
+    }
+
+    /**
+     * Returns the values of all parameter methods of this workplace class instance.<p>
+     * 
+     * @return the values of all parameter methods of this workplace class instance
+     */
+    protected Map<String, Object> allParamValues() {
+
+        List<Method> methods = paramGetMethods();
+        Map<String, Object> map = new HashMap<String, Object>(methods.size());
+        Iterator<Method> i = methods.iterator();
+        while (i.hasNext()) {
+            Method m = i.next();
+            Object o = null;
+            try {
+                o = m.invoke(this, new Object[0]);
+            } catch (InvocationTargetException ite) {
+                // can usually be ignored
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(ite);
+                }
+            } catch (IllegalAccessException eae) {
+                // can usually be ignored
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(eae);
+                }
+            }
+            if (o == null) {
+                o = "";
+            }
+            map.put(m.getName().substring(8).toLowerCase(), o);
+        }
+        return map;
     }
 
     /**
@@ -1069,6 +1124,38 @@ public abstract class CmsWorkplace {
     }
 
     /**
+     * Checks that the current user is a workplace user.<p>
+     * 
+     * @throws CmsRoleViolationException if the user does not have the required role 
+     */
+    protected void checkRole() throws CmsRoleViolationException {
+
+        OpenCms.getRoleManager().checkRole(m_cms, CmsRole.WORKPLACE_USER);
+    }
+
+    /**
+     * Decodes an individual parameter value.<p>
+     * 
+     * In special cases some parameters might require a different-from-default
+     * encoding. This is the case if the content of the parameter was 
+     * encoded using the JavaScript encodeURIComponent() method on the client,
+     * which always encodes in UTF-8.<p> 
+     * 
+     * @param paramName the name of the parameter 
+     * @param paramValue the unencoded value of the parameter
+     * 
+     * @return the encoded value of the parameter
+     */
+    protected String decodeParamValue(String paramName, String paramValue) {
+
+        if ((paramName != null) && (paramValue != null)) {
+            return CmsEncoder.decode(paramValue, getCms().getRequestContext().getEncoding());
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * First sets site and project in the workplace settings, then fills all class parameter values from the data 
      * provided in the current request.<p>
      * 
@@ -1092,7 +1179,6 @@ public abstract class CmsWorkplace {
      * 
      * @param request the current JSP request
      */
-    @SuppressWarnings("unchecked")
     public void fillParamValues(HttpServletRequest request) {
 
         m_parameterMap = null;
@@ -1281,6 +1367,7 @@ public abstract class CmsWorkplace {
             // initialize resolver with the objects available
             .setCmsObject(m_cms).setMessages(getMessages()).setJspPageContext(
                 (m_jsp == null) ? null : m_jsp.getJspContext());
+            m_macroResolver.setParameterMap(m_parameterMap);
         }
         return m_macroResolver;
     }
@@ -1305,6 +1392,19 @@ public abstract class CmsWorkplace {
     public List<FileItem> getMultiPartFileItems() {
 
         return m_multiPartFileItems;
+    }
+
+    /**
+     * Returns the map of parameters read from the current request.<p>
+     *
+     * This method will also handle parameters from forms
+     * of type <code>multipart/form-data</code>.<p>
+     * 
+     * @return the map of parameters read from the current request
+     */
+    protected Map<String, String[]> getParameterMap() {
+
+        return m_parameterMap;
     }
 
     /**
@@ -1379,6 +1479,19 @@ public abstract class CmsWorkplace {
     }
 
     /**
+     * Initializes the message object.<p>
+     * 
+     * By default the {@link CmsWorkplaceMessages} are initialized.<p>
+     * 
+     * You SHOULD override this method for setting the bundles you really need,
+     * using the <code>{@link #addMessages(CmsMessages)}</code> or <code>{@link #addMessages(String)}</code> method.<p>
+     */
+    protected void initMessages() {
+
+        // no bundles are added by default as all core bundles are added as part of the WorkplaceModuleMessages
+    }
+
+    /**
      * Sets site and project in the workplace settings with the request values of parameters 
      * <code>{@link CmsWorkplace#PARAM_WP_SITE}</code> and <code>{@link CmsWorkplace#PARAM_WP_PROJECT}</code>.<p>
      * 
@@ -1427,6 +1540,138 @@ public abstract class CmsWorkplace {
 
         return reloadRequired;
     }
+
+    /**
+     * Sets the users time warp if configured and if the current timewarp setting is different or
+     * clears the current time warp setting if the user has no configured timewarp.<p>
+     * 
+     * Timwarping is controlled by the session attribute
+     * {@link CmsContextInfo#ATTRIBUTE_REQUEST_TIME} with a value of type <code>Long</code>.<p>
+     * 
+     * @param settings the user settings which are configured via the preferences dialog
+     * 
+     * @param session the session of the user
+     */
+    protected void initTimeWarp(CmsUserSettings settings, HttpSession session) {
+
+        long timeWarpConf = settings.getTimeWarp();
+        Long timeWarpSetLong = (Long)session.getAttribute(CmsContextInfo.ATTRIBUTE_REQUEST_TIME);
+        long timeWarpSet = (timeWarpSetLong != null) ? timeWarpSetLong.longValue() : CmsContextInfo.CURRENT_TIME;
+
+        if (timeWarpConf == CmsContextInfo.CURRENT_TIME) {
+            // delete:
+            if (timeWarpSetLong != null) {
+                // we may come from direct_edit.jsp: don't remove attribute, this is
+                session.removeAttribute(CmsContextInfo.ATTRIBUTE_REQUEST_TIME);
+            }
+        } else {
+            // this is dominant: if configured we will use it
+            if (timeWarpSet != timeWarpConf) {
+                session.setAttribute(CmsContextInfo.ATTRIBUTE_REQUEST_TIME, new Long(timeWarpConf));
+            }
+        }
+    }
+
+    /**
+     * Sets the cms request context and other cms related settings to the 
+     * values stored in the workplace settings.<p>
+     * 
+     * @param settings the workplace settings
+     * @param cms the current cms object
+     */
+    private void initWorkplaceCmsContext(CmsWorkplaceSettings settings, CmsObject cms) {
+
+        CmsRequestContext reqCont = cms.getRequestContext();
+
+        // check project setting        
+        if (!settings.getProject().equals(reqCont.getCurrentProject().getUuid())) {
+            try {
+                reqCont.setCurrentProject(cms.readProject(settings.getProject()));
+            } catch (CmsDbEntryNotFoundException e) {
+                try {
+                    // project not found, set current project and settings to online project
+                    reqCont.setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
+                    settings.setProject(CmsProject.ONLINE_PROJECT_ID);
+                } catch (CmsException ex) {
+                    // log error
+                    if (LOG.isInfoEnabled()) {
+                        LOG.info(ex.getLocalizedMessage());
+                    }
+                }
+            } catch (CmsException e1) {
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e1.getLocalizedMessage());
+                }
+            }
+        }
+
+        // check site setting
+        if (!(settings.getSite().equals(reqCont.getSiteRoot()))) {
+            // site was switched, set new site root
+            reqCont.setSiteRoot(settings.getSite());
+            // removed setting explorer resource to "/" to get the stored folder
+        }
+    }
+
+    /**
+     * Initializes this workplace class instance.<p>
+     * 
+     * This method can be used in case there a workplace class was generated using
+     * {@link Class#forName(java.lang.String)} to initialize the class members.<p> 
+     * 
+     * @param jsp the initialized JSP context
+     */
+    protected void initWorkplaceMembers(CmsJspActionElement jsp) {
+
+        if (jsp != null) {
+            m_jsp = jsp;
+            m_cms = m_jsp.getCmsObject();
+            m_session = m_jsp.getRequest().getSession();
+
+            // check role
+            try {
+                checkRole();
+            } catch (CmsRoleViolationException e) {
+                throw new CmsIllegalStateException(e.getMessageContainer(), e);
+            }
+
+            // get / create the workplace settings 
+            m_settings = (CmsWorkplaceSettings)m_session.getAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
+
+            if (m_settings == null) {
+                // create the settings object
+                m_settings = new CmsWorkplaceSettings();
+                m_settings = initWorkplaceSettings(m_cms, m_settings, false);
+
+                storeSettings(m_session, m_settings);
+            }
+
+            // initialize messages            
+            CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(getLocale());
+            // generate a new multi messages object and add the messages from the workplace
+            m_messages = new CmsMultiMessages(getLocale());
+            m_messages.addMessages(messages);
+            initMessages();
+
+            // check request for changes in the workplace settings
+            initWorkplaceRequestValues(m_settings, m_jsp.getRequest());
+
+            // set cms context accordingly
+            initWorkplaceCmsContext(m_settings, m_cms);
+
+            // timewarp reset logic
+            initTimeWarp(m_settings.getUserSettings(), m_session);
+        }
+    }
+
+    /**
+     * Analyzes the request for workplace parameters and adjusts the workplace
+     * settings accordingly.<p> 
+     * 
+     * @param settings the workplace settings
+     * @param request the current request
+     */
+    protected abstract void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request);
 
     /**
      * Returns the forwarded flag.<p>
@@ -1615,6 +1860,30 @@ public abstract class CmsWorkplace {
     }
 
     /**
+     * Returns a list of all methods of the current class instance that 
+     * start with "getParam" and have no parameters.<p> 
+     * 
+     * @return a list of all methods of the current class instance that 
+     * start with "getParam" and have no parameters
+     */
+    private List<Method> paramGetMethods() {
+
+        List<Method> list = new ArrayList<Method>();
+        Method[] methods = this.getClass().getMethods();
+        int length = methods.length;
+        for (int i = 0; i < length; i++) {
+            Method method = methods[i];
+            if (method.getName().startsWith("getParam") && (method.getParameterTypes().length == 0)) {
+                if (DEBUG) {
+                    System.err.println("getMethod: " + method.getName());
+                }
+                list.add(method);
+            }
+        }
+        return list;
+    }
+
+    /**
      * Returns all initialized parameters of the current workplace class 
      * as hidden field tags that can be inserted in a form.<p>
      * 
@@ -1691,6 +1960,65 @@ public abstract class CmsWorkplace {
             }
         }
         return result.toString();
+    }
+
+    /**
+     * Returns a list of all methods of the current class instance that 
+     * start with "setParam" and have exactly one String parameter.<p> 
+     * 
+     * @return a list of all methods of the current class instance that 
+     * start with "setParam" and have exactly one String parameter
+     */
+    private List<Method> paramSetMethods() {
+
+        List<Method> list = new ArrayList<Method>();
+        Method[] methods = getClass().getMethods();
+        int length = methods.length;
+        for (int i = 0; i < length; i++) {
+            Method method = methods[i];
+            if (method.getName().startsWith("setParam")
+                && (method.getParameterTypes().length == 1)
+                && (method.getParameterTypes()[0].equals(java.lang.String.class))) {
+                if (DEBUG) {
+                    System.err.println("setMethod: " + method.getName());
+                }
+                list.add(method);
+            }
+        }
+        return list;
+    }
+
+    /**
+     * Returns the values of all parameter methods of this workplace class instance.<p>
+     * 
+     * @return the values of all parameter methods of this workplace class instance
+     */
+    protected Map<String, Object> paramValues() {
+
+        List<Method> methods = paramGetMethods();
+        Map<String, Object> map = new HashMap<String, Object>(methods.size());
+        Iterator<Method> i = methods.iterator();
+        while (i.hasNext()) {
+            Method m = i.next();
+            Object o = null;
+            try {
+                o = m.invoke(this, new Object[0]);
+            } catch (InvocationTargetException ite) {
+                // can usually be ignored
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(ite.getLocalizedMessage());
+                }
+            } catch (IllegalAccessException eae) {
+                // can usually be ignored
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(eae.getLocalizedMessage());
+                }
+            }
+            if (o != null) {
+                map.put(m.getName().substring(8).toLowerCase(), o);
+            }
+        }
+        return map;
     }
 
     /**
@@ -1773,244 +2101,6 @@ public abstract class CmsWorkplace {
     }
 
     /**
-     * Auxiliary method for initialization of messages.<p>
-     * 
-     * @param messages the {@link CmsMessages} to add
-     */
-    protected void addMessages(CmsMessages messages) {
-
-        if (messages != null) {
-            m_messages.addMessages(messages);
-        }
-    }
-
-    /**
-     * Auxiliary method for initialization of messages.<p>
-     * 
-     * @param bundleName the resource bundle name to add
-     */
-    protected void addMessages(String bundleName) {
-
-        addMessages(new CmsMessages(bundleName, getLocale()));
-    }
-
-    /**
-     * Returns the values of all parameter methods of this workplace class instance.<p>
-     * 
-     * @return the values of all parameter methods of this workplace class instance
-     */
-    protected Map<String, Object> allParamValues() {
-
-        List<Method> methods = paramGetMethods();
-        Map<String, Object> map = new HashMap<String, Object>(methods.size());
-        Iterator<Method> i = methods.iterator();
-        while (i.hasNext()) {
-            Method m = i.next();
-            Object o = null;
-            try {
-                o = m.invoke(this, new Object[0]);
-            } catch (InvocationTargetException ite) {
-                // can usually be ignored
-                if (LOG.isInfoEnabled()) {
-                    LOG.info(ite);
-                }
-            } catch (IllegalAccessException eae) {
-                // can usually be ignored
-                if (LOG.isInfoEnabled()) {
-                    LOG.info(eae);
-                }
-            }
-            if (o == null) {
-                o = "";
-            }
-            map.put(m.getName().substring(8).toLowerCase(), o);
-        }
-        return map;
-    }
-
-    /**
-     * Checks that the current user is a workplace user.<p>
-     * 
-     * @throws CmsRoleViolationException if the user does not have the required role 
-     */
-    protected void checkRole() throws CmsRoleViolationException {
-
-        OpenCms.getRoleManager().checkRole(m_cms, CmsRole.WORKPLACE_USER);
-    }
-
-    /**
-     * Decodes an individual parameter value.<p>
-     * 
-     * In special cases some parameters might require a different-from-default
-     * encoding. This is the case if the content of the parameter was 
-     * encoded using the JavaScript encodeURIComponent() method on the client,
-     * which always encodes in UTF-8.<p> 
-     * 
-     * @param paramName the name of the parameter 
-     * @param paramValue the unencoded value of the parameter
-     * 
-     * @return the encoded value of the parameter
-     */
-    protected String decodeParamValue(String paramName, String paramValue) {
-
-        if ((paramName != null) && (paramValue != null)) {
-            return CmsEncoder.decode(paramValue, getCms().getRequestContext().getEncoding());
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Returns the map of parameters read from the current request.<p>
-     *
-     * This method will also handle parameters from forms
-     * of type <code>multipart/form-data</code>.<p>
-     * 
-     * @return the map of parameters read from the current request
-     */
-    protected Map<String, String[]> getParameterMap() {
-
-        return m_parameterMap;
-    }
-
-    /**
-     * Initializes the message object.<p>
-     * 
-     * By default the {@link CmsWorkplaceMessages} are initialized.<p>
-     * 
-     * You SHOULD override this method for setting the bundles you really need,
-     * using the <code>{@link #addMessages(CmsMessages)}</code> or <code>{@link #addMessages(String)}</code> method.<p>
-     */
-    protected void initMessages() {
-
-        // no bundles are added by default as all core bundles are added as part of the WorkplaceModuleMessages
-    }
-
-    /**
-     * Sets the users time warp if configured and if the current timewarp setting is different or
-     * clears the current time warp setting if the user has no configured timewarp.<p>
-     * 
-     * Timwarping is controlled by the session attribute
-     * {@link CmsContextInfo#ATTRIBUTE_REQUEST_TIME} with a value of type <code>Long</code>.<p>
-     * 
-     * @param settings the user settings which are configured via the preferences dialog
-     * 
-     * @param session the session of the user
-     */
-    protected void initTimeWarp(CmsUserSettings settings, HttpSession session) {
-
-        long timeWarpConf = settings.getTimeWarp();
-        Long timeWarpSetLong = (Long)session.getAttribute(CmsContextInfo.ATTRIBUTE_REQUEST_TIME);
-        long timeWarpSet = (timeWarpSetLong != null) ? timeWarpSetLong.longValue() : CmsContextInfo.CURRENT_TIME;
-
-        if (timeWarpConf == CmsContextInfo.CURRENT_TIME) {
-            // delete:
-            if (timeWarpSetLong != null) {
-                // we may come from direct_edit.jsp: don't remove attribute, this is
-                session.removeAttribute(CmsContextInfo.ATTRIBUTE_REQUEST_TIME);
-            }
-        } else {
-            // this is dominant: if configured we will use it
-            if (timeWarpSet != timeWarpConf) {
-                session.setAttribute(CmsContextInfo.ATTRIBUTE_REQUEST_TIME, new Long(timeWarpConf));
-            }
-        }
-    }
-
-    /**
-     * Initializes this workplace class instance.<p>
-     * 
-     * This method can be used in case there a workplace class was generated using
-     * {@link Class#forName(java.lang.String)} to initialize the class members.<p> 
-     * 
-     * @param jsp the initialized JSP context
-     */
-    protected void initWorkplaceMembers(CmsJspActionElement jsp) {
-
-        if (jsp != null) {
-            m_jsp = jsp;
-            m_cms = m_jsp.getCmsObject();
-            m_session = m_jsp.getRequest().getSession();
-
-            // check role
-            try {
-                checkRole();
-            } catch (CmsRoleViolationException e) {
-                throw new CmsIllegalStateException(e.getMessageContainer(), e);
-            }
-
-            // get / create the workplace settings 
-            m_settings = (CmsWorkplaceSettings)m_session.getAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
-
-            if (m_settings == null) {
-                // create the settings object
-                m_settings = new CmsWorkplaceSettings();
-                m_settings = initWorkplaceSettings(m_cms, m_settings, false);
-
-                storeSettings(m_session, m_settings);
-            }
-
-            // initialize messages            
-            CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(getLocale());
-            // generate a new multi messages object and add the messages from the workplace
-            m_messages = new CmsMultiMessages(getLocale());
-            m_messages.addMessages(messages);
-            initMessages();
-
-            // check request for changes in the workplace settings
-            initWorkplaceRequestValues(m_settings, m_jsp.getRequest());
-
-            // set cms context accordingly
-            initWorkplaceCmsContext(m_settings, m_cms);
-
-            // timewarp reset logic
-            initTimeWarp(m_settings.getUserSettings(), m_session);
-        }
-    }
-
-    /**
-     * Analyzes the request for workplace parameters and adjusts the workplace
-     * settings accordingly.<p> 
-     * 
-     * @param settings the workplace settings
-     * @param request the current request
-     */
-    protected abstract void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request);
-
-    /**
-     * Returns the values of all parameter methods of this workplace class instance.<p>
-     * 
-     * @return the values of all parameter methods of this workplace class instance
-     */
-    protected Map<String, Object> paramValues() {
-
-        List<Method> methods = paramGetMethods();
-        Map<String, Object> map = new HashMap<String, Object>(methods.size());
-        Iterator<Method> i = methods.iterator();
-        while (i.hasNext()) {
-            Method m = i.next();
-            Object o = null;
-            try {
-                o = m.invoke(this, new Object[0]);
-            } catch (InvocationTargetException ite) {
-                // can usually be ignored
-                if (LOG.isInfoEnabled()) {
-                    LOG.info(ite.getLocalizedMessage());
-                }
-            } catch (IllegalAccessException eae) {
-                // can usually be ignored
-                if (LOG.isInfoEnabled()) {
-                    LOG.info(eae.getLocalizedMessage());
-                }
-            }
-            if (o != null) {
-                map.put(m.getName().substring(8).toLowerCase(), o);
-            }
-        }
-        return map;
-    }
-
-    /**
      * Replaces the site title, if necessary.<p>
      * 
      * @param title the site title
@@ -2054,96 +2144,5 @@ public abstract class CmsWorkplace {
         CmsUUID tempProjectId = OpenCms.getWorkplaceManager().getTempFileProjectId();
         getCms().getRequestContext().setCurrentProject(getCms().readProject(tempProjectId));
         return tempProjectId;
-    }
-
-    /**
-     * Sets the cms request context and other cms related settings to the 
-     * values stored in the workplace settings.<p>
-     * 
-     * @param settings the workplace settings
-     * @param cms the current cms object
-     */
-    private void initWorkplaceCmsContext(CmsWorkplaceSettings settings, CmsObject cms) {
-
-        CmsRequestContext reqCont = cms.getRequestContext();
-
-        // check project setting        
-        if (!settings.getProject().equals(reqCont.getCurrentProject().getUuid())) {
-            try {
-                reqCont.setCurrentProject(cms.readProject(settings.getProject()));
-            } catch (CmsDbEntryNotFoundException e) {
-                try {
-                    // project not found, set current project and settings to online project
-                    reqCont.setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
-                    settings.setProject(CmsProject.ONLINE_PROJECT_ID);
-                } catch (CmsException ex) {
-                    // log error
-                    if (LOG.isInfoEnabled()) {
-                        LOG.info(ex.getLocalizedMessage());
-                    }
-                }
-            } catch (CmsException e1) {
-                if (LOG.isInfoEnabled()) {
-                    LOG.info(e1.getLocalizedMessage());
-                }
-            }
-        }
-
-        // check site setting
-        if (!(settings.getSite().equals(reqCont.getSiteRoot()))) {
-            // site was switched, set new site root
-            reqCont.setSiteRoot(settings.getSite());
-            // removed setting explorer resource to "/" to get the stored folder
-        }
-    }
-
-    /**
-     * Returns a list of all methods of the current class instance that 
-     * start with "getParam" and have no parameters.<p> 
-     * 
-     * @return a list of all methods of the current class instance that 
-     * start with "getParam" and have no parameters
-     */
-    private List<Method> paramGetMethods() {
-
-        List<Method> list = new ArrayList<Method>();
-        Method[] methods = this.getClass().getMethods();
-        int length = methods.length;
-        for (int i = 0; i < length; i++) {
-            Method method = methods[i];
-            if (method.getName().startsWith("getParam") && (method.getParameterTypes().length == 0)) {
-                if (DEBUG) {
-                    System.err.println("getMethod: " + method.getName());
-                }
-                list.add(method);
-            }
-        }
-        return list;
-    }
-
-    /**
-     * Returns a list of all methods of the current class instance that 
-     * start with "setParam" and have exactly one String parameter.<p> 
-     * 
-     * @return a list of all methods of the current class instance that 
-     * start with "setParam" and have exactly one String parameter
-     */
-    private List<Method> paramSetMethods() {
-
-        List<Method> list = new ArrayList<Method>();
-        Method[] methods = getClass().getMethods();
-        int length = methods.length;
-        for (int i = 0; i < length; i++) {
-            Method method = methods[i];
-            if (method.getName().startsWith("setParam")
-                && (method.getParameterTypes().length == 1)
-                && (method.getParameterTypes()[0].equals(java.lang.String.class))) {
-                if (DEBUG) {
-                    System.err.println("setMethod: " + method.getName());
-                }
-                list.add(method);
-            }
-        }
-        return list;
     }
 }
