@@ -2222,7 +2222,7 @@ public final class OpenCmsCore {
      *
      * @return the URL of the login form or <code>null</code> if not set
      *
-     * @throws IOException
+     * @throws IOException in case of IO errors
      */
     private String getLoginFormURL(HttpServletRequest req, HttpServletResponse res) throws IOException {
 

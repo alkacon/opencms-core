@@ -84,6 +84,16 @@ import junit.framework.TestSuite;
 public class TestCmsImportExport extends OpenCmsTestCase {
 
     /**
+     * Default JUnit constructor.<p>
+     * 
+     * @param arg0 JUnit parameters
+     */
+    public TestCmsImportExport(String arg0) {
+
+        super(arg0);
+    }
+
+    /**
      * Test suite for this test class.<p>
      * 
      * @return the test suite
@@ -101,7 +111,6 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         suite.addTest(new TestCmsImportExport("testImportMovedFolder"));
         suite.addTest(new TestCmsImportExport("testImportWrongSite"));
         suite.addTest(new TestCmsImportExport("testSetup"));
-        suite.addTest(new TestCmsImportExport("testUserImport"));
         suite.addTest(new TestCmsImportExport("testImportExportFolder"));
         suite.addTest(new TestCmsImportExport("testImportExportId"));
         suite.addTest(new TestCmsImportExport("testImportExportBrokenLinksHtml"));
@@ -132,69 +141,6 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         };
 
         return wrapper;
-    }
-
-    /**
-     * Default JUnit constructor.<p>
-     * 
-     * @param arg0 JUnit parameters
-     */
-    public TestCmsImportExport(String arg0) {
-
-        super(arg0);
-    }
-
-    /**
-     * Compares imported and exported resources.<p>
-     * 
-     * @param cms the current OpenCms Object
-     * @param path the path the the root folder
-     * @param startResources the list of original resources before exporting and importing
-     * 
-     * @throws CmsException in case of errors accessing the OpenCms VFS
-     */
-    private void assertResources(CmsObject cms, String path, List<CmsResource> startResources) throws CmsException {
-
-        List<CmsResource> endResources = cms.readResources(path, CmsResourceFilter.ALL, true);
-
-        for (CmsResource res : startResources) {
-            if (!endResources.contains(res)) {
-                fail("Resource " + res + " not found in imported resources!");
-            }
-        }
-        for (CmsResource res : endResources) {
-            if (!startResources.contains(res)) {
-                fail("Resource " + res + " was additionally imported!");
-            }
-        }
-    }
-
-    /**
-     * Convert a given timestamp from a String format to a long value.<p>
-     * 
-     * The timestamp is either the string representation of a long value (old export format)
-     * or a user-readable string format.
-     * 
-     * @param timestamp timestamp to convert
-     * @return long value of the timestamp
-     */
-    private long convertTimestamp(String timestamp) {
-
-        long value = 0;
-        // try to parse the timestamp string
-        // if it successes, its an old style long value
-        try {
-            value = Long.parseLong(timestamp);
-
-        } catch (NumberFormatException e) {
-            // the timestamp was in in a user-readable string format, create the long value form it
-            try {
-                value = CmsDateUtil.parseHeaderDate(timestamp);
-            } catch (ParseException pe) {
-                value = System.currentTimeMillis();
-            }
-        }
-        return value;
     }
 
     /**
@@ -2087,5 +2033,58 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
         assertEquals(expectedDateCreated, resource.getDateCreated());
         assertEquals(expectedDateLastModified, resource.getDateLastModified());
+    }
+
+    /**
+     * Compares imported and exported resources.<p>
+     * 
+     * @param cms the current OpenCms Object
+     * @param path the path the the root folder
+     * @param startResources the list of original resources before exporting and importing
+     * 
+     * @throws CmsException in case of errors accessing the OpenCms VFS
+     */
+    private void assertResources(CmsObject cms, String path, List<CmsResource> startResources) throws CmsException {
+
+        List<CmsResource> endResources = cms.readResources(path, CmsResourceFilter.ALL, true);
+
+        for (CmsResource res : startResources) {
+            if (!endResources.contains(res)) {
+                fail("Resource " + res + " not found in imported resources!");
+            }
+        }
+        for (CmsResource res : endResources) {
+            if (!startResources.contains(res)) {
+                fail("Resource " + res + " was additionally imported!");
+            }
+        }
+    }
+
+    /**
+     * Convert a given timestamp from a String format to a long value.<p>
+     * 
+     * The timestamp is either the string representation of a long value (old export format)
+     * or a user-readable string format.
+     * 
+     * @param timestamp timestamp to convert
+     * @return long value of the timestamp
+     */
+    private long convertTimestamp(String timestamp) {
+
+        long value = 0;
+        // try to parse the timestamp string
+        // if it successes, its an old style long value
+        try {
+            value = Long.parseLong(timestamp);
+
+        } catch (NumberFormatException e) {
+            // the timestamp was in in a user-readable string format, create the long value form it
+            try {
+                value = CmsDateUtil.parseHeaderDate(timestamp);
+            } catch (ParseException pe) {
+                value = System.currentTimeMillis();
+            }
+        }
+        return value;
     }
 }

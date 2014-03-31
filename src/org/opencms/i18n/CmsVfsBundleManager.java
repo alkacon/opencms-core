@@ -57,6 +57,9 @@ public class CmsVfsBundleManager {
      */
     public class Listener implements I_CmsEventListener {
 
+        /** Thread generation counter. */
+        private int m_threadCount;
+
         /**
          * @see org.opencms.main.I_CmsEventListener#cmsEvent(org.opencms.main.CmsEvent)
          */
@@ -120,20 +123,26 @@ public class CmsVfsBundleManager {
          */
         private void scheduleReload() {
 
-            Thread thread = new Thread() {
+            if (!isReloadScheduled() && (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT)) {
+                // only schedule a reload if the system is not going down already
+                m_threadCount++;
+                Thread thread = new Thread("Bundle reload Thread " + m_threadCount) {
 
-                @Override
-                public void run() {
+                    @Override
+                    public void run() {
 
-                    try {
-                        Thread.sleep(1000);
-                    } catch (Exception e) {
-                        // ignore 
+                        setReloadScheduled(true);
+                        try {
+                            Thread.sleep(1000);
+                        } catch (Exception e) {
+                            // ignore 
+                        }
+                        reload(false);
+                        setReloadScheduled(false);
                     }
-                    reload(false);
-                }
-            };
-            thread.start();
+                };
+                thread.start();
+            }
         }
 
     }
@@ -181,6 +190,9 @@ public class CmsVfsBundleManager {
             return m_name;
         }
     }
+
+    /** Indicated if a reload is already scheduled. */
+    private boolean m_reloadIsScheduled;
 
     /** Resource type name for plain-text properties files containing messages. */
     public static final String TYPE_PROPERTIES_BUNDLE = "propertyvfsbundle";
@@ -242,35 +254,61 @@ public class CmsVfsBundleManager {
     }
 
     /**
+     * Indicates if a reload thread is currently scheduled.
+     * 
+     * @return <code>true</code> if a reload is currently scheduled
+     */
+    public boolean isReloadScheduled() {
+
+        return m_reloadIsScheduled;
+    }
+
+    /**
      * Re-initializes the resource bundles.<p>
      * 
      * @param isStartup true when this is called during startup 
      */
     public synchronized void reload(boolean isStartup) {
 
-        m_logToErrorChannel = isStartup;
-        flushBundles();
-        try {
-            int xmlType = OpenCms.getResourceManager().getResourceType(TYPE_XML_BUNDLE).getTypeId();
-            List<CmsResource> xmlBundles = m_cms.readResources("/", CmsResourceFilter.ALL.addRequireType(xmlType), true);
-            for (CmsResource xmlBundle : xmlBundles) {
-                addXmlBundle(xmlBundle);
+        if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) {
+            // we only need to reload if the system is initialized
+            m_logToErrorChannel = isStartup;
+            flushBundles();
+            try {
+                int xmlType = OpenCms.getResourceManager().getResourceType(TYPE_XML_BUNDLE).getTypeId();
+                List<CmsResource> xmlBundles = m_cms.readResources(
+                    "/",
+                    CmsResourceFilter.ALL.addRequireType(xmlType),
+                    true);
+                for (CmsResource xmlBundle : xmlBundles) {
+                    addXmlBundle(xmlBundle);
+                }
+            } catch (Exception e) {
+                logError(e);
             }
-        } catch (Exception e) {
-            logError(e);
-        }
-        try {
-            int propType = OpenCms.getResourceManager().getResourceType(TYPE_PROPERTIES_BUNDLE).getTypeId();
-            List<CmsResource> propertyBundles = m_cms.readResources(
-                "/",
-                CmsResourceFilter.ALL.addRequireType(propType),
-                true);
-            for (CmsResource propertyBundle : propertyBundles) {
-                addPropertyBundle(propertyBundle);
+            try {
+                int propType = OpenCms.getResourceManager().getResourceType(TYPE_PROPERTIES_BUNDLE).getTypeId();
+                List<CmsResource> propertyBundles = m_cms.readResources(
+                    "/",
+                    CmsResourceFilter.ALL.addRequireType(propType),
+                    true);
+                for (CmsResource propertyBundle : propertyBundles) {
+                    addPropertyBundle(propertyBundle);
+                }
+            } catch (Exception e) {
+                logError(e);
             }
-        } catch (Exception e) {
-            logError(e);
         }
+    }
+
+    /**
+     * Sets the information if a reload thread is currently scheduled.
+     * 
+     * @param reloadIsScheduled if <code>true</code> there is a reload currently scheduled
+     */
+    public void setReloadScheduled(boolean reloadIsScheduled) {
+
+        m_reloadIsScheduled = reloadIsScheduled;
     }
 
     /**
@@ -295,6 +333,8 @@ public class CmsVfsBundleManager {
         } else {
             LOG.info(e.getLocalizedMessage(), e);
         }
+        // if an error was logged make sure that the flag to schedule a reload is reset
+        setReloadScheduled(false);
     }
 
     /**
@@ -378,7 +418,10 @@ public class CmsVfsBundleManager {
             CmsResourceBundleLoader.flushBundleCache(baseName, true);
         }
         m_bundleBaseNames.clear();
-        OpenCms.getWorkplaceManager().flushMessageCache();
+        if (OpenCms.getWorkplaceManager() != null) {
+            // may be null in some test case scenarios
+            OpenCms.getWorkplaceManager().flushMessageCache();
+        }
     }
 
     /**
