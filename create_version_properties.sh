@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # the output filename
-OUTPUT_FILE=$WORKSPACE+"version.properties"
+OUTPUT_FILE="$WORKSPACE/opencms/version.properties"
 
 OPENCMS_VERSION_NUMBER="9.5.x"
 OPENCMS_BUILD_NUMBER=$OPENCMS_BUILD_NUMBER
