@@ -16,6 +16,6 @@ echo "# " >> $OUTPUT_FILE
 echo "version.number=$OPENCMS_VERSION_NUMBER" >> $OUTPUT_FILE
 echo "version.buildnumber=$OPENCMS_BUILD_NUMBER" >> $OUTPUT_FILE
 echo "version.builddate=$OPENCMS_BUILD_DATE" >> $OUTPUT_FILE
-echo "version.gitid=$OPENCMS_GIT_ID" >> $OUTPUT_FILE
+echo "version.gitid=${OPENCMS_GIT_ID:0:7}" >> $OUTPUT_FILE
 echo "version.gitbranch=$OPENCMS_GIT_BRANCH" >> $OUTPUT_FILE
 
