@@ -457,7 +457,7 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
             resource = "";
         }
         result.append(resource);
-        result.append("\" class=\"maxwidth\" onkeyup=\"checkValue();\" ></td>\n");
+        result.append("\" class=\"maxwidth\" onkeyup=\"checkValue();\" onchange=\"checkValue();\" onpaste=\"setTimeout(checkValue,4);\" ></td>\n");
         result.append("\t</tr>\n");
         result.append("\t<tr>\n");
         result.append("\t\t<td>&nbsp;</td>\n");
