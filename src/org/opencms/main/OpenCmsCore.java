@@ -1029,6 +1029,52 @@ public final class OpenCmsCore {
      */
     protected synchronized void initConfiguration(CmsParameterConfiguration configuration) throws CmsInitException {
 
+        String serverInfo = configuration.getString("context.servlet.container", null);
+
+        // output startup message to log file
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DOT_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DOT_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DOT_0));
+            CmsLog.INIT.info(". "
+                + Messages.get().getBundle().key(
+                    Messages.GUI_SHELL_VERSION_1,
+                    OpenCms.getSystemInfo().getVersionNumber()));
+            for (int i = 0; i < Messages.COPYRIGHT_BY_ALKACON.length; i++) {
+                CmsLog.INIT.info(". " + Messages.COPYRIGHT_BY_ALKACON[i]);
+            }
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_LINE_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_STARTUP_TIME_1,
+                new Date(System.currentTimeMillis())));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_OPENCMS_VERSION_1,
+                OpenCms.getSystemInfo().getVersionNumber() + " [" + OpenCms.getSystemInfo().getVersionId() + "]"));
+            if (serverInfo != null) {
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SERVLET_CONTAINER_1, serverInfo));
+            }
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_WEBAPP_NAME_1,
+                getSystemInfo().getWebApplicationName()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_SERVLET_PATH_1,
+                getSystemInfo().getServletPath()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_OPENCMS_CONTEXT_1,
+                getSystemInfo().getOpenCmsContext()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_WEBINF_PATH_1,
+                getSystemInfo().getWebInfRfsPath()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_PROPERTY_FILE_1,
+                getSystemInfo().getConfigurationFileRfsPath()));
+
+            String logFileRfsPath = getSystemInfo().getLogFileRfsPath();
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_LOG_FILE_1,
+                logFileRfsPath != null ? logFileRfsPath : "Managed by log4j"));
+        }
+
         String systemEncoding = null;
         try {
             systemEncoding = System.getProperty("file.encoding");
@@ -1387,6 +1433,10 @@ public final class OpenCmsCore {
         if (configuration.getBoolean("wizard.enabled", true)) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_WIZARD_0));
         }
+
+        // add an indicator that the configuration was processed from the servlet context
+        configuration.add("context.servlet.container", context.getServerInfo());
+
         // output startup message and copyright to STDERR
         System.err.println(Messages.get().getBundle().key(
             Messages.LOG_STARTUP_CONSOLE_NOTE_2,
@@ -1396,43 +1446,6 @@ public final class OpenCmsCore {
             System.err.println(Messages.COPYRIGHT_BY_ALKACON[i]);
         }
         System.err.println();
-
-        // output startup message to log file
-        if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DOT_0));
-            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DOT_0));
-            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DOT_0));
-            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DOT_0));
-            for (int i = 0; i < Messages.COPYRIGHT_BY_ALKACON.length; i++) {
-                CmsLog.INIT.info(". " + Messages.COPYRIGHT_BY_ALKACON[i]);
-            }
-            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_LINE_0));
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.INIT_STARTUP_TIME_1,
-                new Date(System.currentTimeMillis())));
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.INIT_OPENCMS_VERSION_1,
-                OpenCms.getSystemInfo().getVersionNumber()));
-            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SERVLET_CONTAINER_1, context.getServerInfo()));
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.INIT_WEBAPP_NAME_1,
-                getSystemInfo().getWebApplicationName()));
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.INIT_SERVLET_PATH_1,
-                getSystemInfo().getServletPath()));
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.INIT_OPENCMS_CONTEXT_1,
-                getSystemInfo().getOpenCmsContext()));
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.INIT_WEBINF_PATH_1,
-                getSystemInfo().getWebInfRfsPath()));
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.INIT_PROPERTY_FILE_1,
-                getSystemInfo().getConfigurationFileRfsPath()));
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.INIT_LOG_FILE_1,
-                getSystemInfo().getLogFileRfsPath()));
-        }
 
         // initialize the configuration
         initConfiguration(configuration);
@@ -1749,7 +1762,7 @@ public final class OpenCmsCore {
                     CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_LINE_0));
                     CmsLog.INIT.info(Messages.get().getBundle().key(
                         Messages.INIT_SHUTDOWN_START_1,
-                        getSystemInfo().getVersionNumber()));
+                        getSystemInfo().getVersionNumber() + " [" + getSystemInfo().getVersionId() + "]"));
                     CmsLog.INIT.info(Messages.get().getBundle().key(
                         Messages.INIT_CURRENT_RUNLEVEL_1,
                         new Integer(getRunLevel())));

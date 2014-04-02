@@ -1993,7 +1993,6 @@ public class CmsSetupBean implements I_CmsShellCommands {
      * 
      * @return true if already submitted
      */
-    @SuppressWarnings("unchecked")
     public boolean setDbParamaters(HttpServletRequest request, String provider) {
 
         return setDbParamaters(request.getParameterMap(), provider, request.getContextPath(), request.getSession());
@@ -2353,7 +2352,11 @@ public class CmsSetupBean implements I_CmsShellCommands {
         for (int i = copy.length - 1; i >= 0; i--) {
             System.out.println(copy[i]);
         }
-        System.out.println("This is OpenCms " + OpenCms.getSystemInfo().getVersionNumber());
+        System.out.println("This is OpenCms "
+            + OpenCms.getSystemInfo().getVersionNumber()
+            + " ["
+            + OpenCms.getSystemInfo().getVersionId()
+            + "]");
         System.out.println();
         System.out.println();
     }

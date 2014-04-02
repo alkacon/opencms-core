@@ -166,7 +166,8 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
         "remoteaddress", // 4
         "webapp", // 5
         "webbasepath", // 6 
-        "version" // 7
+        "version", // 7
+        "versionid" // 8
     };
 
     /** The "magic" commands wrapped in a List. */
@@ -628,6 +629,10 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                     case 7:
                         // version
                         value = OpenCms.getSystemInfo().getVersionNumber();
+                        break;
+                    case 8:
+                        // versionid
+                        value = OpenCms.getSystemInfo().getVersionId();
                         break;
                     default:
                         // return the key "as is"

@@ -842,7 +842,11 @@ public class CmsUpdateBean extends CmsSetupBean {
         for (int i = copy.length - 1; i >= 0; i--) {
             System.out.println(copy[i]);
         }
-        System.out.println("This is OpenCms " + OpenCms.getSystemInfo().getVersionNumber());
+        System.out.println("This is OpenCms "
+            + OpenCms.getSystemInfo().getVersionNumber()
+            + " ["
+            + OpenCms.getSystemInfo().getVersionId()
+            + "]");
         System.out.println();
         System.out.println();
     }
@@ -1042,7 +1046,7 @@ public class CmsUpdateBean extends CmsSetupBean {
      * @param moduleName the name of the module to remove 
      * @param report the report to write to
      *
-     * @throws CmsException   
+     * @throws CmsException in case something goes wrong
      */
     protected void removeModule(String moduleName, I_CmsReport report) throws CmsException {
 

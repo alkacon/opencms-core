@@ -4,7 +4,13 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 sourceCompatibility = java_target_version
 targetCompatibility = java_target_version
-version = version_number
+
+// use the same properties file as the OpenCms core does for the version information
+// please note that in a Jenkins CI build, this properties file should be dynamically generated
+Properties vprops = new Properties()
+vprops.load(new FileInputStream("$projectDir/src/org/opencms/main/version.properties"))
+version = vprops['version.number']
+
 buildDir = build_directory
 repositories {
     mavenLocal()
@@ -193,15 +199,6 @@ jar {
 
     metaInf {  from("${projectDir}/webapp/WEB-INF/opencms.tld") }
 
-    from ("${projectDir}/webapp/WEB-INF/setupdata/version.properties"){
-        include 'version.properties'
-        filter(ReplaceTokens, tokens: [
-            OPENCMS_VERSION_NUMBER: version_number,
-            OPENCMS_VERSION_NAME: version_number
-        ])
-        into '/org/opencms/main/'
-    }
-
     doLast {
         if (tasks.findByPath('tomcatUpdate')!=null&&gradle.taskGraph.hasTask(tasks['tomcatUpdate'])){
             println "copying ${project.buildDir}/libs/${archiveName} to ${tomcat_update_target}"
@@ -231,8 +228,8 @@ javadoc {
         noDeprecatedList="false"
         noDeprecated="false"
         overview="${sourceSets.main.output.resourcesDir}/org/opencms/main/overview.html"
-        docTitle="OpenCms Core API, version $version_number"
-        windowTitle="OpenCms Core API, version $version_number"
+        docTitle="OpenCms Core API, version $version"
+        windowTitle="OpenCms Core API, version $version"
         stylesheetFile= file("${projectDir}/doc/javadoc/stylesheet.css")
         header = "<script type=\"text/javascript\"> if (window.location.href.indexOf(\"overview-frame\") == -1) { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.alkacon.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/Alkacon.png\\\" /></a>\"); } else { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.opencms.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/OpenCms.png\\\" /></a>\"); }</script>"
     }
@@ -287,8 +284,8 @@ task javadocModules(type: Javadoc, dependsOn: jar) {
         linkSource="false"
         noDeprecatedList="false"
         noDeprecated="false"
-        docTitle="OpenCms Workplace Modules API, version $version_number"
-        windowTitle="OpenCms Workplace Modules API, version $version_number"
+        docTitle="OpenCms Workplace Modules API, version $version"
+        windowTitle="OpenCms Workplace Modules API, version $version"
         stylesheetFile= file("${projectDir}/doc/javadoc/stylesheet.css")
         header = "<script type=\"text/javascript\"> if (window.location.href.indexOf(\"overview-frame\") == -1) { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.alkacon.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/Alkacon.png\\\" /></a>\"); } else { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.opencms.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/OpenCms.png\\\" /></a>\"); }</script>"
     }
@@ -314,8 +311,8 @@ task javadocGwt(type: Javadoc, dependsOn: jar) {
         linkSource="false"
         noDeprecatedList="false"
         noDeprecated="false"
-        docTitle="OpenCms GWT Components API, version $version_number"
-        windowTitle="OpenCms GWT Components API, version $version_number"
+        docTitle="OpenCms GWT Components API, version $version"
+        windowTitle="OpenCms GWT Components API, version $version"
         stylesheetFile= file("${projectDir}/doc/javadoc/stylesheet.css")
         header = "<script type=\"text/javascript\"> if (window.location.href.indexOf(\"overview-frame\") == -1) { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.alkacon.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/Alkacon.png\\\" /></a>\"); } else { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.opencms.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/OpenCms.png\\\" /></a>\"); }</script>"
     }
@@ -375,8 +372,8 @@ task javadocSetup(type: Javadoc, dependsOn: jar) {
         linkSource="false"
         noDeprecatedList="false"
         noDeprecated="false"
-        docTitle="OpenCms Setup API, version $version_number"
-        windowTitle="OpenCms Setup API, version $version_number"
+        docTitle="OpenCms Setup API, version $version"
+        windowTitle="OpenCms Setup API, version $version"
         stylesheetFile= file("${projectDir}/doc/javadoc/stylesheet.css")
         header = "<script type=\"text/javascript\"> if (window.location.href.indexOf(\"overview-frame\") == -1) { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.alkacon.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/Alkacon.png\\\" /></a>\"); } else { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.opencms.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/OpenCms.png\\\" /></a>\"); }</script>"
     }
@@ -723,9 +720,8 @@ task war (dependsOn: [setupJar, allModules], type: Zip){
         include '**/*.txt'
         include '**/*.xml'
         filter(ReplaceTokens, tokens: [
-            OPENCMS_VERSION_NUMBER: version_number,
-            OPENCMS_VERSION_NAME: version_number,
-            OPENCMS_VERSION: product_name+' '+version_number,
+            OPENCMS_VERSION_NUMBER: version,
+            OPENCMS_VERSION: product_name+' '+version,
             DRIVERS_VFS: drivers_vfs,
             DRIVERS_PROJECT: drivers_project,
             DRIVERS_USER: drivers_user,
@@ -765,8 +761,8 @@ task updater (dependsOn: setupJar, type: Zip){
         exclude 'update/empty.jar'
         exclude 'update/readme.txt'
         filter(ReplaceTokens, tokens: [
-            OPENCMS_VERSION_NUMBER: version_number,
-            OPENCMS_VERSION: product_name+' '+version_number
+            OPENCMS_VERSION_NUMBER: version,
+            OPENCMS_VERSION: product_name+' '+version
         ])
     }
     from ("${projectDir}/webapp/WEB-INF/solr/conf"){
@@ -776,8 +772,8 @@ task updater (dependsOn: setupJar, type: Zip){
     }
     from ("${projectDir}/webapp/update/readme.txt"){
         filter(ReplaceTokens, tokens: [
-            OPENCMS_VERSION_NUMBER: version_number,
-            OPENCMS_VERSION: product_name+' '+version_number
+            OPENCMS_VERSION_NUMBER: version,
+            OPENCMS_VERSION: product_name+' '+version
         ])
     }
     from ("${projectDir}/webapp/WEB-INF"){
@@ -827,8 +823,8 @@ task bindist (dependsOn: war, type: Zip){
         include 'license.txt'
         include 'history.txt'
         filter(ReplaceTokens, tokens: [
-            OPENCMS_VERSION_NUMBER: version_number,
-            OPENCMS_VERSION: product_name+' '+version_number
+            OPENCMS_VERSION_NUMBER: version,
+            OPENCMS_VERSION: product_name+' '+version
         ])
     }
 }
@@ -841,6 +837,33 @@ test {
     classpath += files("$buildDir/classes/gwt") { builtBy 'gwtClasses' }
     useJUnit()
     include 'org/opencms/test/AllTests*'
+    // important: exclude all anonymous classes
+    exclude '**/*$*.class'
+    scanForTestClasses false
+    testClassesDir = sourceSets.test.output.classesDir
+    systemProperties['test.data.path'] = "${projectDir}/test/data"
+    systemProperties['test.webapp.path'] = "${projectDir}/webapp"
+    systemProperties['test.build.folder'] =sourceSets.test.output.resourcesDir
+    maxHeapSize = max_heap_size
+    jvmArgs '-XX:MaxPermSize=256m'
+    testLogging.showStandardStreams = true
+    ignoreFailures true
+}
+
+task testSingle(type: Test, dependsOn: [compileTestJava]) {
+    description "Runs a specified test case set like this: -PtestCaseToRun=org/opencms/main/TestCmsSystemInfo*"
+    classpath += fileTree('webapp/setup/database'){ include '**/*.jar' }
+    classpath += files("$buildDir/classes/setup") { builtBy 'setupClasses' }
+    classpath += files("$buildDir/classes/modules") { builtBy 'modulesClasses' }
+    classpath += files("$buildDir/classes/gwt") { builtBy 'gwtClasses' }
+    useJUnit()
+    if (!project.hasProperty('testCaseToRun')){
+        ext {
+            testCaseToRun='org/opencms/main/TestCmsSystemInfo*'
+        }
+    }
+    println "Running test case : ${testCaseToRun}"    
+    include testCaseToRun
     // important: exclude all anonymous classes
     exclude '**/*$*.class'
     scanForTestClasses false
@@ -1042,7 +1065,7 @@ if (project.hasProperty('publish_repository')){
                         def dependency = pom.model.class.classLoader.loadClass("org.apache.maven.model.Dependency").newInstance();
                         dependency.setGroupId("org.opencms")
                         dependency.setArtifactId("opencms-core")
-                        dependency.setVersion(version_number)
+                        dependency.setVersion(version)
                         pom.dependencies.add(dependency)
                     }
                 }
@@ -1090,7 +1113,7 @@ if (project.hasProperty('publish_repository')){
                             def dependency = pom.model.class.classLoader.loadClass("org.apache.maven.model.Dependency").newInstance();
                             dependency.setGroupId("org.opencms")
                             dependency.setArtifactId("opencms-core")
-                            dependency.setVersion(version_number)
+                            dependency.setVersion(version)
                             pom.dependencies.add(dependency)
                         }
                     }
@@ -1219,7 +1242,7 @@ install {
                     def dependency = pom.model.class.classLoader.loadClass("org.apache.maven.model.Dependency").newInstance();
                     dependency.setGroupId("org.opencms")
                     dependency.setArtifactId("opencms-core")
-                    dependency.setVersion(version_number)
+                    dependency.setVersion(version)
                     pom.dependencies.add(dependency)
                 }
             }
@@ -1266,7 +1289,7 @@ install {
                         def dependency = pom.model.class.classLoader.loadClass("org.apache.maven.model.Dependency").newInstance();
                         dependency.setGroupId("org.opencms")
                         dependency.setArtifactId("opencms-core")
-                        dependency.setVersion(version_number)
+                        dependency.setVersion(version)
                         pom.dependencies.add(dependency)
                     }
                 }
