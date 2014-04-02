@@ -237,10 +237,10 @@ public class TestCmsSystemInfo extends OpenCmsTestCase {
             assertNotNull("build.gitid not set", info.get("build.gitid"));
             assertNotNull("build.gitbranch not set", info.get("build.gitbranch"));
 
-            // the build system name is hard coded
-            assertEquals("Jenkins CI", info.get("build.type")[0]);
             // the git commit ID should be 7 chars long
             assertTrue(info.get("build.gitid")[0].length() == 7);
+            // the build system name is hard coded
+            assertEquals("Jenkins CI", info.get("build.system")[0]);
         } else {
             fail("No valid version information for test cases found, version id is '"
                 + OpenCms.getSystemInfo().getVersionId()
