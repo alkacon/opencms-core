@@ -54,6 +54,9 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
     /** Parameter for SCrypt settings. */
     public static String PARAM_SCRYPT_SETTINGS = "scrypt.settings";
 
+    /** Parameter for SCrypt fall back. */
+    public static String PARAM_SCRYPT_FALLBACK = "scrypt.fallback";
+
     /**  The minimum length of a password. */
     public static final int PASSWORD_MIN_LENGTH = 4;
 
@@ -80,6 +83,9 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
 
     /** SCrypt parameter: Parallelization parameter. */
     private int m_scryptP;
+
+    /** SCrypt fall back algorithm. */
+    private String m_scryptFallback;
 
     /**
      * The constructor does not perform any operation.<p>
@@ -113,7 +119,7 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
                 // hashed valued not right, check if we want to fall back to MD5 
                 if (useFallback) {
                     try {
-                        success = digestedPassword.equals(digest(plainPassword, DIGEST_TYPE_MD5, m_inputEncoding));
+                        success = digestedPassword.equals(digest(plainPassword, m_scryptFallback, m_inputEncoding));
                     } catch (CmsPasswordEncryptionException e1) {
                         // success will be false
                     }
@@ -246,7 +252,7 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
         }
         m_configuration = CmsParameterConfiguration.unmodifiableVersion(m_configuration);
 
-        // Set default SCrypt values
+        // Set default SCrypt parameter values
         m_scryptN = 16384; // CPU cost, must be a power of 2
         m_scryptR = 8; // Memory cost
         m_scryptP = 1; // Parallelization parameter
@@ -262,6 +268,23 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
             } else {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().getBundle().key(Messages.LOG_SCRYPT_PARAMETERS_1, scryptSettings));
+                }
+            }
+        }
+
+        // Initialize the SCrypt fall back
+        m_scryptFallback = DIGEST_TYPE_MD5;
+        String scryptFallback = m_configuration.get(PARAM_SCRYPT_FALLBACK);
+        if (scryptFallback != null) {
+
+            try {
+                MessageDigest.getInstance(scryptFallback);
+                // Configured fall back algorithm available
+                m_scryptFallback = scryptFallback;
+            } catch (NoSuchAlgorithmException e) {
+                // Configured fall back algorithm not available, use default MD5
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_SCRYPT_PARAMETERS_1, scryptFallback));
                 }
             }
         }
