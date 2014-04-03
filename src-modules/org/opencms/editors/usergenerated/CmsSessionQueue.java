@@ -31,16 +31,15 @@ public class CmsSessionQueue {
 
     private boolean m_enabled;
 
-    public CmsSessionQueue(boolean enabled, int interval, int maxLength) {
+    public CmsSessionQueue(boolean enabled, long interval, int maxLength) {
 
     }
 
     public static CmsSessionQueue createQueue(CmsFormConfiguration config) {
 
-        CmsSessionQueue queue = new CmsSessionQueue(
-            config.needsQueue(),
-            config.getQueueInterval(),
-            config.getMaxQueueLength());
+        CmsSessionQueue queue = new CmsSessionQueue(config.needsQueue(), config.getQueueInterval().isPresent()
+        ? config.getQueueInterval().get().longValue()
+        : 0, config.getMaxQueueLength().isPresent() ? config.getMaxQueueLength().get().intValue() : 0);
         return queue;
     }
 

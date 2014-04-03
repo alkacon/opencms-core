@@ -27,32 +27,230 @@
 
 package org.opencms.editors.usergenerated;
 
+import org.opencms.file.CmsResource;
 import org.opencms.util.CmsUUID;
 
+import java.util.List;
+import java.util.Locale;
+
+import com.google.common.base.Optional;
+
+/**
+ * The configuration for 'user generated content' forms.<p>
+ */
 public class CmsFormConfiguration {
 
+    /** An id that should uniquely identify the configuration. */
+    private CmsUUID m_id;
+
+    /** The optional wait interval for the queue. */
+    private Optional<Long> m_queueInterval;
+
+    /** The optional maximum queue length. */
+    private Optional<Integer> m_maxQueueLength;
+
+    /** The name pattern for XML contents. */
+    private String m_namePattern;
+
+    /** The parent folder in which contents should be created. */
+    private CmsResource m_contentParentFolder;
+
+    /** The optional parent folder in which uploaded files should be created. */
+    private Optional<CmsResource> m_uploadParentFolder;
+
+    /** The maximum upload size (optional). */
+    private Optional<Long> m_maxUploadSize;
+
+    /** The maximum content number (optional). */
+    private Optional<Integer> m_maxContentNumber;
+
+    /** Flag which determines whether contents should automatically be published. */
+    private boolean m_isAutoPublish;
+
+    /** The valid file name extensions. */
+    private Optional<List<String>> m_validExtensions;
+
+    /** The locale in which to save the content. */
+    private Locale m_locale;
+
+    /** The resource type for new XML contents. */
+    private String m_resourceType;
+
+    /**
+     * Creates a new form configuration.<p>
+     * 
+     * @param id the id for the form configuration 
+     * @param resourceType the resource type for new XML contents
+     * @param contentParentFolder the parent folder for XML contents 
+     * @param namePattern the name pattern for XML contents 
+     * @param locale the locale to use 
+     * @param uploadParent the parent folder for uploads 
+     * @param maxUploadSize the maximum upload file size 
+     * @param maxContents the maximum number of XML contents 
+     * @param queueTimeout the wait time for the queue 
+     * @param maxQueueLength the maximum queue length 
+     * @param autoPublish enables/disables automatic publishing 
+     * @param validExtensions the list of valid extensions 
+     */
+    public CmsFormConfiguration(
+        CmsUUID id,
+        String resourceType,
+        CmsResource contentParentFolder,
+        String namePattern,
+        Locale locale,
+        Optional<CmsResource> uploadParent,
+        Optional<Long> maxUploadSize,
+        Optional<Integer> maxContents,
+        Optional<Long> queueTimeout,
+        Optional<Integer> maxQueueLength,
+        boolean autoPublish,
+        Optional<List<String>> validExtensions) {
+
+        m_id = id;
+        m_resourceType = resourceType;
+        m_contentParentFolder = contentParentFolder;
+        m_namePattern = namePattern;
+        m_locale = locale;
+        m_uploadParentFolder = uploadParent;
+        m_maxUploadSize = maxUploadSize;
+        m_maxContentNumber = maxContents;
+        m_queueInterval = queueTimeout;
+        m_maxQueueLength = maxQueueLength;
+        m_isAutoPublish = autoPublish;
+        m_validExtensions = validExtensions;
+
+    }
+
+    /**
+     * Returns the folder for XML contents.<p>
+     *
+     * @return the folder for XML contents 
+     */
+    public CmsResource getContentParentFolder() {
+
+        return m_contentParentFolder;
+    }
+
+    /**
+     * Gets the id.<p>
+     * 
+     * The id is a UUID that should uniquely identify this configuration.<p>
+     * 
+     * @return the id for this configuration 
+     */
     public CmsUUID getId() {
 
-        // TODO Auto-generated method stub
-        return null;
+        return m_id;
     }
 
-    public int getMaxQueueLength() {
+    /**
+     * Returns the locale.<p>
+     *
+     * @return the locale
+     */
+    public Locale getLocale() {
 
-        // TODO Auto-generated method stub
-        return 0;
+        return m_locale;
     }
 
-    public int getQueueInterval() {
+    /**
+     * Returns the maximum number of XML contents.<p>
+     *
+     * @return the maximum number of XML contents
+     */
+    public Optional<Integer> getMaxContentNumber() {
 
-        // TODO Auto-generated method stub
-        return 0;
+        return m_maxContentNumber;
     }
 
+    /**
+     * Returns the maximum queue length.<p>
+     *
+     * @return the maximum queue length
+     */
+    public Optional<Integer> getMaxQueueLength() {
+
+        return m_maxQueueLength;
+    }
+
+    /**
+     * Returns the maximum upload size.<p>
+     *
+     * @return the maximum upload size
+     */
+    public Optional<Long> getMaxUploadSize() {
+
+        return m_maxUploadSize;
+    }
+
+    /**
+     * Returns the name pattern for XML contents.<p>
+     *
+     * @return the name pattern for XML contents 
+     */
+    public String getNamePattern() {
+
+        return m_namePattern;
+    }
+
+    /**
+     * Returns the wait time for acquiring sessions for the same configuration.<p>
+     *
+     * @return the wait time 
+     */
+    public Optional<Long> getQueueInterval() {
+
+        return m_queueInterval;
+    }
+
+    /**
+     * Returns the resource type for XML contents.<p>
+     *
+     * @return the resource type for XML contents 
+     */
+    public String getResourceType() {
+
+        return m_resourceType;
+    }
+
+    /**
+     * Returns the folder for uploads.<p>
+     *
+     * @return the folder for uploads 
+     */
+    public Optional<CmsResource> getUploadParentFolder() {
+
+        return m_uploadParentFolder;
+    }
+
+    /**
+     * Returns the list of valid extensions for uploads.<p>
+     *
+     * @return the list of valid extensions for uploads 
+     */
+    public Optional<List<String>> getValidExtensions() {
+
+        return m_validExtensions;
+    }
+
+    /**
+     * Returns true if XML contents should automatically be published.<p>
+     *
+     * @return true if XML contents should automatically be published 
+     */
+    public boolean isAutoPublish() {
+
+        return m_isAutoPublish;
+    }
+
+    /**
+     * Checks if a queue is needed for creating sessions for this configuration.<p>
+     * 
+     * @return true if a queue is needed for this configuration 
+     */
     public boolean needsQueue() {
 
-        // TODO Auto-generated method stub
-        return false;
+        return m_maxQueueLength.isPresent() || m_queueInterval.isPresent();
     }
 
 }
