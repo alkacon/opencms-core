@@ -36,6 +36,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * Factory to create the form editing sessions.<p>
+ */
 public class CmsFormSessionFactory {
 
     private ConcurrentHashMap<CmsUUID, CmsSessionQueue> m_queues = new ConcurrentHashMap<CmsUUID, CmsSessionQueue>();

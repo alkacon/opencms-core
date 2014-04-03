@@ -34,7 +34,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlUtils;
@@ -138,15 +137,16 @@ public class CmsFormSession {
     }
 
     /**
+     * Creates a new resource from upload data.<p>
      * 
-     * @param fileName
-     * @param content
-     * @return
-     * @throws CmsIllegalArgumentException
-     * @throws CmsException
+     * @param fileName the file name
+     * @param content the file content
+     * 
+     * @return the newly created resource
+     * 
+     * @throws CmsException if creating the resource fails
      */
-    public CmsResource createUploadResource(String fileName, byte[] content)
-    throws CmsIllegalArgumentException, CmsException {
+    public CmsResource createUploadResource(String fileName, byte[] content) throws CmsException {
 
         CmsResource result = null;
         if (m_configuration.getUploadParentFolder().isPresent()) {
@@ -157,16 +157,28 @@ public class CmsFormSession {
             int resTypeId = OpenCms.getResourceManager().getDefaultTypeForName(sitePath).getTypeId();
             result = m_cms.createResource(fileName, resTypeId, content, null);
         }
-        return null;
+        return result;
     }
 
-    public CmsResource createXmlContent() throws CmsIllegalArgumentException, CmsException {
+    /**
+     * Creates a new edit resource.<p>
+     * 
+     * @return the newly created resource
+     * 
+     * @throws CmsException if creating the resource fails
+     */
+    public CmsResource createXmlContent() throws CmsException {
 
         I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(m_configuration.getResourceType());
         m_editResource = m_cms.createResource(getNewResourceName(), type.getTypeId());
         return m_editResource;
     }
 
+    /**
+     * Returns the edit resource.<p>
+     * 
+     * @return the edit resource
+     */
     public CmsResource getResource() {
 
         return m_editResource;
@@ -196,6 +208,15 @@ public class CmsFormSession {
         return null;
     }
 
+    /**
+     * Loads the existing edit resource.<p>
+     * 
+     * @param fileName the resource file name
+     * 
+     * @return the edit resource
+     * 
+     * @throws CmsException if reading the resource fails
+     */
     public CmsResource loadXmlContent(String fileName) throws CmsException {
 
         m_editResource = m_cms.readResource(fileName);
@@ -207,6 +228,15 @@ public class CmsFormSession {
 
     }
 
+    /**
+     * Saves the content values to the sessions edit resource.<p>
+     * 
+     * @param contentValues the content values by XPath
+     * 
+     * @return the validation handler
+     * 
+     * @throws CmsException if writing the content fails
+     */
     public CmsXmlContentErrorHandler saveContent(Map<String, String> contentValues) throws CmsException {
 
         CmsFile file = m_cms.readFile(m_editResource);
@@ -222,6 +252,15 @@ public class CmsFormSession {
 
     }
 
+    /**
+     * Validates the content values.<p>
+     * 
+     * @param contentValues the content values to validate
+     * 
+     * @return the validation handler
+     * 
+     * @throws CmsException if reading the content file fails
+     */
     public CmsXmlContentErrorHandler validateContent(Map<String, String> contentValues) throws CmsException {
 
         CmsFile file = m_cms.readFile(m_editResource);
@@ -229,11 +268,24 @@ public class CmsFormSession {
         return content.validate(m_cms);
     }
 
+    /**
+     * Returns the edit project.<p>
+     *  
+     * @return the edit project
+     */
     CmsProject getProject() {
 
         return m_cms.getRequestContext().getCurrentProject();
     }
 
+    /**
+     * Adds the given value to the content document.<p>
+     * 
+     * @param content the content document
+     * @param locale the content locale
+     * @param path the value XPath
+     * @param value the value
+     */
     private void addContentValue(CmsXmlContent content, Locale locale, String path, String value) {
 
         if (!content.hasValue(path, locale)) {
@@ -251,6 +303,16 @@ public class CmsFormSession {
         content.getValue(path, locale).setStringValue(m_cms, value);
     }
 
+    /**
+     * Adds the given values to the content document.<p>
+     * 
+     * @param file the content file
+     * @param contentValues the values to add
+     * 
+     * @return the content document
+     *  
+     * @throws CmsException if writing the XML fails 
+     */
     private CmsXmlContent addContentValues(CmsFile file, Map<String, String> contentValues) throws CmsException {
 
         CmsXmlContent content = CmsXmlContentFactory.unmarshal(m_cms, file);
@@ -267,11 +329,21 @@ public class CmsFormSession {
         return content;
     }
 
+    /**
+     * Returns the edit project name.<p>
+     * 
+     * @return the project name
+     */
     private String generateProjectName() {
 
         return "Edit project";
     }
 
+    /**
+     * Returns the new resource site path.<p>
+     * 
+     * @return the new resource site path
+     */
     private String getNewResourceName() {
 
         return CmsStringUtil.joinPaths(m_cms.getSitePath(m_configuration.getContentParentFolder()), "newResource");
