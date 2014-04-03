@@ -137,6 +137,16 @@ public class CmsFormSession {
     }
 
     /**
+     * Constructor. For test purposes only.<p>
+     * 
+     * @param cms the cms context
+     */
+    protected CmsFormSession(CmsObject cms) {
+
+        m_cms = cms;
+    }
+
+    /**
      * Creates a new resource from upload data.<p>
      * 
      * @param fileName the file name
@@ -175,6 +185,16 @@ public class CmsFormSession {
     }
 
     /**
+     * Returns the edit project.<p>
+     *  
+     * @return the edit project
+     */
+    public CmsProject getProject() {
+
+        return m_cms.getRequestContext().getCurrentProject();
+    }
+
+    /**
      * Returns the edit resource.<p>
      * 
      * @return the edit resource
@@ -200,12 +220,7 @@ public class CmsFormSession {
         if (!content.hasLocale(locale)) {
             content.addLocale(m_cms, locale);
         }
-        Map<String, String> result = new HashMap<String, String>();
-        List<I_CmsXmlContentValue> values = content.getValues(locale);
-        for (I_CmsXmlContentValue value : values) {
-            result.put(value.getPath(), value.getStringValue(m_cms));
-        }
-        return null;
+        return getValues(content, locale);
     }
 
     /**
@@ -269,16 +284,6 @@ public class CmsFormSession {
     }
 
     /**
-     * Returns the edit project.<p>
-     *  
-     * @return the edit project
-     */
-    CmsProject getProject() {
-
-        return m_cms.getRequestContext().getCurrentProject();
-    }
-
-    /**
      * Adds the given value to the content document.<p>
      * 
      * @param content the content document
@@ -286,7 +291,7 @@ public class CmsFormSession {
      * @param path the value XPath
      * @param value the value
      */
-    private void addContentValue(CmsXmlContent content, Locale locale, String path, String value) {
+    protected void addContentValue(CmsXmlContent content, Locale locale, String path, String value) {
 
         if (!content.hasValue(path, locale)) {
             String[] pathElements = path.split("/");
@@ -313,7 +318,7 @@ public class CmsFormSession {
      *  
      * @throws CmsException if writing the XML fails 
      */
-    private CmsXmlContent addContentValues(CmsFile file, Map<String, String> contentValues) throws CmsException {
+    protected CmsXmlContent addContentValues(CmsFile file, Map<String, String> contentValues) throws CmsException {
 
         CmsXmlContent content = CmsXmlContentFactory.unmarshal(m_cms, file);
         Locale locale = m_cms.getRequestContext().getLocale();
@@ -327,6 +332,18 @@ public class CmsFormSession {
             addContentValue(content, locale, path, contentValues.get(path));
         }
         return content;
+    }
+
+    protected Map<String, String> getValues(CmsXmlContent content, Locale locale) {
+
+        Map<String, String> result = new HashMap<String, String>();
+        List<I_CmsXmlContentValue> values = content.getValues(locale);
+        for (I_CmsXmlContentValue value : values) {
+            if (value.isSimpleType()) {
+                result.put(value.getPath(), value.getStringValue(m_cms));
+            }
+        }
+        return result;
     }
 
     /**
