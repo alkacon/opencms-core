@@ -27,6 +27,7 @@
 
 package org.opencms.editors.usergenerated;
 
+import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.util.CmsUUID;
@@ -46,6 +47,9 @@ public class CmsFormConfiguration {
 
     /** An id that should uniquely identify the configuration. */
     private CmsUUID m_id;
+
+    /** The manager group for the project in which VFS operations should be performed. */
+    private CmsGroup m_projectGroup;
 
     /** The optional wait interval for the queue. */
     private Optional<Long> m_queueInterval;
@@ -84,7 +88,8 @@ public class CmsFormConfiguration {
      * Creates a new form configuration.<p>
      * 
      * @param id the id for the form configuration
-     * @param userForGuests the user to use for VFS operations caused by guests who submit the XML content form   
+     * @param userForGuests the user to use for VFS operations caused by guests who submit the XML content form
+     * @param projectGroup the group to be used as the manager group for projects based on this configuration    
      * @param resourceType the resource type for new XML contents
      * @param contentParentFolder the parent folder for XML contents 
      * @param namePattern the name pattern for XML contents 
@@ -100,6 +105,7 @@ public class CmsFormConfiguration {
     public CmsFormConfiguration(
         CmsUUID id,
         Optional<CmsUser> userForGuests,
+        CmsGroup projectGroup,
         String resourceType,
         CmsResource contentParentFolder,
         String namePattern,
@@ -114,6 +120,7 @@ public class CmsFormConfiguration {
 
         m_id = id;
         m_userForGuests = userForGuests;
+        m_projectGroup = projectGroup;
         m_resourceType = resourceType;
         m_contentParentFolder = contentParentFolder;
         m_namePattern = namePattern;
@@ -198,6 +205,16 @@ public class CmsFormConfiguration {
     public String getNamePattern() {
 
         return m_namePattern;
+    }
+
+    /**
+     * Returns the group which should be used as the manager groups for projects based on this configuration.<p>
+     * 
+     * @return the project manager group for this configuration 
+     */
+    public CmsGroup getProjectGroup() {
+
+        return m_projectGroup;
     }
 
     /**
