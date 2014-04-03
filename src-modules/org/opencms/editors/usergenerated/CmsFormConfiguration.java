@@ -35,6 +35,8 @@ import org.opencms.util.CmsUUID;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 import com.google.common.base.Optional;
 
 /**
@@ -285,6 +287,15 @@ public class CmsFormConfiguration {
     public boolean needsQueue() {
 
         return m_maxQueueLength.isPresent() || m_queueInterval.isPresent();
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+
+        return ToStringBuilder.reflectionToString(this);
     }
 
 }

@@ -51,8 +51,16 @@ public class CmsFormSessionFactory {
 
         CmsFormConfigurationReader reader = new CmsFormConfigurationReader(cms);
         CmsFile configFile = cms.readFile(sitePath);
-        CmsFormConfiguration config = reader.readConfiguration(configFile);
-        return createSession(cms, request, config);
+        CmsFormConfiguration config;
+        try {
+            config = reader.readConfiguration(configFile);
+            return createSession(cms, request, config);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
+
     }
 
     private CmsFormSession createSession(CmsObject cms, CmsFormConfiguration config) {

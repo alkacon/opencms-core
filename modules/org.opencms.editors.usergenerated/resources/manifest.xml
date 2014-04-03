@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<creator>Admin</creator>
+		<opencms_version>8.5.2</opencms_version>
+		<createdate>Thu, 03 Apr 2014 09:36:01 GMT</createdate>
+		<infoproject>Offline</infoproject>
+		<export_version>7</export_version>
+	</info>
+	<module>
+		<name>org.opencms.editors.usergenerated</name>
+		<nicename/>
+		<class/>
+		<description><![CDATA[User generated content]]></description>
+		<version>0.2</version>
+		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
+		<authoremail/>
+		<datecreated/>
+		<userinstalled/>
+		<dateinstalled/>
+		<dependencies/>
+		<exportpoints>
+			<exportpoint uri="/system/modules/org.opencms.editors.usergenerated/classes/" destination="WEB-INF/classes/"/>
+			<exportpoint uri="/system/modules/org.opencms.editors.usergenerated/resources/" destination="resources/"/>
+			<exportpoint uri="/system/modules/org.opencms.editors.usergenerated/lib" destination="WEB-INF/lib/" />
+		</exportpoints>
+		<resources>
+			<resource uri="/system/modules/org.opencms.editors.usergenerated/"/>
+		</resources>
+		<parameters/>
+		<resourcetypes>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration"
+				name="ugc_form_config" id="309">
+				<properties>
+					<property>
+						<name>locale-available</name>
+						<value><![CDATA[en]]></value>
+					</property>
+					<property>
+						<name>locale</name>
+						<value><![CDATA[en]]></value>
+					</property>
+					<property>
+						<name>search.exclude</name>
+						<value>all</value>
+					</property>
+				</properties>
+				<param name="schema">/system/modules/org.opencms.editors.usergenerated/schemas/ugc_form_config.xsd</param>
+			</type>
+		</resourcetypes>
+		
+		<explorertypes>
+			<explorertype name="ugc_form_config" key="fileicon.ugc_form_config"
+				 reference="xmlcontent">
+				<newresource page="otheroptions"
+					uri="newresource_xmlcontent.jsp?newresourcetype=ugc_form_config"
+					order="23" autosetnavigation="false" autosettitle="false"
+					info="desc.ugc_form_config" />
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER"
+						permissions="+r+v+w+c" />
+				</accesscontrol>
+			</explorertype>
+		</explorertypes>
+	</module>
+	<files>
+		<file>
+			<destination>system</destination>
+			<type>folder</type>
+			<uuidstructure>4359d218-b9a1-11e3-ba84-0ddf2cfaeffd</uuidstructure>
+			<datelastmodified>Tue, 01 Apr 2014 13:26:42 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Apr 2014 13:26:42 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>514</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/modules</destination>
+			<type>folder</type>
+			<uuidstructure>447c3244-b9a1-11e3-ba84-0ddf2cfaeffd</uuidstructure>
+			<datelastmodified>Tue, 01 Apr 2014 13:26:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Apr 2014 13:26:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>514</flags>
+					<permissionset>
+						<allowed>5</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.editors.usergenerated</destination>
+			<type>folder</type>
+			<uuidstructure>c33b370b-bb12-11e3-a3c7-0ddf2cfaeffd</uuidstructure>
+			<datelastmodified>Thu, 03 Apr 2014 09:31:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 03 Apr 2014 09:31:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.editors.usergenerated/classes</destination>
+			<type>folder</type>
+			<uuidstructure>c343e99f-bb12-11e3-a3c7-0ddf2cfaeffd</uuidstructure>
+			<datelastmodified>Thu, 03 Apr 2014 09:31:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 03 Apr 2014 09:31:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.editors.usergenerated/classes/org</destination>
+			<type>folder</type>
+			<uuidstructure>c3463391-bb12-11e3-a3c7-0ddf2cfaeffd</uuidstructure>
+			<datelastmodified>Thu, 03 Apr 2014 09:31:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 03 Apr 2014 09:31:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.editors.usergenerated/classes/org/opencms</destination>
+			<type>folder</type>
+			<uuidstructure>c348a493-bb12-11e3-a3c7-0ddf2cfaeffd</uuidstructure>
+			<datelastmodified>Thu, 03 Apr 2014 09:31:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 03 Apr 2014 09:31:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.editors.usergenerated/classes/org/opencms/editors</destination>
+			<type>folder</type>
+			<uuidstructure>c34b1595-bb12-11e3-a3c7-0ddf2cfaeffd</uuidstructure>
+			<datelastmodified>Thu, 03 Apr 2014 09:31:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 03 Apr 2014 09:31:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.editors.usergenerated/classes/org/opencms/editors/usergenerated</destination>
+			<type>folder</type>
+			<uuidstructure>c34d5f87-bb12-11e3-a3c7-0ddf2cfaeffd</uuidstructure>
+			<datelastmodified>Thu, 03 Apr 2014 09:31:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 03 Apr 2014 09:31:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.editors.usergenerated/resources</destination>
+			<type>folder</type>
+			<uuidstructure>0f655a8b-bb13-11e3-a3c7-0ddf2cfaeffd</uuidstructure>
+			<datelastmodified>Thu, 03 Apr 2014 09:33:48 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 03 Apr 2014 09:33:48 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.editors.usergenerated/schemas</destination>
+			<type>folder</type>
+			<uuidstructure>c341789d-bb12-11e3-a3c7-0ddf2cfaeffd</uuidstructure>
+			<datelastmodified>Thu, 03 Apr 2014 09:31:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 03 Apr 2014 09:31:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.editors.usergenerated/schemas/ugc_form_config.xsd</source>
+			<destination>system/modules/org.opencms.editors.usergenerated/schemas/ugc_form_config.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>d1a03679-bb12-11e3-a3c7-0ddf2cfaeffd</uuidstructure>
+			<uuidresource>d1a0367a-bb12-11e3-a3c7-0ddf2cfaeffd</uuidresource>
+			<datelastmodified>Thu, 03 Apr 2014 09:32:05 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 03 Apr 2014 09:32:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
+		<file>
+			<destination>system/modules/org.opencms.editors.usergenerated/lib</destination>
+			<type>folder</type>
+			<uuidstructure>f30e29c9-20c6-4adc-a985-547cff8c4169</uuidstructure>
+			<datelastmodified>Thu, 03 Apr 2014 09:31:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 03 Apr 2014 09:31:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.editors.usergenerated/lib/org.opencms.editors.usergenerated.jar</source>
+			<destination>system/modules/org.opencms.editors.usergenerated/lib/org.opencms.editors.usergenerated.jar</destination>
+			<type>binary</type>
+			<uuidstructure>c6d698fb-0f81-4ad4-8ba6-fc36b80f3e0e</uuidstructure>
+			<uuidresource>bb4ba791-4ee1-4912-8710-eec23132b361</uuidresource>
+			<datelastmodified>Wed, 02 Jul 2008 07:36:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 02 Jul 2008 07:35:54 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+	</files>
+</export>
