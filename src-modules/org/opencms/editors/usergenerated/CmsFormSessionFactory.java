@@ -40,7 +40,8 @@ public class CmsFormSessionFactory {
 
     private ConcurrentHashMap<CmsUUID, CmsSessionQueue> m_queues = new ConcurrentHashMap<CmsUUID, CmsSessionQueue>();
 
-    public CmsFormSession createSession(CmsObject cms, HttpServletRequest request, CmsFormConfiguration config) {
+    public CmsFormSession createSession(CmsObject cms, HttpServletRequest request, CmsFormConfiguration config)
+    throws CmsException {
 
         CmsFormSession session = createSession(cms, config);
         request.getSession(true).setAttribute("FS", session);
@@ -63,10 +64,10 @@ public class CmsFormSessionFactory {
 
     }
 
-    private CmsFormSession createSession(CmsObject cms, CmsFormConfiguration config) {
+    private CmsFormSession createSession(CmsObject cms, CmsFormConfiguration config) throws CmsException {
 
         getQueue(config).waitForSlot();
-        return new CmsFormSession();
+        return new CmsFormSession(cms, config);
     }
 
     private CmsSessionQueue getQueue(CmsFormConfiguration config) {
