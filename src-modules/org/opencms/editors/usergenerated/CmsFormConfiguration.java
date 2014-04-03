@@ -28,6 +28,7 @@
 package org.opencms.editors.usergenerated;
 
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsUser;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
@@ -39,6 +40,9 @@ import com.google.common.base.Optional;
  * The configuration for 'user generated content' forms.<p>
  */
 public class CmsFormConfiguration {
+
+    /** The user to user for VFS operations caused by guests who submit the XML content form. */
+    private Optional<CmsUser> m_userForGuests;
 
     /** An id that should uniquely identify the configuration. */
     private CmsUUID m_id;
@@ -79,7 +83,8 @@ public class CmsFormConfiguration {
     /**
      * Creates a new form configuration.<p>
      * 
-     * @param id the id for the form configuration 
+     * @param id the id for the form configuration
+     * @param userForGuests the user to use for VFS operations caused by guests who submit the XML content form   
      * @param resourceType the resource type for new XML contents
      * @param contentParentFolder the parent folder for XML contents 
      * @param namePattern the name pattern for XML contents 
@@ -94,6 +99,7 @@ public class CmsFormConfiguration {
      */
     public CmsFormConfiguration(
         CmsUUID id,
+        Optional<CmsUser> userForGuests,
         String resourceType,
         CmsResource contentParentFolder,
         String namePattern,
@@ -107,6 +113,7 @@ public class CmsFormConfiguration {
         Optional<List<String>> validExtensions) {
 
         m_id = id;
+        m_userForGuests = userForGuests;
         m_resourceType = resourceType;
         m_contentParentFolder = contentParentFolder;
         m_namePattern = namePattern;
@@ -221,6 +228,16 @@ public class CmsFormConfiguration {
     public Optional<CmsResource> getUploadParentFolder() {
 
         return m_uploadParentFolder;
+    }
+
+    /**
+     * Returns the user which should be used for VFS operations when guests submit the XML content form.<p>
+     * 
+     * @return the  user to use for VFS operations instead of the guest user 
+     */
+    public Optional<CmsUser> getUserForGuests() {
+
+        return m_userForGuests;
     }
 
     /**
