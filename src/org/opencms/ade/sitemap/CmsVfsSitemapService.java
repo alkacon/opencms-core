@@ -287,10 +287,11 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             }
             String folderName = OpenCms.getResourceManager().getFileTranslator().translateResource(title);
 
-            String folderPath = OpenCms.getResourceManager().getNameGenerator().getUniqueFileName(
+            folderName = OpenCms.getResourceManager().getNameGenerator().getUniqueFileName(
                 cms,
                 parentFolder,
                 folderName);
+            String folderPath = CmsStringUtil.joinPaths(parentFolder, folderName);
 
             CmsResource galleryFolder = cms.createResource(
                 folderPath,

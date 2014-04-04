@@ -27,17 +27,29 @@
 
 package org.opencms.ade.sitemap.client;
 
+import org.opencms.ade.sitemap.client.control.CmsSitemapController;
+import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapLayoutBundle;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsGalleryFolderEntry;
 import org.opencms.ade.sitemap.shared.CmsGalleryType;
 import org.opencms.file.CmsResource;
+import org.opencms.gwt.client.property.CmsReloadMode;
+import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.client.ui.CmsListItemWidget.I_CmsTitleEditHandler;
+import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.property.CmsClientProperty;
+import org.opencms.gwt.shared.property.CmsPropertyModification;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -165,6 +177,57 @@ public class CmsGalleryTreeItem extends CmsTreeItem {
             galleryFolder.getResourceType(),
             galleryFolder.getSitePath(),
             false));
+        if ((CmsSitemapView.getInstance().getController().getEntryById(galleryFolder.getStructureId()) == null)
+            || CmsSitemapView.getInstance().getController().getEntryById(galleryFolder.getStructureId()).isEditable()) {
+            result.addTitleStyleName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().itemTitle());
+            result.setTitleEditable(true);
+            result.setTitleEditHandler(new I_CmsTitleEditHandler() {
+
+                /**
+                 * @see org.opencms.gwt.client.ui.CmsListItemWidget.I_CmsTitleEditHandler#handleEdit(org.opencms.gwt.client.ui.input.CmsLabel, com.google.gwt.user.client.ui.TextBox)
+                 */
+                public void handleEdit(CmsLabel titleLabel, TextBox box) {
+
+                    CmsClientSitemapEntry editEntry = CmsSitemapView.getInstance().getController().getEntryById(
+                        getEntryId());
+                    final String newTitle = box.getText();
+                    box.removeFromParent();
+                    if (CmsStringUtil.isEmpty(newTitle)) {
+                        titleLabel.setVisible(true);
+                        String dialogTitle = Messages.get().key(Messages.GUI_EDIT_TITLE_ERROR_DIALOG_TITLE_0);
+                        String dialogText = Messages.get().key(Messages.GUI_TITLE_CANT_BE_EMPTY_0);
+                        CmsAlertDialog alert = new CmsAlertDialog(dialogTitle, dialogText);
+                        alert.center();
+                        return;
+                    }
+                    String oldTitle = editEntry.getPropertyValue(CmsClientProperty.PROPERTY_TITLE);
+                    if (!oldTitle.equals(newTitle)) {
+                        CmsPropertyModification propMod = new CmsPropertyModification(
+                            editEntry.getId(),
+                            CmsClientProperty.PROPERTY_TITLE,
+                            newTitle,
+                            true);
+                        final List<CmsPropertyModification> propChanges = new ArrayList<CmsPropertyModification>();
+                        propChanges.add(propMod);
+                        CmsSitemapController controller = CmsSitemapView.getInstance().getController();
+                        if (editEntry.isNew() && !editEntry.isRoot()) {
+                            String urlName = controller.ensureUniqueName(
+                                CmsResource.getParentFolder(editEntry.getSitePath()),
+                                newTitle);
+                            controller.editAndChangeName(
+                                editEntry,
+                                urlName,
+                                propChanges,
+                                true,
+                                CmsReloadMode.reloadEntry);
+                        } else {
+                            controller.edit(editEntry, propChanges, CmsReloadMode.reloadEntry);
+                        }
+                    }
+                    titleLabel.setVisible(true);
+                }
+            });
+        }
         return result;
     }
 

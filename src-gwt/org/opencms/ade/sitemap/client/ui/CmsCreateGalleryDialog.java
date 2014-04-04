@@ -103,6 +103,7 @@ public class CmsCreateGalleryDialog extends CmsPopup {
         m_dialogContent.getFieldSet().getElement().getStyle().setMarginTop(4, Style.Unit.PX);
         setMainContent(m_dialogContent);
         m_titleInput = new CmsTextBox();
+        m_titleInput.setTriggerChangeOnKeyPress(true);
         m_titleInput.addValueChangeHandler(new ValueChangeHandler<String>() {
 
             public void onValueChange(ValueChangeEvent<String> event) {

@@ -333,6 +333,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         typeItem.setOpen(true);
         // in case the type item had been hidden
         typeItem.getElement().getStyle().clearDisplay();
+        m_noGalleriesLabel.getElement().getStyle().setDisplay(Display.NONE);
     }
 
     /**
@@ -909,7 +910,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
                         }
                     }
                     String oldPath = changeItem.getSitePath();
-                    if (!oldPath.endsWith("/" + change.getName())) {
+                    if ((change.getName() != null) && !oldPath.endsWith("/" + change.getName())) {
                         String newPath = CmsResource.getParentFolder(oldPath) + change.getName() + "/";
                         changeItem.updateSitePath(newPath);
                     }
