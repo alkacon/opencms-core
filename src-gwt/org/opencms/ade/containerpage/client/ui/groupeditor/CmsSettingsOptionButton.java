@@ -27,6 +27,7 @@
 
 package org.opencms.ade.containerpage.client.ui.groupeditor;
 
+import org.opencms.ade.containerpage.client.CmsContainerpageController;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
@@ -69,7 +70,8 @@ public class CmsSettingsOptionButton extends CmsPushButton implements I_CmsGroup
      */
     public boolean checkVisibility() {
 
-        return m_elementWidget.getInheritanceInfo().isNew() && m_elementWidget.hasSettings();
+        boolean useTemplateContexts = CmsContainerpageController.get().getData().getTemplateContextInfo().shouldShowElementTemplateContextSelection();
+        return m_elementWidget.getInheritanceInfo().isNew() && (useTemplateContexts || m_elementWidget.hasSettings());
     }
 
     /**
