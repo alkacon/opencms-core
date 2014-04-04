@@ -47,14 +47,14 @@ import com.google.common.base.Optional;
 /**
  * Test cases for the org.opencms.editors.usergenerated package.
  */
-public class TestUserGeneratedContent extends OpenCmsTestCase {
+public class TestFormSessionSecurityLimits extends OpenCmsTestCase {
 
     /**
      * Creates a new test instance.<p<
      * 
      * @param name the test name 
      */
-    public TestUserGeneratedContent(String name) {
+    public TestFormSessionSecurityLimits(String name) {
 
         super(name);
     }
@@ -67,7 +67,7 @@ public class TestUserGeneratedContent extends OpenCmsTestCase {
     public static Test suite() {
 
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        return generateSetupTestWrapper(TestUserGeneratedContent.class, "systemtest", "/");
+        return generateSetupTestWrapper(TestFormSessionSecurityLimits.class, "systemtest", "/");
     }
 
     /**
