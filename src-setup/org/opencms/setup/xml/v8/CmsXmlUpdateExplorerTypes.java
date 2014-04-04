@@ -68,8 +68,6 @@ public class CmsXmlUpdateExplorerTypes extends A_CmsXmlWorkplace {
         {"imagegallery", "bigicon", "imagegallery_big.png"},
         {"downloadgallery", "bigicon", "downloadgallery_big.png"},
         {"linkgallery", "bigicon", "linkgallery_big.png"},
-        {"htmlgallery", "bigicon", "htmlgallery_big.png"},
-        {"tablegallery", "bigicon", "tablegallery_big.png"},
         {"xmlcontent", "bigicon", "xmlcontent_big.png"}};
 
     /** The order data to update. */
@@ -244,7 +242,7 @@ public class CmsXmlUpdateExplorerTypes extends A_CmsXmlWorkplace {
                         Element elementToInsert = createElementFromXml(xml);
                         parent.elements().add(0, elementToInsert);
                         if (forReal) {
-                            for (String referencingType : new String[] {"tablegallery", "htmlgallery", "linkgallery"}) {
+                            for (String referencingType : new String[] {"linkgallery"}) {
                                 Element referencingTypeElement = (Element)(doc.selectSingleNode(xpathForType(referencingType)));
                                 if (referencingTypeElement != null) {
                                     referencingTypeElement.attribute("reference").setValue("classicgallery");
