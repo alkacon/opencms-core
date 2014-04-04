@@ -160,6 +160,7 @@ public class CmsFormSession {
     public CmsResource createUploadResource(String fileName, byte[] content) throws CmsException {
 
         CmsResource result = null;
+        CmsFormSessionSecurityUtil.checkCreateUpload(m_cms, m_configuration, fileName, content.length);
         if (m_configuration.getUploadParentFolder().isPresent()) {
             String sitePath = OpenCms.getResourceManager().getNameGenerator().getUniqueFileName(
                 m_cms,
@@ -180,6 +181,7 @@ public class CmsFormSession {
      */
     public CmsResource createXmlContent() throws CmsException {
 
+        CmsFormSessionSecurityUtil.checkCreateContent(m_cms, m_configuration);
         I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(m_configuration.getResourceType());
         m_editResource = m_cms.createResource(getNewResourceName(), type.getTypeId());
         return m_editResource;
