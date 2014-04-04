@@ -273,13 +273,10 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
-     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#createNewGalleryFolder(java.lang.String, java.lang.String, java.lang.String, int)
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#createNewGalleryFolder(java.lang.String, java.lang.String, int)
      */
-    public CmsGalleryFolderEntry createNewGalleryFolder(
-        String parentFolder,
-        String folderName,
-        String title,
-        int folderTypeId) throws CmsRpcException {
+    public CmsGalleryFolderEntry createNewGalleryFolder(String parentFolder, String title, int folderTypeId)
+    throws CmsRpcException {
 
         CmsObject cms = getCmsObject();
         CmsGalleryFolderEntry folderEntry = null;
@@ -288,7 +285,12 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 CmsResource parent = cms.createResource(parentFolder, CmsResourceTypeFolder.getStaticTypeId());
                 tryUnlock(parent);
             }
-            String folderPath = CmsStringUtil.joinPaths(parentFolder, folderName);
+            String folderName = OpenCms.getResourceManager().getFileTranslator().translateResource(title);
+
+            String folderPath = OpenCms.getResourceManager().getNameGenerator().getUniqueFileName(
+                cms,
+                parentFolder,
+                folderName);
 
             CmsResource galleryFolder = cms.createResource(
                 folderPath,
@@ -434,62 +436,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             result.put(type, galleries);
         }
         return result;
-    }
-
-    /**
-     * Returns the galleries of the given sub site for the requested gallery type.<p>
-     * 
-     * @param entryPointUri the sub site entry point
-     * @param galleryType the gallery type
-     * @param subSitePaths the sub site paths
-     * 
-     * @return the gallery folder entries
-     * 
-     * @throws CmsException if reading the resources fails
-     */
-    private List<CmsGalleryFolderEntry> getGalleriesForType(
-        String entryPointUri,
-        CmsGalleryType galleryType,
-        List<String> subSitePaths) throws CmsException {
-
-        List<CmsGalleryFolderEntry> galleries = new ArrayList<CmsGalleryFolderEntry>();
-        List<CmsResource> galleryFolders = getCmsObject().readResources(
-            entryPointUri,
-            CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(galleryType.getTypeId()));
-        for (CmsResource folder : galleryFolders) {
-            try {
-                if (!isInSubsite(subSitePaths, folder.getRootPath())) {
-                    galleries.add(readGalleryFolderEntry(folder, galleryType.getTypeName()));
-                }
-            } catch (CmsException ex) {
-                log(ex.getLocalizedMessage(), ex);
-            }
-        }
-        // create a tree structure
-        Collections.sort(galleries, new Comparator<CmsGalleryFolderEntry>() {
-
-            public int compare(CmsGalleryFolderEntry o1, CmsGalleryFolderEntry o2) {
-
-                return o1.getSitePath().compareTo(o2.getSitePath());
-            }
-        });
-        List<CmsGalleryFolderEntry> galleryTree = new ArrayList<CmsGalleryFolderEntry>();
-        for (int i = 0; i < galleries.size(); i++) {
-            boolean isSubGallery = false;
-            if (i > 0) {
-                for (int j = i - 1; j >= 0; j--) {
-                    if (galleries.get(i).getSitePath().startsWith(galleries.get(j).getSitePath())) {
-                        galleries.get(j).addSubGallery(galleries.get(i));
-                        isSubGallery = true;
-                        break;
-                    }
-                }
-            }
-            if (!isSubGallery) {
-                galleryTree.add(galleries.get(i));
-            }
-        }
-        return galleryTree;
     }
 
     /**
@@ -823,7 +769,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      *
      * @return list of changed sitemap entries
      *
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     protected CmsSitemapChange saveInternal(String entryPoint, CmsSitemapChange change) throws CmsException {
 
@@ -1599,10 +1545,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      * @param subSitemapFolder the sub-sitemap folder in which the .content folder should be created 
      * 
      * @throws CmsException if something goes wrong 
-     * @throws CmsLoaderException
      */
-    private void createSitemapContentFolder(CmsObject cms, CmsResource subSitemapFolder)
-    throws CmsException, CmsLoaderException {
+    private void createSitemapContentFolder(CmsObject cms, CmsResource subSitemapFolder) throws CmsException {
 
         String sitePath = cms.getSitePath(subSitemapFolder);
         String folderName = CmsStringUtil.joinPaths(sitePath, CmsADEManager.CONTENT_FOLDER_NAME + "/");
@@ -1874,6 +1818,62 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
+     * Returns the galleries of the given sub site for the requested gallery type.<p>
+     * 
+     * @param entryPointUri the sub site entry point
+     * @param galleryType the gallery type
+     * @param subSitePaths the sub site paths
+     * 
+     * @return the gallery folder entries
+     * 
+     * @throws CmsException if reading the resources fails
+     */
+    private List<CmsGalleryFolderEntry> getGalleriesForType(
+        String entryPointUri,
+        CmsGalleryType galleryType,
+        List<String> subSitePaths) throws CmsException {
+
+        List<CmsGalleryFolderEntry> galleries = new ArrayList<CmsGalleryFolderEntry>();
+        List<CmsResource> galleryFolders = getCmsObject().readResources(
+            entryPointUri,
+            CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(galleryType.getTypeId()));
+        for (CmsResource folder : galleryFolders) {
+            try {
+                if (!isInSubsite(subSitePaths, folder.getRootPath())) {
+                    galleries.add(readGalleryFolderEntry(folder, galleryType.getTypeName()));
+                }
+            } catch (CmsException ex) {
+                log(ex.getLocalizedMessage(), ex);
+            }
+        }
+        // create a tree structure
+        Collections.sort(galleries, new Comparator<CmsGalleryFolderEntry>() {
+
+            public int compare(CmsGalleryFolderEntry o1, CmsGalleryFolderEntry o2) {
+
+                return o1.getSitePath().compareTo(o2.getSitePath());
+            }
+        });
+        List<CmsGalleryFolderEntry> galleryTree = new ArrayList<CmsGalleryFolderEntry>();
+        for (int i = 0; i < galleries.size(); i++) {
+            boolean isSubGallery = false;
+            if (i > 0) {
+                for (int j = i - 1; j >= 0; j--) {
+                    if (galleries.get(i).getSitePath().startsWith(galleries.get(j).getSitePath())) {
+                        galleries.get(j).addSubGallery(galleries.get(i));
+                        isSubGallery = true;
+                        break;
+                    }
+                }
+            }
+            if (!isSubGallery) {
+                galleryTree.add(galleries.get(i));
+            }
+        }
+        return galleryTree;
+    }
+
+    /**
      * Returns the modified list from the current user.<p>
      *
      * @return the modified list
@@ -1961,7 +1961,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      *
      * @return the list of all property names
      *
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     private List<String> getPropertyNames(CmsObject cms) throws CmsException {
 
@@ -2556,7 +2556,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      * @param isRoot true if the entry is a root entry
      *
      * @return the client sitemap entry
-     * @throws CmsException
+     * 
+     * @throws CmsException if something goes wrong
      */
     private CmsClientSitemapEntry toClientEntry(CmsJspNavElement navElement, boolean isRoot) throws CmsException {
 

@@ -62,14 +62,12 @@ public interface I_CmsSitemapServiceAsync {
      * Creates a new gallery folder.<p>
      * 
      * @param parentFolder the parent folder path
-     * @param folderName the gallery folder name
      * @param title the title property
      * @param folderTypeId the resource type id
      * @param callback the async callback
      */
     void createNewGalleryFolder(
         String parentFolder,
-        String folderName,
         String title,
         int folderTypeId,
         AsyncCallback<CmsGalleryFolderEntry> callback);

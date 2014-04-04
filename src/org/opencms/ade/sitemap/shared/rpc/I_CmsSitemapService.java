@@ -63,7 +63,6 @@ public interface I_CmsSitemapService extends RemoteService {
      * Creates a new gallery folder.<p>
      * 
      * @param parentFolder the parent folder path
-     * @param folderName the gallery folder name
      * @param title the title property
      * @param folderTypeId the resource type id
      * 
@@ -71,7 +70,7 @@ public interface I_CmsSitemapService extends RemoteService {
      * 
      * @throws CmsRpcException if something goes wrong 
      */
-    CmsGalleryFolderEntry createNewGalleryFolder(String parentFolder, String folderName, String title, int folderTypeId)
+    CmsGalleryFolderEntry createNewGalleryFolder(String parentFolder, String title, int folderTypeId)
     throws CmsRpcException;
 
     /**

@@ -332,14 +332,9 @@ public class CmsSitemapController implements I_CmsSitemapController {
      * 
      * @param parentId the parent folder id
      * @param galleryTypeId the folder type id
-     * @param folderName the folder name
      * @param title the folder title
      */
-    public void createNewGallery(
-        final CmsUUID parentId,
-        final int galleryTypeId,
-        final String folderName,
-        final String title) {
+    public void createNewGallery(final CmsUUID parentId, final int galleryTypeId, final String title) {
 
         final String parentFolder = parentId != null ? getEntryById(parentId).getSitePath() : CmsStringUtil.joinPaths(
             m_data.getRoot().getSitePath(),
@@ -350,7 +345,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
             @Override
             public void execute() {
 
-                getService().createNewGalleryFolder(parentFolder, folderName, title, galleryTypeId, this);
+                getService().createNewGalleryFolder(parentFolder, title, galleryTypeId, this);
             }
 
             @Override

@@ -68,9 +68,6 @@ public class CmsCreateGalleryDialog extends CmsPopup {
     /** The dialog content panel. */
     private CmsFieldsetFormFieldPanel m_dialogContent;
 
-    /** The folder name input. */
-    private CmsTextBox m_folderNameInput;
-
     /** The OK button. */
     private CmsPushButton m_okButton;
 
@@ -105,20 +102,14 @@ public class CmsCreateGalleryDialog extends CmsPopup {
         m_dialogContent.getFieldSet().setOpenerVisible(false);
         m_dialogContent.getFieldSet().getElement().getStyle().setMarginTop(4, Style.Unit.PX);
         setMainContent(m_dialogContent);
-        m_folderNameInput = new CmsTextBox();
-        m_folderNameInput.setTriggerChangeOnKeyPress(true);
-        m_folderNameInput.addValueChangeHandler(new ValueChangeHandler<String>() {
+        m_titleInput = new CmsTextBox();
+        m_titleInput.addValueChangeHandler(new ValueChangeHandler<String>() {
 
             public void onValueChange(ValueChangeEvent<String> event) {
 
                 setOkEnabled(CmsStringUtil.isNotEmptyOrWhitespaceOnly(event.getValue()));
             }
         });
-        addInputRow(
-            org.opencms.ade.sitemap.client.Messages.get().key(
-                org.opencms.ade.sitemap.client.Messages.GUI_GALLERIES_LABEL_FOLDER_NAME_0),
-            m_folderNameInput);
-        m_titleInput = new CmsTextBox();
         addInputRow(
             org.opencms.ade.sitemap.client.Messages.get().key(
                 org.opencms.ade.sitemap.client.Messages.GUI_GALLERIES_LABEL_TITLE_0),
@@ -165,11 +156,7 @@ public class CmsCreateGalleryDialog extends CmsPopup {
      */
     protected void onOk() {
 
-        m_controller.createNewGallery(
-            m_parentId,
-            m_resourceTypeId,
-            m_folderNameInput.getFormValueAsString(),
-            m_titleInput.getFormValueAsString());
+        m_controller.createNewGallery(m_parentId, m_resourceTypeId, m_titleInput.getFormValueAsString());
         hide();
     }
 
