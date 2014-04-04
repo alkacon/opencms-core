@@ -12,22 +12,12 @@
 <p>consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>]]></content>
       </Text>
       <Image>
-        <Image>
-          <link type="WEAK">
-            <target><![CDATA[/sites/default/.galleries/samples/02.jpg]]></target>
-            <uuid>c0ac6977-4705-11e3-8417-000c29d28104</uuid>
-          </link>
-        </Image>
+        <Image><![CDATA[/sites/default/.galleries/samples/02.jpg]]></Image>
         <Title><![CDATA[Gerbera]]></Title>
       </Image>
       <Link>
         <Text><![CDATA[More information]]></Text>
-        <URI>
-          <link internal="true" type="WEAK">
-            <target><![CDATA[/sites/default/demo/]]></target>
-            <uuid>114934a1-21ee-11e3-b95f-000c29d28104</uuid>
-          </link>
-        </URI>
+        <URI><![CDATA[/sites/default/demo/]]></URI>
       </Link>
     </Paragraph>
   </BootstrapTextblock>

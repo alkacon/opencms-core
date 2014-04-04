@@ -86,6 +86,7 @@ public class TestFormSession extends OpenCmsTestCase {
         suite.setName(TestFormSession.class.getName());
 
         suite.addTest(new TestFormSession("testGetValues"));
+        suite.addTest(new TestFormSession("testAddValues"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -110,6 +111,34 @@ public class TestFormSession extends OpenCmsTestCase {
      * 
      * @throws Exception if something goes wrong
      */
+    public void testAddValues() throws Exception {
+
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
+        CmsXmlContentDefinition definition = unmarshalDefinition(resolver);
+        CmsXmlEntityResolver.cacheSystemId(
+            SCHEMA_ID_TEXTBLOCK,
+            definition.getSchema().asXML().getBytes(CmsEncoder.ENCODING_UTF_8));
+        String fileContent = CmsFileUtil.readFile(
+            "org/opencms/editors/usergenerated/tb_00001.xml",
+            CmsEncoder.ENCODING_UTF_8);
+        // now create the XML content
+        CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(fileContent, CmsEncoder.ENCODING_UTF_8, resolver);
+        CmsFormSession session = new CmsFormSession(getCmsObject());
+        Locale editLocale = new Locale("en");
+        Map<String, String> values = session.getContentValues(xmlContent, editLocale);
+
+        xmlContent.removeLocale(editLocale);
+        session.addContentValues(xmlContent, editLocale, values);
+
+        // all content values should be restored
+        assertEquals(fileContent, new String(xmlContent.marshal(), CmsEncoder.ENCODING_UTF_8));
+    }
+
+    /**
+     * Tests the get values method.<p>
+     * 
+     * @throws Exception if something goes wrong
+     */
     public void testGetValues() throws Exception {
 
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
@@ -123,7 +152,7 @@ public class TestFormSession extends OpenCmsTestCase {
         // now create the XML content
         CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(fileContent, CmsEncoder.ENCODING_UTF_8, resolver);
         CmsFormSession session = new CmsFormSession(getCmsObject());
-        Map<String, String> values = session.getValues(xmlContent, new Locale("en"));
+        Map<String, String> values = session.getContentValues(xmlContent, new Locale("en"));
         assertEquals("Full width example", values.get("Title[1]"));
     }
 

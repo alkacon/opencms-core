@@ -36,6 +36,7 @@ import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentErrorHandler;
@@ -220,7 +221,7 @@ public class CmsFormSession {
         if (!content.hasLocale(locale)) {
             content.addLocale(m_cms, locale);
         }
-        return getValues(content, locale);
+        return getContentValues(content, locale);
     }
 
     /**
@@ -301,7 +302,7 @@ public class CmsFormSession {
                     currentPath = CmsStringUtil.joinPaths(currentPath, pathElements[i]);
                 }
                 while (!content.hasValue(currentPath, locale)) {
-                    content.addValue(m_cms, currentPath, locale, CmsXmlUtils.getXpathIndexInt(currentPath));
+                    content.addValue(m_cms, currentPath, locale, CmsXmlUtils.getXpathIndexInt(currentPath) - 1);
                 }
             }
         }
@@ -323,6 +324,22 @@ public class CmsFormSession {
         CmsXmlContent content = CmsXmlContentFactory.unmarshal(m_cms, file);
         Locale locale = m_cms.getRequestContext().getLocale();
 
+        addContentValues(content, locale, contentValues);
+        return content;
+    }
+
+    /**
+     * Adds the given values to the content document.<p>
+     * 
+     * @param content the content document
+     * @param locale the content locale
+     * @param contentValues the values
+     * 
+     * @throws CmsXmlException if writing the XML fails
+     */
+    protected void addContentValues(CmsXmlContent content, Locale locale, Map<String, String> contentValues)
+    throws CmsXmlException {
+
         if (!content.hasLocale(locale)) {
             content.addLocale(m_cms, locale);
         }
@@ -331,10 +348,17 @@ public class CmsFormSession {
         for (String path : paths) {
             addContentValue(content, locale, path, contentValues.get(path));
         }
-        return content;
     }
 
-    protected Map<String, String> getValues(CmsXmlContent content, Locale locale) {
+    /**
+     * Returns the content values of the requested locale.<p>
+     * 
+     * @param content the content document
+     * @param locale the content locale
+     * 
+     * @return the values
+     */
+    protected Map<String, String> getContentValues(CmsXmlContent content, Locale locale) {
 
         Map<String, String> result = new HashMap<String, String>();
         List<I_CmsXmlContentValue> values = content.getValues(locale);
