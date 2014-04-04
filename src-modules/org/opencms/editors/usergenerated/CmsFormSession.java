@@ -34,7 +34,9 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
@@ -181,9 +183,10 @@ public class CmsFormSession {
      */
     public CmsResource createXmlContent() throws CmsException {
 
+        checkEditResourceNotSet();
         CmsFormSessionSecurityUtil.checkCreateContent(m_cms, m_configuration);
         I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(m_configuration.getResourceType());
-        m_editResource = m_cms.createResource(getNewResourceName(), type.getTypeId());
+        m_editResource = m_cms.createResource(getNewContentName(), type.getTypeId());
         return m_editResource;
     }
 
@@ -237,7 +240,16 @@ public class CmsFormSession {
      */
     public CmsResource loadXmlContent(String fileName) throws CmsException {
 
-        m_editResource = m_cms.readResource(fileName);
+        checkEditResourceNotSet();
+        if (fileName.contains("/")) {
+            throw new CmsPermissionViolationException(Messages.get().container(
+                Messages.ERR_INVALID_FILE_NAME_TO_LOAD_1,
+                fileName));
+        }
+        String contentSitePath = m_cms.getRequestContext().removeSiteRoot(
+            m_configuration.getContentParentFolder().getRootPath());
+        String path = CmsStringUtil.joinPaths(contentSitePath, fileName);
+        m_editResource = m_cms.readResource(path);
         CmsLock lock = m_cms.getLock(m_editResource);
         if (!lock.isOwnedBy(m_cms.getRequestContext().getCurrentUser())) {
             m_cms.lockResourceTemporary(m_editResource);
@@ -373,6 +385,19 @@ public class CmsFormSession {
     }
 
     /**
+     * Throws an error if the edit resource is already set.<p>
+     * 
+     * @throws CmsIllegalStateException if the edit resource is already set 
+     */
+    private void checkEditResourceNotSet() throws CmsIllegalStateException {
+
+        if (m_editResource != null) {
+            throw new CmsIllegalStateException(Messages.get().container(
+                Messages.ERR_CANT_EDIT_MULTIPLE_CONTENTS_IN_SESSION_0));
+        }
+    }
+
+    /**
      * Returns the edit project name.<p>
      * 
      * @return the project name
@@ -386,9 +411,16 @@ public class CmsFormSession {
      * Returns the new resource site path.<p>
      * 
      * @return the new resource site path
+     * @throws CmsException if something goes wrong 
      */
-    private String getNewResourceName() {
+    private String getNewContentName() throws CmsException {
 
-        return CmsStringUtil.joinPaths(m_cms.getSitePath(m_configuration.getContentParentFolder()), "newResource");
+        String sitePath = OpenCms.getResourceManager().getNameGenerator().getNewFileName(
+            m_cms,
+            CmsStringUtil.joinPaths(
+                m_cms.getRequestContext().removeSiteRoot(m_configuration.getContentParentFolder().getRootPath()),
+                m_configuration.getNamePattern()),
+            5);
+        return sitePath;
     }
 }

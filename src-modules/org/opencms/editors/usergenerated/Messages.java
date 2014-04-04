@@ -56,6 +56,12 @@ public class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String ERR_NO_UPLOADS_ALLOWED_0 = "ERR_NO_UPLOADS_ALLOWED_0";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CANT_EDIT_MULTIPLE_CONTENTS_IN_SESSION_0 = "ERR_CANT_EDIT_MULTIPLE_CONTENTS_IN_SESSION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INVALID_FILE_NAME_TO_LOAD_1 = "ERR_INVALID_FILE_NAME_TO_LOAD_1";
+
     /**
      * Hides the public constructor for this utility class.<p>
      */
