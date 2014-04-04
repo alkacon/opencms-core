@@ -64,13 +64,12 @@ public class CmsFormSessionFactory {
             e.printStackTrace();
         }
         return null;
-
     }
 
     private CmsFormSession createSession(CmsObject cms, CmsFormConfiguration config) throws CmsException {
 
         getQueue(config).waitForSlot();
-        return new CmsFormSession(cms, config);
+        return new CmsFormSession(CmsFormModuleAction.getAdminCms(), cms, config);
     }
 
     private CmsSessionQueue getQueue(CmsFormConfiguration config) {

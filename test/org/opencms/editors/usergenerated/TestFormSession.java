@@ -29,13 +29,16 @@ package org.opencms.editors.usergenerated;
 
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsEvent;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsUUID;
@@ -93,6 +96,17 @@ public class TestFormSession extends OpenCmsTestCase {
         return wrapper;
     }
 
+    /** 
+     * Publishes the offline project.<p>
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public void publishAll() throws CmsException {
+
+        OpenCms.getPublishManager().publishProject(getCmsObject(), new CmsShellReport(Locale.ENGLISH));
+        OpenCms.getPublishManager().waitWhileRunning();
+    }
+
     /**
      * Tests the add values method.<p>
      * 
@@ -119,6 +133,96 @@ public class TestFormSession extends OpenCmsTestCase {
 
         // all content values should be restored
         assertEquals(fileContent, new String(xmlContent.marshal(), CmsEncoder.ENCODING_UTF_8));
+    }
+
+    /**
+     * Tests that created resources are created in the correct project.<p>
+     * 
+     * @throws Exception - 
+     */
+    public void testAssignProjectToCreatedResources() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        CmsUser admin = cms.readUser("Admin");
+        CmsResource contentFolder = cms.createResource("/" + getName(), 0);
+        CmsResource uploadFolder = cms.createResource("/" + getName() + "Upload", 0);
+        CmsGroup administrators = cms.readGroup("Administrators");
+
+        CmsFormConfiguration config = new CmsFormConfiguration(
+            new CmsUUID(),
+            Optional.of(admin),
+            administrators,
+            "xmlcontent",
+            contentFolder,
+            "n_%(number)",
+            Locale.ENGLISH,
+            Optional.of(uploadFolder),
+            Optional.<Long> absent(),
+            Optional.<Integer> absent(),
+            Optional.<Long> absent(),
+            Optional.<Integer> absent(),
+            false,
+            Optional.<List<String>> absent());
+        CmsFormSession session = new CmsFormSession(cms, config);
+        CmsResource contentRes = session.createXmlContent();
+        CmsResource uploadRes = session.createUploadResource("example.bin", new byte[] {1, 2, 3, 4, 5});
+        CmsProject expectedProject = session.getProject();
+        assertEquals(
+            "Project id doesn't match session project",
+            expectedProject.getUuid(),
+            contentRes.getProjectLastModified());
+        assertEquals(
+            "Project id doesn't match session project",
+            expectedProject.getUuid(),
+            uploadRes.getProjectLastModified());
+    }
+
+    /**
+     * Tests automatic publishing.<p>
+     * 
+     * @throws Exception - 
+     */
+    public void testAutoPublish() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        CmsUser admin = cms.readUser("Admin");
+        String newUserName = "user_" + getName();
+        String password = "password";
+        cms.createUser(newUserName, password, "test", new HashMap<String, Object>());
+        cms.addUserToGroup(newUserName, "Users");
+        CmsObject userCms = OpenCms.initCmsObject(cms);
+        userCms.loginUser(newUserName, password);
+        userCms.getRequestContext().setCurrentProject(cms.getRequestContext().getCurrentProject());
+        CmsResource contentFolder = cms.createResource("/" + getName(), 0);
+        CmsResource uploadFolder = cms.createResource("/" + getName() + "Upload", 0);
+        publishAll();
+        CmsGroup administrators = cms.readGroup("Administrators");
+
+        CmsFormConfiguration config = new CmsFormConfiguration(
+            new CmsUUID(),
+            Optional.of(admin),
+            administrators,
+            "xmlcontent",
+            contentFolder,
+            "n_%(number)",
+            Locale.ENGLISH,
+            Optional.of(uploadFolder),
+            Optional.<Long> absent(),
+            Optional.<Integer> absent(),
+            Optional.<Long> absent(),
+            Optional.<Integer> absent(),
+            true,
+            Optional.<List<String>> absent());
+
+        CmsFormSession session = new CmsFormSession(cms, userCms, config);
+        CmsResource contentRes = session.createXmlContent();
+        CmsResource uploadRes = session.createUploadResource("example.bin", new byte[] {1, 2, 3, 4, 5});
+        session.finish();
+        OpenCms.getPublishManager().waitWhileRunning();
+        contentRes = cms.readResource(contentRes.getStructureId());
+        assertEquals(CmsResource.STATE_UNCHANGED, contentRes.getState());
+        uploadRes = cms.readResource(uploadRes.getStructureId());
+        assertEquals(CmsResource.STATE_UNCHANGED, uploadRes.getState());
     }
 
     /**
