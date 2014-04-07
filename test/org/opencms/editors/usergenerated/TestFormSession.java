@@ -56,6 +56,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import junit.framework.Test;
 
@@ -382,6 +384,74 @@ public class TestFormSession extends OpenCmsTestCase {
     }
 
     /**
+     * Tests that the session queue does not allow more than maxLength waiting entries 
+     * 
+     * @throws Exception if something goes wrong 
+     */
+    public void testQueueMaxLength() throws Exception {
+
+        int maxLength = 10;
+        final CmsSessionQueue queue = new CmsSessionQueue(true, 100, maxLength);
+        int numThreads = 30;
+        final AtomicInteger okCount = new AtomicInteger();
+        final CountDownLatch countdown = new CountDownLatch(numThreads);
+        for (int i = 0; i < numThreads; i++) {
+            Thread thread = new Thread() {
+
+                /**
+                 * @see java.lang.Thread#run()
+                 */
+                @Override
+                public void run() {
+
+                    if (queue.waitForSlot()) {
+                        okCount.incrementAndGet();
+                    }
+                    countdown.countDown();
+                }
+            };
+            thread.start();
+        }
+        countdown.await(); // wait until all threads have finished 
+        assertEquals(1 + maxLength, okCount.get());
+
+    }
+
+    /**
+     * Tests the wait time for queue is observed.<p>
+     * 
+     * @throws Exception - 
+     */
+    public void testQueueWaitTime() throws Exception {
+
+        int waitTime = 500;
+        final CmsSessionQueue queue = new CmsSessionQueue(true, waitTime, Integer.MAX_VALUE);
+        int numThreads = 10;
+        final CountDownLatch countdown = new CountDownLatch(numThreads);
+        long t1 = System.currentTimeMillis();
+        for (int i = 0; i < numThreads; i++) {
+            Thread thread = new Thread() {
+
+                /**
+                 * @see java.lang.Thread#run()
+                 */
+                @Override
+                public void run() {
+
+                    queue.waitForSlot();
+                    countdown.countDown();
+
+                }
+            };
+
+            thread.start();
+        }
+        countdown.await(); // wait until all threads have finished 
+        long t2 = System.currentTimeMillis();
+        assertTrue("The elapsed time is below expected wait time", (t2 - t1) > ((numThreads - 1) * waitTime));
+    }
+
+    /**
      * Tests that the session is cleaned up after its parent session is destroyed.<p>
      * 
      * @throws Exception - 
@@ -505,4 +575,5 @@ public class TestFormSession extends OpenCmsTestCase {
             resolver);
         return definition;
     }
+
 }
