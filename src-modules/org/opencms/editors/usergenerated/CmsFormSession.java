@@ -40,6 +40,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.CmsLogReport;
 import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsXmlContent;
@@ -255,6 +256,16 @@ public class CmsFormSession {
     }
 
     /**
+     * Gets the CMS context used by this session.<p>
+     * 
+     * @return the CMS context used by this session 
+     */
+    public CmsObject getCmsObject() {
+
+        return m_cms;
+    }
+
+    /**
      * Returns the edit project.<p>
      *  
      * @return the edit project
@@ -294,6 +305,16 @@ public class CmsFormSession {
     }
 
     /**
+     * Returns true if the session is finished.<p>
+     * 
+     * @return true if the session is finished 
+     */
+    public boolean isFinished() {
+
+        return m_finished;
+    }
+
+    /**
      * Loads the existing edit resource.<p>
      * 
      * @param fileName the resource file name
@@ -320,6 +341,34 @@ public class CmsFormSession {
             m_cms.lockResourceTemporary(m_editResource);
         }
         return m_editResource;
+    }
+
+    /**
+     * Is called when the parent session times out.<p>
+     */
+    public void onSessionDestroyed() {
+
+        if (!isFinished()) {
+            try {
+                CmsUUID projectId = getProject().getUuid();
+                List<CmsResource> projectResources = m_adminCms.readProjectView(projectId, CmsResource.STATE_KEEP);
+                if (hasOnlyNewResources(projectResources)) {
+                    for (CmsResource res : projectResources) {
+                        LOG.info("Deleting resource for timed out form session: " + res.getRootPath());
+                        deleteResourceFromProject(res);
+                    }
+                    LOG.info("Deleting project for timed out form session: "
+                        + getProject().getName()
+                        + " ["
+                        + getProject().getUuid()
+                        + "]");
+                    m_adminCms.deleteProject(projectId);
+
+                }
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
     }
 
     /**
@@ -478,6 +527,24 @@ public class CmsFormSession {
     }
 
     /**
+     * Deletes the given resource which is part of  a form session project.<p>
+     * 
+     * @param res the resource to delete
+     *  
+     * @throws CmsException if something goes wrong 
+     */
+    private void deleteResourceFromProject(CmsResource res) throws CmsException {
+
+        CmsLock lock = m_adminCms.getLock(res);
+        if (lock.isUnlocked() || lock.isLockableBy(m_adminCms.getRequestContext().getCurrentUser())) {
+            m_adminCms.lockResourceTemporary(res);
+        } else {
+            m_adminCms.changeLock(res);
+        }
+        m_adminCms.deleteResource(m_adminCms.getSitePath(res), CmsResource.DELETE_PRESERVE_SIBLINGS);
+    }
+
+    /**
      * Returns the edit project name.<p>
      * 
      * @return the project name
@@ -502,5 +569,23 @@ public class CmsFormSession {
                 m_configuration.getNamePattern()),
             5);
         return sitePath;
+    }
+
+    /**
+     * Checks if all the resource states from a list of resources are 'new'.<p>
+     * 
+     * @param projectResources the resources to check 
+     * @return true if all the resources from the input list have the state 'new' 
+     */
+    private boolean hasOnlyNewResources(List<CmsResource> projectResources) {
+
+        boolean hasOnlyNewResources = true;
+        for (CmsResource projectRes : projectResources) {
+            if (!projectRes.getState().isNew()) {
+                hasOnlyNewResources = false;
+                break;
+            }
+        }
+        return hasOnlyNewResources;
     }
 }

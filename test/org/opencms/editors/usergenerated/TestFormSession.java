@@ -27,11 +27,14 @@
 
 package org.opencms.editors.usergenerated;
 
+import org.opencms.db.CmsPublishList;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
@@ -376,6 +379,86 @@ public class TestFormSession extends OpenCmsTestCase {
         CmsFormSession session = new CmsFormSession(getCmsObject());
         Map<String, String> values = session.getContentValues(xmlContent, new Locale("en"));
         assertEquals("Full width example", values.get("Title[1]"));
+    }
+
+    /**
+     * Tests that the session is cleaned up after its parent session is destroyed.<p>
+     * 
+     * @throws Exception - 
+     */
+    public void testSessionCleanup() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        CmsUser admin = cms.readUser("Admin");
+        CmsResource contentFolder = cms.createResource("/" + getName(), 0);
+        CmsResource uploadFolder = cms.createResource("/" + getName() + "Upload", 0);
+
+        CmsPublishList pubList = OpenCms.getPublishManager().getPublishList(cms, contentFolder, false);
+        OpenCms.getPublishManager().publishProject(cms, new CmsShellReport(Locale.ENGLISH), pubList);
+        OpenCms.getPublishManager().waitWhileRunning();
+        CmsGroup administrators = cms.readGroup("Administrators");
+
+        CmsFormConfiguration config = new CmsFormConfiguration(
+            new CmsUUID(),
+            Optional.of(admin),
+            administrators,
+            "xmlcontent",
+            contentFolder,
+            "n_%(number)",
+            Locale.ENGLISH,
+            Optional.of(uploadFolder),
+            Optional.<Long> absent(),
+            Optional.<Integer> absent(),
+            Optional.<Long> absent(),
+            Optional.<Integer> absent(),
+            false,
+            Optional.<List<String>> absent());
+        CmsFormSession session = new CmsFormSession(cms, config);
+        CmsResource contentRes = session.createXmlContent();
+        CmsResource uploadRes = session.createUploadResource("example.bin", new byte[] {1, 2, 3, 4, 5});
+        CmsProject project = session.getProject();
+
+        session.onSessionDestroyed();
+
+        try {
+            cms.readResource(contentRes.getStructureId(), CmsResourceFilter.ALL);
+            fail("Resource shouldn't exist after session cleanup");
+        } catch (CmsVfsResourceNotFoundException e) {
+            // ignore 
+        }
+
+        try {
+            cms.readResource(uploadRes.getStructureId(), CmsResourceFilter.ALL);
+            fail("Resource shouldn't exist after session cleanup");
+        } catch (CmsVfsResourceNotFoundException e) {
+            // ignore 
+        }
+
+        try {
+            cms.readProject(project.getUuid());
+            fail("Project shouldn't exist after session cleanup");
+        } catch (CmsException e) {
+            // ok
+        }
+
+        // Now check that the session isn't cleaned up if the project contains any non-new, non-unchanged resources
+
+        session = new CmsFormSession(cms, config);
+        contentRes = session.createXmlContent();
+        uploadRes = session.createUploadResource("example.bin", new byte[] {1, 2, 3, 4, 5});
+        project = session.getProject();
+        CmsPublishList pubList2 = OpenCms.getPublishManager().getPublishList(cms, contentRes, false);
+        OpenCms.getPublishManager().publishProject(cms, new CmsShellReport(Locale.ENGLISH), pubList2);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        session.getCmsObject().lockResource(contentRes);
+        session.getCmsObject().writeResource(session.getCmsObject().readResource(contentRes.getStructureId()));
+
+        session.onSessionDestroyed();
+
+        cms.readResource(contentRes.getStructureId(), CmsResourceFilter.ALL);
+        cms.readProject(project.getUuid());
+
     }
 
     /**
