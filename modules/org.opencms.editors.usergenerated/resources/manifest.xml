@@ -242,6 +242,34 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+		
+		<file>
+			<destination>system/modules/org.opencms.editors.usergenerated/resources</destination>
+			<type>folder</type>
+			<uuidstructure>d2be0da6-8c48-4217-bc33-f904b139ca75</uuidstructure>
+			<datelastmodified>Thu, 03 Apr 2014 09:31:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 03 Apr 2014 09:31:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
+		<file>
+			<destination>system/modules/org.opencms.editors.usergenerated/resources/org.opencms.editors.usergenerated.Form</destination>
+			<type>folder</type>
+			<uuidstructure>36b2183f-f615-41e4-8402-17e5a62a4c2a</uuidstructure>
+			<datelastmodified>Thu, 03 Apr 2014 09:31:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 03 Apr 2014 09:31:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
 		<file>
 			<source>system/modules/org.opencms.editors.usergenerated/lib/org.opencms.editors.usergenerated.jar</source>
 			<destination>system/modules/org.opencms.editors.usergenerated/lib/org.opencms.editors.usergenerated.jar</destination>
