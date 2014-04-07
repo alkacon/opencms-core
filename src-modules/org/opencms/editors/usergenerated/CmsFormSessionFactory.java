@@ -41,16 +41,65 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class CmsFormSessionFactory {
 
+    /** The factory instance. */
+    private static CmsFormSessionFactory INSTANCE;
+
+    /** The editing session attribute name. */
+    private final String ATTR_EDITING_SESSION = "editing_session";
+
+    /** The session queues. */
     private ConcurrentHashMap<CmsUUID, CmsSessionQueue> m_queues = new ConcurrentHashMap<CmsUUID, CmsSessionQueue>();
 
+    /**
+     * Constructor.<p>
+     */
+    private CmsFormSessionFactory() {
+
+    }
+
+    /**
+     * Returns the factory instance.<p>
+     * 
+     * @return the factory instance
+     */
+    public static synchronized CmsFormSessionFactory getInstance() {
+
+        if (INSTANCE == null) {
+            INSTANCE = new CmsFormSessionFactory();
+        }
+        return INSTANCE;
+    }
+
+    /**
+     * Creates a new editing session.<p>
+     * 
+     * @param cms the cms context
+     * @param request the request
+     * @param config the configuration
+     * 
+     * @return the form session
+     * 
+     * @throws CmsException if creating the session fails
+     */
     public CmsFormSession createSession(CmsObject cms, HttpServletRequest request, CmsFormConfiguration config)
     throws CmsException {
 
         CmsFormSession session = createSession(cms, config);
-        request.getSession(true).setAttribute("FS", session);
+        request.getSession(true).setAttribute(ATTR_EDITING_SESSION, session);
         return session;
     }
 
+    /**
+     * Creates a new editing session.<p>
+     * 
+     * @param cms the cms context
+     * @param request the request
+     * @param sitePath the configuration site path
+     * 
+     * @return the form session
+     * 
+     * @throws CmsException if creating the session fails
+     */
     public CmsFormSession createSession(CmsObject cms, HttpServletRequest request, String sitePath) throws CmsException {
 
         CmsFormConfigurationReader reader = new CmsFormConfigurationReader(cms);
@@ -66,12 +115,41 @@ public class CmsFormSessionFactory {
         return null;
     }
 
+    /**
+     * Returns the session, if already initialized.<p>
+     * 
+     * @param request the request
+     * 
+     * @return the session
+     */
+    public CmsFormSession getSession(HttpServletRequest request) {
+
+        return (CmsFormSession)request.getSession(true).getAttribute(ATTR_EDITING_SESSION);
+    }
+
+    /**
+     * Creates a new editing session.<p>
+     * 
+     * @param cms the cms context
+     * @param config the configuration
+     * 
+     * @return the form session
+     * 
+     * @throws CmsException if creating the session fails
+     */
     private CmsFormSession createSession(CmsObject cms, CmsFormConfiguration config) throws CmsException {
 
         getQueue(config).waitForSlot();
         return new CmsFormSession(CmsFormModuleAction.getAdminCms(), cms, config);
     }
 
+    /**
+     * Returns the session queue.<p>
+     * 
+     * @param config the form configuration
+     * 
+     * @return the queue
+     */
     private CmsSessionQueue getQueue(CmsFormConfiguration config) {
 
         if (m_queues.get(config.getId()) == null) {

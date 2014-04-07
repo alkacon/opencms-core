@@ -27,8 +27,41 @@
 
 package org.opencms.editors.usergenerated.shared.rpc;
 
-import com.google.gwt.user.client.rpc.RemoteService;
+import org.opencms.editors.usergenerated.shared.CmsFormContent;
+import org.opencms.util.CmsUUID;
 
-public interface I_CmsFromEditService extends RemoteService {
+import java.util.Map;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
+
+/**
+ * The asynchronous form edit service interface.<p>
+ */
+public interface I_CmsFormEditServiceAsync {
+
+    /**
+     * Returns the form content for an existing content.<p>
+     * 
+     * @param configPath the configuration path
+     * @param sitepath the resource path
+     * @param callback the callback
+     */
+    void getExistingContent(String configPath, String sitepath, AsyncCallback<CmsFormContent> callback);
+
+    /**
+     * Returns the form content for new content.<p>
+     * 
+     * @param configPath the configuration path
+     * @param callback the callback
+     */
+    void getNewContent(String configPath, AsyncCallback<CmsFormContent> callback);
+
+    /**
+     * Saves the given content values to the edited content.<p>
+     * 
+     * @param sessionId the session id
+     * @param contentValues the content values
+     * @param callback the callback
+     */
+    void saveContent(CmsUUID sessionId, Map<String, String> contentValues, AsyncCallback<Map<String, String>> callback);
 }
