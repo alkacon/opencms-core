@@ -34,11 +34,22 @@ import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContentErrorHandler;
 
+import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadBase;
+import org.apache.commons.fileupload.servlet.ServletRequestContext;
 
 /**
  * The form editing service.<p>
@@ -112,6 +123,44 @@ public class CmsFormEditService extends CmsGwtService implements I_CmsFormEditSe
             error(e);
         }
         return result;
+    }
+
+    /**
+     * Handles all multipart requests.<p>
+     * 
+     * @param request the request
+     * @param response the response
+     */
+    protected void handleUpload(HttpServletRequest request, HttpServletResponse response) {
+
+        List<FileItem> multiPartFileItems = CmsRequestUtil.readMultipartFileItems(request);
+        if (multiPartFileItems != null) {
+            // this was indeed a multipart form request
+            Map<String, String[]> parameterMap = CmsRequestUtil.readParameterMapFromMultiPart(
+                getCmsObject().getRequestContext().getEncoding(),
+                multiPartFileItems);
+
+        }
+    }
+
+    /**
+     * @see javax.servlet.http.HttpServlet#service(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    @Override
+    protected void service(HttpServletRequest request, HttpServletResponse response)
+    throws ServletException, IOException {
+
+        boolean isMultiPart = FileUploadBase.isMultipartContent(new ServletRequestContext(request));
+
+        if (isMultiPart) {
+            try {
+                handleUpload(request, response);
+            } finally {
+                clearThreadStorage();
+            }
+        } else {
+            super.service(request, response);
+        }
     }
 
     /**
