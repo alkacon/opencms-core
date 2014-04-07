@@ -11,7 +11,7 @@
 	<module>
 		<name>org.opencms.editors.usergenerated</name>
 		<nicename/>
-		<class/>
+		<class>org.opencms.editors.usergenerated.CmsFormModuleAction</class>
 		<description><![CDATA[User generated content]]></description>
 		<version>0.2</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
