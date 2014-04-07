@@ -34,7 +34,7 @@ import com.google.gwt.core.client.EntryPoint;
 /**
  * Entry point for client-side form handling code for user-generated content module.<p>
  */
-public class FormEntryPoint implements EntryPoint {
+public class CmsFormEntryPoint implements EntryPoint {
 
     /**
      * @see com.google.gwt.core.client.EntryPoint#onModuleLoad()
@@ -42,6 +42,7 @@ public class FormEntryPoint implements EntryPoint {
     public void onModuleLoad() {
 
         CmsDebugLog.consoleLog("Hello world!");
+
     }
 
 }

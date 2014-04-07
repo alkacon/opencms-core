@@ -5,5 +5,5 @@
 	<inherits name="org.opencms.GwtBase" />
 	<source path="client" />
 	<source path="shared" />
-	<entry-point class="org.opencms.editors.usergenerated.client.FormEntryPoint" />
+	<entry-point class="org.opencms.editors.usergenerated.client.CmsFormEntryPoint" />
 </module>
