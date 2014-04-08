@@ -129,10 +129,13 @@ sourceSets{
 sourceSets.modules.compileClasspath += files("$buildDir/classes/main") { builtBy 'compileJava' }
 sourceSets.setup.compileClasspath += files("$buildDir/classes/main") { builtBy 'compileJava' }
 sourceSets.gwt.compileClasspath += files("$buildDir/classes/main") { builtBy 'compileJava' }
+sourceSets.gwt.compileClasspath += files("$buildDir/classes/modules") { builtBy 'modulesClasses' }
 sourceSets.test.compileClasspath += fileTree('webapp/setup/database'){ include '**/*.jar' }
 sourceSets.test.compileClasspath += files("$buildDir/classes/setup") { builtBy 'setupClasses' }
 sourceSets.test.compileClasspath += files("$buildDir/classes/modules") { builtBy 'modulesClasses' }
 sourceSets.test.compileClasspath += files("$buildDir/classes/gwt") { builtBy 'gwtClasses' }
+
+
 
 
 project.ext.componentsRuntimeClassPath=configurations.componentsRuntime
@@ -612,7 +615,11 @@ allModuleNames.split(',').each{ moduleName ->
                     sourceSets.gwt.output.classesDir,
                     // Generated classes
                     sourceSets.gwt.compileClasspath,
-                    // Deps
+
+                    sourceSets.modules.java.srcDirs,
+                    
+                    
+                                        // Deps
                     sourceSets[moduleName+'_gwt'].java.srcDirs,
                     sourceSets[moduleName+'_gwt'].output.resourcesDir,
                     sourceSets[moduleName+'_gwt'].output.classesDir
@@ -631,7 +638,7 @@ allModuleNames.split(',').each{ moduleName ->
                         '-localWorkers',
                         '2',
                         '-style',
-                        'obfuscated',
+                        'pretty',
                         '-extra',
                         extraDir,
                         '-strict'
@@ -1302,3 +1309,9 @@ install {
 tasks.withType(JavaCompile) {
     options.compilerArgs += ["-sourcepath", ""]
 }
+
+
+        
+
+
+
