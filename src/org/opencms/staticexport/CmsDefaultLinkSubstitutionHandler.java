@@ -66,6 +66,11 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
      */
     public static final String DONT_USE_CURRENT_SITE_FOR_WORKPLACE_REQUESTS = "DONT_USE_CURRENT_SITE_FOR_WORKPLACE_REQUESTS";
 
+    /**
+     * Request context attribute name to make the link substitution handler treat the link like an image link.<p>
+     */
+    public static final String ATTR_IS_IMAGE_LINK = "IS_IMAGE_LINK";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDefaultLinkSubstitutionHandler.class);
 
@@ -310,7 +315,9 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                         LOG.warn(e1.getLocalizedMessage(), e1);
                         imageId = CmsResourceTypeImage.getStaticTypeId();
                     }
-                    if (linkType != imageId) {
+                    boolean hasIsImageLinkAttr = Boolean.parseBoolean(""
+                        + cms.getRequestContext().getAttribute(ATTR_IS_IMAGE_LINK));
+                    if ((linkType != imageId) && !hasIsImageLinkAttr) {
                         // check the secure property of the link
                         boolean secureRequest = exportManager.isSecureLink(cms, oriUri);
 
