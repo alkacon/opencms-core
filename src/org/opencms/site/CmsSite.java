@@ -183,6 +183,20 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     }
 
     /**
+     * Constructs a new site object without title and id information,
+     * with a site matcher generated from the provided URL.<p>
+     * 
+     * This is to be used for test purposes only.<p>
+     * 
+     * @param siteRoot root directory of this site in the OpenCms VFS
+     * @param siteURL the URL to create the site matcher for this site from
+     */
+    public CmsSite(String siteRoot, String siteURL) {
+
+        this(siteRoot, new CmsSiteMatcher(siteURL));
+    }
+
+    /**
      * Returns a clone of this Objects instance.<p>
      * 
      * @return a clone of this instance
@@ -234,7 +248,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
             return true;
         }
         if (obj instanceof CmsSite) {
-            ((CmsSite)obj).m_siteMatcher.equals(m_siteMatcher);
+            return (m_siteMatcher != null) && m_siteMatcher.equals(((CmsSite)obj).m_siteMatcher);
         }
         return false;
     }
@@ -530,10 +544,19 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
         StringBuffer result = new StringBuffer(128);
         result.append("server: ");
         result.append(m_siteMatcher != null ? m_siteMatcher.toString() : "null");
-        result.append(" uri: ");
-        result.append(m_siteRoot);
-        result.append(" title: ");
-        result.append(m_title);
+        // some extra effort to make debugging easier
+        if (m_siteRoot != null) {
+            result.append(" siteRoot: ");
+            result.append(m_siteRoot);
+        } else {
+            result.append(" (no siteRoot)");
+        }
+        if (m_title != null) {
+            result.append(" title: ");
+            result.append(m_title);
+        } else {
+            result.append(" (no title)");
+        }
         return result.toString();
     }
 
