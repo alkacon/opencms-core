@@ -25,36 +25,26 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.editors.usergenerated.client;
+package org.opencms.editors.usergenerated.client.export;
 
-import org.opencms.editors.usergenerated.client.export.CmsXmlContentFormApi;
-
-import org.timepedia.exporter.client.ExporterUtil;
-
-import com.google.gwt.core.client.EntryPoint;
+import org.timepedia.exporter.client.Export;
+import org.timepedia.exporter.client.ExportClosure;
+import org.timepedia.exporter.client.ExportPackage;
+import org.timepedia.exporter.client.Exportable;
 
 /**
- * Entry point for client-side form handling code for user-generated content module.<p>
+ * Callback interface for functions taking a string as a parameter.<p>
  */
-public class CmsFormEntryPoint implements EntryPoint {
+@Export
+@ExportClosure
+@ExportPackage("opencms")
+public interface I_CmsStringCallback extends Exportable {
 
     /**
-     * Exports the API objects as native Javascript objects.<p>
+     * Calls the function with the given string.<p>
      * 
-     * @param api the API to expose as Javascript object 
+     * @param str the string to be used as a parameter 
      */
-    public native void installJavascriptApi(CmsXmlContentFormApi api) /*-{
-                                                                      $wnd.OpenCmsXmlContentFormApi = new $wnd.opencms.CmsXmlContentFormApi(api); 
-                                                                      }-*/;
-
-    /**
-    * @see com.google.gwt.core.client.EntryPoint#onModuleLoad()
-    */
-    public void onModuleLoad() {
-
-        ExporterUtil.exportAll();
-        CmsXmlContentFormApi api = new CmsXmlContentFormApi();
-        installJavascriptApi(api);
-    }
+    void call(String str);
 
 }

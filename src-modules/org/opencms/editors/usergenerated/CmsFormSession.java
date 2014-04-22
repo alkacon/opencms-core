@@ -51,6 +51,7 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -253,6 +254,7 @@ public class CmsFormSession {
                 projectCms,
                 new CmsLogReport(Locale.ENGLISH, CmsFormSession.class));
         }
+
     }
 
     /**
@@ -349,25 +351,7 @@ public class CmsFormSession {
     public void onSessionDestroyed() {
 
         if (!isFinished()) {
-            try {
-                CmsUUID projectId = getProject().getUuid();
-                List<CmsResource> projectResources = m_adminCms.readProjectView(projectId, CmsResource.STATE_KEEP);
-                if (hasOnlyNewResources(projectResources)) {
-                    for (CmsResource res : projectResources) {
-                        LOG.info("Deleting resource for timed out form session: " + res.getRootPath());
-                        deleteResourceFromProject(res);
-                    }
-                    LOG.info("Deleting project for timed out form session: "
-                        + getProject().getName()
-                        + " ["
-                        + getProject().getUuid()
-                        + "]");
-                    m_adminCms.deleteProject(projectId);
-
-                }
-            } catch (CmsException e) {
-                LOG.error(e.getLocalizedMessage(), e);
-            }
+            cleanupProject();
         }
     }
 
@@ -527,6 +511,32 @@ public class CmsFormSession {
     }
 
     /**
+     * Cleans up the project.<p>
+     */
+    private void cleanupProject() {
+
+        try {
+            CmsUUID projectId = getProject().getUuid();
+            List<CmsResource> projectResources = m_adminCms.readProjectView(projectId, CmsResource.STATE_KEEP);
+            if (hasOnlyNewResources(projectResources)) {
+                for (CmsResource res : projectResources) {
+                    LOG.info("Deleting resource for timed out form session: " + res.getRootPath());
+                    deleteResourceFromProject(res);
+                }
+                LOG.info("Deleting project for timed out form session: "
+                    + getProject().getName()
+                    + " ["
+                    + getProject().getUuid()
+                    + "]");
+                m_adminCms.deleteProject(projectId);
+
+            }
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+    }
+
+    /**
      * Deletes the given resource which is part of  a form session project.<p>
      * 
      * @param res the resource to delete
@@ -551,7 +561,7 @@ public class CmsFormSession {
      */
     private String generateProjectName() {
 
-        return "Edit project";
+        return "Edit project " + new Date();
     }
 
     /**

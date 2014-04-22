@@ -30,6 +30,7 @@ package org.opencms.editors.usergenerated;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
+import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsUUID;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -105,14 +106,8 @@ public class CmsFormSessionFactory {
         CmsFormConfigurationReader reader = new CmsFormConfigurationReader(cms);
         CmsFile configFile = cms.readFile(sitePath);
         CmsFormConfiguration config;
-        try {
-            config = reader.readConfiguration(configFile);
-            return createSession(cms, request, config);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return null;
+        config = reader.readConfiguration(configFile);
+        return createSession(cms, request, config);
     }
 
     /**
@@ -139,8 +134,11 @@ public class CmsFormSessionFactory {
      */
     private CmsFormSession createSession(CmsObject cms, CmsFormConfiguration config) throws CmsException {
 
-        getQueue(config).waitForSlot();
-        return new CmsFormSession(CmsFormModuleAction.getAdminCms(), cms, config);
+        if (getQueue(config).waitForSlot()) {
+            return new CmsFormSession(CmsFormModuleAction.getAdminCms(), cms, config);
+        } else {
+            throw new CmsSecurityException(Messages.get().container(Messages.ERR_WAIT_QUEUE_EXCEEDED_0));
+        }
     }
 
     /**

@@ -39,7 +39,7 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_EDITOR_BUTTON_AUTOCLOSE_0 = "GUI_EDITOR_BUTTON_AUTOCLOSE_0";
 
     /** Name of the used resource bundle. */
-    private static final String BUNDLE_NAME = "org.opencms.editors.usergenerated";
+    private static final String BUNDLE_NAME = "org.opencms.editors.usergenerated.messages";
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
@@ -64,6 +64,9 @@ public class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_FORM_SESSION_ALREADY_FINISHED_0 = "ERR_FORM_SESSION_ALREADY_FINISHED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_WAIT_QUEUE_EXCEEDED_0 = "ERR_WAIT_QUEUE_EXCEEDED_0";
 
     /**
      * Hides the public constructor for this utility class.<p>

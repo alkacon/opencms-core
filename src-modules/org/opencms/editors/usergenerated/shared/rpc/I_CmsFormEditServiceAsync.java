@@ -32,6 +32,7 @@ import org.opencms.util.CmsUUID;
 
 import java.util.Map;
 
+import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -53,8 +54,10 @@ public interface I_CmsFormEditServiceAsync {
      * 
      * @param configPath the configuration path
      * @param callback the callback
+     * 
+     * @return the request builder for this  RPC call
      */
-    void getNewContent(String configPath, AsyncCallback<CmsFormContent> callback);
+    RequestBuilder getNewContent(String configPath, AsyncCallback<CmsFormContent> callback);
 
     /**
      * Saves the given content values to the edited content.<p>
@@ -62,6 +65,11 @@ public interface I_CmsFormEditServiceAsync {
      * @param sessionId the session id
      * @param contentValues the content values
      * @param callback the callback
+     * 
+     * @return the request builder for this  RPC call
      */
-    void saveContent(CmsUUID sessionId, Map<String, String> contentValues, AsyncCallback<Map<String, String>> callback);
+    RequestBuilder saveContent(
+        CmsUUID sessionId,
+        Map<String, String> contentValues,
+        AsyncCallback<Map<String, String>> callback);
 }

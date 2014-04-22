@@ -29,6 +29,7 @@ package org.opencms.editors.usergenerated;
 
 import org.opencms.editors.usergenerated.shared.CmsFormContent;
 import org.opencms.editors.usergenerated.shared.rpc.I_CmsFormEditService;
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsRpcException;
@@ -58,6 +59,15 @@ public class CmsFormEditService extends CmsGwtService implements I_CmsFormEditSe
 
     /** The serial version id. */
     private static final long serialVersionUID = 5479252081304867604L;
+
+    /**
+     * @see org.opencms.gwt.CmsGwtService#checkPermissions(org.opencms.file.CmsObject)
+     */
+    @Override
+    public void checkPermissions(CmsObject cms) {
+
+        // don't do permission checks, since this service should be available to "Guest" users from the frontend 
+    }
 
     /**
      * @see org.opencms.editors.usergenerated.shared.rpc.I_CmsFormEditService#getExistingContent(java.lang.String, java.lang.String)

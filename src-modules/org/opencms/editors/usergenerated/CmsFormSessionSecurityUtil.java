@@ -30,6 +30,7 @@ package org.opencms.editors.usergenerated;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.security.CmsPermissionViolationException;
+import org.opencms.security.CmsSecurityException;
 
 import java.util.List;
 
@@ -62,7 +63,7 @@ public class CmsFormSessionSecurityUtil {
             int maxContents = config.getMaxContentNumber().get().intValue();
             String sitePath = cms.getSitePath(config.getContentParentFolder());
             if (cms.getFilesInFolder(sitePath).size() >= maxContents) {
-                throw new CmsPermissionViolationException(Messages.get().container(
+                throw new CmsSecurityException(Messages.get().container(
                     Messages.ERR_TOO_MANY_CONTENTS_1,
                     config.getContentParentFolder()));
             }

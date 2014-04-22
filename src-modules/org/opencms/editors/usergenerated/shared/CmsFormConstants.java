@@ -25,36 +25,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.editors.usergenerated.client;
-
-import org.opencms.editors.usergenerated.client.export.CmsXmlContentFormApi;
-
-import org.timepedia.exporter.client.ExporterUtil;
-
-import com.google.gwt.core.client.EntryPoint;
+package org.opencms.editors.usergenerated.shared;
 
 /**
- * Entry point for client-side form handling code for user-generated content module.<p>
+ * Shared constants used by the client- and server-side components of the form editing module.<p>
  */
-public class CmsFormEntryPoint implements EntryPoint {
+public class CmsFormConstants {
 
-    /**
-     * Exports the API objects as native Javascript objects.<p>
-     * 
-     * @param api the API to expose as Javascript object 
-     */
-    public native void installJavascriptApi(CmsXmlContentFormApi api) /*-{
-                                                                      $wnd.OpenCmsXmlContentFormApi = new $wnd.opencms.CmsXmlContentFormApi(api); 
-                                                                      }-*/;
-
-    /**
-    * @see com.google.gwt.core.client.EntryPoint#onModuleLoad()
-    */
-    public void onModuleLoad() {
-
-        ExporterUtil.exportAll();
-        CmsXmlContentFormApi api = new CmsXmlContentFormApi();
-        installJavascriptApi(api);
-    }
+    /** Name of the form field containing the session id. */
+    public static final String FIELD_SESSION_ID = "formSessionId";
 
 }
