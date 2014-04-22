@@ -1662,9 +1662,7 @@ public final class OpenCmsCore {
             if (lock == null) {
                 lock = new Object();
             }
-            synchronized (lock) {
-                rpcService.service(req, res);
-            }
+            rpcService.service(req, res);
             // update the session info
             m_sessionManager.updateSessionInfo(cms, req);
         } catch (CmsRoleViolationException rv) {
