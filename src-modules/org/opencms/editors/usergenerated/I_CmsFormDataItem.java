@@ -25,17 +25,32 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.editors.usergenerated.shared;
+package org.opencms.editors.usergenerated;
 
 /**
- * Shared constants used by the client- and server-side components of the form editing module.<p>
+ * Interface representing the data from a field of a submitted form.<p>
  */
-public class CmsFormConstants {
+public interface I_CmsFormDataItem {
 
-    /** Name of the form field containing the session id. */
-    public static final String FIELD_SESSION_ID = "formSessionId";
+    /** 
+     * Gets the data from the field as a byte array.
+     * 
+     * @return the field data
+     **/
+    public byte[] getData();
 
-    /** The request parameter used for identifying form submits. */
-    public static final String PARAM_FORM_DATA_ID = "formDataId";
+    /**
+     * Gets the field name.<p>
+     * 
+     * @return the field name 
+     */
+    public String getFieldName();
+
+    /**
+     * Gets the file name, if this is a file upload field.<p>
+     * 
+     * @return the file name 
+     */
+    public String getFileName();
 
 }

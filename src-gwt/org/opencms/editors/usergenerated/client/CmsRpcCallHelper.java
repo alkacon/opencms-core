@@ -27,8 +27,6 @@
 
 package org.opencms.editors.usergenerated.client;
 
-import org.opencms.editors.usergenerated.client.export.I_CmsBooleanCallback;
-
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
 
@@ -37,20 +35,18 @@ import com.google.gwt.http.client.RequestCallback;
  */
 public class CmsRpcCallHelper {
 
-    /** Count of waiting RPC calls. */
-    private static int WAIT_COUNT = 0;
-
-    /** The callback to enable/disable the wait indicator. */
-    private I_CmsBooleanCallback m_waitIndicatorCallback;
+    /** Counter to keep track of running requests. */
+    private CmsRequestCounter m_requestCounter;
 
     /** 
      * Creates a new instance.<p>
      * 
-     * @param waitIndicatorCallback the wait indicator callback to use
+     * @param counter the request counter to keep track of running requests
      */
-    public CmsRpcCallHelper(I_CmsBooleanCallback waitIndicatorCallback) {
+    public CmsRpcCallHelper(CmsRequestCounter counter) {
 
-        m_waitIndicatorCallback = waitIndicatorCallback;
+        m_requestCounter = counter;
+
     }
 
     /**
@@ -58,6 +54,7 @@ public class CmsRpcCallHelper {
      * 
      * @param requestBuilder the request builder returned by the service interface 
      */
+    @SuppressWarnings("synthetic-access")
     public void executeRpc(RequestBuilder requestBuilder) {
 
         final RequestCallback callback = requestBuilder.getCallback();
@@ -65,7 +62,7 @@ public class CmsRpcCallHelper {
 
             public void onError(com.google.gwt.http.client.Request request, Throwable exception) {
 
-                stopLoading();
+                m_requestCounter.decrement();
                 callback.onError(request, exception);
             }
 
@@ -73,36 +70,16 @@ public class CmsRpcCallHelper {
                 com.google.gwt.http.client.Request request,
                 com.google.gwt.http.client.Response response) {
 
-                stopLoading();
+                m_requestCounter.decrement();
                 callback.onResponseReceived(request, response);
             }
         };
         requestBuilder.setCallback(callbackWrapper);
-        startLoading();
+        m_requestCounter.increment();
         try {
             requestBuilder.send();
         } catch (Exception e) {
-            stopLoading();
-        }
-    }
-
-    /** 
-     * Called before  sending a  request.<p>
-     */
-    protected void startLoading() {
-
-        WAIT_COUNT += 1;
-        m_waitIndicatorCallback.call(true);
-    }
-
-    /**
-     * Called after receiving a response.<p>
-     */
-    protected void stopLoading() {
-
-        WAIT_COUNT -= 1;
-        if (WAIT_COUNT == 0) {
-            m_waitIndicatorCallback.call(false);
+            m_requestCounter.decrement();
         }
     }
 

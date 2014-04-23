@@ -25,17 +25,53 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.editors.usergenerated.shared;
+package org.opencms.editors.usergenerated;
+
+import org.apache.commons.fileupload.FileItem;
 
 /**
- * Shared constants used by the client- and server-side components of the form editing module.<p>
+ * Implementation of the I_CmsFormDataItem which delegates its methods to a FileItem from Apache Commons Upload.<p>
  */
-public class CmsFormConstants {
+public class CmsFormDataItem implements I_CmsFormDataItem {
 
-    /** Name of the form field containing the session id. */
-    public static final String FIELD_SESSION_ID = "formSessionId";
+    /** The wrapped file item. */
+    private FileItem m_fileItem;
 
-    /** The request parameter used for identifying form submits. */
-    public static final String PARAM_FORM_DATA_ID = "formDataId";
+    /** 
+     * Creates a new instance.<p>
+     * 
+     * @param item the file item to wrap
+     */
+    public CmsFormDataItem(FileItem item) {
+
+        m_fileItem = item;
+    }
+
+    /**
+     * @see org.opencms.editors.usergenerated.I_CmsFormDataItem#getData()
+     */
+    @Override
+    public byte[] getData() {
+
+        return m_fileItem.get();
+    }
+
+    /**
+     * @see org.opencms.editors.usergenerated.I_CmsFormDataItem#getFieldName()
+     */
+    @Override
+    public String getFieldName() {
+
+        return m_fileItem.getFieldName();
+    }
+
+    /**
+     * @see org.opencms.editors.usergenerated.I_CmsFormDataItem#getFileName()
+     */
+    @Override
+    public String getFileName() {
+
+        return m_fileItem.getName();
+    }
 
 }

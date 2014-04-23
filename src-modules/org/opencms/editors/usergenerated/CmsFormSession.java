@@ -39,6 +39,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsLogReport;
 import org.opencms.security.CmsPermissionViolationException;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlException;
@@ -57,6 +58,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.logging.Log;
 
 /**
@@ -108,6 +110,9 @@ public class CmsFormSession {
             return result;
         }
     }
+
+    /** The form upload helper. */
+    private CmsFormUploadHelper m_uploadHelper = new CmsFormUploadHelper();
 
     /** The log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsFormSession.class);
@@ -184,30 +189,56 @@ public class CmsFormSession {
     /**
      * Creates a new resource from upload data.<p>
      * 
-     * @param fileName the file name
+     * @param rawFileName the file name
      * @param content the file content
      * 
      * @return the newly created resource
      * 
      * @throws CmsException if creating the resource fails
      */
-    public CmsResource createUploadResource(String fileName, byte[] content) throws CmsException {
+    public CmsResource createUploadResource(String rawFileName, byte[] content) throws CmsException {
 
         CmsResource result = null;
-        CmsFormSessionSecurityUtil.checkCreateUpload(m_cms, m_configuration, fileName, content.length);
-        if (m_configuration.getUploadParentFolder().isPresent()) {
-            String uploadRootPath = m_configuration.getUploadParentFolder().get().getRootPath();
-            String realFileName = OpenCms.getResourceManager().getNameGenerator().getUniqueFileName(
-                m_cms,
-                uploadRootPath,
-                fileName);
+        CmsFormSessionSecurityUtil.checkCreateUpload(m_cms, m_configuration, rawFileName, content.length);
 
-            String sitePath = CmsStringUtil.joinPaths(
-                m_cms.getRequestContext().removeSiteRoot(uploadRootPath),
-                realFileName);
-            int resTypeId = OpenCms.getResourceManager().getDefaultTypeForName(sitePath).getTypeId();
-            result = m_cms.createResource(sitePath, resTypeId, content, null);
+        String baseName = rawFileName;
+
+        // if the given name is a path, make sure we only get the last segment
+
+        int lastSlashPos = Math.max(baseName.lastIndexOf('/'), baseName.lastIndexOf('\\'));
+        if (lastSlashPos != -1) {
+            baseName = baseName.substring(1 + lastSlashPos);
         }
+
+        // translate it so it doesn't contain illegal characters 
+
+        baseName = OpenCms.getResourceManager().getFileTranslator().translateResource(baseName);
+
+        // add a macro before the file extension (if there is a file extension, otherwise just append it)
+
+        int dotPos = baseName.lastIndexOf('.');
+        if (dotPos == -1) {
+            baseName = baseName + "_%(random)";
+        } else {
+            baseName = baseName.substring(0, dotPos) + "_%(random)" + baseName.substring(dotPos);
+        }
+
+        // now prepend the upload folder's path 
+
+        String uploadRootPath = m_configuration.getUploadParentFolder().get().getRootPath();
+        String sitePath = CmsStringUtil.joinPaths(m_cms.getRequestContext().removeSiteRoot(uploadRootPath), baseName);
+
+        // ... and replace the macro with random strings until we find a path that isn't already used 
+
+        String realSitePath;
+        do {
+            CmsMacroResolver resolver = new CmsMacroResolver();
+            resolver.addMacro("random", RandomStringUtils.random(8, "0123456789abcdefghijklmnopqrstuvwxyz"));
+            realSitePath = resolver.resolveMacros(sitePath);
+        } while (m_cms.existsResource(realSitePath));
+        int resTypeId = OpenCms.getResourceManager().getDefaultTypeForName(realSitePath).getTypeId();
+        result = m_cms.createResource(realSitePath, resTypeId, content, null);
+
         return result;
     }
 
@@ -265,6 +296,16 @@ public class CmsFormSession {
     public CmsObject getCmsObject() {
 
         return m_cms;
+    }
+
+    /**
+     * Gets the form upload helper belonging to this session.<p>
+     * 
+     * @return the form upload helper belonging to this session
+     */
+    public CmsFormUploadHelper getFormUploadHelper() {
+
+        return m_uploadHelper;
     }
 
     /**

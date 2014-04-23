@@ -28,15 +28,12 @@
 package org.opencms.editors.usergenerated.client;
 
 import org.opencms.editors.usergenerated.client.export.CmsXmlContentFormApi;
-
-import org.timepedia.exporter.client.ExporterUtil;
-
-import com.google.gwt.core.client.EntryPoint;
+import org.opencms.gwt.client.A_CmsEntryPoint;
 
 /**
  * Entry point for client-side form handling code for user-generated content module.<p>
  */
-public class CmsFormEntryPoint implements EntryPoint {
+public class CmsFormEntryPoint extends A_CmsEntryPoint {
 
     /**
      * Exports the API objects as native Javascript objects.<p>
@@ -50,9 +47,10 @@ public class CmsFormEntryPoint implements EntryPoint {
     /**
     * @see com.google.gwt.core.client.EntryPoint#onModuleLoad()
     */
+    @Override
     public void onModuleLoad() {
 
-        ExporterUtil.exportAll();
+        super.onModuleLoad();
         CmsXmlContentFormApi api = new CmsXmlContentFormApi();
         installJavascriptApi(api);
     }

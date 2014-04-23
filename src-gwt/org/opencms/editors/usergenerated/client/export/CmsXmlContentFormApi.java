@@ -27,11 +27,11 @@
 
 package org.opencms.editors.usergenerated.client.export;
 
+import org.opencms.editors.usergenerated.client.CmsRequestCounter;
 import org.opencms.editors.usergenerated.client.CmsRpcCallHelper;
 import org.opencms.editors.usergenerated.shared.CmsFormContent;
 import org.opencms.editors.usergenerated.shared.rpc.I_CmsFormEditService;
 import org.opencms.editors.usergenerated.shared.rpc.I_CmsFormEditServiceAsync;
-import org.opencms.gwt.client.util.CmsDebugLog;
 
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
@@ -52,22 +52,16 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
 @ExportPackage("opencms")
 public class CmsXmlContentFormApi implements Exportable {
 
+    /** The request counter. */
+    private CmsRequestCounter m_requestCounter = new CmsRequestCounter();
+
     /** Service instance. */
     @NoExport
     public static final I_CmsFormEditServiceAsync SERVICE = GWT.create(I_CmsFormEditService.class);
 
-    /** 
-     * Default wait indicator callback.<p>
-     * 
-     * TODO: use default OpenCms gwt wait symbol here 
-     */
-    private I_CmsBooleanCallback m_waitIndicatorCallback = new I_CmsBooleanCallback() {
-
-        public void call(boolean b) {
-
-            CmsDebugLog.consoleLog("Wait indicator " + (b ? "ON" : "OFF"));
-        }
-    };
+    /** The service URL. */
+    @NoExport
+    public static final String SERVICE_URL;
 
     /**
      * Default constructor for gwt-exporter.<p>
@@ -83,7 +77,20 @@ public class CmsXmlContentFormApi implements Exportable {
         // cut off fragment, parameters, and trailing slash, then append service name  
         url = url.replaceAll("#.*$", "").replaceAll("\\?.*$", "").replaceAll("/$", "")
             + "/org.opencms.editors.usergenerated.CmsFormEditService.gwt";
-        ((ServiceDefTarget)SERVICE).setServiceEntryPoint(url);
+        SERVICE_URL = url;
+        ((ServiceDefTarget)SERVICE).setServiceEntryPoint(SERVICE_URL);
+
+    }
+
+    /**
+     * Gets the request counter.<p>
+     * 
+     * @return the request counter 
+     */
+    @NoExport
+    public CmsRequestCounter getRequestCounter() {
+
+        return m_requestCounter;
     }
 
     /**
@@ -94,7 +101,7 @@ public class CmsXmlContentFormApi implements Exportable {
     @NoExport
     public CmsRpcCallHelper getRpcHelper() {
 
-        return new CmsRpcCallHelper(m_waitIndicatorCallback);
+        return new CmsRpcCallHelper(m_requestCounter);
     }
 
     /**
@@ -121,6 +128,7 @@ public class CmsXmlContentFormApi implements Exportable {
             public void onSuccess(CmsFormContent result) {
 
                 CmsClientFormSession session = new CmsClientFormSession(CmsXmlContentFormApi.this, result);
+                session.initFormElement(formElement);
                 onSuccess.call(session);
             }
         }));
@@ -134,6 +142,6 @@ public class CmsXmlContentFormApi implements Exportable {
      */
     public void setWaitIndicatorCallback(I_CmsBooleanCallback callback) {
 
-        m_waitIndicatorCallback = callback;
+        m_requestCounter.setCallback(callback);
     }
 }

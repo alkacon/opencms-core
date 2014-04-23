@@ -75,4 +75,6 @@ public interface I_CmsFormEditService extends RemoteService {
      */
     Map<String, String> saveContent(CmsUUID sessionId, Map<String, String> contentValues) throws CmsRpcException;
 
+    String uploadFile(CmsUUID sessionId, String fieldName, String formDataId) throws CmsRpcException;
+
 }

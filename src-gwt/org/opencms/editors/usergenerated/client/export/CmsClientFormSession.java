@@ -27,8 +27,9 @@
 
 package org.opencms.editors.usergenerated.client.export;
 
+import org.opencms.editors.usergenerated.client.CmsFormWrapper;
 import org.opencms.editors.usergenerated.shared.CmsFormContent;
-import org.opencms.gwt.client.util.CmsDebugLog;
+import org.opencms.util.CmsUUID;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +37,9 @@ import java.util.Map;
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
+import org.timepedia.exporter.client.NoExport;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -55,6 +58,9 @@ public class CmsClientFormSession implements Exportable {
     /** The map of new values to set in the content. */
     private Map<String, String> m_newValues = new HashMap<String, String>();
 
+    /** The form wrapper widget. */
+    private CmsFormWrapper m_formWrapper;
+
     /** 
      * Creates a new instance.<p>
      * 
@@ -65,6 +71,18 @@ public class CmsClientFormSession implements Exportable {
 
         m_content = content;
         m_apiRoot = apiRoot;
+    }
+
+    /**
+     * Gets the content form API instance.<p>
+     * 
+     * @return the content form API instance
+     */
+    @NoExport
+    public CmsXmlContentFormApi getContentFormApi() {
+
+        return m_apiRoot;
+
     }
 
     /**
@@ -105,6 +123,28 @@ public class CmsClientFormSession implements Exportable {
     }
 
     /**
+     * Initializes the form belonging to this session.<p>
+     * 
+     * @param formElement the form element
+     */
+    @NoExport
+    public void initFormElement(Element formElement) {
+
+        m_formWrapper = new CmsFormWrapper(formElement, getSessionId());
+        m_formWrapper.setFormSession(this);
+    }
+
+    /**
+     * Gets the session id as a UUID.<p>
+     * 
+     * @return the session id 
+     */
+    public CmsUUID internalGetSessionId() {
+
+        return m_content.getSessionId();
+    }
+
+    /**
      * Asks the server to save the values set via setNewValue in the XML content.<p>
      * 
      * @param onSuccess the callback to be called in case of success 
@@ -127,11 +167,10 @@ public class CmsClientFormSession implements Exportable {
                     public void onSuccess(Map<String, String> result) {
 
                         if ((result == null) || result.isEmpty()) {
-                            CmsDebugLog.consoleLog("Content saved!");
-                            onSuccess.call("Success");
+                            onSuccess.call("");
                         } else {
-                            onFailure.call("Epic fail");
-                            CmsDebugLog.consoleLog("Validation errors occurred: " + result);
+                            onFailure.call("");
+                            //TODO: Handle validation
                         }
                     }
                 }));
@@ -147,5 +186,17 @@ public class CmsClientFormSession implements Exportable {
     public void setNewValue(String xpath, String value) {
 
         m_newValues.put(xpath, value);
+    }
+
+    /**
+     * Uploads a file.<p>
+     * 
+     * @param fieldName the field name for the file upload field 
+     * @param fileCallback
+     * @param errorCallback
+     */
+    public void uploadFile(String fieldName, I_CmsStringCallback fileCallback, I_CmsStringCallback errorCallback) {
+
+        m_formWrapper.uploadField(fieldName, fileCallback, errorCallback);
     }
 }

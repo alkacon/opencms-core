@@ -25,17 +25,31 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.editors.usergenerated.shared;
+package org.opencms.editors.usergenerated.client;
+
+import java.util.Random;
 
 /**
- * Shared constants used by the client- and server-side components of the form editing module.<p>
+ * Various utility functions.<p>
  */
-public class CmsFormConstants {
+public class CmsJsUtils {
 
-    /** Name of the form field containing the session id. */
-    public static final String FIELD_SESSION_ID = "formSessionId";
+    /** The random number generator. */
+    public static final Random RANDOM = new Random();
 
-    /** The request parameter used for identifying form submits. */
-    public static final String PARAM_FORM_DATA_ID = "formDataId";
+    /**
+     * Generates a random id.<p>
+     * 
+     * @return the random id 
+     */
+    public static String generateRandomId() {
+
+        StringBuffer buffer = new StringBuffer();
+        int base = 36;
+        for (int i = 0; i < 16; i++) {
+            buffer.append(Integer.toString(RANDOM.nextInt(base), base));
+        }
+        return buffer.toString();
+    }
 
 }

@@ -72,4 +72,10 @@ public interface I_CmsFormEditServiceAsync {
         CmsUUID sessionId,
         Map<String, String> contentValues,
         AsyncCallback<Map<String, String>> callback);
+
+    RequestBuilder uploadFile(
+        CmsUUID sessionId,
+        String fieldName,
+        String formDataId,
+        AsyncCallback<String> filenameCallback);
 }

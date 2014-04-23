@@ -35,20 +35,17 @@ import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContentErrorHandler;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadBase;
 import org.apache.commons.fileupload.servlet.ServletRequestContext;
 
@@ -115,7 +112,7 @@ public class CmsFormEditService extends CmsGwtService implements I_CmsFormEditSe
 
         Map<String, String> result = null;
         try {
-            CmsFormSession session = CmsFormSessionFactory.getInstance().getSession(getRequest());
+            CmsFormSession session = getFormSession();
             if ((session != null) && sessionId.equals(session.getProject().getUuid())) {
 
                 CmsXmlContentErrorHandler errorHandler = session.saveContent(contentValues);
@@ -135,6 +132,34 @@ public class CmsFormEditService extends CmsGwtService implements I_CmsFormEditSe
         return result;
     }
 
+    public String uploadFile(final CmsUUID sessionId, final String fieldName, final String formDataId)
+    throws CmsRpcException {
+
+        try {
+            final CmsException[] storedException = {null};
+            final CmsFormSession session = getFormSession();
+            final String[] storedSitePath = {null};
+
+            session.getFormUploadHelper().consumeFormData(formDataId, new I_CmsFormDataHandler() {
+
+                public void handleFormData(Map<String, I_CmsFormDataItem> items) throws Exception {
+
+                    I_CmsFormDataItem item = items.get(fieldName);
+
+                    CmsResource createdResource = session.createUploadResource(item.getFileName(), item.getData());
+                    String sitePath = session.getCmsObject().getSitePath(createdResource);
+                    storedSitePath[0] = sitePath;
+
+                }
+            });
+            return storedSitePath[0];
+        } catch (Exception e) {
+            error(e);
+            return null; // will never be reached 
+
+        }
+    }
+
     /**
      * Handles all multipart requests.<p>
      * 
@@ -143,14 +168,7 @@ public class CmsFormEditService extends CmsGwtService implements I_CmsFormEditSe
      */
     protected void handleUpload(HttpServletRequest request, HttpServletResponse response) {
 
-        List<FileItem> multiPartFileItems = CmsRequestUtil.readMultipartFileItems(request);
-        if (multiPartFileItems != null) {
-            // this was indeed a multipart form request
-            Map<String, String[]> parameterMap = CmsRequestUtil.readParameterMapFromMultiPart(
-                getCmsObject().getRequestContext().getEncoding(),
-                multiPartFileItems);
-
-        }
+        CmsFormSessionFactory.getInstance().getSession(request).getFormUploadHelper().processFormSubmitRequest(request);
     }
 
     /**
@@ -171,6 +189,13 @@ public class CmsFormEditService extends CmsGwtService implements I_CmsFormEditSe
         } else {
             super.service(request, response);
         }
+    }
+
+    private CmsFormSession getFormSession() {
+
+        //TODO: Implement multiple form sessions per servlet session
+
+        return CmsFormSessionFactory.getInstance().getSession(getRequest());
     }
 
     /**
@@ -194,5 +219,4 @@ public class CmsFormEditService extends CmsGwtService implements I_CmsFormEditSe
         formContent.setStrucureId(resource.getStructureId());
         return formContent;
     }
-
 }

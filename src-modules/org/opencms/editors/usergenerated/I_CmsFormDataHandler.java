@@ -25,17 +25,22 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.editors.usergenerated.shared;
+package org.opencms.editors.usergenerated;
+
+import java.util.Map;
 
 /**
- * Shared constants used by the client- and server-side components of the form editing module.<p>
+ * Interface for classes which want to process data submitted by form posts.<p>
  */
-public class CmsFormConstants {
+public interface I_CmsFormDataHandler {
 
-    /** Name of the form field containing the session id. */
-    public static final String FIELD_SESSION_ID = "formSessionId";
-
-    /** The request parameter used for identifying form submits. */
-    public static final String PARAM_FORM_DATA_ID = "formDataId";
+    /**
+     * Processes the map of form data.<p>
+     * 
+     * @param item a map with the form field names as keys and the corresponding data items as valus 
+     * 
+     * @throws Exception if something goes wrong 
+     */
+    void handleFormData(Map<String, I_CmsFormDataItem> item) throws Exception;
 
 }
