@@ -421,7 +421,7 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
                     inheritanceInfo = new CmsInheritanceInfo(null, true, true);
                     m_changedInheritanceInfo = true;
                 }
-                CmsContainerElement element = getController().getCachedElement(elementWidget.getId());
+                CmsContainerElement element = getController().getCachedElement(elementWidget.getId()).copy();
                 element.setInheritanceInfo(inheritanceInfo);
                 elements.add(element);
             }

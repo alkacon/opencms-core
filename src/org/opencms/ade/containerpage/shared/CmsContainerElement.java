@@ -105,6 +105,33 @@ public class CmsContainerElement implements IsSerializable {
     }
 
     /**
+     * Copies the container element.<p>
+     * 
+     * @return the new copy of the container element
+     */
+    public CmsContainerElement copy() {
+
+        CmsContainerElement result = new CmsContainerElement();
+        result.m_clientId = m_clientId;
+        result.m_hasSettings = m_hasSettings;
+        result.m_inheritanceInfo = m_inheritanceInfo;
+        result.m_new = m_new;
+        result.m_newEditorDisabled = m_newEditorDisabled;
+        result.m_permissionInfo = new CmsPermissionInfo(
+            m_permissionInfo.hasViewPermission(),
+            m_permissionInfo.hasWritePermission(),
+            m_permissionInfo.getNoEditReason());
+        result.m_releasedAndNotExpired = m_releasedAndNotExpired;
+        result.m_resourceType = m_resourceType;
+        result.m_sitePath = m_sitePath;
+        result.m_subTitle = m_subTitle;
+        result.m_title = m_title;
+        result.m_elementView = m_elementView;
+        return result;
+
+    }
+
+    /**
      * Returns the client id.<p>
      *
      * @return the client id

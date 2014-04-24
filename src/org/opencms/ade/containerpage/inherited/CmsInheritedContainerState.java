@@ -135,7 +135,7 @@ public class CmsInheritedContainerState {
         // STEP 2: Get elements which are referenced by the ordering  
         for (String key : ordering) {
             CmsContainerElementBean element = elementsByKey.get(key);
-            if (element != null) {
+            if ((element != null) && !keysUsed.contains(key)) {
                 CmsContainerElementBean elementToAdd = CmsContainerElementBean.cloneWithSettings(
                     element,
                     element.getIndividualSettings());
