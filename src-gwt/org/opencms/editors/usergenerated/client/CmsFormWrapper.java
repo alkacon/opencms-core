@@ -118,6 +118,7 @@ public class CmsFormWrapper extends FormPanel {
             @SuppressWarnings("synthetic-access")
             public void onSubmitComplete(SubmitCompleteEvent event) {
 
+                enableAllFileFields();
                 registration[0].removeHandler();
                 CmsUUID sessionId = m_formSession.internalGetSessionId();
                 RequestBuilder requestBuilder = CmsXmlContentFormApi.SERVICE.uploadFiles(
@@ -144,8 +145,6 @@ public class CmsFormWrapper extends FormPanel {
         });
         m_formSession.getContentFormApi().getRequestCounter().increment();
         submit();
-        enableAllFileFields();
-
     }
 
     /**
