@@ -846,6 +846,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             List<CmsContainerElementBean> elements = new ArrayList<CmsContainerElementBean>();
             for (CmsContainerElement clientElement : inheritanceContainer.getElements()) {
                 CmsContainerElementBean elementBean = getCachedElement(clientElement.getClientId());
+                elementBean = CmsContainerElementBean.cloneWithSettings(
+                    elementBean,
+                    elementBean.getIndividualSettings());
                 CmsInheritanceInfo inheritanceInfo = clientElement.getInheritanceInfo();
                 // if a local elements misses the key it was newly added
                 if (inheritanceInfo.isNew() && CmsStringUtil.isEmptyOrWhitespaceOnly(inheritanceInfo.getKey())) {
@@ -864,8 +867,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     true,
                     elements);
             }
-            // update offline indices
-            OpenCms.getSearchManager().updateOfflineIndexes(2 * CmsSearchManager.DEFAULT_OFFLINE_UPDATE_FREQNENCY);
             return getElements(
                 new ArrayList<String>(Collections.singletonList(inheritanceContainer.getClientId())),
                 sitePath,
