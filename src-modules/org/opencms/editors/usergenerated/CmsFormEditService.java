@@ -27,6 +27,7 @@
 
 package org.opencms.editors.usergenerated;
 
+import org.opencms.editors.usergenerated.shared.CmsFormConstants;
 import org.opencms.editors.usergenerated.shared.CmsFormContent;
 import org.opencms.editors.usergenerated.shared.rpc.I_CmsFormEditService;
 import org.opencms.file.CmsObject;
@@ -40,7 +41,9 @@ import org.opencms.xml.content.CmsXmlContentErrorHandler;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -112,8 +115,8 @@ public class CmsFormEditService extends CmsGwtService implements I_CmsFormEditSe
 
         Map<String, String> result = null;
         try {
-            CmsFormSession session = getFormSession();
-            if ((session != null) && sessionId.equals(session.getProject().getUuid())) {
+            CmsFormSession session = getFormSession(sessionId);
+            if ((session != null) && sessionId.equals(session.getId())) {
 
                 CmsXmlContentErrorHandler errorHandler = session.saveContent(contentValues);
                 if (errorHandler.hasErrors()) {
@@ -132,27 +135,31 @@ public class CmsFormEditService extends CmsGwtService implements I_CmsFormEditSe
         return result;
     }
 
-    public String uploadFile(final CmsUUID sessionId, final String fieldName, final String formDataId)
-    throws CmsRpcException {
+    /**
+     * @see org.opencms.editors.usergenerated.shared.rpc.I_CmsFormEditService#uploadFiles(org.opencms.util.CmsUUID, java.util.Set, java.lang.String)
+     */
+    public Map<String, String> uploadFiles(
+        final CmsUUID sessionId,
+        final Set<String> fieldNames,
+        final String formDataId) throws CmsRpcException {
 
         try {
-            final CmsException[] storedException = {null};
-            final CmsFormSession session = getFormSession();
-            final String[] storedSitePath = {null};
+            final CmsFormSession session = getFormSession(sessionId);
+            final Map<String, String> result = new HashMap<String, String>();
 
             session.getFormUploadHelper().consumeFormData(formDataId, new I_CmsFormDataHandler() {
 
                 public void handleFormData(Map<String, I_CmsFormDataItem> items) throws Exception {
 
-                    I_CmsFormDataItem item = items.get(fieldName);
-
-                    CmsResource createdResource = session.createUploadResource(item.getFileName(), item.getData());
-                    String sitePath = session.getCmsObject().getSitePath(createdResource);
-                    storedSitePath[0] = sitePath;
-
+                    for (String fieldName : fieldNames) {
+                        I_CmsFormDataItem item = items.get(fieldName);
+                        CmsResource createdResource = session.createUploadResource(item.getFileName(), item.getData());
+                        String sitePath = session.getCmsObject().getSitePath(createdResource);
+                        result.put(fieldName, sitePath);
+                    }
                 }
             });
-            return storedSitePath[0];
+            return result;
         } catch (Exception e) {
             error(e);
             return null; // will never be reached 
@@ -168,7 +175,10 @@ public class CmsFormEditService extends CmsGwtService implements I_CmsFormEditSe
      */
     protected void handleUpload(HttpServletRequest request, HttpServletResponse response) {
 
-        CmsFormSessionFactory.getInstance().getSession(request).getFormUploadHelper().processFormSubmitRequest(request);
+        String sessionIdStr = request.getParameter(CmsFormConstants.PARAM_SESSION_ID);
+        CmsUUID sessionId = new CmsUUID(sessionIdStr);
+        CmsFormSession session = CmsFormSessionFactory.getInstance().getSession(request, sessionId);
+        session.getFormUploadHelper().processFormSubmitRequest(request);
     }
 
     /**
@@ -191,11 +201,16 @@ public class CmsFormEditService extends CmsGwtService implements I_CmsFormEditSe
         }
     }
 
-    private CmsFormSession getFormSession() {
+    /**
+     * Gets the form session  with the given id.<p>
+     * 
+     * @param sessionId the session id 
+     * 
+     * @return the form session 
+     */
+    private CmsFormSession getFormSession(CmsUUID sessionId) {
 
-        //TODO: Implement multiple form sessions per servlet session
-
-        return CmsFormSessionFactory.getInstance().getSession(getRequest());
+        return CmsFormSessionFactory.getInstance().getSession(getRequest(), sessionId);
     }
 
     /**
@@ -213,7 +228,7 @@ public class CmsFormEditService extends CmsGwtService implements I_CmsFormEditSe
         CmsFormContent formContent = new CmsFormContent();
         Map<String, String> contentValues = session.getValues();
         formContent.setContentValues(contentValues);
-        formContent.setSessionId(session.getProject().getUuid());
+        formContent.setSessionId(session.getId());
         formContent.setResourceType(OpenCms.getResourceManager().getResourceType(resource).getTypeName());
         formContent.setSitePath(getCmsObject().getSitePath(resource));
         formContent.setStrucureId(resource.getStructureId());

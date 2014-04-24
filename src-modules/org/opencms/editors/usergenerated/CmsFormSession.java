@@ -308,6 +308,16 @@ public class CmsFormSession {
         return m_uploadHelper;
     }
 
+    /** 
+     * Returns the session id.<p>
+     * 
+     * @return the session id 
+     */
+    public CmsUUID getId() {
+
+        return getProject().getUuid();
+    }
+
     /**
      * Returns the edit project.<p>
      *  

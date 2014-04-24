@@ -31,6 +31,7 @@ import org.opencms.editors.usergenerated.shared.CmsFormContent;
 import org.opencms.util.CmsUUID;
 
 import java.util.Map;
+import java.util.Set;
 
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -73,9 +74,19 @@ public interface I_CmsFormEditServiceAsync {
         Map<String, String> contentValues,
         AsyncCallback<Map<String, String>> callback);
 
-    RequestBuilder uploadFile(
+    /**
+     * Uploads submitted file form fields to the VFS.<p>
+     * 
+     * @param sessionId the session id
+     * @param fieldNames the set of names of the form fields containing the uploads 
+     * @param formDataId the form data id 
+     * @param filenameCallback the callback to call with the resulting map from field names to file paths 
+     * 
+     * @return the request builder for this service method 
+     */
+    RequestBuilder uploadFiles(
         CmsUUID sessionId,
-        String fieldName,
+        Set<String> fieldNames,
         String formDataId,
-        AsyncCallback<String> filenameCallback);
+        AsyncCallback<Map<String, String>> filenameCallback);
 }

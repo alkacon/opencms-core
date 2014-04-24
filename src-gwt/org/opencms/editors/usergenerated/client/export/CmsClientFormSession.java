@@ -28,17 +28,21 @@
 package org.opencms.editors.usergenerated.client.export;
 
 import org.opencms.editors.usergenerated.client.CmsFormWrapper;
+import org.opencms.editors.usergenerated.client.CmsJsUtils;
 import org.opencms.editors.usergenerated.shared.CmsFormContent;
 import org.opencms.util.CmsUUID;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.NoExport;
 
+import com.google.common.base.Function;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -189,14 +193,54 @@ public class CmsClientFormSession implements Exportable {
     }
 
     /**
-     * Uploads a file.<p>
+     * Uploads a single file from a file input field.<p>
      * 
-     * @param fieldName the field name for the file upload field 
-     * @param fileCallback
-     * @param errorCallback
+     * @param fieldName the name of the form field to upload 
+     * @param fileCallback the callback for the result
+     * @param errorCallback the error handling callback  
      */
-    public void uploadFile(String fieldName, I_CmsStringCallback fileCallback, I_CmsStringCallback errorCallback) {
+    public void uploadFile(
+        final String fieldName,
+        final I_CmsStringCallback fileCallback,
+        I_CmsStringCallback errorCallback) {
 
-        m_formWrapper.uploadField(fieldName, fileCallback, errorCallback);
+        Set<String> fieldSet = new HashSet<String>();
+        fieldSet.add(fieldName);
+        m_formWrapper.uploadFields(fieldSet, new Function<Map<String, String>, Void>() {
+
+            public Void apply(Map<String, String> input) {
+
+                fileCallback.call(input.get(fieldName));
+                return null;
+            }
+        }, errorCallback);
+
+    }
+
+    /**
+     * Uploads multiple files.<p>
+     * 
+     * @param fieldNames the array of form field names containing files to upload  
+     * @param fileCallback the callback for the results 
+     * @param errorCallback the error handling callback 
+     */
+    public void uploadFiles(
+        String[] fieldNames,
+        final I_CmsJavaScriptObjectCallback fileCallback,
+        I_CmsStringCallback errorCallback) {
+
+        Set<String> fieldSet = new HashSet<String>();
+        for (String field : fieldNames) {
+            fieldSet.add(field);
+        }
+
+        m_formWrapper.uploadFields(fieldSet, new Function<Map<String, String>, Void>() {
+
+            public Void apply(Map<String, String> input) {
+
+                fileCallback.call(CmsJsUtils.convertMapToJsObject(input));
+                return null;
+            }
+        }, errorCallback);
     }
 }

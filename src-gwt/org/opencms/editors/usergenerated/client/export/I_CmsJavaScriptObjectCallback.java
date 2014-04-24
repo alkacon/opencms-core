@@ -25,20 +25,28 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.editors.usergenerated.shared;
+package org.opencms.editors.usergenerated.client.export;
+
+import org.timepedia.exporter.client.Export;
+import org.timepedia.exporter.client.ExportClosure;
+import org.timepedia.exporter.client.ExportPackage;
+import org.timepedia.exporter.client.Exportable;
+
+import com.google.gwt.core.client.JavaScriptObject;
 
 /**
- * Shared constants used by the client- and server-side components of the form editing module.<p>
+ * Callback interface for functions taking a JavaScriptObject as a parameter.<p>
  */
-public class CmsFormConstants {
+@Export
+@ExportClosure
+@ExportPackage("opencms")
+public interface I_CmsJavaScriptObjectCallback extends Exportable {
 
-    /** Name of the form field containing the session id. */
-    public static final String FIELD_SESSION_ID = "formSessionId";
-
-    /** The request parameter used for identifying form submits. */
-    public static final String PARAM_FORM_DATA_ID = "formDataId";
-
-    /** Name of the parameter containing the session id. */
-    public static final String PARAM_SESSION_ID = "formSessionId";
+    /**
+     * Calls the function with the given Javascript object.<p>
+     * 
+     * @param jso the Javascript object parameter 
+     */
+    void call(JavaScriptObject jso);
 
 }

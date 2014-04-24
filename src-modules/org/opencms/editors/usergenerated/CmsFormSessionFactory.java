@@ -36,6 +36,9 @@ import org.opencms.util.CmsUUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.collections.EnumerationUtils;
 
 /**
  * Factory to create the form editing sessions.<p>
@@ -44,9 +47,6 @@ public class CmsFormSessionFactory {
 
     /** The factory instance. */
     private static CmsFormSessionFactory INSTANCE;
-
-    /** The editing session attribute name. */
-    private final String ATTR_EDITING_SESSION = "editing_session";
 
     /** The session queues. */
     private ConcurrentHashMap<CmsUUID, CmsSessionQueue> m_queues = new ConcurrentHashMap<CmsUUID, CmsSessionQueue>();
@@ -86,7 +86,10 @@ public class CmsFormSessionFactory {
     throws CmsException {
 
         CmsFormSession session = createSession(cms, config);
-        request.getSession(true).setAttribute(ATTR_EDITING_SESSION, session);
+        HttpSession httpSession = request.getSession(true);
+        httpSession.setAttribute("" + session.getId(), session);
+
+        System.out.println("Session attributes: " + EnumerationUtils.toList(httpSession.getAttributeNames()));
         return session;
     }
 
@@ -114,12 +117,13 @@ public class CmsFormSessionFactory {
      * Returns the session, if already initialized.<p>
      * 
      * @param request the request
+     * @param sessionId the form session id 
      * 
      * @return the session
      */
-    public CmsFormSession getSession(HttpServletRequest request) {
+    public CmsFormSession getSession(HttpServletRequest request, CmsUUID sessionId) {
 
-        return (CmsFormSession)request.getSession(true).getAttribute(ATTR_EDITING_SESSION);
+        return (CmsFormSession)request.getSession(true).getAttribute("" + sessionId);
     }
 
     /**

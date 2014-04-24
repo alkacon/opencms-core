@@ -32,6 +32,7 @@ import org.opencms.gwt.CmsRpcException;
 import org.opencms.util.CmsUUID;
 
 import java.util.Map;
+import java.util.Set;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 
@@ -75,6 +76,17 @@ public interface I_CmsFormEditService extends RemoteService {
      */
     Map<String, String> saveContent(CmsUUID sessionId, Map<String, String> contentValues) throws CmsRpcException;
 
-    String uploadFile(CmsUUID sessionId, String fieldName, String formDataId) throws CmsRpcException;
+    /**
+     * Uploads multiple files.<p>
+     * 
+     * @param sessionId the session id 
+     * @param fieldNames the set of field names of the form fields containing the uploaded files 
+     * @param formDataId the form data id of the form submit in which the form fields were posted
+     *  
+     * @return the map from field names to the VFS paths of uploaded files 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    Map<String, String> uploadFiles(CmsUUID sessionId, Set<String> fieldNames, String formDataId)
+    throws CmsRpcException;
 
 }

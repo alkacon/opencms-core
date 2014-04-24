@@ -34,7 +34,10 @@ import org.opencms.editors.usergenerated.shared.CmsFormConstants;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.InputElement;
@@ -94,18 +97,18 @@ public class CmsFormWrapper extends FormPanel {
     }
 
     /**
-     * Uploads only the given field.<p>
+     * Uploads files from the given file input fields.<p<
      * 
-     * @param fieldName tbe name of the field
-     * @param fileNameCallback the callback to call with the new path of the uploaded file 
+     * @param fields the set of names of fields containing the files to upload 
+     * @param filenameCallback the callback to call with the resulting map from field names to file paths  
      * @param errorCallback the callback to call with an error message 
      */
-    public void uploadField(
-        final String fieldName,
-        final I_CmsStringCallback fileNameCallback,
+    public void uploadFields(
+        final Set<String> fields,
+        final Function<Map<String, String>, Void> filenameCallback,
         final I_CmsStringCallback errorCallback) {
 
-        disableAllFileFieldsExcept(fieldName);
+        disableAllFileFieldsExcept(fields);
         final String id = CmsJsUtils.generateRandomId();
         updateFormAction(id);
         // Using an array here because we can only store the handler registration after it has been created , but  
@@ -117,11 +120,11 @@ public class CmsFormWrapper extends FormPanel {
 
                 registration[0].removeHandler();
                 CmsUUID sessionId = m_formSession.internalGetSessionId();
-                RequestBuilder requestBuilder = CmsXmlContentFormApi.SERVICE.uploadFile(
+                RequestBuilder requestBuilder = CmsXmlContentFormApi.SERVICE.uploadFiles(
                     sessionId,
-                    fieldName,
+                    fields,
                     id,
-                    new AsyncCallback<String>() {
+                    new AsyncCallback<Map<String, String>>() {
 
                         public void onFailure(Throwable caught) {
 
@@ -129,9 +132,9 @@ public class CmsFormWrapper extends FormPanel {
 
                         }
 
-                        public void onSuccess(String fileName) {
+                        public void onSuccess(Map<String, String> fileNames) {
 
-                            fileNameCallback.call(fileName);
+                            filenameCallback.apply(fileNames);
 
                         }
                     });
@@ -148,13 +151,14 @@ public class CmsFormWrapper extends FormPanel {
     /**
      * Disables all file input fields except the one with the given name.<p>
      * 
-     * @param name the name of the field which should not be disabled 
+     * @param fieldNames the set of names of fields that should not be disabled 
      */
-    void disableAllFileFieldsExcept(String name) {
+    void disableAllFileFieldsExcept(Set<String> fieldNames) {
 
         for (InputElement field : getAllFields()) {
             if (isFileField(field)) {
-                field.setDisabled(!field.getName().equals(name));
+                boolean shouldDisable = !fieldNames.contains(field.getName());
+                field.setDisabled(shouldDisable);
             }
         }
     }
@@ -200,7 +204,7 @@ public class CmsFormWrapper extends FormPanel {
             + "="
             + id
             + "&"
-            + CmsFormConstants.FIELD_SESSION_ID
+            + CmsFormConstants.PARAM_SESSION_ID
             + "="
             + m_formSession.getSessionId());
     }

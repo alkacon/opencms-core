@@ -27,7 +27,12 @@
 
 package org.opencms.editors.usergenerated.client;
 
+import java.util.Map;
 import java.util.Random;
+
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONString;
 
 /**
  * Various utility functions.<p>
@@ -36,6 +41,24 @@ public class CmsJsUtils {
 
     /** The random number generator. */
     public static final Random RANDOM = new Random();
+
+    /**
+     * Converts a map whose keys and values are strings to a Javascript object with the keys as attributes and the 
+     * corresponding values as the attribute values.<p>
+     * 
+     * @param stringMap the map to convert 
+     * @return the Javascript object with the attributes defined by the map 
+     */
+    public static JavaScriptObject convertMapToJsObject(Map<String, String> stringMap) {
+
+        JSONObject json = new JSONObject();
+        for (Map.Entry<String, String> entry : stringMap.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+            json.put(key, new JSONString(value));
+        }
+        return json.getJavaScriptObject();
+    }
 
     /**
      * Generates a random id.<p>

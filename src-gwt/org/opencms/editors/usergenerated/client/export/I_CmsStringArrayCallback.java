@@ -25,20 +25,26 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.editors.usergenerated.shared;
+package org.opencms.editors.usergenerated.client.export;
+
+import org.timepedia.exporter.client.Export;
+import org.timepedia.exporter.client.ExportClosure;
+import org.timepedia.exporter.client.ExportPackage;
+import org.timepedia.exporter.client.Exportable;
 
 /**
- * Shared constants used by the client- and server-side components of the form editing module.<p>
+ * Callback interface for functions taking a string as a parameter.<p>
  */
-public class CmsFormConstants {
+@Export
+@ExportClosure
+@ExportPackage("opencms")
+public interface I_CmsStringArrayCallback extends Exportable {
 
-    /** Name of the form field containing the session id. */
-    public static final String FIELD_SESSION_ID = "formSessionId";
-
-    /** The request parameter used for identifying form submits. */
-    public static final String PARAM_FORM_DATA_ID = "formDataId";
-
-    /** Name of the parameter containing the session id. */
-    public static final String PARAM_SESSION_ID = "formSessionId";
+    /**
+     * Calls the function with the given string.<p>
+     * 
+     * @param str the string to be used as a parameter 
+     */
+    void call(String[] str);
 
 }
