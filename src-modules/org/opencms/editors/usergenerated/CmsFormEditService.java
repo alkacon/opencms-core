@@ -35,13 +35,13 @@ import org.opencms.file.CmsResource;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContentErrorHandler;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -51,11 +51,17 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileUploadBase;
 import org.apache.commons.fileupload.servlet.ServletRequestContext;
+import org.apache.commons.logging.Log;
+
+import com.google.common.collect.Maps;
 
 /**
  * The form editing service.<p>
  */
 public class CmsFormEditService extends CmsGwtService implements I_CmsFormEditService {
+
+    /** Log instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsFormEditService.class);
 
     /** The serial version id. */
     private static final long serialVersionUID = 5479252081304867604L;
@@ -145,20 +151,25 @@ public class CmsFormEditService extends CmsGwtService implements I_CmsFormEditSe
 
         try {
             final CmsFormSession session = getFormSession(sessionId);
-            final Map<String, String> result = new HashMap<String, String>();
+            final Map<String, String> result = Maps.newHashMap();
 
             session.getFormUploadHelper().consumeFormData(formDataId, new I_CmsFormDataHandler() {
 
+                @SuppressWarnings("synthetic-access")
                 public void handleFormData(Map<String, I_CmsFormDataItem> items) throws Exception {
 
                     for (String fieldName : fieldNames) {
                         I_CmsFormDataItem item = items.get(fieldName);
-                        CmsResource createdResource = session.createUploadResource(
-                            item.getFieldName(),
-                            item.getFileName(),
-                            item.getData());
-                        String sitePath = session.getCmsObject().getSitePath(createdResource);
-                        result.put(fieldName, sitePath);
+                        if (item != null) {
+                            CmsResource createdResource = session.createUploadResource(
+                                item.getFieldName(),
+                                item.getFileName(),
+                                item.getData());
+                            String sitePath = session.getCmsObject().getSitePath(createdResource);
+                            result.put(fieldName, sitePath);
+                        } else {
+                            LOG.debug(formDataId + ": requested upload for field " + fieldName + " which was empty.");
+                        }
                     }
                 }
             });

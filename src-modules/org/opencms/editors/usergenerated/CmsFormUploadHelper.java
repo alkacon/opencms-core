@@ -28,7 +28,9 @@
 package org.opencms.editors.usergenerated;
 
 import org.opencms.editors.usergenerated.shared.CmsFormConstants;
+import org.opencms.main.CmsLog;
 import org.opencms.util.CmsRequestUtil;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -37,6 +39,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Maps;
 
@@ -44,6 +47,9 @@ import com.google.common.collect.Maps;
  * A helper class which processes and stores uploaded form data belonging to a single form edit session.<p>
  */
 public class CmsFormUploadHelper {
+
+    /** Log instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsFormUploadHelper.class);
 
     /** The stored form data. */
     private ConcurrentHashMap<String, List<FileItem>> m_storedFormData = new ConcurrentHashMap<String, List<FileItem>>();
@@ -60,10 +66,17 @@ public class CmsFormUploadHelper {
     public void consumeFormData(String formDataId, I_CmsFormDataHandler handler) throws Exception {
 
         List<FileItem> items = m_storedFormData.get(formDataId);
+
         if (items != null) {
             Map<String, I_CmsFormDataItem> itemMap = Maps.newHashMap();
+            LOG.debug(formDataId + ": Processing file items");
             for (FileItem item : items) {
-                itemMap.put(item.getFieldName(), new CmsFormDataItem(item));
+                LOG.debug(formDataId + ": " + item.toString());
+                if (!item.isFormField() && CmsStringUtil.isEmptyOrWhitespaceOnly(item.getName())) {
+                    LOG.debug(formDataId + ": skipping previous file field because it is empty");
+                } else {
+                    itemMap.put(item.getFieldName(), new CmsFormDataItem(item));
+                }
             }
             Exception storedException = null;
             try {
