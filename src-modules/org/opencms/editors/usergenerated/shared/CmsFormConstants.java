@@ -41,4 +41,10 @@ public class CmsFormConstants {
     /** Name of the parameter containing the session id. */
     public static final String PARAM_SESSION_ID = "formSessionId";
 
+    /** Javascript attribute name. */
+    public static final String JS_ATTR_ERROR = "error";
+
+    /** JavaScript attribute name. */
+    public static final String JS_ATTR_VALIDATION_ERRORS = "validationErrors";
+
 }

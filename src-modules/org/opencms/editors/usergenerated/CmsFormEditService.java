@@ -149,7 +149,6 @@ public class CmsFormEditService extends CmsGwtService implements I_CmsFormEditSe
                     session.finish();
                     result = Collections.emptyMap();
                 }
-
             } else {
                 // invalid session 
 

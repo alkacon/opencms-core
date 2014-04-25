@@ -432,10 +432,11 @@ public class CmsFormSession {
         CmsXmlContent content = addContentValues(file, contentValues);
         CmsXmlContentErrorHandler errorHandler = content.validate(m_cms);
 
-        file.setContents(content.marshal());
-
-        // the file content might have been modified during the write operation
-        file = m_cms.writeFile(file);
+        if (!errorHandler.hasErrors()) {
+            file.setContents(content.marshal());
+            // the file content might have been modified during the write operation
+            file = m_cms.writeFile(file);
+        }
 
         return errorHandler;
 

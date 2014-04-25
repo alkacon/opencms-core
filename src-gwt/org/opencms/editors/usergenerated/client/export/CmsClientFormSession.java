@@ -29,6 +29,7 @@ package org.opencms.editors.usergenerated.client.export;
 
 import org.opencms.editors.usergenerated.client.CmsFormWrapper;
 import org.opencms.editors.usergenerated.client.CmsJsUtils;
+import org.opencms.editors.usergenerated.shared.CmsFormConstants;
 import org.opencms.editors.usergenerated.shared.CmsFormContent;
 import org.opencms.util.CmsUUID;
 
@@ -44,6 +45,8 @@ import org.timepedia.exporter.client.NoExport;
 
 import com.google.common.base.Function;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONString;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -176,7 +179,7 @@ public class CmsClientFormSession implements Exportable {
      * @param onSuccess the callback to be called in case of success 
      * @param onFailure the callback to be called in case of failure 
      */
-    public void saveContent(final I_CmsStringCallback onSuccess, final I_CmsStringCallback onFailure) {
+    public void saveContent(final I_CmsStringCallback onSuccess, final I_CmsJavaScriptObjectCallback onFailure) {
 
         m_apiRoot.getRpcHelper().executeRpc(
             CmsXmlContentFormApi.SERVICE.saveContent(
@@ -186,8 +189,9 @@ public class CmsClientFormSession implements Exportable {
 
                     public void onFailure(Throwable caught) {
 
-                        onFailure.call("An error occurred: " + caught);
-
+                        JSONObject error = new JSONObject();
+                        error.put(CmsFormConstants.JS_ATTR_ERROR, new JSONString(caught.getMessage()));
+                        onFailure.call(error.getJavaScriptObject());
                     }
 
                     public void onSuccess(Map<String, String> result) {
@@ -195,8 +199,13 @@ public class CmsClientFormSession implements Exportable {
                         if ((result == null) || result.isEmpty()) {
                             onSuccess.call("");
                         } else {
-                            onFailure.call("");
-                            //TODO: Handle validation
+                            JSONObject error = new JSONObject();
+                            JSONObject validationErrors = new JSONObject();
+                            for (Map.Entry<String, String> entry : result.entrySet()) {
+                                validationErrors.put(entry.getKey(), new JSONString(entry.getValue()));
+                            }
+                            error.put(CmsFormConstants.JS_ATTR_VALIDATION_ERRORS, validationErrors);
+                            onFailure.call(error.getJavaScriptObject());
                         }
                     }
                 }));
