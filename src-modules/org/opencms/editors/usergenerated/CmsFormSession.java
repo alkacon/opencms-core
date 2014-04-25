@@ -137,6 +137,9 @@ public class CmsFormSession {
     /** Previously uploaded resources, indexed by field names. */
     private Map<String, CmsResource> m_uploadResourcesByField = Maps.newHashMap();
 
+    /** Flag which indicates whether the project and its resources should be deleted when the session is destroyed. */
+    private boolean m_requiresCleanup = true;
+
     /** 
      * Constructor.<p>
      * 
@@ -274,6 +277,7 @@ public class CmsFormSession {
     public void finish() throws CmsException {
 
         m_finished = true;
+        m_requiresCleanup = false;
         if (m_configuration.isAutoPublish()) {
             CmsProject project = getProject();
             CmsObject projectCms = OpenCms.initCmsObject(m_adminCms);
@@ -407,7 +411,7 @@ public class CmsFormSession {
      */
     public void onSessionDestroyed() {
 
-        if (!isFinished()) {
+        if (m_requiresCleanup) {
             cleanupProject();
         }
     }
@@ -572,20 +576,24 @@ public class CmsFormSession {
      */
     private void cleanupProject() {
 
+        m_requiresCleanup = false;
+
         try {
+            CmsObject cms = OpenCms.initCmsObject(m_adminCms);
+            cms.getRequestContext().setCurrentProject(getProject());
             CmsUUID projectId = getProject().getUuid();
-            List<CmsResource> projectResources = m_adminCms.readProjectView(projectId, CmsResource.STATE_KEEP);
+            List<CmsResource> projectResources = cms.readProjectView(projectId, CmsResource.STATE_KEEP);
             if (hasOnlyNewResources(projectResources)) {
                 for (CmsResource res : projectResources) {
                     LOG.info("Deleting resource for timed out form session: " + res.getRootPath());
-                    deleteResourceFromProject(res);
+                    deleteResourceFromProject(cms, res);
                 }
                 LOG.info("Deleting project for timed out form session: "
                     + getProject().getName()
                     + " ["
                     + getProject().getUuid()
                     + "]");
-                m_adminCms.deleteProject(projectId);
+                cms.deleteProject(projectId);
 
             }
         } catch (CmsException e) {
@@ -596,19 +604,20 @@ public class CmsFormSession {
     /**
      * Deletes the given resource which is part of  a form session project.<p>
      * 
+     * @param cms the CMS context to use 
      * @param res the resource to delete
      *  
      * @throws CmsException if something goes wrong 
      */
-    private void deleteResourceFromProject(CmsResource res) throws CmsException {
+    private void deleteResourceFromProject(CmsObject cms, CmsResource res) throws CmsException {
 
-        CmsLock lock = m_adminCms.getLock(res);
-        if (lock.isUnlocked() || lock.isLockableBy(m_adminCms.getRequestContext().getCurrentUser())) {
-            m_adminCms.lockResourceTemporary(res);
+        CmsLock lock = cms.getLock(res);
+        if (lock.isUnlocked() || lock.isLockableBy(cms.getRequestContext().getCurrentUser())) {
+            cms.lockResourceTemporary(res);
         } else {
-            m_adminCms.changeLock(res);
+            cms.changeLock(res);
         }
-        m_adminCms.deleteResource(m_adminCms.getSitePath(res), CmsResource.DELETE_PRESERVE_SIBLINGS);
+        cms.deleteResource(cms.getSitePath(res), CmsResource.DELETE_PRESERVE_SIBLINGS);
     }
 
     /**

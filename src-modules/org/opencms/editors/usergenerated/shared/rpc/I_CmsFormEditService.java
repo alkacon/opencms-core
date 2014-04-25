@@ -42,6 +42,15 @@ import com.google.gwt.user.client.rpc.RemoteService;
 public interface I_CmsFormEditService extends RemoteService {
 
     /**
+     * Destroys the given session.<p>
+     * 
+     * @param sessionId the id of the session to destroy 
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    void destroySession(CmsUUID sessionId) throws CmsRpcException;
+
+    /**
      * Returns the form content for an existing content.<p>
      * 
      * @param configPath the configuration path

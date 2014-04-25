@@ -78,6 +78,28 @@ public class CmsClientFormSession implements Exportable {
     }
 
     /**
+     * Destroys the session.<p>
+     */
+    public void destroy() {
+
+        CmsXmlContentFormApi.SERVICE.destroySession(m_content.getSessionId(), new AsyncCallback<Void>() {
+
+            public void onFailure(Throwable caught) {
+
+                // TODO Auto-generated method stub
+
+            }
+
+            public void onSuccess(Void result) {
+
+                // TODO Auto-generated method stub
+
+            }
+        });
+
+    }
+
+    /**
      * Gets the content form API instance.<p>
      * 
      * @return the content form API instance

@@ -42,6 +42,15 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public interface I_CmsFormEditServiceAsync {
 
     /**
+     * Destroys a session.<p>
+     * 
+     * @param sessionId the id of the session to destroy 
+     * 
+     * @param callback if something goes wrong 
+     */
+    void destroySession(CmsUUID sessionId, AsyncCallback<Void> callback);
+
+    /**
      * Returns the form content for an existing content.<p>
      * 
      * @param configPath the configuration path

@@ -76,6 +76,24 @@ public class CmsFormEditService extends CmsGwtService implements I_CmsFormEditSe
     }
 
     /**
+     * @see org.opencms.editors.usergenerated.shared.rpc.I_CmsFormEditService#destroySession(org.opencms.util.CmsUUID)
+     */
+    public void destroySession(CmsUUID sessionId) throws CmsRpcException {
+
+        try {
+
+            CmsFormSession formSession = getFormSession(sessionId);
+            getRequest().getSession().removeAttribute("" + sessionId);
+            if (formSession != null) {
+                formSession.onSessionDestroyed();
+            }
+
+        } catch (Exception e) {
+            error(e);
+        }
+    }
+
+    /**
      * @see org.opencms.editors.usergenerated.shared.rpc.I_CmsFormEditService#getExistingContent(java.lang.String, java.lang.String)
      */
     public CmsFormContent getExistingContent(String configPath, String sitepath) throws CmsRpcException {
@@ -128,6 +146,7 @@ public class CmsFormEditService extends CmsGwtService implements I_CmsFormEditSe
                 if (errorHandler.hasErrors()) {
                     result = errorHandler.getErrors(getCmsObject().getRequestContext().getLocale());
                 } else {
+                    session.finish();
                     result = Collections.emptyMap();
                 }
 
