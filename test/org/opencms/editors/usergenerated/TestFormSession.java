@@ -170,7 +170,12 @@ public class TestFormSession extends OpenCmsTestCase {
             Optional.<List<String>> absent());
         CmsFormSession session = new CmsFormSession(cms, config);
         CmsResource contentRes = session.createXmlContent();
-        CmsResource uploadRes = session.createUploadResource("example.bin", new byte[] {1, 2, 3, 4, 5});
+        CmsResource uploadRes = session.createUploadResource(randomFieldName(), "example.bin", new byte[] {
+            1,
+            2,
+            3,
+            4,
+            5});
         CmsProject expectedProject = session.getProject();
         assertEquals(
             "Project id doesn't match session project",
@@ -221,7 +226,12 @@ public class TestFormSession extends OpenCmsTestCase {
 
         CmsFormSession session = new CmsFormSession(cms, userCms, config);
         CmsResource contentRes = session.createXmlContent();
-        CmsResource uploadRes = session.createUploadResource("example.bin", new byte[] {1, 2, 3, 4, 5});
+        CmsResource uploadRes = session.createUploadResource(randomFieldName(), "example.bin", new byte[] {
+            1,
+            2,
+            3,
+            4,
+            5});
         session.finish();
         OpenCms.getPublishManager().waitWhileRunning();
         contentRes = cms.readResource(contentRes.getStructureId());
@@ -485,7 +495,12 @@ public class TestFormSession extends OpenCmsTestCase {
             Optional.<List<String>> absent());
         CmsFormSession session = new CmsFormSession(cms, config);
         CmsResource contentRes = session.createXmlContent();
-        CmsResource uploadRes = session.createUploadResource("example.bin", new byte[] {1, 2, 3, 4, 5});
+        CmsResource uploadRes = session.createUploadResource(randomFieldName(), "example.bin", new byte[] {
+            1,
+            2,
+            3,
+            4,
+            5});
         CmsProject project = session.getProject();
 
         session.onSessionDestroyed();
@@ -515,7 +530,7 @@ public class TestFormSession extends OpenCmsTestCase {
 
         session = new CmsFormSession(cms, config);
         contentRes = session.createXmlContent();
-        uploadRes = session.createUploadResource("example.bin", new byte[] {1, 2, 3, 4, 5});
+        uploadRes = session.createUploadResource(randomFieldName(), "example.bin", new byte[] {1, 2, 3, 4, 5});
         project = session.getProject();
         CmsPublishList pubList2 = OpenCms.getPublishManager().getPublishList(cms, contentRes, false);
         OpenCms.getPublishManager().publishProject(cms, new CmsShellReport(Locale.ENGLISH), pubList2);
@@ -545,6 +560,16 @@ public class TestFormSession extends OpenCmsTestCase {
         byte[] schema = CmsFileUtil.readFile(fileName);
         // store the XML schema in the resolver
         CmsXmlEntityResolver.cacheSystemId(systemId, schema);
+    }
+
+    /**
+     * Generate random string to be used as field name.<p>
+     * 
+     * @return a random field name 
+     */
+    private String randomFieldName() {
+
+        return "" + new CmsUUID();
     }
 
     /**

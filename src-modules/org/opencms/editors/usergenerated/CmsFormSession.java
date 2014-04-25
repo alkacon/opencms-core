@@ -61,6 +61,8 @@ import java.util.Map;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.logging.Log;
 
+import com.google.common.collect.Maps;
+
 /**
  * A form editing session is required to create and edit contents from the web front-end.<p>
  */
@@ -132,6 +134,9 @@ public class CmsFormSession {
     /** True if the session is finished. */
     private boolean m_finished;
 
+    /** Previously uploaded resources, indexed by field names. */
+    private Map<String, CmsResource> m_uploadResourcesByField = Maps.newHashMap();
+
     /** 
      * Constructor.<p>
      * 
@@ -189,6 +194,7 @@ public class CmsFormSession {
     /**
      * Creates a new resource from upload data.<p>
      * 
+     * @param fieldName the name of the form field for the upload
      * @param rawFileName the file name
      * @param content the file content
      * 
@@ -196,11 +202,10 @@ public class CmsFormSession {
      * 
      * @throws CmsException if creating the resource fails
      */
-    public CmsResource createUploadResource(String rawFileName, byte[] content) throws CmsException {
+    public CmsResource createUploadResource(String fieldName, String rawFileName, byte[] content) throws CmsException {
 
         CmsResource result = null;
         CmsFormSessionSecurityUtil.checkCreateUpload(m_cms, m_configuration, rawFileName, content.length);
-
         String baseName = rawFileName;
 
         // if the given name is a path, make sure we only get the last segment
@@ -238,6 +243,7 @@ public class CmsFormSession {
         } while (m_cms.existsResource(realSitePath));
         int resTypeId = OpenCms.getResourceManager().getDefaultTypeForName(realSitePath).getTypeId();
         result = m_cms.createResource(realSitePath, resTypeId, content, null);
+        updateUploadResource(fieldName, result);
 
         return result;
     }
@@ -648,5 +654,24 @@ public class CmsFormSession {
             }
         }
         return hasOnlyNewResources;
+    }
+
+    /**
+     * Stores the upload resource and deletes previously uploaded resources for the same form field.<p>
+     * 
+     * @param fieldName the field name 
+     * @param upload the uploaded resource 
+     */
+    private void updateUploadResource(String fieldName, CmsResource upload) {
+
+        CmsResource prevUploadResource = m_uploadResourcesByField.get(fieldName);
+        if (prevUploadResource != null) {
+            try {
+                m_cms.deleteResource(m_cms.getSitePath(prevUploadResource), CmsResource.DELETE_PRESERVE_SIBLINGS);
+            } catch (Exception e) {
+                LOG.error("Couldn't delete previous upload resource: " + e.getLocalizedMessage(), e);
+            }
+        }
+        m_uploadResourcesByField.put(fieldName, upload);
     }
 }

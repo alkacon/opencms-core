@@ -153,7 +153,10 @@ public class CmsFormEditService extends CmsGwtService implements I_CmsFormEditSe
 
                     for (String fieldName : fieldNames) {
                         I_CmsFormDataItem item = items.get(fieldName);
-                        CmsResource createdResource = session.createUploadResource(item.getFileName(), item.getData());
+                        CmsResource createdResource = session.createUploadResource(
+                            item.getFieldName(),
+                            item.getFileName(),
+                            item.getData());
                         String sitePath = session.getCmsObject().getSitePath(createdResource);
                         result.put(fieldName, sitePath);
                     }
