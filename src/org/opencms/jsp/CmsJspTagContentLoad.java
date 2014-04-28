@@ -33,6 +33,7 @@ import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.util.CmsJspContentLoadBean;
+import org.opencms.loader.CmsDefaultFileNameGenerator;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
@@ -293,7 +294,9 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
         boolean hasMoreContent = m_collectorResult.size() > 0;
         if (m_isFirstLoop) {
             m_isFirstLoop = false;
-            if (!hasMoreContent && m_editEmpty && (m_directEditLinkForNew != null)) {
+            if (!hasMoreContent
+                && m_editEmpty
+                && ((m_directEditLinkForNew != null) && CmsDefaultFileNameGenerator.hasNumberMacro(m_directEditLinkForNew))) {
                 try {
                     CmsJspTagEditable.insertEditEmpty(pageContext, this, m_directEditMode);
                 } catch (CmsException e) {
@@ -329,15 +332,14 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
                 CmsDirectEditButtonSelection directEditButtons;
                 if (m_directEditFollowButtons == null) {
                     // this is the first call, calculate the options
-                    if (m_directEditLinkForNew == null) {
-                        // if create link is null, show only "edit" button for first element
-                        directEditButtons = CmsDirectEditButtonSelection.EDIT;
-                        // also show only the "edit" button for 2nd to last element
+                    if ((m_directEditLinkForNew == null)
+                        || !CmsDefaultFileNameGenerator.hasNumberMacro(m_directEditLinkForNew)) {
+                        // if create link is null, show only "edit" and "delete" button for first element
+                        directEditButtons = CmsDirectEditButtonSelection.EDIT_DELETE;
                         m_directEditFollowButtons = directEditButtons;
                     } else {
-                        // if create link is not null, show "edit", "delete" and "new" button for first element
+                        // if create link is not null, show "edit", "delete" and "new" buttons
                         directEditButtons = CmsDirectEditButtonSelection.EDIT_DELETE_NEW;
-                        // show "edit" and "delete" button for 2nd to last element
                         m_directEditFollowButtons = CmsDirectEditButtonSelection.EDIT_DELETE_NEW;
                     }
                 } else {

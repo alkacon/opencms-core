@@ -114,6 +114,25 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
     }
 
     /**
+     * Checks the given pattern for the number macro.<p>
+     * 
+     * @param pattern the pattern to check
+     * 
+     * @return <code>true</code> if the pattern contains the macro
+     */
+    public static boolean hasNumberMacro(String pattern) {
+
+        String macro = MACRO_NUMBER_START;
+        int prefixIndex = pattern.indexOf(MACRO_NUMBER_START);
+        if (prefixIndex >= 0) {
+            // this macro contains an individual digit setting
+            char n = pattern.charAt(prefixIndex + MACRO_NUMBER_START.length());
+            macro = macro + ':' + n;
+        }
+        return pattern.contains("%(" + macro + ")");
+    }
+
+    /**
      * Returns a new resource name based on the provided OpenCms user context and name pattern.<p>
      * 
      * The pattern in this default implementation must be a path which may contain the macro <code>%(number)</code>.
@@ -187,6 +206,12 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
      */
     protected String getNewFileNameFromList(List<String> fileNames, String checkPattern, int defaultDigits) {
 
+        if (!hasNumberMacro(checkPattern)) {
+            throw new IllegalArgumentException(Messages.get().getBundle().key(
+                Messages.ERR_FILE_NAME_PATTERN_WITHOUT_NUMBER_MACRO_1,
+                checkPattern));
+        }
+
         String checkFileName, checkTempFileName;
         CmsMacroResolver resolver = CmsMacroResolver.newInstance();
         Set<String> extensionlessNames = new HashSet<String>();
@@ -207,12 +232,19 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
 
         CmsNumberFactory numberFactory = new CmsNumberFactory(useDigits);
         resolver.addDynamicMacro(macro, numberFactory);
-
+        Set<String> checked = new HashSet<String>();
         int j = 0;
         do {
             numberFactory.setNumber(++j);
             // resolve macros in file name
             checkFileName = resolver.resolveMacros(checkPattern);
+            if (checked.contains(checkFileName)) {
+                // the file name has been checked before, abort the search
+                throw new RuntimeException(Messages.get().getBundle().key(
+                    Messages.ERR_NO_FILE_NAME_AVAILABLE_FOR_PATTERN_1,
+                    checkPattern));
+            }
+            checked.add(checkFileName);
             // get name of the resolved temp file
             checkTempFileName = CmsWorkplace.getTemporaryFileName(checkFileName);
         } while (extensionlessNames.contains(removeExtension(checkFileName))
