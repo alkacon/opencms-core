@@ -794,7 +794,11 @@ public class CmsLogin extends CmsJspLoginBean {
         html.append("}\n");
 
         // function to check IE version, in case of a version < IE8 login will be disabled and an error message shown.
-        html.append("function checkBrowser(){\n  if ($.browser.msie && $.browser.version<8){\n  $('#");
+        html.append("function checkBrowser(){\n ");
+        html.append("var div = document.createElement(\"div\");\n");
+        html.append("div.innerHTML = \"<!--[if lt IE 8]><i></i><![endif]-->\";\n");
+        html.append("var isIeLessThan8 = (div.getElementsByTagName(\"i\").length == 1);\n");
+        html.append("if (isIeLessThan) {\n  $('#");
         html.append(PARAM_FORM);
         html.append("').after('<div style=\"color: #B31B34; font-weight: bold; font-size: 14px; margin: 20px; text-align: center;\">");
         html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_UNSUPPORTED_BROWSER_0));
