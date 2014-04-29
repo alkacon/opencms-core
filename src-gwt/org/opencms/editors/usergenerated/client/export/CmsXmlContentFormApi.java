@@ -32,6 +32,7 @@ import org.opencms.editors.usergenerated.client.CmsRpcCallHelper;
 import org.opencms.editors.usergenerated.shared.CmsFormContent;
 import org.opencms.editors.usergenerated.shared.rpc.I_CmsFormEditService;
 import org.opencms.editors.usergenerated.shared.rpc.I_CmsFormEditServiceAsync;
+import org.opencms.util.CmsUUID;
 
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
@@ -132,7 +133,37 @@ public class CmsXmlContentFormApi implements Exportable {
                 onSuccess.call(session);
             }
         }));
+    }
 
+    /**
+     * Loads a pre-created session.<p>
+     * 
+     * @param sessionId the session id 
+     * @param formElement the form element 
+     * @param onSuccess the callback to call in case of success
+     * @param onError the callback to call in case of an error 
+     */
+    public void initFormForSession(
+        final String sessionId,
+        final Element formElement,
+        final I_CmsClientFormSessionCallback onSuccess,
+        final I_CmsStringCallback onError) {
+
+        getRpcHelper().executeRpc(
+            SERVICE.getExistingContent(new CmsUUID(sessionId), new AsyncCallback<CmsFormContent>() {
+
+                public void onFailure(Throwable caught) {
+
+                    onError.call("RPC call failed: " + caught);
+                }
+
+                public void onSuccess(CmsFormContent result) {
+
+                    CmsClientFormSession session = new CmsClientFormSession(CmsXmlContentFormApi.this, result);
+                    session.initFormElement(formElement);
+                    onSuccess.call(session);
+                }
+            }));
     }
 
     /** 

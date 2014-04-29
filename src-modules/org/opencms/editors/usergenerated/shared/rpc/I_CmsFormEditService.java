@@ -51,16 +51,15 @@ public interface I_CmsFormEditService extends RemoteService {
     void destroySession(CmsUUID sessionId) throws CmsRpcException;
 
     /**
-     * Returns the form content for an existing content.<p>
+     * Loads the form content for an existing session.<p>
      * 
-     * @param configPath the configuration path
-     * @param sitepath the resource path
+     * @param sessionId the id of the existing session
      * 
      * @return the form content information 
      * 
      * @throws CmsRpcException if something goes wrong
      */
-    CmsFormContent getExistingContent(String configPath, String sitepath) throws CmsRpcException;
+    CmsFormContent getExistingContent(CmsUUID sessionId) throws CmsRpcException;
 
     /**
      * Returns the form content for new content.<p>

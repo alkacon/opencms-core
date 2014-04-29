@@ -33,12 +33,12 @@ import org.opencms.main.CmsException;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsUUID;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
-import org.apache.commons.collections.EnumerationUtils;
 
 /**
  * Factory to create the form editing sessions.<p>
@@ -50,6 +50,8 @@ public class CmsFormSessionFactory {
 
     /** The session queues. */
     private ConcurrentHashMap<CmsUUID, CmsSessionQueue> m_queues = new ConcurrentHashMap<CmsUUID, CmsSessionQueue>();
+
+    public static final String ATTR_FORM_EDITABLE_RESOURCES = "cmsFormEditableResources";
 
     /**
      * Constructor.<p>
@@ -88,8 +90,6 @@ public class CmsFormSessionFactory {
         CmsFormSession session = createSession(cms, config);
         HttpSession httpSession = request.getSession(true);
         httpSession.setAttribute("" + session.getId(), session);
-
-        System.out.println("Session attributes: " + EnumerationUtils.toList(httpSession.getAttributeNames()));
         return session;
     }
 
@@ -113,6 +113,17 @@ public class CmsFormSessionFactory {
         return createSession(cms, request, config);
     }
 
+    public CmsFormSession createSessionForFile(
+        CmsObject cms,
+        HttpServletRequest request,
+        String configPath,
+        String fileName) throws CmsException {
+
+        CmsFormSession session = createSession(cms, request, configPath);
+        session.loadXmlContent(fileName);
+        return session;
+    }
+
     /**
      * Returns the session, if already initialized.<p>
      * 
@@ -124,6 +135,12 @@ public class CmsFormSessionFactory {
     public CmsFormSession getSession(HttpServletRequest request, CmsUUID sessionId) {
 
         return (CmsFormSession)request.getSession(true).getAttribute("" + sessionId);
+    }
+
+    public void makeEditable(HttpServletRequest request, CmsUUID id) {
+
+        HttpSession session = request.getSession(true);
+        getEditableStructureIds(session).add(id);
     }
 
     /**
@@ -143,6 +160,16 @@ public class CmsFormSessionFactory {
         } else {
             throw new CmsSecurityException(Messages.get().container(Messages.ERR_WAIT_QUEUE_EXCEEDED_0));
         }
+    }
+
+    private Set<CmsUUID> getEditableStructureIds(HttpSession session) {
+
+        Set<CmsUUID> editables = (Set<CmsUUID>)session.getAttribute(ATTR_FORM_EDITABLE_RESOURCES);
+        if (editables == null) {
+            editables = new HashSet<CmsUUID>();
+            session.setAttribute(ATTR_FORM_EDITABLE_RESOURCES, editables);
+        }
+        return editables;
     }
 
     /**

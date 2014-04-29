@@ -94,17 +94,14 @@ public class CmsFormEditService extends CmsGwtService implements I_CmsFormEditSe
     }
 
     /**
-     * @see org.opencms.editors.usergenerated.shared.rpc.I_CmsFormEditService#getExistingContent(java.lang.String, java.lang.String)
+     * @see org.opencms.editors.usergenerated.shared.rpc.I_CmsFormEditService#getExistingContent(org.opencms.util.CmsUUID)
      */
-    public CmsFormContent getExistingContent(String configPath, String sitepath) throws CmsRpcException {
+    public CmsFormContent getExistingContent(CmsUUID sessionId) throws CmsRpcException {
 
         CmsFormContent formContent = null;
         try {
-            CmsFormSession session = CmsFormSessionFactory.getInstance().createSession(
-                getCmsObject(),
-                getRequest(),
-                configPath);
-            formContent = readContent(session, session.loadXmlContent(sitepath));
+            CmsFormSession session = CmsFormSessionFactory.getInstance().getSession(getRequest(), sessionId);
+            formContent = readContent(session, session.getResource());
         } catch (Exception e) {
             error(e);
         }

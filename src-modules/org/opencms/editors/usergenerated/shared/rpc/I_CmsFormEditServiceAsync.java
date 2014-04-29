@@ -51,13 +51,14 @@ public interface I_CmsFormEditServiceAsync {
     void destroySession(CmsUUID sessionId, AsyncCallback<Void> callback);
 
     /**
-     * Returns the form content for an existing content.<p>
+     * Returns the form content for an existing session.<p>
      * 
-     * @param configPath the configuration path
-     * @param sitepath the resource path
-     * @param callback the callback
+     * @param sessionId the id of the existing session 
+     * @param callback the callback for the result  
+     * 
+     * @return the request builder for this RPC call 
      */
-    void getExistingContent(String configPath, String sitepath, AsyncCallback<CmsFormContent> callback);
+    RequestBuilder getExistingContent(CmsUUID sessionId, AsyncCallback<CmsFormContent> callback);
 
     /**
      * Returns the form content for new content.<p>
