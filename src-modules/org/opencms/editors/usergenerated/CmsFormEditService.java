@@ -81,7 +81,6 @@ public class CmsFormEditService extends CmsGwtService implements I_CmsFormEditSe
     public void destroySession(CmsUUID sessionId) throws CmsRpcException {
 
         try {
-
             CmsFormSession formSession = getFormSession(sessionId);
             getRequest().getSession().removeAttribute("" + sessionId);
             if (formSession != null) {
@@ -141,7 +140,7 @@ public class CmsFormEditService extends CmsGwtService implements I_CmsFormEditSe
 
                 CmsXmlContentErrorHandler errorHandler = session.saveContent(contentValues);
                 if (errorHandler.hasErrors()) {
-                    result = errorHandler.getErrors(getCmsObject().getRequestContext().getLocale());
+                    result = errorHandler.getErrors(session.getMessageLocale());
                 } else {
                     session.finish();
                     result = Collections.emptyMap();
