@@ -33,6 +33,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.lock.CmsLock;
+import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsLog;
@@ -169,7 +170,8 @@ public class CmsFormSession {
         m_adminCms = adminCms;
         m_configuration = configuration;
         if (cms.getRequestContext().getCurrentUser().isGuestUser() && m_configuration.getUserForGuests().isPresent()) {
-            m_cms = OpenCms.initCmsObject(m_configuration.getUserForGuests().get().getName());
+            m_cms = OpenCms.initCmsObject(CmsFormModuleAction.getAdminCms(), new CmsContextInfo(
+                m_configuration.getUserForGuests().get().getName()));
             m_cms.getRequestContext().setSiteRoot(cms.getRequestContext().getSiteRoot());
         } else {
             m_cms = OpenCms.initCmsObject(cms);
