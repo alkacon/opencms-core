@@ -102,6 +102,25 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
     private static final String MACRO_NUMBER_START = "%(" + I_CmsFileNameGenerator.MACRO_NUMBER + ":";
 
     /**
+     * Checks the given pattern for the number macro.<p>
+     * 
+     * @param pattern the pattern to check
+     * 
+     * @return <code>true</code> if the pattern contains the macro
+     */
+    public static boolean hasNumberMacro(String pattern) {
+
+        String macro = I_CmsFileNameGenerator.MACRO_NUMBER;
+        int prefixIndex = pattern.indexOf(MACRO_NUMBER_START);
+        if (prefixIndex >= 0) {
+            // this macro contains an individual digit setting
+            char n = pattern.charAt(prefixIndex + MACRO_NUMBER_START.length());
+            macro = macro + ':' + n;
+        }
+        return pattern.contains("%(" + macro + ")");
+    }
+
+    /**
      * Removes the file extension if it only consists of letters.<p>
      * 
      * @param path the path from which to remove the file extension
@@ -111,25 +130,6 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
     public static String removeExtension(String path) {
 
         return path.replaceFirst("\\.[a-zA-Z]*$", "");
-    }
-
-    /**
-     * Checks the given pattern for the number macro.<p>
-     * 
-     * @param pattern the pattern to check
-     * 
-     * @return <code>true</code> if the pattern contains the macro
-     */
-    public static boolean hasNumberMacro(String pattern) {
-
-        String macro = MACRO_NUMBER_START;
-        int prefixIndex = pattern.indexOf(MACRO_NUMBER_START);
-        if (prefixIndex >= 0) {
-            // this macro contains an individual digit setting
-            char n = pattern.charAt(prefixIndex + MACRO_NUMBER_START.length());
-            macro = macro + ':' + n;
-        }
-        return pattern.contains("%(" + macro + ")");
     }
 
     /**
