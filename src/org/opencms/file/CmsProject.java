@@ -117,6 +117,9 @@ public class CmsProject implements Cloneable, Comparable<CmsProject> {
     /** Indicates that a normal project. */
     public static final int PROJECT_FLAG_NONE = 0;
 
+    /** Indicates that a project should be hidden from the workplace project selector, but should otherwise behave the same as normal projects. */
+    public static final int PROJECT_HIDDEN_IN_SELECTOR = 8;
+
     /** Indicates a normal project. */
     public static final CmsProjectType PROJECT_TYPE_NORMAL = CmsProjectType.MODE_PROJECT_NORMAL;
 
@@ -453,6 +456,16 @@ public class CmsProject implements Cloneable, Comparable<CmsProject> {
     public boolean isHidden() {
 
         return (getFlags() & PROJECT_FLAG_HIDDEN) == PROJECT_FLAG_HIDDEN;
+    }
+
+    /** 
+     * Checks if the project should be hidden from the project selector in the workplace.<p>
+     * 
+     * @return true if the project should not appear in the workplace's project selector 
+     */
+    public boolean isHiddenFromSelector() {
+
+        return isWorkflowProject() || (0 != (getFlags() & PROJECT_HIDDEN_IN_SELECTOR));
     }
 
     /**

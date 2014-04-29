@@ -182,6 +182,7 @@ public class CmsFormSession {
             m_configuration.getProjectGroup().getName(),
             m_configuration.getProjectGroup().getName());
         project.setDeleteAfterPublishing(true);
+        project.setFlags(CmsProject.PROJECT_HIDDEN_IN_SELECTOR);
         m_adminCms.writeProject(project);
         m_cms.getRequestContext().setCurrentProject(project);
     }

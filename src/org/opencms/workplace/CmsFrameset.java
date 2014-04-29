@@ -115,7 +115,7 @@ public class CmsFrameset extends CmsWorkplace {
 
         List<CmsProject> result = new ArrayList<CmsProject>();
         for (CmsProject project : projects) {
-            if (!project.isWorkflowProject()) {
+            if (!project.isHiddenFromSelector()) {
                 result.add(project);
             }
         }
