@@ -351,7 +351,7 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
                     m_resourceName,
                     directEditButtons,
                     m_directEditMode,
-                    m_directEditLinkForNew);
+                    CmsEncoder.encode(m_directEditLinkForNew));
                 params.setPostCreateHandler(m_postCreateHandler);
                 params.setId(m_contentInfoBean.getId());
                 m_directEditOpen = CmsJspTagEditable.startDirectEdit(pageContext, params);
@@ -580,7 +580,7 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
                 String createParam = collector.getCreateParam(m_cms, m_collectorName, m_collectorParam);
                 if (createParam != null) {
                     // use "create link" only if collector supports it
-                    m_directEditLinkForNew = CmsEncoder.encode(m_collectorName + "|" + createParam);
+                    m_directEditLinkForNew = m_collectorName + "|" + createParam;
                 }
             } else if (isScopeVarSet()) {
                 // scope variable is set, store content load bean in JSP context
