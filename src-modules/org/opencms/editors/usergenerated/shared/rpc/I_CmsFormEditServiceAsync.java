@@ -35,6 +35,7 @@ import java.util.Set;
 
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
 
 /**
  * The asynchronous form edit service interface.<p>
@@ -48,6 +49,7 @@ public interface I_CmsFormEditServiceAsync {
      * 
      * @param callback if something goes wrong 
      */
+    @SynchronizedRpcRequest
     void destroySession(CmsUUID sessionId, AsyncCallback<Void> callback);
 
     /**
