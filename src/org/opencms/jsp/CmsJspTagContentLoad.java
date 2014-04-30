@@ -294,9 +294,7 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
         boolean hasMoreContent = m_collectorResult.size() > 0;
         if (m_isFirstLoop) {
             m_isFirstLoop = false;
-            if (!hasMoreContent
-                && m_editEmpty
-                && ((m_directEditLinkForNew != null) && CmsDefaultFileNameGenerator.hasNumberMacro(m_directEditLinkForNew))) {
+            if (!hasMoreContent && m_editEmpty && (m_directEditLinkForNew != null)) {
                 try {
                     CmsJspTagEditable.insertEditEmpty(pageContext, this, m_directEditMode);
                 } catch (CmsException e) {
@@ -332,8 +330,7 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
                 CmsDirectEditButtonSelection directEditButtons;
                 if (m_directEditFollowButtons == null) {
                     // this is the first call, calculate the options
-                    if ((m_directEditLinkForNew == null)
-                        || !CmsDefaultFileNameGenerator.hasNumberMacro(m_directEditLinkForNew)) {
+                    if (m_directEditLinkForNew == null) {
                         // if create link is null, show only "edit" and "delete" button for first element
                         directEditButtons = CmsDirectEditButtonSelection.EDIT_DELETE;
                         m_directEditFollowButtons = directEditButtons;
@@ -351,7 +348,7 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
                     m_resourceName,
                     directEditButtons,
                     m_directEditMode,
-                    CmsEncoder.encode(m_directEditLinkForNew));
+                    m_directEditLinkForNew);
                 params.setPostCreateHandler(m_postCreateHandler);
                 params.setId(m_contentInfoBean.getId());
                 m_directEditOpen = CmsJspTagEditable.startDirectEdit(pageContext, params);
@@ -578,9 +575,9 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
                 m_contentInfoBean.initPageNavIndexes();
 
                 String createParam = collector.getCreateParam(m_cms, m_collectorName, m_collectorParam);
-                if (createParam != null) {
-                    // use "create link" only if collector supports it
-                    m_directEditLinkForNew = m_collectorName + "|" + createParam;
+                if ((createParam != null) && CmsDefaultFileNameGenerator.hasNumberMacro(createParam)) {
+                    // use "create link" only if collector supports it and it contains the number macro for new file names
+                    m_directEditLinkForNew = CmsEncoder.encode(m_collectorName + "|" + createParam);
                 }
             } else if (isScopeVarSet()) {
                 // scope variable is set, store content load bean in JSP context
