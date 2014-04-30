@@ -43,6 +43,7 @@ import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.tools.CmsToolManager;
 
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 
@@ -606,6 +607,20 @@ public class CmsSessionManager {
         if ((userId != null) && (getSessionInfos(userId).size() == 0)) {
             // remove the temporary locks of this user from memory
             OpenCmsCore.getInstance().getLockManager().removeTempLocks(userId);
+        }
+
+        HttpSession session = event.getSession();
+        Enumeration<?> attrNames = session.getAttributeNames();
+        while (attrNames.hasMoreElements()) {
+            String attrName = (String)attrNames.nextElement();
+            Object attribute = session.getAttribute(attrName);
+            if (attribute instanceof I_CmsSessionDestroyHandler) {
+                try {
+                    ((I_CmsSessionDestroyHandler)attribute).onSessionDestroyed();
+                } catch (Exception e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
         }
 
         if (LOG.isDebugEnabled()) {

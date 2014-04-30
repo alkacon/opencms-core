@@ -38,6 +38,7 @@ import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.I_CmsSessionDestroyHandler;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsLogReport;
 import org.opencms.util.CmsMacroResolver;
@@ -67,7 +68,7 @@ import com.google.common.collect.Maps;
 /**
  * A form editing session is required to create and edit contents from the web front-end.<p>
  */
-public class CmsFormSession {
+public class CmsFormSession implements I_CmsSessionDestroyHandler {
 
     /**
      * Compares XPaths.<p>
@@ -439,7 +440,7 @@ public class CmsFormSession {
     }
 
     /**
-     * Is called when the parent session times out.<p>
+     * @see org.opencms.main.I_CmsSessionDestroyHandler#onSessionDestroyed()
      */
     public void onSessionDestroyed() {
 
