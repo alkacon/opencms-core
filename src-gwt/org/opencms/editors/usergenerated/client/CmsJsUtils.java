@@ -30,6 +30,7 @@ package org.opencms.editors.usergenerated.client;
 import java.util.Map;
 import java.util.Random;
 
+import com.google.common.collect.Maps;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
@@ -41,6 +42,26 @@ public class CmsJsUtils {
 
     /** The random number generator. */
     public static final Random RANDOM = new Random();
+
+    /**
+     * Converts a Javascript object to a map from strings to strings, ignoring all properties 
+     * of the object whose value is not a string.<p>
+     * 
+     * @param jso the Javascript object to convert 
+     * @return the map containing the string-valued properties of the Javascript object 
+     */
+    public static Map<String, String> convertJsObjectToMap(JavaScriptObject jso) {
+
+        Map<String, String> result = Maps.newHashMap();
+        JSONObject json = new JSONObject(jso);
+        for (String key : json.keySet()) {
+            JSONString value = json.get(key).isString();
+            if (value != null) {
+                result.put(key, value.stringValue());
+            }
+        }
+        return result;
+    }
 
     /**
      * Converts a map whose keys and values are strings to a Javascript object with the keys as attributes and the 

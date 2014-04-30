@@ -34,7 +34,6 @@ import org.opencms.editors.usergenerated.shared.CmsFormContent;
 import org.opencms.editors.usergenerated.shared.CmsFormException;
 import org.opencms.util.CmsUUID;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -45,9 +44,8 @@ import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.NoExport;
 
 import com.google.common.base.Function;
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONString;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -62,9 +60,6 @@ public class CmsClientFormSession implements Exportable {
 
     /** The form content returned from the server. */
     private CmsFormContent m_content;
-
-    /** The map of new values to set in the content. */
-    private Map<String, String> m_newValues = new HashMap<String, String>();
 
     /** The form wrapper widget. */
     private CmsFormWrapper m_formWrapper;
@@ -116,33 +111,6 @@ public class CmsClientFormSession implements Exportable {
     }
 
     /**
-     * Gets the old content value originally returned from the server.<p>
-     * 
-     * @param xpath the xpath for which the value should be returned
-     * @return the value for the xpath, or null if there is no value for the path 
-     */
-    public String getOldValue(String xpath) {
-
-        return m_content.getContentValues().get(xpath);
-    }
-
-    /**
-     * Gets the array of xpaths of the values which are set in the original content received from the server.<p>
-     * 
-     * @return the array of xpaths from the content 
-     */
-    public String[] getOldValueKeys() {
-
-        String[] result = new String[m_content.getContentValues().size()];
-        int i = 0;
-        for (String key : m_content.getContentValues().keySet()) {
-            result[i] = key;
-            i += 1;
-        }
-        return result;
-    }
-
-    /**
      * Gets the session id.<p>
      * 
      * @return the session id
@@ -150,6 +118,16 @@ public class CmsClientFormSession implements Exportable {
     public String getSessionId() {
 
         return "" + m_content.getSessionId();
+    }
+
+    /** 
+     * Gets the old content values as a Javascript object.<p>
+     *  
+     * @return a Javascript object whose properties are the xpaths of the existing content values 
+     */
+    public JavaScriptObject getValues() {
+
+        return CmsJsUtils.convertMapToJsObject(m_content.getContentValues());
     }
 
     /**
@@ -176,16 +154,20 @@ public class CmsClientFormSession implements Exportable {
 
     /**
      * Asks the server to save the values set via setNewValue in the XML content.<p>
-     * 
+     *
+     * @param newValues the new values to set 
      * @param onSuccess the callback to be called in case of success 
      * @param onFailure the callback to be called in case of failure 
      */
-    public void saveContent(final I_CmsStringCallback onSuccess, final I_CmsErrorCallback onFailure) {
+    public void saveContent(
+        JavaScriptObject newValues,
+        final I_CmsStringCallback onSuccess,
+        final I_CmsErrorCallback onFailure) {
 
         m_apiRoot.getRpcHelper().executeRpc(
             CmsXmlContentFormApi.SERVICE.saveContent(
                 m_content.getSessionId(),
-                m_newValues,
+                CmsJsUtils.convertJsObjectToMap(newValues),
                 new AsyncCallback<Map<String, String>>() {
 
                     @SuppressWarnings("synthetic-access")
@@ -200,53 +182,11 @@ public class CmsClientFormSession implements Exportable {
                         if ((result == null) || result.isEmpty()) {
                             onSuccess.call("");
                         } else {
-                            JSONObject validationErrors = new JSONObject();
-                            for (Map.Entry<String, String> entry : result.entrySet()) {
-                                validationErrors.put(entry.getKey(), new JSONString(entry.getValue()));
-                            }
-                            onFailure.call(
-                                CmsFormConstants.ErrorCode.errValidation.toString(),
-                                "",
-                                validationErrors.getJavaScriptObject());
+                            JavaScriptObject validationErrorsJso = CmsJsUtils.convertMapToJsObject(result);
+                            onFailure.call(CmsFormConstants.ErrorCode.errValidation.toString(), "", validationErrorsJso);
                         }
                     }
                 }));
-
-    }
-
-    /**
-     * Sets a new content value to be saved later.<p>
-     * 
-     * @param xpath the path of the value to set 
-     * @param value the actual value 
-     */
-    public void setNewValue(String xpath, String value) {
-
-        m_newValues.put(xpath, value);
-    }
-
-    /**
-     * Uploads a single file from a file input field.<p>
-     * 
-     * @param fieldName the name of the form field to upload 
-     * @param fileCallback the callback for the result
-     * @param errorCallback the error handling callback  
-     */
-    public void uploadFile(
-        final String fieldName,
-        final I_CmsStringCallback fileCallback,
-        I_CmsErrorCallback errorCallback) {
-
-        Set<String> fieldSet = new HashSet<String>();
-        fieldSet.add(fieldName);
-        m_formWrapper.uploadFields(fieldSet, new Function<Map<String, String>, Void>() {
-
-            public Void apply(Map<String, String> input) {
-
-                fileCallback.call(input.get(fieldName));
-                return null;
-            }
-        }, errorCallback);
 
     }
 
