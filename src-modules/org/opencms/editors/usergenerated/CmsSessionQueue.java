@@ -83,6 +83,20 @@ public class CmsSessionQueue {
     }
 
     /**
+     * Updates the queue parameters from the configuration object.<p>
+     * 
+     * @param config the form configuration 
+     */
+    public synchronized void updateFromConfiguration(CmsFormConfiguration config) {
+
+        m_enabled = config.needsQueue();
+        m_interval = config.getQueueInterval().isPresent() ? config.getQueueInterval().get().longValue() : 0;
+        m_maxLength = config.getMaxQueueLength().isPresent()
+        ? config.getMaxQueueLength().get().intValue()
+        : Integer.MAX_VALUE;
+    }
+
+    /**
      * If there are currently any threads waiting on this queue, wait for the interval given on construction after the currenly last thread stops waiting.<p>
      * 
      * @return false if the queue was too long to wait, true otherwise   

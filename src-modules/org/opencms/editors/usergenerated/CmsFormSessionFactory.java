@@ -195,10 +195,13 @@ public class CmsFormSessionFactory {
      */
     private CmsSessionQueue getQueue(CmsFormConfiguration config) {
 
-        if (m_queues.get(config.getId()) == null) {
-            m_queues.put(config.getId(), CmsSessionQueue.createQueue(config));
+        CmsSessionQueue queue = m_queues.get(config.getId());
+        if (queue == null) {
+            queue = CmsSessionQueue.createQueue(config);
+            m_queues.put(config.getId(), queue);
+        } else {
+            queue.updateFromConfiguration(config);
         }
-        return m_queues.get(config.getId());
+        return queue;
     }
-
 }
