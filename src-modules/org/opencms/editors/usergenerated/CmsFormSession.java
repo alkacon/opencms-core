@@ -27,6 +27,8 @@
 
 package org.opencms.editors.usergenerated;
 
+import org.opencms.editors.usergenerated.shared.CmsFormConstants;
+import org.opencms.editors.usergenerated.shared.CmsFormException;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -35,11 +37,9 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsLogReport;
-import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -167,7 +167,7 @@ public class CmsFormSession {
     public CmsFormSession(CmsObject adminCms, CmsObject cms, CmsFormConfiguration configuration)
     throws CmsException {
 
-        m_adminCms = adminCms;
+        m_adminCms = OpenCms.initCmsObject(adminCms);
         m_configuration = configuration;
         if (cms.getRequestContext().getCurrentUser().isGuestUser() && m_configuration.getUserForGuests().isPresent()) {
             m_cms = OpenCms.initCmsObject(CmsFormModuleAction.getAdminCms(), new CmsContextInfo(
@@ -175,6 +175,9 @@ public class CmsFormSession {
             m_cms.getRequestContext().setSiteRoot(cms.getRequestContext().getSiteRoot());
         } else {
             m_cms = OpenCms.initCmsObject(cms);
+        }
+        for (CmsObject currentCms : new CmsObject[] {m_cms, m_adminCms}) {
+            currentCms.getRequestContext().setLocale(getMessageLocale());
         }
         CmsProject project = m_adminCms.createProject(
             generateProjectName(),
@@ -206,9 +209,10 @@ public class CmsFormSession {
      * 
      * @return the newly created resource
      * 
-     * @throws CmsException if creating the resource fails
+     * @throws CmsFormException if creating the resource fails
      */
-    public CmsResource createUploadResource(String fieldName, String rawFileName, byte[] content) throws CmsException {
+    public CmsResource createUploadResource(String fieldName, String rawFileName, byte[] content)
+    throws CmsFormException {
 
         CmsResource result = null;
         CmsFormSessionSecurityUtil.checkCreateUpload(m_cms, m_configuration, rawFileName, content.length);
@@ -247,11 +251,15 @@ public class CmsFormSession {
             resolver.addMacro("random", RandomStringUtils.random(8, "0123456789abcdefghijklmnopqrstuvwxyz"));
             realSitePath = resolver.resolveMacros(sitePath);
         } while (m_cms.existsResource(realSitePath));
-        int resTypeId = OpenCms.getResourceManager().getDefaultTypeForName(realSitePath).getTypeId();
-        result = m_cms.createResource(realSitePath, resTypeId, content, null);
-        updateUploadResource(fieldName, result);
-
-        return result;
+        try {
+            int resTypeId = OpenCms.getResourceManager().getDefaultTypeForName(realSitePath).getTypeId();
+            result = m_cms.createResource(realSitePath, resTypeId, content, null);
+            updateUploadResource(fieldName, result);
+            return result;
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            throw new CmsFormException(e, CmsFormConstants.ErrorCode.errMiscUploadError, e.getLocalizedMessage());
+        }
     }
 
     /**
@@ -259,17 +267,22 @@ public class CmsFormSession {
      * 
      * @return the newly created resource
      * 
-     * @throws CmsException if creating the resource fails
+     * @throws CmsFormException if creating the resource fails
      */
-    public CmsResource createXmlContent() throws CmsException {
+    public CmsResource createXmlContent() throws CmsFormException {
 
         checkNotFinished();
         checkEditResourceNotSet();
 
         CmsFormSessionSecurityUtil.checkCreateContent(m_cms, m_configuration);
-        I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(m_configuration.getResourceType());
-        m_editResource = m_cms.createResource(getNewContentName(), type.getTypeId());
-        return m_editResource;
+        try {
+            I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(m_configuration.getResourceType());
+            m_editResource = m_cms.createResource(getNewContentName(), type.getTypeId());
+            return m_editResource;
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            throw new CmsFormException(e, CmsFormConstants.ErrorCode.errMiscContentError, e.getLocalizedMessage());
+        }
     }
 
     /**
@@ -397,26 +410,30 @@ public class CmsFormSession {
      * 
      * @return the edit resource
      * 
-     * @throws CmsException if reading the resource fails
+     * @throws CmsFormException if reading the resource fails
      */
-    public CmsResource loadXmlContent(String fileName) throws CmsException {
+    public CmsResource loadXmlContent(String fileName) throws CmsFormException {
 
         checkNotFinished();
         checkEditResourceNotSet();
         if (fileName.contains("/")) {
-            throw new CmsPermissionViolationException(Messages.get().container(
-                Messages.ERR_INVALID_FILE_NAME_TO_LOAD_1,
-                fileName));
+            String message = Messages.get().container(Messages.ERR_INVALID_FILE_NAME_TO_LOAD_1, fileName).key(
+                getCmsObject().getRequestContext().getLocale());
+            throw new CmsFormException(CmsFormConstants.ErrorCode.errMiscContentError, message);
         }
-        String contentSitePath = m_cms.getRequestContext().removeSiteRoot(
-            m_configuration.getContentParentFolder().getRootPath());
-        String path = CmsStringUtil.joinPaths(contentSitePath, fileName);
-        m_editResource = m_cms.readResource(path);
-        CmsLock lock = m_cms.getLock(m_editResource);
-        if (!lock.isOwnedBy(m_cms.getRequestContext().getCurrentUser())) {
-            m_cms.lockResourceTemporary(m_editResource);
+        try {
+            String contentSitePath = m_cms.getRequestContext().removeSiteRoot(
+                m_configuration.getContentParentFolder().getRootPath());
+            String path = CmsStringUtil.joinPaths(contentSitePath, fileName);
+            m_editResource = m_cms.readResource(path);
+            CmsLock lock = m_cms.getLock(m_editResource);
+            if (!lock.isOwnedBy(m_cms.getRequestContext().getCurrentUser())) {
+                m_cms.lockResourceTemporary(m_editResource);
+            }
+            return m_editResource;
+        } catch (CmsException e) {
+            throw new CmsFormException(CmsFormConstants.ErrorCode.errMiscContentError, e.getLocalizedMessage());
         }
-        return m_editResource;
     }
 
     /**
@@ -436,21 +453,26 @@ public class CmsFormSession {
      * 
      * @return the validation handler
      * 
-     * @throws CmsException if writing the content fails
+     * @throws CmsFormException if writing the content fails
      */
-    public CmsXmlContentErrorHandler saveContent(Map<String, String> contentValues) throws CmsException {
+    public CmsXmlContentErrorHandler saveContent(Map<String, String> contentValues) throws CmsFormException {
 
         checkNotFinished();
-        CmsFile file = m_cms.readFile(m_editResource);
-        CmsXmlContent content = addContentValues(file, contentValues);
-        CmsXmlContentErrorHandler errorHandler = content.validate(m_cms);
-        if (!errorHandler.hasErrors()) {
-            file.setContents(content.marshal());
-            // the file content might have been modified during the write operation
-            file = m_cms.writeFile(file);
-        }
+        try {
+            CmsFile file = m_cms.readFile(m_editResource);
+            CmsXmlContent content = addContentValues(file, contentValues);
+            CmsXmlContentErrorHandler errorHandler = content.validate(m_cms);
+            if (!errorHandler.hasErrors()) {
+                file.setContents(content.marshal());
+                // the file content might have been modified during the write operation
+                file = m_cms.writeFile(file);
+            }
 
-        return errorHandler;
+            return errorHandler;
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            throw new CmsFormException(e, CmsFormConstants.ErrorCode.errMiscContentError, e.getLocalizedMessage());
+        }
 
     }
 
@@ -461,14 +483,19 @@ public class CmsFormSession {
      * 
      * @return the validation handler
      * 
-     * @throws CmsException if reading the content file fails
+     * @throws CmsFormException if reading the content file fails
      */
-    public CmsXmlContentErrorHandler validateContent(Map<String, String> contentValues) throws CmsException {
+    public CmsXmlContentErrorHandler validateContent(Map<String, String> contentValues) throws CmsFormException {
 
         checkNotFinished();
-        CmsFile file = m_cms.readFile(m_editResource);
-        CmsXmlContent content = addContentValues(file, contentValues);
-        return content.validate(m_cms);
+        try {
+            CmsFile file = m_cms.readFile(m_editResource);
+            CmsXmlContent content = addContentValues(file, contentValues);
+            return content.validate(m_cms);
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            throw new CmsFormException(e, CmsFormConstants.ErrorCode.errMiscContentError, e.getLocalizedMessage());
+        }
     }
 
     /**
@@ -560,27 +587,29 @@ public class CmsFormSession {
     /**
      * Throws an error if the edit resource is already set.<p>
      * 
-     * @throws CmsIllegalStateException if the edit resource is already set 
+     * @throws CmsFormException if the edit resource is already set 
      */
-    private void checkEditResourceNotSet() throws CmsIllegalStateException {
+    private void checkEditResourceNotSet() throws CmsFormException {
 
         if (m_editResource != null) {
-            throw new CmsIllegalStateException(Messages.get().container(
-                Messages.ERR_CANT_EDIT_MULTIPLE_CONTENTS_IN_SESSION_0));
+            String message = Messages.get().container(Messages.ERR_CANT_EDIT_MULTIPLE_CONTENTS_IN_SESSION_0).key(
+                getCmsObject().getRequestContext().getLocale());
+            throw new CmsFormException(CmsFormConstants.ErrorCode.errInvalidAction, message);
+
         }
     }
 
     /**
      * Checks that the session is not finished, and throws an exception otherwise.<p>
      * 
-     * @throws CmsIllegalStateException if the session is finished 
+     * @throws CmsFormException if the session is finished 
      */
-    private void checkNotFinished() throws CmsIllegalStateException {
+    private void checkNotFinished() throws CmsFormException {
 
         if (m_finished) {
-            throw new CmsIllegalStateException(Messages.get().container(Messages.ERR_FORM_SESSION_ALREADY_FINISHED_0
-
-            ));
+            String message = Messages.get().container(Messages.ERR_FORM_SESSION_ALREADY_FINISHED_0).key(
+                getCmsObject().getRequestContext().getLocale());
+            throw new CmsFormException(CmsFormConstants.ErrorCode.errInvalidAction, message);
         }
     }
 

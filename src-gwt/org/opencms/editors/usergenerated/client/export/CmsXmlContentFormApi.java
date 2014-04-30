@@ -29,9 +29,12 @@ package org.opencms.editors.usergenerated.client.export;
 
 import org.opencms.editors.usergenerated.client.CmsRequestCounter;
 import org.opencms.editors.usergenerated.client.CmsRpcCallHelper;
+import org.opencms.editors.usergenerated.shared.CmsFormConstants;
 import org.opencms.editors.usergenerated.shared.CmsFormContent;
+import org.opencms.editors.usergenerated.shared.CmsFormException;
 import org.opencms.editors.usergenerated.shared.rpc.I_CmsFormEditService;
 import org.opencms.editors.usergenerated.shared.rpc.I_CmsFormEditServiceAsync;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.util.CmsUUID;
 
 import org.timepedia.exporter.client.Export;
@@ -40,6 +43,8 @@ import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.NoExport;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -69,7 +74,21 @@ public class CmsXmlContentFormApi implements Exportable {
      */
     public CmsXmlContentFormApi() {
 
-        // do nothing 
+        GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+
+            public void onUncaughtException(final Throwable e) {
+
+                handleError(e, new I_CmsErrorCallback() {
+
+                    public void call(String errorType, String message, JavaScriptObject additionalData) {
+
+                        CmsDebugLog.consoleLog("uncaught error: " + message);
+                        throw new RuntimeException(e);
+                    }
+                });
+
+            }
+        });
 
     }
 
@@ -106,6 +125,26 @@ public class CmsXmlContentFormApi implements Exportable {
     }
 
     /**
+     * Passes an exception to the given error handling callback and optionally outputs some debug info.<p>
+     * 
+     * @param e the exception 
+     * @param callback  the error handling callback 
+     */
+    public void handleError(Throwable e, I_CmsErrorCallback callback) {
+
+        String errorCode = CmsFormConstants.ErrorCode.errMisc.toString();
+        String message;
+        if (e instanceof CmsFormException) {
+            CmsFormException formException = (CmsFormException)e;
+            errorCode = formException.getErrorCode().toString();
+            message = formException.getUserMessage();
+        } else {
+            message = e.getMessage();
+        }
+        callback.call(errorCode, message, JavaScriptObject.createObject());
+    }
+
+    /**
      * Creates a new session for a newly created XML content.<p>
      * 
      * @param formConfigPath the form configuration path 
@@ -117,13 +156,13 @@ public class CmsXmlContentFormApi implements Exportable {
         final String formConfigPath,
         final Element formElement,
         final I_CmsClientFormSessionCallback onSuccess,
-        final I_CmsStringCallback onError) {
+        final I_CmsErrorCallback onError) {
 
         getRpcHelper().executeRpc(SERVICE.getNewContent(formConfigPath, new AsyncCallback<CmsFormContent>() {
 
             public void onFailure(Throwable caught) {
 
-                onError.call("RPC call failed: " + caught);
+                handleError(caught, onError);
             }
 
             public void onSuccess(CmsFormContent result) {
@@ -147,14 +186,14 @@ public class CmsXmlContentFormApi implements Exportable {
         final String sessionId,
         final Element formElement,
         final I_CmsClientFormSessionCallback onSuccess,
-        final I_CmsStringCallback onError) {
+        final I_CmsErrorCallback onError) {
 
         getRpcHelper().executeRpc(
             SERVICE.getExistingContent(new CmsUUID(sessionId), new AsyncCallback<CmsFormContent>() {
 
                 public void onFailure(Throwable caught) {
 
-                    onError.call("RPC call failed: " + caught);
+                    handleError(caught, onError);
                 }
 
                 public void onSuccess(CmsFormContent result) {

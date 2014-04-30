@@ -31,6 +31,7 @@ import org.opencms.editors.usergenerated.client.CmsFormWrapper;
 import org.opencms.editors.usergenerated.client.CmsJsUtils;
 import org.opencms.editors.usergenerated.shared.CmsFormConstants;
 import org.opencms.editors.usergenerated.shared.CmsFormContent;
+import org.opencms.editors.usergenerated.shared.CmsFormException;
 import org.opencms.util.CmsUUID;
 
 import java.util.HashMap;
@@ -179,7 +180,7 @@ public class CmsClientFormSession implements Exportable {
      * @param onSuccess the callback to be called in case of success 
      * @param onFailure the callback to be called in case of failure 
      */
-    public void saveContent(final I_CmsStringCallback onSuccess, final I_CmsJavaScriptObjectCallback onFailure) {
+    public void saveContent(final I_CmsStringCallback onSuccess, final I_CmsErrorCallback onFailure) {
 
         m_apiRoot.getRpcHelper().executeRpc(
             CmsXmlContentFormApi.SERVICE.saveContent(
@@ -187,11 +188,11 @@ public class CmsClientFormSession implements Exportable {
                 m_newValues,
                 new AsyncCallback<Map<String, String>>() {
 
+                    @SuppressWarnings("synthetic-access")
                     public void onFailure(Throwable caught) {
 
-                        JSONObject error = new JSONObject();
-                        error.put(CmsFormConstants.JS_ATTR_ERROR, new JSONString(caught.getMessage()));
-                        onFailure.call(error.getJavaScriptObject());
+                        CmsFormException formException = (CmsFormException)caught;
+                        m_apiRoot.handleError(formException, onFailure);
                     }
 
                     public void onSuccess(Map<String, String> result) {
@@ -199,13 +200,14 @@ public class CmsClientFormSession implements Exportable {
                         if ((result == null) || result.isEmpty()) {
                             onSuccess.call("");
                         } else {
-                            JSONObject error = new JSONObject();
                             JSONObject validationErrors = new JSONObject();
                             for (Map.Entry<String, String> entry : result.entrySet()) {
                                 validationErrors.put(entry.getKey(), new JSONString(entry.getValue()));
                             }
-                            error.put(CmsFormConstants.JS_ATTR_VALIDATION_ERRORS, validationErrors);
-                            onFailure.call(error.getJavaScriptObject());
+                            onFailure.call(
+                                CmsFormConstants.ErrorCode.errValidation.toString(),
+                                "",
+                                validationErrors.getJavaScriptObject());
                         }
                     }
                 }));
@@ -233,7 +235,7 @@ public class CmsClientFormSession implements Exportable {
     public void uploadFile(
         final String fieldName,
         final I_CmsStringCallback fileCallback,
-        I_CmsStringCallback errorCallback) {
+        I_CmsErrorCallback errorCallback) {
 
         Set<String> fieldSet = new HashSet<String>();
         fieldSet.add(fieldName);
@@ -258,7 +260,7 @@ public class CmsClientFormSession implements Exportable {
     public void uploadFiles(
         String[] fieldNames,
         final I_CmsJavaScriptObjectCallback fileCallback,
-        I_CmsStringCallback errorCallback) {
+        I_CmsErrorCallback errorCallback) {
 
         Set<String> fieldSet = new HashSet<String>();
         for (String field : fieldNames) {

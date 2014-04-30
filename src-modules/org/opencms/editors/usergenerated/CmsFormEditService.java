@@ -29,6 +29,7 @@ package org.opencms.editors.usergenerated;
 
 import org.opencms.editors.usergenerated.shared.CmsFormConstants;
 import org.opencms.editors.usergenerated.shared.CmsFormContent;
+import org.opencms.editors.usergenerated.shared.CmsFormException;
 import org.opencms.editors.usergenerated.shared.rpc.I_CmsFormEditService;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -78,7 +79,7 @@ public class CmsFormEditService extends CmsGwtService implements I_CmsFormEditSe
     /**
      * @see org.opencms.editors.usergenerated.shared.rpc.I_CmsFormEditService#destroySession(org.opencms.util.CmsUUID)
      */
-    public void destroySession(CmsUUID sessionId) throws CmsRpcException {
+    public void destroySession(CmsUUID sessionId) throws CmsFormException {
 
         try {
             CmsFormSession formSession = getFormSession(sessionId);
@@ -93,9 +94,20 @@ public class CmsFormEditService extends CmsGwtService implements I_CmsFormEditSe
     }
 
     /**
+     * @see org.opencms.gwt.CmsGwtService#error(java.lang.Throwable)
+     */
+    @Override
+    public void error(Throwable t) throws CmsFormException {
+
+        logError(t);
+        CmsFormException exception = t instanceof CmsFormException ? (CmsFormException)t : new CmsFormException(t);
+        throw exception;
+    }
+
+    /**
      * @see org.opencms.editors.usergenerated.shared.rpc.I_CmsFormEditService#getExistingContent(org.opencms.util.CmsUUID)
      */
-    public CmsFormContent getExistingContent(CmsUUID sessionId) throws CmsRpcException {
+    public CmsFormContent getExistingContent(CmsUUID sessionId) throws CmsFormException {
 
         CmsFormContent formContent = null;
         try {
@@ -111,7 +123,7 @@ public class CmsFormEditService extends CmsGwtService implements I_CmsFormEditSe
     /**
      * @see org.opencms.editors.usergenerated.shared.rpc.I_CmsFormEditService#getNewContent(java.lang.String)
      */
-    public CmsFormContent getNewContent(String configPath) throws CmsRpcException {
+    public CmsFormContent getNewContent(String configPath) throws CmsFormException {
 
         CmsFormContent formContent = null;
         try {
@@ -131,7 +143,8 @@ public class CmsFormEditService extends CmsGwtService implements I_CmsFormEditSe
     /**
      * @see org.opencms.editors.usergenerated.shared.rpc.I_CmsFormEditService#saveContent(org.opencms.util.CmsUUID, java.util.Map)
      */
-    public Map<String, String> saveContent(CmsUUID sessionId, Map<String, String> contentValues) throws CmsRpcException {
+    public Map<String, String> saveContent(CmsUUID sessionId, Map<String, String> contentValues)
+    throws CmsFormException {
 
         Map<String, String> result = null;
         try {

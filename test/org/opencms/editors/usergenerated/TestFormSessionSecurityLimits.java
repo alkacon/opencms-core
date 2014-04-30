@@ -27,11 +27,11 @@
 
 package org.opencms.editors.usergenerated;
 
+import org.opencms.editors.usergenerated.shared.CmsFormException;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
-import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsUUID;
@@ -100,8 +100,8 @@ public class TestFormSessionSecurityLimits extends OpenCmsTestCase {
         try {
             CmsFormSessionSecurityUtil.checkCreateUpload(cms, config, "foo.png", 100L);
             fail("Exception should have been thrown!");
-        } catch (CmsPermissionViolationException e) {
-            assertEquals(Messages.ERR_NO_UPLOADS_ALLOWED_0, e.getMessageContainer().getKey());
+        } catch (CmsFormException e) {
+            // empty
         }
 
     }
@@ -137,34 +137,36 @@ public class TestFormSessionSecurityLimits extends OpenCmsTestCase {
         try {
             CmsFormSessionSecurityUtil.checkCreateUpload(cms, config, "foo.png", 50000);
             fail("Exception should have been thrown!");
-        } catch (CmsPermissionViolationException e) {
-            assertEquals(Messages.ERR_UPLOAD_TOO_BIG_1, e.getMessageContainer().getKey());
+        } catch (CmsFormException e) {
+            // empty
         }
 
         try {
             CmsFormSessionSecurityUtil.checkCreateUpload(cms, config, "foo.png", 3);
-        } catch (CmsPermissionViolationException e) {
+        } catch (CmsFormException e) {
             fail("Exception was thrown: " + e.getLocalizedMessage());
         }
 
         try {
             CmsFormSessionSecurityUtil.checkCreateUpload(cms, config, "foo.doc", 100L);
             fail("Exception should have been thrown!");
-        } catch (CmsPermissionViolationException e) {
-            assertEquals(Messages.ERR_UPLOAD_FILE_EXTENSION_NOT_ALLOWED_1, e.getMessageContainer().getKey());
+        } catch (CmsFormException e) {
+            // empty
+
         }
 
         try {
             CmsFormSessionSecurityUtil.checkCreateUpload(cms, config, "foo.JPG", 100L);
-        } catch (CmsPermissionViolationException e) {
+        } catch (CmsFormException e) {
             fail("Exceptikon was thrown: " + e.getLocalizedMessage());
         }
 
         try {
             CmsFormSessionSecurityUtil.checkCreateContent(cms, config);
             fail("Exception should have been thrown!");
-        } catch (CmsPermissionViolationException e) {
-            assertEquals(Messages.ERR_TOO_MANY_CONTENTS_1, e.getMessageContainer().getKey());
+        } catch (CmsFormException e) {
+            // empty
+
         }
 
         config = new CmsFormConfiguration(
@@ -185,7 +187,7 @@ public class TestFormSessionSecurityLimits extends OpenCmsTestCase {
 
         try {
             CmsFormSessionSecurityUtil.checkCreateContent(cms, config);
-        } catch (CmsPermissionViolationException e) {
+        } catch (CmsFormException e) {
             fail("Exception was thrown: " + e.getLocalizedMessage());
         }
 
@@ -222,7 +224,7 @@ public class TestFormSessionSecurityLimits extends OpenCmsTestCase {
 
         try {
             CmsFormSessionSecurityUtil.checkCreateUpload(cms, config, "foo.aasdfasdfasdf", 99999999L);
-        } catch (CmsPermissionViolationException e) {
+        } catch (CmsFormException e) {
             fail("Exception was thrown: " + e);
         }
     }

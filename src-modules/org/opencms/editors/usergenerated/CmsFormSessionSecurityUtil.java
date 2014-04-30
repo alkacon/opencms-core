@@ -27,17 +27,23 @@
 
 package org.opencms.editors.usergenerated;
 
+import org.opencms.editors.usergenerated.shared.CmsFormConstants;
+import org.opencms.editors.usergenerated.shared.CmsFormException;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
-import org.opencms.security.CmsPermissionViolationException;
-import org.opencms.security.CmsSecurityException;
+import org.opencms.main.CmsLog;
 
 import java.util.List;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Helper class which implements some of the security checks for user generated content creation.<p>
  */
 public class CmsFormSessionSecurityUtil {
+
+    /** The log instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsFormSessionSecurityUtil.class);
 
     /** 
      * Hidden default constructor.<p>
@@ -51,21 +57,26 @@ public class CmsFormSessionSecurityUtil {
      * Checks whether a new XML content may be created and throws an exception if this is not the case.<p>
      * 
      * @param cms the current CMS context 
-     * @param config the form configuration 
+     * @param config the form configuration
      * 
-     * @throws CmsPermissionViolationException if creating a content would violate the limits set in the configuration
-     * @throws CmsException for all other errors  
+     *  @throws CmsFormException if something goes wrong 
      */
-    public static void checkCreateContent(CmsObject cms, CmsFormConfiguration config)
-    throws CmsPermissionViolationException, CmsException {
+    public static void checkCreateContent(CmsObject cms, CmsFormConfiguration config) throws CmsFormException {
 
         if (config.getMaxContentNumber().isPresent()) {
             int maxContents = config.getMaxContentNumber().get().intValue();
             String sitePath = cms.getSitePath(config.getContentParentFolder());
-            if (cms.getFilesInFolder(sitePath).size() >= maxContents) {
-                throw new CmsSecurityException(Messages.get().container(
-                    Messages.ERR_TOO_MANY_CONTENTS_1,
-                    config.getContentParentFolder()));
+            try {
+                if (cms.getFilesInFolder(sitePath).size() >= maxContents) {
+
+                    String message = Messages.get().getBundle(cms.getRequestContext().getLocale()).key(
+                        Messages.ERR_TOO_MANY_CONTENTS_1,
+                        config.getContentParentFolder());
+                    throw new CmsFormException(CmsFormConstants.ErrorCode.errMaxContentsExceeded, message);
+                }
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+                throw new CmsFormException(e);
             }
         }
     }
@@ -76,21 +87,25 @@ public class CmsFormSessionSecurityUtil {
      * @param cms the current CMS context 
      * @param config the form configuration 
      * @param name the file name of the uploaded file 
-     * @param size the size of the uploaded file 
+     * @param size the size of the uploaded file
      * 
-     * @throws CmsPermissionViolationException if creating the upload in the VFS would violate the limits set in the configuration
-     * @throws CmsException for all other errors 
+     *  @throws CmsFormException if something goes wrong 
+     * 
      */
     public static void checkCreateUpload(CmsObject cms, CmsFormConfiguration config, String name, long size)
-    throws CmsPermissionViolationException, CmsException {
+    throws CmsFormException {
 
         if (!config.getUploadParentFolder().isPresent()) {
-            throw new CmsPermissionViolationException(Messages.get().container(Messages.ERR_NO_UPLOADS_ALLOWED_0));
+            String message = Messages.get().container(Messages.ERR_NO_UPLOADS_ALLOWED_0).key(
+                cms.getRequestContext().getLocale());
+            throw new CmsFormException(CmsFormConstants.ErrorCode.errNoUploadAllowed, message);
         }
 
         if (config.getMaxUploadSize().isPresent()) {
             if (config.getMaxUploadSize().get().longValue() < size) {
-                throw new CmsPermissionViolationException(Messages.get().container(Messages.ERR_UPLOAD_TOO_BIG_1, name));
+                String message = Messages.get().container(Messages.ERR_UPLOAD_TOO_BIG_1, name).key(
+                    cms.getRequestContext().getLocale());
+                throw new CmsFormException(CmsFormConstants.ErrorCode.errMaxUploadSizeExceeded, message);
             }
         }
 
@@ -104,9 +119,9 @@ public class CmsFormSessionSecurityUtil {
                 }
             }
             if (!foundExtension) {
-                throw new CmsPermissionViolationException(Messages.get().container(
-                    Messages.ERR_UPLOAD_FILE_EXTENSION_NOT_ALLOWED_1,
-                    name));
+                String message = Messages.get().container(Messages.ERR_UPLOAD_FILE_EXTENSION_NOT_ALLOWED_1, name).key(
+                    cms.getRequestContext().getLocale());
+                throw new CmsFormException(CmsFormConstants.ErrorCode.errInvalidExtension, message);
             }
         }
     }

@@ -29,7 +29,7 @@ package org.opencms.editors.usergenerated.client;
 
 import org.opencms.editors.usergenerated.client.export.CmsClientFormSession;
 import org.opencms.editors.usergenerated.client.export.CmsXmlContentFormApi;
-import org.opencms.editors.usergenerated.client.export.I_CmsStringCallback;
+import org.opencms.editors.usergenerated.client.export.I_CmsErrorCallback;
 import org.opencms.editors.usergenerated.shared.CmsFormConstants;
 import org.opencms.util.CmsUUID;
 
@@ -106,7 +106,7 @@ public class CmsFormWrapper extends FormPanel {
     public void uploadFields(
         final Set<String> fields,
         final Function<Map<String, String>, Void> filenameCallback,
-        final I_CmsStringCallback errorCallback) {
+        final I_CmsErrorCallback errorCallback) {
 
         disableAllFileFieldsExcept(fields);
         final String id = CmsJsUtils.generateRandomId();
@@ -129,7 +129,7 @@ public class CmsFormWrapper extends FormPanel {
 
                         public void onFailure(Throwable caught) {
 
-                            errorCallback.call(caught.getMessage());
+                            m_formSession.getContentFormApi().handleError(caught, errorCallback);
 
                         }
 

@@ -32,6 +32,11 @@ package org.opencms.editors.usergenerated.shared;
  */
 public class CmsFormConstants {
 
+    /** Enum representing the different types of errors. The string values of these enum values are intended for use in JavaScript error handling functions. */
+    public enum ErrorCode {
+        errInvalidAction, errConfiguration, errNoUploadAllowed, errMaxContentsExceeded, errMaxQueueLengthExceeded, errInvalidExtension, errValidation, errMisc, errMaxUploadSizeExceeded, errMiscUploadError, errMiscContentError
+    }
+
     /** Name of the form field containing the session id. */
     public static final String FIELD_SESSION_ID = "formSessionId";
 

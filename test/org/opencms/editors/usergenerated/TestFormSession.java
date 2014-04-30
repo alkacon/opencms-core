@@ -28,6 +28,7 @@
 package org.opencms.editors.usergenerated;
 
 import org.opencms.db.CmsPublishList;
+import org.opencms.editors.usergenerated.shared.CmsFormException;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -38,7 +39,6 @@ import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
@@ -335,7 +335,7 @@ public class TestFormSession extends OpenCmsTestCase {
 
             session.loadXmlContent("file1.txt");
             fail("Should not be able to edit more than one file in a session.");
-        } catch (CmsIllegalStateException e) {
+        } catch (CmsFormException e) {
             // ok 
         }
 
@@ -345,7 +345,7 @@ public class TestFormSession extends OpenCmsTestCase {
         try {
             session.createXmlContent();
             fail("Should not be able to edit more than one file in a session.");
-        } catch (CmsIllegalStateException e) {
+        } catch (CmsFormException e) {
             // ok 
         }
 
@@ -355,7 +355,7 @@ public class TestFormSession extends OpenCmsTestCase {
         try {
             session.createXmlContent();
             fail("Should not be able to edit more than one file in a session.");
-        } catch (CmsIllegalStateException e) {
+        } catch (CmsFormException e) {
             // ok 
         }
 
@@ -365,7 +365,7 @@ public class TestFormSession extends OpenCmsTestCase {
         try {
             session.loadXmlContent("file2.txt");
             fail("Should not be able to edit more than one file in a session.");
-        } catch (CmsIllegalStateException e) {
+        } catch (CmsFormException e) {
             // ok 
         }
 

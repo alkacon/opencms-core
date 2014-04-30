@@ -27,8 +27,8 @@
 
 package org.opencms.editors.usergenerated;
 
+import org.opencms.editors.usergenerated.shared.CmsFormException;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.CmsException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -58,9 +58,9 @@ public class CmsFormActionElement extends CmsJspActionElement {
      * @param fileName the name (not path) of the XML content to edit 
      * @return the id of the newly created form session
      * 
-     * @throws CmsException if something goes wrong 
+     * @throws CmsFormException if something goes wrong 
      */
-    public String createSessionForResource(String configPath, String fileName) throws CmsException {
+    public String createSessionForResource(String configPath, String fileName) throws CmsFormException {
 
         CmsFormSession formSession = CmsFormSessionFactory.getInstance().createSessionForFile(
             getCmsObject(),
