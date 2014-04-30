@@ -294,11 +294,10 @@ public class CmsFormSession {
 
         m_finished = true;
         m_requiresCleanup = false;
+        CmsProject project = getProject();
+        CmsObject projectCms = OpenCms.initCmsObject(m_adminCms);
+        projectCms.getRequestContext().setCurrentProject(project);
         if (m_configuration.isAutoPublish()) {
-            CmsProject project = getProject();
-            CmsObject projectCms = OpenCms.initCmsObject(m_adminCms);
-            projectCms.getRequestContext().setCurrentProject(project);
-
             // we don't necessarily publish with the user who has the locks on the resources, so we need to steal the locks  
             List<CmsResource> projectResources = projectCms.readProjectView(project.getUuid(), CmsResource.STATE_KEEP);
             for (CmsResource projectResource : projectResources) {
@@ -310,6 +309,9 @@ public class CmsFormSession {
             OpenCms.getPublishManager().publishProject(
                 projectCms,
                 new CmsLogReport(Locale.ENGLISH, CmsFormSession.class));
+        } else {
+            // try to unlock everything - we don't need this in case of auto-publish, since publishing already unlocks the resources
+            projectCms.unlockProject(project.getUuid());
         }
 
     }
