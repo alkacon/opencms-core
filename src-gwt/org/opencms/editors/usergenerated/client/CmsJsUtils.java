@@ -58,6 +58,8 @@ public class CmsJsUtils {
             JSONString value = json.get(key).isString();
             if (value != null) {
                 result.put(key, value.stringValue());
+            } else if (json.get(key).isNull() != null) {
+                result.put(key, null);
             }
         }
         return result;

@@ -52,6 +52,7 @@ import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -63,7 +64,9 @@ import java.util.Map;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.logging.Log;
 
+import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Ordering;
 
 /**
  * A form editing session is required to create and edit contents from the web front-end.<p>
@@ -73,7 +76,7 @@ public class CmsFormSession implements I_CmsSessionDestroyHandler {
     /**
      * Compares XPaths.<p>
      */
-    protected static class PathComparator implements Comparator<String> {
+    public static class PathComparator implements Comparator<String> {
 
         /**
          * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
@@ -88,29 +91,21 @@ public class CmsFormSession implements I_CmsSessionDestroyHandler {
             } else {
                 String[] o1Elements = o1.split("/");
                 String[] o2Elements = o2.split("/");
-                // compare the path elements
-                for (int i = 0; i < o1Elements.length; i++) {
-                    String o1Name = CmsXmlUtils.removeXpathIndex(o1Elements[i]);
-                    String o2Name = CmsXmlUtils.removeXpathIndex(o2Elements[i]);
-                    if (o1Name.equals(o2Name)) {
-                        // in case of the same path name, check the indices
-                        int o1Index = CmsXmlUtils.getXpathIndexInt(o1Elements[i]);
-                        int o2Index = CmsXmlUtils.getXpathIndexInt(o2Elements[i]);
-                        if (o1Index != o2Index) {
-                            result = o2Index - o1Index;
-                            break;
-                        } else if (i == (o2Elements.length - 1)) {
-                            // in case this is the last element of o2's path
-                            result = 1;
-                            break;
-                        }
-                    } else {
-                        result = o1Name.compareTo(o2Name);
-                        break;
-                    }
-                }
-            }
+                // ordering for comparing single xpath components 
+                Ordering<String> elementOrdering = new Ordering<String>() {
 
+                    @Override
+                    public int compare(String first, String second) {
+
+                        return ComparisonChain.start().compare(
+                            CmsXmlUtils.removeXpathIndex(first),
+                            CmsXmlUtils.removeXpathIndex(second)).compare(
+                            CmsXmlUtils.getXpathIndexInt(first),
+                            CmsXmlUtils.getXpathIndexInt(second)).result();
+                    }
+                };
+                result = elementOrdering.lexicographical().compare(Arrays.asList(o1Elements), Arrays.asList(o2Elements));
+            }
             return result;
         }
     }
@@ -284,6 +279,14 @@ public class CmsFormSession implements I_CmsSessionDestroyHandler {
             LOG.error(e.getLocalizedMessage(), e);
             throw new CmsFormException(e, CmsFormConstants.ErrorCode.errMiscContentError, e.getLocalizedMessage());
         }
+    }
+
+    /**
+     * Disables auto-cleanup on session destruction.<p>
+     */
+    public void disableCleanup() {
+
+        m_requiresCleanup = false;
     }
 
     /**
@@ -511,19 +514,28 @@ public class CmsFormSession implements I_CmsSessionDestroyHandler {
      */
     protected void addContentValue(CmsXmlContent content, Locale locale, String path, String value) {
 
-        if (!content.hasValue(path, locale)) {
-            String[] pathElements = path.split("/");
-            String currentPath = pathElements[0];
-            for (int i = 0; i < pathElements.length; i++) {
-                if (i > 0) {
-                    currentPath = CmsStringUtil.joinPaths(currentPath, pathElements[i]);
-                }
-                while (!content.hasValue(currentPath, locale)) {
-                    content.addValue(m_cms, currentPath, locale, CmsXmlUtils.getXpathIndexInt(currentPath) - 1);
+        boolean hasValue = content.hasValue(path, locale);
+        if (value != null) {
+            if (!hasValue) {
+                String[] pathElements = path.split("/");
+                String currentPath = pathElements[0];
+                for (int i = 0; i < pathElements.length; i++) {
+                    if (i > 0) {
+                        currentPath = CmsStringUtil.joinPaths(currentPath, pathElements[i]);
+                    }
+                    while (!content.hasValue(currentPath, locale)) {
+                        content.addValue(m_cms, currentPath, locale, CmsXmlUtils.getXpathIndexInt(currentPath) - 1);
+                    }
                 }
             }
+            content.getValue(path, locale).setStringValue(m_cms, value);
+        } else {
+            if (hasValue) {
+                int index = CmsXmlUtils.getXpathIndexInt(path) - 1;
+                content.removeValue(path, locale, index);
+
+            }
         }
-        content.getValue(path, locale).setStringValue(m_cms, value);
     }
 
     /**

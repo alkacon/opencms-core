@@ -28,6 +28,7 @@
 package org.opencms.editors.usergenerated;
 
 import org.opencms.db.CmsPublishList;
+import org.opencms.editors.usergenerated.CmsFormSession.PathComparator;
 import org.opencms.editors.usergenerated.shared.CmsFormException;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
@@ -391,6 +392,25 @@ public class TestFormSession extends OpenCmsTestCase {
         CmsFormSession session = new CmsFormSession(getCmsObject());
         Map<String, String> values = session.getContentValues(xmlContent, new Locale("en"));
         assertEquals("Full width example", values.get("Title[1]"));
+    }
+
+    /**
+     * Tests the comparator used for xpath ordering.<p>
+     * 
+     * @throws Exception if something goes wrong 
+     */
+    public void testPathComparator() throws Exception {
+
+        PathComparator comp = new PathComparator();
+        assertEquals("Equal paths should be equal", 0, comp.compare("Title[1]", "Title[1]"));
+        assertEquals(
+            "Parent path should come before child path",
+            -1,
+            comp.compare("Paragraph[1]", "Paragraph[1]/Headline[1]"));
+        assertEquals("Index 2 should come before index 11", -1, comp.compare("Paragraph[2]", "Paragraph[11]"));
+        assertEquals("A should come before B", -1, comp.compare("A[1]", "B[1]"));
+        assertEquals("A should come before B at lower levels", -1, comp.compare("Foo[1]/A[1]", "Foo[1]/B[1]"));
+
     }
 
     /**

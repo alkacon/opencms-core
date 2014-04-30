@@ -141,6 +141,9 @@ public class CmsFormSessionFactory {
 
         CmsFormSession session = createSession(cms, request, configPath);
         session.loadXmlContent(fileName);
+
+        // when we open a session for existing files, we do not want them to get automatically deleted
+        session.disableCleanup();
         return session;
     }
 
