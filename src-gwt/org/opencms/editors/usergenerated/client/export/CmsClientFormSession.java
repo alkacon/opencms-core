@@ -44,6 +44,7 @@ import org.timepedia.exporter.client.Exportable;
 import org.timepedia.exporter.client.NoExport;
 
 import com.google.common.base.Function;
+import com.google.common.collect.Maps;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -215,5 +216,38 @@ public class CmsClientFormSession implements Exportable {
                 return null;
             }
         }, errorCallback);
+    }
+
+    /**
+     * Validates the new content values.<p>
+     * 
+     * @param newValues a Javascript object with the value xpaths as keys and the corresponding content values as values.<p>
+     * 
+     * @param onSuccess the callback to call with the validation results 
+     */
+    public void validate(JavaScriptObject newValues, final I_CmsJavaScriptObjectCallback onSuccess) {
+
+        AsyncCallback<Map<String, String>> rpcCallback = new AsyncCallback<Map<String, String>>() {
+
+            @SuppressWarnings("synthetic-access")
+            public void onFailure(Throwable caught) {
+
+                m_apiRoot.handleError(caught, null);
+            }
+
+            public void onSuccess(Map<String, String> result) {
+
+                if (result == null) {
+                    result = Maps.newHashMap();
+                }
+                onSuccess.call(CmsJsUtils.convertMapToJsObject(result));
+            }
+        };
+        m_apiRoot.getRpcHelper().executeRpc(
+            CmsXmlContentFormApi.SERVICE.validateContent(
+                m_content.getSessionId(),
+                CmsJsUtils.convertJsObjectToMap(newValues),
+                rpcCallback));
+
     }
 }

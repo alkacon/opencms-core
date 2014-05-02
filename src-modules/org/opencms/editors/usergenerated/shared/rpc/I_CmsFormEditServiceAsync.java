@@ -101,4 +101,18 @@ public interface I_CmsFormEditServiceAsync {
         Set<String> fieldNames,
         String formDataId,
         AsyncCallback<Map<String, String>> filenameCallback);
+
+    /**
+     * Validates the new content values for a content loaded in the given session.<p>
+     * 
+     * @param sessionId the id of the session containing the content 
+     * @param values the values to validate
+     * @param resultCallback the callback to call with the result  
+     * 
+     * @return the request builder for the RPC call  
+     */
+    RequestBuilder validateContent(
+        CmsUUID sessionId,
+        Map<String, String> values,
+        AsyncCallback<Map<String, String>> resultCallback);
 }

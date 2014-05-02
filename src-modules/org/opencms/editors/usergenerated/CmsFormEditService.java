@@ -209,6 +209,28 @@ public class CmsFormEditService extends CmsGwtService implements I_CmsFormEditSe
     }
 
     /**
+     * @see org.opencms.editors.usergenerated.shared.rpc.I_CmsFormEditService#validateContent(org.opencms.util.CmsUUID, java.util.Map)
+     */
+    public Map<String, String> validateContent(CmsUUID sessionId, Map<String, String> contentValues)
+    throws CmsFormException {
+
+        Map<String, String> result = Maps.newHashMap();
+        try {
+            CmsFormSession session = getFormSession(sessionId);
+            if ((session != null) && sessionId.equals(session.getId())) {
+                CmsXmlContentErrorHandler errorHandler = session.validateContent(contentValues);
+                result = errorHandler.getErrors(session.getMessageLocale());
+            } else {
+                // invalid session 
+
+            }
+        } catch (Exception e) {
+            error(e);
+        }
+        return result;
+    }
+
+    /**
      * Handles all multipart requests.<p>
      * 
      * @param request the request
@@ -275,4 +297,5 @@ public class CmsFormEditService extends CmsGwtService implements I_CmsFormEditSe
         formContent.setStrucureId(resource.getStructureId());
         return formContent;
     }
+
 }

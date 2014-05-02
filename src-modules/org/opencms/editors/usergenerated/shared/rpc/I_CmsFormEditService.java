@@ -28,6 +28,7 @@
 package org.opencms.editors.usergenerated.shared.rpc;
 
 import org.opencms.editors.usergenerated.shared.CmsFormContent;
+import org.opencms.editors.usergenerated.shared.CmsFormException;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.util.CmsUUID;
 
@@ -96,5 +97,17 @@ public interface I_CmsFormEditService extends RemoteService {
      */
     Map<String, String> uploadFiles(CmsUUID sessionId, Set<String> fieldNames, String formDataId)
     throws CmsRpcException;
+
+    /**
+     * Validates the new content values for a content loaded in the given session.<p>
+     * 
+     * @param sessionId the id of the session containing the content 
+     * @param contentValues the values to validate 
+     * 
+     * @return the map of validation results 
+     * 
+     * @throws CmsFormException if something goes wrong 
+     */
+    Map<String, String> validateContent(CmsUUID sessionId, Map<String, String> contentValues) throws CmsFormException;
 
 }

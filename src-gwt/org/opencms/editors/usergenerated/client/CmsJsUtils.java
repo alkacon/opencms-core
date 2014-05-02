@@ -74,6 +74,9 @@ public class CmsJsUtils {
      */
     public static JavaScriptObject convertMapToJsObject(Map<String, String> stringMap) {
 
+        if (stringMap == null) {
+            return null;
+        }
         JSONObject json = new JSONObject();
         for (Map.Entry<String, String> entry : stringMap.entrySet()) {
             String key = entry.getKey();

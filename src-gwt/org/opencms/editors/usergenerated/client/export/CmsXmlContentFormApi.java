@@ -141,7 +141,9 @@ public class CmsXmlContentFormApi implements Exportable {
         } else {
             message = e.getMessage();
         }
-        callback.call(errorCode, message, JavaScriptObject.createObject());
+        if (callback != null) {
+            callback.call(errorCode, message, JavaScriptObject.createObject());
+        }
     }
 
     /**
