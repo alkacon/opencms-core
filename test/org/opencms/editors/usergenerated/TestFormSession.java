@@ -478,7 +478,8 @@ public class TestFormSession extends OpenCmsTestCase {
         }
         countdown.await(); // wait until all threads have finished 
         long t2 = System.currentTimeMillis();
-        assertTrue("The elapsed time is below expected wait time", (t2 - t1) > ((numThreads - 1) * waitTime));
+        System.out.println("delta-t=" + (t2 - t1) + ", expected=" + (waitTime * (numThreads - 1)));
+        assertTrue("The elapsed time is below expected wait time", (t2 - t1) >= ((numThreads - 1) * waitTime));
     }
 
     /**
