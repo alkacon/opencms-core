@@ -177,7 +177,7 @@ public class CmsFormSession implements I_CmsSessionDestroyHandler {
         }
         CmsProject project = m_adminCms.createProject(
             generateProjectName(),
-            "User generated content project",
+            "User generated content project for " + configuration.getPath(),
             m_configuration.getProjectGroup().getName(),
             m_configuration.getProjectGroup().getName());
         project.setDeleteAfterPublishing(true);
@@ -449,6 +449,8 @@ public class CmsFormSession implements I_CmsSessionDestroyHandler {
 
         if (m_requiresCleanup) {
             cleanupProject();
+        } else {
+            cleanupProjectIfEmpty();
         }
     }
 
@@ -634,7 +636,12 @@ public class CmsFormSession implements I_CmsSessionDestroyHandler {
     private void cleanupProject() {
 
         m_requiresCleanup = false;
-
+        try {
+            CmsObject cms = OpenCms.initCmsObject(m_adminCms);
+            cms.readProject(getProject().getUuid());
+        } catch (CmsException e) {
+            return;
+        }
         try {
             CmsObject cms = OpenCms.initCmsObject(m_adminCms);
             cms.getRequestContext().setCurrentProject(getProject());
@@ -652,6 +659,31 @@ public class CmsFormSession implements I_CmsSessionDestroyHandler {
                     + "]");
                 cms.deleteProject(projectId);
 
+            }
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+    }
+
+    /**
+     * Cleans up the project, but only if it's empty.<p>
+     */
+    private void cleanupProjectIfEmpty() {
+
+        m_requiresCleanup = false;
+        try {
+            CmsObject cms = OpenCms.initCmsObject(m_adminCms);
+            cms.readProject(getProject().getUuid());
+        } catch (CmsException e) {
+            return;
+        }
+        try {
+            CmsObject cms = OpenCms.initCmsObject(m_adminCms);
+            cms.getRequestContext().setCurrentProject(getProject());
+            CmsUUID projectId = getProject().getUuid();
+            List<CmsResource> projectResources = cms.readProjectView(projectId, CmsResource.STATE_KEEP);
+            if (projectResources.isEmpty()) {
+                cms.deleteProject(projectId);
             }
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);

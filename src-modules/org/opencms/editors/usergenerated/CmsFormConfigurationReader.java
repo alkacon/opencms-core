@@ -154,7 +154,7 @@ public class CmsFormConfigurationReader {
         String projectGroupStr = getStringValue(N_PROJECT_GROUP);
         CmsGroup projectGroup = m_cms.readGroup(projectGroupStr.trim());
         CmsUUID id = configFile.getStructureId();
-        return new CmsFormConfiguration(
+        CmsFormConfiguration result = new CmsFormConfiguration(
             id,
             userForGuest,
             projectGroup,
@@ -169,6 +169,8 @@ public class CmsFormConfigurationReader {
             maxQueueLength,
             autoPublish,
             validExtensions);
+        result.setPath(configFile.getRootPath());
+        return result;
     }
 
     /**

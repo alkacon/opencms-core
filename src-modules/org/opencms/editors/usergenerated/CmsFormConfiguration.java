@@ -86,6 +86,9 @@ public class CmsFormConfiguration {
     /** The resource type for new XML contents. */
     private String m_resourceType;
 
+    /** The path of the configuration. */
+    private String m_path;
+
     /**
      * Creates a new form configuration.<p>
      * 
@@ -209,6 +212,16 @@ public class CmsFormConfiguration {
         return m_namePattern;
     }
 
+    /** 
+     * Gets the path of the configuration.<p>
+     * 
+     * @return the path of the configuration
+     */
+    public String getPath() {
+
+        return m_path;
+    }
+
     /**
      * Returns the group which should be used as the manager groups for projects based on this configuration.<p>
      * 
@@ -287,6 +300,16 @@ public class CmsFormConfiguration {
     public boolean needsQueue() {
 
         return m_maxQueueLength.isPresent() || m_queueInterval.isPresent();
+    }
+
+    /**
+     * Sets the path.<p>
+     * 
+     * @param path the path of the configuration.<p>
+     */
+    public void setPath(String path) {
+
+        m_path = path;
     }
 
     /**

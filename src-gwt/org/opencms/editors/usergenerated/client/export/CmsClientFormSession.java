@@ -145,6 +145,16 @@ public class CmsClientFormSession implements Exportable {
         return "" + m_content.getSessionId();
     }
 
+    /**
+     * Gets the site path of the edited content.<p>
+     * 
+     * @return the site path of the edited content
+     */
+    public String getSitePath() {
+
+        return m_content.getSitePath();
+    }
+
     /** 
      * Gets the old content values as a Javascript object.<p>
      *  
