@@ -43,10 +43,10 @@
 				<layout element="ValidExtensions" widget="ComboWidget" configuration=".png;.jpg;.jpeg;.gif|.txt;.doc;.docx;.pdf;.odt|.zip;.rar;.bz2" />
 			</layouts>
 			<validationrules>
-				<rule element="MaxUploadSize" regex="[0-9]*" type="error" message="Please enter a number" />
-				<rule element="MaxNumContents" regex="[0-9]*" type="error" message="Please enter a number" />
-				<rule element="QueueWaitTime" regex="[0-9]*" type="error" message="Please enter a number" />
-				<rule element="QueueMaxLength" regex="[0-9]*" type="error" message="Please enter a number" />
+				<rule element="MaxUploadSize" regex="[0-9]*" type="error" message="%(key.validation.numeric)" />
+				<rule element="MaxNumContents" regex="[0-9]*" type="error" message="%(key.validation.numeric)" />
+				<rule element="QueueWaitTime" regex="[0-9]*" type="error" message="%(key.validation.numeric)" />
+				<rule element="QueueMaxLength" regex="[0-9]*" type="error" message="%(key.validation.numeric)" />
 			</validationrules>
 			<tabs>
 			</tabs>

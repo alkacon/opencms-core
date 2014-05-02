@@ -86,13 +86,13 @@ public class CmsClientFormSession implements Exportable {
 
             public void onFailure(Throwable caught) {
 
-                // TODO Auto-generated method stub
+                throw new RuntimeException(caught);
 
             }
 
             public void onSuccess(Void result) {
 
-                // TODO Auto-generated method stub
+                // do nothing 
 
             }
         });

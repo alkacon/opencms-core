@@ -34,11 +34,34 @@ public class CmsFormConstants {
 
     /** Enum representing the different types of errors. The string values of these enum values are intended for use in JavaScript error handling functions. */
     public enum ErrorCode {
-        errInvalidAction, errConfiguration, errNoUploadAllowed, errMaxContentsExceeded, errMaxQueueLengthExceeded, errInvalidExtension, errValidation, errMisc, errMaxUploadSizeExceeded, errMiscUploadError, errMiscContentError
-    }
+        /** Invalid action error. */
+        errInvalidAction,
 
-    /** Name of the form field containing the session id. */
-    public static final String FIELD_SESSION_ID = "formSessionId";
+        /** Configuration error. */
+        errConfiguration,
+
+        /** Error when trying to upload a file and uploads are not allowed. */
+        errNoUploadAllowed,
+
+        /** Error when the  maximum number of contents in the content directory is reached. */
+        errMaxContentsExceeded,
+
+        /** Error when the maximum number of entries in the form session request queue is reached. */
+        errMaxQueueLengthExceeded,
+
+        /** Error when user tries to upload a file with a file extension which is not among the configured file extensions. */
+        errInvalidExtension,
+
+        /** Validation error. */
+        errValidation,
+
+        /** Miscellaneous other errors. */
+        errMisc,
+
+        /** Error when uploaded files exceed the configured maximum upload size. */
+        errMaxUploadSizeExceeded;
+
+    }
 
     /** The request parameter used for identifying form submits. */
     public static final String PARAM_FORM_DATA_ID = "formDataId";

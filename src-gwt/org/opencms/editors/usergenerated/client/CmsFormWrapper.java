@@ -46,15 +46,11 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.Hidden;
 
 /**
  * Widget used to wrap and manage the state of forms for which the form editing API is used.<p>
  */
 public class CmsFormWrapper extends FormPanel {
-
-    /** Field containing the form session id. */
-    private Hidden m_formSessionIdField;
 
     /** The client form session. */
     private CmsClientFormSession m_formSession;
@@ -68,9 +64,6 @@ public class CmsFormWrapper extends FormPanel {
     public CmsFormWrapper(Element element, String formSessionId) {
 
         super(element, true);
-
-        m_formSessionIdField = new Hidden(CmsFormConstants.FIELD_SESSION_ID, formSessionId);
-        add(m_formSessionIdField);
         setEncoding(FormPanel.ENCODING_MULTIPART);
         onAttach();
     }

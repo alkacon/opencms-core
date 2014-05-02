@@ -34,7 +34,6 @@ import org.opencms.editors.usergenerated.shared.CmsFormContent;
 import org.opencms.editors.usergenerated.shared.CmsFormException;
 import org.opencms.editors.usergenerated.shared.rpc.I_CmsFormEditService;
 import org.opencms.editors.usergenerated.shared.rpc.I_CmsFormEditServiceAsync;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.util.CmsUUID;
 
 import org.timepedia.exporter.client.Export;
@@ -82,7 +81,6 @@ public class CmsXmlContentFormApi implements Exportable {
 
                     public void call(String errorType, String message, JavaScriptObject additionalData) {
 
-                        CmsDebugLog.consoleLog("uncaught error: " + message);
                         throw new RuntimeException(e);
                     }
                 });

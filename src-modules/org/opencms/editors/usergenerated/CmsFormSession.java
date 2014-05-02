@@ -254,7 +254,7 @@ public class CmsFormSession implements I_CmsSessionDestroyHandler {
             return result;
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
-            throw new CmsFormException(e, CmsFormConstants.ErrorCode.errMiscUploadError, e.getLocalizedMessage());
+            throw new CmsFormException(e, CmsFormConstants.ErrorCode.errMisc, e.getLocalizedMessage());
         }
     }
 
@@ -277,7 +277,7 @@ public class CmsFormSession implements I_CmsSessionDestroyHandler {
             return m_editResource;
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
-            throw new CmsFormException(e, CmsFormConstants.ErrorCode.errMiscContentError, e.getLocalizedMessage());
+            throw new CmsFormException(e, CmsFormConstants.ErrorCode.errMisc, e.getLocalizedMessage());
         }
     }
 
@@ -425,7 +425,7 @@ public class CmsFormSession implements I_CmsSessionDestroyHandler {
         if (fileName.contains("/")) {
             String message = Messages.get().container(Messages.ERR_INVALID_FILE_NAME_TO_LOAD_1, fileName).key(
                 getCmsObject().getRequestContext().getLocale());
-            throw new CmsFormException(CmsFormConstants.ErrorCode.errMiscContentError, message);
+            throw new CmsFormException(CmsFormConstants.ErrorCode.errMisc, message);
         }
         try {
             String contentSitePath = m_cms.getRequestContext().removeSiteRoot(
@@ -438,7 +438,7 @@ public class CmsFormSession implements I_CmsSessionDestroyHandler {
             }
             return m_editResource;
         } catch (CmsException e) {
-            throw new CmsFormException(CmsFormConstants.ErrorCode.errMiscContentError, e.getLocalizedMessage());
+            throw new CmsFormException(CmsFormConstants.ErrorCode.errMisc, e.getLocalizedMessage());
         }
     }
 
@@ -477,7 +477,7 @@ public class CmsFormSession implements I_CmsSessionDestroyHandler {
             return errorHandler;
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
-            throw new CmsFormException(e, CmsFormConstants.ErrorCode.errMiscContentError, e.getLocalizedMessage());
+            throw new CmsFormException(e, CmsFormConstants.ErrorCode.errMisc, e.getLocalizedMessage());
         }
 
     }
@@ -500,7 +500,7 @@ public class CmsFormSession implements I_CmsSessionDestroyHandler {
             return content.validate(m_cms);
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
-            throw new CmsFormException(e, CmsFormConstants.ErrorCode.errMiscContentError, e.getLocalizedMessage());
+            throw new CmsFormException(e, CmsFormConstants.ErrorCode.errMisc, e.getLocalizedMessage());
         }
     }
 

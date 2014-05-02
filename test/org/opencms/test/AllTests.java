@@ -124,6 +124,7 @@ public final class AllTests {
         suite.addTest(org.opencms.xml.content.AllTests.suite());
         suite.addTest(org.opencms.xml.page.AllTests.suite());
         suite.addTest(org.opencms.repository.AllTests.suite());
+        suite.addTest(org.opencms.editors.usergenerated.AllTests.suite());
 
         TestSetup wrapper = new TestSetup(suite) {
 

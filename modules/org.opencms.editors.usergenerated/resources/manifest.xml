@@ -46,6 +46,7 @@
 						<value>all</value>
 					</property>
 				</properties>
+				<param name="resource.flag.internal">true</param>
 				<param name="schema">/system/modules/org.opencms.editors.usergenerated/schemas/ugc_form_config.xsd</param>
 			</type>
 		</resourcetypes>
