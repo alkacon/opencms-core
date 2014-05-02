@@ -112,6 +112,30 @@ public class CmsClientFormSession implements Exportable {
     }
 
     /**
+     * Fetches the link for a given path from the server.<p>
+     * 
+     * @param path the path for which we want the link 
+     * 
+     * @param callback the callback to call with the result 
+     */
+    public void getLink(String path, final I_CmsStringCallback callback) {
+
+        m_apiRoot.getRpcHelper().executeRpc(CmsXmlContentFormApi.SERVICE.getLink(path, new AsyncCallback<String>() {
+
+            @SuppressWarnings("synthetic-access")
+            public void onFailure(Throwable caught) {
+
+                m_apiRoot.handleError(caught, null);
+            }
+
+            public void onSuccess(String result) {
+
+                callback.call(result);
+            }
+        }));
+    }
+
+    /**
      * Gets the session id.<p>
      * 
      * @return the session id

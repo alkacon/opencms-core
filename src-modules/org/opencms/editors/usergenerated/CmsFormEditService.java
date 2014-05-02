@@ -121,6 +121,14 @@ public class CmsFormEditService extends CmsGwtService implements I_CmsFormEditSe
     }
 
     /**
+     * @see org.opencms.editors.usergenerated.shared.rpc.I_CmsFormEditService#getLink(java.lang.String)
+     */
+    public String getLink(String path) {
+
+        return OpenCms.getLinkManager().substituteLink(getCmsObject(), path);
+    }
+
+    /**
      * @see org.opencms.editors.usergenerated.shared.rpc.I_CmsFormEditService#getNewContent(java.lang.String)
      */
     public CmsFormContent getNewContent(String configPath) throws CmsFormException {

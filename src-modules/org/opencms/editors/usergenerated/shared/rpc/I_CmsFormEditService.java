@@ -63,6 +63,15 @@ public interface I_CmsFormEditService extends RemoteService {
     CmsFormContent getExistingContent(CmsUUID sessionId) throws CmsRpcException;
 
     /**
+     * Gets the link corresponding to a given site path.<p>
+     * 
+     * @param path the site path 
+     * 
+     * @return the link for the path 
+     */
+    String getLink(String path);
+
+    /**
      * Returns the form content for new content.<p>
      * 
      * @param configPath the configuration path
