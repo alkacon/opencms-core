@@ -27,10 +27,10 @@
 
 package org.opencms.editors.usergenerated.client;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import com.google.common.collect.Maps;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
@@ -52,13 +52,12 @@ public class CmsJsUtils {
      */
     public static Map<String, String> convertJsObjectToMap(JavaScriptObject jso) {
 
-        Map<String, String> result = Maps.newHashMap();
+        Map<String, String> result = new HashMap<String, String>();
         JSONObject json = new JSONObject(jso);
         for (String key : json.keySet()) {
-            JSONString value = json.get(key).isString();
-            if (value != null) {
-                result.put(key, value.stringValue());
-            } else if (json.get(key).isNull() != null) {
+            if ((json.get(key) != null) && (json.get(key).isString() != null)) {
+                result.put(key, json.get(key).isString().stringValue());
+            } else {
                 result.put(key, null);
             }
         }
