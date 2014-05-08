@@ -220,7 +220,7 @@ javadoc {
             into "${buildDir}/docs/javadoc/logos"
         }
     }
-    options.addStringOption("sourcepath", "")
+    
     project.configure(options) {
         memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
         charSet = "UTF-8"
@@ -277,7 +277,7 @@ task javadocModules(type: Javadoc, dependsOn: jar) {
             into "${buildDir}/docs/javadocModules/logos"
         }
     }
-    options.addStringOption("sourcepath", "")
+    
     project.configure(options) {
         memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
         charSet = "UTF-8"
@@ -304,7 +304,7 @@ task javadocGwt(type: Javadoc, dependsOn: jar) {
             into "${buildDir}/docs/javadocGwt/logos"
         }
     }
-    options.addStringOption("sourcepath", "")
+    
     project.configure(options) {
         memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
         charSet = "UTF-8"
@@ -365,7 +365,7 @@ task javadocSetup(type: Javadoc, dependsOn: jar) {
             into "${buildDir}/docs/javadocSetup/logos"
         }
     }
-    options.addStringOption("sourcepath", "")
+    
     project.configure(options) {
         memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
         charSet = "UTF-8"
@@ -558,6 +558,7 @@ allModuleNames.split(',').each{ moduleName ->
             source = sourceSets[moduleName].allJava
             classpath = project.sourceSets[moduleName].compileClasspath
             destinationDir = file("${buildDir}/docs/javadoc${moduleName}")
+            
         }
 
         task "javadocJar_$moduleName"(type: Jar) {
@@ -606,20 +607,20 @@ allModuleNames.split(',').each{ moduleName ->
 
             classpath {
                 [
-                    sourceSets.main.java.srcDirs,
                     // Java source core
+                    sourceSets.main.java.srcDirs,
+                    // Java source gwt
                     sourceSets.gwt.java.srcDirs,
-                    // Java source
-                    sourceSets.gwt.output.resourcesDir,
+                    // Java source modules
+                    sourceSets.modules.java.srcDirs,
                     // Generated resources
-                    sourceSets.gwt.output.classesDir,
+                    sourceSets.gwt.output.resourcesDir,
                     // Generated classes
+                    sourceSets.gwt.output.classesDir,
+                    // Dependecies
                     sourceSets.gwt.compileClasspath,
 
-                    sourceSets.modules.java.srcDirs,
-                    
-                    
-                                        // Deps
+                    // Souceset folders of the current module
                     sourceSets[moduleName+'_gwt'].java.srcDirs,
                     sourceSets[moduleName+'_gwt'].output.resourcesDir,
                     sourceSets[moduleName+'_gwt'].output.classesDir
@@ -638,7 +639,7 @@ allModuleNames.split(',').each{ moduleName ->
                         '-localWorkers',
                         '2',
                         '-style',
-                        'pretty',
+                        'obfuscated',
                         '-extra',
                         extraDir,
                         '-strict'
@@ -1308,6 +1309,9 @@ install {
 // fixed issue with libraries containing both .java and .class files
 tasks.withType(JavaCompile) {
     options.compilerArgs += ["-sourcepath", ""]
+}
+tasks.withType(Javadoc) {
+    options.addStringOption("sourcepath", "")
 }
 
 
