@@ -164,7 +164,8 @@ public class CmsLocationController {
      */
     private static native boolean isApiLoaded()/*-{
                                                return $wnd.google !== undefined && $wnd.google.maps !== undefined
-                                               && $wnd.google.maps.Map !== undefined;
+                                               && $wnd.google.maps.Map !== undefined
+                                               && $wnd.google.maps.places !== undefined;
                                                }-*/;
 
     /**
@@ -398,7 +399,7 @@ public class CmsLocationController {
                           zoom : zoom,
                           mapTypeId : type,
                           center : new $wnd.google.maps.LatLng(-34.397, 150.644),
-                          streetViewControl: false
+                          streetViewControl : false
                           };
                           var popupContent = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_popupContent;
                           var canvas = popupContent.@org.opencms.gwt.client.ui.input.location.CmsLocationPopupContent::getMapCanvas()();
@@ -465,15 +466,15 @@ public class CmsLocationController {
                                  zoomControl : false,
                                  streetViewControl : false,
                                  scrollwheel : false,
-                                 keyboardShortcuts :false
+                                 keyboardShortcuts : false
                                  };
                                  map = new $wnd.google.maps.Map(canvas, mapOptions);
                                  this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_previewMap = map;
                                  } else {
                                  map.setZoom(zoom);
                                  map.setMapTypeId(type);
-                                 map.panTo(pos);
-                                 map.setCenter(pos);
+                                 
+
                                  }
                                  var marker = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_previewMarker;
                                  if (marker == null) {
@@ -486,6 +487,8 @@ public class CmsLocationController {
                                  } else {
                                  marker.setPosition(pos);
                                  }
+                                 map.panTo(pos);
+                                 map.setCenter(pos);
 
                                  }-*/;
 
@@ -547,7 +550,8 @@ public class CmsLocationController {
      * @return <code>true</code> if the address field is configured
      */
     private native boolean hasAddress()/*-{
-                                       return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit.indexOf('address')!=-1;
+                                       return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit
+                                       .indexOf('address') != -1;
                                        }-*/;
 
     /**
@@ -556,8 +560,9 @@ public class CmsLocationController {
      * @return <code>true</code> if the lat. lng. fields are configured
      */
     private native boolean hasLatLng()/*-{
-                                       return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit.indexOf('coords')!=-1;
-                                       }-*/;
+                                      return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit
+                                      .indexOf('coords') != -1;
+                                      }-*/;
 
     /**
      * Evaluates if the map field is configured.<p>
@@ -565,7 +570,8 @@ public class CmsLocationController {
      * @return <code>true</code> if the map field is configured
      */
     private native boolean hasMap()/*-{
-                                   return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit.indexOf('map')!=-1;
+                                   return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit
+                                   .indexOf('map') != -1;
                                    }-*/;
 
     /**
@@ -574,7 +580,9 @@ public class CmsLocationController {
      * @return <code>true</code> if the mode field is configured
      */
     private native boolean hasMode()/*-{
-                                    return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit.indexOf('mode')!=-1;}-*/;
+                                    return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit
+                                    .indexOf('mode') != -1;
+                                    }-*/;
 
     /**
      * Evaluates if the size fields are configured.<p>
@@ -582,7 +590,8 @@ public class CmsLocationController {
      * @return <code>true</code> if the size fields are configured
      */
     private native boolean hasSize()/*-{
-                                    return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit.indexOf('size')!=-1;
+                                    return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit
+                                    .indexOf('size') != -1;
                                     }-*/;
 
     /**
@@ -591,7 +600,8 @@ public class CmsLocationController {
      * @return <code>true</code> if the type field is configured
      */
     private native boolean hasType()/*-{
-                                    return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit.indexOf('type')!=-1;
+                                    return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit
+                                    .indexOf('type') != -1;
                                     }-*/;
 
     /**
@@ -600,7 +610,8 @@ public class CmsLocationController {
      * @return <code>true</code> if the zoom field is configured
      */
     private native boolean hasZoom()/*-{
-                                    return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit.indexOf('zoom')!=-1;
+                                    return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit
+                                    .indexOf('zoom') != -1;
                                     }-*/;
 
     /**

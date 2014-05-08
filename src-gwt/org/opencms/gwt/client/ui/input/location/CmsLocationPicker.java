@@ -39,6 +39,7 @@ import java.util.Map.Entry;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -99,6 +100,7 @@ public class CmsLocationPicker extends Composite implements HasValueChangeHandle
         initWidget(uiBinder.createAndBindUi(this));
         // disable input, the picker popup is used for editing the value
         m_textbox.setEnabled(false);
+        m_locationInfoPanel.getStyle().setDisplay(Display.NONE);
         m_controller = new CmsLocationController(this, configuration);
     }
 
@@ -177,11 +179,17 @@ public class CmsLocationPicker extends Composite implements HasValueChangeHandle
      */
     protected void setLocationInfo(Map<String, String> infos) {
 
-        StringBuffer infoHtml = new StringBuffer();
-        for (Entry<String, String> info : infos.entrySet()) {
-            infoHtml.append("<p><span>").append(info.getKey()).append(":</span>").append(info.getValue()).append("</p>");
+        if (infos.isEmpty()) {
+            m_locationInfoPanel.getStyle().setDisplay(Display.NONE);
+        } else {
+            StringBuffer infoHtml = new StringBuffer();
+            for (Entry<String, String> info : infos.entrySet()) {
+                infoHtml.append("<p><span>").append(info.getKey()).append(":</span>").append(info.getValue()).append(
+                    "</p>");
+            }
+            m_locationInfoPanel.setInnerHTML(infoHtml.toString());
+            m_locationInfoPanel.getStyle().clearDisplay();
         }
-        m_locationInfoPanel.setInnerHTML(infoHtml.toString());
     }
 
     /**
