@@ -856,6 +856,7 @@ public final class CmsContentEditor extends EditorBase {
      */
     public void setShowEditorHelp(final boolean show) {
 
+        CmsCoreProvider.get().setShowEditorHelp(show);
         CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
 
             /**

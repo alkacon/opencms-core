@@ -497,4 +497,14 @@ public class CmsCoreData implements IsSerializable {
 
         return m_toolbarVisible;
     }
+
+    /**
+     * Sets the show editor help flag.<p>
+     * 
+     * @param show <code>true</code> to show editor help
+     */
+    public void setShowEditorHelp(boolean show) {
+
+        m_isShowEditorHelp = show;
+    }
 }
