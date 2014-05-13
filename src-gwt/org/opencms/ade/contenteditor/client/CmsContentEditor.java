@@ -73,7 +73,6 @@ import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsIconUtil;
-import org.opencms.gwt.shared.rpc.I_CmsCoreServiceAsync;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -163,9 +162,6 @@ public final class CmsContentEditor extends EditorBase {
 
     /** The copy locale button. */
     private CmsPushButton m_copyLocaleButton;
-
-    /** The core RPC service instance. */
-    private I_CmsCoreServiceAsync m_coreSvc;
 
     /** The loaded content definitions by locale. */
     private Map<String, CmsContentDefinition> m_definitions;
@@ -857,27 +853,6 @@ public final class CmsContentEditor extends EditorBase {
     public void setShowEditorHelp(final boolean show) {
 
         CmsCoreProvider.get().setShowEditorHelp(show);
-        CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
-             */
-            @Override
-            public void execute() {
-
-                getCoreService().setShowEditorHelp(show, this);
-            }
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-             */
-            @Override
-            protected void onResponse(Void result) {
-
-                //nothing to do
-            }
-        };
-        action.execute();
     }
 
     /**
@@ -959,19 +934,6 @@ public final class CmsContentEditor extends EditorBase {
     protected String getContextUri() {
 
         return CmsCoreProvider.get().getUri();
-    }
-
-    /**
-     * Returns the core RPC service.<p>
-     *
-     * @return the core service
-     */
-    protected I_CmsCoreServiceAsync getCoreService() {
-
-        if (m_coreSvc == null) {
-            m_coreSvc = CmsCoreProvider.getService();
-        }
-        return m_coreSvc;
     }
 
     /**

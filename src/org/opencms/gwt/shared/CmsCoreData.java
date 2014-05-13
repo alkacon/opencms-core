@@ -503,7 +503,7 @@ public class CmsCoreData implements IsSerializable {
      * 
      * @param show <code>true</code> to show editor help
      */
-    public void setShowEditorHelp(boolean show) {
+    protected void setShowEditorHelp(boolean show) {
 
         m_isShowEditorHelp = show;
     }

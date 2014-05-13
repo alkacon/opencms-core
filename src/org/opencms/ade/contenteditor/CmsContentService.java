@@ -791,7 +791,6 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         Entity newEntity = new Entity(newEntityId, typeName);
         Entity result = newEntity;
 
-        @SuppressWarnings("unchecked")
         List<Element> elements = element.elements();
         I_Type type = visitor.getTypes().get(typeName);
         boolean isChoice = type.isChoice();

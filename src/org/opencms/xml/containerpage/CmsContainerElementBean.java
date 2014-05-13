@@ -203,7 +203,7 @@ public class CmsContainerElementBean implements Cloneable {
      * @param locale the locale to use
      *
      * @return the created element bean
-     * @throws CmsException
+     * @throws CmsException if something goes wrong creating the element
      * @throws IllegalArgumentException if the resource type not instance of {@link org.opencms.file.types.CmsResourceTypeXmlContent}
      */
     public static CmsContainerElementBean createElementForResourceType(
@@ -416,8 +416,15 @@ public class CmsContainerElementBean implements Cloneable {
                 id = getId();
             }
             // the resource object may have a wrong root path, e.g. if it was created before the resource was moved
-            m_resource = cms.readResource(id, CmsResourceFilter.IGNORE_EXPIRATION);
-            m_releasedAndNotExpired = m_resource.isReleasedAndNotExpired(cms.getRequestContext().getRequestTime());
+            if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+                m_resource = cms.readResource(id);
+                m_releasedAndNotExpired = true;
+            } else {
+                if (!isTemporaryContent()) {
+                    m_resource = cms.readResource(getId(), CmsResourceFilter.IGNORE_EXPIRATION);
+                }
+                m_releasedAndNotExpired = m_resource.isReleasedAndNotExpired(cms.getRequestContext().getRequestTime());
+            }
         }
         if (m_settings == null) {
             m_settings = CmsXmlContentPropertyHelper.mergeDefaults(cms, m_resource, m_individualSettings);

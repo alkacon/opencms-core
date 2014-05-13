@@ -534,6 +534,36 @@ public final class CmsCoreProvider extends CmsCoreData {
     }
 
     /**
+     * @see org.opencms.gwt.shared.CmsCoreData#setShowEditorHelp(boolean)
+     */
+    @Override
+    public void setShowEditorHelp(final boolean show) {
+
+        super.setShowEditorHelp(show);
+        CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                getService().setShowEditorHelp(show, this);
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(Void result) {
+
+                //nothing to do
+            }
+        };
+        action.execute();
+    }
+
+    /**
      * Returns the absolute link to the given root path.<p>
      * 
      * @param rootPath the root path
