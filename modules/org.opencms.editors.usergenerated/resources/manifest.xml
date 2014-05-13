@@ -41,10 +41,6 @@
 						<name>locale</name>
 						<value><![CDATA[en]]></value>
 					</property>
-					<property>
-						<name>search.exclude</name>
-						<value>all</value>
-					</property>
 				</properties>
 				<param name="resource.flag.internal">true</param>
 				<param name="schema">/system/modules/org.opencms.editors.usergenerated/schemas/ugc_form_config.xsd</param>
@@ -185,6 +181,34 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.editors.usergenerated/.config</source>
+			<destination>system/modules/org.opencms.editors.usergenerated/.config</destination>
+			<type>module_config</type>
+			<uuidstructure>9874a681-da7f-11e3-8d7f-c11cc2af282b</uuidstructure>
+			<uuidresource>9874a682-da7f-11e3-8d7f-c11cc2af282b</uuidresource>
+			<datelastmodified>Tue, 13 May 2014 09:19:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 13 May 2014 09:18:50 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>locale</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>locale-available</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>search.exclude</name>
+					<value><![CDATA[all]]></value>
+				</property>
+			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
