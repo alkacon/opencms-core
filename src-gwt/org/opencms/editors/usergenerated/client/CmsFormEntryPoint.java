@@ -53,6 +53,16 @@ public class CmsFormEntryPoint {
         ExporterUtil.exportAll();
         CmsXmlContentFormApi api = new CmsXmlContentFormApi();
         installJavascriptApi(api);
+        callInitFunction();
     }
+
+    /**
+     * Calls the init form method after the API has been exported.<p>
+     */
+    private native void callInitFunction() /*-{
+                                           if ($wnd.initUserContentForm != undefined  && typeof $wnd.initUserContentForm == 'function'){
+                                           $wnd.initUserContentForm();
+                                           }
+                                           }-*/;
 
 }
