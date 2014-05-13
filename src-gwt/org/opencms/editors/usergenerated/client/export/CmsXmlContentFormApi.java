@@ -205,6 +205,32 @@ public class CmsXmlContentFormApi implements Exportable {
             }));
     }
 
+    /**
+     * Sets the error callback for all uncaught exceptions.<p>
+     * 
+     * @param callback the error callback
+     */
+    public void setErrorCallback(final I_CmsStringArrayCallback callback) {
+
+        if (callback != null) {
+            GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+
+                public void onUncaughtException(Throwable e) {
+
+                    String[] stack = new String[e.getStackTrace().length];
+                    for (int i = 0; i < e.getStackTrace().length; i++) {
+                        StackTraceElement stackEl = e.getStackTrace()[i];
+                        stack[i] = stackEl.toString();
+                    }
+                    callback.call(stack);
+                }
+
+            });
+        } else {
+            GWT.setUncaughtExceptionHandler(null);
+        }
+    }
+
     /** 
      * Sets the wait indicator callback.<p>
      * 
