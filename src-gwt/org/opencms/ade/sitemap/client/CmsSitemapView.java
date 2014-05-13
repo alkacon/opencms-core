@@ -665,7 +665,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         m_tree = new CmsLazyTree<CmsSitemapTreeItem>(m_openHandler);
 
         m_inNavigationStyle = new CmsStyleVariable(m_tree);
-
+        m_inNavigationStyle.setValue(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().navMode());
         if (m_controller.isEditable()) {
             // enable drag'n drop 
             CmsDNDHandler dndHandler = new CmsDNDHandler(new CmsSitemapDNDController(m_controller, m_toolbar));

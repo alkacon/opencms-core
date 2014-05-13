@@ -88,11 +88,7 @@ div.marker {
 
 .hasChildren {} 
 
-.hasNoChildren {} 
-
 .hasNavChildren {}
-
-.hasNoNavChildren {}
 
 .navMode .hasNoNavChildren .treeItemOpener {
 	display: none; 
