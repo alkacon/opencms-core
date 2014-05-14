@@ -49,11 +49,15 @@ public final class CmsLocationValue extends JavaScriptObject {
      * @return the location object
      */
     public static native CmsLocationValue parse(String value)/*-{
-                                                             if (value.indexOf("{")!=0){
+                                                             if (value.indexOf("{") != 0) {
                                                              // add curly braces if not present before parsing
-                                                             value="{"+value+"}";
+                                                             value = "{" + value + "}";
                                                              }
+                                                             try {
                                                              return JSON.parse(value);
+                                                             } catch (e) {
+                                                             return eval("("+value+")");
+                                                             }
                                                              }-*/;
 
     /**
@@ -63,14 +67,14 @@ public final class CmsLocationValue extends JavaScriptObject {
      */
     public native CmsLocationValue cloneValue()/*-{
                                                return {
-                                               address: this.address,
-                                               height: this.height,
-                                               lat: this.lat,
-                                               lng: this.lng,
-                                               mode: this.mode,
-                                               type: this.type,
-                                               width: this.width,
-                                               zoom: this.zoom
+                                               address : this.address,
+                                               height : this.height,
+                                               lat : this.lat,
+                                               lng : this.lng,
+                                               mode : this.mode,
+                                               type : this.type,
+                                               width : this.width,
+                                               zoom : this.zoom
                                                };
                                                }-*/;
 
@@ -107,7 +111,8 @@ public final class CmsLocationValue extends JavaScriptObject {
      * @return the latitude string representation
      */
     public native String getLatitudeString()/*-{
-                                            return this.lat.toFixed(6);;
+                                            return this.lat.toFixed(6);
+                                            ;
                                             }-*/;
 
     /**
@@ -170,7 +175,7 @@ public final class CmsLocationValue extends JavaScriptObject {
      * @param address the address
      */
     public native void setAddress(String address)/*-{
-                                                 this.address=address;
+                                                 this.address = address;
                                                  }-*/;
 
     /**
@@ -179,7 +184,7 @@ public final class CmsLocationValue extends JavaScriptObject {
      * @param height the height
      */
     public native void setHeight(int height)/*-{
-                                            this.height=height;
+                                            this.height = height;
                                             }-*/;
 
     /**
@@ -188,8 +193,8 @@ public final class CmsLocationValue extends JavaScriptObject {
      * @param height the height
      */
     public native void setHeight(String height)/*-{
-                                               var h=parseInt(height);
-                                               this.height=isNaN(h)?0:h;
+                                               var h = parseInt(height);
+                                               this.height = isNaN(h) ? 0 : h;
                                                }-*/;
 
     /**
@@ -198,7 +203,7 @@ public final class CmsLocationValue extends JavaScriptObject {
      * @param latitude the latitude
      */
     public native void setLatitude(float latitude)/*-{
-                                                  this.lat=latitude;
+                                                  this.lat = latitude;
                                                   }-*/;
 
     /**
@@ -207,8 +212,8 @@ public final class CmsLocationValue extends JavaScriptObject {
      * @param latitude the latitude
      */
     public native void setLatitude(String latitude)/*-{
-                                                   var lat=parseFloat(latitude);
-                                                   this.lat=isNaN(lat)?0:lat;
+                                                   var lat = parseFloat(latitude);
+                                                   this.lat = isNaN(lat) ? 0 : lat;
                                                    }-*/;
 
     /**
@@ -217,7 +222,7 @@ public final class CmsLocationValue extends JavaScriptObject {
      * @param longitude the longitude
      */
     public native void setLongitude(float longitude)/*-{
-                                                    this.lng=longitude;
+                                                    this.lng = longitude;
                                                     }-*/;
 
     /**
@@ -226,8 +231,8 @@ public final class CmsLocationValue extends JavaScriptObject {
      * @param longitude the longitude
      */
     public native void setLongitude(String longitude)/*-{
-                                                     var lng=parseFloat(longitude);
-                                                     this.lng=isNaN(lng)?0:lng;
+                                                     var lng = parseFloat(longitude);
+                                                     this.lng = isNaN(lng) ? 0 : lng;
                                                      }-*/;
 
     /**
@@ -236,7 +241,7 @@ public final class CmsLocationValue extends JavaScriptObject {
      * @param mode the map mode
      */
     public native void setMode(String mode)/*-{
-                                           this.mode=mode;
+                                           this.mode = mode;
                                            }-*/;
 
     /**
@@ -245,7 +250,7 @@ public final class CmsLocationValue extends JavaScriptObject {
      * @param type the map type
      */
     public native void setType(String type)/*-{
-                                           this.type=type;
+                                           this.type = type;
                                            }-*/;
 
     /**
@@ -254,7 +259,7 @@ public final class CmsLocationValue extends JavaScriptObject {
      * @param width the width
      */
     public native void setWidth(int width)/*-{
-                                          this.width=width;
+                                          this.width = width;
                                           }-*/;
 
     /**
@@ -263,8 +268,8 @@ public final class CmsLocationValue extends JavaScriptObject {
      * @param width the width
      */
     public native void setWidth(String width)/*-{
-                                             var w=parseInt(width);
-                                             this.width=isNaN(w)?0:w;
+                                             var w = parseInt(width);
+                                             this.width = isNaN(w) ? 0 : w;
                                              }-*/;
 
     /**
@@ -273,7 +278,7 @@ public final class CmsLocationValue extends JavaScriptObject {
      * @param zoom the zoom level
      */
     public native void setZoom(int zoom)/*-{
-                                        this.zoom=zoom;
+                                        this.zoom = zoom;
                                         }-*/;
 
     /**
@@ -282,8 +287,8 @@ public final class CmsLocationValue extends JavaScriptObject {
      * @param zoom the zoom level
      */
     public native void setZoom(String zoom)/*-{
-                                            var z=parseInt(z);
-                                           this.zoom=isNaN(z)?0:z;
+                                           var z = parseInt(z);
+                                           this.zoom = isNaN(z) ? 0 : z;
                                            }-*/;
 
     /**

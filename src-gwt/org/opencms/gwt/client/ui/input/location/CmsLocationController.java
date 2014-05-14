@@ -28,7 +28,9 @@
 package org.opencms.gwt.client.ui.input.location;
 
 import org.opencms.gwt.client.Messages;
+import org.opencms.gwt.client.rpc.CmsLog;
 import org.opencms.gwt.client.ui.CmsPopup;
+import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -227,12 +229,16 @@ public class CmsLocationController {
     public void setStringValue(String value) {
 
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
-            m_value = CmsLocationValue.parse(value);
-            m_previousValue = m_value.cloneValue();
-            displayValue();
-            if ((m_popup != null) && m_popup.isVisible()) {
-                m_popupContent.displayValues(m_value);
-                updateMarkerPosition();
+            try {
+                m_value = CmsLocationValue.parse(value);
+                m_previousValue = m_value.cloneValue();
+                displayValue();
+                if ((m_popup != null) && m_popup.isVisible()) {
+                    m_popupContent.displayValues(m_value);
+                    updateMarkerPosition();
+                }
+            } catch (Exception e) {
+                CmsLog.log(e.getLocalizedMessage() + "\n" + CmsClientStringUtil.getStackTrace(e, "\n"));
             }
         }
     }
@@ -473,7 +479,6 @@ public class CmsLocationController {
                                  } else {
                                  map.setZoom(zoom);
                                  map.setMapTypeId(type);
-                                 
 
                                  }
                                  var marker = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_previewMarker;
