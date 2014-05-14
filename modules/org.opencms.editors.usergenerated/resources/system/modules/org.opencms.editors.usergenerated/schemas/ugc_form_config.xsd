@@ -20,7 +20,7 @@
            <xsd:element name="ContentPath" type="OpenCmsVfsFile" />
            <xsd:element name="NamePattern" type="OpenCmsString" />
            <xsd:element name="Locale" type="OpenCmsString" />
-           <xsd:element name="UserForGuest" type="OpenCmsString" />
+           <xsd:element name="UserForGuest" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
            <xsd:element name="ProjectGroup" type="OpenCmsString" />
            <xsd:element name="UploadPath" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="1" />
            <xsd:element name="MaxUploadSize" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
