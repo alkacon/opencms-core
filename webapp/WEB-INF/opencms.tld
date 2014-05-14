@@ -304,6 +304,42 @@
     		<rtexprvalue>true</rtexprvalue>
     	</attribute>
     </tag>
+    <tag>
+    	<description><![CDATA[Initializes a user generated content form session.]]></description>
+    	<name>initformsession</name>
+    	<tag-class>org.opencms.editors.usergenerated.CmsJspTagUserFormSession</tag-class>
+    	<body-content>empty</body-content>
+    	<attribute>
+    		<description><![CDATA[The generated session id will be written to the given page context attribute. Defaults to 'formSessionId'.]]></description>
+    		<name>var</name>
+    		<required>false</required>
+    		<rtexprvalue>true</rtexprvalue>
+    	</attribute>
+    	<attribute>
+    		<description><![CDATA[In case of an exception during session initialization the error message will be written to the given page context attribute. Defaults to 'formError'.]]></description>
+    		<name>error</name>
+    		<required>false</required>
+    		<rtexprvalue>true</rtexprvalue>
+    	</attribute>
+    	<attribute>
+    		<description><![CDATA[The path to the form edid configuration file.]]></description>
+    		<name>configPath</name>
+    		<required>true</required>
+    		<rtexprvalue>true</rtexprvalue>
+    	</attribute>
+    	<attribute>
+    		<description><![CDATA[The name of the file to edit, alternativly provide the resource structure id with the 'editId' attribute. If neither the 'editName' nor the 'editId' is set, a new content will be created.]]></description>
+    		<name>editName</name>
+    		<required>false</required>
+    		<rtexprvalue>true</rtexprvalue>
+    	</attribute>
+    	<attribute>
+    	<description><![CDATA[The resource structure id of the file to edit, alternativly provide the file name 'editName' attribute. If neither the 'editName' nor the 'editId' is set, a new content will be created.]]></description>
+    		<name>editId</name>
+    		<required>false</required>
+    		<rtexprvalue>true</rtexprvalue>
+    	</attribute>
+    </tag>
     
     <tag>
         <description><![CDATA[
@@ -531,11 +567,11 @@
             <rtexprvalue>true</rtexprvalue>            
         </attribute> 
         <attribute>
-            <name>pageSize</name>
             <description><![CDATA[
               Specifies the number of results shown per page.</P>
               <em>Note:</em>The attribute has to be used in combination with <code>pageIndex</code>.
-            ]]></description>                         
+            ]]></description>  
+            <name>pageSize</name>                       
             <rtexprvalue>true</rtexprvalue>            
         </attribute>  
         <attribute>

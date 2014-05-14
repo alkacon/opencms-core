@@ -60,7 +60,7 @@ public interface I_CmsFormEditServiceAsync {
      * 
      * @return the request builder for this RPC call 
      */
-    RequestBuilder getExistingContent(CmsUUID sessionId, AsyncCallback<CmsFormContent> callback);
+    RequestBuilder getContent(CmsUUID sessionId, AsyncCallback<CmsFormContent> callback);
 
     /**
      * Gets the link corresponding to a given site path.<p>
@@ -71,16 +71,6 @@ public interface I_CmsFormEditServiceAsync {
      * @return the request builder for the RPC call  
      */
     RequestBuilder getLink(String path, AsyncCallback<String> resultCallback);
-
-    /**
-     * Returns the form content for new content.<p>
-     * 
-     * @param configPath the configuration path
-     * @param callback the callback
-     * 
-     * @return the request builder for this  RPC call
-     */
-    RequestBuilder getNewContent(String configPath, AsyncCallback<CmsFormContent> callback);
 
     /**
      * Saves the given content values to the edited content.<p>

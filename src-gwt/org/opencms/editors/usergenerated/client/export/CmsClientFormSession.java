@@ -182,6 +182,7 @@ public class CmsClientFormSession implements Exportable {
      * 
      * @return the session id 
      */
+    @NoExport
     public CmsUUID internalGetSessionId() {
 
         return m_content.getSessionId();

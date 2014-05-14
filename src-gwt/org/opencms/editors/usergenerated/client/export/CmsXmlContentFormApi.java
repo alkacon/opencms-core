@@ -145,36 +145,6 @@ public class CmsXmlContentFormApi implements Exportable {
     }
 
     /**
-     * Creates a new session for a newly created XML content.<p>
-     * 
-     * @param formConfigPath the form configuration path 
-     * @param formElement the form element 
-     * @param onSuccess the function to call in case of success 
-     * @param onError the function to call in case an error occurs 
-     */
-    public void initFormForNewContent(
-        final String formConfigPath,
-        final Element formElement,
-        final I_CmsClientFormSessionCallback onSuccess,
-        final I_CmsErrorCallback onError) {
-
-        getRpcHelper().executeRpc(SERVICE.getNewContent(formConfigPath, new AsyncCallback<CmsFormContent>() {
-
-            public void onFailure(Throwable caught) {
-
-                handleError(caught, onError);
-            }
-
-            public void onSuccess(CmsFormContent result) {
-
-                CmsClientFormSession session = new CmsClientFormSession(CmsXmlContentFormApi.this, result);
-                session.initFormElement(formElement);
-                onSuccess.call(session);
-            }
-        }));
-    }
-
-    /**
      * Loads a pre-created session.<p>
      * 
      * @param sessionId the session id 
@@ -188,21 +158,20 @@ public class CmsXmlContentFormApi implements Exportable {
         final I_CmsClientFormSessionCallback onSuccess,
         final I_CmsErrorCallback onError) {
 
-        getRpcHelper().executeRpc(
-            SERVICE.getExistingContent(new CmsUUID(sessionId), new AsyncCallback<CmsFormContent>() {
+        getRpcHelper().executeRpc(SERVICE.getContent(new CmsUUID(sessionId), new AsyncCallback<CmsFormContent>() {
 
-                public void onFailure(Throwable caught) {
+            public void onFailure(Throwable caught) {
 
-                    handleError(caught, onError);
-                }
+                handleError(caught, onError);
+            }
 
-                public void onSuccess(CmsFormContent result) {
+            public void onSuccess(CmsFormContent result) {
 
-                    CmsClientFormSession session = new CmsClientFormSession(CmsXmlContentFormApi.this, result);
-                    session.initFormElement(formElement);
-                    onSuccess.call(session);
-                }
-            }));
+                CmsClientFormSession session = new CmsClientFormSession(CmsXmlContentFormApi.this, result);
+                session.initFormElement(formElement);
+                onSuccess.call(session);
+            }
+        }));
     }
 
     /**
