@@ -1646,5 +1646,6 @@
 				</root>
 			</roots>
 		</tool-manager>
+		<user-lists mode="lazy" />
 	</workplace>
 </opencms>
