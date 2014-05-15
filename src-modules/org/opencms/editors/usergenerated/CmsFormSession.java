@@ -576,8 +576,16 @@ public class CmsFormSession implements I_CmsSessionDestroyHandler {
         }
         List<String> paths = new ArrayList<String>(contentValues.keySet());
         Collections.sort(paths, new PathComparator());
+        String lastDelete = "///";
         for (String path : paths) {
-            addContentValue(content, locale, path, contentValues.get(path));
+            // skip values where the parent node has been deleted
+            if (!path.startsWith(lastDelete)) {
+                String value = contentValues.get(path);
+                if (value == null) {
+                    lastDelete = path;
+                }
+                addContentValue(content, locale, path, value);
+            }
         }
     }
 
