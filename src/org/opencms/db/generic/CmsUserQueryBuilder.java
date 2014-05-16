@@ -31,11 +31,11 @@ import org.opencms.db.CmsCompositeQueryFragment;
 import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsPagingQuery;
 import org.opencms.db.CmsSelectQuery;
+import org.opencms.db.CmsSelectQuery.TableAlias;
 import org.opencms.db.CmsSimpleQueryFragment;
 import org.opencms.db.CmsSqlBooleanClause;
 import org.opencms.db.CmsStatementBuilder;
 import org.opencms.db.I_CmsQueryFragment;
-import org.opencms.db.CmsSelectQuery.TableAlias;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsUserSearchParameters;
 import org.opencms.file.CmsUserSearchParameters.SearchKey;
@@ -314,8 +314,7 @@ public class CmsUserQueryBuilder {
                     case email:
                         searchCondition.add(new CmsSimpleQueryFragment(wrapLower(
                             users.column(colEmail()),
-                            caseInsensitive)
-                            + like, searchFilter));
+                            caseInsensitive) + like, searchFilter));
                         break;
                     case orgUnit:
                         searchCondition.add(new CmsSimpleQueryFragment(
@@ -361,7 +360,7 @@ public class CmsUserQueryBuilder {
 
         String webuserConditionTemplate;
         if (orgUnit.hasFlagWebuser()) {
-            webuserConditionTemplate = "( %1$ >= 32768 AND %1$s < 65536 )";
+            webuserConditionTemplate = "( %1$s >= 32768 AND %1$s < 65536 )";
         } else {
             webuserConditionTemplate = "( %1$s < 32768 OR %1$s >= 65536 )";
         }
