@@ -211,7 +211,8 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
                 selectedProject = CmsCurrentPageProject.ID;
                 foundProject = true;
             } else if (!CmsStringUtil.isEmptyOrWhitespaceOnly(filesParam)) {
-                params.put(CmsPublishOptions.PARAM_ENABLE_INCLUDE_CONTENTS, "true");
+                params.put(CmsPublishOptions.PARAM_ENABLE_INCLUDE_CONTENTS, Boolean.TRUE.toString());
+                params.put(CmsPublishOptions.PARAM_INCLUDE_CONTENTS, Boolean.TRUE.toString());
                 selectedProject = CmsDirectPublishProject.ID;
                 foundProject = true;
             } else {

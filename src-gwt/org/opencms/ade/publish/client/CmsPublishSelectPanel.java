@@ -355,13 +355,17 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         m_actionButtons = new ArrayList<CmsPushButton>();
         initWidget(UI_BINDER.createAndBindUi(this));
         boolean enableAddContents = false;
+        boolean addContent = false;
         try {
             enableAddContents = Boolean.parseBoolean(publishOptions.getParameters().get(
                 CmsPublishOptions.PARAM_ENABLE_INCLUDE_CONTENTS));
+            addContent = Boolean.parseBoolean(publishOptions.getParameters().get(
+                CmsPublishOptions.PARAM_INCLUDE_CONTENTS));
         } catch (Exception e) {
             // ignore; enableAddContents remains the default value
         }
         m_checkboxAddContents.setVisible(enableAddContents);
+        m_checkboxAddContents.setChecked(addContent);
         if (enableAddContents) {
             m_directPublishId = publishOptions.getProjectId();
         }
@@ -802,7 +806,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     /**
      * Event handler for the 'add contents' check box.<p>
      *
-     * @param event
+     * @param event the click event
      */
     @UiHandler("m_checkboxAddContents")
     protected void onAddContentsClick(ClickEvent event) {
