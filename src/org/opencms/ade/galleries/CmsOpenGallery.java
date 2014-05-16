@@ -65,7 +65,7 @@ public class CmsOpenGallery extends CmsDialog {
     /**
      * Opens the gallery.<p>
      * 
-     * @throws Exception 
+     * @throws Exception if something goes wrong
      */
     public void openGallery() throws Exception {
 

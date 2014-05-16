@@ -80,6 +80,7 @@ import org.opencms.search.galleries.CmsGallerySearchParameters;
 import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.search.galleries.CmsGallerySearchResultList;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
@@ -970,7 +971,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * @param children the children of the entry 
      * 
      * @return the created VFS entry bean 
-     * @throws CmsException 
+     * @throws CmsException if something goes wrong
      */
     CmsVfsEntryBean internalCreateVfsEntryBean(
         CmsResource resource,
@@ -1167,14 +1168,13 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * 
      * @return the client side search result item
      *  
-     * @throws CmsLoaderException
-     * @throws CmsException
-     * @throws ParseException
+     * @throws CmsException if something goes wrong
+     * @throws ParseException if date parsing fails
      */
     private CmsResultItemBean buildSingleSearchResultItem(
         CmsObject cms,
         CmsGallerySearchResult sResult,
-        CmsGallerySearchResult presetResult) throws CmsLoaderException, CmsException, ParseException {
+        CmsGallerySearchResult presetResult) throws CmsException, ParseException {
 
         Locale wpLocale = getWorkplaceLocale();
         CmsResultItemBean bean = new CmsResultItemBean();
@@ -1581,7 +1581,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * @param conf the gallery configration 
      * @return the gallery settings 
      * 
-     * @throws CmsRpcException 
+     * @throws CmsRpcException if something goes wrong
      */
     private CmsGalleryDataBean getInitialSettingsInternal(CmsGalleryConfiguration conf) throws CmsRpcException {
 
@@ -2048,7 +2048,11 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         CmsResource defaultFileResource = null;
         CmsJspNavBuilder navBuilder = new CmsJspNavBuilder(cms);
         if (ownResource.isFolder() && !navElement.isNavigationLevel()) {
-            defaultFileResource = cms.readDefaultFile(ownResource, CmsResourceFilter.ONLY_VISIBLE);
+            try {
+                defaultFileResource = cms.readDefaultFile(ownResource, CmsResourceFilter.ONLY_VISIBLE);
+            } catch (CmsPermissionViolationException e) {
+                // user has insufficient rights, can be ignored
+            }
         }
         String type;
         if (defaultFileResource != null) {
