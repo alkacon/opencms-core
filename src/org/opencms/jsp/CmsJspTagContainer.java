@@ -161,7 +161,7 @@ public class CmsJspTagContainer extends TagSupport {
      * @param cms the cms context
      * @param element the element bean
      * @param adeConfig the ADE configuration data
-     * @param containerName
+     * @param containerName the container name
      * @param containerType the container type
      * @param containerWidth the container width
      * 
@@ -229,6 +229,36 @@ public class CmsJspTagContainer extends TagSupport {
             }
         }
         return formatterBean;
+    }
+
+    /**
+     * Returns the detail only container page bean or <code>null</code> if none available.<p>
+     * 
+     * @param cms the cms context
+     * @param req the current request
+     * 
+     * @return the container page bean
+     */
+    public static CmsContainerPageBean getDetailOnlyPage(CmsObject cms, ServletRequest req) {
+
+        CmsJspStandardContextBean standardContext = CmsJspStandardContextBean.getInstance(req);
+        CmsContainerPageBean detailOnlyPage = standardContext.getDetailOnlyPage();
+        if (standardContext.isDetailRequest() && (detailOnlyPage == null)) {
+            try {
+                String resourceName = getDetailOnlyPageName(cms.getSitePath(standardContext.getDetailContent()));
+                if (cms.existsResource(resourceName)) {
+                    CmsXmlContainerPage xmlContainerPage = CmsXmlContainerPageFactory.unmarshal(
+                        cms,
+                        cms.readResource(resourceName),
+                        req);
+                    detailOnlyPage = xmlContainerPage.getContainerPage(cms);
+                    standardContext.setDetailOnlyPage(detailOnlyPage);
+                }
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        return detailOnlyPage;
     }
 
     /**
@@ -410,19 +440,8 @@ public class CmsJspTagContainer extends TagSupport {
                         // this is no detail page, so the detail only container will not be rendered at all
                         return SKIP_BODY;
                     } else {
-                        CmsContainerPageBean detailOnlyPage = standardContext.getDetailOnlyPage();
-                        if (detailOnlyPage == null) {
-                            String resourceName = getDetailOnlyPageName(cms.getSitePath(detailContent));
-                            if (cms.existsResource(resourceName)) {
-                                CmsXmlContainerPage xmlContainerPage = CmsXmlContainerPageFactory.unmarshal(
-                                    cms,
-                                    cms.readResource(resourceName),
-                                    req);
-                                detailOnlyPage = xmlContainerPage.getContainerPage(cms);
-                                standardContext.setDetailOnlyPage(detailOnlyPage);
-                                container = detailOnlyPage.getContainers().get(m_name);
-                            }
-                        } else {
+                        CmsContainerPageBean detailOnlyPage = getDetailOnlyPage(cms, req);
+                        if (detailOnlyPage != null) {
                             container = detailOnlyPage.getContainers().get(m_name);
                         }
                     }

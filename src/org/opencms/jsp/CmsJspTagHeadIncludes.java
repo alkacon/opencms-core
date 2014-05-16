@@ -54,6 +54,7 @@ import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -547,9 +548,16 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
         if ((containerPage != null) && (containerPage.getElements() != null)) {
             Map<CmsUUID, I_CmsFormatterBean> formatters = OpenCms.getADEManager().getCachedFormatters(
                 standardContext.getIsOnlineProject()).getFormatters();
-            for (CmsContainerBean container : containerPage.getContainers().values()) {
+            List<CmsContainerBean> containers = new ArrayList<CmsContainerBean>(containerPage.getContainers().values());
+            // add detail only containers if available
+            if (standardContext.isDetailRequest()) {
+                CmsContainerPageBean detailOnly = CmsJspTagContainer.getDetailOnlyPage(cms, req);
+                if (detailOnly != null) {
+                    containers.addAll(detailOnly.getContainers().values());
+                }
+            }
+            for (CmsContainerBean container : containers) {
                 for (CmsContainerElementBean element : container.getElements()) {
-
                     try {
                         element.initResource(cms);
                         if (!standardContext.getIsOnlineProject()
