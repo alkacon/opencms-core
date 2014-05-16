@@ -188,23 +188,31 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
                 settings.setStartProject(getStartProject());
             }
 
-            CmsObject tmp = OpenCms.initCmsObject(getCms());
-            tmp.getRequestContext().setSiteRoot(getSite());
-            String folder = tmp.getRequestContext().removeSiteRoot(getStartFolder());
+            boolean webuserOu = false;
             try {
-                CmsResource res = tmp.readResource(folder);
-                String siteRoot = OpenCms.getSiteManager().getSiteRoot(res.getRootPath());
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(siteRoot)
-                    && CmsStringUtil.isNotEmptyOrWhitespaceOnly(tmp.getRequestContext().getSiteRoot())
-                    && !tmp.getRequestContext().getSiteRoot().equals("/")) {
-                    folder = res.getRootPath().substring(siteRoot.length());
-                }
+                webuserOu = OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), getParamOufqn()).hasFlagWebuser();
             } catch (CmsException e) {
-                throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.ERR_SELECTED_FOLDER_NOT_IN_SITE_0));
+                // ignore
             }
-            settings.setStartFolder(folder);
-
+            // only set the start folder for non web users
+            if (!webuserOu) {
+                CmsObject tmp = OpenCms.initCmsObject(getCms());
+                tmp.getRequestContext().setSiteRoot(getSite());
+                String folder = tmp.getRequestContext().removeSiteRoot(getStartFolder());
+                try {
+                    CmsResource res = tmp.readResource(folder);
+                    String siteRoot = OpenCms.getSiteManager().getSiteRoot(res.getRootPath());
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(siteRoot)
+                        && CmsStringUtil.isNotEmptyOrWhitespaceOnly(tmp.getRequestContext().getSiteRoot())
+                        && !tmp.getRequestContext().getSiteRoot().equals("/")) {
+                        folder = res.getRootPath().substring(siteRoot.length());
+                    }
+                } catch (CmsException e) {
+                    throw new CmsIllegalArgumentException(Messages.get().container(
+                        Messages.ERR_SELECTED_FOLDER_NOT_IN_SITE_0));
+                }
+                settings.setStartFolder(folder);
+            }
             settings.setStartView(getStartView());
             settings.save(getCms());
 
@@ -865,7 +873,6 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
      * Returns a list of options for the project selector.<p>
      * 
      * @return a list of options for the project selector
-     * @throws CmsException 
      */
     private List<CmsSelectWidgetOption> getProjects() {
 
