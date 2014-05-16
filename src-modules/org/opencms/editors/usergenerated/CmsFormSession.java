@@ -534,8 +534,12 @@ public class CmsFormSession implements I_CmsSessionDestroyHandler {
         } else {
             if (hasValue) {
                 int index = CmsXmlUtils.getXpathIndexInt(path) - 1;
-                content.removeValue(path, locale, index);
-
+                I_CmsXmlContentValue val = content.getValue(path, locale);
+                if (index >= val.getMinOccurs()) {
+                    content.removeValue(path, locale, index);
+                } else {
+                    val.setStringValue(m_cms, "");
+                }
             }
         }
     }
