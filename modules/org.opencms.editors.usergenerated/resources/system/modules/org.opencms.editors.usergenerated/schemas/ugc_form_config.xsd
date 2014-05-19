@@ -36,10 +36,6 @@
     <xsd:annotation>
         <xsd:appinfo>
 			<resourcebundle name="org.opencms.editors.usergenerated.messages"/>
-			<tabs>
-				<tab element="Title" collapse="false" name="General" />
-				<tab element="MaxUploadSize" collapse="false" name="Security" />
-			</tabs>
 			<mappings>
 				<mapping element="Title" mapto="property:Title" />
 			</mappings>
@@ -57,6 +53,8 @@
 				<rule element="QueueMaxLength" regex="[0-9]*" type="error" message="%(key.validation.numeric)" />
 			</validationrules>
 			<tabs>
+				<tab element="Title" collapse="false" name="General" />
+				<tab element="MaxUploadSize" collapse="false" name="Security" />
 			</tabs>
         </xsd:appinfo>        
     </xsd:annotation>
