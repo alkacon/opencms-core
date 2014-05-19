@@ -16,25 +16,33 @@
     
     <xsd:complexType name="OpenCmsUserGeneratedContentFormConfiguration">
         <xsd:sequence>
+        <xsd:element name="Title" type="OpenCmsString" />
            <xsd:element name="ContentType" type="OpenCmsString" />
            <xsd:element name="ContentPath" type="OpenCmsVfsFile" />
            <xsd:element name="NamePattern" type="OpenCmsString" />
            <xsd:element name="Locale" type="OpenCmsString" />
+           <xsd:element name="AutoPublish" type="OpenCmsBoolean" />
            <xsd:element name="UserForGuest" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
            <xsd:element name="ProjectGroup" type="OpenCmsString" />
            <xsd:element name="UploadPath" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="1" />
+           <xsd:element name="ValidExtensions" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
            <xsd:element name="MaxUploadSize" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
            <xsd:element name="MaxNumContents" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
            <xsd:element name="QueueWaitTime" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
            <xsd:element name="QueueMaxLength" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
-           <xsd:element name="AutoPublish" type="OpenCmsBoolean" />
-           <xsd:element name="ValidExtensions" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>
     <xsd:annotation>
         <xsd:appinfo>
 			<resourcebundle name="org.opencms.editors.usergenerated.messages"/>
+			<tabs>
+				<tab element="Title" collapse="false" name="General" />
+				<tab element="MaxUploadSize" collapse="false" name="Security" />
+			</tabs>
+			<mappings>
+				<mapping element="Title" mapto="property:Title" />
+			</mappings>
 			<layouts>
 				<layout element="ContentPath" widget="VfsFileWidget" configuration="excludefiles" />
 				<layout element="UploadPath" widget="VfsFileWidget" configuration="excludefiles" />
