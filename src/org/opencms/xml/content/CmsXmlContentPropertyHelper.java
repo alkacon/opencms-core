@@ -336,7 +336,7 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
      */
     public static Map<String, String> mergeDefaults(CmsObject cms, CmsResource resource, Map<String, String> properties) {
 
-        Map<String, String> result = new HashMap<String, String>();
+        Map<String, CmsXmlContentProperty> propertyConfig = null;
         if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
             I_CmsFormatterBean formatter = null;
             // check formatter configuration setting
@@ -352,7 +352,7 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
             }
 
             try {
-                Map<String, CmsXmlContentProperty> propertyConfig;
+
                 if (formatter != null) {
                     propertyConfig = formatter.getSettings();
                 } else {
@@ -361,13 +361,34 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
                         cms,
                         resource);
                 }
-                for (Map.Entry<String, CmsXmlContentProperty> entry : propertyConfig.entrySet()) {
-                    CmsXmlContentProperty prop = entry.getValue();
-                    result.put(entry.getKey(), getPropValueIds(cms, prop.getType(), prop.getDefault()));
-                }
             } catch (CmsException e) {
                 // should never happen
                 LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        return mergeDefaults(cms, propertyConfig, properties);
+    }
+
+    /**
+     * Extends the given properties with the default values 
+     * from property configuration.<p>
+     * 
+     * @param cms the current CMS context
+     * @param propertyConfig the property configuration
+     * @param properties the properties to extend
+     *  
+     * @return a merged map of properties
+     */
+    public static Map<String, String> mergeDefaults(
+        CmsObject cms,
+        Map<String, CmsXmlContentProperty> propertyConfig,
+        Map<String, String> properties) {
+
+        Map<String, String> result = new HashMap<String, String>();
+        if (propertyConfig != null) {
+            for (Map.Entry<String, CmsXmlContentProperty> entry : propertyConfig.entrySet()) {
+                CmsXmlContentProperty prop = entry.getValue();
+                result.put(entry.getKey(), getPropValueIds(cms, prop.getType(), prop.getDefault()));
             }
         }
         result.putAll(properties);

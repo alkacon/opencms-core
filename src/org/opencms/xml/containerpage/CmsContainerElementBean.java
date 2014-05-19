@@ -427,10 +427,31 @@ public class CmsContainerElementBean implements Cloneable {
             }
         }
         if (m_settings == null) {
-            m_settings = CmsXmlContentPropertyHelper.mergeDefaults(cms, m_resource, m_individualSettings);
+            m_settings = new HashMap<String, String>(m_individualSettings);
         }
         // redo on every init call to ensure sitepath is calculated for current site
         m_sitePath = cms.getSitePath(m_resource);
+    }
+
+    /**
+     * Initializes the element settings.<p>
+     * 
+     * @param cms the CMS context
+     * @param formatterBean the formatter configuration bean
+     */
+    public void initSettings(CmsObject cms, I_CmsFormatterBean formatterBean) {
+
+        if (m_settings != null) {
+            m_settings = CmsXmlContentPropertyHelper.mergeDefaults(
+                cms,
+                formatterBean.getSettings(),
+                m_individualSettings);
+        } else {
+            m_settings.putAll(CmsXmlContentPropertyHelper.mergeDefaults(
+                cms,
+                formatterBean.getSettings(),
+                m_individualSettings));
+        }
     }
 
     /**

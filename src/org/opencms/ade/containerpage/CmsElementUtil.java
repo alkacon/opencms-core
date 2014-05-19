@@ -547,6 +547,7 @@ public class CmsElementUtil {
             formatter = configs.getDefaultFormatter(container.getType(), container.getWidth());
         }
         if (formatter != null) {
+            element.initSettings(m_cms, formatter);
             try {
                 content = getElementContent(element, m_cms.readResource(formatter.getJspStructureId()), container);
             } catch (Exception e) {

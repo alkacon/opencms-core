@@ -699,10 +699,16 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
         Map<CmsUUID, I_CmsFormatterBean> formatters) {
 
         int containerWidth = -1;
-        try {
-            containerWidth = Integer.parseInt(container.getWidth());
-        } catch (NumberFormatException e) {
-            // do nothing, set width to -1
+        if (container.getWidth() == null) {
+            // the container width has not been set yet
+            containerWidth = CmsFormatterConfiguration.MATCH_ALL_CONTAINER_WIDTH;
+        } else {
+            try {
+
+                containerWidth = Integer.parseInt(container.getWidth());
+            } catch (NumberFormatException e) {
+                // do nothing, set width to -1
+            }
         }
         CmsJspTagContainer.ensureValidFormatterSettings(
             cms,

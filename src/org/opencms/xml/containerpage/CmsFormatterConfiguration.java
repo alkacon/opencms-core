@@ -144,13 +144,17 @@ public final class CmsFormatterConfiguration {
             if (formatter.isTypeFormatter()) {
                 return formatter.getContainerTypes().contains(m_type);
             } else {
-                return (formatter.getMinWidth() <= m_width) && (m_width <= formatter.getMaxWidth());
+                return (m_width == MATCH_ALL_CONTAINER_WIDTH)
+                    || ((formatter.getMinWidth() <= m_width) && (m_width <= formatter.getMaxWidth()));
             }
         }
     }
 
     /** The empty formatter configuration. */
     public static final CmsFormatterConfiguration EMPTY_CONFIGURATION = new CmsFormatterConfiguration(null, null);
+
+    /** The container width to match all width configured formatters. */
+    public static final int MATCH_ALL_CONTAINER_WIDTH = -2;
 
     /** The log instance for this class. */
     public static final Log LOG = CmsLog.getLog(CmsFormatterConfiguration.class);
@@ -409,7 +413,7 @@ public final class CmsFormatterConfiguration {
      * Returns <code>true</code> in case this configuration contains a formatter with the 
      * provided structure id that has been configured for including the formatted content in the online search.<p>
      * 
-     * @param formatterStructureId
+     * @param formatterStructureId the formatter structure id
      * 
      * @return <code>true</code> in case this configuration contains a formatter with the 
      * provided structure id that has been configured for including the formatted content in the online search

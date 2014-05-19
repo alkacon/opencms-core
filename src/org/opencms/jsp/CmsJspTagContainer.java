@@ -513,7 +513,7 @@ public class CmsJspTagContainer extends TagSupport {
 
                     // update the cache
                     container.setMaxElements(maxElements);
-                    container.setWidth(getWidth());
+                    container.setWidth("" + getContainerWidth());
                     List<CmsContainerElementBean> allElements = new ArrayList<CmsContainerElementBean>();
                     CmsContainerElementBean detailElement = null;
                     if (isUsedAsDetailView) {
@@ -1017,6 +1017,9 @@ public class CmsJspTagContainer extends TagSupport {
                     getName(),
                     containerType,
                     containerWidth);
+            }
+            if (formatterConfig != null) {
+                element.initSettings(cms, formatterConfig);
             }
             getSessionCache(cms).setCacheContainerElement(element.editorHash(), element);
         }
