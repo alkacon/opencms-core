@@ -60,12 +60,21 @@ public class CmsToolbarNewGalleryButton extends A_CmsToolbarListMenuButton {
     public CmsToolbarNewGalleryButton(CmsSitemapToolbar toolbar, CmsSitemapController controller) {
 
         super(
-            Messages.get().key(Messages.GUI_TOOLBAR_NEW_BUTTON_TITLE_0),
+            Messages.get().key(Messages.GUI_TOOLBAR_NEW_GALLERY_TITLE_0),
             I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarAdd(),
             toolbar,
             controller);
         m_galleriesList = new CmsList<I_CmsListItem>();
         addTab(createTab(m_galleriesList), Messages.get().key(Messages.GUI_GALLERIES_TYPES_TAB_0));
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.client.toolbar.A_CmsToolbarListMenuButton#initContent()
+     */
+    @Override
+    protected void initContent() {
+
+        // nothing to do
     }
 
     /**
@@ -110,14 +119,5 @@ public class CmsToolbarNewGalleryButton extends A_CmsToolbarListMenuButton {
         });
         item.getListItemWidget().addButton(button);
         return item;
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.client.toolbar.A_CmsToolbarListMenuButton#initContent()
-     */
-    @Override
-    protected void initContent() {
-
-        // nothing to do
     }
 }

@@ -472,6 +472,9 @@ public final class Messages {
     public static final String GUI_TOOLBAR_NEW_BUTTON_TITLE_0 = "GUI_TOOLBAR_NEW_BUTTON_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_NEW_GALLERY_TITLE_0 = "GUI_TOOLBAR_NEW_GALLERY_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_NEW_DISABLE_0 = "GUI_TOOLBAR_NEW_DISABLE_0";
 
     /** Message constant for key in the resource bundle. */
