@@ -172,8 +172,8 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
                     }
                 }
             }
-
-            if ((maxVersion - versionsToKeep) <= 0) {
+            // versionsToKeep < 0 is the same as unlimited so do not delete
+            if (versionsToKeep < 0 || (maxVersion - versionsToKeep) <= 0) {
                 // nothing to delete
                 internalCleanup(dbc, resource);
                 return 0;
