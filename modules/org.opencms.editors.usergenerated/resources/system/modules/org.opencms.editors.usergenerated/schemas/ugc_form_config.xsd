@@ -16,7 +16,7 @@
     
     <xsd:complexType name="OpenCmsUserGeneratedContentFormConfiguration">
         <xsd:sequence>
-        <xsd:element name="Title" type="OpenCmsString" />
+		   <xsd:element name="Title" type="OpenCmsString" />
            <xsd:element name="ContentType" type="OpenCmsString" />
            <xsd:element name="ContentPath" type="OpenCmsVfsFile" />
            <xsd:element name="NamePattern" type="OpenCmsString" />
@@ -56,8 +56,9 @@
 				<tab element="Title" collapse="false" name="General" />
 				<tab element="MaxUploadSize" collapse="false" name="Security" />
 			</tabs>
+            <formatters>
+               <formatter type="*" uri="/system/modules/org.opencms.editors.usergenerated/formatters/usergenerated-default.jsp" />
+            </formatters>			
         </xsd:appinfo>        
     </xsd:annotation>
 </xsd:schema>
-
-

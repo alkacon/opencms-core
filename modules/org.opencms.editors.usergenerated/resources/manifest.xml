@@ -228,18 +228,149 @@
 			<accesscontrol />
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.editors.usergenerated/resources
+			<destination>system/modules/org.opencms.editors.usergenerated/formatters</destination>
+			<type>folder</type>
+			<uuidstructure>d9438903-dfea-11e3-b2f0-005056b60ccd</uuidstructure>
+			<datelastmodified>Tue, 20 May 2014 11:03:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 20 May 2014 06:49:11 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.editors.usergenerated/formatters/usergenerated-default.jsp</source>
+			<destination>system/modules/org.opencms.editors.usergenerated/formatters/usergenerated-default.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>05d94da5-dfec-11e3-b2f0-005056b60ccd</uuidstructure>
+			<uuidresource>05d94da6-dfec-11e3-b2f0-005056b60ccd</uuidresource>
+			<datelastmodified>Tue, 20 May 2014 11:07:04 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 20 May 2014 06:57:35 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Default formatter for UGC form elements]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.editors.usergenerated/lib
 			</destination>
 			<type>folder</type>
-			<uuidstructure>0f655a8b-bb13-11e3-a3c7-0ddf2cfaeffd</uuidstructure>
-			<datelastmodified>Thu, 03 Apr 2014 09:33:48 GMT</datelastmodified>
+			<uuidstructure>f30e29c9-20c6-4adc-a985-547cff8c4169</uuidstructure>
+			<datelastmodified>Thu, 03 Apr 2014 09:31:41 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 03 Apr 2014 09:33:48 GMT</datecreated>
+			<datecreated>Thu, 03 Apr 2014 09:31:41 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
 			<relations />
 			<accesscontrol />
+		</file>
+		<file>
+			<source>system/modules/org.opencms.editors.usergenerated/lib/org.opencms.editors.usergenerated.jar
+			</source>
+			<destination>system/modules/org.opencms.editors.usergenerated/lib/org.opencms.editors.usergenerated.jar
+			</destination>
+			<type>binary</type>
+			<uuidstructure>c6d698fb-0f81-4ad4-8ba6-fc36b80f3e0e</uuidstructure>
+			<uuidresource>bb4ba791-4ee1-4912-8710-eec23132b361</uuidresource>
+			<datelastmodified>Wed, 02 Jul 2008 07:36:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 02 Jul 2008 07:35:54 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties />
+			<relations />
+			<accesscontrol />
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.editors.usergenerated/resources
+			</destination>
+			<type>folder</type>
+			<uuidstructure>d2be0da6-8c48-4217-bc33-f904b139ca75</uuidstructure>
+			<datelastmodified>Thu, 03 Apr 2014 09:31:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 03 Apr 2014 09:31:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties />
+			<relations />
+			<accesscontrol />
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.editors.usergenerated/resources/form
+			</destination>
+			<type>folder</type>
+			<uuidstructure>36b2183f-f615-41e4-8402-17e5a62a4c2a</uuidstructure>
+			<datelastmodified>Thu, 03 Apr 2014 09:31:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 03 Apr 2014 09:31:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties />
+			<relations />
+			<accesscontrol />
+		</file>
+		<file>
+			<source>system/modules/org.opencms.editors.usergenerated/resources/form/form.nocache.js</source>
+			<destination>system/modules/org.opencms.editors.usergenerated/resources/form/form.nocache.js</destination>
+			<type>binary</type>
+			<uuidstructure>ba98180e-dfae-11e3-bf3d-aff008c81c84</uuidstructure>
+			<uuidresource>ba983f1f-dfae-11e3-bf3d-aff008c81c84</uuidresource>
+			<datelastmodified>Tue, 20 May 2014 11:05:48 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 19 May 2014 23:38:49 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[UGC API main JavaScript]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.editors.usergenerated/resources/js</destination>
+			<type>folder</type>
+			<uuidstructure>b1b3cf0b-e00b-11e3-b2f0-005056b60ccd</uuidstructure>
+			<datelastmodified>Tue, 20 May 2014 10:44:18 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 20 May 2014 10:44:18 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.editors.usergenerated/resources/js/ugc-jquery.js</source>
+			<destination>system/modules/org.opencms.editors.usergenerated/resources/js/ugc-jquery.js</destination>
+			<type>plain</type>
+			<uuidstructure>b8d5d3fd-e00b-11e3-b2f0-005056b60ccd</uuidstructure>
+			<uuidresource>b8d5d3fe-e00b-11e3-b2f0-005056b60ccd</uuidresource>
+			<datelastmodified>Tue, 20 May 2014 13:00:54 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 20 May 2014 10:44:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[UGC API jQuery add-on JavaScript]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/modules/org.opencms.editors.usergenerated/schemas
@@ -266,68 +397,6 @@
 			<datelastmodified>Thu, 03 Apr 2014 09:32:05 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 03 Apr 2014 09:32:05 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties />
-			<relations />
-			<accesscontrol />
-		</file>
-
-		<file>
-			<destination>system/modules/org.opencms.editors.usergenerated/lib
-			</destination>
-			<type>folder</type>
-			<uuidstructure>f30e29c9-20c6-4adc-a985-547cff8c4169</uuidstructure>
-			<datelastmodified>Thu, 03 Apr 2014 09:31:41 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 03 Apr 2014 09:31:41 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties />
-			<relations />
-			<accesscontrol />
-		</file>
-
-		<file>
-			<destination>system/modules/org.opencms.editors.usergenerated/resources
-			</destination>
-			<type>folder</type>
-			<uuidstructure>d2be0da6-8c48-4217-bc33-f904b139ca75</uuidstructure>
-			<datelastmodified>Thu, 03 Apr 2014 09:31:41 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 03 Apr 2014 09:31:41 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties />
-			<relations />
-			<accesscontrol />
-		</file>
-
-		<file>
-			<destination>system/modules/org.opencms.editors.usergenerated/resources/form
-			</destination>
-			<type>folder</type>
-			<uuidstructure>36b2183f-f615-41e4-8402-17e5a62a4c2a</uuidstructure>
-			<datelastmodified>Thu, 03 Apr 2014 09:31:41 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 03 Apr 2014 09:31:41 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties />
-			<relations />
-			<accesscontrol />
-		</file>
-		<file>
-			<source>system/modules/org.opencms.editors.usergenerated/lib/org.opencms.editors.usergenerated.jar
-			</source>
-			<destination>system/modules/org.opencms.editors.usergenerated/lib/org.opencms.editors.usergenerated.jar
-			</destination>
-			<type>binary</type>
-			<uuidstructure>c6d698fb-0f81-4ad4-8ba6-fc36b80f3e0e</uuidstructure>
-			<uuidresource>bb4ba791-4ee1-4912-8710-eec23132b361</uuidresource>
-			<datelastmodified>Wed, 02 Jul 2008 07:36:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 02 Jul 2008 07:35:54 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
