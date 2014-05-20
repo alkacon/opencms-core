@@ -1185,6 +1185,25 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             timer = System.currentTimeMillis();
         }
         CmsObject cms = getCmsObject();
+        List<Locale> availableLocalesList = OpenCms.getLocaleManager().getAvailableLocales(cms, file);
+        if (!availableLocalesList.contains(locale)) {
+            availableLocalesList.retainAll(content.getLocales());
+            List<Locale> defaultLocales = OpenCms.getLocaleManager().getDefaultLocales(cms, file);
+            Locale replacementLocale = OpenCms.getLocaleManager().getBestMatchingLocale(
+                locale,
+                defaultLocales,
+                availableLocalesList);
+            LOG.info("Can't edit locale "
+                + locale
+                + " of file "
+                + file.getRootPath()
+                + " because it is not configured as available locale. Using locale "
+                + replacementLocale
+                + " instead.");
+            locale = replacementLocale;
+            entityId = CmsContentDefinition.uuidToEntityId(file.getStructureId(), locale.toString());
+        }
+
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(entityId)) {
             entityId = CmsContentDefinition.uuidToEntityId(file.getStructureId(), locale.toString());
         }
