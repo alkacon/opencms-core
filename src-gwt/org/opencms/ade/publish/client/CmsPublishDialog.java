@@ -397,32 +397,36 @@ public class CmsPublishDialog extends CmsPopup {
      */
     public void onCancel() {
 
-        final List<CmsUUID> toRemove = m_publishSelectPanel.m_model.getIdsOfAlreadyPublishedResources();
-        if (toRemove.isEmpty()) {
-            hide();
+        if (m_publishSelectPanel.m_model != null) {
+            final List<CmsUUID> toRemove = m_publishSelectPanel.m_model.getIdsOfAlreadyPublishedResources();
+            if (toRemove.isEmpty()) {
+                hide();
+            } else {
+                CmsRpcAction<CmsWorkflowResponse> action = new CmsRpcAction<CmsWorkflowResponse>() {
+
+                    @Override
+                    public void execute() {
+
+                        start(0, true);
+                        CmsWorkflowActionParams params = getWorkflowActionParams();
+                        getService().executeAction(
+                            new CmsWorkflowAction(CmsWorkflowAction.ACTION_CANCEL, "", true),
+                            params,
+                            this);
+                    }
+
+                    @Override
+                    protected void onResponse(CmsWorkflowResponse result) {
+
+                        stop(false);
+                        hide();
+
+                    }
+                };
+                action.execute();
+            }
         } else {
-            CmsRpcAction<CmsWorkflowResponse> action = new CmsRpcAction<CmsWorkflowResponse>() {
-
-                @Override
-                public void execute() {
-
-                    start(0, true);
-                    CmsWorkflowActionParams params = getWorkflowActionParams();
-                    getService().executeAction(
-                        new CmsWorkflowAction(CmsWorkflowAction.ACTION_CANCEL, "", true),
-                        params,
-                        this);
-                }
-
-                @Override
-                protected void onResponse(CmsWorkflowResponse result) {
-
-                    stop(false);
-                    hide();
-
-                }
-            };
-            action.execute();
+            hide();
         }
     }
 

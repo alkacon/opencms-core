@@ -640,7 +640,6 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
                     m_groupPanels.get(key).updateCheckboxState(entry.getValue());
                 }
             }
-
         }
     }
 
@@ -681,15 +680,16 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         m_tooManyResources.setVisible(!showResources);
         m_tooManyResources.setText(tooManyResourcesMessage);
         m_selectAll.setVisible(showResources);
+        enableActions(true);
         if (!showResources) {
             m_checkboxProblems.setVisible(false);
             m_noResources.setVisible(false);
             m_scrollPanel.setVisible(false);
+        } else {
+            addMoreListItems();
+            showProblemCount(m_model.countProblems());
+            onChangePublishSelection();
         }
-        enableActions(true);
-        addMoreListItems();
-        showProblemCount(m_model.countProblems());
-        onChangePublishSelection();
     }
 
     /**
@@ -699,9 +699,9 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
      */
     public boolean shouldEnablePublishButton() {
 
-        boolean enablePublishButton = (getResourcesToRemove().size() != 0)
-            || (getResourcesToPublish().size() != 0)
-            || !m_showResources;
+        boolean enablePublishButton = !m_showResources
+            || (getResourcesToRemove().size() != 0)
+            || (getResourcesToPublish().size() != 0);
         return enablePublishButton;
 
     }
@@ -723,7 +723,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     public void updateDialogTitle() {
 
         String title;
-        if (m_model.getGroups().size() > 1) {
+        if ((m_model != null) && (m_model.getGroups().size() > 1)) {
             title = Messages.get().key(
                 Messages.GUI_PUBLISH_DIALOG_TITLE_3,
                 m_publishDialog.getSelectedWorkflow().getNiceName(),

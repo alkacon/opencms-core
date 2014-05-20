@@ -197,7 +197,7 @@ public class CmsPublishGroupPanel extends Composite {
         CmsListItemWidget itemWidget = new CmsListItemWidget(info);
         String resourceUser = resourceBean.getUserLastModified();
         String currentUser = CmsCoreProvider.get().getUserInfo().getName();
-        if (!resourceUser.equals(currentUser)) {
+        if (!currentUser.equals(resourceUser)) {
             itemWidget.setTopRightIcon(
                 I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().changed(),
                 Messages.get().key(Messages.GUI_CHANGED_BY_USER_1, resourceBean.getUserLastModified()));
