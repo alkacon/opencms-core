@@ -27,6 +27,10 @@
 
 package org.opencms.ade.sitemap.client;
 
+import org.opencms.ade.galleries.client.ui.CmsGalleryPopup;
+import org.opencms.ade.galleries.shared.CmsGalleryConfiguration;
+import org.opencms.ade.galleries.shared.CmsGalleryTabConfiguration;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapLayoutBundle;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
@@ -49,6 +53,8 @@ import org.opencms.util.CmsUUID;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -115,7 +121,30 @@ public class CmsGalleryTreeItem extends CmsTreeItem {
     public CmsGalleryTreeItem(CmsGalleryType galleryType) {
 
         super(true);
-        initContent(createListWidget(galleryType));
+        CmsListItemWidget itemWidget = createListWidget(galleryType);
+        initContent(itemWidget);
+        itemWidget.addIconClickHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+
+                setOpen(!isOpen());
+            }
+        });
+    }
+
+    /**
+     * Creates the list item widget for the given type.<p>
+     * 
+     * @param galleryType the gallery type
+     * 
+     * @return the list item widget
+     */
+    public static CmsListItemWidget createListWidget(CmsGalleryType galleryType) {
+
+        CmsListInfoBean infoBean = new CmsListInfoBean(galleryType.getNiceName(), galleryType.getDescription(), null);
+        CmsListItemWidget result = new CmsListItemWidget(infoBean);
+        result.setIcon(CmsIconUtil.getResourceIconClasses(galleryType.getTypeName(), null, false));
+        return result;
     }
 
     /**
@@ -177,6 +206,25 @@ public class CmsGalleryTreeItem extends CmsTreeItem {
             galleryFolder.getResourceType(),
             galleryFolder.getSitePath(),
             false));
+        result.addIconClickHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+
+                CmsSitemapController controller = CmsSitemapView.getInstance().getController();
+                CmsClientSitemapEntry entry = controller.getEntryById(getEntryId());
+
+                CmsGalleryConfiguration configuration = new CmsGalleryConfiguration();
+                List<String> typeNames = controller.getGalleryType(new Integer(entry.getResourceTypeId())).getContentTypeNames();
+                configuration.setSearchTypes(typeNames);
+                configuration.setResourceTypes(typeNames);
+                configuration.setGalleryMode(GalleryMode.adeView);
+                configuration.setTabConfiguration(CmsGalleryTabConfiguration.resolve("selectDoc"));
+                configuration.setReferencePath(entry.getSitePath());
+                configuration.setGalleryPath(entry.getSitePath());
+                CmsGalleryPopup dialog = new CmsGalleryPopup(null, configuration);
+                dialog.center();
+            }
+        });
         if ((CmsSitemapView.getInstance().getController().getEntryById(galleryFolder.getStructureId()) == null)
             || CmsSitemapView.getInstance().getController().getEntryById(galleryFolder.getStructureId()).isEditable()) {
             result.addTitleStyleName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().itemTitle());
@@ -228,21 +276,6 @@ public class CmsGalleryTreeItem extends CmsTreeItem {
                 }
             });
         }
-        return result;
-    }
-
-    /**
-     * Creates the list item widget for the given type.<p>
-     * 
-     * @param galleryType the gallery type
-     * 
-     * @return the list item widget
-     */
-    private CmsListItemWidget createListWidget(CmsGalleryType galleryType) {
-
-        CmsListInfoBean infoBean = new CmsListInfoBean(galleryType.getNiceName(), galleryType.getDescription(), null);
-        CmsListItemWidget result = new CmsListItemWidget(infoBean);
-        result.setIcon(CmsIconUtil.getResourceIconClasses(galleryType.getTypeName(), null, false));
         return result;
     }
 

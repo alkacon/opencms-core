@@ -636,7 +636,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
             CmsPushButton goToParentButton = new CmsPushButton();
             goToParentButton.setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarParent());
             goToParentButton.setTitle(Messages.get().key(Messages.GUI_HOVERBAR_PARENT_0));
-            goToParentButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+            goToParentButton.setButtonStyle(ButtonStyle.IMAGE, null);
             goToParentButton.addClickHandler(new ClickHandler() {
 
                 /**
@@ -679,6 +679,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         page.add(m_tree);
 
         m_galleryTree = new CmsTree<CmsGalleryTreeItem>();
+        m_galleryTree.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().galleriesMode());
         m_galleryTree.addOpenHandler(new OpenHandler<CmsGalleryTreeItem>() {
 
             public void onOpen(OpenEvent<CmsGalleryTreeItem> event) {

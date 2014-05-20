@@ -319,9 +319,9 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
     /**
      * Adds a tab with a user-defined id.<p>
      * 
-     * @param tabContent
-     * @param tabName
-     * @param tabId
+     * @param tabContent the tab content
+     * @param tabName the tab name
+     * @param tabId the tab id
      */
     public void addNamed(E tabContent, String tabName, String tabId) {
 
@@ -459,7 +459,6 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
      * @param tabIndex the child widget's index
      * @return the child widget
      */
-    @SuppressWarnings("unchecked")
     public E getWidget(int tabIndex) {
 
         return (E)m_tabPanel.getWidget(tabIndex);
@@ -497,7 +496,6 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
      * 
      * @return the iterator
      */
-    @SuppressWarnings("unchecked")
     public Iterator<E> iterator() {
 
         return (Iterator<E>)m_tabPanel.iterator();

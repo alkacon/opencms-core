@@ -237,7 +237,7 @@ public class CmsScrollPanel extends ScrollPanel implements HasResizeHandlers, I_
     /**
      * Sets the default height of the scrolling panel.
      * 
-     * @param height 
+     * @param height the default height
      */
     public void setDefaultHeight(double height) {
 
@@ -331,7 +331,7 @@ public class CmsScrollPanel extends ScrollPanel implements HasResizeHandlers, I_
     /**
      * Sets the start parameters of the resize event.<p>
      * 
-     * @param event
+     * @param event the mouse event
      */
     protected void setStartParameters(MouseDownEvent event) {
 

@@ -33,6 +33,7 @@ import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.ui.CmsCreateGalleryDialog;
 import org.opencms.ade.sitemap.shared.CmsGalleryType;
 import org.opencms.gwt.client.ui.CmsList;
+import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsListItem;
@@ -100,10 +101,10 @@ public class CmsToolbarNewGalleryButton extends A_CmsToolbarListMenuButton {
      */
     private I_CmsListItem makeGalleryTypeItem(final CmsGalleryType galleryType) {
 
-        CmsGalleryTreeItem item = new CmsGalleryTreeItem(galleryType);
+        CmsListItem item = new CmsListItem(CmsGalleryTreeItem.createListWidget(galleryType));
         CmsPushButton button = new CmsPushButton();
         button.setImageClass(org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.style().addIcon());
-        button.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        button.setButtonStyle(ButtonStyle.IMAGE, null);
         button.setTitle(Messages.get().key(Messages.GUI_GALLERIES_CREATE_0));
         button.addClickHandler(new ClickHandler() {
 

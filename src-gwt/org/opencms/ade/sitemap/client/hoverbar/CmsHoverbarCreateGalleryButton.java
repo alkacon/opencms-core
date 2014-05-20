@@ -64,7 +64,7 @@ public class CmsHoverbarCreateGalleryButton extends CmsPushButton {
         m_parentId = parentId;
         setImageClass(org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.style().addIcon());
         setTitle(Messages.get().key(Messages.GUI_GALLERIES_CREATE_0));
-        setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        setButtonStyle(ButtonStyle.IMAGE, null);
         addClickHandler(new ClickHandler() {
 
             /**

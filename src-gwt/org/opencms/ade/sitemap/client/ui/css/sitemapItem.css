@@ -66,7 +66,7 @@ div.itemTitle{
 	cursor: text;
 }
 
-.navMode .cms_type_icon, .vfsMode .cms_type_icon{
+.navMode .cms_type_icon, .vfsMode .cms_type_icon, .galleriesMode .cms_type_icon{
 	cursor: pointer;
 }
 

@@ -52,7 +52,7 @@ public class CmsHoverbarGotoButton extends CmsPushButton {
         // TODO: this should be a link so it can be opened in a new window or tab by the user
         setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarGoto());
         setTitle(Messages.get().key(Messages.GUI_HOVERBAR_GOTO_0));
-        setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        setButtonStyle(ButtonStyle.IMAGE, null);
         addClickHandler(new ClickHandler() {
 
             /**

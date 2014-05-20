@@ -63,7 +63,7 @@ public class CmsHoverbarMoveButton extends CmsPushButton implements I_CmsDragHan
         addStyleName(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarMove());
         setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarMove());
         setTitle(Messages.get().key(Messages.GUI_HOVERBAR_MOVE_0));
-        setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        setButtonStyle(ButtonStyle.IMAGE, null);
         hoverbar.addShowHandler(new I_CmsHoverbarShowHandler() {
 
             /**
