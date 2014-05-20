@@ -504,6 +504,16 @@ I_HasResizeOnShow {
                 height = m_defaultRows;
             }
             m_textArea.setVisibleLines(height);
+            int j = 0;
+            int maxIterations = 200;
+            // Increase the  number of lines until the offset height reaches the scroll height. This is necessary in some cases, e.g. with 
+            // text area contents containing no spaces.
+            // We set a limit on the number of iterations, because in some cases changing the number of lines may not change
+            // the height of the element (e.g. if a maximum height is set on the element), and we would have an infinite loop if not for the limit.
+            while ((m_textArea.getOffsetHeight() < m_textArea.getElement().getScrollHeight()) && (j < maxIterations)) {
+                m_textArea.setVisibleLines(m_textArea.getVisibleLines() + 1);
+                j += 1;
+            }
             m_textAreaContainer.onResizeDescendant();
         }
     }
