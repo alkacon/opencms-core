@@ -482,39 +482,27 @@ I_HasResizeOnShow {
      */
     protected void updateContentSize() {
 
-        int width = m_textArea.getOffsetWidth();
-        // sanity check: don't do anything, if the measured width doesn't make any sense
-        if (width > 10) {
-            String string = m_textArea.getText();
-            String searchString = "\n";
-            int occurences = 0;
-            if (0 != searchString.length()) {
-                for (int index = string.indexOf(searchString, 0); index != -1; index = string.indexOf(
-                    searchString,
-                    index + 1)) {
-                    occurences++;
-                }
+        int offsetHeight = m_textArea.getOffsetHeight();
+        // sanity check: don't do anything, if the measured height doesn't make any sense
+        if (offsetHeight > 5) {
+            int visibleRows = m_textArea.getVisibleLines();
+            double lineHeight = (1.00 * offsetHeight) / visibleRows;
+            // store the current scroll position
+            int scrollPosition = m_textAreaContainer.getVerticalScrollPosition()
+                + m_textArea.getElement().getScrollTop();
+            if (visibleRows != m_defaultRows) {
+                m_textArea.setVisibleLines(m_defaultRows);
             }
-            String[] splittext = string.split("\\n");
-            for (int i = 0; i < splittext.length; i++) {
-                occurences += (splittext[i].length() * 6.77) / width;
+            int rows = (int)Math.ceil(m_textArea.getElement().getScrollHeight() / lineHeight) + 1;
+            if (rows < m_defaultRows) {
+                rows = m_defaultRows;
             }
-            int height = occurences + 1;
-            if (m_defaultRows > height) {
-                height = m_defaultRows;
+            m_textArea.setVisibleLines(rows);
+            // restore the scroll position
+            m_textAreaContainer.setVerticalScrollPosition(scrollPosition);
+            if (visibleRows != rows) {
+                m_textAreaContainer.onResizeDescendant();
             }
-            m_textArea.setVisibleLines(height);
-            int j = 0;
-            int maxIterations = 200;
-            // Increase the  number of lines until the offset height reaches the scroll height. This is necessary in some cases, e.g. with 
-            // text area contents containing no spaces.
-            // We set a limit on the number of iterations, because in some cases changing the number of lines may not change
-            // the height of the element (e.g. if a maximum height is set on the element), and we would have an infinite loop if not for the limit.
-            while ((m_textArea.getOffsetHeight() < m_textArea.getElement().getScrollHeight()) && (j < maxIterations)) {
-                m_textArea.setVisibleLines(m_textArea.getVisibleLines() + 1);
-                j += 1;
-            }
-            m_textAreaContainer.onResizeDescendant();
         }
     }
 }
