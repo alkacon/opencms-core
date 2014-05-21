@@ -1006,21 +1006,19 @@ public class CmsJspTagContainer extends TagSupport {
         boolean isGroupContainer = element.isGroupContainer(cms);
         boolean isInheritedContainer = element.isInheritedContainer(cms);
         I_CmsFormatterBean formatterConfig = null;
+        if (!isGroupContainer && !isInheritedContainer) {
+            // ensure that the formatter configuration id is added to the element settings, so it will be persisted on save
+            formatterConfig = ensureValidFormatterSettings(
+                cms,
+                element,
+                adeConfig,
+                getName(),
+                containerType,
+                containerWidth);
+            element.initSettings(cms, formatterConfig);
+        }
         // writing elements to the session cache to improve performance of the container-page editor in offline project
         if (!isOnline) {
-            if (!isGroupContainer && !isInheritedContainer) {
-                // ensure that the formatter configuration id is added to the element settings, so it will be persisted on save
-                formatterConfig = ensureValidFormatterSettings(
-                    cms,
-                    element,
-                    adeConfig,
-                    getName(),
-                    containerType,
-                    containerWidth);
-            }
-            if (formatterConfig != null) {
-                element.initSettings(cms, formatterConfig);
-            }
             getSessionCache(cms).setCacheContainerElement(element.editorHash(), element);
         }
 
@@ -1045,28 +1043,17 @@ public class CmsJspTagContainer extends TagSupport {
                     if (isOnline && (!shouldShowSubElementInContext || !subelement.isReleasedAndNotExpired())) {
                         continue;
                     }
-                    I_CmsFormatterBean subElementFormatterConfig = null;
+                    I_CmsFormatterBean subElementFormatterConfig = ensureValidFormatterSettings(
+                        cms,
+                        subelement,
+                        adeConfig,
+                        getName(),
+                        containerType,
+                        containerWidth);
+                    subelement.initSettings(cms, subElementFormatterConfig);
                     // writing elements to the session cache to improve performance of the container-page editor
                     if (!isOnline) {
-                        subElementFormatterConfig = ensureValidFormatterSettings(
-                            cms,
-                            subelement,
-                            adeConfig,
-                            getName(),
-                            containerType,
-                            containerWidth);
                         getSessionCache(cms).setCacheContainerElement(subelement.editorHash(), subelement);
-                    } else {
-                        // group elements store the formatter info in their settings only
-                        String settingsKey = CmsFormatterConfig.getSettingsKeyForContainer(getName());
-                        if (subelement.getSettings().containsKey(settingsKey)) {
-                            String formatterConfigId = subelement.getSettings().get(settingsKey);
-                            if (CmsUUID.isValidUUID(formatterConfigId)) {
-                                subElementFormatterConfig = OpenCms.getADEManager().getCachedFormatters(
-                                    cms.getRequestContext().getCurrentProject().isOnlineProject()).getFormatters().get(
-                                    new CmsUUID(formatterConfigId));
-                            }
-                        }
                     }
                     if (subElementFormatterConfig == null) {
                         CmsFormatterConfiguration subelementFormatters = adeConfig.getFormatters(

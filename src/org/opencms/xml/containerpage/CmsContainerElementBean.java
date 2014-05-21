@@ -441,16 +441,19 @@ public class CmsContainerElementBean implements Cloneable {
      */
     public void initSettings(CmsObject cms, I_CmsFormatterBean formatterBean) {
 
-        if (m_settings != null) {
-            m_settings = CmsXmlContentPropertyHelper.mergeDefaults(
+        Map<String, String> mergedSettings;
+        if (formatterBean == null) {
+            mergedSettings = CmsXmlContentPropertyHelper.mergeDefaults(cms, m_resource, m_individualSettings);
+        } else {
+            mergedSettings = CmsXmlContentPropertyHelper.mergeDefaults(
                 cms,
                 formatterBean.getSettings(),
                 m_individualSettings);
+        }
+        if (m_settings != null) {
+            m_settings = mergedSettings;
         } else {
-            m_settings.putAll(CmsXmlContentPropertyHelper.mergeDefaults(
-                cms,
-                formatterBean.getSettings(),
-                m_individualSettings));
+            m_settings.putAll(mergedSettings);
         }
     }
 
