@@ -1417,7 +1417,7 @@ a.searchcategory:hover, a.searchcategory:active {
 %>
 
 .help { 
-    color: /*begin-color InfoText*/#ffffff/*end-color*/; 
+    color: #000000; 
     position: absolute; 
     top: 0px; 
     left: 0px; 
