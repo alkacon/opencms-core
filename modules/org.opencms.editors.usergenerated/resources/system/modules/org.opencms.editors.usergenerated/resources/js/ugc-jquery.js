@@ -214,6 +214,9 @@ UGC.prototype.getXpath = function() {
         if (arguments.length == 1) {
             // set the form element with the given name to the content value stored in the mapping with the same name
             this.getForm(arguments[0]).val(this.content[this.mappings[arguments[0]].contentPath]);
+        } else if (arguments.length == 2) {
+            // set the form element with the given name to the given value
+            this.getForm(arguments[0]).val(arguments[1]);            
         } else {
             // fill the complete form with all mapped values
             this.fillForm();
@@ -224,10 +227,6 @@ UGC.prototype.getXpath = function() {
  UGC.prototype.setContent = function() {
     // check if the name parameter was provided, if not we have to initialize everything later
     var formId = (arguments.length > 0) ? arguments[0] : null;
-    if (this.contentClone == null) {
-        // initialize the content clone on first call
-        this.createContentClone();  
-    }
     if (formId != null) {
         // set the content (clone) value stored in the mapping with the given name to the form element value with the same 
         var value = (arguments.length > 1) ? arguments[1] : this.getFormVal(formId);
@@ -315,6 +314,10 @@ UGC.prototype.setSession = function() {
     this.session = arguments[0];
     // initialize the content from the session
     this.content = this.session.getValues();
+    if (this.contentClone == null) {
+        // initialize the content clone on first call
+        this.createContentClone();  
+    }    
 };
 
 UGC.prototype.getSession = function() {
@@ -325,4 +328,26 @@ UGC.prototype.getSession = function() {
 UGC.prototype.destroySession = function() {
     // wrapper for session
     if (this.session != null) this.session.destroy();
+};
+
+// global UGC variable to avoid context problems when initializing
+var globalUGC = null;
+
+UGC.prototype.init = function() {
+    // method to be used in callback from UGC main API
+    globalUGC.setSession(arguments[0]);
+    // initialize the form with the data from the context
+    globalUGC.setForm();
+};
+
+UGC.prototype.initForm = function() {
+    // method to be used for checking if the form exists and initializing the mappings
+    if ((arguments.length == 1) && (this.getForm() != null)) {
+        // store the used UGC object to access later in the init function
+        globalUGC = this;
+        // first argument must be the form mapping callback
+        arguments[0]();
+        return true;
+    }
+    return false;
 };

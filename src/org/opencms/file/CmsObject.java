@@ -1776,9 +1776,9 @@ public final class CmsObject {
      *
      * @param resource the resource to check the permissions for
      * @param requiredPermissions the set of permissions to check for
-     * @param checkLock if <code>true</code>, a lock for the current user is required for
-     *      all write operations, if <code>false</code> it's ok to write as long as the resource
-     *      is not locked by another user.
+     * @param checkLock if <code>true</code> the lock status of the resource is checked for write operations
+     *      and the resource needs be locked by the current user so that the test is passed,
+     *      if <code>false</code> the lock is not checked at all
      * @param filter the resource filter to use
      *
      * @return <code>true</code> if the required permissions are satisfied
