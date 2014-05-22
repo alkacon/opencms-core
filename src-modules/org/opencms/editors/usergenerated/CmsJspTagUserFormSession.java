@@ -66,6 +66,21 @@ public class CmsJspTagUserFormSession extends TagSupport {
     private String m_var;
 
     /**
+     * @see javax.servlet.jsp.tagext.TagSupport#doEndTag()
+     */
+    @Override
+    public int doEndTag() throws JspException {
+
+        // reset all tag attribute values
+        m_configPath = null;
+        m_editId = null;
+        m_editName = null;
+        m_error = null;
+        m_var = null;
+        return super.doEndTag();
+    }
+
+    /**
      * @see javax.servlet.jsp.tagext.TagSupport#doStartTag()
      */
     @Override
