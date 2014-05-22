@@ -625,6 +625,16 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             if (detailId == null) {
                 return null;
             }
+            String origSiteRoot = cms.getRequestContext().getSiteRoot();
+            try {
+                cms.getRequestContext().setSiteRoot("");
+                // real root paths have priority over detail contents 
+                if (cms.existsResource(result)) {
+                    return null;
+                }
+            } finally {
+                cms.getRequestContext().setSiteRoot(origSiteRoot);
+            }
             CmsResource detailResource = cms.readResource(detailId, CmsResourceFilter.ALL);
             return detailResource.getRootPath() + getSuffix(uri);
         } catch (Exception e) {
