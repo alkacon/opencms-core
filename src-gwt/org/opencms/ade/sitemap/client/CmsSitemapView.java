@@ -91,7 +91,6 @@ import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
-import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -680,13 +679,13 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
         m_galleryTree = new CmsTree<CmsGalleryTreeItem>();
         m_galleryTree.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().galleriesMode());
-        m_galleryTree.addOpenHandler(new OpenHandler<CmsGalleryTreeItem>() {
-
-            public void onOpen(OpenEvent<CmsGalleryTreeItem> event) {
-
-                ensureEntriesLoaded(event.getTarget());
-            }
-        });
+        //        m_galleryTree.addOpenHandler(new OpenHandler<CmsGalleryTreeItem>() {
+        //
+        //            public void onOpen(OpenEvent<CmsGalleryTreeItem> event) {
+        //
+        //                ensureEntriesLoaded(event.getTarget());
+        //            }
+        //        });
         m_galleryTreeItems = new HashMap<CmsUUID, CmsGalleryTreeItem>();
         m_galleryTypeItems = new HashMap<String, CmsGalleryTreeItem>();
         page.add(m_galleryTree);
@@ -936,7 +935,11 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
     private CmsGalleryTreeItem createGalleryFolderItem(CmsGalleryFolderEntry galleryFolder) {
 
         CmsGalleryTreeItem folderItem = new CmsGalleryTreeItem(galleryFolder);
-        CmsSitemapHoverbar.installOn(m_controller, folderItem, galleryFolder.getStructureId());
+        CmsSitemapHoverbar.installOn(
+            m_controller,
+            folderItem,
+            galleryFolder.getStructureId(),
+            galleryFolder.getSitePath());
         return folderItem;
     }
 

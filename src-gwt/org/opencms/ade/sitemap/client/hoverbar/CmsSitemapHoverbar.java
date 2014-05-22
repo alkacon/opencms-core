@@ -27,7 +27,6 @@
 
 package org.opencms.ade.sitemap.client.hoverbar;
 
-import org.opencms.ade.sitemap.client.CmsSitemapTreeItem;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
@@ -44,6 +43,7 @@ import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -72,6 +72,9 @@ public final class CmsSitemapHoverbar extends FlowPanel {
     /** Flag to indicate the the hoverbar visibility is locked. */
     private boolean m_locked;
 
+    /** The entry site path, only used for gallery tree items. */
+    private String m_sitePath;
+
     /**
      * Constructor.<p>
      * 
@@ -96,6 +99,19 @@ public final class CmsSitemapHoverbar extends FlowPanel {
             add(new CmsHoverbarGotoSubSitemapButton(this));
             add(new CmsHoverbarGotoButton(this));
         }
+    }
+
+    /**
+     * Constructor to be used for gallery tree items.<p>
+     * 
+     * @param controller the controller
+     * @param entryId sitemap entry id
+     * @param sitePath the entry site path
+     */
+    private CmsSitemapHoverbar(CmsSitemapController controller, CmsUUID entryId, String sitePath) {
+
+        this(controller, entryId, true);
+        m_sitePath = sitePath;
     }
 
     /**
@@ -124,10 +140,21 @@ public final class CmsSitemapHoverbar extends FlowPanel {
      */
     public static void installOn(CmsSitemapController controller, CmsTreeItem treeItem, CmsUUID entryId) {
 
-        CmsSitemapHoverbar hoverbar = new CmsSitemapHoverbar(
-            controller,
-            entryId,
-            !(treeItem instanceof CmsSitemapTreeItem));
+        CmsSitemapHoverbar hoverbar = new CmsSitemapHoverbar(controller, entryId, false);
+        installHoverbar(hoverbar, treeItem.getListItemWidget());
+    }
+
+    /**
+     * Installs a hover bar for the given item widget.<p>
+     * 
+     * @param controller the controller 
+     * @param treeItem the item to hover
+     * @param entryId the entry id
+     * @param sitePath the entry site path
+     */
+    public static void installOn(CmsSitemapController controller, CmsTreeItem treeItem, CmsUUID entryId, String sitePath) {
+
+        CmsSitemapHoverbar hoverbar = new CmsSitemapHoverbar(controller, entryId, sitePath);
         installHoverbar(hoverbar, treeItem.getListItemWidget());
     }
 
@@ -302,6 +329,21 @@ public final class CmsSitemapHoverbar extends FlowPanel {
     protected boolean isLocked() {
 
         return m_locked;
+    }
+
+    /**
+     * Loads the sitemap entry.<p>
+     * 
+     * @param callback executed when the entry is loaded
+     */
+    protected void loadEntry(AsyncCallback<CmsClientSitemapEntry> callback) {
+
+        CmsClientSitemapEntry entry = getEntry();
+        if ((entry == null) && (m_sitePath != null)) {
+            m_controller.loadPath(m_sitePath, callback);
+        } else {
+            callback.onSuccess(entry);
+        }
     }
 
     /**

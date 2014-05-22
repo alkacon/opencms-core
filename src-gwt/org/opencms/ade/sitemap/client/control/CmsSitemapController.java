@@ -1118,8 +1118,20 @@ public class CmsSitemapController implements I_CmsSitemapController {
      */
     public void loadPath(final String sitePath) {
 
+        loadPath(sitePath, null);
+    }
+
+    /**
+     * Loads all entries on the given path.<p>
+     * 
+     * @param sitePath the site path
+     * @param callback the callback to execute when done
+     */
+    public void loadPath(final String sitePath, final AsyncCallback<CmsClientSitemapEntry> callback) {
+
         if (getEntry(sitePath) != null) {
-            updateEntry(sitePath);
+            CmsClientSitemapEntry entry = getEntry(sitePath);
+            getChildren(entry.getId(), CmsSitemapTreeItem.getItemById(entry.getId()).isOpen(), callback);
         } else {
             String parentPath = CmsResource.getParentFolder(sitePath);
             CmsClientSitemapEntry entry = getEntry(parentPath);
@@ -1140,8 +1152,11 @@ public class CmsSitemapController implements I_CmsSitemapController {
                     public void onSuccess(CmsClientSitemapEntry result) {
 
                         // check if target entry is loaded
-                        if (getEntry(sitePath) == null) {
-                            loadPath(sitePath);
+                        CmsClientSitemapEntry target = getEntry(sitePath);
+                        if (target == null) {
+                            loadPath(sitePath, callback);
+                        } else {
+                            callback.onSuccess(target);
                         }
                     }
                 });

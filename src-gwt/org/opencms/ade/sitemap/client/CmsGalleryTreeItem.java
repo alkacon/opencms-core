@@ -55,6 +55,7 @@ import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -183,6 +184,55 @@ public class CmsGalleryTreeItem extends CmsTreeItem {
     }
 
     /**
+     * Shows the gallery dialog for the given entry.<p>
+     * 
+     * @param entry the gallery folder entry
+     */
+    protected void showGallery(CmsClientSitemapEntry entry) {
+
+        CmsGalleryConfiguration configuration = new CmsGalleryConfiguration();
+        List<String> typeNames = CmsSitemapView.getInstance().getController().getGalleryType(
+            new Integer(entry.getResourceTypeId())).getContentTypeNames();
+        configuration.setSearchTypes(typeNames);
+        configuration.setResourceTypes(typeNames);
+        configuration.setGalleryMode(GalleryMode.adeView);
+        configuration.setTabConfiguration(CmsGalleryTabConfiguration.resolve("selectDoc"));
+        configuration.setReferencePath(getSitePath());
+        configuration.setGalleryPath(getSitePath());
+        CmsGalleryPopup dialog = new CmsGalleryPopup(null, configuration);
+        dialog.center();
+    }
+
+    /**
+     * Handles direct editing of the gallery title.<p>
+     * 
+     * @param editEntry the edit entry
+     * @param newTitle the new title
+     */
+    void handleEdit(CmsClientSitemapEntry editEntry, final String newTitle) {
+
+        if (CmsStringUtil.isEmpty(newTitle)) {
+            String dialogTitle = Messages.get().key(Messages.GUI_EDIT_TITLE_ERROR_DIALOG_TITLE_0);
+            String dialogText = Messages.get().key(Messages.GUI_TITLE_CANT_BE_EMPTY_0);
+            CmsAlertDialog alert = new CmsAlertDialog(dialogTitle, dialogText);
+            alert.center();
+            return;
+        }
+        String oldTitle = editEntry.getPropertyValue(CmsClientProperty.PROPERTY_TITLE);
+        if (!oldTitle.equals(newTitle)) {
+            CmsPropertyModification propMod = new CmsPropertyModification(
+                getEntryId(),
+                CmsClientProperty.PROPERTY_TITLE,
+                newTitle,
+                true);
+            final List<CmsPropertyModification> propChanges = new ArrayList<CmsPropertyModification>();
+            propChanges.add(propMod);
+            CmsSitemapController controller = CmsSitemapView.getInstance().getController();
+            controller.edit(editEntry, propChanges, CmsReloadMode.reloadEntry);
+        }
+    }
+
+    /**
      * Creates the list item widget for the given folder.<p>
      * 
      * @param galleryFolder the gallery folder
@@ -210,19 +260,21 @@ public class CmsGalleryTreeItem extends CmsTreeItem {
 
             public void onClick(ClickEvent event) {
 
-                CmsSitemapController controller = CmsSitemapView.getInstance().getController();
-                CmsClientSitemapEntry entry = controller.getEntryById(getEntryId());
+                CmsSitemapView.getInstance().getController().loadPath(
+                    getSitePath(),
+                    new AsyncCallback<CmsClientSitemapEntry>() {
 
-                CmsGalleryConfiguration configuration = new CmsGalleryConfiguration();
-                List<String> typeNames = controller.getGalleryType(new Integer(entry.getResourceTypeId())).getContentTypeNames();
-                configuration.setSearchTypes(typeNames);
-                configuration.setResourceTypes(typeNames);
-                configuration.setGalleryMode(GalleryMode.adeView);
-                configuration.setTabConfiguration(CmsGalleryTabConfiguration.resolve("selectDoc"));
-                configuration.setReferencePath(entry.getSitePath());
-                configuration.setGalleryPath(entry.getSitePath());
-                CmsGalleryPopup dialog = new CmsGalleryPopup(null, configuration);
-                dialog.center();
+                        public void onFailure(Throwable caught) {
+
+                            // nothing to do
+
+                        }
+
+                        public void onSuccess(CmsClientSitemapEntry entry) {
+
+                            showGallery(entry);
+                        }
+                    });
             }
         });
         if ((CmsSitemapView.getInstance().getController().getEntryById(galleryFolder.getStructureId()) == null)
@@ -234,45 +286,24 @@ public class CmsGalleryTreeItem extends CmsTreeItem {
                 /**
                  * @see org.opencms.gwt.client.ui.CmsListItemWidget.I_CmsTitleEditHandler#handleEdit(org.opencms.gwt.client.ui.input.CmsLabel, com.google.gwt.user.client.ui.TextBox)
                  */
-                public void handleEdit(CmsLabel titleLabel, TextBox box) {
+                public void handleEdit(final CmsLabel titleLabel, final TextBox box) {
 
-                    CmsClientSitemapEntry editEntry = CmsSitemapView.getInstance().getController().getEntryById(
-                        getEntryId());
-                    final String newTitle = box.getText();
-                    box.removeFromParent();
-                    if (CmsStringUtil.isEmpty(newTitle)) {
-                        titleLabel.setVisible(true);
-                        String dialogTitle = Messages.get().key(Messages.GUI_EDIT_TITLE_ERROR_DIALOG_TITLE_0);
-                        String dialogText = Messages.get().key(Messages.GUI_TITLE_CANT_BE_EMPTY_0);
-                        CmsAlertDialog alert = new CmsAlertDialog(dialogTitle, dialogText);
-                        alert.center();
-                        return;
-                    }
-                    String oldTitle = editEntry.getPropertyValue(CmsClientProperty.PROPERTY_TITLE);
-                    if (!oldTitle.equals(newTitle)) {
-                        CmsPropertyModification propMod = new CmsPropertyModification(
-                            editEntry.getId(),
-                            CmsClientProperty.PROPERTY_TITLE,
-                            newTitle,
-                            true);
-                        final List<CmsPropertyModification> propChanges = new ArrayList<CmsPropertyModification>();
-                        propChanges.add(propMod);
-                        CmsSitemapController controller = CmsSitemapView.getInstance().getController();
-                        if (editEntry.isNew() && !editEntry.isRoot()) {
-                            String urlName = controller.ensureUniqueName(
-                                CmsResource.getParentFolder(editEntry.getSitePath()),
-                                newTitle);
-                            controller.editAndChangeName(
-                                editEntry,
-                                urlName,
-                                propChanges,
-                                true,
-                                CmsReloadMode.reloadEntry);
-                        } else {
-                            controller.edit(editEntry, propChanges, CmsReloadMode.reloadEntry);
-                        }
-                    }
-                    titleLabel.setVisible(true);
+                    CmsSitemapView.getInstance().getController().loadPath(
+                        getSitePath(),
+                        new AsyncCallback<CmsClientSitemapEntry>() {
+
+                            public void onFailure(Throwable caught) {
+
+                                // nothing to do
+                            }
+
+                            public void onSuccess(CmsClientSitemapEntry editEntry) {
+
+                                CmsGalleryTreeItem.this.handleEdit(editEntry, box.getText());
+                                box.removeFromParent();
+                                titleLabel.setVisible(true);
+                            }
+                        });
                 }
             });
         }
