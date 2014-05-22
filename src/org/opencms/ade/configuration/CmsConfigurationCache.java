@@ -393,34 +393,36 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
         List<CmsDetailPageInfo> allDetailPages = new ArrayList<CmsDetailPageInfo>();
         // First collect all detail page infos 
         for (CmsADEConfigData configData : m_siteConfigurations.values()) {
+        	
             List<CmsDetailPageInfo> detailPageInfos = configData.getAllDetailPages();
             allDetailPages.addAll(detailPageInfos);
-        }
-        // First pass: check if the structure id or path directly match one of the configured detail pages.
-        for (CmsDetailPageInfo info : allDetailPages) {
-            if (folder.getStructureId().equals(info.getId())
-                || folder.getRootPath().equals(info.getUri())
-                || resource.getStructureId().equals(info.getId())
-                || resource.getRootPath().equals(info.getUri())) {
-                return true;
-            }
-        }
-        // Second pass: configured detail pages may be actual container pages rather than folders 
-        String normalizedFolderRootPath = CmsStringUtil.joinPaths(folder.getRootPath(), "/");
-        for (CmsDetailPageInfo info : allDetailPages) {
-            String parentPath = CmsResource.getParentFolder(info.getUri());
-            String normalizedParentPath = CmsStringUtil.joinPaths(parentPath, "/");
-            if (normalizedParentPath.equals(normalizedFolderRootPath)) {
-                try {
-                    CmsResource infoResource = m_cms.readResource(info.getId());
-                    if (infoResource.isFile()) {
-                        return true;
-                    }
-                } catch (CmsException e) {
-                    LOG.warn(e.getLocalizedMessage(), e);
-                }
-            }
-        }
+            
+	        for (CmsDetailPageInfo info : detailPageInfos) {
+	        	// First pass: check if the structure id or path directly match one of the configured detail pages.
+	            if (folder.getStructureId().equals(info.getId())
+	                || folder.getRootPath().equals(info.getUri())
+	                || resource.getStructureId().equals(info.getId())
+	                || resource.getRootPath().equals(info.getUri())) {
+	                return true;
+	            }
+	        
+	            // Second pass: configured detail pages may be actual container pages rather than folders 
+	            String normalizedFolderRootPath = CmsStringUtil.joinPaths(folder.getRootPath(), "/");
+	            String parentPath = CmsResource.getParentFolder(info.getUri());
+	            String normalizedParentPath = CmsStringUtil.joinPaths(parentPath, "/");
+	            if (normalizedParentPath.equals(normalizedFolderRootPath)) {
+	                try {
+	                    CmsResource infoResource = m_cms.readResource(info.getId());
+	                    if (infoResource.isFile()) {
+	                        return true;
+	                    }
+	                } catch (CmsException e) {
+	                    LOG.warn(e.getLocalizedMessage(), e);
+	                }
+	            }
+	        }
+	       
+    	}
         return false;
     }
 
