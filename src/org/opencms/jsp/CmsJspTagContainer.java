@@ -1056,15 +1056,6 @@ public class CmsJspTagContainer extends TagSupport {
                         getSessionCache(cms).setCacheContainerElement(subelement.editorHash(), subelement);
                     }
                     if (subElementFormatterConfig == null) {
-                        CmsFormatterConfiguration subelementFormatters = adeConfig.getFormatters(
-                            cms,
-                            subelement.getResource());
-                        subElementFormatterConfig = subelementFormatters.getDefaultFormatter(
-                            containerType,
-                            containerWidth);
-                    }
-
-                    if (subElementFormatterConfig == null) {
                         if (LOG.isErrorEnabled()) {
                             LOG.error(new CmsIllegalStateException(Messages.get().container(
                                 Messages.ERR_XSD_NO_TEMPLATE_FORMATTER_3,
