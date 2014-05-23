@@ -212,6 +212,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     /** The additional user info key for modified list. */
     private static final String ADDINFO_ADE_MODIFIED_LIST = "ADE_MODIFIED_LIST";
 
+    /** The galleries folder name. */
+    public static final String GALLERIES_FOLDER_NAME = ".galleries";
+
     /** The lock table to prevent multiple users from editing the alias table concurrently. */
     private static CmsAliasEditorLockTable aliasEditorLockTable = new CmsAliasEditorLockTable();
 
@@ -520,13 +523,21 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             List<CmsNewResourceInfo> resourceTypeInfos = null;
             boolean canEditDetailPages = false;
             boolean isOnlineProject = CmsProject.isOnlineProject(cms.getRequestContext().getCurrentProject().getUuid());
-
+            String defaultGalleryFolder = GALLERIES_FOLDER_NAME;
             Locale locale = CmsLocaleManager.getDefaultLocale();
             try {
                 String basePath = configData.getBasePath();
                 CmsObject rootCms = OpenCms.initCmsObject(cms);
                 rootCms.getRequestContext().setSiteRoot("");
                 CmsResource baseDir = rootCms.readResource(basePath, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+                CmsProperty galleryFolderProp = cms.readPropertyObject(
+                    baseDir,
+                    CmsPropertyDefinition.PROPERTY_GALLERIES_FOLDER,
+                    true);
+                if (!galleryFolderProp.isNullProperty()
+                    && CmsStringUtil.isNotEmptyOrWhitespaceOnly(galleryFolderProp.getValue())) {
+                    defaultGalleryFolder = galleryFolderProp.getValue();
+                }
                 locale = CmsLocaleManager.getMainLocale(cms, baseDir);
             } catch (CmsException e) {
                 LOG.warn(e.getLocalizedMessage(), e);
@@ -623,7 +634,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 canEditAliases,
                 OpenCms.getWorkplaceManager().getDefaultUserSettings().getSubsitemapCreationMode() == CmsDefaultUserSettings.SubsitemapCreationMode.createfolder,
                 subsitemapFolderTypeInfos,
-                editorMode);
+                editorMode,
+                defaultGalleryFolder);
         } catch (Throwable e) {
             error(e);
         }

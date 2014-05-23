@@ -338,7 +338,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
         final String parentFolder = parentId != null ? getEntryById(parentId).getSitePath() : CmsStringUtil.joinPaths(
             m_data.getRoot().getSitePath(),
-            CmsSitemapView.GALLERIES_FOLDER_NAME);
+            m_data.getDefaultGalleryFolder());
 
         CmsRpcAction<CmsGalleryFolderEntry> action = new CmsRpcAction<CmsGalleryFolderEntry>() {
 
@@ -1156,7 +1156,9 @@ public class CmsSitemapController implements I_CmsSitemapController {
                         if (target == null) {
                             loadPath(sitePath, callback);
                         } else {
-                            callback.onSuccess(target);
+                            if (callback != null) {
+                                callback.onSuccess(target);
+                            }
                         }
                     }
                 });

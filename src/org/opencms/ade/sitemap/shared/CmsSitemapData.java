@@ -82,6 +82,9 @@ public class CmsSitemapData implements IsSerializable {
     /** A flag which controls whether a new folder should be created for subsitemaps. */
     private boolean m_createNewFolderForSubsitemap;
 
+    /** The default gallery parent folder. */
+    private String m_defaultGalleryFolder;
+
     /** The default info bean for new elements. **/
     private CmsNewResourceInfo m_defaultNewElementInfo;
 
@@ -184,6 +187,7 @@ public class CmsSitemapData implements IsSerializable {
      * @param createNewFoldersForSubsitemaps flag to control whether new folders should be created for subsitemaps 
      * @param subsitemapTypeInfos the type information beans for the available subsitemap folder types 
      * @param editorMode the editor mode
+     * @param defaultGalleryFolder default gallery parent folder
      */
     public CmsSitemapData(
         Map<String, CmsClientTemplateBean> templates,
@@ -213,7 +217,8 @@ public class CmsSitemapData implements IsSerializable {
         boolean canEditAliases,
         boolean createNewFoldersForSubsitemaps,
         List<CmsListInfoBean> subsitemapTypeInfos,
-        EditorMode editorMode) {
+        EditorMode editorMode,
+        String defaultGalleryFolder) {
 
         m_templates = templates;
         m_properties = properties;
@@ -243,6 +248,7 @@ public class CmsSitemapData implements IsSerializable {
         m_createNewFolderForSubsitemap = createNewFoldersForSubsitemaps;
         m_sitemapFolderTypeInfos = subsitemapTypeInfos;
         m_editorMode = editorMode;
+        m_defaultGalleryFolder = defaultGalleryFolder;
     }
 
     /**
@@ -304,6 +310,16 @@ public class CmsSitemapData implements IsSerializable {
     public List<CmsContextMenuEntryBean> getContextMenuEntries() {
 
         return m_contextMenuEntries;
+    }
+
+    /**
+     * Returns the default gallery parent folder.<p>
+     * 
+     * @return the default gallery parent folder
+     */
+    public String getDefaultGalleryFolder() {
+
+        return m_defaultGalleryFolder;
     }
 
     /**

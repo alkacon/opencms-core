@@ -150,9 +150,6 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
     /** The download gallery type name. */
     public static final String DOWNLOAD_GALLERY_TYPE = "downloadgallery";
 
-    /** The galleries folder name. */
-    public static final String GALLERIES_FOLDER_NAME = ".galleries";
-
     /** The image gallery type name. */
     public static final String IMAGE_GALLERY_TYPE = "imagegallery";
 
@@ -256,8 +253,9 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         m_galleryTreeItems.clear();
         m_galleryTypeItems.clear();
         CmsUUID galleriesFolderId = null;
-        if (getRootItem().getChild(GALLERIES_FOLDER_NAME) != null) {
-            galleriesFolderId = ((CmsSitemapTreeItem)getRootItem().getChild(GALLERIES_FOLDER_NAME)).getEntryId();
+        if (getRootItem().getChild(m_controller.getData().getDefaultGalleryFolder()) != null) {
+            galleriesFolderId = ((CmsSitemapTreeItem)getRootItem().getChild(
+                m_controller.getData().getDefaultGalleryFolder())).getEntryId();
         }
         List<CmsGalleryType> types = new ArrayList<CmsGalleryType>(galleries.keySet());
         Collections.sort(types, new Comparator<CmsGalleryType>() {
