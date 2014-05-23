@@ -16,7 +16,7 @@
 		<description><![CDATA[<p>This module contains the German language localization files for the OpenCms workplace.</p>
 <p>Install this module if you want to use the german version of the OpenCms Workplace.</p>
 <p><i>&copy; 2014 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>9.4.4</version>
+		<version>9.4.5</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>

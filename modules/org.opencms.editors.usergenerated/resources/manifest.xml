@@ -14,7 +14,7 @@
 		<class>org.opencms.editors.usergenerated.CmsFormModuleAction</class>
 		<description><![CDATA[<p>User generated content form API</p>
 								<p><i>&copy; 2014 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>9.4.4</version>
+		<version>9.4.5</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail />
 		<datecreated />
