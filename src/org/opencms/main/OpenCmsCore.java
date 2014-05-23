@@ -1668,8 +1668,8 @@ public final class OpenCmsCore {
         } catch (CmsRoleViolationException rv) {
             // don't log these into the error channel
             LOG.debug(rv.getLocalizedMessage(), rv);
-            // error code not set - set "internal server error" (500)
-            int status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+            // error code not set - set "unauthorized error" (401)
+            int status = HttpServletResponse.SC_UNAUTHORIZED;
             res.setStatus(status);
             try {
                 res.sendError(status, rv.toString());
