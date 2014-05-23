@@ -261,7 +261,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      *  
      * @return the status of the removed element 
      * 
-     * @throws CmsRpcException
+     * @throws CmsRpcException if something goes wrong 
      */
     CmsRemovedElementStatus getRemovedElementStatus(String id, CmsUUID containerpageId) throws CmsRpcException;
 

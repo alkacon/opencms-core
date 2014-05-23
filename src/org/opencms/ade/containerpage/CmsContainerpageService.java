@@ -67,7 +67,6 @@ import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspTagContainer;
 import org.opencms.jsp.util.CmsJspStandardContextBean.TemplateBean;
-import org.opencms.loader.CmsLoaderException;
 import org.opencms.loader.CmsTemplateContextManager;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockType;
@@ -617,11 +616,10 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * 
      * @return the status of the removed element
      *   
-     * @throws CmsException 
-     * @throws CmsLoaderException
+     * @throws CmsException in case reading the resource fails
      */
     public CmsRemovedElementStatus internalGetRemovedElementStatus(CmsUUID structureId, CmsUUID containerpageId)
-    throws CmsException, CmsLoaderException {
+    throws CmsException {
 
         CmsObject cms = getCmsObject();
         CmsResource elementResource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
