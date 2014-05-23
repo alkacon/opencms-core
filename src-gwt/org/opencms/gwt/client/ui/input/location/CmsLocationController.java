@@ -34,6 +34,7 @@ import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,10 +86,10 @@ public class CmsLocationController {
     private JavaScriptObject m_previewMarker;
 
     /** The previous value. */
-    private CmsLocationValue m_previousValue;
+    private CmsLocationValue m_currentValue;
 
     /** The current location value. */
-    private CmsLocationValue m_value;
+    private CmsLocationValue m_editValue;
 
     /**
      * Constructor.<p>
@@ -99,8 +100,8 @@ public class CmsLocationController {
     public CmsLocationController(CmsLocationPicker picker, String configuration) {
 
         m_picker = picker;
-        m_value = CmsLocationValue.parse("{\"address\": \"London\", \"lat\": 51.5001524, \"lng\": -0.1262362, \"height\": 300, \"width\": 400, \"mode\": \"\", \"type\":\"roadmap\", \"zoom\": 8}");
-        m_previousValue = m_value.cloneValue();
+        m_editValue = CmsLocationValue.parse("{\"address\": \"London\", \"lat\": 51.5001524, \"lng\": -0.1262362, \"height\": 300, \"width\": 400, \"mode\": \"\", \"type\":\"roadmap\", \"zoom\": 8}");
+        m_currentValue = m_editValue.cloneValue();
         parseConfig(configuration);
     }
 
@@ -165,8 +166,7 @@ public class CmsLocationController {
      * @return <code>true</code>  if the google maps API is already loaded to the window context
      */
     private static native boolean isApiLoaded()/*-{
-                                               return $wnd.google !== undefined && $wnd.google.maps !== undefined
-                                               && $wnd.google.maps.Map !== undefined
+                                               return $wnd.google !== undefined && $wnd.google.maps !== undefined && $wnd.google.maps.Map !== undefined
                                                && $wnd.google.maps.places !== undefined;
                                                }-*/;
 
@@ -209,7 +209,7 @@ public class CmsLocationController {
      */
     public CmsLocationValue getLocationValue() {
 
-        return m_value;
+        return m_editValue;
     }
 
     /**
@@ -219,7 +219,7 @@ public class CmsLocationController {
      */
     public String getStringValue() {
 
-        return m_value.toJSONString();
+        return m_currentValue == null ? "" : m_currentValue.toJSONString();
     }
 
     /** Sets the location value as string.
@@ -230,16 +230,19 @@ public class CmsLocationController {
 
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
             try {
-                m_value = CmsLocationValue.parse(value);
-                m_previousValue = m_value.cloneValue();
+                m_editValue = CmsLocationValue.parse(value);
+                m_currentValue = m_editValue.cloneValue();
                 displayValue();
                 if ((m_popup != null) && m_popup.isVisible()) {
-                    m_popupContent.displayValues(m_value);
+                    m_popupContent.displayValues(m_editValue);
                     updateMarkerPosition();
                 }
             } catch (Exception e) {
                 CmsLog.log(e.getLocalizedMessage() + "\n" + CmsClientStringUtil.getStackTrace(e, "\n"));
             }
+        } else {
+            m_currentValue = null;
+            displayValue();
         }
     }
 
@@ -249,7 +252,7 @@ public class CmsLocationController {
      * @return the position object
      */
     protected native JavaScriptObject getCurrentPosition()/*-{
-                                                          var val = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_value;
+                                                          var val = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_editValue;
                                                           return new $wnd.google.maps.LatLng(val.lat, val.lng);
 
                                                           }-*/;
@@ -261,7 +264,7 @@ public class CmsLocationController {
      */
     protected native void onAddressChange(String address) /*-{
                                                           var self = this;
-                                                          this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_value.address = address;
+                                                          this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_editValue.address = address;
                                                           this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_geocoder
                                                           .geocode(
                                                           {
@@ -269,8 +272,7 @@ public class CmsLocationController {
                                                           },
                                                           function(results, status) {
                                                           // check to see if we have at least one valid address
-                                                          if (!results
-                                                          || (status != $wnd.google.maps.GeocoderStatus.OK)
+                                                          if (!results || (status != $wnd.google.maps.GeocoderStatus.OK)
                                                           || !results[0].formatted_address) {
                                                           alert("Address not found");
                                                           return;
@@ -292,13 +294,25 @@ public class CmsLocationController {
     }
 
     /**
+     * Cancels the location selection.<p>
+     */
+    protected void onCancel() {
+
+        m_popup.hide();
+        if (m_currentValue != null) {
+            m_editValue = m_currentValue;
+        }
+        displayValue();
+    }
+
+    /**
      * Called on height value change.<p>
      * 
      * @param height the height
      */
     protected void onHeightChange(String height) {
 
-        m_value.setHeight(height);
+        m_editValue.setHeight(height);
     }
 
     /**
@@ -308,7 +322,7 @@ public class CmsLocationController {
      */
     protected void onLatitudeChange(String latitude) {
 
-        m_value.setLatitude(latitude);
+        m_editValue.setLatitude(latitude);
         updateMarkerPosition();
         updateAddress();
     }
@@ -320,7 +334,7 @@ public class CmsLocationController {
      */
     protected void onLongitudeChange(String longitude) {
 
-        m_value.setLongitude(longitude);
+        m_editValue.setLongitude(longitude);
         updateMarkerPosition();
         updateAddress();
     }
@@ -332,7 +346,16 @@ public class CmsLocationController {
      */
     protected void onModeChange(String mode) {
 
-        m_value.setMode(mode);
+        m_editValue.setMode(mode);
+    }
+
+    /**
+     * Sets the selected location value.<p>
+     */
+    protected void onOk() {
+
+        fireChangeEventOnPicker(false);
+        m_popup.hide();
     }
 
     /**
@@ -341,9 +364,8 @@ public class CmsLocationController {
      * @param type the map type
      */
     protected native void onTypeChange(String type)/*-{
-                                                   this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_value.type = type;
-                                                   this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_map
-                                                   .setMapTypeId(type);
+                                                   this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_editValue.type = type;
+                                                   this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_map.setMapTypeId(type);
                                                    }-*/;
 
     /**
@@ -353,7 +375,7 @@ public class CmsLocationController {
      */
     protected void onWidthChange(String width) {
 
-        m_value.setWidth(width);
+        m_editValue.setWidth(width);
     }
 
     /**
@@ -364,7 +386,7 @@ public class CmsLocationController {
     protected native void onZoomChange(String zoom) /*-{
                                                     var z = parseInt(zoom);
                                                     if (!isNaN(z)) {
-                                                    this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_value.zoom = z;
+                                                    this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_editValue.zoom = z;
                                                     var map = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_map;
                                                     map.setZoom(z);
                                                     var pos = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::getCurrentPosition()();
@@ -380,9 +402,9 @@ public class CmsLocationController {
      */
     void fireChangeEventOnPicker(boolean force) {
 
-        String val = m_value.toJSONString();
-        if (force || !val.equals(m_previousValue.toJSONString())) {
-            m_previousValue = m_value.cloneValue();
+        String val = m_editValue.toJSONString();
+        if (force || (m_currentValue == null) || !val.equals(m_currentValue.toJSONString())) {
+            m_currentValue = m_editValue.cloneValue();
             displayValue();
             ValueChangeEvent.fire(m_picker, val);
         }
@@ -393,9 +415,8 @@ public class CmsLocationController {
      */
     native void initMap() /*-{
                           if (this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_map == null) {
-                          var value = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_value;
-                          var type = (value.type == null || value.type == "") ? "roadmap"
-                          : value.type;
+                          var value = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_editValue;
+                          var type = (value.type == null || value.type == "") ? "roadmap" : value.type;
                           var zoom = parseInt(value.zoom);
                           if (isNaN(zoom)) {
                           zoom = 8;
@@ -431,13 +452,7 @@ public class CmsLocationController {
                 getZoomItems());
             setFieldVisibility();
             m_popup.setMainContent(m_popupContent);
-            m_popup.addDialogClose(new Command() {
-
-                public void execute() {
-
-                    fireChangeEventOnPicker(false);
-                }
-            });
+            m_popup.addDialogClose(null);
         }
         m_popup.center();
         m_popup.show();
@@ -450,10 +465,9 @@ public class CmsLocationController {
      */
     native void showMapPreview() /*-{
                                  var map = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_previewMap;
-                                 var value = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_value;
+                                 var value = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_editValue;
                                  var pos = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::getCurrentPosition()();
-                                 var type = (value.type == null || value.type == "") ? "roadmap"
-                                 : value.type;
+                                 var type = (value.type == null || value.type == "") ? "roadmap" : value.type;
                                  var zoom = parseInt(value.zoom);
                                  if (isNaN(zoom)) {
                                  zoom = 8;
@@ -502,37 +516,42 @@ public class CmsLocationController {
      */
     private void displayValue() {
 
-        m_picker.displayValue(m_value.getAddress());
-        Map<String, String> infos = new LinkedHashMap<String, String>();
-        if (hasLatLng()) {
-            infos.put(Messages.get().key(Messages.GUI_LOCATION_LATITUDE_0), m_value.getLatitudeString());
-            infos.put(Messages.get().key(Messages.GUI_LOCATION_LONGITUDE_0), m_value.getLongitudeString());
-        }
-        if (hasSize()) {
-            infos.put(
-                Messages.get().key(Messages.GUI_LOCATION_SIZE_0),
-                m_value.getWidth() + " x " + m_value.getHeight());
-        }
-        if (hasType()) {
-            infos.put(Messages.get().key(Messages.GUI_LOCATION_TYPE_0), m_value.getType());
-        }
-        if (hasMode()) {
-            infos.put(Messages.get().key(Messages.GUI_LOCATION_MODE_0), m_value.getMode());
-        }
-        m_picker.setLocationInfo(infos);
-        m_picker.setPreviewVisible(true);
-        if (isApiLoaded()) {
-            showMapPreview();
+        if (m_currentValue == null) {
+            m_picker.displayValue("");
+            m_picker.setPreviewVisible(false);
+            m_picker.setLocationInfo(Collections.<String, String> emptyMap());
         } else {
-            onApiReady(new Command() {
+            m_picker.displayValue(m_editValue.getAddress());
+            Map<String, String> infos = new LinkedHashMap<String, String>();
+            if (hasLatLng()) {
+                infos.put(Messages.get().key(Messages.GUI_LOCATION_LATITUDE_0), m_editValue.getLatitudeString());
+                infos.put(Messages.get().key(Messages.GUI_LOCATION_LONGITUDE_0), m_editValue.getLongitudeString());
+            }
+            if (hasSize()) {
+                infos.put(Messages.get().key(Messages.GUI_LOCATION_SIZE_0), m_editValue.getWidth()
+                    + " x "
+                    + m_editValue.getHeight());
+            }
+            if (hasType()) {
+                infos.put(Messages.get().key(Messages.GUI_LOCATION_TYPE_0), m_editValue.getType());
+            }
+            if (hasMode()) {
+                infos.put(Messages.get().key(Messages.GUI_LOCATION_MODE_0), m_editValue.getMode());
+            }
+            m_picker.setLocationInfo(infos);
+            m_picker.setPreviewVisible(true);
+            if (isApiLoaded()) {
+                showMapPreview();
+            } else {
+                onApiReady(new Command() {
 
-                public void execute() {
+                    public void execute() {
 
-                    showMapPreview();
-                }
-            });
+                        showMapPreview();
+                    }
+                });
+            }
         }
-
     }
 
     /**
@@ -544,9 +563,9 @@ public class CmsLocationController {
 
         return Messages.get().key(
             Messages.GUI_LOCATION_DISPLAY_3,
-            m_value.getAddress(),
-            m_value.getLatitudeString(),
-            m_value.getLongitudeString());
+            m_editValue.getAddress(),
+            m_editValue.getLatitudeString(),
+            m_editValue.getLongitudeString());
     }
 
     /**
@@ -555,8 +574,7 @@ public class CmsLocationController {
      * @return <code>true</code> if the address field is configured
      */
     private native boolean hasAddress()/*-{
-                                       return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit
-                                       .indexOf('address') != -1;
+                                       return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit.indexOf('address') != -1;
                                        }-*/;
 
     /**
@@ -565,8 +583,7 @@ public class CmsLocationController {
      * @return <code>true</code> if the lat. lng. fields are configured
      */
     private native boolean hasLatLng()/*-{
-                                      return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit
-                                      .indexOf('coords') != -1;
+                                      return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit.indexOf('coords') != -1;
                                       }-*/;
 
     /**
@@ -575,8 +592,7 @@ public class CmsLocationController {
      * @return <code>true</code> if the map field is configured
      */
     private native boolean hasMap()/*-{
-                                   return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit
-                                   .indexOf('map') != -1;
+                                   return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit.indexOf('map') != -1;
                                    }-*/;
 
     /**
@@ -585,8 +601,7 @@ public class CmsLocationController {
      * @return <code>true</code> if the mode field is configured
      */
     private native boolean hasMode()/*-{
-                                    return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit
-                                    .indexOf('mode') != -1;
+                                    return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit.indexOf('mode') != -1;
                                     }-*/;
 
     /**
@@ -595,8 +610,7 @@ public class CmsLocationController {
      * @return <code>true</code> if the size fields are configured
      */
     private native boolean hasSize()/*-{
-                                    return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit
-                                    .indexOf('size') != -1;
+                                    return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit.indexOf('size') != -1;
                                     }-*/;
 
     /**
@@ -605,8 +619,7 @@ public class CmsLocationController {
      * @return <code>true</code> if the type field is configured
      */
     private native boolean hasType()/*-{
-                                    return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit
-                                    .indexOf('type') != -1;
+                                    return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit.indexOf('type') != -1;
                                     }-*/;
 
     /**
@@ -615,8 +628,7 @@ public class CmsLocationController {
      * @return <code>true</code> if the zoom field is configured
      */
     private native boolean hasZoom()/*-{
-                                    return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit
-                                    .indexOf('zoom') != -1;
+                                    return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit.indexOf('zoom') != -1;
                                     }-*/;
 
     /**
@@ -643,8 +655,7 @@ public class CmsLocationController {
      * @param configuration the configuration
      */
     private native void parseConfig(String configuration)/*-{
-                                                         this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config = JSON
-                                                         .parse(configuration);
+                                                         this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config = JSON.parse(configuration);
                                                          }-*/;
 
     /**
@@ -671,9 +682,9 @@ public class CmsLocationController {
      */
     private void setPosition(float latitude, float longitude, boolean updateMap, boolean updateAddress) {
 
-        m_value.setLatitude(latitude);
-        m_value.setLongitude(longitude);
-        m_popupContent.displayValues(m_value);
+        m_editValue.setLatitude(latitude);
+        m_editValue.setLongitude(longitude);
+        m_popupContent.displayValues(m_editValue);
         if (updateMap) {
             updateMarkerPosition();
         }
@@ -689,22 +700,17 @@ public class CmsLocationController {
                                        var self = this;
                                        var pos = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::getCurrentPosition()();
                                        // try to evaluate the address from the current position
-                                       this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_geocoder
-                                       .geocode(
-                                       {
+                                       this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_geocoder.geocode({
                                        'latLng' : pos
-                                       },
-                                       function(results, status) {
+                                       }, function(results, status) {
                                        var address = "";
                                        // check that everything is ok
-                                       if (status == $wnd.google.maps.GeocoderStatus.OK
-                                       && results[0]
-                                       && results[0].formatted_address) {
+                                       if (status == $wnd.google.maps.GeocoderStatus.OK && results[0] && results[0].formatted_address) {
                                        // set the new address
                                        address = results[0].formatted_address;
                                        }
-                                       if (address != self.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_value.address) {
-                                       self.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_value.address = address;
+                                       if (address != self.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_editValue.address) {
+                                       self.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_editValue.address = address;
                                        self.@org.opencms.gwt.client.ui.input.location.CmsLocationController::updateForm()();
                                        }
                                        });
@@ -715,7 +721,7 @@ public class CmsLocationController {
      */
     private void updateForm() {
 
-        m_popupContent.displayValues(m_value);
+        m_popupContent.displayValues(m_editValue);
     }
 
     /**

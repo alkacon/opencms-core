@@ -10,6 +10,17 @@ div.locationMainPanel div.locationFields {
 	width: 400px;
 }
 
+div.locationMainPanel div.buttonBar {
+	position: absolute;
+	bottom:5px;
+	right: 5px;
+	text-align: right;
+}
+
+div.locationMainPanel div.buttonBar > div{
+	margin-left:6px;
+}
+
 div.locationFields>div {
 	margin: 5px;
 }

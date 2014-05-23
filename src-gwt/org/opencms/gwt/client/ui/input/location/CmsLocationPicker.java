@@ -102,6 +102,7 @@ public class CmsLocationPicker extends Composite implements HasValueChangeHandle
         m_textbox.setEnabled(false);
         m_locationInfoPanel.getStyle().setDisplay(Display.NONE);
         m_controller = new CmsLocationController(this, configuration);
+        m_mapPreview.setId(HTMLPanel.createUniqueId());
     }
 
     /**

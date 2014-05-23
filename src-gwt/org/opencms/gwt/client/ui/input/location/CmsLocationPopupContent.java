@@ -28,6 +28,9 @@
 package org.opencms.gwt.client.ui.input.location;
 
 import org.opencms.gwt.client.Messages;
+import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonColor;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.CmsSuggestBox;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
@@ -38,6 +41,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -71,6 +75,10 @@ public class CmsLocationPopupContent extends Composite {
     @UiField
     Label m_addressLabel;
 
+    /** The cancel button. */
+    @UiField
+    CmsPushButton m_cancelButton;
+
     /** The height field. */
     @UiField
     CmsTextBox m_heightField;
@@ -102,6 +110,10 @@ public class CmsLocationPopupContent extends Composite {
     /** The mode label. */
     @UiField
     Label m_modeLabel;
+
+    /** The OK button. */
+    @UiField
+    CmsPushButton m_okButton;
 
     /** The map size label. */
     @UiField
@@ -153,6 +165,7 @@ public class CmsLocationPopupContent extends Composite {
         m_zoomField = new CmsSelectBox(zoomItems);
         initWidget(uiBinder.createAndBindUi(this));
         m_controller = controller;
+        m_mapCanvas.setId(HTMLPanel.createUniqueId());
         initLabels();
         initFields();
     }
@@ -315,6 +328,17 @@ public class CmsLocationPopupContent extends Composite {
     }
 
     /**
+     * Handles the cancel click.<p>
+     * 
+     * @param event the mouse event
+     */
+    @UiHandler("m_cancelButton")
+    void onCancel(ClickEvent event) {
+
+        m_controller.onCancel();
+    }
+
+    /**
      * On height value change.<p>
      * 
      * @param event the change event
@@ -356,6 +380,17 @@ public class CmsLocationPopupContent extends Composite {
     void onModeChange(ValueChangeEvent<String> event) {
 
         m_controller.onModeChange(event.getValue());
+    }
+
+    /**
+     * Handles the OK click.<p>
+     * 
+     * @param event the mouse event
+     */
+    @UiHandler("m_okButton")
+    void onOk(ClickEvent event) {
+
+        m_controller.onOk();
     }
 
     /**
@@ -414,5 +449,12 @@ public class CmsLocationPopupContent extends Composite {
         m_zoomLabel.setText(Messages.get().key(Messages.GUI_LOCATION_ZOOM_0));
         m_typeLabel.setText(Messages.get().key(Messages.GUI_LOCATION_TYPE_0));
         m_modeLabel.setText(Messages.get().key(Messages.GUI_LOCATION_MODE_0));
+
+        m_okButton.setText(Messages.get().key(Messages.GUI_OK_0));
+        m_okButton.setUseMinWidth(true);
+        m_okButton.setButtonStyle(ButtonStyle.TEXT, ButtonColor.BLUE);
+        m_cancelButton.setText(Messages.get().key(Messages.GUI_CANCEL_0));
+        m_cancelButton.setUseMinWidth(true);
+        m_cancelButton.setButtonStyle(ButtonStyle.TEXT, ButtonColor.BLUE);
     }
 }
