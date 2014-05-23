@@ -28,7 +28,6 @@
 package org.opencms.jsp;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
-import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.history.CmsHistoryResourceHandler;
@@ -710,21 +709,13 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                 // do nothing, set width to -1
             }
         }
-        CmsJspTagContainer.ensureValidFormatterSettings(
+        I_CmsFormatterBean result = CmsJspTagContainer.getFormatterConfigurationForElement(
             cms,
             element,
             config,
             container.getName(),
             container.getType(),
             containerWidth);
-
-        I_CmsFormatterBean result = null;
-        String formatterConfigId = element.getSettings() != null ? element.getSettings().get(
-            CmsFormatterConfig.getSettingsKeyForContainer(container.getName())) : null;
-        if (CmsUUID.isValidUUID(formatterConfigId)) {
-            result = formatters.get(new CmsUUID(formatterConfigId));
-        }
-
         return result;
     }
 

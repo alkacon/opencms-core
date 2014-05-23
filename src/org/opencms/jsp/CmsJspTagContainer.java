@@ -156,7 +156,7 @@ public class CmsJspTagContainer extends TagSupport {
     private String m_width;
 
     /**
-     * Ensures the appropriate formatter configuration  ID is set in the element settings.<p>
+     * Ensures the appropriate formatter configuration ID is set in the element settings.<p>
      * 
      * @param cms the cms context
      * @param element the element bean
@@ -175,58 +175,23 @@ public class CmsJspTagContainer extends TagSupport {
         String containerType,
         int containerWidth) {
 
-        I_CmsFormatterBean formatterBean = null;
+        I_CmsFormatterBean formatterBean = getFormatterConfigurationForElement(
+            cms,
+            element,
+            adeConfig,
+            containerName,
+            containerType,
+            containerWidth);
         String settingsKey = CmsFormatterConfig.getSettingsKeyForContainer(containerName);
-        if (element.getFormatterId() != null) {
-
-            if (!element.getSettings().containsKey(settingsKey)) {
-                for (I_CmsFormatterBean formatter : adeConfig.getFormatters(cms, element.getResource()).getAllMatchingFormatters(
-                    containerType,
-                    containerWidth)) {
-                    if (element.getFormatterId().equals(formatter.getJspStructureId())) {
-                        String formatterConfigId = formatter.getId();
-                        if (formatterConfigId == null) {
-                            formatterConfigId = CmsFormatterConfig.SCHEMA_FORMATTER_ID;
-                        }
-                        element.getSettings().put(
-                            CmsFormatterConfig.getSettingsKeyForContainer(containerName),
-                            formatterConfigId);
-                        formatterBean = formatter;
-                        break;
-                    }
-                }
-            } else {
-                String formatterConfigId = element.getSettings().get(settingsKey);
-                if (CmsUUID.isValidUUID(formatterConfigId)) {
-                    formatterBean = OpenCms.getADEManager().getCachedFormatters(
-                        cms.getRequestContext().getCurrentProject().isOnlineProject()).getFormatters().get(
-                        new CmsUUID(formatterConfigId));
-                }
+        if (formatterBean != null) {
+            String formatterConfigId = formatterBean.getId();
+            if (formatterConfigId == null) {
+                formatterConfigId = CmsFormatterConfig.SCHEMA_FORMATTER_ID;
             }
+            element.getSettings().put(settingsKey, formatterConfigId);
+            element.setFormatterId(formatterBean.getJspStructureId());
         } else {
-            if (element.getSettings().containsKey(settingsKey)) {
-                String formatterConfigId = element.getSettings().get(settingsKey);
-                if (CmsUUID.isValidUUID(formatterConfigId)) {
-                    formatterBean = OpenCms.getADEManager().getCachedFormatters(
-                        cms.getRequestContext().getCurrentProject().isOnlineProject()).getFormatters().get(
-                        new CmsUUID(formatterConfigId));
-                }
-            }
-            if (formatterBean == null) {
-                formatterBean = adeConfig.getFormatters(cms, element.getResource()).getDefaultFormatter(
-                    containerType,
-                    containerWidth);
-            }
-            if (formatterBean != null) {
-                String formatterConfigId = formatterBean.getId();
-                if (formatterConfigId == null) {
-                    formatterConfigId = CmsFormatterConfig.SCHEMA_FORMATTER_ID;
-                }
-                element.getSettings().put(settingsKey, formatterConfigId);
-                element.setFormatterId(formatterBean.getJspStructureId());
-            } else {
-                element.setFormatterId(null);
-            }
+            element.setFormatterId(null);
         }
         return formatterBean;
     }
@@ -276,6 +241,69 @@ public class CmsJspTagContainer extends TagSupport {
             DETAIL_CONTAINERS_FOLDER_NAME,
             CmsResource.getName(detailContentSitePath));
         return result;
+    }
+
+    /**
+     * Returns the formatter configuration for the given element.<p>
+     * 
+     * @param cms the cms context
+     * @param element the element bean
+     * @param adeConfig the ADE configuration
+     * @param containerName the container name
+     * @param containerType the container type
+     * @param containerWidth the container width
+     * 
+     * @return the formatter configuration
+     */
+    public static I_CmsFormatterBean getFormatterConfigurationForElement(
+        CmsObject cms,
+        CmsContainerElementBean element,
+        CmsADEConfigData adeConfig,
+        String containerName,
+        String containerType,
+        int containerWidth) {
+
+        I_CmsFormatterBean formatterBean = null;
+        String settingsKey = CmsFormatterConfig.getSettingsKeyForContainer(containerName);
+        if (element.getFormatterId() != null) {
+
+            if (!element.getSettings().containsKey(settingsKey)) {
+                for (I_CmsFormatterBean formatter : adeConfig.getFormatters(cms, element.getResource()).getAllMatchingFormatters(
+                    containerType,
+                    containerWidth)) {
+                    if (element.getFormatterId().equals(formatter.getJspStructureId())) {
+                        String formatterConfigId = formatter.getId();
+                        if (formatterConfigId == null) {
+                            formatterConfigId = CmsFormatterConfig.SCHEMA_FORMATTER_ID;
+                        }
+                        formatterBean = formatter;
+                        break;
+                    }
+                }
+            } else {
+                String formatterConfigId = element.getSettings().get(settingsKey);
+                if (CmsUUID.isValidUUID(formatterConfigId)) {
+                    formatterBean = OpenCms.getADEManager().getCachedFormatters(
+                        cms.getRequestContext().getCurrentProject().isOnlineProject()).getFormatters().get(
+                        new CmsUUID(formatterConfigId));
+                }
+            }
+        } else {
+            if (element.getSettings().containsKey(settingsKey)) {
+                String formatterConfigId = element.getSettings().get(settingsKey);
+                if (CmsUUID.isValidUUID(formatterConfigId)) {
+                    formatterBean = OpenCms.getADEManager().getCachedFormatters(
+                        cms.getRequestContext().getCurrentProject().isOnlineProject()).getFormatters().get(
+                        new CmsUUID(formatterConfigId));
+                }
+            }
+            if (formatterBean == null) {
+                formatterBean = adeConfig.getFormatters(cms, element.getResource()).getDefaultFormatter(
+                    containerType,
+                    containerWidth);
+            }
+        }
+        return formatterBean;
     }
 
     /**
