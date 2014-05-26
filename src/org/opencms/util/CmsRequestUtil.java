@@ -27,12 +27,14 @@
 
 package org.opencms.util;
 
+import org.opencms.file.CmsObject;
 import org.opencms.flex.CmsFlexRequest;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
@@ -838,5 +840,24 @@ public final class CmsRequestUtil {
 
         HttpSession session = request.getSession(true);
         session.setAttribute(key, value);
+    }
+
+    /**
+     * Sets the request context's request time to the warp time the user has specified.<p>
+     *
+     * If the user has not specified a warp time, the request time is not modified.<p>
+     *
+     * @param cms the cms context
+     * @param request the http request
+     */
+    public static void warpRequestTime(CmsObject cms, HttpServletRequest request) {
+
+        if(!cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+            Long timeWarpValue = (Long) getSessionValue(request, CmsContextInfo.ATTRIBUTE_REQUEST_TIME);
+
+            if (timeWarpValue != null) {
+                cms.getRequestContext().setRequestTime(timeWarpValue);
+            }
+        }
     }
 }

@@ -54,6 +54,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplaceMessages;
@@ -161,6 +162,9 @@ public class CmsElementUtil {
         m_res = res;
         m_currentPageUri = currentPageUri;
         m_locale = locale;
+
+        CmsRequestUtil.warpRequestTime(m_cms, req);
+        
         // initializing request for standard context bean
         req.setAttribute(CmsJspStandardContextBean.ATTRIBUTE_CMS_OBJECT, m_cms);
         if (detailContentId != null) {

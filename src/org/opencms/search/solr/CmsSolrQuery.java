@@ -40,6 +40,8 @@ import org.opencms.util.CmsPair;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -48,6 +50,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.common.params.CommonParams;
@@ -115,6 +118,9 @@ public class CmsSolrQuery extends SolrQuery {
         + ","
         + CmsSearchField.FIELD_PARENT_FOLDERS;
 
+    /** ISO 8601 date format for dealing with Solr dates. */
+    private static final DateFormat ISO8601_FORMAT;
+
     /** The serial version UID. */
     private static final long serialVersionUID = -2387357736597627703L;
 
@@ -129,6 +135,11 @@ public class CmsSolrQuery extends SolrQuery {
 
     /** The name of the field to search the text in. */
     private List<String> m_textSearchFields = new ArrayList<String>();
+
+    static {
+        ISO8601_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
+        ISO8601_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT"));
+    }
 
     /**
      * Default constructor.<p>
@@ -161,7 +172,7 @@ public class CmsSolrQuery extends SolrQuery {
         }
         ensureParameters();
         ensureReturnFields();
-        ensureExpiration();
+        ensureExpiration(cms);
     }
 
     /**
@@ -552,8 +563,10 @@ public class CmsSolrQuery extends SolrQuery {
 
     /**
      * Ensures that expired and not yet released resources are not returned by default.<p>
+     *     
+     * @param cms the cms context
      */
-    private void ensureExpiration() {
+    private void ensureExpiration(CmsObject cms) {
 
         boolean expirationDateSet = false;
         boolean releaseDateSet = false;
@@ -568,10 +581,10 @@ public class CmsSolrQuery extends SolrQuery {
             }
         }
         if (!expirationDateSet) {
-            addFilterQuery(CmsSearchField.FIELD_DATE_EXPIRED + ":[NOW TO *]");
+            addFilterQuery(CmsSearchField.FIELD_DATE_EXPIRED + ":[" + getNow(cms) + " TO *]");
         }
         if (!releaseDateSet) {
-            addFilterQuery(CmsSearchField.FIELD_DATE_RELEASED + ":[* TO NOW]");
+            addFilterQuery(CmsSearchField.FIELD_DATE_RELEASED + ":[* TO " + getNow(cms) + "]");
         }
     }
 
@@ -639,5 +652,25 @@ public class CmsSolrQuery extends SolrQuery {
 
         removeFilterQueries(fqs);
         addFilterQuery(fqs);
+    }
+
+    /**
+     * Gets the NOW time part for Solr date queries.
+     *
+     * For example, if a warp time is set, the current time should be the warp time, not the current system time.
+     * If the request time is <code>CmsContextInfo.CURRENT_TIME</code>, then "NOW" is returned.
+     *
+     * @param cms the cms context
+     * @return the current time in respect to the cms context's request time
+     */
+    private String getNow(CmsObject cms) {
+
+        if(cms != null && !cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+            if(cms.getRequestContext().getRequestTime() > 0) {
+                return ISO8601_FORMAT.format(new Date(cms.getRequestContext().getRequestTime()));
+            }
+        }
+
+        return "NOW";
     }
 }
