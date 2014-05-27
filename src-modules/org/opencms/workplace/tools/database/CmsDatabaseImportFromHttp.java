@@ -95,7 +95,7 @@ public class CmsDatabaseImportFromHttp extends A_CmsImportFromHttp {
         }
         Map params = new HashMap();
         params.put(PARAM_FILE, getParamImportfile());
-        params.put(PARAM_KEEPPERMISSIONS, getParamKeepPermissions());
+        params.put(PARAM_KEEPPERMISSIONS.toLowerCase(), getParamKeepPermissions());
         // set style to display report in correct layout
         params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
         // set close link to get back to overview after finishing the import
