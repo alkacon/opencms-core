@@ -33,6 +33,10 @@ import org.opencms.gwt.client.rpc.CmsLog;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
 
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
@@ -48,11 +52,17 @@ import com.google.gwt.user.client.ui.Panel;
  */
 public class CmsErrorDialog extends CmsPopup {
 
+    /** The active error dialog ids. */
+    private static Set<String> m_activeErrorDialogIds = new HashSet<String>();
+
     /** The 'close' button. */
     private CmsPushButton m_closeButton;
 
     /** The details fieldset. */
     private CmsFieldSet m_detailsFieldset;
+
+    /** String which identifies the error dialog. */
+    private String m_errorDialogId;
 
     /** The message HTML. */
     private CmsMessageWidget m_messageWidget;
@@ -66,6 +76,7 @@ public class CmsErrorDialog extends CmsPopup {
     public CmsErrorDialog(String message, String details) {
 
         super(Messages.get().key(Messages.GUI_ERROR_0));
+        m_errorDialogId = new Date() + " " + message;
         setAutoHideEnabled(false);
         setModal(true);
         setGlassEnabled(true);
@@ -149,14 +160,35 @@ public class CmsErrorDialog extends CmsPopup {
     }
 
     /**
+     * Checks if any error dialogs are showing.<p>
+     * 
+     * @return true if any error dialogs are showing 
+     */
+    public static boolean isShowingErrorDialogs() {
+
+        return m_activeErrorDialogIds.size() > 0;
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.CmsPopup#center()
      */
     @Override
     public void center() {
 
+        m_activeErrorDialogIds.add(m_errorDialogId);
         show();
         super.center();
 
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.CmsPopup#hide()
+     */
+    @Override
+    public void hide() {
+
+        m_activeErrorDialogIds.remove(m_errorDialogId);
+        super.hide();
     }
 
     /**
@@ -165,6 +197,7 @@ public class CmsErrorDialog extends CmsPopup {
     @Override
     public void show() {
 
+        m_activeErrorDialogIds.add(m_errorDialogId);
         super.show();
         onShow();
     }
