@@ -265,7 +265,7 @@ public class CmsJspTagContainer extends TagSupport {
 
         I_CmsFormatterBean formatterBean = null;
         String settingsKey = CmsFormatterConfig.getSettingsKeyForContainer(containerName);
-        if (element.getFormatterId() != null) {
+        if ((element.getFormatterId() != null) && !element.getFormatterId().isNullUUID()) {
 
             if (!element.getSettings().containsKey(settingsKey)) {
                 for (I_CmsFormatterBean formatter : adeConfig.getFormatters(cms, element.getResource()).getAllMatchingFormatters(
