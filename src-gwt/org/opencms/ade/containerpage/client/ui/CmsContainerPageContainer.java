@@ -28,7 +28,7 @@
 package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.ade.containerpage.shared.I_CmsContainer;
+import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.ui.CmsHighlightingBorder;
@@ -228,7 +228,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
      * 
      * @param containerData the container data
      */
-    public CmsContainerPageContainer(I_CmsContainer containerData) {
+    public CmsContainerPageContainer(CmsContainer containerData) {
 
         initWidget(RootPanel.get(containerData.getName()));
         m_containerId = containerData.getName();

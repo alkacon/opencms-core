@@ -90,6 +90,7 @@ public class CmsToolbarAllGalleriesMenu extends A_CmsToolbarMenu<CmsContainerpag
      * 
      * @return the gallery dialog instance
      */
+    @SuppressWarnings("unused")
     protected static CmsGalleryDialog createDialog(
         I_CmsGalleryConfiguration configuration,
         I_CmsGalleryHandler galleryHandler) {

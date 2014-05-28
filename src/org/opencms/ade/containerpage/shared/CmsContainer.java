@@ -38,6 +38,12 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class CmsContainer implements IsSerializable {
 
+    /** Flag indicating the container is displayed in detail view only. */
+    private boolean m_detailOnly;
+
+    /** Flag indicating this container is used for detail views. */
+    private boolean m_detailView;
+
     /** List of the contained elements id's. */
     private List<CmsContainerElement> m_elements;
 
@@ -52,9 +58,6 @@ public class CmsContainer implements IsSerializable {
 
     /** The width of the container. */
     private int m_width;
-
-    /** Flag indicating this container is used for detail views. */
-    private boolean m_detailView;
 
     /**
      * Constructor.<p>
@@ -80,16 +83,6 @@ public class CmsContainer implements IsSerializable {
         m_maxElements = maxElements;
         m_width = width;
         m_detailView = detailView;
-    }
-
-    /**
-     * Returns if this container is used for detail views.<p>
-     * 
-     * @return <code>true</code> if this container is used for detail views
-     */
-    public boolean isDetailView() {
-
-        return m_detailView;
     }
 
     /**
@@ -148,6 +141,36 @@ public class CmsContainer implements IsSerializable {
     public int getWidth() {
 
         return m_width;
+    }
+
+    /**
+     * Returns <code>true</code> if the container is displayed in detail view only.<p>
+     * 
+     * @return <code>true</code> if the container is displayed in detail view only
+     */
+    public boolean isDetailOnly() {
+
+        return m_detailOnly;
+    }
+
+    /**
+     * Returns if this container is used for detail views.<p>
+     * 
+     * @return <code>true</code> if this container is used for detail views
+     */
+    public boolean isDetailView() {
+
+        return m_detailView;
+    }
+
+    /**
+     * Sets the detail only flag.<p>
+     * 
+     * @param detailOnly <code>true</code> if the container is displayed in detail view only
+     */
+    public void setDeatilOnly(boolean detailOnly) {
+
+        m_detailOnly = detailOnly;
     }
 
     /**

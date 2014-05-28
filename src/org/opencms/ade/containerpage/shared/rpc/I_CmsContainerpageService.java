@@ -145,6 +145,13 @@ public interface I_CmsContainerpageService extends RemoteService {
     /**
      * This method is used for serialization purposes only.<p>
      * 
+     * @return container info
+     */
+    CmsContainer getContainerInfo();
+
+    /**
+     * This method is used for serialization purposes only.<p>
+     * 
      * @return element info
      */
     CmsContainerElement getElementInfo();

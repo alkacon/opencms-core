@@ -76,8 +76,6 @@ public class CmsContainerpageActionElement extends CmsGwtActionElement {
     public String export() throws Exception {
 
         StringBuffer sb = new StringBuffer();
-        sb.append(CmsCntPageData.KEY_CONTAINER_DATA).append("= new Array();");
-        wrapScript(sb);
         sb.append(ClientMessages.get().export(getRequest()));
         sb.append(org.opencms.gwt.seo.ClientMessages.get().export(getRequest()));
         String prefetchedData = exportDictionary(

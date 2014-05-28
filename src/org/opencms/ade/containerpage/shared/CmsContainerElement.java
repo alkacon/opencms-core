@@ -48,6 +48,9 @@ public class CmsContainerElement implements IsSerializable {
     /** HTML class used to identify group container elements. */
     public static final String CLASS_GROUP_CONTAINER_ELEMENT_MARKER = "cms_ade_groupcontainer";
 
+    /** HTML class used to identify containers. */
+    public static final String CLASS_CONTAINER = "cms_ade_container";
+
     /** The group container resource type name. */
     public static final String GROUP_CONTAINER_TYPE_NAME = "groupcontainer";
 

@@ -59,7 +59,7 @@ public class CmsSmallElementsHandler {
     /** 
      * Creates a new small elements handler.<p>
      * 
-     * @param service
+     * @param service the container page service
      */
     public CmsSmallElementsHandler(I_CmsContainerpageServiceAsync service) {
 

@@ -83,7 +83,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.AnchorElement;
@@ -143,7 +142,7 @@ public final class CmsContainerpageController {
          *  
          * @return true if the container should be processed, true if it should be skipped 
          */
-        boolean beginContainer(String name, CmsContainerJso container);
+        boolean beginContainer(String name, CmsContainer container);
 
         /**
          * This method is called after all elements of a container have been processed.<p>
@@ -185,9 +184,9 @@ public final class CmsContainerpageController {
         }
 
         /**
-         * @see org.opencms.ade.containerpage.client.CmsContainerpageController.I_PageContentVisitor#beginContainer(java.lang.String, org.opencms.ade.containerpage.client.CmsContainerJso)
+         * @see org.opencms.ade.containerpage.client.CmsContainerpageController.I_PageContentVisitor#beginContainer(java.lang.String, org.opencms.ade.containerpage.shared.CmsContainer)
          */
-        public boolean beginContainer(String name, CmsContainerJso container) {
+        public boolean beginContainer(String name, CmsContainer container) {
 
             return !container.isDetailView();
         }
@@ -234,7 +233,7 @@ public final class CmsContainerpageController {
         protected String m_containerName;
 
         /** The contaienr which is currently being processed. */
-        protected CmsContainerJso m_currentContainer;
+        protected CmsContainer m_currentContainer;
 
         /** The list of collected containers. */
         protected List<CmsContainer> m_resultContainers = new ArrayList<CmsContainer>();
@@ -243,9 +242,9 @@ public final class CmsContainerpageController {
         List<CmsContainerElement> m_currentElements;
 
         /**
-         * @see org.opencms.ade.containerpage.client.CmsContainerpageController.I_PageContentVisitor#beginContainer(java.lang.String, org.opencms.ade.containerpage.client.CmsContainerJso)
+         * @see org.opencms.ade.containerpage.client.CmsContainerpageController.I_PageContentVisitor#beginContainer(java.lang.String, org.opencms.ade.containerpage.shared.CmsContainer)
          */
-        public boolean beginContainer(String name, CmsContainerJso container) {
+        public boolean beginContainer(String name, CmsContainer container) {
 
             if (container.isDetailView() || ((getData().getDetailId() != null) && !container.isDetailOnly())) {
                 m_currentContainer = null;
@@ -364,7 +363,7 @@ public final class CmsContainerpageController {
                     getData().getDetailId(),
                     getRequestParams(),
                     m_clientIds,
-                    m_containerBeans,
+                    new ArrayList<CmsContainer>(m_containers.values()),
                     getLocale(),
 
                     this);
@@ -422,7 +421,7 @@ public final class CmsContainerpageController {
                 getData().getDetailId(),
                 getRequestParams(),
                 m_clientIds,
-                m_containerBeans,
+                new ArrayList<CmsContainer>(m_containers.values()),
                 getLocale(),
 
                 this);
@@ -526,7 +525,7 @@ public final class CmsContainerpageController {
                     getData().getDetailId(),
                     getRequestParams(),
                     clientIds,
-                    m_containerBeans,
+                    new ArrayList<CmsContainer>(m_containers.values()),
                     getLocale(),
 
                     this);
@@ -576,9 +575,6 @@ public final class CmsContainerpageController {
     /** Instance of the data provider. */
     private static CmsContainerpageController INSTANCE;
 
-    /** The list of beans for the containers on the current page. */
-    protected List<CmsContainer> m_containerBeans;
-
     /** The container element data. All requested elements will be cached here.*/
     protected Map<String, CmsContainerElementData> m_elements;
 
@@ -601,7 +597,7 @@ public final class CmsContainerpageController {
     private CmsContainerpageUtil m_containerpageUtil;
 
     /** The container data. */
-    private Map<String, CmsContainerJso> m_containers;
+    Map<String, CmsContainer> m_containers;
 
     /** The container types within this page. */
     private Set<String> m_containerTypes;
@@ -1076,7 +1072,7 @@ public final class CmsContainerpageController {
      * 
      * @return the container data
      */
-    public CmsContainerJso getContainer(String containerName) {
+    public CmsContainer getContainer(String containerName) {
 
         return m_containers.get(containerName);
     }
@@ -1111,7 +1107,7 @@ public final class CmsContainerpageController {
      *
      * @return the containers
      */
-    public Map<String, CmsContainerJso> getContainers() {
+    public Map<String, CmsContainer> getContainers() {
 
         return m_containers;
     }
@@ -1298,7 +1294,7 @@ public final class CmsContainerpageController {
                         getData().getDetailId(),
                         getRequestParams(),
                         resourceType,
-                        m_containerBeans,
+                        new ArrayList<CmsContainer>(m_containers.values()),
                         getLocale(),
                         this);
                 }
@@ -1328,6 +1324,19 @@ public final class CmsContainerpageController {
         } else {
             return "" + ownId;
         }
+    }
+
+    /**
+     * Returns the deserialized element data.<p>
+     * 
+     * @param data the data to deserialize
+     * 
+     * @return the container element
+     * @throws SerializationException if deserialization fails
+     */
+    public CmsContainer getSerializedContainer(String data) throws SerializationException {
+
+        return (CmsContainer)CmsRpcPrefetcher.getSerializedObjectFromString(getContainerpageService(), data);
     }
 
     /**
@@ -1506,7 +1515,7 @@ public final class CmsContainerpageController {
         m_elements = new HashMap<String, CmsContainerElementData>();
         m_newElements = new HashMap<String, CmsContainerElementData>();
         m_containerTypes = new HashSet<String>();
-        m_containers = new HashMap<String, CmsContainerJso>();
+        m_containers = new HashMap<String, CmsContainer>();
         if (m_data == null) {
             m_handler.m_editor.disableEditing(Messages.get().key(Messages.ERR_READING_CONTAINER_PAGE_DATA_0));
             CmsErrorDialog dialog = new CmsErrorDialog(
@@ -1515,16 +1524,12 @@ public final class CmsContainerpageController {
             dialog.center();
             return;
         }
-        JsArray<CmsContainerJso> containers = CmsContainerJso.getContainers();
-        for (int i = 0; i < containers.length(); i++) {
-            CmsContainerJso container = containers.get(i);
-            m_containerTypes.add(container.getType());
-            m_containers.put(container.getName(), container);
-        }
-        m_containerBeans = createEmptyContainerBeans();
         // ensure any embedded flash players are set opaque so UI elements may be placed above them
         CmsDomUtil.fixFlashZindex(RootPanel.getBodyElement());
         m_targetContainers = m_containerpageUtil.consumeContainers(m_containers);
+        for (CmsContainer container : m_containers.values()) {
+            m_containerTypes.add(container.getType());
+        }
         for (CmsContainerPageContainer cont : m_targetContainers.values()) {
             Element elem = DOM.getElementById(cont.getContainerId());
             CmsContainerpageEditor.getZIndexManager().addContainer(cont.getContainerId(), elem);
@@ -1668,7 +1673,7 @@ public final class CmsContainerpageController {
                 getContainerpageService().getFavoriteList(
                     CmsCoreProvider.get().getStructureId(),
                     getData().getDetailId(),
-                    m_containerBeans,
+                    new ArrayList<CmsContainer>(m_containers.values()),
                     getLocale(),
                     this);
             }
@@ -1706,7 +1711,7 @@ public final class CmsContainerpageController {
                 getContainerpageService().getRecentList(
                     CmsCoreProvider.get().getStructureId(),
                     getData().getDetailId(),
-                    m_containerBeans,
+                    new ArrayList<CmsContainer>(m_containers.values()),
                     getLocale(),
                     this);
             }
@@ -2208,7 +2213,7 @@ public final class CmsContainerpageController {
                         getData().getDetailId(),
                         getRequestParams(),
                         groupContainer,
-                        m_containerBeans,
+                        new ArrayList<CmsContainer>(m_containers.values()),
                         getLocale(),
                         this);
                 }
@@ -2265,7 +2270,7 @@ public final class CmsContainerpageController {
                         CmsCoreProvider.get().getStructureId(),
                         getData().getDetailId(),
                         inheritanceContainer,
-                        m_containerBeans,
+                        new ArrayList<CmsContainer>(m_containers.values()),
                         getLocale(),
                         this);
                 }
@@ -2634,7 +2639,7 @@ public final class CmsContainerpageController {
 
         for (Entry<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> entry : m_targetContainers.entrySet()) {
 
-            CmsContainerJso cnt = m_containers.get(entry.getKey());
+            CmsContainer cnt = m_containers.get(entry.getKey());
             if (visitor.beginContainer(entry.getKey(), cnt)) {
                 Iterator<Widget> elIt = entry.getValue().iterator();
                 while (elIt.hasNext()) {
@@ -2854,27 +2859,6 @@ public final class CmsContainerpageController {
     }
 
     /**
-     * Creates beans for each of this page's containers and ignore their contents.<p>
-     * 
-     * @return a list of container beans without contents 
-     */
-    private List<CmsContainer> createEmptyContainerBeans() {
-
-        List<CmsContainer> result = new ArrayList<CmsContainer>();
-        for (CmsContainerJso containerJso : m_containers.values()) {
-            CmsContainer container = new CmsContainer(
-                containerJso.getName(),
-                containerJso.getType(),
-                containerJso.getWidth(),
-                containerJso.getMaxElements(),
-                containerJso.isDetailView(),
-                null);
-            result.add(container);
-        }
-        return result;
-    }
-
-    /**
      * Retrieves a container element with a given set of settings.<p>
      * 
      * @param clientId the id of the container element
@@ -2902,7 +2886,7 @@ public final class CmsContainerpageController {
                     getRequestParams(),
                     clientId,
                     settings,
-                    m_containerBeans,
+                    new ArrayList<CmsContainer>(m_containers.values()),
                     getLocale(),
                     this);
 

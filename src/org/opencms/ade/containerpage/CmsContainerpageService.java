@@ -187,6 +187,20 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
+     * Returns serialized container data.<p>
+     * 
+     * @param container the container
+     * 
+     * @return the serialized data
+     * 
+     * @throws Exception if serialization fails
+     */
+    public static String getSerializedContainerInfo(CmsContainer container) throws Exception {
+
+        return CmsGwtActionElement.serialize(I_CmsContainerpageService.class.getMethod("getContainerInfo"), container);
+    }
+
+    /**
      * Returns the serialized element data.<p>
      * 
      * @param cms the cms context
@@ -438,6 +452,14 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             error(e);
         }
         return element;
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getContainerInfo()
+     */
+    public CmsContainer getContainerInfo() {
+
+        throw new UnsupportedOperationException("This method is used for serialization only.");
     }
 
     /**

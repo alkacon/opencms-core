@@ -35,6 +35,7 @@ import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElementPanel;
 import org.opencms.ade.containerpage.client.ui.CmsMenuListItem;
 import org.opencms.ade.containerpage.client.ui.I_CmsDropContainer;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.gwt.client.CmsCoreProvider;
@@ -256,23 +257,30 @@ public class CmsContainerpageUtil {
      *
      * @return the drag target containers
      */
-    public Map<String, CmsContainerPageContainer> consumeContainers(Map<String, CmsContainerJso> containers) {
+    public Map<String, CmsContainerPageContainer> consumeContainers(Map<String, CmsContainer> containers) {
 
         Map<String, CmsContainerPageContainer> result = new HashMap<String, CmsContainerPageContainer>();
-        Iterator<CmsContainerJso> it = containers.values().iterator();
-        while (it.hasNext()) {
-            CmsContainerJso container = it.next();
+        List<Element> containerElements = CmsDomUtil.getElementsByClass(CmsContainerElement.CLASS_CONTAINER);
+        for (Element containerElement : containerElements) {
+            String data = containerElement.getAttribute("rel");
             try {
-                CmsContainerPageContainer dragContainer = new CmsContainerPageContainer(container);
-                consumeContainerElements(dragContainer);
-                result.put(container.getName(), dragContainer);
+                CmsContainer container = m_controller.getSerializedContainer(data);
+                containers.put(container.getName(), container);
+                try {
+                    CmsContainerPageContainer dragContainer = new CmsContainerPageContainer(container);
+                    consumeContainerElements(dragContainer);
+                    result.put(container.getName(), dragContainer);
+                } catch (Exception e) {
+                    CmsErrorDialog.handleException(new Exception("Error parsing container "
+                        + container.getName()
+                        + ". Please check if your HTML is well formed.", e));
+                }
             } catch (Exception e) {
-                CmsErrorDialog.handleException(new Exception("Error parsing container "
-                    + container.getName()
-                    + ". Please check if your HTML is well formed.", e));
+                CmsErrorDialog.handleException(new Exception(
+                    "Deserialization of container data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
+                    e));
             }
         }
-
         return result;
     }
 

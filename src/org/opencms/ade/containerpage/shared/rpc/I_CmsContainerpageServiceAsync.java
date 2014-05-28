@@ -139,6 +139,13 @@ public interface I_CmsContainerpageServiceAsync {
      *  
      * @param callback the callback
      */
+    void getContainerInfo(AsyncCallback<CmsContainer> callback);
+
+    /**
+     * This method is used for serialization purposes only.<p>
+     *  
+     * @param callback the callback
+     */
     void getElementInfo(AsyncCallback<CmsContainerElement> callback);
 
     /**
