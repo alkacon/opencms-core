@@ -273,6 +273,13 @@ public interface I_CmsContainerpageService extends RemoteService {
     CmsRemovedElementStatus getRemovedElementStatus(String id, CmsUUID containerpageId) throws CmsRpcException;
 
     /**
+     * Loads the index of the clipboard tab last selected by the user.<p>
+     * 
+     * @return the clipboard tab index 
+     */
+    int loadClipboardTab();
+
+    /**
      * Returns the initialization data.<p>
      * 
      * @return the initialization data
@@ -280,6 +287,13 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @throws CmsRpcException if something goes wrong 
      */
     CmsCntPageData prefetch() throws CmsRpcException;
+
+    /**
+     * Saves the index of the clipboard tab selected by the user.<p>
+     * 
+     * @param tabIndex the index of the selected clipboard tab 
+     */
+    void saveClipboardTab(int tabIndex);
 
     /**
      * Saves the container-page.<p>

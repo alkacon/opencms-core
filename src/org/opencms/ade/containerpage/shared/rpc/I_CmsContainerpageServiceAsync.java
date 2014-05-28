@@ -253,11 +253,26 @@ public interface I_CmsContainerpageServiceAsync {
     void getRemovedElementStatus(String id, CmsUUID containerpageId, AsyncCallback<CmsRemovedElementStatus> callback);
 
     /**
+     * Loads the clipboard tab to initially select.<p>
+     * 
+     * @param resultCallback the result callback 
+     */
+    void loadClipboardTab(AsyncCallback<Integer> resultCallback);
+
+    /**
      * Returns the initialization data.<p>
      * 
      * @param callback the async callback
      */
     void prefetch(AsyncCallback<CmsCntPageData> callback);
+
+    /**
+     * Saves the selected clipboard tab.<p>
+     * 
+     * @param tabIndex the index of the selected clipboard tab
+     * @param callback the result callback
+     */
+    void saveClipboardTab(int tabIndex, AsyncCallback<Void> callback);
 
     /**
      * Saves the container-page.<p> 

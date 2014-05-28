@@ -145,6 +145,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     /** The session cache. */
     private CmsADESessionCache m_sessionCache;
 
+    /** Session attribute name used to store the selected clipboard tab. */
+    public static final String ATTR_CLIPBOARD_TAB = "clipboardtab";
+
     /**
      * Generates the model resource data list.<p>
      * 
@@ -671,6 +674,18 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#loadClipboardTab()
+     */
+    public int loadClipboardTab() {
+
+        Integer clipboardTab = (Integer)(getRequest().getSession().getAttribute(ATTR_CLIPBOARD_TAB));
+        if (clipboardTab == null) {
+            clipboardTab = Integer.valueOf(0);
+        }
+        return clipboardTab.intValue();
+    }
+
+    /**
      * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#prefetch()
      */
     public CmsCntPageData prefetch() throws CmsRpcException {
@@ -727,6 +742,14 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             error(e);
         }
         return data;
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#saveClipboardTab(int)
+     */
+    public void saveClipboardTab(int tabIndex) {
+
+        getRequest().getSession().setAttribute(ATTR_CLIPBOARD_TAB, new Integer(tabIndex));
     }
 
     /**

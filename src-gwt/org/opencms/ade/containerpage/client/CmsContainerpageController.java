@@ -2109,6 +2109,31 @@ public final class CmsContainerpageController {
         }
     }
 
+    /** 
+     * Saves the clipboard tab  index selected by the user.<p>
+     * 
+     * @param tabIndex the tab index 
+     */
+    public void saveClipboardTab(final int tabIndex) {
+
+        CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+            @Override
+            public void execute() {
+
+                start(1, false);
+                getContainerpageService().saveClipboardTab(tabIndex, this);
+            }
+
+            @Override
+            protected void onResponse(Void result) {
+
+                stop(false);
+            }
+        };
+        action.execute();
+    }
+
     /**
      * Saves the current state of the container-page.<p>
      * 

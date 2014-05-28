@@ -27,10 +27,12 @@
 
 package org.opencms.ade.containerpage.client.ui;
 
+import org.opencms.ade.containerpage.client.CmsContainerpageController;
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
 import org.opencms.ade.containerpage.client.CmsFavoritesDNDController;
 import org.opencms.ade.containerpage.client.Messages;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.A_CmsToolbarMenu;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
@@ -84,6 +86,11 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu<CmsContainerpageHa
 
         m_content = new FlowPanel();
         m_tabs = new CmsTabbedPanel<Widget>();
+        m_favorites = new CmsFavoriteTab(this);
+        m_recent = new CmsRecentTab();
+
+        m_tabs.add(m_favorites, Messages.get().key(Messages.GUI_TAB_FAVORITES_TITLE_0));
+        m_tabs.add(m_recent, Messages.get().key(Messages.GUI_TAB_RECENT_TITLE_0));
         m_tabs.addSelectionHandler(new SelectionHandler<Integer>() {
 
             /**
@@ -94,13 +101,10 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu<CmsContainerpageHa
                 if (m_isEditingFavorites) {
                     m_favorites.saveFavorites();
                 }
+                CmsContainerpageController.get().saveClipboardTab(event.getSelectedItem().intValue());
             }
         });
-        m_favorites = new CmsFavoriteTab(this);
-        m_recent = new CmsRecentTab();
 
-        m_tabs.add(m_favorites, Messages.get().key(Messages.GUI_TAB_FAVORITES_TITLE_0));
-        m_tabs.add(m_recent, Messages.get().key(Messages.GUI_TAB_RECENT_TITLE_0));
         SimplePanel tabsContainer = new SimplePanel();
         tabsContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().menuTabContainer());
         tabsContainer.add(m_tabs);
@@ -127,26 +131,6 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu<CmsContainerpageHa
     public void addToRecent(CmsListItem listItem) {
 
         m_recent.addListItem(listItem);
-    }
-
-    /**
-     * Replaces old versions of the given item with the new one.<p>
-     * 
-     * @param listItem the list item
-     */
-    public void replaceFavoriteItem(CmsListItem listItem) {
-
-        m_favorites.replaceItem(listItem);
-    }
-
-    /**
-     * Replaces old versions of the given item with the new one.<p>
-     * 
-     * @param listItem the list item
-     */
-    public void replaceRecentItem(CmsListItem listItem) {
-
-        m_recent.replaceItem(listItem);
     }
 
     /**
@@ -189,6 +173,26 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu<CmsContainerpageHa
         Document.get().getBody().addClassName(I_CmsButton.ButtonData.CLIPBOARD.getIconClass());
         getHandler().loadFavorites();
         getHandler().loadRecent();
+        CmsRpcAction<Integer> tabAction = new CmsRpcAction<Integer>() {
+
+            @Override
+            public void execute() {
+
+                start(1, false);
+                CmsContainerpageController.get().getContainerpageService().loadClipboardTab(this);
+            }
+
+            @SuppressWarnings("synthetic-access")
+            @Override
+            protected void onResponse(Integer result) {
+
+                stop(false);
+                m_tabs.selectTab(result.intValue(), false);
+
+            }
+
+        };
+        tabAction.execute();
     }
 
     /**
@@ -210,6 +214,26 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu<CmsContainerpageHa
         m_isEditingFavorites = false;
         getHandler().enableFavoriteEditing(false, m_dndController);
         getHandler().loadFavorites();
+    }
+
+    /**
+     * Replaces old versions of the given item with the new one.<p>
+     * 
+     * @param listItem the list item
+     */
+    public void replaceFavoriteItem(CmsListItem listItem) {
+
+        m_favorites.replaceItem(listItem);
+    }
+
+    /**
+     * Replaces old versions of the given item with the new one.<p>
+     * 
+     * @param listItem the list item
+     */
+    public void replaceRecentItem(CmsListItem listItem) {
+
+        m_recent.replaceItem(listItem);
     }
 
     /**
