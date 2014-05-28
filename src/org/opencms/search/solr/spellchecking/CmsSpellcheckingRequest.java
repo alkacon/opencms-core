@@ -34,6 +34,18 @@ import org.opencms.json.JSONObject;
  */
 class CmsSpellcheckingRequest {
 
+    /** The Id of the request sent by tinyMce. */
+    String m_id;
+
+    /** The dictionary to use.  */
+    String m_dictionaryToUse;
+
+    /** The string array that contains the words that have to checked. */
+    String[] m_wordsToCheck;
+
+    /** JSON object containing the computed suggestions for the checked words. */
+    JSONObject m_wordSuggestions;
+
     /**
      * Constructor.
      */
@@ -76,15 +88,12 @@ class CmsSpellcheckingRequest {
         return (null != m_dictionaryToUse) && (null != m_wordsToCheck);
     }
 
-    /** The Id of the request sent by tinyMce. */
-    String m_id;
+    /**
+     * Sets the words to check. 
+     * @param q Array containing all words to check. 
+     */
+    public void setWordsToCheck(String[] q) {
 
-    /** The dictionary to use.  */
-    String m_dictionaryToUse;
-
-    /** The string array that contains the words that have to checked. */
-    String[] m_wordsToCheck;
-
-    /** JSON object containing the computed suggestions for the checked words. */
-    JSONObject m_wordSuggestions;
+        this.m_wordsToCheck = q;
+    }
 }

@@ -37,6 +37,7 @@ import org.opencms.security.CmsPermissionViolationException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -129,6 +130,16 @@ public final class CmsSolrSpellchecker {
     }
 
     /**
+     * Return an instance of this class.
+     * 
+     * @return instance of CmsSolrSpellchecker
+     */
+    public static CmsSolrSpellchecker getInstance() {
+
+        return instance;
+    }
+
+    /**
      * Return an instance of this class. 
      * 
      * @param container Solr CoreContainer container object in order to create a server object. 
@@ -144,16 +155,6 @@ public final class CmsSolrSpellchecker {
                 }
             }
         }
-
-        return instance;
-    }
-
-    /**
-     * Return an instance of this class.
-     * 
-     * @return instance of CmsSolrSpellchecker
-     */
-    public static CmsSolrSpellchecker getInstance() {
 
         return instance;
     }
@@ -219,6 +220,78 @@ public final class CmsSolrSpellchecker {
     }
 
     /**
+     * Converts the suggestions from the Solrj format to JSON format. 
+     * 
+     * @param response The SpellCheckResponse object containing the spellcheck results. 
+     * @return The spellcheck suggestions as JSON object or null if something goes wrong. 
+     */
+    private JSONObject getConvertedResponseAsJson(SpellCheckResponse response) {
+
+        if (null == response) {
+            return null;
+        }
+
+        final JSONObject suggestions = new JSONObject();
+        final Map<String, Suggestion> solrSuggestions = response.getSuggestionMap();
+
+        // Add suggestions to the response 
+        for (final String key : solrSuggestions.keySet()) {
+
+            // Indicator to ignore words that are erroneously marked as misspelled. 
+            boolean ignoreWord = false;
+
+            // Suggestions that are in the form "Xxxx" -> "xxxx" should be ignored.
+            if (Character.isUpperCase(key.codePointAt(0))) {
+                final String lowercaseKey = key.toLowerCase();
+                // If the suggestion map doesn't contain the lowercased word, ignore this entry.
+                if (!solrSuggestions.containsKey(lowercaseKey)) {
+                    ignoreWord = true;
+                }
+            }
+
+            if (!ignoreWord) {
+                try {
+                    // Get suggestions as List
+                    final List<String> l = solrSuggestions.get(key).getAlternatives();
+                    suggestions.put(key, l);
+                } catch (JSONException e) {
+                    LOG.debug("Exception while converting Solr spellcheckresponse to JSON. ");
+                }
+            }
+        }
+
+        return suggestions;
+    }
+
+    /**
+     * Returns the result of the performed spellcheck formatted in JSON. 
+     * 
+     * @param request The CmsSpellcheckingRequest.
+     * @return JSONObject that contains the result of the performed spellcheck.  
+     */
+    private JSONObject getJsonFormattedSpellcheckResult(CmsSpellcheckingRequest request) {
+
+        final JSONObject response = new JSONObject();
+
+        try {
+            if (null != request.m_id) {
+                response.put(JSON_ID, request.m_id);
+            }
+
+            response.put(JSON_RESULT, request.m_wordSuggestions);
+
+        } catch (Exception e) {
+            try {
+                response.put(JSON_ERROR, true);
+            } catch (JSONException ex) {
+                LOG.debug("Error while assembling spellcheck response in JSON format. ");
+            }
+        }
+
+        return response;
+    }
+
+    /**
      * Returns the body of the request. This method is used to read posted JSON data. 
      * 
      * @param request The request. 
@@ -236,53 +309,6 @@ public final class CmsSolrSpellchecker {
         }
 
         return sb.toString();
-    }
-
-    /**
-     * Sets the appropriate headers to response of this request. 
-     * 
-     * @param response The HttpServletResponse response object. 
-     */
-    private void setResponeHeaders(HttpServletResponse response) {
-
-        response.setHeader("Cache-Control", "no-store, no-cache");
-        response.setHeader("Pragma", "no-cache");
-        response.setDateHeader("Expires", System.currentTimeMillis());
-        response.setContentType("text/plain; charset=utf-8");
-        response.setCharacterEncoding("utf-8");
-    }
-
-    /**
-     * Parse JSON parameters from this request. 
-     *  
-     * @param jsonRequest The request in the JSON format. 
-     * @return CmsSpellcheckingRequest object that contains parsed parameters or null, if JSON input is not well 
-     * defined.  
-     */
-    private CmsSpellcheckingRequest parseJsonRequest(JSONObject jsonRequest) {
-
-        final String id = jsonRequest.optString(JSON_ID);
-        final String lang = jsonRequest.optString(JSON_LANG, LANG_DEFAULT);
-        final JSONObject params = jsonRequest.optJSONObject(JSON_PARAMS);
-
-        if (null == params) {
-            LOG.debug("Invalid JSON request: No field \"params\" defined. ");
-            return null;
-        }
-        final JSONArray words = params.optJSONArray(JSON_WORDS);
-
-        if (null == words) {
-            LOG.debug("Invalid JSON request: No field \"words\" defined. ");
-            return null;
-        }
-
-        // Convert JSON array to array of type String
-        final String[] wordsToCheck = new String[words.length()];
-        for (int i = 0; i < words.length(); i++) {
-            wordsToCheck[i] = words.opt(i).toString();
-        }
-
-        return new CmsSpellcheckingRequest(wordsToCheck, lang, id);
     }
 
     /**
@@ -314,17 +340,60 @@ public final class CmsSolrSpellchecker {
         }
 
         final StringTokenizer st = new StringTokenizer(q);
-        final List<String> list = new ArrayList<String>();
+        final List<String> wordsToCheck = new ArrayList<String>();
         while (st.hasMoreTokens()) {
-            list.add(st.nextToken());
+            final String word = st.nextToken();
+            wordsToCheck.add(word);
+
+            if (Character.isUpperCase(word.codePointAt(0))) {
+                wordsToCheck.add(word.toLowerCase());
+            }
         }
 
-        final String[] w = list.toArray(new String[list.size()]);
+        final String[] w = wordsToCheck.toArray(new String[wordsToCheck.size()]);
         final String dict = req.getParameter(HTTP_PARAMETER_LANG) == null
         ? LANG_DEFAULT
         : req.getParameter(HTTP_PARAMETER_LANG);
 
         return new CmsSpellcheckingRequest(w, dict);
+    }
+
+    /**
+     * Parse JSON parameters from this request. 
+     *  
+     * @param jsonRequest The request in the JSON format. 
+     * @return CmsSpellcheckingRequest object that contains parsed parameters or null, if JSON input is not well 
+     * defined.  
+     */
+    private CmsSpellcheckingRequest parseJsonRequest(JSONObject jsonRequest) {
+
+        final String id = jsonRequest.optString(JSON_ID);
+        final String lang = jsonRequest.optString(JSON_LANG, LANG_DEFAULT);
+        final JSONObject params = jsonRequest.optJSONObject(JSON_PARAMS);
+
+        if (null == params) {
+            LOG.debug("Invalid JSON request: No field \"params\" defined. ");
+            return null;
+        }
+        final JSONArray words = params.optJSONArray(JSON_WORDS);
+
+        if (null == words) {
+            LOG.debug("Invalid JSON request: No field \"words\" defined. ");
+            return null;
+        }
+
+        // Convert JSON array to array of type String
+        final List<String> wordsToCheck = new LinkedList<String>();
+        for (int i = 0; i < words.length(); i++) {
+            final String word = words.opt(i).toString();
+            wordsToCheck.add(word);
+
+            if (Character.isUpperCase(word.codePointAt(0))) {
+                wordsToCheck.add(word.toLowerCase());
+            }
+        }
+
+        return new CmsSpellcheckingRequest(wordsToCheck.toArray(new String[wordsToCheck.size()]), lang, id);
     }
 
     /**
@@ -383,51 +452,6 @@ public final class CmsSolrSpellchecker {
     }
 
     /**
-     * Converts the suggestions from the Solrj format to JSON format. 
-     * 
-     * @param response The SpellCheckResponse object containing the spellcheck results. 
-     * @return The spellcheck suggestions as JSON object or null if something goes wrong. 
-     */
-    private JSONObject getConvertedResponseAsJson(SpellCheckResponse response) {
-
-        if (null == response) {
-            return null;
-        }
-
-        final JSONObject suggestions = new JSONObject();
-        final Map<String, Suggestion> solrSuggestions = response.getSuggestionMap();
-
-        // Add suggestions to the response 
-        for (final String key : solrSuggestions.keySet()) {
-
-            // Get suggestions as List
-            final List<String> l = solrSuggestions.get(key).getAlternatives();
-
-            // Indicator to ignore words that are erroneously marked as misspelled. 
-            boolean ignoreWord = false;
-
-            // Suggestions that are in the form "Xxxx" -> "xxxx" should be ignored.
-            if (Character.isUpperCase(key.charAt(0))) {
-                final String lowercaseKey = key.toLowerCase();
-                // If the suggestion list contains the lowercased word, ignore this entry.
-                if (l.contains(lowercaseKey)) {
-                    ignoreWord = true;
-                }
-            }
-
-            if (!ignoreWord) {
-                try {
-                    suggestions.put(key, l);
-                } catch (JSONException e) {
-                    LOG.debug("Exception while converting Solr spellcheckresponse to JSON. ");
-                }
-            }
-        }
-
-        return suggestions;
-    }
-
-    /**
      * Sends the JSON-formatted spellchecking results to the client. 
      * 
      * @param res The HttpServletResponse object. 
@@ -442,30 +466,16 @@ public final class CmsSolrSpellchecker {
     }
 
     /**
-     * Returns the result of the performed spellcheck formatted in JSON. 
+     * Sets the appropriate headers to response of this request. 
      * 
-     * @param request The CmsSpellcheckingRequest.
-     * @return JSONObject that contains the result of the performed spellcheck.  
+     * @param response The HttpServletResponse response object. 
      */
-    private JSONObject getJsonFormattedSpellcheckResult(CmsSpellcheckingRequest request) {
+    private void setResponeHeaders(HttpServletResponse response) {
 
-        final JSONObject response = new JSONObject();
-
-        try {
-            if (null != request.m_id) {
-                response.put(JSON_ID, request.m_id);
-            }
-
-            response.put(JSON_RESULT, request.m_wordSuggestions);
-
-        } catch (Exception e) {
-            try {
-                response.put(JSON_ERROR, true);
-            } catch (JSONException ex) {
-                LOG.debug("Error while assembling spellcheck response in JSON format. ");
-            }
-        }
-
-        return response;
+        response.setHeader("Cache-Control", "no-store, no-cache");
+        response.setHeader("Pragma", "no-cache");
+        response.setDateHeader("Expires", System.currentTimeMillis());
+        response.setContentType("text/plain; charset=utf-8");
+        response.setCharacterEncoding("utf-8");
     }
 }
