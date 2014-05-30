@@ -38,6 +38,7 @@ import org.opencms.util.CmsUUID;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -54,9 +55,10 @@ public class CmsCreateModeSelectionDialog extends CmsPopup {
      * @param info the resource information for the selected collector list entry
      * @param createModeCallback the callback to call with the result
      */
-    public CmsCreateModeSelectionDialog(CmsListInfoBean info, AsyncCallback<String> createModeCallback) {
+    public CmsCreateModeSelectionDialog(CmsListInfoBean info, final AsyncCallback<String> createModeCallback) {
 
-        super(messageCaption(), 400);
+        super("", 400);
+        setCaption(messageCaption());
         m_callback = createModeCallback;
         setModal(true);
         setGlassEnabled(true);
@@ -66,51 +68,15 @@ public class CmsCreateModeSelectionDialog extends CmsPopup {
         CmsListItemWidget item = new CmsListItemWidget(info);
         main.getInfoBox().add(item);
         setMainContent(main);
-        CmsPushButton copyButton = createButton(messageCopy(), ButtonColor.GREEN, CmsEditorConstants.MODE_COPY);
-        CmsPushButton newButton = createButton(messageNew(), ButtonColor.BLUE, null);
-        addButton(copyButton);
-        addButton(newButton);
-        addDialogClose(null);
-    }
+        addButtons();
+        Command closeCommand = new Command() {
 
-    /**
-     * Message accessor.<p>
-     *
-     * @return the message
-     */
-    public static String messageAskMode() {
+            public void execute() {
 
-        return Messages.get().key(Messages.GUI_CREATE_MODE_ASK_0);
-    }
-
-    /**
-     * Message accessor.<p>
-     *
-     * @return the message
-     */
-    public static String messageCaption() {
-
-        return Messages.get().key(Messages.GUI_CREATE_MODE_CAPTION_0);
-    }
-
-    /**
-     * Message accessor.<p>
-     *
-     * @return the message
-     */
-    public static String messageCopy() {
-
-        return Messages.get().key(Messages.GUI_CREATE_MODE_BUTTON_COPY_0);
-    }
-
-    /**
-     * Message accessor.<p>
-     *
-     * @return the message
-     */
-    public static String messageNew() {
-
-        return Messages.get().key(Messages.GUI_CREATE_MODE_BUTTON_NEW_0);
+                createModeCallback.onFailure(null);
+            }
+        };
+        addDialogClose(closeCommand);
     }
 
     /**
@@ -143,6 +109,56 @@ public class CmsCreateModeSelectionDialog extends CmsPopup {
     }
 
     /**
+     * Message accessor.<p>
+     *
+     * @return the message
+     */
+    public String messageAskMode() {
+
+        return Messages.get().key(Messages.GUI_CREATE_MODE_ASK_0);
+    }
+
+    /**
+     * Message accessor.<p>
+     *
+     * @return the message
+     */
+    public String messageCaption() {
+
+        return Messages.get().key(Messages.GUI_CREATE_MODE_CAPTION_0);
+    }
+
+    /**
+     * Message accessor.<p>
+     *
+     * @return the message
+     */
+    public String messageCopy() {
+
+        return Messages.get().key(Messages.GUI_CREATE_MODE_BUTTON_COPY_0);
+    }
+
+    /**
+     * Message accessor.<p>
+     *
+     * @return the message
+     */
+    public String messageNew() {
+
+        return Messages.get().key(Messages.GUI_CREATE_MODE_BUTTON_NEW_0);
+    }
+
+    /**
+     * Adds the dialog buttons.<p>
+     */
+    protected void addButtons() {
+
+        addButton(createButton(messageNew(), ButtonColor.BLUE, null));
+        addButton(createButton(messageCopy(), ButtonColor.GREEN, CmsEditorConstants.MODE_COPY));
+
+    }
+
+    /**
      * Creates a button used to select a create mode.<p>
      *
      * @param text the button text
@@ -151,7 +167,7 @@ public class CmsCreateModeSelectionDialog extends CmsPopup {
      *
      * @return the newly created button
      */
-    CmsPushButton createButton(String text, ButtonColor color, final String result) {
+    protected CmsPushButton createButton(String text, ButtonColor color, final String result) {
 
         CmsPushButton button = new CmsPushButton();
         button = new CmsPushButton();

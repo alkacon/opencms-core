@@ -237,6 +237,18 @@ public final class Messages {
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.containerpage.clientmessages";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SELECT_COPY_OR_REUSE_TEXT_0 = "GUI_SELECT_COPY_OR_REUSE_TEXT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SELECT_COPY_OR_REUSE_CAPTION_0 = "GUI_SELECT_COPY_OR_REUSE_CAPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPY_ELEMENT_0 = "GUI_COPY_ELEMENT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_REUSE_ELEMENT_0 = "GUI_REUSE_ELEMENT_0";
+
     /** Static instance member. */
     private static CmsMessages INSTANCE;
 

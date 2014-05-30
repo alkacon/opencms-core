@@ -1221,6 +1221,59 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Retrieves a container element with a given set of settings.<p>
+     * 
+     * @param clientId the id of the container element
+     * @param settings the set of settings
+     *  
+     * @param callback the callback which should be executed when the element has been loaded 
+     */
+    public void getElementWithSettings(
+        final String clientId,
+        final Map<String, String> settings,
+        final I_CmsSimpleCallback<CmsContainerElementData> callback) {
+
+        CmsRpcAction<CmsContainerElementData> action = new CmsRpcAction<CmsContainerElementData>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                start(200, false);
+                getContainerpageService().getElementWithSettings(
+                    CmsCoreProvider.get().getStructureId(),
+                    getData().getDetailId(),
+                    getRequestParams(),
+                    clientId,
+                    settings,
+                    new ArrayList<CmsContainer>(m_containers.values()),
+                    getLocale(),
+                    this);
+
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(CmsContainerElementData result) {
+
+                stop(false);
+                if (result != null) {
+                    // cache the loaded element
+                    m_elements.put(result.getClientId(), result);
+                }
+                callback.execute(result);
+            }
+
+        };
+        action.execute();
+
+    }
+
+    /**
      * Returns the group-container element being edited.<p>
      * 
      * @return the group-container
@@ -2881,58 +2934,6 @@ public final class CmsContainerpageController {
             m_lockStatus = LockStatus.failed;
             m_handler.m_editor.disableEditing(getData().getLockInfo());
         }
-    }
-
-    /**
-     * Retrieves a container element with a given set of settings.<p>
-     * 
-     * @param clientId the id of the container element
-     * @param settings the set of settings
-     *  
-     * @param callback the callback which should be executed when the element has been loaded 
-     */
-    private void getElementWithSettings(
-        final String clientId,
-        final Map<String, String> settings,
-        final I_CmsSimpleCallback<CmsContainerElementData> callback) {
-
-        CmsRpcAction<CmsContainerElementData> action = new CmsRpcAction<CmsContainerElementData>() {
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
-             */
-            @Override
-            public void execute() {
-
-                start(200, false);
-                getContainerpageService().getElementWithSettings(
-                    CmsCoreProvider.get().getStructureId(),
-                    getData().getDetailId(),
-                    getRequestParams(),
-                    clientId,
-                    settings,
-                    new ArrayList<CmsContainer>(m_containers.values()),
-                    getLocale(),
-                    this);
-
-            }
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-             */
-            @Override
-            protected void onResponse(CmsContainerElementData result) {
-
-                stop(false);
-                if (result != null) {
-                    // cache the loaded element
-                    m_elements.put(result.getClientId(), result);
-                }
-                callback.execute(result);
-            }
-
-        };
-        action.execute();
     }
 
     /**

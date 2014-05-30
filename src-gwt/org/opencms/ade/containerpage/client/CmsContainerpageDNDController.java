@@ -27,13 +27,16 @@
 
 package org.opencms.ade.containerpage.client;
 
+import org.opencms.ade.containerpage.client.ui.CmsClipboardDropModeSelectionDialog;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
 import org.opencms.ade.containerpage.client.ui.CmsElementOptionBar;
 import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElementPanel;
+import org.opencms.ade.containerpage.client.ui.CmsMenuListItem;
 import org.opencms.ade.containerpage.client.ui.I_CmsDropContainer;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
+import org.opencms.ade.contenteditor.shared.CmsEditorConstants;
 import org.opencms.ade.galleries.client.ui.CmsResultListItem;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
@@ -54,6 +57,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.base.Objects;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Document;
@@ -314,6 +318,9 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     public void onDrop(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
 
         boolean changedContainerpage = false;
+        boolean isFromClipboard = draggable instanceof CmsMenuListItem;
+        CmsContainerPageElementPanel clipboardContainerElement = null;
+
         if (target != m_initialDropTarget) {
             if (target instanceof I_CmsDropContainer) {
                 I_CmsDropContainer container = (I_CmsDropContainer)target;
@@ -328,7 +335,11 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                         containerElement.setNewType(m_draggableId);
                     } else {
                         CmsContainerElementData elementData = m_controller.getCachedElement(m_draggableId);
+
                         containerElement = m_controller.getContainerpageUtil().createElement(elementData, container);
+                        if (isFromClipboard) {
+                            clipboardContainerElement = containerElement;
+                        }
                         m_controller.addToRecentList(m_draggableId, null);
                     }
                     handler.getPlaceholder().getStyle().setDisplay(Display.NONE);
@@ -374,8 +385,71 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             optionBar.removeFromParent();
             containerElement.setElementOptionBar(optionBar);
         }
-        if (changedContainerpage) {
-            m_controller.setPageChanged();
+
+        if (clipboardContainerElement != null) {
+            final CmsContainerPageElementPanel finalClipboardContainerElement = clipboardContainerElement;
+            final String serverIdStr = CmsContainerpageController.getServerId(m_draggableId);
+            CmsUUID structureId = new CmsUUID(serverIdStr);
+
+            // when dropping elements from the clipboard into the page, we ask the user if the dropped element should 
+            // be used, or a copy of it. If the user wants a copy, we copy the corresponding resource and replace the element
+            // in the page 
+
+            AsyncCallback<String> modeCallback = new AsyncCallback<String>() {
+
+                public void onFailure(Throwable caught) {
+
+                    finalClipboardContainerElement.removeFromParent();
+                }
+
+                public void onSuccess(String result) {
+
+                    if (Objects.equal(result, CmsEditorConstants.MODE_COPY)) {
+                        final CmsContainerpageController controller = CmsContainerpageController.get();
+                        CmsContainerElementData data = controller.getCachedElement(finalClipboardContainerElement.getId());
+                        final Map<String, String> settings = data.getSettings();
+                        controller.copyElement(serverIdStr, new AsyncCallback<CmsUUID>() {
+
+                            public void onFailure(Throwable caught) {
+
+                                // this should never happen, in theory
+
+                            }
+
+                            public void onSuccess(CmsUUID resultId) {
+
+                                controller.getElementWithSettings(
+                                    "" + resultId,
+                                    settings,
+                                    new I_CmsSimpleCallback<CmsContainerElementData>() {
+
+                                        public void execute(CmsContainerElementData newData) {
+
+                                            try {
+                                                controller.replaceContainerElement(
+                                                    finalClipboardContainerElement,
+                                                    newData);
+                                                controller.setPageChanged();
+                                            } catch (Exception e) {
+                                                CmsDebugLog.consoleLog("??? " + e);
+                                            }
+                                        }
+                                    });
+                            }
+                        });
+
+                    } else if (Objects.equal(result, CmsEditorConstants.MODE_REUSE)) {
+                        m_controller.setPageChanged();
+                    }
+
+                }
+            };
+            CmsClipboardDropModeSelectionDialog.showDialog(structureId, modeCallback);
+
+        } else {
+            if (changedContainerpage) {
+                m_controller.setPageChanged();
+            }
         }
         stopDrag(handler);
     }

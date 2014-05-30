@@ -53,4 +53,7 @@ public class CmsEditorConstants {
     /** Request parameter name. */
     public static final String PARAM_POST_CREATE_HANDLER = "postCreateHandler";
 
+    /** Constant for the "reuse" mode when dropping clipboard elements. */
+    public static final String MODE_REUSE = "reuse";
+
 }
