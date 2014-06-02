@@ -1856,7 +1856,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             } catch (Exception e) {
                 // no secure link required (probably security issues, e.g. no access for current user)
                 // however other users may be allowed to read the resource, so the result can't be cached
-                secureResource = "false";
+                return false;
             }
         }
         return Boolean.parseBoolean(secureResource)

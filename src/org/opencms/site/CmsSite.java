@@ -28,10 +28,7 @@
 package org.opencms.site;
 
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
-import org.opencms.main.CmsException;
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -39,17 +36,12 @@ import org.opencms.util.CmsUUID;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-
 /**
  * Describes a configured site in OpenCms.<p>
  * 
  * @since 6.0.0 
  */
 public final class CmsSite implements Cloneable, Comparable<CmsSite> {
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsSite.class);
 
     /** The aliases for this site, a vector of CmsSiteMatcher Objects. */
     private List<CmsSiteMatcher> m_aliases = new ArrayList<CmsSiteMatcher>();
@@ -308,7 +300,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
      * secure (https) and non-secure (http) sites.<p>
      * 
      * This is required since a resource may have an individual "secure" setting using the property
-     * {@link CmsPropertyDefinition#PROPERTY_SECURE}, which means this resource
+     * {@link org.opencms.file.CmsPropertyDefinition#PROPERTY_SECURE}, which means this resource
      * must be delivered only using a secure protocol.<p>
      * 
      * The result will look like <code>http://site.enterprise.com:8080/</code> or <code>https://site.enterprise.com/</code>.<p> 
@@ -318,26 +310,11 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
      * 
      * @return the server prefix for the given resource in this site
      * 
-     * @see #getSecureUrl()
-     * @see #getUrl()
+     * @see #getServerPrefix(CmsObject, String)
      */
     public String getServerPrefix(CmsObject cms, CmsResource resource) {
 
-        if (equals(OpenCms.getSiteManager().getDefaultSite())) {
-            return OpenCms.getSiteManager().getWorkplaceServer();
-        }
-        boolean secure = false;
-        if (hasSecureServer()) {
-            try {
-                secure = Boolean.valueOf(
-                    cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_SECURE, true).getValue()).booleanValue();
-            } catch (CmsException e) {
-                if (LOG.isErrorEnabled()) {
-                    LOG.error(e.getLocalizedMessage(), e);
-                }
-            }
-        }
-        return (secure ? getSecureUrl() : getUrl());
+        return getServerPrefix(cms, resource.getRootPath());
     }
 
     /**
@@ -345,7 +322,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
      * secure (https) and non-secure (http) sites.<p>
      * 
      * This is required since a resource may have an individual "secure" setting using the property
-     * {@link CmsPropertyDefinition#PROPERTY_SECURE}, which means this resource
+     * {@link org.opencms.file.CmsPropertyDefinition#PROPERTY_SECURE}, which means this resource
      * must be delivered only using a secure protocol.<p>
      * 
      * The result will look like <code>http://site.enterprise.com:8080/</code> or <code>https://site.enterprise.com/</code>.<p> 
@@ -360,14 +337,11 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
      */
     public String getServerPrefix(CmsObject cms, String resourceName) {
 
-        if (equals(OpenCms.getSiteManager().getDefaultSite())) {
-            return OpenCms.getSiteManager().getWorkplaceServer();
-        }
         if (resourceName.startsWith(cms.getRequestContext().getSiteRoot())) {
             // make sure this can also be used with a resource root path
             resourceName = resourceName.substring(cms.getRequestContext().getSiteRoot().length());
         }
-        boolean secure = OpenCms.getStaticExportManager().isSecureLink(cms, resourceName);
+        boolean secure = OpenCms.getStaticExportManager().isSecureLink(cms, resourceName, false);
         return (secure ? getSecureUrl() : getUrl());
     }
 
