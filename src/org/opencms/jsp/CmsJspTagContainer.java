@@ -96,9 +96,6 @@ public class CmsJspTagContainer extends TagSupport {
         + CmsTemplateContextInfo.DUMMY_ELEMENT_MARKER
         + "' style='display: none !important;'></div>";
 
-    /** The element instance id settings key. */
-    public static final String ELEMENT_INSTANCE_ID = "element_instance_id";
-
     /** The default tag name constant. */
     private static final String DEFAULT_TAG_NAME = "div";
 
@@ -175,9 +172,6 @@ public class CmsJspTagContainer extends TagSupport {
             element.setFormatterId(formatterBean.getJspStructureId());
         } else {
             element.setFormatterId(null);
-        }
-        if (!element.getSettings().containsKey(ELEMENT_INSTANCE_ID)) {
-            element.getSettings().put(ELEMENT_INSTANCE_ID, new CmsUUID().toString());
         }
         return formatterBean;
     }
@@ -476,7 +470,7 @@ public class CmsJspTagContainer extends TagSupport {
                         tagName,
                         getName(),
                         getTagClass(),
-                        isOnline ? null : getContainerData(container, getWidth(), isUsedAsDetailView, m_detailOnly)));
+                        isOnline ? null : getContainerData(maxElements, isUsedAsDetailView)));
 
                 standardContext.setContainer(container);
                 // validate the type
@@ -560,7 +554,7 @@ public class CmsJspTagContainer extends TagSupport {
     public String getName() {
 
         if ((m_parentContainer != null) && (m_parentElement != null)) {
-            String elementId = m_parentElement.getSettings().get(ELEMENT_INSTANCE_ID);
+            String elementId = m_parentElement.getInstanceId();
             return m_parentContainer.getName() + "-" + elementId + "-" + m_name;
         }
         return m_name;
@@ -691,35 +685,30 @@ public class CmsJspTagContainer extends TagSupport {
     /**
      * Returns the serialized data of the given container.<p>
      * 
-     * @param container the container to get the data tag for
-     * @param widthStr the width of the container as a string 
+     * @param maxElements the maximum number of elements allowed within this container
      * @param isDetailView <code>true</code> if this container is currently being used for the detail view
-     * @param isDetailOnly <code>true</code> if this container is displayed in detail view only
      * 
      * @return the serialized container data
      */
-    protected String getContainerData(
-        CmsContainerBean container,
-        String widthStr,
-        boolean isDetailView,
-        boolean isDetailOnly) {
+    protected String getContainerData(int maxElements, boolean isDetailView) {
 
         int width = -1;
         try {
-            if (widthStr != null) {
-                width = Integer.parseInt(widthStr);
+            if (getWidth() != null) {
+                width = Integer.parseInt(getWidth());
             }
         } catch (NumberFormatException e) {
             //ignore; set width to -1
         }
         CmsContainer cont = new CmsContainer(
-            container.getName(),
-            container.getType(),
+            getName(),
+            getType(),
             width,
-            container.getMaxElements(),
+            maxElements,
             isDetailView,
+            m_parentContainer != null,
             null);
-        cont.setDeatilOnly(isDetailOnly);
+        cont.setDeatilOnly(m_detailOnly);
         String result = "";
         try {
             result = CmsContainerpageService.getSerializedContainerInfo(cont);
@@ -865,7 +854,6 @@ public class CmsJspTagContainer extends TagSupport {
      */
     private int getMaxElements(String requestUri) {
 
-        String containerName = getName();
         String containerMaxElements = getMaxElements();
 
         int maxElements = -1;
@@ -875,13 +863,13 @@ public class CmsJspTagContainer extends TagSupport {
             } catch (NumberFormatException e) {
                 throw new CmsIllegalStateException(Messages.get().container(
                     Messages.LOG_WRONG_CONTAINER_MAXELEMENTS_3,
-                    new Object[] {requestUri, containerName, containerMaxElements}), e);
+                    new Object[] {requestUri, getName(), containerMaxElements}), e);
             }
         } else {
             if (LOG.isWarnEnabled()) {
                 LOG.warn(Messages.get().getBundle().key(
                     Messages.LOG_MAXELEMENTS_NOT_SET_2,
-                    new Object[] {containerName, requestUri}));
+                    new Object[] {getName(), requestUri}));
             }
         }
         return maxElements;

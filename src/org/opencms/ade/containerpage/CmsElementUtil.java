@@ -269,7 +269,6 @@ public class CmsElementUtil {
         Locale requestLocale = m_cms.getRequestContext().getLocale();
         m_cms.getRequestContext().setLocale(m_locale);
         element.initResource(m_cms);
-
         CmsResourceUtil resUtil = new CmsResourceUtil(m_cms, element.getResource());
         CmsUUID structureId = resUtil.getResource().getStructureId();
         CmsContainerElementData elementData = new CmsContainerElementData();

@@ -56,6 +56,9 @@ import java.util.Map;
  */
 public class CmsContainerElementBean implements Cloneable {
 
+    /** The element instance id settings key. */
+    public static final String ELEMENT_INSTANCE_ID = "element_instance_id";
+
     /** Flag indicating if a new element should be created replacing the given one on first edit of a container-page. */
     private final boolean m_createNew;
 
@@ -69,7 +72,7 @@ public class CmsContainerElementBean implements Cloneable {
     private CmsUUID m_formatterId;
 
     /** The configured properties. */
-    private final Map<String, String> m_individualSettings;
+    private Map<String, String> m_individualSettings;
 
     /** The inheritance info of this element. */
     private CmsInheritanceInfo m_inheritanceInfo;
@@ -111,6 +114,9 @@ public class CmsContainerElementBean implements Cloneable {
         Map<String, String> newSettings = (individualSettings == null
         ? new HashMap<String, String>()
         : individualSettings);
+        if (!newSettings.containsKey(ELEMENT_INSTANCE_ID)) {
+            newSettings.put(ELEMENT_INSTANCE_ID, new CmsUUID().toString());
+        }
         m_individualSettings = Collections.unmodifiableMap(newSettings);
         String clientId = m_elementId.toString();
         if (!m_individualSettings.isEmpty()) {
@@ -351,6 +357,16 @@ public class CmsContainerElementBean implements Cloneable {
     }
 
     /**
+     * Returns the element instance id.<p>
+     * 
+     * @return the element instance id
+     */
+    public String getInstanceId() {
+
+        return m_individualSettings.get(ELEMENT_INSTANCE_ID);
+    }
+
+    /**
      * Returns the resource of this element.<p>
      *
      * It is required to call {@link #initResource(CmsObject)} before this method can be used.<p>
@@ -450,7 +466,7 @@ public class CmsContainerElementBean implements Cloneable {
                 formatterBean.getSettings(),
                 m_individualSettings);
         }
-        if (m_settings != null) {
+        if (m_settings == null) {
             m_settings = mergedSettings;
         } else {
             m_settings.putAll(mergedSettings);

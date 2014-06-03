@@ -42,10 +42,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.Style.Position;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -220,9 +220,6 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     /** Flag indicating the element positions need to be re-evaluated. */
     private boolean m_requiresPositionUpdate = true;
 
-    /** The wrapped widget. This will be a @link com.google.gwt.user.client.RootPanel. */
-    private Widget m_widget;
-
     /**
      * Constructor.<p>
      * 
@@ -230,7 +227,11 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
      */
     public CmsContainerPageContainer(CmsContainer containerData) {
 
-        initWidget(RootPanel.get(containerData.getName()));
+        Element element = Document.get().getElementById(containerData.getName());
+        setElement(element);
+        if (!containerData.isSubContainer()) {
+            RootPanel.detachOnWindowClose(this);
+        }
         m_containerId = containerData.getName();
         m_containerType = containerData.getType();
         m_maxElements = containerData.getMaxElements();
@@ -238,6 +239,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
         m_detailOnly = containerData.isDetailOnly();
         m_configuredWidth = containerData.getWidth();
         addStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragTarget());
+        onAttach();
     }
 
     /**
@@ -435,18 +437,6 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     }
 
     /**
-     * @see com.google.gwt.user.client.ui.Widget#isAttached()
-     */
-    @Override
-    public boolean isAttached() {
-
-        if (m_widget != null) {
-            return m_widget.isAttached();
-        }
-        return false;
-    }
-
-    /**
      * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#isDetailOnly()
      */
     public boolean isDetailOnly() {
@@ -462,19 +452,6 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     public boolean isDetailView() {
 
         return m_isDetailView;
-    }
-
-    /**
-     * @see com.google.gwt.user.client.ui.Widget#onBrowserEvent(com.google.gwt.user.client.Event)
-     */
-    @Override
-    public void onBrowserEvent(Event event) {
-
-        // Fire any handler added to the composite itself.
-        super.onBrowserEvent(event);
-
-        // Delegate events to the widget.
-        m_widget.onBrowserEvent(event);
     }
 
     /**
@@ -560,41 +537,6 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
                 ((CmsContainerPageElementPanel)widget).updateOptionBarPosition();
             }
         }
-    }
-
-    /**
-     * Provides subclasses access to the topmost widget that defines this
-     * composite.
-     * 
-     * @return the widget
-     */
-    protected Widget getWidget() {
-
-        return m_widget;
-    }
-
-    /**
-     * Sets the widget to be wrapped by the composite. The wrapped widget must be
-     * set before calling any {@link Widget} methods on this object, or adding it
-     * to a panel. This method may only be called once for a given composite.
-     * 
-     * @param widget the widget to be wrapped
-     */
-    protected void initWidget(Widget widget) {
-
-        // Validate. Make sure the widget is not being set twice.
-        if (m_widget != null) {
-            throw new IllegalStateException("Composite.initWidget() may only be " + "called once.");
-        }
-
-        // Use the contained widget's element as the composite's element,
-        // effectively merging them within the DOM.
-        setElement((Element)widget.getElement());
-
-        adopt(widget);
-
-        // Logical attach.
-        m_widget = widget;
     }
 
     /**

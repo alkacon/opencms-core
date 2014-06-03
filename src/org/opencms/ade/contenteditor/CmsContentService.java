@@ -642,6 +642,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                         containerWidth,
                         maxElements,
                         detailView,
+                        false,
                         Collections.<CmsContainerElement> emptyList());
                     CmsUUID detailContentId = null;
                     if (contextInfo.has(CmsCntPageData.JSONKEY_DETAIL_ELEMENT_ID)) {

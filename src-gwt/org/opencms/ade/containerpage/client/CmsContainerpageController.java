@@ -93,7 +93,6 @@ import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
@@ -269,6 +268,7 @@ public final class CmsContainerpageController {
                 m_currentContainer.getWidth(),
                 m_currentContainer.getMaxElements(),
                 m_currentContainer.isDetailView(),
+                m_currentContainer.isSubContainer(),
                 m_currentElements));
         }
 
@@ -581,6 +581,9 @@ public final class CmsContainerpageController {
     /** The new element data by resource type name. */
     protected Map<String, CmsContainerElementData> m_newElements;
 
+    /** The container data. */
+    Map<String, CmsContainer> m_containers;
+
     /** The container-page handler. */
     CmsContainerpageHandler m_handler;
 
@@ -595,12 +598,6 @@ public final class CmsContainerpageController {
 
     /** The container-page util instance. */
     private CmsContainerpageUtil m_containerpageUtil;
-
-    /** The container data. */
-    Map<String, CmsContainer> m_containers;
-
-    /** The container types within this page. */
-    private Set<String> m_containerTypes;
 
     /** The XML content editor handler. */
     private CmsContentEditorHandler m_contentEditorHandler;
@@ -829,6 +826,28 @@ public final class CmsContainerpageController {
         };
         action.execute();
 
+    }
+
+    /**
+     * Checks for container elements that are no longer present within the DOM.<p>
+     */
+    public void cleanUpContainers() {
+
+        List<String> removed = new ArrayList<String>();
+        for (Entry<String, CmsContainerPageContainer> entry : m_targetContainers.entrySet()) {
+            if (!RootPanel.getBodyElement().isOrHasChild(entry.getValue().getElement())) {
+                removed.add(entry.getKey());
+            }
+        }
+        for (String containerId : removed) {
+            m_targetContainers.remove(containerId);
+            m_containers.remove(containerId);
+        }
+        CmsContainerpageEditor.getZIndexManager().clear();
+        for (CmsContainerPageContainer cont : m_targetContainers.values()) {
+            Element elem = cont.getElement();
+            CmsContainerpageEditor.getZIndexManager().addContainer(cont.getContainerId(), elem);
+        }
     }
 
     /**
@@ -1442,6 +1461,7 @@ public final class CmsContainerpageController {
 
         if (element.isNew()) {
             element.removeFromParent();
+            cleanUpContainers();
             setPageChanged();
             return;
         }
@@ -1498,6 +1518,7 @@ public final class CmsContainerpageController {
                                 };
                             }
                             element.removeFromParent();
+                            cleanUpContainers();
                             setPageChanged(nextActions);
                         }
                     });
@@ -1567,7 +1588,6 @@ public final class CmsContainerpageController {
 
         m_elements = new HashMap<String, CmsContainerElementData>();
         m_newElements = new HashMap<String, CmsContainerElementData>();
-        m_containerTypes = new HashSet<String>();
         m_containers = new HashMap<String, CmsContainer>();
         if (m_data == null) {
             m_handler.m_editor.disableEditing(Messages.get().key(Messages.ERR_READING_CONTAINER_PAGE_DATA_0));
@@ -1579,12 +1599,9 @@ public final class CmsContainerpageController {
         }
         // ensure any embedded flash players are set opaque so UI elements may be placed above them
         CmsDomUtil.fixFlashZindex(RootPanel.getBodyElement());
-        m_targetContainers = m_containerpageUtil.consumeContainers(m_containers);
-        for (CmsContainer container : m_containers.values()) {
-            m_containerTypes.add(container.getType());
-        }
+        m_targetContainers = m_containerpageUtil.consumeContainers(m_containers, RootPanel.getBodyElement());
         for (CmsContainerPageContainer cont : m_targetContainers.values()) {
-            Element elem = DOM.getElementById(cont.getContainerId());
+            Element elem = cont.getElement();
             CmsContainerpageEditor.getZIndexManager().addContainer(cont.getContainerId(), elem);
         }
         resetEditButtons();
@@ -1619,6 +1636,16 @@ public final class CmsContainerpageController {
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(historyToken)) {
             m_contentEditorHandler.openEditorForHistory(historyToken);
         }
+    }
+
+    /**
+     * Checks for element sub containers.<p>
+     * 
+     * @param containerElement the container element
+     */
+    public void initializeSubContainers(CmsContainerPageElementPanel containerElement) {
+
+        m_targetContainers.putAll(m_containerpageUtil.consumeContainers(m_containers, containerElement.getElement()));
     }
 
     /**
@@ -1971,6 +1998,7 @@ public final class CmsContainerpageController {
             switch (removeMode) {
                 case saveAndCheckReferences:
                     dragElement.removeFromParent();
+                    cleanUpContainers();
                     Runnable checkReferencesAction = new Runnable() {
 
                         public void run() {
@@ -1986,6 +2014,7 @@ public final class CmsContainerpageController {
                 case silent:
                 default:
                     dragElement.removeFromParent();
+                    cleanUpContainers();
                     setPageChanged();
                     break;
             }

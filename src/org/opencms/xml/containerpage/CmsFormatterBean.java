@@ -90,7 +90,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     /** Indicates if this formatter is to be used as preview in the ADE gallery GUI. */
     private boolean m_isPreviewFormatter;
 
-    /** Javascript head includes. */
+    /** JavaScript head includes. */
     private List<String> m_javascriptHeadIncludes = new ArrayList<String>();
 
     /** The formatter JSP. */
@@ -137,19 +137,18 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
      * @param preview indicates if this formatter is to be used for the preview in the ADE gallery GUI
      * @param searchContent indicates if the content should be searchable in the online index when this formatter is used
      * @param location the location where this formatter was defined, should be an OpenCms VFS resource path
-     * 
-     * @param cssHeadIncludes
-     * @param inlineCss
-     * @param javascriptHeadIncludes
-     * @param inlineJavascript
-     * @param niceName
-     * @param resourceTypeName
-     * @param rank
-     * @param id
-     * @param settings 
-     * @param isFromConfigFile
-     * @param isAutoEnabled 
-     * @param isDetail 
+     * @param cssHeadIncludes the CSS head includes
+     * @param inlineCss the in-line CSS
+     * @param javascriptHeadIncludes the JavaScript headincludes
+     * @param inlineJavascript the in-line JavaScript
+     * @param niceName the configuration display name
+     * @param resourceTypeName the resource type name
+     * @param rank the configuration rank
+     * @param id the configuration id
+     * @param settings the settings configuration
+     * @param isFromConfigFile <code>true</code> if configuration file based
+     * @param isAutoEnabled <code>true</code> if auto enabled
+     * @param isDetail <code>true</code> if detail formatter
      */
     public CmsFormatterBean(
         Set<String> containerTypes,
@@ -160,7 +159,6 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
         boolean preview,
         boolean searchContent,
         String location,
-
         List<String> cssHeadIncludes,
         String inlineCss,
         List<String> javascriptHeadIncludes,
@@ -210,8 +208,6 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
      * @param preview indicates if this formatter is to be used for the preview in the ADE gallery GUI
      * @param searchContent indicates if the content should be searchable in the online index when this formatter is used
      * @param location the location where this formatter was defined, should be an OpenCms VFS resource path
-     * 
-     *  
      */
     public CmsFormatterBean(
         String containerType,
@@ -244,8 +240,6 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
             false,
             false,
             true);
-
-        // TODO Auto-generated constructor stub
 
     }
 

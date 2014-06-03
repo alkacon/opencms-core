@@ -81,6 +81,17 @@ public class CmsContainerZIndexManager implements I_CmsContainerZIndexManager {
     }
 
     /**
+     * @see org.opencms.ade.containerpage.client.I_CmsContainerZIndexManager#clear()
+     */
+    public void clear() {
+
+        m_chains.clear();
+        m_startContainer = null;
+        m_bumped = null;
+        m_maxZIndex = 0;
+    }
+
+    /**
      * @see org.opencms.ade.containerpage.client.I_CmsContainerZIndexManager#enter(java.lang.String)
      */
     public void enter(String containerName) {

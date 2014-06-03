@@ -254,13 +254,16 @@ public class CmsContainerpageUtil {
      * by converting the associated DOM elements. The contained elements will be transformed into {@link CmsContainerPageElementPanel}.<p>
      *
      * @param containers the container data
+     * @param context the parent element to the containers
      *
      * @return the drag target containers
      */
-    public Map<String, CmsContainerPageContainer> consumeContainers(Map<String, CmsContainer> containers) {
+    public Map<String, CmsContainerPageContainer> consumeContainers(
+        Map<String, CmsContainer> containers,
+        Element context) {
 
         Map<String, CmsContainerPageContainer> result = new HashMap<String, CmsContainerPageContainer>();
-        List<Element> containerElements = CmsDomUtil.getElementsByClass(CmsContainerElement.CLASS_CONTAINER);
+        List<Element> containerElements = CmsDomUtil.getElementsByClass(CmsContainerElement.CLASS_CONTAINER, context);
         for (Element containerElement : containerElements) {
             String data = containerElement.getAttribute("rel");
             try {

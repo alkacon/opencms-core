@@ -1171,11 +1171,9 @@ public final class CmsDomUtil {
         if (internalHasClass(className, rootElement)) {
             result.add(rootElement);
         }
-        NodeList<Element> elements = rootElement.getElementsByTagName(tag.toString());
+        NodeList<Element> elements = querySelectorAll(tag + "." + className, rootElement);
         for (int i = 0; i < elements.getLength(); i++) {
-            if (internalHasClass(className, elements.getItem(i))) {
-                result.add(elements.getItem(i));
-            }
+            result.add(elements.getItem(i));
         }
         return result;
     }
@@ -1604,6 +1602,38 @@ public final class CmsDomUtil {
         currentIndex = parent.getChildCount() - 1;
         return currentIndex;
     }
+
+    /**
+     * Returns the first element matching the given CSS selector.<p>
+     * 
+     * @param selector the CSS selector
+     * @param context the context element, may be <code>null</code>
+     * 
+     * @return the matching element
+     */
+    public static native Element querySelector(String selector, Element context)/*-{
+                                                                                             if (context!=null){
+                                                                                             return context.querySelector(selector);
+                                                                                             }else{
+                                                                                             $doc.querySelector(selector);
+                                                                                             }
+                                                                                             }-*/;
+
+    /**
+     * Returns a list of elements matching the given CSS selector.<p>
+     * 
+     * @param selector the CSS selector
+     * @param context the context element, may be <code>null</code>
+     * 
+     * @return the list of matching elements
+     */
+    public static native NodeList<Element> querySelectorAll(String selector, Element context)/*-{
+                                                                                             if (context!=null){
+                                                                                             return context.querySelectorAll(selector);
+                                                                                             }else{
+                                                                                             $doc.querySelectorAll(selector);
+                                                                                             }
+                                                                                             }-*/;
 
     /**
      * Removes any present overlay from the element and it's children.<p>

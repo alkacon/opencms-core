@@ -53,6 +53,9 @@ public class CmsContainer implements IsSerializable {
     /** The container name. */
     private String m_name;
 
+    /** Flag indicating this is a sub container. */
+    private boolean m_subContainer;
+
     /** The container type. */
     private String m_type;
 
@@ -67,6 +70,7 @@ public class CmsContainer implements IsSerializable {
      * @param width the width of the container 
      * @param maxElements the maximum number of elements displayed by this container
      * @param detailView flag indicating this container is used for detail views
+     * @param subContainer flag indicating this is a sub container
      * @param elements the container elements id's
      */
     public CmsContainer(
@@ -75,6 +79,7 @@ public class CmsContainer implements IsSerializable {
         int width,
         int maxElements,
         boolean detailView,
+        boolean subContainer,
         List<CmsContainerElement> elements) {
 
         m_elements = elements;
@@ -83,6 +88,7 @@ public class CmsContainer implements IsSerializable {
         m_maxElements = maxElements;
         m_width = width;
         m_detailView = detailView;
+        m_subContainer = subContainer;
     }
 
     /**
@@ -161,6 +167,16 @@ public class CmsContainer implements IsSerializable {
     public boolean isDetailView() {
 
         return m_detailView;
+    }
+
+    /**
+     * Returns if this is a sub container.<p>
+     * 
+     * @return <code>true</code> this is a sub container
+     */
+    public boolean isSubContainer() {
+
+        return m_subContainer;
     }
 
     /**

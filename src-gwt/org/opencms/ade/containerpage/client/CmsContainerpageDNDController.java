@@ -353,6 +353,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                     if (draggable instanceof CmsContainerPageElementPanel) {
                         ((CmsContainerPageElementPanel)draggable).removeFromParent();
                     }
+                    m_controller.initializeSubContainers(containerElement);
                 } catch (Exception e) {
                     CmsDebugLog.getInstance().printLine(e.getMessage());
                 }
@@ -360,6 +361,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                     container.getElement().removeClassName(
                         I_CmsLayoutBundle.INSTANCE.containerpageCss().emptyGroupContainer());
                 }
+
             } else if (target instanceof CmsList<?>) {
                 m_controller.addToFavoriteList(m_draggableId);
             }

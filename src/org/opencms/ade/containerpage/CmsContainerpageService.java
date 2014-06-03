@@ -1036,7 +1036,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         }
         // this is necessary if the element has not been cached yet
         element = new CmsContainerElementBean(convertToServerId(id), null, null, false);
-        getSessionCache().setCacheContainerElement(id, element);
+        getSessionCache().setCacheContainerElement(element.editorHash(), element);
         return element;
     }
 
@@ -1239,7 +1239,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             }
             CmsContainerElementBean element = getCachedElement(elemId);
             CmsContainerElementData elementData = elemUtil.getElementData(page, element, containers);
-            result.put(element.editorHash(), elementData);
+            result.put(elemId, elementData);
             if (elementData.isGroupContainer() || elementData.isInheritContainer()) {
                 // this is a group-container 
                 CmsResource elementRes = cms.readResource(element.getId());

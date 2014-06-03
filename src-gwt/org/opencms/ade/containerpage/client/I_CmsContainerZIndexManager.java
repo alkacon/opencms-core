@@ -49,6 +49,11 @@ public interface I_CmsContainerZIndexManager {
      */
     void addContainer(String name, Element element);
 
+    /**
+     * Clears the z-index chains.<p>
+     */
+    void clear();
+
     /** 
      * Called when the user drags an element over a container.<p>
      * 
