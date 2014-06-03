@@ -118,6 +118,9 @@ public class CmsElementUtil {
     /** The current page uri. */
     private String m_currentPageUri;
 
+    /** The current container page. */
+    private CmsResource m_page;
+
     /** The content locale. */
     private Locale m_locale;
 
@@ -172,7 +175,7 @@ public class CmsElementUtil {
 
         CmsXmlContainerPage xmlContainerPage = CmsXmlContainerPageFactory.unmarshal(
             cms,
-            m_cms.readResource(currentPageUri),
+            m_page = m_cms.readResource(currentPageUri),
             req);
         CmsContainerPageBean containerPage = xmlContainerPage.getContainerPage(cms);
         m_standardContext.setPage(containerPage);
@@ -250,6 +253,7 @@ public class CmsElementUtil {
     /**
      * Returns the data for an element.<p>
      *
+     * @param page the current container page 
      * @param element the resource
      * @param containers the containers on the current container page
      *
@@ -257,8 +261,10 @@ public class CmsElementUtil {
      *
      * @throws CmsException if something goes wrong
      */
-    public CmsContainerElementData getElementData(CmsContainerElementBean element, Collection<CmsContainer> containers)
-    throws CmsException {
+    public CmsContainerElementData getElementData(
+        CmsResource page,
+        CmsContainerElementBean element,
+        Collection<CmsContainer> containers) throws CmsException {
 
         Locale requestLocale = m_cms.getRequestContext().getLocale();
         m_cms.getRequestContext().setLocale(m_locale);
@@ -281,6 +287,7 @@ public class CmsElementUtil {
 
         Map<String, CmsXmlContentProperty> settingConfig = CmsXmlContentPropertyHelper.getPropertyInfo(
             m_cms,
+            page,
             element.getResource());
         elementData.setSettings(CmsXmlContentPropertyHelper.convertPropertiesToClientFormat(
             m_cms,
@@ -403,6 +410,7 @@ public class CmsElementUtil {
                         formatter.getSettings());
                     settingsConfig = CmsXmlContentPropertyHelper.resolveMacrosForPropertyInfo(
                         m_cms,
+                        page,
                         element.getResource(),
                         settingsConfig);
                     config.setSettingConfig(settingsConfig);
@@ -419,6 +427,16 @@ public class CmsElementUtil {
         elementData.setFormatters(formatters);
         m_cms.getRequestContext().setLocale(requestLocale);
         return elementData;
+    }
+
+    /**
+     * Gets the container page.<p>
+     * 
+     * @return the container page resource
+     */
+    public CmsResource getPage() {
+
+        return m_page;
     }
 
     /**
@@ -647,7 +665,7 @@ public class CmsElementUtil {
 
         CmsFormatterConfiguration formatters = getConfigData().getFormatters(m_cms, resource);
         boolean result = (formatters.getAllFormatters().size() > 1)
-            || !CmsXmlContentPropertyHelper.getPropertyInfo(m_cms, resource).isEmpty();
+            || !CmsXmlContentPropertyHelper.getPropertyInfo(m_cms, null, resource).isEmpty();
         if (!result && (formatters.getAllFormatters().size() == 1)) {
             result = (formatters.getAllFormatters().get(0).getSettings() != null)
                 && (formatters.getAllFormatters().get(0).getSettings().size() > 0);

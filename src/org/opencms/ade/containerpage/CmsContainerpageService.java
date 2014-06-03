@@ -490,6 +490,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             CmsResource pageResource = getCmsObject().readResource(pageStructureId);
             String containerpageUri = getCmsObject().getSitePath(pageResource);
             result = getElements(
+                pageResource,
                 clientIds,
                 containerpageUri,
                 detailContentId,
@@ -533,7 +534,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 elementBean,
                 convertSettingValues(elementBean.getResource(), settings, contentLocale));
             getSessionCache().setCacheContainerElement(elementBean.editorHash(), elementBean);
-            element = elemUtil.getElementData(elementBean, containers);
+            element = elemUtil.getElementData(pageResource, elementBean, containers);
         } catch (Throwable e) {
             error(e);
         }
@@ -907,6 +908,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             // update offline indices
             OpenCms.getSearchManager().updateOfflineIndexes(2 * CmsSearchManager.DEFAULT_OFFLINE_UPDATE_FREQNENCY);
             return getElements(
+                containerPage,
                 new ArrayList<String>(Collections.singletonList(inheritanceContainer.getClientId())),
                 sitePath,
                 detailContentId,
@@ -1200,6 +1202,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     /**
      * Returns the data of the given elements.<p>
      * 
+     * @param page the current container page 
      * @param clientIds the list of IDs of the elements to retrieve the data for
      * @param uriParam the current URI
      * @param detailContentId the detail content structure id
@@ -1211,6 +1214,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * @throws CmsException if something really bad happens
      */
     private Map<String, CmsContainerElementData> getElements(
+        CmsResource page,
         Collection<String> clientIds,
         String uriParam,
         CmsUUID detailContentId,
@@ -1234,7 +1238,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 continue;
             }
             CmsContainerElementBean element = getCachedElement(elemId);
-            CmsContainerElementData elementData = elemUtil.getElementData(element, containers);
+            CmsContainerElementData elementData = elemUtil.getElementData(page, element, containers);
             result.put(element.editorHash(), elementData);
             if (elementData.isGroupContainer() || elementData.isInheritContainer()) {
                 // this is a group-container 
@@ -1246,7 +1250,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 for (CmsContainerElementBean subElement : subElements) {
                     getSessionCache().setCacheContainerElement(subElement.editorHash(), subElement);
                     if (!ids.contains(subElement.editorHash())) {
-                        CmsContainerElementData subItemData = elemUtil.getElementData(subElement, containers);
+                        CmsContainerElementData subItemData = elemUtil.getElementData(page, subElement, containers);
                         ids.add(subElement.editorHash());
                         result.put(subElement.editorHash(), subItemData);
                     }
@@ -1404,7 +1408,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             // checking if resource exists
             if (cms.existsResource(element.getId(), CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
                 cache.setCacheContainerElement(element.editorHash(), element);
-                CmsContainerElementData elementData = elemUtil.getElementData(element, containers);
+                CmsContainerElementData elementData = elemUtil.getElementData(elemUtil.getPage(), element, containers);
                 result.add(elementData);
             }
         }
@@ -1478,7 +1482,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 locale);
             getSessionCache().setCacheContainerElement(elementBean.editorHash(), elementBean);
         }
-        return elemUtil.getElementData(elementBean, containers);
+        return elemUtil.getElementData(elemUtil.getPage(), elementBean, containers);
     }
 
     /**
