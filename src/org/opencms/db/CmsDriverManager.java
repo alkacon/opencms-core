@@ -135,7 +135,6 @@ import org.apache.commons.dbcp.PoolingDriver;
 import org.apache.commons.logging.Log;
 import org.apache.commons.pool.ObjectPool;
 
-import com.google.common.base.Objects;
 import com.google.common.collect.ArrayListMultimap;
 
 /**
@@ -6188,6 +6187,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         vfsDriver.deleteUrlNameMappingEntries(dbc, true, nameFilter);
                         vfsDriver.deleteUrlNameMappingEntries(dbc, false, nameFilter);
                     }
+                }
+                for (CmsUrlNameMappingEntry entry : entries) {
                     CmsUrlNameMappingEntry newEntry = new CmsUrlNameMappingEntry(
                         entry.getName(),
                         entry.getStructureId(),
@@ -10176,8 +10177,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 filter);
             for (CmsUrlNameMappingEntry entry : entriesWithSameName) {
                 boolean sameId = entry.getStructureId().equals(structureId);
-                boolean sameLocale = Objects.equal(entry.getLocale(), locale);
-                if (!sameId || !sameLocale) {
+                if (!sameId) {
                     // name already used for other resource, or for different locale of the same resource
                     alreadyInUse = true;
                     break;
