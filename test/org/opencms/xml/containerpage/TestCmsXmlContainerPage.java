@@ -161,7 +161,8 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
      * Creates a resourc with a random file name for use as a container element and returns it.<p>
      * 
      * @return the created resource 
-     * @throws CmsException
+     * 
+     * @throws CmsException if anything goes wrong
      */
     public CmsResource createElementResource() throws CmsException {
 
@@ -175,7 +176,7 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
     /**
      * Tests that the container bean is loaded from the master locale if that locale is present in the XML content.<p>
      * 
-     * @throws Exception
+     * @throws Exception if anything goes wrong
      */
     public void testContainerBeanIsFromMasterLocaleIfAvailable() throws Exception {
 
@@ -210,7 +211,7 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
     /** 
      * Tests that, if the master locale is not available, the container page bean will be loaded from a different locale.<p>
      * 
-     * @throws Exception
+     * @throws Exception if anything goes wrong
      */
     public void testGetContainerBeanFromDifferentLocaleIfMasterLocaleNotAvailable() throws Exception {
 
@@ -240,7 +241,7 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
     /**
      * Tests that when the container page is saved, the data is saved to the master locale, and all other locales are removed.<p>
      * 
-     * @throws Exception
+     * @throws Exception if anything goes wrong
      */
     public void testOverwriteExistingLocales() throws Exception {
 
@@ -358,8 +359,6 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
                 for (int i = 0; i < cnt.getElements().size(); i++) {
                     CmsContainerElementBean element = cnt.getElements().get(i);
                     CmsContainerElementBean expected = elemMap.get(locale.toString() + type).get(i);
-
-                    assertEquals(expected.editorHash(), element.editorHash());
                     assertEquals(expected.getId(), element.getId());
                     assertEquals(expected.getFormatterId(), element.getFormatterId());
                     assertEquals(expected.getIndividualSettings(), element.getIndividualSettings());
