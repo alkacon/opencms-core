@@ -113,6 +113,15 @@ public class CmsAdeDownloadGalleryWidget extends A_CmsAdeGalleryWidget {
     }
 
     /**
+     * @see org.opencms.widgets.A_CmsAdeGalleryWidget#getGalleryStoragePrefix()
+     */
+    @Override
+    protected String getGalleryStoragePrefix() {
+
+        return "binary";
+    }
+
+    /**
      * @see org.opencms.widgets.A_CmsAdeGalleryWidget#getGalleryTypes()
      */
     @Override

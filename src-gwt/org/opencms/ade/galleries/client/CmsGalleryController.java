@@ -98,9 +98,6 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
  */
 public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySearchBean> {
 
-    /** The last selected gallery paths. */
-    private static Map<String, String> m_lastSelectedGallerys = new HashMap<String, String>();
-
     /** The preview factory registration. */
     private static Map<String, I_CmsPreviewFactory> m_previewFactoryRegistration = new HashMap<String, I_CmsPreviewFactory>();
 
@@ -130,6 +127,9 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
 
     /** The current resource preview. */
     private I_CmsResourcePreview<?> m_currentPreview;
+
+    /** Flag to record whether the user changed the gallery selection. */
+    private boolean m_galleriesChanged;
 
     /** The gallery service instance. */
     private I_CmsGalleryServiceAsync m_gallerySvc;
@@ -195,6 +195,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             m_searchObject.setIgnoreSearchExclude(m_dialogMode != GalleryMode.ade);
             m_searchObject.setLocale(m_dialogBean.getLocale());
             m_searchObject.setScope(m_dialogBean.getScope());
+            m_searchObject.setGalleryStoragePrefix(m_dialogBean.getGalleryStoragePrefix());
         }
         if (m_dialogBean != null) {
             m_tabIds = m_dialogBean.getTabIds();
@@ -268,18 +269,6 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     }
 
     /**
-     * Returns the last selecte gallery for the given configuration or <code>null</code>.
-     * 
-     * @param config the gallery configuration
-     * 
-     * @return the gallery path
-     */
-    public static String getLastSelectedGallery(I_CmsGalleryConfiguration config) {
-
-        return m_lastSelectedGallerys.get(generateGalleryKey(config));
-    }
-
-    /**
      * Registers a preview factory for the given name.
      * 
      * @param previewProviderName the preview provider name
@@ -288,18 +277,6 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     public static void registerPreviewFactory(String previewProviderName, I_CmsPreviewFactory factory) {
 
         m_previewFactoryRegistration.put(previewProviderName, factory);
-    }
-
-    /**
-     * Generates the last selected gallery key from the given configuration.<p>
-     * 
-     * @param config the gallery configuration
-     * 
-     * @return the key
-     */
-    private static String generateGalleryKey(I_CmsGalleryConfiguration config) {
-
-        return config.getReferencePath() + "###" + config.getGalleryTypeName();
     }
 
     /**
@@ -383,10 +360,8 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
 
         m_searchObject.addGallery(galleryPath);
         m_searchObjectChanged = true;
+        m_galleriesChanged = true;
         ValueChangeEvent.fire(this, m_searchObject);
-        if (m_searchObject.getGalleries().size() == 1) {
-            storeLastSelectedGallery(galleryPath);
-        }
     }
 
     /**
@@ -1049,6 +1024,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
 
         m_searchObject.removeGallery(galleryPath);
         m_searchObjectChanged = true;
+        m_galleriesChanged = true;
         ValueChangeEvent.fire(this, m_searchObject);
     }
 
@@ -1060,6 +1036,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     public void removeGalleryParam(String key) {
 
         if (m_searchObject.getGalleries().contains(key)) {
+            m_galleriesChanged = true;
             m_handler.onClearGalleries(Collections.singletonList(key));
             m_searchObject.removeGallery(key);
             updateResultsTab(false);
@@ -1494,6 +1471,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
                     m_callId = m_currentCallId;
                     m_loading = true;
                     CmsGallerySearchBean preparedObject = prepareSearchObject();
+
                     if (isNextPage) {
                         preparedObject.setPage(preparedObject.getLastPage() + 1);
                     } else {
@@ -1565,7 +1543,9 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     }
 
     /**
-     * @param resourcePath
+     * Deletes a resource.<p>
+     * 
+     * @param resourcePath the path of the resource to delete 
      */
     protected void internalDeleteResource(final String resourcePath) {
 
@@ -1691,6 +1671,10 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
                     availableTypes,
                     galleryTypes)));
             }
+        }
+        if (m_galleriesChanged) {
+            preparedSearchObj.setGalleriesChanged(true);
+            m_galleriesChanged = false;
         }
         return preparedSearchObj;
 
@@ -1890,15 +1874,4 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         return null;
     }
 
-    /**
-     * Stores the the last selected gallery path in the page context.<p>
-     * 
-     * @param galleryPath the gallery path
-     */
-    private void storeLastSelectedGallery(String galleryPath) {
-
-        if (m_configuration != null) {
-            m_lastSelectedGallerys.put(generateGalleryKey(m_configuration), galleryPath);
-        }
-    }
 }

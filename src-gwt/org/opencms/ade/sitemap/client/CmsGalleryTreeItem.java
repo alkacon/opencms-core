@@ -196,6 +196,7 @@ public class CmsGalleryTreeItem extends CmsTreeItem {
         configuration.setSearchTypes(typeNames);
         configuration.setResourceTypes(typeNames);
         configuration.setGalleryMode(GalleryMode.adeView);
+        configuration.setGalleryStoragePrefix("" + GalleryMode.adeView);
         configuration.setTabConfiguration(CmsGalleryTabConfiguration.resolve("selectDoc"));
         configuration.setReferencePath(getSitePath());
         configuration.setGalleryPath(getSitePath());

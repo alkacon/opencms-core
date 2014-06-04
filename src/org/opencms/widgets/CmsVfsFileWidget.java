@@ -586,6 +586,7 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
             config.put(I_CmsGalleryProviderConstants.CONFIG_REFERENCE_PATH, cms.getSitePath(resource));
             config.put(I_CmsGalleryProviderConstants.CONFIG_LOCALE, contentLocale.toString());
             config.put(I_CmsGalleryProviderConstants.CONFIG_GALLERY_MODE, GalleryMode.widget.name());
+            config.put(I_CmsGalleryProviderConstants.CONFIG_GALLERY_STORAGE_PREFIX, "linkselect");
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_selectableTypes)) {
                 config.put(I_CmsGalleryProviderConstants.CONFIG_RESOURCE_TYPES, m_selectableTypes.trim());
             }

@@ -28,7 +28,6 @@
 package org.opencms.ade.galleries.client.ui;
 
 import org.opencms.ade.galleries.client.CmsGalleryConfigurationJSO;
-import org.opencms.ade.galleries.client.CmsGalleryController;
 import org.opencms.ade.galleries.client.I_CmsGalleryWidgetHandler;
 import org.opencms.ade.galleries.client.Messages;
 import org.opencms.ade.galleries.client.preview.CmsCroppingParamBean;
@@ -515,7 +514,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     /**
      * Handles the focus event on the opener.<p>
      * 
-     * @param event  
+     * @param event  the focus event
      */
     @UiHandler("m_textbox")
     protected void onFocusTextbox(FocusEvent event) {
@@ -809,9 +808,6 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
             }
         };
         m_configuration.setCurrentElement(getCurrentElement());
-        if (m_configuration.getStartFolder() == null) {
-            m_configuration.setStartFolder(CmsGalleryController.getLastSelectedGallery(m_configuration));
-        }
         return new CmsGalleryPopup(handler, m_configuration);
     }
 

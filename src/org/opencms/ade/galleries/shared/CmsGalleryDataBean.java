@@ -58,6 +58,9 @@ public class CmsGalleryDataBean implements IsSerializable {
     /** The galleries to display in the list with available galleries. */
     private List<CmsGalleryFolderBean> m_galleries;
 
+    /** The prefix for the key used to store the last selected gallery. */
+    private String m_galleryStoragePrefix;
+
     /** The content locale. */
     private String m_locale;
 
@@ -145,6 +148,16 @@ public class CmsGalleryDataBean implements IsSerializable {
 
         return m_galleries;
 
+    }
+
+    /**
+     * Gets the prefix for the key used to store the last selected gallery.<p>
+     * 
+     * @return the gallery key prefix 
+     */
+    public String getGalleryStoragePrefix() {
+
+        return m_galleryStoragePrefix;
     }
 
     /**
@@ -336,6 +349,16 @@ public class CmsGalleryDataBean implements IsSerializable {
     public void setGalleries(List<CmsGalleryFolderBean> galleries) {
 
         m_galleries = galleries;
+    }
+
+    /**
+     * Sets the prefix for the key used to store the last selected gallery.<p>
+     * 
+     * @param prefix the prefix for the gallery key 
+     */
+    public void setGalleryStoragePrefix(String prefix) {
+
+        m_galleryStoragePrefix = prefix;
     }
 
     /**

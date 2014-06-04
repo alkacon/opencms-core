@@ -48,6 +48,9 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
     /** The gallery path. */
     private String m_galleryPath;
 
+    /** The prefix for the key used to store the last selected gallery. */
+    private String m_galleryStoragePrefix;
+
     /** The gallery type name. */
     private String m_galleryTypeName;
 
@@ -125,6 +128,7 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
         m_tabConfiguration = configuration.getTabConfiguration();
         m_useFormats = configuration.isUseFormats();
         m_treeToken = configuration.getTreeToken();
+        m_galleryStoragePrefix = configuration.getGalleryStoragePrefix();
     }
 
     /**
@@ -149,6 +153,14 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
     public String getGalleryPath() {
 
         return m_galleryPath;
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#getGalleryStoragePrefix()
+     */
+    public String getGalleryStoragePrefix() {
+
+        return m_galleryStoragePrefix;
     }
 
     /**
@@ -318,6 +330,16 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
     public void setGalleryPath(String galleryPath) {
 
         m_galleryPath = galleryPath;
+    }
+
+    /**
+     * Sets the prefix for the key used to store the last selected gallery.<p>
+     * 
+     * @param prefix the new prefix 
+     */
+    public void setGalleryStoragePrefix(String prefix) {
+
+        m_galleryStoragePrefix = prefix;
     }
 
     /**

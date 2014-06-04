@@ -70,6 +70,7 @@ public class CmsOpenGalleryMenuEntry extends A_CmsSitemapMenuEntry {
         configuration.setSearchTypes(typeNames);
         configuration.setResourceTypes(typeNames);
         configuration.setGalleryMode(GalleryMode.adeView);
+        configuration.setGalleryStoragePrefix("" + GalleryMode.adeView);
         configuration.setTabConfiguration(CmsGalleryTabConfiguration.resolve("selectDoc"));
         configuration.setReferencePath(entry.getSitePath());
         configuration.setGalleryPath(entry.getSitePath());

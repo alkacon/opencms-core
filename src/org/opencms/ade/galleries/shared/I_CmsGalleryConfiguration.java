@@ -58,6 +58,13 @@ public interface I_CmsGalleryConfiguration {
     String getGalleryPath();
 
     /**
+     * Gets the prefix for the key used to store the last selected gallery.<p>
+     * 
+     * @return the prefix for the key used to store the last selected gallery 
+     */
+    String getGalleryStoragePrefix();
+
+    /**
      * Returns the gallery type name.<p>
      * 
      * @return the gallery type name

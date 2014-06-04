@@ -165,7 +165,17 @@ function createGalleryDialogUrl(path, typesParam, integrator, integratorArgs) {
        searchParam="&<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_TAB_CONFIG%>=selectDoc&<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_RESOURCE_TYPES%>="+typesParam;
    }
    searchParam+="&<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_CURRENT_ELEMENT%>="+ ( path==null ? "" : path)+"&__locale="+elementLanguage;
-   return "<%= cms.link("/system/modules/org.opencms.ade.galleries/gallery.jsp") %>?<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_GALLERY_MODE+"="+org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode.editor.name() %>" + searchParam + resParam + integratorParam + debugParam;
+   var galleryStoragePrefixParam = "&<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_GALLERY_STORAGE_PREFIX%>=";
+   if (typesParam == "image") { 
+       galleryStoragePrefixParam += "image";
+   } else if (typesParam == "binary") {
+       galleryStoragePrefixParam += "binary"; 
+   } else {
+       galleryStoragePrefixParam += "linkselect";
+       // leave the parameter empty  
+   } 
+   
+   return "<%= cms.link("/system/modules/org.opencms.ade.galleries/gallery.jsp") %>?<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_GALLERY_MODE+"="+org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode.editor.name() %>" + searchParam + resParam + galleryStoragePrefixParam + integratorParam + debugParam;
 }
 
 

@@ -190,6 +190,12 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
         } else {
             conf.setTabConfiguration(CmsGalleryTabConfiguration.getDefault());
         }
+        String galleryStoragePrefix = getRequest().getParameter(
+            I_CmsGalleryProviderConstants.CONFIG_GALLERY_STORAGE_PREFIX);
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(galleryStoragePrefix)) {
+            galleryStoragePrefix = "";
+        }
+        conf.setGalleryStoragePrefix(galleryStoragePrefix);
         return conf;
     }
 
