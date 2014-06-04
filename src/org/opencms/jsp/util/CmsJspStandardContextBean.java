@@ -80,6 +80,51 @@ import org.apache.commons.logging.Log;
 public final class CmsJspStandardContextBean {
 
     /**
+     * Provides a lazy initialized Map that provides the detail page link as a value when given the name of a 
+     * (named) dynamic function or resource type as a key.<p>
+     */
+    public class CmsDetailLookupTransformer implements Transformer {
+
+        /** The selected prefix. */
+        private String m_prefix;
+
+        /**
+         * Constructor with a prefix.<p>
+         * 
+         * @param prefix the locale to use
+         */
+        public CmsDetailLookupTransformer(String prefix) {
+
+            m_prefix = prefix;
+        }
+
+        /**
+         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         */
+        public Object transform(Object input) {
+
+            String type = m_prefix + String.valueOf(input);
+            CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
+                m_cms,
+                m_cms.addSiteRoot(m_cms.getRequestContext().getUri()));
+            List<CmsDetailPageInfo> detailPages = config.getDetailPagesForType(type);
+            if ((detailPages == null) || (detailPages.size() == 0)) {
+                return "[No detail page configured for type =" + type + "=]";
+            }
+            CmsDetailPageInfo mainDetailPage = detailPages.get(0);
+            CmsUUID id = mainDetailPage.getId();
+            CmsResource detailRes;
+            try {
+                detailRes = m_cms.readResource(id);
+                return OpenCms.getLinkManager().substituteLink(m_cms, detailRes);
+            } catch (CmsException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+                return "[Error reading detail page for type =" + type + "=]";
+            }
+        }
+    }
+
+    /**
      * Bean containing a template name and URI.<p>
      */
     public static class TemplateBean {
@@ -203,8 +248,8 @@ public final class CmsJspStandardContextBean {
     /** The currently rendered element. */
     private CmsContainerElementBean m_element;
 
-    /** Cached object for the EL 'function' accessor. */
-    private Object m_function;
+    /** The lazy initialized map which allows access to the dynamic function beans. */
+    private Map<String, CmsDynamicFunctionBeanWrapper> m_function;
 
     /** The currently displayed container page. */
     private CmsContainerPageBean m_page;
@@ -214,6 +259,12 @@ public final class CmsJspStandardContextBean {
 
     /** The VFS content access bean. */
     private CmsJspVfsAccessBean m_vfsBean;
+
+    /** The lazy initialized map for the function detail pages. */
+    private Map<String, String> m_functionDetail;
+
+    /** The lazy initialized map for the detail pages. */
+    private Map<String, String> m_detailPage;
 
     /**
      * Creates an empty instance.<p>
@@ -339,7 +390,7 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
-     * Returns the detail content site path. Returns <code>null</code> if not available.<p>
+     * Returns the detail content site path, or <code>null</code> if not available.<p>
      * 
      * @return the detail content site path
      */
@@ -360,6 +411,27 @@ public final class CmsJspStandardContextBean {
         return m_detailOnlyPage;
     }
 
+    /**
+     * Returns a lazy initialized Map that provides the detail page link as a value when given the name of a 
+     * resource type as a key.<p>
+     * 
+     * The provided Map key is assumed to be the name of a resource type that has a detail page configured.<p>
+     * 
+     * Usage example on a JSP with the JSTL:<pre>
+     * &lt;a href=${cms.detailPage['bs-blog']} /&gt
+     * </pre>
+     *  
+     * @return a lazy initialized Map that provides the detail page link as a value when given the name of a 
+     * resource type as a key
+     */
+    public Map<String, String> getDetailPage() {
+
+        if (m_detailPage == null) {
+            m_detailPage = CmsCollectionsGenericWrapper.createLazyMap(new CmsDetailLookupTransformer(""));
+        }
+        return m_detailPage;
+    }
+
     /**    
      * Returns the currently rendered element.<p>
      * 
@@ -371,69 +443,58 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
-     * Returns a map which allows access to dynamic function beans using the JSP EL.<p>
+     * Returns a lazy initialized Map which allows access to the dynamic function beans using the JSP EL.<p>
      * 
-     * When given a key, the returned map will look up the corresponding dynamic function in the module configuration.<p>
+     * When given a key, the returned map will look up the corresponding dynamic function bean in the module configuration.<p>
      * 
-     * @return  a map which allows access to dynamic function beans
+     * @return a lazy initialized Map which allows access to the dynamic function beans using the JSP EL
      */
-    public Object getFunction() {
+    public Map<String, CmsDynamicFunctionBeanWrapper> getFunction() {
 
-        if (m_function != null) {
-            return m_function;
-        }
-        Transformer transformer = new Transformer() {
+        if (m_function == null) {
 
-            public Object transform(Object key) {
+            Transformer transformer = new Transformer() {
 
-                try {
-                    CmsDynamicFunctionBean dynamicFunction = readDynamicFunctionBean((String)key);
-                    CmsDynamicFunctionBeanWrapper wrapper = new CmsDynamicFunctionBeanWrapper(m_cms, dynamicFunction);
-                    return wrapper;
+                public Object transform(Object input) {
 
-                } catch (CmsException e) {
-                    return new CmsDynamicFunctionBeanWrapper(m_cms, null);
+                    try {
+                        CmsDynamicFunctionBean dynamicFunction = readDynamicFunctionBean((String)input);
+                        CmsDynamicFunctionBeanWrapper wrapper = new CmsDynamicFunctionBeanWrapper(
+                            m_cms,
+                            dynamicFunction);
+                        return wrapper;
+
+                    } catch (CmsException e) {
+                        return new CmsDynamicFunctionBeanWrapper(m_cms, null);
+                    }
                 }
-            }
-        };
-        m_function = CmsCollectionsGenericWrapper.createLazyMap(transformer);
+            };
+            m_function = CmsCollectionsGenericWrapper.createLazyMap(transformer);
+        }
         return m_function;
 
     }
 
     /**
-     * Returns a lazy map which computes the detail page link as a value when given the name of a (named) dynamic function
-     * as a key.<p>
+     * Returns a lazy initialized Map that provides the detail page link as a value when given the name of a 
+     * (named) dynamic function as a key.<p>
      * 
-     * @return a lazy map for computing function detail page links  
+     * The provided Map key is assumed to be a String that represents a named dynamic function.<p>
+     * 
+     * Usage example on a JSP with the JSTL:<pre>
+     * &lt;a href=${cms.functionDetail['search']} /&gt
+     * </pre>
+     *  
+     * @return a lazy initialized Map that provides the detail page link as a value when given the name of a 
+     * (named) dynamic function as a key
      */
     public Map<String, String> getFunctionDetail() {
 
-        Transformer transformer = new Transformer() {
-
-            public Object transform(Object key) {
-
-                String detailType = CmsDetailPageInfo.FUNCTION_PREFIX + key;
-                CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
-                    m_cms,
-                    m_cms.addSiteRoot(m_cms.getRequestContext().getUri()));
-                List<CmsDetailPageInfo> detailPages = config.getDetailPagesForType(detailType);
-                if ((detailPages == null) || (detailPages.size() == 0)) {
-                    return "";
-                }
-                CmsDetailPageInfo mainDetailPage = detailPages.get(0);
-                CmsUUID id = mainDetailPage.getId();
-                CmsResource detailRes;
-                try {
-                    detailRes = m_cms.readResource(id);
-                    return OpenCms.getLinkManager().substituteLink(m_cms, detailRes);
-                } catch (CmsException e) {
-                    LOG.warn(e.getLocalizedMessage(), e);
-                    return "";
-                }
-            }
-        };
-        return CmsCollectionsGenericWrapper.createLazyMap(transformer);
+        if (m_functionDetail == null) {
+            m_functionDetail = CmsCollectionsGenericWrapper.createLazyMap(new CmsDetailLookupTransformer(
+                CmsDetailPageInfo.FUNCTION_PREFIX));
+        }
+        return m_functionDetail;
     }
 
     /**
