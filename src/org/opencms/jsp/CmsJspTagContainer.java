@@ -392,6 +392,7 @@ public class CmsJspTagContainer extends TagSupport {
         m_width = null;
         // reset the current element
         CmsJspStandardContextBean.getInstance(pageContext.getRequest()).setElement(m_parentElement);
+        CmsJspStandardContextBean.getInstance(pageContext.getRequest()).setContainer(m_parentContainer);
         m_parentElement = null;
         m_parentContainer = null;
         return super.doEndTag();
@@ -706,8 +707,9 @@ public class CmsJspTagContainer extends TagSupport {
             width,
             maxElements,
             isDetailView,
-            m_parentContainer != null,
-            null);
+            null,
+            m_parentContainer != null ? m_parentContainer.getName() : null,
+            m_parentElement != null ? m_parentElement.editorHash() : null);
         cont.setDeatilOnly(m_detailOnly);
         String result = "";
         try {
