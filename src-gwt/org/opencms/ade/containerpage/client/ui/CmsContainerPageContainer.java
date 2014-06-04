@@ -31,6 +31,7 @@ import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
+import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.CmsHighlightingBorder;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
@@ -220,6 +221,9 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     /** Flag indicating the element positions need to be re-evaluated. */
     private boolean m_requiresPositionUpdate = true;
 
+    /** The list of nested sub containers that are also valid drop targets during the current drag and drop. */
+    private List<I_CmsDropTarget> m_dnDChildren;
+
     /**
      * Constructor.<p>
      * 
@@ -249,6 +253,17 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     public void add(Widget w) {
 
         add(w, (Element)getElement());
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#addDndChild(org.opencms.gwt.client.dnd.I_CmsDropTarget)
+     */
+    public void addDndChild(I_CmsDropTarget child) {
+
+        if (m_dnDChildren == null) {
+            m_dnDChildren = new ArrayList<I_CmsDropTarget>();
+        }
+        m_dnDChildren.add(child);
     }
 
     /**
@@ -316,6 +331,16 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     }
 
     /**
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#clearDnDChildren()
+     */
+    public void clearDnDChildren() {
+
+        if (m_dnDChildren != null) {
+            m_dnDChildren.clear();
+        }
+    }
+
+    /**
      * Returns all contained drag elements.<p>
      * 
      * @return the drag elements
@@ -373,11 +398,27 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     }
 
     /**
+     * @see org.opencms.gwt.client.dnd.I_CmsNestedDropTarget#getDnDChildren()
+     */
+    public List<I_CmsDropTarget> getDnDChildren() {
+
+        return m_dnDChildren;
+    }
+
+    /**
      * @see org.opencms.gwt.client.dnd.I_CmsDropTarget#getPlaceholderIndex()
      */
     public int getPlaceholderIndex() {
 
         return m_placeholderIndex;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.dnd.I_CmsNestedDropTarget#hasDnDChildren()
+     */
+    public boolean hasDnDChildren() {
+
+        return (m_dnDChildren != null) && !m_dnDChildren.isEmpty();
     }
 
     /**

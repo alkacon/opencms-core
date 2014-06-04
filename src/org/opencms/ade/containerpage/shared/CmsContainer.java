@@ -53,8 +53,11 @@ public class CmsContainer implements IsSerializable {
     /** The container name. */
     private String m_name;
 
-    /** Flag indicating this is a sub container. */
-    private boolean m_subContainer;
+    /** The parent container name. */
+    private String m_parentContainerName;
+
+    /** The parent element hash. */
+    private String m_parentElementHash;
 
     /** The container type. */
     private String m_type;
@@ -70,8 +73,9 @@ public class CmsContainer implements IsSerializable {
      * @param width the width of the container 
      * @param maxElements the maximum number of elements displayed by this container
      * @param detailView flag indicating this container is used for detail views
-     * @param subContainer flag indicating this is a sub container
      * @param elements the container elements id's
+     * @param parentContainerName the parent container name
+     * @param parentElementHash the parent element hash
      */
     public CmsContainer(
         String name,
@@ -79,8 +83,9 @@ public class CmsContainer implements IsSerializable {
         int width,
         int maxElements,
         boolean detailView,
-        boolean subContainer,
-        List<CmsContainerElement> elements) {
+        List<CmsContainerElement> elements,
+        String parentContainerName,
+        String parentElementHash) {
 
         m_elements = elements;
         m_name = name;
@@ -88,7 +93,8 @@ public class CmsContainer implements IsSerializable {
         m_maxElements = maxElements;
         m_width = width;
         m_detailView = detailView;
-        m_subContainer = subContainer;
+        m_parentContainerName = parentContainerName;
+        m_parentElementHash = parentElementHash;
     }
 
     /**
@@ -127,6 +133,26 @@ public class CmsContainer implements IsSerializable {
     public String getName() {
 
         return m_name;
+    }
+
+    /**
+     * Returns the parent container name.<p>
+     * 
+     * @return the parent container name
+     */
+    public String getParentContainerName() {
+
+        return m_parentContainerName;
+    }
+
+    /**
+     * Returns the parent element hash.<p>
+     * 
+     * @return the parent element hash
+     */
+    public String getParentElementHash() {
+
+        return m_parentElementHash;
     }
 
     /**
@@ -176,7 +202,7 @@ public class CmsContainer implements IsSerializable {
      */
     public boolean isSubContainer() {
 
-        return m_subContainer;
+        return m_parentContainerName != null;
     }
 
     /**

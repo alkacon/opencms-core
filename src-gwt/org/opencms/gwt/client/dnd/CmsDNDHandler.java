@@ -601,16 +601,6 @@ public class CmsDNDHandler implements MouseDownHandler {
     }
 
     /**
-     * Sets the scrolling enabled.<p>
-     *
-     * @param scrollEnabled <code>true</code> to enable scrolling
-     */
-    public void setScrollEnabled(boolean scrollEnabled) {
-
-        m_scrollEnabled = scrollEnabled;
-    }
-
-    /**
      * Sets the scroll element in case not the window but another element needs scrolling.<p>
      * 
      * @param scrollElement the scroll element
@@ -618,6 +608,16 @@ public class CmsDNDHandler implements MouseDownHandler {
     public void setScrollElement(Element scrollElement) {
 
         m_scrollElement = scrollElement;
+    }
+
+    /**
+     * Sets the scrolling enabled.<p>
+     *
+     * @param scrollEnabled <code>true</code> to enable scrolling
+     */
+    public void setScrollEnabled(boolean scrollEnabled) {
+
+        m_scrollEnabled = scrollEnabled;
     }
 
     /**
@@ -828,11 +828,27 @@ public class CmsDNDHandler implements MouseDownHandler {
 
         // checking current target first
         if ((m_currentTarget != null) && m_currentTarget.checkPosition(m_clientX, m_clientY, m_orientation)) {
+            // in case of nested targets, check the children of the current target
+            if ((m_currentTarget instanceof I_CmsNestedDropTarget)
+                && ((I_CmsNestedDropTarget)m_currentTarget).hasDnDChildren()) {
+                for (I_CmsDropTarget target : ((I_CmsNestedDropTarget)m_currentTarget).getDnDChildren()) {
+                    if ((target != m_currentTarget) && target.checkPosition(m_clientX, m_clientY, m_orientation)) {
+                        // notifying controller, if false is returned, placeholder will not be positioned inside target 
+                        if (m_controller.onTargetEnter(m_draggable, target, this)) {
+                            target.insertPlaceholder(m_placeholder, m_clientX, m_clientY, m_orientation);
+                            m_currentTarget = target;
+                            m_controller.onPositionedPlaceholder(m_draggable, m_currentTarget, this);
+                            return;
+                        }
+                    }
+                }
+            }
             if (m_currentTarget.getPlaceholderIndex() < 0) {
                 m_currentTarget.insertPlaceholder(m_placeholder, m_clientX, m_clientY, m_orientation);
             } else {
                 m_currentTarget.repositionPlaceholder(m_clientX, m_clientY, m_orientation);
             }
+
             m_controller.onPositionedPlaceholder(m_draggable, m_currentTarget, this);
         } else {
             // leaving the current target

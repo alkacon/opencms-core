@@ -28,13 +28,14 @@
 package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
+import org.opencms.gwt.client.dnd.I_CmsNestedDropTarget;
 
 import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Interface for container page drop targets like containers and group-containers.<p>
  */
-public interface I_CmsDropContainer extends I_CmsDropTarget {
+public interface I_CmsDropContainer extends I_CmsNestedDropTarget {
 
     /**
      * Adds a new child widget.<p>
@@ -44,6 +45,13 @@ public interface I_CmsDropContainer extends I_CmsDropTarget {
      * @see com.google.gwt.user.client.ui.HasWidgets#add(com.google.gwt.user.client.ui.Widget)
      */
     void add(Widget w);
+
+    /**
+     * Registers a child drop target.<p>
+     * 
+     * @param child the child
+     */
+    void addDndChild(I_CmsDropTarget child);
 
     /**
      * Adopts a container-page element registering it as a child of this container. 
@@ -62,6 +70,11 @@ public interface I_CmsDropContainer extends I_CmsDropTarget {
      * Checks the maximum number of allowed elements and displays formerly hidden elements.<p>
      */
     void checkMaxElementsOnLeave();
+
+    /**
+     * Clears the list of child drop targets.<p>
+     */
+    void clearDnDChildren();
 
     /**
      * Returns the container id.<p>

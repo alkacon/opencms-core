@@ -35,6 +35,7 @@ import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElementPanel;
 import org.opencms.ade.containerpage.client.ui.CmsMenuListItem;
 import org.opencms.ade.containerpage.client.ui.I_CmsDropContainer;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.contenteditor.shared.CmsEditorConstants;
 import org.opencms.ade.galleries.client.ui.CmsResultListItem;
@@ -631,6 +632,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                     }
                 }
             }
+            initNestedContainers();
         }
     }
 
@@ -671,6 +673,25 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
         draggable.getElement().getStyle().setDisplay(Display.NONE);
         CmsDomUtil.showOverlay(draggable.getElement(), false);
+    }
+
+    /**
+     * Initializes the nested container infos.<p>
+     */
+    private void initNestedContainers() {
+
+        for (CmsContainer container : m_controller.m_containers.values()) {
+            if (container.isSubContainer()) {
+                CmsContainerPageContainer containerWidget = m_controller.m_targetContainers.get(container.getName());
+                // check if both, the sub container and it's parent are valid drop targets
+                if (m_dragInfos.keySet().contains(containerWidget)
+                    && m_dragInfos.keySet().contains(
+                        m_controller.m_targetContainers.get(container.getParentContainerName()))) {
+                    m_controller.m_targetContainers.get(container.getParentContainerName()).addDndChild(containerWidget);
+                }
+            }
+
+        }
     }
 
     /**
@@ -891,6 +912,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 for (I_CmsDropTarget target : dragTargets) {
                     if (target instanceof I_CmsDropContainer) {
                         ((I_CmsDropContainer)target).refreshHighlighting();
+                        // reset the nested container infos
+                        ((I_CmsDropContainer)target).clearDnDChildren();
                     }
                 }
             }

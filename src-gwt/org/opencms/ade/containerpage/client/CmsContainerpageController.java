@@ -268,8 +268,9 @@ public final class CmsContainerpageController {
                 m_currentContainer.getWidth(),
                 m_currentContainer.getMaxElements(),
                 m_currentContainer.isDetailView(),
-                m_currentContainer.isSubContainer(),
-                m_currentElements));
+                m_currentElements,
+                m_currentContainer.getParentContainerName(),
+                m_currentContainer.getParentElementHash()));
         }
 
         /**

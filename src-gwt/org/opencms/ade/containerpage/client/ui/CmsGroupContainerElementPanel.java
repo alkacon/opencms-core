@@ -32,11 +32,13 @@ import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
+import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.CmsHighlightingBorder;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPositionBean;
 
 import java.util.Iterator;
+import java.util.List;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
@@ -68,6 +70,9 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
 
     /** The resource type name. */
     private String m_resourceType;
+
+    /** The cached highlighting position. */
+    private CmsPositionBean m_ownPosition;
 
     /**
      * Constructor.<p>
@@ -110,6 +115,14 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
     }
 
     /**
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#addDndChild(org.opencms.gwt.client.dnd.I_CmsDropTarget)
+     */
+    public void addDndChild(I_CmsDropTarget child) {
+
+        throw new UnsupportedOperationException("Element groups do not support nested containers");
+    }
+
+    /**
      * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#adoptElement(org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel)
      */
     public void adoptElement(CmsContainerPageElementPanel containerElement) {
@@ -137,9 +150,6 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
 
     }
 
-    /** The cached highlighting position. */
-    private CmsPositionBean m_ownPosition;
-
     /**
      * @see org.opencms.gwt.client.dnd.I_CmsDropTarget#checkPosition(int, int, Orientation)
      */
@@ -156,6 +166,14 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
             return (relativeLeft > 0) && (m_ownPosition.getWidth() > relativeLeft);
         }
         return false;
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#clearDnDChildren()
+     */
+    public void clearDnDChildren() {
+
+        // nothing todo
     }
 
     /**
@@ -178,11 +196,27 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
     }
 
     /**
+     * @see org.opencms.gwt.client.dnd.I_CmsNestedDropTarget#getDnDChildren()
+     */
+    public List<I_CmsDropTarget> getDnDChildren() {
+
+        return null;
+    }
+
+    /**
      * @see org.opencms.gwt.client.dnd.I_CmsDropTarget#getPlaceholderIndex()
      */
     public int getPlaceholderIndex() {
 
         return m_placeholderIndex;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.dnd.I_CmsNestedDropTarget#hasDnDChildren()
+     */
+    public boolean hasDnDChildren() {
+
+        return false;
     }
 
     /**
