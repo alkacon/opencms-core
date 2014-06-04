@@ -1,6 +1,21 @@
  function UGC () {
-    // the id of the form in the HTML
+ 
+    if (arguments.length < 3) {
+        alert(
+            "UGC requires at least 3 arguments:\n\n" +
+            "1: The id of the form in the HTML\n" +
+            "2: The mapping callback function\n" + 
+            "3: The error callback function\n" + 
+            "4: (optional) The custom form init callback function\n" +
+            "5: (optional) The wait indicator callback function"
+        );
+    }
+ 
     this.formId = arguments[0];
+    this.mappingsCallback = arguments[1];
+    this.errorCallback = arguments[2];
+    this.formInitCallback = arguments.length > 3 ? arguments[3] : null;
+    this.waitIndicatorCallback = arguments.length > 4 ? arguments[4] : null;
     
     // the mappings from form field id's to XML content xpath
     this.mappings = {};
@@ -333,21 +348,90 @@ UGC.prototype.destroySession = function() {
 // global UGC variable to avoid context problems when initializing
 var globalUGC = null;
 
-UGC.prototype.init = function() {
+UGC.prototype.initSession = function() {
     // method to be used in callback from UGC main API
     globalUGC.setSession(arguments[0]);
     // initialize the form with the data from the context
     globalUGC.setForm();
+    if (globalUGC.formInitCallback != null) {
+        // custom user form initialization
+        globalUGC.formInitCallback();
+    }    
 };
+
+UGC.prototype.init = function() {
+    // initialize the mappings
+    this.mappingsCallback();
+    // initialize the user generated content API
+    var sessionId = arguments[0];  
+    if (this.waitIndicatorCallback != null) {
+        OpenCmsXmlContentFormApi.setWaitIndicatorCallback(this.waitIndicatorCallback);
+    }
+    OpenCmsXmlContentFormApi.initFormForSession(sessionId, this.form, this.initSession, this.errorCallback);
+};
+
+UGC.prototype.setWaitIndicator = function() {
+    // set the wait indicator callback
+    this.waitIndicatorCallback = arguments[0];
+}
+
+UGC.prototype.setMappings = function() {
+    // set the wait indicator callback
+    this.mappingsCallback = arguments[0];
+}
+
+UGC.prototype.setError = function() {
+    // set the wait indicator callback
+    this.errorCallback = arguments[0];
+}
+
+UGC.prototype.setFormInit = function() {
+    // set the wait indicator callback
+    this.formInitCallback = arguments[0];
+}    
 
 UGC.prototype.initForm = function() {
     // method to be used for checking if the form exists and initializing the mappings
-    if ((arguments.length == 1) && (this.getForm() != null)) {
+    if ((arguments.length == 0) && (this.getForm() != null)) {
         // store the used UGC object to access later in the init function
         globalUGC = this;
-        // first argument must be the form mapping callback
-        arguments[0]();
         return true;
     }
     return false;
 };
+
+UGC.prototype.uploadFiles = function() {
+    // convenience wrapper to access "uploadFiles" in the UGC session 
+    if (arguments.length != 2) {
+        alert(
+            "UGC.uploadFiles requires 2 arguments:\n\n" +
+            "1: Array of id's that indicate the fields with the file uploads\n" +
+            "2: The after upload handler function callback"
+        );
+    }
+    this.getSession().uploadFiles(arguments[0], arguments[1], this.errorCallback);    
+}
+
+UGC.prototype.saveContent = function() {
+    // convenience wrapper to access "saveContent" in the UGC session 
+    if (arguments.length != 2) {
+        alert(
+            "UGC.saveContent requires 2 arguments:\n\n" +
+            "1: Content object to save\n" +
+            "2: The after save handler function callback"
+        );
+    }
+    this.getSession().saveContent(arguments[0], arguments[1], this.errorCallback);    
+}
+
+UGC.prototype.validate = function() {
+    // convenience wrapper to access "validate" in the UGC session 
+    if (arguments.length != 2) {
+        alert(
+            "UGC.validate requires 2 arguments:\n\n" +
+            "1: Content object to validate\n" +
+            "2: The validation results handler function callback"
+        );
+    }
+    this.getSession().validate(arguments[0], arguments[1]);    
+}
