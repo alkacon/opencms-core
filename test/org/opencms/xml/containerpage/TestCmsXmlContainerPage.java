@@ -49,6 +49,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -361,7 +362,20 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
                     CmsContainerElementBean expected = elemMap.get(locale.toString() + type).get(i);
                     assertEquals(expected.getId(), element.getId());
                     assertEquals(expected.getFormatterId(), element.getFormatterId());
-                    assertEquals(expected.getIndividualSettings(), element.getIndividualSettings());
+                    assertEquals(expected.getIndividualSettings().size(), element.getIndividualSettings().size());
+                    for (Entry<String, String> settingsEntry : element.getIndividualSettings().entrySet()) {
+                        // all settings but the instance id should be the same
+                        if (!settingsEntry.getKey().equals(CmsContainerElementBean.ELEMENT_INSTANCE_ID)) {
+                            assertEquals(
+                                expected.getIndividualSettings().get(settingsEntry.getKey()),
+                                settingsEntry.getValue());
+                        } else {
+                            assertNotSame(
+                                expected.getIndividualSettings().get(settingsEntry.getKey()),
+                                settingsEntry.getValue());
+                        }
+                    }
+
                 }
             }
         }
