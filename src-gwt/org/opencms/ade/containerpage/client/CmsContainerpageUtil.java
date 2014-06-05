@@ -270,7 +270,7 @@ public class CmsContainerpageUtil {
                 CmsContainer container = m_controller.getSerializedContainer(data);
                 containers.put(container.getName(), container);
                 try {
-                    CmsContainerPageContainer dragContainer = new CmsContainerPageContainer(container);
+                    CmsContainerPageContainer dragContainer = new CmsContainerPageContainer(container, containerElement);
                     consumeContainerElements(dragContainer);
                     result.put(container.getName(), dragContainer);
                 } catch (Exception e) {

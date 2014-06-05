@@ -549,6 +549,22 @@ public class CmsContainerElementBean implements Cloneable {
     }
 
     /**
+     * Removes the instance id.<p>
+     */
+    public void removeInstanceId() {
+
+        Map<String, String> newSettings = new HashMap<String, String>(m_individualSettings);
+        newSettings.remove(ELEMENT_INSTANCE_ID);
+        m_individualSettings = Collections.unmodifiableMap(newSettings);
+        String clientId = m_elementId.toString();
+        if (!m_individualSettings.isEmpty()) {
+            int hash = m_individualSettings.toString().hashCode();
+            clientId += CmsADEManager.CLIENT_ID_SEPERATOR + hash;
+        }
+        m_editorHash = clientId;
+    }
+
+    /**
      * Sets the formatter id.<p>
      *
      * @param formatterId the formatter id

@@ -1238,6 +1238,10 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 continue;
             }
             CmsContainerElementBean element = getCachedElement(elemId);
+            if (element.getInstanceId() == null) {
+                element = element.clone();
+                getSessionCache().setCacheContainerElement(element.editorHash(), element);
+            }
             CmsContainerElementData elementData = elemUtil.getElementData(page, element, containers);
             result.put(elemId, elementData);
             if (elementData.isGroupContainer() || elementData.isInheritContainer()) {
@@ -1688,7 +1692,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      */
     private List<CmsContainerElementBean> updateFavoriteRecentList(String clientId, List<CmsContainerElementBean> list) {
 
-        CmsContainerElementBean element = getCachedElement(clientId);
+        CmsContainerElementBean element = getCachedElement(clientId).clone();
+        element.removeInstanceId();
         Iterator<CmsContainerElementBean> listIt = list.iterator();
         while (listIt.hasNext()) {
             CmsContainerElementBean listElem = listIt.next();

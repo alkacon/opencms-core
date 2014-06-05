@@ -43,7 +43,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.Style.Position;
@@ -228,10 +227,10 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
      * Constructor.<p>
      * 
      * @param containerData the container data
+     * @param element the container element
      */
-    public CmsContainerPageContainer(CmsContainer containerData) {
+    public CmsContainerPageContainer(CmsContainer containerData, Element element) {
 
-        Element element = Document.get().getElementById(containerData.getName());
         setElement(element);
         if (!containerData.isSubContainer()) {
             RootPanel.detachOnWindowClose(this);
