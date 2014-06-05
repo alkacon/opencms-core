@@ -1102,7 +1102,9 @@ public final class CmsDomUtil {
 
         String backgroundColor = CmsDomUtil.getCurrentStyle(element, Style.backgroundColor);
         if ((CmsStringUtil.isEmptyOrWhitespaceOnly(backgroundColor) || isTransparent(backgroundColor) || backgroundColor.equals(StyleValue.inherit.toString()))) {
-            if (Document.get().getBody() != element) {
+
+            if ((Document.get().getBody() != element) && (element.getParentElement() != null)) {
+
                 backgroundColor = getEffectiveBackgroundColor(element.getParentElement());
             } else {
                 // if body element has still no background color set default to white
