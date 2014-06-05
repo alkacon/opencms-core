@@ -91,7 +91,9 @@ public final class CmsJspStandardContextBean {
         /**
          * Constructor with a prefix.<p>
          * 
-         * @param prefix the locale to use
+         * The prefix is used to distinguish between type detail pages and function detail pages.<p>
+         * 
+         * @param prefix the prefix to use
          */
         public CmsDetailLookupTransformer(String prefix) {
 
@@ -113,10 +115,9 @@ public final class CmsJspStandardContextBean {
             }
             CmsDetailPageInfo mainDetailPage = detailPages.get(0);
             CmsUUID id = mainDetailPage.getId();
-            CmsResource detailRes;
             try {
-                detailRes = m_cms.readResource(id);
-                return OpenCms.getLinkManager().substituteLink(m_cms, detailRes);
+                CmsResource r = m_cms.readResource(id);
+                return OpenCms.getLinkManager().substituteLink(m_cms, r);
             } catch (CmsException e) {
                 LOG.warn(e.getLocalizedMessage(), e);
                 return "[Error reading detail page for type =" + type + "=]";
@@ -261,10 +262,10 @@ public final class CmsJspStandardContextBean {
     private CmsJspVfsAccessBean m_vfsBean;
 
     /** The lazy initialized map for the function detail pages. */
-    private Map<String, String> m_functionDetail;
+    private Map<String, String> m_functionDetailPage;
 
     /** The lazy initialized map for the detail pages. */
-    private Map<String, String> m_detailPage;
+    private Map<String, String> m_typeDetailPage;
 
     /**
      * Creates an empty instance.<p>
@@ -411,27 +412,6 @@ public final class CmsJspStandardContextBean {
         return m_detailOnlyPage;
     }
 
-    /**
-     * Returns a lazy initialized Map that provides the detail page link as a value when given the name of a 
-     * resource type as a key.<p>
-     * 
-     * The provided Map key is assumed to be the name of a resource type that has a detail page configured.<p>
-     * 
-     * Usage example on a JSP with the JSTL:<pre>
-     * &lt;a href=${cms.detailPage['bs-blog']} /&gt
-     * </pre>
-     *  
-     * @return a lazy initialized Map that provides the detail page link as a value when given the name of a 
-     * resource type as a key
-     */
-    public Map<String, String> getDetailPage() {
-
-        if (m_detailPage == null) {
-            m_detailPage = CmsCollectionsGenericWrapper.createLazyMap(new CmsDetailLookupTransformer(""));
-        }
-        return m_detailPage;
-    }
-
     /**    
      * Returns the currently rendered element.<p>
      * 
@@ -476,25 +456,41 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
+     * Deprecated method to access function detail pages using the EL.<p>
+     * 
+     * @return a lazy initialized Map that provides the detail page link as a value when given the name of a 
+     * (named) dynamic function as a key
+     * 
+     * @deprecated use {@link #getFunctionDetailPage()} instead 
+     */
+    @Deprecated
+    public Map<String, String> getFunctionDetail() {
+
+        return getFunctionDetailPage();
+    }
+
+    /**
      * Returns a lazy initialized Map that provides the detail page link as a value when given the name of a 
      * (named) dynamic function as a key.<p>
      * 
      * The provided Map key is assumed to be a String that represents a named dynamic function.<p>
      * 
      * Usage example on a JSP with the JSTL:<pre>
-     * &lt;a href=${cms.functionDetail['search']} /&gt
+     * &lt;a href=${cms.functionDetailPage['search']} /&gt
      * </pre>
      *  
      * @return a lazy initialized Map that provides the detail page link as a value when given the name of a 
      * (named) dynamic function as a key
+     * 
+     * @see #getTypeDetailPage()
      */
-    public Map<String, String> getFunctionDetail() {
+    public Map<String, String> getFunctionDetailPage() {
 
-        if (m_functionDetail == null) {
-            m_functionDetail = CmsCollectionsGenericWrapper.createLazyMap(new CmsDetailLookupTransformer(
+        if (m_functionDetailPage == null) {
+            m_functionDetailPage = CmsCollectionsGenericWrapper.createLazyMap(new CmsDetailLookupTransformer(
                 CmsDetailPageInfo.FUNCTION_PREFIX));
         }
-        return m_functionDetail;
+        return m_functionDetailPage;
     }
 
     /**
@@ -690,6 +686,29 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
+     * Returns a lazy initialized Map that provides the detail page link as a value when given the name of a 
+     * resource type as a key.<p>
+     * 
+     * The provided Map key is assumed to be the name of a resource type that has a detail page configured.<p>
+     * 
+     * Usage example on a JSP with the JSTL:<pre>
+     * &lt;a href=${cms.typeDetailPage['bs-blog']} /&gt
+     * </pre>
+     *  
+     * @return a lazy initialized Map that provides the detail page link as a value when given the name of a 
+     * resource type as a key
+     * 
+     * @see #getFunctionDetailPage()
+     */
+    public Map<String, String> getTypeDetailPage() {
+
+        if (m_typeDetailPage == null) {
+            m_typeDetailPage = CmsCollectionsGenericWrapper.createLazyMap(new CmsDetailLookupTransformer(""));
+        }
+        return m_typeDetailPage;
+    }
+
+    /**
      * Returns an initialized VFS access bean.<p>
      * 
      * @return an initialized VFS access bean
@@ -714,36 +733,25 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
-     * Checks whether a detail page is available for the container element.<p>
+     * Returns <code>true</code in case a detail page is available for the current element.<p>
      * 
-     * @return true if there is a detail page for the container element
+     * @return <code>true</code in case a detail page is available for the current element
      */
     public boolean isDetailPageAvailable() {
 
-        if (m_cms == null) {
-            return false;
+        boolean result = false;
+        if ((m_cms != null) && (m_element != null) && !m_element.isInMemoryOnly() && (m_element.getResource() != null)) {
+            try {
+                String detailPage = OpenCms.getADEManager().getDetailPageFinder().getDetailPage(
+                    m_cms,
+                    m_element.getResource().getRootPath(),
+                    m_cms.getRequestContext().getUri());
+                result = detailPage != null;
+            } catch (CmsException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
         }
-        CmsContainerElementBean element = getElement();
-        if (element == null) {
-            return false;
-        }
-        if (element.isInMemoryOnly()) {
-            return false;
-        }
-        CmsResource res = element.getResource();
-        if (res == null) {
-            return false;
-        }
-        try {
-            String detailPage = OpenCms.getADEManager().getDetailPageFinder().getDetailPage(
-                m_cms,
-                res.getRootPath(),
-                m_cms.getRequestContext().getUri());
-            return detailPage != null;
-        } catch (CmsException e) {
-            LOG.warn(e.getLocalizedMessage(), e);
-            return false;
-        }
+        return result;
     }
 
     /**

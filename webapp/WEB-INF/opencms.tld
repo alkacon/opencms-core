@@ -7,7 +7,10 @@
 
     <description>
         The standard OpenCms / JSP integration tag library.
-        Developed by Alkacon Software GmbH for OpenCms.
+        Used by OpenCms, the Open Source Content Management System. 
+        (c) Alkacon Software GmbH.
+        For more details about OpenCms, please see http://www.opencms.org/.
+        For more details about Alkacon Software GmbH, please see http://www.alkacon.com/.
     </description>
     <display-name>OpenCms JSP standard taglib</display-name>
     <tlib-version>1.0</tlib-version>
@@ -304,6 +307,7 @@
     		<rtexprvalue>true</rtexprvalue>
     	</attribute>
     </tag>
+    
     <tag>
     	<description><![CDATA[Initializes a user generated content form session.]]></description>
     	<name>initformsession</name>

@@ -31,6 +31,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.util.CmsUUID;
+import org.opencms.util.ant.CmsStringUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -91,22 +92,22 @@ public class CmsJspTagUserFormSession extends TagSupport {
         if (controller != null) {
             CmsObject cms = controller.getCmsObject();
             try {
-                CmsFormSession fsession = null;
+                CmsFormSession ugcsession = null;
                 if ((m_editName == null) && (m_editId != null)) {
                     CmsResource res = cms.readResource(new CmsUUID(m_editId));
                     m_editName = res.getName();
                 }
                 if (m_editName != null) {
-                    fsession = CmsFormSessionFactory.getInstance().createSessionForFile(
+                    ugcsession = CmsFormSessionFactory.getInstance().createSessionForFile(
                         cms,
                         req,
                         m_configPath,
                         m_editName);
                 } else {
-                    fsession = CmsFormSessionFactory.getInstance().createSession(cms, req, m_configPath);
-                    fsession.createXmlContent();
+                    ugcsession = CmsFormSessionFactory.getInstance().createSession(cms, req, m_configPath);
+                    ugcsession.createXmlContent();
                 }
-                pageContext.setAttribute(m_var == null ? DEFAULT_SESSION_ID_ATTR : m_var, fsession.getId().toString());
+                pageContext.setAttribute(m_var == null ? DEFAULT_SESSION_ID_ATTR : m_var, ugcsession.getId().toString());
             } catch (Exception e) {
                 pageContext.setAttribute(
                     m_error == null ? DEFAULT_ERROR_MESSAGE_ATTR : m_error,
@@ -173,7 +174,7 @@ public class CmsJspTagUserFormSession extends TagSupport {
      */
     public void setConfigPath(String configPath) {
 
-        m_configPath = configPath;
+        m_configPath = CmsStringUtil.isEmptyOrWhitespaceOnly(configPath) ? null : configPath;
     }
 
     /**
@@ -183,7 +184,7 @@ public class CmsJspTagUserFormSession extends TagSupport {
      */
     public void setEditId(String editId) {
 
-        m_editId = editId;
+        m_editId = CmsStringUtil.isEmptyOrWhitespaceOnly(editId) ? null : editId;
     }
 
     /**
@@ -193,7 +194,7 @@ public class CmsJspTagUserFormSession extends TagSupport {
      */
     public void setEditName(String editName) {
 
-        m_editName = editName;
+        m_editName = CmsStringUtil.isEmptyOrWhitespaceOnly(editName) ? null : editName;
     }
 
     /**
@@ -203,7 +204,7 @@ public class CmsJspTagUserFormSession extends TagSupport {
      */
     public void setError(String error) {
 
-        m_error = error;
+        m_error = CmsStringUtil.isEmptyOrWhitespaceOnly(error) ? null : error;
     }
 
     /**
@@ -213,7 +214,7 @@ public class CmsJspTagUserFormSession extends TagSupport {
      */
     public void setVar(String var) {
 
-        m_var = var;
+        m_var = CmsStringUtil.isEmptyOrWhitespaceOnly(var) ? null : var;
     }
 
 }
