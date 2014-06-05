@@ -39,10 +39,22 @@ if (project.hasProperty('external_directories')){
 }
 
 configurations {
+    
+    distribution {
+        description = 'libraries included into the opencms distribution'
+        transitive = false
+    }
+    
     compile {
         description = 'used to compile the opencms.jar and the modules jars'
         transitive = false
         extendsFrom distribution
+    }
+    
+    modulesCompile {
+        description = 'used to compile the modules classes'
+        transitive = false
+        extendsFrom compile
     }
 
     testCompile{
@@ -62,12 +74,6 @@ configurations {
         extendsFrom componentsCompile
     }
 
-    modulesCompile {
-        description = 'used to compile the modules classes'
-        transitive = false
-        extendsFrom compile
-    }
-
     gwtCompile {
         description = 'needed to generate the GWT JavaScript resources'
         transitive = false
@@ -77,11 +83,6 @@ configurations {
     setupCompile {
         transitive = false
         extendsFrom modulesCompile
-    }
-
-    distribution {
-        description = 'libraries included into the opencms distribution'
-        transitive = false
     }
 }
 
@@ -203,7 +204,7 @@ javadoc {
     doLast {
         copy {
             from  "${projectDir}/doc/javadoc/logos"
-            into "${buildDir}/docs/javadoc"
+            into "${buildDir}/docs/javadoc/logos"
         }
     }
     options.addStringOption("sourcepath", "")
@@ -219,7 +220,8 @@ javadoc {
         overview="${sourceSets.main.output.resourcesDir}/org/opencms/main/overview.html"
         docTitle="OpenCms Core API, version $version_number"
         windowTitle="OpenCms Core API, version $version_number"
-        header = "<script type=\"text/javascript\"> if (window.location.href.indexOf(\"overview-frame\") == -1) { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.alkacon.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logo_alkacon_100_t.gif\\\" /></a>\"); } else { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.opencms.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logo_opencms_100.gif\\\" /></a>\"); }</script>"
+        stylesheetFile= file("${projectDir}/doc/javadoc/stylesheet.css")
+        header = "<script type=\"text/javascript\"> if (window.location.href.indexOf(\"overview-frame\") == -1) { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.alkacon.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/Alkacon.png\\\" /></a>\"); } else { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.opencms.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/OpenCms.png\\\" /></a>\"); }</script>"
     }
 }
 
@@ -259,7 +261,7 @@ task javadocModules(type: Javadoc, dependsOn: jar) {
     doLast {
     copy {
         from  "${projectDir}/doc/javadoc/logos"
-        into "${buildDir}/docs/javadocModules"
+        into "${buildDir}/docs/javadocModules/logos"
     }
 }
 options.addStringOption("sourcepath", "")
@@ -274,7 +276,8 @@ project.configure(options) {
     noDeprecated="false"
     docTitle="OpenCms Workplace Modules API, version $version_number"
     windowTitle="OpenCms Workplace Modules API, version $version_number"
-    header = "<script type=\"text/javascript\"> if (window.location.href.indexOf(\"overview-frame\") == -1) { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.alkacon.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logo_alkacon_100_t.gif\\\" /></a>\"); } else { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.opencms.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logo_opencms_100.gif\\\" /></a>\"); }</script>"
+    stylesheetFile= file("${projectDir}/doc/javadoc/stylesheet.css")
+        header = "<script type=\"text/javascript\"> if (window.location.href.indexOf(\"overview-frame\") == -1) { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.alkacon.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/Alkacon.png\\\" /></a>\"); } else { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.opencms.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/OpenCms.png\\\" /></a>\"); }</script>"
 }
 source = sourceSets.modules.allJava
 classpath = project.sourceSets.modules.compileClasspath
@@ -285,7 +288,7 @@ task javadocGwt(type: Javadoc, dependsOn: jar) {
         doLast {
         copy {
             from  "${projectDir}/doc/javadoc/logos"
-            into "${buildDir}/docs/javadocGwt"
+            into "${buildDir}/docs/javadocGwt/logos"
         }
     }
     options.addStringOption("sourcepath", "")
@@ -300,7 +303,8 @@ task javadocGwt(type: Javadoc, dependsOn: jar) {
         noDeprecated="false"
         docTitle="OpenCms GWT Components API, version $version_number"
         windowTitle="OpenCms GWT Components API, version $version_number"
-        header = "<script type=\"text/javascript\"> if (window.location.href.indexOf(\"overview-frame\") == -1) { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.alkacon.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logo_alkacon_100_t.gif\\\" /></a>\"); } else { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.opencms.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logo_opencms_100.gif\\\" /></a>\"); }</script>"
+        stylesheetFile= file("${projectDir}/doc/javadoc/stylesheet.css")
+        header = "<script type=\"text/javascript\"> if (window.location.href.indexOf(\"overview-frame\") == -1) { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.alkacon.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/Alkacon.png\\\" /></a>\"); } else { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.opencms.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/OpenCms.png\\\" /></a>\"); }</script>"
     }
     source = sourceSets.gwt.allJava
     classpath = project.sourceSets.gwt.compileClasspath
@@ -345,7 +349,7 @@ task javadocSetup(type: Javadoc, dependsOn: jar) {
     doLast {
         copy {
             from  "${projectDir}/doc/javadoc/logos"
-            into "${buildDir}/docs/javadocSetup"
+            into "${buildDir}/docs/javadocSetup/logos"
         }
     }
     options.addStringOption("sourcepath", "")
@@ -360,7 +364,8 @@ task javadocSetup(type: Javadoc, dependsOn: jar) {
         noDeprecated="false"
         docTitle="OpenCms Setup API, version $version_number"
         windowTitle="OpenCms Setup API, version $version_number"
-        header = "<script type=\"text/javascript\"> if (window.location.href.indexOf(\"overview-frame\") == -1) { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.alkacon.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logo_alkacon_100_t.gif\\\" /></a>\"); } else { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.opencms.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logo_opencms_100.gif\\\" /></a>\"); }</script>"
+        stylesheetFile= file("${projectDir}/doc/javadoc/stylesheet.css")
+        header = "<script type=\"text/javascript\"> if (window.location.href.indexOf(\"overview-frame\") == -1) { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.alkacon.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/Alkacon.png\\\" /></a>\"); } else { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.opencms.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/OpenCms.png\\\" /></a>\"); }</script>"
     }
 }
 
