@@ -495,13 +495,18 @@ public final class CmsContainerpageController {
 
             boolean cached = false;
             if (m_elements.containsKey(m_clientId)) {
-                cached = true;
                 CmsContainerElementData elementData = m_elements.get(m_clientId);
-                if (elementData.isGroupContainer() || elementData.isInheritContainer()) {
-                    for (String subItemId : elementData.getSubItems()) {
-                        if (!m_elements.containsKey(subItemId)) {
-                            cached = false;
-                            break;
+                // check if the cached element data covers all possible containers in case new containers have been added to the page 
+                if (elementData.getContents().keySet().containsAll(m_targetContainers.keySet())) {
+
+                    cached = true;
+
+                    if (elementData.isGroupContainer() || elementData.isInheritContainer()) {
+                        for (String subItemId : elementData.getSubItems()) {
+                            if (!m_elements.containsKey(subItemId)) {
+                                cached = false;
+                                break;
+                            }
                         }
                     }
                 }
@@ -562,7 +567,7 @@ public final class CmsContainerpageController {
 
             if (result != null) {
                 addElements(result);
-                m_callback.execute(m_elements.get(m_clientId));
+                m_callback.execute(result.get(m_clientId));
             }
         }
     }
@@ -696,7 +701,7 @@ public final class CmsContainerpageController {
 
         String serverId = clientId;
         if (clientId.contains(CLIENT_ID_SEPERATOR)) {
-            serverId = clientId.substring(0, clientId.indexOf(CLIENT_ID_SEPERATOR));
+            serverId = clientId.substring(0, clientId.lastIndexOf(CLIENT_ID_SEPERATOR));
         }
         return serverId;
     }
@@ -2033,17 +2038,15 @@ public final class CmsContainerpageController {
      * @throws Exception if something goes wrong
      */
     public CmsContainerPageElementPanel replaceContainerElement(
-        org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel containerElement,
+        CmsContainerPageElementPanel containerElement,
         CmsContainerElementData elementData) throws Exception {
 
         I_CmsDropContainer parentContainer = containerElement.getParentTarget();
         String containerId = parentContainer.getContainerId();
-
+        CmsContainerPageElementPanel replacer = null;
         String elementContent = elementData.getContents().get(containerId);
         if ((elementContent != null) && (elementContent.trim().length() > 0)) {
-            org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel replacer = getContainerpageUtil().createElement(
-                elementData,
-                parentContainer);
+            replacer = getContainerpageUtil().createElement(elementData, parentContainer);
             if (containerElement.isNew()) {
                 // if replacing element data has the same structure id, keep the 'new' state by setting the new type property
                 // this should only be the case when editing settings of a new element that has not been created in the VFS yet
@@ -2060,9 +2063,10 @@ public final class CmsContainerpageController {
             }
             parentContainer.insert(replacer, parentContainer.getWidgetIndex(containerElement));
             containerElement.removeFromParent();
-            return replacer;
+            initializeSubContainers(replacer);
         }
-        return null;
+        cleanUpContainers();
+        return replacer;
     }
 
     /**
@@ -2567,7 +2571,9 @@ public final class CmsContainerpageController {
      */
     protected void addElements(Map<String, CmsContainerElementData> elements) {
 
-        m_elements.putAll(elements);
+        for (CmsContainerElementData element : elements.values()) {
+            m_elements.put(element.getClientId(), element);
+        }
     }
 
     /**

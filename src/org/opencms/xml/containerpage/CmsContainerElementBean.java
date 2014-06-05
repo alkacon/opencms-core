@@ -113,7 +113,7 @@ public class CmsContainerElementBean implements Cloneable {
         m_formatterId = formatterId;
         Map<String, String> newSettings = (individualSettings == null
         ? new HashMap<String, String>()
-        : individualSettings);
+        : new HashMap<String, String>(individualSettings));
         if (!newSettings.containsKey(ELEMENT_INSTANCE_ID)) {
             newSettings.put(ELEMENT_INSTANCE_ID, new CmsUUID().toString());
         }

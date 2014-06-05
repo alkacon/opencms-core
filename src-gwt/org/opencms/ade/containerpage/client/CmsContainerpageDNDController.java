@@ -333,7 +333,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                         containerElement = m_controller.getContainerpageUtil().createElement(
                             m_controller.getCachedElement(m_draggableId),
                             container);
-                        containerElement.setNewType(m_draggableId);
+                        containerElement.setNewType(CmsContainerpageController.getServerId(m_draggableId));
                     } else {
                         CmsContainerElementData elementData = m_controller.getCachedElement(m_draggableId);
 
@@ -388,7 +388,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             optionBar.removeFromParent();
             containerElement.setElementOptionBar(optionBar);
         }
-
         if (clipboardContainerElement != null) {
             final CmsContainerPageElementPanel finalClipboardContainerElement = clipboardContainerElement;
             final String serverIdStr = CmsContainerpageController.getServerId(m_draggableId);
@@ -538,12 +537,12 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             // inserting element from menu
 
         }
-
+        m_draggableId = elementData.getClientId();
         if (m_controller.isGroupcontainerEditing()) {
             CmsGroupContainerElementPanel groupContainer = m_controller.getGroupcontainer();
             if ((groupContainer != m_initialDropTarget)
                 && !(elementData.isGroupContainer() || elementData.isInheritContainer())
-                && elementData.getContents().containsKey(groupContainer.getContainerId())) {
+                && (elementData.getContents().get(groupContainer.getContainerId()) != null)) {
                 Element helper = null;
                 Element placeholder = null;
                 Set<String> cssResources = elementData.getCssResources(groupContainer.getContainerId());
@@ -576,7 +575,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
                 if ((container != m_initialDropTarget)
                     && !container.isDetailView()
-                    && elementData.getContents().containsKey(container.getContainerId())) {
+                    && (elementData.getContents().get(container.getContainerId()) != null)) {
 
                     Element helper = null;
                     Element placeholder = null;
@@ -585,7 +584,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                         String content = "";
                         for (String groupId : elementData.getSubItems()) {
                             CmsContainerElementData subData = m_controller.getCachedElement(groupId);
-                            if ((subData != null) && subData.getContents().containsKey(container.getContainerId())) {
+                            if ((subData != null) && (subData.getContents().get(container.getContainerId()) != null)) {
                                 content += subData.getContents().get(container.getContainerId());
                             }
                         }

@@ -244,8 +244,8 @@ public class CmsElementUtil {
             String content = getContentByContainer(element, container, configs);
             if (content != null) {
                 content = removeScriptTags(content);
-                result.put(container.getName(), content);
             }
+            result.put(container.getName(), content);
         }
         return result;
     }
