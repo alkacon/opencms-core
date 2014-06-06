@@ -433,7 +433,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                                                     newData);
                                                 controller.setPageChanged();
                                             } catch (Exception e) {
-                                                CmsDebugLog.consoleLog("??? " + e);
+                                                throw new RuntimeException(e);
                                             }
                                         }
                                     });
