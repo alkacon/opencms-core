@@ -436,7 +436,8 @@ public class CmsJspTagContainer extends TagSupport {
                 CmsResource detailContent = standardContext.getDetailContent();
                 // get the container
                 CmsContainerBean container = null;
-                if (m_detailOnly) {
+                boolean detailOnly = m_detailOnly || ((m_parentContainer != null) && m_parentContainer.isDetailOnly());
+                if (detailOnly) {
                     if (detailContent == null) {
                         // this is no detail page, so the detail only container will not be rendered at all
                         return SKIP_BODY;
@@ -458,6 +459,8 @@ public class CmsJspTagContainer extends TagSupport {
                         maxElements,
                         Collections.<CmsContainerElementBean> emptyList());
                 }
+                // set the detail only flag
+                container.setDetailOnly(detailOnly);
                 boolean isUsedAsDetailView = false;
                 if (m_detailView && (detailContent != null)) {
                     isUsedAsDetailView = true;
@@ -471,7 +474,7 @@ public class CmsJspTagContainer extends TagSupport {
                         tagName,
                         getName(),
                         getTagClass(),
-                        isOnline ? null : getContainerData(maxElements, isUsedAsDetailView)));
+                        isOnline ? null : getContainerData(maxElements, isUsedAsDetailView, detailOnly)));
 
                 standardContext.setContainer(container);
                 // validate the type
@@ -688,10 +691,11 @@ public class CmsJspTagContainer extends TagSupport {
      * 
      * @param maxElements the maximum number of elements allowed within this container
      * @param isDetailView <code>true</code> if this container is currently being used for the detail view
+     * @param isDetailOnly <code>true</code> if this is a detail only container
      * 
      * @return the serialized container data
      */
-    protected String getContainerData(int maxElements, boolean isDetailView) {
+    protected String getContainerData(int maxElements, boolean isDetailView, boolean isDetailOnly) {
 
         int width = -1;
         try {
@@ -710,7 +714,7 @@ public class CmsJspTagContainer extends TagSupport {
             null,
             m_parentContainer != null ? m_parentContainer.getName() : null,
             m_parentElement != null ? m_parentElement.editorHash() : null);
-        cont.setDeatilOnly(m_detailOnly);
+        cont.setDeatilOnly(isDetailOnly);
         String result = "";
         try {
             result = CmsContainerpageService.getSerializedContainerInfo(cont);

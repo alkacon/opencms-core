@@ -47,6 +47,9 @@ public class CmsContainerBean {
     /** A lazy initialized map that describes if a certain element if part of this container. */
     private transient Map<CmsUUID, Boolean> m_containsElement;
 
+    /** Flag indicating this container is used on detail pages only. */
+    private boolean m_detailOnly;
+
     /** The id's of of all elements in this container. */
     private transient List<CmsUUID> m_elementIds;
 
@@ -190,6 +193,26 @@ public class CmsContainerBean {
     public String getWidth() {
 
         return m_width;
+    }
+
+    /**
+     * Returns if this container is used on detail pages only
+     * 
+     * @return <code>true</code> if this container is used on detail pages only
+     */
+    public boolean isDetailOnly() {
+
+        return m_detailOnly;
+    }
+
+    /**
+     * Sets if this container is used on detail pages only.<p>
+     * 
+     * @param detailOnly <code>true</code> if this container is used on detail pages only
+     */
+    public void setDetailOnly(boolean detailOnly) {
+
+        m_detailOnly = detailOnly;
     }
 
     /**

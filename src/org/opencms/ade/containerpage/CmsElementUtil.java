@@ -618,6 +618,7 @@ public class CmsElementUtil {
             if (containerBean.getWidth() == null) {
                 containerBean.setWidth(String.valueOf(container.getWidth()));
             }
+            containerBean.setDetailOnly(container.isDetailOnly());
             m_standardContext.setContainer(containerBean);
             m_standardContext.setElement(element);
             m_standardContext.setEdited(true);
