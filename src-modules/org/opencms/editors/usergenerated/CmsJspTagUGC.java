@@ -40,7 +40,7 @@ import javax.servlet.jsp.tagext.TagSupport;
 /**
  * Jsp tag to initialize an editing session for user generated content.<p>
  */
-public class CmsJspTagUserFormSession extends TagSupport {
+public class CmsJspTagUGC extends TagSupport {
 
     /** The serial version id. */
     private static final long serialVersionUID = 7290192201848437667L;

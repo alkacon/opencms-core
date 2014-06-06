@@ -42,7 +42,7 @@ public class CmsFormEntryPoint {
      * @param api the API to expose as Javascript object 
      */
     public native void installJavascriptApi(CmsXmlContentFormApi api) /*-{
-                                                                      $wnd.OpenCmsXmlContentFormApi = new $wnd.opencms.CmsXmlContentFormApi(api); 
+                                                                      $wnd.OpenCmsUgc = new $wnd.opencms.CmsXmlContentFormApi(api); 
                                                                       }-*/;
 
     /**
@@ -60,8 +60,8 @@ public class CmsFormEntryPoint {
      * Calls the init form method after the API has been exported.<p>
      */
     private native void callInitFunction() /*-{
-                                           if ($wnd.initUserContentForm != undefined  && typeof $wnd.initUserContentForm == 'function'){
-                                           $wnd.initUserContentForm();
+                                           if ($wnd.initUgc != undefined  && typeof $wnd.initUgc == 'function'){
+                                           $wnd.initUgc();
                                            }
                                            }-*/;
 

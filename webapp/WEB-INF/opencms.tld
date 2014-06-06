@@ -310,8 +310,8 @@
     
     <tag>
     	<description><![CDATA[Initializes a user generated content form session.]]></description>
-    	<name>initformsession</name>
-    	<tag-class>org.opencms.editors.usergenerated.CmsJspTagUserFormSession</tag-class>
+    	<name>ugc</name>
+    	<tag-class>org.opencms.editors.usergenerated.CmsJspTagUgc</tag-class>
     	<body-content>empty</body-content>
     	<attribute>
     		<description><![CDATA[The generated session id will be written to the given page context attribute. Defaults to 'formSessionId'.]]></description>
