@@ -37,6 +37,7 @@ import java.io.File;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.TreeMap;
 
 /**
@@ -55,6 +56,45 @@ import java.util.TreeMap;
  * @since 6.0.0 
  */
 public class CmsSystemInfo {
+
+    /**
+     * Wrapper class used to access build information.<p>
+     */
+    public class BuildInfoItem {
+
+        /** The build information. */
+        private String[] m_data;
+
+        /**
+         * Creates a new instance wrapping a build info string array.<p>
+         * 
+         * @param data the data to wrap 
+         */
+        public BuildInfoItem(String[] data) {
+
+            m_data = data;
+        }
+
+        /**
+         * Gets the nice name for the build info.<p>
+         * 
+         * @return the nice name 
+         */
+        public String getNiceName() {
+
+            return m_data[1];
+        }
+
+        /**
+         * Gets the value for the build info.<p>
+         * 
+         * @return the value 
+         */
+        public String getValue() {
+
+            return m_data[0];
+        }
+    }
 
     /** Name of the config folder property provides as Java VM parameter -Dopencms.config=.*/
     public static final String CONFIG_FOLDER_PROPERTY = "opencms.config";
@@ -87,11 +127,14 @@ public class CmsSystemInfo {
     /** Default encoding. */
     private static final String DEFAULT_ENCODING = CmsEncoder.ENCODING_UTF_8;
 
+    /** Static version id to use if version.properties can not be read. */
+    private static final String DEFAULT_VERSION_ID = "Static";
+
     /** Static version number to use if version.properties can not be read. */
     private static final String DEFAULT_VERSION_NUMBER = "9.x.y";
 
-    /** Static version id to use if version.properties can not be read. */
-    private static final String DEFAULT_VERSION_ID = "Static";
+    /** The list of additional version information that was contained in the version.properties file. */
+    private Map<String, String[]> m_buildInfo;
 
     /** The absolute path to the "opencms.properties" configuration file (in the "real" file system). */
     private String m_configurationFileRfsPath;
@@ -144,14 +187,11 @@ public class CmsSystemInfo {
     /** The version identifier of this OpenCms installation, contains "OpenCms/" and the version number. */
     private String m_version;
 
-    /** The version number of this OpenCms installation. */
-    private String m_versionNumber;
-
     /** The version ID of this OpenCms installation, usually set by the build system. */
     private String m_versionId;
 
-    /** The list of additional version information that was contained in the version.properties file. */
-    private Map<String, String[]> m_buildInfo;
+    /** The version number of this OpenCms installation. */
+    private String m_versionNumber;
 
     /**
      * Creates a new system info container.<p>
@@ -234,6 +274,34 @@ public class CmsSystemInfo {
     public Map<String, String[]> getBuildInfo() {
 
         return m_buildInfo;
+    }
+
+    /**
+     * Gets the build info item for the given key.<p>
+     * 
+     * Returns null if there is no build info item for the given key
+     * 
+     * @param key the key to look up 
+     * 
+     * @return the info item for the given key
+     */
+    public BuildInfoItem getBuildInfoItem(String key) {
+
+        String[] data = m_buildInfo.get(key);
+        if (data == null) {
+            return null;
+        }
+        return new BuildInfoItem(data);
+    }
+
+    /**
+     * Gets the keys of the available build infos.<p>
+     * 
+     * @return the set of keys of available build infos
+     */
+    public Set<String> getBuildInfoKeys() {
+
+        return m_buildInfo.keySet();
     }
 
     /**
