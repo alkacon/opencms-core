@@ -474,14 +474,15 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getElementsData(org.opencms.util.CmsUUID, org.opencms.util.CmsUUID, java.lang.String, java.util.Collection, java.util.Collection, java.lang.String)
-     */
+    * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getElementsData(org.opencms.util.CmsUUID, org.opencms.util.CmsUUID, java.lang.String, java.util.Collection, java.util.Collection, boolean, java.lang.String)
+    */
     public Map<String, CmsContainerElementData> getElementsData(
         CmsUUID pageStructureId,
         CmsUUID detailContentId,
         String reqParams,
         Collection<String> clientIds,
         Collection<CmsContainer> containers,
+        boolean allowNested,
         String locale) throws CmsRpcException {
 
         Map<String, CmsContainerElementData> result = null;
@@ -495,6 +496,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 containerpageUri,
                 detailContentId,
                 containers,
+                allowNested,
                 CmsLocaleManager.getLocale(locale));
         } catch (Throwable e) {
             error(e);
@@ -503,8 +505,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getElementWithSettings(org.opencms.util.CmsUUID, org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.util.Map, java.util.Collection, java.lang.String)
-     */
+    * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getElementWithSettings(org.opencms.util.CmsUUID, org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.util.Map, java.util.Collection, boolean, java.lang.String)
+    */
     public CmsContainerElementData getElementWithSettings(
         CmsUUID pageStructureId,
         CmsUUID detailContentId,
@@ -512,6 +514,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         String clientId,
         Map<String, String> settings,
         Collection<CmsContainer> containers,
+        boolean allowNested,
         String locale) throws CmsRpcException {
 
         CmsContainerElementData element = null;
@@ -534,7 +537,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 elementBean,
                 convertSettingValues(elementBean.getResource(), settings, contentLocale));
             getSessionCache().setCacheContainerElement(elementBean.editorHash(), elementBean);
-            element = elemUtil.getElementData(pageResource, elementBean, containers);
+            element = elemUtil.getElementData(pageResource, elementBean, containers, allowNested);
         } catch (Throwable e) {
             error(e);
         }
@@ -542,12 +545,13 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-    * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getFavoriteList(org.opencms.util.CmsUUID, org.opencms.util.CmsUUID, java.util.Collection, java.lang.String)
-    */
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getFavoriteList(org.opencms.util.CmsUUID, org.opencms.util.CmsUUID, java.util.Collection, boolean, java.lang.String)
+     */
     public List<CmsContainerElementData> getFavoriteList(
         CmsUUID pageStructureId,
         CmsUUID detailContentId,
         Collection<CmsContainer> containers,
+        boolean allowNested,
         String locale) throws CmsRpcException {
 
         List<CmsContainerElementData> result = null;
@@ -560,6 +564,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 containerpageUri,
                 detailContentId,
                 containers,
+                allowNested,
                 CmsLocaleManager.getLocale(locale));
         } catch (Throwable e) {
             error(e);
@@ -568,14 +573,15 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-    * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getNewElementData(org.opencms.util.CmsUUID, org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.util.Collection, java.lang.String)
-    */
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getNewElementData(org.opencms.util.CmsUUID, org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.util.Collection, boolean, java.lang.String)
+     */
     public CmsContainerElementData getNewElementData(
         CmsUUID pageStructureId,
         CmsUUID detailContentId,
         String reqParams,
         String resourceType,
         Collection<CmsContainer> containers,
+        boolean allowNested,
         String localeName) throws CmsRpcException {
 
         CmsContainerElementData result = null;
@@ -584,7 +590,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             CmsResource pageResource = getCmsObject().readResource(pageStructureId);
             String containerpageUri = getCmsObject().getSitePath(pageResource);
             Locale locale = CmsLocaleManager.getLocale(localeName);
-            result = getNewElement(resourceType, containerpageUri, detailContentId, containers, locale);
+            result = getNewElement(resourceType, containerpageUri, detailContentId, containers, allowNested, locale);
         } catch (Throwable e) {
             error(e);
         }
@@ -592,12 +598,13 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getRecentList(org.opencms.util.CmsUUID, org.opencms.util.CmsUUID, java.util.Collection, java.lang.String)
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getRecentList(org.opencms.util.CmsUUID, org.opencms.util.CmsUUID, java.util.Collection, boolean, java.lang.String)
      */
     public List<CmsContainerElementData> getRecentList(
         CmsUUID pageStructureId,
         CmsUUID detailContentId,
         Collection<CmsContainer> containers,
+        boolean allowNested,
         String locale) throws CmsRpcException {
 
         List<CmsContainerElementData> result = null;
@@ -610,6 +617,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 containerpageUri,
                 detailContentId,
                 containers,
+                allowNested,
                 CmsLocaleManager.getLocale(locale));
         } catch (Throwable e) {
             error(e);
@@ -852,6 +860,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             reqParams,
             ids,
             containers,
+            false,
             locale), removedElements);
     }
 
@@ -913,6 +922,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 sitePath,
                 detailContentId,
                 containers,
+                false,
                 requestedLocale);
         } catch (Exception e) {
             error(e);
@@ -1153,7 +1163,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             }
         }
         if (formatter == null) {
-            formatter = formatters.getDefaultFormatter(containerType, containerWidth);
+            formatter = formatters.getDefaultFormatter(containerType, containerWidth, true);
         }
         CmsContainerElementBean newElementBean = null;
         if (formatter != null) {
@@ -1207,6 +1217,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * @param uriParam the current URI
      * @param detailContentId the detail content structure id
      * @param containers the containers for which the element data should be fetched 
+     * @param allowNested if nested containers are allowed
      * @param locale the locale to use 
      * 
      * @return the elements data
@@ -1219,6 +1230,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         String uriParam,
         CmsUUID detailContentId,
         Collection<CmsContainer> containers,
+        boolean allowNested,
         Locale locale) throws CmsException {
 
         CmsObject cms = getCmsObject();
@@ -1242,7 +1254,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 element = element.clone();
                 getSessionCache().setCacheContainerElement(element.editorHash(), element);
             }
-            CmsContainerElementData elementData = elemUtil.getElementData(page, element, containers);
+            CmsContainerElementData elementData = elemUtil.getElementData(page, element, containers, allowNested);
             result.put(elemId, elementData);
             if (elementData.isGroupContainer() || elementData.isInheritContainer()) {
                 // this is a group-container 
@@ -1254,7 +1266,11 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 for (CmsContainerElementBean subElement : subElements) {
                     getSessionCache().setCacheContainerElement(subElement.editorHash(), subElement);
                     if (!ids.contains(subElement.editorHash())) {
-                        CmsContainerElementData subItemData = elemUtil.getElementData(page, subElement, containers);
+                        CmsContainerElementData subItemData = elemUtil.getElementData(
+                            page,
+                            subElement,
+                            containers,
+                            allowNested);
                         ids.add(subElement.editorHash());
                         result.put(subElement.editorHash(), subItemData);
                     }
@@ -1385,6 +1401,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * @param containerpageUri the current URI
      * @param detailContentId the detail content structure id
      * @param containers the containers which exist on the container page  
+     * @param allowNested if nested containers are allowed
      * @param locale the locale to use 
      * 
      * @return the elements data
@@ -1396,6 +1413,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         String containerpageUri,
         CmsUUID detailContentId,
         Collection<CmsContainer> containers,
+        boolean allowNested,
         Locale locale) throws CmsException {
 
         CmsObject cms = getCmsObject();
@@ -1412,7 +1430,11 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             // checking if resource exists
             if (cms.existsResource(element.getId(), CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
                 cache.setCacheContainerElement(element.editorHash(), element);
-                CmsContainerElementData elementData = elemUtil.getElementData(elemUtil.getPage(), element, containers);
+                CmsContainerElementData elementData = elemUtil.getElementData(
+                    elemUtil.getPage(),
+                    element,
+                    containers,
+                    allowNested);
                 result.add(elementData);
             }
         }
@@ -1455,6 +1477,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * @param uriParam the request parameters
      * @param detailContentId the detail content structure id
      * @param containers the containers of the template
+     * @param allowNested if nested containers are allowed
      * @param locale the current locale
      * 
      * @return the element data
@@ -1466,6 +1489,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         String uriParam,
         CmsUUID detailContentId,
         Collection<CmsContainer> containers,
+        boolean allowNested,
         Locale locale) throws CmsException {
 
         CmsObject cms = getCmsObject();
@@ -1486,7 +1510,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 locale);
             getSessionCache().setCacheContainerElement(elementBean.editorHash(), elementBean);
         }
-        return elemUtil.getElementData(elemUtil.getPage(), elementBean, containers);
+        return elemUtil.getElementData(elemUtil.getPage(), elementBean, containers, allowNested);
     }
 
     /**

@@ -659,7 +659,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     htmlContent = elementUtil.getContentByContainer(
                         file,
                         contextInfo.getString(CmsCntPageData.JSONKEY_ELEMENT_ID),
-                        container);
+                        container,
+                        true);
                 }
                 return new EntityHtml(htmlContent, validationResult);
 

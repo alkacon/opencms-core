@@ -144,6 +144,7 @@ public class CmsJspTagContainer extends TagSupport {
      * @param containerName the container name
      * @param containerType the container type
      * @param containerWidth the container width
+     * @param allowNested if nested containers are allowed
      * 
      * @return the formatter configuration bean, may be <code>null</code> if no formatter available or a schema formatter is used
      */
@@ -153,7 +154,8 @@ public class CmsJspTagContainer extends TagSupport {
         CmsADEConfigData adeConfig,
         String containerName,
         String containerType,
-        int containerWidth) {
+        int containerWidth,
+        boolean allowNested) {
 
         I_CmsFormatterBean formatterBean = getFormatterConfigurationForElement(
             cms,
@@ -161,7 +163,8 @@ public class CmsJspTagContainer extends TagSupport {
             adeConfig,
             containerName,
             containerType,
-            containerWidth);
+            containerWidth,
+            allowNested);
         String settingsKey = CmsFormatterConfig.getSettingsKeyForContainer(containerName);
         if (formatterBean != null) {
             String formatterConfigId = formatterBean.getId();
@@ -232,6 +235,7 @@ public class CmsJspTagContainer extends TagSupport {
      * @param containerName the container name
      * @param containerType the container type
      * @param containerWidth the container width
+     * @param allowNested if nested containers are allowed
      * 
      * @return the formatter configuration
      */
@@ -241,7 +245,8 @@ public class CmsJspTagContainer extends TagSupport {
         CmsADEConfigData adeConfig,
         String containerName,
         String containerType,
-        int containerWidth) {
+        int containerWidth,
+        boolean allowNested) {
 
         I_CmsFormatterBean formatterBean = null;
         String settingsKey = CmsFormatterConfig.getSettingsKeyForContainer(containerName);
@@ -250,7 +255,8 @@ public class CmsJspTagContainer extends TagSupport {
             if (!element.getSettings().containsKey(settingsKey)) {
                 for (I_CmsFormatterBean formatter : adeConfig.getFormatters(cms, element.getResource()).getAllMatchingFormatters(
                     containerType,
-                    containerWidth)) {
+                    containerWidth,
+                    allowNested)) {
                     if (element.getFormatterId().equals(formatter.getJspStructureId())) {
                         String formatterConfigId = formatter.getId();
                         if (formatterConfigId == null) {
@@ -280,7 +286,8 @@ public class CmsJspTagContainer extends TagSupport {
             if (formatterBean == null) {
                 formatterBean = adeConfig.getFormatters(cms, element.getResource()).getDefaultFormatter(
                     containerType,
-                    containerWidth);
+                    containerWidth,
+                    allowNested);
             }
         }
         return formatterBean;
@@ -997,7 +1004,8 @@ public class CmsJspTagContainer extends TagSupport {
                 adeConfig,
                 getName(),
                 containerType,
-                containerWidth);
+                containerWidth,
+                true);
             element.initSettings(cms, formatterConfig);
         }
         // writing elements to the session cache to improve performance of the container-page editor in offline project
@@ -1032,7 +1040,8 @@ public class CmsJspTagContainer extends TagSupport {
                         adeConfig,
                         getName(),
                         containerType,
-                        containerWidth);
+                        containerWidth,
+                        false);
                     subelement.initSettings(cms, subElementFormatterConfig);
                     // writing elements to the session cache to improve performance of the container-page editor
                     if (!isOnline) {
@@ -1117,7 +1126,8 @@ public class CmsJspTagContainer extends TagSupport {
                     CmsFormatterConfiguration elementFormatters = adeConfig.getFormatters(cms, element.getResource());
                     I_CmsFormatterBean elementFormatterBean = elementFormatters.getDefaultFormatter(
                         containerType,
-                        containerWidth);
+                        containerWidth,
+                        true);
                     if (elementFormatterBean == null) {
                         if (LOG.isErrorEnabled()) {
                             LOG.error(new CmsIllegalStateException(Messages.get().container(

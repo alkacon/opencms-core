@@ -365,6 +365,7 @@ public final class CmsContainerpageController {
                     getRequestParams(),
                     m_clientIds,
                     new ArrayList<CmsContainer>(m_containers.values()),
+                    !isGroupcontainerEditing(),
                     getLocale(),
 
                     this);
@@ -423,6 +424,7 @@ public final class CmsContainerpageController {
                 getRequestParams(),
                 m_clientIds,
                 new ArrayList<CmsContainer>(m_containers.values()),
+                !isGroupcontainerEditing(),
                 getLocale(),
 
                 this);
@@ -532,6 +534,7 @@ public final class CmsContainerpageController {
                     getRequestParams(),
                     clientIds,
                     new ArrayList<CmsContainer>(m_containers.values()),
+                    !isGroupcontainerEditing(),
                     getLocale(),
 
                     this);
@@ -1274,6 +1277,7 @@ public final class CmsContainerpageController {
                     clientId,
                     settings,
                     new ArrayList<CmsContainer>(m_containers.values()),
+                    !isGroupcontainerEditing(),
                     getLocale(),
                     this);
 
@@ -1373,6 +1377,7 @@ public final class CmsContainerpageController {
                         getRequestParams(),
                         resourceType,
                         new ArrayList<CmsContainer>(m_containers.values()),
+                        !isGroupcontainerEditing(),
                         getLocale(),
                         this);
                 }
@@ -1760,6 +1765,7 @@ public final class CmsContainerpageController {
                     CmsCoreProvider.get().getStructureId(),
                     getData().getDetailId(),
                     new ArrayList<CmsContainer>(m_containers.values()),
+                    !isGroupcontainerEditing(),
                     getLocale(),
                     this);
             }
@@ -1798,6 +1804,7 @@ public final class CmsContainerpageController {
                     CmsCoreProvider.get().getStructureId(),
                     getData().getDetailId(),
                     new ArrayList<CmsContainer>(m_containers.values()),
+                    !isGroupcontainerEditing(),
                     getLocale(),
                     this);
             }

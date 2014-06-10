@@ -236,7 +236,7 @@ public class CmsDynamicFunctionBean {
         }
         formatters.add(0, mainFormatter);
         CmsFormatterConfiguration formatterConfiguration = CmsFormatterConfiguration.create(cms, formatters);
-        I_CmsFormatterBean matchingFormatter = formatterConfiguration.getDefaultFormatter(type, width);
+        I_CmsFormatterBean matchingFormatter = formatterConfiguration.getDefaultFormatter(type, width, false);
         if (matchingFormatter == null) {
             return null;
         }

@@ -164,6 +164,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @param reqParams optional request parameters
      * @param clientIds the requested element id's
      * @param containers the containers of the current page
+     * @param allowNested if nested containers are allowed
      * @param locale the content locale
      * 
      * @return the element data
@@ -176,6 +177,7 @@ public interface I_CmsContainerpageService extends RemoteService {
         String reqParams,
         Collection<String> clientIds,
         Collection<CmsContainer> containers,
+        boolean allowNested,
         String locale) throws CmsRpcException;
 
     /**
@@ -187,6 +189,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @param clientId the requested element ids 
      * @param settings the settings for which the element data should be loaded 
      * @param containers the containers of the current page 
+     * @param allowNested if nested containers are allowed
      * @param locale the content locale
      * 
      * @return the element data 
@@ -200,6 +203,7 @@ public interface I_CmsContainerpageService extends RemoteService {
         String clientId,
         Map<String, String> settings,
         Collection<CmsContainer> containers,
+        boolean allowNested,
         String locale) throws CmsRpcException;
 
     /**
@@ -208,6 +212,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @param pageStructureId the container page structure id
      * @param detailContentId the detail content structure id
      * @param containers the containers of the current page
+     * @param allowNested if nested containers are allowed
      * @param locale the content locale
      * 
      * @return the favorite list element data
@@ -218,6 +223,7 @@ public interface I_CmsContainerpageService extends RemoteService {
         CmsUUID pageStructureId,
         CmsUUID detailContentId,
         Collection<CmsContainer> containers,
+        boolean allowNested,
         String locale) throws CmsRpcException;
 
     /**
@@ -228,6 +234,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @param reqParams optional request parameters
      * @param resourceType the requested element resource type name
      * @param containers the containers of the current page
+     * @param allowNested if nested containers are allowed
      * @param locale the content locale
      * 
      * @return the element data
@@ -240,6 +247,7 @@ public interface I_CmsContainerpageService extends RemoteService {
         String reqParams,
         String resourceType,
         Collection<CmsContainer> containers,
+        boolean allowNested,
         String locale) throws CmsRpcException;
 
     /**
@@ -248,6 +256,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @param pageStructureId the container page structure id
      * @param detailContentId the detail content structure id
      * @param containers the containers of the current page
+     * @param allowNested if nested containers are allowed
      * @param locale the content locale
      * 
      * @return the recent list element data
@@ -258,6 +267,7 @@ public interface I_CmsContainerpageService extends RemoteService {
         CmsUUID pageStructureId,
         CmsUUID detailContentId,
         Collection<CmsContainer> containers,
+        boolean allowNested,
         String locale) throws CmsRpcException;
 
     /**

@@ -101,6 +101,9 @@ public class CmsFormatterBeanParser {
     public static final String N_DETAIL = "Detail";
 
     /** Content value node name. */
+    public static final String N_NESTED_CONTAINERS = "NestedContainers";
+
+    /** Content value node name. */
     public static final String N_HEAD_INCLUDE_CSS = "HeadIncludeCss";
 
     /** Content value node name. */
@@ -277,6 +280,9 @@ public class CmsFormatterBeanParser {
         String isDetailStr = getString(root, N_DETAIL, "true");
         boolean isDetail = Boolean.parseBoolean(isDetailStr);
 
+        String hasNestedContainersString = getString(root, N_NESTED_CONTAINERS, "false");
+        boolean hasNestedContainers = Boolean.parseBoolean(hasNestedContainersString);
+
         parseMatch(root);
         parseHeadIncludes(root);
         parseSettings(root);
@@ -301,7 +307,8 @@ public class CmsFormatterBeanParser {
             m_settings,
             true,
             m_autoEnabled,
-            isDetail);
+            isDetail,
+            hasNestedContainers);
         return formatterBean;
     }
 

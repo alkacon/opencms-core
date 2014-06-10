@@ -111,6 +111,9 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     /** The formatter min width. */
     private int m_minWidth;
 
+    /** Indicating if this formatter has nested containers. */
+    private boolean m_nestedContainers;
+
     /** The nice name. */
     private String m_niceName;
 
@@ -149,6 +152,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
      * @param isFromConfigFile <code>true</code> if configuration file based
      * @param isAutoEnabled <code>true</code> if auto enabled
      * @param isDetail <code>true</code> if detail formatter
+     * @param nestedContainers <code>true</code> if this formatter has nested containers
      */
     public CmsFormatterBean(
         Set<String> containerTypes,
@@ -170,7 +174,8 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
         Map<String, CmsXmlContentProperty> settings,
         boolean isFromConfigFile,
         boolean isAutoEnabled,
-        boolean isDetail) {
+        boolean isDetail,
+        boolean nestedContainers) {
 
         m_jspRootPath = jspRootPath;
         m_jspStructureId = jspStructureId;
@@ -195,6 +200,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
         m_isFromFormatterConfigFile = isFromConfigFile;
         m_isAutoEnabled = isAutoEnabled;
         m_isDetail = isDetail;
+        m_nestedContainers = nestedContainers;
     }
 
     /**
@@ -239,7 +245,8 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
             Collections.<String, CmsXmlContentProperty> emptyMap(),
             false,
             false,
-            true);
+            true,
+            false);
 
     }
 
@@ -327,7 +334,8 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
             Collections.<String, CmsXmlContentProperty> emptyMap(),
             false,
             false,
-            true);
+            true,
+            false);
         m_matchAll = true;
     }
 
@@ -499,6 +507,14 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     public int hashCode() {
 
         return getContainerTypes().hashCode() ^ ((m_minWidth * 33) ^ m_maxWidth);
+    }
+
+    /**
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#hasNestedContainers()
+     */
+    public boolean hasNestedContainers() {
+
+        return m_nestedContainers;
     }
 
     /**

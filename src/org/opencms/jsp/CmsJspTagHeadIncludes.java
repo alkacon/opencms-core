@@ -582,6 +582,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                                             config,
                                             subElement,
                                             container,
+                                            false,
                                             formatters);
                                         if (formatter != null) {
                                             headincludes.addAll(getHeadIncludes(formatter, includeType));
@@ -604,6 +605,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                                     config,
                                     element,
                                     container,
+                                    true,
                                     formatters);
                                 if (formatter != null) {
                                     headincludes.addAll(getHeadIncludes(formatter, includeType));
@@ -686,6 +688,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
      * @param config the current sitemap configuration
      * @param element the element bean
      * @param container the container bean
+     * @param allowNested if nested containers are allowed
      * @param formatters the formatter map
      *
      * @return the formatter configuration bean
@@ -695,6 +698,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
         CmsADEConfigData config,
         CmsContainerElementBean element,
         CmsContainerBean container,
+        boolean allowNested,
         Map<CmsUUID, I_CmsFormatterBean> formatters) {
 
         int containerWidth = -1;
@@ -715,7 +719,8 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
             config,
             container.getName(),
             container.getType(),
-            containerWidth);
+            containerWidth,
+            allowNested);
         return result;
     }
 

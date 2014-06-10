@@ -214,16 +214,21 @@ public class CmsElementUtil {
      * @param elementFile the element resource file
      * @param elementId the element id
      * @param container the container
+     * @param allowNested if nested containers are allowed
      *
      * @return the HTML content
      */
-    public String getContentByContainer(CmsFile elementFile, String elementId, CmsContainer container) {
+    public String getContentByContainer(
+        CmsFile elementFile,
+        String elementId,
+        CmsContainer container,
+        boolean allowNested) {
 
         CmsContainerElementBean element = CmsADESessionCache.getCache(m_req, m_cms).getCacheContainerElement(elementId);
         element = element.clone();
         element.setTemporaryFile(elementFile);
         CmsFormatterConfiguration configs = getFormatterConfiguration(element.getResource());
-        return getContentByContainer(element, container, configs);
+        return getContentByContainer(element, container, configs, allowNested);
     }
 
     /**
@@ -231,17 +236,19 @@ public class CmsElementUtil {
      *
      * @param element the element to render
      * @param containers the containers the element appears in
+     * @param allowNested if nested containers are allowed
      *
      * @return a map from container names to rendered page contents
      */
     public Map<String, String> getContentsByContainerName(
         CmsContainerElementBean element,
-        Collection<CmsContainer> containers) {
+        Collection<CmsContainer> containers,
+        boolean allowNested) {
 
         CmsFormatterConfiguration configs = getFormatterConfiguration(element.getResource());
         Map<String, String> result = new HashMap<String, String>();
         for (CmsContainer container : containers) {
-            String content = getContentByContainer(element, container, configs);
+            String content = getContentByContainer(element, container, configs, allowNested);
             if (content != null) {
                 content = removeScriptTags(content);
             }
@@ -256,6 +263,7 @@ public class CmsElementUtil {
      * @param page the current container page 
      * @param element the resource
      * @param containers the containers on the current container page
+     * @param allowNested if nested containers are allowed
      *
      * @return the data for an element
      *
@@ -264,7 +272,8 @@ public class CmsElementUtil {
     public CmsContainerElementData getElementData(
         CmsResource page,
         CmsContainerElementBean element,
-        Collection<CmsContainer> containers) throws CmsException {
+        Collection<CmsContainer> containers,
+        boolean allowNested) throws CmsException {
 
         Locale requestLocale = m_cms.getRequestContext().getLocale();
         m_cms.getRequestContext().setLocale(m_locale);
@@ -381,7 +390,8 @@ public class CmsElementUtil {
                     CmsFormatterConfig.getSettingsKeyForContainer(cnt.getName()));
                 for (Entry<String, I_CmsFormatterBean> formatterEntry : formatterConfiguraton.getFormatterSelection(
                     cnt.getType(),
-                    cnt.getWidth()).entrySet()) {
+                    cnt.getWidth(),
+                    allowNested).entrySet()) {
                     I_CmsFormatterBean formatter = formatterEntry.getValue();
                     String id = formatterEntry.getKey();
                     if (missesFormatterSetting
@@ -419,7 +429,7 @@ public class CmsElementUtil {
                 formatters.put(cnt.getName(), containerFormatters);
             }
             // get the formatter configuration
-            Map<String, String> contentsByName = getContentsByContainerName(element, containers);
+            Map<String, String> contentsByName = getContentsByContainerName(element, containers, allowNested);
             contents = contentsByName;
         }
         elementData.setContents(contents);
@@ -542,13 +552,15 @@ public class CmsElementUtil {
      * @param element the element
      * @param container the container
      * @param configs the formatter configurations
+     * @param allowNested if nested containers are allowed
      *
      * @return the HTML content
      */
     private String getContentByContainer(
         CmsContainerElementBean element,
         CmsContainer container,
-        CmsFormatterConfiguration configs) {
+        CmsFormatterConfiguration configs,
+        boolean allowNested) {
 
         String content = null;
         I_CmsFormatterBean formatter;
@@ -558,10 +570,11 @@ public class CmsElementUtil {
         if (formatterId != null) {
             Map<String, I_CmsFormatterBean> formatters = configs.getFormatterSelection(
                 container.getType(),
-                container.getWidth());
+                container.getWidth(),
+                allowNested);
             formatter = formatters.get(formatterId);
         } else {
-            formatter = configs.getDefaultFormatter(container.getType(), container.getWidth());
+            formatter = configs.getDefaultFormatter(container.getType(), container.getWidth(), allowNested);
         }
         if (formatter != null) {
             element.initSettings(m_cms, formatter);

@@ -217,11 +217,11 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
         assertEquals(
             "Widest formtter with width < 250 should have matched",
             "f2",
-            formatterConfig.getDefaultFormatter("foo", 250).getNiceName());
+            formatterConfig.getDefaultFormatter("foo", 250, false).getNiceName());
         assertEquals(
             "Widest formatter with width < 350 and maxWidth >= 350 should have matched",
             "f3",
-            formatterConfig.getDefaultFormatter("foo", 350).getNiceName());
+            formatterConfig.getDefaultFormatter("foo", 350, false).getNiceName());
 
         I_CmsFormatterBean f5 = createTypeBasedFormatter("f5", 100, "foo");
         config = createConfig("/", f1, f2, f3, f4, f5);
@@ -229,7 +229,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
         assertEquals(
             "Type based formatter should have matched",
             "f5",
-            formatterConfig.getDefaultFormatter("foo", 350).getNiceName());
+            formatterConfig.getDefaultFormatter("foo", 350, false).getNiceName());
 
         I_CmsFormatterBean f6 = createWidthBasedFormatter("f6", 200, 200, 999);
         config = createConfig("/", f1, f2, f3, f4, f5, f6);
@@ -237,7 +237,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
         assertEquals(
             "Formatter with higher ranking should have matched",
             "f6",
-            formatterConfig.getDefaultFormatter("foo", 350).getNiceName());
+            formatterConfig.getDefaultFormatter("foo", 350, false).getNiceName());
 
     }
 
@@ -489,6 +489,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
         boolean isFromConfigFile = true;
         boolean isAutoEnabled = enabled;
         boolean isDetail = true;
+        boolean hasNestedContainers = false;
         CmsFormatterBean result = new CmsFormatterBean(
             containerTypes,
             jspRootPath,
@@ -510,7 +511,8 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             settings,
             isFromConfigFile,
             isAutoEnabled,
-            isDetail);
+            isDetail,
+            hasNestedContainers);
 
         return result;
 
@@ -556,6 +558,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             + enabled
             + "</AutoEnabled>\n"
             + "    <Detail>true</Detail>\n"
+            + "    <NestedContainers>false</NestedContainers>\n"
             + "  </NewFormatter>\n"
             + "</NewFormatters>\n"
             + "";
@@ -597,6 +600,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
         boolean isFromConfigFile = true;
         boolean isAutoEnabled = true;
         boolean isDetail = true;
+        boolean hasNestedContainers = false;
         CmsFormatterBean result = new CmsFormatterBean(
             containerTypes,
             jspRootPath,
@@ -618,7 +622,8 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             settings,
             isFromConfigFile,
             isAutoEnabled,
-            isDetail);
+            isDetail,
+            hasNestedContainers);
 
         return result;
     }
@@ -654,6 +659,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
         boolean isFromConfigFile = true;
         boolean isAutoEnabled = true;
         boolean isDetail = true;
+        boolean hasNestedContainers = false;
         CmsFormatterBean result = new CmsFormatterBean(
             containerTypes,
             jspRootPath,
@@ -675,7 +681,8 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             settings,
             isFromConfigFile,
             isAutoEnabled,
-            isDetail);
+            isDetail,
+            hasNestedContainers);
         return result;
     }
 
