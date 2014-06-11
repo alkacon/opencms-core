@@ -817,6 +817,9 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         boolean isAdmin = roleManager.hasRole(cms, CmsRole.ADMINISTRATOR);
         boolean isDeveloper = roleManager.hasRole(cms, CmsRole.DEVELOPER);
         UserInfo userInfo = new UserInfo(cms.getRequestContext().getCurrentUser().getName(), isAdmin, isDeveloper);
+        String aboutLink = OpenCms.getLinkManager().substituteLink(
+            getCmsObject(),
+            "/system/modules/org.opencms.gwt/about.jsp");
         CmsCoreData data = new CmsCoreData(
             EDITOR_URI,
             EDITOR_BACKLINK_URI,
@@ -834,6 +837,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             isShowHelp,
             toolbarVisible,
             defaultWorkplaceLink,
+            aboutLink,
             userInfo,
             OpenCms.getWorkplaceManager().getFileBytesMaxUploadSize(getCmsObject()),
             OpenCms.getWorkplaceManager().isKeepAlive(),

@@ -101,6 +101,21 @@
 		      <relations/>
 		      <accesscontrol/>
     	</file>
+   		<file>
+		      <source>system/modules/org.opencms.gwt/about.jsp</source>
+		      <destination>system/modules/org.opencms.gwt/about.jsp</destination>
+		      <type>jsp</type>
+		      <uuidstructure>1761c0f6-b2be-4d21-892f-0cfe75f67779</uuidstructure>
+		      <uuidresource>9d8e5c90-9bad-4209-b71f-88a618eaef69</uuidresource>
+		      <datelastmodified>Mon, 12 Apr 2010 07:44:36 GMT</datelastmodified>
+		      <userlastmodified>Admin</userlastmodified>
+		      <datecreated>Mon, 12 Apr 2010 07:44:27 GMT</datecreated>
+		      <usercreated>Admin</usercreated>
+		      <flags>0</flags>
+		      <properties/>
+		      <relations/>
+		      <accesscontrol/>
+    	</file>
 		<file>
 			<source>system/modules/org.opencms.gwt/resourceIcon.css</source>
 			<destination>system/modules/org.opencms.gwt/resourceIcon.css</destination>

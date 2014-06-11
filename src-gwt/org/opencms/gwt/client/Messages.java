@@ -79,6 +79,9 @@ public final class Messages {
     public static final String ERR_UPLOAD_BROWSER_SECURITY_0 = "ERR_UPLOAD_BROWSER_SECURITY_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_ABOUT_DIALOG_TITLE_0 = "GUI_ABOUT_DIALOG_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_BROKEN_LINK_NO_TITLE_0 = "GUI_BROKEN_LINK_NO_TITLE_0";
 
     /** Message constant for key in the resource bundle. */

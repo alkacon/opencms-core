@@ -380,6 +380,9 @@
 						<entry key="GUI_EXPLORER_CONTEXT_LOGOUT_0" 
 							name="org.opencms.gwt.client.ui.contextmenu.CmsLogout"
 							rule="containerpage" />
+						<entry key="GUI_EXPLORER_CONTEXT_ABOUT_0"
+							name="org.opencms.gwt.client.ui.contextmenu.CmsAbout"
+							rule="containerpage" />
 					</contextmenu>
 				</editoptions>
 			</explorertype>

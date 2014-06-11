@@ -138,6 +138,9 @@ public class CmsCoreData implements IsSerializable {
     /** A bean with information about the current user. */
     protected UserInfo m_userInfo;
 
+    /** The link to the page displayed in the "about" dialog. */
+    private String m_aboutLink;
+
     /** ADE parameters. */
     private Map<String, String> m_adeParameters;
 
@@ -224,6 +227,7 @@ public class CmsCoreData implements IsSerializable {
             clone.isShowEditorHelp(),
             clone.isToolbarVisible(),
             clone.getDefaultWorkplaceLink(),
+            clone.getAboutLink(),
             clone.getUserInfo(),
             clone.getUploadFileSizeLimit(),
             clone.isKeepAlive(),
@@ -248,7 +252,8 @@ public class CmsCoreData implements IsSerializable {
      * @param serverTime the current time  
      * @param isShowEditorHelp the show editor help flag
      * @param toolbarVisible a flag to indicate whether the toolbar should be visible initially
-     * @param defaultWorkplaceLink the default link to use for opening the workplace  
+     * @param defaultWorkplaceLink the default link to use for opening the workplace
+     * @param aboutLink the link to the "About" page   
      * @param userInfo information about the current user 
      * @param uploadFileSizeLimit the file upload size limit
      * @param isKeepAlive the keep-alive mode 
@@ -271,6 +276,7 @@ public class CmsCoreData implements IsSerializable {
         boolean isShowEditorHelp,
         boolean toolbarVisible,
         String defaultWorkplaceLink,
+        String aboutLink,
         UserInfo userInfo,
         long uploadFileSizeLimit,
         boolean isKeepAlive,
@@ -292,10 +298,21 @@ public class CmsCoreData implements IsSerializable {
         m_toolbarVisible = toolbarVisible;
         m_structureId = structureId;
         m_defaultWorkplaceLink = defaultWorkplaceLink;
+        m_aboutLink = aboutLink;
         m_userInfo = userInfo;
         m_uploadFileSizeLimit = uploadFileSizeLimit;
         m_keepAlive = isKeepAlive;
         m_adeParameters = adeParameters;
+    }
+
+    /**
+     * Gets the "About" link.<p>
+     * 
+     * @return the "about" link 
+     */
+    public String getAboutLink() {
+
+        return m_aboutLink;
     }
 
     /** 
