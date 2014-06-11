@@ -365,9 +365,9 @@ UGC.prototype.init = function() {
     // initialize the user generated content API
     var sessionId = arguments[0];  
     if (this.waitIndicatorCallback != null) {
-        OpenCmsXmlContentFormApi.setWaitIndicatorCallback(this.waitIndicatorCallback);
+        OpenCmsUgc.setWaitIndicatorCallback(this.waitIndicatorCallback);
     }
-    OpenCmsXmlContentFormApi.initFormForSession(sessionId, this.form, this.initSession, this.errorCallback);
+    OpenCmsUgc.initFormForSession(sessionId, this.form, this.initSession, this.errorCallback);
 };
 
 UGC.prototype.setWaitIndicator = function() {
