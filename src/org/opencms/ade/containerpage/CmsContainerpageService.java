@@ -533,6 +533,15 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 contentLocale);
             CmsContainerElementBean elementBean = getCachedElement(clientId);
             elementBean.initResource(cms);
+
+            // make sure to keep the element instance id
+            if (!settings.containsKey(CmsContainerElementBean.ELEMENT_INSTANCE_ID)
+                && elementBean.getIndividualSettings().containsKey(CmsContainerElementBean.ELEMENT_INSTANCE_ID)) {
+                settings.put(
+                    CmsContainerElementBean.ELEMENT_INSTANCE_ID,
+                    elementBean.getIndividualSettings().get(CmsContainerElementBean.ELEMENT_INSTANCE_ID));
+            }
+
             elementBean = CmsContainerElementBean.cloneWithSettings(
                 elementBean,
                 convertSettingValues(elementBean.getResource(), settings, contentLocale));

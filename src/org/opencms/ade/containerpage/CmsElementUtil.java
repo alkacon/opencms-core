@@ -106,6 +106,9 @@ import org.apache.commons.logging.Log;
  */
 public class CmsElementUtil {
 
+    /** The maximum number of nested container levels. */
+    public static final int MAX_NESTING_LEVEL = 2;
+
     /** Static reference to the log. */
     private static final Log LOG = CmsLog.getLog(org.opencms.ade.containerpage.CmsElementUtil.class);
 
@@ -118,11 +121,11 @@ public class CmsElementUtil {
     /** The current page uri. */
     private String m_currentPageUri;
 
-    /** The current container page. */
-    private CmsResource m_page;
-
     /** The content locale. */
     private Locale m_locale;
+
+    /** The current container page. */
+    private CmsResource m_page;
 
     /** The request parameters to use while rendering the elements. */
     @SuppressWarnings("unused")
@@ -248,7 +251,11 @@ public class CmsElementUtil {
         CmsFormatterConfiguration configs = getFormatterConfiguration(element.getResource());
         Map<String, String> result = new HashMap<String, String>();
         for (CmsContainer container : containers) {
-            String content = getContentByContainer(element, container, configs, allowNested);
+            String content = getContentByContainer(
+                element,
+                container,
+                configs,
+                allowNested && checkContainerTreeLevel(container, containers));
             if (content != null) {
                 content = removeScriptTags(content);
             }
@@ -384,14 +391,17 @@ public class CmsElementUtil {
             elementData.setInheritanceInfos(inheritanceInfos);
             elementData.setInheritanceName(name);
         } else {
+
             for (CmsContainer cnt : containers) {
                 Map<String, CmsFormatterConfig> containerFormatters = new LinkedHashMap<String, CmsFormatterConfig>();
                 boolean missesFormatterSetting = !elementData.getSettings().containsKey(
                     CmsFormatterConfig.getSettingsKeyForContainer(cnt.getName()));
-                for (Entry<String, I_CmsFormatterBean> formatterEntry : formatterConfiguraton.getFormatterSelection(
+                boolean allowNestedCnt = allowNested && checkContainerTreeLevel(cnt, containers);
+                Map<String, I_CmsFormatterBean> formatterSelection = formatterConfiguraton.getFormatterSelection(
                     cnt.getType(),
                     cnt.getWidth(),
-                    allowNested).entrySet()) {
+                    allowNestedCnt);
+                for (Entry<String, I_CmsFormatterBean> formatterEntry : formatterSelection.entrySet()) {
                     I_CmsFormatterBean formatter = formatterEntry.getValue();
                     String id = formatterEntry.getKey();
                     if (missesFormatterSetting
@@ -531,6 +541,31 @@ public class CmsElementUtil {
         result.setReleasedAndNotExpired(elementBean.isReleasedAndNotExpired());
         result.setNoEditReason(noEditReason);
         return result;
+    }
+
+    /**
+     * Checks if the maximum nesting level is reached for the given container.<p>
+     * 
+     * @param container the container
+     * @param containers the other containers of the container page
+     * 
+     * @return <code>true</code> if further nesting is allowed
+     */
+    private boolean checkContainerTreeLevel(CmsContainer container, Collection<CmsContainer> containers) {
+
+        Map<String, CmsContainer> containersByName = new HashMap<String, CmsContainer>();
+        for (CmsContainer cnt : containers) {
+            containersByName.put(cnt.getName(), cnt);
+        }
+        int level = 0;
+        String parentName = container.getParentContainerName();
+        while (CmsStringUtil.isNotEmptyOrWhitespaceOnly(parentName)) {
+            level++;
+            parentName = containersByName.containsKey(parentName)
+            ? containersByName.get(parentName).getParentContainerName()
+            : null;
+        }
+        return MAX_NESTING_LEVEL > level;
     }
 
     /**
