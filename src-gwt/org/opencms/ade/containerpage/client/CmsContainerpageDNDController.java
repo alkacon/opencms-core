@@ -279,7 +279,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         };
         if (isNewId(clientId)) {
             // for new content elements dragged from the gallery menu, the given id contains the resource type name
-            //clientId = m_controller.getNewResourceId(clientId);
             m_isNew = true;
             m_controller.getNewElement(clientId, callback);
         } else {
@@ -682,11 +681,21 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         for (CmsContainer container : m_controller.m_containers.values()) {
             if (container.isSubContainer()) {
                 CmsContainerPageContainer containerWidget = m_controller.m_targetContainers.get(container.getName());
-                // check if both, the sub container and it's parent are valid drop targets
-                if (m_dragInfos.keySet().contains(containerWidget)
-                    && m_dragInfos.keySet().contains(
-                        m_controller.m_targetContainers.get(container.getParentContainerName()))) {
-                    m_controller.m_targetContainers.get(container.getParentContainerName()).addDndChild(containerWidget);
+                // check if the sub container is a valid drop targets
+                if (m_dragInfos.keySet().contains(containerWidget)) {
+                    CmsContainer parentContainer = m_controller.m_containers.get(container.getParentContainerName());
+                    // add the container to all it's ancestors as a dnd child
+                    while (parentContainer != null) {
+                        if (m_dragInfos.keySet().contains(
+                            m_controller.m_targetContainers.get(parentContainer.getName()))) {
+                            m_controller.m_targetContainers.get(parentContainer.getName()).addDndChild(containerWidget);
+                        }
+                        if (parentContainer.isSubContainer()) {
+                            parentContainer = m_controller.m_containers.get(parentContainer.getParentContainerName());
+                        } else {
+                            parentContainer = null;
+                        }
+                    }
                 }
             }
 
