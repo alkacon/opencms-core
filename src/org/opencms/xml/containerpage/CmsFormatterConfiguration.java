@@ -143,7 +143,7 @@ public final class CmsFormatterConfiguration {
          */
         public boolean apply(I_CmsFormatterBean formatter) {
 
-            if (!m_allowNested || formatter.hasNestedContainers()) {
+            if (!m_allowNested && formatter.hasNestedContainers()) {
                 return false;
             }
             if (formatter.isMatchAll()) {
