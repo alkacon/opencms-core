@@ -42,7 +42,6 @@ import org.opencms.json.JSONObject;
 import org.opencms.jsp.CmsJspLoginBean;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.CmsSystemInfo.BuildInfoItem;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsCustomLoginException;
 import org.opencms.security.CmsOrganizationalUnit;
@@ -58,7 +57,6 @@ import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -1298,23 +1296,23 @@ public class CmsLogin extends CmsJspLoginBean {
         html.append("</td></tr></table>\n");
         html.append("</td></tr></table>\n");
 
-        html.append("<table style='margin-left:auto; margin-right: auto; margin-bottom: 10px'>");
-        Set<String> keys = OpenCms.getSystemInfo().getBuildInfoKeys();
-        for (String key : keys) {
-            BuildInfoItem item = OpenCms.getSystemInfo().getBuildInfoItem(key);
-            html.append("<tr>");
-
-            html.append("<td>");
-            html.append(CmsEncoder.escapeXml(item.getNiceName() + ":"));
-            html.append("</td>");
-
-            html.append("<td>");
-            html.append(CmsEncoder.escapeXml(item.getValue()));
-            html.append("</td>");
-
-            html.append("</tr>");
-        }
-        html.append("</table>");
+        //        html.append("<table style='margin-left:auto; margin-right: auto; margin-bottom: 10px'>");
+        //        Set<String> keys = OpenCms.getSystemInfo().getBuildInfoKeys();
+        //        for (String key : keys) {
+        //            BuildInfoItem item = OpenCms.getSystemInfo().getBuildInfoItem(key);
+        //            html.append("<tr>");
+        //
+        //            html.append("<td>");
+        //            html.append(CmsEncoder.escapeXml(item.getNiceName() + ":"));
+        //            html.append("</td>");
+        //
+        //            html.append("<td>");
+        //            html.append(CmsEncoder.escapeXml(item.getValue()));
+        //            html.append("</td>");
+        //
+        //            html.append("</tr>");
+        //        }
+        //        html.append("</table>");
 
         html.append("<div style=\"text-align: center; font-size: 10px; white-space: nowrap;\">");
         html.append("<a href=\"http://www.opencms.org\" target=\"_blank\">OpenCms</a> ");
