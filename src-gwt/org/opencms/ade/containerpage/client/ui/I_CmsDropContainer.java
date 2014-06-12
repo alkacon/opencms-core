@@ -29,6 +29,7 @@ package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.dnd.I_CmsNestedDropTarget;
+import org.opencms.gwt.client.util.CmsPositionBean;
 
 import com.google.gwt.user.client.ui.Widget;
 
@@ -82,6 +83,13 @@ public interface I_CmsDropContainer extends I_CmsNestedDropTarget {
      * @return the container id
      */
     String getContainerId();
+
+    /**
+     * Returns the current position info.<p>
+     * 
+     * @return the position info
+     */
+    CmsPositionBean getPositionInfo();
 
     /**
      * Gets the number of child widgets in this panel.<p>
@@ -138,6 +146,13 @@ public interface I_CmsDropContainer extends I_CmsNestedDropTarget {
     void refreshHighlighting();
 
     /**
+     * Refreshes position and dimension of the highlighting border. Call when anything changed during the drag process.<p>
+     * 
+     * @param positionInfo the position info to use
+     */
+    void refreshHighlighting(CmsPositionBean positionInfo);
+
+    /**
      * Removes the highlighting border.<p>
      */
     void removeHighlighting();
@@ -146,5 +161,10 @@ public interface I_CmsDropContainer extends I_CmsNestedDropTarget {
      * Shows list collector direct edit buttons (old direct edit style), if present.<p>
      */
     void showEditableListButtons();
+
+    /**
+     * Updates the cached position info.<p>
+     */
+    void updatePositionInfo();
 
 }

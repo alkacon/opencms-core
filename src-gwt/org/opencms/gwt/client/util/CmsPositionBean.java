@@ -27,15 +27,8 @@
 
 package org.opencms.gwt.client.util;
 
-import org.opencms.gwt.client.util.CmsDomUtil.Style;
-import org.opencms.util.CmsStringUtil;
-
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Node;
-import com.google.gwt.dom.client.NodeList;
-import com.google.gwt.dom.client.Style.Display;
-import com.google.gwt.dom.client.Style.Overflow;
-import com.google.gwt.dom.client.Style.Position;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.UIObject;
 
 /**
@@ -110,6 +103,38 @@ public class CmsPositionBean {
     }
 
     /**
+     * Checks whether the two position rectangles collide.<p>
+     * 
+     * @param posA the first position to check
+     * @param posB the second position to check
+     * 
+     * @return <code>true</code> if the two position rectangles collide
+     */
+    public static boolean checkCollision(CmsPositionBean posA, CmsPositionBean posB) {
+
+        // check for non collision is easier
+        if (posA.getLeft() > (posB.getLeft() + posB.getWidth())) {
+            // posA is right of posB
+            return false;
+        }
+        if ((posA.getLeft() + posA.getWidth()) < posB.getLeft()) {
+            // posA is left of posB
+            return false;
+        }
+        if (posA.getTop() > (posB.getTop() + posB.getHeight())) {
+            // posA is bellow posB
+            return false;
+        }
+        if ((posA.getTop() + posA.getHeight()) < posB.getTop()) {
+            // posA is above posB
+            return false;
+        }
+
+        // in any other case the position rectangles collide
+        return true;
+    }
+
+    /**
      * Collects the position information of the given UI object and returns a position info bean.<p> 
      * 
      * @param element the object to read the position data from
@@ -163,83 +188,59 @@ public class CmsPositionBean {
      */
     public static CmsPositionBean getInnerDimensions(Element panel, int levels, boolean includeSelf) {
 
-        boolean first = true;
-        int top = 0;
-        int left = 0;
-        int bottom = 0;
-        int right = 0;
-        // if overflow is set to hidden, use the outer dimensions
-        // if there is a background color set, use the outer dimensions
-        String parentBackground = CmsDomUtil.getCurrentStyle(panel.getParentElement(), Style.backgroundColor);
-        String selfBackground = CmsDomUtil.getCurrentStyle(panel, Style.backgroundColor);
-        if (!Overflow.HIDDEN.getCssName().equals(CmsDomUtil.getCurrentStyle(panel, Style.overflow))
-            && ((parentBackground.equals(selfBackground) || "transparent".equals(selfBackground)))) {
-            if (!includeSelf) {
-                // check for any text content
-                NodeList<Node> children = panel.getChildNodes();
-                for (int i = 0; i < children.getLength(); i++) {
-                    if ((children.getItem(i).getNodeType() == Node.TEXT_NODE)
-                        && CmsStringUtil.isNotEmptyOrWhitespaceOnly(children.getItem(i).getNodeValue())) {
-                        includeSelf = true;
-                        break;
-                    }
-                }
-            }
-            if (includeSelf) {
-                top = panel.getAbsoluteTop();
-                left = panel.getAbsoluteLeft();
-                bottom = top + panel.getOffsetHeight();
-                right = left + panel.getOffsetWidth();
-                first = false;
-            }
-            Element child = panel.getFirstChildElement();
-            while (child != null) {
-                String tagName = child.getTagName();
-                if (tagName.equalsIgnoreCase("br")
-                    || tagName.equalsIgnoreCase("tr")
-                    || tagName.equalsIgnoreCase("thead")
-                    || tagName.equalsIgnoreCase("tfoot")
-                    || tagName.equalsIgnoreCase("script")
-                    || tagName.equalsIgnoreCase("style")) {
-                    // ignore tags with no relevant position info
-                    child = child.getNextSiblingElement();
-                    continue;
-                }
-                String positioning = CmsDomUtil.getCurrentStyle(child, Style.position);
-                if (!Display.NONE.getCssName().equals(CmsDomUtil.getCurrentStyle(child, Style.display))
-                    && !(positioning.equalsIgnoreCase(Position.ABSOLUTE.getCssName()) || positioning.equalsIgnoreCase(Position.FIXED.getCssName()))) {
-                    CmsPositionBean childDimensions = levels > 0
-                    ? getInnerDimensions(child, levels - 1, true)
-                    : generatePositionInfo(panel);
-                    if (first) {
-                        first = false;
-                        top = childDimensions.getTop();
-                        left = childDimensions.getLeft();
-                        bottom = top + childDimensions.getHeight();
-                        right = left + childDimensions.getWidth();
-                    } else {
-                        int wTop = childDimensions.getTop();
-                        top = top < wTop ? top : wTop;
-                        int wLeft = childDimensions.getLeft();
-                        left = left < wLeft ? left : wLeft;
-                        int wBottom = wTop + childDimensions.getHeight();
-                        bottom = bottom > wBottom ? bottom : wBottom;
-                        int wRight = wLeft + childDimensions.getWidth();
-                        right = right > wRight ? right : wRight;
-                    }
-                }
-                child = child.getNextSiblingElement();
-            }
+        CmsPositionBean result = new CmsPositionBean();
+        getBoundingClientRect(panel, result, Window.getScrollLeft(), Window.getScrollTop());
+        return result;
+    }
+
+    /**
+     * Uses the getBoundingClientRect method to evaluate the element dimensions.<p>
+     * 
+     * @param element the element
+     * @param pos the position bean
+     * @param scrollLeft the window scroll position left
+     * @param scrollTop the window scroll position top
+     */
+    private static native void getBoundingClientRect(Element element, CmsPositionBean pos, int scrollLeft, int scrollTop)/*-{
+                                                                                                                         
+                                                                                                                         var rect = element.getBoundingClientRect();
+                                                                                                                         pos.@org.opencms.gwt.client.util.CmsPositionBean::m_top=rect.top+scrollTop;
+                                                                                                                         pos.@org.opencms.gwt.client.util.CmsPositionBean::m_left=rect.left+scrollLeft;
+                                                                                                                         pos.@org.opencms.gwt.client.util.CmsPositionBean::m_height=rect.height;
+                                                                                                                         pos.@org.opencms.gwt.client.util.CmsPositionBean::m_width=rect.width;
+                                                                                                                         }-*/;
+
+    /**
+     * Increases the dimensions to completely surround the child.<p>
+     * 
+     * @param child the child position info
+     * @param padding the padding to apply
+     */
+    public void ensureSurrounds(CmsPositionBean child, int padding) {
+
+        // increase the size of the outer rectangle
+        if (getLeft() > child.getLeft()) {
+            int diff = getLeft() - child.getLeft();
+            // ensure padding
+            diff += padding;
+            setLeft(getLeft() - diff);
+            setWidth(getWidth() + diff);
         }
-        if (!first) {
-            CmsPositionBean result = new CmsPositionBean();
-            result.setHeight(bottom - top);
-            result.setWidth(right - left);
-            result.setTop(top);
-            result.setLeft(left);
-            return result;
-        } else {
-            return generatePositionInfo(panel);
+        if (getTop() > child.getTop()) {
+            int diff = getTop() - child.getTop();
+            diff += padding;
+            setTop(getTop() - diff);
+            setHeight(getHeight() + diff);
+        }
+        if ((getLeft() + getWidth()) < (child.getLeft() + child.getWidth())) {
+            int diff = (child.getLeft() + child.getWidth()) - (getLeft() + getWidth());
+            diff += padding;
+            setWidth(getWidth() + diff);
+        }
+        if ((getTop() + getHeight()) < (child.getTop() + child.getHeight())) {
+            int diff = (child.getTop() + child.getHeight()) - (getTop() + getHeight());
+            diff += padding;
+            setHeight(getHeight() + diff);
         }
     }
 
@@ -329,6 +330,22 @@ public class CmsPositionBean {
     public int getWidth() {
 
         return m_width;
+    }
+
+    /**
+     * Checks whether the given position is completely surrounded by this position.<p>
+     * 
+     * @param child the child position
+     * @param padding the padding to use
+     * 
+     * @return <code>true</code> if the child position is completely surrounded
+     */
+    public boolean isInside(CmsPositionBean child, int padding) {
+
+        return ((getLeft() + padding) < child.getLeft()) // checking left border
+            && ((getTop() + padding) < child.getTop()) // checking top border
+            && (((getLeft() + getWidth()) - padding) > (child.getLeft() + child.getWidth())) // checking right border
+            && (((getTop() + getHeight()) - padding) > (child.getTop() + child.getHeight())); // checking bottom border
     }
 
     /**

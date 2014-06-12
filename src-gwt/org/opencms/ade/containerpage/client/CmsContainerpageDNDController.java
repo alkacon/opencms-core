@@ -48,6 +48,7 @@ import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.CmsPositionBean;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -56,6 +57,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import com.google.common.base.Objects;
@@ -936,10 +938,43 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
      */
     private void updateHighlighting() {
 
+        Map<I_CmsDropContainer, CmsPositionBean> containers = new HashMap<I_CmsDropContainer, CmsPositionBean>();
         for (I_CmsDropTarget target : m_dragInfos.keySet()) {
-            if (target instanceof I_CmsDropContainer) {
-                ((I_CmsDropContainer)target).refreshHighlighting();
+            if ((target instanceof I_CmsDropContainer)
+                && !Display.NONE.getCssName().equalsIgnoreCase(
+                    CmsDomUtil.getCurrentStyle(target.getElement(), CmsDomUtil.Style.display))) {
+                ((I_CmsDropContainer)target).updatePositionInfo();
+                containers.put((I_CmsDropContainer)target, ((I_CmsDropContainer)target).getPositionInfo());
             }
+        }
+        int padding = 2;
+        List<I_CmsDropContainer> containersToMatch = new ArrayList<I_CmsDropContainer>(containers.keySet());
+        for (I_CmsDropContainer contA : containers.keySet()) {
+            containersToMatch.remove(contA);
+            for (I_CmsDropContainer contB : containersToMatch) {
+                CmsPositionBean posA = containers.get(contA);
+                CmsPositionBean posB = containers.get(contB);
+                if (CmsPositionBean.checkCollision(posA, posB)) {
+                    if (contA.hasDnDChildren() && contA.getDnDChildren().contains(contB)) {
+                        if (!posA.isInside(posB, padding)) {
+                            // the nested container is not completely inside the other
+                            // increase the size of the outer container
+                            posA.ensureSurrounds(posB, padding);
+                        }
+                    } else if (contB.hasDnDChildren() && contB.getDnDChildren().contains(contA)) {
+                        if (!posB.isInside(posA, padding)) {
+                            // the nested container is not completely inside the other
+                            // increase the size of the outer container
+                            posB.ensureSurrounds(posA, padding);
+                        }
+                    } else {
+                        // TODO: implement solution for overlapping non nested containers
+                    }
+                }
+            }
+        }
+        for (Entry<I_CmsDropContainer, CmsPositionBean> containerEntry : containers.entrySet()) {
+            containerEntry.getKey().refreshHighlighting(containerEntry.getValue());
         }
     }
 }

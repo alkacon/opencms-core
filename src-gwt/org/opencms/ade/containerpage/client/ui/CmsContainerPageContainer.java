@@ -413,6 +413,14 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     }
 
     /**
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#getPositionInfo()
+     */
+    public CmsPositionBean getPositionInfo() {
+
+        return m_ownPosition;
+    }
+
+    /**
      * @see org.opencms.gwt.client.dnd.I_CmsNestedDropTarget#hasDnDChildren()
      */
     public boolean hasDnDChildren() {
@@ -508,8 +516,18 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     public void refreshHighlighting() {
 
         if (m_highlighting != null) {
-            // cache the position info, to be used during drag and drop
-            m_ownPosition = CmsPositionBean.getInnerDimensions(getElement(), 3, false);
+            refreshHighlighting(CmsPositionBean.getInnerDimensions(getElement(), 3, false));
+        }
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#refreshHighlighting(org.opencms.gwt.client.util.CmsPositionBean)
+     */
+    public void refreshHighlighting(CmsPositionBean positionInfo) {
+
+        // cache the position info, to be used during drag and drop
+        m_ownPosition = positionInfo;
+        if (m_highlighting != null) {
             m_highlighting.setPosition(m_ownPosition);
         }
     }
@@ -577,6 +595,14 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
                 ((CmsContainerPageElementPanel)widget).updateOptionBarPosition();
             }
         }
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#updatePositionInfo()
+     */
+    public void updatePositionInfo() {
+
+        m_ownPosition = CmsPositionBean.getInnerDimensions(getElement(), 3, false);
     }
 
     /**
