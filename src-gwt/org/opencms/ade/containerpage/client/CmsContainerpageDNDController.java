@@ -50,6 +50,7 @@ import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPositionBean;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -322,6 +323,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         boolean changedContainerpage = false;
         boolean isFromClipboard = draggable instanceof CmsMenuListItem;
         CmsContainerPageElementPanel clipboardContainerElement = null;
+        final boolean[] triggerReload = {false};
 
         if (target != m_initialDropTarget) {
             if (target instanceof I_CmsDropContainer) {
@@ -352,6 +354,11 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                     }
                     // changes are only relevant to the container page if not group-container editing
                     changedContainerpage = !m_controller.isGroupcontainerEditing();
+                    triggerReload[0] = containerElement.getElement().getInnerHTML().contains(
+                        CmsGwtConstants.FORMATTER_RELOAD_MARKER)
+                        && changedContainerpage
+                        && !m_isNew;
+
                     if (draggable instanceof CmsContainerPageElementPanel) {
                         ((CmsContainerPageElementPanel)draggable).removeFromParent();
                     }
@@ -389,6 +396,17 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             optionBar.removeFromParent();
             containerElement.setElementOptionBar(optionBar);
         }
+        final Runnable checkReload = new Runnable() {
+
+            public void run() {
+
+                if (triggerReload[0]) {
+                    CmsContainerpageController.get().reloadPage();
+                }
+            }
+
+        };
+
         if (clipboardContainerElement != null) {
             final CmsContainerPageElementPanel finalClipboardContainerElement = clipboardContainerElement;
             final String serverIdStr = CmsContainerpageController.getServerId(m_draggableId);
@@ -432,7 +450,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                                                 controller.replaceContainerElement(
                                                     finalClipboardContainerElement,
                                                     newData);
-                                                controller.setPageChanged();
+                                                controller.setPageChanged(checkReload);
                                             } catch (Exception e) {
                                                 throw new RuntimeException(e);
                                             }
@@ -442,7 +460,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                         });
 
                     } else if (Objects.equal(result, CmsEditorConstants.MODE_REUSE)) {
-                        m_controller.setPageChanged();
+                        m_controller.setPageChanged(checkReload);
                     }
 
                 }
@@ -451,7 +469,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
         } else {
             if (changedContainerpage) {
-                m_controller.setPageChanged();
+                m_controller.setPageChanged(checkReload);
             }
         }
         stopDrag(handler);

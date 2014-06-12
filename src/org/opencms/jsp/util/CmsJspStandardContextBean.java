@@ -39,6 +39,7 @@ import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.flex.CmsFlexRequest;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.jsp.CmsJspBean;
 import org.opencms.jsp.CmsJspTagEditable;
 import org.opencms.jsp.Messages;
@@ -252,20 +253,20 @@ public final class CmsJspStandardContextBean {
     /** The lazy initialized map which allows access to the dynamic function beans. */
     private Map<String, CmsDynamicFunctionBeanWrapper> m_function;
 
+    /** The lazy initialized map for the function detail pages. */
+    private Map<String, String> m_functionDetailPage;
+
     /** The currently displayed container page. */
     private CmsContainerPageBean m_page;
 
     /** The current request. */
     private ServletRequest m_request;
 
-    /** The VFS content access bean. */
-    private CmsJspVfsAccessBean m_vfsBean;
-
-    /** The lazy initialized map for the function detail pages. */
-    private Map<String, String> m_functionDetailPage;
-
     /** The lazy initialized map for the detail pages. */
     private Map<String, String> m_typeDetailPage;
+
+    /** The VFS content access bean. */
+    private CmsJspVfsAccessBean m_vfsBean;
 
     /**
      * Creates an empty instance.<p>
@@ -420,6 +421,18 @@ public final class CmsJspStandardContextBean {
     public CmsContainerElementBean getElement() {
 
         return m_element;
+    }
+
+    /**
+     * Alternative method name for getReloadMarker(). 
+     * 
+     * @see org.opencms.jsp.util.CmsJspStandardContextBean#getReloadMarker()
+     * 
+     * @return the reload marker 
+     */
+    public String getEnableReload() {
+
+        return getReloadMarker();
     }
 
     /**
@@ -606,6 +619,21 @@ public final class CmsJspStandardContextBean {
             }
         };
         return CmsCollectionsGenericWrapper.createLazyMap(transformer);
+    }
+
+    /**
+     * Returns a HTML comment string that will cause the container page editor to reload the page if the element or its settings
+     * were edited.<p>
+     * 
+     * @return the reload marker 
+     */
+    public String getReloadMarker() {
+
+        if (m_cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+            return ""; // reload marker is not needed in Online mode 
+        } else {
+            return CmsGwtConstants.FORMATTER_RELOAD_MARKER;
+        }
     }
 
     /**

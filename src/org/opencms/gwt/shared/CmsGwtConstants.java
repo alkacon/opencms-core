@@ -38,12 +38,14 @@ public final class CmsGwtConstants {
     /** Context menu action id. */
     public static final String ACTION_TEMPLATECONTEXTS = "templatecontexts";
 
+    /** A HTML comment that will cause the container page editor to reload the page if it is contained in HTML which is reloaded after the element or its settings have been edited. */
+    public static final String FORMATTER_RELOAD_MARKER = "<!--FORMATTER_RELOAD_g3jf9o0n-->";
+
     /** Parameter to disable direct edit. */
     public static final String PARAM_DISABLE_DIRECT_EDIT = "__disableDirectEdit";
 
     /** Parameter to force a specific template context. */
     public static final String PARAM_TEMPLATE_CONTEXT = "__templateContext";
-
     /** Type name for container pages. */
     public static final String TYPE_CONTAINERPAGE = "containerpage";
 

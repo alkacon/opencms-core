@@ -66,6 +66,7 @@ import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.gwt.shared.rpc.I_CmsCoreServiceAsync;
@@ -442,13 +443,19 @@ public final class CmsContainerpageController {
             }
             addElements(result);
             Iterator<org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel> it = getAllDragElements().iterator();
+            final boolean[] reloadMarkerFound = {false};
             while (it.hasNext()) {
                 org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel containerElement = it.next();
                 if (!m_clientIds.contains(containerElement.getId())) {
                     continue;
                 }
                 try {
-                    replaceContainerElement(containerElement, m_elements.get(containerElement.getId()));
+                    CmsContainerPageElementPanel replacer = replaceContainerElement(
+                        containerElement,
+                        m_elements.get(containerElement.getId()));
+                    if (replacer.getElement().getInnerHTML().contains(CmsGwtConstants.FORMATTER_RELOAD_MARKER)) {
+                        reloadMarkerFound[0] = true;
+                    }
                 } catch (Exception e) {
                     CmsDebugLog.getInstance().printLine("trying to replace");
                     CmsDebugLog.getInstance().printLine(e.getLocalizedMessage());
@@ -458,6 +465,10 @@ public final class CmsContainerpageController {
             if (isGroupcontainerEditing()) {
                 getGroupEditor().updateBackupElements(result);
                 getGroupcontainer().refreshHighlighting();
+            } else {
+                if (reloadMarkerFound[0]) {
+                    CmsContainerpageController.get().reloadPage();
+                }
             }
             m_handler.updateClipboard(result);
             resetEditButtons();
@@ -638,6 +649,9 @@ public final class CmsContainerpageController {
     /** The current lock status for the page. */
     private LockStatus m_lockStatus = LockStatus.unknown;
 
+    /** The browser location at the time the containerpage controller was initialized. */
+    private String m_originalUrl;
+
     /** Flag if the container-page has changed. */
     private boolean m_pageChanged;
 
@@ -652,6 +666,7 @@ public final class CmsContainerpageController {
      */
     public CmsContainerpageController() {
 
+        m_originalUrl = Window.Location.getHref();
         INSTANCE = this;
         try {
             m_data = (CmsCntPageData)CmsRpcPrefetcher.getSerializedObjectFromDictionary(
@@ -1984,6 +1999,24 @@ public final class CmsContainerpageController {
             }
         };
         getElementWithSettings(clientId, settings, callback);
+    }
+
+    /**
+     * Reloads the page.<p>
+     */
+    public void reloadPage() {
+
+        Timer timer = new Timer() {
+
+            @Override
+            @SuppressWarnings("synthetic-access")
+            public void run() {
+
+                Window.Location.assign(m_originalUrl);
+            }
+        };
+        timer.schedule(150);
+
     }
 
     /**

@@ -46,6 +46,7 @@ import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 import org.opencms.gwt.client.ui.input.form.CmsInfoBoxFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.util.CmsStringUtil;
@@ -339,6 +340,10 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
                     }
                     if (hasFormatterChanges) {
                         updateCss();
+                    }
+                    if (result.getElement().getInnerHTML().contains(CmsGwtConstants.FORMATTER_RELOAD_MARKER)
+                        && !CmsContainerpageController.get().isGroupcontainerEditing()) {
+                        CmsContainerpageController.get().reloadPage();
                     }
                 }
 
