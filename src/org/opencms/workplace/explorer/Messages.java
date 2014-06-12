@@ -96,6 +96,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_EXPLORER_ALTBELONGTO_0 = "GUI_EXPLORER_ALTBELONGTO_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_CONTEXT_ABOUT_0 = "GUI_EXPLORER_CONTEXT_ABOUT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_CONTEXT_ACCESS_0 = "GUI_EXPLORER_CONTEXT_ACCESS_0";
 
     /** Message constant for key in the resource bundle. */
