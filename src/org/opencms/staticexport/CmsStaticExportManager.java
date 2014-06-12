@@ -2443,7 +2443,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             data = new CmsStaticExportData(CACHEVALUE_404, rfsName, null, null);
         }
 
-        siteRoot = OpenCms.getSiteManager().getSiteRoot(data.getResource().getRootPath());
+        if (data.getResource() != null) {
+            siteRoot = OpenCms.getSiteManager().getSiteRoot(data.getResource().getRootPath());
+        }
         if (siteRoot != null) {
             m_cacheExportUris.put(siteRoot + ":" + rfsName, data);
         } else {
