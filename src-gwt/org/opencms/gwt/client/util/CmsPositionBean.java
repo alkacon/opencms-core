@@ -290,10 +290,10 @@ public class CmsPositionBean {
     private static native void getBoundingClientRect(Element element, CmsPositionBean pos, int scrollLeft, int scrollTop)/*-{
                                                                                                                          
                                                                                                                          var rect = element.getBoundingClientRect();
-                                                                                                                         pos.@org.opencms.gwt.client.util.CmsPositionBean::m_top=rect.top+scrollTop;
-                                                                                                                         pos.@org.opencms.gwt.client.util.CmsPositionBean::m_left=rect.left+scrollLeft;
-                                                                                                                         pos.@org.opencms.gwt.client.util.CmsPositionBean::m_height=rect.height;
-                                                                                                                         pos.@org.opencms.gwt.client.util.CmsPositionBean::m_width=rect.width;
+                                                                                                                         pos.@org.opencms.gwt.client.util.CmsPositionBean::m_top=Math.round(rect.top+scrollTop);
+                                                                                                                         pos.@org.opencms.gwt.client.util.CmsPositionBean::m_left=Math.round(rect.left+scrollLeft);
+                                                                                                                         pos.@org.opencms.gwt.client.util.CmsPositionBean::m_height=Math.round(rect.height);
+                                                                                                                         pos.@org.opencms.gwt.client.util.CmsPositionBean::m_width=Math.round(rect.width);
                                                                                                                          }-*/;
 
     /**
