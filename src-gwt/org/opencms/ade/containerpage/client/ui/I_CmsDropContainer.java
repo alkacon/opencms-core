@@ -118,6 +118,13 @@ public interface I_CmsDropContainer extends I_CmsNestedDropTarget {
     void highlightContainer();
 
     /**
+     * Puts a highlighting border around the container content using the given dimensions.<p>
+     * 
+     * @param positionInfo the highlighting position to use
+     */
+    void highlightContainer(CmsPositionBean positionInfo);
+
+    /**
      * Inserts a child widget before the specified index.
      * If the widget is already a child of this panel, it will be moved to the specified index.<p>
      * 

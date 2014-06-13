@@ -447,6 +447,14 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
      */
     public void highlightContainer() {
 
+        highlightContainer(CmsPositionBean.getInnerDimensions(getElement(), 3, false));
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#highlightContainer(org.opencms.gwt.client.util.CmsPositionBean)
+     */
+    public void highlightContainer(CmsPositionBean positionInfo) {
+
         getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragging());
         // remove any remaining highlighting
         if (m_highlighting != null) {
@@ -461,7 +469,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
             getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().clearFix());
         }
         // cache the position info, to be used during drag and drop
-        m_ownPosition = CmsPositionBean.getInnerDimensions(getElement(), 3, false);
+        m_ownPosition = positionInfo;
         m_highlighting = new CmsHighlightingBorder(m_ownPosition, CmsHighlightingBorder.BorderColor.red);
         RootPanel.get().add(m_highlighting);
     }

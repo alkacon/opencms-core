@@ -481,7 +481,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     public void onPositionedPlaceholder(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
 
         if (hasChangedPosition(target)) {
-            updateHighlighting();
+            updateHighlighting(false);
         }
     }
 
@@ -527,7 +527,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             }
         }
         showOriginalPositionPlaceholder(draggable, false);
-        updateHighlighting();
+        updateHighlighting(false);
         if (target instanceof CmsContainerPageContainer) {
             String id = ((CmsContainerPageContainer)target).getContainerId();
             CmsContainerpageEditor.getZIndexManager().leave(id);
@@ -640,16 +640,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 }
             }
             // add highlighting after all drag targets have been initialized
-            for (I_CmsDropTarget target : m_dragInfos.keySet()) {
-                if (target instanceof I_CmsDropContainer) {
-                    if (target == m_initialDropTarget) {
-                        // the initial target is already highlighted, update the position
-                        ((I_CmsDropContainer)target).refreshHighlighting();
-                    } else {
-                        ((I_CmsDropContainer)target).highlightContainer();
-                    }
-                }
-            }
+            updateHighlighting(true);
             initNestedContainers();
         }
     }
@@ -953,8 +944,10 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
     /**
      * Updates the drag target highlighting.<p>
+     * 
+     * @param initial <code>true</code> when initially highlighting the drop containers 
      */
-    private void updateHighlighting() {
+    private void updateHighlighting(boolean initial) {
 
         Map<I_CmsDropContainer, CmsPositionBean> containers = new HashMap<I_CmsDropContainer, CmsPositionBean>();
         for (I_CmsDropTarget target : m_dragInfos.keySet()) {
@@ -965,14 +958,14 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 containers.put((I_CmsDropContainer)target, ((I_CmsDropContainer)target).getPositionInfo());
             }
         }
-        int padding = 2;
+        int padding = 4;
         List<I_CmsDropContainer> containersToMatch = new ArrayList<I_CmsDropContainer>(containers.keySet());
         for (I_CmsDropContainer contA : containers.keySet()) {
             containersToMatch.remove(contA);
             for (I_CmsDropContainer contB : containersToMatch) {
                 CmsPositionBean posA = containers.get(contA);
                 CmsPositionBean posB = containers.get(contB);
-                if (CmsPositionBean.checkCollision(posA, posB)) {
+                if (CmsPositionBean.checkCollision(posA, posB, padding * 3)) {
                     if (contA.hasDnDChildren() && contA.getDnDChildren().contains(contB)) {
                         if (!posA.isInside(posB, padding)) {
                             // the nested container is not completely inside the other
@@ -986,13 +979,18 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                             posB.ensureSurrounds(posA, padding);
                         }
                     } else {
-                        // TODO: implement solution for overlapping non nested containers
+                        CmsPositionBean.avoidCollision(posA, posB, padding * 3);
                     }
                 }
             }
         }
+
         for (Entry<I_CmsDropContainer, CmsPositionBean> containerEntry : containers.entrySet()) {
-            containerEntry.getKey().refreshHighlighting(containerEntry.getValue());
+            if (initial && (containerEntry.getKey() != m_initialDropTarget)) {
+                containerEntry.getKey().highlightContainer(containerEntry.getValue());
+            } else {
+                containerEntry.getKey().refreshHighlighting(containerEntry.getValue());
+            }
         }
     }
 }

@@ -69,6 +69,22 @@ public class CmsPositionBean {
         CORNER_TOP_RIGHT
     }
 
+    /** The directions. */
+    static enum Direction {
+        /** Bottom. */
+        bottom,
+
+        /** Left. */
+        left,
+
+        /** Right. */
+
+        right,
+
+        /** Top. */
+        top
+    }
+
     /** Element height. */
     private int m_height;
 
@@ -103,29 +119,99 @@ public class CmsPositionBean {
     }
 
     /**
+     * Manipulates the position infos to ensure a minimum margin between the rectangles.<p>
+     * 
+     * @param posA the first position to check
+     * @param posB the second position to check
+     * @param margin the required margin
+     */
+    @SuppressWarnings("incomplete-switch")
+    public static void avoidCollision(CmsPositionBean posA, CmsPositionBean posB, int margin) {
+
+        Direction dir = null;
+        int diff = 0;
+        int diffTemp = (posB.getLeft() + posB.getWidth()) - posA.getLeft();
+        if (diffTemp > -margin) {
+            dir = Direction.left;
+            diff = diffTemp;
+        }
+
+        diffTemp = (posA.getLeft() + posA.getWidth()) - posB.getLeft();
+        if ((diffTemp > -margin) && (diffTemp < diff)) {
+            dir = Direction.right;
+            diff = diffTemp;
+        }
+        diffTemp = (posB.getTop() + posB.getHeight()) - posA.getTop();
+        if ((diffTemp > -margin) && (diffTemp < diff)) {
+            dir = Direction.top;
+            diff = diffTemp;
+        }
+        diffTemp = (posA.getTop() + posA.getHeight()) - posB.getTop();
+        if ((diffTemp > -margin) && (diffTemp < diff)) {
+            dir = Direction.bottom;
+            diff = diffTemp;
+        }
+
+        diff = (int)Math.ceil((1.0 * (diff + margin)) / 2);
+        switch (dir) {
+            case left:
+                // move the left border of a
+                posA.setLeft(posA.getLeft() + diff);
+                posA.setWidth(posA.getWidth() - diff);
+
+                // move the right border of b
+                posB.setWidth(posB.getWidth() - diff);
+                break;
+
+            case right:
+                // move the left border of b
+                posB.setLeft(posB.getLeft() + diff);
+                posB.setWidth(posB.getWidth() - diff);
+
+                // move the right border of a
+                posA.setWidth(posA.getWidth() - diff);
+                break;
+
+            case top:
+                posA.setTop(posA.getTop() + diff);
+                posA.setHeight(posA.getHeight() - diff);
+
+                posB.setHeight(posB.getHeight() - diff);
+                break;
+            case bottom:
+                posB.setTop(posB.getTop() + diff);
+                posB.setHeight(posB.getHeight() - diff);
+
+                posA.setHeight(posA.getHeight() - diff);
+
+        }
+    }
+
+    /**
      * Checks whether the two position rectangles collide.<p>
      * 
      * @param posA the first position to check
      * @param posB the second position to check
+     * @param margin the required margin
      * 
      * @return <code>true</code> if the two position rectangles collide
      */
-    public static boolean checkCollision(CmsPositionBean posA, CmsPositionBean posB) {
+    public static boolean checkCollision(CmsPositionBean posA, CmsPositionBean posB, int margin) {
 
         // check for non collision is easier
-        if (posA.getLeft() > (posB.getLeft() + posB.getWidth())) {
+        if ((posA.getLeft() - margin) > (posB.getLeft() + posB.getWidth())) {
             // posA is right of posB
             return false;
         }
-        if ((posA.getLeft() + posA.getWidth()) < posB.getLeft()) {
+        if ((posA.getLeft() + posA.getWidth()) < (posB.getLeft() - margin)) {
             // posA is left of posB
             return false;
         }
-        if (posA.getTop() > (posB.getTop() + posB.getHeight())) {
+        if ((posA.getTop() - margin) > (posB.getTop() + posB.getHeight())) {
             // posA is bellow posB
             return false;
         }
-        if ((posA.getTop() + posA.getHeight()) < posB.getTop()) {
+        if ((posA.getTop() + posA.getHeight()) < (posB.getTop() - margin)) {
             // posA is above posB
             return false;
         }
@@ -219,25 +305,25 @@ public class CmsPositionBean {
     public void ensureSurrounds(CmsPositionBean child, int padding) {
 
         // increase the size of the outer rectangle
-        if (getLeft() > child.getLeft()) {
+        if ((getLeft() + padding) > child.getLeft()) {
             int diff = getLeft() - child.getLeft();
             // ensure padding
             diff += padding;
             setLeft(getLeft() - diff);
             setWidth(getWidth() + diff);
         }
-        if (getTop() > child.getTop()) {
+        if ((getTop() + padding) > child.getTop()) {
             int diff = getTop() - child.getTop();
             diff += padding;
             setTop(getTop() - diff);
             setHeight(getHeight() + diff);
         }
-        if ((getLeft() + getWidth()) < (child.getLeft() + child.getWidth())) {
+        if ((getLeft() + getWidth()) < (child.getLeft() + child.getWidth() + padding)) {
             int diff = (child.getLeft() + child.getWidth()) - (getLeft() + getWidth());
             diff += padding;
             setWidth(getWidth() + diff);
         }
-        if ((getTop() + getHeight()) < (child.getTop() + child.getHeight())) {
+        if ((getTop() + getHeight()) < (child.getTop() + child.getHeight() + padding)) {
             int diff = (child.getTop() + child.getHeight()) - (getTop() + getHeight());
             diff += padding;
             setHeight(getHeight() + diff);
