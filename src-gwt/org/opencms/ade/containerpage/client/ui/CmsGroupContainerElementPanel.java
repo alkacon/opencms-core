@@ -28,7 +28,6 @@
 package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageController;
-import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
@@ -255,18 +254,9 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
      */
     public void highlightContainer(CmsPositionBean positionInfo) {
 
-        getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragging());
         // remove any remaining highlighting
         if (m_highlighting != null) {
             m_highlighting.removeFromParent();
-        }
-        // adding the 'clearFix' style to all targets containing floated elements
-        // in some layouts this may lead to inappropriate clearing after the target, 
-        // but it is still necessary as it forces the target to enclose it's floated content 
-        if ((getWidgetCount() > 0)
-            && !CmsDomUtil.getCurrentStyle(getWidget(0).getElement(), CmsDomUtil.Style.floatCss).equals(
-                CmsDomUtil.StyleValue.none.toString())) {
-            getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().clearFix());
         }
         // cache the position info, to be used during drag and drop
         m_ownPosition = positionInfo;
@@ -381,10 +371,6 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
             m_highlighting.removeFromParent();
             m_highlighting = null;
         }
-
-        getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragging());
-        getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().clearFix());
-
     }
 
     /**

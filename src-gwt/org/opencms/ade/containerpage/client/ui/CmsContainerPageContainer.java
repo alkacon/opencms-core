@@ -316,15 +316,17 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
      */
     public boolean checkPosition(int x, int y, Orientation orientation) {
 
-        // ignore orientation
-        int scrollTop = getElement().getOwnerDocument().getScrollTop();
-        // use cached position
-        int relativeTop = (y + scrollTop) - m_ownPosition.getTop();
-        if ((relativeTop > 0) && (m_ownPosition.getHeight() > relativeTop)) {
-            // cursor is inside the height of the element, check horizontal position
-            int scrollLeft = getElement().getOwnerDocument().getScrollLeft();
-            int relativeLeft = (x + scrollLeft) - m_ownPosition.getLeft();
-            return (relativeLeft > 0) && (m_ownPosition.getWidth() > relativeLeft);
+        if (m_ownPosition != null) {
+            // ignore orientation
+            int scrollTop = getElement().getOwnerDocument().getScrollTop();
+            // use cached position
+            int relativeTop = (y + scrollTop) - m_ownPosition.getTop();
+            if ((relativeTop > 0) && (m_ownPosition.getHeight() > relativeTop)) {
+                // cursor is inside the height of the element, check horizontal position
+                int scrollLeft = getElement().getOwnerDocument().getScrollLeft();
+                int relativeLeft = (x + scrollLeft) - m_ownPosition.getLeft();
+                return (relativeLeft > 0) && (m_ownPosition.getWidth() > relativeLeft);
+            }
         }
         return false;
     }
@@ -455,18 +457,9 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
      */
     public void highlightContainer(CmsPositionBean positionInfo) {
 
-        getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragging());
         // remove any remaining highlighting
         if (m_highlighting != null) {
             m_highlighting.removeFromParent();
-        }
-        // adding the 'clearFix' style to all targets containing floated elements
-        // in some layouts this may lead to inappropriate clearing after the target, 
-        // but it is still necessary as it forces the target to enclose it's floated content 
-        if ((getWidgetCount() > 0)
-            && !CmsDomUtil.getCurrentStyle(getWidget(0).getElement(), CmsDomUtil.Style.floatCss).equals(
-                CmsDomUtil.StyleValue.none.toString())) {
-            getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().clearFix());
         }
         // cache the position info, to be used during drag and drop
         m_ownPosition = positionInfo;
@@ -549,8 +542,6 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
             m_highlighting.removeFromParent();
             m_highlighting = null;
         }
-        removeStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragging());
-        removeStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().clearFix());
     }
 
     /**
