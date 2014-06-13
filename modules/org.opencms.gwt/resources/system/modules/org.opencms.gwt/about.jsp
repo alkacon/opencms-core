@@ -1,42 +1,33 @@
-<%@page taglibs="cms" import="java.util.*,org.opencms.main.*,org.opencms.i18n.*" %><!DOCTYPE html>
+<%@page taglibs="cms" import="java.util.*,org.opencms.main.*,org.opencms.i18n.*" trimDirectiveWhitespaces="true" %><!DOCTYPE html>
 <html>
 <head>
 <cms:jquery js="jquery" />
 <style type="text/css">
-	* { 
-	font-family: Verdana,Helvetica,Arial,sans-serif;
-	font-size: 12px; 
-	}
-	
-	.license p { 
-		margin-top: 0px;
-		margin-bottom: 0px; 
-		text-align: center; 
-	}
-	
-	.versionline { 
-		text-align: center;
-		font-size: 16px; 
-	}
-
+    * { font-family: Verdana,Helvetica,Arial,sans-serif; font-size: 12px; }
+    table { margin-left: auto; margin-right: auto; }      
+    h1 { font-size: 18px; }
+    a:link { color:#b31b34; text-decoration:none; }
+    a:visited { color:#b31b34; text-decoration:none; }
+    a:hover { color:#b31b34; text-decoration:underline; }
+   .center { text-align: center; }
 </style>
 
 <script type="text/javascript">
 $(function() { 
-	setTimeout(function() {
-		window.timerId = setInterval(function() {
-			scrollBy(0, 1);
-			if($(window).scrollTop() + $(window).height() == $(document).height()) {
-   		    	clearInterval(window.timerId);
-			}
-		} , 20);
-	} , 1000);
-	
-	$("body").click(function() {
-		clearInterval(window.timerId);
-	}); 
-	
-	
+    setTimeout(function() {
+        window.timerId = setInterval(function() {
+            scrollBy(0, 1);
+            if($(window).scrollTop() + $(window).height() == $(document).height()) {
+                clearInterval(window.timerId);
+            }
+        } , 20);
+    } , 1000);
+    
+    $("body").click(function() {
+        clearInterval(window.timerId);
+    }); 
+    
+    
 });
 
 
@@ -44,35 +35,34 @@ $(function() {
 
 </head>
 <body>
-	<p class="versionline">
-	       OpenCms <%= OpenCms.getSystemInfo().getVersionNumber() %>
-	</p>
+    <div class="center">
+        <h1>This is OpenCms <%= OpenCms.getSystemInfo().getVersionNumber() %></h1>
+        <p><a href="http://alkacon.com" target="_blank">&copy; Alkacon Software GmbH - All rights reserved</a></p>    
+        <h2>Version and Build Information</h2>    
+    </div>
+    
+    <table>
+    <tr><td>Version:</td><td><%= OpenCms.getSystemInfo().getVersionNumber() %></td></tr>
 <%
-		StringBuffer html = new StringBuffer();
-        html.append("<table style='margin-left:auto; margin-right: auto; margin-bottom: 10px'>");
-        Set<String> keys = OpenCms.getSystemInfo().getBuildInfoKeys();
-        for (String key : keys) {
-            CmsSystemInfo.BuildInfoItem item = OpenCms.getSystemInfo().getBuildInfoItem(key);
-            html.append("<tr>");
-
-            html.append("<td>");
-            html.append(CmsEncoder.escapeXml(item.getNiceName() + ":"));
-            html.append("</td>");
-
-            html.append("<td>");
-            html.append(CmsEncoder.escapeXml(item.getValue()));
-            html.append("</td>");
-
-            html.append("</tr>");
-        }
-        html.append("</table>");
-		out.println(html.toString());
+    for (String key : OpenCms.getSystemInfo().getBuildInfoKeys()) {
+        CmsSystemInfo.BuildInfoItem item = OpenCms.getSystemInfo().getBuildInfoItem(key);
 %>
-<div class="license">
-	<p><a href="http://www.opencms.org">OpenCms</a> is free software available under the GNU LGPL license.</p>
-	<p>Alkacon OpenCms and the OpenCms logo are registered trademarks of Alkacon Software GmbH.</p>
-	<p>&#x00a9; 2002 - 2014 Alkacon Software GmbH. All rights reserved.</p>
-</div>
+    <tr><td><%= CmsEncoder.escapeXml(item.getNiceName())%>:</td><td><%= CmsEncoder.escapeXml(item.getValue()) %></td></tr>
+<%
+    // <!-- end of for - loop (!) -->
+    }
+%>
+    </table>
 
+    <div class="center">
+        <p>
+            OpenCms is free software available under the GNU LGPL license.
+            Alkacon OpenCms and the OpenCms logo are registered trademarks of Alkacon Software GmbH.
+        </p>    
+        <p>
+            Visit the OpenCms Website at <a href="http://opencms.org" target="_blank">http://opencms.org</a>
+        </p>
+    </div>
+    
 </body>
 </html>
