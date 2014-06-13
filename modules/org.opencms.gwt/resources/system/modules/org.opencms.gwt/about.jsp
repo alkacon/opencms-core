@@ -71,7 +71,7 @@ $(function() {
 <div class="license">
 	<p><a href="http://www.opencms.org">OpenCms</a> is free software available under the GNU LGPL license.</p>
 	<p>Alkacon OpenCms and the OpenCms logo are registered trademarks of Alkacon Software GmbH.</p>
-	<p>© 2002 - 2014 Alkacon Software GmbH. All rights reserved.</p>
+	<p>&#x00a9; 2002 - 2014 Alkacon Software GmbH. All rights reserved.</p>
 </div>
 
 </body>
