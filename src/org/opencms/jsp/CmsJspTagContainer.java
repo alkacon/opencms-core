@@ -460,11 +460,9 @@ public class CmsJspTagContainer extends TagSupport {
                 // get the maximal number of elements
                 int maxElements = getMaxElements(requestUri);
                 if (container == null) {
-                    container = new CmsContainerBean(
-                        getName(),
-                        getType(),
-                        maxElements,
-                        Collections.<CmsContainerElementBean> emptyList());
+                    container = new CmsContainerBean(getName(), getType(), m_parentElement != null
+                    ? m_parentElement.getInstanceId()
+                    : null, maxElements, Collections.<CmsContainerElementBean> emptyList());
                 }
                 // set the detail only flag
                 container.setDetailOnly(detailOnly);
@@ -720,7 +718,7 @@ public class CmsJspTagContainer extends TagSupport {
             isDetailView,
             null,
             m_parentContainer != null ? m_parentContainer.getName() : null,
-            m_parentElement != null ? m_parentElement.editorHash() : null);
+            m_parentElement != null ? m_parentElement.getInstanceId() : null);
         cont.setDeatilOnly(isDetailOnly);
         String result = "";
         try {

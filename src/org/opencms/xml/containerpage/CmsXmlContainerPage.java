@@ -98,6 +98,8 @@ public class CmsXmlContainerPage extends CmsXmlContent {
         Key,
         /** Container name node name. */
         Name,
+        /** Parent element instance id node name. */
+        ParentInstanceId,
         /** Container type node name. */
         Type,
         /** Element URI node name. */
@@ -327,6 +329,31 @@ public class CmsXmlContainerPage extends CmsXmlContent {
             }
         }
 
+        // check if any nested containers have lost their parent element
+
+        // first collect all present elements
+        Map<String, CmsContainerElementBean> pageElements = new HashMap<String, CmsContainerElementBean>();
+        for (CmsContainerBean container : containers) {
+            for (CmsContainerElementBean element : container.getElements()) {
+                pageElements.put(element.getInstanceId(), element);
+            }
+        }
+        Iterator<CmsContainerBean> cntIt = containers.iterator();
+        while (cntIt.hasNext()) {
+            CmsContainerBean container = cntIt.next();
+            // check all unused nested containers if their parent element is still part of the page
+            if (!currentContainers.containsKey(container.getName())
+                && container.isNestedContainer()
+                && !pageElements.containsKey(container.getParentInstanceId())) {
+                // remove the sub elements from the page list
+                for (CmsContainerElementBean element : container.getElements()) {
+                    pageElements.remove(element.getInstanceId());
+                }
+                // remove the container
+                cntIt.remove();
+            }
+        }
+
         return new CmsContainerPageBean(containers);
     }
 
@@ -417,6 +444,12 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                     Element type = container.element(XmlNode.Type.name());
                     addBookmarkForElement(type, locale, container, cntPath, cntDef);
 
+                    // parent instance id
+                    Element parentInstance = container.element(XmlNode.ParentInstanceId.name());
+                    if (parentInstance != null) {
+                        addBookmarkForElement(parentInstance, locale, container, cntPath, cntDef);
+                    }
+
                     List<CmsContainerElementBean> elements = new ArrayList<CmsContainerElementBean>();
                     // Elements
                     for (Iterator<Element> itElems = CmsXmlGenericWrapper.elementIterator(
@@ -473,7 +506,11 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                             elements.add(new CmsContainerElementBean(elementId, formatterId, propertiesMap, createNew));
                         }
                     }
-                    CmsContainerBean newContainerBean = new CmsContainerBean(name.getText(), type.getText(), elements);
+                    CmsContainerBean newContainerBean = new CmsContainerBean(
+                        name.getText(),
+                        type.getText(),
+                        parentInstance != null ? parentInstance.getText() : null,
+                        elements);
                     containers.add(newContainerBean);
                 }
 
@@ -507,6 +544,9 @@ public class CmsXmlContainerPage extends CmsXmlContent {
             Element cntElement = parent.addElement(XmlNode.Containers.name());
             cntElement.addElement(XmlNode.Name.name()).addCDATA(container.getName());
             cntElement.addElement(XmlNode.Type.name()).addCDATA(container.getType());
+            if (container.isNestedContainer()) {
+                cntElement.addElement(XmlNode.ParentInstanceId.name()).addCDATA(container.getParentInstanceId());
+            }
 
             // the elements
             for (CmsContainerElementBean element : container.getElements()) {

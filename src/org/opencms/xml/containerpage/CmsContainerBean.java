@@ -28,6 +28,7 @@
 package org.opencms.xml.containerpage;
 
 import org.opencms.util.CmsCollectionsGenericWrapper;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -62,6 +63,9 @@ public class CmsContainerBean {
     /** The container name. */
     private final String m_name;
 
+    /** The parent element instance id. */
+    private String m_parentInstanceId;
+
     /** The container type. */
     private String m_type;
 
@@ -73,13 +77,20 @@ public class CmsContainerBean {
      * 
      * @param name the container name
      * @param type the container type
+     * @param parentInstanceId the parent instance id
      * @param maxElements the maximal number of elements in the container
      * @param elements the elements
      **/
-    public CmsContainerBean(String name, String type, int maxElements, List<CmsContainerElementBean> elements) {
+    public CmsContainerBean(
+        String name,
+        String type,
+        String parentInstanceId,
+        int maxElements,
+        List<CmsContainerElementBean> elements) {
 
         m_name = name;
         m_type = type;
+        m_parentInstanceId = parentInstanceId;
         m_maxElements = maxElements;
         m_elements = (elements == null
         ? Collections.<CmsContainerElementBean> emptyList()
@@ -91,11 +102,12 @@ public class CmsContainerBean {
      * 
      * @param name the container name
      * @param type the container type
+     * @param parentInstanceId the parent instance id
      * @param elements the elements
      **/
-    public CmsContainerBean(String name, String type, List<CmsContainerElementBean> elements) {
+    public CmsContainerBean(String name, String type, String parentInstanceId, List<CmsContainerElementBean> elements) {
 
-        this(name, type, -1, elements);
+        this(name, type, parentInstanceId, -1, elements);
     }
 
     /**
@@ -176,6 +188,16 @@ public class CmsContainerBean {
     }
 
     /**
+     * Returns the the parent instance id.<p>
+     * 
+     * @return the parent instance id
+     */
+    public String getParentInstanceId() {
+
+        return m_parentInstanceId;
+    }
+
+    /**
      * Returns the type of this container.<p>
      *
      * @return the type of this container
@@ -203,6 +225,16 @@ public class CmsContainerBean {
     public boolean isDetailOnly() {
 
         return m_detailOnly;
+    }
+
+    /**
+     * Returns if the given container is a nested container.<p>
+     * 
+     * @return <code>true</code> if the given container is a nested container
+     */
+    public boolean isNestedContainer() {
+
+        return CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_parentInstanceId);
     }
 
     /**

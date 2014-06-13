@@ -271,7 +271,7 @@ public final class CmsContainerpageController {
                 m_currentContainer.isDetailView(),
                 m_currentElements,
                 m_currentContainer.getParentContainerName(),
-                m_currentContainer.getParentElementHash()));
+                m_currentContainer.getParentInstanceId()));
         }
 
         /**

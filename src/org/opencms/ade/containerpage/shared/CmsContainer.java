@@ -56,8 +56,8 @@ public class CmsContainer implements IsSerializable {
     /** The parent container name. */
     private String m_parentContainerName;
 
-    /** The parent element hash. */
-    private String m_parentElementHash;
+    /** The parent instance id. */
+    private String m_parentInstanceId;
 
     /** The container type. */
     private String m_type;
@@ -75,7 +75,7 @@ public class CmsContainer implements IsSerializable {
      * @param detailView flag indicating this container is used for detail views
      * @param elements the container elements id's
      * @param parentContainerName the parent container name
-     * @param parentElementHash the parent element hash
+     * @param parentInstanceId the parent instance id
      */
     public CmsContainer(
         String name,
@@ -85,7 +85,7 @@ public class CmsContainer implements IsSerializable {
         boolean detailView,
         List<CmsContainerElement> elements,
         String parentContainerName,
-        String parentElementHash) {
+        String parentInstanceId) {
 
         m_elements = elements;
         m_name = name;
@@ -94,7 +94,7 @@ public class CmsContainer implements IsSerializable {
         m_width = width;
         m_detailView = detailView;
         m_parentContainerName = parentContainerName;
-        m_parentElementHash = parentElementHash;
+        m_parentInstanceId = parentInstanceId;
     }
 
     /**
@@ -146,13 +146,13 @@ public class CmsContainer implements IsSerializable {
     }
 
     /**
-     * Returns the parent element hash.<p>
+     * Returns the parent instance id.<p>
      * 
-     * @return the parent element hash
+     * @return the parent instance id
      */
-    public String getParentElementHash() {
+    public String getParentInstanceId() {
 
-        return m_parentElementHash;
+        return m_parentInstanceId;
     }
 
     /**

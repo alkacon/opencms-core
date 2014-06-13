@@ -908,7 +908,11 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                     new HashMap<String, String>(),
                     false);
                 newElems.add(0, newElement);
-                CmsContainerBean newCntBean = new CmsContainerBean(cntBean.getName(), cntBean.getType(), newElems);
+                CmsContainerBean newCntBean = new CmsContainerBean(
+                    cntBean.getName(),
+                    cntBean.getType(),
+                    cntBean.getParentInstanceId(),
+                    newElems);
                 containerBeans.add(newCntBean);
             } else {
                 containerBeans.add(cntBean);
@@ -1268,6 +1272,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             CmsContainerBean updatedContainer = new CmsContainerBean(
                 container.getName(),
                 container.getType(),
+                container.getParentInstanceId(),
                 container.getMaxElements(),
                 updatedElements);
             updatedContainers.add(updatedContainer);

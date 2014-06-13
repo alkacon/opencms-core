@@ -1105,7 +1105,11 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 log(e.getLocalizedMessage(), e);
             }
         }
-        CmsContainerBean result = new CmsContainerBean(container.getName(), container.getType(), elements);
+        CmsContainerBean result = new CmsContainerBean(
+            container.getName(),
+            container.getType(),
+            container.getParentInstanceId(),
+            elements);
         return result;
     }
 

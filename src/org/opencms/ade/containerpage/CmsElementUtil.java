@@ -660,6 +660,7 @@ public class CmsElementUtil {
                 containerBean = new CmsContainerBean(
                     container.getName(),
                     container.getType(),
+                    container.getParentInstanceId(),
                     container.getMaxElements(),
                     Collections.<CmsContainerElementBean> emptyList());
             }
