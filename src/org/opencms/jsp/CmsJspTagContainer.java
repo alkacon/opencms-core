@@ -65,6 +65,7 @@ import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -808,12 +809,15 @@ public class CmsJspTagContainer extends TagSupport {
             CmsFormatterConfiguration formatters = config.getFormatters(cms, detailContent);
             I_CmsFormatterBean formatter = formatters.getDetailFormatter(getType(), getContainerWidth());
             if (formatter != null) {
+                // use structure id as the instance id to enable use of nested containers
+                Map<String, String> settings = new HashMap<String, String>();
+                settings.put(CmsContainerElementBean.ELEMENT_INSTANCE_ID, detailContent.getStructureId().toString());
                 // create element bean
                 element = new CmsContainerElementBean(
                     detailContent.getStructureId(),
                     formatter.getJspStructureId(),
-                    null,
-                    false); // when used as template element there are no properties
+                    settings,
+                    false);
             }
         }
         return element;
