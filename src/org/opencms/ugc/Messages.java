@@ -60,7 +60,7 @@ public class Messages extends A_CmsMessageBundle {
     public static final String ERR_WAIT_QUEUE_EXCEEDED_0 = "ERR_WAIT_QUEUE_EXCEEDED_0";
 
     /** Name of the used resource bundle. */
-    private static final String BUNDLE_NAME = "org.opencms.editors.usergenerated.messages";
+    private static final String BUNDLE_NAME = "org.opencms.ugc.messages";
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();

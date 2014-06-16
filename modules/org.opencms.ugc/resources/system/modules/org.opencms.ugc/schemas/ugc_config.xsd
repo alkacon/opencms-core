@@ -35,7 +35,7 @@
     </xsd:complexType>
     <xsd:annotation>
         <xsd:appinfo>
-			<resourcebundle name="org.opencms.editors.usergenerated.messages"/>
+			<resourcebundle name="org.opencms.ugc.messages"/>
 			<mappings>
 				<mapping element="Title" mapto="property:Title" />
 			</mappings>
@@ -57,7 +57,7 @@
 				<tab element="MaxUploadSize" collapse="false" name="Security" />
 			</tabs>
             <formatters>
-               <formatter type="*" uri="/system/modules/org.opencms.editors.usergenerated/formatters/usergenerated-default.jsp" />
+               <formatter type="*" uri="/system/modules/org.opencms.ugc/formatters/usergenerated-default.jsp" />
             </formatters>			
         </xsd:appinfo>        
     </xsd:annotation>
