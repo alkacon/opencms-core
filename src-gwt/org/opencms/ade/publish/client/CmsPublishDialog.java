@@ -42,6 +42,8 @@ import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler;
+import org.opencms.gwt.client.ui.resourceinfo.CmsResourceInfoView;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -199,6 +201,9 @@ public class CmsPublishDialog extends CmsPopup {
     /** Stores the last workflow action. */
     private CmsWorkflowAction m_lastAction;
 
+    /** The context menu handler. */
+    private CmsContextMenuHandler m_menuHandler;
+
     /** The root panel of this dialog which contains both the selection panel and the panel for displaying broken links. */
     private DeckPanel m_panel = new DeckPanel();
 
@@ -218,8 +223,9 @@ public class CmsPublishDialog extends CmsPopup {
      * Constructs a new publish dialog.<p>
      *
      * @param initData the initial data
+     * @param refreshAction the action to perform on a context menu triggered refresh 
      */
-    public CmsPublishDialog(CmsPublishData initData) {
+    public CmsPublishDialog(CmsPublishData initData, final Runnable refreshAction) {
 
         super(800);
         initCss();
@@ -228,6 +234,15 @@ public class CmsPublishDialog extends CmsPopup {
         setAutoHideEnabled(false);
         setModal(true);
         addStyleName(CSS.publishDialog());
+        m_menuHandler = new CmsResourceInfoView.ContextMenuHandler() {
+
+            @Override
+            public void refreshResource(CmsUUID structureId) {
+
+                CmsPublishDialog.this.hide();
+                refreshAction.run();
+            }
+        };
         m_workflows = initData.getWorkflows();
         m_workflowId = initData.getSelectedWorkflowId();
         m_publishOptions = initData.getOptions();
@@ -251,22 +266,15 @@ public class CmsPublishDialog extends CmsPopup {
     }
 
     /**
-     * Convenience method which opens a publish dialog.<p>
-     */
-    public static void showPublishDialog() {
-
-        showPublishDialog(new HashMap<String, String>(), null);
-    }
-
-    /**
      * Shows the publish dialog.<p>
      *
      * @param result the publish data
      * @param handler the dialog close handler
+     * @param refreshAction the action to execute on a context menu triggered refresh 
      */
-    public static void showPublishDialog(CmsPublishData result, CloseHandler<PopupPanel> handler) {
+    public static void showPublishDialog(CmsPublishData result, CloseHandler<PopupPanel> handler, Runnable refreshAction) {
 
-        CmsPublishDialog publishDialog = new CmsPublishDialog(result);
+        CmsPublishDialog publishDialog = new CmsPublishDialog(result, refreshAction);
         if (handler != null) {
             publishDialog.addCloseHandler(handler);
         }
@@ -280,8 +288,12 @@ public class CmsPublishDialog extends CmsPopup {
      *
      * @param handler the close handler
      * @param params the additional publish dialog parameters
+     * @param refreshAction the action to execute after a context menu triggered refresh 
      */
-    public static void showPublishDialog(final HashMap<String, String> params, final CloseHandler<PopupPanel> handler) {
+    public static void showPublishDialog(
+        final HashMap<String, String> params,
+        final CloseHandler<PopupPanel> handler,
+        final Runnable refreshAction) {
 
         (new CmsRpcAction<CmsPublishData>() {
 
@@ -302,9 +314,19 @@ public class CmsPublishDialog extends CmsPopup {
             protected void onResponse(CmsPublishData result) {
 
                 stop(false);
-                showPublishDialog(result, handler);
+                showPublishDialog(result, handler, refreshAction);
             }
         }).execute();
+    }
+
+    /**
+     * Convenience method which opens a publish dialog.<p>
+     * 
+     * @param refreshAction the action to execute after a context menu triggered refresh 
+     */
+    public static void showPublishDialog(Runnable refreshAction) {
+
+        showPublishDialog(new HashMap<String, String>(), null, refreshAction);
     }
 
     /**
@@ -330,6 +352,16 @@ public class CmsPublishDialog extends CmsPopup {
     public void executeAction(CmsWorkflowAction actionKey) {
 
         (new CmsPublishAction(actionKey)).execute();
+    }
+
+    /**
+     * Gets the context menu handler.<p>
+     * 
+     * @return the context menu handler 
+     */
+    public CmsContextMenuHandler getContextMenuHandler() {
+
+        return m_menuHandler;
     }
 
     /**

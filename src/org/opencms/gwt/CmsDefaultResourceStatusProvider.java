@@ -98,11 +98,11 @@ public class CmsDefaultResourceStatusProvider {
         boolean cancelIfChanged) throws CmsException {
 
         CmsRelationTargetListBean result = new CmsRelationTargetListBean();
-        CmsResource content = cms.readResource(source, CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsResource content = cms.readResource(source, CmsResourceFilter.ALL);
         boolean isContainerPage = CmsResourceTypeXmlContainerPage.isContainerPage(content);
         for (CmsUUID structureId : additionalIds) {
             try {
-                CmsResource res = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+                CmsResource res = cms.readResource(structureId, CmsResourceFilter.ALL);
                 result.add(res);
                 if (res.getState().isChanged() && cancelIfChanged) {
                     return result;
@@ -117,7 +117,7 @@ public class CmsDefaultResourceStatusProvider {
                 continue;
             }
             try {
-                CmsResource target = relation.getTarget(cms, CmsResourceFilter.IGNORE_EXPIRATION);
+                CmsResource target = relation.getTarget(cms, CmsResourceFilter.ALL);
                 I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(target);
                 if (isContainerPage && (type instanceof CmsResourceTypeJsp)) {
                     // ignore formatters for container pages, as the normal user probably doesn't want to deal with them  
@@ -155,7 +155,7 @@ public class CmsDefaultResourceStatusProvider {
 
         Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         cms.getRequestContext().setLocale(locale);
-        CmsResource resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsResource resource = cms.readResource(structureId, CmsResourceFilter.ALL);
         String localizedTitle = null;
         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(contentLocale)) {
             Locale realLocale = CmsLocaleManager.getLocale(contentLocale);
@@ -244,7 +244,7 @@ public class CmsDefaultResourceStatusProvider {
 
         // find all distinct relation sources 
         for (CmsRelation relation : relations) {
-            CmsResource currentSource = relation.getSource(cms, CmsResourceFilter.IGNORE_EXPIRATION);
+            CmsResource currentSource = relation.getSource(cms, CmsResourceFilter.ALL);
             relationSources.put(currentSource.getStructureId(), currentSource);
         }
 

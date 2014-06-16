@@ -83,7 +83,14 @@ public class CmsPublishEntryPoint extends A_CmsEntryPoint {
                 }
             };
 
-            CmsPublishDialog.showPublishDialog(initData, closeHandler);
+            CmsPublishDialog.showPublishDialog(initData, closeHandler, new Runnable() {
+
+                public void run() {
+
+                    Window.Location.reload();
+                }
+
+            });
         } catch (Exception e) {
             CmsErrorDialog.handleException(e);
         }

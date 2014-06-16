@@ -363,7 +363,7 @@ public interface I_CmsVfsService extends RemoteService {
      *
      * @param id the structure id of a resource
      * @return the property information for that resource
-     * @throws CmsRpcException
+     * @throws CmsRpcException if something goes wrong
      */
     CmsPropertiesBean loadPropertyData(CmsUUID id) throws CmsRpcException;
 
@@ -374,7 +374,7 @@ public interface I_CmsVfsService extends RemoteService {
      * @param fileNameWithMacros the file name, which may contain macros
      *
      * @return a bean with more information about the file to edit
-     * @throws CmsRpcException
+     * @throws CmsRpcException if something goes wrong
      */
     CmsPrepareEditResponse prepareEdit(CmsUUID currentPage, String fileNameWithMacros) throws CmsRpcException;
 
@@ -406,7 +406,7 @@ public interface I_CmsVfsService extends RemoteService {
      * @param structureId the structure id of the page
      *
      * @param aliases the aliases which should be saved for the page
-     * @throws CmsRpcException
+     * @throws CmsRpcException if something goes wrong
      */
     void saveAliases(CmsUUID structureId, List<CmsAliasBean> aliases) throws CmsRpcException;
 
@@ -451,6 +451,15 @@ public interface I_CmsVfsService extends RemoteService {
      * @throws CmsRpcException if something goes wrong
      */
     void syncDeleteResource(CmsUUID structureId) throws CmsRpcException;
+
+    /**
+     * Undeletes a resource.<p>
+     * 
+     * @param structureId the structure id of the resource to undelete 
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    void undelete(CmsUUID structureId) throws CmsRpcException;
 
     /**
      * Undoes the changes to a given resource, i.e. restores its online content to its offline version.<p>

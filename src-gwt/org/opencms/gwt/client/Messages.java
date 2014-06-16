@@ -728,6 +728,12 @@ public final class Messages {
     public static final String GUI_TOOLBAR_TOGGLE_HELP_0 = "GUI_TOOLBAR_TOGGLE_HELP_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_UNDELETE_CAPTION_0 = "GUI_UNDELETE_CAPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UNDELETE_TEXT_0 = "GUI_UNDELETE_TEXT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_UNLOCK_0 = "GUI_UNLOCK_0";
 
     /** Message constant for key in the resource bundle. */

@@ -562,7 +562,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     public void forceUnlock(CmsUUID structureId) throws CmsRpcException {
 
         try {
-            CmsResource resource = getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+            CmsResource resource = getCmsObject().readResource(structureId, CmsResourceFilter.ALL);
             // get the current lock
             CmsLock currentLock = getCmsObject().getLock(resource);
             // check if the resource is locked at all
@@ -752,7 +752,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         CmsLockReportInfo result = null;
         CmsObject cms = getCmsObject();
         try {
-            CmsResource resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+            CmsResource resource = cms.readResource(structureId, CmsResourceFilter.ALL);
             List<CmsListInfoBean> lockedInfos = new ArrayList<CmsListInfoBean>();
             List<CmsResource> lockedResources = cms.getBlockingLockedResources(resource);
             if (lockedResources != null) {
@@ -773,7 +773,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     public CmsListInfoBean getPageInfo(CmsUUID structureId) throws CmsRpcException {
 
         try {
-            CmsResource res = getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+            CmsResource res = getCmsObject().readResource(structureId, CmsResourceFilter.ALL);
             return getPageInfo(res);
         } catch (Throwable e) {
             error(e);
@@ -1283,6 +1283,22 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#undelete(org.opencms.util.CmsUUID)
+     */
+    public void undelete(CmsUUID structureId) throws CmsRpcException {
+
+        try {
+            CmsObject cms = OpenCms.initCmsObject(getCmsObject());
+            cms.getRequestContext().setSiteRoot("");
+            CmsResource resource = cms.readResource(structureId, CmsResourceFilter.ALL);
+            ensureLock(resource);
+            cms.undeleteResource(resource.getRootPath(), true);
+        } catch (Exception e) {
+            error(e);
+        }
+    }
+
+    /**
      * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#undoChanges(org.opencms.util.CmsUUID, boolean)
      */
     public void undoChanges(CmsUUID structureId, boolean undoMove) throws CmsRpcException {
@@ -1625,7 +1641,6 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
      *
      * @throws CmsException if something goes wrong
      */
-    @SuppressWarnings("unchecked")
     private List<CmsBrokenLinkBean> getBrokenLinkBeans(MultiValueMap linkMap) throws CmsException {
 
         CmsBrokenLinkRenderer brokenLinkRenderer = new CmsBrokenLinkRenderer(getCmsObject());
@@ -1704,7 +1719,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
      *
      * @return the list of resources which link to the given id
      *
-     * @throws CmsException
+     * @throws CmsException if something goes wrong 
      */
     private List<CmsResource> getLinkSources(CmsObject cms, CmsResource resource, HashSet<CmsUUID> deleteIds)
     throws CmsException {

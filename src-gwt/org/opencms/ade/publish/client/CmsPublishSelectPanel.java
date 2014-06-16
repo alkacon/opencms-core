@@ -39,6 +39,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
+import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
@@ -310,12 +311,12 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
     /** The current group panel. */
     private CmsPublishGroupPanel m_currentGroupPanel;
-
     /** The id of the virtual project used for 'direct publish'. */
     private CmsUUID m_directPublishId;
 
     /** Indicates whether a previously selected project has been found. */
     private boolean m_foundOldProject;
+
     /** The list of group panels for each publish list group. */
     private List<CmsPublishGroupPanel> m_groupPanels = new ArrayList<CmsPublishGroupPanel>();
 
@@ -1025,6 +1026,17 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     }
 
     /**
+     * Gets the context menu handler for the publish items' context menus.<p>
+     * 
+     * @return the context menu handler 
+     */
+    CmsContextMenuHandler getContextMenuHandler() {
+
+        return m_publishDialog.getContextMenuHandler();
+
+    }
+
+    /**
      * Adds a new group panel.<p>
      *
      * @param group the publish group for which a panel should be added
@@ -1042,6 +1054,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
             this,
             m_model,
             m_selectionControllers,
+            getContextMenuHandler(),
             m_showProblemsOnly);
         if (m_model.hasSingleGroup()) {
             groupPanel.hideGroupSelectCheckBox();

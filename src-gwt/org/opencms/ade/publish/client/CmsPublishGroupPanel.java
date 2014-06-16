@@ -38,6 +38,8 @@ import org.opencms.gwt.client.ui.CmsPreviewDialog;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsSimpleListItem;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
+import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuButton;
+import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
@@ -78,16 +80,19 @@ public class CmsPublishGroupPanel extends Composite {
     protected static final I_CmsPublishCss CSS = I_CmsPublishLayoutBundle.INSTANCE.publishCss();
 
     /** The number of button slits. */
-    private static final int NUM_BUTTON_SLOTS = 3;
+    private static final int NUM_BUTTON_SLOTS = 4;
+
+    /** The slot for the context menu button. */
+    private static final int SLOT_MENU = 0;
 
     /** The slot for the preview button. */
-    private static final int SLOT_PREVIEW = 0;
+    private static final int SLOT_PREVIEW = 1;
 
     /** The slot for the 'remove' checkbox. */
-    private static final int SLOT_REMOVE = 1;
+    private static final int SLOT_REMOVE = 2;
 
     /** The slot for the warning symbol. */
-    private static final int SLOT_WARNING = 2;
+    private static final int SLOT_WARNING = 3;
 
     /** Text metrics key. */
     private static final String TM_PUBLISH_LIST = "PublishList";
@@ -100,6 +105,9 @@ public class CmsPublishGroupPanel extends Composite {
 
     /** The handler which is called when the publish item selection changes. */
     protected I_CmsPublishSelectionChangeHandler m_selectionChangeHandler;
+
+    /** The context menu handler. */
+    private CmsContextMenuHandler m_contextMenuHandler;
 
     /** The global map of selection controllers of *ALL* groups (to which this group's selection controllers are added). */
     private Map<CmsUUID, CmsPublishItemSelectionController> m_controllersById;
@@ -131,6 +139,7 @@ public class CmsPublishGroupPanel extends Composite {
      * @param selectionChangeHandler the handler for selection changes for publish resources
      * @param model the data model for the publish resources
      * @param controllersById the map of selection controllers to which this panel's selection controllers should be added
+     * @param menuHandler the context menu handler 
      * @param showProblemsOnly if true, sets this panel into "show resources with problems only" mode
      */
     public CmsPublishGroupPanel(
@@ -140,12 +149,14 @@ public class CmsPublishGroupPanel extends Composite {
         I_CmsPublishSelectionChangeHandler selectionChangeHandler,
         CmsPublishDataModel model,
         Map<CmsUUID, CmsPublishItemSelectionController> controllersById,
+        CmsContextMenuHandler menuHandler,
         boolean showProblemsOnly) {
 
         initWidget(m_panel);
         m_panel.add(m_header);
         m_model = model;
         m_groupIndex = groupIndex;
+        m_contextMenuHandler = menuHandler;
         m_publishResources = model.getGroups().get(groupIndex).getResources();
         m_controllersById = controllersById;
         m_panel.truncate(TM_PUBLISH_LIST, CmsPublishDialog.DIALOG_WIDTH);
@@ -375,6 +386,11 @@ public class CmsPublishGroupPanel extends Composite {
     private CmsTreeItem buildItem(final CmsPublishResource resourceBean, CmsPublishItemStatus status, boolean isSubItem) {
 
         CmsListItemWidget itemWidget = createListItemWidget(resourceBean);
+        CmsContextMenuButton button = new CmsContextMenuButton(resourceBean.getId(), m_contextMenuHandler);
+
+        fillButtonSlot(itemWidget, SLOT_MENU, button);
+
+        resourceBean.getId();
         final CmsStyleVariable styleVar = new CmsStyleVariable(itemWidget);
         styleVar.setValue(CSS.itemToKeep());
 

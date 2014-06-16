@@ -206,6 +206,13 @@ public class CmsDirectEditToolbarHandler extends A_CmsToolbarHandler {
                 deactivateCurrentButton();
 
             }
+        }, new Runnable() {
+
+            public void run() {
+
+                showPublishDialog();
+            }
+
         });
     }
 

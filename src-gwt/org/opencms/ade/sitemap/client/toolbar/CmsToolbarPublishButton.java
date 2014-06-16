@@ -88,6 +88,13 @@ public class CmsToolbarPublishButton extends CmsPushButton {
 
                 setEnabled(true);
             }
+        }, new Runnable() {
+
+            public void run() {
+
+                openPublish();
+            }
+
         });
     }
 }

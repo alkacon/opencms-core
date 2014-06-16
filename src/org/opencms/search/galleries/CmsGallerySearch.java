@@ -174,7 +174,7 @@ public class CmsGallerySearch {
             Document doc = (Document)sDoc.getDocument();
             result = new CmsGallerySearchResult(m_cms, 100, doc, null, locale);
         } else {
-            CmsResource res = m_cms.readResource(id, CmsResourceFilter.IGNORE_EXPIRATION);
+            CmsResource res = m_cms.readResource(id, CmsResourceFilter.ALL);
             result = new CmsGallerySearchResult(m_cms, res);
         }
         return result;

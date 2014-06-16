@@ -29,9 +29,9 @@ package org.opencms.gwt.shared.rpc;
 
 import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsDeleteResourceBean;
+import org.opencms.gwt.shared.CmsExternalLinkInfoBean;
 import org.opencms.gwt.shared.CmsHistoryResourceCollection;
 import org.opencms.gwt.shared.CmsHistoryVersion;
-import org.opencms.gwt.shared.CmsExternalLinkInfoBean;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsLockReportInfo;
 import org.opencms.gwt.shared.CmsPrepareEditResponse;
@@ -389,6 +389,15 @@ public interface I_CmsVfsServiceAsync {
      */
     @SynchronizedRpcRequest
     void syncDeleteResource(CmsUUID structureId, AsyncCallback<Void> callback);
+
+    /**
+     * Undeletes a resource.<p>
+     * 
+     * @param structureId the structure id of the resource
+     * 
+     * @param callback the result callback 
+     */
+    void undelete(CmsUUID structureId, AsyncCallback<Void> callback);
 
     /**
      * Undoes the changes to a given resource, i.e. restores its online content to its offline version.<p>

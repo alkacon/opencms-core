@@ -63,7 +63,7 @@ public class CmsResourceInfoView extends Composite {
     /**
      * Context menu handler for resource info boxes.<p>
      */
-    static class ContextMenuHandler extends CmsContextMenuHandler {
+    public static class ContextMenuHandler extends CmsContextMenuHandler {
 
         /** Set of context menu actions which we do not want to appear in the context menu for the relation source items. */
         protected static Set<String> m_filteredActions = new HashSet<String>();

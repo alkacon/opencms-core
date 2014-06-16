@@ -1267,6 +1267,13 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                 activateSelection();
 
             }
+        }, new Runnable() {
+
+            public void run() {
+
+                openPublish();
+            }
+
         });
     }
 

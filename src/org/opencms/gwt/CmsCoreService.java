@@ -36,6 +36,8 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
@@ -146,21 +148,32 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             }
             CmsResourceUtil[] resUtil = new CmsResourceUtil[1];
             resUtil[0] = new CmsResourceUtil(cms, cms.readResource(structureId, CmsResourceFilter.ONLY_VISIBLE));
-            if (hasViewPermissions(cms, resUtil[0].getResource())) {
-                // the explorer type settings
-                CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
-                    resUtil[0].getResourceTypeName());
-                // only if the user has access to this resource type
-                if ((settings != null)) {
-                    // get the context menu configuration for the given selection mode
-                    CmsExplorerContextMenu contextMenu = settings.getContextMenu();
-                    // transform the context menu into beans
-                    List<CmsContextMenuEntryBean> allEntries = transformToMenuEntries(
-                        cms,
-                        contextMenu.getAllEntries(),
-                        resUtil);
-                    // filter the result
-                    result = filterEntries(allEntries);
+            CmsResource resource = resUtil[0].getResource();
+            if (hasViewPermissions(cms, resource)) {
+
+                String fallbackType = resource.isFolder()
+                ? CmsResourceTypeFolder.getStaticTypeName()
+                : CmsResourceTypePlain.getStaticTypeName();
+                String[] lookupTypes = {resUtil[0].getResourceTypeName(), fallbackType};
+
+                for (String currentType : lookupTypes) {
+                    // the explorer type settings
+                    CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(currentType);
+                    // only if the user has access to this resource type
+                    if ((settings != null)) {
+                        // get the context menu configuration for the given selection mode
+                        CmsExplorerContextMenu contextMenu = settings.getContextMenu();
+                        // transform the context menu into beans
+                        List<CmsContextMenuEntryBean> allEntries = transformToMenuEntries(
+                            cms,
+                            contextMenu.getAllEntries(),
+                            resUtil);
+                        // filter the result
+                        result = filterEntries(allEntries);
+                        if (!result.isEmpty()) {
+                            break;
+                        }
+                    }
                 }
             }
         } catch (CmsException e) {

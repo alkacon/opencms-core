@@ -1807,6 +1807,13 @@ public final class CmsContentEditor extends EditorBase {
                                 }
                                 clearEditor();
                             }
+                        }, new Runnable() {
+
+                            public void run() {
+
+                                // ignore 
+                            }
+
                         });
 
                     }

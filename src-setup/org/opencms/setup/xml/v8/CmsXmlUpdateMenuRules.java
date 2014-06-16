@@ -249,6 +249,30 @@ public class CmsXmlUpdateMenuRules extends A_CmsXmlWorkplace {
                 }
             });
 
+            m_updateActions.put(xpathForMenuRule("containerpage-deleted"), new CmsXmlUpdateAction() {
+
+                @Override
+                public boolean executeUpdate(Document doc, String xpath, boolean forReal) {
+
+                    Element elem = (Element)doc.selectSingleNode(xpath);
+                    if (elem == null) {
+                        String[] classes = {
+                            "org.opencms.workplace.explorer.menu.CmsMirInvisibleIfNotDeleted",
+                            "org.opencms.workplace.explorer.menu.CmsMirNonContainerpageInvisible",
+                            "org.opencms.workplace.explorer.menu.CmsMirContainerPageActive"};
+                        for (String className : classes) {
+                            CmsSetupXmlHelper.setValue(
+                                doc,
+                                xpathForMenuItemRule("containerpage-deleted", className),
+                                "");
+                        }
+                        return true;
+                    }
+                    return false;
+
+                }
+            });
+
             m_updateActions.put(xpathForMenuRule("containerpage-no-different-site"), new CmsXmlUpdateAction() {
 
                 @Override
@@ -326,7 +350,6 @@ public class CmsXmlUpdateMenuRules extends A_CmsXmlWorkplace {
      *  
      * @param className the class name 
      */
-    @SuppressWarnings("unchecked")
     protected void updateMenuRule(Element elem, String className) {
 
         if (elem == null) {

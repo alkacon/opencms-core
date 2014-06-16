@@ -373,6 +373,8 @@
 						<entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsRestore" 
 							rule="ade-undochanges"/>
+						<entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" 
+							name="org.opencms.gwt.client.ui.contextmenu.CmsUndelete" rule="containerpage-deleted" />
                         <entry key="EDITSMALLELEMENTS" name="editsmallelements" rule="containerpage"/>							
 						<entry key="GUI_EXPLORER_CONTEXT_SHOW_WORKPLACE_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsShowWorkplace"
