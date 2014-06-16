@@ -26,6 +26,7 @@ OpenCms 9.5.0 - (no release date set)
 ! Improved ADE configuration performance
 ! Added spell checking to WYSIWYG widget
 ! Using SCrypt as new default password hash algorithm with fall back to MD5 for backward compatibility
+! Added support for nested container page containers
 
 OpenCms 9.0.1 - February 6, 2014
 ! New 'Add resource type' dialog added to the module management.

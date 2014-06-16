@@ -15,7 +15,7 @@
 		<class />
 		<description><![CDATA[<p>This module contains TinyMCE editor for HTML pages and XML content.</p>
                               <p>The version of TinyMCE is 4.0.16</p>]]></description>
-		<version>9.4.1</version>
+		<version>9.4.6</version>
 		<authorname><![CDATA[OpenCms community]]></authorname>
 		<authoremail><![CDATA[opencms-dev@opencms.org]]></authoremail>
 		<datecreated />
