@@ -82,7 +82,7 @@ public final class TestCmsModuleMessageBundles extends TestCmsMessageBundles {
 
         return new I_CmsMessageBundle[] {
             org.opencms.editors.codemirror.Messages.get(),
-            org.opencms.editors.usergenerated.Messages.get(),
+            org.opencms.ugc.Messages.get(),
             org.opencms.workplace.tools.searchindex.sourcesearch.Messages.get(),
             org.opencms.workplace.tools.workplace.logging.Messages.get(),
             org.opencms.workplace.administration.Messages.get(),

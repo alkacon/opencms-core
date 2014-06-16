@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Could not determine the version of your GWT SDK; using the module DTD from GWT 1.6.4. You may want to change this. -->
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit//EN" "http://google-web-toolkit.googlecode.com/svn/trunk/distro-source/core/src/gwt-module.dtd">
+<module rename-to="ugc">
+	<inherits name="org.opencms.GwtBase" />
+	<source path="client" />
+	<source path="shared" />
+	<entry-point class="org.opencms.ugc.client.CmsUgcEntryPoint" />
+</module>

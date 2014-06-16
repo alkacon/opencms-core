@@ -16,7 +16,7 @@
 		<description><![CDATA[<p>This module contains the German language localization files for the OpenCms workplace.</p>
 <p>Install this module if you want to use the german version of the OpenCms Workplace.</p>
 <p><i>&copy; 2014 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>9.4.5</version>
+		<version>9.4.6</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -706,20 +706,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/locales/de/messages/org/opencms/editors</destination>
-			<type>folder</type>
-			<uuidstructure>5ac6f64f-d1d3-11e3-9357-1f9aedc18ed9</uuidstructure>
-			<datelastmodified>Fri, 02 May 2014 08:25:44 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 02 May 2014 08:25:44 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/locales/de/messages/org/opencms/editors/usergenerated</destination>
+			<destination>system/workplace/locales/de/messages/org/opencms/ugc</destination>
 			<type>folder</type>
 			<uuidstructure>63da1ce1-d1d3-11e3-9357-1f9aedc18ed9</uuidstructure>
 			<datelastmodified>Fri, 02 May 2014 08:25:59 GMT</datelastmodified>
@@ -732,8 +719,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/locales/de/messages/org/opencms/editors/usergenerated/messages_de.properties</source>
-			<destination>system/workplace/locales/de/messages/org/opencms/editors/usergenerated/messages_de.properties</destination>
+			<source>system/workplace/locales/de/messages/org/opencms/ugc/messages_de.properties</source>
+			<destination>system/workplace/locales/de/messages/org/opencms/ugc/messages_de.properties</destination>
 			<type>plain</type>
 			<uuidstructure>6b75e5b3-d1d3-11e3-9357-1f9aedc18ed9</uuidstructure>
 			<uuidresource>6b75e5b4-d1d3-11e3-9357-1f9aedc18ed9</uuidresource>
