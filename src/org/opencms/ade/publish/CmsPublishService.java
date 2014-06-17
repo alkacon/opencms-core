@@ -75,6 +75,7 @@ import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 /**
  * The implementation of the publish service. <p>
@@ -202,15 +203,21 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
             if (!CmsStringUtil.isEmptyOrWhitespaceOnly(filesParam)) {
                 params.put(CmsPublishOptions.PARAM_FILES, filesParam);
             }
-            boolean useCurrentPage = params.containsKey(CmsPublishOptions.PARAM_START_WITH_CURRENT_PAGE);
+            boolean useCurrentPageAsDefault = params.containsKey(CmsPublishOptions.PARAM_START_WITH_CURRENT_PAGE);
             CmsPublishOptions options = getCachedOptions();
             List<CmsProjectBean> projects = OpenCms.getWorkflowManager().getManageableProjects(cms, params);
+            Set<CmsUUID> availableProjectIds = Sets.newHashSet();
+            for (CmsProjectBean projectBean : projects) {
+                availableProjectIds.add(projectBean.getId());
+            }
+            CmsUUID defaultProjectId = CmsUUID.getNullUUID();
+            if (useCurrentPageAsDefault && availableProjectIds.contains(CmsCurrentPageProject.ID)) {
+                defaultProjectId = CmsCurrentPageProject.ID;
+            }
+
             boolean foundProject = false;
             CmsUUID selectedProject = null;
-            if (useCurrentPage) {
-                selectedProject = CmsCurrentPageProject.ID;
-                foundProject = true;
-            } else if (!CmsStringUtil.isEmptyOrWhitespaceOnly(filesParam)) {
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(filesParam)) {
                 params.put(CmsPublishOptions.PARAM_ENABLE_INCLUDE_CONTENTS, Boolean.TRUE.toString());
                 params.put(CmsPublishOptions.PARAM_INCLUDE_CONTENTS, Boolean.TRUE.toString());
                 selectedProject = CmsDirectPublishProject.ID;
@@ -232,15 +239,21 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
                 }
                 if (!foundProject) {
                     selectedProject = options.getProjectId();
-                    // check if the selected project is a manageable project
-                    for (CmsProjectBean project : projects) {
-                        if (selectedProject.equals(project.getId())) {
-                            foundProject = true;
-                            if (project.isWorkflowProject()) {
-                                canOverrideWorkflow = false;
-                                workflowId = OpenCms.getWorkflowManager().getWorkflowForWorkflowProject(selectedProject);
+                    if (selectedProject == null) {
+                        selectedProject = defaultProjectId;
+                        foundProject = true;
+                    } else {
+                        // check if the selected project is a manageable project
+                        for (CmsProjectBean project : projects) {
+                            if (selectedProject.equals(project.getId())) {
+                                foundProject = true;
+                                if (project.isWorkflowProject()) {
+                                    canOverrideWorkflow = false;
+                                    workflowId = OpenCms.getWorkflowManager().getWorkflowForWorkflowProject(
+                                        selectedProject);
+                                }
+                                break;
                             }
-                            break;
                         }
                     }
                 }

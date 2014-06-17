@@ -81,7 +81,6 @@ public class CmsPublishOptions implements Serializable {
     public CmsPublishOptions() {
 
         m_includeRelated = true;
-        m_projectId = CmsUUID.getNullUUID();
     }
 
     /**
