@@ -60,7 +60,9 @@ public final class AllTests {
         //$JUnit-BEGIN$
         suite.addTest(new TestSuite(TestCmsXmlContent.class));
         suite.addTest(new TestSuite(TestCmsXmlContentDefinition.class));
+        suite.addTest(TestCmsXmlContentSearchSettings.suite());
         suite.addTest(TestCmsXmlContentWithVfs.suite());
+        suite.addTest(TestCmsXmlContentResourceBundlesGerman.suite());
         suite.addTest(TestCmsXmlContentSchemaModifications.suite());
         suite.addTest(TestCmsXmlContentLinks.suite());
         suite.addTest(TestCmsXmlContent75Features.suite());

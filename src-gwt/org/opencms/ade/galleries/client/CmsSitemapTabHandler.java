@@ -137,6 +137,31 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
     }
 
     /**
+     * Initializes the sitemap tab's content.<p>
+     */
+    public void initializeSitemapTab() {
+
+        String siteRoot = m_controller.getPreselectOption(
+            m_controller.getStartSiteRoot(),
+            m_controller.getSitemapSiteSelectorOptions());
+        getTab().setSortSelectBoxValue(siteRoot, true);
+        m_controller.getDefaultScope();
+        if (siteRoot == null) {
+            siteRoot = m_controller.getDefaultVfsTabSiteRoot();
+        }
+        m_siteRoot = siteRoot;
+        getSubEntries(siteRoot, true, new I_CmsSimpleCallback<List<CmsSitemapEntryBean>>() {
+
+            public void execute(List<CmsSitemapEntryBean> result) {
+
+                getTab().fillDefault(result);
+                getTab().onContentChange();
+            }
+        });
+
+    }
+
+    /**
      * This method is called when the tree open state changes.<p>
      * 
      * @param openItemIds the structure ids of open entries 
@@ -155,22 +180,7 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
         if (getTab().isInitialized()) {
             getTab().onContentChange();
         } else {
-            String siteRoot = m_controller.getPreselectOption(
-                m_controller.getStartSiteRoot(),
-                m_controller.getSitemapSiteSelectorOptions());
-            getTab().setSortSelectBoxValue(siteRoot, true);
-            if (siteRoot == null) {
-                siteRoot = m_controller.getDefaultVfsTabSiteRoot();
-            }
-            m_siteRoot = siteRoot;
-            getSubEntries(siteRoot, true, new I_CmsSimpleCallback<List<CmsSitemapEntryBean>>() {
-
-                public void execute(List<CmsSitemapEntryBean> result) {
-
-                    getTab().fillInitially(result);
-                    getTab().onContentChange();
-                }
-            });
+            initializeSitemapTab();
         }
     }
 
@@ -184,7 +194,7 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
 
             public void execute(List<CmsSitemapEntryBean> entries) {
 
-                getTab().fillInitially(entries);
+                getTab().fill(entries);
                 setSiteRoot(sortParams);
                 onChangeTreeState(new HashSet<CmsUUID>());
             }

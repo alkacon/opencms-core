@@ -28,6 +28,7 @@
 package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
@@ -51,6 +52,9 @@ public abstract class A_CmsWidget implements I_CmsWidget {
 
         /** The massage of this widget. */
         private CmsMessages m_message;
+
+        /** The resource being edited. */
+        private CmsResource m_resource;
 
         /** Constructor.<p> 
          * @param locale the locale of the dialog
@@ -150,12 +154,32 @@ public abstract class A_CmsWidget implements I_CmsWidget {
             return m_message;
         }
 
+        /** 
+         * Gets the resource being edited.
+         * 
+         * @return the resource being edited 
+         */
+        public CmsResource getResource() {
+
+            return m_resource;
+        }
+
         /**
          * @see org.opencms.widgets.I_CmsWidgetDialog#getUserAgent()
          */
         public String getUserAgent() {
 
             return null;
+        }
+
+        /**
+         * Sets the resource being edited.<p>
+         * 
+         * @param resource the resource being edited 
+         */
+        public void setResource(CmsResource resource) {
+
+            m_resource = resource;
         }
 
         /**

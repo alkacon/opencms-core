@@ -139,6 +139,9 @@ public final class Messages {
     public static final String GUI_EDIT_SMALL_ELEMENTS_0 = "GUI_EDIT_SMALL_ELEMENTS_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_FORMATTERS_LEGEND_0 = "GUI_FORMATTERS_LEGEND_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_GROUPCONTAINER_CAPTION_0 = "GUI_GROUPCONTAINER_CAPTION_0";
 
     /** Message constant for key in the resource bundle. */
@@ -205,6 +208,9 @@ public final class Messages {
     public static final String GUI_PROPERTY_DIALOG_TITLE_0 = "GUI_PROPERTY_DIALOG_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SELECT_FORMATTER_LABEL_0 = "GUI_SELECT_FORMATTER_LABEL_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SETTINGS_LEGEND_0 = "GUI_SETTINGS_LEGEND_0";
 
     /** Message constant for key in the resource bundle. */
@@ -221,6 +227,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TAB_RECENT_TITLE_0 = "GUI_TAB_RECENT_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TEMPLATE_CONTEXT_NO_VARIANT_0 = "GUI_TEMPLATE_CONTEXT_NO_VARIANT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TITLE_INHERITED_FROM_1 = "GUI_TITLE_INHERITED_FROM_1";

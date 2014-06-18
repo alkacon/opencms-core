@@ -29,7 +29,6 @@ package org.opencms.ade.editprovider.client;
 
 import org.opencms.gwt.client.ui.A_CmsToolbarButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
-import org.opencms.gwt.client.util.CmsDomUtil;
 
 /**
  * A simplified publish button for the Toolbar direct edit provider.<p>
@@ -53,8 +52,6 @@ public class CmsToolbarPublishButton extends A_CmsToolbarButton<CmsDirectEditToo
      */
     public void onToolbarActivate() {
 
-        // triggering a mouse-out event, as it won't be fired once the dialog has opened (the dialog will capture all events)
-        CmsDomUtil.ensureMouseOut(getElement());
         setEnabled(false);
         getHandler().showPublishDialog();
     }

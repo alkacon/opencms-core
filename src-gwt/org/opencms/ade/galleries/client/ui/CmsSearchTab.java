@@ -190,6 +190,9 @@ public class CmsSearchTab extends A_CmsTab {
     /** The map of available locales. */
     private Map<String, String> m_availableLocales;
 
+    /** The default search scope. */
+    private CmsGallerySearchScope m_defaultScope;
+
     /** The tab panel. */
     private HTMLPanel m_tab;
 
@@ -201,6 +204,7 @@ public class CmsSearchTab extends A_CmsTab {
      * @param currentLocale the current content locale
      * @param availableLocales the available locales
      * @param scope the search scope 
+     * @param defaultScope the default search scope 
      */
     @SuppressWarnings("deprecation")
     public CmsSearchTab(
@@ -208,7 +212,8 @@ public class CmsSearchTab extends A_CmsTab {
         I_CmsAutoHider autoHideParent,
         String currentLocale,
         Map<String, String> availableLocales,
-        CmsGallerySearchScope scope) {
+        CmsGallerySearchScope scope,
+        CmsGallerySearchScope defaultScope) {
 
         // initialize the tab
         super(GalleryTabId.cms_tab_search.name());
@@ -219,6 +224,7 @@ public class CmsSearchTab extends A_CmsTab {
         m_autoHideParent = autoHideParent;
         m_currentLocale = currentLocale;
         m_availableLocales = availableLocales;
+        m_defaultScope = defaultScope;
 
         //add search roots selection
         String scopeLabelText = Messages.get().key(Messages.GUI_SEARCH_SCOPE_0);
@@ -328,7 +334,7 @@ public class CmsSearchTab extends A_CmsTab {
         String modifiedEnd = m_dateModifiedEndDateBox.getValueAsFormatedString();
 
         CmsGallerySearchScope scope = CmsGallerySearchScope.valueOf(m_scopeSelection.getFormValueAsString());
-        if ((scope != CmsGallerySearchScope.everything)) {
+        if ((scope != m_defaultScope)) {
             CmsSearchParamPanel panel = new CmsSearchParamPanel(
                 Messages.get().key(Messages.GUI_PARAMS_LABEL_SCOPE_0),
                 this);
@@ -440,7 +446,7 @@ public class CmsSearchTab extends A_CmsTab {
                 m_dateModifiedEndDateBox.setValue(null, true);
                 break;
             case scope:
-                m_scopeSelection.setFormValueAsString(CmsGallerySearchScope.everything.name());
+                m_scopeSelection.setFormValueAsString(m_defaultScope.name());
                 break;
             default:
         }

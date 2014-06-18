@@ -29,21 +29,20 @@ package org.opencms.ade.containerpage.client;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageController.ElementRemoveMode;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
+import org.opencms.ade.containerpage.client.ui.CmsElementSettingsDialog;
 import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElementPanel;
 import org.opencms.ade.containerpage.client.ui.CmsSmallElementsHandler;
-import org.opencms.ade.containerpage.client.ui.groupeditor.CmsInheritanceContainerEditor;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.publish.client.CmsPublishDialog;
+import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.gwt.client.CmsCoreProvider;
-import org.opencms.gwt.client.CmsGwtConstants;
 import org.opencms.gwt.client.dnd.I_CmsDNDController;
 import org.opencms.gwt.client.ui.A_CmsToolbarHandler;
 import org.opencms.gwt.client.ui.A_CmsToolbarMenu;
 import org.opencms.gwt.client.ui.CmsAcceptDeclineCancelDialog;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
-import org.opencms.gwt.client.ui.CmsFieldSet;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsLockReportDialog;
 import org.opencms.gwt.client.ui.CmsModelSelectDialog;
@@ -60,32 +59,21 @@ import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler;
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.gwt.client.ui.input.CmsCheckBox;
-import org.opencms.gwt.client.ui.input.CmsMultiCheckBox;
-import org.opencms.gwt.client.ui.input.I_CmsFormField;
-import org.opencms.gwt.client.ui.input.form.A_CmsFormFieldPanel;
-import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
-import org.opencms.gwt.client.ui.input.form.CmsDialogFormHandler;
-import org.opencms.gwt.client.ui.input.form.CmsFieldsetFormFieldPanel;
-import org.opencms.gwt.client.ui.input.form.CmsForm;
-import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
-import org.opencms.gwt.client.ui.input.form.CmsInfoBoxFormFieldPanel;
-import org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler;
 import org.opencms.gwt.client.ui.resourceinfo.CmsResourceInfoDialog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Method;
 import org.opencms.gwt.client.util.CmsDomUtil.Target;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
+import org.opencms.gwt.shared.CmsClientVariantInfo;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
-import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsLockInfo;
 import org.opencms.gwt.shared.CmsModelResourceInfo;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -93,17 +81,15 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.Maps;
 import com.google.gwt.dom.client.FormElement;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Timer;
@@ -120,11 +106,63 @@ import com.google.gwt.user.client.ui.SimplePanel;
  */
 public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
+    /** 
+     * Action which is executed when the user selects a client variant.<p>
+     */
+    class ClientVariantSelectAction implements Runnable {
+
+        /** The template context name. */
+        private String m_context;
+
+        /** The variant bean. */
+        private CmsClientVariantInfo m_variant;
+
+        /**
+         * Creates a new instance.<p>
+         * 
+         * @param context the context name  
+         * @param variant the variant information 
+         */
+        public ClientVariantSelectAction(String context, CmsClientVariantInfo variant) {
+
+            m_context = context;
+            m_variant = variant;
+        }
+
+        /**
+         * @see java.lang.Runnable#run()
+         */
+        public void run() {
+
+            deactivateCurrentButton();
+            m_clientVariantDisplay.show(m_context, m_variant);
+        }
+    }
+
+    /** 
+     * Action which does nothing.<p>
+     */
+    public static final Runnable DO_NOTHING = new Runnable() {
+
+        /**
+         * @see java.lang.Runnable#run()
+         */
+        public void run() {
+
+            // do nothing
+
+        }
+
+    };
+
     /** The container-page controller. */
     protected CmsContainerpageController m_controller;
 
     /** The container-page editor. */
     protected CmsContainerpageEditor m_editor;
+
+    /** The widget used for displaying the client variants. */
+    CmsClientVariantDisplay m_clientVariantDisplay = new CmsClientVariantDisplay(this);
 
     /** The currently active tool-bar button. */
     private I_CmsToolbarButton m_activeButton;
@@ -194,6 +232,23 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     }
 
     /**
+     * Switches the template context.<p>
+     * 
+     * @param cookieName the cookie name 
+     * @param value the new template context 
+     */
+    @SuppressWarnings("deprecation")
+    public void changeTemplateContextManually(final String cookieName, final String value) {
+
+        if (value != null) {
+            Cookies.setCookie(cookieName, value, new Date(300, 0, 1), null, "/", false);
+        } else {
+            Cookies.removeCookie(cookieName, "/");
+        }
+        Window.Location.reload();
+    }
+
+    /**
      * Checks whether GWT widgets are available for all fields of a content.<p>
      * 
      * @param structureId the structure id of the content 
@@ -203,6 +258,27 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     public void checkNewWidgetsAvailable(CmsUUID structureId, AsyncCallback<Boolean> asyncCallback) {
 
         m_controller.checkNewWidgetsAvailable(structureId, asyncCallback);
+    }
+
+    /**
+     * Creates a context menu entry.<p>
+     * 
+     * @param structureId structure id of the resource 
+     * @param name the label 
+     * @param checked true if checkbox should be displayed
+     * @param action the action to execute 
+     * 
+     * @return the menu entry
+     */
+    public CmsContextMenuEntry createSimpleContextMenuEntry(
+        CmsUUID structureId,
+        String name,
+        boolean checked,
+        final Runnable action) {
+
+        CmsContextMenuEntry entry = createRawMenuEntry(structureId, action);
+        decorateMenuEntry(entry, name, checked);
+        return entry;
     }
 
     /**
@@ -230,6 +306,14 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         }
     }
 
+    /** 
+     * Deactivates the selection.<p>
+     */
+    public void deactivateSelection() {
+
+        m_editor.getSelection().setActive(false);
+    }
+
     /**
      * Deactivates all toolbar buttons.<p>
      */
@@ -251,148 +335,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
             public void execute(final CmsContainerElementData elementBean) {
 
-                Map<String, String> settings = elementBean.getSettings();
-                Map<String, CmsXmlContentProperty> propertyConfig = elementBean.getSettingConfig();
-                final CmsTemplateContextInfo contextInfo = CmsContainerpageController.get().getData().getTemplateContextInfo();
-                final boolean useTemplateContext = contextInfo.shouldShowElementTemplateContextSelection();
-                if ((propertyConfig.size() == 0) && !useTemplateContext) {
-                    String message = Messages.get().key(Messages.GUI_NO_SETTINGS_0);
-                    String title = Messages.get().key(Messages.GUI_NO_SETTINGS_TITLE_0);
-                    (new CmsAlertDialog(title, message)).center();
-                    return;
-                }
-                if (useTemplateContext) {
-                    String templateContexts = settings.get(CmsTemplateContextInfo.SETTING);
-                    if (templateContexts == null) {
-                        templateContexts = CmsStringUtil.listAsString(
-                            new ArrayList<String>(
-                                CmsContainerpageController.get().getData().getTemplateContextInfo().getContextLabels().keySet()),
-                            "|");
-                    } else if (templateContexts.equals(CmsTemplateContextInfo.EMPTY_VALUE)) {
-                        // translate "none" to an empty selection
-                        templateContexts = "";
-                    }
-                    settings.put(CmsTemplateContextInfo.SETTING, templateContexts);
-                }
-
-                final CmsForm form = new CmsForm(false);
-                CmsListInfoBean infoBean = new CmsListInfoBean();
-                infoBean.setTitle(elementBean.getTitle());
-                infoBean.setSubTitle(elementBean.getSitePath());
-                infoBean.setResourceType(elementBean.getResourceType());
-                A_CmsFormFieldPanel formFieldPanel = null;
-                final boolean[] changedContext = new boolean[] {false};
-                CmsMultiCheckBox contextsWidget = null;
-                final CmsMultiCheckBox[] contextsWidgets = new CmsMultiCheckBox[] {null};
-                if (useTemplateContext) {
-                    String settingsLegend = org.opencms.ade.containerpage.client.Messages.get().key(
-                        org.opencms.ade.containerpage.client.Messages.GUI_SETTINGS_LEGEND_0);
-                    CmsFieldsetFormFieldPanel fieldSetPanel = new CmsFieldsetFormFieldPanel(infoBean, settingsLegend);
-                    formFieldPanel = fieldSetPanel;
-                    CmsFieldSet contextsFieldset = new CmsFieldSet();
-                    contextsFieldset.setLegend(contextInfo.getSettingDefinition().getNiceName());
-                    contextsFieldset.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
-                    contextsWidget = new CmsMultiCheckBox(CmsStringUtil.splitAsMap(
-                        contextInfo.getSettingDefinition().getWidgetConfiguration(),
-                        "|",
-                        ":"));
-                    for (CmsCheckBox checkbox : contextsWidget.getCheckboxes()) {
-                        Style checkboxStyle = checkbox.getElement().getStyle();
-                        checkbox.getButton().getElement().getStyle().setFontWeight(Style.FontWeight.NORMAL);
-                        checkboxStyle.setMarginTop(7, Style.Unit.PX);
-                    }
-                    contextsWidget.setFormValueAsString(settings.get(CmsTemplateContextInfo.SETTING));
-                    contextsWidgets[0] = contextsWidget;
-                    contextsWidget.addValueChangeHandler(new ValueChangeHandler<String>() {
-
-                        public void onValueChange(ValueChangeEvent<String> event) {
-
-                            changedContext[0] = true;
-                        }
-                    });
-
-                    contextsFieldset.add(contextsWidget);
-                    fieldSetPanel.getMainPanel().add(contextsFieldset);
-                } else {
-                    formFieldPanel = new CmsInfoBoxFormFieldPanel(infoBean);
-                }
-                form.setWidget(formFieldPanel);
-
-                I_CmsFormSubmitHandler submitHandler = new I_CmsFormSubmitHandler() {
-
-                    /**
-                     * @see org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler#onSubmitForm(org.opencms.gwt.client.ui.input.form.CmsForm, java.util.Map, java.util.Set)
-                     */
-                    public void onSubmitForm(
-                        CmsForm formParam,
-                        final Map<String, String> fieldValues,
-                        Set<String> editedFields) {
-
-                        if (CmsInheritanceContainerEditor.getInstance() != null) {
-                            CmsInheritanceContainerEditor.getInstance().onSettingsEdited();
-                        }
-                        if (useTemplateContext) {
-                            String newTemplateContexts = contextsWidgets[0].getFormValueAsString();
-                            if ((newTemplateContexts == null) || "".equals(newTemplateContexts)) {
-                                newTemplateContexts = CmsTemplateContextInfo.EMPTY_VALUE;
-                                // translate an empty selection to "none" 
-                            }
-                            fieldValues.put(CmsTemplateContextInfo.SETTING, newTemplateContexts);
-                        }
-                        final Map<String, String> filteredFieldValues = new HashMap<String, String>();
-                        for (Map.Entry<String, String> entry : fieldValues.entrySet()) {
-                            String key = entry.getKey();
-                            String value = entry.getValue();
-                            if ((value != null) && (value.length() > 0)) {
-                                filteredFieldValues.put(key, value);
-                            }
-                        }
-                        m_controller.reloadElementWithSettings(
-                            elementWidget,
-                            elementBean.getClientId(),
-                            filteredFieldValues,
-                            new AsyncCallback<CmsContainerPageElementPanel>() {
-
-                                public void onFailure(Throwable caught) {
-
-                                    // will not be executed
-                                }
-
-                                public void onSuccess(CmsContainerPageElementPanel result) {
-
-                                    if (changedContext[0]) {
-                                        // if the context multiselect box isn't displayed, of course it can't change values,
-                                        // and this code won't be executed.
-                                        CmsContainerpageController.get().handleChangeTemplateContext(
-                                            result,
-                                            filteredFieldValues.get(CmsTemplateContextInfo.SETTING));
-                                    }
-                                }
-
-                            });
-                    }
-
-                };
-                CmsDialogFormHandler formHandler = new CmsDialogFormHandler();
-                formHandler.setSubmitHandler(submitHandler);
-                form.setFormHandler(formHandler);
-                String title = Messages.get().key(Messages.GUI_PROPERTY_DIALOG_TITLE_0);
-                CmsFormDialog dialog = new CmsFormDialog(title, form);
-                formHandler.setDialog(dialog);
-                Map<String, I_CmsFormField> formFields = CmsBasicFormField.createFields(propertyConfig.values());
-                for (I_CmsFormField field : formFields.values()) {
-                    String fieldId = field.getId();
-                    String initialValue = settings.get(fieldId);
-                    if (initialValue == null) {
-                        CmsXmlContentProperty propDef = propertyConfig.get(fieldId);
-                        initialValue = propDef.getDefault();
-                    }
-                    form.addField(field, initialValue);
-                }
-                form.render();
-                if (dialog.getWidth() > 0) {
-                    form.getWidget().truncate("settings_truncation", dialog.getWidth() - 12);
-                }
+                CmsElementSettingsDialog dialog = new CmsElementSettingsDialog(m_controller, elementWidget, elementBean);
                 dialog.center();
             }
         });
@@ -725,6 +668,31 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     }
 
     /**
+     * Opens the elements info dialog.<p>
+     */
+    public void openElementsInfo() {
+
+        CmsUUID detailId = CmsContainerpageController.get().getData().getDetailId();
+        List<CmsUUID> detailIdList = new ArrayList<CmsUUID>();
+        if (detailId != null) {
+            detailIdList.add(detailId);
+        }
+        CmsResourceInfoDialog.load(
+            CmsCoreProvider.get().getStructureId(),
+            true,
+            detailIdList,
+            new CloseHandler<PopupPanel>() {
+
+                public void onClose(CloseEvent<PopupPanel> event) {
+
+                    deactivateCurrentButton();
+                    activateSelection();
+                }
+
+            });
+    }
+
+    /**
      * Opens the lock report for the given element.<p>
      * 
      * @param element the element
@@ -832,7 +800,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
      */
     public void resetEditableListButtons() {
 
-        m_controller.resetEditableListButtons();
+        m_controller.resetEditButtons();
     }
 
     /**
@@ -908,7 +876,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     public void showElementInfo(CmsContainerPageElementPanel element) {
 
         CmsUUID structureId = element.getStructureId();
-        CmsResourceInfoDialog.load(structureId);
+        CmsResourceInfoDialog.load(structureId, true, new ArrayList<CmsUUID>(), null);
     }
 
     /**
@@ -1037,6 +1005,42 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     }
 
     /**
+     * Creates a menu entry based on a structure id and action without anything else.<p>
+     * 
+     * @param structureId the structure id  
+     * @param action the action for the menu entry 
+     * 
+     * @return the new menu entry 
+     */
+    protected CmsContextMenuEntry createRawMenuEntry(CmsUUID structureId, final Runnable action) {
+
+        CmsContextMenuEntry entry = new CmsContextMenuEntry(this, structureId, new I_CmsContextMenuCommand() {
+
+            public void execute(CmsUUID innerStructureId, I_CmsContextMenuHandler handler, CmsContextMenuEntryBean bean) {
+
+                if (action != null) {
+                    action.run();
+                }
+            }
+
+            public A_CmsContextMenuItem getItemWidget(
+                CmsUUID innerStructureId,
+                I_CmsContextMenuHandler handler,
+                CmsContextMenuEntryBean bean) {
+
+                return null;
+            }
+
+            public boolean hasItemWidget() {
+
+                return false;
+            }
+
+        });
+        return entry;
+    }
+
+    /**
      * Creates the template context selection entry for the context menu.<p>
      * 
      * @param structureId the structure id of the page
@@ -1081,29 +1085,59 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
             parentEntry.setBean(parentBean);
 
             Map<String, String> contextNames = info.getContextLabels();
+
             List<I_CmsContextMenuEntry> templateContextEntries = new ArrayList<I_CmsContextMenuEntry>();
             for (Map.Entry<String, String> entry : contextNames.entrySet()) {
                 final String key = entry.getKey();
                 final String label = entry.getValue();
+                if (info.hasClientVariants(key)) {
+                    CmsContextMenuEntry singleContextEntry = createRawMenuEntry(structureId, DO_NOTHING);
+                    boolean showCheckbox = Objects.equal(info.getSelectedContext(), entry.getKey());
+                    decorateMenuEntry(singleContextEntry, label, showCheckbox);
+                    List<I_CmsContextMenuEntry> variantEntries = new ArrayList<I_CmsContextMenuEntry>();
+                    CmsContextMenuEntry editVariantEntry = createMenuEntryForTemplateContext(
+                        info.getCookieName(),
+                        key,
+                        org.opencms.ade.containerpage.client.Messages.get().key(
+                            org.opencms.ade.containerpage.client.Messages.GUI_TEMPLATE_CONTEXT_NO_VARIANT_0),
+                        false,
+                        this,
+                        structureId);
+                    variantEntries.add(editVariantEntry);
+                    Map<String, CmsClientVariantInfo> variants = info.getClientVariants(key);
+                    for (CmsClientVariantInfo variant : variants.values()) {
+                        CmsContextMenuEntry currentVariantEntry = createRawMenuEntry(
+                            structureId,
+                            new ClientVariantSelectAction(key, variant));
+                        decorateMenuEntry(currentVariantEntry, variant.getNiceName(), false);
+                        variantEntries.add(currentVariantEntry);
+                    }
+                    singleContextEntry.setSubMenu(variantEntries);
+                    templateContextEntries.add(singleContextEntry);
 
-                CmsContextMenuEntry menuEntry = createMenuEntryForTemplateContext(
-                    info.getCookieName(),
-                    key,
-                    label,
-                    info.getSelectedContext(),
-                    this,
-                    structureId);
-                templateContextEntries.add(menuEntry);
+                } else {
+
+                    CmsContextMenuEntry menuEntry = createMenuEntryForTemplateContext(
+                        info.getCookieName(),
+                        key,
+                        label,
+                        Objects.equal(key, info.getSelectedContext()),
+                        this,
+                        structureId);
+                    templateContextEntries.add(menuEntry);
+                }
             }
             templateContextEntries.add(createMenuEntryForTemplateContext(
                 info.getCookieName(),
                 null,
                 org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_TEMPLATE_CONTEXT_NONE_0),
-                info.getSelectedContext(),
+                Objects.equal(null, info.getSelectedContext()),
                 this,
                 structureId));
             parentEntry.setSubMenu(templateContextEntries);
+
             return parentEntry;
+
         } else {
             return null;
         }
@@ -1154,6 +1188,24 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         return entry;
     }
 
+    /** 
+     * Fills in label and checkbox of a menu entry.<p>
+     * 
+     * @param entry the menu entry  
+     * @param name the label 
+     * @param checked true if checkbox should be shown 
+     */
+    protected void decorateMenuEntry(CmsContextMenuEntry entry, String name, boolean checked) {
+
+        CmsContextMenuEntryBean bean = new CmsContextMenuEntryBean();
+        bean.setLabel(name);
+        bean.setActive(true);
+        bean.setVisible(true);
+        I_CmsInputCss inputCss = I_CmsInputLayoutBundle.INSTANCE.inputCss();
+        bean.setIconClass(checked ? inputCss.checkBoxImageChecked() : "");
+        entry.setBean(bean);
+    }
+
     /**
      * Helper method for getting the error message for a locking error.<p>
      * 
@@ -1200,7 +1252,11 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
      */
     protected void openPublish() {
 
-        CmsPublishDialog.showPublishDialog(new CloseHandler<PopupPanel>() {
+        HashMap<String, String> params = Maps.newHashMap();
+        params.put(CmsPublishOptions.PARAM_CONTAINERPAGE, "" + CmsCoreProvider.get().getStructureId());
+        params.put(CmsPublishOptions.PARAM_START_WITH_CURRENT_PAGE, "");
+        params.put(CmsPublishOptions.PARAM_DETAIL, "" + m_controller.getData().getDetailId());
+        CmsPublishDialog.showPublishDialog(params, new CloseHandler<PopupPanel>() {
 
             /**
              * @see com.google.gwt.event.logical.shared.CloseHandler#onClose(com.google.gwt.event.logical.shared.CloseEvent)
@@ -1217,37 +1273,31 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     /**
      * Creates a context menu entry for selecting a template context.<p>
      * 
-     * @param name the name of the cookie 
+     * @param cookieName the name of the cookie 
      * @param value the value of the cookie 
      * @param label the text for the menu entry 
-     * @param currentContext the current template context 
+     * @param isActive true if context is currently active  
      * @param handler the context menu handler 
      * @param structureId the current page's structure id 
      * 
      * @return the created context menu entry 
      */
     private CmsContextMenuEntry createMenuEntryForTemplateContext(
-        final String name,
+        final String cookieName,
         final String value,
         String label,
-        String currentContext,
+        boolean isActive,
         I_CmsContextMenuHandler handler,
         CmsUUID structureId) {
 
         CmsContextMenuEntry menuEntry = new CmsContextMenuEntry(handler, structureId, new I_CmsContextMenuCommand() {
 
-            @SuppressWarnings("deprecation")
             public void execute(
                 CmsUUID innerStructureId,
                 I_CmsContextMenuHandler innerHandler,
                 CmsContextMenuEntryBean bean) {
 
-                if (value != null) {
-                    Cookies.setCookie(name, value, new Date(300, 0, 1), null, "/", false);
-                } else {
-                    Cookies.removeCookie(name, "/");
-                }
-                Window.Location.reload();
+                changeTemplateContextManually(cookieName, value);
             }
 
             public A_CmsContextMenuItem getItemWidget(
@@ -1265,7 +1315,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         });
         CmsContextMenuEntryBean bean = new CmsContextMenuEntryBean();
         bean.setLabel(label);
-        boolean isActive = Objects.equal(value, currentContext);
+
         I_CmsInputCss inputCss = I_CmsInputLayoutBundle.INSTANCE.inputCss();
         bean.setIconClass(isActive ? inputCss.checkBoxImageChecked() : "");
         bean.setActive(true);

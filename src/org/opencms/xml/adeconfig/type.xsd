@@ -1,7 +1,6 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
     <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/folder_choice.xsd" />
-    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/type_formatter.xsd" />
  
     <xsd:element name="ADETypes" type="OpenCmsADETypes" />
     
@@ -14,10 +13,9 @@
     <xsd:complexType name="OpenCmsADEType">
         <xsd:sequence>    
         <xsd:element name="TypeName" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
-        <xsd:element name="Disabled" type="OpenCmsBoolean" minOccurs="1" maxOccurs="1" />
+        <xsd:element name="Disabled" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
       	<xsd:element name="Folder" type="OpenCmsADEFolderChoice" minOccurs="0" maxOccurs="1" />
      	<xsd:element name="NamePattern" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
-      	<xsd:element name="Formatter" type="OpenCmsADETypeFormatter" minOccurs="0" maxOccurs="unbounded"  /> 
       	<xsd:element name="DetailPagesDisabled" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />    	
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
@@ -26,8 +24,15 @@
         <xsd:appinfo>
 			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
 			<layouts>
-				<layout element="TypeName" widget="org.opencms.widgets.CmsTypeComboWidget"  /> 
+				<layout element="TypeName" widget="org.opencms.widgets.CmsTypeComboWidget"  />
+				<layout element="Disabled" widget="SelectorWidget" configuration="true:%(key.disabled.true)|*false:%(key.disabled.false)|add:%(key.disabled.add)" />
 			</layouts>
+			<defaults>
+				<default element="Disabled" value="true"/>
+			</defaults>
+			<validationrules>
+				<validationrule element="NamePattern" regex=".*\%\(number\).*" message="%(key.err.namepattern.missung_number_macro)" />
+			</validationrules>
         </xsd:appinfo>
     </xsd:annotation>
 </xsd:schema>

@@ -306,5 +306,7 @@ implements ClickHandler, MouseOutHandler, MouseOverHandler, HasClickHandlers, Ha
     protected void setSubMenu(CmsContextMenu subMenu) {
 
         m_subMenu = subMenu;
+        subMenu.setParentItem(this);
+
     }
 }

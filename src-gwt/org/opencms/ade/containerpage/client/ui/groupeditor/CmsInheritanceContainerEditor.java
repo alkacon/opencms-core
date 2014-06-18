@@ -128,6 +128,8 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
             public void onClick(ClickEvent event) {
 
                 I_CmsGroupEditorOption optionButton = (I_CmsGroupEditorOption)event.getSource();
+                ((CmsPushButton)optionButton).clearHoverState();
+                CmsDomUtil.ensureMouseOut(((CmsPushButton)optionButton).getElement().getParentElement());
                 optionButton.onClick(event);
             }
         };
@@ -173,13 +175,24 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
         if (INSTANCE != null) {
             CmsDebugLog.getInstance().printLine("group-container editor already open");
         } else {
-            INSTANCE = new CmsInheritanceContainerEditor(groupContainer, controller, handler);
-            RootPanel.get().add(INSTANCE);
-            INSTANCE.openDialog(Messages.get().key(Messages.GUI_INHERITANCECONTAINER_CAPTION_0));
+            CmsInheritanceContainerEditor editor = new CmsInheritanceContainerEditor(
+                groupContainer,
+                controller,
+                handler);
+            RootPanel.get().add(editor);
+            editor.openDialog(Messages.get().key(Messages.GUI_INHERITANCECONTAINER_CAPTION_0));
             groupContainer.refreshHighlighting();
-
+            INSTANCE = editor;
         }
         return INSTANCE;
+    }
+
+    /**
+     * Clears the instance reference.<p>
+     */
+    private static void clear() {
+
+        INSTANCE = null;
     }
 
     /**
@@ -363,7 +376,7 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
     @Override
     protected void clearInstance() {
 
-        INSTANCE = null;
+        clear();
     }
 
     /**
@@ -494,30 +507,35 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
     private CmsElementOptionBar createOptionBar(CmsContainerPageElementPanel elementWidget) {
 
         CmsElementOptionBar optionBar = new CmsElementOptionBar(elementWidget);
-        CmsPushButton button = new CmsFavoritesOptionButton(elementWidget, this);
+        CmsPushButton button = new CmsRemoveOptionButton(elementWidget, this);
         button.addClickHandler(m_optionClickHandler);
         optionBar.add(button);
+
+        button = new CmsFavoritesOptionButton(elementWidget, this);
+        button.addClickHandler(m_optionClickHandler);
+        optionBar.add(button);
+
         button = new CmsSettingsOptionButton(elementWidget, this);
         button.addClickHandler(m_optionClickHandler);
         optionBar.add(button);
-        button = new CmsRemoveOptionButton(elementWidget, this);
+
+        button = new CmsInfoOptionButton(elementWidget, this);
         button.addClickHandler(m_optionClickHandler);
         optionBar.add(button);
-        button = new CmsEditOptionButton(elementWidget, this);
-        button.addClickHandler(m_optionClickHandler);
-        optionBar.add(button);
-        button = new CmsMoveOptionButton(elementWidget, this);
-        // setting the drag and drop handler
-        button.addMouseDownHandler(getController().getDndHandler());
-        button.addClickHandler(m_optionClickHandler);
-        optionBar.add(button);
+
         button = new CmsAddOptionButton(elementWidget, this);
         button.addClickHandler(m_optionClickHandler);
         optionBar.add(button);
+
         button = new CmsInheritedOptionButton(elementWidget, this);
-        button.addClickHandler(m_optionClickHandler);
         optionBar.add(button);
-        button = new CmsSelectionOptionButton(elementWidget, this);
+
+        button = new CmsMoveOptionButton(elementWidget, this);
+        // setting the drag and drop handler
+        button.addMouseDownHandler(getController().getDndHandler());
+        optionBar.add(button);
+
+        button = new CmsEditOptionButton(elementWidget, this);
         button.addClickHandler(m_optionClickHandler);
         optionBar.add(button);
 

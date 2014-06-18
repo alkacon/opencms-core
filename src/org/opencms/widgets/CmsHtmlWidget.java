@@ -41,17 +41,20 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.editors.CmsEditorDisplayOptions;
 import org.opencms.workplace.editors.CmsWorkplaceEditorConfiguration;
 import org.opencms.workplace.editors.I_CmsEditorCssHandler;
+import org.opencms.xml.content.I_CmsXmlContentHandler.DisplayType;
 import org.opencms.xml.types.A_CmsXmlContentValue;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
+
+import com.google.common.collect.Lists;
 
 /**
  * Provides a widget that creates a rich input field using the matching component, for use on a widget dialog.<p>
@@ -67,6 +70,12 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
 
     /** The editor widget to use depending on the current users settings, current browser and installed editors. */
     private I_CmsWidget m_editorWidget;
+
+    /** Labels for the default block format options. */
+    public static final Map<String, String> TINYMCE_DEFAULT_BLOCK_FORMAT_LABELS = Collections.unmodifiableMap(CmsStringUtil.splitAsMap(
+        "p:Paragraph|address:Address|pre:Pre|h1:Header 1|h2:Header 2|h3:Header 3|h4:Header 4|h5:Header 5|h6:Header 6",
+        "|",
+        ":"));
 
     /**
      * Creates a new html editing widget.<p>
@@ -98,6 +107,28 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
     }
 
     /**
+     * Gets the block format configuration string for TinyMCE from the configured format select options.<p>
+     *  
+     * @param formatSelectOptions the format select options 
+     * 
+     * @return the block_formats configuration 
+     */
+    public static String getTinyMceBlockFormats(String formatSelectOptions) {
+
+        String[] options = formatSelectOptions.split(";");
+        List<String> resultParts = Lists.newArrayList();
+        for (String option : options) {
+            String label = TINYMCE_DEFAULT_BLOCK_FORMAT_LABELS.get(option);
+            if (label == null) {
+                label = option;
+            }
+            resultParts.add(label + "=" + option);
+        }
+        String result = CmsStringUtil.listAsString(resultParts, ";");
+        return result;
+    }
+
+    /**
      * @see org.opencms.widgets.I_CmsADEWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.xml.types.A_CmsXmlContentValue, org.opencms.i18n.CmsMessages, org.opencms.file.CmsResource, java.util.Locale)
      */
     public String getConfiguration(
@@ -117,6 +148,14 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
 
         // not needed for internal widget
         return null;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getDefaultDisplayType()
+     */
+    public DisplayType getDefaultDisplayType() {
+
+        return DisplayType.wide;
     }
 
     /**
@@ -288,15 +327,14 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
             String formatSelectOptions = widgetOptions.getFormatSelectOptions();
             if (!CmsStringUtil.isEmpty(formatSelectOptions)
                 && !widgetOptions.isButtonHidden(CmsHtmlWidgetOption.OPTION_FORMATSELECT)) {
-                formatSelectOptions = StringUtils.replace(formatSelectOptions, ";", ",");
-                result.put("block_formats", formatSelectOptions);
+                result.put("block_formats", getTinyMceBlockFormats(formatSelectOptions));
             }
             CmsWorkplaceEditorConfiguration editorConfig = OpenCms.getWorkplaceManager().getWorkplaceEditorManager().getEditorConfiguration(
                 "tinymce");
             Boolean pasteText = Boolean.valueOf(editorConfig.getParameters().get("paste_text"));
             JSONObject directOptions = new JSONObject();
             directOptions.put("paste_text_sticky_default", pasteText);
-            directOptions.put("paste_text_sticky", Boolean.TRUE);
+            directOptions.put("paste_text_sticky", pasteText);
             result.put("tinyMceOptions", directOptions);
 
         } catch (JSONException e) {

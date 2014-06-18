@@ -24,6 +24,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.util.ant;
 
 import java.io.BufferedInputStream;
@@ -49,20 +50,18 @@ import org.xml.sax.InputSource;
  */
 public class CmsAntTaskSyncManifest extends Task {
 
-    /**
-     * Base directory (for example,
-     * <tt>modules/org.opencms.ade.containerpage/resources</tt>)
-     */
+    /** Base directory (for example, <tt>modules/org.opencms.ade.containerpage/resources</tt>). */
     private String m_base; // required
-    /**
-     * Source directory (for example,
-     * <tt>modules/org.opencms.ade.containerpage/resources/system/modules/org.opencms.ade.containerpage/resources/containerpage</tt>)
-     */
+
+    /** Source directory (for example, <tt>modules/org.opencms.ade.containerpage/resources/system/modules/org.opencms.ade.containerpage/resources/containerpage</tt>). */
     private String m_directory; // required
-    /**
-     * Absolute path to the manifest file.
-     */
+
+    /** Absolute path to the manifest file. */
     private String m_dstManifestFile; // required
+
+    /** The directory prefix. */
+    private String m_prefix;
+
     /**
      * Absolute path to the manifest file.
      */
@@ -120,7 +119,7 @@ public class CmsAntTaskSyncManifest extends Task {
             // get directory content
             String directory = getDirectory();
             log("Dir to synch: " + directory, Project.MSG_VERBOSE);
-            
+
             String[] files = new File(directory).list();
             // XXX: If empty directory, a nice null pointer exception is thrown
             log("Files found to sync: " + Arrays.toString(files), Project.MSG_VERBOSE);
@@ -136,20 +135,20 @@ public class CmsAntTaskSyncManifest extends Task {
                 for (int j = 0; j < children.length; j++) {
                     newFiles[j + i + 1] = files[i] + '/' + children[j];
                 }
-                if (i + 1 < files.length) {
+                if ((i + 1) < files.length) {
                     System.arraycopy(files, i + 1, newFiles, i + 1 + children.length, files.length - (i + 1));
                 }
                 files = newFiles;
             }
 
             // delete superfluous entries
-            String prefix = new File(directory).getAbsolutePath().substring(
+            String prefix = m_prefix != null ? m_prefix : new File(directory).getAbsolutePath().substring(
                 new File(getBase()).getAbsolutePath().length() + 1).replace('\\', '/');
 
             List<Node> xmlFiles = doc.selectNodes("export/files/file/destination[starts-with(.,'" + prefix + "/')]");
             for (Node xmlFile : xmlFiles) {
                 String path = xmlFile.getText();
-                File file = new File(getBase() + "/" + path);
+                File file = new File(getDirectory() + path.substring(prefix.length()));
                 if (!file.exists()) {
                     log("Removing old entry for non-existing file '" + path + "'", Project.MSG_DEBUG);
                     CmsSetupXmlHelper.setValue(doc, getFileXpath(path), null);
@@ -190,7 +189,7 @@ public class CmsAntTaskSyncManifest extends Task {
 
     /**
      * Returns the required base path.<p>
-     * <p/>
+     * 
      * @return for example,
      *         <tt>modules/org.opencms.ade.containerpage/resources</tt>
      */
@@ -201,7 +200,7 @@ public class CmsAntTaskSyncManifest extends Task {
 
     /**
      * Returns the required directory path.<p>
-     * <p/>
+     * 
      * @return for example,
      *         <tt>modules/org.opencms.ade.containerpage/resources/system/modules/org.opencms.ade.containerpage/resources/containerpage</tt>
      */
@@ -211,19 +210,33 @@ public class CmsAntTaskSyncManifest extends Task {
     }
 
     /**
-     * @return absolute path to the source manifest file
-     */
-    public String getSrcManifestFile() {
-
-        return m_srcManifestFile;
-    }
-
-    /**
+     * Returns the absolute path where the synched manifest will be written.<p>
+     * 
      * @return absolute path where the synched manifest will be written
      */
     public String getDstManifestFile() {
 
         return m_dstManifestFile;
+    }
+
+    /**
+     * Returns the directory prefix.<p>
+     *
+     * @return the directory prefix
+     */
+    public String getPrefix() {
+
+        return m_prefix;
+    }
+
+    /**
+     * Returns the absolute path to the source manifest file.<p>
+     * 
+     * @return absolute path to the source manifest file
+     */
+    public String getSrcManifestFile() {
+
+        return m_srcManifestFile;
     }
 
     /**
@@ -247,6 +260,28 @@ public class CmsAntTaskSyncManifest extends Task {
     }
 
     /**
+     * Sets the absolute path where the synched manifest will be written.<p>
+     * 
+     * @param dstManifestFile absolute path where the synched manifest will be written
+     */
+    public void setDstManifestFile(String dstManifestFile) {
+
+        m_dstManifestFile = dstManifestFile;
+    }
+
+    /**
+     * Sets the directory prefix.<p>
+     *
+     * @param prefix the directory prefix to set
+     */
+    public void setPrefix(String prefix) {
+
+        m_prefix = prefix;
+    }
+
+    /**
+     * Sets the absolute path to the source manifest file.<p>
+     * 
      * @param srcManifestFile absolute path to the source manifest file
      */
     public void setSrcManifestFile(String srcManifestFile) {
@@ -255,20 +290,12 @@ public class CmsAntTaskSyncManifest extends Task {
     }
 
     /**
-     * @param dstManifestFile absolute path where the synched manifest will be
-     *                        written
-     */
-    public void setDstManifestFile(String dstManifestFile) {
-
-        m_dstManifestFile = dstManifestFile;
-    }
-
-    /**
      * Creates a new XML entry for the given destination path.<p>
      * 
      * The node will be created just after the given previous destination path.<p>
      * 
-     * @param doc         the xml document to modify
+     * @param doc the xml document to modify
+     * @param prevDest the previous destination
      * @param destination the destination path
      */
     private void createEntry(Document doc, String prevDest, String destination) {
@@ -322,7 +349,13 @@ public class CmsAntTaskSyncManifest extends Task {
         if (destination.endsWith(".jpg") || destination.endsWith(".gif") || destination.endsWith(".png")) {
             return "image";
         }
-        if (destination.endsWith(".jar") || destination.endsWith(".class")) {
+        // use binary type for GWT specific files (*.cache.html, hosted.html, *.nocache.js, *.rpc) to avoid their content being indexed or editable
+        if (destination.endsWith(".jar")
+            || destination.endsWith(".class")
+            || destination.endsWith(".cache.html")
+            || destination.endsWith("hosted.html")
+            || destination.endsWith(".nocache.js")
+            || destination.endsWith(".rpc")) {
             return "binary";
         }
         if (destination.endsWith(".jsp")) {
@@ -335,7 +368,6 @@ public class CmsAntTaskSyncManifest extends Task {
             || destination.endsWith(".html")
             || destination.endsWith(".js")
             || destination.endsWith(".xml")
-            || destination.endsWith(".rpc")
             || destination.endsWith(".css")) {
             return "plain";
         }

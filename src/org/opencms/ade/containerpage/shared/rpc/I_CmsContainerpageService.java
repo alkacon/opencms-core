@@ -71,6 +71,18 @@ public interface I_CmsContainerpageService extends RemoteService {
     void addToRecentList(String clientId) throws CmsRpcException;
 
     /**
+     * Check if a page or its elements have been changed.<p> 
+     * 
+     * @param structureId the structure id of the resource 
+     * @param detailContentId the structure id of the detail content (may be null)
+     * 
+     * @return true if there were changes in the page or its elements 
+     * 
+     * @throws CmsRpcException if the RPC call fails 
+     */
+    boolean checkContainerpageOrElementsChanged(CmsUUID structureId, CmsUUID detailContentId) throws CmsRpcException;
+
+    /**
      * To create a new element of the given type this method will check if a model resource needs to be selected, otherwise creates the new element.
      * Returns a bean containing either the new element data or a list of model resources to select.<p>
      * 
@@ -141,6 +153,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      * Returns container element data by client id.<p>
      * 
      * @param  pageStructureId the container page structure id
+     * @param detailContentId the detail content structure id
      * @param reqParams optional request parameters
      * @param clientIds the requested element id's
      * @param containers the containers of the current page
@@ -152,6 +165,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      */
     Map<String, CmsContainerElementData> getElementsData(
         CmsUUID pageStructureId,
+        CmsUUID detailContentId,
         String reqParams,
         Collection<String> clientIds,
         Collection<CmsContainer> containers,
@@ -161,6 +175,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      * Gets the element data for an id and a map of settings.<p>
      * 
      * @param pageStructureId the container page structure id 
+     * @param detailContentId the detail content structure id
      * @param reqParams optional request parameters 
      * @param clientId the requested element ids 
      * @param settings the settings for which the element data should be loaded 
@@ -173,6 +188,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      */
     CmsContainerElementData getElementWithSettings(
         CmsUUID pageStructureId,
+        CmsUUID detailContentId,
         String reqParams,
         String clientId,
         Map<String, String> settings,
@@ -183,6 +199,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      * Returns the container element data of the favorite list.<p>
      * 
      * @param pageStructureId the container page structure id
+     * @param detailContentId the detail content structure id
      * @param containers the containers of the current page
      * @param locale the content locale
      * 
@@ -192,13 +209,15 @@ public interface I_CmsContainerpageService extends RemoteService {
      */
     List<CmsContainerElementData> getFavoriteList(
         CmsUUID pageStructureId,
+        CmsUUID detailContentId,
         Collection<CmsContainer> containers,
         String locale) throws CmsRpcException;
 
     /**
      * Returns new container element data for the given resource type name.<p>
      * 
-     * @param  pageStructureId the container page structure id
+     * @param pageStructureId the container page structure id
+     * @param detailContentId the detail content structure id
      * @param reqParams optional request parameters
      * @param resourceType the requested element resource type name
      * @param containers the containers of the current page
@@ -210,6 +229,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      */
     CmsContainerElementData getNewElementData(
         CmsUUID pageStructureId,
+        CmsUUID detailContentId,
         String reqParams,
         String resourceType,
         Collection<CmsContainer> containers,
@@ -219,6 +239,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      * Returns the container element data of the recent list.<p>
      * 
      * @param pageStructureId the container page structure id
+     * @param detailContentId the detail content structure id
      * @param containers the containers of the current page
      * @param locale the content locale
      * 
@@ -228,6 +249,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      */
     List<CmsContainerElementData> getRecentList(
         CmsUUID pageStructureId,
+        CmsUUID detailContentId,
         Collection<CmsContainer> containers,
         String locale) throws CmsRpcException;
 
@@ -265,6 +287,18 @@ public interface I_CmsContainerpageService extends RemoteService {
     throws CmsRpcException;
 
     /**
+     * Saves the detail containers.<p>
+     * 
+     * @param detailContainerResource the detail container resource path
+     * @param containers the container-page's containers
+     * @param locale the content locale
+     * 
+     * @throws CmsRpcException if something goes wrong processing the request
+     */
+    void saveDetailContainers(String detailContainerResource, List<CmsContainer> containers, String locale)
+    throws CmsRpcException;
+
+    /**
      * Saves the favorite list.<p>
      * 
      * @param clientIds favorite list element id's
@@ -277,6 +311,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      * Saves a group-container element.<p>
      * 
      * @param pageStructureId the container page structure id
+     * @param detailContentId the detail content structure id
      * @param reqParams optional request parameters
      * @param groupContainer the group-container to save
      * @param containers the containers of the current page
@@ -288,6 +323,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      */
     CmsGroupContainerSaveResult saveGroupContainer(
         CmsUUID pageStructureId,
+        CmsUUID detailContentId,
         String reqParams,
         CmsGroupContainer groupContainer,
         Collection<CmsContainer> containers,
@@ -297,6 +333,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      * Saves an inheritance container.<p>
      * 
      * @param pageStructureId the current page's structure id
+     * @param detailContentId the detail content structure id
      * @param inheritanceContainer the inheritance container to save
      * @param containers the containers of the current page
      * @param locale the requested locale
@@ -307,6 +344,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      */
     Map<String, CmsContainerElementData> saveInheritanceContainer(
         CmsUUID pageStructureId,
+        CmsUUID detailContentId,
         CmsInheritanceContainer inheritanceContainer,
         Collection<CmsContainer> containers,
         String locale) throws CmsRpcException;
@@ -339,6 +377,18 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @throws CmsRpcException if something goes wrong processing the request
      */
     void syncSaveContainerpage(CmsUUID pageStructureId, List<CmsContainer> containers, String locale)
+    throws CmsRpcException;
+
+    /**
+     * Saves the detail containers.<p>
+     * 
+     * @param detailContainerResource the detail container resource path
+     * @param containers the container-page's containers
+     * @param locale the content locale
+     * 
+     * @throws CmsRpcException if something goes wrong processing the request
+     */
+    void syncSaveDetailContainers(String detailContainerResource, List<CmsContainer> containers, String locale)
     throws CmsRpcException;
 
 }

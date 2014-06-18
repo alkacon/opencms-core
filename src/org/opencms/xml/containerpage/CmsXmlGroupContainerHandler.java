@@ -135,4 +135,13 @@ public class CmsXmlGroupContainerHandler extends CmsDefaultXmlContentHandler {
         return result;
     }
 
+    /**
+     * @see org.opencms.xml.content.CmsDefaultXmlContentHandler#hasModifiableFormatters()
+     */
+    @Override
+    public boolean hasModifiableFormatters() {
+
+        return false;
+    }
+
 }

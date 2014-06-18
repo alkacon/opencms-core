@@ -33,7 +33,7 @@ import com.alkacon.acacia.client.widgets.I_EditWidget;
 import com.alkacon.acacia.client.widgets.I_FormEditWidget;
 
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.user.client.Element;
+import com.google.gwt.dom.client.Element;
 
 /**
  * A widget factory for native java script widgets.<p>
@@ -61,11 +61,11 @@ public final class WidgetFactoryWrapper extends JavaScriptObject implements I_Wi
      * @return the widget name
      */
     public native String getName()/*-{
-        return this.widgetName;
-    }-*/;
+                                  return this.widgetName;
+                                  }-*/;
 
     /**
-     * @see com.alkacon.acacia.client.I_WidgetFactory#createInlineWidget(java.lang.String, com.google.gwt.user.client.Element)
+     * @see com.alkacon.acacia.client.I_WidgetFactory#createInlineWidget(java.lang.String, com.google.gwt.dom.client.Element)
      */
     public I_EditWidget createInlineWidget(String configuration, Element element) {
 
@@ -80,8 +80,8 @@ public final class WidgetFactoryWrapper extends JavaScriptObject implements I_Wi
      * @return the created widget
      */
     private native NativeEditWidget createNativeWidget(String configuration)/*-{
-        return this.createNativeWidget(configuration);
-    }-*/;
+                                                                            return this.createNativeWidget(configuration);
+                                                                            }-*/;
 
     /**
      * Creates a native java script widget wrapping an existing DOM element.<p>
@@ -92,6 +92,6 @@ public final class WidgetFactoryWrapper extends JavaScriptObject implements I_Wi
      * @return the native widget
      */
     private native NativeEditWidget createNativeWrapedElement(String configuration, Element element)/*-{
-        return this.createNativeWrapedElement(configuration, element);
-    }-*/;
+                                                                                                    return this.createNativeWrapedElement(configuration, element);
+                                                                                                    }-*/;
 }

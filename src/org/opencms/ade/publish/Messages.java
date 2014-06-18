@@ -41,7 +41,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_BROKEN_LINK_ONLINE_0 = "GUI_BROKEN_LINK_ONLINE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_RESOURCE_MISSING_ONLINE_0 = "GUI_RESOURCE_MISSING_ONLINE_0";
+    public static final String GUI_CURRENTPAGE_PROJECT_0 = "GUI_CURRENTPAGE_PROJECT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_GROUPNAME_DAY_1 = "GUI_GROUPNAME_DAY_1";
@@ -53,16 +53,34 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_GROUPNAME_SESSION_1 = "GUI_GROUPNAME_SESSION_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_MYCHANGES_PROJECT_0 = "GUI_MYCHANGES_PROJECT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NORMAL_PROJECT_1 = "GUI_NORMAL_PROJECT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PAGE_1 = "GUI_PAGE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROJECT_DIRECT_PUBLISH_0 = "GUI_PROJECT_DIRECT_PUBLISH_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_RELATED_RESOURCE_CAN_NOT_BE_PUBLISHED_0 = "GUI_RELATED_RESOURCE_CAN_NOT_BE_PUBLISHED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_RESOURCE_LOCKED_BY_2 = "GUI_RESOURCE_LOCKED_BY_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCE_MISSING_ONLINE_0 = "GUI_RESOURCE_MISSING_ONLINE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_RESOURCE_NOT_ENOUGH_PERMISSIONS_0 = "GUI_RESOURCE_NOT_ENOUGH_PERMISSIONS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_RESOURCE_PUBLISHED_BY_2 = "GUI_RESOURCE_PUBLISHED_BY_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOO_MANY_RESOURCES_2 = "GUI_TOO_MANY_RESOURCES_2";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.publish.messages";

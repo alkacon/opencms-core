@@ -30,6 +30,7 @@ package org.opencms.widgets;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.xml.content.I_CmsXmlContentHandler.DisplayType;
 import org.opencms.xml.types.A_CmsXmlContentValue;
 
 import java.util.List;
@@ -39,13 +40,6 @@ import java.util.Locale;
  * Widgets to be used with the new XML content editor are required to implement this interface.<p>
  */
 public interface I_CmsADEWidget extends I_CmsWidget {
-
-    /**
-     * Returns the class name of the widget.<p>
-     * 
-     * @return the class name
-     */
-    String getWidgetName();
 
     /**
      * Returns the configuration string for the ADE content editor widget.<p>
@@ -75,6 +69,13 @@ public interface I_CmsADEWidget extends I_CmsWidget {
     List<String> getCssResourceLinks(CmsObject cms);
 
     /**
+     * Returns the default display type of this widget.<p>
+     * 
+     * @return the default display type
+     */
+    DisplayType getDefaultDisplayType();
+
+    /**
      * Returns the java script initialization call.<p>
      * 
      * @return the java script initialization call
@@ -89,6 +90,13 @@ public interface I_CmsADEWidget extends I_CmsWidget {
      * @return the required java script resource links
      */
     List<String> getJavaScriptResourceLinks(CmsObject cms);
+
+    /**
+     * Returns the class name of the widget.<p>
+     * 
+     * @return the class name
+     */
+    String getWidgetName();
 
     /**
      * Returns if this is an internal widget.<p>

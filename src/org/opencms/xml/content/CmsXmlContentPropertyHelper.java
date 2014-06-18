@@ -27,16 +27,18 @@
 
 package org.opencms.xml.content;
 
+import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
-import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.i18n.CmsMultiMessages;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.util.CmsMacroResolver;
@@ -45,6 +47,7 @@ import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlGenericWrapper;
 import org.opencms.xml.CmsXmlUtils;
+import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContentProperty.PropType;
 import org.opencms.xml.page.CmsXmlPage;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
@@ -60,6 +63,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 
@@ -195,8 +199,11 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
         CmsMacroResolver resolver = new CmsMacroResolver();
         resolver.setCmsObject(cms);
         CmsUserSettings settings = new CmsUserSettings(cms.getRequestContext().getCurrentUser());
+        CmsMultiMessages multimessages = new CmsMultiMessages(settings.getLocale());
         CmsMessages messages = contentHandler.getMessages(settings.getLocale());
-        resolver.setMessages(messages);
+        multimessages.addMessages(messages);
+        multimessages.addMessages(OpenCms.getWorkplaceManager().getMessages(settings.getLocale()));
+        resolver.setMessages(multimessages);
         resolver.setKeepEmptyMacros(true);
         return resolver;
     }
@@ -318,18 +325,6 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
     }
 
     /**
-     * Returns true if the property name passed as a parameter is the name of a special system property.<p>
-     * 
-     * @param name the property name 
-     * 
-     * @return true if the property name is the name of a special property 
-     */
-    public static boolean isSpecialProperty(String name) {
-
-        return name.startsWith("#") || name.startsWith("*");
-    }
-
-    /**
      * Extends the given properties with the default values 
      * from the resource's property configuration.<p>
      * 
@@ -343,10 +338,29 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
 
         Map<String, String> result = new HashMap<String, String>();
         if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
+            I_CmsFormatterBean formatter = null;
+            // check formatter configuration setting
+            for (Entry<String, String> property : properties.entrySet()) {
+                if (property.getKey().startsWith(CmsFormatterConfig.FORMATTER_SETTINGS_KEY)
+                    && CmsUUID.isValidUUID(property.getValue())) {
+                    formatter = OpenCms.getADEManager().getCachedFormatters(
+                        cms.getRequestContext().getCurrentProject().isOnlineProject()).getFormatters().get(
+                        new CmsUUID(property.getValue()));
+                    break;
+                }
+
+            }
+
             try {
-                Map<String, CmsXmlContentProperty> propertyConfig = CmsXmlContentDefinition.getContentHandlerForResource(
-                    cms,
-                    resource).getSettings(cms, resource);
+                Map<String, CmsXmlContentProperty> propertyConfig;
+                if (formatter != null) {
+                    propertyConfig = formatter.getSettings();
+                } else {
+                    // fall back to schema configuration
+                    propertyConfig = CmsXmlContentDefinition.getContentHandlerForResource(cms, resource).getSettings(
+                        cms,
+                        resource);
+                }
                 for (Map.Entry<String, CmsXmlContentProperty> entry : propertyConfig.entrySet()) {
                     CmsXmlContentProperty prop = entry.getValue();
                     result.put(entry.getKey(), getPropValueIds(cms, prop.getType(), prop.getDefault()));
@@ -513,6 +527,30 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
     }
 
     /**
+     * Resolves macros in the given property information for the given resource (type) AND the current user.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param resource the resource
+     * @param propertiesConf the property information
+     * 
+     * @return the property information
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public static Map<String, CmsXmlContentProperty> resolveMacrosForPropertyInfo(
+        CmsObject cms,
+        CmsResource resource,
+        Map<String, CmsXmlContentProperty> propertiesConf) throws CmsException {
+
+        if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
+            I_CmsXmlContentHandler contentHandler = CmsXmlContentDefinition.getContentHandlerForResource(cms, resource);
+            CmsMacroResolver resolver = getMacroResolverForProperties(cms, contentHandler);
+            return resolveMacrosInProperties(propertiesConf, resolver);
+        }
+        return propertiesConf;
+    }
+
+    /**
      * Resolves macros in all properties in a map.<p>
      * 
      * @param properties the map of properties in which macros should be resolved 
@@ -584,10 +622,7 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
         for (Map.Entry<String, String> property : properties.entrySet()) {
             String propName = property.getKey();
             String propValue = property.getValue();
-            boolean isSpecial = isSpecialProperty(propName);
-            if (!isSpecial
-                && !CmsTemplateContextInfo.SETTING.equals(propName)
-                && (!propertiesConf.containsKey(propName) || (propValue == null) || (propValue.length() == 0))) {
+            if ((propValue == null) || (propValue.length() == 0)) {
                 continue;
             }
             // only if the property is configured in the schema we will save it
@@ -596,9 +631,8 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
             // the property name
             propElement.addElement(CmsXmlContentProperty.XmlNode.Name.name()).addCDATA(propName);
             Element valueElement = propElement.addElement(CmsXmlContentProperty.XmlNode.Value.name());
-            String baseName = isSpecial ? propName.substring(1) : propName;
             boolean isVfs = false;
-            CmsXmlContentProperty propDef = propertiesConf.get(baseName);
+            CmsXmlContentProperty propDef = propertiesConf.get(propName);
             if (propDef != null) {
                 isVfs = CmsXmlContentProperty.PropType.isVfsList(propDef.getType());
             }
@@ -717,9 +751,6 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
             String propValue = entry.getValue();
             String type = "string";
             CmsXmlContentProperty configEntry = getPropertyConfig(propConfig, propName);
-            if ((configEntry == null) && !CmsTemplateContextInfo.SETTING.equals(propName)) {
-                continue; // ignore properties which are not configured anymore 
-            }
             if (configEntry != null) {
                 type = configEntry.getType();
             }
@@ -779,23 +810,6 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
     }
 
     /**
-     * Returns the base name of a given property name.<p>
-     * 
-     * If propName starts with a '#' character, the base name equals the part 
-     * after the '#', otherwise the base name is identical to propName.<p>
-     * 
-     * @param propName a property name 
-     * @return the base name of the property name 
-     */
-    protected static String getPropertyBaseName(String propName) {
-
-        if (isSpecialProperty(propName)) {
-            return propName.substring(1);
-        }
-        return propName;
-    }
-
-    /**
      * Helper method for accessing the property configuration for a single property.<p>
      * 
      * This method uses the base name of the property to access the property configuration,
@@ -810,7 +824,6 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
         Map<String, CmsXmlContentProperty> propertyConfig,
         String propName) {
 
-        return propertyConfig.get(getPropertyBaseName(propName));
+        return propertyConfig.get(propName);
     }
-
 }

@@ -39,8 +39,6 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.widgets.I_CmsADEWidget;
-import org.opencms.widgets.I_CmsWidget;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -49,7 +47,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -164,15 +161,7 @@ public class CmsWorkplaceEditorManager {
             return false;
         }
         CmsContentTypeVisitor visitor = new CmsContentTypeVisitor(cms, file, cms.getRequestContext().getLocale());
-        visitor.visitTypes(content.getContentDefinition(), Locale.ENGLISH, true);
-        List<I_CmsWidget> widgets = visitor.getCollectedWidgets();
-        for (I_CmsWidget widget : widgets) {
-            if (!(widget instanceof I_CmsADEWidget)) {
-                LOG.info("Widget not compatible with new editor: " + widget.getClass().getName());
-                return false;
-            }
-        }
-        return true;
+        return visitor.isEditorCompatible(content.getContentDefinition());
     }
 
     /**

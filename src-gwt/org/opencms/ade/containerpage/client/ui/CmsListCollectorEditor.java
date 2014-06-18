@@ -57,10 +57,10 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.A_CmsDirectEditButtons#setPosition(org.opencms.gwt.client.util.CmsPositionBean, com.google.gwt.user.client.Element)
+     * @see org.opencms.gwt.client.ui.A_CmsDirectEditButtons#setPosition(org.opencms.gwt.client.util.CmsPositionBean, com.google.gwt.dom.client.Element)
      */
     @Override
-    public void setPosition(CmsPositionBean position, com.google.gwt.user.client.Element containerElement) {
+    public void setPosition(CmsPositionBean position, Element containerElement) {
 
         m_position = position;
         Element parent = CmsDomUtil.getPositioningParent(getElement());
@@ -83,6 +83,7 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
             top = 25;
         }
         style.setTop(top, Unit.PX);
+        updateExpiredOverlayPosition(parent);
     }
 
     /**
@@ -100,9 +101,9 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
     protected void onClickDelete() {
 
         removeHighlighting();
-        openWarningDialog();
-        CmsDomUtil.ensureMouseOut(m_delete.getElement());
         CmsDomUtil.ensureMouseOut(getElement());
+        openWarningDialog();
+        m_delete.clearHoverState();
     }
 
     /**

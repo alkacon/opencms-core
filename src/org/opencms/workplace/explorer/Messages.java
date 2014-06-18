@@ -186,6 +186,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0 = "GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_CONTEXT_PAGE_INFO_0 = "GUI_EXPLORER_CONTEXT_PAGE_INFO_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_CONTEXT_PAGEEDIT_0 = "GUI_EXPLORER_CONTEXT_PAGEEDIT_0";
 
     /** Message constant for key in the resource bundle. */

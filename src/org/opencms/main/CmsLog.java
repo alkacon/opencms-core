@@ -66,11 +66,11 @@ public final class CmsLog {
     /** Log for initialization messages. */
     public static final Log INIT = LogFactory.getLog("org.opencms.init");
 
-    /** The absolute path to the OpenCms log file (in the "real" file system). */
-    private static String m_logFileRfsPath;
-
     /** The absolute path to the folder of the main OpenCms log file (in the "real" file system). */
     private static String m_logFileRfsFolder;
+
+    /** The absolute path to the OpenCms log file (in the "real" file system). */
+    private static String m_logFileRfsPath;
 
     /**
      * Hides the public constructor.<p>
@@ -157,4 +157,5 @@ public final class CmsLog {
 
         return m_logFileRfsPath;
     }
+
 }

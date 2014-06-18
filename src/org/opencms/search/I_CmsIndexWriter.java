@@ -27,6 +27,8 @@
 
 package org.opencms.search;
 
+import org.opencms.db.CmsPublishedResource;
+
 import java.io.IOException;
 
 /**
@@ -53,11 +55,11 @@ public interface I_CmsIndexWriter {
     /**
      * Delete a document from the index.<p>
      * 
-     * @param rootPath the root path of the document to delete
+     * @param resource the resource to delete
      * 
      * @throws IOException in case something goes wrong
      */
-    void deleteDocuments(String rootPath) throws IOException;
+    void deleteDocument(CmsPublishedResource resource) throws IOException;
 
     /**
      * Optimizes the index.<p>

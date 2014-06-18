@@ -44,8 +44,10 @@ import org.opencms.widgets.I_CmsADEWidget;
 import org.opencms.widgets.I_CmsComplexWidget;
 import org.opencms.widgets.I_CmsWidget;
 import org.opencms.xml.CmsXmlContentDefinition;
+import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.content.CmsXmlContentTab;
 import org.opencms.xml.content.I_CmsXmlContentHandler;
+import org.opencms.xml.content.I_CmsXmlContentHandler.DisplayType;
 import org.opencms.xml.types.A_CmsXmlContentValue;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
@@ -62,6 +64,158 @@ import java.util.Map;
  * Visitor to read all types and attribute configurations within a content definition.<p>
  */
 public class CmsContentTypeVisitor {
+
+    /**
+     * Helper class to evaluate the widget display type.<p>
+     */
+    protected class DisplayTypeEvaluator {
+
+        /** The attribute name. */
+        private String m_attributeName;
+
+        /** The attribute type configuration. */
+        private AttributeConfiguration m_config;
+
+        /** The configured display type. */
+        private DisplayType m_configuredType;
+
+        /** The default display type. */
+        private DisplayType m_default;
+
+        /** The applied rule. */
+        private EvaluationRule m_rule;
+
+        /**
+         * Constructor.<p>
+         * 
+         * @param config the attribute type configuration
+         * @param configuredType the configured display type
+         * @param defaultType the default display type
+         * @param rule the applied rule
+         */
+        protected DisplayTypeEvaluator(
+            AttributeConfiguration config,
+            DisplayType configuredType,
+            DisplayType defaultType,
+            EvaluationRule rule) {
+
+            m_config = config;
+
+            m_configuredType = configuredType;
+            m_default = defaultType;
+            m_rule = rule;
+        }
+
+        /**
+         * Returns the attribute name.<p>
+         * 
+         * @return the attribute name
+         */
+        protected String getAttributeName() {
+
+            return m_attributeName;
+        }
+
+        /**
+         * Returns the attribute configuration with the evaluated display type.<p>
+         * 
+         * @param predecessor the proposed predecessor display type
+         * @param successor the proposed successor display type
+         * 
+         * @return the attribute configuration 
+         */
+        protected AttributeConfiguration getEvaluatedConfiguration(DisplayType predecessor, DisplayType successor) {
+
+            DisplayType resultingType = m_configuredType;
+
+            if (resultingType.equals(DisplayType.none)) {
+                if (m_rule.equals(EvaluationRule.rootLevel)) {
+                    resultingType = DisplayType.wide;
+                } else {
+                    resultingType = getProposedType();
+                    if ((predecessor != null) && predecessor.equals(DisplayType.none)) {
+                        predecessor = null;
+                    }
+                    if ((successor != null) && successor.equals(DisplayType.none)) {
+                        successor = null;
+                    }
+                    if ((predecessor != null) && predecessor.equals(DisplayType.column)) {
+                        predecessor = DisplayType.singleline;
+                    }
+                    if ((successor != null) && successor.equals(DisplayType.column)) {
+                        successor = DisplayType.singleline;
+                    }
+                    boolean strong = (m_rule.equals(EvaluationRule.none) || (m_rule.equals(EvaluationRule.optional) && m_default.equals(DisplayType.singleline)))
+                        || (m_rule.equals(EvaluationRule.optional) && m_default.equals(DisplayType.singleline));
+                    if (((predecessor == null) || (successor == null)) && strong) {
+                        resultingType = m_default;
+                    } else if ((predecessor != null) || (successor != null)) {
+
+                        // check if the proposed type matches neither the type of the predecessor nor the type of the successor 
+                        if (!(((predecessor != null) && resultingType.equals(predecessor)) || ((successor != null) && resultingType.equals(successor)))) {
+                            DisplayType match = (predecessor != null)
+                                && (predecessor.equals(DisplayType.wide) || predecessor.equals(DisplayType.singleline))
+                            ? predecessor
+                            : ((successor != null)
+                                && (successor.equals(DisplayType.wide) || successor.equals(DisplayType.singleline))
+                            ? successor
+                            : null);
+                            resultingType = match != null ? match : resultingType;
+                        }
+                    }
+                }
+            }
+            m_config.setDisplayType(resultingType.name());
+            return m_config;
+        }
+
+        /**
+         * Returns the proposed display type.<p>
+         * 
+         * @return the proposed display type
+         */
+        protected DisplayType getProposedType() {
+
+            DisplayType resultingType = m_configuredType;
+            if (resultingType.equals(DisplayType.none)) {
+                switch (m_rule) {
+                    case rootLevel:
+                    case labelLength:
+                        resultingType = DisplayType.wide;
+                        break;
+                    case optional:
+                        resultingType = DisplayType.singleline;
+                        break;
+                    default:
+                        resultingType = m_default;
+
+                }
+            }
+            return resultingType;
+        }
+
+        /**
+         * Sets the attribute name.<p>
+         * 
+         * @param attributeName the attribute name
+         */
+        protected void setAttributeName(String attributeName) {
+
+            m_attributeName = attributeName;
+        }
+    }
+
+    /** Widget display type evaluation rules. */
+    protected enum EvaluationRule {
+        /** Label length rule. */
+        labelLength,
+        /** No rule applied. */
+        none,
+        /** Optional field rule. */
+        optional,
+        /** Root level rule. */
+        rootLevel
+    }
 
     /** The attribute configurations. */
     private Map<String, AttributeConfiguration> m_attributeConfigurations;
@@ -151,14 +305,29 @@ public class CmsContentTypeVisitor {
     }
 
     /**
-     * Visits all types within the XML content definition.<p>
+     * Checks if the content type widgets are compatible with the new content editor.<p>
      * 
      * @param xmlContentDefinition the content definition
-     * @param messageLocale the locale
+     * 
+     * @return <code>true</code> if the content type widgets are compatible with the new content editor
+     * 
+     * @throws CmsXmlException if something goes wrong reading the type widget
      */
-    public void visitTypes(CmsXmlContentDefinition xmlContentDefinition, Locale messageLocale) {
+    public boolean isEditorCompatible(CmsXmlContentDefinition xmlContentDefinition) throws CmsXmlException {
 
-        visitTypes(xmlContentDefinition, messageLocale, false);
+        boolean result = true;
+        for (I_CmsXmlSchemaType subType : xmlContentDefinition.getTypeSequence()) {
+            if (subType.isSimpleType()) {
+                result = isEditorCompatible((A_CmsXmlContentValue)subType);
+            } else {
+                CmsXmlContentDefinition subTypeDefinition = ((CmsXmlNestedContentDefinition)subType).getNestedContentDefinition();
+                result = isEditorCompatible(subTypeDefinition);
+            }
+            if (!result) {
+                break;
+            }
+        }
+        return result;
     }
 
     /**
@@ -166,10 +335,14 @@ public class CmsContentTypeVisitor {
      * 
      * @param xmlContentDefinition the content definition
      * @param messageLocale the locale
-     * @param checkWidgetsOnly if <code>true</code> the availability of new editor widgets will be checked only, 
-     *        in this case widget configuration will NOT be read
      */
-    public void visitTypes(CmsXmlContentDefinition xmlContentDefinition, Locale messageLocale, boolean checkWidgetsOnly) {
+    /**
+     * Visits all types within the XML content definition.<p>
+     * 
+     * @param xmlContentDefinition the content definition
+     * @param messageLocale the locale
+     */
+    public void visitTypes(CmsXmlContentDefinition xmlContentDefinition, Locale messageLocale) {
 
         m_contentHandler = xmlContentDefinition.getContentHandler();
         CmsMessages messages = null;
@@ -191,8 +364,8 @@ public class CmsContentTypeVisitor {
         m_attributeConfigurations = new HashMap<String, AttributeConfiguration>();
         m_widgetConfigurations = new HashMap<String, CmsExternalWidgetConfiguration>();
         m_registeredTypes = new HashMap<String, I_Type>();
-        readTypes(xmlContentDefinition, "", checkWidgetsOnly);
         m_tabInfos = collectTabInfos(xmlContentDefinition);
+        readTypes(xmlContentDefinition, "");
     }
 
     /**
@@ -295,57 +468,113 @@ public class CmsContentTypeVisitor {
     }
 
     /**
+     * Checks if the content value widget is compatible with the new content editor.<p>
+     * 
+     * @param schemaType the content value type
+     * 
+     * @return <code>true</code> if the content value widget is compatible with the new content editor
+     * 
+     * @throws CmsXmlException if something goes wrong reading the type widget
+     */
+    private boolean isEditorCompatible(A_CmsXmlContentValue schemaType) throws CmsXmlException {
+
+        boolean result = false;
+        I_CmsXmlContentHandler contentHandler = schemaType.getContentDefinition().getContentHandler();
+        I_CmsWidget widget = contentHandler.getWidget(schemaType);
+        result = (widget == null) || (widget instanceof I_CmsADEWidget);
+        return result;
+    }
+
+    /**
+     * Returns if an element with the given path will be displayed at root level of a content editor tab.<p>
+     * 
+     * @param path the element path
+     * 
+     * @return <code>true</code> if an element with the given path will be displayed at root level of a content editor tab
+     */
+    private boolean isTabRootLevel(String path) {
+
+        path = path.substring(1);
+        if (!path.contains("/")) {
+            return true;
+        }
+        if (m_tabInfos != null) {
+            for (TabInfo info : m_tabInfos) {
+                if (info.isCollapsed()
+                    && path.startsWith(info.getStartName())
+                    && !path.substring(info.getStartName().length() + 1).contains("/")) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * Reads the attribute configuration for the given schema type. May return <code>null</code> if no special configuration was set.<p>
      * 
      * @param schemaType the schema type
      * @param path the attribute path
-     * @param checkWidgetsOnly checks the availability of new editor widgets only
      * 
      * @return the attribute configuration
      */
-    private AttributeConfiguration readConfiguration(
-        A_CmsXmlContentValue schemaType,
-        String path,
-        boolean checkWidgetsOnly) {
+    private DisplayTypeEvaluator readConfiguration(A_CmsXmlContentValue schemaType, String path) {
 
-        AttributeConfiguration result = null;
         String widgetName = null;
         String widgetConfig = null;
-        boolean compactView = false;
         CmsObject cms = getCmsObject();
+        String label = getLabel(schemaType);
+        // set the default display type
+        DisplayType configuredType = DisplayType.none;
+        DisplayType defaultType = DisplayType.none;
+        EvaluationRule rule = EvaluationRule.none;
         try {
             I_CmsXmlContentHandler contentHandler = schemaType.getContentDefinition().getContentHandler();
-            // currently the compact view mode is restricted to complex types or single value types
-            compactView = contentHandler.isCompactView(schemaType)
-                && (!schemaType.isSimpleType() || (schemaType.getMaxOccurs() == 1));
             I_CmsWidget widget = contentHandler.getWidget(schemaType);
+            configuredType = contentHandler.getDisplayType(schemaType);
+            if (configuredType.equals(DisplayType.none) && schemaType.isSimpleType()) {
+                // check the type is on the root level of the document, those will be displayed 'wide'
+                // the path will always have a leading '/'
+                // also in case the label has more than 15 characters, we display 'wide'
+                if (isTabRootLevel(path)) {
+                    rule = EvaluationRule.rootLevel;
+                } else if (label.length() > 15) {
+                    rule = EvaluationRule.labelLength;
+                } else if ((schemaType.getMinOccurs() == 0)) {
+                    rule = EvaluationRule.optional;
+                }
+            }
             if (widget != null) {
                 widgetName = widget.getClass().getName();
-                compactView = compactView && widget.isCompactViewEnabled();
+                if ((configuredType == DisplayType.column)
+                    && !(schemaType.isSimpleType() && (schemaType.getMaxOccurs() == 1) && widget.isCompactViewEnabled())) {
+                    // column view is not allowed for this widget
+                    configuredType = DisplayType.singleline;
+                }
                 long timer = 0;
                 if (widget instanceof I_CmsADEWidget) {
-                    if (!checkWidgetsOnly) {
-                        if (CmsContentService.LOG.isDebugEnabled()) {
-                            timer = System.currentTimeMillis();
-                        }
-                        I_CmsADEWidget adeWidget = (I_CmsADEWidget)widget;
-                        widgetName = adeWidget.getWidgetName();
-                        widgetConfig = adeWidget.getConfiguration(cms, schemaType, m_messages, m_file, m_locale);
-                        if (!adeWidget.isInternal() && !m_widgetConfigurations.containsKey(widgetName)) {
-                            CmsExternalWidgetConfiguration externalConfiguration = new CmsExternalWidgetConfiguration(
-                                widgetName,
-                                adeWidget.getInitCall(),
-                                adeWidget.getJavaScriptResourceLinks(cms),
-                                adeWidget.getCssResourceLinks(cms));
-                            m_widgetConfigurations.put(widgetName, externalConfiguration);
-                        }
-                        if (CmsContentService.LOG.isDebugEnabled()) {
-                            CmsContentService.LOG.debug(Messages.get().getBundle().key(
-                                Messages.LOG_TAKE_READING_WIDGET_CONFIGURATION_TIME_2,
-                                widgetName,
-                                "" + (System.currentTimeMillis() - timer)));
-                        }
+                    if (CmsContentService.LOG.isDebugEnabled()) {
+                        timer = System.currentTimeMillis();
                     }
+                    I_CmsADEWidget adeWidget = (I_CmsADEWidget)widget;
+                    defaultType = adeWidget.getDefaultDisplayType();
+                    widgetName = adeWidget.getWidgetName();
+                    widgetConfig = adeWidget.getConfiguration(cms, schemaType, m_messages, m_file, m_locale);
+                    if (!adeWidget.isInternal() && !m_widgetConfigurations.containsKey(widgetName)) {
+                        CmsExternalWidgetConfiguration externalConfiguration = new CmsExternalWidgetConfiguration(
+                            widgetName,
+                            adeWidget.getInitCall(),
+                            adeWidget.getJavaScriptResourceLinks(cms),
+                            adeWidget.getCssResourceLinks(cms));
+                        m_widgetConfigurations.put(widgetName, externalConfiguration);
+                    }
+                    if (CmsContentService.LOG.isDebugEnabled()) {
+                        CmsContentService.LOG.debug(Messages.get().getBundle().key(
+                            Messages.LOG_TAKE_READING_WIDGET_CONFIGURATION_TIME_2,
+                            widgetName,
+                            "" + (System.currentTimeMillis() - timer)));
+                    }
+
                 }
                 m_widgets.add(widget);
             } else if (contentHandler.getComplexWidget(schemaType) != null) {
@@ -361,14 +590,14 @@ public class CmsContentTypeVisitor {
             // may happen if no widget was set for the value
             CmsContentService.LOG.debug(e.getMessage(), e);
         }
-        result = new AttributeConfiguration(
-            getLabel(schemaType),
+        AttributeConfiguration result = new AttributeConfiguration(
+            label,
             getHelp(schemaType),
             widgetName,
             widgetConfig,
             readDefaultValue(schemaType, path),
-            compactView);
-        return result;
+            configuredType.name());
+        return new DisplayTypeEvaluator(result, configuredType, defaultType, rule);
     }
 
     /**
@@ -390,9 +619,8 @@ public class CmsContentTypeVisitor {
      * 
      * @param xmlContentDefinition the XML content definition
      * @param path the element path
-     * @param checkWidgetsOnly checks the availability of new editor widgets only
      */
-    private void readTypes(CmsXmlContentDefinition xmlContentDefinition, String path, boolean checkWidgetsOnly) {
+    private void readTypes(CmsXmlContentDefinition xmlContentDefinition, String path) {
 
         String typeName = CmsContentService.getTypeUri(xmlContentDefinition);
         if (m_registeredTypes.containsKey(typeName)) {
@@ -411,19 +639,15 @@ public class CmsContentTypeVisitor {
                 xmlContentDefinition.getChoiceMaxOccurs());
             type = choiceType;
         }
+        ArrayList<DisplayTypeEvaluator> evaluators = new ArrayList<DisplayTypeEvaluator>();
         for (I_CmsXmlSchemaType subType : xmlContentDefinition.getTypeSequence()) {
 
             String subTypeName = null;
             String childPath = path + "/" + subType.getName();
             String subAttributeName = CmsContentService.getAttributeName(subType.getName(), typeName);
-
-            AttributeConfiguration config = readConfiguration(
-                (A_CmsXmlContentValue)subType,
-                childPath,
-                checkWidgetsOnly);
-            if (config != null) {
-                m_attributeConfigurations.put(subAttributeName, config);
-            }
+            DisplayTypeEvaluator ev = readConfiguration((A_CmsXmlContentValue)subType, childPath);
+            ev.setAttributeName(subAttributeName);
+            evaluators.add(ev);
             if (subType.isSimpleType()) {
                 subTypeName = CmsContentService.TYPE_NAME_PREFIX + subType.getTypeName();
                 if (!m_registeredTypes.containsKey(subTypeName)) {
@@ -432,9 +656,17 @@ public class CmsContentTypeVisitor {
             } else {
                 CmsXmlContentDefinition subTypeDefinition = ((CmsXmlNestedContentDefinition)subType).getNestedContentDefinition();
                 subTypeName = CmsContentService.getTypeUri(subTypeDefinition);
-                readTypes(subTypeDefinition, childPath, checkWidgetsOnly);
+                readTypes(subTypeDefinition, childPath);
             }
             type.addAttribute(subAttributeName, subTypeName, subType.getMinOccurs(), subType.getMaxOccurs());
+        }
+        DisplayType predecessor = null;
+        for (int i = 0; i < evaluators.size(); i++) {
+            DisplayTypeEvaluator ev = evaluators.get(i);
+            DisplayType successor = ((i + 1) < evaluators.size()) ? evaluators.get(i + 1).getProposedType() : null;
+            AttributeConfiguration evaluated = ev.getEvaluatedConfiguration(predecessor, successor);
+            m_attributeConfigurations.put(ev.getAttributeName(), evaluated);
+            predecessor = DisplayType.valueOf(evaluated.getDisplayType());
         }
     }
 }

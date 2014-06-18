@@ -1,0 +1,25 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+	
+	.device_iframe { 
+    	border: 30px solid #333; 
+		margin:0 auto; 
+		-moz-border-radius: 25px; 
+		border-radius: 25px; 
+		box-shadow: 10px 10px 5px #888888;
+	}
+	
+	.iframePlaceholder {
+		background-color: white; 
+		width: 100%;
+		height: 100%; 
+	}
+	</ui:style>
+	<g:HTMLPanel>
+		<g:FlowPanel ui:field="m_iframeContainer" addStyleNames="{style.device_iframe}">
+			<g:Label addStyleNames="{style.iframePlaceholder}" ui:field="m_iframePlaceholder" />
+		</g:FlowPanel>
+	</g:HTMLPanel>
+</ui:UiBinder> 

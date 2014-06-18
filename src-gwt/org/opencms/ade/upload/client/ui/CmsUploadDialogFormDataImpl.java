@@ -35,7 +35,7 @@ import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
 import org.opencms.gwt.shared.CmsListInfoBean;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.core.client.JavaScriptObject;
@@ -128,12 +128,11 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
      */
     protected void addJsFiles(JavaScriptObject files) {
 
-        JsArray<CmsFileInfo> cmsFiles = getFiles(files);
-        CmsFileInfo[] result = new CmsFileInfo[cmsFiles.length()];
+        JsArray<CmsFileInfo> cmsFiles = files.cast();
+        List<CmsFileInfo> fileObjects = new ArrayList<CmsFileInfo>();
         for (int i = 0; i < cmsFiles.length(); ++i) {
-            result[i] = cmsFiles.get(i);
+            fileObjects.add(cmsFiles.get(i));
         }
-        List<CmsFileInfo> fileObjects = Arrays.asList(result);
         addFiles(fileObjects);
     }
 
@@ -162,7 +161,7 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
             m_dragAndDropMessage = null;
             m_normalColor = I_CmsLayoutBundle.INSTANCE.constants().css().backgroundColorDialog();
             m_scrollPanel.getElement().getStyle().setBackgroundColor(m_normalColor);
-            onResize();
+            doResize();
         }
     }
 
@@ -180,7 +179,7 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
         getContentWrapper().add(m_dragAndDropMessage);
         m_normalColor = I_CmsConstantsBundle.INSTANCE.css().notificationNormalBg();
         m_scrollPanel.getElement().getStyle().setBackgroundColor(m_normalColor);
-        onResize();
+        doResize();
     }
 
     /**
@@ -191,42 +190,31 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
      */
     private native void addUploadZone(JavaScriptObject element, CmsUploadDialogFormDataImpl dialog)/*-{
 
-        function dragover(event) {
-            event.stopPropagation();
-            event.preventDefault();
-            element.style.backgroundColor = dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl::m_hightLightColor;
-        }
+                                                                                                   function dragover(event) {
+                                                                                                   event.stopPropagation();
+                                                                                                   event.preventDefault();
+                                                                                                   element.style.backgroundColor = dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl::m_hightLightColor;
+                                                                                                   }
 
-        function dragleave(event) {
-            event.stopPropagation();
-            event.preventDefault();
-            element.style.backgroundColor = dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl::m_normalColor;
-        }
+                                                                                                   function dragleave(event) {
+                                                                                                   event.stopPropagation();
+                                                                                                   event.preventDefault();
+                                                                                                   element.style.backgroundColor = dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl::m_normalColor;
+                                                                                                   }
 
-        function drop(event) {
-            event.preventDefault();
-            var dt = event.dataTransfer;
-            var files = dt.files;
-            element.style.backgroundColor = dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl::m_normalColor;
-            dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl::addJsFiles(Lcom/google/gwt/core/client/JavaScriptObject;)(files);
-        }
+                                                                                                   function drop(event) {
+                                                                                                   event.preventDefault();
+                                                                                                   var dt = event.dataTransfer;
+                                                                                                   var files = dt.files;
+                                                                                                   element.style.backgroundColor = dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl::m_normalColor;
+                                                                                                   dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl::addJsFiles(Lcom/google/gwt/core/client/JavaScriptObject;)(files);
+                                                                                                   }
 
-        element.addEventListener("dragover", dragover, false);
-        element.addEventListener("dragexit", dragleave, false);
-        element.addEventListener("dragleave", dragleave, false);
-        element.addEventListener("dragend", dragleave, false);
-        element.addEventListener("drop", drop, false);
+                                                                                                   element.addEventListener("dragover", dragover, false);
+                                                                                                   element.addEventListener("dragexit", dragleave, false);
+                                                                                                   element.addEventListener("dragleave", dragleave, false);
+                                                                                                   element.addEventListener("dragend", dragleave, false);
+                                                                                                   element.addEventListener("drop", drop, false);
 
-    }-*/;
-
-    /**
-     * Converts a JavaScriptObject to an JsArray.<p>
-     * 
-     * @param files the array of files as JavaScriptObject
-     * 
-     * @return a JsArray of CmsFileInfo objects
-     */
-    private native JsArray<CmsFileInfo> getFiles(JavaScriptObject files) /*-{
-        return files;
-    }-*/;
+                                                                                                   }-*/;
 }

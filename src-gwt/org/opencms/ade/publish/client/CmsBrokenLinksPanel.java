@@ -46,6 +46,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -119,8 +120,9 @@ public class CmsBrokenLinksPanel extends Composite {
       * Adds a resource bean to be displayed.<p>
       * 
       * @param res a resource bean
+      * @return the list item widget of the created entry 
       */
-    public void addEntry(CmsPublishResource res) {
+    public CmsListItemWidget addEntry(CmsPublishResource res) {
 
         CmsListItemWidget itemWidget = CmsPublishGroupPanel.createListItemWidget(res);
         CmsTreeItem item = new CmsTreeItem(false, itemWidget);
@@ -131,7 +133,8 @@ public class CmsBrokenLinksPanel extends Composite {
             item.addChild(subItem);
         }
         m_list.addItem(item);
-        m_scrollPanel.onResize();
+        m_scrollPanel.onResizeDescendant();
+        return itemWidget;
     }
 
     /**
@@ -173,8 +176,21 @@ public class CmsBrokenLinksPanel extends Composite {
     public void setEntries(Collection<CmsPublishResource> resourceBeans, List<CmsWorkflowAction> actions) {
 
         m_list.clear();
+        CmsListItemWidget listItemWidget = null;
         for (CmsPublishResource res : resourceBeans) {
-            addEntry(res);
+            listItemWidget = addEntry(res);
+        }
+        if (listItemWidget != null) {
+            final CmsListItemWidget lastListItemWidget = listItemWidget;
+            Timer timer = new Timer() {
+
+                @Override
+                public void run() {
+
+                    CmsDomUtil.resizeAncestor(lastListItemWidget);
+                }
+            };
+            timer.schedule(10);
         }
         m_actions = actions;
     }

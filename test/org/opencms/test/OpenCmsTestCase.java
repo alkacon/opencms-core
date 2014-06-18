@@ -72,6 +72,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -512,16 +513,7 @@ public class OpenCmsTestCase extends TestCase {
         final String targetFolder) {
 
         try {
-            TestSuite suite = new TestSuite();
-            suite.setName(testClass.getName());
-            Constructor<? extends Test> constructor = testClass.getConstructor(String.class);
-            for (Method method : testClass.getMethods()) {
-                String methodName = method.getName();
-                if (methodName.startsWith("test") && (method.getParameterTypes().length == 0)) {
-                    Test test = constructor.newInstance(method.getName());
-                    suite.addTest(test);
-                }
-            }
+            TestSuite suite = generateTestSuite(testClass);
             TestSetup wrapper = new TestSetup(suite) {
 
                 /**
@@ -546,6 +538,34 @@ public class OpenCmsTestCase extends TestCase {
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Generates a test suite by creating a test instance for all test* methods in the given test class and adding them to a new suite.<p>
+     * 
+     * @param testClass the test class 
+     * 
+     * @return the test suite for the given class 
+     * 
+     * @throws NoSuchMethodException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     */
+    public static TestSuite generateTestSuite(Class<? extends Test> testClass)
+    throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+
+        TestSuite suite = new TestSuite();
+        suite.setName(testClass.getName());
+        Constructor<? extends Test> constructor = testClass.getConstructor(String.class);
+        for (Method method : testClass.getMethods()) {
+            String methodName = method.getName();
+            if (methodName.startsWith("test") && (method.getParameterTypes().length == 0)) {
+                Test test = constructor.newInstance(method.getName());
+                suite.addTest(test);
+            }
+        }
+        return suite;
     }
 
     /**
@@ -625,6 +645,34 @@ public class OpenCmsTestCase extends TestCase {
     public static String getDbProduct() {
 
         return m_dbProduct;
+    }
+
+    /**
+     * Returns the path to a file in the test data configuration, 
+     * or <code>null</code> if the given file can not be found.<p>
+     * 
+     * This methods searches the given file in all configured test data paths.
+     * It returns the file found first.<p>
+     * 
+     * @param filename the file name to look up
+     * @return the path to a file in the test data configuration
+     */
+    public static String getTestDataPath(String filename) {
+
+        for (int i = 0; i < m_testDataPath.size(); i++) {
+
+            String path = m_testDataPath.get(i);
+            File file = new File(path + filename);
+            if (file.exists()) {
+                if (file.isDirectory()) {
+                    return CmsFileUtil.normalizePath(file.getAbsolutePath() + File.separator);
+                } else {
+                    return CmsFileUtil.normalizePath(file.getAbsolutePath());
+                }
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -958,16 +1006,19 @@ public class OpenCmsTestCase extends TestCase {
             script = new File(getTestDataPath("scripts/script_default_projects.txt"));
             stream = new FileInputStream(script);
             m_shell.start(stream);
+            stream.close();
 
             if (publish) {
                 // publish the current project by script
                 script = new File(getTestDataPath("scripts/script_publish.txt"));
                 stream = new FileInputStream(script);
                 m_shell.start(stream);
+                stream.close();
                 OpenCms.getPublishManager().waitWhileRunning();
             } else {
                 cms.unlockProject(cms.readProject("_setupProject").getUuid());
             }
+            stream.close();
 
             // switch to the "Offline" project
             cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
@@ -1092,34 +1143,6 @@ public class OpenCmsTestCase extends TestCase {
         }
 
         return setupDb;
-    }
-
-    /**
-     * Returns the path to a file in the test data configuration, 
-     * or <code>null</code> if the given file can not be found.<p>
-     * 
-     * This methods searches the given file in all configured test data paths.
-     * It returns the file found first.<p>
-     * 
-     * @param filename the file name to look up
-     * @return the path to a file in the test data configuration
-     */
-    protected static String getTestDataPath(String filename) {
-
-        for (int i = 0; i < m_testDataPath.size(); i++) {
-
-            String path = m_testDataPath.get(i);
-            File file = new File(path + filename);
-            if (file.exists()) {
-                if (file.isDirectory()) {
-                    return CmsFileUtil.normalizePath(file.getAbsolutePath() + File.separator);
-                } else {
-                    return CmsFileUtil.normalizePath(file.getAbsolutePath());
-                }
-            }
-        }
-
-        return null;
     }
 
     /**
@@ -3333,6 +3356,24 @@ public class OpenCmsTestCase extends TestCase {
             m_currentResourceStrorage = storage;
         } else {
             throw new CmsException(Messages.get().container(Messages.ERR_RESOURCE_STORAGE_NOT_FOUND_0));
+        }
+    }
+
+    /** 
+     * Deletes a given resource if possible.<p>
+     * 
+     * @param path the path of the resource to delete 
+     * @throws CmsException
+     */
+    protected void delete(String path) throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        if (cms.existsResource(path)) {
+            CmsLock lock = cms.getLock(path);
+            if (lock.isUnlocked() || !lock.isOwnedBy(cms.getRequestContext().getCurrentUser())) {
+                cms.lockResource(path);
+            }
+            cms.deleteResource(path, CmsResource.DELETE_PRESERVE_SIBLINGS);
         }
     }
 

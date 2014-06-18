@@ -33,6 +33,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
@@ -65,6 +66,9 @@ public final class CmsResourceWrapperUtils {
 
     /** The extension to use for the property file. */
     public static final String EXTENSION_PROPERTIES = "properties";
+
+    /** Property name used for reading / changing the resource type. */
+    public static final String PROPERTY_RESOURCE_TYPE = "resourceType";
 
     /** The prefix used for a shared property entry. */
     public static final String SUFFIX_PROP_INDIVIDUAL = ".i";
@@ -185,6 +189,11 @@ public final class CmsResourceWrapperUtils {
         Map<String, CmsProperty> activeProperties = CmsPropertyAdvanced.getPropertyMap(cms.readPropertyObjects(
             res,
             false));
+
+        String resourceType = OpenCms.getResourceManager().getResourceType(res).getTypeName();
+        content.append("resourceType=");
+        content.append(resourceType);
+        content.append("\n\n");
 
         // iterate over all possible properties for the resource
         Iterator<CmsPropertyDefinition> i = propertyDef.iterator();
@@ -381,6 +390,14 @@ public final class CmsResourceWrapperUtils {
             }
 
             cms.writePropertyObjects(resourcename, propList);
+            String newType = properties.getProperty(PROPERTY_RESOURCE_TYPE);
+            if (newType != null) {
+                newType = newType.trim();
+                if (OpenCms.getResourceManager().hasResourceType(newType)) {
+                    I_CmsResourceType newTypeObj = OpenCms.getResourceManager().getResourceType(newType);
+                    cms.chtype(resourcename, newTypeObj.getTypeId());
+                }
+            }
         } catch (IOException e) {
             // noop
         }

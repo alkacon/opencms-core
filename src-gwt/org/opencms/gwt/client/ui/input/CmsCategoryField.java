@@ -147,20 +147,20 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
     /** The container for the text area. */
     CmsScrollPanel m_scrollPanel = GWT.create(CmsScrollPanel.class);
 
+    /** The sife pathes of all added categories. */
+    private List<String> m_allSidePath = new ArrayList<String>();
+
     /** The error display for this widget. */
     private CmsErrorWidget m_error = new CmsErrorWidget();
+
+    /** The value if the parent should be selected with the children. */
+    private boolean m_selectParent;
 
     /** The side path of the last added category. */
     private String m_singelSidePath = "";
 
     /** Count the numbers of values shown. */
     private int m_valuesSet;
-
-    /** The sife pathes of all added categories. */
-    private List<String> m_allSidePath = new ArrayList<String>();
-
-    /** The value if the parent should be selected with the children. */
-    private boolean m_selectParent;
 
     /**
      * Category field widgets for ADE forms.<p>
@@ -231,7 +231,7 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
             }
         }
         m_scrollPanel.add(m_categories);
-        m_scrollPanel.onResize();
+        m_scrollPanel.onResizeDescendant();
 
     }
 
@@ -368,7 +368,7 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
         m_defaultHeight = height;
         m_scrollPanel.setHeight(m_defaultHeight + "px");
         m_scrollPanel.setDefaultHeight(m_defaultHeight);
-        m_scrollPanel.onResize();
+        m_scrollPanel.onResizeDescendant();
     }
 
     /**
@@ -463,8 +463,7 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
             category.getTitle(),
             CmsStringUtil.isNotEmptyOrWhitespaceOnly(category.getDescription())
             ? category.getDescription()
-            : category.getPath(),
-            null);
+            : category.getPath(), null);
         // set the list item widget
 
         CmsDataValue categoryTreeItem = new CmsDataValue(

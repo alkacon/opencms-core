@@ -59,10 +59,8 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -108,8 +106,8 @@ public class CmsUploadBean extends CmsJspBean {
     /** The map of parameters read from the current request. */
     private Map<String, String[]> m_parameterMap;
 
-    /** The names of the resources that have been created successfully. */
-    private Set<String> m_resourcesCreated = new HashSet<String>();
+    /** The names by id of the resources that have been created successfully. */
+    private HashMap<String, String> m_resourcesCreated = new HashMap<String, String>();
 
     /** A CMS context for the root site. */
     private CmsObject m_rootCms;
@@ -274,14 +272,16 @@ public class CmsUploadBean extends CmsJspBean {
                     } finally {
                         // get the created resource names
                         for (CmsResource importedResource : importZip.getImportedResources()) {
-                            m_resourcesCreated.add(importedResource.getStructureId().toString());
+                            m_resourcesCreated.put(
+                                importedResource.getStructureId().toString(),
+                                importedResource.getName());
                         }
                     }
                 } else {
                     // create the resource
                     CmsResource importedResource = createSingleResource(cms, fileName, targetFolder, content);
                     // add the name of the created resource to the list of successful created resources
-                    m_resourcesCreated.add(importedResource.getStructureId().toString());
+                    m_resourcesCreated.put(importedResource.getStructureId().toString(), importedResource.getName());
                 }
 
                 if (listener.isCanceled()) {
@@ -365,7 +365,6 @@ public class CmsUploadBean extends CmsJspBean {
                 throw sqlExc;
             } catch (OutOfMemoryError e) {
                 // the file is to large try to clear up
-                content = null;
                 cms.lockResource(newResname);
                 cms.deleteResource(newResname, CmsResource.DELETE_PRESERVE_SIBLINGS);
                 throw e;
@@ -392,7 +391,6 @@ public class CmsUploadBean extends CmsJspBean {
                     throw sqlExc;
                 } catch (OutOfMemoryError e) {
                     // the file is to large try to clear up
-                    content = null;
                     file.setContents(contents);
                     cms.writeFile(file);
                     throw e;
@@ -439,7 +437,8 @@ public class CmsUploadBean extends CmsJspBean {
             result.put(I_CmsUploadConstants.KEY_MESSAGE, message);
             result.put(I_CmsUploadConstants.KEY_STACKTRACE, stacktrace);
             result.put(I_CmsUploadConstants.KEY_REQUEST_SIZE, getRequest().getContentLength());
-            result.put(I_CmsUploadConstants.KEY_UPLOADED_FILES, new JSONArray(m_resourcesCreated));
+            result.put(I_CmsUploadConstants.KEY_UPLOADED_FILES, new JSONArray(m_resourcesCreated.keySet()));
+            result.put(I_CmsUploadConstants.KEY_UPLOADED_FILE_NAMES, new JSONArray(m_resourcesCreated.values()));
             if (m_uploadHook != null) {
                 result.put(I_CmsUploadConstants.KEY_UPLOAD_HOOK, m_uploadHook);
             }
@@ -460,7 +459,7 @@ public class CmsUploadBean extends CmsJspBean {
         if (!m_resourcesCreated.isEmpty()) {
             // some resources have been created, tell the user which resources were created successfully
             StringBuffer buf = new StringBuffer(64);
-            for (String name : m_resourcesCreated) {
+            for (String name : m_resourcesCreated.values()) {
                 buf.append("<br />");
                 buf.append(name);
             }

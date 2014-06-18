@@ -89,13 +89,13 @@ public class CmsHtmlWidgetOption {
     public static final String BUTTONBAR_BLOCK_START = "[";
 
     /** The default editor widget button bar configuration. */
-    public static final String BUTTONBAR_DEFAULT = "[;undo;redo;-;find;replace;-;selectall;removeformat;-;cut;copy;paste;-;bold;italic;underline;strikethrough;-;subscript;superscript;];"
+    public static final String BUTTONBAR_DEFAULT = "[;undo;redo;-;find;replace;-;removeformat;-;pastetext;-;copy;paste;-;bold;italic;underline;strikethrough;-;subscript;superscript;];"
         + "[;alignleft;aligncenter;alignright;justify;-;orderedlist;unorderedlist;-;outdent;indent;];"
         + "[;source;-;formatselect;style;editorlink;link;anchor;unlink;];"
         + "[;imagegallery;downloadgallery;linkgallery;htmlgallery;tablegallery;-;table;-;specialchar;-;print;spellcheck;-;fitwindow;];"
         // additional buttons from TinyMCE
         + "[;abbr;absolute;acronym;advhr;attribs;backcolor;blockquote;cite;cleanup;del;emotions;fontselect;fontsizeselect;forecolor;hr"
-        + ";ins;insertdate;insertlayer;inserttime;ltr;media;movebackward;moveforward;newdocument;nonbreaking;pagebreak;pastetext;pasteword;rtl"
+        + ";ins;insertdate;insertlayer;inserttime;ltr;media;movebackward;moveforward;newdocument;nonbreaking;pagebreak;rtl"
         + ";styleprops;template;visualaid;visualchars;];";
 
     /** The default button bar configuration as List. */
@@ -113,20 +113,62 @@ public class CmsHtmlWidgetOption {
     /** The editor widget default height to use. */
     public static final String EDITOR_DEFAULTHEIGHT = "260px";
 
+    /** Option for the "abbreviation" button. */
+    public static final String OPTION_ABBR = "abbr";
+
+    /** Option for the "absolute" button. */
+    public static final String OPTION_ABSOLUTE = "absolute";
+
+    /** Option for the "acronym" button. */
+    public static final String OPTION_ACRONYM = "acronym";
+
+    /** Option for the "advanced hr" button. */
+    public static final String OPTION_ADVHR = "advhr";
+
     /** Option for the "anchor" dialog. */
     public static final String OPTION_ANCHOR = "anchor";
+
+    /** Option for the "insert/edit attributes" button. */
+    public static final String OPTION_ATTRIBS = "attribs";
+
+    /** Option for the "background color" button. */
+    public static final String OPTION_BACKCOLOR = "backcolor";
+
+    /** Option for the "block quote" button. */
+    public static final String OPTION_BLOCKQUOTE = "blockquote";
 
     /** Option for the "buttonbar" configuration. */
     public static final String OPTION_BUTTONBAR = "buttonbar:";
 
+    /** Option for the "citation" button. */
+    public static final String OPTION_CITE = "cite";
+
+    /** Option for the "clean up messy code" button. */
+    public static final String OPTION_CLEANUP = "cleanup";
+
     /** Option for the css style sheet VFS path to use in the widget area. */
     public static final String OPTION_CSS = "css:";
+
+    /** Option for the "mark text as deletion" button. */
+    public static final String OPTION_DEL = "del";
 
     /** Option for the "editor link" dialog (editor specific). */
     public static final String OPTION_EDITORLINK = "editorlink";
 
+    /** Option for the "emotions" button. */
+    public static final String OPTION_EMOTIONS = "emotions";
+
     /** Option for the "find" dialog. */
     public static final String OPTION_FIND = "find";
+
+    /** Option for the "font select" button. */
+    public static final String OPTION_FONTSELECT = "fontselect";
+
+    /** Option for the "font size" button. */
+    public static final String OPTION_FONTSIZESELECT = "fontsizeselect";
+
+    /** Option for the "text color" button. */
+    public static final String OPTION_FORECOLOR = "forecolor";
 
     /** Option for the "formatselect" selector. */
     public static final String OPTION_FORMATSELECT = "formatselect";
@@ -143,80 +185,11 @@ public class CmsHtmlWidgetOption {
     /** Option for the "hidebuttons" configuration. */
     public static final String OPTION_HIDEBUTTONS = "hidebuttons:";
 
-    /** Option for the "image" dialog. */
-    public static final String OPTION_IMAGE = "image";
-
-    /** Option for the "link" dialog. */
-    public static final String OPTION_LINK = "link";
-
-    /** Option for the "replace" dialog. */
-    public static final String OPTION_REPLACE = "replace";
-
-    /** Option for the "source" code mode. */
-    public static final String OPTION_SOURCE = "source";
-
-    /** Option for the "spell check" dialog. */
-    public static final String OPTION_SPELLCHECK = "spellcheck";
-
-    /** Option for the style select box. */
-    public static final String OPTION_STYLE = "style";
-
-    /** Option for the styles XML VFS path to use in the widget area. */
-    public static final String OPTION_STYLES = "stylesxml:";
-
-    /** Option for the styles format VFS path to use in the widget area. */
-    public static final String OPTION_STYLES_FORMAT = "stylesformat:";
-
-    /** Option for the "table" dialog. */
-    public static final String OPTION_TABLE = "table";
-
-    /** Option for the "unlink" button. */
-    public static final String OPTION_UNLINK = "unlink";
-
-    /** Option for the "abbreviation" button. */
-    public static final String OPTION_ABBR = "abbr";
-
-    /** Option for the "absolute" button. */
-    public static final String OPTION_ABSOLUTE = "absolute";
-
-    /** Option for the "acronym" button. */
-    public static final String OPTION_ACRONYM = "acronym";
-
-    /** Option for the "advanced hr" button. */
-    public static final String OPTION_ADVHR = "advhr";
-
-    /** Option for the "insert/edit attributes" button. */
-    public static final String OPTION_ATTRIBS = "attribs";
-
-    /** Option for the "background color" button. */
-    public static final String OPTION_BACKCOLOR = "backcolor";
-
-    /** Option for the "block quote" button. */
-    public static final String OPTION_BLOCKQUOTE = "blockquote";
-
-    /** Option for the "citation" button. */
-    public static final String OPTION_CITE = "cite";
-
-    /** Option for the "clean up messy code" button. */
-    public static final String OPTION_CLEANUP = "cleanup";
-
-    /** Option for the "mark text as deletion" button. */
-    public static final String OPTION_DEL = "del";
-
-    /** Option for the "emotions" button. */
-    public static final String OPTION_EMOTIONS = "emotions";
-
-    /** Option for the "font select" button. */
-    public static final String OPTION_FONTSELECT = "fontselect";
-
-    /** Option for the "font size" button. */
-    public static final String OPTION_FONTSIZESELECT = "fontsizeselect";
-
-    /** Option for the "text color" button. */
-    public static final String OPTION_FORECOLOR = "forecolor";
-
     /** Option for the "hr" button. */
     public static final String OPTION_HR = "hr";
+
+    /** Option for the "image" dialog. */
+    public static final String OPTION_IMAGE = "image";
 
     /** Option for the "mark text as insertion" button. */
     public static final String OPTION_INS = "ins";
@@ -229,6 +202,9 @@ public class CmsHtmlWidgetOption {
 
     /** Option for the "insert time" button. */
     public static final String OPTION_INSERTTIME = "inserttime";
+
+    /** Option for the "link" dialog. */
+    public static final String OPTION_LINK = "link";
 
     /** Option for the "left to right text" button. */
     public static final String OPTION_LTR = "ltr";
@@ -251,20 +227,41 @@ public class CmsHtmlWidgetOption {
     /** Option for the "page break" button. */
     public static final String OPTION_PAGEBREAK = "pagebreak";
 
-    /** Option for the "paste text" button. */
-    public static final String OPTION_PASTETEXT = "pastetext";
-
     /** Option for the "paste from word" button. */
     public static final String OPTION_PASTEWORD = "pasteword";
+
+    /** Option for the "replace" dialog. */
+    public static final String OPTION_REPLACE = "replace";
 
     /** Option for the "right to left text" button. */
     public static final String OPTION_RTL = "rtl";
 
+    /** Option for the "source" code mode. */
+    public static final String OPTION_SOURCE = "source";
+
+    /** Option for the "spell check" dialog. */
+    public static final String OPTION_SPELLCHECK = "spellcheck";
+
+    /** Option for the style select box. */
+    public static final String OPTION_STYLE = "style";
+
     /** Option for the "edit CSS style" button. */
     public static final String OPTION_STYLEPROPS = "styleprops";
 
+    /** Option for the styles XML VFS path to use in the widget area. */
+    public static final String OPTION_STYLES = "stylesxml:";
+
+    /** Option for the styles format VFS path to use in the widget area. */
+    public static final String OPTION_STYLES_FORMAT = "stylesformat:";
+
+    /** Option for the "table" dialog. */
+    public static final String OPTION_TABLE = "table";
+
     /** Option for the "insert predefined template content" button. */
     public static final String OPTION_TEMPLATE = "template";
+
+    /** Option for the "unlink" button. */
+    public static final String OPTION_UNLINK = "unlink";
 
     /** Option for the "show/hide guidelines/invisible elements" button. */
     public static final String OPTION_VISUALAID = "visualaid";
@@ -292,7 +289,6 @@ public class CmsHtmlWidgetOption {
         OPTION_ADVHR,
         OPTION_ATTRIBS,
         OPTION_BACKCOLOR,
-        OPTION_BLOCKQUOTE,
         OPTION_CITE,
         OPTION_CLEANUP,
         OPTION_DEL,
@@ -300,7 +296,6 @@ public class CmsHtmlWidgetOption {
         OPTION_FONTSELECT,
         OPTION_FONTSIZESELECT,
         OPTION_FORECOLOR,
-        OPTION_HR,
         OPTION_INS,
         OPTION_INSERTDATE,
         OPTION_INSERTLAYER,
@@ -312,7 +307,6 @@ public class CmsHtmlWidgetOption {
         OPTION_NEWDOCUMENT,
         OPTION_NONBREAKING,
         OPTION_PAGEBREAK,
-        OPTION_PASTETEXT,
         OPTION_PASTEWORD,
         OPTION_RTL,
         OPTION_STYLEPROPS,
@@ -361,11 +355,11 @@ public class CmsHtmlWidgetOption {
     /** The hidden buttons. */
     private List<String> m_hiddenButtons;
 
-    /** The style XML path. */
-    private String m_stylesXmlPath;
-
     /** The path for custom styles. */
     private String m_stylesFormatPath;
+
+    /** The style XML path. */
+    private String m_stylesXmlPath;
 
     /**
      * Creates a new empty HTML widget object object.<p>
@@ -760,16 +754,6 @@ public class CmsHtmlWidgetOption {
     }
 
     /**
-     * Returns the styles XML VFS path to use in the widget area.<p>
-     *
-     * @return the styles XML VFS path to use in the widget area
-     */
-    public String getStylesXmlPath() {
-
-        return m_stylesXmlPath;
-    }
-
-    /**
      * Returns the styles format VFS path to use in the widget area.<p>
      *
      * @return the styles XML format path to use in the widget area
@@ -777,6 +761,16 @@ public class CmsHtmlWidgetOption {
     public String getStylesFormatPath() {
 
         return m_stylesFormatPath;
+    }
+
+    /**
+     * Returns the styles XML VFS path to use in the widget area.<p>
+     *
+     * @return the styles XML VFS path to use in the widget area
+     */
+    public String getStylesXmlPath() {
+
+        return m_stylesXmlPath;
     }
 
     /**
@@ -922,16 +916,6 @@ public class CmsHtmlWidgetOption {
     }
 
     /**
-     * Sets the styles XML VFS path to use in the widget area.<p>
-     *
-     * @param stylesXmlPath the styles XML VFS path to use in the widget area
-     */
-    public void setStylesXmlPath(String stylesXmlPath) {
-
-        m_stylesXmlPath = stylesXmlPath;
-    }
-
-    /**
      * Sets the styles format VFS path to use in the widget area.<p>
      *
      * @param stylesFormatPath the styles XML VFS path to use in the widget area
@@ -939,6 +923,16 @@ public class CmsHtmlWidgetOption {
     public void setStylesFormatPath(String stylesFormatPath) {
 
         m_stylesFormatPath = stylesFormatPath;
+    }
+
+    /**
+     * Sets the styles XML VFS path to use in the widget area.<p>
+     *
+     * @param stylesXmlPath the styles XML VFS path to use in the widget area
+     */
+    public void setStylesXmlPath(String stylesXmlPath) {
+
+        m_stylesXmlPath = stylesXmlPath;
     }
 
     /**
@@ -1003,16 +997,6 @@ public class CmsHtmlWidgetOption {
     }
 
     /**
-     * Returns true if the styles selector should be available.<p>
-     *
-     * @return if the styles selector should be available
-     */
-    public boolean showStylesXml() {
-
-        return CmsStringUtil.isNotEmpty(getStylesXmlPath());
-    }
-
-    /**
      * Returns true if the styles format selector should be available.<p>
      *
      * @return if the styles format selector should be available
@@ -1020,6 +1004,16 @@ public class CmsHtmlWidgetOption {
     public boolean showStylesFormat() {
 
         return CmsStringUtil.isNotEmpty(getStylesFormatPath());
+    }
+
+    /**
+     * Returns true if the styles selector should be available.<p>
+     *
+     * @return if the styles selector should be available
+     */
+    public boolean showStylesXml() {
+
+        return CmsStringUtil.isNotEmpty(getStylesXmlPath());
     }
 
     /**

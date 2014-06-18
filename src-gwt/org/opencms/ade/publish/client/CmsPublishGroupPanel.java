@@ -28,21 +28,23 @@
 package org.opencms.ade.publish.client;
 
 import org.opencms.ade.publish.client.CmsPublishItemStatus.Signal;
+import org.opencms.ade.publish.client.CmsPublishSelectPanel.CheckBoxUpdate;
+import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishResource;
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPreviewDialog;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsSimpleListItem;
-import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
+import org.opencms.gwt.client.ui.input.CmsTriStateCheckBox;
+import org.opencms.gwt.client.ui.input.CmsTriStateCheckBox.State;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
-import org.opencms.gwt.client.util.CmsDomUtil;
-import org.opencms.gwt.client.util.CmsResourceStateUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
@@ -56,6 +58,8 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -112,11 +116,8 @@ public class CmsPublishGroupPanel extends Composite {
     /** The publish resources of the current group.<p>*/
     private List<CmsPublishResource> m_publishResources;
 
-    /** The button for selecting all resources in the group. */
-    private CmsPushButton m_selectAll;
-
-    /** The button for deselecting all resources in the group. */
-    private CmsPushButton m_selectNone;
+    /** Checkbox for selecting/deselecting all group items. */
+    private CmsTriStateCheckBox m_selectGroup;
 
     /** A flag which indicates whether only resources with problems should be shown. */
     private boolean m_showProblemsOnly;
@@ -124,6 +125,7 @@ public class CmsPublishGroupPanel extends Composite {
     /**
      * Constructs a new instance.<p>
      * 
+     * @param publishGroup the group for which to build the group panel 
      * @param title the title of the group
      * @param groupIndex the index of the group which this panel should render
      * @param selectionChangeHandler the handler for selection changes for publish resources
@@ -132,6 +134,7 @@ public class CmsPublishGroupPanel extends Composite {
      * @param showProblemsOnly if true, sets this panel into "show resources with problems only" mode
      */
     public CmsPublishGroupPanel(
+        CmsPublishGroup publishGroup,
         String title,
         int groupIndex,
         I_CmsPublishSelectionChangeHandler selectionChangeHandler,
@@ -147,12 +150,8 @@ public class CmsPublishGroupPanel extends Composite {
         m_controllersById = controllersById;
         m_panel.truncate(TM_PUBLISH_LIST, CmsPublishDialog.DIALOG_WIDTH);
         initSelectButtons();
-        if (groupIndex == 0) {
+        if ((groupIndex == 0) && publishGroup.isAutoSelectable()) {
             m_model.signalGroup(Signal.publish, 0);
-        }
-        if (hasOnlyProblemResources()) {
-            m_selectAll.setEnabled(false);
-            m_selectNone.setEnabled(false);
         }
         m_showProblemsOnly = showProblemsOnly;
         if (hasNoProblemResources() && showProblemsOnly) {
@@ -160,7 +159,7 @@ public class CmsPublishGroupPanel extends Composite {
         }
 
         HTML label = new HTML();
-        label.setHTML(title + CmsPublishSelectPanel.formatResourceCount(m_publishResources.size()));
+        label.setHTML(title);
         label.addStyleName(CSS.groupHeader());
         m_header.add(label);
 
@@ -182,20 +181,27 @@ public class CmsPublishGroupPanel extends Composite {
         CmsListInfoBean info = new CmsListInfoBean();
         info.setTitle(getTitle(resourceBean));
         info.setSubTitle(resourceBean.getName());
-        String stateLabel = org.opencms.gwt.client.Messages.get().key(
-            org.opencms.gwt.client.Messages.GUI_RESOURCE_STATE_0);
-        String stateName = CmsResourceStateUtil.getStateName(resourceBean.getState());
-        // this can be null for the source resources of broken relations in the 'broken links' 
-        // panel since these resources don't have to be new or deleted or changed
-        if (stateName != null) {
-            info.addAdditionalInfo(stateLabel, stateName, CmsResourceStateUtil.getStateStyle(resourceBean.getState()));
-        }
+        info.setResourceState(resourceBean.getState());
         if (resourceBean.getUserLastModified() != null) {
             String userLabel = org.opencms.ade.publish.client.Messages.get().key(
                 org.opencms.ade.publish.client.Messages.GUI_LABEL_USER_LAST_MODIFIED_0);
             info.addAdditionalInfo(userLabel, resourceBean.getUserLastModified());
         }
+        if (resourceBean.getDateLastModifiedString() != null) {
+            String dateLabel = org.opencms.ade.publish.client.Messages.get().key(
+                org.opencms.ade.publish.client.Messages.GUI_LABEL_DATE_LAST_MODIFIED_0);
+            info.addAdditionalInfo(dateLabel, resourceBean.getDateLastModifiedString());
+        }
+
+        info.setMarkChangedState(false);
         CmsListItemWidget itemWidget = new CmsListItemWidget(info);
+        String resourceUser = resourceBean.getUserLastModified();
+        String currentUser = CmsCoreProvider.get().getUserInfo().getName();
+        if (!resourceUser.equals(currentUser)) {
+            itemWidget.setTopRightIcon(
+                I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().changed(),
+                Messages.get().key(Messages.GUI_CHANGED_BY_USER_1, resourceBean.getUserLastModified()));
+        }
         for (int i = 0; i < NUM_BUTTON_SLOTS; i++) {
             SimplePanel panel = new SimplePanel();
             panel.getElement().getStyle().setWidth(20, Unit.PX);
@@ -223,7 +229,7 @@ public class CmsPublishGroupPanel extends Composite {
             public void onClick(ClickEvent event) {
 
                 CmsPushButton button = (CmsPushButton)event.getSource();
-                CmsDomUtil.ensureMouseOut(button.getElement());
+                button.clearHoverState();
                 CmsPreviewDialog.showPreviewForResource(resourceBean.getId());
             }
         });
@@ -296,6 +302,26 @@ public class CmsPublishGroupPanel extends Composite {
     public boolean hasMoreItems() {
 
         return m_itemIndex < m_publishResources.size();
+    }
+
+    /**
+     * Hides the tri-state select box for the group.<p>
+     */
+    public void hideGroupSelectCheckBox() {
+
+        m_selectGroup.getElement().getStyle().setVisibility(Visibility.HIDDEN);
+    }
+
+    /** 
+     * Updates the check box state for this group.<p>
+     * 
+     * @param value the state to use for updating the check box 
+     */
+    public void updateCheckboxState(CmsPublishItemStateSummary value) {
+
+        CheckBoxUpdate update = CmsPublishSelectPanel.updateCheckbox(value);
+        m_selectGroup.setTitle(update.getAction());
+        m_selectGroup.setState(update.getState(), false);
     }
 
     /**
@@ -405,7 +431,9 @@ public class CmsPublishGroupPanel extends Composite {
                     m_model.signal(remove ? Signal.remove : Signal.unremove, resourceBean.getId());
                 }
             });
-            fillButtonSlot(itemWidget, SLOT_REMOVE, remover);
+            if (resourceBean.isRemovable()) {
+                fillButtonSlot(itemWidget, SLOT_REMOVE, remover);
+            }
             controller.update(status);
         }
         return row;
@@ -417,42 +445,24 @@ public class CmsPublishGroupPanel extends Composite {
      */
     private void initSelectButtons() {
 
-        m_selectAll = new CmsPushButton();
-        m_selectAll.setText(Messages.get().key(Messages.GUI_PUBLISH_TOP_PANEL_ALL_BUTTON_0));
-        m_selectAll.setImageClass(I_CmsInputLayoutBundle.INSTANCE.inputCss().checkBoxImageChecked());
-        m_selectAll.setSize(I_CmsButton.Size.small);
-        m_selectAll.setUseMinWidth(true);
-        m_selectAll.addClickHandler(new ClickHandler() {
+        m_selectGroup = new CmsTriStateCheckBox("");
+        m_selectGroup.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().inlineBlock());
+        m_selectGroup.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().alignBottom());
+        m_selectGroup.setNextStateAfterIntermediateState(State.on);
+        m_selectGroup.addValueChangeHandler(new ValueChangeHandler<CmsTriStateCheckBox.State>() {
 
-            /**
-             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
-             */
-            public void onClick(ClickEvent event) {
+            public void onValueChange(ValueChangeEvent<State> event) {
 
-                m_model.signalGroup(Signal.publish, m_groupIndex);
+                State state = event.getValue();
+                if (state == State.on) {
+                    m_model.signalGroup(Signal.publish, m_groupIndex);
+                } else if (state == State.off) {
+                    m_model.signalGroup(Signal.unpublish, m_groupIndex);
+                }
             }
+
         });
-
-        m_selectNone = new CmsPushButton();
-        m_selectNone.setText(Messages.get().key(Messages.GUI_PUBLISH_TOP_PANEL_NONE_BUTTON_0));
-        m_selectNone.setImageClass(I_CmsInputLayoutBundle.INSTANCE.inputCss().checkBoxImageUnchecked());
-        m_selectNone.setSize(I_CmsButton.Size.small);
-        m_selectNone.setUseMinWidth(true);
-        m_selectNone.addClickHandler(new ClickHandler() {
-
-            /**
-             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
-             */
-            public void onClick(ClickEvent event) {
-
-                m_model.signalGroup(Signal.unpublish, m_groupIndex);
-            }
-        });
-
-        FlowPanel selectButtons = new FlowPanel();
-        selectButtons.add(m_selectAll);
-        selectButtons.add(m_selectNone);
-        selectButtons.setStyleName(CSS.selectButtons());
-        m_header.add(selectButtons);
+        m_header.add(m_selectGroup);
+        m_header.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().alignCheckboxBottom());
     }
 }

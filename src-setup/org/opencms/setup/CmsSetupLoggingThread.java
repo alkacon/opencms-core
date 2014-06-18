@@ -47,11 +47,22 @@ import java.util.List;
  */
 public class CmsSetupLoggingThread extends Thread {
 
+    /** The line number reader to print out the report. */
     private LineNumberReader m_lineReader;
+
+    /** The file writer for logging. */
     private FileWriter m_logWriter;
+
+    /** A list of messages. */
     private List<String> m_messages;
+
+    /** The piped input. */
     private PipedInputStream m_pipedIn;
+
+    /** The piped output. */
     private PipedOutputStream m_pipedOut;
+
+    /** Signals if the logging thread is finished. */
     private boolean m_stopThread;
 
     /** 

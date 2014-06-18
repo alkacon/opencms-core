@@ -44,8 +44,10 @@ import org.opencms.workplace.tools.A_CmsToolHandler;
  */
 public class CmsSitesToolHandlerWebserver extends A_CmsToolHandler {
 
+    /** Parameter name to enable or disable the configuration. */
     private static final String PARAM_ENABLED = "enableconfig";
 
+    /** The name of this module. */
     private static final String MODULE_NAME = "org.opencms.workplace.tools.sites";
 
     /**

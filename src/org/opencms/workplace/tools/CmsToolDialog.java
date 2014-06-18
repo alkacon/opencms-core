@@ -83,6 +83,9 @@ public class CmsToolDialog extends CmsWorkplace {
     /** Style parameter value. */
     private String m_paramStyle;
 
+    /** The adminProject parameter name. */
+    public static final String PARAM_ADMIN_PROJECT = "adminProject";
+
     /**
      * Default Constructor.<p>
      * 
@@ -134,12 +137,7 @@ public class CmsToolDialog extends CmsWorkplace {
         String toolPath = getCurrentToolPath();
         String parentPath = getParentPath();
         String rootKey = getToolManager().getCurrentRoot(this).getKey();
-        CmsTool parentTool = getToolManager().resolveAdminTool(rootKey, parentPath);
-        String upLevelLink = CmsToolManager.linkForToolPath(
-            getJsp(),
-            parentPath,
-            parentTool.getHandler().getParameters(this));
-        upLevelLink = CmsRequestUtil.appendParameter(upLevelLink, PARAM_FORCE, Boolean.TRUE.toString());
+        String upLevelLink = computeUpLevelLink();
         String parentName = getToolManager().resolveAdminTool(rootKey, parentPath).getHandler().getName();
 
         html.append(getToolManager().generateNavBar(toolPath, this));
@@ -422,7 +420,7 @@ public class CmsToolDialog extends CmsWorkplace {
         }
 
         StringBuffer html = new StringBuffer(512);
-        html.append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n");
+        html.append("<!DOCTYPE html>\n");
         html.append("<html>\n");
         html.append("<head>\n");
         html.append("<meta http-equiv='Content-Type' content='text/html; charset=");
@@ -525,6 +523,24 @@ public class CmsToolDialog extends CmsWorkplace {
     public boolean useNewStyle() {
 
         return (getParamStyle() != null) && getParamStyle().equals(CmsToolDialog.STYLE_NEW);
+    }
+
+    /**
+     * Creates the link for the 'up' button.<p>
+     * 
+     * @return the link for the 'up' button 
+     */
+    protected String computeUpLevelLink() {
+
+        String parentPath = getParentPath();
+        String rootKey = getToolManager().getCurrentRoot(this).getKey();
+        CmsTool parentTool = getToolManager().resolveAdminTool(rootKey, parentPath);
+        String upLevelLink = CmsToolManager.linkForToolPath(
+            getJsp(),
+            parentPath,
+            parentTool.getHandler().getParameters(this));
+        upLevelLink = CmsRequestUtil.appendParameter(upLevelLink, PARAM_FORCE, Boolean.TRUE.toString());
+        return upLevelLink;
     }
 
     /**

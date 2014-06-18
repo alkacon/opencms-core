@@ -106,9 +106,16 @@ public interface I_CmsDropContainer extends I_CmsDropTarget {
     void insert(Widget w, int beforeIndex);
 
     /**
-     * Returns true if this container is being currently used to display a detail view.<p>
+     * Returns <code>true</code> if this container is a detail view only container.<p>
      * 
-     * @return true if this container is used to display a detail view
+     * @return <code>true</code> if this container is a detail view only container
+     */
+    boolean isDetailOnly();
+
+    /**
+     * Returns <code>true</code> if this container is being currently used to display a detail view.<p>
+     * 
+     * @return <code>true</code> if this container is used to display a detail view
      */
     boolean isDetailView();
 

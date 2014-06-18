@@ -1300,7 +1300,7 @@ public class CmsLogin extends CmsJspLoginBean {
         html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_TRADEMARKS_0));
         html.append("</div>\n");
         html.append("<div style=\"text-align: center; font-size: 10px; white-space: nowrap;\">");
-        html.append("&copy; 2002 - 2012 Alkacon Software GmbH. ");
+        html.append("&copy; 2002 - 2014 Alkacon Software GmbH. ");
         html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_RIGHTS_RESERVED_0));
         html.append("</div>\n");
 
@@ -1420,18 +1420,21 @@ public class CmsLogin extends CmsJspLoginBean {
     private String getDirectEditPath(CmsUserSettings userSettings) {
 
         if (userSettings.getStartView().equals(CmsWorkplace.VIEW_DIRECT_EDIT)) {
-            String originalSiteRoot = getCmsObject().getRequestContext().getSiteRoot();
 
             try {
-                getCmsObject().getRequestContext().setSiteRoot(userSettings.getStartSite());
+                CmsObject cloneCms = OpenCms.initCmsObject(getCmsObject());
+                cloneCms.getRequestContext().setSiteRoot(userSettings.getStartSite());
+                String projectName = userSettings.getStartProject();
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(projectName)) {
+                    cloneCms.getRequestContext().setCurrentProject(cloneCms.readProject(projectName));
+                }
                 String folder = userSettings.getStartFolder();
-                CmsResource targetRes = getCmsObject().readDefaultFile(folder);
+                CmsResource targetRes = cloneCms.readDefaultFile(folder);
                 if (targetRes != null) {
-                    return getCmsObject().getSitePath(targetRes);
+                    return cloneCms.getSitePath(targetRes);
                 }
             } catch (Exception e) {
                 LOG.debug(e);
-                getCmsObject().getRequestContext().setSiteRoot(originalSiteRoot);
             }
         }
         return null;

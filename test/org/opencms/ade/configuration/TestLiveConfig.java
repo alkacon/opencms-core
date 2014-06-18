@@ -38,8 +38,6 @@ import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestLogAppender;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsUUID;
-import org.opencms.xml.containerpage.CmsFormatterBean;
-import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -118,23 +116,6 @@ public class TestLiveConfig extends OpenCmsTestCase {
             "/sites/default/.content/a1/blarg.html",
             "/today/news");
         assertEquals("/sites/default/", detailPage);
-    }
-
-    /**
-     * Tests formatter configuration.<p>
-     * 
-     * @throws Exception
-     */
-    public void testFormatters() throws Exception {
-
-        CmsObject cms = rootCms();
-        CmsADEManager manager = OpenCms.getADEManager();
-        CmsADEConfigData config = manager.lookupConfiguration(cms, "/sites/default");
-        CmsFormatterConfiguration formatterConfig = config.getFormatters("a");
-        assertNotNull(formatterConfig);
-        List<CmsFormatterBean> formatters = formatterConfig.getAllFormatters();
-        assertEquals(1, formatters.size());
-        assertEquals("blah", formatters.get(0).getContainerType());
     }
 
     /**

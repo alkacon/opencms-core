@@ -31,35 +31,36 @@ import com.alkacon.acacia.client.css.I_LayoutBundle;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
+import org.opencms.gwt.client.util.CmsDomUtil;
 
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
- * Provides a standard HTML form checkbox widget, for use on a widget dialog.<p>
+ * Provides a standard HTML form check box widget, for use on a widget dialog.<p>
  * 
  * */
 public class CmsCheckboxWidget extends Composite implements I_EditWidget {
 
+    /** The check box of this widget. */
+    protected CmsCheckBox m_checkbox = new CmsCheckBox();
+
     /** The token to control activation. */
     private boolean m_active = true;
 
-    /** The checkbox of this widget. */
-    protected CmsCheckBox m_checkbox = new CmsCheckBox();
-
     /**
      * Constructs an OptionalTextBox with the given caption on the check.<p>
-     * 
      */
     public CmsCheckboxWidget() {
 
-        // Place the check above the text box using a vertical panel.
-        VerticalPanel panel = new VerticalPanel();
-        // adds the checkbot to the panel. 
+        SimplePanel panel = new SimplePanel();
+        // adds the checkbox to the panel. 
         panel.add(m_checkbox);
 
         // Set the check box's caption, and check it by default.
@@ -78,6 +79,13 @@ public class CmsCheckboxWidget extends Composite implements I_EditWidget {
             }
 
         });
+        m_checkbox.getButton().addFocusHandler(new FocusHandler() {
+
+            public void onFocus(FocusEvent event) {
+
+                CmsDomUtil.fireFocusEvent(CmsCheckboxWidget.this);
+            }
+        });
         // All composites must call initWidget() in their constructors.
         initWidget(panel);
 
@@ -88,7 +96,7 @@ public class CmsCheckboxWidget extends Composite implements I_EditWidget {
      */
     public HandlerRegistration addFocusHandler(FocusHandler handler) {
 
-        return null;
+        return addDomHandler(handler, FocusEvent.getType());
     }
 
     /**
@@ -132,10 +140,25 @@ public class CmsCheckboxWidget extends Composite implements I_EditWidget {
     }
 
     /**
+     * @see com.alkacon.acacia.client.widgets.I_EditWidget#owns(com.google.gwt.dom.client.Element)
+     */
+    public boolean owns(Element element) {
+
+        // TODO implement this in case we want the delete behavior for optional fields
+        return false;
+
+    }
+
+    /**
      * @see com.alkacon.acacia.client.widgets.I_EditWidget#setActive(boolean)
      */
     public void setActive(boolean active) {
 
+        // fix button bar positioning issue
+        Element parent = CmsDomUtil.getAncestor(getElement(), I_LayoutBundle.INSTANCE.form().attributeValue());
+        if (parent != null) {
+            parent.addClassName(I_LayoutBundle.INSTANCE.form().shallowWidget());
+        }
         // control if the value has not change do nothing.        
         if (m_active == active) {
             return;
@@ -148,7 +171,6 @@ public class CmsCheckboxWidget extends Composite implements I_EditWidget {
         }
         // activate the checkbox.
         m_checkbox.setEnabled(active);
-
     }
 
     /**

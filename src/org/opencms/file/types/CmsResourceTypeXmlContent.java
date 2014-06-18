@@ -46,7 +46,6 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
-import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -275,7 +274,7 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
                         m_schema,
                         getTypeName()));
                 }
-            } catch (CmsXmlException e) {
+            } catch (Exception e) {
                 // unable to unmarshal the XML schema configured
                 LOG.error(Messages.get().getBundle().key(Messages.ERR_BAD_XML_SCHEMA_2, m_schema, getTypeName()), e);
             }

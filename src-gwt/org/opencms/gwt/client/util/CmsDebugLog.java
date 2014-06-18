@@ -29,13 +29,13 @@ package org.opencms.gwt.client.util;
 
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.BorderStyle;
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -47,11 +47,11 @@ import com.google.gwt.user.client.ui.RootPanel;
  */
 public final class CmsDebugLog extends Composite {
 
-    /** Debug log displayed within the client window. */
-    private static CmsDebugLog m_debug;
-
     /** Global debugging flag. */
     private static final boolean DEBUG = false;
+
+    /** Debug log displayed within the client window. */
+    private static CmsDebugLog m_debug;
 
     /** The wrapped widget. */
     protected HTML m_html;
@@ -59,7 +59,6 @@ public final class CmsDebugLog extends Composite {
     /**
      * Constructor.<p>
      */
-    @SuppressWarnings("unused")
     private CmsDebugLog() {
 
         if (!DEBUG) {
@@ -83,6 +82,17 @@ public final class CmsDebugLog extends Composite {
     }
 
     /**
+     * Logs a message to the browser console if possible.<p>
+     * 
+     * @param message the message to log
+     */
+    public static native void consoleLog(String message) /*-{
+                                                         if ($wnd.console) {
+                                                         $wnd.console.log(message);
+                                                         }
+                                                         }-*/;
+
+    /**
      * Returns the debug log.<p>
      * 
      * @return the debug log
@@ -99,6 +109,17 @@ public final class CmsDebugLog extends Composite {
     }
 
     /**
+     * Clears the debug log.<p>
+     */
+    public void clear() {
+
+        if (!DEBUG) {
+            return;
+        }
+        m_html.setHTML("");
+    }
+
+    /**
      * Prints a new line into the log window by adding a p-tag including given text as HTML.<p>
      * 
      * @param text the text to print
@@ -108,22 +129,9 @@ public final class CmsDebugLog extends Composite {
         if (!DEBUG) {
             return;
         }
-        @SuppressWarnings("unused")
         Element child = DOM.createElement("p");
         child.setInnerHTML(text);
         m_html.getElement().insertFirst(child);
 
-    }
-
-    /**
-     * Clears the debug log.<p>
-     */
-    @SuppressWarnings("unused")
-    public void clear() {
-
-        if (!DEBUG) {
-            return;
-        }
-        m_html.setHTML("");
     }
 }

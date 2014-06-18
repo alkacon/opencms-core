@@ -133,43 +133,39 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
      * @param context the ade context (sitemap or containerpage)
      * 
      * @return the context menu entries 
-     * @throws CmsException
      */
     public static List<CmsContextMenuEntryBean> getContextMenuEntries(
         CmsObject cms,
         CmsUUID structureId,
-        AdeContext context) throws CmsException {
+        AdeContext context) {
 
-        List<CmsContextMenuEntryBean> result = null;
-        if (context != null) {
-            cms.getRequestContext().setAttribute(I_CmsMenuItemRule.ATTR_CONTEXT_INFO, context.toString());
+        List<CmsContextMenuEntryBean> result = Collections.<CmsContextMenuEntryBean> emptyList();
+        try {
+            if (context != null) {
+                cms.getRequestContext().setAttribute(I_CmsMenuItemRule.ATTR_CONTEXT_INFO, context.toString());
+            }
+            CmsResourceUtil[] resUtil = new CmsResourceUtil[1];
+            resUtil[0] = new CmsResourceUtil(cms, cms.readResource(structureId, CmsResourceFilter.ONLY_VISIBLE));
+            if (hasViewPermissions(cms, resUtil[0].getResource())) {
+                // the explorer type settings
+                CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+                    resUtil[0].getResourceTypeName());
+                // only if the user has access to this resource type
+                if ((settings != null)) {
+                    // get the context menu configuration for the given selection mode
+                    CmsExplorerContextMenu contextMenu = settings.getContextMenu();
+                    // transform the context menu into beans
+                    List<CmsContextMenuEntryBean> allEntries = transformToMenuEntries(
+                        cms,
+                        contextMenu.getAllEntries(),
+                        resUtil);
+                    // filter the result
+                    result = filterEntries(allEntries);
+                }
+            }
+        } catch (CmsException e) {
+            // ignore, the user probably has not enough permissions to read the resource
         }
-        CmsResourceUtil[] resUtil = new CmsResourceUtil[1];
-        resUtil[0] = new CmsResourceUtil(cms, cms.readResource(structureId));
-        if (!hasViewPermissions(cms, resUtil[0].getResource())) {
-            // the user has no access to this resource type
-            // could be configured in the opencms-vfs.xml or in the opencms-modules.xml
-            return Collections.<CmsContextMenuEntryBean> emptyList();
-        }
-        // the explorer type settings
-        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
-            resUtil[0].getResourceTypeName());
-
-        // get the context menu configuration for the given selection mode
-        CmsExplorerContextMenu contextMenu;
-        if ((settings == null) || !hasViewPermissions(cms, resUtil[0].getResource())) {
-            // the user has no access to this resource type
-            // could be configured in the opencms-vfs.xml or in the opencms-modules.xml
-            return Collections.<CmsContextMenuEntryBean> emptyList();
-        }
-        // get the context menu
-        contextMenu = settings.getContextMenu();
-
-        // transform the context menu into beans
-        List<CmsContextMenuEntryBean> allEntries = transformToMenuEntries(cms, contextMenu.getAllEntries(), resUtil);
-
-        // filter the result
-        result = filterEntries(allEntries);
         return result;
     }
 
@@ -702,6 +698,46 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#lockIfExists(java.lang.String)
+     */
+    public String lockIfExists(String sitePath) throws CmsRpcException {
+
+        CmsObject cms = getCmsObject();
+        String errorMessage = null;
+        try {
+            if (cms.existsResource(sitePath, CmsResourceFilter.IGNORE_EXPIRATION)) {
+
+                try {
+                    ensureLock(cms.readResource(sitePath, CmsResourceFilter.IGNORE_EXPIRATION));
+                } catch (CmsException e) {
+                    errorMessage = e.getLocalizedMessage(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
+                }
+
+            } else {
+                // check if parent folder may be locked by the current user
+                String parentFolder = CmsResource.getParentFolder(sitePath);
+                while ((parentFolder != null) && !cms.existsResource(parentFolder, CmsResourceFilter.IGNORE_EXPIRATION)) {
+                    parentFolder = CmsResource.getParentFolder(parentFolder);
+                }
+                if (parentFolder != null) {
+                    CmsResource ancestorFolder = cms.readResource(parentFolder, CmsResourceFilter.IGNORE_EXPIRATION);
+                    CmsUser user = cms.getRequestContext().getCurrentUser();
+                    CmsLock lock = cms.getLock(ancestorFolder);
+                    if (!lock.isLockableBy(user)) {
+                        errorMessage = "Can not lock parent folder '" + parentFolder + "'.";
+                    }
+                } else {
+                    errorMessage = "Can not access any parent folder.";
+                }
+            }
+        } catch (Throwable e) {
+            error(e);
+        }
+
+        return errorMessage;
+    }
+
+    /**
      * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#lockTemp(org.opencms.util.CmsUUID)
      */
     public String lockTemp(CmsUUID structureId) throws CmsRpcException {
@@ -780,7 +816,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         CmsRoleManager roleManager = OpenCms.getRoleManager();
         boolean isAdmin = roleManager.hasRole(cms, CmsRole.ADMINISTRATOR);
         boolean isDeveloper = roleManager.hasRole(cms, CmsRole.DEVELOPER);
-        UserInfo userInfo = new UserInfo(isAdmin, isDeveloper);
+        UserInfo userInfo = new UserInfo(cms.getRequestContext().getCurrentUser().getName(), isAdmin, isDeveloper);
         CmsCoreData data = new CmsCoreData(
             EDITOR_URI,
             EDITOR_BACKLINK_URI,
@@ -892,8 +928,27 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
         CmsObject cms = getCmsObject();
         try {
-            CmsResource resource = cms.readResource(structureId);
+            CmsResource resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
             tryUnlock(resource);
+        } catch (CmsException e) {
+            return e.getLocalizedMessage(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
+        } catch (Throwable e) {
+            error(e);
+        }
+        return null;
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#unlock(java.lang.String)
+     */
+    public String unlock(String sitePath) throws CmsRpcException {
+
+        CmsObject cms = getCmsObject();
+        try {
+            if (cms.existsResource(sitePath, CmsResourceFilter.IGNORE_EXPIRATION)) {
+                CmsResource resource = cms.readResource(sitePath, CmsResourceFilter.IGNORE_EXPIRATION);
+                tryUnlock(resource);
+            }
         } catch (CmsException e) {
             return e.getLocalizedMessage(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
         } catch (Throwable e) {

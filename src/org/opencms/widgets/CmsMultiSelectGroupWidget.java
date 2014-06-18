@@ -149,6 +149,7 @@ public class CmsMultiSelectGroupWidget extends CmsSelectGroupWidget {
 
         String result = "";
         CmsDummyWidgetDialog widgetDialog = new CmsDummyWidgetDialog(schemaType.getLocale(), messages);
+        widgetDialog.setResource(resource);
         List<CmsSelectWidgetOption> options = parseSelectOptions(cms, widgetDialog, schemaType);
         Iterator<CmsSelectWidgetOption> it = options.iterator();
         int i = 0;

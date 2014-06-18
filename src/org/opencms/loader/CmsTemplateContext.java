@@ -28,8 +28,13 @@
 package org.opencms.loader;
 
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.i18n.I_CmsMessageContainer;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * A template context is basically a named path to a template JSP, which 
@@ -38,11 +43,17 @@ import java.util.Locale;
  */
 public class CmsTemplateContext {
 
+    /** Map of client variants, with the variant names used as keys. */
+    private Map<String, CmsClientVariant> m_clientVariants;
+
+    /** A flag which indicates whether this template context has been manually selected rather than automatically determined. */
+    private boolean m_forced;
+
     /** The key used for identifying the template context. */
     private String m_key;
 
     /** The message container for the user-readable name. */
-    private CmsMessageContainer m_messageContainer;
+    private I_CmsMessageContainer m_messageContainer;
 
     /** The template context provider which created this context. */
     private I_CmsTemplateContextProvider m_provider;
@@ -64,10 +75,50 @@ public class CmsTemplateContext {
         CmsMessageContainer container,
         I_CmsTemplateContextProvider provider) {
 
+        this(key, path, container, provider, new ArrayList<CmsClientVariant>(), false);
+    }
+
+    /**
+     * Constructor.<p>
+     * 
+     * @param key the internal name 
+     * @param path the template path 
+     * @param container the message container for the name
+     * @param provider the template context provider
+     * @param clientVariants the client variants 
+     * @param forced true if the template context is forced to a specific value instead of automatically determined
+     * 
+     */
+    public CmsTemplateContext(
+        String key,
+        String path,
+        I_CmsMessageContainer container,
+        I_CmsTemplateContextProvider provider,
+        Collection<CmsClientVariant> clientVariants,
+        boolean forced) {
+
         m_key = key;
         m_templatePath = path;
         m_messageContainer = container;
         m_provider = provider;
+        m_forced = forced;
+        m_clientVariants = new LinkedHashMap<String, CmsClientVariant>();
+        for (CmsClientVariant variant : clientVariants) {
+            m_clientVariants.put(variant.getName(), variant);
+        }
+    }
+
+    /**
+     * Gets the map of client variants.<p>
+     * 
+     * Client variants are specialized variants of a template context which are only used by the container page editor
+     * for preview purposes.
+     * 
+     * @return the client variants 
+     */
+    public Map<String, CmsClientVariant> getClientVariants() {
+
+        return m_clientVariants;
     }
 
     /**
@@ -100,7 +151,7 @@ public class CmsTemplateContext {
      * 
      * @return the message container 
      */
-    public CmsMessageContainer getMessageContainer() {
+    public I_CmsMessageContainer getMessageContainer() {
 
         return m_messageContainer;
     }
@@ -123,6 +174,16 @@ public class CmsTemplateContext {
     public String getTemplatePath() {
 
         return m_templatePath;
+    }
+
+    /**
+     * Return true if the template context was not automatically determined.<p>
+     * 
+     * @return true if the template context was not automatically determined 
+     */
+    public boolean isForced() {
+
+        return m_forced;
     }
 
     /**

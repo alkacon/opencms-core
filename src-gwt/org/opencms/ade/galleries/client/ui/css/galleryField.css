@@ -1,13 +1,18 @@
+@external cmsState;
+
 div>div.fader{
 	right: 20px;
 	cursor: text;
 	top: 0px;
 }
+div.hasUpload > div.fader{
+	right: 40px;
+}
 .fieldBox{
 	border: 1px solid #bbbbbb;
 	position:relative;
 }
-div.galleryField input{
+div.galleryField input[type="text"]{
 	border: none;
     box-shadow: none;
     outline: none;
@@ -25,14 +30,36 @@ div.inputContainer{
 	margin: 0px 21px 0px 4px;
 	padding: 0px;
 }
-div.galleryField input:focus{
+.hasUpload > div.inputContainer{
+	margin-right: 41px;	
+}
+
+div.galleryField input[type="text"]:focus{
 	box-shadow: none;
     outline: none;
 }
-.opener{
+div.opener{
 	position: absolute;
 	right: 3px;
 	top: 1px;
+}
+div.uploadButton{
+	display:none;
+}
+div.hasUpload > div.uploadButton{
+	display: inline-block;
+	height: auto;
+	width: auto;
+	position: absolute;
+	top: 1px;
+	right: 24px;
+}
+
+div.fieldBox > div.uploadButton > input{
+	height: auto;
+	width: auto;
+	font-size: 200px;
+	line-height: 200px;	
 }
 .resourceInfo{
 	margin:3px 0px 0px 0px;
@@ -57,6 +84,7 @@ div.imagePreview {
 	float: left;
 	display: none;
 	overflow: hidden;
+	position: relative;
 }
 div.imagePreview > div{
 	height: 110px;
@@ -64,10 +92,34 @@ div.imagePreview > div{
 	background: white;
 	text-align: center;
 }
+
 div.imagePreview img {
 	margin: auto;
 }
 
 .hasImage div.imagePreview {
 	display: block;	
+}
+
+@def DROPZONE_GRADIENT literal("left, #ffa0ae 0%, #ffb2bc 81%, #e8d5d8 100%");  
+
+div.uploadDropZone.dropZoneHover{
+	background: value("constants.css.textColorImportant") !important;
+	background-image: literal("-moz-linear-gradient(")DROPZONE_GRADIENT literal(")") !important;
+	background-image: literal("-ms-linear-gradient(")DROPZONE_GRADIENT literal(")") !important;
+	background-image: literal("-webkit-linear-gradient(")DROPZONE_GRADIENT literal(")") !important;
+	background-image: literal("-o-linear-gradient(")DROPZONE_GRADIENT literal(")") !important;
+	background-image: literal("linear-gradient(")DROPZONE_GRADIENT literal(")") !important;
+}
+
+div.formats{
+	height: 18px;
+	width: auto;
+	margin: 5px 0px 5px 170px;
+	position: relative;
+}
+	
+div.descriptionField{
+	margin-left: 170px;
+	margin-top: 5px;
 }

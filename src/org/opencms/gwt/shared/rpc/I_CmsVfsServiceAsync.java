@@ -42,6 +42,7 @@ import org.opencms.gwt.shared.alias.CmsAliasBean;
 import org.opencms.gwt.shared.property.CmsPropertiesBean;
 import org.opencms.gwt.shared.property.CmsPropertyChangeSet;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -140,6 +141,17 @@ public interface I_CmsVfsServiceAsync {
     void getChildren(String path, AsyncCallback<List<CmsVfsEntryBean>> callback);
 
     /**
+     * Gets the default property configurations for a list of structure ids.<p>
+     * 
+     * @param structureIds the structure ids for which to fetch the default property configurations 
+     * 
+     * @param callback the callback for the result 
+     */
+    void getDefaultProperties(
+        List<CmsUUID> structureIds,
+        AsyncCallback<Map<CmsUUID, Map<String, CmsXmlContentProperty>>> callback);
+
+    /**
      * Gets the names of defined properties.<p>
      * 
      * @param callback the callback for the results 
@@ -208,10 +220,17 @@ public interface I_CmsVfsServiceAsync {
      * Gets status information for a single resource.<p>
      * 
      * @param structureId the structure id of the resource
-     * @param locale the locale for which we want the resource information  
+     * @param locale the locale for which we want the resource information
+     * @param includeTargets flag to control whether relation targets should also be fetched 
+     * @param additionalTargetIds structure ids of additional resources to include in the relation targets returned   
      * @param callback the callback for the results 
      */
-    void getResourceStatus(CmsUUID structureId, String locale, AsyncCallback<CmsResourceStatusBean> callback);
+    void getResourceStatus(
+        CmsUUID structureId,
+        String locale,
+        boolean includeTargets,
+        List<CmsUUID> additionalTargetIds,
+        AsyncCallback<CmsResourceStatusBean> callback);
 
     /**
      * Gets the information which is necessary for opening the 'Restore' dialog for a resource.<p>

@@ -30,6 +30,7 @@ package org.opencms.ade.contenteditor.widgetregistry.client;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
@@ -99,6 +100,16 @@ public final class WidgetWrapper extends Widget implements I_EditWidget {
     }
 
     /**
+     * @see com.alkacon.acacia.client.widgets.I_EditWidget#owns(com.google.gwt.dom.client.Element)
+     */
+    public boolean owns(Element element) {
+
+        // TODO implement this in case we want the delete behavior for optional fields
+        return false;
+
+    }
+
+    /**
      * @see com.alkacon.acacia.client.widgets.I_EditWidget#setActive(boolean)
      */
     public void setActive(boolean active) {
@@ -161,13 +172,13 @@ public final class WidgetWrapper extends Widget implements I_EditWidget {
      * Initializes the native widget by setting the on change and on focus functions.<p>
      */
     private native void initNativeWidget()/*-{
-        var self = this;
-        var nativeWidget = this.@org.opencms.ade.contenteditor.widgetregistry.client.WidgetWrapper::m_nativeWidget;
-        nativeWidget.onChangeCommand = function() {
-            self.@org.opencms.ade.contenteditor.widgetregistry.client.WidgetWrapper::fireChangeEvent()();
-        }
-        nativeWidget.onFocusCommand = function() {
-            self.@org.opencms.ade.contenteditor.widgetregistry.client.WidgetWrapper::fireFocusEvent()();
-        }
-    }-*/;
+                                          var self = this;
+                                          var nativeWidget = this.@org.opencms.ade.contenteditor.widgetregistry.client.WidgetWrapper::m_nativeWidget;
+                                          nativeWidget.onChangeCommand = function() {
+                                          self.@org.opencms.ade.contenteditor.widgetregistry.client.WidgetWrapper::fireChangeEvent()();
+                                          }
+                                          nativeWidget.onFocusCommand = function() {
+                                          self.@org.opencms.ade.contenteditor.widgetregistry.client.WidgetWrapper::fireFocusEvent()();
+                                          }
+                                          }-*/;
 }

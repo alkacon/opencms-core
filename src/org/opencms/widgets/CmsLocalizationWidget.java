@@ -35,6 +35,7 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.I_CmsMacroResolver;
+import org.opencms.xml.content.I_CmsXmlContentHandler.DisplayType;
 import org.opencms.xml.types.A_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
@@ -128,6 +129,14 @@ public class CmsLocalizationWidget extends A_CmsWidget implements I_CmsADEWidget
     public List<String> getCssResourceLinks(CmsObject cms) {
 
         return null;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getDefaultDisplayType()
+     */
+    public DisplayType getDefaultDisplayType() {
+
+        return DisplayType.wide;
     }
 
     /**

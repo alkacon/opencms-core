@@ -34,6 +34,7 @@ import org.opencms.jsp.util.CmsJspStandardContextBean.TemplateBean;
 import org.opencms.loader.CmsTemplateContextManager;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsUUID;
@@ -100,7 +101,7 @@ public class CmsFlexRequestKey {
         m_resource = CmsFlexCacheKey.getKeyName(m_context.addSiteRoot(target), online);
 
         // calculate the device
-        m_device = CmsFlexController.getController(req).getCmsCache().getDeviceSelector().getDeviceType(req);
+        m_device = OpenCms.getSystemInfo().getDeviceSelector().getDeviceType(req);
 
         CmsJspStandardContextBean standardContext = CmsJspStandardContextBean.getInstance(req);
         // get the current container element

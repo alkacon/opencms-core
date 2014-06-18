@@ -18,7 +18,16 @@
 	max-height: none;
 	min-width: 0;
 	max-width: none;
+	box-sizing: content-box;
+	-moz-box-sizing: content-box;
 }
+
+.popup table { 
+	border-collapse: separate;
+	border-spacing: inherit;
+}
+
+
 .closePopup{
     position: absolute;
     right: -12px;
@@ -149,6 +158,8 @@ div.frameDialog div.popupButtonPanel {
     padding: 0px 5px 5px 5px;
     height: auto; 
     white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
     height: 25px;
     line-height: 25px;
 }

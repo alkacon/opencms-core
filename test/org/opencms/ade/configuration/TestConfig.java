@@ -41,8 +41,6 @@ import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.xml.containerpage.CmsFormatterBean;
-import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.ArrayList;
@@ -63,16 +61,16 @@ import com.google.common.collect.Lists;
 public class TestConfig extends OpenCmsTestCase {
 
     /** Empty detail page list. **/
-    protected static final List<CmsDetailPageInfo> NO_DETAILPAGES = Collections.<CmsDetailPageInfo> emptyList();
+    public static final List<CmsDetailPageInfo> NO_DETAILPAGES = Collections.<CmsDetailPageInfo> emptyList();
 
     /** Empty model page list. **/
-    protected static final List<CmsModelPageConfig> NO_MODEL_PAGES = Collections.<CmsModelPageConfig> emptyList();
+    public static final List<CmsModelPageConfig> NO_MODEL_PAGES = Collections.<CmsModelPageConfig> emptyList();
 
     /** Empty property definition list. **/
-    protected static final List<CmsPropertyConfig> NO_PROPERTIES = Collections.<CmsPropertyConfig> emptyList();
+    public static final List<CmsPropertyConfig> NO_PROPERTIES = Collections.<CmsPropertyConfig> emptyList();
 
     /** Empty resource type list. **/
-    protected static final List<CmsResourceTypeConfig> NO_TYPES = Collections.<CmsResourceTypeConfig> emptyList();
+    public static final List<CmsResourceTypeConfig> NO_TYPES = Collections.<CmsResourceTypeConfig> emptyList();
 
     /**
      * Test constructor.<p>
@@ -161,9 +159,9 @@ public class TestConfig extends OpenCmsTestCase {
         dummyUserCms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
 
         CmsFolderOrName folder = new CmsFolderOrName(baseDirectory + "/.content", "plain");
-        CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig("plain", false, folder, "pattern_%(number)", null);
+        CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig("plain", false, folder, "pattern_%(number)");
         CmsResourceTypeConfig typeConf2 = new CmsResourceTypeConfig("binary", false, new CmsFolderOrName(baseDirectory
-            + "/.content", "binary"), "binary_%(number).html", null);
+            + "/.content", "binary"), "binary_%(number).html");
 
         CmsTestConfigData config1 = new CmsTestConfigData(
             baseDirectory,
@@ -203,7 +201,7 @@ public class TestConfig extends OpenCmsTestCase {
         String baseDirectory2 = "/sites/default/foo";
 
         CmsFolderOrName folder = new CmsFolderOrName(contentDirectory, typename);
-        CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig(typename, false, folder, "file_%(number)", null);
+        CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig(typename, false, folder, "file_%(number)");
 
         CmsTestConfigData config1 = new CmsTestConfigData(
             baseDirectory,
@@ -242,10 +240,10 @@ public class TestConfig extends OpenCmsTestCase {
         String baseDirectory3 = "/sites/default/foo/bar";
 
         CmsFolderOrName folder = new CmsFolderOrName(contentDirectory, typename);
-        CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig(typename, false, folder, "file_%(number)", null);
+        CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig(typename, false, folder, "file_%(number)");
         CmsResourceTypeConfig typeConf2 = new CmsResourceTypeConfig("foo", false, new CmsFolderOrName(
             contentDirectory2,
-            "foo"), "foo_%(number)", null);
+            "foo"), "foo_%(number)");
 
         CmsTestConfigData config1 = new CmsTestConfigData(
             baseDirectory,
@@ -307,10 +305,10 @@ public class TestConfig extends OpenCmsTestCase {
         String baseDirectory3 = "/sites/default/foo/bar";
 
         CmsFolderOrName folder = new CmsFolderOrName(contentDirectory, typename);
-        CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig(typename, false, folder, "file_%(number)", null);
+        CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig(typename, false, folder, "file_%(number)");
         CmsResourceTypeConfig typeConf2 = new CmsResourceTypeConfig("foo", false, new CmsFolderOrName(
             contentDirectory2,
-            "foo"), "foo_%(number)", null);
+            "foo"), "foo_%(number)");
 
         CmsTestConfigData config1 = new CmsTestConfigData(
             baseDirectory,
@@ -349,7 +347,7 @@ public class TestConfig extends OpenCmsTestCase {
         String typename = "plain";
         String baseDirectory = "/sites/default";
         String baseDirectory2 = "/sites/default/foo";
-        CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig(typename, false, null, "file_%(number)", null);
+        CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig(typename, false, null, "file_%(number)");
 
         CmsTestConfigData config1 = new CmsTestConfigData(
             baseDirectory,
@@ -390,7 +388,7 @@ public class TestConfig extends OpenCmsTestCase {
             System.out.println("***" + e);
         }
         CmsFolderOrName folder = new CmsFolderOrName(baseDirectory + "/.content", typename);
-        CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig(typename, false, folder, "file_%(number)", null);
+        CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig(typename, false, folder, "file_%(number)");
         CmsTestConfigData config1 = new CmsTestConfigData(
             baseDirectory,
             list(typeConf1),
@@ -419,7 +417,7 @@ public class TestConfig extends OpenCmsTestCase {
      */
     public void testDefaultFolderName() throws Exception {
 
-        CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig("foo", false, null, "pattern_%(number)", null);
+        CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig("foo", false, null, "pattern_%(number)");
         CmsTestConfigData config1 = new CmsTestConfigData(
             "/somefolder/somesubfolder",
             list(typeConf1),
@@ -440,7 +438,7 @@ public class TestConfig extends OpenCmsTestCase {
      */
     public void testDefaultFolderName2() throws Exception {
 
-        CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig("foo", false, null, "pattern_%(number)", null);
+        CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig("foo", false, null, "pattern_%(number)");
         CmsTestConfigData config1 = new CmsTestConfigData(
             "/somefolder/somesubfolder",
             list(typeConf1),
@@ -450,7 +448,7 @@ public class TestConfig extends OpenCmsTestCase {
         config1.setIsModuleConfig(true);
         config1.initialize(rootCms());
 
-        CmsResourceTypeConfig typeConf2 = new CmsResourceTypeConfig("foo", false, null, "patternx_%(number)", null);
+        CmsResourceTypeConfig typeConf2 = new CmsResourceTypeConfig("foo", false, null, "patternx_%(number)");
         CmsTestConfigData config2 = new CmsTestConfigData(
             "/blah",
             list(typeConf2),
@@ -571,11 +569,11 @@ public class TestConfig extends OpenCmsTestCase {
     public void testDiscardInheritedTypes() throws Exception {
 
         CmsFolderOrName folder = new CmsFolderOrName("/.content", "foldername");
-        CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig("foo", false, folder, "pattern_%(number)", null);
+        CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig("foo", false, folder, "pattern_%(number)");
         CmsResourceTypeConfig typeConf2 = new CmsResourceTypeConfig("bar", false, new CmsFolderOrName(
             "/.content",
-            "foldername2"), "pattern2_%(number)", null);
-        CmsResourceTypeConfig typeConf3 = new CmsResourceTypeConfig("baz", false, folder, "blah", null);
+            "foldername2"), "pattern2_%(number)");
+        CmsResourceTypeConfig typeConf3 = new CmsResourceTypeConfig("baz", false, folder, "blah");
         CmsTestConfigData config1 = new CmsTestConfigData(
             "/",
             list(typeConf1, typeConf2, typeConf3),
@@ -606,7 +604,7 @@ public class TestConfig extends OpenCmsTestCase {
     public void testInheritedFolderName1() throws Exception {
 
         CmsFolderOrName folder = new CmsFolderOrName("/somefolder/.content", "blah");
-        CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig("foo", false, folder, "pattern_%(number)", null);
+        CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig("foo", false, folder, "pattern_%(number)");
         CmsTestConfigData config1 = new CmsTestConfigData(
             "/somefolder",
             list(typeConf1),
@@ -638,7 +636,7 @@ public class TestConfig extends OpenCmsTestCase {
     public void testInheritedFolderName2() throws Exception {
 
         CmsFolderOrName folder = new CmsFolderOrName("/somefolder/.content", "blah");
-        CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig("foo", false, folder, "pattern_%(number)", null);
+        CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig("foo", false, folder, "pattern_%(number)");
         CmsTestConfigData config1 = new CmsTestConfigData(
             "/somefolder",
             list(typeConf1),
@@ -647,7 +645,7 @@ public class TestConfig extends OpenCmsTestCase {
             NO_MODEL_PAGES);
         config1.initialize(rootCms());
 
-        CmsResourceTypeConfig typeConf2 = new CmsResourceTypeConfig("foo", false, null, "blah", null);
+        CmsResourceTypeConfig typeConf2 = new CmsResourceTypeConfig("foo", false, null, "blah");
         CmsTestConfigData config2 = new CmsTestConfigData(
             "/somefolder/somesubfolder",
             list(typeConf2),
@@ -671,8 +669,8 @@ public class TestConfig extends OpenCmsTestCase {
 
         CmsFolderOrName folder = new CmsFolderOrName("/.content", "foldername");
         String pattern1 = "pattern1";
-        CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig("foo", false, folder, pattern1, null);
-        CmsResourceTypeConfig typeConf2 = new CmsResourceTypeConfig("foo", false, folder, null, null);
+        CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig("foo", false, folder, pattern1);
+        CmsResourceTypeConfig typeConf2 = new CmsResourceTypeConfig("foo", false, folder, null);
         CmsTestConfigData config1 = new CmsTestConfigData(
             "/",
             list(typeConf1),
@@ -744,10 +742,10 @@ public class TestConfig extends OpenCmsTestCase {
     public void testInheritResourceTypes1() throws Exception {
 
         CmsFolderOrName folder = new CmsFolderOrName("/.content", "foldername");
-        CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig("foo", false, folder, "pattern_%(number)", null);
+        CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig("foo", false, folder, "pattern_%(number)");
         CmsResourceTypeConfig typeConf2 = new CmsResourceTypeConfig("bar", false, new CmsFolderOrName(
             "/.content",
-            "foldername2"), "pattern2_%(number)", null);
+            "foldername2"), "pattern2_%(number)");
         CmsTestConfigData config1 = new CmsTestConfigData(
             "/",
             list(typeConf1),
@@ -851,10 +849,10 @@ public class TestConfig extends OpenCmsTestCase {
     public void testOverrideResourceType() throws Exception {
 
         CmsFolderOrName folder = new CmsFolderOrName("/.content", "foldername");
-        CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig("foo", false, folder, "pattern_%(number)", null);
+        CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig("foo", false, folder, "pattern_%(number)");
         CmsResourceTypeConfig typeConf2 = new CmsResourceTypeConfig("foo", false, new CmsFolderOrName(
             "/.content",
-            "foldername2"), "pattern2_%(number)", null);
+            "foldername2"), "pattern2_%(number)");
         CmsTestConfigData config1 = new CmsTestConfigData(
             "/",
             list(typeConf1),
@@ -963,11 +961,11 @@ public class TestConfig extends OpenCmsTestCase {
     public void testRemoveResourceType() throws Exception {
 
         CmsFolderOrName folder = new CmsFolderOrName("/.content", "foldername");
-        CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig("foo", false, folder, "pattern_%(number)", null);
+        CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig("foo", false, folder, "pattern_%(number)");
         CmsResourceTypeConfig typeConf2 = new CmsResourceTypeConfig("bar", false, new CmsFolderOrName(
             "/.content",
-            "foldername2"), "pattern2_%(number)", null);
-        CmsResourceTypeConfig typeConf3 = new CmsResourceTypeConfig("baz", false, folder, "blah", null);
+            "foldername2"), "pattern2_%(number)");
+        CmsResourceTypeConfig typeConf3 = new CmsResourceTypeConfig("baz", false, folder, "blah");
         CmsTestConfigData config1 = new CmsTestConfigData(
             "/",
             list(typeConf1, typeConf2, typeConf3),
@@ -975,7 +973,7 @@ public class TestConfig extends OpenCmsTestCase {
             NO_DETAILPAGES,
             NO_MODEL_PAGES);
 
-        CmsResourceTypeConfig removeType = new CmsResourceTypeConfig("bar", true, null, null, null);
+        CmsResourceTypeConfig removeType = new CmsResourceTypeConfig("bar", true, null, null);
         CmsTestConfigData config2 = new CmsTestConfigData(
             "/",
             list(removeType),
@@ -1000,11 +998,11 @@ public class TestConfig extends OpenCmsTestCase {
     public void testReorderResourceTypes() throws Exception {
 
         CmsFolderOrName folder = new CmsFolderOrName("/.content", "foldername");
-        CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig("foo", false, folder, "pattern_%(number)", null);
+        CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig("foo", false, folder, "pattern_%(number)");
         CmsResourceTypeConfig typeConf2 = new CmsResourceTypeConfig("bar", false, new CmsFolderOrName(
             "/.content",
-            "foldername2"), "pattern2_%(number)", null);
-        CmsResourceTypeConfig typeConf3 = new CmsResourceTypeConfig("baz", false, folder, "blah", null);
+            "foldername2"), "pattern2_%(number)");
+        CmsResourceTypeConfig typeConf3 = new CmsResourceTypeConfig("baz", false, folder, "blah");
         CmsTestConfigData config1 = new CmsTestConfigData(
             "/",
             list(typeConf1, typeConf2, typeConf3),
@@ -1037,7 +1035,7 @@ public class TestConfig extends OpenCmsTestCase {
     public void testResolveFolderName1() throws Exception {
 
         CmsFolderOrName folder = new CmsFolderOrName("/somefolder/somesubfolder/.content", "blah");
-        CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig("foo", false, folder, "pattern_%(number)", null);
+        CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig("foo", false, folder, "pattern_%(number)");
         CmsTestConfigData config1 = new CmsTestConfigData(
             "/somefolder/somesubfolder",
             list(typeConf1),
@@ -1057,7 +1055,7 @@ public class TestConfig extends OpenCmsTestCase {
      */
     public void testResourceTypeConfigObjectsNotSame() throws Exception {
 
-        CmsResourceTypeConfig c1 = new CmsResourceTypeConfig("c", false, null, "foo", null);
+        CmsResourceTypeConfig c1 = new CmsResourceTypeConfig("c", false, null, "foo");
         CmsTestConfigData t1 = new CmsTestConfigData("/", list(c1), NO_PROPERTIES, NO_DETAILPAGES, NO_MODEL_PAGES);
         CmsTestConfigData t2 = new CmsTestConfigData("/", NO_TYPES, NO_PROPERTIES, NO_DETAILPAGES, NO_MODEL_PAGES);
         t1.initialize(rootCms());
@@ -1065,27 +1063,6 @@ public class TestConfig extends OpenCmsTestCase {
         t2.setParent(t1);
         assertNotNull(t2.getResourceType("c"));
         assertNotSame(t1.getResourceType("c"), t2.getResourceType("c"));
-    }
-
-    /**
-     * Tests accessing the XSD formatter configuration.<p>
-     * 
-     * @throws Exception
-     */
-    public void testXsdFormatters1() throws Exception {
-
-        //TODO: replace this with a test that uses the public methods
-        CmsTestConfigData config1 = new CmsTestConfigData("/", NO_TYPES, NO_PROPERTIES, NO_DETAILPAGES, NO_MODEL_PAGES);
-        config1.initialize(rootCms());
-        CmsFormatterConfiguration formatterConfig = config1.getFormatters("article1");
-        List<CmsFormatterBean> formatters = formatterConfig.getAllFormatters();
-        assertEquals(2, formatters.size());
-        CmsFormatterBean formatter1 = formatters.get(0);
-        CmsFormatterBean formatter2 = formatters.get(1);
-        assertEquals(1, formatter1.getMinWidth());
-        assertEquals(2, formatter1.getMaxWidth());
-        assertEquals(3, formatter2.getMinWidth());
-        assertEquals(4, formatter2.getMaxWidth());
     }
 
     /**

@@ -41,6 +41,8 @@ body.integratedEditor{
 	max-height: none;
 	min-width: 0;
 	max-width: none;
+	box-sizing: content-box;
+	-moz-box-sizing: content-box;
 }
 
 @sprite .basePanel{
@@ -56,16 +58,8 @@ body.integratedEditor{
 	left:0;
 	right:0;
 	z-index: value("constants.css.zIndexPopup");
-}
-
-.contentPanel{
-	padding: 2px 2px 0px;
-	position: relative;
-	width: value("constants.css.toolbarWidth");
-	margin: 10px auto;
-	background-color: value("constants.css.backgroundColorDialog");
-	border: 2px solid value("constants.css.borderColor");
-	border-radius: value("constants.css.borderRadius");
+	box-sizing: content-box;
+	-moz-box-sizing: content-box;
 }
 
 div.basePanel > div{

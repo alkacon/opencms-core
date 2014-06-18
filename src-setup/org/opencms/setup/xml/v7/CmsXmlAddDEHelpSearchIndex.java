@@ -31,10 +31,7 @@ import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsSearchConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.file.CmsProject;
-import org.opencms.file.types.CmsResourceTypeXmlPage;
-import org.opencms.search.CmsVfsIndexer;
 import org.opencms.setup.xml.A_CmsXmlSearch;
-import org.opencms.workplace.CmsWorkplace;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,14 +77,6 @@ public class CmsXmlAddDEHelpSearchIndex extends A_CmsXmlSearch {
                     Locale.GERMAN.getLanguage(),
                     null,
                     new String[] {"source2"});
-            } else if (xpath.equals(getXPathsToUpdate().get(1))) {
-                createIndexSource(
-                    document,
-                    xpath,
-                    "source2",
-                    CmsVfsIndexer.class,
-                    new String[] {CmsWorkplace.VFS_PATH_LOCALES},
-                    new String[] {CmsResourceTypeXmlPage.getStaticTypeName()});
             }
             return true;
         }
@@ -126,20 +115,6 @@ public class CmsXmlAddDEHelpSearchIndex extends A_CmsXmlSearch {
             xp.append(I_CmsXmlConfiguration.N_NAME);
             xp.append("='German online help']");
             m_xpaths = new ArrayList<String>();
-            m_xpaths.add(xp.toString());
-            // /opencms/search/indexsources/indexsource[name='source2']
-            xp = new StringBuffer(256);
-            xp.append("/");
-            xp.append(CmsConfigurationManager.N_ROOT);
-            xp.append("/");
-            xp.append(CmsSearchConfiguration.N_SEARCH);
-            xp.append("/");
-            xp.append(CmsSearchConfiguration.N_INDEXSOURCES);
-            xp.append("/");
-            xp.append(CmsSearchConfiguration.N_INDEXSOURCE);
-            xp.append("[");
-            xp.append(I_CmsXmlConfiguration.N_NAME);
-            xp.append("='source2']");
             m_xpaths.add(xp.toString());
         }
         return m_xpaths;

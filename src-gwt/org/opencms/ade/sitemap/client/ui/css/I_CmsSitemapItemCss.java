@@ -49,6 +49,41 @@ public interface I_CmsSitemapItemCss extends CssResource {
      * 
      * @return a CSS class
      **/
+    String expiredOrNotReleased();
+
+    /**
+     * CSS class accessor.<p>
+     * 
+     * @return a CSS class
+     **/
+    String hasChildren();
+
+    /**
+     * CSS class accessor.<p>
+     * 
+     * @return a CSS class
+     **/
+    String hasNavChildren();
+
+    /**
+     * CSS class accessor.<p>
+     * 
+     * @return a CSS class
+     **/
+    String hasNoChildren();
+
+    /**
+     * CSS class accessor.<p>
+     * 
+     * @return a CSS class
+     **/
+    String hasNoNavChildren();
+
+    /**
+     * CSS class accessor.<p>
+     * 
+     * @return a CSS class
+     **/
     String hiddenNavEntry();
 
     /**
@@ -104,15 +139,15 @@ public interface I_CmsSitemapItemCss extends CssResource {
      * CSS class accessor.<p>
      * 
      * @return a CSS class
-     **/
-    String expiredOrNotReleased();
+     */
+    String sitemapEntryDecoration();
 
     /**
      * CSS class accessor.<p>
      * 
      * @return a CSS class
-     */
-    String sitemapEntryDecoration();
+     **/
+    String treeItemOpener();
 
     /**
      * CSS class accessor.<p>

@@ -30,7 +30,7 @@ package org.opencms.ade.galleries;
 import org.opencms.ade.galleries.shared.CmsGalleryConfiguration;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
-import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
+import org.opencms.ade.galleries.shared.CmsGalleryTabConfiguration;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
@@ -163,15 +163,13 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
     }
 
     /**
-     * Returns the serialized initial data for gallery dialog depending on the given mode.<p>
+     * Uses the request parameters of the current request to create a gallery configuration object.<p>
      * 
-     * @param galleryMode the gallery mode
+     * @param galleryMode the gallery mode 
      * 
-     * @return the data
-     * 
-     * @throws Exception if something goes wrong
+     * @return the gallery configuration 
      */
-    private String export(GalleryMode galleryMode) throws Exception {
+    private CmsGalleryConfiguration createGalleryConfigurationFromRequest(GalleryMode galleryMode) {
 
         CmsGalleryConfiguration conf = new CmsGalleryConfiguration();
         conf.setGalleryMode(galleryMode);
@@ -186,6 +184,27 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(galleryTypes)) {
             conf.setGalleryTypes(galleryTypes.split(","));
         }
+        String tabs = getRequest().getParameter(I_CmsGalleryProviderConstants.CONFIG_TAB_CONFIG);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(tabs)) {
+            conf.setTabConfiguration(CmsGalleryTabConfiguration.resolve(tabs));
+        } else {
+            conf.setTabConfiguration(CmsGalleryTabConfiguration.getDefault());
+        }
+        return conf;
+    }
+
+    /**
+     * Returns the serialized initial data for gallery dialog depending on the given mode.<p>
+     * 
+     * @param galleryMode the gallery mode
+     * 
+     * @return the data
+     * 
+     * @throws Exception if something goes wrong
+     */
+    private String export(GalleryMode galleryMode) throws Exception {
+
+        CmsGalleryConfiguration conf = createGalleryConfigurationFromRequest(galleryMode);
         CmsGalleryDataBean data = CmsGalleryService.getInitialSettings(getRequest(), conf);
         CmsGallerySearchBean search = null;
         if (GalleryTabId.cms_tab_results.equals(data.getStartTab())) {
@@ -195,7 +214,7 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
             // default selected scope option should be the one for which the search has been actually performed 
             data.setScope(search.getScope());
         } else if ((search != null) && (search.getScope() == null)) {
-            data.setScope(CmsGallerySearchScope.everything);
+            data.setScope(OpenCms.getWorkplaceManager().getGalleryDefaultScope());
         }
 
         StringBuffer sb = new StringBuffer();

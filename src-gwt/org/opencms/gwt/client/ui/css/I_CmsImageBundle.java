@@ -240,6 +240,12 @@ public interface I_CmsImageBundle extends ClientBundle {
         String uploadIcon();
 
         /** Access method.<p>
+        *
+        * @return the CSS class name
+        */
+        String uploadSmallIcon();
+
+        /** Access method.<p>
          *
          * @return the CSS class name
          */
@@ -293,6 +299,14 @@ public interface I_CmsImageBundle extends ClientBundle {
      */
     @Source("images/broken_image.png")
     ImageResource brokenImage();
+
+    /**
+     * Image resource accessor.<p>
+     *
+     * @return an image resource
+     */
+    @Source("images/icons/changedIcon.png")
+    ImageResource changedIcon();
 
     /**
      * Access method.<p>

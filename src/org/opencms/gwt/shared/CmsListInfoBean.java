@@ -83,6 +83,9 @@ public class CmsListInfoBean implements IsSerializable {
     /** The lock icon title. */
     private String m_lockIconTitle;
 
+    /** Flag to control whether a resource state of 'changed' should be visualized with an overlay icon. */
+    private boolean m_markChangedState = true;
+
     /** The resource state. */
     private CmsResourceState m_resourceState;
 
@@ -239,6 +242,16 @@ public class CmsListInfoBean implements IsSerializable {
     }
 
     /**
+     * Returns true if the 'changed' resource state should be marked by an icon.<p>
+     * 
+     * @return true if the 'changed' resource state should be marked by an icon.<p>
+     */
+    public boolean isMarkChangedState() {
+
+        return m_markChangedState;
+    }
+
+    /**
      * Sets the additional info.<p>
      *
      * @param additionalInfo the additional info to set
@@ -266,6 +279,16 @@ public class CmsListInfoBean implements IsSerializable {
     public void setLockIconTitle(String lockIconTitle) {
 
         m_lockIconTitle = lockIconTitle;
+    }
+
+    /**
+     * Enables or disables the display of the 'changed' icon for the 'changed' resource state.<p>
+     * 
+     * @param markChanged true if the 'changed' state should be displayed 
+     */
+    public void setMarkChangedState(boolean markChanged) {
+
+        m_markChangedState = markChanged;
     }
 
     /**

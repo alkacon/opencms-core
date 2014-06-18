@@ -58,6 +58,7 @@ import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
 import org.opencms.xml.containerpage.CmsFormatterBean;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
+import org.opencms.xml.containerpage.I_CmsFormatterBean;
 
 import java.util.Collections;
 import java.util.Date;
@@ -111,8 +112,7 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
                     cms.getRequestContext().getRootUri());
 
                 CmsFormatterConfiguration formatters = adeConfig.getFormatters(cms, resource);
-                CmsFormatterBean formatter = formatters.getFormatter(CmsFormatterBean.PREVIEW_TYPE, -1);
-
+                I_CmsFormatterBean formatter = formatters.getPreviewFormatter();
                 if (formatter != null) {
                     CmsObject tempCms = OpenCms.initCmsObject(cms);
                     tempCms.getRequestContext().setLocale(locale);

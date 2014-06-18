@@ -32,6 +32,8 @@ import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsDialog;
+import org.opencms.xml.content.I_CmsXmlContentHandler.DisplayType;
 import org.opencms.xml.types.A_CmsXmlContentValue;
 
 import java.util.ArrayList;
@@ -134,6 +136,7 @@ public abstract class A_CmsSelectWidget extends A_CmsWidget implements I_CmsADEW
 
         String result = "";
         CmsDummyWidgetDialog widgetDialog = new CmsDummyWidgetDialog(messages.getLocale(), messages);
+        widgetDialog.setResource(resource);
         List<CmsSelectWidgetOption> options = parseSelectOptions(cms, widgetDialog, schemaType);
         Iterator<CmsSelectWidgetOption> it = options.iterator();
         int i = 0;
@@ -158,6 +161,14 @@ public abstract class A_CmsSelectWidget extends A_CmsWidget implements I_CmsADEW
     public List<String> getCssResourceLinks(CmsObject cms) {
 
         return null;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getDefaultDisplayType()
+     */
+    public DisplayType getDefaultDisplayType() {
+
+        return DisplayType.singleline;
     }
 
     /**
@@ -230,6 +241,27 @@ public abstract class A_CmsSelectWidget extends A_CmsWidget implements I_CmsADEW
     protected String getHeight() {
 
         return m_height;
+    }
+
+    /** 
+     * Gets the resource path for the given dialog.<p>
+     * @param cms TODO
+     * @param dialog the dialog 
+     * 
+     * @return the resource path 
+     */
+    protected String getResourcePath(CmsObject cms, I_CmsWidgetDialog dialog) {
+
+        String result = null;
+        if (dialog instanceof CmsDummyWidgetDialog) {
+            result = ((CmsDummyWidgetDialog)dialog).getResource().getRootPath();
+        } else if (dialog instanceof CmsDialog) {
+            result = ((CmsDialog)dialog).getParamResource();
+            if (result != null) {
+                result = cms.getRequestContext().addSiteRoot(result);
+            }
+        }
+        return result;
     }
 
     /**

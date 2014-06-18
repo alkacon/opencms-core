@@ -47,6 +47,14 @@
     gwt-image: "copyLocaleBigIconActive";
 }
 
+@sprite .cmsState-up-disabled .toolbarGallery, .cmsState-down-disabled .toolbarGallery {
+	gwt-image: "galleryBigIcon";
+}
+@sprite .cmsState-up .toolbarGallery, .cmsState-up-hovering .toolbarGallery, .cmsState-down-hovering .toolbarGallery, .cmsState-down .toolbarGallery {
+    gwt-image: "galleryBigIcon";
+}
+
+
 @sprite .cmsState-up-disabled .toolbarClipboard, .cmsState-down-disabled .toolbarClipboard{
 	gwt-image: "clipboardBigIconDeactivated";
 }
@@ -66,6 +74,20 @@
 }
 @sprite .cmsState-up .toolbarDeleteLocale, .cmsState-up-hovering .toolbarDeleteLocale, .cmsState-down-hovering .toolbarDeleteLocale, .cmsState-down .toolbarDeleteLocale{
     gwt-image: "deleteLocaleBigIconActive";
+}
+
+@sprite .cmsState-up-disabled .toolbarRedo, .cmsState-down-disabled .toolbarRedo{
+	gwt-image: "redoBigIconDeactivated";
+}
+@sprite .cmsState-up .toolbarRedo, .cmsState-up-hovering .toolbarRedo, .cmsState-down-hovering .toolbarRedo, .cmsState-down .toolbarRedo{
+    gwt-image: "redoBigIconActive";
+}
+
+@sprite .cmsState-up-disabled .toolbarUndo, .cmsState-down-disabled .toolbarUndo{
+	gwt-image: "undoBigIconDeactivated";
+}
+@sprite .cmsState-up .toolbarUndo, .cmsState-up-hovering .toolbarUndo, .cmsState-down-hovering .toolbarUndo, .cmsState-down .toolbarUndo{
+    gwt-image: "undoBigIconActive";
 }
 
 @sprite .cmsState-up-disabled .toolbarReset, .cmsState-down-disabled .toolbarReset{
@@ -124,6 +146,7 @@
     gwt-image: "sitemapBigIconActive";
 }
 
+
 @sprite .cmsState-up-disabled .toolbarRefresh, .cmsState-down-disabled .toolbarRefresh{
 	gwt-image: "resetBigIconActive";
 }
@@ -168,8 +191,20 @@
 }
 
 
+
+@sprite .elementInfoChanged .toolbarElementInfo { 
+	gwt-image:"elementsBigIconChanged";
+	
+}
+
+@sprite .toolbarElementInfo { 
+	gwt-image: "elementsBigIcon";
+}
+
 .cmsState-up .toolbarDelete, .cmsState-up-hovering .toolbarDelete, .cmsState-down-hovering .toolbarDelete, .cmsState-down .toolbarDelete, .cmsState-up-disabled .toolbarDelete, .cmsState-down-disabled .toolbarDelete{
 }
 
 
 .toolbarInfo {} 
+
+.elementInfoUnchanged {} 

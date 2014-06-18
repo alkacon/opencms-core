@@ -101,6 +101,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_READING_REQUIRED_RESOURCE_1 = "ERR_READING_REQUIRED_RESOURCE_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_RESOURCE_IS_NOT_RELEASE_OR_EXPIRED_1 = "ERR_RESOURCE_IS_NOT_RELEASE_OR_EXPIRED_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_RUNTIME_1 = "ERR_RUNTIME_1";
 
     /** Message constant for key in the resource bundle. */

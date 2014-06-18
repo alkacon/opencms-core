@@ -60,8 +60,33 @@ import org.dom4j.Element;
  */
 public interface I_CmsXmlContentHandler {
 
+    /**
+     * The available display types for element widgets.
+     */
+    public static enum DisplayType {
+        /** The two column type. */
+        column,
+
+        /** The default display type. */
+        none,
+
+        /** The single line type. */
+        singleline,
+
+        /** The default wide display type. */
+        wide
+    }
+
+    /** Mapping name for the 'date expired' mapping. */
+    String ATTRIBUTE_DATEEXPIRED = "dateexpired";
+
+    /** Mapping name for the 'date released' mapping. */
+    String ATTRIBUTE_DATERELEASED = "datereleased";
+
     /** List of all allowed attribute mapping names, for fast lookup. */
-    List<String> ATTRIBUTES = Collections.unmodifiableList(Arrays.asList(new String[] {"datereleased", "dateexpired"}));
+    List<String> ATTRIBUTES = Collections.unmodifiableList(Arrays.asList(new String[] {
+        ATTRIBUTE_DATERELEASED,
+        ATTRIBUTE_DATEEXPIRED}));
 
     /** Prefix for attribute mappings. */
     String MAPTO_ATTRIBUTE = "attribute:";
@@ -190,6 +215,15 @@ public interface I_CmsXmlContentHandler {
     String getDefaultComplexWidgetConfiguration();
 
     /**
+     * Returns if the widget for this type should be displayed in compact view.<p> 
+     * 
+     * @param type the value to check the view mode for
+     * 
+     * @return the widgets display type
+     */
+    DisplayType getDisplayType(I_CmsXmlSchemaType type);
+
+    /**
      * Returns the container page element formatter configuration for a given resource.<p>
      * 
      * @param cms the current users OpenCms context, used for selecting the right project
@@ -300,6 +334,19 @@ public interface I_CmsXmlContentHandler {
     Set<CmsSearchField> getSearchFields();
 
     /**
+     * Returns the search content settings defined in the annotation node of this XML content.<p>
+     * 
+     * A search setting defined within the xsd:annotaion node of an XML schema definition can look like:<p>
+     * <code>&lt;searchsetting element="Image/Align" searchContent="false"/&gt;</code><p>
+     * 
+     * The returned map contains the 'element' attribute value as keys and the 'searchContent' 
+     * attribute value as values.<p>
+     * 
+     * @return the search field settings for this XML content schema
+     */
+    Map<String, Boolean> getSearchSettings();
+
+    /**
      * Returns the element settings defined for the container page formatters.<p>
      * 
      * @param cms the current CMS context
@@ -342,6 +389,13 @@ public interface I_CmsXmlContentHandler {
     I_CmsWidget getWidget(I_CmsXmlSchemaType value) throws CmsXmlException;
 
     /**
+     * Returns true if the contents for this content handler have schema-based formatters which can be disabled or enabled.<p>
+     * 
+     * @return true if the contents for this content handler have schema-based formatters which can be disabled or enabled
+     */
+    boolean hasModifiableFormatters();
+
+    /**
      * Initializes this content handler for the given XML content definition by
      * analyzing the "appinfo" node.<p>
      * 
@@ -369,15 +423,6 @@ public interface I_CmsXmlContentHandler {
      * @return true if the Acacia editor is disabled 
      */
     boolean isAcaciaEditorDisabled();
-
-    /**
-     * Returns if the widget for this type should be displayed in compact view.<p> 
-     * 
-     * @param type the value to check the view mode for
-     * 
-     * @return <code>true</code> if the widget for this type should be displayed in compact view
-     */
-    boolean isCompactView(I_CmsXmlSchemaType type);
 
     /**
      * Returns <code>true</code> if the XML content should be indexed when it is dropped in a container page,

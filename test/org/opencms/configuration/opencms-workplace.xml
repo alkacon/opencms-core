@@ -36,6 +36,7 @@
     <enableadvancedpropertytabs>true</enableadvancedpropertytabs>
     <maxfileuploadsize>-1</maxfileuploadsize>
     <labeledfolders/>
+    <repositoryfolder class="org.opencms.workplace.CmsRepositoryFolderHandler" />
     <rfsfileviewsettings>
       <enabled>true</enabled>
       <fileEncoding>windows-1252</fileEncoding>

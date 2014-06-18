@@ -247,7 +247,7 @@ public class CmsAliasTableController {
             public void execute() {
 
                 getService().getAliasTable(this);
-                start(200, false);
+                start(0, true);
             }
 
             /**

@@ -64,9 +64,6 @@ public class CmsResultListItem extends CmsListItem {
     /** The select button. */
     private CmsPushButton m_selectButton;
 
-    /** The vfs path. */
-    private String m_vfsPath;
-
     /**
      * Creates a new result list item with a main widget.<p>
      * 
@@ -206,16 +203,6 @@ public class CmsResultListItem extends CmsListItem {
     public CmsResultItemBean getResult() {
 
         return m_result;
-    }
-
-    /**
-     * Returns the vfs path.<p>
-     *
-     * @return the vfs path
-     */
-    public String getVfsPath() {
-
-        return m_vfsPath;
     }
 
     /**

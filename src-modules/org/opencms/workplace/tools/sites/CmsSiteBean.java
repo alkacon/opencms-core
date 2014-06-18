@@ -62,6 +62,7 @@ public class CmsSiteBean {
     /** The favicon. */
     private String m_favicon;
 
+    /** The original site. */
     private CmsSite m_originalSite;
 
     /** The port (e.g. 8080) which is required to access this site. */

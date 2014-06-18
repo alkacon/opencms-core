@@ -43,6 +43,7 @@ import org.opencms.gwt.shared.alias.CmsAliasBean;
 import org.opencms.gwt.shared.property.CmsPropertiesBean;
 import org.opencms.gwt.shared.property.CmsPropertyChangeSet;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -160,6 +161,17 @@ public interface I_CmsVfsService extends RemoteService {
     List<CmsVfsEntryBean> getChildren(String path) throws CmsRpcException;
 
     /**
+     * Gets the default property configurations for the given structure ids.<p>
+     * 
+     * @param structureIds the structure ids for which the property configurations should be fetched 
+     * @return a map from the given structure ids to their default property configurations
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    Map<CmsUUID, Map<String, CmsXmlContentProperty>> getDefaultProperties(List<CmsUUID> structureIds)
+    throws CmsRpcException;
+
+    /**
      * Gets the names of defined properties.<p>
      * 
      * @return the list of names for all defined properties
@@ -252,12 +264,18 @@ public interface I_CmsVfsService extends RemoteService {
      * 
      * @param structureId the structure id of a resource
      * @param locale the locale for which we want the resource information
+     * @param includeTargets true if relation targets should also be fetched 
+     * @param additionalTargetIds structure ids of resources to add to the relation targets returned 
      *  
      * @return the resource status
      * 
      * @throws CmsRpcException if something goes wrong 
      */
-    CmsResourceStatusBean getResourceStatus(CmsUUID structureId, String locale) throws CmsRpcException;
+    CmsResourceStatusBean getResourceStatus(
+        CmsUUID structureId,
+        String locale,
+        boolean includeTargets,
+        List<CmsUUID> additionalTargetIds) throws CmsRpcException;
 
     /**
      * Gets the information which is necessary for opening the 'Restore' dialog for a resource.<p>

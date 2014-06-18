@@ -70,14 +70,33 @@ public class CmsFormDialog extends CmsPopup {
      */
     public CmsFormDialog(String title, CmsForm form) {
 
+        this(title, form, -1);
+    }
+
+    /** 
+     * Constructs a new form dialog with a given title.<p>
+     * 
+     * @param title the title of the form dialog
+     * @param form the form to use  
+     * @param dialogWidth the dialog width
+     */
+    public CmsFormDialog(String title, CmsForm form, int dialogWidth) {
+
         super(title);
         setGlassEnabled(true);
         setAutoHideEnabled(false);
         setModal(true);
         // check the available width for this dialog
         int windowWidth = Window.getClientWidth();
-        int dialogWidth = (windowWidth - 100) > STANDARD_DIALOG_WIDTH ? windowWidth - 100 : STANDARD_DIALOG_WIDTH;
-        dialogWidth = dialogWidth > MAX_DIALOG_WIDTH ? MAX_DIALOG_WIDTH : dialogWidth;
+        if (dialogWidth > 0) {
+            // reduce the dialog width if necessary
+            if ((windowWidth - 50) < dialogWidth) {
+                dialogWidth = windowWidth - 50;
+            }
+        } else {
+            dialogWidth = (windowWidth - 100) > STANDARD_DIALOG_WIDTH ? windowWidth - 100 : STANDARD_DIALOG_WIDTH;
+            dialogWidth = dialogWidth > MAX_DIALOG_WIDTH ? MAX_DIALOG_WIDTH : dialogWidth;
+        }
         setWidth(dialogWidth);
         addButton(createCancelButton());
         m_okButton = createOkButton();

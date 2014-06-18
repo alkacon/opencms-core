@@ -102,7 +102,7 @@ public class CmsSourceSearchReport extends A_CmsListReport {
         // close link parameter present
         try {
             HttpSession session = getJsp().getJspContext().getSession();
-            ArrayList resultList = (ArrayList)session.getAttribute(CmsSourceSearchSettings.ATTRIBUTE_NAME_SOURCESEARCH_RESULT_LIST);
+            ArrayList resultList = (ArrayList)session.getAttribute(CmsSearchReplaceSettings.ATTRIBUTE_NAME_SOURCESEARCH_RESULT_LIST);
             if ((resultList != null) && !resultList.isEmpty()) {
                 getToolManager().jspForwardTool(this, "/searchindex/sourcesearch/fileslist", params);
             } else {
@@ -122,17 +122,20 @@ public class CmsSourceSearchReport extends A_CmsListReport {
     @Override
     public I_CmsReportThread initializeThread() {
 
-        CmsSourceSearchSettings settings = (CmsSourceSearchSettings)((Map)getSettings().getDialogObject()).get(CmsSourceSearchDialog.class.getName());
+        CmsSearchReplaceSettings settings = (CmsSearchReplaceSettings)((Map)getSettings().getDialogObject()).get(CmsSourceSearchDialog.class.getName());
+        if (settings == null) {
+            settings = (CmsSearchReplaceSettings)((Map)getSettings().getDialogObject()).get(CmsSourceSearchDialog.class.getName());
+        }
 
         // clear the matched file list in the session
         HttpSession session = getJsp().getJspContext().getSession();
-        session.removeAttribute(CmsSourceSearchSettings.ATTRIBUTE_NAME_SOURCESEARCH_RESULT_LIST);
+        session.removeAttribute(CmsSearchReplaceSettings.ATTRIBUTE_NAME_SOURCESEARCH_RESULT_LIST);
 
         // no redirect to the matched file list is necessary here, because the 
         // org.opencms.workplace.list.A_CmsListReport.actionCloseDialog() method is overwritten here in this class
 
         // start the thread
-        I_CmsReportThread searchThread = new CmsSourceSearchThread(session, getCms(), settings);
+        I_CmsReportThread searchThread = new CmsSearchReplaceThread(session, getCms(), settings);
 
         return searchThread;
     }

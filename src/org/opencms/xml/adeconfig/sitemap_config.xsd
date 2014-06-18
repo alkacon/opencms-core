@@ -4,6 +4,8 @@
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/model_page.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/field.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/detailpage.xsd" />
+    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/formatters/add_formatters_block.xsd" />
+    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/formatters/remove_formatters_block.xsd" />
     <xsd:element name="SitemapConfigurations" type="OpenCmsSitemapConfigurations" />
 
     <xsd:complexType name="OpenCmsSitemapConfigurations">
@@ -17,10 +19,12 @@
             <xsd:element name="DiscardTypes" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
         	<xsd:element name="CreateContentsLocally" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
             <xsd:element name="ResourceType" type="OpenCmsADEType" minOccurs="0" maxOccurs="unbounded" />
-            <xsd:element name="DiscardModelPages" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
-            <xsd:element name="ModelPage" type="OpenCmsADEModelPage" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="RemoveFormatters" type="OpenCmsRemoveFormattersBlock" minOccurs="0"/>
+            <xsd:element name="AddFormatters"    type="OpenCmsAddFormattersBlock" minOccurs="0"/>
             <xsd:element name="DiscardProperties" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
             <xsd:element name="Property" type="OpenCmsADEField" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="DiscardModelPages" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="ModelPage" type="OpenCmsADEModelPage" minOccurs="0" maxOccurs="unbounded" />
             <xsd:element name="DetailPage" type="OpenCmsDetailPage" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
@@ -28,10 +32,13 @@
     <xsd:annotation>
         <xsd:appinfo>
 			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
+			<layouts>
+			</layouts>
 			<tabs>
 				<tab element="DiscardTypes" name="TabResourceTypes" collapse="false" />
-				<tab element="DiscardModelPages" name="TabPageModels" collapse="false" />
+				<tab element="RemoveFormatters" name="TabFormatters" collapse="false" />
 				<tab element="DiscardProperties" name="TabPropertyConfiguration" collapse="false" />
+				<tab element="DiscardModelPages" name="TabPageModels" collapse="false" />
 				<tab element="DetailPage" name="TabDetailPages" collapse="false" />
 			</tabs>
         </xsd:appinfo>        

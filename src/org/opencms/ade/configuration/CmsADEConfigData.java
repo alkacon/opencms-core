@@ -27,10 +27,13 @@
 
 package org.opencms.ade.configuration;
 
+import org.opencms.ade.configuration.formatters.CmsFormatterChangeSet;
+import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCacheState;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
@@ -40,14 +43,15 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
+import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContentProperty;
-import org.opencms.xml.content.I_CmsXmlContentHandler;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +62,7 @@ import org.apache.commons.logging.Log;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 /**
  * A class which represents the accessible configuration data at a given point in a sitemap.<p>
@@ -78,6 +83,9 @@ public class CmsADEConfigData {
 
     /** Should inherited types be discarded? */
     protected boolean m_discardInheritedTypes;
+
+    /** The configured formatter changes. */
+    protected CmsFormatterChangeSet m_formatterChangeSet;
 
     /** The base path of this configuration. */
     private String m_basePath;
@@ -140,6 +148,7 @@ public class CmsADEConfigData {
      * @param functionReferences the function reference configuration 
      * @param discardInheritedModelPages the "discard  inherited model pages" flag 
      * @param createContentsLocally the "create contents locally" flag 
+     * @param formatterChangeSet the formatter changes 
      */
     public CmsADEConfigData(
         String basePath,
@@ -151,7 +160,8 @@ public class CmsADEConfigData {
         List<CmsModelPageConfig> modelPages,
         List<CmsFunctionReference> functionReferences,
         boolean discardInheritedModelPages,
-        boolean createContentsLocally) {
+        boolean createContentsLocally,
+        CmsFormatterChangeSet formatterChangeSet) {
 
         m_basePath = basePath;
         m_ownResourceTypes = resourceTypeConfig;
@@ -164,6 +174,7 @@ public class CmsADEConfigData {
         m_discardInheritedProperties = discardInheritedProperties;
         m_discardInheritedModelPages = discardInheritedModelPages;
         m_createContentsLocally = createContentsLocally;
+        m_formatterChangeSet = formatterChangeSet;
     }
 
     /**
@@ -244,6 +255,35 @@ public class CmsADEConfigData {
     }
 
     /**
+     * Applies the formatter change sets of this and all parent configurations to a map of external (non-schema) formatters.<p>
+     * 
+     * @param formatters the external formatter map which will be modified 
+     *  
+     * @param formatterCacheState the formatter cache state from which new external formatters should be fetched 
+     */
+    public void applyAllFormatterChanges(
+        Map<CmsUUID, I_CmsFormatterBean> formatters,
+        CmsFormatterConfigurationCacheState formatterCacheState) {
+
+        for (CmsFormatterChangeSet changeSet : getFormatterChangeSets()) {
+            changeSet.applyToFormatters(formatters, formatterCacheState);
+        }
+    }
+
+    /**
+     * Gets the active external (non-schema) formatters for this sub-sitemap.<p>
+     * 
+     * @return the map of active external formatters by structure id 
+     */
+    public Map<CmsUUID, I_CmsFormatterBean> getActiveFormatters() {
+
+        CmsFormatterConfigurationCacheState cacheState = getCachedFormatters();
+        Map<CmsUUID, I_CmsFormatterBean> result = Maps.newHashMap(cacheState.getAutoEnabledFormatters());
+        applyAllFormatterChanges(result, cacheState);
+        return result;
+    }
+
+    /**
      * Gets the list of all detail pages.<p>
      * 
      * @return the list of all detail pages 
@@ -288,6 +328,17 @@ public class CmsADEConfigData {
 
         checkInitialized();
         return m_basePath;
+    }
+
+    /**
+     * Gets the cached formatters.<p>
+     * 
+     * @return the cached formatters 
+     */
+    public CmsFormatterConfigurationCacheState getCachedFormatters() {
+
+        return OpenCms.getADEManager().getCachedFormatters(
+            m_cms.getRequestContext().getCurrentProject().isOnlineProject());
     }
 
     /**
@@ -362,6 +413,24 @@ public class CmsADEConfigData {
     }
 
     /**
+     * Returns the formatter change sets for this and all parent sitemaps, ordered by increasing folder depth of the sitemap.<p>
+     * 
+     * @return the formatter change sets for all ancestor sitemaps 
+     */
+    public List<CmsFormatterChangeSet> getFormatterChangeSets() {
+
+        CmsADEConfigData currentConfig = this;
+        List<CmsFormatterChangeSet> result = Lists.newArrayList();
+        while (currentConfig != null) {
+            CmsFormatterChangeSet changes = currentConfig.getOwnFormatterChangeSet();
+            result.add(changes);
+            currentConfig = currentConfig.parent();
+        }
+        Collections.reverse(result);
+        return result;
+    }
+
+    /**
      * Gets the formatter configuration for a resource.<p>
      *
      * @param cms the current CMS context 
@@ -375,13 +444,30 @@ public class CmsADEConfigData {
         try {
             I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(resTypeId);
             String typeName = resType.getTypeName();
-            CmsResourceTypeConfig typeConfig = getResourceType(typeName);
-            if ((typeConfig != null)
-                && (typeConfig.getFormatterConfiguration() != null)
-                && !typeConfig.getFormatterConfiguration().getAllFormatters().isEmpty()) {
-                return typeConfig.getFormatterConfiguration();
+            CmsFormatterConfigurationCacheState formatterCacheState = getCachedFormatters();
+            CmsFormatterConfiguration schemaFormatters = getFormattersFromSchema(cms, res);
+            List<I_CmsFormatterBean> formatters = new ArrayList<I_CmsFormatterBean>();
+            Set<String> types = new HashSet<String>();
+            types.add(typeName);
+            for (CmsFormatterChangeSet changeSet : getFormatterChangeSets()) {
+                changeSet.applyToTypes(types);
             }
-            return getFormattersFromSchema(cms, res);
+            if (types.contains(typeName)) {
+                for (I_CmsFormatterBean formatter : schemaFormatters.getAllFormatters()) {
+                    formatters.add(formatter);
+                }
+            }
+            Map<CmsUUID, I_CmsFormatterBean> externalFormattersById = Maps.newHashMap();
+            for (I_CmsFormatterBean formatter : formatterCacheState.getFormattersForType(typeName, true)) {
+                externalFormattersById.put(new CmsUUID(formatter.getId()), formatter);
+            }
+            applyAllFormatterChanges(externalFormattersById, formatterCacheState);
+            for (I_CmsFormatterBean formatter : externalFormattersById.values()) {
+                if (typeName.equals(formatter.getResourceTypeName())) {
+                    formatters.add(formatter);
+                }
+            }
+            return CmsFormatterConfiguration.create(cms, formatters);
         } catch (CmsLoaderException e) {
             LOG.warn(e.getLocalizedMessage(), e);
             return null;
@@ -417,6 +503,19 @@ public class CmsADEConfigData {
     }
 
     /**
+     * Gets the map of external (non-schema) formatters which are inactive in this sub-sitemap.<p>
+     * 
+     * @return the map inactive external formatters 
+     */
+    public Map<CmsUUID, I_CmsFormatterBean> getInactiveFormatters() {
+
+        CmsFormatterConfigurationCacheState cacheState = getCachedFormatters();
+        Map<CmsUUID, I_CmsFormatterBean> result = Maps.newHashMap(cacheState.getFormatters());
+        result.keySet().removeAll(getActiveFormatters().keySet());
+        return result;
+    }
+
+    /**
      * Gets the main detail page for a specific type.<p>
      * 
      * @param type the type name 
@@ -449,6 +548,16 @@ public class CmsADEConfigData {
 
         List<CmsModelPageConfig> result = combineConfigurationElements(parentModelPages, m_ownModelPageConfig);
         return result;
+    }
+
+    /**
+     * Gets the formatter changes for this sitemap configuration.<p>
+     * 
+     * @return the formatter change set 
+     */
+    public CmsFormatterChangeSet getOwnFormatterChangeSet() {
+
+        return m_formatterChangeSet;
     }
 
     /**
@@ -534,6 +643,45 @@ public class CmsADEConfigData {
     public Collection<CmsResourceTypeConfig> getSearchableTypes(CmsObject cms) {
 
         return getResourceTypes();
+    }
+
+    /**
+     * Gets the set of resource type names for which schema formatters can be enabled or disabled and which are not disabled in this sub-sitemap.<p>
+     * 
+     * @return the set of types for which schema formatters are active 
+     */
+    public Set<String> getTypesWithActiveSchemaFormatters() {
+
+        Set<String> result = Sets.newHashSet(getTypesWithModifiableFormatters());
+        for (CmsFormatterChangeSet changeSet : getFormatterChangeSets()) {
+            changeSet.applyToTypes(result);
+        }
+        return result;
+    }
+
+    /**
+     * Gets the set of names of resource types which have schema-based formatters that can be enabled or disabled.<p>
+     * 
+     * @return the set of names of resource types which have schema-based formatters that can be enabled or disabled
+     */
+    public Set<String> getTypesWithModifiableFormatters() {
+
+        Set<String> result = new HashSet<String>();
+        for (I_CmsResourceType type : OpenCms.getResourceManager().getResourceTypes()) {
+            if (type instanceof CmsResourceTypeXmlContent) {
+                CmsXmlContentDefinition contentDef = null;
+                try {
+                    contentDef = CmsXmlContentDefinition.getContentDefinitionForType(m_cms, type.getTypeName());
+                    if ((contentDef != null) && contentDef.getContentHandler().hasModifiableFormatters()) {
+                        result.add(type.getTypeName());
+                    }
+                } catch (Exception e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+        }
+        return result;
+
     }
 
     /**
@@ -749,35 +897,6 @@ public class CmsADEConfigData {
     }
 
     /**
-     * Gets the formatter configuration for a given type.<p>
-     * 
-     * @param type the type for which to get the formatters 
-     * 
-     * @return the formatter configuration for that type 
-     */
-    protected CmsFormatterConfiguration getFormatters(String type) {
-
-        CmsResourceTypeConfig typeConfig = getResourceType(type);
-        if ((typeConfig == null)
-            || (typeConfig.getFormatterConfiguration() == null)
-            || (typeConfig.getFormatterConfiguration().getAllFormatters().isEmpty())) {
-            try {
-                CmsXmlContentDefinition contentDefinition = CmsXmlContentDefinition.getContentDefinitionForType(
-                    m_cms,
-                    type);
-                if (contentDefinition == null) {
-                    return null;
-                }
-                return contentDefinition.getContentHandler().getFormatterConfiguration(m_cms, null);
-            } catch (CmsException e) {
-                LOG.error(e.getLocalizedMessage(), e);
-                return null;
-            }
-        }
-        return typeConfig.getFormatterConfiguration();
-    }
-
-    /**
      * Gets the formatters from the schema.<p>
      * 
      * @param cms the current CMS context 
@@ -788,10 +907,9 @@ public class CmsADEConfigData {
     protected CmsFormatterConfiguration getFormattersFromSchema(CmsObject cms, CmsResource res) {
 
         try {
-            I_CmsXmlContentHandler contentHandler = CmsXmlContentDefinition.getContentHandlerForResource(m_cms, res);
-            return contentHandler.getFormatterConfiguration(cms, res);
+            return OpenCms.getResourceManager().getResourceType(res.getTypeId()).getFormattersForResource(cms, res);
         } catch (CmsException e) {
-            LOG.warn(e.getLocalizedMessage(), e);
+            LOG.error(e.getLocalizedMessage(), e);
             return CmsFormatterConfiguration.EMPTY_CONFIGURATION;
         }
     }

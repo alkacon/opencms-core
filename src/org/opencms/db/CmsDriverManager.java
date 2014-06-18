@@ -183,6 +183,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
     }
 
+    /** Name of the configuration parameter to enable/disable logging to the CMS_LOG table. */
+    public static final String PARAM_LOG_TABLE_ENABLED = "log.table.enabled";
+
     /** Attribute login. */
     public static final String ATTRIBUTE_LOGIN = "A_LOGIN";
 
@@ -5501,6 +5504,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
         newUser.setLastlogin(System.currentTimeMillis());
         dbc.setAttribute(ATTRIBUTE_LOGIN, newUser.getName());
         // write the changed user object back to the user driver
+        Map<String, Object> additionalInfosForRepositories = OpenCms.getRepositoryManager().getAdditionalInfoForLogin(
+            newUser.getName(),
+            password);
+        newUser.getAdditionalInfo().putAll(additionalInfosForRepositories);
         getUserDriver(dbc).writeUser(dbc, newUser);
 
         // update cache
@@ -7844,6 +7851,25 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Reads the URL name mappings matching the given filter.<p>
+     * 
+     * @param dbc the DB context to use 
+     * @param filter the filter used to select the mapping entries 
+     * @return the entries matching the given filter 
+     * 
+     * @throws CmsDataAccessException if something goes wrong 
+     */
+    public List<CmsUrlNameMappingEntry> readUrlNameMappings(CmsDbContext dbc, CmsUrlNameMappingFilter filter)
+    throws CmsDataAccessException {
+
+        List<CmsUrlNameMappingEntry> entries = getVfsDriver(dbc).readUrlNameMappingEntries(
+            dbc,
+            dbc.currentProject().isOnlineProject(),
+            filter);
+        return entries;
+    }
+
+    /**
      * Reads the newest URL names of a resource for all locales.<p>
      *
      * @param dbc the database context
@@ -9160,8 +9186,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
             List<CmsLogEntry> log = new ArrayList<CmsLogEntry>(m_log);
             m_log.clear();
-
-            m_projectDriver.log(dbc, log);
+            String logTableEnabledStr = (String)OpenCms.getRuntimeProperty(PARAM_LOG_TABLE_ENABLED);
+            if (Boolean.parseBoolean(logTableEnabledStr)) { // defaults to 'false' if value not set 
+                m_projectDriver.log(dbc, log);
+            }
             CmsLogToPublishListChangeConverter converter = new CmsLogToPublishListChangeConverter();
             for (CmsLogEntry entry : log) {
                 converter.add(entry);

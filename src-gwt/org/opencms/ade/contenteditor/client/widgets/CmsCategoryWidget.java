@@ -43,8 +43,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
@@ -105,13 +107,13 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
     //private static final String CONFIGURATION_PROPERTY = "property";
 
     /** Configuration parameter to set the 'selection type' parameter. */
-    private static final String CONFIGURATION_SELECTIONTYPE = "selectiontype";
+    private static final String CONFIGURATION_CATEGORYLIST = "CategoryList";
 
     /** Configuration parameter to set the 'selection type' parameter. */
     private static final String CONFIGURATION_PARENTSELECTION = "parentSelection";
 
     /** Configuration parameter to set the 'selection type' parameter. */
-    private static final String CONFIGURATION_CATEGORYLIST = "CategoryList";
+    private static final String CONFIGURATION_SELECTIONTYPE = "selectiontype";
 
     /** Configuration parameter to set the default height. */
     private static final int DEFAULT_HEIGHT = 18;
@@ -125,17 +127,23 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
     /** The priview handler. */
     protected HandlerRegistration m_previewHandlerRegistration;
 
-    /** The category field. */
-    CmsCategoryTree m_cmsCategoryTree;
-
-    /** The popup panel. */
-    CmsPopup m_cmsPopup;
+    /** List of all category folder. */
+    protected List<CmsCategoryTreeEntry> m_resultList;
 
     /** The x-coords of the popup. */
     protected int m_xcoordspopup;
 
     /** The y-coords of the popup. */
     protected int m_ycoordspopup;
+
+    /** The category field. */
+    CmsCategoryTree m_cmsCategoryTree;
+
+    /** The popup panel. */
+    CmsPopup m_cmsPopup;
+
+    /** Height of the display field. */
+    int m_height = DEFAULT_HEIGHT;
 
     /** List of all selected categories. */
     List<String> m_selected = new ArrayList<String>();
@@ -146,26 +154,20 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
     /** Value of the activation. */
     private boolean m_active = true;
 
-    /** Height of the display field. */
-    int m_height = DEFAULT_HEIGHT;
-
-    /** The selection type parsed from configuration string. */
-    private String m_selectiontype = "single";
-
-    /** Is true if only one value is set in xml. */
-    private boolean m_isSingelValue;
+    /** Single category folder. */
+    private String m_category = "";
 
     /** List of all possible category folder. */
     private List<String> m_categoryList = new ArrayList<String>();
 
-    /** Single category folder. */
-    private String m_category = "";
-
-    /** List of all category folder. */
-    protected List<CmsCategoryTreeEntry> m_resultList;
-
     /** Sets the value if the parent should be selected with the children. */
     private boolean m_children;
+
+    /** Is true if only one value is set in xml. */
+    private boolean m_isSingelValue;
+
+    /** The selection type parsed from configuration string. */
+    private String m_selectiontype = "single";
 
     /**
      * Constructs an CmsComboWidget with the in XSD schema declared configuration.<p>
@@ -205,7 +207,7 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
      */
     public HandlerRegistration addFocusHandler(FocusHandler handler) {
 
-        return null;
+        return addDomHandler(handler, FocusEvent.getType());
     }
 
     /**
@@ -262,6 +264,16 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
     public void onAttachWidget() {
 
         super.onAttach();
+    }
+
+    /**
+     * @see com.alkacon.acacia.client.widgets.I_EditWidget#owns(com.google.gwt.dom.client.Element)
+     */
+    public boolean owns(Element element) {
+
+        // TODO implement this in case we want the delete behavior for optional fields
+        return false;
+
     }
 
     /**
@@ -498,4 +510,5 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
 
         }
     }
+
 }

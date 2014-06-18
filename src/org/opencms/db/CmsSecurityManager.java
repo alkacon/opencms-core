@@ -5227,6 +5227,31 @@ public final class CmsSecurityManager {
     }
 
     /**
+     * Reads the URL name mappings matching a given filter.<p>
+     * 
+     * @param context the current request context 
+     * @param filter the filter to match 
+     * 
+     * @return the matching URL name mappings
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public List<CmsUrlNameMappingEntry> readUrlNameMappings(CmsRequestContext context, CmsUrlNameMappingFilter filter)
+    throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            return m_driverManager.readUrlNameMappings(dbc, filter);
+        } catch (Exception e) {
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_DB_OPERATION_1, e.getLocalizedMessage());
+            dbc.report(null, message, e);
+            return null; // will never be reached
+        } finally {
+            dbc.clear();
+        }
+    }
+
+    /**
      * Reads the newest URL names of a structure id for all locales.<p>
      *
      * @param context the current context

@@ -38,7 +38,7 @@ import org.opencms.file.CmsResource;
  * 
  * @since 8.0.0
  */
-public class CmsModelPageConfig implements I_CmsConfigurationObject<CmsModelPageConfig> {
+public class CmsModelPageConfig implements I_CmsConfigurationObject<CmsModelPageConfig>, Cloneable {
 
     /** The model page resource. */
     private CmsResource m_resource;

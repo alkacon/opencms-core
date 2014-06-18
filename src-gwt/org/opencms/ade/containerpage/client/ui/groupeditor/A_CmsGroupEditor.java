@@ -28,6 +28,8 @@
 package org.opencms.ade.containerpage.client.ui.groupeditor;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageController;
+import org.opencms.ade.containerpage.client.CmsContainerpageEvent;
+import org.opencms.ade.containerpage.client.CmsContainerpageEvent.EventType;
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
 import org.opencms.ade.containerpage.client.Messages;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer;
@@ -55,6 +57,7 @@ import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Position;
@@ -64,7 +67,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -172,7 +174,7 @@ public abstract class A_CmsGroupEditor extends Composite {
             }
         }
         m_parentContainer = (CmsContainerPageContainer)m_groupContainer.getParentTarget();
-        m_groupContainerPosition = CmsPositionBean.generatePositionInfo(m_groupContainer);
+        m_groupContainerPosition = CmsPositionBean.getInnerDimensions(m_groupContainer.getElement());
         m_editingPlaceholder = createPlaceholder(m_groupContainer.getElement());
         m_groupContainer.setEditingPlaceholder(m_editingPlaceholder);
         m_groupContainer.setEditingMarker(m_containerMarker);
@@ -415,6 +417,7 @@ public abstract class A_CmsGroupEditor extends Composite {
                 }
             }
         }
+        m_controller.fireEvent(new CmsContainerpageEvent(EventType.elementEdited));
     }
 
     /**

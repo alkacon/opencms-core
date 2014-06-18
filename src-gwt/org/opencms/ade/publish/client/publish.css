@@ -4,9 +4,10 @@
 }
 
 .groupHeader {
+	display: inline-block;
 	font-weight: bold;
 	font-size: value("constants.css.fontSize");
-    padding-top: 5px;
+    margin-left: 3px; 
 }
 
 .publishRow {
@@ -47,6 +48,7 @@
 	margin-top: 5px;
 	margin-left: 5px;
 }
+
 
 @external html-face;
 
@@ -116,6 +118,7 @@ span.selectorLabel{
 
 .topBar > div {
 	margin-right: 4px;
+	margin-top: 3px; 
 }
 	
 .selector {

@@ -3,8 +3,8 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>8.5.1</opencms_version>
-		<createdate>Fri, 22 Feb 2013 14:56:48 GMT</createdate>
+		<opencms_version>9.0.0</opencms_version>
+		<createdate>Tue, 05 Nov 2013 17:04:09 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -14,34 +14,41 @@
 		<group>OpenCms Workplace</group>
 		<class/>
 		<description><![CDATA[<p>This module contains the OpenCms administration tools for managing multiple sites served by OpenCms.</p>
-<p><i>&copy; 2013 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>9.0.0</version>
+<p><i>&copy; 2014 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+		<version>9.0.1</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
 		<userinstalled/>
 		<dateinstalled/>
-		<dependencies/>
+		<dependencies>
+			<dependency name="org.opencms.workplace.administration" version="9.0.0"/>
+		</dependencies>
 		<exportpoints>
 			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/lib/" destination="WEB-INF/lib/"/>
-			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/templates/vhost.template" destination="resources/webserver/resources/vhost.template"/>
-			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/templates/vhost-secure.template" destination="resources/webserver/resources/vhost-secure.template"/>
-			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/templates/script.sh" destination="resources/webserver/resources/script.sh"/>
-			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/templates/script.bat" destination="resources/webserver/resources/script.bat"/>
+			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/webserver-templates/available-macros.txt" destination="WEB-INF/server-scripts/available-macros.txt"/>
+			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/webserver-templates/cron.sh" destination="WEB-INF/server-scripts/cron.sh"/>
+			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/webserver-templates/script.bat" destination="WEB-INF/server-scripts/script.bat"/>
+			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/webserver-templates/script.sh" destination="WEB-INF/server-scripts/script.sh"/>
+			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/webserver-templates/vhost-secure.template" destination="WEB-INF/server-scripts/vhost-secure.template"/>
+			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/webserver-templates/vhost.template" destination="WEB-INF/server-scripts/vhost.template"/>
+			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/webserver-templates/worker.conf" destination="WEB-INF/server-scripts/worker.conf"/>
+			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/webserver-templates/workers.properties" destination="WEB-INF/server-scripts/workers.properties"/>
 		</exportpoints>
 		<resources>
 			<resource uri="/system/modules/org.opencms.workplace.tools.sites/"/>
 			<resource uri="/system/workplace/resources/tools/sites/icons/"/>
 			<resource uri="/system/workplace/admin/sites/"/>
+			<resource uri="/system/workplace/resources/list/delete_inactive.png"/>
 		</resources>
 		<parameters>
 			<param name="configtemplate">/path/to/webserver/config.template</param>
-			<param name="securetemplate">/path/to/webserver/secure-config.template</param>
-			<param name="enableconfig">true</param>
 			<param name="createou">false</param>
-			<param name="oudescription">OU for: %(site)</param>
+			<param name="enableconfig">true</param>
 			<param name="filenameprefix">opencms</param>
 			<param name="loggingdir">/path/to/logging/folder/</param>
+			<param name="oudescription">OU for: %(site)</param>
+			<param name="securetemplate">/path/to/webserver/secure-config.template</param>
 			<param name="targetpath">/path/to/config/target/</param>
 			<param name="webserverscript">/path/to/webserver/script.sh</param>
 		</parameters>
@@ -50,10 +57,10 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>622b08c0-9b81-11e2-93b7-c1221e6a3a06</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<uuidstructure>39919a34-455f-11e3-9b7b-000c297c001d</uuidstructure>
+			<datelastmodified>Mon, 04 Nov 2013 14:41:44 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 02 Apr 2013 10:37:57 GMT</datecreated>
+			<datecreated>Mon, 04 Nov 2013 14:41:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -72,10 +79,10 @@
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
-			<uuidstructure>658c5c6c-9b81-11e2-93b7-c1221e6a3a06</uuidstructure>
-			<datelastmodified>Tue, 02 Apr 2013 10:38:03 GMT</datelastmodified>
+			<uuidstructure>3b7f1290-455f-11e3-9b7b-000c297c001d</uuidstructure>
+			<datelastmodified>Mon, 04 Nov 2013 14:41:47 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 02 Apr 2013 10:38:03 GMT</datecreated>
+			<datecreated>Mon, 04 Nov 2013 14:41:47 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -133,7 +140,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.workplace.tools.sites/templates</destination>
+			<destination>system/modules/org.opencms.workplace.tools.sites/webserver-templates</destination>
 			<type>folder</type>
 			<uuidstructure>d22e7e52-9de5-11e2-8c36-c1221e6a3a06</uuidstructure>
 			<datelastmodified>Fri, 05 Apr 2013 11:42:33 GMT</datelastmodified>
@@ -151,8 +158,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.workplace.tools.sites/templates/available-macros.txt</source>
-			<destination>system/modules/org.opencms.workplace.tools.sites/templates/available-macros.txt</destination>
+			<source>system/modules/org.opencms.workplace.tools.sites/webserver-templates/available-macros.txt</source>
+			<destination>system/modules/org.opencms.workplace.tools.sites/webserver-templates/available-macros.txt</destination>
 			<type>plain</type>
 			<uuidstructure>36c95753-a101-11e2-842a-c1221e6a3a06</uuidstructure>
 			<uuidresource>36c95754-a101-11e2-842a-c1221e6a3a06</uuidresource>
@@ -171,8 +178,28 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.workplace.tools.sites/templates/script.bat</source>
-			<destination>system/modules/org.opencms.workplace.tools.sites/templates/script.bat</destination>
+			<source>system/modules/org.opencms.workplace.tools.sites/webserver-templates/cron.sh</source>
+			<destination>system/modules/org.opencms.workplace.tools.sites/webserver-templates/cron.sh</destination>
+			<type>plain</type>
+			<uuidstructure>254721a9-3d85-11e3-acc0-919ad3557f10</uuidstructure>
+			<uuidresource>254721aa-3d85-11e3-acc0-919ad3557f10</uuidresource>
+			<datelastmodified>Fri, 25 Oct 2013 14:54:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Oct 2013 14:53:01 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Bash Script that reloads Apache that can be used for a cron job]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.tools.sites/webserver-templates/script.bat</source>
+			<destination>system/modules/org.opencms.workplace.tools.sites/webserver-templates/script.bat</destination>
 			<type>plain</type>
 			<uuidstructure>0617fbb5-9de6-11e2-8c36-c1221e6a3a06</uuidstructure>
 			<uuidresource>0617fbb6-9de6-11e2-8c36-c1221e6a3a06</uuidresource>
@@ -191,8 +218,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.workplace.tools.sites/templates/script.sh</source>
-			<destination>system/modules/org.opencms.workplace.tools.sites/templates/script.sh</destination>
+			<source>system/modules/org.opencms.workplace.tools.sites/webserver-templates/script.sh</source>
+			<destination>system/modules/org.opencms.workplace.tools.sites/webserver-templates/script.sh</destination>
 			<type>plain</type>
 			<uuidstructure>225e7298-9de6-11e2-8c36-c1221e6a3a06</uuidstructure>
 			<uuidresource>225e7299-9de6-11e2-8c36-c1221e6a3a06</uuidresource>
@@ -211,8 +238,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.workplace.tools.sites/templates/tomcat.sh</source>
-			<destination>system/modules/org.opencms.workplace.tools.sites/templates/tomcat.sh</destination>
+			<source>system/modules/org.opencms.workplace.tools.sites/webserver-templates/tomcat.sh</source>
+			<destination>system/modules/org.opencms.workplace.tools.sites/webserver-templates/tomcat.sh</destination>
 			<type>plain</type>
 			<uuidstructure>1927ee45-9dfd-11e2-aabc-c1221e6a3a06</uuidstructure>
 			<uuidresource>1927ee46-9dfd-11e2-aabc-c1221e6a3a06</uuidresource>
@@ -231,8 +258,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.workplace.tools.sites/templates/vhost-secure.template</source>
-			<destination>system/modules/org.opencms.workplace.tools.sites/templates/vhost-secure.template</destination>
+			<source>system/modules/org.opencms.workplace.tools.sites/webserver-templates/vhost-secure.template</source>
+			<destination>system/modules/org.opencms.workplace.tools.sites/webserver-templates/vhost-secure.template</destination>
 			<type>plain</type>
 			<uuidstructure>229f334e-a115-11e2-b3ae-c1221e6a3a06</uuidstructure>
 			<uuidresource>229f334f-a115-11e2-b3ae-c1221e6a3a06</uuidresource>
@@ -251,8 +278,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.workplace.tools.sites/templates/vhost.template</source>
-			<destination>system/modules/org.opencms.workplace.tools.sites/templates/vhost.template</destination>
+			<source>system/modules/org.opencms.workplace.tools.sites/webserver-templates/vhost.template</source>
+			<destination>system/modules/org.opencms.workplace.tools.sites/webserver-templates/vhost.template</destination>
 			<type>plain</type>
 			<uuidstructure>419886fb-9de6-11e2-8c36-c1221e6a3a06</uuidstructure>
 			<uuidresource>419886fc-9de6-11e2-8c36-c1221e6a3a06</uuidresource>
@@ -271,8 +298,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.workplace.tools.sites/templates/worker.conf</source>
-			<destination>system/modules/org.opencms.workplace.tools.sites/templates/worker.conf</destination>
+			<source>system/modules/org.opencms.workplace.tools.sites/webserver-templates/worker.conf</source>
+			<destination>system/modules/org.opencms.workplace.tools.sites/webserver-templates/worker.conf</destination>
 			<type>plain</type>
 			<uuidstructure>d65ca058-9dfc-11e2-aabc-c1221e6a3a06</uuidstructure>
 			<uuidresource>d65ca059-9dfc-11e2-aabc-c1221e6a3a06</uuidresource>
@@ -291,8 +318,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.workplace.tools.sites/templates/workers.properties</source>
-			<destination>system/modules/org.opencms.workplace.tools.sites/templates/workers.properties</destination>
+			<source>system/modules/org.opencms.workplace.tools.sites/webserver-templates/workers.properties</source>
+			<destination>system/modules/org.opencms.workplace.tools.sites/webserver-templates/workers.properties</destination>
 			<type>plain</type>
 			<uuidstructure>f7def70b-9dfc-11e2-aabc-c1221e6a3a06</uuidstructure>
 			<uuidresource>f7def70c-9dfc-11e2-aabc-c1221e6a3a06</uuidresource>
@@ -711,7 +738,7 @@
 			<type>jsp</type>
 			<uuidstructure>8157855a-7cfe-11e2-a884-13f7e154c8f7</uuidstructure>
 			<uuidresource>8157855b-7cfe-11e2-a884-13f7e154c8f7</uuidresource>
-			<datelastmodified>Fri, 22 Feb 2013 14:48:21 GMT</datelastmodified>
+			<datelastmodified>Thu, 14 Nov 2013 09:41:17 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 22 Feb 2013 14:45:30 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -761,12 +788,17 @@
 			<destination>system/workplace/admin/sites/reports</destination>
 			<type>folder</type>
 			<uuidstructure>30fd3bf6-7b6d-11e2-ba12-13f7e154c8f7</uuidstructure>
-			<datelastmodified>Wed, 20 Feb 2013 14:52:47 GMT</datelastmodified>
+			<datelastmodified>Tue, 05 Nov 2013 16:59:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 20 Feb 2013 14:52:47 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Reports]]></value>
+				</property>
+			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -776,7 +808,7 @@
 			<type>jsp</type>
 			<uuidstructure>3d677cc8-7b6d-11e2-ba12-13f7e154c8f7</uuidstructure>
 			<uuidresource>3d677cc9-7b6d-11e2-ba12-13f7e154c8f7</uuidresource>
-			<datelastmodified>Wed, 20 Feb 2013 14:55:27 GMT</datelastmodified>
+			<datelastmodified>Tue, 05 Nov 2013 17:02:51 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 20 Feb 2013 14:53:08 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -788,11 +820,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:sites=%(param.sites)&editaction=remove&action=initial]]></value>
-				</property>
-				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.sites.CmsSitesToolHandler]]></value>
+					<value><![CDATA[params:sites=%(param.sites)|path:/sites/remove/report]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -808,7 +836,7 @@
 			<type>jsp</type>
 			<uuidstructure>bdbe5d02-96e6-11e2-8cf9-d723659840f0</uuidstructure>
 			<uuidresource>bdbe5d03-96e6-11e2-8cf9-d723659840f0</uuidresource>
-			<datelastmodified>Wed, 27 Mar 2013 14:02:22 GMT</datelastmodified>
+			<datelastmodified>Thu, 14 Nov 2013 09:34:23 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 27 Mar 2013 14:00:54 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -820,11 +848,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:script=%(param.script)&action=initial]]></value>
-				</property>
-				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.sites.CmsSitesToolHandler]]></value>
+					<value><![CDATA[params:script=%(param.script)|path:/sites/webserver/report]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -1101,6 +1125,39 @@
 					<name>Title</name>
 					<value><![CDATA[sites]]></value>
 				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/list</destination>
+			<type>folder</type>
+			<uuidstructure>96b20cfc-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Wed, 07 Feb 2007 11:31:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/list/delete_inactive.png</source>
+			<destination>system/workplace/resources/list/delete_inactive.png</destination>
+			<type>image</type>
+			<uuidstructure>ab1dc9e6-ee1b-11e2-9268-000c299b0940</uuidstructure>
+			<uuidresource>ab1dc9e7-ee1b-11e2-9268-000c299b0940</uuidresource>
+			<datelastmodified>Tue, 16 Jul 2013 13:29:12 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jul 2013 13:28:57 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:20,h:20]]></value>

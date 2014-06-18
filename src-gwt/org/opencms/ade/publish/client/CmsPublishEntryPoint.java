@@ -54,25 +54,30 @@ public class CmsPublishEntryPoint extends A_CmsEntryPoint {
 
         super.onModuleLoad();
         CmsPublishData initData = null;
-
         try {
             initData = (CmsPublishData)CmsRpcPrefetcher.getSerializedObjectFromDictionary(
                 CmsPublishDialog.getService(),
                 CmsPublishData.DICT_NAME);
+            String closeLink = initData.getCloseLink();
+            if (closeLink == null) {
+                closeLink = CmsCoreProvider.get().getDefaultWorkplaceLink();
+            }
+            final String constCloseLink = closeLink;
             CloseHandler<PopupPanel> closeHandler = new CloseHandler<PopupPanel>() {
 
                 public void onClose(CloseEvent<PopupPanel> event) {
 
-                    final String workplaceUri = CmsCoreProvider.get().getDefaultWorkplaceLink();
                     CmsPublishDialog dialog = (CmsPublishDialog)(event.getTarget());
                     if (dialog.hasSucceeded() || dialog.hasFailed()) {
-                        CmsPublishConfirmationDialog confirmation = new CmsPublishConfirmationDialog(dialog);
+                        CmsPublishConfirmationDialog confirmation = new CmsPublishConfirmationDialog(
+                            dialog,
+                            constCloseLink);
                         confirmation.center();
                     } else {
                         // 'cancel' case 
                         CmsJsUtil.closeWindow();
                         // in case the window isn't successfully closed, go to the workplace 
-                        Window.Location.assign(workplaceUri);
+                        Window.Location.assign(constCloseLink);
                     }
                 }
             };

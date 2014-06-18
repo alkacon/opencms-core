@@ -11,7 +11,7 @@
 	<property name="opencms.output.jars" location="${opencms.build}/jars-core" />
 	<property name="opencms.output.jars-components" location="${opencms.output}/build/jars-components" />
 	<property name="opencms.gwt.forcerebuild" value="false" />
-	<property name="java.target.version" value="1.5" />
+	<property name="java.target.version" value="1.6" />
 
 	<property environment="env" />
 	<property file="${basedir}/opencms.properties" />
@@ -65,7 +65,7 @@
 	<property name="app.name" value="opencms" />
 
 	<property name="jar.excludes" value="**/CVS/*,**/.cvsignore,**/.nbattrs,**/.project,**/.classpath,*.gwt.xml" />
-	<property name="zip.excludes" value="**/CVS/*,**/.cvsignore,**/.nbattrs,**/.project,**/.classpath" />
+	<property name="zip.excludes" value="**/CVS/*,**/.cvsignore,**/.nbattrs,**/.project,**/.classpath,component.properties" />
 	<property name="jar.includes.single" value="**/*.properties,**/*.txt,**/*.dtd,**/*.xml,**/*.sql,**/*.gwt.rpc" />
 	<property name="jar.includes.shared" value="*.properties,*.txt,*.dtd,*.xml,*.sql,*.gwt.rpc" />
 
@@ -394,7 +394,7 @@
 						                 <string>
 
 </string>
-							<fileset dir="${module.input.res}/scripts" includes="@{script-file}"/>
+							<fileset dir="${module.input}/scripts" includes="@{script-file}"/>
 						</concat>
 								</sequential>
 							</for>
@@ -468,7 +468,8 @@
 								<pathelement path="${opencms.input}/src" />
 								<pathelement path="${opencms.input}/src-gwt" />
 								<pathelement path="${opencms.input.gwt}" />
-								<pathelement path="${opencms.output.jars-components}/gwt-opencms.jar" />
+								<pathelement path="${opencms.output}/build/classes-gwt-rpc" />
+								<pathelement path="${opencms.output}/build/classes-gwt" />
 							</classpath>
 						</java>
 						<delete dir="${module.gwt.output}/../WEB-INF" failonerror="false" />

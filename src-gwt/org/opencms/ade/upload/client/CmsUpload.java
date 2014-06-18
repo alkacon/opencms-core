@@ -33,6 +33,8 @@ import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
 
+import java.util.List;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 
@@ -51,12 +53,12 @@ public class CmsUpload extends A_CmsEntryPoint {
      */
     public static native void exportOpenUploadDialog() /*-{
 
-        $wnd[@org.opencms.ade.upload.client.CmsUpload::FUNCTION_OPEN_UPLOAD_DIALOG] = function(
-                uploadTarget) {
-            @org.opencms.ade.upload.client.CmsUpload::openDialog(Ljava/lang/String;)(uploadTarget);
-        };
+                                                       $wnd[@org.opencms.ade.upload.client.CmsUpload::FUNCTION_OPEN_UPLOAD_DIALOG] = function(
+                                                       uploadTarget) {
+                                                       @org.opencms.ade.upload.client.CmsUpload::openDialog(Ljava/lang/String;)(uploadTarget);
+                                                       };
 
-    }-*/;
+                                                       }-*/;
 
     /**
      * Opens an empty upload dialog.<p>
@@ -69,7 +71,7 @@ public class CmsUpload extends A_CmsEntryPoint {
             A_CmsUploadDialog dialog = GWT.create(CmsUploadDialogImpl.class);
             dialog.setContext(new I_CmsUploadContext() {
 
-                public void onUploadFinished() {
+                public void onUploadFinished(List<String> uploadedFiles) {
 
                     Window.Location.reload();
                 }
@@ -97,7 +99,7 @@ public class CmsUpload extends A_CmsEntryPoint {
                 A_CmsUploadDialog dialog = GWT.create(CmsUploadDialogImpl.class);
                 I_CmsUploadContext context = new I_CmsUploadContext() {
 
-                    public void onUploadFinished() {
+                    public void onUploadFinished(List<String> uploadedFiles) {
 
                         String closeLink = getCloseLink() + "?resource=";
                         Window.Location.assign(CmsCoreProvider.get().link(closeLink));
@@ -121,9 +123,9 @@ public class CmsUpload extends A_CmsEntryPoint {
      */
     protected native String getCloseLink() /*-{
 
-        return $wnd[@org.opencms.gwt.shared.I_CmsUploadConstants::ATTR_CLOSE_LINK];
+                                           return $wnd[@org.opencms.gwt.shared.I_CmsUploadConstants::ATTR_CLOSE_LINK];
 
-    }-*/;
+                                           }-*/;
 
     /**
      * Retrieves the dialog mode global variable as a string.<p>
@@ -132,9 +134,9 @@ public class CmsUpload extends A_CmsEntryPoint {
      */
     protected native String getDialogMode() /*-{
 
-        return $wnd[@org.opencms.gwt.shared.I_CmsUploadConstants::ATTR_DIALOG_MODE];
+                                            return $wnd[@org.opencms.gwt.shared.I_CmsUploadConstants::ATTR_DIALOG_MODE];
 
-    }-*/;
+                                            }-*/;
 
     /**
      * Retrieves the target folder global variable as a string.<p>
@@ -143,7 +145,7 @@ public class CmsUpload extends A_CmsEntryPoint {
      */
     private native String getTargetFolder() /*-{
 
-        return $wnd[@org.opencms.gwt.shared.I_CmsUploadConstants::VAR_TARGET_FOLDER];
+                                            return $wnd[@org.opencms.gwt.shared.I_CmsUploadConstants::VAR_TARGET_FOLDER];
 
-    }-*/;
+                                            }-*/;
 }

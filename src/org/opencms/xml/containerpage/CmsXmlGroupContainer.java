@@ -31,6 +31,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
@@ -290,13 +291,9 @@ public class CmsXmlGroupContainer extends CmsXmlContent {
      * 
      * @param cms the current CMS context
      * @param element the XML element to fill
-     * @param resourceId the ID identifying the resource to use
-     * 
-     * @return the resource 
-     * 
-     * @throws CmsException if the resource can not be read
+     * @param res the resource to use
      */
-    protected CmsResource fillResource(CmsObject cms, Element element, CmsUUID resourceId) throws CmsException {
+    protected void fillResource(CmsObject cms, Element element, CmsResource res) {
 
         String xpath = element.getPath();
         int pos = xpath.lastIndexOf("/" + XmlNode.GroupContainers.name() + "/");
@@ -304,9 +301,7 @@ public class CmsXmlGroupContainer extends CmsXmlContent {
             xpath = xpath.substring(pos + 1);
         }
         CmsRelationType type = getHandler().getRelationType(xpath);
-        CmsResource res = cms.readResource(resourceId, CmsResourceFilter.IGNORE_EXPIRATION);
         CmsXmlVfsFileValue.fillEntry(element, res.getStructureId(), res.getRootPath(), type);
-        return res;
     }
 
     /**
@@ -443,15 +438,21 @@ public class CmsXmlGroupContainer extends CmsXmlContent {
 
         // the elements
         for (CmsContainerElementBean element : groupContainer.getElements()) {
+            CmsResource res = cms.readResource(element.getId(), CmsResourceFilter.IGNORE_EXPIRATION);
+            if (OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName().equals(
+                CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME)) {
+                LOG.warn(Messages.get().container(Messages.LOG_WARN_ELEMENT_GROUP_INSIDE_ELEMENT_GROUP_0));
+                continue;
+            }
             Element elemElement = groupContainerElem.addElement(XmlNode.Element.name());
 
             // the element
             Element uriElem = elemElement.addElement(XmlNode.Uri.name());
-            CmsResource uriRes = fillResource(cms, uriElem, element.getId());
+            fillResource(cms, uriElem, res);
 
             // the properties
             Map<String, String> properties = element.getIndividualSettings();
-            Map<String, CmsXmlContentProperty> propertiesConf = OpenCms.getADEManager().getElementSettings(cms, uriRes);
+            Map<String, CmsXmlContentProperty> propertiesConf = OpenCms.getADEManager().getElementSettings(cms, res);
 
             CmsXmlContentPropertyHelper.saveProperties(cms, elemElement, properties, propertiesConf);
         }

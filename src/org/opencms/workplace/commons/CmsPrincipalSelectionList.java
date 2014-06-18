@@ -184,6 +184,9 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
     /** Stores the value of the request parameter for the flags. */
     private String m_paramFlags;
 
+    /** The use parent flag, indicates the value should be set in the parent frame, not the window opener. */
+    private String m_paramUseparent;
+
     /**
      * Public constructor.<p>
      * 
@@ -323,6 +326,16 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
     }
 
     /**
+     * Returns the use parent frame flag.<p>
+     * 
+     * @return the use parent frame flag
+     */
+    public String getParamUseparent() {
+
+        return m_paramUseparent;
+    }
+
+    /**
      * Returns if the list of principals has principals of other organizational units.<p>
      * 
      * @return if the list of principals has principals of other organizational units
@@ -366,6 +379,16 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
     public void setParamFlags(String flags) {
 
         m_paramFlags = flags;
+    }
+
+    /**
+     * Sets the use parent frame flag.<p>
+     * 
+     * @param useParent the use parent frame flag
+     */
+    public void setParamUseparent(String useParent) {
+
+        m_paramUseparent = useParent;
     }
 
     /**
@@ -563,11 +586,19 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
              */
             public String jsCode() {
 
-                return "window.opener.setPrincipalFormValue("
-                    + (((CmsPrincipalSelectionList)getWp()).isShowingUsers() ? 1 : 0)
-                    + ",'"
-                    + getItem().get(LIST_COLUMN_NAME)
-                    + "'); window.opener.focus(); window.close();";
+                if (Boolean.parseBoolean(getParamUseparent())) {
+                    return "parent.setPrincipalFormValue("
+                        + (((CmsPrincipalSelectionList)getWp()).isShowingUsers() ? 1 : 0)
+                        + ",'"
+                        + getItem().get(LIST_COLUMN_NAME)
+                        + "');";
+                } else {
+                    return "window.opener.setPrincipalFormValue("
+                        + (((CmsPrincipalSelectionList)getWp()).isShowingUsers() ? 1 : 0)
+                        + ",'"
+                        + getItem().get(LIST_COLUMN_NAME)
+                        + "'); window.opener.focus(); window.close();";
+                }
             }
         };
         selectAction.setName(Messages.get().container(Messages.GUI_PRINCIPALSELECTION_LIST_ACTION_SELECT_NAME_0));

@@ -3,19 +3,19 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>8.5.0</opencms_version>
+		<opencms_version>9.0.0</opencms_version>
 		<createdate>Tue, 20 Oct 2009 07:26:16 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
 	<module>
 		<name>org.opencms.gwt</name>
-		<nicename><![CDATA[OpenCms 8 GWT Base Module]]></nicename>
+		<nicename><![CDATA[OpenCms 9 GWT Base Module]]></nicename>
 		<group>OpenCms Editors</group>
 		<class />
 		<description><![CDATA[<p>Provides an OpenCms GWT framework.</p>
-<p><i>&copy; 2013 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>8.5.1</version>
+<p><i>&copy; 2014 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+		<version>9.0.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated />

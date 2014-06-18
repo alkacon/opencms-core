@@ -57,7 +57,10 @@ import java.util.Map;
  * 
  * @since 8.5.0
  */
-public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldConfiguration> {
+public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldConfiguration>, I_CmsSearchFieldAppdender {
+
+    /** A list of fields that should be lazy-loaded. */
+    public static final List<String> LAZY_FIELDS = new ArrayList<String>();
 
     /** The name for the standard field configuration. */
     public static final String STR_STANDARD = "standard";
@@ -86,6 +89,11 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
     public CmsSearchFieldConfiguration() {
 
         m_fields = new ArrayList<CmsSearchField>();
+    }
+
+    static {
+        LAZY_FIELDS.add(CmsSearchField.FIELD_CONTENT);
+        LAZY_FIELDS.add(CmsSearchField.FIELD_CONTENT_BLOB);
     }
 
     /**
@@ -148,6 +156,14 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
     }
 
     /**
+     * @see org.opencms.search.fields.I_CmsSearchFieldAppdender#addAdditionalFields()
+     */
+    public void addAdditionalFields() {
+
+        // nothing to do here
+    }
+
+    /**
      * Adds a field to this search field configuration.<p>
      * 
      * @param field the field to add
@@ -171,6 +187,22 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
                 addField(field);
             }
         }
+    }
+
+    /**
+     * Appends the specific search fields to the document.<p>
+     * 
+     * @see org.opencms.search.fields.I_CmsSearchFieldAppdender#appendFields(org.opencms.search.I_CmsSearchDocument, org.opencms.file.CmsObject, org.opencms.file.CmsResource, org.opencms.search.extractors.I_CmsExtractionResult, java.util.List, java.util.List)
+     */
+    public I_CmsSearchDocument appendFields(
+        I_CmsSearchDocument document,
+        CmsObject cms,
+        CmsResource resource,
+        I_CmsExtractionResult extractionResult,
+        List<CmsProperty> properties,
+        List<CmsProperty> propertiesSearched) {
+
+        return document;
     }
 
     /**
@@ -223,6 +255,7 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
         document = appendCategories(document, cms, resource, extraction, properties, propertiesSearched);
         document = appendFieldMappings(document, cms, resource, extraction, properties, propertiesSearched);
         document = setBoost(document, cms, resource, extraction, properties, propertiesSearched);
+        document = appendFields(document, cms, resource, extraction, properties, propertiesSearched);
 
         return document;
     }
@@ -333,7 +366,7 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
      */
     public void init() {
 
-        // nothing to do here
+        addAdditionalFields();
     }
 
     /**
@@ -655,10 +688,9 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
         // add the file name suffix to the document
         String resName = CmsResource.getName(resource.getRootPath());
         int index = resName.lastIndexOf('.');
-        if (index != -1) {
-            document.addSuffixField(resName.substring(index));
+        if ((index != -1) && (resName.length() > index)) {
+            document.addSuffixField(resName.substring(index + 1));
         }
-
         return document;
     }
 

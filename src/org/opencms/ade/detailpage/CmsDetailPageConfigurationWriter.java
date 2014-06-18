@@ -96,6 +96,8 @@ public class CmsDetailPageConfigurationWriter {
         getDocument();
         removeOldValues();
         writeDetailPageInfos(infos, newId);
+        m_document.setAutoCorrectionEnabled(true);
+        m_document.correctXmlStructure(m_cms);
         byte[] content = m_document.marshal();
         m_file.setContents(content);
         m_cms.writeFile(m_file);

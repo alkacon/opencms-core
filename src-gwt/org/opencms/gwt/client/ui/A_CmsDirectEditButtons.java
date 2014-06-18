@@ -44,6 +44,7 @@ import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -136,6 +137,10 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
     protected CmsPushButton m_edit;
     /** The editable data. */
     protected CmsEditableDataJSO m_editableData;
+
+    /** The expired resources overlay element. */
+    protected Element m_expiredOverlay;
+
     /** Highlighting border for this element. */
     protected CmsHighlightingBorder m_highlighting;
 
@@ -182,18 +187,6 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
                 add(m_delete);
                 m_delete.addClickHandler(handler);
             }
-            if (m_editableData.hasEdit()) {
-                m_edit = new CmsPushButton();
-                m_edit.setImageClass(I_CmsButton.ButtonData.EDIT.getIconClass());
-                m_edit.addStyleName(I_CmsButton.ButtonData.EDIT.getIconClass());
-                m_edit.setTitle(I_CmsButton.ButtonData.EDIT.getTitle());
-                m_edit.setButtonStyle(I_CmsButton.ButtonStyle.TRANSPARENT, null);
-                add(m_edit);
-                m_edit.addClickHandler(handler);
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_editableData.getNoEditReason())) {
-                    m_edit.disable(m_editableData.getNoEditReason());
-                }
-            }
             if (m_editableData.hasNew()) {
                 m_new = new CmsPushButton();
                 m_new.setImageClass(I_CmsButton.ButtonData.NEW.getIconClass());
@@ -203,13 +196,27 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
                 add(m_new);
                 m_new.addClickHandler(handler);
             }
-            if (this.getWidgetCount() > 0) {
-                CmsPushButton selection = new CmsPushButton();
-                selection.setImageClass(I_CmsButton.ButtonData.SELECTION.getIconClass());
-                selection.addStyleName(I_CmsButton.ButtonData.SELECTION.getIconClass());
-                selection.setButtonStyle(I_CmsButton.ButtonStyle.TRANSPARENT, null);
-                add(selection);
+            if ((this.getWidgetCount() > 0) || m_editableData.hasEdit()) {
+                m_edit = new CmsPushButton();
+                m_edit.setImageClass(I_CmsButton.ButtonData.SELECTION.getIconClass());
+                m_edit.addStyleName(I_CmsButton.ButtonData.SELECTION.getIconClass());
+                m_edit.setButtonStyle(I_CmsButton.ButtonStyle.TRANSPARENT, null);
+                add(m_edit);
+                if (m_editableData.hasEdit()) {
+                    m_edit.addStyleName(I_CmsButton.ButtonData.EDIT.getIconClass());
+                    m_edit.setTitle(I_CmsButton.ButtonData.EDIT.getTitle());
+                    m_edit.addClickHandler(handler);
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_editableData.getNoEditReason())) {
+                        m_edit.disable(m_editableData.getNoEditReason());
+                    }
+                }
             }
+            if (m_editableData.isUnreleasedOrExpired()) {
+                m_expiredOverlay = DOM.createDiv();
+                m_expiredOverlay.setClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.directEditCss().expiredListElementOverlay());
+                m_markerTag.getParentElement().insertBefore(m_expiredOverlay, m_markerTag);
+            }
+
         } catch (Exception e) {
             throw new UnsupportedOperationException("Error while parsing editable tag information: " + e.getMessage());
         }
@@ -251,7 +258,7 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
             m_highlighting = new CmsHighlightingBorder(m_position, CmsHighlightingBorder.BorderColor.red);
             RootPanel.get().add(m_highlighting);
         } else {
-            m_highlighting.setPosition(CmsPositionBean.generatePositionInfo(this));
+            m_highlighting.setPosition(CmsPositionBean.getInnerDimensions(getElement()));
         }
     }
 
@@ -292,7 +299,7 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
      * @param position the absolute position
      * @param containerElement the parent container element
      */
-    public void setPosition(CmsPositionBean position, com.google.gwt.user.client.Element containerElement) {
+    public void setPosition(CmsPositionBean position, Element containerElement) {
 
         m_position = position;
         Element parent = CmsDomUtil.getPositioningParent(getElement());
@@ -307,6 +314,8 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
             top -= (24 - m_position.getHeight()) / 2;
         }
         style.setTop(top, Unit.PX);
+
+        updateExpiredOverlayPosition(parent);
     }
 
     /**
@@ -346,6 +355,22 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
         }
         removeHighlighting();
         getElement().removeClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering());
+    }
+
+    /**
+     * Updates the position of the expired resources overlay if present.<p>
+     * 
+     * @param positioningParent the positioning parent element
+     */
+    protected void updateExpiredOverlayPosition(Element positioningParent) {
+
+        if (m_expiredOverlay != null) {
+            Style expiredStyle = m_expiredOverlay.getStyle();
+            expiredStyle.setHeight(m_position.getHeight() + 4, Unit.PX);
+            expiredStyle.setWidth(m_position.getWidth() + 4, Unit.PX);
+            expiredStyle.setTop(m_position.getTop() - positioningParent.getAbsoluteTop() - 2, Unit.PX);
+            expiredStyle.setLeft(m_position.getLeft() - positioningParent.getAbsoluteLeft() - 2, Unit.PX);
+        }
     }
 
 }

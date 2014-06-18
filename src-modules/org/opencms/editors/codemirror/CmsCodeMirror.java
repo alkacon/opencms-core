@@ -61,6 +61,9 @@ public class CmsCodeMirror extends CmsSimpleEditor {
     /** Syntax highlight type name: XML. */
     public static final String HIGHLIGHT_TYPE_XML = "xml";
 
+    /** Request parameter name for the close function parameter. */
+    public static final String PARAM_CLOSEFUNCTION = "closefunction";
+
     /** Possible type suffix names. */
     protected static final String[] HIGHLIGHT_TYPES = {
         HIGHLIGHT_TYPE_CSS,
@@ -80,6 +83,9 @@ public class CmsCodeMirror extends CmsSimpleEditor {
 
     /** Path to the editor distribution resources. */
     protected static final String VFS_PATH_EDITOR_DIST = VFS_PATH_EDITOR + "dist/";
+
+    /** The close function parameter. */
+    private String m_paramCloseFunction;
 
     /**
      * Public constructor.<p>
@@ -155,6 +161,26 @@ public class CmsCodeMirror extends CmsSimpleEditor {
         }
         // return HTML type as default
         return HIGHLIGHT_TYPE_HTML;
+    }
+
+    /**
+     * Returns the close function parameter.<p>
+     * 
+     * @return the close function parameter
+     */
+    public String getParamCloseFunction() {
+
+        return m_paramCloseFunction;
+    }
+
+    /**
+     * Sets the close function parameter.<p>
+     * 
+     * @param closeFunction the close function parameter
+     */
+    public void setParamCloseFunction(String closeFunction) {
+
+        m_paramCloseFunction = closeFunction;
     }
 
     /**

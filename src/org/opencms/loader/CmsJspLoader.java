@@ -43,6 +43,7 @@ import org.opencms.flex.CmsFlexResponse;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.util.CmsJspLinkMacroResolver;
+import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -510,8 +511,9 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
 
             // get the Flex controller
             CmsFlexController controller = getController(cms, file, req, res, streaming, true);
-
             if (bypass || controller.isForwardMode()) {
+                // initialize the standard contex bean to be available for all requests
+                CmsJspStandardContextBean.getInstance(controller.getCurrentRequest());
                 // once in forward mode, always in forward mode (for this request)
                 controller.setForwardMode(true);
                 // bypass Flex cache for this page, update the JSP first if necessary            
@@ -637,6 +639,8 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         String target = updateJsp(resource, controller, new HashSet<String>(8));
         // important: Indicate that all output must be buffered
         controller.getCurrentResponse().setOnlyBuffering(true);
+         // initialize the standard contex bean to be available for all requests
+        CmsJspStandardContextBean.getInstance(controller.getCurrentRequest());
         // dispatch to external file
         controller.getCurrentRequest().getRequestDispatcherToExternal(cms.getSitePath(resource), target).include(
             req,
@@ -921,7 +925,6 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         // get request / response wrappers
         CmsFlexRequest f_req = controller.getCurrentRequest();
         CmsFlexResponse f_res = controller.getCurrentResponse();
-
         try {
             f_req.getRequestDispatcher(controller.getCmsObject().getSitePath(controller.getCmsResource())).include(
                 f_req,

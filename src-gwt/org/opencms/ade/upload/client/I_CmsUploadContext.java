@@ -27,6 +27,8 @@
 
 package org.opencms.ade.upload.client;
 
+import java.util.List;
+
 /**
  * Interface with a method that should be called when an upload has finished.<p>
  */
@@ -34,7 +36,9 @@ public interface I_CmsUploadContext {
 
     /**
      * This method should be called when the upload has finished.<p>
+     * 
+     * @param uploadedFiles the uploaded files, or null if the upload was canceled
      */
-    void onUploadFinished();
+    void onUploadFinished(List<String> uploadedFiles);
 
 }

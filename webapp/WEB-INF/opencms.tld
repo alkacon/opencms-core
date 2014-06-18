@@ -14,6 +14,37 @@
     <short-name>cms</short-name>
     <uri>http://www.opencms.org/taglib/cms</uri>
 
+	<tag>
+      <description>
+          Loads a resource bundle to be used by its tag body
+      </description>
+      <name>bundle</name>
+      <tag-class>org.opencms.jsp.CmsJspTagBundle</tag-class>
+      <body-content>JSP</body-content>
+      <attribute>
+          <description>
+            Resource bundle base name. This is the bundle's
+            fully-qualified resource name, which has the same
+            form as a fully-qualified class name, that is, it uses
+            "." as the package component separator and does not
+            have any file type (such as ".class" or ".properties")
+            suffix.
+          </description>
+          <name>basename</name>
+          <required>true</required>
+          <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+          <description>
+            Prefix to be prepended to the value of the message
+            key of any nested &lt;fmt:message&gt; action.
+          </description>
+          <name>prefix</name>
+          <required>false</required>
+          <rtexprvalue>true</rtexprvalue>
+      </attribute>
+    </tag>
+
     <tag>
         <description>
             This tag enables read access to the current files OpenCms properties.
@@ -619,7 +650,11 @@
         <attribute>
             <name>partialTag</name>
             <rtexprvalue>true</rtexprvalue>            
-        </attribute>     
+        </attribute>
+        <attribute>
+            <name>noDim</name>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>    
         <!-- The following attributes are only convenience attributes for easier HTML generation: -->
         <attribute>
             <name>alt</name>
@@ -746,6 +781,11 @@
         	<required>false</required>
         	<rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+        	<name>detailonly</name>
+        	<required>false</required>
+        	<rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>        
     
     <tag>
@@ -808,6 +848,16 @@
         </attribute>
         <attribute>
         	<name>closetags</name>
+        	<required>false</required>
+        	<rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+        	<name>detailtype</name>
+        	<required>false</required>
+        	<rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+        	<name>detailwidth</name>
         	<required>false</required>
         	<rtexprvalue>true</rtexprvalue>
         </attribute>
@@ -1059,4 +1109,28 @@
             java.lang.String getNavigationUri(java.lang.Object)
         </function-signature>
     </function>
+    
+    <function>
+        <description>
+           Uses the 1st String as key to look up from the map that is passed as the 2nd String, and returns either the 
+           element found or the default value from the 3rd String. The map String must have the form "key1:value1|key2:value2" etc.
+        </description>    
+        <name>lookupDefault</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            java.lang.String lookup(java.lang.String, java.lang.String, java.lang.String)
+        </function-signature>
+    </function>    
+    
+    <function>
+        <description>
+           Uses the 1st String as key to look up from the map that is passed as the 2nd String, and returns either the 
+           element found or the empty String. The map String must have the form "key1:value1|key2:value2" etc.
+        </description>    
+        <name>lookup</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            java.lang.String lookup(java.lang.String, java.lang.String)
+        </function-signature>
+    </function>        
 </taglib>

@@ -162,6 +162,18 @@ public interface I_CmsCoreService extends RemoteService {
     String getWorkplaceLink(CmsUUID structureId) throws CmsRpcException;
 
     /**
+     * Locks the given resource with a temporary lock if it exists.<p>
+     * If the resource does not exist yet, the closest existing ancestor folder will check if it is lockable.<p>
+     * 
+     * @param sitePath the site path of the resource to lock 
+     * 
+     * @return <code>null</code> if successful, an error message if not 
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    String lockIfExists(String sitePath) throws CmsRpcException;
+
+    /**
      * Locks the given resource with a temporary lock.<p>
      * 
      * @param structureId the structure id of the resource to lock 
@@ -257,6 +269,17 @@ public interface I_CmsCoreService extends RemoteService {
      * @throws CmsRpcException if something goes wrong 
      */
     String unlock(CmsUUID structureId) throws CmsRpcException;
+
+    /**
+     * Unlocks the given resource.<p>
+     * 
+     * @param sitePath the site path of the resource to unlock   
+     * 
+     * @return <code>null</code> if successful, an error message if not 
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    String unlock(String sitePath) throws CmsRpcException;
 
     /**
      * Performs a batch of validations and returns the results.<p>

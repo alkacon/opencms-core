@@ -90,7 +90,11 @@ public class CmsModuleDeleteThread extends A_CmsReportThread {
     public void run() {
 
         I_CmsReport report = getReport();
+        boolean indexingAlreadyPaused = OpenCms.getSearchManager().isOfflineIndexingPaused();
         try {
+            if (!indexingAlreadyPaused) {
+                OpenCms.getSearchManager().pauseOfflineIndexing();
+            }
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_DELETE_THREAD_STARTED_0));
             }
@@ -116,6 +120,10 @@ public class CmsModuleDeleteThread extends A_CmsReportThread {
         } catch (Throwable e) {
             report.println(e);
             LOG.error(Messages.get().getBundle().key(Messages.LOG_MODULE_DELETE_FAILED_1, m_moduleNames), e);
+        } finally {
+            if (!indexingAlreadyPaused) {
+                OpenCms.getSearchManager().resumeOfflineIndexing();
+            }
         }
     }
 }

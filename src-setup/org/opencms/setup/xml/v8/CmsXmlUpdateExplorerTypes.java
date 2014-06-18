@@ -61,7 +61,6 @@ public class CmsXmlUpdateExplorerTypes extends A_CmsXmlWorkplace {
         {"structurecontent", "icon", "menu.png"},
         {"otheroptions", "icon", "menu.png"},
         {"folder", "bigicon", "folder_big.png"},
-        {"xmlpage", "bigicon", "page_big.png"},
         {"plain", "bigicon", "plain_big.png"},
         {"jsp", "bigicon", "jsp_big.png"},
         {"binary", "bigicon", "binary_big.png"},
@@ -74,14 +73,10 @@ public class CmsXmlUpdateExplorerTypes extends A_CmsXmlWorkplace {
         {"xmlcontent", "bigicon", "xmlcontent_big.png"}};
 
     /** The order data to update. */
-    private String[][] m_orders = {
-        {"xmlpage", "81"},
-        {"link", "90"},
-        {"extendedfolder", "5"},
-        {"structurecontent", "10"}};
+    private String[][] m_orders = { {"link", "90"}, {"extendedfolder", "5"}, {"structurecontent", "10"}};
 
     /** The page data to update. */
-    private String[][] m_pages = { {"xmlpage", "otheroptions"}, {"link", "otheroptions"}};
+    private String[][] m_pages = {{"link", "otheroptions"}};
 
     /**
      * @see org.opencms.setup.xml.I_CmsSetupXmlUpdate#getName()

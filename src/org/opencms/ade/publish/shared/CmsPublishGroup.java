@@ -39,6 +39,9 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class CmsPublishGroup implements IsSerializable {
 
+    /** Flag which indicates whether the resource group is auto-selectable. */
+    private boolean m_autoSelectable = true;
+
     /** The group name.*/
     private String m_name;
 
@@ -54,10 +57,6 @@ public class CmsPublishGroup implements IsSerializable {
     public CmsPublishGroup(String name, List<CmsPublishResource> resources) {
 
         m_name = name;
-        //        m_resources = ((resources == null)
-        //        ? Collections.<CmsPublishResource> emptyList()
-        //        : Collections.unmodifiableList(resources));
-        // HACK: GWT serialization does not like unmodifiable collections :(
         m_resources = ((resources == null) ? new ArrayList<CmsPublishResource>() : new ArrayList<CmsPublishResource>(
             resources));
     }
@@ -88,5 +87,25 @@ public class CmsPublishGroup implements IsSerializable {
     public List<CmsPublishResource> getResources() {
 
         return m_resources;
+    }
+
+    /**
+     * Returns true if the GUI should be able to automatically select this group.<p>
+     *  
+     * @return the value of the auto-selectable flag 
+     */
+    public boolean isAutoSelectable() {
+
+        return m_autoSelectable;
+    }
+
+    /**
+     * Sets the auto-selectable flag.<p>
+     * 
+     * @param autoSelectable the new flag value 
+     */
+    public void setAutoSelectable(boolean autoSelectable) {
+
+        m_autoSelectable = autoSelectable;
     }
 }

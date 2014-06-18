@@ -11,10 +11,265 @@
 
 <h1><span class="logo-braces">{ }</span> <a href="http://codemirror.net/">CodeMirror</a></h1>
 
-<pre class="grey">
-<img src="baboon.png" class="logo" alt="logo"/>/* Old release history */
-
+<div class="grey">
+<img src="baboon.png" class="logo" alt="logo"/>
+<pre>
+/* Old release
+   history */
 </pre>
+</div>
+
+  <p class="rel">20-11-2012: <a href="http://codemirror.net/codemirror-2.36.zip">Version 2.36</a>:</p>
+
+  <ul class="rel-note">
+    <li>New mode: <a href="../mode/z80/index.html">Z80 assembly</a>.</li>
+    <li>New theme: <a href="../demo/theme.html?twilight">Twilight</a>.</li>
+    <li>Add command-line compression helper.</li>
+    <li>Make <a href="manual.html#scrollIntoView"><code>scrollIntoView</code></a> public.</li>
+    <li>Add <a href="manual.html#defaultTextHeight"><code>defaultTextHeight</code></a> method.</li>
+    <li>Various extensions to the vim keymap.</li>
+    <li>Make <a href="../mode/php/index.html">PHP mode</a> build on <a href="../mode/htmlmixed/index.html">mixed HTML mode</a>.</li>
+    <li>Add <a href="manual.html#addon_continuecomment">comment-continuing</a> add-on.</li>
+    <li>Full <a href="../https://github.com/marijnh/CodeMirror/compare/v2.35...v2.36">list of patches</a>.</li>
+  </ul>
+
+  <p class="rel">20-11-2012: <a href="http://codemirror.net/codemirror-3.0rc1.zip">Version 3.0, release candidate 1</a>:</p>
+
+  <ul class="rel-note">
+    <li>New theme: <a href="../demo/theme.html?solarized%20light">Solarized</a>.</li>
+    <li>Introduce <a href="manual.html#addLineClass"><code>addLineClass</code></a>
+    and <a href="manual.html#removeLineClass"><code>removeLineClass</code></a>,
+    drop <code>setLineClass</code>.</li>
+    <li>Add a <em>lot</em> of
+    new <a href="manual.html#markText">options for marked text</a>
+    (read-only, atomic, collapsed, widget replacement).</li>
+    <li>Remove the old code folding interface in favour of these new ranges.</li>
+    <li>Add <a href="manual.html#isClean"><code>isClean</code></a>/<a href="manual.html#markClean"><code>markClean</code></a> methods.</li>
+    <li>Remove <code>compoundChange</code> method, use better undo-event-combining heuristic.</li>
+    <li>Improve scrolling performance smoothness.</li>
+    <li>Full <a href="https://github.com/marijnh/CodeMirror/compare/v3.0beta2...v3.0rc1">list of patches</a>.</li>
+  </ul>
+
+  <p class="rel">22-10-2012: <a href="http://codemirror.net/codemirror-2.35.zip">Version 2.35</a>:</p>
+
+  <ul class="rel-note">
+    <li>New (sub) mode: <a href="../mode/javascript/typescript.html">TypeScript</a>.</li>
+    <li>Don't overwrite (insert key) when pasting.</li>
+    <li>Fix several bugs in <a href="manual.html#markText"><code>markText</code></a>/undo interaction.</li>
+    <li>Better indentation of JavaScript code without semicolons.</li>
+    <li>Add <a href="manual.html#defineInitHook"><code>defineInitHook</code></a> function.</li>
+    <li>Full <a href="https://github.com/marijnh/CodeMirror/compare/v2.34...v2.35">list of patches</a>.</li>
+  </ul>
+
+  <p class="rel">22-10-2012: <a href="http://codemirror.net/codemirror-3.0beta2.zip">Version 3.0, beta 2</a>:</p>
+
+  <ul class="rel-note">
+    <li>Fix page-based coordinate computation.</li>
+    <li>Fix firing of <a href="manual.html#event_gutterClick"><code>gutterClick</code></a> event.</li>
+    <li>Add <a href="manual.html#option_cursorHeight"><code>cursorHeight</code></a> option.</li>
+    <li>Fix bi-directional text regression.</li>
+    <li>Add <a href="manual.html#option_viewportMargin"><code>viewportMargin</code></a> option.</li>
+    <li>Directly handle mousewheel events (again, hopefully better).</li>
+    <li>Make vertical cursor movement more robust (through widgets, big line gaps).</li>
+    <li>Add <a href="manual.html#option_flattenSpans"><code>flattenSpans</code></a> option.</li>
+    <li>Many optimizations. Poor responsiveness should be fixed.</li>
+    <li>Initialization in hidden state works again.</li>
+    <li>Full <a href="https://github.com/marijnh/CodeMirror/compare/v3.0beta1...v3.0beta2">list of patches</a>.</li>
+  </ul>
+
+  <p class="rel">19-09-2012: <a href="http://codemirror.net/codemirror-2.34.zip">Version 2.34</a>:</p>
+
+  <ul class="rel-note">
+    <li>New mode: <a href="../mode/commonlisp/index.html">Common Lisp</a>.</li>
+    <li>Fix right-click select-all on most browsers.</li>
+    <li>Change the way highlighting happens:<br>&nbsp; Saves memory and CPU cycles.<br>&nbsp; <code>compareStates</code> is no longer needed.<br>&nbsp; <code>onHighlightComplete</code> no longer works.</li>
+    <li>Integrate mode (Markdown, XQuery, CSS, sTex) tests in central testsuite.</li>
+    <li>Add a <a href="manual.html#version"><code>CodeMirror.version</code></a> property.</li>
+    <li>More robust handling of nested modes in <a href="../demo/formatting.html">formatting</a> and <a href="../demo/closetag.html">closetag</a> plug-ins.</li>
+    <li>Un/redo now preserves <a href="manual.html#markText">marked text</a> and bookmarks.</li>
+    <li><a href="https://github.com/marijnh/CodeMirror/compare/v2.33...v2.34">Full list</a> of patches.</li>
+  </ul>
+
+  <p class="rel">19-09-2012: <a href="http://codemirror.net/codemirror-3.0beta1.zip">Version 3.0, beta 1</a>:</p>
+
+  <ul class="rel-note">
+    <li>Bi-directional text support.</li>
+    <li>More powerful gutter model.</li>
+    <li>Support for arbitrary text/widget height.</li>
+    <li>In-line widgets.</li>
+    <li>Generalized event handling.</li>
+  </ul>
+
+  <p class="rel">23-08-2012: <a href="http://codemirror.net/codemirror-2.33.zip">Version 2.33</a>:</p>
+
+  <ul class="rel-note">
+    <li>New mode: <a href="../mode/sieve/index.html">Sieve</a>.</li>
+    <li>New <a href="manual.html#getViewport"><code>getViewPort</code></a> and <a href="manual.html#option_onViewportChange"><code>onViewportChange</code></a> API.</li>
+    <li><a href="manual.html#option_cursorBlinkRate">Configurable</a> cursor blink rate.</li>
+    <li>Make binding a key to <code>false</code> disabling handling (again).</li>
+    <li>Show non-printing characters as red dots.</li>
+    <li>More tweaks to the scrolling model.</li>
+    <li>Expanded testsuite. Basic linter added.</li>
+    <li>Remove most uses of <code>innerHTML</code>. Remove <code>CodeMirror.htmlEscape</code>.</li>
+    <li><a href="https://github.com/marijnh/CodeMirror/compare/v2.32...v2.33">Full list</a> of patches.</li>
+  </ul>
+
+  <p class="rel">23-07-2012: <a href="http://codemirror.net/codemirror-2.32.zip">Version 2.32</a>:</p>
+
+  <p class="rel-note">Emergency fix for a bug where an editor with
+  line wrapping on IE will break when there is <em>no</em>
+  scrollbar.</p>
+
+  <p class="rel">20-07-2012: <a href="http://codemirror.net/codemirror-2.31.zip">Version 2.31</a>:</p>
+
+  <ul class="rel-note">
+    <li>New modes: <a href="../mode/ocaml/index.html">OCaml</a>, <a href="../mode/haxe/index.html">Haxe</a>, and <a href="../mode/vb/index.html">VB.NET</a>.</li>
+    <li>Several fixes to the new scrolling model.</li>
+    <li>Add a <a href="manual.html#setSize"><code>setSize</code></a> method for programmatic resizing.</li>
+    <li>Add <a href="manual.html#getHistory"><code>getHistory</code></a> and <a href="manual.html#setHistory"><code>setHistory</code></a> methods.</li>
+    <li>Allow custom line separator string in <a href="manual.html#getValue"><code>getValue</code></a> and <a href="manual.html#getRange"><code>getRange</code></a>.</li>
+    <li>Support double- and triple-click drag, double-clicking whitespace.</li>
+    <li>And more... <a href="https://github.com/marijnh/CodeMirror/compare/v2.3...v2.31">(all patches)</a></li>
+  </ul>
+
+  <p class="rel">22-06-2012: <a href="http://codemirror.net/codemirror-2.3.zip">Version 2.3</a>:</p>
+
+  <ul class="rel-note">
+    <li><strong>New scrollbar implementation</strong>. Should flicker less. Changes DOM structure of the editor.</li>
+    <li>New theme: <a href="../demo/theme.html?vibrant-ink">vibrant-ink</a>.</li>
+    <li>Many extensions to the VIM keymap (including text objects).</li>
+    <li>Add <a href="../demo/multiplex.html">mode-multiplexing</a> utility script.</li>
+    <li>Fix bug where right-click paste works in read-only mode.</li>
+    <li>Add a <a href="manual.html#getScrollInfo"><code>getScrollInfo</code></a> method.</li>
+    <li>Lots of other <a href="https://github.com/marijnh/CodeMirror/compare/v2.25...v2.3">fixes</a>.</li>
+  </ul>
+
+  <p class="rel">23-05-2012: <a href="http://codemirror.net/codemirror-2.25.zip">Version 2.25</a>:</p>
+
+  <ul class="rel-note">
+    <li>New mode: <a href="../mode/erlang/index.html">Erlang</a>.</li>
+    <li><strong>Remove xmlpure mode</strong> (use <a href="../mode/xml/index.html">xml.js</a>).</li>
+    <li>Fix line-wrapping in Opera.</li>
+    <li>Fix X Windows middle-click paste in Chrome.</li>
+    <li>Fix bug that broke pasting of huge documents.</li>
+    <li>Fix backspace and tab key repeat in Opera.</li>
+  </ul>
+
+  <p class="rel">23-04-2012: <a href="http://codemirror.net/codemirror-2.24.zip">Version 2.24</a>:</p>
+
+  <ul class="rel-note">
+    <li><strong>Drop support for Internet Explorer 6</strong>.</li>
+    <li>New
+    modes: <a href="../mode/shell/index.html">Shell</a>, <a href="../mode/tiki/index.html">Tiki
+    wiki</a>, <a href="../mode/pig/index.html">Pig Latin</a>.</li>
+    <li>New themes: <a href="../demo/theme.html?ambiance">Ambiance</a>, <a href="../demo/theme.html?blackboard">Blackboard</a>.</li>
+    <li>More control over drag/drop
+    with <a href="manual.html#option_dragDrop"><code>dragDrop</code></a>
+    and <a href="manual.html#option_onDragEvent"><code>onDragEvent</code></a>
+    options.</li>
+    <li>Make HTML mode a bit less pedantic.</li>
+    <li>Add <a href="manual.html#compoundChange"><code>compoundChange</code></a> API method.</li>
+    <li>Several fixes in undo history and line hiding.</li>
+    <li>Remove (broken) support for <code>catchall</code> in key maps,
+    add <code>nofallthrough</code> boolean field instead.</li>
+  </ul>
+
+  <p class="rel">26-03-2012: <a href="http://codemirror.net/codemirror-2.23.zip">Version 2.23</a>:</p>
+
+  <ul class="rel-note">
+    <li>Change <strong>default binding for tab</strong> <a href="javascript:void(document.getElementById('tabbinding').style.display='')">[more]</a>
+      <div style="display: none" id=tabbinding>
+        Starting in 2.23, these bindings are default:
+        <ul><li>Tab: Insert tab character</li>
+          <li>Shift-tab: Reset line indentation to default</li>
+          <li>Ctrl/Cmd-[: Reduce line indentation (old tab behaviour)</li>
+          <li>Ctrl/Cmd-]: Increase line indentation (old shift-tab behaviour)</li>
+        </ul>
+      </div>
+    </li>
+    <li>New modes: <a href="../mode/xquery/index.html">XQuery</a> and <a href="../mode/vbscript/index.html">VBScript</a>.</li>
+    <li>Two new themes: <a href="../mode/less/index.html">lesser-dark</a> and <a href="../mode/xquery/index.html">xq-dark</a>.</li>
+    <li>Differentiate between background and text styles in <a href="manual.html#setLineClass"><code>setLineClass</code></a>.</li>
+    <li>Fix drag-and-drop in IE9+.</li>
+    <li>Extend <a href="manual.html#charCoords"><code>charCoords</code></a>
+    and <a href="manual.html#cursorCoords"><code>cursorCoords</code></a> with a <code>mode</code> argument.</li>
+    <li>Add <a href="manual.html#option_autofocus"><code>autofocus</code></a> option.</li>
+    <li>Add <a href="manual.html#findMarksAt"><code>findMarksAt</code></a> method.</li>
+  </ul>
+
+  <p class="rel">27-02-2012: <a href="http://codemirror.net/codemirror-2.22.zip">Version 2.22</a>:</p>
+
+  <ul class="rel-note">
+    <li>Allow <a href="manual.html#keymaps">key handlers</a> to pass up events, allow binding characters.</li>
+    <li>Add <a href="manual.html#option_autoClearEmptyLines"><code>autoClearEmptyLines</code></a> option.</li>
+    <li>Properly use tab stops when rendering tabs.</li>
+    <li>Make PHP mode more robust.</li>
+    <li>Support indentation blocks in <a href="manual.html#addon_foldcode">code folder</a>.</li>
+    <li>Add a script for <a href="manual.html#addon_match-highlighter">highlighting instances of the selection</a>.</li>
+    <li>New <a href="../mode/properties/index.html">.properties</a> mode.</li>
+    <li>Fix many bugs.</li>
+  </ul>
+
+  <p class="rel">27-01-2012: <a href="http://codemirror.net/codemirror-2.21.zip">Version 2.21</a>:</p>
+
+  <ul class="rel-note">
+    <li>Added <a href="../mode/less/index.html">LESS</a>, <a href="../mode/mysql/index.html">MySQL</a>,
+    <a href="../mode/go/index.html">Go</a>, and <a href="../mode/verilog/index.html">Verilog</a> modes.</li>
+    <li>Add <a href="manual.html#option_smartIndent"><code>smartIndent</code></a>
+    option.</li>
+    <li>Support a cursor in <a href="manual.html#option_readOnly"><code>readOnly</code></a>-mode.</li>
+    <li>Support assigning multiple styles to a token.</li>
+    <li>Use a new approach to drawing the selection.</li>
+    <li>Add <a href="manual.html#scrollTo"><code>scrollTo</code></a> method.</li>
+    <li>Allow undo/redo events to span non-adjacent lines.</li>
+    <li>Lots and lots of bugfixes.</li>
+  </ul>
+
+  <p class="rel">20-12-2011: <a href="http://codemirror.net/codemirror-2.2.zip">Version 2.2</a>:</p>
+
+  <ul class="rel-note">
+    <li>Slightly incompatible API changes. Read <a href="upgrade_v2.2.html">this</a>.</li>
+    <li>New approach
+    to <a href="manual.html#option_extraKeys">binding</a> keys,
+    support for <a href="manual.html#option_keyMap">custom
+    bindings</a>.</li>
+    <li>Support for overwrite (insert).</li>
+    <li><a href="manual.html#option_tabSize">Custom-width</a>
+    and <a href="../demo/visibletabs.html">stylable</a> tabs.</li>
+    <li>Moved more code into <a href="manual.html#addons">add-on scripts</a>.</li>
+    <li>Support for sane vertical cursor movement in wrapped lines.</li>
+    <li>More reliable handling of
+    editing <a href="manual.html#markText">marked text</a>.</li>
+    <li>Add minimal <a href="../demo/emacs.html">emacs</a>
+    and <a href="../demo/vim.html">vim</a> bindings.</li>
+    <li>Rename <code>coordsFromIndex</code>
+    to <a href="manual.html#posFromIndex"><code>posFromIndex</code></a>,
+    add <a href="manual.html#indexFromPos"><code>indexFromPos</code></a>
+    method.</li>
+  </ul>
+
+  <p class="rel">21-11-2011: <a href="http://codemirror.net/codemirror-2.18.zip">Version 2.18</a>:</p>
+  <p class="rel-note">Fixes <code>TextMarker.clear</code>, which is broken in 2.17.</p>
+
+  <p class="rel">21-11-2011: <a href="http://codemirror.net/codemirror-2.17.zip">Version 2.17</a>:</p>
+  <ul class="rel-note">
+    <li>Add support for <a href="manual.html#option_lineWrapping">line
+    wrapping</a> and <a href="manual.html#hideLine">code
+    folding</a>.</li>
+    <li>Add <a href="../mode/gfm/index.html">Github-style Markdown</a> mode.</li>
+    <li>Add <a href="../theme/monokai.css">Monokai</a>
+    and <a href="../theme/rubyblue.css">Rubyblue</a> themes.</li>
+    <li>Add <a href="manual.html#setBookmark"><code>setBookmark</code></a> method.</li>
+    <li>Move some of the demo code into reusable components
+    under <a href="../addon/"><code>lib/util</code></a>.</li>
+    <li>Make screen-coord-finding code faster and more reliable.</li>
+    <li>Fix drag-and-drop in Firefox.</li>
+    <li>Improve support for IME.</li>
+    <li>Speed up content rendering.</li>
+    <li>Fix browser's built-in search in Webkit.</li>
+    <li>Make double- and triple-click work in IE.</li>
+    <li>Various fixes to modes.</li>
+  </ul>
 
   <p class="rel">27-10-2011: <a href="http://codemirror.net/codemirror-2.16.zip">Version 2.16</a>:</p>
   <ul class="rel-note">
@@ -122,7 +377,7 @@
   faster, smaller, simpler to use, and less dependent on browser
   quirks. See <a href="internals.html">this</a>
   and <a href="http://groups.google.com/group/codemirror/browse_thread/thread/5a8e894024a9f580">this</a>
-  for more information.</a>
+  for more information.</p>
 
   <p class="rel">28-03-2011: <a href="http://codemirror.net/codemirror-1.0.zip">Version 1.0</a>:</p>
   <ul class="rel-note">
@@ -132,7 +387,7 @@
   </ul>
 
   <p class="rel">22-02-2011: <a href="https://github.com/marijnh/codemirror/tree/beta2">Version 2.0 beta 2</a>:</p>
-  <p class="rel-note">Somewhat more mature API, lots of bugs shaken out.</a>
+  <p class="rel-note">Somewhat more mature API, lots of bugs shaken out.</p>
 
   <p class="rel">17-02-2011: <a href="http://codemirror.net/codemirror-0.94.zip">Version 0.94</a>:</p>
   <ul class="rel-note">

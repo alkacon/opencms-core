@@ -55,12 +55,75 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
 
+import org.apache.commons.collections.Closure;
+
 /**
  * Provides File utility functions.<p>
  * 
  * @since 6.0.0 
  */
 public final class CmsFileUtil {
+
+    /**
+     * Data bean which walkFileSystem passes to its callback.<p>
+     * 
+     * The list of directories is mutable, which can be used by the callback to exclude certain directories.<p> 
+     */
+    public static class FileWalkState {
+
+        /** Current directory. */
+        private File m_currentDir;
+
+        /** List of subdirectories of the current directory. */
+        private List<File> m_directories;
+
+        /** List of files of the current directory. */
+        private List<File> m_files;
+
+        /**
+         * Creates a new file walk state.<P>
+         * 
+         * @param currentDir the current directory 
+         * @param dirs the list of subdirectories 
+         * @param files the list of files 
+         */
+        public FileWalkState(File currentDir, List<File> dirs, List<File> files) {
+
+            m_currentDir = currentDir;
+            m_directories = dirs;
+            m_files = files;
+        }
+
+        /**
+         * Gets the current directory.<p>
+         * 
+         * @return the current directory 
+         */
+        public File getCurrentDir() {
+
+            return m_currentDir;
+        }
+
+        /**
+         * Gets the list of subdirectories.<p>
+         * 
+         * @return the list of subdirectories
+         */
+        public List<File> getDirectories() {
+
+            return m_directories;
+        }
+
+        /**
+         * Returns the list of files.<p>
+         * 
+         * @return the list of files 
+         */
+        public List<File> getFiles() {
+
+            return m_files;
+        }
+    }
 
     /**
      * Hides the public constructor.<p> 
@@ -793,5 +856,47 @@ public final class CmsFileUtil {
         }
 
         return webInfFolder;
+    }
+
+    /**
+     * Traverses the file system starting from a base folder and executes a callback for every directory found.<p>
+     * 
+     * @param base the base folder 
+     * @param action a callback which will be passed a FileWalkState object for every directory encountered 
+     */
+    public static void walkFileSystem(File base, Closure action) {
+
+        List<FileWalkState> m_states = new ArrayList<FileWalkState>();
+        m_states.add(createFileWalkState(base));
+        while (!m_states.isEmpty()) {
+            // pop the top off the state stack, process it, then push states for all subdirectories onto it 
+            FileWalkState last = m_states.remove(m_states.size() - 1);
+            action.execute(last);
+            for (File dir : last.getDirectories()) {
+                m_states.add(createFileWalkState(dir));
+            }
+        }
+    }
+
+    /**
+     * Helper method for creating a FileWalkState object from a File object.<p>
+     * 
+     * @param file the file 
+     * 
+     * @return the file walk state 
+     */
+    private static FileWalkState createFileWalkState(File file) {
+
+        File[] contents = file.listFiles();
+        List<File> dirs = new ArrayList<File>();
+        List<File> files = new ArrayList<File>();
+        for (File subFile : contents) {
+            if (subFile.isDirectory()) {
+                dirs.add(subFile);
+            } else {
+                files.add(subFile);
+            }
+        }
+        return new FileWalkState(file, dirs, files);
     }
 }

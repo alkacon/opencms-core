@@ -40,7 +40,7 @@ public final class Messages {
     public static final String ERR_RESOURCE_ALREADY_LOCKED_BY_OTHER_USER_0 = "ERR_RESOURCE_ALREADY_LOCKED_BY_OTHER_USER_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_CHOICE_ADD_CHOICE_0 = "GUI_CHOICE_ADD_CHOICE_0"; //Acacia message: Add choice
+    public static final String GUI_CHOICE_ADD_CHOICE_1 = "GUI_CHOICE_ADD_CHOICE_1"; //Acacia message: Add choice {0}
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CONFIRM_DELETE_LOCALE_TEXT_0 = "GUI_CONFIRM_DELETE_LOCALE_TEXT_0";
@@ -53,45 +53,6 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DOWNLOAD_GALLERY_OPEN_0 = "GUI_DOWNLOAD_GALLERY_OPEN_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HALLO_BLOCK_FORMATS_0 = "GUI_HALLO_BLOCK_FORMATS_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HALLO_BOLD_0 = "GUI_HALLO_BOLD_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HALLO_CENTER_0 = "GUI_HALLO_CENTER_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HALLO_ITALIC_0 = "GUI_HALLO_ITALIC_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HALLO_JUSTIFY_0 = "GUI_HALLO_JUSTIFY_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HALLO_LEFT_0 = "GUI_HALLO_LEFT_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HALLO_ORDERED_LIST_0 = "GUI_HALLO_ORDERED_LIST_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HALLO_REDO_0 = "GUI_HALLO_REDO_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HALLO_RIGHT_0 = "GUI_HALLO_RIGHT_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HALLO_STRIKE_THROUGH_0 = "GUI_HALLO_STRIKE_THROUGH_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HALLO_UNDERLINE_0 = "GUI_HALLO_UNDERLINE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HALLO_UNDO_0 = "GUI_HALLO_UNDO_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HALLO_UNORDERED_LIST_0 = "GUI_HALLO_UNORDERED_LIST_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_IMAGE_GALLERY_OPEN_0 = "GUI_IMAGE_GALLERY_OPEN_0";
@@ -145,6 +106,18 @@ public final class Messages {
     public static final String GUI_TOOLBAR_SAVE_0 = "GUI_TOOLBAR_SAVE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_UNDO_0 = "GUI_TOOLBAR_UNDO_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_REDO_0 = "GUI_TOOLBAR_REDO_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_UNDO_DISABLED_0 = "GUI_TOOLBAR_UNDO_DISABLED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_REDO_DISABLED_0 = "GUI_TOOLBAR_REDO_DISABLED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_SAVE_AND_EXIT_0 = "GUI_TOOLBAR_SAVE_AND_EXIT_0";
 
     /** Message constant for key in the resource bundle. */
@@ -154,16 +127,19 @@ public final class Messages {
     public static final String GUI_VALIDATION_ERROR_1 = "GUI_VALIDATION_ERROR_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_VIEW_ADD_0 = "GUI_VIEW_ADD_0"; //Acacia message: Add
+    public static final String GUI_VIEW_ADD_1 = "GUI_VIEW_ADD_1"; //Acacia message: Add {0}
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_VIEW_CLOSE_0 = "GUI_VIEW_CLOSE_0"; //Acacia message: Close
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_VIEW_DELETE_0 = "GUI_VIEW_DELETE_0"; //Acacia message: Delete
+    public static final String GUI_VIEW_DELETE_1 = "GUI_VIEW_DELETE_1"; //Acacia message: Delete {0}
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_VIEW_MOVE_0 = "GUI_VIEW_MOVE_0"; //Acacia message: Move
+    public static final String GUI_VIEW_EDIT_1 = "GUI_VIEW_EDIT_1"; //Acacia message: Edit {0}
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_VIEW_MOVE_1 = "GUI_VIEW_MOVE_1"; //Acacia message: Move {0}
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_VIEW_MOVE_DOWN_0 = "GUI_VIEW_MOVE_DOWN_0"; //Acacia message: Move down

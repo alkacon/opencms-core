@@ -27,8 +27,8 @@
 
 package org.opencms.ade.containerpage.client.ui;
 
+import com.alkacon.acacia.client.EditorBase;
 import com.alkacon.acacia.client.I_InlineFormParent;
-import com.alkacon.acacia.client.widgets.I_EditWidget;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageController;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
@@ -63,8 +63,12 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Event.NativePreviewEvent;
+import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.AbsolutePanel;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -166,7 +170,7 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
         boolean releasedAndNotExpired,
         boolean disableNewEditor) {
 
-        super((com.google.gwt.user.client.Element)element);
+        super(element);
         m_clientId = clientId;
         m_sitePath = sitePath;
         m_noEditReason = noEditReason;
@@ -188,9 +192,9 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
     }
 
     /**
-     * @see com.alkacon.acacia.client.I_InlineFormParent#adoptWidget(com.alkacon.acacia.client.widgets.I_EditWidget)
+     * @see com.alkacon.acacia.client.I_InlineFormParent#adoptWidget(com.google.gwt.user.client.ui.IsWidget)
      */
-    public void adoptWidget(I_EditWidget widget) {
+    public void adoptWidget(IsWidget widget) {
 
         getChildren().add(widget.asWidget());
         adopt(widget.asWidget());
@@ -201,6 +205,17 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
      */
     public Element getDragHelper(I_CmsDropTarget target) {
 
+        Style optionStyle = m_elementOptionBar.getElement().getStyle();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(optionStyle.getTop())) {
+            // in case the option bar has an especially set top offset, override the Y cursor offset
+            optionStyle.clearTop();
+            CmsContainerpageController.get().getDndHandler().setCursorOffsetY(12);
+        }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(optionStyle.getRight())) {
+            // in case the option bar has an especially set right offset, override the X cursor offset
+            optionStyle.clearRight();
+            CmsContainerpageController.get().getDndHandler().setCursorOffsetX(35);
+        }
         Element helper = CmsDomUtil.clone(getElement());
         target.getElement().appendChild(helper);
         // preparing helper styles
@@ -369,12 +384,12 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
     public void highlightElement() {
 
         if (m_highlighting == null) {
-            m_highlighting = new CmsHighlightingBorder(CmsPositionBean.generatePositionInfo(this), isNew()
+            m_highlighting = new CmsHighlightingBorder(CmsPositionBean.getInnerDimensions(getElement()), isNew()
             ? CmsHighlightingBorder.BorderColor.blue
             : CmsHighlightingBorder.BorderColor.red);
             RootPanel.get().add(m_highlighting);
         } else {
-            m_highlighting.setPosition(CmsPositionBean.generatePositionInfo(this));
+            m_highlighting.setPosition(CmsPositionBean.getInnerDimensions(getElement()));
         }
     }
 
@@ -391,25 +406,33 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
             if (m_editorClickHandlerRegistration != null) {
                 m_editorClickHandlerRegistration.removeHandler();
             }
-            m_editorClickHandlerRegistration = addClickHandler(new ClickHandler() {
+            m_editorClickHandlerRegistration = Event.addNativePreviewHandler(new NativePreviewHandler() {
 
-                public void onClick(ClickEvent event) {
+                public void onPreviewNativeEvent(NativePreviewEvent event) {
 
-                    // if another content is already being edited, don't start another editor
-                    if (controller.isContentEditing()) {
-                        return;
-                    }
-                    Element eventTarget = event.getNativeEvent().getEventTarget().cast();
-                    Element linkTag = CmsDomUtil.getAncestor(eventTarget, Tag.a);
-                    if (linkTag == null) {
-                        Element target = event.getNativeEvent().getEventTarget().cast();
-                        while ((target != null) && (target != getElement())) {
-                            if ("true".equals(target.getAttribute("contentEditable"))) {
-                                controller.getHandler().openEditorForElement(CmsContainerPageElementPanel.this, true);
-                                removeEditorHandler();
-                                break;
-                            } else {
-                                target = target.getParentElement();
+                    if (event.getTypeInt() == Event.ONCLICK) {
+                        // if another content is already being edited, don't start another editor
+                        if (controller.isContentEditing()) {
+                            return;
+                        }
+                        Element eventTarget = event.getNativeEvent().getEventTarget().cast();
+                        // check if the event target is a child 
+                        if (getElement().isOrHasChild(eventTarget)) {
+                            Element target = event.getNativeEvent().getEventTarget().cast();
+                            while ((target != null)
+                                && !target.getTagName().equalsIgnoreCase("a")
+                                && (target != getElement())) {
+                                if (CmsContentEditor.isEditable(target)) {
+                                    EditorBase.markForInlineFocus(target);
+                                    controller.getHandler().openEditorForElement(
+                                        CmsContainerPageElementPanel.this,
+                                        true);
+                                    removeEditorHandler();
+                                    event.cancel();
+                                    break;
+                                } else {
+                                    target = target.getParentElement();
+                                }
                             }
                         }
                     }
@@ -496,6 +519,20 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
     }
 
     /**
+     * @see com.alkacon.acacia.client.I_InlineFormParent#replaceHtml(java.lang.String)
+     */
+    public void replaceHtml(String html) {
+
+        // detach all children first
+        while (getChildren().size() > 0) {
+            getChildren().get(getChildren().size() - 1).removeFromParent();
+        }
+        Element tempDiv = DOM.createDiv();
+        tempDiv.setInnerHTML(html);
+        getElement().setInnerHTML(tempDiv.getFirstChildElement().getInnerHTML());
+    }
+
+    /**
      * Sets the elementOptionBar.<p>
      *
      * @param elementOptionBar the elementOptionBar to set
@@ -507,12 +544,7 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
         }
         m_elementOptionBar = elementOptionBar;
         insert(m_elementOptionBar, 0);
-        if (isOptionbarIFrameCollision(m_elementOptionBar.getCalculatedWidth())) {
-            m_elementOptionBar.getElement().getStyle().setPosition(Position.RELATIVE);
-            int marginLeft = getElement().getOffsetWidth() - m_elementOptionBar.getCalculatedWidth();
-            m_elementOptionBar.getElement().getStyle().setMarginLeft(marginLeft, Unit.PX);
-        }
-
+        updateOptionBarPosition();
     }
 
     /**
@@ -564,14 +596,14 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
 
         m_releasedAndNotExpired = releasedAndNotExpired;
         if (m_releasedAndNotExpired) {
-            getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.containerpageCss().expired());
+            removeStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().expired());
             if (m_expiredOverlay != null) {
                 m_expiredOverlay.removeFromParent();
                 m_expiredOverlay = null;
             }
 
         } else {
-            getElement().addClassName(I_CmsLayoutBundle.INSTANCE.containerpageCss().expired());
+            addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().expired());
             m_expiredOverlay = DOM.createDiv();
             m_expiredOverlay.setTitle("Expired resource");
             m_expiredOverlay.addClassName(I_CmsLayoutBundle.INSTANCE.containerpageCss().expiredOverlay());
@@ -621,7 +653,7 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
             if ((editables != null) && (editables.size() > 0)) {
                 for (Element editable : editables) {
                     CmsListCollectorEditor editor = new CmsListCollectorEditor(editable, m_clientId);
-                    add(editor, (com.google.gwt.user.client.Element)editable.getParentElement());
+                    add(editor, editable.getParentElement());
                     if (CmsDomUtil.hasDimension(editable.getParentElement())) {
                         editor.setPosition(CmsDomUtil.getEditablePosition(editable), getElement());
                     } else {
@@ -651,7 +683,7 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
                 for (Element editable : editables) {
                     if (!m_editables.containsKey(editable)) {
                         CmsListCollectorEditor editor = new CmsListCollectorEditor(editable, m_clientId);
-                        add(editor, (com.google.gwt.user.client.Element)editable.getParentElement());
+                        add(editor, editable.getParentElement());
                         if (CmsDomUtil.hasDimension(editable.getParentElement())) {
                             editor.setPosition(CmsDomUtil.getEditablePosition(editable), getElement());
                         } else {
@@ -666,6 +698,44 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
         }
         m_checkingEditables = false;
         resetNodeInsertedHandler();
+    }
+
+    /**
+     * Updates the option bar position.<p>
+     */
+    public void updateOptionBarPosition() {
+
+        if (m_elementOptionBar == null) {
+            return;
+        }
+        // only if attached to the DOM
+        if (RootPanel.getBodyElement().isOrHasChild(getElement())) {
+            int absoluteTop = getElement().getAbsoluteTop();
+            int absoluteRight = getElement().getAbsoluteRight();
+            CmsPositionBean dimensions = CmsPositionBean.getInnerDimensions(getElement());
+            if (Math.abs(absoluteTop - dimensions.getTop()) > 20) {
+                absoluteTop = (dimensions.getTop() - absoluteTop) + 2;
+                m_elementOptionBar.getElement().getStyle().setTop(absoluteTop, Unit.PX);
+            } else {
+                m_elementOptionBar.getElement().getStyle().clearTop();
+            }
+            if (Math.abs(absoluteRight - dimensions.getLeft() - dimensions.getWidth()) > 20) {
+                absoluteRight = (absoluteRight - dimensions.getLeft() - dimensions.getWidth()) + 2;
+                m_elementOptionBar.getElement().getStyle().setRight(absoluteTop, Unit.PX);
+            } else {
+                m_elementOptionBar.getElement().getStyle().clearRight();
+            }
+            if (isOptionbarIFrameCollision(absoluteTop, m_elementOptionBar.getCalculatedWidth())) {
+                m_elementOptionBar.getElement().getStyle().setPosition(Position.RELATIVE);
+                int marginLeft = getElement().getClientWidth() - m_elementOptionBar.getCalculatedWidth();
+                if (marginLeft > 0) {
+                    m_elementOptionBar.getElement().getStyle().setMarginLeft(marginLeft, Unit.PX);
+                }
+            } else {
+                m_elementOptionBar.getElement().getStyle().clearPosition();
+                m_elementOptionBar.getElement().getStyle().clearMarginLeft();
+            }
+        }
     }
 
     /**
@@ -703,6 +773,16 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
             }
         }
         return CmsDomUtil.getElementsByClass("cms-editable", Tag.div, getElement()).size() > m_editables.size();
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.Widget#onDetach()
+     */
+    @Override
+    protected void onDetach() {
+
+        super.onDetach();
+        removeEditorHandler();
     }
 
     /**
@@ -769,27 +849,27 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
         // using own implementation as GWT won't do it properly on IE7-8
         CmsDomUtil.clearOpacity(getElement());
         getElement().getStyle().clearDisplay();
+        updateOptionBarPosition();
     }
 
     /**
      * Returns if the option bar position collides with any iframe child elements.<p>
      * 
-     * @param optionWidth the option bar witdh 
+     * @param optionTop the option bar absolute top 
+     * @param optionWidth the option bar width 
      * 
      * @return <code>true</code> if there are iframe child elements located no less than 25px below the upper edge of the element
      */
-    private boolean isOptionbarIFrameCollision(int optionWidth) {
+    private boolean isOptionbarIFrameCollision(int optionTop, int optionWidth) {
 
         if (RootPanel.getBodyElement().isOrHasChild(getElement())) {
-            int elementTop = getElement().getAbsoluteTop();
-
             NodeList<Element> frames = getElement().getElementsByTagName(CmsDomUtil.Tag.iframe.name());
             for (int i = 0; i < frames.getLength(); i++) {
                 int frameTop = frames.getItem(i).getAbsoluteTop();
                 int frameHeight = frames.getItem(i).getOffsetHeight();
                 int frameRight = frames.getItem(i).getAbsoluteRight();
-                if (((frameTop - elementTop) < 25)
-                    && (((frameTop + frameHeight) - elementTop) > 0)
+                if (((frameTop - optionTop) < 25)
+                    && (((frameTop + frameHeight) - optionTop) > 0)
                     && ((frameRight - getElement().getAbsoluteRight()) < optionWidth)) {
                     return true;
                 }
@@ -803,29 +883,29 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
      * Resets the node inserted handler.<p>
      */
     private native void resetNodeInsertedHandler()/*-{
-      var $this = this;
-      var element = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::getElement()();
-      var handler = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::m_nodeInsertHandler;
-      if (handler == null) {
-         handler = function(event) {
-            $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::checkForEditableChanges()();
-         };
-         $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::m_nodeInsertHandler = handler;
-      } else {
-         if (element.removeEventLister) {
-            element.removeEventListener("DOMNodeInserted", handler);
-         } else if (element.detachEvent) {
-            // IE specific
-            element.detachEvent("onDOMNodeInserted", handler);
-         }
-      }
-      if (element.addEventListener) {
-         element.addEventListener("DOMNodeInserted", handler, false);
-      } else if (element.attachEvent) {
-         // IE specific
-         element.attachEvent("onDOMNodeInserted", handler);
-      }
-    }-*/;
+                                                  var $this = this;
+                                                  var element = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::getElement()();
+                                                  var handler = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::m_nodeInsertHandler;
+                                                  if (handler == null) {
+                                                  handler = function(event) {
+                                                  $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::checkForEditableChanges()();
+                                                  };
+                                                  $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::m_nodeInsertHandler = handler;
+                                                  } else {
+                                                  if (element.removeEventLister) {
+                                                  element.removeEventListener("DOMNodeInserted", handler);
+                                                  } else if (element.detachEvent) {
+                                                  // IE specific
+                                                  element.detachEvent("onDOMNodeInserted", handler);
+                                                  }
+                                                  }
+                                                  if (element.addEventListener) {
+                                                  element.addEventListener("DOMNodeInserted", handler, false);
+                                                  } else if (element.attachEvent) {
+                                                  // IE specific
+                                                  element.attachEvent("onDOMNodeInserted", handler);
+                                                  }
+                                                  }-*/;
 
     /**
      * This method removes the option-bar widget from DOM and re-attaches it at it's original position.<p>
@@ -837,18 +917,8 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
             if (getWidgetIndex(m_elementOptionBar) >= 0) {
                 m_elementOptionBar.removeFromParent();
             }
-            if (isOptionbarIFrameCollision(m_elementOptionBar.getCalculatedWidth())) {
-                m_elementOptionBar.getElement().getStyle().setPosition(Position.RELATIVE);
-                int marginLeft = getElement().getClientWidth() - m_elementOptionBar.getCalculatedWidth();
-                if (marginLeft > 0) {
-                    m_elementOptionBar.getElement().getStyle().setMarginLeft(marginLeft, Unit.PX);
-                }
-            } else {
-                m_elementOptionBar.getElement().getStyle().clearPosition();
-                m_elementOptionBar.getElement().getStyle().clearMarginLeft();
-            }
+            updateOptionBarPosition();
             insert(m_elementOptionBar, 0);
         }
     }
-
 }

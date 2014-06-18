@@ -87,8 +87,14 @@
 		<xsd:attribute name="element" type="xsd:string" use="required" />
 		<xsd:attribute name="widget" type="xsd:string" use="required" />
 		<xsd:attribute name="configuration" type="xsd:string" use="optional" />
-		<xsd:attribute name="displaycompact" type="xsd:boolean" use="optional" />
+		<xsd:attribute name="display" type="OpenCmsDefaultAppinfoLayoutDisplay" use="optional" />
 	</xsd:complexType>
+	
+	<xsd:simpleType name="OpenCmsDefaultAppinfoLayoutDisplay">
+		<xsd:restriction base="xsd:string">
+			<xsd:pattern value="column|compact|singleline|wide" />
+		</xsd:restriction>
+	</xsd:simpleType>
 
 	<xsd:complexType name="OpenCmsDefaultAppinfoValidationrules">
 		<xsd:sequence>

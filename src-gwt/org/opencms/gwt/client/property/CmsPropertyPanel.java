@@ -27,6 +27,8 @@
 
 package org.opencms.gwt.client.property;
 
+import com.alkacon.geranium.client.I_DescendantResizeHandler;
+
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsFieldSet;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
@@ -58,7 +60,6 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -166,8 +167,8 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
             public void onSelection(SelectionEvent<Integer> event) {
 
                 Widget selectedTab = m_tabPanel.getWidget(event.getSelectedItem().intValue());
-                if (selectedTab instanceof RequiresResize) {
-                    ((RequiresResize)selectedTab).onResize();
+                if (selectedTab instanceof I_DescendantResizeHandler) {
+                    ((I_DescendantResizeHandler)selectedTab).onResizeDescendant();
                 }
             }
         });
@@ -300,6 +301,21 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.I_CmsTruncable#truncate(java.lang.String, int)
+     */
+    public void truncate(String textMetricsKey, int clientWidth) {
+
+        clientWidth -= 12;
+        storeTruncation(textMetricsKey, clientWidth);
+        truncatePanel(m_individualTab, textMetricsKey, clientWidth);
+        truncatePanel(m_individualTabWrapper, textMetricsKey, clientWidth);
+        truncatePanel(m_simpleTab, textMetricsKey, clientWidth);
+        truncatePanel(m_simpleTabWrapper, textMetricsKey, clientWidth);
+        truncatePanel(m_sharedTab, textMetricsKey, clientWidth);
+        truncatePanel(m_sharedTabWrapper, textMetricsKey, clientWidth);
+    }
+
+    /**
      * Creates a list item widget from a list info bean.<p>
      * 
      * @param info the list info bean 
@@ -384,20 +400,5 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
             m_simpleTab.add(createRow(field));
         }
         CmsDomUtil.resizeAncestor(m_simpleTab.getParent());
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.I_CmsTruncable#truncate(java.lang.String, int)
-     */
-    public void truncate(String textMetricsKey, int clientWidth) {
-
-        clientWidth -= 12;
-        storeTruncation(textMetricsKey, clientWidth);
-        truncatePanel(m_individualTab, textMetricsKey, clientWidth);
-        truncatePanel(m_individualTabWrapper, textMetricsKey, clientWidth);
-        truncatePanel(m_simpleTab, textMetricsKey, clientWidth);
-        truncatePanel(m_simpleTabWrapper, textMetricsKey, clientWidth);
-        truncatePanel(m_sharedTab, textMetricsKey, clientWidth);
-        truncatePanel(m_sharedTabWrapper, textMetricsKey, clientWidth);
     }
 }

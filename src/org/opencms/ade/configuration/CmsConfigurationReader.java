@@ -27,6 +27,7 @@
 
 package org.opencms.ade.configuration;
 
+import org.opencms.ade.configuration.formatters.CmsFormatterChangeSet;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -41,7 +42,7 @@ import org.opencms.module.CmsModule;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsFormatterBean;
-import org.opencms.xml.containerpage.CmsFormatterConfiguration;
+import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
@@ -50,8 +51,10 @@ import org.opencms.xml.content.I_CmsXmlContentLocation;
 import org.opencms.xml.content.I_CmsXmlContentValueLocation;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
@@ -64,6 +67,12 @@ public class CmsConfigurationReader {
 
     /** The default locale for configuration objects. */
     public static final Locale DEFAULT_LOCALE = CmsLocaleManager.getLocale("en");
+
+    /** Node name for added formatters. */
+    public static final String N_ADD_FORMATTER = "AddFormatter";
+
+    /** Node name for the nested content with the added formatters. */
+    public static final String N_ADD_FORMATTERS = "AddFormatters";
 
     /** The create content locally node name. */
     public static final String N_CREATE_CONTENTS_LOCALLY = "CreateContentsLocally";
@@ -152,6 +161,12 @@ public class CmsConfigurationReader {
     /** The property name node name. */
     public static final String N_PROPERTY_NAME = "PropertyName";
 
+    /** Node name for removed formatters. */
+    public static final String N_REMOVE_FORMATTER = "RemoveFormatter";
+
+    /** Node name for the nested content with the removed formatters. */
+    public static final String N_REMOVE_FORMATTERS = "RemoveFormatters";
+
     /** The resource type node name. */
     public static final String N_RESOURCE_TYPE = "ResourceType";
 
@@ -205,6 +220,73 @@ public class CmsConfigurationReader {
     }
 
     /**
+     * Gets the string value of an XML content location.<p>
+     * 
+     * @param cms the CMS context to use 
+     * @param location an XML content location 
+     * 
+     * @return the string value of that XML content location 
+     */
+    public static String getString(CmsObject cms, I_CmsXmlContentValueLocation location) {
+
+        if (location == null) {
+            return null;
+        }
+        return location.asString(cms);
+    }
+
+    /**
+     * Helper method to parse a property.<p>
+     * 
+     * @param cms the CMS context to use 
+     * @param field the location of the parent value 
+     * 
+     * @return the parsed property configuration 
+     */
+    public static CmsPropertyConfig parseProperty(CmsObject cms, I_CmsXmlContentLocation field) {
+
+        String name = getString(cms, field.getSubValue(N_PROPERTY_NAME));
+        String widget = getString(cms, field.getSubValue(N_WIDGET));
+        String widgetConfig = getString(cms, field.getSubValue(N_WIDGET_CONFIG));
+        String ruleRegex = getString(cms, field.getSubValue(N_RULE_REGEX));
+        String ruleType = getString(cms, field.getSubValue(N_RULE_TYPE));
+        String default1 = getString(cms, field.getSubValue(N_DEFAULT));
+        String error = getString(cms, field.getSubValue(N_ERROR));
+        String niceName = getString(cms, field.getSubValue(N_DISPLAY_NAME));
+        String description = getString(cms, field.getSubValue(N_DESCRIPTION));
+        String preferFolder = getString(cms, field.getSubValue(N_PREFER_FOLDER));
+
+        String disabledStr = getString(cms, field.getSubValue(N_DISABLED));
+        boolean disabled = ((disabledStr != null) && Boolean.parseBoolean(disabledStr));
+
+        String orderStr = getString(cms, field.getSubValue(N_ORDER));
+        int order = I_CmsConfigurationObject.DEFAULT_ORDER;
+
+        try {
+            order = Integer.parseInt(orderStr);
+        } catch (NumberFormatException e) {
+            // noop 
+        }
+
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(
+            name,
+            "string",
+            widget,
+            widgetConfig,
+            ruleRegex,
+            ruleType,
+            default1,
+            niceName,
+            description,
+            error,
+            preferFolder);
+        // since these are real properties, using type vfslist makes no sense, so we always use the "string" type
+        CmsPropertyConfig propConfig = new CmsPropertyConfig(prop, disabled, order);
+        return propConfig;
+
+    }
+
+    /**
      * Returns the list of function references.<p>
      * 
      * @return the list of function references 
@@ -212,6 +294,21 @@ public class CmsConfigurationReader {
     public List<CmsFunctionReference> getFunctionReferences() {
 
         return new ArrayList<CmsFunctionReference>(m_functionReferences);
+    }
+
+    /** 
+     * Parses the formatters to add.<p>
+     * 
+     * @param node the parent node 
+     * @return the set of keys of the formatters to add 
+     */
+    public Set<String> parseAddFormatters(I_CmsXmlContentLocation node) {
+
+        Set<String> addFormatters = new HashSet<String>();
+        for (I_CmsXmlContentValueLocation addLoc : node.getSubValues(N_ADD_FORMATTERS + "/" + N_ADD_FORMATTER)) {
+            addFormatters.add(addLoc.asString(m_cms).trim());
+        }
+        return addFormatters;
     }
 
     /**
@@ -264,6 +361,7 @@ public class CmsConfigurationReader {
             parseFunctionReference(node);
         }
 
+        CmsFormatterChangeSet formatterChangeSet = parseFormatterChangeSet(root);
         boolean discardInheritedTypes = getBoolean(root, N_DISCARD_TYPES);
         boolean discardInheritedProperties = getBoolean(root, N_DISCARD_PROPERTIES);
         boolean discardInheritedModelPages = getBoolean(root, N_DISCARD_MODEL_PAGES);
@@ -280,7 +378,8 @@ public class CmsConfigurationReader {
             m_modelPageConfigs,
             m_functionReferences,
             discardInheritedModelPages,
-            createContentsLocally);
+            createContentsLocally,
+            formatterChangeSet);
         result.setResource(content.getFile());
         if (OpenCms.getResourceManager().getResourceType(content.getFile().getTypeId()).getTypeName().equals(
             CmsADEManager.MODULE_CONFIG_TYPE)) {
@@ -361,6 +460,21 @@ public class CmsConfigurationReader {
 
     }
 
+    /** 
+     * Parses the set of formatters to remove.<p>
+     * 
+     * @param node the parent node 
+     * @return the set of formatters to remove 
+     */
+    public Set<String> parseRemoveFormatters(I_CmsXmlContentLocation node) {
+
+        Set<String> removeFormatters = new HashSet<String>();
+        for (I_CmsXmlContentValueLocation removeLoc : node.getSubValues(N_REMOVE_FORMATTERS + "/" + N_REMOVE_FORMATTER)) {
+            removeFormatters.add(removeLoc.asString(m_cms).trim());
+        }
+        return removeFormatters;
+    }
+
     /**
      * Parses a resource type configuration element from the XML content.<p>
      * 
@@ -372,9 +486,16 @@ public class CmsConfigurationReader {
 
         I_CmsXmlContentValueLocation typeNameLoc = node.getSubValue(N_TYPE_NAME);
         String typeName = typeNameLoc.asString(m_cms);
-        I_CmsXmlContentValueLocation disabledLoc = node.getSubValue(N_DISABLED);
         CmsFolderOrName folderOrName = parseFolderOrName(basePath, node.getSubValue(N_FOLDER));
-        boolean disabled = (disabledLoc != null) && Boolean.parseBoolean(disabledLoc.asString(m_cms));
+        I_CmsXmlContentValueLocation disabledLoc = node.getSubValue(N_DISABLED);
+        boolean disabled = false;
+        boolean addDisabled = false;
+        String disabledStr = disabledLoc == null ? null : disabledLoc.asString(m_cms);
+        if ((disabledStr != null) && "add".equalsIgnoreCase(disabledStr.trim())) {
+            addDisabled = true;
+        } else {
+            disabled = Boolean.parseBoolean(disabledStr);
+        }
         I_CmsXmlContentValueLocation namePatternLoc = node.getSubValue(N_NAME_PATTERN);
         String namePattern = null;
         if (namePatternLoc != null) {
@@ -399,19 +520,18 @@ public class CmsConfigurationReader {
             }
         }
 
-        List<CmsFormatterBean> formatters = new ArrayList<CmsFormatterBean>();
+        List<I_CmsFormatterBean> formatters = new ArrayList<I_CmsFormatterBean>();
         for (I_CmsXmlContentValueLocation formatterLoc : node.getSubValues(N_FORMATTER)) {
             CmsFormatterBean formatter = parseFormatter(typeName, formatterLoc);
             formatters.add(formatter);
         }
-        CmsFormatterConfiguration formatterConfig = CmsFormatterConfiguration.create(m_cms, formatters);
         CmsResourceTypeConfig typeConfig = new CmsResourceTypeConfig(
             typeName,
             disabled,
             folderOrName,
             namePattern,
-            formatterConfig,
             detailPagesDisabled,
+            addDisabled,
             order);
         m_resourceTypeConfigs.add(typeConfig);
     }
@@ -491,10 +611,7 @@ public class CmsConfigurationReader {
      */
     protected String getString(I_CmsXmlContentValueLocation location) {
 
-        if (location == null) {
-            return null;
-        }
-        return location.asString(m_cms);
+        return getString(m_cms, location);
     }
 
     /**
@@ -527,12 +644,37 @@ public class CmsConfigurationReader {
     protected void parseDetailPage(I_CmsXmlContentLocation node) throws CmsException {
 
         I_CmsXmlContentValueLocation pageLoc = node.getSubValue(N_PAGE);
-        String page = pageLoc.asString(m_cms);
-        CmsResource detailPageRes = m_cms.readResource(page);
-        CmsUUID id = detailPageRes.getStructureId();
         String typeName = getString(node.getSubValue(N_TYPE));
-        CmsDetailPageInfo detailPage = new CmsDetailPageInfo(id, page, typeName);
-        m_detailPageConfigs.add(detailPage);
+        try {
+            String page = pageLoc.asString(m_cms);
+            CmsResource detailPageRes = m_cms.readResource(page);
+            CmsUUID id = detailPageRes.getStructureId();
+            CmsDetailPageInfo detailPage = new CmsDetailPageInfo(id, page, typeName);
+            m_detailPageConfigs.add(detailPage);
+        } catch (CmsVfsResourceNotFoundException e) {
+            CmsUUID structureId = pageLoc.asId(m_cms);
+            CmsResource detailPageRes = m_cms.readResource(structureId);
+            CmsDetailPageInfo detailPage = new CmsDetailPageInfo(
+                structureId,
+                m_cms.getSitePath(detailPageRes),
+                typeName);
+            m_detailPageConfigs.add(detailPage);
+        }
+    }
+
+    /**
+     * Parses the formatter change set.<p>
+     * 
+     * @param node the parent node 
+     * @return the formatter change set 
+     */
+    protected CmsFormatterChangeSet parseFormatterChangeSet(I_CmsXmlContentLocation node) {
+
+        Set<String> addFormatters = parseAddFormatters(node);
+        Set<String> removeFormatters = parseRemoveFormatters(node);
+        CmsFormatterChangeSet result = new CmsFormatterChangeSet();
+        result.initialize(removeFormatters, addFormatters);
+        return result;
     }
 
     /**
@@ -565,43 +707,7 @@ public class CmsConfigurationReader {
      */
     private void parseProperty(I_CmsXmlContentLocation field) {
 
-        String name = getString(field.getSubValue(N_PROPERTY_NAME));
-        String widget = getString(field.getSubValue(N_WIDGET));
-        String widgetConfig = getString(field.getSubValue(N_WIDGET_CONFIG));
-        String ruleRegex = getString(field.getSubValue(N_RULE_REGEX));
-        String ruleType = getString(field.getSubValue(N_RULE_TYPE));
-        String default1 = getString(field.getSubValue(N_DEFAULT));
-        String error = getString(field.getSubValue(N_ERROR));
-        String niceName = getString(field.getSubValue(N_DISPLAY_NAME));
-        String description = getString(field.getSubValue(N_DESCRIPTION));
-        String preferFolder = getString(field.getSubValue(N_PREFER_FOLDER));
-
-        String disabledStr = getString(field.getSubValue(N_DISABLED));
-        boolean disabled = ((disabledStr != null) && Boolean.parseBoolean(disabledStr));
-
-        String orderStr = getString(field.getSubValue(N_ORDER));
-        int order = I_CmsConfigurationObject.DEFAULT_ORDER;
-
-        try {
-            order = Integer.parseInt(orderStr);
-        } catch (NumberFormatException e) {
-            // noop 
-        }
-
-        CmsXmlContentProperty prop = new CmsXmlContentProperty(
-            name,
-            "string",
-            widget,
-            widgetConfig,
-            ruleRegex,
-            ruleType,
-            default1,
-            niceName,
-            description,
-            error,
-            preferFolder);
-        // since these are real properties, using type vfslist makes no sense, so we always use the "string" type
-        CmsPropertyConfig propConfig = new CmsPropertyConfig(prop, disabled, order);
+        CmsPropertyConfig propConfig = parseProperty(m_cms, field);
         m_propertyConfigs.add(propConfig);
     }
 

@@ -80,14 +80,14 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
     /** The resource type name for inherited container references.  */
     public static final String INHERIT_CONTAINER_TYPE_NAME = "inheritance_group";
 
+    /** The name of this resource type. */
+    public static final String RESOURCE_TYPE_NAME = "containerpage";
+
     /** A variable containing the actual configured type id of container pages. */
     private static int containerPageTypeId;
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsResourceTypeXmlContainerPage.class);
-
-    /** The name of this resource type. */
-    private static final String RESOURCE_TYPE_NAME = "containerpage";
 
     /** Fixed schema for container pages. */
     private static final String SCHEMA = "/system/modules/org.opencms.ade.containerpage/schemas/container_page.xsd";
@@ -274,9 +274,11 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
             xmlContent = CmsXmlContainerPageFactory.unmarshal(cms, file);
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(org.opencms.db.Messages.get().getBundle().key(
-                    org.opencms.db.Messages.ERR_READ_RESOURCE_1,
-                    cms.getSitePath(file)), e);
+                LOG.error(
+                    org.opencms.db.Messages.get().getBundle().key(
+                        org.opencms.db.Messages.ERR_READ_RESOURCE_1,
+                        cms.getSitePath(file)),
+                    e);
             }
             return Collections.emptyList();
         } finally {

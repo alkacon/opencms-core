@@ -183,9 +183,6 @@
 				<sources>
 					<source>source1</source>
 				</sources>
-				<param name="lucene.MergeFactor">20</param>				
-				<param name="lucene.RAMBufferSizeMB">20.5</param>				
-				<param name="lucene.UseCompoundFile">true</param>				
 				<param name="org.opencms.search.CmsSearchIndex.checkPermissions">false</param>				
 				<param name="org.opencms.search.CmsSearchIndex.checkTimeRange">false</param>				
 				<param name="org.opencms.search.CmsSearchIndex.createExcerpt">false</param>				

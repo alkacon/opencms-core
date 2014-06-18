@@ -32,7 +32,10 @@ import com.alkacon.acacia.client.widgets.I_EditWidget;
 
 import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsColorPicker;
+import org.opencms.gwt.client.util.CmsDomUtil;
 
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -75,6 +78,13 @@ public class CmsColorpickerWidget extends Composite implements I_EditWidget {
             }
 
         });
+        m_colorPicker.getColorValueBox().addFocusHandler(new FocusHandler() {
+
+            public void onFocus(FocusEvent event) {
+
+                CmsDomUtil.fireFocusEvent(CmsColorpickerWidget.this);
+            }
+        });
     }
 
     /**
@@ -82,7 +92,7 @@ public class CmsColorpickerWidget extends Composite implements I_EditWidget {
      */
     public HandlerRegistration addFocusHandler(FocusHandler handler) {
 
-        return null;
+        return addDomHandler(handler, FocusEvent.getType());
     }
 
     /**
@@ -127,6 +137,16 @@ public class CmsColorpickerWidget extends Composite implements I_EditWidget {
     public void onAttachWidget() {
 
         super.onAttach();
+    }
+
+    /**
+     * @see com.alkacon.acacia.client.widgets.I_EditWidget#owns(com.google.gwt.dom.client.Element)
+     */
+    public boolean owns(Element element) {
+
+        // TODO implement this in case we want the delete behavior for optional fields
+        return false;
+
     }
 
     /**

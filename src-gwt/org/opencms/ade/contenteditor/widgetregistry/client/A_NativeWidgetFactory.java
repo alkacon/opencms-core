@@ -30,7 +30,7 @@ package org.opencms.ade.contenteditor.widgetregistry.client;
 import com.alkacon.acacia.client.I_WidgetFactory;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
-import com.google.gwt.user.client.Element;
+import com.google.gwt.dom.client.Element;
 
 /**
  * Use this widget factory to use stand alone widgets.<p>
@@ -41,29 +41,29 @@ public abstract class A_NativeWidgetFactory implements I_WidgetFactory {
      * Exports the widget factory.<p>
      */
     public native void exportFactory()/*-{
-        var self = this;
-        $wnd[this.@org.opencms.ade.contenteditor.widgetregistry.client.A_NativeWidgetFactory::getInitCallName()()] = function() {
-            var factory = {
-                instance : self,
-                widgetName : self.@org.opencms.ade.contenteditor.widgetregistry.client.A_NativeWidgetFactory::getWidgetName()(),
-                createNativeWidget : function(configuration) {
+                                      var self = this;
+                                      $wnd[this.@org.opencms.ade.contenteditor.widgetregistry.client.A_NativeWidgetFactory::getInitCallName()()] = function() {
+                                      var factory = {
+                                      instance : self,
+                                      widgetName : self.@org.opencms.ade.contenteditor.widgetregistry.client.A_NativeWidgetFactory::getWidgetName()(),
+                                      createNativeWidget : function(configuration) {
 
-                    return this.instance.@org.opencms.ade.contenteditor.widgetregistry.client.A_NativeWidgetFactory::createNativeWidget(Ljava/lang/String;)(configuration);
-                },
-                createNativeWrapedElement : function(configuration, element) {
-                    return this.instance.@org.opencms.ade.contenteditor.widgetregistry.client.A_NativeWidgetFactory::createNativeWrapedElement(Ljava/lang/String;Lcom/google/gwt/user/client/Element;)(configuration, element);
-                }
-            };
+                                      return this.instance.@org.opencms.ade.contenteditor.widgetregistry.client.A_NativeWidgetFactory::createNativeWidget(Ljava/lang/String;)(configuration);
+                                      },
+                                      createNativeWrapedElement : function(configuration, element) {
+                                      return this.instance.@org.opencms.ade.contenteditor.widgetregistry.client.A_NativeWidgetFactory::createNativeWrapedElement(Ljava/lang/String;Lcom/google/gwt/dom/client/Element;)(configuration, element);
+                                      }
+                                      };
 
-            if ($wnd[@org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry::REGISTER_WIDGET_FACTORY_FUNCTION] != null
-                    && typeof $wnd[@org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry::REGISTER_WIDGET_FACTORY_FUNCTION] == 'function') {
-                $wnd[@org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry::REGISTER_WIDGET_FACTORY_FUNCTION]
-                        (factory);
-            } else {
-                throw 'Registry not available';
-            }
-        }
-    }-*/;
+                                      if ($wnd[@org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry::REGISTER_WIDGET_FACTORY_FUNCTION] != null
+                                      && typeof $wnd[@org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry::REGISTER_WIDGET_FACTORY_FUNCTION] == 'function') {
+                                      $wnd[@org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry::REGISTER_WIDGET_FACTORY_FUNCTION]
+                                      (factory);
+                                      } else {
+                                      throw 'Registry not available';
+                                      }
+                                      }
+                                      }-*/;
 
     /**
      * Returns the name of the initialization call.<p>

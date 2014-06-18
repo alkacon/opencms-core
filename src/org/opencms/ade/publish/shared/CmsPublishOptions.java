@@ -29,20 +29,48 @@ package org.opencms.ade.publish.shared;
 
 import org.opencms.util.CmsUUID;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+import java.io.Serializable;
+import java.util.Map;
 
 /**
  * Bean encapsulating all ADE publish options.<p>
  * 
  * @since 7.6 
  */
-public class CmsPublishOptions implements IsSerializable {
+public class CmsPublishOptions implements Serializable {
+
+    /** Parameter name for the container page structure id. */
+    public static final String PARAM_CONTAINERPAGE = "containerpage";
+
+    /** Parameter name for the content structure id. */
+    public static final String PARAM_CONTENT = "content";
+
+    /** Parameter name for the detail content structure id. */
+    public static final String PARAM_DETAIL = "detail";
+
+    /** Parameter for enabling the 'add contents' check box. */
+    public static final String PARAM_ENABLE_INCLUDE_CONTENTS = "enable_include_contents";
+
+    /** The name of the parameter used for passing in the list of resources. */
+    public static final String PARAM_FILES = "files";
+
+    /** The name of the parameter which controls whether to add sub-resources of folders. */
+    public static final String PARAM_INCLUDE_CONTENTS = "include_contents";
+
+    /** Parameter for indicating that the initial project should be the 'current page' virtual project. */
+    public static final String PARAM_START_WITH_CURRENT_PAGE = "startWithCurrentPage";
+
+    /** The serial version id. */
+    private static final long serialVersionUID = 1L;
 
     /** Flag to include related resources. */
     private boolean m_includeRelated;
 
     /** Flag to include siblings. */
     private boolean m_includeSiblings;
+
+    /** The additional publish parameters. */
+    private Map<String, String> m_params;
 
     /** The id of the project to publish. */
     private CmsUUID m_projectId;
@@ -68,6 +96,27 @@ public class CmsPublishOptions implements IsSerializable {
         m_includeRelated = includeRelated;
         m_includeSiblings = includeSiblings;
         m_projectId = projectId;
+    }
+
+    /**
+     * Creates a new instance.<p>
+     * 
+     * @param params the additional publish parameters 
+     */
+    public CmsPublishOptions(Map<String, String> params) {
+
+        this();
+        m_params = params;
+    }
+
+    /** 
+     * Gets the additional publish parameters.<p>
+     * 
+     * @return the additional publish parameters 
+     */
+    public Map<String, String> getParameters() {
+
+        return m_params;
     }
 
     /**
@@ -118,6 +167,16 @@ public class CmsPublishOptions implements IsSerializable {
     public void setIncludeSiblings(boolean includeSiblings) {
 
         m_includeSiblings = includeSiblings;
+    }
+
+    /** 
+     * Sets the additional publish parameters.<p>
+     * 
+     * @param params the additional parameters to set 
+     */
+    public void setParameters(Map<String, String> params) {
+
+        m_params = params;
     }
 
     /**

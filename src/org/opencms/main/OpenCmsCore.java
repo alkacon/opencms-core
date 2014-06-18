@@ -63,6 +63,7 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsI18nInfo;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.i18n.CmsVfsBundleManager;
 import org.opencms.importexport.CmsImportExportManager;
 import org.opencms.jsp.util.CmsErrorBean;
 import org.opencms.loader.CmsResourceManager;
@@ -103,6 +104,7 @@ import org.opencms.xml.CmsXmlContentTypeManager;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 
 import java.io.IOException;
+import java.security.Security;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -114,6 +116,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -123,6 +126,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
+
+import cryptix.jce.provider.CryptixCrypto;
 
 /**
  * The internal implementation of the core OpenCms "operating system" functions.<p>
@@ -184,6 +189,9 @@ public final class OpenCmsCore {
 
     /** The event manager for the event handling. */
     private CmsEventManager m_eventManager;
+
+    /** The thread pool executor. */
+    private ScheduledThreadPoolExecutor m_executor;
 
     /** The set of configured export points. */
     private Set<CmsExportPoint> m_exportPoints;
@@ -459,6 +467,16 @@ public final class OpenCmsCore {
     protected CmsEventManager getEventManager() {
 
         return m_eventManager;
+    }
+
+    /** 
+     * Gets the thread pool executor.<p>
+     * 
+     * @return the thread pool executor 
+     */
+    protected ScheduledThreadPoolExecutor getExecutor() {
+
+        return m_executor;
     }
 
     /**
@@ -1017,12 +1035,13 @@ public final class OpenCmsCore {
         } catch (SecurityException se) {
             // security manager is active, but we will try other options before giving up
         }
+        Security.addProvider(new CryptixCrypto());
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_FILE_ENCODING_1, systemEncoding));
         }
 
         // read server ethernet address (MAC) and init UUID generator
-        String ethernetAddress = configuration.getString("server.ethernet.address", CmsUUID.getDummyEthernetAddress());
+        String ethernetAddress = configuration.getString("server.ethernet.address", CmsStringUtil.getEthernetAddress());
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_ETHERNET_ADDRESS_1, ethernetAddress));
         }
@@ -1113,6 +1132,7 @@ public final class OpenCmsCore {
         getSystemInfo().setNotificationProject(systemConfiguration.getNotificationProject());
         // set the scheduler manager
         m_scheduleManager = systemConfiguration.getScheduleManager();
+        m_executor = new ScheduledThreadPoolExecutor(2);
         // set resource init classes
         m_resourceInitHandlers = systemConfiguration.getResourceInitHandlers();
         // register request handler classes
@@ -1153,6 +1173,7 @@ public final class OpenCmsCore {
             }
             // get the flex cache configuration from the SystemConfiguration
             CmsFlexCacheConfiguration flexCacheConfiguration = systemConfiguration.getCmsFlexCacheConfiguration();
+            getSystemInfo().setDeviceSelector(flexCacheConfiguration.getDeviceSelector());
             // pass configuration to flex cache for initialization
             flexCache = new CmsFlexCache(flexCacheConfiguration);
             if (CmsLog.INIT.isInfoEnabled()) {
@@ -1286,6 +1307,9 @@ public final class OpenCmsCore {
 
             // initialize the search manager
             m_searchManager.initialize(initCmsObject(adminCms));
+
+            CmsVfsBundleManager vfsBundleManager = new CmsVfsBundleManager(adminCms);
+            vfsBundleManager.reload(true);
 
             // initialize the workplace manager
             m_workplaceManager.initialize(initCmsObject(adminCms));
@@ -1530,6 +1554,7 @@ public final class OpenCmsCore {
             }
         }
 
+        boolean clearErrors = false;
         // test if this file has to be checked or modified
         for (I_CmsResourceInit handler : m_resourceInitHandlers) {
             try {
@@ -1538,6 +1563,7 @@ public final class OpenCmsCore {
             } catch (CmsResourceInitException e) {
                 if (e.isClearErrors()) {
                     tmpException = null;
+                    clearErrors = true;
                 }
                 break;
             } catch (CmsSecurityException e) {
@@ -1547,8 +1573,14 @@ public final class OpenCmsCore {
         }
 
         // file is still null and not found exception was thrown, so throw original exception
-        if ((resource == null) && (tmpException != null)) {
-            throw tmpException;
+        if (resource == null) {
+            if (tmpException != null) {
+                throw tmpException;
+            } else if (!clearErrors) {
+                throw new CmsVfsResourceNotFoundException(org.opencms.main.Messages.get().container(
+                    org.opencms.main.Messages.ERR_PATH_NOT_FOUND_1,
+                    resourceName));
+            }
         }
 
         // return the resource read from the VFS
@@ -1670,6 +1702,8 @@ public final class OpenCmsCore {
             if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
                 String uri = cms.getRequestContext().getUri();
                 if (OpenCms.getStaticExportManager().isExportLink(cms, uri)) {
+                    // if we used the request's query string for getRfsName, clients could cause an unlimited number 
+                    // of files to be exported just by varying the request parameters! 
                     String url = OpenCms.getStaticExportManager().getRfsName(cms, uri);
                     String siteRoot = cms.getRequestContext().getSiteRoot();
                     url = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot).getUrl() + url;
@@ -1761,6 +1795,17 @@ public final class OpenCmsCore {
                         Messages.get().getBundle().key(Messages.LOG_ERROR_MODULE_SHUTDOWN_1, e.getMessage()),
                         e);
                 }
+
+                try {
+                    if (m_executor != null) {
+                        m_executor.shutdownNow();
+                    }
+                } catch (Throwable e) {
+                    CmsLog.INIT.error(
+                        Messages.get().getBundle().key(Messages.LOG_ERROR_MODULE_SHUTDOWN_1, e.getMessage()),
+                        e);
+                }
+
                 try {
                     if (m_scheduleManager != null) {
                         m_scheduleManager.shutDown();
@@ -1779,6 +1824,15 @@ public final class OpenCmsCore {
                         Messages.get().getBundle().key(Messages.LOG_ERROR_RESOURCE_SHUTDOWN_1, e.getMessage()),
                         e);
                 }
+
+                try {
+                    if (m_repositoryManager != null) {
+                        m_repositoryManager.shutDown();
+                    }
+                } catch (Throwable e) {
+                    CmsLog.INIT.error(e.getLocalizedMessage(), e);
+                }
+
                 try {
                     // has to be stopped before the security manager, since this thread uses it
                     if (m_threadStore != null) {
@@ -2083,6 +2137,9 @@ public final class OpenCmsCore {
                 t = t.getCause();
             }
             LOG.error(t.getLocalizedMessage() + " rendering URL " + req.getRequestURL(), t);
+        } else if (t.getClass().getName().equals("org.apache.catalina.connector.ClientAbortException")) {
+            // only log to debug channel any exceptions caused by a client abort - this is tomcat specific 
+            LOG.debug(t.getLocalizedMessage() + " rendering URL " + req.getRequestURL(), t);
         } else {
             LOG.error(t.getLocalizedMessage() + " rendering URL " + req.getRequestURL(), t);
         }
@@ -2256,6 +2313,7 @@ public final class OpenCmsCore {
             m_resourceManager.getFolderTranslator(),
             m_resourceManager.getFileTranslator(),
             contextInfo.getOuFqn());
+        context.setDetailResource(contextInfo.getDetailResource());
 
         // now initialize and return the CmsObject
         return new CmsObject(m_securityManager, context);
@@ -2444,6 +2502,10 @@ public final class OpenCmsCore {
                             // unable to set the startup project, bad but not critical
                         }
                     }
+                    // fire the login user event
+                    OpenCms.fireCmsEvent(
+                        I_CmsEventListener.EVENT_LOGIN_USER,
+                        Collections.<String, Object> singletonMap("data", user));
                     return newCms;
                 } finally {
                     m_adminCms = null;

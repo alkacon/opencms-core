@@ -27,6 +27,7 @@
 
 package org.opencms.ade.containerpage.client;
 
+import org.opencms.ade.containerpage.client.CmsContainerpageEvent.EventType;
 import org.opencms.ade.containerpage.client.ui.CmsConfirmRemoveDialog;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
@@ -88,6 +89,8 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.AnchorElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Command;
@@ -96,9 +99,8 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.Window.ClosingEvent;
-import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
@@ -245,7 +247,7 @@ public final class CmsContainerpageController {
          */
         public boolean beginContainer(String name, CmsContainerJso container) {
 
-            if (container.isDetailView()) {
+            if (container.isDetailView() || ((getData().getDetailId() != null) && !container.isDetailOnly())) {
                 m_currentContainer = null;
                 return false;
 
@@ -267,6 +269,7 @@ public final class CmsContainerpageController {
                 m_currentContainer.getType(),
                 m_currentContainer.getWidth(),
                 m_currentContainer.getMaxElements(),
+                m_currentContainer.isDetailView(),
                 m_currentElements));
         }
 
@@ -358,6 +361,7 @@ public final class CmsContainerpageController {
             } else {
                 getContainerpageService().getElementsData(
                     CmsCoreProvider.get().getStructureId(),
+                    getData().getDetailId(),
                     getRequestParams(),
                     m_clientIds,
                     m_containerBeans,
@@ -415,6 +419,7 @@ public final class CmsContainerpageController {
 
             getContainerpageService().getElementsData(
                 CmsCoreProvider.get().getStructureId(),
+                getData().getDetailId(),
                 getRequestParams(),
                 m_clientIds,
                 m_containerBeans,
@@ -453,7 +458,8 @@ public final class CmsContainerpageController {
                 getGroupcontainer().refreshHighlighting();
             }
             m_handler.updateClipboard(result);
-            resetEditableListButtons();
+            resetEditButtons();
+            CmsContainerpageController.get().fireEvent(new CmsContainerpageEvent(EventType.elementEdited));
         }
     }
 
@@ -517,6 +523,7 @@ public final class CmsContainerpageController {
                 clientIds.add(m_clientId);
                 getContainerpageService().getElementsData(
                     CmsCoreProvider.get().getStructureId(),
+                    getData().getDetailId(),
                     getRequestParams(),
                     clientIds,
                     m_containerBeans,
@@ -581,6 +588,9 @@ public final class CmsContainerpageController {
     /** The container-page handler. */
     CmsContainerpageHandler m_handler;
 
+    /** The drag targets within this page. */
+    Map<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> m_targetContainers;
+
     /** The container page drag and drop controller. */
     private I_CmsDNDController m_cntDndController;
 
@@ -611,6 +621,9 @@ public final class CmsContainerpageController {
     /** The drag and drop handler. */
     private CmsDNDHandler m_dndHandler;
 
+    /** Edit button position timer. */
+    private Timer m_editButtonsPositionTimer;
+
     /** The currently editing group-container editor. */
     private A_CmsGroupEditor m_groupEditor;
 
@@ -626,11 +639,11 @@ public final class CmsContainerpageController {
     /** Flag if the container-page has changed. */
     private boolean m_pageChanged;
 
+    /** Timer to handle window resize. */
+    private Timer m_resizeTimer;
+
     /** Handler for small elements. */
     private CmsSmallElementsHandler m_smallElementsHandler;
-
-    /** The drag targets within this page. */
-    private Map<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> m_targetContainers;
 
     /**
      * Constructor.<p>
@@ -648,7 +661,9 @@ public final class CmsContainerpageController {
                 e));
         }
         m_smallElementsHandler = new CmsSmallElementsHandler(getContainerpageService());
-        m_smallElementsHandler.setEditSmallElements(m_data.isEditSmallElementsInitially(), false);
+        if (m_data != null) {
+            m_smallElementsHandler.setEditSmallElements(m_data.isEditSmallElementsInitially(), false);
+        }
     }
 
     /**
@@ -713,6 +728,16 @@ public final class CmsContainerpageController {
 
         CmsRemovedElementDeletionDialog dialog = new CmsRemovedElementDeletionDialog(status);
         dialog.center();
+    }
+
+    /**
+     * Adds a handler for container page events.<p>
+     * 
+     * @param handler the handler to add 
+     */
+    public void addContainerpageEventHandler(I_CmsContainerpageEventHandler handler) {
+
+        CmsCoreProvider.get().getEventBus().addHandler(CmsContainerpageEvent.TYPE, handler);
     }
 
     /**
@@ -836,9 +861,6 @@ public final class CmsContainerpageController {
 
         };
         action.execute();
-
-        // TODO: Auto-generated method stub
-
     }
 
     /**
@@ -944,6 +966,7 @@ public final class CmsContainerpageController {
      */
     public void disableInlineEditing(CmsContainerPageElementPanel notThisOne) {
 
+        removeEditButtonsPositionTimer();
         if (isGroupcontainerEditing()) {
             for (Widget element : m_groupEditor.getGroupContainerWidget()) {
                 if ((element instanceof CmsContainerPageElementPanel) && (element != notThisOne)) {
@@ -978,6 +1001,17 @@ public final class CmsContainerpageController {
         } else {
             m_dndHandler.setController(m_cntDndController);
         }
+
+    }
+
+    /** 
+     * Fires an event on the core event bus.<p>
+     * 
+     * @param event the event to fire 
+     */
+    public void fireEvent(CmsContainerpageEvent event) {
+
+        CmsCoreProvider.get().getEventBus().fireEvent(event);
 
     }
 
@@ -1048,6 +1082,21 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Returns the container-page RPC service.<p>
+     * 
+     * @return the container-page service
+     */
+    public I_CmsContainerpageServiceAsync getContainerpageService() {
+
+        if (m_containerpageService == null) {
+            m_containerpageService = GWT.create(I_CmsContainerpageService.class);
+            String serviceUrl = CmsCoreProvider.get().link("org.opencms.ade.containerpage.CmsContainerpageService.gwt");
+            ((ServiceDefTarget)m_containerpageService).setServiceEntryPoint(serviceUrl);
+        }
+        return m_containerpageService;
+    }
+
+    /**
      * Returns the {@link org.opencms.ade.containerpage.client.CmsContainerpageUtil}.<p>
      *
      * @return the containerpage-util
@@ -1085,7 +1134,18 @@ public final class CmsContainerpageController {
      */
     public Map<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> getContainerTargets() {
 
-        return m_targetContainers;
+        Map<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> result = new HashMap<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer>();
+        if (isDetailPage()) {
+            // in case of a detail page, regular containers are not considered a drop target
+            for (Entry<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> entry : m_targetContainers.entrySet()) {
+                if (entry.getValue().isDetailOnly() || entry.getValue().isDetailView()) {
+                    result.put(entry.getKey(), entry.getValue());
+                }
+            }
+        } else {
+            result.putAll(m_targetContainers);
+        }
+        return result;
     }
 
     /**
@@ -1233,9 +1293,14 @@ public final class CmsContainerpageController {
                 @Override
                 public void execute() {
 
-                    getContainerpageService().getNewElementData(CmsCoreProvider.get().getStructureId(),
-
-                    getRequestParams(), resourceType, m_containerBeans, getLocale(), this);
+                    getContainerpageService().getNewElementData(
+                        CmsCoreProvider.get().getStructureId(),
+                        getData().getDetailId(),
+                        getRequestParams(),
+                        resourceType,
+                        m_containerBeans,
+                        getLocale(),
+                        this);
                 }
 
                 @Override
@@ -1405,6 +1470,7 @@ public final class CmsContainerpageController {
      */
     public void hideEditableListButtons() {
 
+        removeEditButtonsPositionTimer();
         for (org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer container : m_targetContainers.values()) {
             container.hideEditableListButtons();
         }
@@ -1424,6 +1490,13 @@ public final class CmsContainerpageController {
         CmsContentEditorHandler contentEditorHandler,
         CmsContainerpageUtil containerpageUtil) {
 
+        Window.addResizeHandler(new ResizeHandler() {
+
+            public void onResize(ResizeEvent event) {
+
+                CmsContainerpageController.this.onResize();
+            }
+        });
         m_containerpageUtil = containerpageUtil;
         m_handler = handler;
         m_contentEditorHandler = contentEditorHandler;
@@ -1456,31 +1529,12 @@ public final class CmsContainerpageController {
             Element elem = DOM.getElementById(cont.getContainerId());
             CmsContainerpageEditor.getZIndexManager().addContainer(cont.getContainerId(), elem);
         }
-        resetEditableListButtons();
+        resetEditButtons();
         Event.addNativePreviewHandler(new NativePreviewHandler() {
 
             public void onPreviewNativeEvent(NativePreviewEvent event) {
 
                 previewNativeEvent(event);
-            }
-        });
-        // adding on close handler
-        Window.addWindowClosingHandler(new ClosingHandler() {
-
-            /**
-             * @see com.google.gwt.user.client.Window.ClosingHandler#onWindowClosing(com.google.gwt.user.client.Window.ClosingEvent)
-             */
-            public void onWindowClosing(ClosingEvent event) {
-
-                deactivateOnClosing();
-                if (hasPageChanged() && !isEditingDisabled()) {
-                    boolean savePage = Window.confirm(Messages.get().key(Messages.GUI_DIALOG_SAVE_BEFORE_LEAVING_0));
-                    if (savePage) {
-                        syncSaveContainerpage();
-                    } else {
-                        unlockContainerpage();
-                    }
-                }
             }
         });
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_data.getNoEditReason())) {
@@ -1517,6 +1571,16 @@ public final class CmsContainerpageController {
     public boolean isContentEditing() {
 
         return m_isContentEditing;
+    }
+
+    /**
+     * Returns if this page displays a detail view.<p>
+     * 
+     * @return <code>true</code> if this page displays a detail view
+     */
+    public boolean isDetailPage() {
+
+        return m_data.getDetailId() != null;
     }
 
     /**
@@ -1603,6 +1667,7 @@ public final class CmsContainerpageController {
                 start(200, true);
                 getContainerpageService().getFavoriteList(
                     CmsCoreProvider.get().getStructureId(),
+                    getData().getDetailId(),
                     m_containerBeans,
                     getLocale(),
                     this);
@@ -1640,6 +1705,7 @@ public final class CmsContainerpageController {
                 start(200, true);
                 getContainerpageService().getRecentList(
                     CmsCoreProvider.get().getStructureId(),
+                    getData().getDetailId(),
                     m_containerBeans,
                     getLocale(),
                     this);
@@ -1672,7 +1738,12 @@ public final class CmsContainerpageController {
         if (m_lockStatus == LockStatus.failed) {
             return false;
         }
-        String lockError = CmsCoreProvider.get().lockOrReturnError(CmsCoreProvider.get().getStructureId());
+        String lockError;
+        if (getData().getDetailContainerPage() != null) {
+            lockError = CmsCoreProvider.get().lockOrReturnError(getData().getDetailContainerPage());
+        } else {
+            lockError = CmsCoreProvider.get().lockOrReturnError(CmsCoreProvider.get().getStructureId());
+        }
         if (lockError == null) {
             onLockSuccess();
             return true;
@@ -1709,7 +1780,7 @@ public final class CmsContainerpageController {
     public void onWindowClose() {
 
         // causes synchronous RPC call 
-        CmsCoreProvider.get().unlock();
+        unlockContainerpage();
     }
 
     /**
@@ -1717,6 +1788,7 @@ public final class CmsContainerpageController {
      */
     public void reInitInlineEditing() {
 
+        removeEditButtonsPositionTimer();
         if ((m_targetContainers == null) || getData().isUseClassicEditor()) {
             // if the target containers are not initialized yet or classic editor is set, don't do anything
             return;
@@ -1799,7 +1871,7 @@ public final class CmsContainerpageController {
                             }
                         });
                     }
-                    resetEditableListButtons();
+                    resetEditButtons();
                     addToRecentList(newElement.getClientId(), new Runnable() {
 
                         public void run() {
@@ -1906,13 +1978,31 @@ public final class CmsContainerpageController {
     }
 
     /**
-     * Shows list collector direct edit buttons (old direct edit style), if present.<p>
+     * Resets all edit buttons an there positions.<p>
      */
-    public void resetEditableListButtons() {
+    public void resetEditButtons() {
 
-        for (org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer container : m_targetContainers.values()) {
-            container.showEditableListButtons();
-        }
+        removeEditButtonsPositionTimer();
+        m_editButtonsPositionTimer = new Timer() {
+
+            /** Timer run counter. */
+            private int m_timerRuns;
+
+            @Override
+            public void run() {
+
+                for (org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer container : m_targetContainers.values()) {
+                    container.showEditableListButtons();
+                    container.updateOptionBars();
+                }
+
+                if (m_timerRuns > 3) {
+                    cancel();
+                }
+                m_timerRuns++;
+            }
+        };
+        m_editButtonsPositionTimer.scheduleRepeating(100);
     }
 
     /**
@@ -1940,11 +2030,19 @@ public final class CmsContainerpageController {
                 @Override
                 public void execute() {
 
-                    getContainerpageService().saveContainerpage(
-                        CmsCoreProvider.get().getStructureId(),
-                        getPageContent(),
-                        getLocale(),
-                        this);
+                    if (getData().getDetailContainerPage() != null) {
+                        getContainerpageService().saveDetailContainers(
+                            getData().getDetailContainerPage(),
+                            getPageContent(),
+                            getLocale(),
+                            this);
+                    } else {
+                        getContainerpageService().saveContainerpage(
+                            CmsCoreProvider.get().getStructureId(),
+                            getPageContent(),
+                            getLocale(),
+                            this);
+                    }
                 }
 
                 /**
@@ -1954,6 +2052,7 @@ public final class CmsContainerpageController {
                 protected void onResponse(Void result) {
 
                     CmsNotification.get().send(Type.NORMAL, Messages.get().key(Messages.GUI_NOTIFICATION_PAGE_SAVED_0));
+                    CmsContainerpageController.get().fireEvent(new CmsContainerpageEvent(EventType.pageSaved));
                     setPageChanged(false, true);
                     leaveCommand.execute();
                 }
@@ -1978,11 +2077,19 @@ public final class CmsContainerpageController {
                 @Override
                 public void execute() {
 
-                    getContainerpageService().saveContainerpage(
-                        CmsCoreProvider.get().getStructureId(),
-                        getPageContent(),
-                        getLocale(),
-                        this);
+                    if (getData().getDetailContainerPage() != null) {
+                        getContainerpageService().saveDetailContainers(
+                            getData().getDetailContainerPage(),
+                            getPageContent(),
+                            getLocale(),
+                            this);
+                    } else {
+                        getContainerpageService().saveContainerpage(
+                            CmsCoreProvider.get().getStructureId(),
+                            getPageContent(),
+                            getLocale(),
+                            this);
+                    }
                 }
 
                 /**
@@ -1992,6 +2099,7 @@ public final class CmsContainerpageController {
                 protected void onResponse(Void result) {
 
                     CmsNotification.get().send(Type.NORMAL, Messages.get().key(Messages.GUI_NOTIFICATION_PAGE_SAVED_0));
+                    CmsContainerpageController.get().fireEvent(new CmsContainerpageEvent(EventType.pageSaved));
                     setPageChanged(false, true);
                     Window.Location.assign(targetUri);
                 }
@@ -2016,7 +2124,13 @@ public final class CmsContainerpageController {
                 @Override
                 public void execute() {
 
-                    if (lockContainerpage()) {
+                    if (getData().getDetailContainerPage() != null) {
+                        getContainerpageService().saveDetailContainers(
+                            getData().getDetailContainerPage(),
+                            getPageContent(),
+                            getLocale(),
+                            this);
+                    } else if (lockContainerpage()) {
                         setLoadingMessage(org.opencms.gwt.client.Messages.get().key(
                             org.opencms.gwt.client.Messages.GUI_SAVING_0));
                         start(500, true);
@@ -2035,6 +2149,7 @@ public final class CmsContainerpageController {
                 protected void onResponse(Void result) {
 
                     stop(false);
+                    CmsContainerpageController.get().fireEvent(new CmsContainerpageEvent(EventType.pageSaved));
                     setPageChanged(false, false);
                     for (Runnable afterSaveAction : afterSaveActions) {
                         afterSaveAction.run();
@@ -2096,6 +2211,7 @@ public final class CmsContainerpageController {
 
                     getContainerpageService().saveGroupContainer(
                         CmsCoreProvider.get().getStructureId(),
+                        getData().getDetailId(),
                         getRequestParams(),
                         groupContainer,
                         m_containerBeans,
@@ -2153,6 +2269,7 @@ public final class CmsContainerpageController {
 
                     getContainerpageService().saveInheritanceContainer(
                         CmsCoreProvider.get().getStructureId(),
+                        getData().getDetailId(),
                         inheritanceContainer,
                         m_containerBeans,
                         getLocale(),
@@ -2217,12 +2334,11 @@ public final class CmsContainerpageController {
      */
     public void setPageChanged(Runnable... nextActions) {
 
-        // the container page will be saved immediately
-        m_pageChanged = true;
-        saveContainerpage(nextActions);
-        //        if (!hasPageChanged()) {
-        //            setPageChanged(true, false);
-        //        }
+        if (!isGroupcontainerEditing()) {
+            // the container page will be saved immediately
+            m_pageChanged = true;
+            saveContainerpage(nextActions);
+        }
     }
 
     /**
@@ -2232,6 +2348,7 @@ public final class CmsContainerpageController {
      */
     public void setToolbarVisible(final boolean visible) {
 
+        removeEditButtonsPositionTimer();
         CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
 
             /**
@@ -2254,7 +2371,7 @@ public final class CmsContainerpageController {
         };
         action.execute();
         if (visible) {
-            resetEditableListButtons();
+            resetEditButtons();
         }
     }
 
@@ -2288,6 +2405,7 @@ public final class CmsContainerpageController {
      */
     public void startEditingGroupcontainer(CmsGroupContainerElementPanel groupContainer, boolean isElementGroup) {
 
+        removeEditButtonsPositionTimer();
         if ((m_groupEditor == null)
             && (groupContainer.isNew() || CmsCoreProvider.get().lock(groupContainer.getStructureId()))) {
             if (isElementGroup) {
@@ -2385,23 +2503,9 @@ public final class CmsContainerpageController {
      */
     protected void deactivateOnClosing() {
 
+        removeEditButtonsPositionTimer();
         m_handler.deactivateCurrentButton();
         m_handler.disableToolbarButtons();
-    }
-
-    /**
-     * Returns the container-page RPC service.<p>
-     * 
-     * @return the container-page service
-     */
-    protected I_CmsContainerpageServiceAsync getContainerpageService() {
-
-        if (m_containerpageService == null) {
-            m_containerpageService = GWT.create(I_CmsContainerpageService.class);
-            String serviceUrl = CmsCoreProvider.get().link("org.opencms.ade.containerpage.CmsContainerpageService.gwt");
-            ((ServiceDefTarget)m_containerpageService).setServiceEntryPoint(serviceUrl);
-        }
-        return m_containerpageService;
     }
 
     /**
@@ -2590,7 +2694,6 @@ public final class CmsContainerpageController {
 
         if (changed) {
             if (!m_pageChanged) {
-
                 m_pageChanged = changed;
                 if (lockContainerpage()) {
                     m_handler.enableSaveReset(!isEditingDisabled());
@@ -2619,11 +2722,19 @@ public final class CmsContainerpageController {
                 @Override
                 public void execute() {
 
-                    getContainerpageService().syncSaveContainerpage(
-                        CmsCoreProvider.get().getStructureId(),
-                        getPageContent(),
-                        getLocale(),
-                        this);
+                    if (getData().getDetailContainerPage() != null) {
+                        getContainerpageService().syncSaveDetailContainers(
+                            getData().getDetailContainerPage(),
+                            getPageContent(),
+                            getLocale(),
+                            this);
+                    } else {
+                        getContainerpageService().syncSaveContainerpage(
+                            CmsCoreProvider.get().getStructureId(),
+                            getPageContent(),
+                            getLocale(),
+                            this);
+                    }
                 }
 
                 /**
@@ -2632,6 +2743,7 @@ public final class CmsContainerpageController {
                 @Override
                 protected void onResponse(Void result) {
 
+                    CmsContainerpageController.get().fireEvent(new CmsContainerpageEvent(EventType.pageSaved));
                     CmsNotification.get().send(Type.NORMAL, Messages.get().key(Messages.GUI_NOTIFICATION_PAGE_SAVED_0));
                     setPageChanged(false, false);
                 }
@@ -2645,10 +2757,38 @@ public final class CmsContainerpageController {
      */
     protected void unlockContainerpage() {
 
-        if (unlockResource(CmsCoreProvider.get().getStructureId())) {
+        if (getData().getDetailContainerPage() != null) {
+
+            CmsCoreProvider.get().unlock(getData().getDetailContainerPage());
+        } else if (unlockResource(CmsCoreProvider.get().getStructureId())) {
             CmsDebugLog.getInstance().printLine(Messages.get().key(Messages.GUI_NOTIFICATION_PAGE_UNLOCKED_0));
-        } else {
-            // ignore
+        }
+    }
+
+    /**
+     * Handles a window resize to reset highlighting and the edit button positions.<p>
+     */
+    void handleResize() {
+
+        m_resizeTimer = null;
+        resetEditButtons();
+    }
+
+    /**
+     * Call on window resize.<p>
+     */
+    void onResize() {
+
+        if (!isGroupcontainerEditing() && (m_resizeTimer == null)) {
+            m_resizeTimer = new Timer() {
+
+                @Override
+                public void run() {
+
+                    handleResize();
+                }
+            };
+            m_resizeTimer.schedule(300);
         }
     }
 
@@ -2672,6 +2812,7 @@ public final class CmsContainerpageController {
                 public void execute() {
 
                     start(200, true);
+                    CmsCoreProvider.getVfsService().getPageInfo(new CmsUUID(getServerId(element.getId())), this);
                 }
 
                 @Override
@@ -2734,6 +2875,7 @@ public final class CmsContainerpageController {
                 containerJso.getType(),
                 containerJso.getWidth(),
                 containerJso.getMaxElements(),
+                containerJso.isDetailView(),
                 null);
             result.add(container);
         }
@@ -2764,6 +2906,7 @@ public final class CmsContainerpageController {
                 start(200, false);
                 getContainerpageService().getElementWithSettings(
                     CmsCoreProvider.get().getStructureId(),
+                    getData().getDetailId(),
                     getRequestParams(),
                     clientId,
                     settings,
@@ -2821,6 +2964,17 @@ public final class CmsContainerpageController {
             }
         }
         return result;
+    }
+
+    /**
+     * Removes the edit buttons position timer.<p>
+     */
+    private void removeEditButtonsPositionTimer() {
+
+        if (m_editButtonsPositionTimer != null) {
+            m_editButtonsPositionTimer.cancel();
+            m_editButtonsPositionTimer = null;
+        }
     }
 
 }

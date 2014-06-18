@@ -36,6 +36,7 @@ import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
+import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
@@ -53,7 +54,7 @@ import com.google.gwt.user.client.ui.Panel;
  * @since 8.0.0
  * 
  */
-public class CmsVfsSelection extends Composite implements I_CmsFormWidget {
+public class CmsVfsSelection extends Composite implements I_CmsFormWidget, HasValueChangeHandlers<String> {
 
     /**
      * Event preview handler.<p>
@@ -101,26 +102,29 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget {
     /** The download mode of this widget. */
     public static final String DOWNLOAD = "download";
 
-    /** The downloadlink mode of this widget. */
+    /** The download link mode of this widget. */
     public static final String DOWNLOAD_LINK = "download_link";
 
-    /** The filelink mode of this widget. */
+    /** The file link mode of this widget. */
     public static final String FILE_LINK = "file_link";
 
-    /** The pricipal mode of this widget. */
-    public static final String PRINCIPAL = "principal";
+    /** The group select mode of this widget. */
+    public static final String GROUP = "group";
 
-    /** The OrgUnit mode of this widget. */
-    public static final String ORGUNIT = "orgunit";
-
-    /** The html mode of this widget. */
+    /** The HTML mode of this widget. */
     public static final String HTML = "html";
 
-    /** The imagelink mode of this widget. */
+    /** The image link mode of this widget. */
     public static final String IMAGE_LINK = "image_link";
 
     /** The link mode of this widget. */
     public static final String LINK = "link";
+
+    /** The OrgUnit mode of this widget. */
+    public static final String ORGUNIT = "orgunit";
+
+    /** The principal mode of this widget. */
+    public static final String PRINCIPAL = "principal";
 
     /** The table mode of this widget. */
     public static final String TABLE = "table";
@@ -152,10 +156,10 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget {
     /** The error display for this widget. */
     private CmsErrorWidget m_error = new CmsErrorWidget();
 
-    /***/
+    /** The field id. */
     private String m_id;
 
-    /***/
+    /** The selection type. */
     private String m_type;
 
     /**
@@ -220,11 +224,11 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget {
     }
 
     /**
-     * @param handler
+     * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
      */
-    public void addValueChangeHandler(ValueChangeHandler<String> handler) {
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
 
-        m_selectionInput.m_textbox.addValueChangeHandler(handler);
+        return m_selectionInput.m_textbox.addValueChangeHandler(handler);
     }
 
     /**
@@ -402,11 +406,7 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget {
     @Override
     public void setTitle(String title) {
 
-        if ((title.length() * 6.88) > m_panel.getOffsetWidth()) {
-            m_selectionInput.m_textbox.getElement().setTitle(title);
-        } else {
-            m_selectionInput.m_textbox.getElement().setTitle("");
-        }
+        m_selectionInput.m_textbox.getElement().setTitle(title);
     }
 
     /**
@@ -417,7 +417,11 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget {
     protected String buildGalleryUrl() {
 
         String basePath = "";
-        if (m_type.equals(LINK) || m_type.equals(HTML) || m_type.equals(TABLE) || m_type.equals(PRINCIPAL)) {
+        if (m_type.equals(LINK)
+            || m_type.equals(HTML)
+            || m_type.equals(TABLE)
+            || m_type.equals(PRINCIPAL)
+            || m_type.equals(GROUP)) {
             if (m_type.equals(LINK)) {
                 basePath = "/system/workplace/galleries/linkgallery/index.jsp?dialogmode=widget&fieldid=" + m_id;
             } else if (m_type.equals(HTML)) {
@@ -425,7 +429,10 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget {
             } else if (m_type.equals(TABLE)) {
                 basePath = "/system/workplace/galleries/tablegallery/index.jsp?dialogmode=widget&fieldid=" + m_id;
             } else if (m_type.equals(PRINCIPAL)) {
-                basePath = "/system/workplace/commons/principal_selection.jsp?dialogmode=widget&fieldid=" + m_id;
+                basePath = "/system/workplace/commons/principal_selection.jsp?dialogmode=widget&useparent=true&fieldid="
+                    + m_id;
+            } else if (m_type.equals(GROUP)) {
+                basePath = "/system/workplace/commons/group_selection.jsp?type=groupwidget&fieldid=" + m_id;
             } else {
                 basePath = "/system/workplace/galleries/" + m_type + "gallery/index.jsp";
             }
@@ -497,6 +504,7 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget {
             } else if (m_type.equals(TABLE)) {
                 m_popup.getFrame().setSize("705px", "640px");
             } else if (m_type.equals(PRINCIPAL)) {
+                exportSetPrincipalFunction();
                 m_popup.getFrame().setSize("705px", "320px");
             } else {
                 m_popup.getFrame().setSize("705px", "485px");
@@ -519,4 +527,15 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget {
             m_previewHandlerRegistration = Event.addNativePreviewHandler(new CloseEventPreviewHandler());
         }
     }
+
+    /**
+     * Exporting the set principal function to the window scope.<p>
+     */
+    private native void exportSetPrincipalFunction()/*-{
+                                                    var self=this;
+                                                    $wnd.setPrincipalFormValue = function(typeFlag, principal){
+                                                    self.@org.opencms.gwt.client.ui.input.CmsVfsSelection::setFormValueAsString(Ljava/lang/String;)(principal);
+                                                    self.@org.opencms.gwt.client.ui.input.CmsVfsSelection::close()();
+                                                    }
+                                                    }-*/;
 }

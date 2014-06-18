@@ -26,7 +26,8 @@
  */
 
 package org.opencms.setup.xml.v7;
-import org.opencms.configuration.CmsConfigurationManager;
+
+import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsWorkplaceConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.file.types.CmsResourceTypeBinary;
@@ -34,7 +35,6 @@ import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypePointer;
-import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.setup.xml.A_CmsSetupXmlUpdate;
 import org.opencms.setup.xml.CmsSetupXmlHelper;
 import org.opencms.util.CmsStringUtil;
@@ -44,7 +44,6 @@ import java.util.List;
 
 import org.dom4j.Document;
 import org.dom4j.Node;
-
 
 /**
  * Modifies the history context menu.<p>
@@ -168,7 +167,6 @@ public class CmsXmlUpdateHistoryContextMenu extends A_CmsSetupXmlUpdate {
             m_xpaths = new ArrayList<String>();
             // ???: xmlcontent, xmlpage, plain, image, jsp, binary, pointer, XMLTemplate
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", "xmlcontent"));
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypeXmlPage.getStaticTypeName()));
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypePlain.getStaticTypeName()));
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypeImage.getStaticTypeName()));
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypeJsp.getStaticTypeName()));

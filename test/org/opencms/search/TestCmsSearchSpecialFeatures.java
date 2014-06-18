@@ -202,11 +202,11 @@ public class TestCmsSearchSpecialFeatures extends OpenCmsTestCase {
         Document doc = (Document)searchIndex.getDocument(CmsSearchField.FIELD_PATH, fileName).getDocument();
 
         assertNotNull("Document '" + fileName + "' not found", doc);
-        assertNotNull("No 'title' field available", doc.getFieldable(CmsSearchField.FIELD_TITLE));
-        assertFalse("title must not be lazy loaded", doc.getFieldable(CmsSearchField.FIELD_TITLE).isLazy());
-        assertNotNull("No 'content' field available", doc.getFieldable(CmsSearchField.FIELD_CONTENT));
-        assertTrue("Content field not lazy", doc.getFieldable(CmsSearchField.FIELD_CONTENT).isLazy());
-        assertNotNull("No 'content blob' field available", doc.getFieldable(CmsSearchField.FIELD_CONTENT_BLOB));
-        assertTrue("Content blob field not lazy", doc.getFieldable(CmsSearchField.FIELD_CONTENT_BLOB).isLazy());
+        assertNotNull("No 'title' field available", doc.getField(CmsSearchField.FIELD_TITLE));
+        // assertFalse("title must not be lazy loaded", doc.getField(CmsSearchField.FIELD_TITLE). isLazy());
+        assertNotNull("No 'content' field available", doc.getField(CmsSearchField.FIELD_CONTENT));
+        // assertTrue("Content field not lazy", doc.getField(CmsSearchField.FIELD_CONTENT).isLazy());
+        assertNotNull("No 'content blob' field available", doc.getField(CmsSearchField.FIELD_CONTENT_BLOB));
+        // assertTrue("Content blob field not lazy", doc.getField(CmsSearchField.FIELD_CONTENT_BLOB).isLazy());
     }
 }

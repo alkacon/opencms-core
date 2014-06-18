@@ -62,6 +62,9 @@ public class CmsUploadPropertyDialog {
     /** The panel for the content. */
     CmsScrollPanel m_dialogContent = GWT.create(CmsScrollPanel.class);
 
+    /** The pre fetched date. */
+    CmsPostUploadDialogBean m_dialogData;
+
     /** The index of the currently displayed resource. */
     int m_dialogIndex;
 
@@ -82,9 +85,6 @@ public class CmsUploadPropertyDialog {
 
     /** The command that is executed on close action. */
     private Command m_closeCommand;
-
-    /** The pre fetched date. */
-    CmsPostUploadDialogBean m_dialogData;
 
     /** The dialog service. */
     private I_CmsPostUploadDialogServiceAsync m_dialogService;
@@ -142,11 +142,11 @@ public class CmsUploadPropertyDialog {
      */
     public native boolean isExplorerMode() /*-{
 
-        if ($wnd.self.name == 'explorer_files') {
-            return true;
-        }
-        return false;
-    }-*/;
+                                           if ($wnd.self.name == 'explorer_files') {
+                                           return true;
+                                           }
+                                           return false;
+                                           }-*/;
 
     /**
      * Returns if the dialog is in iFrame mode.<p>
@@ -380,7 +380,7 @@ public class CmsUploadPropertyDialog {
         m_frameDialog.setWidth(600);
         if (!m_frameDialog.isShowing()) {
             m_frameDialog.show();
-            m_dialogContent.onResize();
+            m_dialogContent.onResizeDescendant();
         }
         m_uploadPropertyPanel.truncate("POST_UPLOAD_DIALOG", 600);
     }

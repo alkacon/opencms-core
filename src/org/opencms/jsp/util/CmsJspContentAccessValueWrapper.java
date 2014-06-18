@@ -88,8 +88,12 @@ public final class CmsJspContentAccessValueWrapper {
          */
         public Object transform(Object input) {
 
-            CmsJspContentAccessValueWrapper wrapper = getValue().get(input);
-            return wrapper.getRdfaAttr();
+            if ((obtainCmsObject() != null)
+                && !obtainCmsObject().getRequestContext().getCurrentProject().isOnlineProject()) {
+                return CmsContentService.getRdfaAttributes(obtainContentValue(), String.valueOf(input));
+            } else {
+                return "";
+            }
         }
     }
 

@@ -61,7 +61,6 @@ import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -131,6 +130,12 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     /** Style variable for opener. */
     private CmsStyleVariable m_openerForNonNavigationStyle;
 
+    /** Style variable for switching between 'children / no children' styles. */
+    private CmsStyleVariable m_styleHasChildren = new CmsStyleVariable(this);
+
+    /** Style variable for switching between 'navigation children / no navigation children' styles. */
+    private CmsStyleVariable m_styleHasNavChildren = new CmsStyleVariable(this);
+
     /**
      * Default constructor.<p>
      * 
@@ -139,6 +144,9 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     public CmsSitemapTreeItem(CmsClientSitemapEntry entry) {
 
         super(generateItemWidget(entry), false);
+        m_opener.addStyleName(CSS.treeItemOpener());
+        m_styleHasChildren.setValue(CSS.hasChildren());
+        m_styleHasNavChildren.setValue(CSS.hasNavChildren());
         m_entryId = entry.getId();
         m_decoratedPanel.addDecorationBoxStyle(CSS.sitemapEntryDecoration());
         m_detailPageLabelTitleGenerator = new DetailPageLabelTitleGenerator();
@@ -344,6 +352,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         final CmsListItemWidget itemWidget = new CmsListItemWidget(infoBean);
         itemWidget.setUnselectable();
         itemWidget.setIcon(CmsSitemapView.getInstance().getIconForEntry(entry));
+        itemWidget.setTopRightIcon(null, "");
         itemWidget.setIconTitle(entry.isSubSitemapType()
         ? Messages.get().key(Messages.GUI_HOVERBAR_GOTO_SUB_0)
         : Messages.get().key(Messages.GUI_HOVERBAR_GOTO_0));
@@ -779,18 +788,20 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
             return;
         }
         removeInvalidChildren();
-        Iterator<Widget> childIt = m_children.iterator();
-        while (childIt.hasNext()) {
-            Widget childWidget = childIt.next();
+        boolean hasChildren = false;
+        boolean hasNavChildren = false;
+        for (Widget childWidget : m_children) {
             if (childWidget instanceof CmsSitemapTreeItem) {
+                hasChildren = true;
                 CmsSitemapTreeItem treeItem = (CmsSitemapTreeItem)childWidget;
                 if (treeItem.getSitemapEntry().isInNavigation()) {
-                    m_openerForNonNavigationStyle.setValue(null);
-                    return;
+                    hasNavChildren = true;
+                    break; // both flags set to true, no more iterations needed
                 }
             }
         }
-        m_openerForNonNavigationStyle.setValue(CSS.notInNavigationEntry());
+        m_styleHasChildren.setValue(hasChildren ? CSS.hasChildren() : CSS.hasNoChildren());
+        m_styleHasNavChildren.setValue(hasNavChildren ? CSS.hasNavChildren() : CSS.hasNoNavChildren());
     }
 
     /**

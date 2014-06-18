@@ -97,7 +97,7 @@ public final class CmsUUID extends Object implements Cloneable, Comparable<CmsUU
             // if no ethernet address is available, generate a dummy
             // this is required because otherwise we can't ever de-serialize a CmsUUID outside of OpenCms, 
             // since the empty constructor is called when the de-serialization takes place
-            init(getDummyEthernetAddress());
+            init(CmsStringUtil.getEthernetAddress());
         }
         m_uuid = UUIDGenerator.getInstance().generateTimeBasedUUID(m_ethernetAddress);
     }

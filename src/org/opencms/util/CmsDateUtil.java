@@ -136,10 +136,8 @@ public final class CmsDateUtil {
         GregorianCalendar now = new GregorianCalendar();
         GregorianCalendar lastModified = (GregorianCalendar)now.clone();
         lastModified.setTimeInMillis(dateLastModified.getTime());
-        return now.get(Calendar.DAY_OF_YEAR)
-            - lastModified.get(Calendar.DAY_OF_YEAR)
-            + (now.get(Calendar.YEAR) - lastModified.get(Calendar.YEAR))
-            * 365;
+        return (now.get(Calendar.DAY_OF_YEAR) - lastModified.get(Calendar.DAY_OF_YEAR))
+            + ((now.get(Calendar.YEAR) - lastModified.get(Calendar.YEAR)) * 365);
     }
 
     /**
@@ -160,7 +158,7 @@ public final class CmsDateUtil {
     }
 
     /**
-     * Returns a formated date and time String form a timestamp value based on the
+     * Returns a formatted date and time String form a timestamp value based on the
      * (old) Netscape cookie date format.<p>
      * 
      * @param time the time value to format as date
@@ -173,7 +171,11 @@ public final class CmsDateUtil {
             OLD_COOKIE.setTimeZone(GMT_TIMEZONE);
         }
 
-        return OLD_COOKIE.format(new Date(time));
+        try {
+            return OLD_COOKIE.format(new Date(time));
+        } catch (Throwable t) {
+            return OLD_COOKIE.format(new Date());
+        }
     }
 
     /**

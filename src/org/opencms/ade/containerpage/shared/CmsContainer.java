@@ -38,9 +38,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class CmsContainer implements IsSerializable {
 
-    /** Key for container data. This has to be identical with {@link org.opencms.jsp.CmsJspTagContainer#KEY_CONTAINER_DATA}. */
-    public static final String KEY_CONTAINER_DATA = "org_opencms_ade_containerpage_containers";
-
     /** List of the contained elements id's. */
     private List<CmsContainerElement> m_elements;
 
@@ -56,6 +53,9 @@ public class CmsContainer implements IsSerializable {
     /** The width of the container. */
     private int m_width;
 
+    /** Flag indicating this container is used for detail views. */
+    private boolean m_detailView;
+
     /**
      * Constructor.<p>
      * 
@@ -63,15 +63,33 @@ public class CmsContainer implements IsSerializable {
      * @param type the container type
      * @param width the width of the container 
      * @param maxElements the maximum number of elements displayed by this container
+     * @param detailView flag indicating this container is used for detail views
      * @param elements the container elements id's
      */
-    public CmsContainer(String name, String type, int width, int maxElements, List<CmsContainerElement> elements) {
+    public CmsContainer(
+        String name,
+        String type,
+        int width,
+        int maxElements,
+        boolean detailView,
+        List<CmsContainerElement> elements) {
 
         m_elements = elements;
         m_name = name;
         m_type = type;
         m_maxElements = maxElements;
         m_width = width;
+        m_detailView = detailView;
+    }
+
+    /**
+     * Returns if this container is used for detail views.<p>
+     * 
+     * @return <code>true</code> if this container is used for detail views
+     */
+    public boolean isDetailView() {
+
+        return m_detailView;
     }
 
     /**

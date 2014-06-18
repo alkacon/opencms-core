@@ -50,7 +50,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Fieldable;
+import org.apache.lucene.index.IndexableField;
 
 /**
  * Contains a single search result from the gallery search index.<p>
@@ -181,7 +181,7 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
         m_excerpt = excerpt;
 
         m_path = null;
-        Fieldable f = doc.getFieldable(CmsSearchField.FIELD_PATH);
+        IndexableField f = doc.getField(CmsSearchField.FIELD_PATH);
         if (f != null) {
             m_path = f.stringValue();
         }
@@ -192,39 +192,37 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
         }
 
         m_title = null;
-        f = doc.getFieldable(CmsSearchField.FIELD_TITLE);
+        f = doc.getField(CmsSearchField.FIELD_TITLE);
         if (f != null) {
             m_title = f.stringValue();
         }
         if (m_title == null) {
-            f = doc.getFieldable(CmsSearchFieldConfiguration.getLocaleExtendedName(CmsSearchField.FIELD_TITLE, locale));
+            f = doc.getField(CmsSearchFieldConfiguration.getLocaleExtendedName(CmsSearchField.FIELD_TITLE, locale));
             if (f != null) {
                 m_title = f.stringValue();
             }
         }
 
         m_description = null;
-        f = doc.getFieldable(CmsSearchField.FIELD_DESCRIPTION);
+        f = doc.getField(CmsSearchField.FIELD_DESCRIPTION);
         if (f != null) {
             m_description = f.stringValue();
         }
         if (m_description == null) {
-            f = doc.getFieldable(CmsSearchFieldConfiguration.getLocaleExtendedName(
-                CmsSearchField.FIELD_DESCRIPTION,
-                locale));
+            f = doc.getField(CmsSearchFieldConfiguration.getLocaleExtendedName(CmsSearchField.FIELD_DESCRIPTION, locale));
             if (f != null) {
                 m_description = f.stringValue();
             }
         }
 
         m_resourceType = null;
-        f = doc.getFieldable(CmsSearchField.FIELD_TYPE);
+        f = doc.getField(CmsSearchField.FIELD_TYPE);
         if (f != null) {
             m_resourceType = f.stringValue();
         }
 
         m_dateCreated = null;
-        f = doc.getFieldable(CmsSearchField.FIELD_DATE_CREATED);
+        f = doc.getField(CmsSearchField.FIELD_DATE_CREATED);
         if (f != null) {
             try {
                 m_dateCreated = DateTools.stringToDate(f.stringValue());
@@ -234,7 +232,7 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
         }
 
         m_dateLastModified = null;
-        f = doc.getFieldable(CmsSearchField.FIELD_DATE_LASTMODIFIED);
+        f = doc.getField(CmsSearchField.FIELD_DATE_LASTMODIFIED);
         if (f != null) {
             try {
                 m_dateLastModified = DateTools.stringToDate(f.stringValue());
@@ -244,7 +242,7 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
         }
 
         m_dateExpired = null;
-        f = doc.getFieldable(CmsGallerySearchFieldMapping.FIELD_RESOURCE_DATE_EXPIRED);
+        f = doc.getField(CmsGallerySearchFieldMapping.FIELD_RESOURCE_DATE_EXPIRED);
         if (f != null) {
             try {
                 m_dateExpired = DateTools.stringToDate(f.stringValue());
@@ -254,7 +252,7 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
         }
 
         m_dateReleased = null;
-        f = doc.getFieldable(CmsGallerySearchFieldMapping.FIELD_RESOURCE_DATE_RELEASED);
+        f = doc.getField(CmsGallerySearchFieldMapping.FIELD_RESOURCE_DATE_RELEASED);
         if (f != null) {
             try {
                 m_dateReleased = DateTools.stringToDate(f.stringValue());
@@ -264,7 +262,7 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
         }
 
         m_length = 0;
-        f = doc.getFieldable(CmsGallerySearchFieldMapping.FIELD_RESOURCE_LENGTH);
+        f = doc.getField(CmsGallerySearchFieldMapping.FIELD_RESOURCE_LENGTH);
         if (f != null) {
             try {
                 m_length = Integer.parseInt(f.stringValue());
@@ -274,7 +272,7 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
         }
 
         m_state = 0;
-        f = doc.getFieldable(CmsGallerySearchFieldMapping.FIELD_RESOURCE_STATE);
+        f = doc.getField(CmsGallerySearchFieldMapping.FIELD_RESOURCE_STATE);
         if (f != null) {
             try {
                 m_state = Integer.parseInt(f.stringValue());
@@ -284,38 +282,38 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
         }
 
         m_userCreated = null;
-        f = doc.getFieldable(CmsGallerySearchFieldMapping.FIELD_RESOURCE_USER_CREATED);
+        f = doc.getField(CmsGallerySearchFieldMapping.FIELD_RESOURCE_USER_CREATED);
         if (f != null) {
             m_userCreated = f.stringValue();
         }
 
         m_structureId = null;
-        f = doc.getFieldable(CmsGallerySearchFieldMapping.FIELD_RESOURCE_STRUCTURE_ID);
+        f = doc.getField(CmsGallerySearchFieldMapping.FIELD_RESOURCE_STRUCTURE_ID);
         if (f != null) {
             m_structureId = f.stringValue();
         }
 
         m_userLastModified = null;
-        f = doc.getFieldable(CmsGallerySearchFieldMapping.FIELD_RESOURCE_USER_LASTMODIFIED);
+        f = doc.getField(CmsGallerySearchFieldMapping.FIELD_RESOURCE_USER_LASTMODIFIED);
         if (f != null) {
             m_userLastModified = f.stringValue();
         }
 
         m_additonalInfo = null;
-        f = doc.getFieldable(CmsGallerySearchFieldMapping.FIELD_ADDITIONAL_INFO);
+        f = doc.getField(CmsGallerySearchFieldMapping.FIELD_ADDITIONAL_INFO);
         if (f != null) {
             m_additonalInfo = f.stringValue();
         }
 
         m_containerTypes = null;
-        f = doc.getFieldable(CmsGallerySearchFieldMapping.FIELD_CONTAINER_TYPES);
+        f = doc.getField(CmsGallerySearchFieldMapping.FIELD_CONTAINER_TYPES);
         if (f != null) {
             String containers = f.stringValue();
             m_containerTypes = CmsStringUtil.splitAsList(containers, ' ');
         }
 
         m_locales = null;
-        f = doc.getFieldable(CmsSearchField.FIELD_RESOURCE_LOCALES);
+        f = doc.getField(CmsSearchField.FIELD_RESOURCE_LOCALES);
         if (f != null) {
             String locales = f.stringValue();
             m_locales = CmsStringUtil.splitAsList(locales, ' ');

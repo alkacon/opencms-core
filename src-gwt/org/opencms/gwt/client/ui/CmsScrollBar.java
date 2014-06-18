@@ -27,10 +27,13 @@
 
 package org.opencms.gwt.client.ui;
 
+import com.alkacon.geranium.client.I_DescendantResizeHandler;
+
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsPositionBean;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -40,19 +43,17 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.VerticalScrollbar;
 
 /**
  * A custom scroll bar to be used with {@link org.opencms.gwt.client.ui.CmsScrollPanel}.<p>
  */
-public class CmsScrollBar extends FocusPanel implements RequiresResize, HasValue<Integer>, VerticalScrollbar {
+public class CmsScrollBar extends FocusPanel implements I_DescendantResizeHandler, HasValue<Integer>, VerticalScrollbar {
 
     /**
      * The timer used to continue to shift the knob as the user holds down one of
@@ -139,11 +140,11 @@ public class CmsScrollBar extends FocusPanel implements RequiresResize, HasValue
     /** The initial delay. */
     private static final int INITIALDELAY = 400;
 
-    /** The scroll knob top and bottom offset. */
-    private static final int SCROLL_KNOB_OFFSET = 2;
-
     /** The scroll knob minimum height. */
     private static final int SCROLL_KNOB_MIN_HEIGHT = 10;
+
+    /** The scroll knob top and bottom offset. */
+    private static final int SCROLL_KNOB_OFFSET = 2;
 
     /** The size of the increments between knob positions. */
     protected int m_stepSize = 5;
@@ -207,26 +208,13 @@ public class CmsScrollBar extends FocusPanel implements RequiresResize, HasValue
     public CmsScrollBar(Element scrollableElement, Element containerElement) {
 
         I_CmsLayoutBundle.INSTANCE.scrollBarCss().ensureInjected();
-        this.setStyleName(I_CmsLayoutBundle.INSTANCE.scrollBarCss().scrollBar());
+        setStyleName(I_CmsLayoutBundle.INSTANCE.scrollBarCss().scrollBar());
         m_scrollableElement = scrollableElement;
         m_containerElement = containerElement;
         m_knob = DOM.createDiv();
         m_knob.addClassName(I_CmsLayoutBundle.INSTANCE.scrollBarCss().scrollKnob());
         getElement().appendChild(m_knob);
         sinkEvents(Event.MOUSEEVENTS | Event.ONMOUSEWHEEL | Event.KEYEVENTS | Event.FOCUSEVENTS);
-    }
-
-    /**
-     * @param reziseable true if the panel is resizeable
-     * 
-     */
-    public void isResizeable(boolean reziseable) {
-
-        if (reziseable) {
-            this.getElement().getStyle().setMarginBottom(7, Unit.PX);
-        } else {
-            this.getElement().getStyle().setMarginBottom(0, Unit.PX);
-        }
     }
 
     /**
@@ -288,6 +276,19 @@ public class CmsScrollBar extends FocusPanel implements RequiresResize, HasValue
     }
 
     /**
+     * @param reziseable true if the panel is resizeable
+     * 
+     */
+    public void isResizeable(boolean reziseable) {
+
+        if (reziseable) {
+            this.getElement().getStyle().setMarginBottom(7, Unit.PX);
+        } else {
+            this.getElement().getStyle().setMarginBottom(0, Unit.PX);
+        }
+    }
+
+    /**
      * Listen for events that will move the knob.
      *
      * @param event the event that occurred
@@ -312,8 +313,8 @@ public class CmsScrollBar extends FocusPanel implements RequiresResize, HasValue
 
             // Mousewheel events
             case Event.ONMOUSEWHEEL:
-                int velocityY = DOM.eventGetMouseWheelVelocityY(event) * m_stepSize;
-                DOM.eventPreventDefault(event);
+                int velocityY = event.getMouseWheelVelocityY() * m_stepSize;
+                event.preventDefault();
                 CmsDebugLog.getInstance().printLine("Whell velocity: " + velocityY);
                 if (velocityY > 0) {
                     shiftDown(velocityY);
@@ -326,41 +327,41 @@ public class CmsScrollBar extends FocusPanel implements RequiresResize, HasValue
             case Event.ONKEYDOWN:
                 if (!m_slidingKeyboard) {
                     int multiplier = 1;
-                    if (DOM.eventGetCtrlKey(event)) {
+                    if (event.getCtrlKey()) {
                         multiplier = m_stepSize;
                     }
 
-                    switch (DOM.eventGetKeyCode(event)) {
+                    switch (event.getKeyCode()) {
                         case KeyCodes.KEY_HOME:
-                            DOM.eventPreventDefault(event);
+                            event.preventDefault();
                             setValue(Integer.valueOf(0));
                             break;
                         case KeyCodes.KEY_END:
-                            DOM.eventPreventDefault(event);
+                            event.preventDefault();
                             setValue(Integer.valueOf(getMaximumVerticalScrollPosition()));
                             break;
                         case KeyCodes.KEY_PAGEUP:
-                            DOM.eventPreventDefault(event);
+                            event.preventDefault();
                             m_slidingKeyboard = true;
                             shiftUp(m_pageSize);
                             m_keyTimer.schedule(INITIALDELAY, true, m_pageSize);
                             break;
                         case KeyCodes.KEY_PAGEDOWN:
-                            DOM.eventPreventDefault(event);
+                            event.preventDefault();
                             m_slidingKeyboard = true;
 
                             shiftDown(m_pageSize);
                             m_keyTimer.schedule(INITIALDELAY, false, m_pageSize);
                             break;
                         case KeyCodes.KEY_UP:
-                            DOM.eventPreventDefault(event);
+                            event.preventDefault();
                             m_slidingKeyboard = true;
 
                             shiftUp(multiplier);
                             m_keyTimer.schedule(INITIALDELAY, true, multiplier);
                             break;
                         case KeyCodes.KEY_DOWN:
-                            DOM.eventPreventDefault(event);
+                            event.preventDefault();
                             m_slidingKeyboard = true;
 
                             shiftDown(multiplier);
@@ -381,10 +382,9 @@ public class CmsScrollBar extends FocusPanel implements RequiresResize, HasValue
 
             // Mouse Events
             case Event.ONMOUSEDOWN:
-                setFocus(true);
                 if (sliderClicked(event)) {
                     startMouseSliding(event);
-                    DOM.eventPreventDefault(event);
+                    event.preventDefault();
                 }
                 break;
             case Event.ONMOUSEUP:
@@ -399,9 +399,9 @@ public class CmsScrollBar extends FocusPanel implements RequiresResize, HasValue
     }
 
     /**
-     * @see com.google.gwt.user.client.ui.RequiresResize#onResize()
+     * @see com.alkacon.geranium.client.I_DescendantResizeHandler#onResizeDescendant()
      */
-    public void onResize() {
+    public void onResizeDescendant() {
 
         redraw();
     }

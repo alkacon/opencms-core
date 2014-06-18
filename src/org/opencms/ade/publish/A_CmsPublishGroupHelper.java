@@ -61,6 +61,27 @@ public abstract class A_CmsPublishGroupHelper<RESOURCE, GROUP> {
         young
     }
 
+    /**
+     * Comparator used for sorting publish resources.<p>
+     */
+    public class SortingComparator implements Comparator<RESOURCE> {
+
+        /**
+         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+         */
+        public int compare(RESOURCE r1, RESOURCE r2) {
+
+            if (r1 == r2) {
+                return 0;
+            }
+
+            long date1 = getDateLastModified(r1);
+            long date2 = getDateLastModified(r2);
+
+            return (date1 > date2) ? -1 : (date1 < date2) ? 1 : 0;
+        }
+    }
+
     /** The gap between session groups. */
     protected static final int GROUP_SESSIONS_GAP = 8 * 60 * 60 * 1000;
 
@@ -167,21 +188,7 @@ public abstract class A_CmsPublishGroupHelper<RESOURCE, GROUP> {
     public List<GROUP> getGroups(List<RESOURCE> resources) {
 
         List<RESOURCE> sortedResources = new ArrayList<RESOURCE>(resources);
-        Collections.sort(sortedResources, new Comparator<RESOURCE>() {
-
-            public int compare(RESOURCE r1, RESOURCE r2) {
-
-                if (r1 == r2) {
-                    return 0;
-                }
-
-                long date1 = getDateLastModified(r1);
-                long date2 = getDateLastModified(r2);
-
-                return (date1 > date2) ? -1 : (date1 < date2) ? 1 : 0;
-            }
-        });
-
+        Collections.sort(sortedResources, new SortingComparator());
         Map<Long, Integer> daysMap = computeDaysForResources(sortedResources);
         Map<GroupAge, List<RESOURCE>> resourcesByAge = partitionPublishResourcesByAge(sortedResources, daysMap);
         List<List<RESOURCE>> youngGroups = partitionYoungResources(resourcesByAge.get(GroupAge.young));

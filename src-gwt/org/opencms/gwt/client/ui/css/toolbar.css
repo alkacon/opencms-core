@@ -1,17 +1,8 @@
-@if user.agent ie6 {
-	/** ie6/7 will always show a scroll-bar, so there is no need to force it **/
-	.toolbarShow{}
-} @else {
-	/** forcing a scroll-bar for all other browsers **/
-	body.toolbarShow{
-		overflow-y: scroll;
-	}
-}
 .toolbarHide.toolbar .toolbarBackground{
 	display: none;
 }
 
-.simpleToolbarShow {} 
+.simpleToolbarShow, .toolbarShow{}
 
 .toolbar, .toolbar *, .toolbar table tr td {
 	margin: 0;
@@ -29,6 +20,8 @@
 	max-height: none;
 	min-width: 0;
 	max-width: none;
+	box-sizing: content-box;
+	-moz-box-sizing: content-box;
 }
 
 .toolbar{

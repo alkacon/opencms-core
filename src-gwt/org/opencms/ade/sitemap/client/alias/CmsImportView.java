@@ -277,7 +277,7 @@ public class CmsImportView extends Composite {
                             @Override
                             public void run() {
 
-                                m_scrollPanel.onResize();
+                                m_scrollPanel.onResizeDescendant();
                             }
                         };
                         resizeTimer.schedule(100);

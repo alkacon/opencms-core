@@ -29,6 +29,7 @@ package org.opencms.ade.contenteditor;
 
 import com.alkacon.acacia.shared.ContentDefinition;
 import com.alkacon.acacia.shared.Entity;
+import com.alkacon.acacia.shared.EntityHtml;
 import com.alkacon.acacia.shared.Type;
 import com.alkacon.acacia.shared.ValidationResult;
 import com.alkacon.vie.shared.I_Entity;
@@ -36,6 +37,10 @@ import com.alkacon.vie.shared.I_EntityAttribute;
 import com.alkacon.vie.shared.I_Type;
 
 import org.opencms.ade.containerpage.CmsContainerpageService;
+import org.opencms.ade.containerpage.CmsElementUtil;
+import org.opencms.ade.containerpage.shared.CmsCntPageData;
+import org.opencms.ade.containerpage.shared.CmsContainer;
+import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
 import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService;
 import org.opencms.file.CmsFile;
@@ -51,6 +56,7 @@ import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.shared.CmsModelResourceInfo;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.json.JSONObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -66,10 +72,12 @@ import org.opencms.workplace.explorer.CmsNewResourceXmlContent;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
+import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentErrorHandler;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
+import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -158,6 +166,64 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
+     * Returns the RDF annotations required for in line editing.<p>
+     * 
+     * @param parentValue the parent XML content value
+     * @param childNames the child attribute names separated by '|'
+     * 
+     * @return the RDFA
+     */
+    public static String getRdfaAttributes(I_CmsXmlContentValue parentValue, String childNames) {
+
+        StringBuffer result = new StringBuffer();
+        result.append("about=\"");
+        result.append(CmsContentDefinition.uuidToEntityId(
+            parentValue.getDocument().getFile().getStructureId(),
+            parentValue.getLocale().toString()));
+        result.append("/").append(parentValue.getPath());
+        result.append("\" ");
+        String[] children = childNames.split("\\|");
+        result.append("property=\"");
+        for (int i = 0; i < children.length; i++) {
+            I_CmsXmlSchemaType schemaType = parentValue.getContentDefinition().getSchemaType(
+                parentValue.getName() + "/" + children[i]);
+            if (schemaType != null) {
+                if (i > 0) {
+                    result.append(" ");
+                }
+                result.append(getTypeUri(schemaType.getContentDefinition())).append("/").append(children[i]);
+            }
+        }
+        result.append("\"");
+        return result.toString();
+    }
+
+    /**
+     * Returns the RDF annotations required for in line editing.<p>
+     * 
+     * @param document the parent XML document
+     * @param contentLocale the content locale
+     * @param childName the child attribute name
+     * 
+     * @return the RDFA
+     */
+    public static String getRdfaAttributes(I_CmsXmlDocument document, Locale contentLocale, String childName) {
+
+        I_CmsXmlSchemaType schemaType = document.getContentDefinition().getSchemaType(childName);
+        StringBuffer result = new StringBuffer();
+        if (schemaType != null) {
+            result.append("about=\"");
+            result.append(CmsContentDefinition.uuidToEntityId(
+                document.getFile().getStructureId(),
+                contentLocale.toString()));
+            result.append("\" property=\"");
+            result.append(getTypeUri(schemaType.getContentDefinition())).append("/").append(childName);
+            result.append("\"");
+        }
+        return result.toString();
+    }
+
+    /**
      * Returns the type URI.<p>
      * 
      * @param xmlContentDefinition the type content definition
@@ -222,12 +288,13 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
-     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadDefinition(java.lang.String, java.lang.String, org.opencms.util.CmsUUID)
+     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadDefinition(java.lang.String, java.lang.String, org.opencms.util.CmsUUID, java.lang.String)
      */
-    public CmsContentDefinition loadDefinition(String entityId, String newLink, CmsUUID modelFileId)
+    public CmsContentDefinition loadDefinition(String entityId, String newLink, CmsUUID modelFileId, String editContext)
     throws CmsRpcException {
 
         CmsContentDefinition result = null;
+        getCmsObject().getRequestContext().setAttribute(CmsXmlContentEditor.ATTRIBUTE_EDITCONTEXT, editContext);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(newLink)) {
             try {
                 CmsUUID structureId = CmsContentDefinition.entityIdToUuid(entityId);
@@ -270,6 +337,11 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     public CmsContentDefinition prefetch() throws CmsRpcException {
 
         String paramResource = getRequest().getParameter(CmsDialog.PARAM_RESOURCE);
+        String paramDirectEdit = getRequest().getParameter(CmsEditor.PARAM_DIRECTEDIT);
+        boolean isDirectEdit = false;
+        if (paramDirectEdit != null) {
+            isDirectEdit = Boolean.parseBoolean(paramDirectEdit);
+        }
         String paramNewLink = getRequest().getParameter(CmsXmlContentEditor.PARAM_NEWLINK);
         boolean createNew = false;
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(paramNewLink)) {
@@ -286,7 +358,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(paramLocale)) {
                         locale = CmsLocaleManager.getLocale(paramLocale);
                     }
-
+                    CmsContentDefinition result;
                     if (createNew) {
                         if (locale == null) {
                             locale = OpenCms.getLocaleManager().getDefaultLocale(cms, paramResource);
@@ -296,7 +368,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(paramModelFile)) {
                             modelFileId = cms.readResource(paramModelFile).getStructureId();
                         }
-                        return readContentDefnitionForNew(paramNewLink, resource, modelFileId, locale);
+                        result = readContentDefnitionForNew(paramNewLink, resource, modelFileId, locale);
                     } else {
 
                         CmsFile file = cms.readFile(resource);
@@ -304,8 +376,10 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                         if (locale == null) {
                             locale = getBestAvailableLocale(resource, content);
                         }
-                        return readContentDefinition(file, content, null, locale, false);
+                        result = readContentDefinition(file, content, null, locale, false);
                     }
+                    result.setDirectEdit(isDirectEdit);
+                    return result;
                 }
             } catch (Throwable e) {
                 error(e);
@@ -387,6 +461,68 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     public ValidationResult saveEntity(Entity entity) throws CmsRpcException {
 
         return saveEntities(Collections.singletonList(entity));
+    }
+
+    /**
+     * @see com.alkacon.acacia.shared.rpc.I_ContentService#updateEntityHtml(com.alkacon.acacia.shared.Entity, java.lang.String, java.lang.String)
+     */
+    public EntityHtml updateEntityHtml(Entity entity, String contextUri, String htmlContextInfo) throws Exception {
+
+        CmsUUID structureId = CmsContentDefinition.entityIdToUuid(entity.getId());
+        if (structureId != null) {
+            CmsObject cms = getCmsObject();
+            try {
+                CmsResource resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+                CmsFile file = cms.readFile(resource);
+                CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
+                String entityId = entity.getId();
+                Locale contentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(entityId));
+                if (content.hasLocale(contentLocale)) {
+                    content.removeLocale(contentLocale);
+                }
+                content.addLocale(cms, contentLocale);
+                addEntityAttributes(cms, content, "", entity, contentLocale);
+                ValidationResult validationResult = validateContent(cms, structureId, content);
+                String htmlContent = null;
+                if (!validationResult.hasErrors()) {
+                    file.setContents(content.marshal());
+
+                    JSONObject contextInfo = new JSONObject(htmlContextInfo);
+                    String containerName = contextInfo.getString(CmsCntPageData.JSONKEY_NAME);
+                    String containerType = contextInfo.getString(CmsCntPageData.JSONKEY_TYPE);
+                    int containerWidth = contextInfo.getInt(CmsCntPageData.JSONKEY_WIDTH);
+                    int maxElements = contextInfo.getInt(CmsCntPageData.JSONKEY_MAXELEMENTS);
+                    boolean detailView = contextInfo.getBoolean(CmsCntPageData.JSONKEY_DETAILVIEW);
+                    CmsContainer container = new CmsContainer(
+                        containerName,
+                        containerType,
+                        containerWidth,
+                        maxElements,
+                        detailView,
+                        Collections.<CmsContainerElement> emptyList());
+                    CmsUUID detailContentId = null;
+                    if (contextInfo.has(CmsCntPageData.JSONKEY_DETAIL_ELEMENT_ID)) {
+                        detailContentId = new CmsUUID(contextInfo.getString(CmsCntPageData.JSONKEY_DETAIL_ELEMENT_ID));
+                    }
+                    CmsElementUtil elementUtil = new CmsElementUtil(
+                        cms,
+                        contextUri,
+                        detailContentId,
+                        getThreadLocalRequest(),
+                        getThreadLocalResponse(),
+                        contentLocale);
+                    htmlContent = elementUtil.getContentByContainer(
+                        file,
+                        contextInfo.getString(CmsCntPageData.JSONKEY_ELEMENT_ID),
+                        container);
+                }
+                return new EntityHtml(htmlContent, validationResult);
+
+            } catch (Exception e) {
+                error(e);
+            }
+        }
+        return null;
     }
 
     /**
@@ -864,6 +1000,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             LOG.warn(e.getLocalizedMessage(), e);
         }
         String typeName = OpenCms.getResourceManager().getResourceType(file.getTypeId()).getTypeName();
+        boolean autoUnlock = OpenCms.getWorkplaceManager().shouldAcaciaUnlock();
+
         return new CmsContentDefinition(
             entity,
             visitor.getAttributeConfigurations(),
@@ -877,7 +1015,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             title,
             cms.getSitePath(file),
             typeName,
-            performedAutoCorrection);
+            performedAutoCorrection,
+            autoUnlock);
     }
 
     /**

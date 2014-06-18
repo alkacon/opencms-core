@@ -567,7 +567,7 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
                 m_categories.put(((CmsDataValue)dataValue.getMainWidget()).getParameter(1), dataValue);
                 m_scrollList.add(dataValue);
                 CmsScrollPanel scrollparent = (CmsScrollPanel)m_scrollList.getParent();
-                scrollparent.onResize();
+                scrollparent.onResizeDescendant();
             }
         } else {
             showIsEmptyLabel();
@@ -872,7 +872,7 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
      * Select a singel value and all parents.<p>
      * @param item 
      * @param path The path of the Item that should be selected
-     * @return true if this CmsTreeItem is selected or one of it큦 children
+     * @return true if this CmsTreeItem is selected or one of its children
      */
     protected boolean selectAllParents(CmsTreeItem item, String path) {
 
@@ -924,7 +924,7 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
      * @param item 
      * @param path The path of the Item that should be selected
      * @param result 
-     * @return true if this CmsTreeItem is selected or one of it큦 children
+     * @return true if this CmsTreeItem is selected or one of its children
      */
     protected boolean selectAllParents(CmsTreeItem item, String path, List<String> result) {
 
@@ -1053,9 +1053,9 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
     }
 
     /**
-     * Return true if the given CmsTreeItem or it큦 children is selected.<p>
+     * Return true if the given CmsTreeItem or its children is selected.<p>
      * @param item The CmsTreeItem to start the check
-     * @return true if the given CmsTreeItem or it큦 children is selected
+     * @return true if the given CmsTreeItem or its children is selected
      */
     private boolean hasSelectedChildren(CmsTreeItem item) {
 
@@ -1088,7 +1088,7 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
 
             public void execute() {
 
-                m_list.onResize();
+                m_list.onResizeDescendant();
             }
         });
     }

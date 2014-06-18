@@ -52,6 +52,9 @@ public class CmsGalleryDataBean implements IsSerializable {
     /** The current element. */
     private String m_currentElement;
 
+    /** The default search scope. */
+    private CmsGallerySearchScope m_defaultScope = CmsGallerySearchScope.everything;
+
     /** The galleries to display in the list with available galleries. */
     private List<CmsGalleryFolderBean> m_galleries;
 
@@ -85,6 +88,12 @@ public class CmsGalleryDataBean implements IsSerializable {
     /** The start up tab id. */
     private GalleryTabId m_startTab;
 
+    /** The tab configuration. */
+    private CmsGalleryTabConfiguration m_tabConfiguration;
+
+    /** The configured tabs. */
+    private GalleryTabId[] m_tabIds;
+
     /** A token used to determine which tree state is loaded/saved . */
     private String m_treeToken;
 
@@ -115,6 +124,16 @@ public class CmsGalleryDataBean implements IsSerializable {
     public String getCurrentElement() {
 
         return m_currentElement;
+    }
+
+    /**
+     * Gets the default search scope.<p>
+     * 
+     * @return the default search scope
+     */
+    public CmsGallerySearchScope getDefaultScope() {
+
+        return m_defaultScope;
     }
 
     /**
@@ -219,6 +238,26 @@ public class CmsGalleryDataBean implements IsSerializable {
         return m_startTab;
     }
 
+    /** 
+     * Gets the tab configuration.<p>
+     * 
+     * @return the tab configuration 
+     */
+    public CmsGalleryTabConfiguration getTabConfiguration() {
+
+        return m_tabConfiguration;
+    }
+
+    /**
+     * Returns the configured tabs.<p>
+     *
+     * @return the configured tabs
+     */
+    public GalleryTabId[] getTabIds() {
+
+        return m_tabIds;
+    }
+
     /**
      * Gets the tree token, which is used to  determine which tree state is loaded from the session.<p>
      * 
@@ -277,6 +316,16 @@ public class CmsGalleryDataBean implements IsSerializable {
     public void setCurrentElement(String currentElement) {
 
         m_currentElement = currentElement;
+    }
+
+    /** 
+     * Sets the default search scope.<p>
+     * 
+     * @param scope the default search scope 
+     */
+    public void setDefaultScope(CmsGallerySearchScope scope) {
+
+        m_defaultScope = scope;
     }
 
     /**
@@ -378,6 +427,27 @@ public class CmsGalleryDataBean implements IsSerializable {
     public void setStartTab(GalleryTabId startTab) {
 
         m_startTab = startTab;
+    }
+
+    /**
+     * Sets the tab configuration.<p>
+     * 
+     * @param tabConfiguration the tab configuration 
+     */
+    public void setTabConfiguration(CmsGalleryTabConfiguration tabConfiguration) {
+
+        m_tabConfiguration = tabConfiguration;
+
+    }
+
+    /**
+     * Sets the tab id's.<p>
+     *
+     * @param tabIds the tab id's to set
+     */
+    public void setTabIds(GalleryTabId[] tabIds) {
+
+        m_tabIds = tabIds;
     }
 
     /**

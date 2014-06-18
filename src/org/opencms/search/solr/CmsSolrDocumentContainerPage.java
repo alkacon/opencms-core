@@ -27,16 +27,17 @@
 
 package org.opencms.search.solr;
 
+import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsIndexException;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.I_CmsSearchDocument;
+import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.search.documents.Messages;
 import org.opencms.search.extractors.CmsExtractionResult;
 import org.opencms.search.extractors.I_CmsExtractionResult;
@@ -53,6 +54,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -119,6 +121,7 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
     throws CmsException {
 
         logContentExtraction(resource, index);
+        I_CmsExtractionResult ex = null;
         try {
             CmsFile file = readFile(cms, resource);
             CmsXmlContainerPage containerPage = CmsXmlContainerPageFactory.unmarshal(cms, file);
@@ -131,17 +134,22 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
                     // check all elements in this container
                     // get the formatter configuration for this element
                     element.initResource(cms);
-                    I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(element.getResource());
-                    CmsFormatterConfiguration formatters = type.getFormattersForResource(cms, element.getResource());
-
-                    if (formatters.isSearchContent(element.getFormatterId())) {
+                    CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(cms, file.getRootPath());
+                    CmsFormatterConfiguration formatters = adeConfig.getFormatters(cms, element.getResource());
+                    if ((formatters != null)
+                        && (element.getFormatterId() != null)
+                        && formatters.isSearchContent(element.getFormatterId())) {
                         // the content of this element must be included for the container page
                         element.initResource(cms);
-                        all.add(super.extractContent(cms, element.getResource(), index));
+                        I_CmsDocumentFactory xmlFac = index.getDocumentFactory(element.getResource());
+                        all.add(xmlFac.extractContent(cms, element.getResource(), index));
                     }
                 }
             }
-            return merge(all);
+            // we have to overwrite the resource locales with the one from this container page
+            ex = merge(cms, resource, all, (CmsSolrFieldConfiguration)index.getFieldConfiguration());
+            ex.getContentItems().put(CmsSearchField.FIELD_RESOURCE_LOCALES, locale.toString());
+            return ex;
         } catch (Exception e) {
             throw new CmsIndexException(
                 Messages.get().container(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()),
@@ -170,11 +178,19 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
     /**
      * Merges the given list of extraction results into a single one.<p>
      * 
+     * @param cms the CMS object to use
+     * @param resource 
+     * 
      * @param all the extraction result objects to merge
+     * @param conf the Solr field configuration
      * 
      * @return the merged result
      */
-    private I_CmsExtractionResult merge(List<I_CmsExtractionResult> all) {
+    private I_CmsExtractionResult merge(
+        CmsObject cms,
+        CmsResource resource,
+        List<I_CmsExtractionResult> all,
+        CmsSolrFieldConfiguration conf) {
 
         StringBuffer content = new StringBuffer();
         Map<String, String> items = new HashMap<String, String>();
@@ -185,12 +201,23 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
                 content.append(ex.getContent());
             }
             if (ex.getContentItems() != null) {
-                items.putAll(ex.getContentItems());
+                for (Entry<String, String> item : ex.getContentItems().entrySet()) {
+                    String key = item.getKey();
+                    String value = item.getValue();
+                    if (items.containsKey(key) && (items.get(key) != null)) {
+                        if (!items.get(key).equals(value)) {
+                            items.put(key, items.get(key) + " " + value);
+                        }
+                    } else {
+                        items.put(key, value);
+                    }
+                }
             }
-            if (ex.getMappingFields() != null) {
-                fields.addAll(ex.getMappingFields());
+            Set<CmsSearchField> mappedFields = conf.getXSDMappings(cms, resource);
+            if (mappedFields != null) {
+                fields.addAll(mappedFields);
             }
         }
-        return new CmsExtractionResult(content.toString(), items, fields);
+        return new CmsExtractionResult(content.toString(), items);
     }
 }

@@ -32,14 +32,16 @@ import com.alkacon.acacia.client.widgets.I_EditWidget;
 import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.input.CmsGroupSelection;
+import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.util.CmsStringUtil;
 
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Image;
 
 /**
  * Provides a display only widget, for use on a widget dialog.<br>
@@ -64,15 +66,14 @@ public class CmsGroupWidget extends Composite implements I_EditWidget {
     /** The the flags used in the popup window. */
     private Integer m_flags;
 
+    /** The disabled textbox to show the value. */
+    private CmsGroupSelection m_groupSelection;
+
     /** The the organizational unit used in the popup window. */
     private String m_ouFqn;
 
     /** The the user used in the popup window. */
     private String m_userName;
-
-    /** The disabled textbox to show the value. */
-    private CmsGroupSelection m_groupSelection = new CmsGroupSelection(
-        new Image(I_CmsImageBundle.INSTANCE.groupImage()).asWidget().toString());
 
     /**
      * Creates a new display widget.<p>
@@ -82,9 +83,9 @@ public class CmsGroupWidget extends Composite implements I_EditWidget {
     public CmsGroupWidget(String config) {
 
         parseConfiguration(config);
-        // All composites must call initWidget() in their constructors.
+        m_groupSelection = new CmsGroupSelection(I_CmsImageBundle.INSTANCE.style().popupIcon());
         m_groupSelection.setParameter(m_flags, m_ouFqn, m_userName);
-        m_groupSelection.getTextAreaContainer().setStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().vfsInputBox());
+        m_groupSelection.getTextAreaContainer().addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().vfsInputBox());
         m_groupSelection.addValueChangeHandler(new ValueChangeHandler<String>() {
 
             public void onValueChange(ValueChangeEvent<String> event) {
@@ -94,6 +95,13 @@ public class CmsGroupWidget extends Composite implements I_EditWidget {
             }
         });
         initWidget(m_groupSelection);
+        m_groupSelection.getTextAreaContainer().getTextBox().addFocusHandler(new FocusHandler() {
+
+            public void onFocus(FocusEvent event) {
+
+                CmsDomUtil.fireFocusEvent(CmsGroupWidget.this);
+            }
+        });
     }
 
     /**
@@ -101,7 +109,7 @@ public class CmsGroupWidget extends Composite implements I_EditWidget {
      */
     public HandlerRegistration addFocusHandler(FocusHandler handler) {
 
-        return null;
+        return addDomHandler(handler, FocusEvent.getType());
     }
 
     /**
@@ -144,6 +152,16 @@ public class CmsGroupWidget extends Composite implements I_EditWidget {
     public void onAttachWidget() {
 
         super.onAttach();
+    }
+
+    /**
+     * @see com.alkacon.acacia.client.widgets.I_EditWidget#owns(com.google.gwt.dom.client.Element)
+     */
+    public boolean owns(Element element) {
+
+        // TODO implement this in case we want the delete behavior for optional fields
+        return false;
+
     }
 
     /**

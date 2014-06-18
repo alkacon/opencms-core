@@ -40,7 +40,7 @@ public final class Messages extends A_CmsMessageBundle {
     /** The copyright message for OpenCms. */
     public static final String[] COPYRIGHT_BY_ALKACON = {
         "",
-        "Copyright (c) 2013 Alkacon Software GmbH",
+        "Copyright (c) 2014 Alkacon Software GmbH",
         "OpenCms comes with ABSOLUTELY NO WARRANTY",
         "This is free software, and you are welcome to",
         "redistribute it under certain conditions.",
@@ -119,6 +119,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_OPENCMS_NOT_INITIALIZED_2 = "ERR_OPENCMS_NOT_INITIALIZED_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_PATH_NOT_FOUND_1 = "ERR_PATH_NOT_FOUND_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PERMALINK_1 = "ERR_PERMALINK_1";

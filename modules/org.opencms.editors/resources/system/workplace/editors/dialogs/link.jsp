@@ -1,18 +1,18 @@
-<%@ page import="org.opencms.main.*, org.opencms.workplace.*, org.opencms.workplace.explorer.*" %><%	
+<%@ page import="org.opencms.main.*, org.opencms.workplace.*, org.opencms.workplace.explorer.*, org.opencms.util.CmsStringUtil" %><%	
 
 	// initialize the workplace class
 	CmsDialog wp = new CmsDialog(pageContext, request, response);
 	wp.setParamIsPopup("true");
 	String editorName = "";
 	if (request.getParameter("editorname") != null) {
-		editorName = request.getParameter("editorname");
+		editorName = CmsStringUtil.escapeJavaScript(request.getParameter("editorname"));
 	}
 	
 %><%= wp.htmlStart(null, wp.key(org.opencms.workplace.editors.Messages.GUI_TITLE_NEWLINK_0)) %>
 <script type="text/javascript">
 <!--
 
-var linkEditorStyleInputs = <%= request.getParameter("showCss") %>;
+var linkEditorStyleInputs = <%= Boolean.parseBoolean(request.getParameter("showCss")) %>;
 var linkEditorPrefix = "<%= OpenCms.getSystemInfo().getOpenCmsContext() %>";
 var editorName = "<%= editorName %>";
 
@@ -75,7 +75,7 @@ function init() {
 	if (window.opener.linkEditorPrefix != null) {
     	linkEditorPrefix = window.opener.linkEditorPrefix;
 	}
-	var anchor = "<%= request.getParameter("href") %>";
+	var anchor = "<%= CmsStringUtil.escapeJavaScript(request.getParameter("href")) %>";
 	if (anchor != "null") {
 		document.forms["NEU"].elements["neulink"].value = checkContext(decodeURIComponent(anchor), false);
 	}
@@ -85,8 +85,8 @@ function init() {
 	}
 
 	if (linkEditorStyleInputs) {
-		var anchorStyle = "<%= request.getParameter("style") %>";
-		var anchorClass = "<%= request.getParameter("class") %>";
+		var anchorStyle = "<%= CmsStringUtil.escapeJavaScript(request.getParameter("style")) %>";
+		var anchorClass = "<%= CmsStringUtil.escapeJavaScript(request.getParameter("class")) %>";
 		if (anchorStyle != "null") {
 			document.forms["NEU"].elements["linkstyle"].value = anchorStyle;
 		}
@@ -96,7 +96,7 @@ function init() {
 	}
 	
 	document.forms["NEU"].elements["targetname"].value = "";
-	var anchorTarget = "<%= request.getParameter("target") %>";
+	var anchorTarget = "<%= CmsStringUtil.escapeJavaScript(request.getParameter("target")) %>";
 	if (anchorTarget != "null") {
 		if ((anchorTarget == "_self") || (anchorTarget == "") || (anchorTarget == null)) {
     	    document.forms["NEU"].elements["linktarget"].selectedIndex = 0;

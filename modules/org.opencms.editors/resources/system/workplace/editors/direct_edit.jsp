@@ -163,7 +163,7 @@ if (showNew) {
 <style type="text/css">
 <!--
 a.ocms_button,a.ocms_button:link,a.ocms_button:active,a.ocms_button:hover,a.ocms_button:visited {
-	color: ButtonText;
+	color: /*begin-color ButtonText*/#000000/*end-color*/;
 	text-decoration: none;
 	cursor: pointer;
 }
@@ -177,31 +177,31 @@ span.ocms_combobutton {
 	padding-right: 4px;
 	padding-bottom: 4px;
 	background-repeat: no-repeat;
-	background-color: ButtonFace;
+	background-color: /*begin-color ButtonFace*/#f0f0f0/*end-color*/;
 	background-position: 4px 0px;
 }
 span.ocms_norm {
 	display: block;
-	border: 1px solid ButtonFace;
+	border: 1px solid /*begin-color ButtonFace*/#f0f0f0/*end-color*/;
 }
 span.ocms_over {
 	display: block;
-	border-top: 1px solid ButtonHighlight;
-	border-left: 1px solid ButtonHighlight;
-	border-bottom: 1px solid ButtonShadow;
-	border-right: 1px solid ButtonShadow;
+	border-top: 1px solid /*begin-color ButtonHighlight*/#ffffff/*end-color*/;
+	border-left: 1px solid /*begin-color ButtonHighlight*/#ffffff/*end-color*/;
+	border-bottom: 1px solid /*begin-color ButtonShadow*/#999999/*end-color*/;
+	border-right: 1px solid /*begin-color ButtonShadow*/#999999/*end-color*/;
 }
 span.ocms_push {
 	display: block;
-	border-top: 1px solid ButtonShadow;
-	border-left: 1px solid ButtonShadow;
-	border-bottom: 1px solid ButtonHighlight;
-	border-right: 1px solid ButtonHighlight;
+	border-top: 1px solid /*begin-color ButtonShadow*/#999999/*end-color*/;
+	border-left: 1px solid /*begin-color ButtonShadow*/#999999/*end-color*/;
+	border-bottom: 1px solid /*begin-color ButtonHighlight*/#ffffff/*end-color*/;
+	border-right: 1px solid /*begin-color ButtonHighlight*/#ffffff/*end-color*/;
 }
 span.ocms_disabled {
 	display: block;
-	border: 1px solid ButtonFace;
-	color: ButtonShadow;
+	border: 1px solid /*begin-color ButtonFace*/#f0f0f0/*end-color*/;
+	color: /*begin-color ButtonShadow*/#999999/*end-color*/;
 }
 div.ocms_de_bt {
 	visibility: hidden; 
@@ -217,13 +217,13 @@ div.ocms_de_over {
 	width: 100%;
 	padding-top: 0;
 	padding-bottom: 0;
-	background-color: InfoBackground;
-	border-top: 1px dotted ThreedDarkShadow;
-	border-bottom: 1px dotted ThreedDarkShadow;
+	background-color: /*begin-color InfoBackground*/#f9f9f9/*end-color*/;
+	border-top: 1px dotted /*begin-color ThreedDarkShadow*/#606161/*end-color*/;
+	border-bottom: 1px dotted /*begin-color ThreedDarkShadow*/#606161/*end-color*/;
 }
 td.ocms_de {
 	line-height: 12px;
-	background-color: ButtonFace;
+	background-color: /*begin-color ButtonFace*/#f0f0f0/*end-color*/;
 }
 form.ocms_nomargin {
 	display: none;

@@ -52,6 +52,8 @@ public abstract class A_CmsToolbarOptionButton extends A_CmsToolbarButton<CmsCon
 
             CmsElementOptionButton source = (CmsElementOptionButton)event.getSource();
             source.getToolbarButton().onElementClick(event, source.getContainerElement());
+            source.getContainerElement().getElementOptionBar().removeHighlighting();
+            source.clearHoverState();
         }
     };
 

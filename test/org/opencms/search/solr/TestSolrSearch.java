@@ -30,6 +30,7 @@ package org.opencms.search.solr;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeFolder;
@@ -46,6 +47,8 @@ import org.opencms.util.CmsRequestUtil;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
@@ -60,7 +63,7 @@ import junit.framework.TestSuite;
 
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrQuery.ORDER;
-import org.apache.solr.schema.DateField;
+import org.apache.solr.common.util.DateUtil;
 
 /**
  * Tests if Solr search queries are able to do what was earlier done with Lucene.<p>
@@ -104,8 +107,9 @@ public class TestSolrSearch extends OpenCmsTestCase {
         suite.addTest(new TestSolrSearch("testQueryParameterStrength"));
         suite.addTest(new TestSolrSearch("testSortResults"));
         suite.addTest(new TestSolrSearch("testXmlContent"));
-
+        suite.addTest(new TestSolrSearch("testDocumentBoost"));
         suite.addTest(new TestSolrSearch("testAdvancedFacetting"));
+
         // suite.addTest(new TestSolrSearch("testAdvancedHighlighting"));
         // suite.addTest(new TestSolrSearch("testAdvancedMoreLikeThis"));
         // suite.addTest(new TestSolrSearch("testAdvancedPaging"));
@@ -140,6 +144,115 @@ public class TestSolrSearch extends OpenCmsTestCase {
         };
 
         return wrapper;
+    }
+
+    /**
+     * @throws Throwable if something goes wrong
+     */
+    public void testDocumentBoost() throws Throwable {
+
+        echo("Testing document boost");
+        CmsObject cms = getCmsObject();
+
+        cms.createResource("0searchNew.txt", CmsResourceTypePlain.getStaticTypeId(), "OpenCms".getBytes(), null);
+        CmsResource resource1 = cms.createResource(
+            "1searchNew.txt",
+            CmsResourceTypePlain.getStaticTypeId(),
+            "OpenCms".getBytes(),
+            null);
+        cms.createResource("2searchNew.txt", CmsResourceTypePlain.getStaticTypeId(), "OpenCms".getBytes(), null);
+        cms.createResource("3searchNew.txt", CmsResourceTypePlain.getStaticTypeId(), "OpenCms".getBytes(), null);
+        cms.createResource("4searchNew.txt", CmsResourceTypePlain.getStaticTypeId(), "OpenCms".getBytes(), null);
+        cms.createResource("5searchNew.txt", CmsResourceTypePlain.getStaticTypeId(), "OpenCms".getBytes(), null);
+        cms.createResource("6searchNew.txt", CmsResourceTypePlain.getStaticTypeId(), "OpenCms".getBytes(), null);
+        CmsResource resource7 = cms.createResource(
+            "7searchNew.txt",
+            CmsResourceTypePlain.getStaticTypeId(),
+            "OpenCms".getBytes(),
+            null);
+        CmsResource resource8 = cms.createResource(
+            "8searchNew.txt",
+            CmsResourceTypePlain.getStaticTypeId(),
+            "OpenCms".getBytes(),
+            null);
+        CmsResource resource9 = cms.createResource(
+            "9searchNew.txt",
+            CmsResourceTypePlain.getStaticTypeId(),
+            "OpenCms".getBytes(),
+            null);
+
+        I_CmsReport report = new CmsShellReport(cms.getRequestContext().getLocale());
+        OpenCms.getPublishManager().publishProject(cms, report);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
+        String query = "?rows=10&q=text:OpenCms&sort=score desc&fq=path:*searchNew.txt";
+        CmsSolrResultList results = index.search(getCmsObject(), query);
+        AllTests.printResults(cms, results, false);
+
+        CmsProperty prop = new CmsProperty(CmsPropertyDefinition.PROPERTY_SEARCH_PRIORITY, "max", "max");
+        List<CmsProperty> props1 = cms.readPropertyObjects(resource1, false);
+        props1.add(prop);
+        cms.lockResource(resource9);
+        cms.writePropertyObjects(resource9, props1);
+
+        prop = new CmsProperty(CmsPropertyDefinition.PROPERTY_SEARCH_PRIORITY, "high", "high");
+        List<CmsProperty> props2 = cms.readPropertyObjects(resource1, false);
+        props2.add(prop);
+        cms.lockResource(resource8);
+        cms.writePropertyObjects(resource8, props2);
+
+        prop = new CmsProperty(CmsPropertyDefinition.PROPERTY_SEARCH_PRIORITY, "low", "low");
+        List<CmsProperty> props3 = cms.readPropertyObjects(resource1, false);
+        props3.add(prop);
+        cms.lockResource(resource1);
+        cms.writePropertyObjects(resource1, props3);
+
+        prop = new CmsProperty(CmsPropertyDefinition.PROPERTY_SEARCH_PRIORITY, "high", "high");
+        List<CmsProperty> props4 = cms.readPropertyObjects(resource1, false);
+        props4.add(prop);
+        cms.lockResource(resource7);
+        cms.writePropertyObjects(resource7, props4);
+
+        OpenCms.getPublishManager().publishProject(cms, report);
+        OpenCms.getPublishManager().waitWhileRunning();
+        Thread.sleep(200);
+
+        results = index.search(getCmsObject(), query);
+        AllTests.printResults(cms, results, false);
+
+        // 1   /sites/default/9searchNew.txt      plain     20.11.13 10:03   score: 100
+        assertTrue(
+            "9searchNew.txt with priority 'max' should be the first",
+            results.get(0).getDocument().getPath().equals("/sites/default/9searchNew.txt"));
+        assertTrue(
+            "9searchNew.txt with priority 'max' should have a score of 100%",
+            results.get(0).getScore(results.getMaxScore().floatValue()) == 100);
+
+        // 2   /sites/default/7searchNew.txt      plain     20.11.13 10:03   score: 80
+        assertTrue(
+            "7searchNew.txt with priority 'high' should be the second",
+            results.get(1).getDocument().getPath().equals("/sites/default/7searchNew.txt"));
+        assertTrue(
+            "7searchNew.txt with priority 'high' should have a score of 75%",
+            results.get(1).getScore(results.getMaxScore().floatValue()) == 75);
+
+        // 3   /sites/default/8searchNew.txt      plain     20.11.13 10:03   score: 80
+        assertTrue(
+            "8searchNew.txt with priority 'high' should be the second",
+            results.get(2).getDocument().getPath().equals("/sites/default/8searchNew.txt"));
+        assertTrue(
+            "8searchNew.txt with priority 'high' should have a score of 75%",
+            results.get(2).getScore(results.getMaxScore().floatValue()) == 75);
+
+        // 10 /sites/default/1searchNew.txt      plain     20.11.13 10:03   score: 25
+        assertTrue(
+            "1searchNew.txt with priority 'low' should be the third",
+            results.get(9).getDocument().getPath().equals("/sites/default/1searchNew.txt"));
+        assertTrue(
+            "1searchNew.txt with priority 'low' should have a score of 25%",
+            results.get(9).getScore(results.getMaxScore().floatValue()) == 25);
+
     }
 
     /**
@@ -360,13 +473,13 @@ public class TestSolrSearch extends OpenCmsTestCase {
         String query;
         CmsSolrResultList results;
 
-        query = "q=+text:\"Alkacon\" +text:\"OpenCms\" +parent-folders:/sites/default/&sort=path asc";
+        query = "q=+text:\"Alkacon\" +text:\"OpenCms\" +parent-folders:\"/sites/default/\"&sort=path asc";
         results = index.search(getCmsObject(), query);
         AllTests.printResults(cms, results, false);
         assertEquals(8, results.size());
         assertEquals("/sites/default" + folderName + "text.txt", results.get(0).getRootPath());
 
-        query = "q=+text:Alkacon +text:OpenCms +parent-folders:/sites/default" + folderName;
+        query = "q=+text:Alkacon +text:OpenCms +parent-folders:\"/sites/default" + folderName + "\"";
         results = index.search(getCmsObject(), query);
         AllTests.printResults(cms, results, false);
         assertEquals(1, results.size());
@@ -380,17 +493,20 @@ public class TestSolrSearch extends OpenCmsTestCase {
      */
     public void testLimitTimeRanges() throws Exception {
 
+        DateFormat DF = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        DF.setTimeZone(DateUtil.UTC);
+
         CmsObject cms = getCmsObject();
         echo("Testing searching with limiting to time ranges");
 
         CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
-        String query = "?rows=50&q=+text:OpenCms";
+        String query = "?rows=50&q=text:OpenCms";
         CmsSolrResultList results = index.search(getCmsObject(), query);
         int orgCount = results.size();
 
         // check min date created
         Date stamp = new Date();
-        String date = DateField.formatExternal(stamp);
+        String date = DF.format(stamp);
         query += " +created:[" + date + " TO NOW]";
         results = index.search(getCmsObject(), query);
         assertEquals(0, results.size());
@@ -405,7 +521,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
         assertEquals(1, results.size());
 
         // check max date created
-        String maxDate = DateField.formatExternal(new Date(stamp.getTime() - 1000));
+        String maxDate = DF.format(new Date(stamp.getTime() - 1000));
         query = "?rows=50&q=+text:OpenCms  +created:[* TO " + maxDate + "]";
         results = index.search(getCmsObject(), query);
         assertEquals(orgCount, results.size());
@@ -415,11 +531,15 @@ public class TestSolrSearch extends OpenCmsTestCase {
         AllTests.printResults(cms, results, false);
         assertEquals(orgCount + 1, results.size());
 
+        // wait a second because the Solr time range precision
+        Thread.sleep(1000);
+
         // check min date last modified
         stamp = new Date();
-        date = DateField.formatExternal(stamp);
-        query = "?rows=50&q=+text:OpenCms +lastmodified:[" + date + " TO NOW]";
+        date = DF.format(stamp);
+        query = "?rows=50&q=+text:OpenCms" + "&fq=lastmodified:[" + date + " TO NOW]";
         results = index.search(getCmsObject(), query);
+        AllTests.printResults(getCmsObject(), results, false);
         assertEquals(0, results.size());
 
         CmsFile file = cms.readFile(resName);
@@ -434,7 +554,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
         assertEquals(1, results.size());
 
         // check max date last modified
-        maxDate = DateField.formatExternal(new Date(stamp.getTime() - 1000));
+        maxDate = DF.format(new Date(stamp.getTime() - 1000));
         query = "?rows=50&q=+text:OpenCms +lastmodified:[* TO " + maxDate + "]";
         results = index.search(getCmsObject(), query);
         assertEquals(orgCount, results.size());
@@ -451,17 +571,20 @@ public class TestSolrSearch extends OpenCmsTestCase {
      */
     public void testLimitTimeRangesOptimized() throws Exception {
 
+        DateFormat DF = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        DF.setTimeZone(DateUtil.UTC);
+
         CmsObject cms = getCmsObject();
         echo("Testing searching with optimized limiting to time ranges");
 
         String query = "?rows=50&q=+text:OpenCms";
         CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
-        List<CmsSearchResource> results = index.search(getCmsObject(), query);
+        CmsSolrResultList results = index.search(getCmsObject(), query);
         int orgCount = results.size();
 
         // check min date created
         Date stamp = new Date();
-        String date = DateField.formatExternal(new Date(stamp.getTime() - 20000));
+        String date = DF.format(new Date(stamp.getTime() - 20000));
         query = "?rows=50&q=+text:OpenCms +created:[" + date + " TO NOW]";
         results = index.search(getCmsObject(), query);
         // we must find one match because of the previous time range test
@@ -478,23 +601,26 @@ public class TestSolrSearch extends OpenCmsTestCase {
         assertEquals(2, results.size());
 
         // check max date created (must move back one day because of granularity level in optimized date range search)
-        String maxDate = DateField.formatExternal(new Date(stamp.getTime() - (1000 * 60 * 60 * 24)));
+        String maxDate = DF.format(new Date(stamp.getTime() - (1000 * 60 * 60 * 24)));
         query = "?rows=50&q=+text:OpenCms +created:[* TO " + maxDate + "]";
         results = index.search(getCmsObject(), query);
         // we will find one result less then before because of the previous date range rest
         assertEquals(orgCount - 1, results.size());
 
-        maxDate = DateField.formatExternal(new Date());
+        maxDate = DF.format(new Date());
         query = "?rows=50&q=+text:OpenCms +created:[* TO " + maxDate + "]";
         results = index.search(getCmsObject(), query);
         assertEquals(orgCount + 1, results.size());
 
+        // wait a second because the Solr time range precision
+        Thread.sleep(1000);
+
         // check min date last modified
         Date newStamp = new Date();
-        date = DateField.formatExternal(newStamp);
+        date = DF.format(newStamp);
 
         // move to tomorrow because of granularity level in optimized date search
-        String minDate = DateField.formatExternal(new Date(newStamp.getTime() + (1000 * 60 * 60 * 24)));
+        String minDate = DF.format(new Date(newStamp.getTime() + (1000 * 60 * 60 * 24)));
         query = "?rows=50&q=+text:OpenCms +lastmodified:[ " + minDate + " TO NOW]";
         results = index.search(getCmsObject(), query);
         assertEquals(0, results.size());
@@ -511,9 +637,10 @@ public class TestSolrSearch extends OpenCmsTestCase {
         results = index.search(getCmsObject(), query);
         // TODO This test finds two results for Lucene, but it should only be one
         // TODO This variant is correct for Solr
+        AllTests.printResults(getCmsObject(), results, false);
         assertEquals(1, results.size());
 
-        maxDate = DateField.formatExternal(new Date(newStamp.getTime() - (1000 * 60 * 60 * 24)));
+        maxDate = DF.format(new Date(newStamp.getTime() - (1000 * 60 * 60 * 24)));
         query = "?rows=50&q=+text:OpenCms +lastmodified:[* TO " + maxDate + "]";
         results = index.search(getCmsObject(), query);
         assertEquals(orgCount - 1, results.size());
@@ -648,7 +775,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
             int expect = expected[i];
             String[] rootList = roots[i];
             for (int j = 0; j < rootList.length; j++) {
-                query += "parent-folders:" + rootList[j];
+                query += "parent-folders:\"" + rootList[j] + "\"";
                 if (rootList.length > (j + 1)) {
                     query += " OR ";
                 }
@@ -669,7 +796,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
     public void testQueryDefaults() throws Throwable {
 
         // test default query
-        String defaultQuery = "q=*:*&fl=*,score&qt=edismax&rows=10";
+        String defaultQuery = "q=*:*&fl=*,score&qt=edismax&rows=10&fq=expired:[NOW TO *]&fq=released:[* TO NOW]";
         CmsSolrQuery query = new CmsSolrQuery();
         assertEquals(defaultQuery, query.toString());
 
@@ -678,7 +805,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
         assertEquals(defaultQuery, query.toString());
 
         // test creating default query by String
-        String defaultContextQuery = "q=*:*&fl=*,score&qt=edismax&rows=10&fq=con_locales:en&fq=parent-folders:/sites/default/";
+        String defaultContextQuery = "q=*:*&fl=*,score&qt=edismax&rows=10&fq=con_locales:en&fq=parent-folders:\"/sites/default/\"&fq=expired:[NOW TO *]&fq=released:[* TO NOW]";
         query = new CmsSolrQuery(getCmsObject(), null);
         assertEquals(defaultContextQuery, query.toString());
 
@@ -696,36 +823,38 @@ public class TestSolrSearch extends OpenCmsTestCase {
      */
     public void testQueryParameterStrength() throws Throwable {
 
-        String defaultContextQuery = "q=*:*&fl=*,score&qt=edismax&rows=10&fq=con_locales:en&fq=parent-folders:/sites/default/";
-        String modifiedContextQuery = "q=*:*&fl=*,score&qt=edismax&rows=10&fq=con_locales:en&fq=parent-folders:/";
+        String defaultContextQuery = "q=*:*&fl=*,score&qt=edismax&rows=10&fq=con_locales:en&fq=parent-folders:\"/sites/default/\"&fq=expired:[NOW TO *]&fq=released:[* TO NOW]";
+        String modifiedContextQuery = "q=*:*&fl=*,score&qt=edismax&rows=10&fq=con_locales:en&fq=parent-folders:\"/\"&fq=expired:[NOW TO *]&fq=released:[* TO NOW]";
 
         // members should be stronger than request context
         CmsSolrQuery query = new CmsSolrQuery(getCmsObject(), null);
         assertEquals(defaultContextQuery, query.toString());
         query.setSearchRoots("/");
-        assertEquals(modifiedContextQuery, "q=*:*&fl=*,score&qt=edismax&rows=10&fq=con_locales:en&fq=parent-folders:/");
+        assertEquals(
+            modifiedContextQuery,
+            "q=*:*&fl=*,score&qt=edismax&rows=10&fq=con_locales:en&fq=parent-folders:\"/\"&fq=expired:[NOW TO *]&fq=released:[* TO NOW]");
         query.setLocales(Locale.GERMAN, Locale.FRENCH, Locale.ENGLISH);
         query.setLocales(Locale.GERMAN, Locale.FRENCH);
         assertEquals(
-            "q=*:*&fl=*,score&qt=edismax&rows=10&fq=parent-folders:/&fq=con_locales:(de OR fr)",
+            "q=*:*&fl=*,score&qt=edismax&rows=10&fq=expired:[NOW TO *]&fq=released:[* TO NOW]&fq=parent-folders:\"/\"&fq=con_locales:(de OR fr)",
             query.toString());
 
         // parameters should be stronger than request context
-        query = new CmsSolrQuery(getCmsObject(), CmsRequestUtil.createParameterMap("fq=parent-folders:/"));
+        query = new CmsSolrQuery(getCmsObject(), CmsRequestUtil.createParameterMap("fq=parent-folders:\"/\""));
         assertEquals(modifiedContextQuery, query.toString());
 
         // parameters should be stronger than request context and members
         query = new CmsSolrQuery(
             getCmsObject(),
-            CmsRequestUtil.createParameterMap("q=test&fq=parent-folders:/&fq=con_locales:fr&fl=content_fr&rows=50&qt=edismax&fq=type:v8news"));
+            CmsRequestUtil.createParameterMap("q=test&fq=parent-folders:\"/\"&fq=con_locales:fr&fl=content_fr&rows=50&qt=edismax&fq=type:v8news&fq=expired:[NOW TO *]&fq=released:[* TO NOW]"));
         query.setText("test");
         query.setTextSearchFields("pla");
         query.setLocales(Locale.GERMAN);
         query.setFields("pla,plub");
         query.setRows(new Integer(1000));
-        query.setQueryType("lucene");
+        query.setRequestHandler("lucene");
         query.setResourceTypes("article");
-        String ex = "q={!q.op=OR qf=text_en}test&fl=pla,plub&qt=lucene&rows=1000&fq=parent-folders:/&fq=con_locales:de&fq=type:article";
+        String ex = "q={!q.op=OR qf=text_en}test&fl=pla,plub&qt=lucene&rows=1000&fq=parent-folders:\"/\"&fq=expired:[NOW TO *]&fq=released:[* TO NOW]&fq=con_locales:de&fq=type:article";
         assertEquals(ex, query.toString());
 
         assertEquals("article", CmsSolrQuery.getResourceType(query.getFilterQueries()));

@@ -1,0 +1,1263 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'signing'
+sourceCompatibility = java_target_version
+targetCompatibility = java_target_version
+version = version_number
+buildDir = build_directory
+repositories {
+    mavenLocal()
+    if (project.hasProperty('additional_repositories')){
+        additional_repositories.split(';').each{ repo ->
+            maven { url repo }
+        }
+    }
+    mavenCentral()
+}
+
+if (!project.hasProperty('max_heap_size')){
+    project.ext.max_heap_size='1024m'
+}
+
+Properties props = new Properties()
+props.load(new FileInputStream("$projectDir/modules/all-modules.properties"))
+project.ext.allModuleNames = props['modules.common.all']
+project.ext.allExternalModuleNames = ''
+project.ext.modulesDistsDir = file("${project.buildDir}/modulesZip")
+if (project.hasProperty('external_directories')){
+    def externalPropFile =file(external_directories+'/modules/all-modules.properties')
+    if (externalPropFile.exists()){
+        Properties externalprops = new Properties()
+        println "reading external modules from ${external_directories}/modules/all-modules.properties"
+        externalprops.load(new FileInputStream(externalPropFile))
+        project.ext.allExternalModuleNames = externalprops['modules.common.all']
+        project.ext.allModuleNames += ','+allExternalModuleNames
+    }else{
+        println "Can\'t read from external module properties modules/all-modules.properties from directory $external_directories"
+    }
+}
+
+configurations {
+    
+    distribution {
+        description = 'libraries included into the opencms distribution'
+        transitive = false
+    }
+    
+    compile {
+        description = 'used to compile the opencms.jar and the modules jars'
+        transitive = false
+        extendsFrom distribution
+    }
+    
+    modulesCompile {
+        description = 'used to compile the modules classes'
+        transitive = false
+        extendsFrom compile
+    }
+
+    testCompile{
+        transitive = false
+        extendsFrom modulesCompile
+    }
+
+    testRuntime{ transitive = false }
+
+    componentsCompile {
+        description = 'needed to compile the opencms components'
+        transitive = false
+    }
+
+    componentsRuntime {
+        transitive = false
+        extendsFrom componentsCompile
+    }
+
+    gwtCompile {
+        description = 'needed to generate the GWT JavaScript resources'
+        transitive = false
+        extendsFrom modulesCompile
+    }
+
+    setupCompile {
+        transitive = false
+        extendsFrom modulesCompile
+    }
+}
+
+// import dependencies
+apply from: 'dependencies.gradle'
+
+sourceSets{
+    main {
+        java.srcDir 'src'
+        resources.srcDir 'src'
+    }
+    components {
+        java.srcDir 'src-components'
+        resources.srcDir 'src-components'
+    }
+    modules {
+        java.srcDir 'src-modules'
+        resources.srcDir 'src-modules'
+    }
+    gwt {
+        java.srcDir 'src-gwt'
+        resources.srcDir 'src-gwt'
+    }
+    setup {
+        java.srcDir 'src-setup'
+        resources.srcDir 'src-setup'
+    }
+    test {
+        java.srcDir 'test'
+        resources.srcDir 'test'
+        resources.srcDir 'src'
+        resources.srcDir 'src-modules'
+        resources.srcDir 'src-setup'
+    }
+}
+
+task componentsJar(type: Jar) {
+    from sourceSets.components.output
+    baseName 'opencms-components'
+    archiveName 'opencms-components.jar'
+    include 'org/opencms/**'
+    exclude '**/.gitignore'
+}
+
+task sourcesJarComponents(type: Jar) {
+    from sourceSets.components.allSource
+    classifier = 'sources'
+    baseName 'opencms-components'
+}
+
+task javadocComponents(type: Javadoc, dependsOn: componentsJar) {
+    source = sourceSets.components.allJava
+    classpath = project.sourceSets.components.compileClasspath
+    destinationDir = file("${buildDir}/docs/javadocComponents")
+}
+
+task javadocJarComponents(type: Jar, dependsOn: javadocComponents) {
+    classifier = 'javadoc'
+    from "${buildDir}/docs/javadocComponents"
+    baseName 'opencms-components'
+}
+
+if (project.hasProperty('tomcat_update_target') && file(tomcat_update_target).exists()){
+    task tomcatUpdate { doFirst { println "All generated Jar files will be copied to the configured lib folder." } }
+}
+
+task enhance << {
+    ant.taskdef(
+            name      : 'openjpaenhancer',
+            classpath : configurations.modulesCompile.asPath,
+            classname : 'org.apache.openjpa.ant.PCEnhancerTask'
+            )
+
+    ant.openjpaenhancer(classpath : configurations.modulesCompile.asPath){
+        fileset(dir: "${sourceSets.main.output.classesDir}/org/opencms/db/jpa/persistence"){ exclude(name: '*$*.class') }
+        config(propertiesFile: "${projectDir}/webapp/WEB-INF/classes/META-INF/persistence.xml")
+    }
+}
+
+jar {
+    it.dependsOn enhance
+    manifest {
+        attributes 'Implementation-Title': 'Alkacon OpenCms',
+        'Implementation-Version': version,
+        'JPA-PersistenceUnits': 'DATA_OPENJPA,DATA_OPENJPA_JTA',
+        'Meta-Persistence': 'META-INF/persistence.xml'
+    }
+    baseName 'opencms-core'
+    archiveName 'opencms.jar'
+
+    include 'org/opencms/**'
+    include 'com/**'
+    exclude '**/*.html'
+    exclude '**/.gitignore'
+
+    metaInf {  from("${projectDir}/webapp/WEB-INF/opencms.tld") }
+
+    from ("${projectDir}/webapp/WEB-INF/setupdata/version.properties"){
+        include 'version.properties'
+        filter(ReplaceTokens, tokens: [
+            OPENCMS_VERSION_NUMBER: version_number,
+            OPENCMS_VERSION_NAME: version_number
+        ])
+        into '/org/opencms/main/'
+    }
+
+    doLast {
+        if (tasks.findByPath('tomcatUpdate')!=null&&gradle.taskGraph.hasTask(tasks['tomcatUpdate'])){
+            println "copying ${project.buildDir}/libs/${archiveName} to ${tomcat_update_target}"
+            copy {
+                from  "${project.buildDir}/libs/${archiveName}"
+                into tomcat_update_target
+            }
+        }
+    }
+}
+
+javadoc {
+    doLast {
+        copy {
+            from  "${projectDir}/doc/javadoc/logos"
+            into "${buildDir}/docs/javadoc/logos"
+        }
+    }
+    options.addStringOption("sourcepath", "")
+    project.configure(options) {
+        memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
+        charSet = "UTF-8"
+        author="true"
+        version="true"
+        source= java_target_version
+        linkSource="false"
+        noDeprecatedList="false"
+        noDeprecated="false"
+        overview="${sourceSets.main.output.resourcesDir}/org/opencms/main/overview.html"
+        docTitle="OpenCms Core API, version $version_number"
+        windowTitle="OpenCms Core API, version $version_number"
+        stylesheetFile= file("${projectDir}/doc/javadoc/stylesheet.css")
+        header = "<script type=\"text/javascript\"> if (window.location.href.indexOf(\"overview-frame\") == -1) { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.alkacon.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/Alkacon.png\\\" /></a>\"); } else { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.opencms.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/OpenCms.png\\\" /></a>\"); }</script>"
+    }
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from "${buildDir}/docs/javadoc"
+    baseName 'opencms-core'
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+    baseName 'opencms-core'
+}
+
+task gwtJar(dependsOn: jar, type: Jar) {
+    from sourceSets.gwt.output
+    from (sourceSets.gwt.allSource){ include '**/*.java' }
+    from (sourceSets.main.allSource){
+        include '**/shared/**'
+        include '**/gwt/CmsRpcException.java'
+        include '**/ade/detailpage/CmsDetailPageInfo.java'
+        include '**/db/CmsResourceState.java'
+        include '**/jsp/CmsContainerJsonKeys.java'
+        include '**/util/CmsPair.java'
+        include '**/util/CmsDefaultSet.java'
+        include '**/xml/content/CmsXmlContentProperty.java'
+        include '**/workplace/editors/CmsTinyMceToolbarHelper.java'
+    }
+    includeEmptyDirs false
+    archiveName 'opencms-gwt.jar'
+    baseName 'opencms-gwt'
+    exclude '**/.gitignore'
+}
+
+task javadocModules(type: Javadoc, dependsOn: jar) {
+    doLast {
+    copy {
+        from  "${projectDir}/doc/javadoc/logos"
+        into "${buildDir}/docs/javadocModules/logos"
+    }
+}
+options.addStringOption("sourcepath", "")
+project.configure(options) {
+    memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
+    charSet = "UTF-8"
+    author="true"
+    version="true"
+    source= java_target_version
+    linkSource="false"
+    noDeprecatedList="false"
+    noDeprecated="false"
+    docTitle="OpenCms Workplace Modules API, version $version_number"
+    windowTitle="OpenCms Workplace Modules API, version $version_number"
+    stylesheetFile= file("${projectDir}/doc/javadoc/stylesheet.css")
+        header = "<script type=\"text/javascript\"> if (window.location.href.indexOf(\"overview-frame\") == -1) { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.alkacon.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/Alkacon.png\\\" /></a>\"); } else { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.opencms.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/OpenCms.png\\\" /></a>\"); }</script>"
+}
+source = sourceSets.modules.allJava
+classpath = project.sourceSets.modules.compileClasspath
+destinationDir = file("${buildDir}/docs/javadocModules")
+}
+
+task javadocGwt(type: Javadoc, dependsOn: jar) {
+        doLast {
+        copy {
+            from  "${projectDir}/doc/javadoc/logos"
+            into "${buildDir}/docs/javadocGwt/logos"
+        }
+    }
+    options.addStringOption("sourcepath", "")
+    project.configure(options) {
+        memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
+        charSet = "UTF-8"
+        author="true"
+        version="true"
+        source= java_target_version
+        linkSource="false"
+        noDeprecatedList="false"
+        noDeprecated="false"
+        docTitle="OpenCms GWT Components API, version $version_number"
+        windowTitle="OpenCms GWT Components API, version $version_number"
+        stylesheetFile= file("${projectDir}/doc/javadoc/stylesheet.css")
+        header = "<script type=\"text/javascript\"> if (window.location.href.indexOf(\"overview-frame\") == -1) { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.alkacon.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/Alkacon.png\\\" /></a>\"); } else { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.opencms.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/OpenCms.png\\\" /></a>\"); }</script>"
+    }
+    source = sourceSets.gwt.allJava
+    classpath = project.sourceSets.gwt.compileClasspath
+    destinationDir = file("${buildDir}/docs/javadocGwt")
+}
+
+task javadocJarGwt(type: Jar, dependsOn: javadocGwt) {
+    classifier = 'javadoc'
+    from "${buildDir}/docs/javadocGwt"
+    baseName 'opencms-gwt'
+}
+
+task sourcesJarGwt(type: Jar) {
+    from sourceSets.gwt.allSource
+    from (sourceSets.main.allSource){
+        include '**/shared/**'
+        include '**/gwt/CmsRpcException.java'
+        include '**/ade/detailpage/CmsDetailPageInfo.java'
+        include '**/db/CmsResourceState.java'
+        include '**/jsp/CmsContainerJsonKeys.java'
+        include '**/util/CmsPair.java'
+        include '**/util/CmsDefaultSet.java'
+        include '**/xml/content/CmsXmlContentProperty.java'
+        include '**/workplace/editors/CmsTinyMceToolbarHelper.java'
+    }
+    includeEmptyDirs false
+    classifier = 'sources'
+    baseName 'opencms-gwt'
+}
+
+task setupJar(dependsOn: jar, type: Jar) {
+    from sourceSets.setup.output
+    archiveName 'opencms-setup.jar'
+    baseName 'opencms-setup'
+    exclude '**/.gitignore'
+}
+
+task javadocSetup(type: Javadoc, dependsOn: jar) {
+    source = sourceSets.setup.allJava
+    classpath = project.sourceSets.setup.compileClasspath
+    destinationDir = file("${buildDir}/docs/javadocSetup")
+    doLast {
+        copy {
+            from  "${projectDir}/doc/javadoc/logos"
+            into "${buildDir}/docs/javadocSetup/logos"
+        }
+    }
+    options.addStringOption("sourcepath", "")
+    project.configure(options) {
+        memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
+        charSet = "UTF-8"
+        author="true"
+        version="true"
+        source= java_target_version
+        linkSource="false"
+        noDeprecatedList="false"
+        noDeprecated="false"
+        docTitle="OpenCms Setup API, version $version_number"
+        windowTitle="OpenCms Setup API, version $version_number"
+        stylesheetFile= file("${projectDir}/doc/javadoc/stylesheet.css")
+        header = "<script type=\"text/javascript\"> if (window.location.href.indexOf(\"overview-frame\") == -1) { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.alkacon.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/Alkacon.png\\\" /></a>\"); } else { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.opencms.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/OpenCms.png\\\" /></a>\"); }</script>"
+    }
+}
+
+task javadocJarSetup(type: Jar, dependsOn: javadocSetup) {
+    classifier = 'javadoc'
+    from "${buildDir}/docs/javadocSetup"
+    baseName 'opencms-setup'
+}
+
+task sourcesJarSetup(type: Jar) {
+    from sourceSets.setup.allSource
+    classifier = 'sources'
+    baseName 'opencms-setup'
+}
+
+// iterate all available modules and create the required tasks
+allModuleNames.split(',').each{ moduleName ->
+    def modulePackages = moduleName
+    def gwtModule = null
+    def moduleScripts = null
+    def moduleFolder = file("${projectDir}/modules/${moduleName}")
+    def srcGwtDir = "${projectDir}/src-gwt/"
+    def moduleSrcFolder = file("${projectDir}/src-modules")
+    def isExternal = allExternalModuleNames.contains(moduleName)
+
+    if (isExternal.toBoolean()){
+        moduleFolder = file("${external_directories}/modules/${moduleName}")
+        srcGwtDir = file("${external_directories}/src-gwt/")
+        moduleSrcFolder = file("${external_directories}/src-modules")
+    }
+    def propertyFile = file("${moduleFolder}/module.properties")
+    def gwtRename = null
+    if (propertyFile.exists()){
+        Properties moduleProperties= new Properties()
+        moduleProperties.load(new FileInputStream(propertyFile))
+        if (moduleProperties['module.packages']!=null){
+            modulePackages=moduleProperties['module.packages']
+        }
+        if (moduleProperties['module.gwt']!=null){
+            gwtModule = moduleProperties['module.gwt']
+            def moduleXml = (new XmlParser()).parse(srcGwtDir.toString()+"/" +gwtModule.replaceAll('\\.','/')+'.gwt.xml')
+            gwtRename = moduleXml['@rename-to']
+            if (gwtRename==null){
+                gwtRename=gwtModule
+            }
+        }
+        if (moduleProperties['module.scripts']!=null){
+            moduleScripts=moduleProperties['module.scripts']
+        }
+    }
+    def manifestFile = file("${moduleFolder}/resources/manifest.xml")
+    def moduleDependencies=[]
+    def moduleVersion = version
+    if (manifestFile.exists()){
+        def parsedManifest= (new XmlParser()).parse("${moduleFolder}/resources/manifest.xml")
+        parsedManifest.module[0].dependencies[0].dependency.each{ dep ->
+            moduleDependencies.add(dep.@name)
+        }
+        moduleVersion = parsedManifest.module[0].version[0].text()
+    }
+
+    def requiresJar = false
+    // check if there are any java packages to include into the module's jar
+    modulePackages.split(',').each{ pack ->
+        def packageFolder
+        if (isExternal.toBoolean()){
+            packageFolder= file("${external_directories}/src-modules/"+ pack.replaceAll('\\.','/'))
+        }else{
+            packageFolder= file("${projectDir}/src-modules/"+ pack.replaceAll('\\.','/'))
+        }
+        if (packageFolder.exists()&&packageFolder.isDirectory()){
+            packageFolder.listFiles().each{ file ->
+                if (file.isFile()){
+                    requiresJar = true
+                }
+            }
+        }
+    }
+
+    task "dist_$moduleName" (dependsOn: componentsJar, type: Zip){
+        ext.moduleName = moduleName
+        ext.modulePackages = modulePackages
+        ext.gwtModule = gwtModule
+        ext.moduleScripts = moduleScripts
+        ext.moduleFolder = moduleFolder
+        ext.srcGwtDir = srcGwtDir
+        ext.isExternal = isExternal
+        ext.requiresJar = requiresJar
+        ext.dependencies = moduleDependencies
+        ext.gwtRenameTo = gwtRename
+        version moduleVersion
+        destinationDir modulesDistsDir
+        // include the jar file if necessary
+        if (requiresJar.toBoolean()){
+            from( "${project.buildDir}/libs") {
+                include "${moduleName}.jar"
+                into "/system/modules/${moduleName}/lib/"
+            }
+
+        }
+        // include the GWT resources if necessary
+        if (gwtModule == null){
+            from "${moduleFolder}/resources"
+        }else{
+            // exclude the manifest for now, use the synced manifest later
+            from ("${moduleFolder}/resources") {
+                exclude 'manifest.xml'
+                exclude "system/modules/${moduleName}/resources/${gwtRenameTo}/**"
+            }
+            from( "${project.buildDir}/gwt/${moduleName}") {
+                exclude '**/WEB-INF/**'
+                into "/system/modules/${moduleName}/resources/"
+            }
+            def syncedManifest="${project.buildDir}/extra/${moduleName}/manifest.xml"
+            from syncedManifest
+            doFirst{
+                ant.taskdef(resource: 'org/opencms/util/ant/taskdefs.properties', classpath: configurations.componentsRuntime.asPath)
+                ant.syncmanifest(
+                        srcmanifestfile: "${moduleFolder}/resources/manifest.xml",
+                        dstmanifestfile: syncedManifest,
+                        base: "${moduleFolder}/resources/",
+                        prefix: "system/modules/${moduleName}/resources/${gwtRenameTo}",
+                        directory: "${project.buildDir}/gwt/${moduleName}/${gwtRenameTo}"
+                        )
+            }
+        }
+        if (moduleScripts != null){
+            from( "${project.buildDir}/scripts/${moduleName}") { into "/system/modules/${moduleName}/resources/" }
+        }
+        // TODO: set the module version to match the manifest.xml
+        baseName moduleName
+        doFirst {
+            println '======================================================'
+            println "Building ZIP for $moduleName version $moduleVersion"
+            println '======================================================'
+        }
+    }
+
+    if (requiresJar.toBoolean()){
+
+        sourceSets.create(moduleName)
+        sourceSets[moduleName].java.srcDirs=files("$moduleSrcFolder")
+        sourceSets[moduleName].resources.srcDirs=files("$moduleSrcFolder")
+        modulePackages.split(',').each{ pack ->
+            sourceSets[moduleName].java.includes.add(pack.replaceAll('\\.','/')+'/**')
+            sourceSets[moduleName].resources.includes.add(pack.replaceAll('\\.','/')+'/**')
+        }
+
+        sourceSets[moduleName].compileClasspath=configurations.modulesCompile
+
+        task "jar_$moduleName" (type: Jar) {
+            manifest {
+                attributes 'Implementation-Title': 'Alkacon OpenCms', 'Implementation-Version': version
+            }
+            from sourceSets[moduleName].output
+            archiveName moduleName+'.jar'
+            baseName moduleName
+            exclude '**/.gitignore'
+            doFirst{
+                println '======================================================'
+                println "Building ${moduleName}.jar including $modulePackages"
+                println '======================================================'
+            }
+
+            doLast {
+                if (tasks.findByPath('tomcatUpdate')!=null&&gradle.taskGraph.hasTask(tomcatUpdate)){
+                    println "copying ${project.buildDir}/libs/${archiveName} to ${tomcat_update_target}"
+                    copy {
+                        from  "${project.buildDir}/libs/${archiveName}"
+                        into tomcat_update_target
+                    }
+                }
+            }
+        }
+
+        task "javadoc_$moduleName" (type: Javadoc){
+            source = sourceSets[moduleName].allJava
+            classpath = project.sourceSets[moduleName].compileClasspath
+            destinationDir = file("${buildDir}/docs/javadoc${moduleName}")
+        }
+
+        task "javadocJar_$moduleName"(type: Jar) {
+            it.dependsOn("javadoc_$moduleName")
+            classifier = 'javadoc'
+            from "${buildDir}/docs/javadoc${moduleName}"
+            baseName moduleName
+        }
+
+        task "sourcesJar_$moduleName"(type: Jar) {
+            from sourceSets[moduleName].allSource
+            classifier = 'sources'
+            baseName moduleName
+        }
+
+        tasks["dist_$moduleName"].dependsOn("jar_$moduleName")
+    }
+
+    if (gwtModule != null){
+        sourceSets.create(moduleName+'_gwt')
+        sourceSets[moduleName+'_gwt'].java.srcDirs=files("$srcGwtDir")
+        sourceSets[moduleName+'_gwt'].resources.srcDirs=files("$srcGwtDir")
+        task "gwt_$moduleName" (dependsOn: gwtClasses, type: JavaExec) {
+            ext.buildDir =  project.buildDir.toString()  +"/gwt/$moduleName"
+            ext.extraDir =  project.buildDir.toString() + "/extra/$moduleName"
+            inputs.source sourceSets.gwt.java.srcDirs
+            inputs.dir sourceSets.gwt.output.resourcesDir
+            outputs.dir buildDir
+
+            // Workaround for incremental build (GRADLE-1483)
+            outputs.upToDateSpec = new org.gradle.api.specs.AndSpec()
+
+            doFirst {
+                println '======================================================'
+                println "Building GWT resources for $gwtModule"
+                println '======================================================'
+                // to clean the output directory, delete it first
+                def dir = file(buildDir)
+                if (dir.exists()){
+                    delete{ delete dir }
+                }
+                dir.mkdirs()
+            }
+
+            main = 'com.google.gwt.dev.Compiler'
+
+            classpath {
+                [
+                    sourceSets.main.java.srcDirs,
+                    // Java source core
+                    sourceSets.gwt.java.srcDirs,
+                    // Java source
+                    sourceSets.gwt.output.resourcesDir,
+                    // Generated resources
+                    sourceSets.gwt.output.classesDir,
+                    // Generated classes
+                    sourceSets.gwt.compileClasspath,
+                    // Deps
+                    sourceSets[moduleName+'_gwt'].java.srcDirs,
+                    sourceSets[moduleName+'_gwt'].output.resourcesDir,
+                    sourceSets[moduleName+'_gwt'].output.classesDir
+                ]
+            }
+
+
+            args =
+                    [
+                        gwtModule,
+                        // Your GWT module
+                        '-war',
+                        buildDir,
+                        '-logLevel',
+                        'INFO',
+                        '-localWorkers',
+                        '2',
+                        '-style',
+                        'obfuscated',
+                        '-extra',
+                        extraDir,
+                        '-strict'
+                        // '-draftCompile' // Speeds up compile with 25%
+                    ]
+
+            maxHeapSize = max_heap_size
+        }
+
+        tasks["dist_$moduleName"].dependsOn("gwt_$moduleName")
+    }
+    if (moduleScripts != null){
+        task "scripts_$moduleName" {
+            ext.srcDir = file("${moduleFolder}/scripts")
+            ext.destDir = new File("${project.buildDir}/scripts/$moduleName")
+            inputs.dir srcDir
+            outputs.dir destDir
+            doFirst{
+                // to clean the output directory, delete it first
+                if (destDir.exists()){
+                    delete { delete destDir }
+                }
+                destDir.mkdirs()
+            }
+            doLast {
+
+                def text=''
+                moduleScripts.split(',').each{ script ->
+                    def scriptFile = file("${srcDir}/$script")
+
+                    if (scriptFile.exists()){
+                        text += scriptFile.text
+                    }
+                }
+                def destFile = new File(destDir, moduleName+'.scripts.js')
+                destFile.write(text)
+            }
+        }
+        tasks["dist_$moduleName"].dependsOn("scripts_$moduleName")
+    }
+}
+
+tasks.findAll{ task -> task.name.startsWith('dist_')}.each{ dist_task ->
+    if (dist_task.requiresJar.toBoolean()){
+        dist_task.dependencies.each{ dep ->
+            def depCompileName = 'compile'+dep.replaceAll('\\.','')+'java'
+            tasks.findAll{ comp_task -> comp_task.name.toLowerCase().equals(depCompileName)}.each {comp_task ->
+                sourceSets[dist_task.moduleName].compileClasspath += files("${project.buildDir}/classes/$dep") { builtBy comp_task.name }
+                // we need to manipulate the classpath of the java doc task specifically
+                tasks['javadoc_'+dist_task.moduleName].classpath += files("${project.buildDir}/classes/$dep") { builtBy comp_task.name }
+            }
+        }
+        tasks['jar_'+dist_task.moduleName].dependsOn{
+            tasks.findAll{ comp_task -> comp_task.name.toLowerCase().equals('compile'+dist_task.moduleName.replaceAll('\\.','')+'java')}
+        }
+        tasks['javadoc_'+dist_task.moduleName].dependsOn{
+            tasks.findAll{ comp_task -> comp_task.name.toLowerCase().equals('compile'+dist_task.moduleName.replaceAll('\\.','')+'java')}
+        }
+    }
+}
+
+task allModules(dependsOn: tasks.matching{ Task task -> task.name.startsWith('dist_')}) << {
+    println '======================================================'
+    println 'Done building modules'
+    println '======================================================'
+}
+
+task war (dependsOn: [setupJar, allModules], type: Zip){
+
+    archiveName 'opencms.war'
+    baseName 'opencms-webapp'
+    extension 'war'
+    from ("${projectDir}/webapp"){
+        // exclude the database drivers
+        exclude '**/setup/**/*.jar'
+        exclude '**/update/**'
+        exclude '**/*.html'
+        exclude '**/*.properties'
+        exclude '**/*.txt'
+        exclude '**/*.xml'
+    }
+    from ("${projectDir}/webapp"){
+        exclude '**/update/**'
+        include '**/*.html'
+        include '**/*.properties'
+        include '**/*.txt'
+        include '**/*.xml'
+        filter(ReplaceTokens, tokens: [
+            OPENCMS_VERSION_NUMBER: version_number,
+            OPENCMS_VERSION_NAME: version_number,
+            OPENCMS_VERSION: product_name+' '+version_number,
+            DRIVERS_VFS: drivers_vfs,
+            DRIVERS_PROJECT: drivers_project,
+            DRIVERS_USER: drivers_user,
+            DRIVERS_HISTORY: drivers_history,
+            DRIVERS_CONFIGURATION: drivers_configuration,
+            DRIVERS_SUBSCRIPTION: drivers_subscription,
+            ADDITIONAL_DB_POOLS: db_additional_pools,
+            OPENCMS_CONFIGURATION: opencms_configuration,
+            RUNTIME_INFO: system_runtimeinfo
+        ])
+    }
+    from ("${project.buildDir}/libs") {
+        include '*.jar'
+
+        exclude 'opencms-components*.jar'
+        exclude 'opencms-gwt*.jar'
+        exclude 'opencms-test*.jar'
+        exclude '*-sources.jar'
+        exclude '*-javadoc.jar'
+
+        into '/WEB-INF/lib'
+    }
+    into ('/WEB-INF/lib') { from configurations.distribution }
+    fileTree('webapp/setup/database'){ include '**/*.jar'}.each {File driverJar ->
+        // copy the database drivers into the lib folder
+        from (driverJar.path) { into '/WEB-INF/lib' }
+    }
+    from (modulesDistsDir) { into '/WEB-INF/packages/modules' }
+
+    from("${projectDir}/lib/jni") { into "/WEB-INF/lib/jni" }
+}
+
+task updater (dependsOn: setupJar, type: Zip){
+    baseName 'opencms-upgrade-to'
+    from ("${projectDir}/webapp"){
+        include 'update/**'
+        exclude 'update/empty.jar'
+        exclude 'update/readme.txt'
+        filter(ReplaceTokens, tokens: [
+            OPENCMS_VERSION_NUMBER: version_number,
+            OPENCMS_VERSION: product_name+' '+version_number
+        ])
+    }
+    from ("${projectDir}/webapp/WEB-INF/solr/conf"){
+        into '/WEB-INF/solr-update/'
+        include 'schema.xml'
+        include 'solrconfig.xml'
+    }
+    from ("${projectDir}/webapp/update/readme.txt"){
+        filter(ReplaceTokens, tokens: [
+            OPENCMS_VERSION_NUMBER: version_number,
+            OPENCMS_VERSION: product_name+' '+version_number
+        ])
+    }
+    from ("${projectDir}/webapp/WEB-INF"){
+        into '/WEB-INF'
+        include 'opencms.tld'
+        include 'web.xml'
+        include 'cmsshell.sh'
+        include 'classes/META-INF/persistence.xml'
+        include 'classes/ehcache.xml'
+        include 'classes/repository.properties'
+        include 'sun-jaxws.xml'
+        include 'wsdl/**'
+    }
+    from ("${project.buildDir}/libs") {
+        include 'opencms.jar'
+        include 'opencms-setup.jar'
+        into '/WEB-INF/lib'
+    }
+    into ('/WEB-INF/lib') { from configurations.distribution }
+    tasks.findAll{dist_task -> dist_task.name.startsWith('dist_') && !(updater_excluded_modules.split(',').contains(dist_task.moduleName))}.each{ dist_task ->
+        from ("${modulesDistsDir}/${dist_task.archiveName}"){ into '/update/modules' }
+        if (dist_task.requiresJar.toBoolean()){
+            from ("${project.buildDir}/libs/${dist_task.moduleName}.jar"){ into 'WEB-INF/lib' }
+        }
+    }
+    fileTree('webapp/setup/database'){ include '**/*.jar'}.each {File driverJar ->
+        // copy the database drivers into the lib folder
+        from (driverJar.path) { into '/WEB-INF/lib' }
+    }
+    Properties buildProps = new Properties()
+    buildProps.load(new FileInputStream("${projectDir}/build-default.properties"))
+    buildProps['updater.jars.remove'].split(',').each{ jar ->
+        from("${projectDir}/webapp/update/empty.jar"){
+            into '/WEB-INF/lib'
+            rename('empty\\.jar', jar)
+        }
+    }
+}
+
+updater.dependsOn(tasks.matching{dist_task -> dist_task.name.startsWith('dist_') && !(updater_excluded_modules.split(',').contains(dist_task.moduleName))})
+
+task bindist (dependsOn: war, type: Zip){
+    baseName 'opencms'
+    from "${project.buildDir}/distributions/opencms.war"
+    from(projectDir) {
+        include 'install.html'
+        include 'license.txt'
+        include 'history.txt'
+        filter(ReplaceTokens, tokens: [
+            OPENCMS_VERSION_NUMBER: version_number,
+            OPENCMS_VERSION: product_name+' '+version_number
+        ])
+    }
+}
+
+test {
+    useJUnit()
+    include 'org/opencms/test/AllTests*'
+    // important: exclude all anonymous classes
+    exclude '**/*$*.class'
+    scanForTestClasses false
+    testClassesDir = sourceSets.test.output.classesDir
+    systemProperties['test.data.path'] = "${projectDir}/test/data"
+    systemProperties['test.webapp.path'] = "${projectDir}/webapp"
+    systemProperties['test.build.folder'] =sourceSets.test.output.resourcesDir
+    maxHeapSize = max_heap_size
+    jvmArgs '-XX:MaxPermSize=256m'
+    testLogging.showStandardStreams = true
+    ignoreFailures true
+}
+
+task testJar(dependsOn: compileTestJava, type: Jar) {
+    from sourceSets.test.output
+    baseName 'opencms-test'
+    exclude '**/.gitignore'
+    exclude '**/*.java'
+}
+
+task javadocTest(type: Javadoc, dependsOn: jar) {
+    source = sourceSets.test.allJava
+    classpath = project.sourceSets.test.compileClasspath
+    destinationDir = file("${buildDir}/docs/javadocTest")
+}
+
+task javadocJarTest(type: Jar, dependsOn: javadocTest) {
+    classifier = 'javadoc'
+    from "${buildDir}/docs/javadocTest"
+    baseName 'opencms-test'
+}
+
+task sourcesJarTest(type: Jar) {
+    from sourceSets.test.allSource
+    classifier = 'sources'
+    baseName 'opencms-test'
+}
+
+artifacts {
+    archives jar
+    archives javadocJar
+    archives sourcesJar
+    if (project.hasProperty('publish_repository')){
+        // do not include the war if only running the install task, it takes ages to build
+        archives war
+    }
+    archives setupJar
+    archives javadocJarSetup
+    archives sourcesJarSetup
+    archives gwtJar
+    archives javadocJarGwt
+    archives sourcesJarGwt
+    archives componentsJar
+    archives javadocJarComponents
+    archives sourcesJarComponents
+    archives testJar
+    archives javadocJarTest
+    archives sourcesJarTest
+    tasks.each{ task ->
+        if (task.name.startsWith("jar_org.opencms.")){
+            def moduleName=task.baseName
+            archives task
+            archives tasks["javadocJar_$moduleName"]
+            archives tasks["sourcesJar_$moduleName"]
+        }
+    }
+}
+
+signing {
+    required {gradle.taskGraph.hasTask("uploadArchives") }
+    sign configurations.archives
+}
+
+
+
+if (project.hasProperty('publish_repository')){
+    uploadArchives {
+        it.dependsOn(signArchives)
+        repositories {
+            mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+                repository(url: publish_repository) {
+                    authentication(userName: publish_user, password: publish_password)
+                }
+                addFilter('core'){artifact, file ->
+                    artifact.name.startsWith('opencms-core')
+                }
+                pom('core').project {
+                    name product_name
+                    description product_description
+                    packaging 'jar'
+                    groupId 'org.opencms'
+                    url 'http://www.opencms.org'
+                    scm {
+                        url 'scm:git@github.com:alkacon/opencms-core.git'
+                        connection 'scm:git@github.com:alkacon/opencms-core.git'
+                        developerConnection 'scm:git@github.com:alkacon/opencms-core.git'
+                    }
+                    licenses {
+                        license {
+                            name 'GNU Lesser General Public License'
+                            url 'http://www.gnu.org/licenses/lgpl.html'
+                            distribution 'repo'
+                        }
+                    }
+                    organization {
+                        name 'Alkacon Software'
+                        url 'http://www.alkacon.com'
+                    }
+                    developers {
+                        developer {
+                            name 'Alkacon Software'
+                            url 'http://www.alkacon.com'
+                        }
+                    }
+                }
+                pom('core').scopeMappings.addMapping(1, configurations.distribution, 'runtime')
+                // all dependencies are non transitive, as gradle is ignoring this setting when creating the pom, we have to manipulate the pom
+                pom('core').whenConfigured {pom ->
+                    pom.dependencies.each { dependency ->
+                        // to avoid class loading problems
+                        def exclusion = pom.model.class.classLoader.loadClass("org.apache.maven.model.Exclusion").newInstance();
+                        exclusion.setGroupId('*')
+                        exclusion.setArtifactId('*')
+                        dependency.addExclusion(exclusion)
+
+                    }
+                }
+                addFilter('war'){artifact, file ->
+                    artifact.name.startsWith('opencms-webapp')
+                }
+                pom('war').project {
+                    name product_name
+                    description product_description
+                    packaging 'war'
+                    groupId 'org.opencms'
+                    url 'http://www.opencms.org'
+                    scm {
+                        url 'scm:git@github.com:alkacon/opencms-core.git'
+                        connection 'scm:git@github.com:alkacon/opencms-core.git'
+                        developerConnection 'scm:git@github.com:alkacon/opencms-core.git'
+                    }
+                    licenses {
+                        license {
+                            name 'GNU Lesser General Public License'
+                            url 'http://www.gnu.org/licenses/lgpl.html'
+                            distribution 'repo'
+                        }
+                    }
+                    organization {
+                        name 'Alkacon Software'
+                        url 'http://www.alkacon.com'
+                    }
+                    developers {
+                        developer {
+                            name 'Alkacon Software'
+                            url 'http://www.alkacon.com'
+                        }
+                    }
+                }
+                'setup,gwt,components,test'.split(",").each { groupName ->
+                    addFilter(groupName){artifact, file ->
+                        artifact.name.startsWith("opencms-$groupName")
+                    }
+                    pom(groupName).project {
+                        name product_name
+                        description product_description
+                        packaging 'jar'
+                        groupId 'org.opencms'
+                        url 'http://www.opencms.org'
+                        scm {
+                            url 'scm:git@github.com:alkacon/opencms-core.git'
+                            connection 'scm:git@github.com:alkacon/opencms-core.git'
+                            developerConnection 'scm:git@github.com:alkacon/opencms-core.git'
+                        }
+                        licenses {
+                            license {
+                                name 'GNU Lesser General Public License'
+                                url 'http://www.gnu.org/licenses/lgpl.html'
+                                distribution 'repo'
+                            }
+                        }
+                        organization {
+                            name 'Alkacon Software'
+                            url 'http://www.alkacon.com'
+                        }
+                        developers {
+                            developer {
+                                name 'Alkacon Software'
+                                url 'http://www.alkacon.com'
+                            }
+                        }
+                    }
+                    pom(groupName).whenConfigured {pom ->
+                        // the setup jar depends on opencms-core, override anything else
+                        pom.dependencies.clear()
+                        // to avoid class loading problems
+                        def dependency = pom.model.class.classLoader.loadClass("org.apache.maven.model.Dependency").newInstance();
+                        dependency.setGroupId("org.opencms")
+                        dependency.setArtifactId("opencms-core")
+                        dependency.setVersion(version_number)
+                        pom.dependencies.add(dependency)
+                    }
+                }
+
+                artifacts.each{ arch ->
+                    def filterName=arch.name
+                    if (filterName.startsWith("org.opencms")){
+                        filterName=filterName.substring(0, filterName.lastIndexOf(".jar"))
+                        addFilter(filterName){artifact, file ->
+                            artifact.name.startsWith(filterName)
+                        }
+                        pom(filterName).project {
+                            name product_name
+                            description product_description
+                            packaging 'jar'
+                            groupId 'org.opencms'
+                            url 'http://www.opencms.org'
+                            scm {
+                                url 'scm:git@github.com:alkacon/opencms-core.git'
+                                connection 'scm:git@github.com:alkacon/opencms-core.git'
+                                developerConnection 'scm:git@github.com:alkacon/opencms-core.git'
+                            }
+                            licenses {
+                                license {
+                                    name 'GNU Lesser General Public License'
+                                    url 'http://www.gnu.org/licenses/lgpl.html'
+                                    distribution 'repo'
+                                }
+                            }
+                            organization {
+                                name 'Alkacon Software'
+                                url 'http://www.alkacon.com'
+                            }
+                            developers {
+                                developer {
+                                    name 'Alkacon Software'
+                                    url 'http://www.alkacon.com'
+                                }
+                            }
+                        }
+                        pom(filterName).whenConfigured {pom ->
+                            // the jars depend on opencms-core, override anything else
+                            pom.dependencies.clear()
+                            // to avoid class loading problems
+                            def dependency = pom.model.class.classLoader.loadClass("org.apache.maven.model.Dependency").newInstance();
+                            dependency.setGroupId("org.opencms")
+                            dependency.setArtifactId("opencms-core")
+                            dependency.setVersion(version_number)
+                            pom.dependencies.add(dependency)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+install {
+    repositories {
+        mavenInstaller {
+            addFilter('core'){artifact, file ->
+                artifact.name.startsWith('opencms-core')
+            }
+            pom('core').project {
+                name product_name
+                description product_description
+                packaging 'jar'
+                groupId 'org.opencms'
+                url 'http://www.opencms.org'
+                scm {
+                    url 'scm:git@github.com:alkacon/opencms-core.git'
+                    connection 'scm:git@github.com:alkacon/opencms-core.git'
+                    developerConnection 'scm:git@github.com:alkacon/opencms-core.git'
+                }
+                licenses {
+                    license {
+                        name 'GNU Lesser General Public License'
+                        url 'http://www.gnu.org/licenses/lgpl.html'
+                        distribution 'repo'
+                    }
+                }
+                organization {
+                    name 'Alkacon Software'
+                    url 'http://www.alkacon.com'
+                }
+                developers {
+                    developer {
+                        name 'Alkacon Software'
+                        url 'http://www.alkacon.com'
+                    }
+                }
+            }
+            pom('core').scopeMappings.addMapping(1, configurations.distribution, 'runtime')
+            // all dependencies are non transitive, as gradle is ignoring this setting when creating the pom, we have to manipulate the pom
+            pom('core').whenConfigured {pom ->
+                pom.dependencies.each { dependency ->
+                    // to avoid class loading problems
+                    def exclusion = pom.model.class.classLoader.loadClass("org.apache.maven.model.Exclusion").newInstance();
+                    exclusion.setGroupId('*')
+                    exclusion.setArtifactId('*')
+                    dependency.addExclusion(exclusion)
+
+                }
+            }
+            addFilter('war'){artifact, file ->
+                artifact.name.startsWith('opencms-webapp')
+            }
+            pom('war').project {
+                name product_name
+                description product_description
+                packaging 'war'
+                groupId 'org.opencms'
+                url 'http://www.opencms.org'
+                scm {
+                    url 'scm:git@github.com:alkacon/opencms-core.git'
+                    connection 'scm:git@github.com:alkacon/opencms-core.git'
+                    developerConnection 'scm:git@github.com:alkacon/opencms-core.git'
+                }
+                licenses {
+                    license {
+                        name 'GNU Lesser General Public License'
+                        url 'http://www.gnu.org/licenses/lgpl.html'
+                        distribution 'repo'
+                    }
+                }
+                organization {
+                    name 'Alkacon Software'
+                    url 'http://www.alkacon.com'
+                }
+                developers {
+                    developer {
+                        name 'Alkacon Software'
+                        url 'http://www.alkacon.com'
+                    }
+                }
+            }
+            'setup,gwt,components,test'.split(",").each { groupName ->
+                addFilter(groupName){artifact, file ->
+                    artifact.name.startsWith("opencms-$groupName")
+                }
+                pom(groupName).project {
+                    name product_name
+                    description product_description
+                    packaging 'jar'
+                    groupId 'org.opencms'
+                    url 'http://www.opencms.org'
+                    scm {
+                        url 'scm:git@github.com:alkacon/opencms-core.git'
+                        connection 'scm:git@github.com:alkacon/opencms-core.git'
+                        developerConnection 'scm:git@github.com:alkacon/opencms-core.git'
+                    }
+                    licenses {
+                        license {
+                            name 'GNU Lesser General Public License'
+                            url 'http://www.gnu.org/licenses/lgpl.html'
+                            distribution 'repo'
+                        }
+                    }
+                    organization {
+                        name 'Alkacon Software'
+                        url 'http://www.alkacon.com'
+                    }
+                    developers {
+                        developer {
+                            name 'Alkacon Software'
+                            url 'http://www.alkacon.com'
+                        }
+                    }
+                }
+                pom(groupName).whenConfigured {pom ->
+                    // the setup jar depends on opencms-core, override anything else
+                    pom.dependencies.clear()
+                    // to avoid class loading problems
+                    def dependency = pom.model.class.classLoader.loadClass("org.apache.maven.model.Dependency").newInstance();
+                    dependency.setGroupId("org.opencms")
+                    dependency.setArtifactId("opencms-core")
+                    dependency.setVersion(version_number)
+                    pom.dependencies.add(dependency)
+                }
+            }
+            artifacts.each{ arch ->
+                def filterName=arch.name
+                if (filterName.startsWith("org.opencms")){
+                    filterName=filterName.substring(0, filterName.lastIndexOf(".jar"))
+                    addFilter(filterName){artifact, file ->
+                        artifact.name.startsWith(filterName)
+                    }
+                    pom(filterName).project {
+                        name product_name
+                        description product_description
+                        packaging 'jar'
+                        groupId 'org.opencms'
+                        url 'http://www.opencms.org'
+                        scm {
+                            url 'scm:git@github.com:alkacon/opencms-core.git'
+                            connection 'scm:git@github.com:alkacon/opencms-core.git'
+                            developerConnection 'scm:git@github.com:alkacon/opencms-core.git'
+                        }
+                        licenses {
+                            license {
+                                name 'GNU Lesser General Public License'
+                                url 'http://www.gnu.org/licenses/lgpl.html'
+                                distribution 'repo'
+                            }
+                        }
+                        organization {
+                            name 'Alkacon Software'
+                            url 'http://www.alkacon.com'
+                        }
+                        developers {
+                            developer {
+                                name 'Alkacon Software'
+                                url 'http://www.alkacon.com'
+                            }
+                        }
+                    }
+                    pom(filterName).whenConfigured {pom ->
+                        // the jars depend on opencms-core, override anything else
+                        pom.dependencies.clear()
+                        // to avoid class loading problems
+                        def dependency = pom.model.class.classLoader.loadClass("org.apache.maven.model.Dependency").newInstance();
+                        dependency.setGroupId("org.opencms")
+                        dependency.setArtifactId("opencms-core")
+                        dependency.setVersion(version_number)
+                        pom.dependencies.add(dependency)
+                    }
+                }
+            }
+        }
+    }
+}
+
+// fixed issue with libraries containing both .java and .class files
+tasks.withType(JavaCompile) {
+    options.compilerArgs += ["-sourcepath", ""]
+}

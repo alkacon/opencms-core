@@ -113,7 +113,8 @@ public class CmsSubSitemapMenuEntry extends A_CmsSitemapMenuEntry {
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
         boolean show = CmsSitemapView.getInstance().isNavigationMode()
             && entry.isInNavigation()
-            && entry.isFolderType();
+            && entry.isFolderType()
+            && !controller.isRoot(entry.getSitePath());
         if (isCreateFolderMode()) {
             setVisible(show);
             setActive(show);

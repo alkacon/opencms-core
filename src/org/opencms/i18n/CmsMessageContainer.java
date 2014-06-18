@@ -43,7 +43,7 @@ import java.util.Locale;
  *   
  * @see org.opencms.i18n.I_CmsMessageBundle
  */
-public class CmsMessageContainer implements Serializable {
+public class CmsMessageContainer implements Serializable, I_CmsMessageContainer {
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = 2844402574674092147L;

@@ -36,47 +36,47 @@ import org.opencms.i18n.I_CmsMessageBundle;
  */
 public final class Messages extends A_CmsMessageBundle {
 
-    /** Name of the used resource bundle. */
-    private static final String BUNDLE_NAME = "org.opencms.workflow.messages";
-
     /** Message key for the resource bundle. */
     public static final String ERR_INVALID_WORKFLOW_ACTION_1 = "ERR_INVALID_WORKFLOW_ACTION_1";
-
-    /** Message key for the resource bundle. */
-    public static final String GUI_WORKFLOW_ACTION_RELEASE_0 = "GUI_WORKFLOW_ACTION_RELEASE_0";
-
-    /** Message key for the resource bundle. */
-    public static final String GUI_WORKFLOW_ACTION_PUBLISH_0 = "GUI_WORKFLOW_ACTION_PUBLISH_0";
-
-    /** Message key for the resource bundle. */
-    public static final String GUI_WORKFLOW_ACTION_FORCE_PUBLISH_0 = "GUI_WORKFLOW_ACTION_FORCE_PUBLISH_0";
 
     /** Message key for the resource bundle. */
     public static final String ERR_NEW_PARENT_NOT_IN_WORKFLOW_1 = "ERR_NEW_PARENT_NOT_IN_WORKFLOW_1";
 
     /** Message key for the resource bundle. */
-    public static final String GUI_MAIL_PUBLISH_LINK_1 = "GUI_MAIL_PUBLISH_LINK_1";
-
-    /** Message key for the resource bundle. */
-    public static final String GUI_WORKFLOW_PROJECT_NAME_2 = "GUI_WORKFLOW_PROJECT_NAME_2";
-
-    /** Message key for the resource bundle. */
-    public static final String GUI_WORKFLOW_PROJECT_DESCRIPTION_2 = "GUI_WORKFLOW_PROJECT_DESCRIPTION_2";
-
-    /** Message key for the resource bundle. */
-    public static final String GUI_WORKFLOW_PUBLISH_0 = "GUI_WORKFLOW_PUBLISH_0";
+    public static final String GUI_ALREADY_IN_WORKFLOW_0 = "GUI_ALREADY_IN_WORKFLOW_0";
 
     /** Message key for the resource bundle. */
     public static final String GUI_BROKEN_LINKS_0 = "GUI_BROKEN_LINKS_0";
 
-    /** Static instance member. */
-    private static final I_CmsMessageBundle INSTANCE = new Messages();
+    /** Message key for the resource bundle. */
+    public static final String GUI_MAIL_PUBLISH_LINK_1 = "GUI_MAIL_PUBLISH_LINK_1";
 
     /** Message key for the resource bundle. */
     public static final String GUI_MAIL_USER_LINE_1 = "GUI_MAIL_USER_LINE_1";
 
     /** Message key for the resource bundle. */
-    public static final String GUI_ALREADY_IN_WORKFLOW_0 = "GUI_ALREADY_IN_WORKFLOW_0";
+    public static final String GUI_WORKFLOW_ACTION_FORCE_PUBLISH_0 = "GUI_WORKFLOW_ACTION_FORCE_PUBLISH_0";
+
+    /** Message key for the resource bundle. */
+    public static final String GUI_WORKFLOW_ACTION_PUBLISH_0 = "GUI_WORKFLOW_ACTION_PUBLISH_0";
+
+    /** Message key for the resource bundle. */
+    public static final String GUI_WORKFLOW_ACTION_RELEASE_0 = "GUI_WORKFLOW_ACTION_RELEASE_0";
+
+    /** Message key for the resource bundle. */
+    public static final String GUI_WORKFLOW_PROJECT_DESCRIPTION_2 = "GUI_WORKFLOW_PROJECT_DESCRIPTION_2";
+
+    /** Message key for the resource bundle. */
+    public static final String GUI_WORKFLOW_PROJECT_NAME_2 = "GUI_WORKFLOW_PROJECT_NAME_2";
+
+    /** Message key for the resource bundle. */
+    public static final String GUI_WORKFLOW_PUBLISH_0 = "GUI_WORKFLOW_PUBLISH_0";
+
+    /** Name of the used resource bundle. */
+    private static final String BUNDLE_NAME = "org.opencms.workflow.messages";
+
+    /** Static instance member. */
+    private static final I_CmsMessageBundle INSTANCE = new Messages();
 
     /**
      * Hides the public constructor for this utility class.<p>

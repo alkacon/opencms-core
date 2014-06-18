@@ -26,7 +26,9 @@
  */
 
 package org.opencms.repository;
+
 import org.opencms.configuration.CmsConfigurationException;
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.wrapper.CmsObjectWrapper;
@@ -40,7 +42,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
-
 
 /**
  * Creates a repository session to access OpenCms.<p>
@@ -84,51 +85,12 @@ public class CmsRepository extends A_CmsRepository {
     @Override
     public void initConfiguration() throws CmsConfigurationException {
 
-        if (getConfiguration().containsKey(PARAM_WRAPPER)) {
-            List<String> wrappers = getConfiguration().getList(PARAM_WRAPPER);
-
-            for (String classname : wrappers) {
-
-                classname = classname.trim();
-                Class<?> nameClazz;
-
-                // init class for wrapper
-                try {
-                    nameClazz = Class.forName(classname);
-                } catch (ClassNotFoundException e) {
-                    LOG.error(Messages.get().getBundle().key(Messages.LOG_WRAPPER_CLASS_NOT_FOUND_1, classname), e);
-                    return;
-                }
-
-                I_CmsResourceWrapper wrapper;
-                try {
-                    wrapper = (I_CmsResourceWrapper)nameClazz.newInstance();
-                } catch (InstantiationException e) {
-                    throw new CmsConfigurationException(Messages.get().container(
-                        Messages.ERR_INVALID_WRAPPER_NAME_1,
-                        classname));
-                } catch (IllegalAccessException e) {
-                    throw new CmsConfigurationException(Messages.get().container(
-                        Messages.ERR_INVALID_WRAPPER_NAME_1,
-                        classname));
-                } catch (ClassCastException e) {
-                    throw new CmsConfigurationException(Messages.get().container(
-                        Messages.ERR_INVALID_WRAPPER_NAME_1,
-                        classname));
-                }
-
-                m_wrappers.add(wrapper);
-
-                if (CmsLog.INIT.isInfoEnabled()) {
-                    CmsLog.INIT.info(Messages.get().getBundle().key(
-                        Messages.INIT_ADD_WRAPPER_1,
-                        wrapper.getClass().getName()));
-                }
-            }
-        }
-
-        m_wrappers = Collections.unmodifiableList(m_wrappers);
-
+        CmsParameterConfiguration config = getConfiguration();
+        List<I_CmsResourceWrapper> wrapperObjects = CmsRepositoryManager.createResourceWrappersFromConfiguration(
+            config,
+            PARAM_WRAPPER,
+            LOG);
+        m_wrappers = Collections.unmodifiableList(wrapperObjects);
         super.initConfiguration();
     }
 

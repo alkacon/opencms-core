@@ -46,6 +46,9 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.dom.client.HasFocusHandlers;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
@@ -53,6 +56,8 @@ import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -81,7 +86,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  */
 public abstract class A_CmsSelectBox<OPTION extends A_CmsSelectCell> extends Composite
-implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
+implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_CmsTruncable {
 
     /**
      * The UI Binder interface for this widget.<p>
@@ -183,6 +188,9 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
     /** The widget width for truncation. */
     private int m_widgetWidth;
 
+    /** Handler registration for the window resize handler. */
+    private HandlerRegistration m_windowResizeHandlerReg;
+
     /**
      * Creates a new select box.<p>
      */
@@ -239,6 +247,14 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
         });
 
         initOpener();
+    }
+
+    /**
+     * @see com.google.gwt.event.dom.client.HasFocusHandlers#addFocusHandler(com.google.gwt.event.dom.client.FocusHandler)
+     */
+    public HandlerRegistration addFocusHandler(FocusHandler handler) {
+
+        return addDomHandler(handler, FocusEvent.getType());
     }
 
     /**
@@ -363,7 +379,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
 
         close();
         m_enabled = enabled;
-        DOM.setElementPropertyBoolean(getElement(), "disabled", !enabled);
+        getElement().setPropertyBoolean("disabled", !enabled);
         m_openClose.setEnabled(enabled);
         if (enabled) {
             removeStyleName(CSS.selectBoxDisabled());
@@ -511,6 +527,44 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
     protected abstract void initOpener();
 
     /**
+     * @see com.google.gwt.user.client.ui.Composite#onDetach()
+     */
+    @Override
+    protected void onDetach() {
+
+        super.onDetach();
+        removeWindowResizeHandler();
+    }
+
+    /**
+     * Handles the focus event on the opener.<p>
+     * 
+     * @param event  
+     */
+    @UiHandler("m_opener")
+    protected void onFocus(FocusEvent event) {
+
+        CmsDomUtil.fireFocusEvent(this);
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.Widget#onLoad()
+     */
+    @Override
+    protected void onLoad() {
+
+        removeWindowResizeHandler();
+        m_windowResizeHandlerReg = Window.addResizeHandler(new ResizeHandler() {
+
+            public void onResize(ResizeEvent event) {
+
+                close();
+            }
+        });
+
+    }
+
+    /**
      * This method is called when a value is selected.<p>
      * 
      * @param value the selected value 
@@ -619,6 +673,17 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
         // m_selectBoxState.setValue(CSS.selectBoxOpen());
 
         m_previewHandlerRegistration = Event.addNativePreviewHandler(new ScrollEventPreviewHandler());
+    }
+
+    /**
+     * Deinstalls the window resize handler.<p>
+     */
+    protected void removeWindowResizeHandler() {
+
+        if (m_windowResizeHandlerReg != null) {
+            m_windowResizeHandlerReg.removeHandler();
+            m_windowResizeHandlerReg = null;
+        }
     }
 
     /**

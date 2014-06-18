@@ -54,10 +54,9 @@
 }
 
 .tilingList .tilingItem .cmsHovering .buttonPanel, .tilingList .tilingItem .buttonPanel.permaVisible{
-	gwt-image: "backgrounds.softBackground";
 	height: auto;
 	border: 1px solid value("constants.css.borderColor");
-	background-color: value("constants.css.backgroundColorSoft");
+	background: value("constants.css.backgroundColorDialog");
 	border-radius:2px;
 	display:block;
 	top: 0px;
@@ -69,3 +68,9 @@
 }
 
 .unselectable {} 
+
+.changed{}
+
+.topRightIcon {} 
+
+.titleDeleted {}

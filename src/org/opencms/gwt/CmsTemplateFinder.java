@@ -36,6 +36,7 @@ import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.gwt.shared.property.CmsClientTemplateBean;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
@@ -49,6 +50,9 @@ import java.util.Map;
  * @since 8.0.0
  */
 public class CmsTemplateFinder {
+
+    /** Macro which is used in template.provider property to be substituted with the template path. */
+    public static final String MACRO_TEMPLATEPATH = "templatepath";
 
     /** The cms context. */
     protected CmsObject m_cms;
@@ -123,11 +127,19 @@ public class CmsTemplateFinder {
         CmsProperty titleProp = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false);
         CmsProperty descProp = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false);
         CmsProperty imageProp = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TEMPLATE_IMAGE, false);
-        return new CmsClientTemplateBean(
-            titleProp.getValue(),
-            descProp.getValue(),
-            cms.getSitePath(resource),
-            imageProp.getValue());
+        CmsProperty selectValueProp = cms.readPropertyObject(
+            resource,
+            CmsPropertyDefinition.PROPERTY_TEMPLATE_PROVIDER,
+            false);
+        String sitePath = cms.getSitePath(resource);
+        String templateValue = sitePath;
+        if (!selectValueProp.isNullProperty() && !CmsStringUtil.isEmptyOrWhitespaceOnly(selectValueProp.getValue())) {
+            String selectValue = selectValueProp.getValue();
+            CmsMacroResolver resolver = new CmsMacroResolver();
+            resolver.addMacro(MACRO_TEMPLATEPATH, sitePath);
+            templateValue = resolver.resolveMacros(selectValue);
+        }
+        return new CmsClientTemplateBean(titleProp.getValue(), descProp.getValue(), templateValue, imageProp.getValue());
     }
 
 }

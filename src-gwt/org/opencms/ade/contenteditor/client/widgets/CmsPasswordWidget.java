@@ -31,9 +31,12 @@ import com.alkacon.acacia.client.css.I_LayoutBundle;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
 import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.util.CmsDomUtil;
 
 import java.text.ParseException;
 
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -75,7 +78,13 @@ public class CmsPasswordWidget extends Composite implements I_EditWidget {
             }
 
         });
+        m_passwordTextBox.addFocusHandler(new FocusHandler() {
 
+            public void onFocus(FocusEvent event) {
+
+                CmsDomUtil.fireFocusEvent(CmsPasswordWidget.this);
+            }
+        });
     }
 
     /**
@@ -83,7 +92,7 @@ public class CmsPasswordWidget extends Composite implements I_EditWidget {
      */
     public HandlerRegistration addFocusHandler(FocusHandler handler) {
 
-        return null;
+        return addDomHandler(handler, FocusEvent.getType());
     }
 
     /**
@@ -100,9 +109,6 @@ public class CmsPasswordWidget extends Composite implements I_EditWidget {
      */
     public void fireChangeEvent() {
 
-        if ((m_passwordTextBox.getValue() == "")) {
-            m_passwordTextBox.setValue("");
-        }
         ValueChangeEvent.fire(this, m_passwordTextBox.getValue());
     }
 
@@ -133,6 +139,16 @@ public class CmsPasswordWidget extends Composite implements I_EditWidget {
     public void onAttachWidget() {
 
         super.onAttach();
+    }
+
+    /**
+     * @see com.alkacon.acacia.client.widgets.I_EditWidget#owns(com.google.gwt.dom.client.Element)
+     */
+    public boolean owns(Element element) {
+
+        // TODO implement this in case we want the delete behavior for optional fields
+        return false;
+
     }
 
     /**

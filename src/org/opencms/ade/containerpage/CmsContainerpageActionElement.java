@@ -28,7 +28,6 @@
 package org.opencms.ade.containerpage;
 
 import org.opencms.ade.containerpage.shared.CmsCntPageData;
-import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
 import org.opencms.ade.contenteditor.CmsContentEditorActionElement;
 import org.opencms.ade.galleries.CmsGalleryActionElement;
@@ -77,7 +76,7 @@ public class CmsContainerpageActionElement extends CmsGwtActionElement {
     public String export() throws Exception {
 
         StringBuffer sb = new StringBuffer();
-        sb.append(CmsContainer.KEY_CONTAINER_DATA).append("= new Array();");
+        sb.append(CmsCntPageData.KEY_CONTAINER_DATA).append("= new Array();");
         wrapScript(sb);
         sb.append(ClientMessages.get().export(getRequest()));
         sb.append(org.opencms.gwt.seo.ClientMessages.get().export(getRequest()));

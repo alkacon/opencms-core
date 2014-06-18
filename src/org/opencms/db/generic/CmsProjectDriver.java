@@ -994,7 +994,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                         dbc.currentProject().getUuid(),
                         delFile.getStructureId(),
                         true);
-                    CmsFile offlineFile = new CmsFile(offlineResource);
+                    CmsFile offlineFile = new CmsFile(offlineResource); 
                     offlineFile.setContents(vfsDriver.readContent(
                         dbc,
                         dbc.currentProject().getUuid(),
@@ -1094,6 +1094,15 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             while (itProjects.hasNext()) {
                 CmsProject project = itProjects.next();
                 deleteProjectResource(dbc, project.getUuid(), deletedResourceRootPath);
+            }
+
+            try {
+                m_driverManager.getVfsDriver(dbc).deleteAliases(
+                    dbc,
+                    onlineProject,
+                    new CmsAliasFilter(null, null, currentFolder.getStructureId()));
+            } catch (CmsDataAccessException e) {
+                LOG.error("Could not delete aliases: " + e.getLocalizedMessage(), e);
             }
 
             report.println(

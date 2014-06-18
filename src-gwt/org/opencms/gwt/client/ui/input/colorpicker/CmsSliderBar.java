@@ -28,11 +28,11 @@
 package org.opencms.gwt.client.ui.input.colorpicker;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.BorderStyle;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
@@ -170,7 +170,7 @@ public final class CmsSliderBar extends HTML {
                 //$FALL-THROUGH$
             case Event.ONMOUSEMOVE:
                 if (m_capturedMouse) {
-                    DOM.eventPreventDefault(event);
+                    event.preventDefault();
                     double abolut_top = getAbsoluteTop();
                     int y = ((event.getClientY() - (int)abolut_top) + Window.getScrollTop());
                     setSliderPosition(y);
@@ -303,7 +303,7 @@ public final class CmsSliderBar extends HTML {
                 default:
                     return;
             }
-
+            colorbar.getStyle().setOpacity((1.0 * alpha) / 100);
             CmsTransparencyImpl.setTransparency(colorbar, alpha);
         }
     }

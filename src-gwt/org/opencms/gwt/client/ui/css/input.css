@@ -1,5 +1,17 @@
 @external gwt-ToggleButton, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled;
 
+@external html-face;
+
+.alignCheckboxBottom.alignCheckboxBottom.alignCheckboxBottom.alignCheckboxBottom *, .alignCheckboxBottom.alignCheckboxBottom.alignCheckboxBottom.alignCheckboxBottom { 
+	vertical-align: baseline;  
+}
+
+.alignCheckboxBottom.alignCheckboxBottom.alignCheckboxBottom.alignCheckboxBottom .html-face > span:first-child { 
+	vertical-align: -3px; 
+}
+
+
+
 
 /* inner text box of the text box widget */
 input.textBox {
@@ -69,6 +81,15 @@ div.textArea {
     overflow:hidden;
 	position: relative;
 }
+div.textArea > div.disableTextArea {
+	position: absolute;
+	toP: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	background: #FFFFFF;
+	opacity: 0.1;
+}
 .textAreaBoxPanel{
 	border: 1px solid value("constants.css.borderColor");
 }
@@ -113,6 +134,48 @@ div.textArea textarea{
 @sprite .cmsState-down-hovering .checkBoxImage {
 	gwt-image: "inputImages.checkboxCheckedHover";
 }
+
+
+@sprite .triState .triStateOn {
+	gwt-image: "inputImages.checkboxChecked";
+	
+}
+
+@sprite .triState.cmsState-down-hovering .triStateOn,.triState.cmsState-up-hovering .triStateOn {
+	gwt-image: "inputImages.checkboxCheckedHover";
+}
+
+
+@sprite .triState .triStateOff {
+	gwt-image: "inputImages.checkboxUnchecked";
+	
+}
+
+@sprite .triState.cmsState-up-hovering .triStateOff, .triState.cmsState-down-hovering .triStateOff {
+	gwt-image: "inputImages.checkboxUncheckedHover";
+}
+
+
+@sprite .triState .triStateMedium {
+	gwt-image: "inputImages.checkboxCheckedSome";
+}
+
+@sprite .triState.cmsState-up-hovering .triStateMedium, .triState.cmsState-down-hovering .triStateMedium {
+	gwt-image: "inputImages.checkboxCheckedSomeHover";
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -325,7 +388,9 @@ div.selectBoxOpener {
     padding: 0px 15px 2px 0px;
     box-shadow: none;
     background:  value("constants.css.backgroundColorDialog");
+    margin-left: 5px; 
 }
+
 
 div.dataValue {
 	height: 20px;
@@ -352,7 +417,10 @@ div.categoryItem{
 	margin-top: 6px;
 }
 
-@if user.agent ie6 ie8 {
+@def FADER_LEFT_RIGHT literal("left, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%"); 
+@def FADER_TOP_BOTTOM literal("top, rgba(255,255,255,0) 0%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,1) 100%");  
+
+@if user.agent ie8 {
 	div.dataValue{
 		background-color: value("constants.css.gradientFormDialogColor");
 	}
@@ -362,57 +430,33 @@ div.categoryItem{
 	div.textArea div.fader{
 		filter: literal("progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#ffffff',GradientType=0 );");
 	}
-} @elif user.agent gecko gecko1_8 {
-	div.dataValue{
-		background-image: literal("-moz-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
-	}
-	div.fader {
-		background: literal("-moz-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%)");
-	}
-	div.textArea div.fader{
-		background: literal("-moz-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,1) 100%)");
-	}
-} @elif user.agent safari {
-	div.dataValue{
-		background-image: literal("-webkit-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
-	}
-	div.fader {
-		background: literal("-webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(255,255,255,1)))");
-	}
-	div.textArea div.fader{
-		background: literal("-webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0)), color-stop(50%,rgba(255,255,255,0.6)), color-stop(100%,rgba(255,255,255,1)))");
-	}
-} @elif user.agent opera {
-	div.dataValue{
-		background-image: literal("-o-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
-	}
-	div.fader {
-		background: literal("-o-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%)");
-	}
-	div.textArea div.fader{
-		background: literal("-o-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(255,255,255,0.6) 50%,rgba(255,255,255,1) 100%)");
-	}
-} @elif user.agent ie9 {
-	div.dataValue{
-		background-image: value("constants.css.gradientFormDialogIE9");
-	}
-	div.fader {
-		background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIwIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+); 
-	}
-	div.textArea div.fader{
-		background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIwIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjkwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
-	}
 } @else {
 	div.dataValue{
+		background-image: value("constants.css.gradientFormDialogIE9");
+		background-image: literal("-moz-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
+		background-image: literal("-ms-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
+		background-image: literal("-webkit-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
+		background-image: literal("-o-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
 		background-image: literal("linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
 	}
-	div.fader {
-		background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+	div.fader, div.textArea div.fader {
+		background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIwIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+		background-image: literal("-moz-linear-gradient(")FADER_LEFT_RIGHT literal(")") !important;
+		background-image: literal("-ms-linear-gradient(")FADER_LEFT_RIGHT literal(")") !important;
+		background-image: literal("-webkit-linear-gradient(")FADER_LEFT_RIGHT literal(")") !important;
+		background-image: literal("-o-linear-gradient(")FADER_LEFT_RIGHT literal(")") !important;
+		background-image: literal("linear-gradient(")FADER_LEFT_RIGHT literal(")") !important;
 	}
 	div.textArea div.fader{
-		background: linear-gradient(to bottom, rgba(255,255,255,0) 0%,rgba(255,255,255,0.6) 50%,rgba(255,255,255,1) 100%);
+		background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIwIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjkwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+		background-image: literal("-moz-linear-gradient(")FADER_TOP_BOTTOM literal(")") !important;
+		background-image: literal("-ms-linear-gradient(")FADER_TOP_BOTTOM literal(")") !important;
+		background-image: literal("-webkit-linear-gradient(")FADER_TOP_BOTTOM literal(")") !important;
+		background-image: literal("-o-linear-gradient(")FADER_TOP_BOTTOM literal(")") !important;
+		background-image: literal("linear-gradient(")FADER_TOP_BOTTOM literal(")") !important;
 	}
-}
+} 
+
 div.fader{
 	cursor: pointer;
     overflow: hidden;
@@ -431,7 +475,7 @@ div.selectionInput{
 	height: 18px;
 }
 
-div.selectionInput input{
+div.selectionInput>input[type=text]{
 	height: 18px;
 	width: 100%;
 	outline:none;

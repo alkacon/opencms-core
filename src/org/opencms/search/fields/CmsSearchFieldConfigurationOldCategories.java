@@ -39,7 +39,7 @@ import java.util.List;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.document.Fieldable;
+import org.apache.lucene.document.StringField;
 
 /**
  * Describes a field configuration using the old (pre 8.0) logic for categories that depend on properties.<p>
@@ -89,12 +89,8 @@ public class CmsSearchFieldConfigurationOldCategories extends CmsLuceneFieldConf
             // all categories are internally stored lower case
             value = value.trim().toLowerCase();
             if (value.length() > 0) {
-                Fieldable field = new Field(
-                    CmsSearchField.FIELD_CATEGORY,
-                    value,
-                    Field.Store.YES,
-                    Field.Index.NOT_ANALYZED);
-                field.setBoost(0);
+                Field field = new StringField(CmsSearchField.FIELD_CATEGORY, value, Field.Store.YES);
+                // field.setBoost(0);
                 doc.add(field);
             }
         }

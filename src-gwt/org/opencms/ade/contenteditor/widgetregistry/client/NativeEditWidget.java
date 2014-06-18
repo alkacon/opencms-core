@@ -30,7 +30,7 @@ package org.opencms.ade.contenteditor.widgetregistry.client;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.user.client.Element;
+import com.google.gwt.dom.client.Element;
 
 /**
  * Overlay object for native java script widgets.<p>
@@ -52,42 +52,42 @@ public final class NativeEditWidget extends JavaScriptObject {
      * @return the wrapping native java script object
      */
     public static native NativeEditWidget wrapWidget(I_EditWidget widget)/*-{
-        var nat = {
-            instance : widget
-        };
-        nat.getElement = function() {
-            return this.instance.@com.alkacon.acacia.client.widgets.I_EditWidget::asWidget()().@com.google.gwt.user.client.ui.Widget::getElement()();
-        }
-        nat.isActive = function() {
-            return this.instance.@com.alkacon.acacia.client.widgets.I_EditWidget::isActive()();
-        }
-        nat.setActive = function(active) {
-            return this.instance.@com.alkacon.acacia.client.widgets.I_EditWidget::setActive(Z)(active);
-        }
-        nat.getValue = function() {
-            return this.instance.@com.alkacon.acacia.client.widgets.I_EditWidget::getValue()();
-        }
-        nat.setValue = function(value, fireEvent) {
-            this.instance.@com.alkacon.acacia.client.widgets.I_EditWidget::setValue(Ljava/lang/String;Z)(value, fireEvent);
-        }
-        nat.onAttachWidget = function() {
-            this.instance.@com.alkacon.acacia.client.widgets.I_EditWidget::onAttachWidget()();
-        }
-        nat.onChange = function() {
-            if (this.onChangeCommand != null) {
-                this.onChangeCommand();
-            }
-        };
-        nat.onFocus = function() {
-            if (this.onFocusCommand != null) {
-                this.onFocusCommand();
-            }
-        };
-        var nativeHandler = @org.opencms.ade.contenteditor.widgetregistry.client.NativeEditWidget::getNativeHandler(Lorg/opencms/ade/contenteditor/widgetregistry/client/NativeEditWidget;)(nat);
-        widget.@com.alkacon.acacia.client.widgets.I_EditWidget::addValueChangeHandler(Lcom/google/gwt/event/logical/shared/ValueChangeHandler;)(nativeHandler);
-        widget.@com.alkacon.acacia.client.widgets.I_EditWidget::addFocusHandler(Lcom/google/gwt/event/dom/client/FocusHandler;)(nativeHandler);
-        return nat;
-    }-*/;
+                                                                         var nat = {
+                                                                         instance : widget
+                                                                         };
+                                                                         nat.getElement = function() {
+                                                                         return this.instance.@com.alkacon.acacia.client.widgets.I_EditWidget::asWidget()().@com.google.gwt.user.client.ui.Widget::getElement()();
+                                                                         }
+                                                                         nat.isActive = function() {
+                                                                         return this.instance.@com.alkacon.acacia.client.widgets.I_EditWidget::isActive()();
+                                                                         }
+                                                                         nat.setActive = function(active) {
+                                                                         return this.instance.@com.alkacon.acacia.client.widgets.I_EditWidget::setActive(Z)(active);
+                                                                         }
+                                                                         nat.getValue = function() {
+                                                                         return this.instance.@com.alkacon.acacia.client.widgets.I_EditWidget::getValue()();
+                                                                         }
+                                                                         nat.setValue = function(value, fireEvent) {
+                                                                         this.instance.@com.alkacon.acacia.client.widgets.I_EditWidget::setValue(Ljava/lang/String;Z)(value, fireEvent);
+                                                                         }
+                                                                         nat.onAttachWidget = function() {
+                                                                         this.instance.@com.alkacon.acacia.client.widgets.I_EditWidget::onAttachWidget()();
+                                                                         }
+                                                                         nat.onChange = function() {
+                                                                         if (this.onChangeCommand != null) {
+                                                                         this.onChangeCommand();
+                                                                         }
+                                                                         };
+                                                                         nat.onFocus = function() {
+                                                                         if (this.onFocusCommand != null) {
+                                                                         this.onFocusCommand();
+                                                                         }
+                                                                         };
+                                                                         var nativeHandler = @org.opencms.ade.contenteditor.widgetregistry.client.NativeEditWidget::getNativeHandler(Lorg/opencms/ade/contenteditor/widgetregistry/client/NativeEditWidget;)(nat);
+                                                                         widget.@com.alkacon.acacia.client.widgets.I_EditWidget::addValueChangeHandler(Lcom/google/gwt/event/logical/shared/ValueChangeHandler;)(nativeHandler);
+                                                                         widget.@com.alkacon.acacia.client.widgets.I_EditWidget::addFocusHandler(Lcom/google/gwt/event/dom/client/FocusHandler;)(nativeHandler);
+                                                                         return nat;
+                                                                         }-*/;
 
     /**
      * Returns an event handler that delegates to a native java script object.<p>
@@ -107,8 +107,8 @@ public final class NativeEditWidget extends JavaScriptObject {
      * @return the widget element
      */
     protected native Element getElement() /*-{
-        return this.getElement();
-    }-*/;
+                                          return this.getElement();
+                                          }-*/;
 
     /**
      * Returns the widget value.<p>
@@ -116,8 +116,8 @@ public final class NativeEditWidget extends JavaScriptObject {
      * @return the widget value
      */
     protected native String getValue()/*-{
-        return this.getValue();
-    }-*/;
+                                      return this.getValue();
+                                      }-*/;
 
     /**
      * Returns if the widget is active.<p>
@@ -125,15 +125,15 @@ public final class NativeEditWidget extends JavaScriptObject {
      * @return <code>true</code> if the widget is active
      */
     protected native boolean isActive() /*-{
-        return this.isActive();
-    }-*/;
+                                        return this.isActive();
+                                        }-*/;
 
     /**
      * Call when the widget was added into the window document.<p>
      */
     protected native void onAttachWidget()/*-{
-        this.onAttachWidget();
-    }-*/;
+                                          this.onAttachWidget();
+                                          }-*/;
 
     /**
      * Sets the widget active.<p>
@@ -141,8 +141,8 @@ public final class NativeEditWidget extends JavaScriptObject {
      * @param active <code>true</code> to activate the widget
      */
     protected native void setActive(boolean active)/*-{
-        this.setActive(active);
-    }-*/;
+                                                   this.setActive(active);
+                                                   }-*/;
 
     /**
      * Sets the widget value.<p>
@@ -150,8 +150,8 @@ public final class NativeEditWidget extends JavaScriptObject {
      * @param value the value
      */
     protected native void setValue(String value)/*-{
-        this.setValue(value, false);
-    }-*/;
+                                                this.setValue(value, false);
+                                                }-*/;
 
     /**
      * Sets the widget value.<p>
@@ -160,6 +160,6 @@ public final class NativeEditWidget extends JavaScriptObject {
      * @param fireEvent <code>true</code> to fire the value change event
      */
     protected native void setValue(String value, boolean fireEvent)/*-{
-        this.setValue(value, fireEvent);
-    }-*/;
+                                                                   this.setValue(value, fireEvent);
+                                                                   }-*/;
 }

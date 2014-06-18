@@ -37,6 +37,10 @@ Alkacon OpenCms Setup Wizard
 			alert("Please insert a Database Name");
 			document.forms[0].dbName.focus();
 			return false;
+		} else if (!isValidDbName(document.forms[0].dbName.value)) {
+		    alert("Invalid database name");
+			document.forms[0].dbName.focus();
+		    return false; 
 		}
 		else if (document.forms[0].createDb.value != "" && document.forms[0].templateDb.value == "") {
 			alert("Please insert the name of the Template Database");

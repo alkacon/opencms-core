@@ -37,6 +37,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.util.CmsFileUtil;
+import org.opencms.widgets.CmsComboWidget;
 import org.opencms.widgets.CmsSelectWidget;
 import org.opencms.widgets.CmsSelectWidgetOption;
 import org.opencms.widgets.CmsVfsFileWidget;
@@ -178,7 +179,8 @@ public class CmsSitesSettingsDialog extends CmsWidgetDialog {
 
         StringBuffer result = new StringBuffer(1024);
         result.append(createWidgetTableStart());
-        result.append(dialogBlockStart(Messages.get().getBundle().key(Messages.GUI_SITES_GENERAL_SETTINGS_0)));
+        result.append(dialogBlockStart(Messages.get().getBundle(getCms().getRequestContext().getLocale()).key(
+            Messages.GUI_SITES_GENERAL_SETTINGS_0)));
         result.append(createWidgetTableStart());
         result.append(createDialogRowsHtml(0, 2));
         result.append(createWidgetTableEnd());
@@ -217,6 +219,7 @@ public class CmsSitesSettingsDialog extends CmsWidgetDialog {
                     CmsSelectWidgetOption option = new CmsSelectWidgetOption(
                         site.getSiteRoot() + "/",
                         true,
+                        site.getTitle(),
                         site.getTitle());
                     defaultUriOptions.add(option);
                 } else {
@@ -224,23 +227,32 @@ public class CmsSitesSettingsDialog extends CmsWidgetDialog {
                     CmsSelectWidgetOption option = new CmsSelectWidgetOption(
                         site.getSiteRoot() + "/",
                         false,
+                        site.getTitle(),
                         site.getTitle());
                     defaultUriOptions.add(option);
                 }
                 if (site.getUrl().equals(OpenCms.getSiteManager().getWorkplaceServer())) {
                     // is the current wp server use as default option
-                    CmsSelectWidgetOption option = new CmsSelectWidgetOption(site.getUrl(), true, site.getTitle());
+                    CmsSelectWidgetOption option = new CmsSelectWidgetOption(
+                        site.getUrl(),
+                        true,
+                        site.getTitle(),
+                        site.getTitle());
                     wpServerOptions.add(option);
                 } else {
                     // no default, create a option
-                    CmsSelectWidgetOption option = new CmsSelectWidgetOption(site.getUrl(), false, site.getTitle());
+                    CmsSelectWidgetOption option = new CmsSelectWidgetOption(
+                        site.getUrl(),
+                        false,
+                        site.getTitle(),
+                        site.getTitle());
                     wpServerOptions.add(option);
 
                 }
             }
         }
 
-        addWidget(new CmsWidgetDialogParameter(this, "workplaceServer", PAGES[0], new CmsSelectWidget(wpServerOptions)));
+        addWidget(new CmsWidgetDialogParameter(this, "workplaceServer", PAGES[0], new CmsComboWidget(wpServerOptions)));
         addWidget(new CmsWidgetDialogParameter(this, "defaultUri", PAGES[0], new CmsSelectWidget(defaultUriOptions)));
         addWidget(new CmsWidgetDialogParameter(this, "sharedFolder", PAGES[0], new CmsVfsFileWidget(
             false,

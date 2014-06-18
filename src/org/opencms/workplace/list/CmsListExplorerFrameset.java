@@ -27,6 +27,7 @@
 
 package org.opencms.workplace.list;
 
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
@@ -104,25 +105,29 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
     public String defaultActionHtml() {
 
         String params = allParamsAsRequest();
-        String titleUri = getJsp().getRequest().getParameter(PARAM_TITLE_URI);
+        String titleUri = CmsEncoder.escapeXml(getJsp().getRequest().getParameter(PARAM_TITLE_URI));
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(titleUri)) {
             titleUri = CmsToolManager.ADMINVIEW_ROOT_LOCATION + "/list-title.jsp";
         }
         String titleSrc = getFrameSource("tool_title", getJsp().link(titleUri + "?" + params));
-        String contentSrc = getFrameSource("tool_content", getJsp().link(
-            CmsToolManager.ADMINVIEW_ROOT_LOCATION + "/list-explorer.jsp")
-            + "?"
-            + params);
+        String contentSrc = getFrameSource(
+            "tool_content",
+            getJsp().link(CmsToolManager.ADMINVIEW_ROOT_LOCATION + "/list-explorer.jsp") + "?" + params);
         StringBuffer html = new StringBuffer(1024);
         html.append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Frameset//EN\" \"http://www.w3.org/TR/html4/frameset.dtd\">\n");
         html.append("<html>\n");
         html.append("\t<head>\n");
         html.append("\t\t<meta HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=\"").append(getEncoding()).append(
             "\">\n");
+        String uplink = "/opencms_a/opencms/system/workplace/views/admin/admin-main.jsp?path=/projects/files&action=initial&projectid=fa9f561f-be30-11e2-bac3-21ebf444feef&showexplorer=true";
+        html.append("<script type='text/javascript'>var uplink = \""
+            + CmsStringUtil.escapeJavaScript(uplink)
+            + "\";</script>\n");
         html.append("\t\t<title>\n");
         html.append("\t\t\t").append(
-            key(org.opencms.workplace.Messages.GUI_LABEL_WPTITLE_1, new Object[] {getSettings().getUser().getFullName()})).append(
-            "\n");
+            key(
+                org.opencms.workplace.Messages.GUI_LABEL_WPTITLE_1,
+                new Object[] {getSettings().getUser().getFullName()})).append("\n");
         html.append("\t\t</title>\n");
         html.append("\t</head>\n");
         html.append("\t<frameset rows='57,*' border='0' frameborder='0' framespacing='0'>\n");
@@ -137,6 +142,7 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
     /**
      * @see org.opencms.workplace.tools.CmsToolDialog#dialogTitle()
      */
+    @Override
     public String dialogTitle() {
 
         StringBuffer html = new StringBuffer(512);
@@ -148,9 +154,10 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
             getJsp(),
             parentPath,
             parentTool.getHandler().getParameters(this));
-        String listLevelLink = CmsToolManager.linkForToolPath(getJsp(), toolPath, getToolManager().resolveAdminTool(
-            rootKey,
-            toolPath).getHandler().getParameters(this));
+        String listLevelLink = CmsToolManager.linkForToolPath(
+            getJsp(),
+            toolPath,
+            getToolManager().resolveAdminTool(rootKey, toolPath).getHandler().getParameters(this));
         listLevelLink = CmsRequestUtil.appendParameter(
             listLevelLink,
             A_CmsListExplorerDialog.PARAM_SHOW_EXPLORER,
@@ -236,7 +243,13 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
     public void displayDialog() throws IOException, ServletException {
 
         getSettings().setExplorerMode(CmsExplorer.VIEW_LIST);
-        getToolManager().jspForwardPage(this, FILE_EXPLORER_FILELIST, null);
+        Map<String, String[]> addParams = new HashMap<String, String[]>();
+        HttpServletRequest req = getJsp().getRequest();
+        String addParamsVal = req.getParameter(CmsExplorer.PARAMETER_CONTEXTMENUPARAMS);
+        if (addParamsVal != null) {
+            addParams.put(CmsExplorer.PARAMETER_CONTEXTMENUPARAMS, new String[] {addParamsVal});
+        }
+        getToolManager().jspForwardPage(this, FILE_EXPLORER_FILELIST, addParams);
     }
 
     /**
@@ -262,6 +275,7 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#paramsAsHidden(java.util.Collection)
      */
+    @Override
     public String paramsAsHidden(Collection excludes) {
 
         StringBuffer result = new StringBuffer(512);
@@ -277,7 +291,7 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
                     result.append("<input type=\"hidden\" name=\"");
                     result.append(param);
                     result.append("\" value=\"");
-                    result.append(value[i]);
+                    result.append(CmsEncoder.encode(value[i], getCms().getRequestContext().getEncoding()));
                     result.append("\">\n");
                 }
             }
@@ -298,6 +312,7 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
     /**
      * @see org.opencms.workplace.CmsDialog#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         setParamStyle(CmsToolDialog.STYLE_NEW);

@@ -27,6 +27,7 @@
 
 package org.opencms.ade.galleries.shared;
 
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.util.CmsStringUtil;
@@ -73,11 +74,17 @@ public class CmsGallerySearchBean implements IsSerializable {
     /** The start modification date criteria as long. */
     private long m_dateModifiedStart = -1L;
 
+    /** Flag to disable the preview. */
+    private boolean m_disablePreview;
+
     /** The list of selected vfs folders. */
     private Set<String> m_folders = new HashSet<String>();
 
     /** The list of selected galleries ids (path). */
     private List<String> m_galleries = new ArrayList<String>();
+
+    /** The gallery mode. */
+    private GalleryMode m_galleryMode;
 
     /** Indicates the search exclude property should be ignored. */
     private boolean m_ignoreSearchExclude;
@@ -174,6 +181,7 @@ public class CmsGallerySearchBean implements IsSerializable {
         setScope(searchObj.getScope());
         setIncludeExpired(searchObj.isIncludeExpired());
         setIgnoreSearchExclude(searchObj.isIgnoreSearchExclude());
+        setGalleryMode(searchObj.getGalleryMode());
     }
 
     /**
@@ -334,6 +342,16 @@ public class CmsGallerySearchBean implements IsSerializable {
     public List<String> getGalleries() {
 
         return m_galleries;
+    }
+
+    /**
+     * Gets the gallery mode.<p>
+     * 
+     * @return the gallery mode 
+     */
+    public GalleryMode getGalleryMode() {
+
+        return m_galleryMode;
     }
 
     /**
@@ -520,6 +538,16 @@ public class CmsGallerySearchBean implements IsSerializable {
     }
 
     /**
+     * Returns true if no preview should be shown for the search result.<p>
+     * 
+     * @return true if no preview should be shown 
+     */
+    public boolean isDisablePreview() {
+
+        return m_disablePreview;
+    }
+
+    /**
      * Checks if any search parameter are selected.<p>
      * 
      * @return false if any search parameter is selected, true if there are no search parameter selected
@@ -542,7 +570,7 @@ public class CmsGallerySearchBean implements IsSerializable {
             Long.valueOf(m_dateModifiedEnd),
             Long.valueOf(m_dateModifiedStart)});
         for (Long date : dates) {
-            if ((date != null) && (date != Long.valueOf(-1L))) {
+            if ((date != null) && (!date.equals(Long.valueOf(-1L)))) {
                 return false;
             }
         }
@@ -659,6 +687,16 @@ public class CmsGallerySearchBean implements IsSerializable {
         m_dateModifiedStart = dateModifiedStart;
     }
 
+    /**
+     * Sets the 'disable preview' flag.<p>
+     * 
+     * @param disablePreview true if the preview for the search result should not be shown 
+     */
+    public void setDisablePreview(boolean disablePreview) {
+
+        m_disablePreview = disablePreview;
+    }
+
     /** 
      * Sets the folders to search in.<p>
      * 
@@ -677,6 +715,16 @@ public class CmsGallerySearchBean implements IsSerializable {
     public void setGalleries(List<String> galleries) {
 
         m_galleries = galleries;
+    }
+
+    /**
+     * Sets the gallery mode.<p>
+     * 
+     * @param galleryMode the gallery mode to set 
+     */
+    public void setGalleryMode(GalleryMode galleryMode) {
+
+        m_galleryMode = galleryMode;
     }
 
     /**

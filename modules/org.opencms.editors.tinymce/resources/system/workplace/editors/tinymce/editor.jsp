@@ -61,7 +61,7 @@ if(grp.length() > 0){
 
 //Group
 grp = new StringBuilder() ;
-grp.append(",search,replace");
+grp.append(",searchreplace");
 
 if(grp.length() > 0){
 	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
@@ -70,12 +70,6 @@ if(grp.length() > 0){
 
 //Group
 grp = new StringBuilder() ;
-
-if (options.showElement("button.hr", displayOptions)) {
-	grp.append(",hr");
-}
-
-grp.append(",selectall") ;
 
 if (options.showElement("button.removeformat", displayOptions)) {
 	grp.append(",removeformat");
@@ -91,7 +85,7 @@ if(grp.length() > 0){
 
 //Group
 grp = new StringBuilder() ;
-grp.append(",cut,copy,paste,pastetext,pasteword");
+grp.append(",cut,copy,paste,pastetext");
 
 if(grp.length() > 0){
 	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
@@ -120,12 +114,7 @@ grp = new StringBuilder() ;
 if (options.showElement("option.links", displayOptions)) {
 
 	// determine if the local link button should be shown
-	if (options.showElement("option.link", displayOptions)) {
-		grp.append(",oc-link");
-	}
-
-	// determine if the external link button should be shown
-	if (options.showElement("option.extlink", displayOptions)) {
+	if (options.showElement("option.link", displayOptions)||options.showElement("option.extlink", displayOptions)) {
 		grp.append(",link");
 	}
 
@@ -177,9 +166,6 @@ if(grp.length() > 0){
 //Group
 grp = new StringBuilder() ;
 
-if (options.showElement("button.advhr", displayOptions)) {
-	grp.append(",advhr");
-}
 
 
 if (options.showElement("option.specialchars", displayOptions)) {
@@ -187,7 +173,7 @@ if (options.showElement("option.specialchars", displayOptions)) {
 }
 
 if (options.showElement("option.spellcheck", displayOptions)) {
-	grp.append(",iespell");
+	grp.append(",spellchecker");
 }
 
 
@@ -282,10 +268,10 @@ if (options.showElement("font.decoration", displayOptions)) {
 	}
 
 	if (options.showElement("button.sub", CmsStringUtil.TRUE, displayOptions)) {
-		grp.append(",sub");
+		grp.append(",subscript");
 	}
 	if (options.showElement("button.super", CmsStringUtil.TRUE, displayOptions)) {
-		grp.append(",sup");
+		grp.append(",superscript");
 	}
 }
 
@@ -299,16 +285,16 @@ grp = new StringBuilder() ;
 //determine if the text alignment buttons should be shown
 if (options.showElement("text.align", displayOptions)) {
 	if (options.showElement("button.alignleft", CmsStringUtil.TRUE, displayOptions)) {
-		grp.append(",justifyleft");
+		grp.append(",alignleft");
 	}
 	if (options.showElement("button.aligncenter", CmsStringUtil.TRUE, displayOptions)) {
-		grp.append(",justifycenter");
+		grp.append(",aligncenter");
 	}
 	if (options.showElement("button.alignright", CmsStringUtil.TRUE, displayOptions)) {
-		grp.append(",justifyright");
+		grp.append(",alignright");
 	}
 	if (options.showElement("button.justify", CmsStringUtil.TRUE, displayOptions)) {
-		grp.append(",justifyfull");
+		grp.append(",alignjustify");
 	}
 }
 
@@ -354,6 +340,12 @@ if (options.showElement("button.blockquote", CmsStringUtil.TRUE, displayOptions)
 	grp.append(",blockquote");
 }
 
+if (options.showElement("button.hr", CmsStringUtil.TRUE, displayOptions)) {
+	grp.append(",hr");
+}
+
+
+
 if(grp.length() > 0){
 	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
 }
@@ -383,19 +375,12 @@ if (options.showElement("button.image", displayOptions)) {
 	grp.append(",image");
 }
 
-if (options.showElement("option.cleanup", displayOptions)) {
-	grp.append(",cleanup");
-}
 
 //determine if the help button should be shown
 if (wp.isHelpEnabled()) {
 	if (options.showElement("option.help", displayOptions)) {
 		grp.append(",oc-help");
 	}
-}
-
-if (options.showElement("option.sourcecode", displayOptions)) {
-	grp.append(",code");
 }
 
 if(grp.length() > 0){
@@ -439,21 +424,8 @@ if(grp.length() > 0){
 //Group
 grp = new StringBuilder() ;
 
-if (options.showElement("button.insertlayer", displayOptions)) {
-	grp.append(",insertlayer");
-}
 
-if (options.showElement("button.moveforward", displayOptions)) {
-	grp.append(",moveforward");
-}
 
-if (options.showElement("button.movebackward", displayOptions)) {
-	grp.append(",movebackward");
-}
-
-if (options.showElement("button.absolute", displayOptions)) {
-	grp.append(",absolute");
-}
 
 if(grp.length() > 0){
 	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
@@ -462,44 +434,11 @@ if(grp.length() > 0){
 //Group
 grp = new StringBuilder() ;
 
-if (options.showElement("button.styleprops", displayOptions)) {
-	grp.append(",styleprops");
-}
 
 if(grp.length() > 0){
 	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
 }
 
-//Group
-grp = new StringBuilder() ;
-
-if (options.showElement("button.cite", displayOptions)) {
-	grp.append(",cite");
-}
-
-if (options.showElement("button.abbr", displayOptions)) {
-	grp.append(",abbr");
-}
-
-if (options.showElement("button.acronym", displayOptions)) {
-	grp.append(",acronym");
-}
-
-if (options.showElement("button.del", displayOptions)) {
-	grp.append(",del");
-}
-
-if (options.showElement("button.ins", displayOptions)) {
-	grp.append(",ins");
-}
-
-if (options.showElement("button.attribs", displayOptions)) {
-	grp.append(",attribs");
-}
-
-if(grp.length() > 0){
-	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
-}
 
 //Group
 grp = new StringBuilder() ;
@@ -559,13 +498,13 @@ case CmsEditor.ACTION_DELETELOCALE:
 	if (wp.getAction() == CmsEditor.ACTION_DELETELOCALE) {
 		wp.actionDeleteElementLocale();
     }
-
+	//$FALL-THROUGH$
 case CmsEditor.ACTION_SAVE:
 //////////////////// ACTION: save the modified content
 	if (wp.getAction() == CmsEditor.ACTION_SAVE) {
 		wp.actionSave();
 	}
-
+	//$FALL-THROUGH$
 case CmsDialog.ACTION_DEFAULT:
 case CmsEditor.ACTION_SHOW:
 default:
@@ -581,11 +520,9 @@ default:
 <meta http-equiv="content-type" content="text/html; charset=<%= wp.getEncoding() %>">
 <title>(<%= wp.getSettings().getUser().getName() %>) - <%= wp.getParamResource() %></title>
 
-<link rel=stylesheet type="text/css" href="<%= wp.getStyleUri("workplace.css") %>">
-<link rel=stylesheet type="text/css" href="<%= cms.link("/system/workplace/editors/tinymce/tinymce_xmlpage.css") %>">
-<!-- <script type="text/javascript" src="<cms:link>/system/workplace/editors/tinymce/gallery.js</cms:link>"></script>
-<script type="text/javascript" src="<cms:link>/system/workplace/editors/tinymce/link.js</cms:link>"></script>-->
-<script type="text/javascript" src="<%= CmsWorkplace.getSkinUri() + "editors/tinymce/jscripts/tiny_mce/" %>tiny_mce_src.js"></script>
+<link rel="stylesheet" type="text/css" href="<%= wp.getStyleUri("workplace.css") %>">
+<link rel="stylesheet" type="text/css" href="<%= cms.link("/system/workplace/editors/tinymce/tinymce_xmlpage.css") %>">
+<script type="text/javascript" src="<%= CmsWorkplace.getSkinUri() + "editors/tinymce/jscripts/tinymce/" %>tinymce.min.js"></script>
 <script type="text/javascript" src="<%= CmsWorkplace.getSkinUri() + "jquery/packed/" %>jquery.js"></script>
 <script type="text/javascript">
 
@@ -744,31 +681,40 @@ function popupCloseAction(closeObj) {
 <script type="text/javascript" src="<cms:link>/system/workplace/editors/tinymce/opencms_plugin.js</cms:link>"></script>
 <script type="text/javascript">
 <!--
+var toolbarButtons="<%= CmsTinyMCE.buildToolbar(toolbar.toString())%>";
+var contextmenu="";
+if (toolbarButtons.indexOf("link")>0)
+    contextmenu+="link";
+if (toolbarButtons.indexOf("OcmsDownloadGallery")>0)
+    contextmenu+=" OcmsDownloadGallery";
+if (toolbarButtons.indexOf("OcmsImageGallery")>0)
+    contextmenu+=" OcmsImageGallery";
+if (toolbarButtons.indexOf("table")>0)
+    contextmenu+=" inserttable | cell row column deletetable"
+
+var plugins = "anchor,charmap,code,textcolor,autolink,lists,pagebreak,layer,table,save,hr,image,link,emoticons,insertdatetime,preview,media,searchreplace,print,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,template,wordcount,advlist,code,-opencms";
+if (contextmenu!="")
+    plugins+=",contextmenu"
+
 tinyMCE.init({
     // General options
+    toolbar_items_size: 'small',
     mode : "exact",
     elements : "tinymce_content",
-    theme : "advanced",
-    plugins : "autolink,lists,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template,wordcount,-opencms",
-    file_browser_callback : 'cmsTinyMceFileBrowser',
+    theme : "modern",
+    plugins : plugins,
+    contextmenu: contextmenu,
+    file_browser_callback : cmsTinyMceFileBrowser,
     entity_encoding: "raw",
-
-    // Theme options
-    <%= CmsTinyMCE.buildToolbar(toolbar.toString())%>
-    theme_advanced_toolbar_location : "top",
-    theme_advanced_toolbar_align : "left",
-    theme_advanced_statusbar_location : "bottom",
-    theme_advanced_resizing : false,
-    paste_text_sticky: true,
-    paste_text_sticky_default: <%=""+Boolean.valueOf(OpenCms.getWorkplaceManager().getWorkplaceEditorManager().getEditorConfiguration("tinymce").getParameters().get("paste_text"))%>,
-    
+	toolbar: toolbarButtons,
+	toolbar_items_size: 'small',
+    menubar:false,
+    resize : false,
+    paste_as_text: <%=""+Boolean.valueOf(OpenCms.getWorkplaceManager().getWorkplaceEditorManager().getEditorConfiguration("tinymce").getParameters().get("paste_text"))%>,
     cmsGalleryEnhancedOptions : <%= options.showElement("gallery.enhancedoptions", displayOptions)%>,
     cmsGalleryUseThickbox : <%= options.showElement("gallery.usethickbox", displayOptions)%>,
     language : "<%= wp.getLocale().getLanguage() %>",
-
-    // Skin options
-    skin_variant : "ocms",
-    relative_urls: false,
+	relative_urls: false,
     remove_script_host: false,
 
     // Example content CSS (should be your site CSS)
@@ -783,10 +729,19 @@ tinyMCE.init({
     <%
     if(formatSelectOption){
     	String format = options.getOptionValue("formatselect.options", "", displayOptions);
-    	format = StringUtils.replace(format, ";", ",");
-    	%>
-    	theme_advanced_blockformats : "<%=format%>",
-    	<%
+    	if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(format)){
+	    	String[] formats=format.split(";");
+	    	format="";
+	    	for (int i=0; i < formats.length; i++){
+	    	    format+=formats[i].toUpperCase()+"="+formats[i];
+	    	    if (i<formats.length-1){
+	    	        format+=";";
+	    	    }
+	    	}
+	    	%>
+	    	block_formats : "<%=format%>",
+	    	<%
+    	}
     }
     %>
     
@@ -810,12 +765,12 @@ tinyMCE.init({
     
     // events
     setup : function(ed) {
-		  ed.onInit.add(function(ed) {
-		      ed.setContent(decodeURIComponent('<%= wp.getParamContent() %>'));
-		      ed.undoManager.clear();
-		      addCustomShortcuts(ed);
+		  ed.on("init",function(event) {
+		      event.target.setContent(decodeURIComponent('<%= wp.getParamContent() %>'));
+		      event.target.undoManager.clear();
+		      addCustomShortcuts(event.target);
 		  });
-		  setupTinyMCE(ed);
+		//  setupTinyMCE(ed);
 		// Add Publisg button
 	    ed.addButton('oc-publish', {
 	    	title : '<%= CmsEncoder.encodeJavaEntities(wp.key(org.opencms.workplace.editors.Messages.GUI_EXPLORER_CONTEXT_PUBLISH_0), encoding)  %>',
@@ -972,7 +927,7 @@ if (options.showElement("option.cleanup", displayOptions)) {
 
 <tr>
 <td style="width:100%; height:100%;">
-<div id="textarea-container" class="cmsTinyMCE" style="width:100%; height:100%; background-color: Window;">
+<div id="textarea-container" class="cmsTinyMCE" style="width:100%; height:100%; background-color: /*begin-color Window*/#ffffff/*end-color*/;">
 <script language="javascript">
 document.write ('<textarea id="tinymce_content" name="tinymce_content" style="height:'+getEditorHeight()+'px; width:100%;"></textarea>');
 </script>

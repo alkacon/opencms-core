@@ -43,7 +43,9 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.nio.ByteBuffer;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -56,10 +58,11 @@ import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrException;
 import org.apache.solr.common.SolrInputDocument;
-import org.apache.solr.schema.DateField;
+import org.apache.solr.common.util.DateUtil;
 import org.apache.solr.schema.FieldType;
 import org.apache.solr.schema.IndexSchema;
 import org.apache.solr.schema.SchemaField;
+import org.apache.solr.schema.TrieDateField;
 
 /**
  * A search document implementation for Solr indexes.<p>
@@ -67,6 +70,9 @@ import org.apache.solr.schema.SchemaField;
  * @since 8.5.0
  */
 public class CmsSolrDocument implements I_CmsSearchDocument {
+
+    /** A constant for the Solr date format. */
+    protected static DateFormat DF = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSolrDocument.class);
@@ -84,6 +90,7 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
      */
     public CmsSolrDocument(SolrDocument doc) {
 
+        this();
         m_doc = ClientUtils.toSolrInputDocument(doc);
     }
 
@@ -94,8 +101,16 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
      */
     public CmsSolrDocument(SolrInputDocument doc) {
 
+        this();
         m_doc = doc;
+    }
 
+    /**
+     * Private constructor.<p>
+     */
+    private CmsSolrDocument() {
+
+        DF.setTimeZone(DateUtil.UTC);
     }
 
     /**
@@ -135,10 +150,10 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
      */
     public void addDateField(String name, long time, boolean analyzed) {
 
-        String dateValue = DateField.formatExternal(new Date(time));
-        m_doc.addField(name, dateValue);
+        String val = DF.format(new Date(time));
+        m_doc.addField(name, val);
         if (analyzed) {
-            m_doc.addField(name + CmsSearchField.FIELD_DATE_LOOKUP_SUFFIX, dateValue);
+            m_doc.addField(name + CmsSearchField.FIELD_DATE_LOOKUP_SUFFIX, val);
         }
     }
 
@@ -263,8 +278,8 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(val)) {
                         try {
                             FieldType type = schema.getFieldType(fieldName);
-                            if (type instanceof DateField) {
-                                val = DateField.formatExternal(new Date(new Long(val).longValue()));
+                            if (type instanceof TrieDateField) {
+                                val = DF.format(new Date(new Long(val).longValue()));
                             }
                         } catch (SolrException e) {
                             LOG.debug(e.getMessage(), e);
@@ -347,7 +362,7 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
         }
         if (o != null) {
             try {
-                return DateField.parseDate(o.toString());
+                return DateUtil.parseDate(o.toString());
             } catch (ParseException e) {
                 // ignore: not a valid date format
                 LOG.debug(e);

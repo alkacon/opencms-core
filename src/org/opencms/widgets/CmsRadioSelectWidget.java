@@ -28,6 +28,7 @@
 package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
+import org.opencms.xml.content.I_CmsXmlContentHandler.DisplayType;
 
 import java.util.Iterator;
 import java.util.List;
@@ -80,6 +81,15 @@ public class CmsRadioSelectWidget extends A_CmsSelectWidget {
     public CmsRadioSelectWidget(String configuration) {
 
         super(configuration);
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getDefaultDisplayType()
+     */
+    @Override
+    public DisplayType getDefaultDisplayType() {
+
+        return DisplayType.wide;
     }
 
     /**

@@ -41,7 +41,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
@@ -121,7 +120,7 @@ public class CmsColorSelector extends Composite implements KeyPressHandler, Clic
         m_blue = 0;
 
         HorizontalPanel panel = new HorizontalPanel();
-        panel.setSpacing(5);
+        panel.addStyleName(I_CmsLayoutBundle.INSTANCE.colorSelectorCss().colorSelectorWidget());
         FlexTable table = new FlexTable();
 
         // Add the slider map
@@ -826,7 +825,7 @@ public class CmsColorSelector extends Composite implements KeyPressHandler, Clic
      */
     private void setPreview(String hex) {
 
-        DOM.setStyleAttribute(m_colorpreview.getElement(), "backgroundColor", "#" + hex);
+        m_colorpreview.getElement().getStyle().setBackgroundColor("#" + hex);
     }
 
     /**

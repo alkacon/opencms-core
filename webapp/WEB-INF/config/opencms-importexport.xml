@@ -152,5 +152,14 @@
 				<param name="index">Solr Online</param>
 			</params>
 		</repository>
+		<repository name="OPENCMS" class="org.opencms.jlan.CmsJlanRepository">
+			<params>
+				<param name="project">Offline</param>
+				<param name="root">/</param>
+				<param name="addBOM">false</param>
+				<param name="wrapper">org.opencms.file.wrapper.CmsResourceWrapperPreventCreateNameCI:thumbs.db|.thumbnails|.xvpics</param>
+				<param name="wrapper">org.opencms.file.wrapper.CmsResourceWrapperReplaceDeleted</param>
+			</params>					
+		</repository>
 	</repositories>
 </opencms>

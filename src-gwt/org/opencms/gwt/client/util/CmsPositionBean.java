@@ -28,9 +28,13 @@
 package org.opencms.gwt.client.util;
 
 import org.opencms.gwt.client.util.CmsDomUtil.Style;
+import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Node;
+import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.user.client.ui.UIObject;
 
@@ -144,34 +148,88 @@ public class CmsPositionBean {
      */
     public static CmsPositionBean getInnerDimensions(Element panel) {
 
+        return getInnerDimensions(panel, 2, false);
+    }
+
+    /**
+     * Returns a position info representing the dimensions of all visible child elements of the given panel (excluding elements with position:absolute).
+     * If the panel has no visible child elements, it's outer dimensions are returned.<p>
+     * 
+     * @param panel the panel
+     * @param levels the levels to traverse down the DOM tree
+     * @param includeSelf <code>true</code> to include the outer dimensions of the given panel
+     * 
+     * @return the position info
+     */
+    public static CmsPositionBean getInnerDimensions(Element panel, int levels, boolean includeSelf) {
+
         boolean first = true;
         int top = 0;
         int left = 0;
         int bottom = 0;
         int right = 0;
-        Element child = panel.getFirstChildElement();
-        while (child != null) {
-            String positioning = CmsDomUtil.getCurrentStyle(child, Style.position);
-            if (!Display.NONE.getCssName().equals(CmsDomUtil.getCurrentStyle(child, Style.display))
-                && !(positioning.equalsIgnoreCase(Position.ABSOLUTE.getCssName()) || positioning.equalsIgnoreCase(Position.FIXED.getCssName()))) {
-                if (first) {
-                    first = false;
-                    top = child.getAbsoluteTop();
-                    left = child.getAbsoluteLeft();
-                    bottom = top + child.getOffsetHeight();
-                    right = left + child.getOffsetWidth();
-                } else {
-                    int wTop = child.getAbsoluteTop();
-                    top = top < wTop ? top : wTop;
-                    int wLeft = child.getAbsoluteLeft();
-                    left = left < wLeft ? left : wLeft;
-                    int wBottom = wTop + child.getOffsetHeight();
-                    bottom = bottom > wBottom ? bottom : wBottom;
-                    int wRight = wLeft + child.getOffsetWidth();
-                    right = right > wRight ? right : wRight;
+        // if overflow is set to hidden, use the outer dimensions
+        // if there is a background color set, use the outer dimensions
+        String parentBackground = CmsDomUtil.getCurrentStyle(panel.getParentElement(), Style.backgroundColor);
+        String selfBackground = CmsDomUtil.getCurrentStyle(panel, Style.backgroundColor);
+        if (!Overflow.HIDDEN.getCssName().equals(CmsDomUtil.getCurrentStyle(panel, Style.overflow))
+            && ((parentBackground.equals(selfBackground) || "transparent".equals(selfBackground)))) {
+            if (!includeSelf) {
+                // check for any text content
+                NodeList<Node> children = panel.getChildNodes();
+                for (int i = 0; i < children.getLength(); i++) {
+                    if ((children.getItem(i).getNodeType() == Node.TEXT_NODE)
+                        && CmsStringUtil.isNotEmptyOrWhitespaceOnly(children.getItem(i).getNodeValue())) {
+                        includeSelf = true;
+                        break;
+                    }
                 }
             }
-            child = child.getNextSiblingElement();
+            if (includeSelf) {
+                top = panel.getAbsoluteTop();
+                left = panel.getAbsoluteLeft();
+                bottom = top + panel.getOffsetHeight();
+                right = left + panel.getOffsetWidth();
+                first = false;
+            }
+            Element child = panel.getFirstChildElement();
+            while (child != null) {
+                String tagName = child.getTagName();
+                if (tagName.equalsIgnoreCase("br")
+                    || tagName.equalsIgnoreCase("tr")
+                    || tagName.equalsIgnoreCase("thead")
+                    || tagName.equalsIgnoreCase("tfoot")
+                    || tagName.equalsIgnoreCase("script")
+                    || tagName.equalsIgnoreCase("style")) {
+                    // ignore tags with no relevant position info
+                    child = child.getNextSiblingElement();
+                    continue;
+                }
+                String positioning = CmsDomUtil.getCurrentStyle(child, Style.position);
+                if (!Display.NONE.getCssName().equals(CmsDomUtil.getCurrentStyle(child, Style.display))
+                    && !(positioning.equalsIgnoreCase(Position.ABSOLUTE.getCssName()) || positioning.equalsIgnoreCase(Position.FIXED.getCssName()))) {
+                    CmsPositionBean childDimensions = levels > 0
+                    ? getInnerDimensions(child, levels - 1, true)
+                    : generatePositionInfo(panel);
+                    if (first) {
+                        first = false;
+                        top = childDimensions.getTop();
+                        left = childDimensions.getLeft();
+                        bottom = top + childDimensions.getHeight();
+                        right = left + childDimensions.getWidth();
+                    } else {
+                        int wTop = childDimensions.getTop();
+                        top = top < wTop ? top : wTop;
+                        int wLeft = childDimensions.getLeft();
+                        left = left < wLeft ? left : wLeft;
+                        int wBottom = wTop + childDimensions.getHeight();
+                        bottom = bottom > wBottom ? bottom : wBottom;
+                        int wRight = wLeft + childDimensions.getWidth();
+                        right = right > wRight ? right : wRight;
+                    }
+                }
+                child = child.getNextSiblingElement();
+            }
         }
         if (!first) {
             CmsPositionBean result = new CmsPositionBean();
@@ -197,34 +255,34 @@ public class CmsPositionBean {
     public Area getArea(int absLeft, int absTop, int offset) {
 
         if (isOverElement(absLeft, absTop)) {
-            if (absLeft < m_left + 10) {
+            if (absLeft < (m_left + 10)) {
                 // left border
-                if (absTop < m_top + offset) {
+                if (absTop < (m_top + offset)) {
                     // top left corner
                     return Area.CORNER_TOP_LEFT;
-                } else if (absTop > m_top + m_height - offset) {
+                } else if (absTop > ((m_top + m_height) - offset)) {
                     // bottom left corner
                     return Area.CORNER_BOTTOM_LEFT;
                 }
                 return Area.BORDER_LEFT;
             }
-            if (absLeft > m_left + m_width - offset) {
+            if (absLeft > ((m_left + m_width) - offset)) {
                 // right border
-                if (absTop < m_top + offset) {
+                if (absTop < (m_top + offset)) {
                     // top right corner
                     return Area.CORNER_TOP_RIGHT;
                     // fixing opposite corner
-                } else if (absTop > m_top + m_height - offset) {
+                } else if (absTop > ((m_top + m_height) - offset)) {
                     // bottom right corner
                     return Area.CORNER_BOTTOM_RIGHT;
                     // fixing opposite corner
                 }
                 return Area.BORDER_RIGHT;
             }
-            if (absTop < m_top + offset) {
+            if (absTop < (m_top + offset)) {
                 // border top
                 return Area.BORDER_TOP;
-            } else if (absTop > m_top + m_height - offset) {
+            } else if (absTop > ((m_top + m_height) - offset)) {
                 // border bottom
                 return Area.BORDER_BOTTOM;
             }

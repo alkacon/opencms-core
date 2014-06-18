@@ -79,6 +79,15 @@ public class CmsModuleDependency implements Comparable<Object> {
     }
 
     /**
+     * @see java.lang.Object#clone()
+     */
+    @Override
+    public Object clone() {
+
+        return new CmsModuleDependency(m_name, new CmsModuleVersion(m_version.getVersion()));
+    }
+
+    /**
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
     public int compareTo(Object obj) {

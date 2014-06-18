@@ -29,10 +29,10 @@ package org.opencms.jsp;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.collectors.CmsCollectorData;
 import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -77,9 +77,6 @@ import org.apache.commons.logging.Log;
  * @since 6.0.0 
  */
 public class CmsJspTagEditable extends BodyTagSupport {
-
-    /** Parameter to disable direct edit. */
-    public static final String PARAM_DISABLE_DIRECT_EDIT = "__disableDirectEdit";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJspTagEditable.class);
@@ -215,8 +212,10 @@ public class CmsJspTagEditable extends BodyTagSupport {
     public static void insertEditEmpty(PageContext context, I_CmsXmlContentContainer container, CmsDirectEditMode mode)
     throws CmsException, JspException {
 
-        if ((container.getCollectorResult() != null) && (container.getCollectorResult().size() == 0)) {
-            ServletRequest req = context.getRequest();
+        ServletRequest req = context.getRequest();
+        if (isEditableRequest(req)
+            && (container.getCollectorResult() != null)
+            && (container.getCollectorResult().size() == 0)) {
             CmsFlexController controller = CmsFlexController.getController(req);
             CmsObject cms = controller.getCmsObject();
             // now collect the resources
@@ -231,9 +230,13 @@ public class CmsJspTagEditable extends BodyTagSupport {
                 cms,
                 container.getCollectorName(),
                 container.getCollectorParam());
-            CmsCollectorData collectorData = new CmsCollectorData(createParam);
-            if ((createParam != null) && (collectorData.getType() != -1)) {
-                String createFolderName = CmsResource.getFolderPath(createParam);
+            String createLink = collector.getCreateLink(
+                cms,
+                container.getCollectorName(),
+                container.getCollectorParam());
+            if ((createParam != null)
+                && (collector.getCreateTypeId(cms, container.getCollectorName(), container.getCollectorParam()) != -1)) {
+                String createFolderName = CmsResource.getFolderPath(createLink);
                 createParam = CmsEncoder.encode(container.getCollectorName() + "|" + createParam);
                 getDirectEditProvider(context).insertDirectEditEmptyList(
                     context,
@@ -251,8 +254,31 @@ public class CmsJspTagEditable extends BodyTagSupport {
      */
     public static boolean isDirectEditDisabled(ServletRequest request) {
 
-        String disabledParam = request.getParameter(PARAM_DISABLE_DIRECT_EDIT);
+        String disabledParam = request.getParameter(CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT);
         return Boolean.parseBoolean(disabledParam);
+    }
+
+    /**
+     * Checks if the current request should be direct edit enabled. 
+     * Online-, history-requests and temporary files will not be editable.
+     * 
+     * @param req the servlet request
+     * 
+     * @return <code>true</code> if the current request should be direct edit enabled
+     */
+    public static boolean isEditableRequest(ServletRequest req) {
+
+        boolean result = true;
+        if (CmsHistoryResourceHandler.isHistoryRequest(req) || CmsJspTagEditable.isDirectEditDisabled(req)) {
+            // don't display direct edit buttons on an historical resource
+            result = false;
+        } else {
+            CmsFlexController controller = CmsFlexController.getController(req);
+            CmsObject cms = controller.getCmsObject();
+            result = !cms.getRequestContext().getCurrentProject().isOnlineProject()
+                && !CmsResource.isTemporaryFileName(cms.getRequestContext().getUri());
+        }
+        return result;
     }
 
     /**
@@ -303,29 +329,6 @@ public class CmsJspTagEditable extends BodyTagSupport {
         CmsDirectEditParams result = (CmsDirectEditParams)req.getAttribute(I_CmsDirectEditProvider.ATTRIBUTE_DIRECT_EDIT_PROVIDER_PARAMS);
         if (result != null) {
             req.removeAttribute(I_CmsDirectEditProvider.ATTRIBUTE_DIRECT_EDIT_PROVIDER_PARAMS);
-        }
-        return result;
-    }
-
-    /**
-     * Checks if the current request should be direct edit enabled. 
-     * Online-, history-requests and temporary files will not be editable.
-     * 
-     * @param req the servlet request
-     * 
-     * @return <code>true</code> if the current request should be direct edit enabled
-     */
-    protected static boolean isEditableRequest(ServletRequest req) {
-
-        boolean result = true;
-        if (CmsHistoryResourceHandler.isHistoryRequest(req) || isDirectEditDisabled(req)) {
-            // don't display direct edit buttons on an historical resource
-            result = false;
-        } else {
-            CmsFlexController controller = CmsFlexController.getController(req);
-            CmsObject cms = controller.getCmsObject();
-            result = !cms.getRequestContext().getCurrentProject().isOnlineProject()
-                && !CmsResource.isTemporaryFileName(cms.getRequestContext().getUri());
         }
         return result;
     }

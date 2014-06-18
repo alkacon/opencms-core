@@ -236,12 +236,20 @@
  </types>
 
  <fields>
-   <field name="id"                  type="uuid"         indexed="true"  stored="true"  default="NEW"/><!-- Unique identifier. -->
+   <field name="id"                  type="uuid"         indexed="true"  stored="true"  /><!-- Unique identifier. -->
    <field name="timestamp"           type="date"         indexed="true"  stored="true"  default="NOW"/>
    <field name="path"                type="string"       indexed="true"  stored="true"  required="true" />
    <field name="path_hierarchy"      type="text_path"    indexed="true"  stored="false" required="true" /><!-- is copied -->
    <field name="parent-folders"      type="string"       indexed="true"  stored="false" required="true" multiValued="true" />
    <field name="type"                type="string"       indexed="true"  stored="true"  required="true" />
+   <field name="state"               type="string"       indexed="true"  stored="true" />
+   <field name="userLastModified"    type="string"       indexed="true"  stored="true" />
+   <field name="userCreated"         type="string"       indexed="true"  stored="true" />
+   <field name="version"             type="int"          indexed="true"  stored="true" />
+   <field name="filename"            type="string"       indexed="true"  stored="true" />
+   <field name="search_exclude"      type="boolean"      indexed="true"  stored="true" />
+   <field name="mimetype"            type="string"       indexed="true"  stored="true" />
+   <field name="containerTypes"      type="string"       indexed="true"  stored="true" />
    <field name="suffix"              type="string"       indexed="true"  stored="true" />
    <field name="size"                type="int"          indexed="true"  stored="true"  required="true" />
    <field name="res_locales"         type="string"       indexed="true"  stored="true"  required="true" multiValued="true" />
@@ -250,11 +258,13 @@
    <field name="created"             type="date"         indexed="true"  stored="true"  required="true" />
    <field name="lastmodified"        type="date"         indexed="true"  stored="true"  required="true" />
    <field name="expired"             type="date"         indexed="true"  stored="true"  />
-   <field name="relased"             type="date"         indexed="true"  stored="true"  />
-   <field name="content"             type="text_general" indexed="true"  stored="false" multiValued="true" compressed="true" />
-   <field name="contentblob"         type="binary"       indexed="false" stored="true"  compressed="true" />
+   <field name="released"            type="date"         indexed="true"  stored="true"  />
+   <field name="meta"                type="text_general" indexed="true"  stored="true"  multiValued="true" />
+   <field name="content"             type="text_general" indexed="true"  stored="false" multiValued="true" />
+   <field name="contentblob"         type="binary"       indexed="false" stored="true"  />
    <field name="category"            type="text_general" indexed="true"  stored="true"  multiValued="true" />
    <field name="category_exact"      type="string"       indexed="true"  stored="false" multiValued="true" termVectors="true" /><!-- is copied -->
+   <field name="additionalInfo"      type="string"       indexed="false" stored="true" />
    <field name="dependencyType"      type="string"       indexed="true"  stored="true" />
    <field name="place"               type="location"     indexed="true"  stored="true" />
    <field name="spell"               type="spell"        indexed="true"  stored="true"  multiValued="true"/>
@@ -267,7 +277,7 @@
    <field name="text_hu"             type="text_hu"      indexed="true"  stored="false" multiValued="true"/><!-- Catchall for Hungarian text fields -->
    <field name="text_it"             type="text_it"      indexed="true"  stored="false" multiValued="true"/><!-- Catchall for Italian text fields -->
 
-   <dynamicField name="*_excerpt"    type="text_general" indexed="true"  stored="true" termVectors="on" termPositions="on" termOffsets="on" maxChars="1000" />
+   <dynamicField name="*_excerpt"    type="text_general" indexed="true"  stored="true" termVectors="on" termPositions="on" termOffsets="on" />
    <dynamicField name="*_exact"      type="string"       indexed="true"  stored="false"/>
    <dynamicField name="*_prop"       type="text_general" indexed="true"  stored="true"/>
    <dynamicField name="*_i"          type="int"          indexed="true"  stored="true"/>
@@ -316,7 +326,10 @@
  <copyField source="*_prop"    dest="*_exact" />
  <copyField source="path"      dest="path_hierarchy" /> 
  <copyField source="category"  dest="category_exact" />
- <copyField source="*_en"      dest="spell"/>
+
+ <copyField source="Title_prop" dest="spell"/>
+ <copyField source="content_de" dest="spell"/>
+ <copyField source="content_en" dest="spell"/>
 
  <uniqueKey>id</uniqueKey>
 

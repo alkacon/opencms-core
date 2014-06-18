@@ -1,0 +1,26 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+    <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
+    <xsd:element name="HeadIncludeJavascripts" type="OpenCmsHeadIncludeJavascripts" />
+    
+    <xsd:complexType name="OpenCmsHeadIncludeJavascripts">
+        <xsd:sequence>
+            <xsd:element name="HeadIncludeJavascript" type="OpenCmsHeadIncludeJavascript" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="OpenCmsHeadIncludeJavascript">
+        <xsd:choice minOccurs="0" maxOccurs="unbounded">
+        	<xsd:element name="JavascriptInline" type="OpenCmsString" minOccurs="0" />
+        	<xsd:element name="JavascriptLink" type="OpenCmsVfsFile" minOccurs="0"  />
+        </xsd:choice>
+        <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
+    </xsd:complexType>
+   <xsd:annotation>
+        <xsd:appinfo>
+        <resourcebundle name="org.opencms.xml.containerpage.messages"/>
+        <layouts>
+        	<layout element="JavascriptInline" widget="TextareaWidget" configuration="15" />
+        </layouts>
+        </xsd:appinfo> 
+    </xsd:annotation>    
+</xsd:schema>

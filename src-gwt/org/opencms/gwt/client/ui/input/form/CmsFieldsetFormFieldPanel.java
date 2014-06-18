@@ -38,7 +38,6 @@ import java.util.List;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Panel;
 
 /**
  * Form field panel which puts its form fields into a field set, and also displays a resource info box.<p>
@@ -51,8 +50,8 @@ public class CmsFieldsetFormFieldPanel extends A_CmsFormFieldPanel {
     /** The list of form fields. */
     protected List<I_CmsFormField> m_fields;
 
-    /** The panel containing the form field widgets. */
-    private FlowPanel m_fieldsetContents = new FlowPanel();
+    /** The main field set. */
+    private CmsFieldSet m_fieldSet;
 
     /** The main panel .*/
     private FlowPanel m_panel;
@@ -70,15 +69,10 @@ public class CmsFieldsetFormFieldPanel extends A_CmsFormFieldPanel {
         liWidget.truncate(TM_INFOBOX, CmsFormDialog.STANDARD_DIALOG_WIDTH - 50);
         liWidget.setStateIcon(StateIcon.standard);
         m_panel.add(liWidget);
-        CmsFieldSet fieldSet = new CmsFieldSet();
-        fieldSet.setLegend(legend);
-        fieldSet.add(m_fieldsetContents);
-        fieldSet.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
-        m_panel.add(fieldSet);
-
-        //m_innerPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
-        //m_innerPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.propertiesCss().navModePropertiesBox());
-        //setBorder(m_panel);
+        m_fieldSet = new CmsFieldSet();
+        m_fieldSet.setLegend(legend);
+        m_fieldSet.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
+        m_panel.add(m_fieldSet);
         initWidget(m_panel);
     }
 
@@ -92,11 +86,21 @@ public class CmsFieldsetFormFieldPanel extends A_CmsFormFieldPanel {
     }
 
     /**
+     * Returns the main field set.<p>
+     * 
+     * @return the main field set
+     */
+    public CmsFieldSet getFieldSet() {
+
+        return m_fieldSet;
+    }
+
+    /**
      * Gets the main panel.<p>
      * 
      * @return the main panel 
      */
-    public Panel getMainPanel() {
+    public FlowPanel getMainPanel() {
 
         return m_panel;
     }
@@ -107,10 +111,10 @@ public class CmsFieldsetFormFieldPanel extends A_CmsFormFieldPanel {
     @Override
     public void renderFields(Collection<I_CmsFormField> fields) {
 
-        m_fieldsetContents.clear();
+        m_fieldSet.clear();
         for (I_CmsFormField field : fields) {
             CmsFormRow row = createRow(field);
-            m_fieldsetContents.add(row);
+            m_fieldSet.add(row);
         }
     }
 
@@ -119,9 +123,7 @@ public class CmsFieldsetFormFieldPanel extends A_CmsFormFieldPanel {
      */
     public void truncate(String textMetricsKey, int clientWidth) {
 
-        clientWidth -= 12;
         storeTruncation(textMetricsKey, clientWidth);
         truncatePanel(m_panel, textMetricsKey, clientWidth);
-        truncatePanel(m_fieldsetContents, textMetricsKey, clientWidth);
     }
 }

@@ -85,3 +85,21 @@ div.marker {
 	right: 100px;
 	top: 0px;
 }
+
+.hasChildren {} 
+
+.hasNoChildren {} 
+
+.hasNavChildren {}
+
+.hasNoNavChildren {}
+
+.navMode .hasNoNavChildren .treeItemOpener {
+	display: none; 
+}
+
+.vfsMode .hasNoChildren .treeItemOpener {
+	display: none; 
+}
+
+ 

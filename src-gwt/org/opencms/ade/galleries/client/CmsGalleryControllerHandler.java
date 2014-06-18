@@ -58,6 +58,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -111,6 +112,7 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
                 break;
             case ade:
             case view:
+            case adeView:
             default:
                 break;
         }
@@ -229,13 +231,6 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
                 panel.setWidth("660px");
                 panel.getElement().getStyle().setProperty("margin", "20px auto");
 
-            } else if (m_mode.equals(I_CmsGalleryProviderConstants.GalleryMode.editor)) {
-
-                RootPanel panel = RootPanel.get(I_CmsGalleryProviderConstants.GALLERY_DIALOG_ID);
-                panel.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popup());
-                panel.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupContent());
-                panel.addStyleName(org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.galleryDialogCss().editorGallery());
-
             }
 
             if ((dialogBean.getSitemapSiteSelectorOptions() == null)
@@ -279,15 +274,17 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
                 m_galleryDialog.getVfsTab().fillInitially(dialogBean.getVfsRootFolders());
             }
         }
+
         if (startTab == GalleryTabId.cms_tab_results) {
             if (searchObj.isEmpty()) {
-                // if there are no search parameters set, don't show the result tab
-                startTab = m_mode.getTabs()[0];
+                startTab = dialogBean.getTabConfiguration().getDefaultTab();
             }
         }
         m_galleryDialog.selectTab(startTab, startTab != GalleryTabId.cms_tab_results);
+
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(searchObj.getResourcePath())
-            && CmsStringUtil.isNotEmptyOrWhitespaceOnly(searchObj.getResourceType())) {
+            && CmsStringUtil.isNotEmptyOrWhitespaceOnly(searchObj.getResourceType())
+            && !searchObj.isDisablePreview()) {
             if (m_galleryDialog.isAttached()) {
                 controller.openPreview(searchObj.getResourcePath(), searchObj.getResourceType());
             } else {
@@ -305,6 +302,15 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
                 });
             }
         }
+        Timer timer = new Timer() {
+
+            @Override
+            public void run() {
+
+                m_galleryDialog.updateSizes();
+            }
+        };
+        timer.schedule(1);
 
     }
 
@@ -485,8 +491,8 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
      */
     protected native String getCloseLink() /*-{
 
-      return $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::ATTR_CLOSE_LINK];
-    }-*/;
+                                           return $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::ATTR_CLOSE_LINK];
+                                           }-*/;
 
     /**
      * Causes the preloaded tree states to be displayed in the tree tabs.<p>

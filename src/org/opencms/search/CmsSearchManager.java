@@ -34,6 +34,8 @@ import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsEvent;
@@ -44,6 +46,8 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.main.OpenCmsSolrHandler;
+import org.opencms.relations.CmsRelation;
+import org.opencms.relations.CmsRelationFilter;
 import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.scheduler.I_CmsScheduledJob;
@@ -85,9 +89,7 @@ import java.util.TreeMap;
 import org.apache.commons.logging.Log;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.search.Similarity;
 import org.apache.lucene.util.Version;
-import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.core.CoreContainer;
@@ -230,10 +232,14 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
          *
          * @return the resources to index
          */
-        protected synchronized List<CmsPublishedResource> getResourcesToIndex() {
+        protected List<CmsPublishedResource> getResourcesToIndex() {
 
-            List<CmsPublishedResource> result = m_resourcesToIndex;
-            m_resourcesToIndex = new ArrayList<CmsPublishedResource>();
+            List<CmsPublishedResource> result;
+            synchronized (this) {
+                result = m_resourcesToIndex;
+                m_resourcesToIndex = new ArrayList<CmsPublishedResource>();
+            }
+            findRelatedContainerPages(m_adminCms, result);
             return result;
         }
 
@@ -416,6 +422,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
             for (CmsPublishedResource pubRes : resourcesToIndex) {
                 int pos = result.indexOf(pubRes);
+
+                // do not index temporary files
                 if (pos < 0) {
                     // resource not already contained in the update list
                     result.add(pubRes);
@@ -428,6 +436,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                         result.add(pubRes);
                     }
                 }
+
             }
             return changeStateOfMoveOriginsToDeleted(result);
         }
@@ -604,7 +613,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     public static final String JOB_PARAM_WRITELOG = "writeLog";
 
     /** Prefix for Lucene default analyzers package (<code>org.apache.lucene.analysis.</code>). */
-    public static final String LUCENE_ANALYZER = "org.apache.lucene.analysis.";
+    public static final String LUCENE_ANALYZER = "org.apache.lucene.analysis.core.";
 
     /** The log object for this class. */
     protected static final Log LOG = CmsLog.getLog(CmsSearchManager.class);
@@ -620,6 +629,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /** Configured analyzers for languages using &lt;analyzer&gt;. */
     private HashMap<Locale, CmsSearchAnalyzer> m_analyzers;
+
+    /** Stores the offline update frequency while indexing is paused. */
+    private long m_configuredOfflineIndexingFrequency;
 
     /** The Solr core container. */
     private CoreContainer m_coreContainer;
@@ -715,6 +727,62 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
+     * Returns the Solr index configured with the parameters name.
+     * The parameters must contain a key/value pair with an existing 
+     * Solr index, otherwise <code>null</code> is returned.<p>
+     * 
+     * @param cms the current context
+     * @param params the parameter map
+     * 
+     * @return the best matching Solr index
+     */
+    public static final CmsSolrIndex getIndexSolr(CmsObject cms, Map<String, String[]> params) {
+
+        String indexName = null;
+        CmsSolrIndex index = null;
+        // try to get the index name from the parameters: 'core' or 'index'
+        if (params != null) {
+            indexName = params.get(OpenCmsSolrHandler.PARAM_CORE) != null
+            ? params.get(OpenCmsSolrHandler.PARAM_CORE)[0]
+            : (params.get(OpenCmsSolrHandler.PARAM_INDEX) != null
+            ? params.get(OpenCmsSolrHandler.PARAM_INDEX)[0]
+            : null);
+        }
+        if (indexName == null) {
+            // if no parameter is specified try to use the default online/offline indexes by context
+            indexName = cms.getRequestContext().getCurrentProject().isOnlineProject()
+            ? CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE
+            : CmsSolrIndex.DEFAULT_INDEX_NAME_OFFLINE;
+        }
+        // try to get the index
+        index = indexName != null ? OpenCms.getSearchManager().getIndexSolr(indexName) : null;
+        if (index == null) {
+            // index not found -> try to get the first configured Solr index from the config
+            List<CmsSolrIndex> solrs = OpenCms.getSearchManager().getAllSolrIndexes();
+            if ((solrs != null) && !solrs.isEmpty() && (solrs.size() == 1)) {
+                index = solrs.get(0);
+            }
+        }
+        return index;
+    }
+
+    /**
+     * Returns <code>true</code> if the index for the given name is a Lucene index, <code>false</code> otherwise.<p>
+     * 
+     * @param indexName the name of the index to check
+     * 
+     * @return <code>true</code> if the index for the given name is a Lucene index
+     */
+    public static boolean isLuceneIndex(String indexName) {
+
+        CmsSearchIndex i = OpenCms.getSearchManager().getIndex(indexName);
+        if (i instanceof CmsSolrIndex) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Returns an analyzer for the given class name.<p>
      * 
      * Since Lucene 3.0, many analyzers require a "version" parameter in the constructor and 
@@ -731,7 +799,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      * @deprecated The stemmer parameter is used only by the snownall analyzer, which is deprecated in Lucene 3.
      */
     @Deprecated
-    public static Analyzer getAnalyzer(String className, String stemmer) throws Exception {
+    private static Analyzer getAnalyzer(String className, String stemmer) throws Exception {
 
         Analyzer analyzer = null;
         Class<?> analyzerClass;
@@ -789,62 +857,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             }
         }
         return analyzer;
-    }
-
-    /**
-     * Returns the Solr index configured with the parameters name.
-     * The parameters must contain a key/value pair with an existing 
-     * Solr index, otherwise <code>null</code> is returned.<p>
-     * 
-     * @param cms the current context
-     * @param params the parameter map
-     * 
-     * @return the best matching Solr index
-     */
-    public static final CmsSolrIndex getIndexSolr(CmsObject cms, Map<String, String[]> params) {
-
-        String indexName = null;
-        CmsSolrIndex index = null;
-        // try to get the index name from the parameters: 'core' or 'index'
-        if (params != null) {
-            indexName = params.get(OpenCmsSolrHandler.PARAM_CORE) != null
-            ? params.get(OpenCmsSolrHandler.PARAM_CORE)[0]
-            : (params.get(OpenCmsSolrHandler.PARAM_INDEX) != null
-            ? params.get(OpenCmsSolrHandler.PARAM_INDEX)[0]
-            : null);
-        }
-        if (indexName == null) {
-            // if no parameter is specified try to use the default online/offline indexes by context
-            indexName = cms.getRequestContext().getCurrentProject().isOnlineProject()
-            ? CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE
-            : CmsSolrIndex.DEFAULT_INDEX_NAME_OFFLINE;
-        }
-        // try to get the index
-        index = indexName != null ? OpenCms.getSearchManager().getIndexSolr(indexName) : null;
-        if (index == null) {
-            // index not found -> try to get the first configured Solr index from the config
-            List<CmsSolrIndex> solrs = OpenCms.getSearchManager().getAllSolrIndexes();
-            if ((solrs != null) && !solrs.isEmpty() && (solrs.size() == 1)) {
-                index = solrs.get(0);
-            }
-        }
-        return index;
-    }
-
-    /**
-     * Returns <code>true</code> if the index for the given name is a Lucene index, <code>false</code> otherwise.<p>
-     * 
-     * @param indexName the name of the index to check
-     * 
-     * @return <code>true</code> if the index for the given name is a Lucene index
-     */
-    public static boolean isLuceneIndex(String indexName) {
-
-        CmsSearchIndex i = OpenCms.getSearchManager().getIndex(indexName);
-        if (i instanceof CmsSolrIndex) {
-            return false;
-        }
-        return true;
     }
 
     /**
@@ -1472,9 +1484,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         initializeIndexes();
         initOfflineIndexes();
 
-        // register the modified default similarity implementation
-        Similarity.setDefault(new CmsSearchSimilarity());
-
         // register this object as event listener
         OpenCms.addCmsEventListener(this, new int[] {
             I_CmsEventListener.EVENT_CLEAR_CACHES,
@@ -1511,6 +1520,16 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         m_offlineIndexes = offlineIndexes;
         m_offlineHandler.initialize();
 
+    }
+
+    /**
+     * Returns if the offline indexing is paused.<p>
+     * 
+     * @return <code>true</code> if the offline indexing is paused
+     */
+    public boolean isOfflineIndexingPaused() {
+
+        return m_offlineUpdateFrequency == Long.MAX_VALUE;
     }
 
     /**
@@ -1574,6 +1593,19 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             LOG.info(finishMessage);
         }
         return finishMessage;
+    }
+
+    /**
+     * Pauses the offline indexing.<p>
+     * May take some time, because the indexes are updated first.<p>
+     */
+    public void pauseOfflineIndexing() {
+
+        if (m_offlineUpdateFrequency != Long.MAX_VALUE) {
+            m_configuredOfflineIndexingFrequency = m_offlineUpdateFrequency;
+            m_offlineUpdateFrequency = Long.MAX_VALUE;
+            updateOfflineIndexes(0);
+        }
     }
 
     /**
@@ -1659,11 +1691,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      * 
      * @param index the index to register a new Solr core for
      * 
-     * @return the Solr server instance using the created core
-     * 
      * @throws CmsConfigurationException if no Solr server is configured
      */
-    public SolrServer registerSolrIndex(CmsSolrIndex index) throws CmsConfigurationException {
+    public void registerSolrIndex(CmsSolrIndex index) throws CmsConfigurationException {
 
         if ((m_solrConfig == null) || !m_solrConfig.isEnabled()) {
             // No solr server configured
@@ -1672,7 +1702,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         if (m_solrConfig.getServerUrl() != null) {
             // HTTP Server configured
-            return registerOnHttpServer(index);
+            // TODO Implement multi core support for HTTP server
+            // @see http://lucidworks.lucidimagination.com/display/solr/Configuring+solr.xml
+            index.setSolrServer(new HttpSolrServer(m_solrConfig.getServerUrl()));
         }
 
         // get the core container that contains one core for each configured index
@@ -1680,10 +1712,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             m_coreContainer = createCoreContainer();
         }
 
-        // get the core
-        SolrCore core = m_coreContainer.getCore(index.getName());
-
-        if (core == null) {
+        // create a new core if no core exists for the given index
+        if (!m_coreContainer.getCoreNames().contains(index.getName())) {
             // Being sure the core container is not 'null',
             // we can create a core for this index if not already existent
             File dataDir = new File(index.getPath());
@@ -1699,13 +1729,15 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 }
             }
 
+            // create the core
             CoreDescriptor descriptor = new CoreDescriptor(m_coreContainer, "descriptor", m_solrConfig.getHome());
             descriptor.setDataDir(dataDir.getAbsolutePath());
             try {
-                core = m_coreContainer.create(descriptor);
+                SolrCore core = m_coreContainer.create(descriptor);
                 core.setName(index.getName());
                 // Register the newly created core
                 m_coreContainer.register(core, false);
+                index.setSolrServer(new EmbeddedSolrServer(m_coreContainer, index.getName()));
             } catch (Exception e) {
                 throw new CmsConfigurationException(Messages.get().container(
                     Messages.ERR_SOLR_SERVER_NOT_CREATED_3,
@@ -1714,11 +1746,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     m_solrConfig.getSolrConfigFile().getAbsolutePath()), e);
             }
         }
-        SolrServer server = new EmbeddedSolrServer(m_coreContainer, index.getName());
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SOLR_SERVER_CREATED_1, index.getName()));
         }
-        return server;
     }
 
     /**
@@ -1912,6 +1942,18 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         // remove operation (no exception) 
         return m_indexSources.remove(indexsource.getName()) != null;
 
+    }
+
+    /**
+     * Resumes offline indexing if it was paused.<p>
+     */
+    public void resumeOfflineIndexing() {
+
+        if (m_offlineUpdateFrequency == Long.MAX_VALUE) {
+            setOfflineUpdateFrequency(m_configuredOfflineIndexingFrequency > 0
+            ? m_configuredOfflineIndexingFrequency
+            : DEFAULT_OFFLINE_UPDATE_FREQNENCY);
+        }
     }
 
     /**
@@ -2133,16 +2175,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             OpenCms.removeCmsEventListener(m_offlineHandler);
         }
 
-        if (m_coreContainer != null) {
-            for (SolrCore core : m_coreContainer.getCores()) {
-                core.closeSearcher();
-            }
-            m_coreContainer.shutdown();
-            if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SOLR_SHUTDOWN_SUCCESS_0));
-            }
-        }
-
         Iterator<CmsSearchIndex> i = m_indexes.iterator();
         while (i.hasNext()) {
             CmsSearchIndex index = i.next();
@@ -2150,6 +2182,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             index = null;
         }
         m_indexes.clear();
+
+        shutDownSolrContainer();
 
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SHUTDOWN_MANAGER_0));
@@ -2188,6 +2222,67 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         // clean up the extraction result cache
         m_extractionResultCache.cleanCache(m_extractionCacheMaxAge);
+    }
+
+    /**
+     * Collects the related containerpages to the resources that have been published.<p>
+     * 
+     * @param adminCms an OpenCms user context with Admin permissions
+     * @param updateResources the resources to be re-indexed
+     * 
+     * @return the updated list of resource to re-index
+     */
+    protected List<CmsPublishedResource> findRelatedContainerPages(
+        CmsObject adminCms,
+        List<CmsPublishedResource> updateResources) {
+
+        Set<CmsResource> elementGroups = new HashSet<CmsResource>();
+        Set<CmsResource> containerPages = new HashSet<CmsResource>();
+        for (CmsPublishedResource pubRes : updateResources) {
+            try {
+                if (OpenCms.getResourceManager().getResourceType(pubRes.getType()) instanceof CmsResourceTypeXmlContent) {
+                    CmsRelationFilter filter = CmsRelationFilter.relationsToStructureId(pubRes.getStructureId());
+                    filter.filterStrong();
+                    List<CmsRelation> relations = adminCms.readRelations(filter);
+                    for (CmsRelation relation : relations) {
+                        CmsResource res = relation.getSource(adminCms, CmsResourceFilter.ALL);
+                        if (CmsResourceTypeXmlContainerPage.isContainerPage(res)) {
+                            containerPages.add(res);
+                        } else if (OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName().equals(
+                            CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME)) {
+                            elementGroups.add(res);
+                        }
+                    }
+                }
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        for (CmsResource pubRes : elementGroups) {
+            try {
+                CmsRelationFilter filter = CmsRelationFilter.relationsToStructureId(pubRes.getStructureId());
+                filter.filterStrong();
+                List<CmsRelation> relations = adminCms.readRelations(filter);
+                for (CmsRelation relation : relations) {
+                    CmsResource res = relation.getSource(adminCms, CmsResourceFilter.ALL);
+                    if (CmsResourceTypeXmlContainerPage.isContainerPage(res)) {
+                        containerPages.add(res);
+                    }
+                }
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        // add all found container pages as published resource objects to the list
+        for (CmsResource page : containerPages) {
+            CmsPublishedResource pubCont = new CmsPublishedResource(page);
+            if (!updateResources.contains(pubCont)) {
+                // ensure container page is added only once
+                updateResources.add(pubCont);
+            }
+        }
+
+        return updateResources;
     }
 
     /**
@@ -2413,6 +2508,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 }
             }
 
+            findRelatedContainerPages(adminCms, updateResources);
             if (!updateResources.isEmpty()) {
                 // sort the resource to update
                 Collections.sort(updateResources);
@@ -2821,16 +2917,30 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
-     * Register the given index on the configured HTTP server.<p>
-     * 
-     * @param index the index to register
-     * 
-     * @return the created Solr server instance
+     * Shuts down the Solr core container.<p>
      */
-    private SolrServer registerOnHttpServer(CmsSolrIndex index) {
+    private void shutDownSolrContainer() {
 
-        // TODO Implement multi core support for HTTP server
-        // @see http://lucidworks.lucidimagination.com/display/solr/Configuring+solr.xml
-        return new HttpSolrServer(m_solrConfig.getServerUrl());
+        if (m_coreContainer != null) {
+            for (SolrCore core : m_coreContainer.getCores()) {
+                m_coreContainer.remove(core.getName());
+                if (core.getOpenCount() > 1) {
+                    LOG.error("There are still "
+                        + core.getOpenCount()
+                        + " open Solr cores left, potetial resource leak!");
+                    for (int i = 0; i <= core.getOpenCount(); i++) {
+                        core.close();
+                    }
+                } else {
+                    // close the last one
+                    core.close();
+                }
+            }
+            m_coreContainer.shutdown();
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SOLR_SHUTDOWN_SUCCESS_0));
+            }
+            m_coreContainer = null;
+        }
     }
 }

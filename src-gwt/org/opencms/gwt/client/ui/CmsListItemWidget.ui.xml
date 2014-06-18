@@ -15,12 +15,23 @@
 			}
 		}
 		
-		.titleBox {
-			overflow: hidden;
-			text-overflow: ellipsis; 	
-			white-space: nowrap; 
-			word-wrap: break-word; 
-		} 
+		
+		@if user.agent ie6 ie8 ie9 {
+			.titleBox {
+				overflow: hidden;
+				text-overflow: ellipsis; 	
+				white-space: nowrap; 
+				word-wrap: normal; 
+			} 
+	    } @else {
+			.titleBox {
+				overflow: hidden;
+				text-overflow: ellipsis; 	
+				white-space: nowrap; 
+				word-wrap: break-word; 
+			} 
+		}  
+	    
 		
 	</ui:style>
 	<cms:CmsHoverPanel styleName="{resources.listItemWidgetCss.itemContainer}" addStyleNames="{resources.generalCss.cornerAll} {resources.generalCss.textMedium}">
@@ -29,7 +40,7 @@
 				<g:SimplePanel styleName="{resources.listItemWidgetCss.itemIcon}" ui:field="m_iconPanel" />
 		    	<g:FlowPanel ui:field="m_titleRow" styleName="{resources.listItemWidgetCss.titleRow}" >
 		    	  <g:FlowPanel ui:field="m_titleBox" addStyleNames="{style.titleBox}">
-		    	  	<cmsInput:CmsLabel ui:field="m_title" addStyleNames="{resources.listItemWidgetCss.itemTitle} {resources.generalCss.inlineBlock}"/>
+		    	  	<cmsInput:CmsLabel ui:field="m_title" addStyleNames="{resources.listItemWidgetCss.itemTitle}"/>
 		    	  </g:FlowPanel>
 		    	  <g:Label styleName="{style.brk}" /><!-- Abuse label to force a newline. -->
 		    	  <cmsInput:CmsLabel ui:field="m_subtitle" addStyleNames="{resources.generalCss.inlineBlock}" />

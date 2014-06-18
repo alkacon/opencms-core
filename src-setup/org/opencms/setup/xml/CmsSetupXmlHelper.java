@@ -32,6 +32,7 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
 
@@ -318,25 +319,27 @@ public class CmsSetupXmlHelper {
                 handleNode(elem, childrenPart);
                 return elem;
             }
-            Map<String, String> children = CmsStringUtil.splitAsMap(childrenPart, "][", "=");
-            // handle child nodes
-            for (Map.Entry<String, String> child : children.entrySet()) {
-                String childName = child.getKey();
-                String childValue = child.getValue();
-                if (childValue.startsWith("'")) {
-                    childValue = childValue.substring(1);
-                }
-                if (childValue.endsWith("'")) {
-                    childValue = childValue.substring(0, childValue.length() - 1);
-                }
-                if (childName.startsWith("@")) {
-                    elem.addAttribute(childName.substring(1), childValue);
-                } else if (childName.equals("text()")) {
-                    elem.setText(childValue);
-                } else if (!childName.contains("(")) {
-                    Element childElem = elem.addElement(childName);
-                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(childValue)) {
-                        childElem.addText(childValue);
+            if (childrenPart.contains("=")) {
+                Map<String, String> children = CmsStringUtil.splitAsMap(childrenPart, "][", "=");
+                // handle child nodes
+                for (Map.Entry<String, String> child : children.entrySet()) {
+                    String childName = child.getKey();
+                    String childValue = child.getValue();
+                    if (childValue.startsWith("'")) {
+                        childValue = childValue.substring(1);
+                    }
+                    if (childValue.endsWith("'")) {
+                        childValue = childValue.substring(0, childValue.length() - 1);
+                    }
+                    if (childName.startsWith("@")) {
+                        elem.addAttribute(childName.substring(1), childValue);
+                    } else if (childName.equals("text()")) {
+                        elem.setText(childValue);
+                    } else if (!childName.contains("(")) {
+                        Element childElem = elem.addElement(childName);
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(childValue)) {
+                            childElem.addText(childValue);
+                        }
                     }
                 }
             }
@@ -491,6 +494,7 @@ public class CmsSetupXmlHelper {
 
         if (document != null) {
             try {
+                CmsXmlUtils.validateXmlStructure(document, CmsEncoder.ENCODING_UTF_8, new CmsXmlEntityResolver(null));
                 OutputStream out = new FileOutputStream(getFile(xmlFilename));
                 CmsXmlUtils.marshal(document, out, CmsEncoder.ENCODING_UTF_8);
             } catch (FileNotFoundException e) {

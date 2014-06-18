@@ -29,6 +29,7 @@ package org.opencms.gwt.client.util;
 
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.HasAllMouseHandlers;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
@@ -39,7 +40,6 @@ import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -260,24 +260,26 @@ public class CmsToolTipHandler implements MouseOverHandler, MouseMoveHandler, Mo
     /** 
      * Sets the tool-tip position.<p>
      * 
-     * @param absLeft the mouse pointer absolute left
-     * @param absTop the mouse pointer absolute top
+     * @param clientLeft the mouse pointer left position relative to the client window
+     * @param clientTop the mouse pointer top  position relative to the client window
      */
-    private void setToolTipPosition(int absLeft, int absTop) {
+    private void setToolTipPosition(int clientLeft, int clientTop) {
 
         if (m_toolTip != null) {
             int height = m_toolTip.getOffsetHeight();
             int width = m_toolTip.getOffsetWidth();
             int windowHeight = Window.getClientHeight();
             int windowWidth = Window.getClientWidth();
-            int left = absLeft + m_offsetLeft;
-            if ((left + width) > windowWidth) {
-                left = windowWidth - m_offsetLeft - width;
+            int scrollLeft = Window.getScrollLeft();
+            int scrollTop = Window.getScrollTop();
+            int left = clientLeft + scrollLeft + m_offsetLeft;
+            if ((left + width) > (windowWidth + scrollLeft)) {
+                left = (windowWidth + scrollLeft) - m_offsetLeft - width;
             }
             m_toolTip.getStyle().setLeft(left, Unit.PX);
-            int top = absTop + m_offsetTop;
-            if (((top + height) > windowHeight) && ((height + m_offsetTop) < absTop)) {
-                top = absTop - m_offsetTop - height;
+            int top = clientTop + scrollTop + m_offsetTop;
+            if (((top + height) > (windowHeight + scrollTop)) && ((height + m_offsetTop) < clientTop)) {
+                top = (clientTop + scrollTop) - m_offsetTop - height;
             }
             m_toolTip.getStyle().setTop(top, Unit.PX);
         }

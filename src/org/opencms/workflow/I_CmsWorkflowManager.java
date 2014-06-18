@@ -27,14 +27,17 @@
 
 package org.opencms.workflow;
 
+import org.opencms.ade.publish.I_CmsVirtualProject;
+import org.opencms.ade.publish.shared.CmsProjectBean;
+import org.opencms.ade.publish.shared.CmsPublishListToken;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
-import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.ade.publish.shared.CmsWorkflow;
 import org.opencms.ade.publish.shared.CmsWorkflowAction;
 import org.opencms.ade.publish.shared.CmsWorkflowResponse;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
+import org.opencms.util.CmsUUID;
 
 import java.util.List;
 import java.util.Map;
@@ -43,6 +46,29 @@ import java.util.Map;
  * Workflow manager interface.<p>
  */
 public interface I_CmsWorkflowManager {
+
+    /** 
+     * Creates the formatter for formatting the resources to be displayed to the user.<p>
+     * @param cms the CMS context to use 
+     * @param workflow the current workflow 
+     * @param options the publish options 
+     * 
+     * @return the publish resource formatter to use 
+     */
+    I_CmsPublishResourceFormatter createFormatter(CmsObject cms, CmsWorkflow workflow, CmsPublishOptions options);
+
+    /**
+     * Executes a workflow action for a publish list token instead of a resource list.<p>
+     * 
+     * @param cms the CMS context to use 
+     * @param action the action to perform 
+     * @param token the publish list token to use 
+     * 
+     * @return the workflow response 
+     * @throws CmsException if something goes wrong 
+     */
+    CmsWorkflowResponse executeAction(CmsObject cms, CmsWorkflowAction action, CmsPublishListToken token)
+    throws CmsException;
 
     /**
      * Executes a workflow action in the context of the current user.<p>
@@ -63,6 +89,16 @@ public interface I_CmsWorkflowManager {
         List<CmsResource> resources) throws CmsException;
 
     /**
+     * Returns the current user's manageable projects.<p>
+     * 
+     * @param cms the CMS context to use 
+     * @param params the publish parameters
+     *  
+     * @return the current user's manageable projects
+     */
+    List<CmsProjectBean> getManageableProjects(CmsObject cms, Map<String, String> params);
+
+    /**
      * Gets the parameters of the workflow manager.<p>
      * 
      * @return the configuration parameters of the workflow manager 
@@ -70,15 +106,32 @@ public interface I_CmsWorkflowManager {
     Map<String, String> getParameters();
 
     /**
-     * Returns the publish resource beans for the given workflow and project.<p>
+     * Gets a publish list token for the given parameters which can be used later to reconstruct the publish list.<p>
      * 
-     * @param cms the user cms context
-     * @param workflow the workflow
-     * @param options the resource options
+     * @param cms the CMS context to use 
+     * @param workflow the workflow 
+     * @param options the publish options 
      * 
-     * @return the workflow publish resource beans
+     * @return the publish list token 
      */
-    List<CmsPublishResource> getWorkflowPublishResources(CmsObject cms, CmsWorkflow workflow, CmsPublishOptions options);
+    CmsPublishListToken getPublishListToken(CmsObject cms, CmsWorkflow workflow, CmsPublishOptions options);
+
+    /**
+     * Gets the virtual project object identified by the given id.<p>
+     * 
+     * @param projectId the virtual project id 
+     * @return the virtual project object 
+     */
+    I_CmsVirtualProject getRealOrVirtualProject(CmsUUID projectId);
+
+    /**
+     * Gets the resource limit.<p>
+     * 
+     * Publish lists which exceed this limit (counted before adding any related resources, siblings etc.) are not displayed to the user.<p>
+     * 
+     * @return the resource limit 
+     */
+    int getResourceLimit();
 
     /**
      * Returns the resources for the given workflow and project.<p>

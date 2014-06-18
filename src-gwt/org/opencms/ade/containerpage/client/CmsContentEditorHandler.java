@@ -27,8 +27,12 @@
 
 package org.opencms.ade.containerpage.client;
 
+import org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
+import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.contenteditor.client.CmsContentEditor;
+import org.opencms.ade.contenteditor.client.CmsEditorContext;
+import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.CmsEditableData;
 import org.opencms.gwt.client.I_CmsEditableData;
@@ -107,27 +111,22 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
      * @param element the container element widget
      * @param inline <code>true</code> to open the in-line editor for the given element if available
      */
-    public void openDialog(final CmsContainerPageElementPanel element, final boolean inline) {
+    public void openDialog(
+
+    final CmsContainerPageElementPanel element, final boolean inline) {
 
         m_handler.disableToolbarButtons();
         m_handler.deactivateCurrentButton();
         m_currentElementId = element.getId();
-        final String serverId = CmsContainerpageController.getServerId(getCurrentElementId());
-        final Runnable classicEdit = new Runnable() {
-
-            public void run() {
-
-                CmsEditableData editableData = new CmsEditableData();
-                editableData.setElementLanguage(CmsCoreProvider.get().getLocale());
-                editableData.setStructureId(new CmsUUID(serverId));
-                editableData.setSitePath(element.getSitePath());
-                CmsContentEditorDialog.get().openEditDialog(editableData, false, CmsContentEditorHandler.this);
-            }
-        };
+        String serverId = CmsContainerpageController.getServerId(getCurrentElementId());
         if (m_handler.m_controller.getData().isUseClassicEditor() || element.isNewEditorDisabled()) {
-            classicEdit.run();
+            CmsEditableData editableData = new CmsEditableData();
+            editableData.setElementLanguage(CmsCoreProvider.get().getLocale());
+            editableData.setStructureId(new CmsUUID(serverId));
+            editableData.setSitePath(element.getSitePath());
+            CmsContentEditorDialog.get().openEditDialog(editableData, false, CmsContentEditorHandler.this);
         } else {
-            final String editorLocale = CmsCoreProvider.get().getLocale();
+            String editorLocale = CmsCoreProvider.get().getLocale();
 
             Command onClose = new Command() {
 
@@ -139,10 +138,25 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
             };
             if (inline && CmsContentEditor.hasEditable(element.getElement())) {
                 addEditingHistoryItem(true);
-                CmsContentEditor.getInstance().openInlineEditor(new CmsUUID(serverId), editorLocale, element, onClose);
+                CmsEditorContext context = getEditorContext();
+                context.setHtmlContextInfo(getContextInfo(element));
+                // remove expired style before initializing the editor
+                element.setReleasedAndNotExpired(true);
+                CmsContentEditor.getInstance().openInlineEditor(
+                    context,
+                    new CmsUUID(serverId),
+                    editorLocale,
+                    element,
+                    onClose);
             } else {
                 addEditingHistoryItem(false);
-                CmsContentEditor.getInstance().openFormEditor(editorLocale, serverId, null, null, onClose);
+                CmsContentEditor.getInstance().openFormEditor(
+                    getEditorContext(),
+                    editorLocale,
+                    serverId,
+                    null,
+                    null,
+                    onClose);
             }
         }
     }
@@ -154,7 +168,9 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
      * @param isNew <code>true</code> if a new resource should be created
      * @param dependingElementId the id of a depending element
      */
-    public void openDialog(final I_CmsEditableData editableData, final boolean isNew, String dependingElementId) {
+    public void openDialog(
+
+    final I_CmsEditableData editableData, final boolean isNew, String dependingElementId) {
 
         m_handler.disableToolbarButtons();
         m_handler.deactivateCurrentButton();
@@ -176,6 +192,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
             }
             addEditingHistoryItem(isNew);
             CmsContentEditor.getInstance().openFormEditor(
+                getEditorContext(),
                 CmsCoreProvider.get().getLocale(),
                 editableData.getStructureId().toString(),
                 newLink,
@@ -217,7 +234,13 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                 }
             };
             String editorLocale = CmsCoreProvider.get().getLocale();
-            CmsContentEditor.getInstance().openFormEditor(editorLocale, m_currentElementId, null, null, onClose);
+            CmsContentEditor.getInstance().openFormEditor(
+                getEditorContext(),
+                editorLocale,
+                m_currentElementId,
+                null,
+                null,
+                onClose);
         } else {
             closeContentEditor();
         }
@@ -242,6 +265,24 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
     }
 
     /**
+     * Gets the editor context to use for the Acacia editor.<p>
+     * 
+     * @return the editor context 
+     */
+    CmsEditorContext getEditorContext() {
+
+        CmsEditorContext result = new CmsEditorContext();
+        result.getPublishParameters().put(
+            CmsPublishOptions.PARAM_CONTAINERPAGE,
+            "" + CmsCoreProvider.get().getStructureId());
+        result.getPublishParameters().put(
+            CmsPublishOptions.PARAM_DETAIL,
+            "" + CmsContainerpageController.get().getData().getDetailId());
+        result.getPublishParameters().put(CmsPublishOptions.PARAM_START_WITH_CURRENT_PAGE, "");
+        return result;
+    }
+
+    /**
      * Adds a history item for the opened editor.<p>
      * Use the prihibitReturn flag to deny a return to the opened editor through the browser history. 
      * Use this feature for inline editing or when opening the editor for new resources.<p> 
@@ -258,4 +299,49 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                 + (m_dependingElementId != null ? "," + m_dependingElementId + ";" : ";"), false);
         }
     }
+
+    /**
+     * Returns the HTML context info for the given element.<p>
+     * 
+     * @param element the edited element 
+     * 
+     * @return the JSON string
+     */
+    private String getContextInfo(CmsContainerPageElementPanel element) {
+
+        CmsContainerPageContainer container = (CmsContainerPageContainer)element.getParentTarget();
+        return "{"
+            + CmsCntPageData.JSONKEY_ELEMENT_ID
+            + ":'"
+            + element.getId()
+            + "', "
+            + (m_handler.m_controller.getData().getDetailId() != null ? (CmsCntPageData.JSONKEY_DETAIL_ELEMENT_ID
+                + ":'"
+                + m_handler.m_controller.getData().getDetailId() + "', ") : "")
+            + CmsCntPageData.JSONKEY_NAME
+            + ":'"
+            + container.getContainerId()
+            + "', "
+            + CmsCntPageData.JSONKEY_TYPE
+            + ": '"
+            + container.getContainerType()
+            + "', "
+            + CmsCntPageData.JSONKEY_WIDTH
+            + ": "
+            + container.getConfiguredWidth()
+            + ", "
+            + CmsCntPageData.JSONKEY_DETAILVIEW
+            + ": "
+            + container.isDetailView()
+            + ", "
+            + CmsCntPageData.JSONKEY_DETAILONLY
+            + ": "
+            + container.isDetailOnly()
+            + ", "
+            + CmsCntPageData.JSONKEY_MAXELEMENTS
+            + ": "
+            + 1
+            + "}";
+    }
+
 }

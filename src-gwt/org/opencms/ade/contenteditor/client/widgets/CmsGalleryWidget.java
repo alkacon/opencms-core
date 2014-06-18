@@ -27,11 +27,15 @@
 
 package org.opencms.ade.contenteditor.client.widgets;
 
+import com.alkacon.acacia.client.css.I_LayoutBundle;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
 import org.opencms.ade.galleries.client.CmsGalleryConfigurationJSO;
 import org.opencms.ade.galleries.client.ui.CmsGalleryField;
+import org.opencms.gwt.client.util.CmsDomUtil;
 
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.HasResizeHandlers;
 import com.google.gwt.event.logical.shared.ResizeHandler;
@@ -48,18 +52,46 @@ public class CmsGalleryWidget extends Composite implements I_EditWidget, HasResi
     /** Value of the activation. */
     private boolean m_active = true;
 
+    /** The allow uploads flag. */
+    private boolean m_allowUploads;
+
     /** The link selector. */
     private CmsGalleryField m_linkSelect;
 
     /**
-     * Constructs an CmsComboWidget with the in XSD schema declared configuration.<p>
+     * Constructs an gallery widget with the in XSD schema declared configuration.<p>
      * 
      * @param openerTitle the gallery opener title
      * @param config the widget configuration string
      */
     public CmsGalleryWidget(String openerTitle, String config) {
 
-        m_linkSelect = new CmsGalleryField(CmsGalleryConfigurationJSO.parseConfiguration(config));
+        this(openerTitle, config, false);
+    }
+
+    /**
+     * Constructs an gallery widget with the in XSD schema declared configuration.<p>
+     * 
+     * @param openerTitle the gallery opener title
+     * @param config the widget configuration string
+     * @param hasImage <code>true</code> if the widget should show an image preview
+     */
+    public CmsGalleryWidget(String openerTitle, String config, boolean hasImage) {
+
+        this(openerTitle, config, hasImage, false);
+    }
+
+    /**
+     * Constructs an gallery widget with the in XSD schema declared configuration.<p>
+     * 
+     * @param openerTitle the gallery opener title
+     * @param config the widget configuration string
+     * @param hasImage <code>true</code> if the widget should show an image preview
+     * @param allowUploads states if the upload button should be enabled for this widget
+     */
+    public CmsGalleryWidget(String openerTitle, String config, boolean hasImage, boolean allowUploads) {
+
+        m_linkSelect = new CmsGalleryField(CmsGalleryConfigurationJSO.parseConfiguration(config), allowUploads);
         m_linkSelect.setGalleryOpenerTitle(openerTitle);
         m_linkSelect.addValueChangeHandler(new ValueChangeHandler<String>() {
 
@@ -71,19 +103,15 @@ public class CmsGalleryWidget extends Composite implements I_EditWidget, HasResi
         });
         // All composites must call initWidget() in their constructors.
         initWidget(m_linkSelect);
-    }
+        m_linkSelect.addFocusHandler(new FocusHandler() {
 
-    /**
-     * Constructs an CmsComboWidget with the in XSD schema declared configuration.<p>
-     * 
-     * @param openerTitle the gallery opener title
-     * @param config the widget configuration string
-     * @param hasImage <code>true</code> if the widget should show an image preview
-     */
-    public CmsGalleryWidget(String openerTitle, String config, boolean hasImage) {
+            public void onFocus(FocusEvent event) {
 
-        this(openerTitle, config);
+                CmsDomUtil.fireFocusEvent(CmsGalleryWidget.this);
+            }
+        });
         m_linkSelect.setHasImage(hasImage);
+        m_allowUploads = allowUploads;
     }
 
     /**
@@ -91,7 +119,7 @@ public class CmsGalleryWidget extends Composite implements I_EditWidget, HasResi
      */
     public HandlerRegistration addFocusHandler(FocusHandler handler) {
 
-        return null;
+        return addDomHandler(handler, FocusEvent.getType());
     }
 
     /**
@@ -140,7 +168,19 @@ public class CmsGalleryWidget extends Composite implements I_EditWidget, HasResi
      */
     public void onAttachWidget() {
 
-        super.onAttach();
+        onAttach();
+    }
+
+    /**
+     * @see com.alkacon.acacia.client.widgets.I_EditWidget#owns(com.google.gwt.dom.client.Element)
+     */
+    public boolean owns(Element element) {
+
+        return (m_linkSelect != null)
+            && (m_linkSelect.getPopup() != null)
+            && m_linkSelect.getPopup().isShowing()
+            && m_linkSelect.getPopup().getContainer().getElement().isOrHasChild(element);
+
     }
 
     /**
@@ -186,5 +226,21 @@ public class CmsGalleryWidget extends Composite implements I_EditWidget, HasResi
             fireChangeEvent();
         }
 
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.Composite#onAttach()
+     */
+    @Override
+    protected void onAttach() {
+
+        super.onAttach();
+        if (m_allowUploads) {
+            // use the parent element with CSS class .widgetHolder as the upload drop zone to allow proper highlighting
+            Element dropZone = CmsDomUtil.getAncestor(getElement(), I_LayoutBundle.INSTANCE.form().widgetHolder());
+            if (dropZone != null) {
+                m_linkSelect.setDropZoneElement(dropZone);
+            }
+        }
     }
 }

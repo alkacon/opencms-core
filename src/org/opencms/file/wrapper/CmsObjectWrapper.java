@@ -86,6 +86,9 @@ public class CmsObjectWrapper {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsObjectWrapper.class);
 
+    /** Flag to contro whether byte order marks should be added to plaintext files. */
+    private boolean m_addByteOrderMark = true;
+
     /** The initialized CmsObject. */
     private CmsObject m_cms;
 
@@ -437,7 +440,6 @@ public class CmsObjectWrapper {
      *
      * Iterates through all configured resource wrappers till the first returns <code>true</code>.<p>
      *
-     * @see I_CmsResourceWrapper#lockResource(CmsObject, String)
      * @see CmsObject#lockResource(String)
      *
      * @param resourcename the name of the resource to lock (full path)
@@ -453,7 +455,7 @@ public class CmsObjectWrapper {
         Iterator<I_CmsResourceWrapper> iter = wrappers.iterator();
         while (iter.hasNext()) {
             I_CmsResourceWrapper wrapper = iter.next();
-            exec = wrapper.lockResource(m_cms, resourcename);
+            exec = wrapper.lockResource(m_cms, resourcename, false);
             if (exec) {
                 break;
             }
@@ -462,6 +464,31 @@ public class CmsObjectWrapper {
         // delegate the call to the CmsObject
         if (!exec) {
             m_cms.lockResource(resourcename);
+        }
+    }
+
+    /**
+     * Locks a resource temporarily.<p>
+     * 
+     * @param resourceName the name of the resource to lock
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void lockResourceTemporary(String resourceName) throws CmsException {
+
+        boolean exec = false;
+        // iterate through all wrappers and call "lockResource" till one does not return false
+        List<I_CmsResourceWrapper> wrappers = getWrappers();
+        for (I_CmsResourceWrapper wrapper : wrappers) {
+            exec = wrapper.lockResource(m_cms, resourceName, true);
+            if (exec) {
+                break;
+            }
+        }
+
+        // delegate the call to the CmsObject
+        if (!exec) {
+            m_cms.lockResourceTemporary(resourceName);
         }
     }
 
@@ -740,6 +767,16 @@ public class CmsObjectWrapper {
     }
 
     /**
+     * Enables or disables the automatic adding of byte order marks to plaintext files.<p>
+     * 
+     * @param addByteOrderMark true if byte order marks should be added to plaintext files automatically
+     */
+    public void setAddByteOrderMark(boolean addByteOrderMark) {
+
+        m_addByteOrderMark = addByteOrderMark;
+    }
+
+    /**
      * Unlocks a resource.<p>
      * 
      * Iterates through all configured resource wrappers till the first returns <code>true</code>.<p>
@@ -795,7 +832,7 @@ public class CmsObjectWrapper {
             resource.setContents(CmsResourceWrapperUtils.removeUtf8Marker(resource.getContents()));
         }
 
-        String resourcename = resource.getRootPath();
+        String resourcename = m_cms.getSitePath(resource);
         if (!m_cms.existsResource(resourcename)) {
 
             // iterate through all wrappers and call "writeFile" till one does not return null
@@ -867,6 +904,9 @@ public class CmsObjectWrapper {
      */
     private boolean needUtf8Marker(CmsResource res) {
 
+        if (!m_addByteOrderMark) {
+            return false;
+        }
         // if the encoding of the resource is not UTF-8 return false
         String encoding = CmsLocaleManager.getResourceEncoding(m_cms, res);
         boolean result = false;

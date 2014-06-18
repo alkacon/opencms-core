@@ -59,6 +59,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_SOLR_ERR_SEARCH_EXECUTION_FAILD_1 = "LOG_SOLR_ERR_SEARCH_EXECUTION_FAILD_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_SOLR_ERR_SEARCH_PERMISSION_VIOLATION_2 = "LOG_SOLR_ERR_SEARCH_PERMISSION_VIOLATION_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_SOLR_ERR_SPELL_EXECUTION_FAILD_1 = "LOG_SOLR_ERR_SPELL_EXECUTION_FAILD_1";
 
     /** Message constant for key in the resource bundle. */

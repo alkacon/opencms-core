@@ -27,6 +27,7 @@
 
 package org.opencms.ade.configuration;
 
+import org.opencms.ade.configuration.formatters.TestFormatterConfiguration;
 import org.opencms.test.OpenCmsTestProperties;
 
 import junit.framework.Test;
@@ -57,6 +58,7 @@ public final class AllTests {
         //$JUnit-BEGIN$
         suite.addTest(TestConfig.suite());
         suite.addTest(TestLiveConfig.suite());
+        suite.addTest(TestFormatterConfiguration.suite());
         //$JUnit-END$
         return suite;
     }

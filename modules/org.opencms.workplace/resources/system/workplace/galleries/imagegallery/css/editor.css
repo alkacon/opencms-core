@@ -23,7 +23,7 @@ td {
 #preview #imgoptions {
 	height: 148px;
 	padding: 6px 4px;
-	border-bottom: 1px solid ButtonShadow;
+	border-bottom: 1px solid /*begin-color ButtonShadow*/#999999/*end-color*/;
 }
 
 #preview #imgdetails {
@@ -34,7 +34,7 @@ td {
 #preview #imgalignspacer {
 	margin-top: 18px;
 	padding: 6px 0;
-	border-top: 1px solid ButtonShadow;
+	border-top: 1px solid /*begin-color ButtonShadow*/#999999/*end-color*/;
 }
 
 #preview #imgalign {
@@ -51,8 +51,8 @@ td {
 }
 
 #advanced {
-	color: InfoText;
-	background-color: InfoBackground;
+	color: /*begin-color InfoText*/#ffffff/*end-color*/;
+	background-color: /*begin-color InfoBackground*/#f9f9f9/*end-color*/;
 }
 
 #advanced .head {
@@ -63,7 +63,7 @@ td {
 
 #advlink {
 	padding: 6px 4px 16px 4px;
-	border-bottom: 1px solid ButtonShadow;
+	border-bottom: 1px solid /*begin-color ButtonShadow*/#999999/*end-color*/;
 }
 
 #advattrs {

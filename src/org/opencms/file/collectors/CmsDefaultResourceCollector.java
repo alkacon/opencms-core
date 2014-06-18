@@ -150,6 +150,19 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
     }
 
     /**
+     * @see org.opencms.file.collectors.A_CmsResourceCollector#getCreateTypeId(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
+     */
+    @Override
+    public int getCreateTypeId(CmsObject cms, String collectorName, String param) {
+
+        int result = -1;
+        if (param != null) {
+            result = new CmsCollectorData(param).getType();
+        }
+        return result;
+    }
+
+    /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getResults(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
     public List<CmsResource> getResults(CmsObject cms, String collectorName, String param)
@@ -210,6 +223,10 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
 
         CmsResourceFilter filter = CmsResourceFilter.DEFAULT_FILES.addRequireType(data.getType()).addExcludeFlags(
             CmsResource.FLAG_TEMPFILE);
+        if (data.isExcludeTimerange() && !cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+            // include all not yet released and expired resources in an offline project
+            filter = filter.addExcludeTimerange();
+        }
         List<CmsResource> result = cms.readResources(foldername, filter, tree);
 
         Collections.sort(result, I_CmsResource.COMPARE_DATE_RELEASED);
@@ -234,6 +251,10 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
 
         CmsResourceFilter filter = CmsResourceFilter.DEFAULT_FILES.addRequireType(data.getType()).addExcludeFlags(
             CmsResource.FLAG_TEMPFILE);
+        if (data.isExcludeTimerange() && !cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+            // include all not yet released and expired resources in an offline project
+            filter = filter.addExcludeTimerange();
+        }
         List<CmsResource> foundResources = cms.readResources(foldername, filter, readSubTree);
 
         // the Cms resources are saved in a map keyed by their nav elements
@@ -295,6 +316,10 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
 
         CmsResourceFilter filter = CmsResourceFilter.DEFAULT_FILES.addRequireType(data.getType()).addExcludeFlags(
             CmsResource.FLAG_TEMPFILE);
+        if (data.isExcludeTimerange() && !cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+            // include all not yet released and expired resources in an offline project
+            filter = filter.addExcludeTimerange();
+        }
         List<CmsResource> result = cms.readResources(foldername, filter, tree);
 
         Collections.sort(result, I_CmsResource.COMPARE_ROOT_PATH);

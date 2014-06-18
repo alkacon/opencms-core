@@ -29,6 +29,7 @@ package org.opencms.loader;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.main.CmsException;
 
 import java.util.Map;
 
@@ -53,6 +54,16 @@ public interface I_CmsTemplateContextProvider {
      */
     Map<String, CmsTemplateContext> getAllContexts();
 
+    /** 
+     * Returns the style sheet to be used for the editor.<p>
+     * 
+     * @param cms the current CMS context
+     * @param editedResourcePath the path of the edited resource 
+     * 
+     * @return the path of the style sheet to be used for the resource 
+     */
+    String getEditorStyleSheet(CmsObject cms, String editedResourcePath);
+
     /**
      * Gets the name of the cookie which should be used for overriding the template context.<p>
      * 
@@ -75,7 +86,25 @@ public interface I_CmsTemplateContextProvider {
      * Initializes the context provider using a CMS object.<p>
      * 
      * @param cms the current CMS context
+     * @param config the template context provider configuration 
      */
-    void initialize(CmsObject cms);
+    void initialize(CmsObject cms, String config);
+
+    /**
+     * Gets the value which should be used instead of a property which was read from the template resource.<p>
+     * 
+     * This is needed because before template context providers, it was common to store template-specific configuration in 
+     * a property on the template JSP. Since template context providers make the result ambiguous, this method is intended
+     * as a replacement.<p> 
+     *
+     * @param cms the CMS context to use 
+     * @param propertyName the name of the property 
+     * @param fallbackValue the value to return if no value is found or an error occurs 
+     * 
+     * @return the common property value 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    String readCommonProperty(CmsObject cms, String propertyName, String fallbackValue) throws CmsException;
 
 }

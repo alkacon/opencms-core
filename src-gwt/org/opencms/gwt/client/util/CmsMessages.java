@@ -71,10 +71,11 @@ public class CmsMessages {
         if (m_dictionaries == null) {
             m_dictionaries = new HashMap<String, Dictionary>();
         }
-        m_dictionary = m_dictionaries.get(bundleName);
+        m_bundleName = bundleName;
+        m_dictionary = m_dictionaries.get(m_bundleName);
         if (m_dictionary == null) {
-            m_dictionary = Dictionary.getDictionary(bundleName.replace('.', '_'));
-            m_dictionaries.put(bundleName, m_dictionary);
+            m_dictionary = Dictionary.getDictionary(m_bundleName.replace('.', '_'));
+            m_dictionaries.put(m_bundleName, m_dictionary);
         }
     }
 

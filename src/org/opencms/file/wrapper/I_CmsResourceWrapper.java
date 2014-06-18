@@ -31,9 +31,9 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsResource.CmsResourceCopyMode;
 import org.opencms.file.CmsResource.CmsResourceDeleteMode;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -75,6 +75,16 @@ public interface I_CmsResourceWrapper {
      */
     List<CmsResource> addResourcesToFolder(CmsObject cms, String resourcename, CmsResourceFilter filter)
     throws CmsException;
+
+    /** 
+     * If there is a configuration string for the wrapper, this method will be called with the configuration string
+     * before it is used.<p>
+     * 
+     *  Otherwise, it will not be called. 
+     * 
+     * @param configuration the configuration string for the wrapper 
+     */
+    void configure(String configuration);
 
     /**
      * Copies a resource.<p>
@@ -202,12 +212,13 @@ public interface I_CmsResourceWrapper {
      * 
      * @param cms the current users OpenCms context
      * @param resourcename the name of the resource to lock (full path)
+     * @param temporary true if the resource should only be locked temporarily
      * 
      * @return true if this request could be handled by this wrapper or false if not
      * 
      * @throws CmsException if something goes wrong
      */
-    boolean lockResource(CmsObject cms, String resourcename) throws CmsException;
+    boolean lockResource(CmsObject cms, String resourcename, boolean temporary) throws CmsException;
 
     /**
      * Moves a resource to the given destination.<p>

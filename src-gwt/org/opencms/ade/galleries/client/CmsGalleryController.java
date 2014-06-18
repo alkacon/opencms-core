@@ -53,7 +53,7 @@ import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.client.ui.CmsDeleteWarningDialog;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
-import org.opencms.gwt.client.util.CmsCollectionUtil;
+import org.opencms.gwt.client.util.CmsClientCollectionUtil;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsCategoryBean;
@@ -95,6 +95,9 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
  * @since 8.0.0
  */
 public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySearchBean> {
+
+    /** The last selected gallery paths. */
+    private static Map<String, String> m_lastSelectedGallerys = new HashMap<String, String>();
 
     /** The preview factory registration. */
     private static Map<String, I_CmsPreviewFactory> m_previewFactoryRegistration = new HashMap<String, I_CmsPreviewFactory>();
@@ -179,11 +182,13 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
 
         if (m_searchObject == null) {
             m_searchObject = new CmsGallerySearchBean();
+            m_searchObject.setGalleryMode(m_dialogMode);
             m_searchObject.setIgnoreSearchExclude(m_dialogMode != GalleryMode.ade);
             m_searchObject.setLocale(m_dialogBean.getLocale());
             m_searchObject.setScope(m_dialogBean.getScope());
         }
         if (m_dialogBean != null) {
+            m_tabIds = m_dialogBean.getTabIds();
             m_handler.onInitialSearch(m_searchObject, m_dialogBean, this, true);
         }
     }
@@ -203,7 +208,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         m_handler.m_galleryDialog.setImageFormatNames(m_configuration.getImageFormatNames());
         m_eventBus = new SimpleEventBus();
         addValueChangeHandler(m_handler);
-        m_treeToken = conf.getTreeToken();
+        m_treeToken = m_configuration.getTreeToken();
         CmsRpcAction<CmsGalleryDataBean> initAction = new CmsRpcAction<CmsGalleryDataBean>() {
 
             @Override
@@ -217,9 +222,6 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
 
                 m_dialogBean = result;
                 m_dialogMode = m_dialogBean.getMode();
-                if ((m_dialogBean.getTypes().size() == 1) && (m_dialogMode != GalleryMode.ade)) {
-                    removeTypesTab();
-                }
                 if (m_dialogBean.getStartTab() != GalleryTabId.cms_tab_results) {
                     List<GalleryTabId> tabs = Arrays.asList(getTabIds());
                     // in case the selected start tab is not present, choose another one
@@ -235,14 +237,37 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             }
         };
         initAction.execute();
-        if (m_configuration.getTabIds() != null) {
-            m_tabIds = m_configuration.getTabIds();
-        }
-
+        m_tabIds = m_configuration.getTabConfiguration().getTabs().toArray(new GalleryTabId[] {});
         setShowSiteSelector(m_configuration.isShowSiteSelector());
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_configuration.getStartSite())) {
             setStartSite(m_configuration.getStartSite());
         }
+    }
+
+    /**
+     * Creates a gallery service instance.<p>
+     * 
+     * @return the gallery service instance 
+     */
+    public static I_CmsGalleryServiceAsync createGalleryService() {
+
+        I_CmsGalleryServiceAsync service;
+        service = GWT.create(I_CmsGalleryService.class);
+        String serviceUrl = CmsCoreProvider.get().link("org.opencms.ade.galleries.CmsGalleryService.gwt");
+        ((ServiceDefTarget)service).setServiceEntryPoint(serviceUrl);
+        return service;
+    }
+
+    /**
+     * Returns the last selecte gallery for the given configuration or <code>null</code>.
+     * 
+     * @param config the gallery configuration
+     * 
+     * @return the gallery path
+     */
+    public static String getLastSelectedGallery(I_CmsGalleryConfiguration config) {
+
+        return m_lastSelectedGallerys.get(generateGalleryKey(config));
     }
 
     /**
@@ -254,6 +279,18 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     public static void registerPreviewFactory(String previewProviderName, I_CmsPreviewFactory factory) {
 
         m_previewFactoryRegistration.put(previewProviderName, factory);
+    }
+
+    /**
+     * Generates the last selected gallery key from the given configuration.<p>
+     * 
+     * @param config the gallery configuration
+     * 
+     * @return the key
+     */
+    private static String generateGalleryKey(I_CmsGalleryConfiguration config) {
+
+        return config.getReferencePath() + "###" + config.getGalleryTypeName();
     }
 
     /**
@@ -338,6 +375,9 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         m_searchObject.addGallery(galleryPath);
         m_searchObjectChanged = true;
         ValueChangeEvent.fire(this, m_searchObject);
+        if (m_searchObject.getGalleries().size() == 1) {
+            storeLastSelectedGallery(galleryPath);
+        }
     }
 
     /**
@@ -507,6 +547,16 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     public Map<String, String> getAvailableLocales() {
 
         return m_dialogBean.getLocales();
+    }
+
+    /**
+     * Gets the default search scope.<p>
+     * 
+     * @return the default search scope 
+     */
+    public CmsGallerySearchScope getDefaultScope() {
+
+        return m_dialogBean.getDefaultScope();
     }
 
     /**
@@ -1448,9 +1498,8 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     protected I_CmsGalleryServiceAsync getGalleryService() {
 
         if (m_gallerySvc == null) {
-            m_gallerySvc = GWT.create(I_CmsGalleryService.class);
-            String serviceUrl = CmsCoreProvider.get().link("org.opencms.ade.galleries.CmsGalleryService.gwt");
-            ((ServiceDefTarget)m_gallerySvc).setServiceEntryPoint(serviceUrl);
+            I_CmsGalleryServiceAsync service = createGalleryService();
+            m_gallerySvc = service;
         }
         return m_gallerySvc;
     }
@@ -1558,12 +1607,12 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         preparedSearchObj.setReferencePath(m_dialogBean.getReferenceSitePath());
         // add the available types to the search object used for next search, 
         // if the criteria for types are empty
-        if (CmsCollectionUtil.isEmptyOrNull(m_searchObject.getTypes())) {
+        if (CmsClientCollectionUtil.isEmptyOrNull(m_searchObject.getTypes())) {
             // no galleries is selected, provide all available types
-            if (CmsCollectionUtil.isEmptyOrNull(m_searchObject.getGalleries())) {
+            if (CmsClientCollectionUtil.isEmptyOrNull(m_searchObject.getGalleries())) {
                 // additionally provide all available gallery folders if in 'widget' and 'editor' dialog-mode and no folder has been selected 
                 if (((m_dialogMode == I_CmsGalleryProviderConstants.GalleryMode.widget) || (m_dialogMode == I_CmsGalleryProviderConstants.GalleryMode.editor))
-                    && CmsCollectionUtil.isEmptyOrNull(m_searchObject.getFolders())) {
+                    && CmsClientCollectionUtil.isEmptyOrNull(m_searchObject.getFolders())) {
                     ArrayList<String> availableGalleries = new ArrayList<String>();
                     for (CmsGalleryFolderBean galleryPath : m_dialogBean.getGalleries()) {
                         availableGalleries.add(galleryPath.getPath());
@@ -1591,7 +1640,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
                     availableTypes.add(type.getType());
                 }
 
-                preparedSearchObj.setTypes(new ArrayList<String>(CmsCollectionUtil.intersection(
+                preparedSearchObj.setTypes(new ArrayList<String>(CmsClientCollectionUtil.intersection(
                     availableTypes,
                     galleryTypes)));
             }
@@ -1792,5 +1841,17 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             return lookForParent(possibleParent.getParent(), targetPath);
         }
         return null;
+    }
+
+    /**
+     * Stores the the last selected gallery path in the page context.<p>
+     * 
+     * @param galleryPath the gallery path
+     */
+    private void storeLastSelectedGallery(String galleryPath) {
+
+        if (m_configuration != null) {
+            m_lastSelectedGallerys.put(generateGalleryKey(m_configuration), galleryPath);
+        }
     }
 }

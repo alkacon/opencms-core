@@ -30,8 +30,11 @@ package org.opencms.loader;
 import org.opencms.ade.containerpage.Messages;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.gwt.shared.CmsClientVariantInfo;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -44,6 +47,7 @@ import org.opencms.xml.content.CmsXmlContentProperty;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -110,6 +114,22 @@ public class CmsTemplateContextManager {
     }
 
     /**
+     * Checks if a template property value refers to a  template context provider.<p>
+     * 
+     * @param templatePath the template property value 
+     * @return true if this value refers to a template context provider 
+     */
+    public static boolean isProvider(String templatePath) {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(templatePath)) {
+            return false;
+        }
+        templatePath = templatePath.trim();
+        return templatePath.startsWith(DYNAMIC_TEMPLATE_LEGACY_PREFIX)
+            || templatePath.startsWith(DYNAMIC_TEMPLATE_PREFIX);
+    }
+
+    /**
      * Removes the prefix which marks a property value as a dynamic template provider.<p>
      * 
      * @param propertyValue the value from which to remove the prefix 
@@ -155,11 +175,20 @@ public class CmsTemplateContextManager {
                 result.setSelectedContext(cookieValue);
             }
             result.setCookieName(cookieName);
-            Map<String, String> niceNames = new HashMap<String, String>();
+            Map<String, String> niceNames = new LinkedHashMap<String, String>();
             for (Map.Entry<String, CmsTemplateContext> entry : provider.getAllContexts().entrySet()) {
                 CmsTemplateContext otherContext = entry.getValue();
                 String niceName = otherContext.getLocalizedName(locale);
                 niceNames.put(otherContext.getKey(), niceName);
+                for (CmsClientVariant variant : otherContext.getClientVariants().values()) {
+                    CmsClientVariantInfo info = new CmsClientVariantInfo(
+                        variant.getName(),
+                        variant.getNiceName(locale),
+                        variant.getScreenWidth(),
+                        variant.getScreenHeight(),
+                        variant.getParameters());
+                    result.setClientVariant(otherContext.getKey(), variant.getName(), info);
+                }
             }
             result.setContextLabels(niceNames);
             result.setContextProvider(provider.getClass().getName());
@@ -190,13 +219,26 @@ public class CmsTemplateContextManager {
             return null;
         }
         String cookieName = provider.getOverrideCookieName();
-        if (cookieName != null) {
-            String cookieValue = CmsRequestUtil.getCookieValue(request.getCookies(), cookieName);
-            if (cookieValue != null) {
-                Map<String, CmsTemplateContext> contextMap = provider.getAllContexts();
-                if (contextMap.containsKey(cookieValue)) {
-                    return contextMap.get(cookieValue);
-                }
+        String forcedValue = null;
+
+        String paramTemplateContext = request.getParameter(CmsGwtConstants.PARAM_TEMPLATE_CONTEXT);
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(paramTemplateContext)) {
+            forcedValue = paramTemplateContext;
+        } else if (cookieName != null) {
+            forcedValue = CmsRequestUtil.getCookieValue(request.getCookies(), cookieName);
+        }
+        if (forcedValue != null) {
+            Map<String, CmsTemplateContext> contextMap = provider.getAllContexts();
+            if (contextMap.containsKey(forcedValue)) {
+                CmsTemplateContext contextBean = contextMap.get(forcedValue);
+                return new CmsTemplateContext(
+                    contextBean.getKey(),
+                    contextBean.getTemplatePath(),
+                    contextBean.getMessageContainer(),
+                    contextBean.getProvider(),
+                    contextBean.getClientVariants().values(),
+                    true);
+
             }
         }
         return provider.getTemplateContext(cms, request, resource);
@@ -243,13 +285,24 @@ public class CmsTemplateContextManager {
 
         providerName = providerName.trim();
         providerName = removePropertyPrefix(providerName);
+        String providerClassName = providerName;
+        String providerConfig = "";
+
+        // get provider configuration string if available
+        int separatorIndex = providerName.indexOf(",");
+        if (separatorIndex > 0) {
+            providerClassName = providerName.substring(0, separatorIndex);
+            providerConfig = providerName.substring(separatorIndex + 1);
+        }
+
         I_CmsTemplateContextProvider result = m_providerInstances.get(providerName);
         if (result == null) {
             try {
-                Class<?> providerClass = Class.forName(providerName);
+                Class<?> providerClass = Class.forName(providerClassName);
                 if (I_CmsTemplateContextProvider.class.isAssignableFrom(providerClass)) {
                     result = (I_CmsTemplateContextProvider)providerClass.newInstance();
-                    result.initialize(m_cms);
+                    result.initialize(m_cms, providerConfig);
+                    //note: we use the provider name as a key here, which includes configuration parameters
                     m_providerInstances.put(providerName, result);
                 }
             } catch (Throwable t) {
@@ -257,6 +310,33 @@ public class CmsTemplateContextManager {
             }
         }
         return result;
+    }
+
+    /**
+     * Utility method which either reads a property from the template used for a specific resource, or from the template context provider used for the resource if available.<p>
+     * 
+     * @param cms the CMS context to use 
+     * @param res the resource from whose template or template context provider the property should be read 
+     * @param propertyName the property name 
+     * @param fallbackValue the fallback value
+     *  
+     * @return the property value 
+     */
+    public String readPropertyFromTemplate(CmsObject cms, CmsResource res, String propertyName, String fallbackValue) {
+
+        try {
+            CmsProperty templateProp = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TEMPLATE, true);
+            String templatePath = templateProp.getValue().trim();
+            if (hasPropertyPrefix(templatePath)) {
+                I_CmsTemplateContextProvider provider = getTemplateContextProvider(templatePath);
+                return provider.readCommonProperty(cms, propertyName, fallbackValue);
+            } else {
+                return cms.readPropertyObject(templatePath, propertyName, false).getValue(fallbackValue);
+            }
+        } catch (Exception e) {
+            LOG.error(e);
+            return fallbackValue;
+        }
     }
 
     /**
@@ -324,7 +404,7 @@ public class CmsTemplateContextManager {
 
         try {
             return OpenCms.getResourceManager().getAllowedContextMap(m_cms);
-        } catch (CmsException e) {
+        } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);
             return Collections.emptyMap();
         }

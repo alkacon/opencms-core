@@ -84,7 +84,7 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
      */
     public CmsList() {
 
-        setElement(DOM.createElement(CmsDomUtil.Tag.ul.name()));
+        setElement((Element)DOM.createElement(CmsDomUtil.Tag.ul.name()));
         setStyleName(CSS.list());
         m_items = new HashMap<String, I>();
     }
@@ -97,7 +97,7 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
     public void add(Widget widget) {
 
         assert widget instanceof I_CmsListItem;
-        add(widget, getElement());
+        add(widget, (Element)getElement());
         registerItem((I)widget);
     }
 
@@ -214,7 +214,7 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
     public void insert(Widget widget, int position) {
 
         assert widget instanceof I_CmsListItem;
-        insert(widget, getElement(), position, true);
+        insert(widget, (Element)getElement(), position, true);
         registerItem((I)widget);
     }
 

@@ -144,7 +144,7 @@
 					</contextmenu>
 				</editoptions>
 			</explorertype>
-			<explorertype name="xmlpage" key="fileicon.xmlpage"
+<!--			<explorertype name="xmlpage" key="fileicon.xmlpage"
 				icon="page.gif" bigicon="page_big.png">
 				<newresource page="otheroptions" uri="newresource_xmlpage.jsp"
 					order="81" autosetnavigation="false" autosettitle="false" info="desc.xmlpage" />
@@ -240,7 +240,7 @@
 						<entry key="GUI_EXPLORER_CONTEXT_LOGOUT_0" name="org.opencms.gwt.client.ui.contextmenu.CmsLogout" rule="editprovider" />	
 					</contextmenu>
 				</editoptions>
-			</explorertype>
+			</explorertype> -->
 			<explorertype name="plain" key="fileicon.plain" icon="plain.gif"
 				bigicon="plain_big.png">
 				<newresource uri="newresource.jsp?newresourcetype=plain"
@@ -1562,7 +1562,7 @@
 				<workplace-startupsettings>
 					<locale>en</locale>
 					<project>Offline</project>
-					<workplaceview>/system/workplace/views/explorer/explorer_fs.jsp</workplaceview>
+					<workplaceview>/system/workplace/views/explorer/directEdit.jsp</workplaceview>
 					<folder>/</folder>
 					<site>/sites/default/</site>
 					<restrictexplorerview>false</restrictexplorerview>

@@ -40,31 +40,30 @@ public interface I_CmsGalleryProviderConstants {
     enum GalleryMode implements IsSerializable {
 
         /** The advanced direct edit mode. */
-        ade(GalleryTabId.cms_tab_types, GalleryTabId.cms_tab_galleries, GalleryTabId.cms_tab_categories,
-        GalleryTabId.cms_tab_search, GalleryTabId.cms_tab_results),
+        ade(CmsGalleryTabConfiguration.resolve(CmsGalleryTabConfiguration.TC_ADE_ADD)),
 
-        /** The FCKEditor mode. */
-        editor(GalleryTabId.cms_tab_galleries, GalleryTabId.cms_tab_categories, GalleryTabId.cms_tab_search,
-        GalleryTabId.cms_tab_results),
+        /** The mode for showing all galleries in ADE. */
+        adeView(CmsGalleryTabConfiguration.resolve(CmsGalleryTabConfiguration.TC_SELECT_DOC)),
+
+        /** The wysiwyg editor mode. */
+        editor(CmsGalleryTabConfiguration.resolve(CmsGalleryTabConfiguration.TC_SELECT_DOC) /* may be overwritten by configuration */),
 
         /** The explorer mode. */
-        view(GalleryTabId.cms_tab_types, GalleryTabId.cms_tab_galleries, GalleryTabId.cms_tab_vfstree,
-        GalleryTabId.cms_tab_categories, GalleryTabId.cms_tab_search, GalleryTabId.cms_tab_results),
+        view(CmsGalleryTabConfiguration.resolve(CmsGalleryTabConfiguration.TC_SELECT_DOC)),
 
         /** The widget mode. */
-        widget(GalleryTabId.cms_tab_galleries, GalleryTabId.cms_tab_vfstree, GalleryTabId.cms_tab_categories,
-        GalleryTabId.cms_tab_search, GalleryTabId.cms_tab_results);
+        widget(CmsGalleryTabConfiguration.resolve(CmsGalleryTabConfiguration.TC_SELECT_DOC));
 
         /** The configuration. */
-        private GalleryTabId[] m_tabs;
+        private CmsGalleryTabConfiguration m_tabConfig;
 
         /** Constructor.<p>
          *
-         * @param tabs the configuration
+         * @param tabConfig the tab configuration 
          */
-        private GalleryMode(GalleryTabId... tabs) {
+        private GalleryMode(CmsGalleryTabConfiguration tabConfig) {
 
-            m_tabs = tabs;
+            m_tabConfig = tabConfig;
         }
 
         /** 
@@ -74,7 +73,11 @@ public interface I_CmsGalleryProviderConstants {
          */
         public GalleryTabId[] getTabs() {
 
-            return m_tabs;
+            GalleryTabId[] tabs = new GalleryTabId[m_tabConfig.getTabs().size()];
+            for (int i = 0; i < tabs.length; i++) {
+                tabs[i] = m_tabConfig.getTabs().get(i);
+            }
+            return tabs;
         }
 
     }
@@ -180,7 +183,13 @@ public interface I_CmsGalleryProviderConstants {
     String CONFIG_GALLERY_PATH = "gallerypath";
 
     /** Configuration key. */
+    String CONFIG_GALLERY_NAME = "galleryname";
+
+    /** Configuration key. */
     String CONFIG_GALLERY_TYPES = "gallerytypes";
+
+    /** Configuration key. */
+    String CONFIG_UPLOAD_FOLDER = "uploadfolder";
 
     /** Configuration key. */
     String CONFIG_IMAGE_FORMAT_NAMES = "imageformatnames";
@@ -210,7 +219,7 @@ public interface I_CmsGalleryProviderConstants {
     String CONFIG_START_SITE = "startsite";
 
     /** Configuration key. */
-    String CONFIG_TAB_IDS = "tabids";
+    String CONFIG_TAB_CONFIG = "tabconfig";
 
     /** The key for the tree token. */
     String CONFIG_TREE_TOKEN = "treeToken";

@@ -1,5 +1,5 @@
             
-            Instructions for updating OpenCms 7.x and 8.x to OpenCms 8.5.1
+            Instructions for updating OpenCms 7.x and 8.x to @OPENCMS_VERSION@
 
 
                                     WARNING:
@@ -14,17 +14,23 @@ Alkacon Software does not guarantee that there will be no damage to your
 existing OpenCms installation when using this upgrade wizard.
 
 IMPORTANT: Before using this upgrade wizard, make sure you have a full backup 
-of your OpenCms installation and database.
+           of your OpenCms installation and database.
 
-IMPORTANT: Alkacon OCEE versions less than 3 will not work with OpenCms 8.   
+IMPORTANT: Alkacon OCEE versions less than 4 will not work with OpenCms 9.   
 
 IMPORTANT: The updater is only compatible with the database engines MySQL, 
            Oracle and PostgreSQL.
            
-IMPORTANT: This version of OpenCms requires at least Java 6 because of library 
-           dependencies.
+IMPORTANT: This version of OpenCms requires at least Java 6.
 
-Follow the following steps to update from OpenCms 7.x and 8.x to OpenCms 8.5.1:
+IMPORTANT: The upgrade wizard will replace all VFS resources of the updated modules.
+           If you made modifications to these modules, their changes will be lost.
+           In this case export the changed module resources before starting the update.
+           Hint: You can use the "Resource changed since" feature in the the Database 
+           Administration to export all the changes you have done after installing 
+           OpenCms.
+
+Follow the following steps to update from OpenCms 7.x and 8.x to @OPENCMS_VERSION@:
 
 
 1. Shutdown your OpenCms servlet container
@@ -34,7 +40,7 @@ Broadcast message tool in the 'Administration' view to inform users before the
 server is shut down.
 
 
-2. Extract the OpenCms upgrade file 'opencms_upgrade_to_8.5.1.zip' to 
+2. Extract the OpenCms upgrade file 'opencms-upgrade-to-@OPENCMS_VERSION@.zip' to 
    your web application directory
 
 If you extracted the file to an external directory, copy the folders 'update'
@@ -102,24 +108,26 @@ The wizard will finish similar to the setup wizard. After the final confirmation
 the wizard will be locked again (in the opencms.properties file).
 
 
-6. Shutdown and restart your OpenCms servlet container
+
+6. Update Solr configuration
+
+During the update Solr will be disabled in the WEB-INF/config/opencms-search.xml.
+To update Solr you must update the 'schema.xml and' the 'solrconfig.xml' manually.
+The new default configuration files are located in the solr-update/ directory in 
+the WEB-INF folder of your application. If you are using the default configuration
+from the distribution, it is sufficient to copy the new configuration files to the
+WEB-INF/solr folder. Else if you have customized the Solr configuration you might 
+want to merge the 'schema.xml' and the 'solrconfig.xml' first. When you are done 
+set the attribute enabled to 'true' again (and restart the servelt container).
+
+
+7. Shutdown and restart your OpenCms servlet container
 
 Note: to be sure all jsp files work correctly please delete the servlet containers
 work directory (ie. ${TOMCAT_HOME}/work/Catalina/localhost/opencms/) and the 
 OpenCms' jsp repository (ie. ${OPENCMS_HOME}/WEB-INF/jsp/)
 
 You should now be able to log into the OpenCms workplace as before.
-
-
-
-IMPORTANT: PLEASE READ THIS
-
-* The upgrade wizard will replace all VFS resources of the updated modules
-* If you made modifications to the modules, these changes will be lost
-* In this case export the changed module resources before starting the update
-* Hint: You can use the "Resource changed since" feature in the the Database 
-  Administration to export all the changes you have done after installing 
-  OpenCms
   
  
 

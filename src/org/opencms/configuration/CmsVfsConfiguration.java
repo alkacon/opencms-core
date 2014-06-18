@@ -793,9 +793,12 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
      */
     public CmsResourceTranslator getFileTranslator() {
 
-        String[] array = m_fileTranslationEnabled ? new String[m_fileTranslations.size()] : new String[0];
-        for (int i = 0; i < m_fileTranslations.size(); i++) {
-            array[i] = m_fileTranslations.get(i);
+        String[] array = new String[0];
+        if (m_fileTranslationEnabled) {
+            array = new String[m_fileTranslations.size()];
+            for (int i = 0; i < m_fileTranslations.size(); i++) {
+                array[i] = m_fileTranslations.get(i);
+            }
         }
         return new CmsResourceTranslator(array, true);
     }
@@ -808,9 +811,12 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
      */
     public CmsResourceTranslator getFolderTranslator() {
 
-        String[] array = m_folderTranslationEnabled ? new String[m_folderTranslations.size()] : new String[0];
-        for (int i = 0; i < m_folderTranslations.size(); i++) {
-            array[i] = m_folderTranslations.get(i);
+        String[] array = new String[0];
+        if (m_folderTranslationEnabled) {
+            array = new String[m_folderTranslations.size()];
+            for (int i = 0; i < m_folderTranslations.size(); i++) {
+                array[i] = m_folderTranslations.get(i);
+            }
         }
         return new CmsResourceTranslator(array, false);
     }

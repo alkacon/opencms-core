@@ -1,0 +1,35 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+
+	<xsd:element name="TestNestedImages" type="OpenCmsTestNestedImages"/>
+
+	<xsd:complexType name="OpenCmsTestNestedImages">
+		<xsd:sequence>
+			<xsd:element name="TestNestedImage" type="OpenCmsTestNestedImage" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsTestNestedImage">
+		<xsd:sequence>
+			<xsd:element name="Path" type="OpenCmsString" />
+			<xsd:element name="Title" type="OpenCmsString" />
+			<xsd:element name="Description" type="OpenCmsString" />
+			<xsd:element name="ImageAlign" type="OpenCmsString" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<searchsettings>
+				<searchsetting element="Path"/>
+				<searchsetting element="Title" searchcontent="false"/>
+				<searchsetting element="Description" searchcontent="true"/>
+				<searchsetting element="ImageAlign" searchcontent="true"/>
+			</searchsettings>
+		</xsd:appinfo>
+
+	</xsd:annotation>
+
+</xsd:schema>

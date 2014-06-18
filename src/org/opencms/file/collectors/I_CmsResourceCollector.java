@@ -127,6 +127,20 @@ public interface I_CmsResourceCollector extends Comparable<I_CmsResourceCollecto
     String getCreateParam(CmsObject cms, String collectorName, String param) throws CmsDataAccessException;
 
     /**
+     * Returns the id of the resource type for new collector items.<p>
+     * Returns -1 if creation of new items is not supported.<p>
+     *  
+     * @param cms the current CmsObject 
+     * @param collectorName the name of the collector to use
+     * @param param an optional collector parameter
+     * 
+     * @return the resource type id
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    int getCreateTypeId(CmsObject cms, String collectorName, String param) throws CmsException;
+
+    /**
      * Returns the default collector name to use for collecting resources.<p>
      * 
      * @return the default collector name

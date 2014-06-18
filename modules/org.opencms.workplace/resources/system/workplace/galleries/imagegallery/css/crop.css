@@ -1,8 +1,8 @@
 html {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
-	background-color: AppWorkspace;
-	color: WindowText;
+	background-color: /*begin-color AppWorkspace*/#999999/*end-color*/;
+	color: /*begin-color WindowText*/#000000/*end-color*/;
 }
 
 body {
@@ -15,11 +15,11 @@ div.head {
 	font-size: 12px;
 	font-weight: bold;
 	background-color: Caption;
-	color: CaptionText;
+	color: /*begin-color CaptionText*/#ffffff/*end-color*/;
 }
 
 div.imgbg {
-	background-color: ButtonFace;
+	background-color: /*begin-color ButtonFace*/#f0f0f0/*end-color*/;
 	height: 450px;
 	text-align: center;
 }
@@ -28,8 +28,8 @@ div.container {
 }
 
 div.selection {
-	background-color: InfoBackground;
-	color: InfoText;
+	background-color: /*begin-color InfoBackground*/#f9f9f9/*end-color*/;
+	color: /*begin-color InfoText*/#ffffff/*end-color*/;
 	font-size: 12px;
 	padding: 6px 0 6px 4px;
 }
@@ -40,7 +40,7 @@ div.width, div.height {
 
 div.buttons {
 	padding-top: 6px;
-	border-top: 1px solid ButtonShadow;
+	border-top: 1px solid /*begin-color ButtonShadow*/#999999/*end-color*/;
 	text-align: center;
 }
 

@@ -36,7 +36,6 @@ import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypePointer;
-import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.setup.xml.A_CmsXmlWorkplace;
 import org.opencms.setup.xml.CmsSetupXmlHelper;
 import org.opencms.util.CmsStringUtil;
@@ -117,8 +116,6 @@ public class CmsXmlAddAutoSetFeatures extends A_CmsXmlWorkplace {
                 + CmsWorkplaceConfiguration.A_AUTOSETNAVIGATION);
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", "xmlcontent")
                 + CmsWorkplaceConfiguration.A_AUTOSETNAVIGATION);
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypeXmlPage.getStaticTypeName())
-                + CmsWorkplaceConfiguration.A_AUTOSETNAVIGATION);
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypePlain.getStaticTypeName())
                 + CmsWorkplaceConfiguration.A_AUTOSETNAVIGATION);
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypeImage.getStaticTypeName())
@@ -147,8 +144,6 @@ public class CmsXmlAddAutoSetFeatures extends A_CmsXmlWorkplace {
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", "downloadgallery")
                 + CmsWorkplaceConfiguration.A_AUTOSETTITLE);
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", "xmlcontent")
-                + CmsWorkplaceConfiguration.A_AUTOSETTITLE);
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypeXmlPage.getStaticTypeName())
                 + CmsWorkplaceConfiguration.A_AUTOSETTITLE);
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypePlain.getStaticTypeName())
                 + CmsWorkplaceConfiguration.A_AUTOSETTITLE);

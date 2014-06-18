@@ -77,25 +77,13 @@ div.header{
 	margin: 0px auto 10px;
 }
 
-
-@if user.agent gecko1_8 gecko{
-	/** firefox **/
-	div.header{
-		background-image: literal("-moz-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
-	}
-} @elif user.agent safari {
-	/** chrome, safari etc. **/
-	div.header{
-		background-image: literal("-webkit-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
-	}
-} @elif user.agent opera {
-	/** opera */
-	div.header{
-		background-image: literal("-o-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
-	}
-} @else {
-	/** ie */
-
+/** joined vendor prefix style, for better fall back behavior */
+div.header{
+	background-image: literal("-moz-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
+	background-image: literal("-ms-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
+	background-image: literal("-webkit-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
+	background-image: literal("-o-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
+	background-image: literal("linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
 }
 
 div.header h2{

@@ -135,43 +135,43 @@ public class CmsXmlSitemapGenerator {
     private static final Log LOG = CmsLog.getLog(CmsXmlSitemapGenerator.class);
 
     /** The root path for the sitemap root folder. */
-    private String m_baseFolderRootPath;
+    protected String m_baseFolderRootPath;
 
     /** The site path of the base folder. */
-    private String m_baseFolderSitePath;
+    protected String m_baseFolderSitePath;
 
     /** Flag to control whether container page dates should be computed. */
-    private boolean m_computeContainerPageDates;
+    protected boolean m_computeContainerPageDates;
 
     /** The list of detail page info beans. */
-    private List<CmsDetailPageInfo> m_detailPageInfos = new ArrayList<CmsDetailPageInfo>();
+    protected List<CmsDetailPageInfo> m_detailPageInfos = new ArrayList<CmsDetailPageInfo>();
 
     /** A map from type names to lists of potential detail resources of that type. */
-    private Map<String, List<CmsResource>> m_detailResources = new HashMap<String, List<CmsResource>>();
+    protected Map<String, List<CmsResource>> m_detailResources = new HashMap<String, List<CmsResource>>();
 
     /** A multimap from detail page root paths to corresponding types. */
-    private Multimap<String, String> m_detailTypesByPage = ArrayListMultimap.create();
+    protected Multimap<String, String> m_detailTypesByPage = ArrayListMultimap.create();
 
     /** A CMS context with guest privileges. */
-    private CmsObject m_guestCms;
+    protected CmsObject m_guestCms;
 
     /** The include/exclude configuration used for choosing pages for the XML sitemap. */
-    private CmsPathIncludeExcludeSet m_includeExcludeSet = new CmsPathIncludeExcludeSet();
+    protected CmsPathIncludeExcludeSet m_includeExcludeSet = new CmsPathIncludeExcludeSet();
 
     /** A map from structure ids to page aliases below the base folder which point to the given structure id. */
-    private Multimap<CmsUUID, CmsAlias> m_pageAliasesBelowBaseFolderByStructureId = ArrayListMultimap.create();
+    protected Multimap<CmsUUID, CmsAlias> m_pageAliasesBelowBaseFolderByStructureId = ArrayListMultimap.create();
 
     /** The map used for storing the results, with URLs as keys. */
-    private Map<String, ResultEntry> m_resultMap = new LinkedHashMap<String, ResultEntry>();
+    protected Map<String, ResultEntry> m_resultMap = new LinkedHashMap<String, ResultEntry>();
 
     /** A guest user CMS object with the site root of the base folder. */
-    private CmsObject m_siteGuestCms;
+    protected CmsObject m_siteGuestCms;
 
     /** The site root of the base folder. */
-    private String m_siteRoot;
+    protected String m_siteRoot;
 
     /** A link to the site root. */
-    private String m_siteRootLink;
+    protected String m_siteRootLink;
 
     /**
      * Creates a new sitemap generator instance.<p>
@@ -196,13 +196,71 @@ public class CmsXmlSitemapGenerator {
     }
 
     /**
+     * Gets the change frequency for a sitemap entry from a list of properties.<p>
+     * 
+     * If the change frequency is not defined in the properties, this method will return null.<p>
+     * 
+     * @param properties the properties from which the change frequency should be obtained 
+     * 
+     * @return the change frequency string 
+     */
+    protected static String getChangeFrequency(List<CmsProperty> properties) {
+
+        CmsProperty prop = CmsProperty.get(CmsPropertyDefinition.PROPERTY_XMLSITEMAP_CHANGEFREQ, properties);
+        if (prop.isNullProperty()) {
+            return null;
+        }
+        String result = prop.getValue().trim();
+        return result;
+    }
+
+    /**
+     * Removes files marked as internal from a resource list.<p>
+     * 
+     * @param resources the list which should be replaced 
+     */
+    protected static void removeInternalFiles(List<CmsResource> resources) {
+
+        Iterator<CmsResource> iter = resources.iterator();
+        while (iter.hasNext()) {
+            CmsResource resource = iter.next();
+            if (resource.isInternal()) {
+                iter.remove();
+            }
+        }
+    }
+
+    /**
+     * Gets the page priority from a list of properties.<p>
+     * 
+     * If the page priority can't be found among the properties, -1 will be returned.<p>
+     * 
+     * @param properties the properties of a resource 
+     * 
+     * @return the page priority read from the properties, or -1 
+     */
+    private static double getPriority(List<CmsProperty> properties) {
+
+        CmsProperty prop = CmsProperty.get(CmsPropertyDefinition.PROPERTY_XMLSITEMAP_PRIORITY, properties);
+        if (prop.isNullProperty()) {
+            return -1.0;
+        }
+        try {
+            double result = Double.parseDouble(prop.getValue().trim());
+            return result;
+        } catch (NumberFormatException e) {
+            return -1.0;
+        }
+    }
+
+    /**
      * Generates a list of XML sitemap entry beans for the root folder which has been set in the constructor.<p>
      * 
      * @return the list of XML sitemap entries
      * 
      * @throws CmsException if something goes wrong 
      */
-    public List<CmsXmlSitemapUrlBean> generateSitemap() throws CmsException {
+    public List<CmsXmlSitemapUrlBean> generateSitemapBeans() throws CmsException {
 
         String baseSitePath = m_siteGuestCms.getRequestContext().removeSiteRoot(m_baseFolderRootPath);
         initializeFileData(baseSitePath);
@@ -224,6 +282,7 @@ public class CmsXmlSitemapGenerator {
                 dateModified,
                 getChangeFrequency(propertyList),
                 getPriority(propertyList));
+            urlBean.setOriginalResource(resource);
             addResult(urlBean, 3);
             if (isContainerPage) {
                 Locale locale = getLocale(resource, propertyList);
@@ -262,11 +321,11 @@ public class CmsXmlSitemapGenerator {
     public String renderSitemap() throws CmsException {
 
         StringBuffer buffer = new StringBuffer();
-        List<CmsXmlSitemapUrlBean> urlBeans = generateSitemap();
+        List<CmsXmlSitemapUrlBean> urlBeans = generateSitemapBeans();
         buffer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-        buffer.append("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n");
+        buffer.append(getUrlSetOpenTag() + "\n");
         for (CmsXmlSitemapUrlBean bean : urlBeans) {
-            buffer.append(bean.renderXml());
+            buffer.append(getXmlForEntry(bean));
             buffer.append("\n");
         }
         buffer.append("</urlset>");
@@ -337,25 +396,6 @@ public class CmsXmlSitemapGenerator {
             }
         }
 
-        return result;
-    }
-
-    /**
-     * Gets the change frequency for a sitemap entry from a list of properties.<p>
-     * 
-     * If the change frequency is not defined in the properties, this method will return null.<p>
-     * 
-     * @param properties the properties from which the change frequency should be obtained 
-     * 
-     * @return the change frequency string 
-     */
-    protected String getChangeFrequency(List<CmsProperty> properties) {
-
-        CmsProperty prop = CmsProperty.get(CmsPropertyDefinition.PROPERTY_XMLSITEMAP_CHANGEFREQ, properties);
-        if (prop.isNullProperty()) {
-            return null;
-        }
-        String result = prop.getValue().trim();
         return result;
     }
 
@@ -451,6 +491,22 @@ public class CmsXmlSitemapGenerator {
         return result;
     }
 
+    /** 
+     * Writes the inner node content for an url element to a buffer.<p>
+     * 
+     * @param entry the entry for which the content should be written
+     * @return the inner XML  
+     */
+    protected String getInnerXmlForEntry(CmsXmlSitemapUrlBean entry) {
+
+        StringBuffer buffer = new StringBuffer();
+        entry.writeElement(buffer, "loc", entry.getUrl());
+        entry.writeLastmod(buffer);
+        entry.writeChangefreq(buffer);
+        entry.writePriority(buffer);
+        return buffer.toString();
+    }
+
     /**
      * Gets the list of pages from the navigation which should be directly added to the XML sitemap.<p>
      * 
@@ -481,6 +537,32 @@ public class CmsXmlSitemapGenerator {
         return result;
     }
 
+    /** 
+     * Gets the opening tag for the urlset element (can be overridden to add e.g. more namespaces.<p>
+     * 
+     * @return the opening tag 
+     */
+    protected String getUrlSetOpenTag() {
+
+        return "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">";
+    }
+
+    /** 
+     * Writes the XML for an URL entry to a buffer.<p>
+     * 
+     * @param entry the XML sitemap entry bean 
+     *  
+     * @return an XML representation of this bean
+     */
+    protected String getXmlForEntry(CmsXmlSitemapUrlBean entry) {
+
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("<url>");
+        buffer.append(getInnerXmlForEntry(entry));
+        buffer.append("</url>");
+        return buffer.toString();
+    }
+
     /**
      * Checks whether the given alias is below the base folder.<p>
      * 
@@ -492,22 +574,6 @@ public class CmsXmlSitemapGenerator {
 
         boolean isBelowBaseFolder = CmsStringUtil.isPrefixPath(m_baseFolderSitePath, alias.getAliasPath());
         return isBelowBaseFolder;
-    }
-
-    /**
-     * Removes files marked as internal from a resource list.<p>
-     * 
-     * @param resources the list which should be replaced 
-     */
-    protected void removeInternalFiles(List<CmsResource> resources) {
-
-        Iterator<CmsResource> iter = resources.iterator();
-        while (iter.hasNext()) {
-            CmsResource resource = iter.next();
-            if (resource.isInternal()) {
-                iter.remove();
-            }
-        }
     }
 
     /** 
@@ -526,6 +592,7 @@ public class CmsXmlSitemapGenerator {
             for (CmsAlias alias : aliases) {
                 String aliasLink = (m_siteRootLink + "/" + alias.getAliasPath()).replaceAll("(?<!:)//+", "/");
                 CmsXmlSitemapUrlBean aliasUrlBean = new CmsXmlSitemapUrlBean(aliasLink, -1, changeFrequency, priority);
+                aliasUrlBean.setOriginalResource(aliasTarget);
                 addResult(aliasUrlBean, 1);
             }
         } catch (CmsException e) {
@@ -536,28 +603,30 @@ public class CmsXmlSitemapGenerator {
     /**
      * Adds the detail page links for a given page to the results.<p>
      * 
-     * @param resource the container page resource 
+     * @param containerPage the container page resource 
      * @param locale the locale of the container page 
      * 
      * @throws CmsException if something goes wrong 
      */
-    private void addDetailLinks(CmsResource resource, Locale locale) throws CmsException {
+    private void addDetailLinks(CmsResource containerPage, Locale locale) throws CmsException {
 
-        List<I_CmsResourceType> types = getDetailTypesForPage(resource);
+        List<I_CmsResourceType> types = getDetailTypesForPage(containerPage);
         for (I_CmsResourceType type : types) {
             List<CmsResource> resourcesForType = getDetailResources(type);
             for (CmsResource detailRes : resourcesForType) {
-                if (!isValidDetailPageCombination(resource, locale, detailRes)) {
+                if (!isValidDetailPageCombination(containerPage, locale, detailRes)) {
                     continue;
                 }
                 List<CmsProperty> detailProps = m_guestCms.readPropertyObjects(detailRes, true);
-                String detailLink = getDetailLink(resource, detailRes, locale);
+                String detailLink = getDetailLink(containerPage, detailRes, locale);
                 detailLink = CmsFileUtil.removeTrailingSeparator(detailLink);
                 CmsXmlSitemapUrlBean detailUrlBean = new CmsXmlSitemapUrlBean(
                     detailLink,
                     detailRes.getDateLastModified(),
                     getChangeFrequency(detailProps),
                     getPriority(detailProps));
+                detailUrlBean.setOriginalResource(detailRes);
+                detailUrlBean.setDetailPageResource(containerPage);
                 addResult(detailUrlBean, 2);
             }
         }
@@ -601,29 +670,6 @@ public class CmsXmlSitemapGenerator {
     private Locale getLocale(CmsResource resource, List<CmsProperty> propertyList) {
 
         return OpenCms.getLocaleManager().getDefaultLocale(m_guestCms, m_guestCms.getSitePath(resource));
-    }
-
-    /**
-     * Gets the page priority from a list of properties.<p>
-     * 
-     * If the page priority can't be found among the properties, -1 will be returned.<p>
-     * 
-     * @param properties the properties of a resource 
-     * 
-     * @return the page priority read from the properties, or -1 
-     */
-    private double getPriority(List<CmsProperty> properties) {
-
-        CmsProperty prop = CmsProperty.get(CmsPropertyDefinition.PROPERTY_XMLSITEMAP_PRIORITY, properties);
-        if (prop.isNullProperty()) {
-            return -1.0;
-        }
-        try {
-            double result = Double.parseDouble(prop.getValue().trim());
-            return result;
-        } catch (NumberFormatException e) {
-            return -1.0;
-        }
     }
 
     /**

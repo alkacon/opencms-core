@@ -38,14 +38,18 @@ function buttonAction(para) {
 		case 1:
 		{
 			_form.action.value = actionExit;
-			_form.target = "_top";
+			if (!callCloseFunction) {
+				_form.target = "_top";
+			}
 			_form.submit();
 			break;
 		}
 		case 2:
 		{
 			_form.action.value = actionSaveExit;
-			_form.target = "_top";
+			if (!callCloseFunction) {
+				_form.target = "_top";
+			}
 			_form.submit();
 			break;
 		}
@@ -149,14 +153,6 @@ function keyDownHandler(e) {
 	}
 }
 
-// adjust the editor height
-function adjustEditorHeight() {
-	var divHeight = document.getElementById("edit1").offsetHeight;
-	// set the height explicitly for the div with the class "CodeMirror-scroll"
-	editorCodeMirror.getScrollerElement().style.height = divHeight + "px";
-	editorCodeMirror.refresh();
-}
-
 // auto format the selected code
 function autoFormatSelection() {
 	var range = getSelectedRange();
@@ -189,6 +185,7 @@ function setEditorFontSize(newSize) {
 	}
 	updateCSS(".CodeMirror span", "font-size", newSize + "px;");
 	updateCSS(".CodeMirror pre", "font-size", newSize + "px;");
+	updateCSS(".CodeMirror-linenumber", "font-size", newSize + "px;");
 	editorCodeMirror.refresh();
 }
 

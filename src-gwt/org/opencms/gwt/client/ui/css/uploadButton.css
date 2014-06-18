@@ -11,15 +11,7 @@ div.uploadButton input.uploadFileInput {
 	position: relative;
 }
 
-@if user.agent ie6 {
-    .uploadFileInput{
-        filter: literal("alpha(opacity = 0)");
-    }
-    .uploadButton {
-    	display: inline;
-    	height: literal("expression( (function(elem){elem.style.height = elem.firstChild.offsetHeight + 'px';})(this) )");
-    } 
-} @elif user.agent ie8 {
+@if user.agent ie8 {
 	.uploadFileInput{
 		-ms-filter: "alpha(opacity = 0)";
 	}

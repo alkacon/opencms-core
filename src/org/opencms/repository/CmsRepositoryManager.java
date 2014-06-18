@@ -26,8 +26,14 @@
  */
 
 package org.opencms.repository;
+
 import org.opencms.configuration.CmsConfigurationException;
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsObject;
+import org.opencms.file.wrapper.I_CmsResourceWrapper;
+import org.opencms.jlan.CmsJlanRepository;
+import org.opencms.jlan.CmsJlanThreadManager;
+import org.opencms.jlan.CmsJlanUsers;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 
@@ -39,6 +45,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.collect.Lists;
 
 /**
  * The RepositoryManager keeps a list with all configured {@link I_CmsRepository}
@@ -54,11 +61,17 @@ public class CmsRepositoryManager {
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsRepositoryManager.class);
 
+    /** Separator between a wrapper class and its parameters. */
+    private static final String WRAPPER_CONFIG_SEPARATOR = ":";
+
     /** Determines if the repository manager was configured or not. */
     private boolean m_configured;
 
     /** Indicates if the configuration is finalized (frozen). */
     private boolean m_frozen;
+
+    /** The JLAN thread manager. */
+    private CmsJlanThreadManager m_jlanThreadManager;
 
     /** The list of repositories. */
     private List<I_CmsRepository> m_repositoryList = new ArrayList<I_CmsRepository>();
@@ -76,6 +89,7 @@ public class CmsRepositoryManager {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_STARTING_REPOSITORY_CONFIG_0));
         }
         m_repositoryMap = new HashMap<String, I_CmsRepository>();
+        m_jlanThreadManager = new CmsJlanThreadManager();
         m_frozen = false;
         m_configured = true;
     }
@@ -94,6 +108,80 @@ public class CmsRepositoryManager {
         m_frozen = true;
     }
 
+    /** 
+     * Creates a list of resource wrappers from a collection of configuration parameters, for use in configuring repositories.<p>
+     * 
+     * @param config the configuration 
+     * @param paramName the parameter name 
+     * @param log the logger to use for error messages 
+     * 
+     * @return the list of resource wrappers 
+     * 
+     * @throws CmsConfigurationException if something goes wrong with reading the configuration 
+     */
+    public static List<I_CmsResourceWrapper> createResourceWrappersFromConfiguration(
+        CmsParameterConfiguration config,
+        String paramName,
+        Log log) throws CmsConfigurationException {
+
+        List<I_CmsResourceWrapper> wrapperObjects = Lists.newArrayList();
+        if (config.containsKey(paramName)) {
+            List<String> wrappers = config.getList(paramName);
+            for (String wrapperString : wrappers) {
+                wrapperString = wrapperString.trim();
+                String className;
+                String configString = null;
+                int separatorPos = wrapperString.indexOf(WRAPPER_CONFIG_SEPARATOR);
+                if (separatorPos < 0) {
+                    className = wrapperString;
+                } else {
+                    className = wrapperString.substring(0, separatorPos);
+                    configString = wrapperString.substring(separatorPos + 1);
+                }
+
+                Class<?> nameClazz;
+
+                // init class for wrapper
+                try {
+                    nameClazz = Class.forName(className);
+                } catch (ClassNotFoundException e) {
+                    log.error(Messages.get().getBundle().key(Messages.LOG_WRAPPER_CLASS_NOT_FOUND_1, className), e);
+                    wrapperObjects.clear();
+                    break;
+                }
+
+                I_CmsResourceWrapper wrapper;
+                try {
+                    wrapper = (I_CmsResourceWrapper)nameClazz.newInstance();
+                    if (configString != null) {
+                        wrapper.configure(configString);
+                    }
+                } catch (InstantiationException e) {
+                    throw new CmsConfigurationException(Messages.get().container(
+                        Messages.ERR_INVALID_WRAPPER_NAME_1,
+                        wrapperString));
+                } catch (IllegalAccessException e) {
+                    throw new CmsConfigurationException(Messages.get().container(
+                        Messages.ERR_INVALID_WRAPPER_NAME_1,
+                        wrapperString));
+                } catch (ClassCastException e) {
+                    throw new CmsConfigurationException(Messages.get().container(
+                        Messages.ERR_INVALID_WRAPPER_NAME_1,
+                        wrapperString));
+                }
+
+                wrapperObjects.add(wrapper);
+
+                if (CmsLog.INIT.isInfoEnabled()) {
+                    CmsLog.INIT.info(Messages.get().getBundle().key(
+                        Messages.INIT_ADD_WRAPPER_1,
+                        wrapper.getClass().getName()));
+                }
+            }
+        }
+        return wrapperObjects;
+    }
+
     /**
      * Adds a new configured repository.<p>
      * 
@@ -108,6 +196,25 @@ public class CmsRepositoryManager {
             throw new CmsConfigurationException(Messages.get().container(Messages.ERR_NO_CONFIG_AFTER_STARTUP_0));
         }
         m_repositoryList.add(repository);
+    }
+
+    /** 
+     * Gets the additional infos for the user who just logged in which is required for the repositories to work.<p>
+     * 
+     * @param userName the name of the logged in user 
+     * @param password the password of the logged in user 
+     * 
+     * @return the additional info entries which should be written to the user 
+     */
+    public Map<String, Object> getAdditionalInfoForLogin(String userName, String password) {
+
+        Map<String, Object> additionalInfos = new HashMap<String, Object>();
+        try {
+            additionalInfos.put(CmsJlanUsers.JLAN_HASH, CmsJlanUsers.hashPassword(password));
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        return additionalInfos;
     }
 
     /**
@@ -221,6 +328,12 @@ public class CmsRepositoryManager {
         for (String removeRepo : toRemove) {
             m_repositoryMap.remove(removeRepo);
         }
+
+        CmsJlanUsers.setAdminCms(cms);
+        if (!getRepositories(CmsJlanRepository.class).isEmpty()) {
+            m_jlanThreadManager.start();
+        }
+
     }
 
     /**
@@ -231,6 +344,16 @@ public class CmsRepositoryManager {
     public boolean isConfigured() {
 
         return m_configured;
+    }
+
+    /** 
+     * Shuts down the repository manager.<p>
+     */
+    public void shutDown() {
+
+        if (m_jlanThreadManager != null) {
+            m_jlanThreadManager.stop();
+        }
     }
 
 }

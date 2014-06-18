@@ -37,6 +37,7 @@ import org.opencms.json.JSONObject;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.galleries.A_CmsAjaxGallery;
+import org.opencms.xml.content.I_CmsXmlContentHandler.DisplayType;
 import org.opencms.xml.types.A_CmsXmlContentValue;
 
 import java.util.List;
@@ -66,15 +67,6 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget implements I_CmsADE
     protected A_CmsGalleryWidget(String configuration) {
 
         super(configuration);
-    }
-
-    /**
-     * @see org.opencms.widgets.A_CmsWidget#isCompactViewEnabled()
-     */
-    @Override
-    public boolean isCompactViewEnabled() {
-
-        return false;
     }
 
     /**
@@ -112,6 +104,14 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget implements I_CmsADE
 
         // TODO: Auto-generated method stub
         return null;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getDefaultDisplayType()
+     */
+    public DisplayType getDefaultDisplayType() {
+
+        return DisplayType.wide;
     }
 
     /**
@@ -335,6 +335,15 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget implements I_CmsADE
     public String getWidgetName() {
 
         return A_CmsGalleryWidget.class.getName();
+    }
+
+    /**
+     * @see org.opencms.widgets.A_CmsWidget#isCompactViewEnabled()
+     */
+    @Override
+    public boolean isCompactViewEnabled() {
+
+        return false;
     }
 
     /**

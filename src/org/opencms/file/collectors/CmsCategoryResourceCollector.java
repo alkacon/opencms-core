@@ -74,7 +74,7 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
      * 
      * Usage:
      * <code>
-     * &quot;resource=[filename]|resourceType=[resource type]|categoryTypes=[category1,category2,...]|subTree=[boolean]|sortBy=[category|date|property:[property_name]]|sortAsc=[boolean]&quot;
+     * &quot;resource=[filename]|resourceType=[resource type]|categoryTypes=[category1,category2,...]|excludeTimerange=false|subTree=[boolean]|sortBy=[category|date|property:[property_name]]|sortAsc=[boolean]&quot;
      * </code>
      */
     private static final class CmsCategoryCollectorData extends CmsCollectorData {
@@ -238,6 +238,8 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
                         // ignore
                     }
                     setCount(count);
+                } else if (PARAM_EXCLUDETIMERANGE.equalsIgnoreCase(key)) {
+                    setExcludeTimerange(new Boolean(value).booleanValue());
                 } else {
                     LOG.error("Unknow key found in collector parameters.");
                 }
@@ -387,6 +389,10 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
             if (data.getType() != -1) {
                 filter = filter.addRequireType(data.getType());
             }
+            if (data.isExcludeTimerange() && !cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+                // include all not yet released and expired resources in an offline project
+                filter = filter.addExcludeTimerange();
+            }
 
             List<CmsResource> resources = cms.readResources(foldername, filter, includeSubTree);
             List<String> categoryTypes = data.getCategoryTypes();
@@ -395,7 +401,7 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
             CmsCategoryService service = CmsCategoryService.getInstance();
             while (itResources.hasNext()) {
                 resource = itResources.next();
-                Iterator<CmsCategory> itCategories = service.readResourceCategories(cms, cms.getSitePath(resource)).iterator();
+                Iterator<CmsCategory> itCategories = service.readResourceCategories(cms, resource).iterator();
                 while (itCategories.hasNext()) {
                     CmsCategory category = itCategories.next();
                     if (categoryTypes.contains(category.getPath())) {

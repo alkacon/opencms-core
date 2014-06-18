@@ -80,7 +80,8 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
      */
     private static final String[][] LEGACY_TRANSLATIONS = {
         {"opencms://system/modules/org.opencms.ade.config/schemas/", "internal://org/opencms/xml/adeconfig/"},
-        {"opencms://system/modules/org.opencms.ade.containerpage/schemas/", "internal://org/opencms/xml/containerpage/"}};
+        {"opencms://system/modules/org.opencms.ade.containerpage/schemas/", "internal://org/opencms/xml/containerpage/"},
+        {"opencms://system/modules/org.opencms.ade.sitemap/schemas/", "internal://org/opencms/xml/adeconfig/sitemap/"}};
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsXmlEntityResolver.class);
@@ -355,9 +356,8 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
         systemId = translateLegacySystemId(systemId);
         content = m_cachePermanent.get(systemId);
         if (content != null) {
-
             // permanent cache contains system id
-            return new InputSource(new ByteArrayInputStream(content));
+            return createInputSource(content, systemId);
         } else if (systemId.equals(CmsXmlPage.XMLPAGE_XSD_SYSTEM_ID)) {
 
             // XML page XSD reference
@@ -366,7 +366,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 content = CmsFileUtil.readFully(stream);
                 // cache the XML page DTD
                 m_cachePermanent.put(systemId, content);
-                return new InputSource(new ByteArrayInputStream(content));
+                return createInputSource(content, systemId);
             } catch (Throwable t) {
                 LOG.error(Messages.get().getBundle().key(Messages.LOG_XMLPAGE_XSD_NOT_FOUND_1, XMLPAGE_XSD_LOCATION), t);
             }
@@ -379,7 +379,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 // cache the XML page DTD
                 content = CmsFileUtil.readFully(stream);
                 m_cachePermanent.put(systemId, content);
-                return new InputSource(new ByteArrayInputStream(content));
+                return createInputSource(content, systemId);
             } catch (Throwable t) {
                 LOG.error(
                     Messages.get().getBundle().key(Messages.LOG_XMLPAGE_DTD_NOT_FOUND_1, XMLPAGE_OLD_DTD_LOCATION),
@@ -395,7 +395,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
             // look up temporary cache
             content = m_cacheTemporary.get(cacheKey);
             if (content != null) {
-                return new InputSource(new ByteArrayInputStream(content));
+                return createInputSource(content, systemId);
             }
             String storedSiteRoot = m_cms.getRequestContext().getSiteRoot();
             try {
@@ -408,7 +408,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().getBundle().key(Messages.LOG_ERR_CACHED_SYS_ID_1, cacheKey));
                 }
-                return new InputSource(new ByteArrayInputStream(content));
+                return createInputSource(content, systemId);
             } catch (Throwable t) {
                 LOG.error(Messages.get().getBundle().key(Messages.LOG_ENTITY_RESOLVE_FAILED_1, systemId), t);
             } finally {
@@ -421,7 +421,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 InputStream stream = getClass().getClassLoader().getResourceAsStream(location);
                 content = CmsFileUtil.readFully(stream);
                 m_cachePermanent.put(systemId, content);
-                return new InputSource(new ByteArrayInputStream(content));
+                return createInputSource(content, systemId);
             } catch (Throwable t) {
                 LOG.error(t.getLocalizedMessage(), t);
             }
@@ -437,7 +437,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 content = CmsFileUtil.readFully(stream);
                 // cache the DTD
                 m_cachePermanent.put(systemId, content);
-                return new InputSource(new ByteArrayInputStream(content));
+                return createInputSource(content, systemId);
             } catch (Throwable t) {
                 LOG.error(Messages.get().getBundle().key(Messages.LOG_DTD_NOT_FOUND_1, location), t);
             }
@@ -475,6 +475,21 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                     getCacheKey(systemId, false)));
             }
         }
+    }
+
+    /** 
+     * Creates an input source for the given byte data and system id.<p>
+     * 
+     * @param data the data which the input source should return 
+     * @param systemId the system id for the input source 
+     * 
+     * @return the input source 
+     */
+    InputSource createInputSource(byte[] data, String systemId) {
+
+        InputSource result = new InputSource(new ByteArrayInputStream(data));
+        result.setSystemId(systemId);
+        return result;
     }
 
     /**

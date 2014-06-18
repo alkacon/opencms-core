@@ -1,0 +1,39 @@
+<?xml version="1.0" standalone="no"?>
+
+<jlanserver>
+  <servers>
+    <SMB/>
+  </servers>
+	
+  <SMB>
+      <host name="OCMSJLAN" domain="OCMSJLANDOMAIN">
+      <broadcast>255.255.255.255</broadcast>
+      <smbdialects>LanMan,NT</smbdialects>
+      <comment>OpenCms JLAN</comment>
+      <tcpipSMB port="1445" platforms="linux,macosx,solaris"/>
+    </host>
+    <sessionDebug flags="Negotiate,Socket,Tree"/>
+    <authenticator type="enterprise" />
+  </SMB>
+
+
+  <debug>
+    <output>
+      <class>org.alfresco.jlan.debug.ConsoleDebug</class>
+      <logFile>jlansrv.log</logFile>
+      <append/>
+    </output>
+  </debug>
+  
+  <shares/>
+  
+  <security>
+    <shareMapper>
+	<class>org.opencms.jlan.CmsJlanShareMapper</class>
+    </shareMapper>
+    <JCEProvider>cryptix.jce.provider.CryptixCrypto</JCEProvider>
+    <usersInterface>
+    	<class>org.opencms.jlan.CmsJlanUsers</class>
+    </usersInterface>
+  </security>
+</jlanserver>

@@ -29,15 +29,27 @@ package org.opencms.gwt.client.ui.resourceinfo;
 
 import org.opencms.db.CmsResourceState;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.client.ui.CmsScrollPanel;
+import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuButton;
+import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler;
+import org.opencms.gwt.client.ui.contextmenu.CmsLogout;
+import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
 import org.opencms.gwt.client.util.CmsResourceStateUtil;
+import org.opencms.gwt.shared.CmsContextMenuEntryBean;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsResourceStatusBean;
+import org.opencms.util.CmsUUID;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -47,6 +59,44 @@ import com.google.gwt.user.client.ui.Widget;
  * A widget used to display various resource information to a user.<p>
  */
 public class CmsResourceInfoView extends Composite {
+
+    /**
+     * Context menu handler for resource info boxes.<p>
+     */
+    static class ContextMenuHandler extends CmsContextMenuHandler {
+
+        /** Set of context menu actions which we do not want to appear in the context menu for the relation source items. */
+        protected static Set<String> m_filteredActions = new HashSet<String>();
+
+        static {
+            m_filteredActions.add(CmsGwtConstants.ACTION_TEMPLATECONTEXTS);
+            m_filteredActions.add(CmsGwtConstants.ACTION_EDITSMALLELEMENTS);
+            m_filteredActions.add(CmsLogout.class.getName());
+        }
+
+        /**
+         * @see org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler#refreshResource(org.opencms.util.CmsUUID)
+         */
+        @Override
+        public void refreshResource(CmsUUID structureId) {
+
+            Window.Location.reload();
+        }
+
+        /**
+         * @see org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler#transformSingleEntry(org.opencms.gwt.shared.CmsContextMenuEntryBean, org.opencms.util.CmsUUID)
+         */
+        @Override
+        protected I_CmsContextMenuEntry transformSingleEntry(CmsContextMenuEntryBean entryBean, CmsUUID structureId) {
+
+            if (m_filteredActions.contains(entryBean.getName())) {
+                return null;
+            } else {
+                return super.transformSingleEntry(entryBean, structureId);
+            }
+        }
+
+    }
 
     /** 
      * The uiBinder interface for this widget.<p>
@@ -125,6 +175,12 @@ public class CmsResourceInfoView extends Composite {
     protected HasText m_resourceType;
 
     /**
+     * Scroll panel for resource information.<p>
+     */
+    @UiField
+    protected CmsScrollPanel m_scrollPanel;
+
+    /**
      * Text field for resource information.<p>
      */
     @UiField
@@ -163,7 +219,8 @@ public class CmsResourceInfoView extends Composite {
 
         initWidget(uiBinder.createAndBindUi(this));
         CmsListItemWidget infoBox = new CmsListItemWidget(status.getListInfo());
-        m_infoBoxContainer.add(infoBox);
+        infoBox.addButton(new CmsContextMenuButton(status.getStructureId(), new ContextMenuHandler()));
+        m_infoBoxContainer.add(new CmsListItem(infoBox));
         m_dateCreated.setText(status.getDateCreated());
         m_dateExpired.setText(status.getDateExpired());
         m_dateLastModified.setText(status.getDateLastModified());
@@ -181,6 +238,7 @@ public class CmsResourceInfoView extends Composite {
         m_size.setText("" + status.getSize() + " Bytes");
         m_userCreated.setText(status.getUserCreated());
         m_userLastModified.setText(status.getUserLastModified());
+        m_scrollPanel.setHeight("280px");
         List<String> locales = status.getLocales();
         if (locales != null) {
             StringBuffer buffer = new StringBuffer();

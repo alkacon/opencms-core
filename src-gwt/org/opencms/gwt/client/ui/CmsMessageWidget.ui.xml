@@ -5,19 +5,17 @@
 		table.main{
 			display: block;
 		}
-		table.main td.icon{
+		.icon{
 			background-repeat: no-repeat;
 			background-position: 50% 50%;
 			vertical-align: middle;
 			padding: 0px;
 			width: 60px;
 			float: none;
-			display: table-cell;
 		}
 		table.main div.message{
 			vertical-align: middle;
-			padding: 15px 15px 15px 0px;
-			overflow: auto;
+			padding: 15px 15px 15px 15px;
 			position: relative;
 			max-height: 150px;
 		}
@@ -27,8 +25,14 @@
 		table.main div.message > p {
 			margin-top: 5px;
 		}
+	
+		.outercontainer {
+			overflow-x: auto;
+		}
 	</ui:style>
+	<div class="{style.outercontainer}" >
 	<table class="{style.main} {resources.generalCss.cornerAll}">
-		<tr><td ui:field="m_icon" class="{style.icon}"></td><td><div ui:field="m_message" class="{style.message}"></div></td></tr>
+		<tr><td><div ui:field="m_icon" class="{style.icon}" /></td><td><div ui:field="m_message" class="{style.message}"></div></td></tr>
 	</table>
+	</div>
 </ui:UiBinder>

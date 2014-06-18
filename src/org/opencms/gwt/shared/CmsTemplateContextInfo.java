@@ -30,7 +30,7 @@ package org.opencms.gwt.shared;
 import org.opencms.util.CmsDefaultSet;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -52,8 +52,11 @@ public class CmsTemplateContextInfo implements IsSerializable {
     /** The map of allowed contexts for each type. */
     private Map<String, CmsDefaultSet<String>> m_allowedContextMap;
 
+    /** Client variant information. */
+    private Map<String, Map<String, CmsClientVariantInfo>> m_clientVariantInfo = new LinkedHashMap<String, Map<String, CmsClientVariantInfo>>();
+
     /** A map from the names of all available template contexts to their localized names. */
-    private Map<String, String> m_contextLabels = new HashMap<String, String>();
+    private Map<String, String> m_contextLabels = new LinkedHashMap<String, String>();
 
     /** The context provider class. */
     private String m_contextProvider;
@@ -87,6 +90,18 @@ public class CmsTemplateContextInfo implements IsSerializable {
 
         return m_allowedContextMap;
 
+    }
+
+    /** 
+     * Gets the client variant information for a specific context.<p>
+     * 
+     * @param context the context name
+     * 
+     * @return the client variant information for that context 
+     */
+    public Map<String, CmsClientVariantInfo> getClientVariants(String context) {
+
+        return m_clientVariantInfo.get(context);
     }
 
     /** 
@@ -150,6 +165,17 @@ public class CmsTemplateContextInfo implements IsSerializable {
     }
 
     /**
+     * Checks if client variants for the given context are present.<p>
+     * 
+     * @param context a context name 
+     * @return true if there are client variants for the context 
+     */
+    public boolean hasClientVariants(String context) {
+
+        return m_clientVariantInfo.containsKey(context);
+    }
+
+    /**
      * Sets the allowed contexts.<p>
      * 
      * @param allowedContextMap the map of allowed contexts 
@@ -157,6 +183,22 @@ public class CmsTemplateContextInfo implements IsSerializable {
     public void setAllowedContexts(Map<String, CmsDefaultSet<String>> allowedContextMap) {
 
         m_allowedContextMap = allowedContextMap;
+    }
+
+    /**
+     * Adds a client variant.<p>
+     * 
+     * @param context a context name 
+     * @param variant the variant name 
+     * @param info the bean with the variant information
+     */
+    public void setClientVariant(String context, String variant, CmsClientVariantInfo info) {
+
+        if (!m_clientVariantInfo.containsKey(context)) {
+            Map<String, CmsClientVariantInfo> variants = new LinkedHashMap<String, CmsClientVariantInfo>();
+            m_clientVariantInfo.put(context, variants);
+        }
+        m_clientVariantInfo.get(context).put(variant, info);
     }
 
     /**

@@ -48,6 +48,9 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
     /** The gallery path. */
     private String m_galleryPath;
 
+    /** The gallery type name. */
+    private String m_galleryTypeName;
+
     /** The gallery types. */
     private String[] m_galleryTypes;
 
@@ -78,11 +81,14 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
     /** The start site. */
     private String m_startSite;
 
-    /** The tab id's. */
-    private GalleryTabId[] m_tabIds;
+    /** The tab configuration. */
+    private CmsGalleryTabConfiguration m_tabConfiguration;
 
     /** The tree token. */
     private String m_treeToken;
+
+    /** The upload folder. */
+    private String m_uploadFolder;
 
     /** The use formats flag. */
     private boolean m_useFormats;
@@ -116,7 +122,7 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
         m_showSiteSelector = configuration.isShowSiteSelector();
         m_startFolder = configuration.getStartFolder();
         m_startSite = configuration.getStartSite();
-        m_tabIds = configuration.getTabIds();
+        m_tabConfiguration = configuration.getTabConfiguration();
         m_useFormats = configuration.isUseFormats();
         m_treeToken = configuration.getTreeToken();
     }
@@ -143,6 +149,14 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
     public String getGalleryPath() {
 
         return m_galleryPath;
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#getGalleryTypeName()
+     */
+    public String getGalleryTypeName() {
+
+        return m_galleryTypeName;
     }
 
     /**
@@ -218,11 +232,24 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
     }
 
     /**
-     * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#getTabIds()
+     * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#getTabConfiguration()
+     */
+    public CmsGalleryTabConfiguration getTabConfiguration() {
+
+        return m_tabConfiguration;
+    }
+
+    /** 
+     * Gets the array of tab ids.<p>
+     * 
+     * @return the tab ids 
      */
     public GalleryTabId[] getTabIds() {
 
-        return m_tabIds;
+        if (m_tabConfiguration == null) {
+            return null;
+        }
+        return m_tabConfiguration.getTabs().toArray(new GalleryTabId[] {});
     }
 
     /**
@@ -234,11 +261,19 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
     }
 
     /**
+     * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#getUploadFolder()
+     */
+    public String getUploadFolder() {
+
+        return m_uploadFolder;
+    }
+
+    /**
      * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#isIncludeFiles()
      */
     public boolean isIncludeFiles() {
 
-        return (getTabIds() == null) || (getTabIds().length != 1);
+        return getTabConfiguration().getTabs().contains(GalleryTabId.cms_tab_results);
     }
 
     /**
@@ -283,6 +318,16 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
     public void setGalleryPath(String galleryPath) {
 
         m_galleryPath = galleryPath;
+    }
+
+    /**
+     * Sets the gallery type name.<p>
+     * 
+     * @param galleryTypeName the gallery type name
+     */
+    public void setGalleryTypeName(String galleryTypeName) {
+
+        m_galleryTypeName = galleryTypeName;
     }
 
     /**
@@ -386,13 +431,23 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
     }
 
     /**
-     * Sets the tab id's.<p>
-     *
-     * @param tabIds the tab id's to set
+     * Sets the tab configuration.<p>
+     * 
+     * @param tabConfig the gallery tab configuration 
      */
-    public void setTabIds(GalleryTabId... tabIds) {
+    public void setTabConfiguration(CmsGalleryTabConfiguration tabConfig) {
 
-        m_tabIds = tabIds;
+        m_tabConfiguration = tabConfig;
+    }
+
+    /**
+     * Sets the upload folder.<p>
+     * 
+     * @param uploadFolder the upload folder
+     */
+    public void setUploadFolder(String uploadFolder) {
+
+        m_uploadFolder = uploadFolder;
     }
 
     /**

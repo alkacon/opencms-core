@@ -31,9 +31,9 @@ import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.CmsDbIoException;
 import org.opencms.db.CmsDbSqlException;
+import org.opencms.db.CmsSelectQuery.TableAlias;
 import org.opencms.db.CmsSimpleQueryFragment;
 import org.opencms.db.I_CmsQueryFragment;
-import org.opencms.db.CmsSelectQuery.TableAlias;
 import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.db.generic.CmsUserQueryBuilder;
 import org.opencms.db.generic.Messages;
@@ -70,21 +70,11 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
      * @return an Output stream from a blob
      * @throws SQLException if something goes wring
      */
-    @SuppressWarnings("deprecation")
     public static OutputStream getOutputStreamFromBlob(ResultSet res, String name) throws SQLException {
 
-        // TODO: perform blob check only once and store Oracle version in a static private member 
-        // TODO: best do this during system startup / db init phase once
         Blob blob = res.getBlob(name);
-        try {
-            // jdbc standard
-            blob.truncate(0);
-            return blob.setBinaryStream(0L);
-        } catch (SQLException e) {
-            // oracle 9 & 8 (if using the same jdbc driver as provided by oracle9: ojdbc14.jar)
-            ((oracle.sql.BLOB)blob).trim(0);
-            return ((oracle.sql.BLOB)blob).getBinaryOutputStream();
-        }
+        blob.truncate(0);
+        return blob.setBinaryStream(0L);
     }
 
     /**

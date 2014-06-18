@@ -102,6 +102,11 @@ public class CmsToolbarNotificationWidget extends A_CmsNotificationWidget {
     @Override
     protected void animateShow() {
 
+        // ensure to display the notification above everything else
+        Element parent = getElement().getParentElement();
+        if (parent != null) {
+            parent.getStyle().setZIndex(I_CmsLayoutBundle.INSTANCE.constants().css().zIndexDND());
+        }
         getElement().getStyle().clearVisibility();
         setAnimation(CmsFadeAnimation.fadeIn(getElement(), new Command() {
 
@@ -194,6 +199,10 @@ public class CmsToolbarNotificationWidget extends A_CmsNotificationWidget {
      */
     private void restore() {
 
+        Element parent = getElement().getParentElement();
+        if (parent != null) {
+            parent.getStyle().clearZIndex();
+        }
         getElement().getStyle().setVisibility(Visibility.HIDDEN);
         // back to plain style without error or warning
         getElement().setClassName(I_CmsLayoutBundle.INSTANCE.toolbarCss().notification());

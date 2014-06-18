@@ -48,7 +48,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.user.client.ui.Label;
 
 /**
@@ -236,7 +235,7 @@ public class CmsCategoriesTab extends A_CmsListTab {
                 }
                 SelectionHandler selectionHandler = new SelectionHandler(categoryBean.getPath(), checkBox);
                 checkBox.addClickHandler(selectionHandler);
-                dataValue.addDomHandler(selectionHandler, DoubleClickEvent.getType());
+                dataValue.addClickHandler(selectionHandler);
                 dataValue.setUnselectable();
                 // set the category list item and add to list 
                 CmsTreeItem listItem = new CmsTreeItem(false, checkBox, dataValue);
@@ -359,7 +358,7 @@ public class CmsCategoriesTab extends A_CmsListTab {
         }
         SelectionHandler selectionHandler = new SelectionHandler(category.getPath(), checkBox);
         checkBox.addClickHandler(selectionHandler);
-        dataValue.addDomHandler(selectionHandler, DoubleClickEvent.getType());
+        dataValue.addClickHandler(selectionHandler);
         dataValue.addButton(createSelectButton(selectionHandler));
         dataValue.setUnselectable();
         // set the category tree item and add to list 

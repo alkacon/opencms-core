@@ -33,6 +33,7 @@ import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
+import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 
@@ -43,6 +44,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.dom.client.HasFocusHandlers;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -58,7 +62,7 @@ import com.google.gwt.user.client.ui.Panel;
  *  
  */
 public class CmsMultiCheckBox extends Composite
-implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
+implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasFocusHandlers {
 
     /** The type string for this widget. */
     public static final String WIDGET_TYPE = "multicheck";
@@ -315,6 +319,13 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
         m_items = new LinkedHashMap<String, String>(items);
         m_panel.setStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().multiCheckBox());
         m_panel.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().textMedium());
+        FocusHandler focusHandler = new FocusHandler() {
+
+            public void onFocus(FocusEvent event) {
+
+                CmsDomUtil.fireFocusEvent(CmsMultiCheckBox.this);
+            }
+        };
         for (Map.Entry<String, String> entry : items.entrySet()) {
             String value = entry.getValue();
             CmsCheckBox checkbox = new CmsCheckBox(value);
@@ -328,10 +339,19 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
                     fireValueChanged(getFormValueAsString());
                 }
             });
+            checkbox.getButton().addFocusHandler(focusHandler);
             m_panel.add(checkboxWrapper);
             m_checkboxes.add(checkbox);
         }
         m_panel.add(m_error);
+    }
+
+    /**
+     * @see com.google.gwt.event.dom.client.HasFocusHandlers#addFocusHandler(com.google.gwt.event.dom.client.FocusHandler)
+     */
+    public HandlerRegistration addFocusHandler(FocusHandler handler) {
+
+        return addDomHandler(handler, FocusEvent.getType());
     }
 
 }

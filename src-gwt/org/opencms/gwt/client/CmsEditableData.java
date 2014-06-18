@@ -60,6 +60,9 @@ public class CmsEditableData implements I_CmsEditableData {
     /** The structure id. */
     private CmsUUID m_structureId;
 
+    /** The unreleased or expired flag. */
+    private boolean m_unreleaseOrExpired;
+
     /**
      * @see org.opencms.gwt.client.I_CmsEditableData#getEditId()
      */
@@ -122,6 +125,14 @@ public class CmsEditableData implements I_CmsEditableData {
     public CmsUUID getStructureId() {
 
         return m_structureId;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.I_CmsEditableData#isUnreleasedOrExpired()
+     */
+    public boolean isUnreleasedOrExpired() {
+
+        return m_unreleaseOrExpired;
     }
 
     /**
@@ -201,5 +212,15 @@ public class CmsEditableData implements I_CmsEditableData {
     public void setStructureId(CmsUUID structureId) {
 
         m_structureId = structureId;
+    }
+
+    /**
+     * Sets the unreleased or expired flag.<p>
+     * 
+     * @param unreleaseOrExpired the unreleased or expired flag
+     */
+    public void setUnreleaseOrExpired(boolean unreleaseOrExpired) {
+
+        m_unreleaseOrExpired = unreleaseOrExpired;
     }
 }

@@ -35,6 +35,8 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
 import java.awt.Color;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -375,6 +377,9 @@ public final class CmsStringUtil {
         source = CmsStringUtil.substitute(source, "\'", "\\\'");
         source = CmsStringUtil.substitute(source, "\r\n", "\\n");
         source = CmsStringUtil.substitute(source, "\n", "\\n");
+
+        // to avoid XSS (closing script tags) in embedded Javascript 
+        source = CmsStringUtil.substitute(source, "/", "\\/");
         return source;
     }
 
@@ -717,6 +722,34 @@ public final class CmsStringUtil {
     }
 
     /**
+     * Returns the Ethernet-Address of the locale host.<p>
+     * 
+     * A dummy ethernet address is returned, if the ip is 
+     * representing the loopback address or in case of exceptions.<p>
+     * 
+     * @return the Ethernet-Address
+     */
+    public static String getEthernetAddress() {
+
+        try {
+            InetAddress ip = InetAddress.getLocalHost();
+            if (!ip.isLoopbackAddress()) {
+                NetworkInterface network = NetworkInterface.getByInetAddress(ip);
+                byte[] mac = network.getHardwareAddress();
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < mac.length; i++) {
+                    sb.append(String.format("%02X%s", new Byte(mac[i]), (i < (mac.length - 1)) ? ":" : ""));
+                }
+                return sb.toString();
+            }
+        } catch (Throwable t) {
+            // if an exception occurred return a dummy address
+        }
+        // return a dummy ethernet address, if the ip is representing the loopback address or in case of exceptions
+        return CmsUUID.getDummyEthernetAddress();
+    }
+
+    /**
      * Returns the Integer (int) value for the given String value.<p> 
      * 
      * All parse errors are caught and the given default value is returned in this case.<p>
@@ -1048,9 +1081,6 @@ public final class CmsStringUtil {
         return true;
     }
 
-    /** Pattern which matches one or more slashes. */
-    private static Pattern oneOrMoreSlashes = Pattern.compile("/+");
-
     /**
      * Concatenates multiple paths and separates them with '/'.<p>
      * 
@@ -1065,7 +1095,7 @@ public final class CmsStringUtil {
 
         String result = listAsString(paths, "/");
         // result may now contain multiple consecutive slashes, so reduce them to single slashes
-        result = oneOrMoreSlashes.matcher(result).replaceAll("/");
+        result = result.replaceAll("/+", "/");
         return result;
     }
 

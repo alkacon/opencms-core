@@ -1,7 +1,8 @@
 <%@ page import="
 	org.opencms.workplace.*,
 	org.opencms.workplace.explorer.*,
-	org.opencms.jsp.*"
+	org.opencms.jsp.*,
+	org.opencms.i18n.CmsEncoder"
 %><%
 	CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 	CmsTree wp = new CmsTree(cms);
@@ -34,7 +35,7 @@
 	    params.append("&");
 	    params.append(CmsTree.PARAM_INTEGRATOR);
 	    params.append("=");
-	    params.append(integrator);
+	    params.append(CmsEncoder.encode(integrator, wp.getEncoding()));
 	}
 	
 	String frameRows = "*,0";
@@ -52,7 +53,7 @@
 <title><%= wp.key(org.opencms.workplace.explorer.Messages.GUI_TITLE_EXPLORERTREE_0)%></title>
 <script Language="Javascript" type="text/javascript" src="<%= CmsWorkplace.getSkinUri() %>commons/tree.js"></script>
 <% if (request.getParameter("integrator") != null)  { %>
-<script language="javascript" type="text/javascript" src="${param.integrator}"></script>
+<script language="javascript" type="text/javascript" src="<%= CmsEncoder.escapeXml(request.getParameter("integrator")) %>"></script>
 <% } %>
 <script type="text/javascript"> 
 <% 

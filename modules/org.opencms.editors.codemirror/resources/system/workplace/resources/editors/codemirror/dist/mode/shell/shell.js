@@ -1,4 +1,4 @@
-CodeMirror.defineMode('shell', function(config) {
+CodeMirror.defineMode('shell', function() {
 
   var words = {};
   function define(style, string) {
@@ -57,10 +57,10 @@ CodeMirror.defineMode('shell', function(config) {
         return 'number';
       }
     }
-    stream.eatWhile(/\w/);
+    stream.eatWhile(/[\w-]/);
     var cur = stream.current();
     if (stream.peek() === '=' && /\w+/.test(cur)) return 'def';
-    return words[cur] || null;
+    return words.hasOwnProperty(cur) ? words[cur] : null;
   }
 
   function tokenString(quote) {
@@ -114,5 +114,5 @@ CodeMirror.defineMode('shell', function(config) {
     }
   };
 });
-  
+
 CodeMirror.defineMIME('text/x-sh', 'shell');

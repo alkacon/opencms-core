@@ -27,11 +27,15 @@
 
 package org.opencms.ade.contenteditor.client.widgets;
 
+import com.alkacon.acacia.client.css.I_LayoutBundle;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
 import org.opencms.ade.galleries.client.CmsGalleryConfigurationJSO;
 import org.opencms.ade.galleries.client.ui.CmsImageGalleryField;
+import org.opencms.gwt.client.util.CmsDomUtil;
 
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.HasResizeHandlers;
 import com.google.gwt.event.logical.shared.ResizeHandler;
@@ -59,7 +63,7 @@ public class CmsImageGalleryWidget extends Composite implements I_EditWidget, Ha
      */
     public CmsImageGalleryWidget(String openerTitle, String config) {
 
-        m_linkSelect = new CmsImageGalleryField(CmsGalleryConfigurationJSO.parseConfiguration(config));
+        m_linkSelect = new CmsImageGalleryField(CmsGalleryConfigurationJSO.parseConfiguration(config), true);
         m_linkSelect.setGalleryOpenerTitle(openerTitle);
         m_linkSelect.addValueChangeHandler(new ValueChangeHandler<String>() {
 
@@ -71,7 +75,13 @@ public class CmsImageGalleryWidget extends Composite implements I_EditWidget, Ha
         });
         // All composites must call initWidget() in their constructors.
         initWidget(m_linkSelect);
+        m_linkSelect.addFocusHandler(new FocusHandler() {
 
+            public void onFocus(FocusEvent event) {
+
+                CmsDomUtil.fireFocusEvent(CmsImageGalleryWidget.this);
+            }
+        });
     }
 
     /**
@@ -79,7 +89,7 @@ public class CmsImageGalleryWidget extends Composite implements I_EditWidget, Ha
      */
     public HandlerRegistration addFocusHandler(FocusHandler handler) {
 
-        return null;
+        return addDomHandler(handler, FocusEvent.getType());
     }
 
     /**
@@ -128,7 +138,15 @@ public class CmsImageGalleryWidget extends Composite implements I_EditWidget, Ha
      */
     public void onAttachWidget() {
 
-        super.onAttach();
+        onAttach();
+    }
+
+    /**
+     * @see com.alkacon.acacia.client.widgets.I_EditWidget#owns(com.google.gwt.dom.client.Element)
+     */
+    public boolean owns(Element element) {
+
+        return getElement().isOrHasChild(element);
     }
 
     /**
@@ -175,4 +193,19 @@ public class CmsImageGalleryWidget extends Composite implements I_EditWidget, Ha
         }
 
     }
+
+    /**
+     * @see com.google.gwt.user.client.ui.Composite#onAttach()
+     */
+    @Override
+    protected void onAttach() {
+
+        super.onAttach();
+        // use the parent element with CSS class .widgetHolder as the upload drop zone to allow proper highlighting
+        Element dropZone = CmsDomUtil.getAncestor(getElement(), I_LayoutBundle.INSTANCE.form().widgetHolder());
+        if (dropZone != null) {
+            m_linkSelect.setDropZoneElement(dropZone);
+        }
+    }
+
 }

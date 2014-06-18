@@ -321,7 +321,7 @@ public final class CmsPublishEngine {
      * 
      * This is required since there may still be a thread running when the system is being shut down.<p>
      */
-    public void shutDown() {
+    public synchronized void shutDown() {
 
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(org.opencms.main.Messages.get().getBundle().key(
@@ -651,17 +651,21 @@ public final class CmsPublishEngine {
             CmsEvent afterPublishEvent = new CmsEvent(I_CmsEventListener.EVENT_PUBLISH_PROJECT, eventData);
             OpenCms.fireCmsEvent(afterPublishEvent);
         } catch (Throwable t) {
-            dbc.rollback();
+            if (dbc != null) {
+                dbc.rollback();
+            }
             LOG.error(t);
             // catch every thing including runtime exceptions
             publishJob.getPublishReport().println(t);
         } finally {
-            try {
-                dbc.clear();
-            } catch (Throwable t) {
-                // ignore
+            if (dbc != null) {
+                try {
+                    dbc.clear();
+                } catch (Throwable t) {
+                    // ignore
+                }
+                dbc = null;
             }
-            dbc = null;
         }
         try {
             // fire the publish finish event

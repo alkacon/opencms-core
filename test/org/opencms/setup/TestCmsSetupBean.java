@@ -30,6 +30,7 @@ package org.opencms.setup;
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.configuration.TestParameterConfiguration;
 import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestProperties;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,12 +41,6 @@ import java.util.List;
  * @since 6.0.0
  */
 public class TestCmsSetupBean extends OpenCmsTestCase {
-
-    // DEBUG flag
-    // private static final boolean DEBUG = true;
-
-    // private static final String PROPERTIES = "/opencms/etc/config/opencms.properties";
-    // private static final String PROPERTIES = "/../OpenCms6-Setup/webapp/WEB-INF/config/opencms.properties";
 
     /**
      * Default JUnit constructor.<p>
@@ -69,9 +64,9 @@ public class TestCmsSetupBean extends OpenCmsTestCase {
 
         String testPropPath = "org/opencms/configuration/";
 
-        File input = new File(TestParameterConfiguration.class.getClassLoader().getResource(
+        File input = new File(this.getClass().getClassLoader().getResource(
             testPropPath + "opencms-test.properties").getPath());
-
+        assertTrue("Checking if test properties file is present", input.exists());
         String inputFile = input.getAbsolutePath();
         String outputFile = input.getParent() + "/output.properties";
 
@@ -80,8 +75,19 @@ public class TestCmsSetupBean extends OpenCmsTestCase {
 
         System.out.println("Writing properties to " + outputFile);
         bean.copyFile(inputFile, outputFile);
+        if (!bean.getErrors().isEmpty()){
+        	for (String message : bean.getErrors()){
+        		System.out.println(message);
+        	}
+        	assertTrue("There shouldn't be any errors copying the properties files",!bean.getErrors().isEmpty());
+        }
         bean.saveProperties(oldProperties, outputFile, false);
-
+        if (!bean.getErrors().isEmpty()){
+        	for (String message : bean.getErrors()){
+        		System.out.println(message);
+        	}
+        	assertTrue("There shouldn't be any errors saving the properties files",!bean.getErrors().isEmpty());
+        }
         System.out.println("Checking properties from " + outputFile);
         CmsParameterConfiguration newProperties = new CmsParameterConfiguration(outputFile);
 

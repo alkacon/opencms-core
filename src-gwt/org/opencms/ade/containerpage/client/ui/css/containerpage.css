@@ -2,10 +2,6 @@
 
 .showButtons, .hideButtons{}
 
-body.forceScrollbar{
-	overflow-y: scroll;
-}
-
 .menuTabContainer{
 	height: 486px;
 }
@@ -37,7 +33,7 @@ ul.clipboardList{
 }
 
 
-div.optionBar{
+.dragElement div.optionBar{
 	border: 1px solid transparent;
 	position: absolute;
 	top: 2px;
@@ -59,15 +55,14 @@ div.optionBar{
 	max-width: none;
 }
 
+.dragElement div.optionBar, .dragElement div.optionBar *{
+	box-sizing: content-box;
+	-moz-box-sizing: content-box;
+}
+
 .toolbarSelection div.expired, .dragging div.expired, .toolbarAdd div.expired, .toolbarClipboard div.expired{
 	display: block;
 }
-
-/** Force scroll-bar as long as direct edit buttons are visible to avoid any flickering when elements highlighted. */
-body.toolbarSelection{
-	overflow-y: scroll;
-}
-
 
 div.expired{
 	display: none;
@@ -84,16 +79,22 @@ div.expired{
 	bottom: 2px;
 }
 
-@if user.agent ie6 {
-	.expired div.expiredOverlay, .hiddenElement div.hiddenElementOverlay {
-		filter: literal("alpha(opacity = 60)");
-	}
-} @elif user.agent ie8 {
-	.expired div.expiredOverlay, .hiddenElement div.hiddenElementOverlay {
+@sprite div.expiredListElementOverlay{
+	gwt-image: 'otherImages.invalidElement';
+	box-sizing: content-box;
+	-moz-box-sizing: content-box;
+	padding: 0px;
+	margin: 0px;
+	position: absolute;
+	z-index: 1;
+}
+
+@if user.agent ie8 {
+	.expired div.expiredOverlay, .hiddenElement div.hiddenElementOverlay, div.expiredListElementOverlay {
 		-ms-filter: "alpha(opacity = 60)";
 	}
 } @else {
-	.expired div.expiredOverlay, .hiddenElement div.hiddenElementOverlay {
+	.expired div.expiredOverlay, .hiddenElement div.hiddenElementOverlay, div.expiredListElementOverlay {
         opacity: 0.6;
 	}
 }
@@ -124,12 +125,11 @@ div.toolbarToggle{
 	max-width: none;
 }
 
-@sprite .toolbarSelection .optionBar.cmsHovering{
-	gwt-image: "backgrounds.softBackground";
+.toolbarSelection div.optionBar.cmsHovering{
 	height: auto;
 	border: 1px solid value("constants.css.borderColor");
-	border-radius: 2px;
-	background-color: value("constants.css.backgroundColorSoft");
+	border-radius: value("constants.css.borderRadius");
+	background: value("constants.css.backgroundColorDialog");
 }
 
 .optionBar div.cmsState{
@@ -172,12 +172,12 @@ div.groupcontainerPlaceholder{
 	display: block;
 }
 
-.groupcontainerEditing .emptyGroupContainer, .toolbarSelection .dragging .optionBar.cmsHovering{
+.groupcontainerEditing .emptyGroupContainer, .toolbarSelection .dragging div.optionBar.cmsHovering{
 	background: transparent;
 	border: none;
 }
 
-.dragStarted .dragElement.dragging .optionBar{
+.dragStarted .dragElement.dragging > .optionBar{
 	display: block;
 }
 
@@ -187,7 +187,6 @@ div.groupcontainerPlaceholder{
 .toolbarSelection .dragging .optionBar .toolbarNew, 
 .toolbarSelection .dragging .optionBar .toolbarProperties, 
 .toolbarSelection .dragging .optionBar .toolbarInherited,
-.toolbarSelection .dragging .optionBar .toolbarSelection,
 .toolbarSelection .dragging .optionBar .toolbarInfo{
 	visibility: hidden;
 }
@@ -222,18 +221,18 @@ div.groupcontainerPlaceholder{
     gwt-image: "images.deleteIconDeactivated";
 }
 
-@sprite .optionBar .cmsState-up-hovering .toolbarEdit, .optionBar .cmsState-down-hovering .toolbarEdit, .optionBar .cmsState-down .toolbarEdit {
+@sprite .optionBar .toolbarEdit.cmsState-up-hovering .toolbarSelection, .optionBar .toolbarEdit.cmsState-down-hovering .toolbarSelection, .optionBar .toolbarEdit.cmsState-down .toolbarSelection {
     gwt-image: "images.editIconActive";
 }
-@sprite .optionBar .cmsState-up .toolbarEdit{
+@sprite .cmsHovering.optionBar .toolbarEdit.cmsState-up .toolbarSelection,  .optionBar .cmsState-up .toolbarEdit{
     gwt-image: "images.editIconDeactivated";
 }
 
 
-@sprite .optionBar .cmsState-up-hovering .toolbarEdit.lockedElement, .optionBar .cmsState-down-hovering .toolbarEdit.lockedElement, .optionBar .cmsState-down .toolbarEdit.lockedElement {
+@sprite .optionBar .cmsState-up-hovering .toolbarSelection.lockedElement, .optionBar .cmsState-down-hovering .toolbarSelection.lockedElement, .optionBar .cmsState-down .toolbarSelection.lockedElement {
     gwt-image: "images.lockIconActive";
 }
-@sprite .optionBar .cmsState-up .toolbarEdit.lockedElement{
+@sprite .optionBar .cmsState-up .toolbarSelection.lockedElement{
     gwt-image: "images.lockIconDeactivated";
 }
 
@@ -242,11 +241,11 @@ div.groupcontainerPlaceholder{
 @sprite .optionBar .cmsState-up-disabled .toolbarEdit, .optionBar .cmsState-down-disabled .toolbarEdit {
 	gwt-image: "images.lockIconDeactivated";
 }
-@sprite .optionBar .cmsState-up-hovering .toolbarMove, .optionBar .cmsState-down-hovering .toolbarMove, .optionBar .cmsState-down .toolbarMove {
-    gwt-image: "images.moveIconActive";
-}
 @sprite .optionBar .cmsState-up .toolbarMove, .optionBar .cmsState-up-disabled .toolbarMove, .optionBar .cmsState-down-disabled .toolbarMove {
     gwt-image: "images.moveIconDeactivated";
+}
+@sprite .optionBar .toolbarMove.cmsState-up-hovering .toolbarMove, .optionBar .toolbarMove.cmsState-down-hovering .toolbarMove, .optionBar .toolbarMove.cmsState-down .toolbarMove {
+    gwt-image: "images.moveIconActive";
 }
 @sprite .optionBar .cmsState-up-hovering .toolbarNew, .optionBar .cmsState-down-hovering .toolbarNew, .optionBar .cmsState-down .toolbarNew {
     gwt-image: "images.addIconActive";
@@ -294,6 +293,7 @@ div.groupcontainerPlaceholder{
 	visibility: hidden; 
 }
 
-
+.elementInfoChanged {} 
+.elementInfoUnchanged {}
 
 

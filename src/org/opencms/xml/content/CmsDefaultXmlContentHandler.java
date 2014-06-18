@@ -80,6 +80,8 @@ import org.opencms.xml.CmsXmlGenericWrapper;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.containerpage.CmsFormatterBean;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
+import org.opencms.xml.containerpage.CmsSchemaFormatterBeanWrapper;
+import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.CmsXmlVarLinkValue;
 import org.opencms.xml.types.CmsXmlVfsFileValue;
@@ -105,6 +107,9 @@ import org.apache.commons.logging.Log;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 /**
  * Default implementation for the XML content handler, will be used by all XML contents that do not
@@ -142,7 +147,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     public static final String APPINFO_ATTR_DESCRIPTION = "description";
 
     /** Constant for the "displaycompact" appinfo attribute name. */
-    public static final String APPINFO_ATTR_DISPLAYCOMPACT = "displaycompact";
+    public static final String APPINFO_ATTR_DISPLAY = "display";
 
     /** Constant for the "element" appinfo attribute name. */
     public static final String APPINFO_ATTR_ELEMENT = "element";
@@ -467,9 +472,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** The validation rules that cause a warning (as defined in the annotations). */
     protected Map<String, String> m_validationWarningRules;
 
-    /** The elements to display in ncompact view. */
-    private Set<String> m_compactViews;
-
     /** The container page only flag, indicating if this XML content should be indexed on container pages only. */
     private boolean m_containerPageOnly;
 
@@ -481,6 +483,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** The default complex widget for this type. */
     private I_CmsComplexWidget m_defaultWidgetInstance;
+
+    /** The elements to display in ncompact view. */
+    private HashMap<String, DisplayType> m_displayTypes;
 
     /**
      * Creates a new instance of the default XML content handler.<p>  
@@ -569,7 +574,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         return Collections.unmodifiableSet(m_cssHeadIncludes);
     }
 
-    /**
+    /***
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#getCSSHeadIncludes(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
      */
     @SuppressWarnings("unused")
@@ -660,14 +665,28 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getDisplayType(org.opencms.xml.types.I_CmsXmlSchemaType)
+     */
+    public DisplayType getDisplayType(I_CmsXmlSchemaType type) {
+
+        if (m_displayTypes.containsKey(type.getName())) {
+            return m_displayTypes.get(type.getName());
+        } else {
+            return DisplayType.none;
+        }
+    }
+
+    /**
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#getFormatterConfiguration(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
      */
     public CmsFormatterConfiguration getFormatterConfiguration(CmsObject cms, CmsResource resource) {
 
-        if (m_formatterConfiguration == null) {
-            m_formatterConfiguration = CmsFormatterConfiguration.create(cms, m_formatters);
+        List<I_CmsFormatterBean> wrappers = Lists.newArrayList();
+        for (CmsFormatterBean formatter : m_formatters) {
+            CmsSchemaFormatterBeanWrapper wrapper = new CmsSchemaFormatterBeanWrapper(cms, formatter, this, resource);
+            wrappers.add(wrapper);
         }
-        return m_formatterConfiguration;
+        return CmsFormatterConfiguration.create(cms, wrappers);
     }
 
     /**
@@ -801,6 +820,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getSearchSettings()
+     */
+    public Map<String, Boolean> getSearchSettings() {
+
+        return m_searchSettings;
+    }
+
+    /**
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#getSettings(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
      */
     public Map<String, CmsXmlContentProperty> getSettings(CmsObject cms, CmsResource resource) {
@@ -854,6 +881,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             result.setConfiguration(configuration);
         }
         return result;
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#hasModifiableFormatters()
+     */
+    public boolean hasModifiableFormatters() {
+
+        return (m_formatters != null) && (m_formatters.size() > 0);
     }
 
     /**
@@ -929,6 +964,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         while (itLocales.hasNext()) {
             Locale locale = itLocales.next();
             List<String> removedNodes = new ArrayList<String>();
+            Map<String, I_CmsXmlContentValue> valuesToRemove = Maps.newHashMap();
             // iterate the values
             Iterator<I_CmsXmlContentValue> itValues = document.getValues(locale).iterator();
             while (itValues.hasNext()) {
@@ -976,14 +1012,19 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                         }
                     }
                     value = document.getValue(parentPath, locale);
-                    // detach the value node from the XML document
-                    value.getElement().detach();
+                    // Doing the actual DOM modifications here would make the bookmarks for this locale invalid, 
+                    // so we delay it until later because we need the bookmarks for document.getValue() in the next loop iterations
+                    valuesToRemove.put(parentPath, value);
                     // mark node as deleted
                     removedNodes.add(parentPath);
                 }
             }
             if (!removedNodes.isEmpty()) {
                 needReinitialization = true;
+            }
+            for (I_CmsXmlContentValue valueToRemove : valuesToRemove.values()) {
+                // detach the value node from the XML document
+                valueToRemove.getElement().detach();
             }
         }
         if (needReinitialization) {
@@ -1003,14 +1044,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
-     * @see org.opencms.xml.content.I_CmsXmlContentHandler#isCompactView(org.opencms.xml.types.I_CmsXmlSchemaType)
-     */
-    public boolean isCompactView(I_CmsXmlSchemaType type) {
-
-        return m_compactViews.contains(type.getName());
-    }
-
-    /**
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#isContainerPageOnly()
      */
     public boolean isContainerPageOnly() {
@@ -1024,9 +1057,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     public boolean isSearchable(I_CmsXmlContentValue value) {
 
         // check for name configured in the annotations
-        Boolean anno = m_searchSettings.get(value.getName());
+        Boolean searchSetting = m_searchSettings.get(value.getName());
+        I_CmsXmlContentHandler rootHandler = value.getDocument().getContentDefinition().getContentHandler();
+        Boolean rootSearchSetting = rootHandler.getSearchSettings().get(CmsXmlUtils.removeXpath(value.getPath()));
+        if (rootSearchSetting != null) {
+            searchSetting = rootSearchSetting;
+        }
         // if no annotation has been found, use default for value
-        return (anno == null) ? value.isSearchable() : anno.booleanValue();
+        return (searchSetting == null) ? value.isSearchable() : searchSetting.booleanValue();
     }
 
     /**
@@ -1068,7 +1106,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         // resolve the file mappings
         content.resolveMappings(cms);
         // ensure all property or permission mappings of deleted optional values are removed
-        removeEmptyMappings(cms, content);
+        removeEmptyMappings(cms, file, content);
         // write categories (if there is a category widget present)
         file = writeCategories(cms, file, content);
         // return the result
@@ -1503,24 +1541,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
-     * Adds the given element to the compact view set.<p>
-     * 
-     * @param contentDefinition the XML content definition this XML content handler belongs to
-     * @param elementName the element name
-     * 
-     * @throws CmsXmlException in case an unknown element name is used
-     */
-    protected void addCompactView(CmsXmlContentDefinition contentDefinition, String elementName) throws CmsXmlException {
-
-        if (contentDefinition.getSchemaType(elementName) == null) {
-            throw new CmsXmlException(Messages.get().container(
-                Messages.ERR_XMLCONTENT_CONFIG_ELEM_UNKNOWN_1,
-                elementName));
-        }
-        m_compactViews.add(elementName);
-    }
-
-    /**
      * Adds a configuration value for an element widget.<p>
      * 
      * @param contentDefinition the XML content definition this XML content handler belongs to
@@ -1607,6 +1627,26 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
+     * Adds the given element to the compact view set.<p>
+     * 
+     * @param contentDefinition the XML content definition this XML content handler belongs to
+     * @param elementName the element name
+     * @param displayType the display type to use for the element widget
+     * 
+     * @throws CmsXmlException in case an unknown element name is used
+     */
+    protected void addDisplayType(CmsXmlContentDefinition contentDefinition, String elementName, DisplayType displayType)
+    throws CmsXmlException {
+
+        if (contentDefinition.getSchemaType(elementName) == null) {
+            throw new CmsXmlException(Messages.get().container(
+                Messages.ERR_XMLCONTENT_CONFIG_ELEM_UNKNOWN_1,
+                elementName));
+        }
+        m_displayTypes.put(elementName, displayType);
+    }
+
+    /**
      * Adds an element mapping.<p>
      * 
      * @param contentDefinition the XML content definition this XML content handler belongs to
@@ -1668,7 +1708,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     throws CmsXmlException {
 
         if (contentDefinition.getSchemaType(elementName) == null) {
-            throw new CmsXmlException(org.opencms.xml.types.Messages.get().container(
+            throw new CmsXmlException(Messages.get().container(
                 Messages.ERR_XMLCONTENT_INVALID_ELEM_SEARCHSETTINGS_1,
                 elementName));
         }
@@ -1905,7 +1945,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         m_searchFields = new HashMap<String, CmsSearchField>();
         m_allowedTemplates = new CmsDefaultSet<String>();
         m_allowedTemplates.setDefaultMembership(true);
-        m_compactViews = new HashSet<String>();
+        m_displayTypes = new HashMap<String, DisplayType>();
     }
 
     /**
@@ -2042,9 +2082,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             String elementName = element.attributeValue(APPINFO_ATTR_ELEMENT);
             String widgetClassOrAlias = element.attributeValue(APPINFO_ATTR_WIDGET);
             String configuration = element.attributeValue(APPINFO_ATTR_CONFIGURATION);
-            boolean displayCompact = Boolean.parseBoolean(element.attributeValue(APPINFO_ATTR_DISPLAYCOMPACT));
-            if (displayCompact && (elementName != null)) {
-                addCompactView(contentDefinition, elementName);
+            String displayCompact = element.attributeValue(APPINFO_ATTR_DISPLAY);
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(displayCompact) && (elementName != null)) {
+                addDisplayType(contentDefinition, elementName, DisplayType.valueOf(displayCompact));
             }
             if ((elementName != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(widgetClassOrAlias)) {
                 // add a widget mapping for the element
@@ -2190,7 +2230,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 m_messageBundleNames.add(messageBundleName);
             }
             // clear the cached resource bundles for this bundle
-            CmsResourceBundleLoader.flushBundleCache(messageBundleName);
+            CmsResourceBundleLoader.flushBundleCache(messageBundleName, false);
 
         } else {
             // multiple "resourcebundles" node
@@ -2206,7 +2246,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                     m_messageBundleNames.add(propertyBundleName);
                 }
                 // clear the cached resource bundles for this bundle
-                CmsResourceBundleLoader.flushBundleCache(propertyBundleName);
+                CmsResourceBundleLoader.flushBundleCache(propertyBundleName, false);
             }
 
             // get an iterator for all "xmlbundle" subnodes
@@ -2220,7 +2260,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                     m_messageBundleNames.add(xmlBundleName);
                 }
                 // clear the cached resource bundles for this bundle
-                CmsResourceBundleLoader.flushBundleCache(xmlBundleName);
+                CmsResourceBundleLoader.flushBundleCache(xmlBundleName, true);
                 Iterator<Element> bundles = CmsXmlGenericWrapper.elementIterator(xmlbundle, APPINFO_BUNDLE);
                 while (bundles.hasNext()) {
                     // iterate all "bundle" elements in the "xmlbundle" node
@@ -2234,10 +2274,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                         // use provided locale
                         locale = CmsLocaleManager.getLocale(localeStr);
                     }
-                    if (CmsLocaleManager.getDefaultLocale().equals(locale)) {
-                        // in case the default locale is given, we store this as root
-                        locale = null;
-                    }
+                    boolean isDefaultLocaleAndNotNull = (locale != null)
+                        && locale.equals(CmsLocaleManager.getDefaultLocale());
 
                     CmsListResourceBundle xmlBundle = null;
 
@@ -2262,6 +2300,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                     }
                     if (xmlBundle != null) {
                         CmsResourceBundleLoader.addBundleToCache(xmlBundleName, locale, xmlBundle);
+                        if (isDefaultLocaleAndNotNull) {
+                            CmsResourceBundleLoader.addBundleToCache(xmlBundleName, null, xmlBundle);
+                        }
                     }
                 }
             }
@@ -2538,11 +2579,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      * Removes property values on resources for non-existing, optional elements.<p>
      * 
      * @param cms the current users OpenCms context
+     * @param file the file which is currently being prepared for writing
      * @param content the XML content to remove the property values for
-     * 
      * @throws CmsException in case of read/write errors accessing the OpenCms VFS
      */
-    protected void removeEmptyMappings(CmsObject cms, CmsXmlContent content) throws CmsException {
+    protected void removeEmptyMappings(CmsObject cms, CmsFile file, CmsXmlContent content) throws CmsException {
 
         List<CmsResource> siblings = null;
         CmsObject rootCms = null;
@@ -2564,8 +2605,10 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             }
             for (int v = mappings.size() - 1; v >= 0; v--) {
                 String mapping = mappings.get(v);
-                if (mapping.startsWith(MAPTO_PROPERTY_LIST) || mapping.startsWith(MAPTO_PROPERTY)) {
 
+                if (mapping.startsWith(MAPTO_ATTRIBUTE)
+                    || mapping.startsWith(MAPTO_PROPERTY_LIST)
+                    || mapping.startsWith(MAPTO_PROPERTY)) {
                     for (int i = 0; i < siblings.size(); i++) {
 
                         // get siblings filename and locale
@@ -2581,16 +2624,42 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                             continue;
                         }
 
-                        String property;
-                        if (mapping.startsWith(MAPTO_PROPERTY_LIST)) {
-                            // this is a property list mapping
-                            property = mapping.substring(MAPTO_PROPERTY_LIST.length());
-                        } else {
-                            // this is a property mapping
-                            property = mapping.substring(MAPTO_PROPERTY.length());
+                        if (mapping.startsWith(MAPTO_PROPERTY_LIST) || mapping.startsWith(MAPTO_PROPERTY)) {
+
+                            String property;
+                            boolean shared = false;
+                            if (mapping.startsWith(MAPTO_PROPERTY_LIST_INDIVIDUAL)) {
+                                property = mapping.substring(MAPTO_PROPERTY_LIST_INDIVIDUAL.length());
+                            } else if (mapping.startsWith(MAPTO_PROPERTY_LIST_SHARED)) {
+                                property = mapping.substring(MAPTO_PROPERTY_LIST_SHARED.length());
+                                shared = true;
+                            } else if (mapping.startsWith(MAPTO_PROPERTY_LIST)) {
+                                property = mapping.substring(MAPTO_PROPERTY_LIST.length());
+                            } else if (mapping.startsWith(MAPTO_PROPERTY_SHARED)) {
+                                property = mapping.substring(MAPTO_PROPERTY_SHARED.length());
+                                shared = true;
+                            } else if (mapping.startsWith(MAPTO_PROPERTY_INDIVIDUAL)) {
+                                property = mapping.substring(MAPTO_PROPERTY_INDIVIDUAL.length());
+                            } else {
+                                property = mapping.substring(MAPTO_PROPERTY.length());
+                            }
+                            rootCms.writePropertyObject(filename, new CmsProperty(
+                                property,
+                                CmsProperty.DELETE_VALUE,
+                                shared ? CmsProperty.DELETE_VALUE : null));
+                        } else if (mapping.startsWith(MAPTO_ATTRIBUTE)) {
+                            if (mapping.equals(MAPTO_ATTRIBUTE + ATTRIBUTE_DATERELEASED)) {
+                                rootCms.setDateReleased(filename, CmsResource.DATE_RELEASED_DEFAULT, false);
+                                if (filename.equals(rootCms.getSitePath(file))) {
+                                    file.setDateReleased(CmsResource.DATE_RELEASED_DEFAULT);
+                                }
+                            } else if (mapping.equals(MAPTO_ATTRIBUTE + ATTRIBUTE_DATEEXPIRED)) {
+                                rootCms.setDateExpired(filename, CmsResource.DATE_EXPIRED_DEFAULT, false);
+                                if (filename.equals(rootCms.getSitePath(file))) {
+                                    file.setDateExpired(CmsResource.DATE_EXPIRED_DEFAULT);
+                                }
+                            }
                         }
-                        // delete the property value for the not existing node
-                        rootCms.writePropertyObject(filename, new CmsProperty(property, CmsProperty.DELETE_VALUE, null));
                     }
                 } else if (mapping.startsWith(MAPTO_PERMISSION)) {
                     for (int i = 0; i < siblings.size(); i++) {

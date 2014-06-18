@@ -28,14 +28,14 @@
 package org.opencms.jsp.util;
 
 import org.opencms.file.CmsObject;
+import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.xml.containerpage.CmsDynamicFunctionBean;
 import org.opencms.xml.containerpage.CmsDynamicFunctionBean.Format;
 
 import java.util.Collections;
 import java.util.Map;
 
-import com.google.common.base.Function;
-import com.google.common.collect.MapMaker;
+import org.apache.commons.collections.Transformer;
 
 /**
  * A wrapper class for using dynamic function beans inside JSPs via the EL.<p>
@@ -67,10 +67,9 @@ public class CmsDynamicFunctionBeanWrapper {
      */
     public Object getFormatFor() {
 
-        MapMaker mm = new MapMaker();
-        Function<Object, Object> mapFunction = new Function<Object, Object>() {
+        Transformer mapFunction = new Transformer() {
 
-            public Object apply(Object param) {
+            public Object transform(Object param) {
 
                 if (m_functionBean == null) {
                     return new CmsDynamicFunctionFormatWrapper(m_cms, null);
@@ -97,7 +96,7 @@ public class CmsDynamicFunctionBeanWrapper {
                 return wrapper;
             }
         };
-        return mm.makeComputingMap(mapFunction);
+        return CmsCollectionsGenericWrapper.createLazyMap(mapFunction);
     }
 
     /**

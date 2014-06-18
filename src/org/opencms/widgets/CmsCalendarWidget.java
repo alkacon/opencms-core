@@ -34,6 +34,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.xml.content.I_CmsXmlContentHandler.DisplayType;
 import org.opencms.xml.types.A_CmsXmlContentValue;
 
 import java.text.DateFormat;
@@ -118,7 +119,7 @@ public class CmsCalendarWidget extends A_CmsWidget implements I_CmsADEWidget {
         result.append("<script type=\"text/javascript\" src=\"");
         result.append(calendarPath);
         result.append("lang/calendar-");
-        result.append(locale.getLanguage());
+        result.append(getLanguageSuffix(locale.getLanguage()));
         result.append(".js\"></script>\n");
         result.append("<script type=\"text/javascript\" src=\"");
         result.append(calendarPath);
@@ -275,6 +276,22 @@ public class CmsCalendarWidget extends A_CmsWidget implements I_CmsADEWidget {
         return df.format(cal.getTime());
     }
 
+    /** 
+     * Returns the language suffix for the calendar-*.js localizations.<p>
+     * 
+     * @param language the language from the locale 
+     * 
+     * @return the suffix to use for the calendar-*js localication file 
+     */
+    private static String getLanguageSuffix(String language) {
+
+        if (language.equals(Locale.JAPANESE.getLanguage())) {
+            return "jp";
+        } else {
+            return language;
+        }
+    }
+
     /**
      * @see org.opencms.widgets.I_CmsADEWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.xml.types.A_CmsXmlContentValue, org.opencms.i18n.CmsMessages, org.opencms.file.CmsResource, java.util.Locale)
      */
@@ -294,6 +311,14 @@ public class CmsCalendarWidget extends A_CmsWidget implements I_CmsADEWidget {
     public List<String> getCssResourceLinks(CmsObject cms) {
 
         return null;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getDefaultDisplayType()
+     */
+    public DisplayType getDefaultDisplayType() {
+
+        return DisplayType.singleline;
     }
 
     /**

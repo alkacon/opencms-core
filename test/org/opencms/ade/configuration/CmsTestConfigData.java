@@ -27,10 +27,17 @@
 
 package org.opencms.ade.configuration;
 
+import org.opencms.ade.configuration.formatters.CmsFormatterChangeSet;
+import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCacheState;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A configuration data class whose parent can be set directly for test purposes.<p>
@@ -39,6 +46,12 @@ public class CmsTestConfigData extends CmsADEConfigData {
 
     /** The parent configuration object. */
     public CmsADEConfigData m_parent;
+
+    /** The formatter cache state can be set directly for the test configuration data. */
+    private CmsFormatterConfigurationCacheState m_formatters;
+
+    /** The schema formatters can be set directly for the test configuration data. */
+    private Map<Integer, CmsFormatterConfiguration> m_schemaFormatterConfiguration = new HashMap<Integer, CmsFormatterConfiguration>();
 
     /**
      * Creates a new configuration data object.<p>
@@ -66,7 +79,21 @@ public class CmsTestConfigData extends CmsADEConfigData {
             modelPages,
             new ArrayList<CmsFunctionReference>(),
             false,
-            false);
+            false,
+            new CmsFormatterChangeSet());
+    }
+
+    /**
+     * @see org.opencms.ade.configuration.CmsADEConfigData#getCachedFormatters()
+     */
+    @Override
+    public CmsFormatterConfigurationCacheState getCachedFormatters() {
+
+        if (m_formatters != null) {
+            return m_formatters;
+        } else {
+            return super.getCachedFormatters();
+        }
     }
 
     /**
@@ -76,6 +103,17 @@ public class CmsTestConfigData extends CmsADEConfigData {
     public CmsADEConfigData parent() {
 
         return m_parent;
+    }
+
+    /**
+     * Registers a schema formatter which will be returned from getSchemaFormatters if a resource with the matching type is passed in.<p>
+     * 
+     * @param typeId  the resource type id 
+     * @param formatters the formatters for the resource type 
+     */
+    public void registerSchemaFormatters(int typeId, CmsFormatterConfiguration formatters) {
+
+        m_schemaFormatterConfiguration.put(new Integer(typeId), formatters);
     }
 
     /**
@@ -109,6 +147,26 @@ public class CmsTestConfigData extends CmsADEConfigData {
     }
 
     /**
+     * Sets the formatter change set.<p>
+     * 
+     * @param changeSet the formatter change set 
+     */
+    public void setFormatterChangeSet(CmsFormatterChangeSet changeSet) {
+
+        m_formatterChangeSet = changeSet;
+    }
+
+    /**
+     * Sets the formatter cache state.<p>
+     * 
+     * @param formatters the formatter cache state 
+     */
+    public void setFormatters(CmsFormatterConfigurationCacheState formatters) {
+
+        m_formatters = formatters;
+    }
+
+    /**
      * Sets the "discard inherited types" flag.<p>
      * 
      * @param discardInheritedTypes the flag to control whether inherited types are discarded 
@@ -126,6 +184,20 @@ public class CmsTestConfigData extends CmsADEConfigData {
     public void setParent(CmsADEConfigData parent) {
 
         m_parent = parent;
+    }
+
+    /**
+     * @see org.opencms.ade.configuration.CmsADEConfigData#getFormattersFromSchema(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
+     */
+    @Override
+    protected CmsFormatterConfiguration getFormattersFromSchema(CmsObject cms, CmsResource res) {
+
+        Integer key = new Integer(res.getTypeId());
+        CmsFormatterConfiguration result = m_schemaFormatterConfiguration.get(key);
+        if (result == null) {
+            result = super.getFormattersFromSchema(cms, res);
+        }
+        return result;
     }
 
 }

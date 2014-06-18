@@ -28,6 +28,7 @@
 package org.opencms.ade.sitemap.client.toolbar;
 
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
+import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsToggleButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
 import org.opencms.gwt.client.ui.CmsToolbarContextButton;
@@ -73,6 +74,9 @@ public class CmsSitemapToolbar extends CmsToolbar {
 
                 I_CmsToolbarButton source = (I_CmsToolbarButton)event.getSource();
                 source.onToolbarClick();
+                if (source instanceof CmsPushButton) {
+                    ((CmsPushButton)source).clearHoverState();
+                }
             }
         };
         m_contextMenuButton = new CmsToolbarContextButton(new CmsSitemapToolbarHandler(

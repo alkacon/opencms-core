@@ -29,8 +29,11 @@ package org.opencms.workplace.editors;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.loader.CmsTemplateContextManager;
+import org.opencms.loader.I_CmsTemplateContextProvider;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
 import org.apache.commons.logging.Log;
@@ -91,6 +94,16 @@ public class CmsEditorCssHandlerDefault implements I_CmsEditorCssHandler {
             try {
                 templatePath = cms.readPropertyObject(editedResourcePath, CmsPropertyDefinition.PROPERTY_TEMPLATE, true).getValue(
                     "");
+                if (CmsTemplateContextManager.isProvider(templatePath)) {
+                    I_CmsTemplateContextProvider provider = OpenCms.getTemplateContextManager().getTemplateContextProvider(
+                        templatePath);
+                    if (provider != null) {
+                        String providerResult = provider.getEditorStyleSheet(cms, editedResourcePath);
+                        if (providerResult != null) {
+                            return providerResult;
+                        }
+                    }
+                }
             } catch (CmsException e) {
                 if (LOG.isWarnEnabled()) {
                     LOG.warn(Messages.get().getBundle().key(Messages.LOG_READ_TEMPLATE_PROP_FAILED_0), e);

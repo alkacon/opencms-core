@@ -1,4 +1,4 @@
-
+@import url("opencms_plugin.css");
 /* These rules are used for laying out TinyMCE's button toolbar rows next to each other, not as rows. */
 
 .mceIframeContainer, .mceIframeContainer iframe, #tinymce_content_tbl > tbody > tr:first-child + tr, #tinymce_content_tbl {
@@ -16,4 +16,22 @@
                     
 .mceToolbar option {
   float: none; 
+}
+
+#textarea-container > .mce-container, #textarea-container > .mce-container > .mce-container-body{
+	width: 100%;
+	height: 100%;
+}
+#textarea-container > .mce-container > .mce-container-body{
+	display: table;
+}
+#textarea-container .mce-edit-area {
+	display: table-row-group;
+}
+#textarea-container > .mce-container > .mce-container-body > .mce-first{
+	display: table-caption;
+}
+#textarea-container > .mce-container > .mce-container-body > .mce-statusbar{
+	display: table-footer-group;
+	height: 30px;
 }

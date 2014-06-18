@@ -31,24 +31,18 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.I_CmsHasInit;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
-import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
-import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
-import org.opencms.gwt.shared.CmsLinkBean;
-import org.opencms.util.CmsStringUtil;
 
 import java.util.Map;
 
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.MouseUpEvent;
-import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
@@ -100,8 +94,11 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
 
     }
 
+    /** A counter used for giving text box widgets ids. */
+    private static int idCounter;
+
     /** The widget type identifier for this widget. */
-    private static final String WIDGET_TYPE = "vfsselection";
+    private static final String WIDGET_TYPE = "groupselection";
 
     /** The fade panel. */
     protected Panel m_fadePanel = new SimplePanel();
@@ -112,14 +109,18 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
     /** The handler registration. */
     protected HandlerRegistration m_previewHandlerRegistration;
 
+    /** The popup title. */
+    protected String m_title = org.opencms.gwt.client.Messages.get().key(
+        org.opencms.gwt.client.Messages.GUI_GALLERY_SELECT_DIALOG_TITLE_0);
+
     /** The default rows set. */
     int m_defaultRows;
 
-    /** A counter used for giving text box widgets ids. */
-    private static int idCounter;
-
     /** The root panel containing the other components of this widget. */
     Panel m_panel = new FlowPanel();
+
+    /** The container for the text area. */
+    CmsSelectionInput m_selectionInput;
 
     /** The internal text area widget used by this widget. */
     TextBox m_textBox;
@@ -130,14 +131,14 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
     /** The error display for this widget. */
     private CmsErrorWidget m_error = new CmsErrorWidget();
 
-    /** The button to to open the selection. */
-    private CmsPushButton m_openSelection;
+    /** The flag parameter. */
+    private Integer m_flags;
 
     /** The id for the windows. */
     private String m_id;
 
-    /** The flag parameter. */
-    private Integer m_flags;
+    /** The button to to open the selection. */
+    private CmsPushButton m_openSelection;
 
     /** The ou parameter. */
     private String m_ouFqn;
@@ -145,77 +146,41 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
     /** The user parameter. */
     private String m_userName;
 
-    /** The popup title. */
-    protected String m_title = org.opencms.gwt.client.Messages.get().key(
-        org.opencms.gwt.client.Messages.GUI_GALLERY_SELECT_DIALOG_TITLE_0);
-
     /**
-     * VsfSelection widget to open the gallery selection.<p>
+     * Constructor.<p>
      * 
-     */
-    public CmsGroupSelection() {
-
-        super();
-    }
-
-    /**
-     * VsfSelection widget to open the gallery selection.<p>
      * @param iconImage the image of the icon shown in the 
 
      */
     public CmsGroupSelection(String iconImage) {
 
-        super();
-
-        m_textBox = new TextBox();
-        m_openSelection = new CmsPushButton(iconImage);
-        m_id = "CmsGroupSelection_" + (idCounter++);
-        m_textBoxContainer.add(m_openSelection);
-        createFader();
         initWidget(m_panel);
-        m_panel.add(m_textBoxContainer);
-        m_fadePanel.setStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().fader());
-        m_textBoxContainer.setStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().selectionInput());
-        m_textBoxContainer.add(m_textBox);
-        m_fadePanel.addDomHandler(new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-
-                m_textBox.setFocus(true);
-            }
-        }, ClickEvent.getType());
+        m_selectionInput = new CmsSelectionInput(iconImage);
+        m_id = "CmsGroupSelection_" + (idCounter++);
+        m_selectionInput.m_textbox.getElement().setId(m_id);
+        m_panel.add(m_selectionInput);
         m_panel.add(m_error);
-        m_textBoxContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
 
-        m_textBox.addMouseUpHandler(new MouseUpHandler() {
+        m_selectionInput.m_textbox.addBlurHandler(new BlurHandler() {
 
-            public void onMouseUp(MouseUpEvent event) {
+            public void onBlur(BlurEvent event) {
 
-                m_textBoxContainer.remove(m_fadePanel);
+                if ((m_selectionInput.m_textbox.getValue().length() * 6.88) > m_selectionInput.m_textbox.getOffsetWidth()) {
+                    setTitle(m_selectionInput.m_textbox.getValue());
+                }
+                m_selectionInput.showFader();
+            }
+        });
+
+        m_selectionInput.setOpenCommand(new Command() {
+
+            public void execute() {
+
                 setTitle("");
 
                 openNative(buildGalleryUrl(), m_title);
             }
 
-        });
-        m_textBox.addBlurHandler(new BlurHandler() {
-
-            public void onBlur(BlurEvent event) {
-
-                if ((m_textBox.getValue().length() * 6.88) > m_textBox.getOffsetWidth()) {
-                    m_textBoxContainer.add(m_fadePanel);
-                    setTitle(m_textBox.getValue());
-                }
-            }
-        });
-
-        m_openSelection.addClickHandler(new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-
-                openNative(buildGalleryUrl(), m_title);
-
-            }
         });
     }
 
@@ -232,7 +197,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
              */
             public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
 
-                return new CmsGroupSelection();
+                return new CmsGroupSelection(I_CmsImageBundle.INSTANCE.style().popupIcon());
             }
         });
     }
@@ -242,7 +207,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
      */
     public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
 
-        return m_textBox.addValueChangeHandler(handler);
+        return m_selectionInput.m_textbox.addValueChangeHandler(handler);
     }
 
     /**
@@ -266,10 +231,10 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
      */
     public Object getFormValue() {
 
-        if (m_textBox.getText() == null) {
+        if (m_selectionInput.m_textbox.getText() == null) {
             return "";
         }
-        return m_textBox.getValue();
+        return m_selectionInput.m_textbox.getValue();
     }
 
     /**
@@ -281,37 +246,13 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
     }
 
     /**
-     * Returns the selected link as a bean.<p>
-     * 
-     * @return the selected link as a bean 
-     */
-    public CmsLinkBean getLinkBean() {
-
-        String link = m_textBox.getValue();
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(link)) {
-            return null;
-        }
-        return new CmsLinkBean(m_textBox.getText(), true);
-    }
-
-    /**
      * Returns the text contained in the text area.<p>
      * 
      * @return the text in the text area
      */
     public String getText() {
 
-        return m_textBox.getValue();
-    }
-
-    /**
-     * Returns the textarea of this widget.<p>
-     * 
-     * @return the textarea
-     */
-    public TextBox getTextArea() {
-
-        return m_textBox;
+        return getFormValueAsString();
     }
 
     /**
@@ -319,9 +260,9 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
      * 
      * @return the text box container
      */
-    public FlowPanel getTextAreaContainer() {
+    public CmsSelectionInput getTextAreaContainer() {
 
-        return m_textBoxContainer;
+        return m_selectionInput;
     }
 
     /**
@@ -329,7 +270,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
      */
     public boolean isEnabled() {
 
-        return m_textBox.isEnabled();
+        return m_selectionInput.m_textbox.isEnabled();
     }
 
     /**
@@ -337,7 +278,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
      */
     public void reset() {
 
-        m_textBox.setText("");
+        m_selectionInput.m_textbox.setText("");
     }
 
     /**
@@ -353,7 +294,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
      */
     public void setEnabled(boolean enabled) {
 
-        m_textBox.setEnabled(enabled);
+        m_selectionInput.m_textbox.setEnabled(enabled);
     }
 
     /**
@@ -376,8 +317,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
         }
         if (value instanceof String) {
             String strValue = (String)value;
-            m_textBox.setValue(strValue, true);
-            createFader();
+            m_selectionInput.m_textbox.setText(strValue);
             setTitle(strValue);
         }
 
@@ -392,27 +332,13 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
     }
 
     /**
-     * Sets the link from a bean.<p>
-     * 
-     * @param link the link bean 
-     */
-    public void setLinkBean(CmsLinkBean link) {
-
-        if (link == null) {
-            link = new CmsLinkBean("", true);
-        }
-        m_textBox.setValue(link.getLink());
-
-    }
-
-    /**
      * Sets the name of the input field.<p>
      * 
      * @param name of the input field
      * */
     public void setName(String name) {
 
-        m_textBox.setName(name);
+        m_selectionInput.m_textbox.setName(name);
 
     }
 
@@ -438,7 +364,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
      */
     public void setText(String text) {
 
-        m_textBox.setValue(text);
+        setFormValueAsString(text);
     }
 
     /**
@@ -447,11 +373,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
     @Override
     public void setTitle(String title) {
 
-        if ((title.length() * 6.88) > m_panel.getOffsetWidth()) {
-            m_textBox.getElement().setTitle(title);
-        } else {
-            m_textBox.getElement().setTitle("");
-        }
+        m_selectionInput.m_textbox.getElement().setTitle(title);
     }
 
     /**
@@ -476,7 +398,6 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
             basePath += "&oufqn=" + m_ouFqn;
         }
 
-        //basePath += "&gwt.codesvr=127.0.0.1:9996"; //to start the hosted mode just remove commentary  
         return CmsCoreProvider.get().link(basePath);
     }
 
@@ -487,24 +408,24 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
      * @param title the title of the popup
      * */
     native void openNative(String url, String title) /*-{
-        $wnd
-                .open(
-                        url,
-                        title,
-                        'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=150,left=260,width=650,height=450');
-        var self = this;
-        $wnd.setGroupFormValue = function(value) {
-            self.@org.opencms.gwt.client.ui.input.CmsGroupSelection::setFormValueAsString(Ljava/lang/String;)(value);
-        };
-    }-*/;
+                                                     $wnd
+                                                     .open(
+                                                     url,
+                                                     title,
+                                                     'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=150,left=260,width=650,height=450');
+                                                     var self = this;
+                                                     $wnd.setGroupFormValue = function(value) {
+                                                     self.@org.opencms.gwt.client.ui.input.CmsGroupSelection::setValueFromNative(Ljava/lang/String;)(value);
+                                                     };
+                                                     }-*/;
 
     /**
-     * Adds the fader if necessary.<p> 
-     * */
-    private void createFader() {
+     * Sets the widget value and fires the change event if necessary.<p>
+     * 
+     * @param value the value to set
+     */
+    private void setValueFromNative(String value) {
 
-        if ((m_textBox.getValue().length() * 6.88) > m_textBox.getOffsetWidth()) {
-            m_textBoxContainer.add(m_fadePanel);
-        }
+        m_selectionInput.m_textbox.setValue(value, true);
     }
 }

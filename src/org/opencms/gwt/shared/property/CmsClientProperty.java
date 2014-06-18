@@ -35,7 +35,6 @@ import java.util.Map;
 
 import com.google.common.base.Function;
 import com.google.common.base.Objects;
-import com.google.common.collect.MapMaker;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -247,8 +246,7 @@ public class CmsClientProperty implements IsSerializable {
      */
     public static Map<String, CmsClientProperty> toLazyMap(Map<String, CmsClientProperty> properties) {
 
-        Map<String, CmsClientProperty> result = (new MapMaker()).makeComputingMap(CREATE_PROPERTY);
-        result.putAll(properties);
+        Map<String, CmsClientProperty> result = new CmsLazyPropertyMap(properties);
         return result;
     }
 

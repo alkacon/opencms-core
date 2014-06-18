@@ -31,8 +31,14 @@
 
 package org.opencms.search.solr;
 
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.CmsContextInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
@@ -46,6 +52,9 @@ import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsFileUtil;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
 import junit.extensions.TestSetup;
@@ -89,6 +98,7 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
         // suite.addTest(new TestSolrConfiguration("testIndexingPerformance"));
         // suite.addTest(new TestSolrConfiguration("testMultipleIndices"));
         // suite.addTest(new TestSolrConfiguration("testMultipleLanguages"));
+        suite.addTest(new TestSolrConfiguration("testReindexPublishedSiblings"));
         suite.addTest(new TestSolrConfiguration("testPostProcessor"));
         suite.addTest(new TestSolrConfiguration("testShutDown"));
 
@@ -97,7 +107,7 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
             @Override
             protected void setUp() {
 
-                setupOpenCms("solrtest", "/", "/../org/opencms/search/solr");
+                setupOpenCms("solrtest", "", "/../org/opencms/search/solr");
                 // disable all lucene indexes
                 for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
                     if (!indexName.equalsIgnoreCase(AllTests.SOLR_ONLINE)) {
@@ -124,6 +134,7 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
      */
     public void testExtractionResults() throws Throwable {
 
+        echo("Testing extraction results");
         CmsObject cms = getCmsObject();
         CmsResource res = cms.createSibling(
             "/xmlcontent/link_article_0001.html",
@@ -198,9 +209,8 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
      */
     public void testPostProcessor() throws Exception {
 
-        CmsObject cms = getCmsObject();
         echo("Testing Solr link processor");
-
+        CmsObject cms = getCmsObject();
         CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
         String query = "q=+text:>>SearchEgg1<<";
         CmsSolrResultList results = index.search(cms, query);
@@ -210,12 +220,99 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
     }
 
     /**
+     * Test result count for changed content of two siblings.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testReindexPublishedSiblings() throws Throwable {
+
+        echo("Test result count for changed content of two siblings");
+        CmsObject cms = getCmsObject();
+
+        // create a folder with two siblings and publish them together
+        String folder = "/reindexPublishedSiblings/";
+        cms.createResource(folder, CmsResourceTypeFolder.getStaticTypeId());
+        String brother = folder + "test_brother.txt";
+        CmsProperty firstTitleProperty = new CmsProperty(
+            CmsPropertyDefinition.PROPERTY_TITLE,
+            "BROTHER AND SISTER",
+            null);
+        List<CmsProperty> props = new ArrayList<CmsProperty>();
+        props.add(firstTitleProperty);
+        CmsResource resource = cms.createResource(
+            brother,
+            CmsResourceTypePlain.getStaticTypeId(),
+            "Solr Enterprise Serach".getBytes(),
+            props);
+        String sister = folder + "test_sister.txt";
+        cms.createSibling(brother, sister, props);
+        OpenCms.getPublishManager().publishResource(cms, folder);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // modify and publish only the source
+        CmsFile file = cms.readFile(resource);
+        file.setContents("OpenCms Enterprise Content Management System".getBytes());
+        cms.lockResource(file);
+        cms.writeFile(file);
+        OpenCms.getPublishManager().publishResource(cms, brother, false, null);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // create a query matching the new content
+        CmsSolrQuery query = new CmsSolrQuery(getCmsObject(), null);
+        query.setQuery("\"OpenCms Enterprise Content Management System\"");
+        List<Locale> locles = Collections.emptyList();
+        query.setLocales(locles);
+        query.setSearchRoots("/");
+        query.setRows(new Integer(10));
+
+        // Offline and Online both siblings should be found for the new content
+        CmsSolrIndex oindex = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
+        CmsSolrResultList rl = oindex.search(cms, query);
+        assertEquals("Both siblings must be found, they have the same content.", 2, rl.size());
+
+        CmsSearchResource brotherDoc = rl.get(0);
+        CmsSearchResource sisterDoc = rl.get(1);
+
+        assertEquals(
+            "Brother must be there",
+            "/sites/default/reindexPublishedSiblings/test_brother.txt",
+            brotherDoc.getRootPath());
+        assertEquals(
+            "Sister must be there",
+            "/sites/default/reindexPublishedSiblings/test_sister.txt",
+            sisterDoc.getRootPath());
+
+        assertEquals(
+            "The content must be",
+            "OpenCms Enterprise Content Management System",
+            brotherDoc.getField("content"));
+
+        assertEquals(
+            "The content of the found documents must be equal",
+            brotherDoc.getField("content"),
+            sisterDoc.getField("content"));
+
+        query.setQuery("\"Solr Enterprise Serach\"");
+        CmsSolrResultList rl2 = oindex.search(cms, query);
+        assertEquals("Old content must not be found anymore", 0, rl2.size());
+
+        cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
+        String sisterContent = new String(cms.readFile(sister).getContents());
+        String brotherContent = new String(cms.readFile(brother).getContents());
+        assertEquals(
+            "Sister and brother must have the same content in the online project",
+            sisterContent,
+            brotherContent);
+    }
+
+    /**
      * Tests shutting down Solr.<p>
      * 
      * @throws Throwable
      */
     public void testShutDown() throws Throwable {
 
+        echo("Testing Solr shutdown");
         CmsSolrIndex index = new CmsSolrIndex(AllTests.INDEX_TEST);
         index.setProject("Offline");
         index.setLocale(Locale.GERMAN);
@@ -224,13 +321,14 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
         index.addSourceName("solr_source2");
         OpenCms.getSearchManager().addSearchIndex(index);
         OpenCms.getSearchManager().rebuildIndex(AllTests.INDEX_TEST, new CmsShellReport(Locale.ENGLISH));
-        index.search(getCmsObject(), "q=*:*");
+        for (int i = 0; i < 250; i++) {
+            index.search(getCmsObject(), "q=*:*");
+        }
 
         // shut down
         CoreContainer container = ((EmbeddedSolrServer)index.m_solr).getCoreContainer();
         for (SolrCore core : container.getCores()) {
-            core.closeSearcher();
-            core.close();
+            echo("Open count for core: " + core.getName() + ": " + core.getOpenCount());
         }
         container.shutdown();
 
@@ -239,6 +337,8 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
 
         // success ?
         CmsFileUtil.purgeDirectory(new File(index.getPath()));
-        assertTrue(!new File(index.getPath()).exists());
+        assertTrue(
+            "The index folder must be deleted, otherwise some index lock may have prevent a successful purge.",
+            !new File(index.getPath()).exists());
     }
 }

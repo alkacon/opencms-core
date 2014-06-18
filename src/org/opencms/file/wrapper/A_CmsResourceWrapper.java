@@ -31,9 +31,9 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsResource.CmsResourceCopyMode;
 import org.opencms.file.CmsResource.CmsResourceDeleteMode;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -67,6 +67,15 @@ public abstract class A_CmsResourceWrapper implements I_CmsResourceWrapper {
         }
 
         return null;
+    }
+
+    /**
+     * @see org.opencms.file.wrapper.I_CmsResourceWrapper#configure(java.lang.String)
+     */
+    public void configure(String configString) {
+
+        // ignore 
+
     }
 
     /**
@@ -126,12 +135,16 @@ public abstract class A_CmsResourceWrapper implements I_CmsResourceWrapper {
     }
 
     /**
-     * @see org.opencms.file.wrapper.I_CmsResourceWrapper#lockResource(CmsObject, String)
+     * @see org.opencms.file.wrapper.I_CmsResourceWrapper#lockResource(org.opencms.file.CmsObject, java.lang.String, boolean)
      */
-    public boolean lockResource(CmsObject cms, String resourcename) throws CmsException {
+    public boolean lockResource(CmsObject cms, String resourcename, boolean temporary) throws CmsException {
 
         if (m_isWrappedResource) {
-            cms.lockResource(resourcename);
+            if (temporary) {
+                cms.lockResourceTemporary(resourcename);
+            } else {
+                cms.lockResource(resourcename);
+            }
             return true;
         }
 

@@ -35,11 +35,15 @@ import org.opencms.ade.publish.shared.CmsPublishResourceInfo.Type;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
 
 /**
  * This class contains the data for the publish resources which are displayed 
@@ -90,6 +94,12 @@ public class CmsPublishDataModel {
     /** The publish resources indexed by path. */
     private Map<String, CmsPublishResource> m_publishResourcesByPath = Maps.newHashMap();
 
+    /** Map from uuids of publish resources to uuids of their related resources. */
+    private Multimap<CmsUUID, CmsUUID> m_relatedIds = ArrayListMultimap.create();
+
+    /** Map containing the related publish resources. */
+    private Map<CmsUUID, CmsPublishResource> m_relatedPublishResources = Maps.newHashMap();
+
     /** The action to execute when the selection changes. */
     private Runnable m_selectionChangeAction;
 
@@ -118,6 +128,11 @@ public class CmsPublishDataModel {
                 m_publishResources.put(res.getId(), res);
                 m_publishResourcesByPath.put(res.getName(), res);
                 idList.add(res.getId());
+                for (CmsPublishResource related : res.getRelated()) {
+                    m_relatedIds.put(res.getId(), related.getId());
+                    m_relatedPublishResources.put(related.getId(), related);
+                }
+
             }
         }
     }
@@ -132,6 +147,40 @@ public class CmsPublishDataModel {
     public static boolean hasProblems(CmsPublishResource publishResource) {
 
         return (publishResource.getInfo() != null) && publishResource.getInfo().hasProblemType();
+    }
+
+    /**
+     * Collects group selection states.<p>
+     * 
+     * @return the group selection states 
+     */
+    public Map<Integer, CmsPublishItemStateSummary> computeGroupSelectionStates() {
+
+        Map<Integer, CmsPublishItemStateSummary> stateMap = Maps.newHashMap();
+
+        CmsPublishItemStateSummary allStates = new CmsPublishItemStateSummary();
+        int i = 0;
+        for (CmsPublishGroup group : m_groups) {
+            CmsPublishItemStateSummary groupStates = new CmsPublishItemStateSummary();
+            for (CmsPublishResource res : group.getResources()) {
+                CmsPublishItemStatus item = m_status.get(res.getId());
+                CmsPublishItemStatus.State stateToAdd;
+                if (item.isDisabled()) {
+                    // a disabled item should have no influence on the select/deselect all checkboxes,
+                    // just as an item which is marked to be removed 
+                    stateToAdd = CmsPublishItemStatus.State.remove;
+                } else {
+                    stateToAdd = item.getState();
+                }
+                groupStates.addState(stateToAdd);
+                allStates.addState(stateToAdd);
+
+            }
+            stateMap.put(new Integer(i), groupStates);
+            i += 1;
+        }
+        stateMap.put(new Integer(-1), allStates);
+        return stateMap;
     }
 
     /**
@@ -210,12 +259,20 @@ public class CmsPublishDataModel {
     public List<CmsUUID> getIdsOfAlreadyPublishedResources() {
 
         List<CmsUUID> alreadyPublished = new ArrayList<CmsUUID>();
+        List<CmsPublishResource> allResources = new ArrayList<CmsPublishResource>();
         for (CmsPublishGroup group : m_groups) {
 
             for (CmsPublishResource resource : group.getResources()) {
-                if ((resource.getInfo() != null) && (resource.getInfo().getType() == Type.PUBLISHED)) {
-                    alreadyPublished.add(resource.getId());
+                allResources.add(resource);
+                for (CmsPublishResource related : resource.getRelated()) {
+                    allResources.add(related);
                 }
+            }
+
+        }
+        for (CmsPublishResource resource : allResources) {
+            if ((resource.getInfo() != null) && (resource.getInfo().getType() == Type.PUBLISHED)) {
+                alreadyPublished.add(resource.getId());
             }
         }
         return alreadyPublished;
@@ -226,14 +283,20 @@ public class CmsPublishDataModel {
      * 
      * @return the ids of publish resources which should be published 
      */
-    public List<CmsUUID> getPublishIds() {
+    public Set<CmsUUID> getPublishIds() {
 
-        List<CmsUUID> toPublish = new ArrayList<CmsUUID>();
+        Set<CmsUUID> toPublish = new HashSet<CmsUUID>();
         for (Map.Entry<CmsUUID, CmsPublishItemStatus> entry : m_status.entrySet()) {
             CmsUUID key = entry.getKey();
             CmsPublishItemStatus status = entry.getValue();
             if (status.getState() == State.publish) {
                 toPublish.add(key);
+                for (CmsUUID relatedId : m_relatedIds.get(key)) {
+                    CmsPublishResource relatedResource = m_relatedPublishResources.get(relatedId);
+                    if ((relatedResource != null) && !hasProblems(relatedResource)) {
+                        toPublish.add(relatedId);
+                    }
+                }
             }
         }
         return toPublish;
@@ -286,6 +349,16 @@ public class CmsPublishDataModel {
     public CmsPublishItemStatus getStatus(CmsUUID id) {
 
         return m_status.get(id);
+    }
+
+    /**
+     * Checks if there is only a single group of resources.<p>
+     * 
+     * @return true if there is only a single group of resources 
+     */
+    public boolean hasSingleGroup() {
+
+        return m_groups.size() == 1;
     }
 
     /**

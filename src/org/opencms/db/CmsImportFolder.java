@@ -280,8 +280,7 @@ public class CmsImportFolder {
      */
     private void importZipResource(ZipInputStream zipStreamIn, String importPath, boolean noSubFolder) throws Exception {
 
-        int todo = 0;
-        // TODO: this method looks very crude, it should be re-written sometime...
+        // HACK: this method looks very crude, it should be re-written sometime...
 
         boolean isFolder = false;
         int j, r, stop, size;

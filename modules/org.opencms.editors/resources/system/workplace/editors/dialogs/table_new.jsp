@@ -10,7 +10,7 @@
 	String disabled = "";
 	if ("edit".equals(titleType)) {
 		dialogTitle = wp.key(org.opencms.workplace.editors.Messages.GUI_TITLE_EDITTABLE_0);
-		disabled = " disabled=\"disabled\" style=\"background-color: Menu;\"";
+		disabled = " disabled=\"disabled\" style=\"background-color: /*begin-color Menu*/#f0f0f0/*end-color*/;\"";
 	} 
 	
 %><%= wp.htmlStart(null, dialogTitle) %>

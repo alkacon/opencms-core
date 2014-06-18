@@ -78,9 +78,6 @@ public class CmsSitemapData implements IsSerializable {
     /** Flag to control the display of the toolbar. */
     private boolean m_displayToolbar;
 
-    /** The export name of the site which contains the sitemap. */
-    private String m_exportName;
-
     /** The export RFS prefix. */
     private String m_exportRfsPrefix;
 
@@ -166,13 +163,10 @@ public class CmsSitemapData implements IsSerializable {
      * @param resourceTypeInfos the resource type information for the detail pages  
      * @param returnCode return page code
      * @param canEditDetailPages flag to indicate whether detail pages can be edited
-    <<<<<<< OURS
      * @param aliasImportUrl the URL of the JSP used to import aliases 
      * @param canEditAliases flag to indicate whether the current user can edit the alias table 
-    =======
      * @param createNewFoldersForSubsitemaps flag to control whether new folders should be created for subsitemaps 
      * @param subsitemapTypeInfos the type information beans for the available subsitemap folder types 
-    >>>>>>> THEIRS
      */
     public CmsSitemapData(
         Map<String, CmsClientTemplateBean> templates,
@@ -311,16 +305,6 @@ public class CmsSitemapData implements IsSerializable {
     public CmsDetailPageTable getDetailPageTable() {
 
         return m_detailPageTable;
-    }
-
-    /**
-     * Returns the export name from the sitemap configuration.<p>
-     *  
-     * @return the export name
-     */
-    public String getExportName() {
-
-        return m_exportName;
     }
 
     /**

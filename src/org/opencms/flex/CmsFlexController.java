@@ -373,6 +373,8 @@ public class CmsFlexController {
         } else {
             // this resource can not be optimized for "last modified", use current time as header
             res.setDateHeader(CmsRequestUtil.HEADER_LAST_MODIFIED, System.currentTimeMillis());
+            // avoiding issues with IE8+
+            res.setHeader(CmsRequestUtil.HEADER_CACHE_CONTROL, "public, max-age=0");
         }
     }
 

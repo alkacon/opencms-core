@@ -206,13 +206,13 @@ public class CmsSearchParameters {
     /** Sort result documents by date of creation, then score. */
     public static final Sort SORT_DATE_CREATED = new Sort(new SortField(
         CmsSearchField.FIELD_DATE_CREATED,
-        SortField.STRING,
+        SortField.Type.STRING,
         true));
 
     /** Sort result documents by date of last modification, then score. */
     public static final Sort SORT_DATE_LASTMODIFIED = new Sort(new SortField(
         CmsSearchField.FIELD_DATE_LASTMODIFIED,
-        SortField.STRING,
+        SortField.Type.STRING,
         true));
 
     /** Default sort order (by document score). */
@@ -227,7 +227,7 @@ public class CmsSearchParameters {
 
     /** Sort result documents by title, then score. */
     public static final Sort SORT_TITLE = new Sort(new SortField[] {
-        new SortField(CmsSearchField.FIELD_TITLE, SortField.STRING),
+        new SortField(CmsSearchField.FIELD_TITLE, SortField.Type.STRING),
         SortField.FIELD_SCORE});
 
     /** The log object for this class. */

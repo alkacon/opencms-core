@@ -28,7 +28,6 @@
 package org.opencms.ade.galleries.shared;
 
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
-import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 
 import java.util.List;
 
@@ -57,6 +56,13 @@ public interface I_CmsGalleryConfiguration {
      * @return the start gallery path
      */
     String getGalleryPath();
+
+    /**
+     * Returns the gallery type name.<p>
+     * 
+     * @return the gallery type name
+     */
+    String getGalleryTypeName();
 
     /**
      * Returns the available gallery types.<p>
@@ -122,11 +128,11 @@ public interface I_CmsGalleryConfiguration {
     String getStartSite();
 
     /**
-     * Returns the tab id's.<p>
+     * Gets the tab configuration.<p>
      * 
-     * @return the tab id's
+     * @return the gallery tab configuration 
      */
-    GalleryTabId[] getTabIds();
+    CmsGalleryTabConfiguration getTabConfiguration();
 
     /** 
      * Gets the tree token.<p>
@@ -138,6 +144,13 @@ public interface I_CmsGalleryConfiguration {
      * @return the tree token 
      */
     String getTreeToken();
+
+    /**
+     * Returns the upload folder.<p>
+     * 
+     * @return the upload folder
+     */
+    String getUploadFolder();
 
     /**
      * Returns if files are selectable.<p>
@@ -166,4 +179,11 @@ public interface I_CmsGalleryConfiguration {
      * @param currentElement the currentElement to set
      */
     void setCurrentElement(String currentElement);
+
+    /**
+     * Sets the start folder.<p>
+     * 
+     * @param startFolder the start folder
+     */
+    void setStartFolder(String startFolder);
 }

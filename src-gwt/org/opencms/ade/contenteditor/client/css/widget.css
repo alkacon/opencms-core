@@ -1,6 +1,41 @@
-@external html-face, textboxGhostMode, scrollContainer, popupContent, gwt-ToggleButton, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled;
+@external html-face, textboxGhostMode, scrollContainer, popupContent, gwt-ToggleButton, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled, mce-opencmsDialog, mce-window, mce-window-head, closeButton;
 
-.radioButtonPanel {
+/* TinyMCE plugin popup dialog styles, all used classes are external. */
+@sprite div.mce-opencmsDialog.mce-window{
+	gwt-image: "backgrounds.dialogBackground";
+    background-color: value("constants.css.backgroundColorDialogBorder");
+    background-position: center top;
+    background-repeat: repeat-x;
+    border-color: #606161 black black;
+    border-radius: 12px 12px 12px 12px;
+    border-style: solid;
+    border-width: 1px;
+    box-shadow: 6px 6px 12px #666666;
+    margin: 0;
+    padding: 6px 5px 5px;
+    overflow: visible;
+}
+
+.mce-opencmsDialog.mce-window > .mce-window-head{
+	display: none;
+}
+
+@sprite .mce-opencmsDialog.mce-window > .closeButton{
+	gwt-image: "gwtImages.dialogCloseImage";
+    background-color: transparent;
+    cursor: pointer;
+    height: 23px;
+    overflow: hidden;
+    position: absolute;
+    right: -11px;
+    top: -12px;
+    width: 23px;
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+div.radioButtonPanel {
 	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
     border-radius: value("constants.css.borderRadius");
     border: 1px solid #7788AA /*value("constants.css.borderColor")*/;
@@ -11,31 +46,24 @@
     padding-top: 3px;
 }
 
-.selectBoxPanel{
+div.selectBoxPanel{
 	display: block;
 	width: auto;
 }
 
-.emptyValue .openerNoHover div.selectBoxSelected{
-	border: 1px solid value("constants.css.borderColor");
-	color: value("constants.css.borderColor");
-	font-style: italic;
-}
-
-.categoryPanel {
+div.categoryPanel {
 	border: 1px solid #7788AA;
 	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
 	border-radius: value("constants.css.borderRadius");
 }
 
-.categoryPanel:hover {
+div.categoryPanel:hover {
 	cursor: pointer;	
 }
 
-.selectBoxPopup {
+div.selectBoxPopup {
 	border: 1px solid #7788AA !important /*value("constants.css.borderColor")*/;
 }
-
 
 textarea.textAreaBox {
 	background: none repeat scroll 0 0 transparent;
@@ -69,27 +97,28 @@ div.vfsInputBox{
 	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
 }
 
-input.textBox{
+div.textBox{
 	border: 1px solid #7788AA;
 	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
 	border-radius: value("constants.css.borderRadius");
 	font-family: value("constants.css.fontFamily");
+	padding: 0px 4px;
+	margin: 0px;
+}
+div.textBox > input[type="text"]{
+	width:100%;
+	outline:none;
 	display: block;
 	color: value("constants.css.textColor");
 	box-shadow: none;
-	width: 100%;
-	padding: 0px 4px;
-	margin: 0px;
-	line-height: value("constants.css.lineHeight");
-	height: 18px;
-	font-size: value("constants.css.fontSize");
-	outline:none;
-	display: inline;
 	vertical-align: baseline;
+	height: 18px;
+	line-height: value("constants.css.lineHeight");
+	border-radius: value("constants.css.borderRadius");
+	font-size: value("constants.css.fontSize");
 }
 
-
-.passwordTextBox{
+div.passwordTextBox{
 	border: 1px solid #7788AA;
 	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
 	border-radius: value("constants.css.borderRadius");
@@ -97,7 +126,7 @@ input.textBox{
 	padding: 0px 4px;
 }
 
-.passwordTextBox input{
+div.passwordTextBox input[type="text"]{
 	border: none;
 	font-family: value("constants.css.fontFamily");
 	display: block;
@@ -110,7 +139,7 @@ input.textBox{
 	outline:none;
 }
 
-.calendarStyle input {
+div.calendarStyle input[type="text"] {
 	box-shadow: none;
 	color: value("constants.css.textColor");
 	font-size: 12px;
@@ -118,7 +147,7 @@ input.textBox{
 	font-style:normal;
 	outline: none;
 }
-div.calendarStyle input.textboxGhostMode{
+div.calendarStyle input[type="text"].textboxGhostMode{
 	color: #7788AA;
 	font-style:normal;
 	outline: none;
@@ -136,11 +165,8 @@ div.calendarStyle {
 	height: 18px;
 }
 
-.inActive div.calendarStyle, .passwordTextBox.inActive  {
-	border: 1px solid value("constants.css.borderColor");
-}
 
-input.displayTextBox{
+input[type="text"].displayTextBox{
 	background: none repeat scroll 0 0 transparent;
 	height: 18px;
 	display: block;
@@ -150,7 +176,7 @@ input.displayTextBox{
 	border: medium none;
 }
 
-input.displayTextBox:disabled{
+input[type="text"].displayTextBox:disabled{
 	background: none repeat scroll 0 0 transparent;
 	height: 18px;
 	display: block;
@@ -164,7 +190,7 @@ div.displayTextBoxPanel{
 	background: none repeat scroll 0 0 transparent;
 }
 
-input.comboBoxInput {
+input[type="text"].comboBoxInput {
     border: medium none;
     box-shadow: none;
     color: value("constants.css.textColor");
@@ -217,7 +243,7 @@ div.radioButtonlabel.cmsState-down-disabled{
 
 /** Colorpicker styles*/
 
-.colorPickerValue {
+div.colorPickerValue {
 	background: none repeat scroll 0 0 white;
     border: 1px solid #7788AA;
     border-radius: 3px 3px 3px 3px;
@@ -229,7 +255,7 @@ div.radioButtonlabel.cmsState-down-disabled{
     width: auto;	
 }
 
-.colorPickerValue input{
+div.colorPickerValue input[type="text"]{
 	background-color: #FFFFFF;
     border: none;
     box-shadow: none;
@@ -248,65 +274,64 @@ div.colorPicker{
     cursor: pointer;
     display: block;
     height: 18px;
-    position: relative;
-    top: -20px;
+    float:left;
     width: 100px;
 }
 
-.inActive .colorPickerValue{
-    border: 1px solid value("constants.css.borderColor");
-}
-.inActive div.colorPicker {
-	border: 1px solid value("constants.css.borderColor");
-}
 
 
 /** Checkbox styles*/
 
-.checkBoxStyle.inActive div.label{
+.defaultView > div > .checkBoxStyle.inActive .label, .compactView > div > .checkBoxStyle.inActive .label, .firstColumn > div > .checkBoxStyle.inActive .label, .secondColumn > div > .checkBoxStyle.inActive .label{
 	color: #000000;
 }
-.checkBoxStyle:hover.inActive div.label{
+.defaultView > div > .checkBoxStyle:hover.inActive .label, .compactView > div > .checkBoxStyle:hover.inActive .label, .firstColumn > div > .checkBoxStyle:hover.inActive .label, .secondColumn > div > .checkBoxStyle:hover.inActive .label{
 	color: #000000;
 }
 
-.checkBoxStyle:hover div.label {
+.defaultView > div > .checkBoxStyle:hover .label, .compactView > div > .checkBoxStyle:hover .label, .firstColumn > div > .checkBoxStyle:hover .label, .secondColumn > div > .checkBoxStyle:hover .label  {
 	color: #445577;
 }
 
-.checkBoxStyle div.label{
-		margin: 4px 3px 2px 20px;
+.defaultView > div > .checkBoxStyle div.label, .compactView > div > .checkBoxStyle div.label, .firstColumn > div > .checkBoxStyle div.label, .secondColumn > div > .checkBoxStyle div.label{
+		margin: 0px 3px 0px 20px;
 }
-.checkBoxStyle .widget{
+.defaultView > div > .checkBoxStyle .widget, .compactView > div > .checkBoxStyle .widget, .firstColumn > div > .checkBoxStyle .widget, .secondColumn > div > .checkBoxStyle .widget{
 	position: absolute;
+	margin: 0 !important;
+	left: 0 !important;
+}
+
+.defaultView > div > div.checkBoxStyle, .compactView > div > div.checkBoxStyle, .firstColumn > div > div.checkBoxStyle, .secondColumn > div > div.checkBoxStyle{
+	position: relative;
+	height: 22px;
 }
 
 
 /** The "empty value" parameters. */
-
-
-.emptyValue .radioButtonPanel {
-	border: 1px solid value("constants.css.borderColor");
+.emptyValue div.selectBoxSelected{
+	color: value("constants.css.borderColor");
+	font-style: italic;
 }
-
 .emptyValue div.displayTextBoxPanel{
-	border: 1px solid value("constants.css.borderColor");
-	background: none repeat scroll 0 0 transparent;
-}
-.emptyValue div.textAreaBoxPanel , .emptyValue .categoryPanel, .emptyValue input.textBox, .emptyValue div.vfsInputBox{
-	border: 1px solid value("constants.css.borderColor");
+	background: transparent;
 }
 
+.emptyValue div.textAreaBoxPanel , .emptyValue div.categoryPanel, .emptyValue div.textBox, .emptyValue div.vfsInputBox,
+.emptyValue div.radioButtonPanel, .emptyValue div.displayTextBoxPanel, .emptyValue div.colorPickerValue, .emptyValue div.colorPicker,
+.emptyValue div.calendarStyle, .emptyValue div.passwordTextBox, .emptyValue div.selectBoxSelected, .emptyValue div.textAreaBoxPanel{
+    border-color: value("constants.css.borderColor");
+}
 
 /** The "has error" parameters. */
 
-.hasError div.selectBoxSelected, .hasError .radioButtonPanel, .hasError.inputField, .hasError div.textAreaBoxPanel, .hasError input.textBox, .hasError div.calendarStyle, .hasError input.passwordTextBox, .hasError .colorPickerValue, .hasError .colorPicker, .hasError .vfsInputBox{
+.hasError div.selectBoxSelected, .hasError .radioButtonPanel, .hasError.inputField, .hasError div.textAreaBoxPanel, .hasError div.textBox, .hasError div.calendarStyle, .hasError input.passwordTextBox, .hasError .colorPickerValue, .hasError .colorPicker, .hasError .vfsInputBox{
 	border: 1px solid value("constants.css.borderColorHighlight");
 }
 
 /** The "has warning" parameters. */
 
-.hasWarning div.selectBoxSelected, .hasWarning .radioButtonPanel, .hasWarning.inputField, .hasWarning div.textAreaBoxPanel, .hasWarning input.textBox, .hasWarning div.calendarStyle, .hasWarning input.passwordTextBox, .hasWarning .colorPickerValue, .hasWarning .colorPicker, .hasWarning .vfsInputBox {
+.hasWarning div.selectBoxSelected, .hasWarning .radioButtonPanel, .hasWarning.inputField, .hasWarning div.textAreaBoxPanel, .hasWarning div.textBox, .hasWarning div.calendarStyle, .hasWarning input.passwordTextBox, .hasWarning .colorPickerValue, .hasWarning .colorPicker, .hasWarning .vfsInputBox {
 	border: 1px solid #FFAA00;
 }
 
@@ -316,23 +341,12 @@ div.colorPicker{
 
 
 .entity .checkBoxStyle .widget{
-	top: 9px;
-}
-.entity .entity .checkBoxStyle .widget{
-	top: 10px;
-}
-
-.entity .entity .entity .checkBoxStyle .widget{
-	top: 8px;
-}
-
-.entity .entity .entity .entity .checkBoxStyle .widget{
-	top: 7px;
+	top: 3px;
 }
 
 /** The "drag helper" parameters. */
 .dragHelper .checkBoxStyle .label{
-	margin: 4px 3px 2px 20px;
+	margin: 0px 3px 0px 20px;
 }
 .dragHelper .checkBoxStyle .widget{
 	position: absolute;
@@ -358,35 +372,44 @@ div.colorPicker{
 	overflow:hidden; 
 }
 	
-.emptyValue{}
-
 div.inputField{
 	margin-right: 12px;
 	position: relative;
 }
 
-div.inputField > div{
-	height: 18px;
-    width: 40px;
-    position: absolute;
-    bottom: 1px;
-    right: -7px;
+div.inputField>div{
+	bottom:1px;
+	right:2px;
 }
 
-.hasError{}
+@external .mce-panel;
+@external .mce-caret;
 
-.hasWarning{}
+/**  Copied from skin.min.css in the TinyMCE editor and increased specificity. */ 
+.mce-panel.mce-panel { 
+	
+    background-color: #F0F0F0;
+    background-image: linear-gradient(to bottom, #FDFDFD, #DDDDDD) ;
+    background-repeat: repeat-x;
+    border: 0 solid #9E9E9E;
+}
 
-.label{}
+.mce-caret.mce-caret {
+    border-left: 4px solid rgba(0, 0, 0, 0);
+    border-right: 4px solid rgba(0, 0, 0, 0);
+    border-top: 4px solid #444444;
+    content: "";
+    display: inline-block;
+    height: 0;
+    vertical-align: top;
+    width: 0;
+}
 
-.inActive{}
 
 .widgetHolder{}
-
-.entity{}
-
+.inActive{}
 .attributeValue{}
-
+.singleLine{}
 .floatDecoratedPanel{}
 .primary{}
 .floatBox{}

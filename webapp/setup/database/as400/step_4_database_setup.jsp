@@ -28,6 +28,10 @@ Alkacon OpenCms Setup Wizard
 			alert("Please enter a library name");
 			document.forms[0].db.focus();
 			return false;
+		} else if (!isValidDbName(document.forms[0].db.value)) {
+		    alert("Invalid database name");
+			document.forms[0].db.focus();
+		    return false; 
 		}
 		else	{
 			return true;

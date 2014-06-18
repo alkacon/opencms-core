@@ -31,17 +31,25 @@
 
 package org.opencms.workplace.tools.sites;
 
+import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.configuration.CmsSystemConfiguration;
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypeFolderSubSitemap;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
+import org.opencms.report.CmsLogReport;
 import org.opencms.site.CmsSite;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsCheckboxWidget;
@@ -54,10 +62,14 @@ import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.xml.content.CmsXmlContent;
+import org.opencms.xml.content.CmsXmlContentFactory;
+import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -86,8 +98,20 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
     /** The dialog action for editing a site. */
     protected static final String DIALOG_EDIT = "edit";
 
+    /** Constant. */
+    private static final String BLANK_HTML = "blank.html";
+
     /** Dialog new action parameter value. */
     private static final String DIALOG_NEW = "new";
+
+    /** Constant. */
+    private static final String MODEL_PAGE = "ModelPage";
+
+    /** Constant. */
+    private static final String MODEL_PAGE_PAGE = "ModelPage/Page";
+
+    /** Constant. */
+    private static final String NEW = ".new/";
 
     /** Signals whether to create an OU or not. */
     private boolean m_createou;
@@ -106,6 +130,9 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
 
     /** The name of the sites root folder. */
     private String m_sitename;
+
+    /** The template property. */
+    private String m_template;
 
     /**
      * Public constructor with JSP action element.<p>
@@ -155,7 +182,49 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
                 siteRootResource = cms.readResource(siteRoot);
             } catch (CmsVfsResourceNotFoundException e) {
                 // not create a new site folder and the according OU if option is checked checked
-                siteRootResource = cms.createResource(siteRoot, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
+                int typeId = OpenCms.getResourceManager().getResourceType(
+                    CmsResourceTypeFolderSubSitemap.TYPE_SUBSITEMAP).getTypeId();
+                siteRootResource = cms.createResource(siteRoot, typeId);
+                String sitePath = cms.getSitePath(siteRootResource);
+                String contentFolder = CmsStringUtil.joinPaths(sitePath, CmsADEManager.CONTENT_FOLDER_NAME + "/");
+                CmsResource config = createSitemapContentFolder(cms, siteRootResource);
+                if (config != null) {
+                    CmsResource newFolder = cms.createResource(
+                        contentFolder + NEW,
+                        CmsResourceTypeFolder.RESOURCE_TYPE_ID);
+                    int containerId = OpenCms.getResourceManager().getResourceType(
+                        org.opencms.file.types.CmsResourceTypeXmlContainerPage.RESOURCE_TYPE_NAME).getTypeId();
+                    CmsResource modelPage = cms.createResource(newFolder.getRootPath() + BLANK_HTML, containerId);
+                    String defTitle = Messages.get().container(Messages.GUI_DEFAULT_MODEL_TITLE_1, m_site.getTitle()).getKey();
+                    String defDes = Messages.get().container(
+                        Messages.GUI_DEFAULT_MODEL_DESCRIPTION_1,
+                        m_site.getTitle()).getKey();
+                    CmsProperty prop = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, defTitle, defTitle);
+                    cms.writePropertyObject(modelPage.getRootPath(), prop);
+                    prop = new CmsProperty(CmsPropertyDefinition.PROPERTY_DESCRIPTION, defDes, defDes);
+                    cms.writePropertyObject(modelPage.getRootPath(), prop);
+                    CmsFile file = cms.readFile(config);
+                    CmsXmlContent con = CmsXmlContentFactory.unmarshal(cms, file);
+                    con.addValue(cms, MODEL_PAGE, Locale.ENGLISH, 0);
+                    I_CmsXmlContentValue val = con.getValue(MODEL_PAGE_PAGE, Locale.ENGLISH);
+                    val.setStringValue(cms, modelPage.getRootPath());
+                    file.setContents(con.marshal());
+                    cms.writeFile(file);
+
+                }
+
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getTemplate())) {
+                    CmsProperty prop = new CmsProperty(
+                        CmsPropertyDefinition.PROPERTY_TEMPLATE,
+                        getTemplate(),
+                        getTemplate());
+                    cms.writePropertyObject(siteRoot, prop);
+                }
+                OpenCms.getPublishManager().publishResource(
+                    cms,
+                    siteRoot,
+                    false,
+                    new CmsLogReport(cms.getRequestContext().getLocale(), getClass()));
                 if (m_createou) {
                     OpenCms.getOrgUnitManager().createOrganizationalUnit(
                         cms,
@@ -167,7 +236,17 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
             }
 
             // update the site manager state
-            OpenCms.getSiteManager().updateSite(getCms(), m_site.getOriginalSite(), m_site.toCmsSite());
+            CmsSite newSite = m_site.toCmsSite();
+            OpenCms.getSiteManager().updateSite(getCms(), m_site.getOriginalSite(), newSite);
+            // update the workplace server if the changed site was the workplace server
+            if ((m_site.getOriginalSite() != null)
+                && m_site.getOriginalSite().getUrl().equals(OpenCms.getSiteManager().getWorkplaceServer())) {
+                OpenCms.getSiteManager().updateGeneralSettings(
+                    getCms(),
+                    OpenCms.getSiteManager().getDefaultUri(),
+                    newSite.getUrl(),
+                    OpenCms.getSiteManager().getSharedFolder());
+            }
             // write the system configuration
             OpenCms.writeConfiguration(CmsSystemConfiguration.class);
             // refresh the list of sites
@@ -222,6 +301,16 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
     }
 
     /**
+     * Returns the template property.<p>
+     *
+     * @return the template property to set
+     */
+    public String getTemplate() {
+
+        return m_template;
+    }
+
+    /**
      * Returns the paramCreateou.<p>
      *
      * @return the paramCreateou
@@ -272,6 +361,16 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
     }
 
     /**
+     * Sets the the template property.<p>
+     *
+     * @param template the template property to set
+     */
+    public void setTemplate(String template) {
+
+        m_template = template;
+    }
+
+    /**
      * @see org.opencms.workplace.CmsWidgetDialog#createDialogHtml(java.lang.String)
      */
     @Override
@@ -283,25 +382,31 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
         // show error header once if there were validation errors
         result.append(createWidgetErrorHeader());
 
-        String title = m_site.getTitle() != null ? m_site.getTitle() : Messages.get().getBundle().key(
-            Messages.GUI_SITES_NEW_SITE_TITLE_0);
+        String title = m_site.getTitle() != null ? m_site.getTitle() : Messages.get().getBundle(
+            getCms().getRequestContext().getLocale()).key(Messages.GUI_SITES_NEW_SITE_TITLE_0);
 
         // only show the position if editing a site or creating a new site 
         int count = getParamEditaction() == null ? 4 : 5;
         // +1 if favicon present
         count = m_site.getFavicon() != null ? ++count : count;
-        // +1 for OU check box when creating a new site
-        count = DIALOG_NEW.equals(getParamEditaction()) ? ++count : count;
+        // +2 for OU check box and template property when creating a new site
+        if (DIALOG_NEW.equals(getParamEditaction())) {
+            count = count + 2;
+        }
 
         // site info
-        result.append(dialogBlockStart(Messages.get().getBundle().key(Messages.GUI_SITES_DETAIL_INFO_1, title)));
+        result.append(dialogBlockStart(Messages.get().getBundle(getCms().getRequestContext().getLocale()).key(
+            Messages.GUI_SITES_DETAIL_INFO_1,
+            title)));
         result.append(createWidgetTableStart());
         result.append(createDialogRowsHtml(0, count));
         result.append(createWidgetTableEnd());
         result.append(dialogBlockEnd());
         if ((getParamEditaction() != null) || CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_site.getSecureUrl())) {
             // secure site
-            result.append(dialogBlockStart(Messages.get().getBundle().key(Messages.GUI_SITES_DETAIL_SECURE_1, title)));
+            result.append(dialogBlockStart(Messages.get().getBundle(getCms().getRequestContext().getLocale()).key(
+                Messages.GUI_SITES_DETAIL_SECURE_1,
+                title)));
             result.append(createWidgetTableStart());
             result.append(createDialogRowsHtml(++count, count + 2));
             result.append(createWidgetTableEnd());
@@ -312,7 +417,9 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
         // site aliases
         if ((DIALOG_EDIT.equals(getParamEditaction()) || DIALOG_NEW.equals(getParamEditaction()))
             || !m_site.getAliases().isEmpty()) {
-            result.append(dialogBlockStart(Messages.get().getBundle().key(Messages.GUI_SITES_DETAIL_ALIASES_1, title)));
+            result.append(dialogBlockStart(Messages.get().getBundle(getCms().getRequestContext().getLocale()).key(
+                Messages.GUI_SITES_DETAIL_ALIASES_1,
+                title)));
             result.append(createWidgetTableStart());
             if (DIALOG_EDIT.equals(getParamEditaction()) || DIALOG_NEW.equals(getParamEditaction())) {
                 result.append(createDialogRowsHtml(++count, count));
@@ -353,6 +460,11 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
             addWidget(new CmsWidgetDialogParameter(m_site, "webserver", PAGES[0], new CmsCheckboxWidget()));
             if (DIALOG_NEW.equals(getParamEditaction())) {
                 addWidget(new CmsWidgetDialogParameter(this, "createou", PAGES[0], new CmsCheckboxWidget()));
+                addWidget(new CmsWidgetDialogParameter(this, "template", PAGES[0], new CmsVfsFileWidget(
+                    true,
+                    "",
+                    true,
+                    false)));
             }
 
             if (m_site.getFavicon() != null) {
@@ -384,7 +496,8 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
             CmsWidgetDialogParameter errorPage;
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_site.getErrorPage())) {
                 errorPage = new CmsWidgetDialogParameter(m_site, "errorPage", PAGES[0], new CmsDisplayWidget(
-                    Messages.get().container(Messages.GUI_SITES_ERROR_PAGE_NOT_AVAILABLE_0).key()));
+                    Messages.get().getBundle(getCms().getRequestContext().getLocale()).key(
+                        Messages.GUI_SITES_ERROR_PAGE_NOT_AVAILABLE_0)));
             } else {
                 errorPage = new CmsWidgetDialogParameter(m_site, "errorPage", PAGES[0], new CmsDisplayWidget());
             }
@@ -415,7 +528,11 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
                 CmsWidgetDialogParameter alias = new CmsWidgetDialogParameter(
                     aliasUrl,
                     aliasUrl,
-                    Messages.get().getBundle().key(Messages.GUI_SITES_DETAIL_LABEL_ALIAS_0) + " [" + (count + 1) + "]",
+                    Messages.get().getBundle(getCms().getRequestContext().getLocale()).key(
+                        Messages.GUI_SITES_DETAIL_LABEL_ALIAS_0)
+                        + " ["
+                        + (count + 1)
+                        + "]",
                     new CmsDisplayWidget(),
                     PAGES[0],
                     1,
@@ -541,6 +658,46 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
             result.add(new CmsSelectWidgetOption(val, false, opt));
         }
         return result;
+    }
+
+    /**
+     * Helper method for creating the .content folder of a sub-sitemap.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param subSitemapFolder the sub-sitemap folder in which the .content folder should be created
+     *  
+     * @return the created folder
+     * 
+     * @throws CmsException if something goes wrong 
+     * @throws CmsLoaderException
+     */
+    private CmsResource createSitemapContentFolder(CmsObject cms, CmsResource subSitemapFolder)
+    throws CmsException, CmsLoaderException {
+
+        CmsResource configFile = null;
+        String sitePath = cms.getSitePath(subSitemapFolder);
+        String folderName = CmsStringUtil.joinPaths(sitePath, CmsADEManager.CONTENT_FOLDER_NAME + "/");
+        String sitemapConfigName = CmsStringUtil.joinPaths(folderName, CmsADEManager.CONFIG_FILE_NAME);
+        if (!cms.existsResource(folderName)) {
+            cms.createResource(
+                folderName,
+                OpenCms.getResourceManager().getResourceType(CmsADEManager.CONFIG_FOLDER_TYPE).getTypeId());
+        }
+        I_CmsResourceType configType = OpenCms.getResourceManager().getResourceType(CmsADEManager.CONFIG_TYPE);
+        if (cms.existsResource(sitemapConfigName)) {
+            configFile = cms.readResource(sitemapConfigName);
+            if (configFile.getTypeId() != configType.getTypeId()) {
+                throw new CmsException(Messages.get().container(
+                    Messages.ERR_CREATING_SUB_SITEMAP_WRONG_CONFIG_FILE_TYPE_2,
+                    sitemapConfigName,
+                    CmsADEManager.CONFIG_TYPE));
+            }
+        } else {
+            configFile = cms.createResource(
+                sitemapConfigName,
+                OpenCms.getResourceManager().getResourceType(CmsADEManager.CONFIG_TYPE).getTypeId());
+        }
+        return configFile;
     }
 
     /**

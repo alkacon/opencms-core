@@ -161,6 +161,19 @@
     vertical-align: middle;
 }
 
+@sprite .cmsState-down .uploadSmallIcon, .cmsState-up-hovering .uploadSmallIcon, .cmsState-down-hovering .uploadSmallIcon{
+    gwt-image: "icons.uploadSmallIconActive";
+    display: inline-block;
+    vertical-align: middle;
+}
+@sprite .cmsState-up .uploadSmallIcon, .cmsState-up-disabled .uploadSmallIcon, .cmsState-down-disabled .uploadSmallIcon{
+    gwt-image: "icons.uploadSmallIconDeactivated";
+    display: inline-block;
+    vertical-align: middle;
+}
+
+
+
 @sprite .cmsState-down .lockIcon, .cmsState-up-hovering .lockIcon, .cmsState-down-hovering .lockIcon{
     gwt-image: "icons.lockIconActive";
     display: inline-block;

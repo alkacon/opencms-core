@@ -153,6 +153,15 @@ public interface I_CmsCoreServiceAsync {
     void lockTemp(CmsUUID structureId, AsyncCallback<String> callback);
 
     /**
+     * Locks the given resource with a temporary lock if it exists.<p>
+     * If the resource does not exist yet, the closest existing ancestor folder will check if it is lockable.<p>
+     * 
+     * @param sitePath the site path of the resource to lock 
+     * @param callback the async callback
+     */
+    void lockIfExists(String sitePath, AsyncCallback<String> callback);
+
+    /**
      * Locks the given resource with a temporary lock additionally checking that 
      * the given resource has not been modified after the given timestamp.<p>
      * 
@@ -228,6 +237,15 @@ public interface I_CmsCoreServiceAsync {
      */
     @SynchronizedRpcRequest
     void unlock(CmsUUID structureId, AsyncCallback<String> callback);
+
+    /**
+     * Unlocks the given resource.<p>
+     * 
+     * @param sitePath the resource site path
+     * @param callback the async callback
+     */
+    @SynchronizedRpcRequest
+    void unlock(String sitePath, AsyncCallback<String> callback);
 
     /**
      * Performs a batch of validations and returns the results.<p>

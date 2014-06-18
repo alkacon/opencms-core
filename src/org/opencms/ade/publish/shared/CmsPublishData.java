@@ -42,8 +42,11 @@ public class CmsPublishData implements IsSerializable {
     /** Name of the used dictionary. */
     public static final String DICT_NAME = "org_opencms_ade_publish";
 
+    /** The close link. */
+    private String m_closeLink;
+
     /** The publish groups. */
-    private List<CmsPublishGroup> m_groups;
+    private CmsPublishGroupList m_groups;
 
     /** The publish options. */
     private CmsPublishOptions m_options;
@@ -69,7 +72,7 @@ public class CmsPublishData implements IsSerializable {
     public CmsPublishData(
         CmsPublishOptions options,
         List<CmsProjectBean> projects,
-        List<CmsPublishGroup> groups,
+        CmsPublishGroupList groups,
         Map<String, CmsWorkflow> workflows,
         String selectedWorkflowId) {
 
@@ -89,11 +92,21 @@ public class CmsPublishData implements IsSerializable {
     }
 
     /**
+     * Gets the close link to open when the dialog is finished.<p>
+     * 
+     * @return the close link 
+     */
+    public String getCloseLink() {
+
+        return m_closeLink;
+    }
+
+    /**
      * Returns the publish groups.<p>
      *
      * @return the publish groups
      */
-    public List<CmsPublishGroup> getGroups() {
+    public CmsPublishGroupList getGroups() {
 
         return m_groups;
     }
@@ -136,5 +149,16 @@ public class CmsPublishData implements IsSerializable {
     public Map<String, CmsWorkflow> getWorkflows() {
 
         return m_workflows;
+    }
+
+    /**
+     * Sets the close link.<p>
+     * 
+     * @param closeLink the close link 
+     */
+    public void setCloseLink(String closeLink) {
+
+        m_closeLink = closeLink;
+
     }
 }

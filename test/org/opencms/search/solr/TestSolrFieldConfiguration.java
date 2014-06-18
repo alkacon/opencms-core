@@ -40,9 +40,11 @@ import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.json.JSONObject;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
+import org.opencms.search.CmsSearchException;
 import org.opencms.search.CmsSearchResource;
 import org.opencms.search.documents.CmsDocumentDependency;
 import org.opencms.search.fields.CmsSearchField;
+import org.opencms.security.CmsRoleViolationException;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsRequestUtil;
@@ -97,6 +99,10 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         suite.addTest(new TestSolrFieldConfiguration("testLanguageDetection"));
         suite.addTest(new TestSolrFieldConfiguration("testLocaleDependenciesField"));
         suite.addTest(new TestSolrFieldConfiguration("testLuceneMigration"));
+        suite.addTest(new TestSolrFieldConfiguration("testOfflineIndexAccess"));
+
+        // this test case must be the last one
+        suite.addTest(new TestSolrFieldConfiguration("testIngnoreMaxRows"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -117,58 +123,6 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
     }
 
     /**
-     * @throws Throwable
-     */
-    public void testLanguageDetection() throws Throwable {
-
-        CmsObject cms = OpenCms.initCmsObject(getCmsObject());
-        // use a folder that only contains GERMAN content @see manifest.xml -> locale poperty
-        String folderName = "/folder1/subfolder12/subsubfolder121/";
-
-        List<CmsProperty> props = new ArrayList<CmsProperty>();
-        props.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_LOCALE, "de", "de"));
-        CmsResource master = importTestResource(cms, "org/opencms/search/solr/lang-detect-doc.pdf", folderName
-            + "lang-detect-doc.pdf", CmsResourceTypeBinary.getStaticTypeId(), props);
-
-        // publish the project and update the search index
-        OpenCms.getPublishManager().publishProject(cms, new CmsShellReport(cms.getRequestContext().getLocale()));
-        OpenCms.getPublishManager().waitWhileRunning();
-        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
-        // index.setLanguageDetection(true);
-        // is the default configured in opencms-search.xml 
-        CmsSolrQuery query = new CmsSolrQuery(cms, null);
-        query.setText("Language Detection Document");
-        // even if the property is set to German this document should be detected as English
-        // because the language inside the PDF is written in English
-        query.setLocales(Collections.singletonList(Locale.GERMAN));
-        CmsSolrResultList result = index.search(cms, query);
-        assertTrue(!result.contains(master));
-        query.setLocales(Collections.singletonList(Locale.ENGLISH));
-        result = index.search(cms, query);
-        assertTrue(result.contains(master));
-
-        // Now test the other way around: German locale property with English content
-        // Should be detected as German
-        // This is the OpenCms default behavior: property wins!
-        index.setLanguageDetection(false);
-        props.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_LOCALE, "de", "de"));
-        CmsResource master2 = importTestResource(cms, "org/opencms/search/solr/lang-detect-doc.pdf", folderName
-            + "lang-detect-doc2.pdf", CmsResourceTypeBinary.getStaticTypeId(), props);
-        // publish the project and update the search index
-        OpenCms.getPublishManager().publishProject(cms, new CmsShellReport(cms.getRequestContext().getLocale()));
-        OpenCms.getPublishManager().waitWhileRunning();
-        query.setLocales(Collections.singletonList(Locale.GERMAN));
-        result = index.search(cms, query);
-        assertTrue(result.contains(master2));
-        query.setLocales(Collections.singletonList(Locale.ENGLISH));
-        result = index.search(cms, query);
-        assertTrue(!result.contains(master2));
-
-        // restore configured value
-        index.setLanguageDetection(true);
-    }
-
-    /**
      * Tests the Solr field configuration that can be done in the XSD of an XML content.<p>
      * 
      * '@see /sites/default/xmlcontent/article.xsd'
@@ -180,7 +134,7 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
         CmsSolrQuery squery = new CmsSolrQuery(
             null,
-            CmsRequestUtil.createParameterMap("q=path:/sites/default/xmlcontent/article_0001.html"));
+            CmsRequestUtil.createParameterMap("q=path:\"/sites/default/xmlcontent/article_0001.html\""));
         CmsSolrResultList results = index.search(getCmsObject(), squery);
 
         /////////////////
@@ -281,19 +235,19 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
 
         squery = new CmsSolrQuery(
             null,
-            CmsRequestUtil.createParameterMap("q=path:/sites/default/xmlcontent/article_0002.html"));
+            CmsRequestUtil.createParameterMap("q=path:\"/sites/default/xmlcontent/article_0002.html\""));
         results = index.search(getCmsObject(), squery);
         res = results.get(0);
         assertEquals("/sites/default/xmlcontent/article_0002.html", res.getRootPath());
         assertTrue(res.getMultivaluedField("ateaser2_en_txt").contains("This is teaser 2 in sample article 2."));
-        
+
         // test multi nested elements
         List<String> teaser = res.getMultivaluedField("mteaser");
         assertTrue(teaser.contains("This is the sample article number 2. This is just a demo teaser. (>>SearchEgg2<<)"));
         assertTrue(teaser.contains("This is teaser 2 in sample article 2."));
         squery = new CmsSolrQuery(
-                null,
-                CmsRequestUtil.createParameterMap("q=path:/sites/default/flower/flower-0001.html"));
+            null,
+            CmsRequestUtil.createParameterMap("q=path:\"/sites/default/flower/flower-0001.html\""));
         results = index.search(getCmsObject(), squery);
         assertEquals(1, results.size());
         res = results.get(0);
@@ -311,7 +265,7 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         assertTrue(desc.contains("First ocurence of a nested content"));
         assertTrue(desc.contains("Second ocurence of a nested content"));
         assertTrue(desc.contains("Third ocurence of a nested content"));
-        
+
     }
 
     /**
@@ -361,7 +315,7 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         for (Map.Entry<String, List<String>> filename : filenames.entrySet()) {
             String absoluteFileName = cms.getRequestContext().addSiteRoot(folderName + filename.getKey());
             SolrQuery squery = new CmsSolrQuery();
-            squery.addFilterQuery("path:" + absoluteFileName);
+            squery.addFilterQuery("path:\"" + absoluteFileName + "\"");
             results = index.search(cms, squery);
             assertEquals(1, results.size());
             CmsSearchResource res = results.get(0);
@@ -372,7 +326,7 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         }
 
         SolrQuery squery = new CmsSolrQuery();
-        squery.addFilterQuery("path:" + "/sites/default/xmlcontent/article_0004.html");
+        squery.addFilterQuery("path:\"/sites/default/xmlcontent/article_0004.html\"");
         results = index.search(cms, squery);
         assertEquals(1, results.size());
         CmsSearchResource res = results.get(0);
@@ -463,6 +417,74 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
     }
 
     /**
+     * @throws Throwable if something goes wrong
+     */
+    public void testIngnoreMaxRows() throws Throwable {
+
+        echo("Testing the ignore max rows argument.");
+        String query = "?fq=con_locales:*&fq=parent-folders:*&fl=path&rows=99999";
+        CmsSolrQuery squery = new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(query));
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
+        CmsSolrResultList result = index.search(getCmsObject(), squery, true);
+        int found = result.size();
+        assertTrue(
+            "The number of found documents must be greater than org.opencms.search.solr.CmsSolrIndex.ROWS_MAX",
+            found > CmsSolrIndex.ROWS_MAX);
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public void testLanguageDetection() throws Throwable {
+
+        CmsObject cms = OpenCms.initCmsObject(getCmsObject());
+        // use a folder that only contains GERMAN content @see manifest.xml -> locale poperty
+        String folderName = "/folder1/subfolder12/subsubfolder121/";
+
+        List<CmsProperty> props = new ArrayList<CmsProperty>();
+        props.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_LOCALE, "de", "de"));
+        CmsResource master = importTestResource(cms, "org/opencms/search/solr/lang-detect-doc.pdf", folderName
+            + "lang-detect-doc.pdf", CmsResourceTypeBinary.getStaticTypeId(), props);
+
+        // publish the project and update the search index
+        OpenCms.getPublishManager().publishProject(cms, new CmsShellReport(cms.getRequestContext().getLocale()));
+        OpenCms.getPublishManager().waitWhileRunning();
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
+        // index.setLanguageDetection(true);
+        // is the default configured in opencms-search.xml 
+        CmsSolrQuery query = new CmsSolrQuery(cms, null);
+        query.setText("Language Detection Document");
+        // even if the property is set to German this document should be detected as English
+        // because the language inside the PDF is written in English
+        query.setLocales(Collections.singletonList(Locale.GERMAN));
+        CmsSolrResultList result = index.search(cms, query);
+        assertTrue(!result.contains(master));
+        query.setLocales(Collections.singletonList(Locale.ENGLISH));
+        result = index.search(cms, query);
+        assertTrue(result.contains(master));
+
+        // Now test the other way around: German locale property with English content
+        // Should be detected as German
+        // This is the OpenCms default behavior: property wins!
+        index.setLanguageDetection(false);
+        props.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_LOCALE, "de", "de"));
+        CmsResource master2 = importTestResource(cms, "org/opencms/search/solr/lang-detect-doc.pdf", folderName
+            + "lang-detect-doc2.pdf", CmsResourceTypeBinary.getStaticTypeId(), props);
+        // publish the project and update the search index
+        OpenCms.getPublishManager().publishProject(cms, new CmsShellReport(cms.getRequestContext().getLocale()));
+        OpenCms.getPublishManager().waitWhileRunning();
+        query.setLocales(Collections.singletonList(Locale.GERMAN));
+        result = index.search(cms, query);
+        assertTrue(result.contains(master2));
+        query.setLocales(Collections.singletonList(Locale.ENGLISH));
+        result = index.search(cms, query);
+        assertTrue(!result.contains(master2));
+
+        // restore configured value
+        index.setLanguageDetection(true);
+    }
+
+    /**
      * 
      * @throws Throwable
      */
@@ -534,19 +556,50 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
 
         CmsSolrFieldConfiguration conf = (CmsSolrFieldConfiguration)index.getFieldConfiguration();
-        assertNotNull(conf.getSolrFields().get("meta_txt"));
+        assertNotNull(conf.getSolrFields().get("meta"));
         assertNotNull(conf.getSolrFields().get("description_txt"));
         assertNotNull(conf.getSolrFields().get("keywords_txt"));
         assertNotNull(conf.getSolrFields().get("special_txt"));
 
         CmsSolrQuery squery = new CmsSolrQuery(
             null,
-            CmsRequestUtil.createParameterMap("q=path:/sites/default/xmlcontent/article_0001.html"));
+            CmsRequestUtil.createParameterMap("q=path:\"/sites/default/xmlcontent/article_0001.html\""));
         CmsSolrResultList results = index.search(getCmsObject(), squery);
 
         CmsSearchResource res = results.get(0);
         String value = "Sample article 1  (>>SearchEgg1<<)";
-        List<String> metaValue = res.getMultivaluedField("meta_txt");
+        List<String> metaValue = res.getMultivaluedField("meta");
         assertEquals(value, metaValue.get(0));
+    }
+
+    /**
+     * Tests the access of Offline indexes.<p>
+     * 
+     * @throws Throwable if sth. goes wrong
+     */
+    public void testOfflineIndexAccess() throws Throwable {
+
+        echo("Testing offline index access with the guest user.");
+        CmsObject guest = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
+        CmsSolrIndex solrIndex = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
+        echo("First execute a search on the online index.");
+        solrIndex.search(guest, "q=*:*&rows=0");
+        echo("OK, search could be executed on the online index.");
+
+        echo("Now try to execute a search on the Solr Offline index.");
+        solrIndex = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_OFFLINE);
+        solrIndex.setEnabled(true);
+        try {
+            solrIndex.search(guest, "q=*:*&rows=0");
+        } catch (CmsSearchException e) {
+            assertTrue(
+                "The cause must be a CmsRoleViolationException",
+                e.getCause() instanceof CmsRoleViolationException);
+            if (!(e.getCause() instanceof CmsRoleViolationException)) {
+                throw e;
+            }
+        }
+        echo("OK, search could not be executed and the cause was a CmsRoleViolationException.");
+        solrIndex.setEnabled(false);
     }
 }

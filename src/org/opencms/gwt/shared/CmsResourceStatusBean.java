@@ -28,8 +28,10 @@
 package org.opencms.gwt.shared;
 
 import org.opencms.db.CmsResourceState;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -76,11 +78,20 @@ public class CmsResourceStatusBean implements IsSerializable {
     /** List of beans representing resources which have relations toward this resource. */
     private ArrayList<CmsResourceStatusRelationBean> m_relationSources = new ArrayList<CmsResourceStatusRelationBean>();
 
+    /** List of relation target beans. */
+    private ArrayList<CmsResourceStatusRelationBean> m_relationTargets = new ArrayList<CmsResourceStatusRelationBean>();
+
     /** Resource type. */
     private String m_resourceType;
 
     /** Size. */
     private int m_size;
+
+    /** Structure id of the resource. */
+    private CmsUUID m_structureId;
+
+    /** An ordered map defining the tabs to display and their order, with the tab labels as values. */
+    private LinkedHashMap<CmsResourceStatusTabId, String> m_tabs;
 
     /** Title property. */
     private String m_title;
@@ -194,11 +205,21 @@ public class CmsResourceStatusBean implements IsSerializable {
     /**
      * Gets the list info beans for the source resources of relations pointing to this resource.<p>
      * 
-     * @return the relation source list info bean 
+     * @return the relation source beans 
      */
     public ArrayList<CmsResourceStatusRelationBean> getRelationSources() {
 
         return m_relationSources;
+    }
+
+    /** 
+     * Gets the list info beans for the targets of relations pointing away from this resource.<p>
+     * 
+     * @return the relation target beans   
+     */
+    public ArrayList<CmsResourceStatusRelationBean> getRelationTargets() {
+
+        return m_relationTargets;
     }
 
     /**
@@ -229,6 +250,26 @@ public class CmsResourceStatusBean implements IsSerializable {
     public CmsResourceState getStateBean() {
 
         return m_stateBean;
+    }
+
+    /**
+     * Gets the structure id of the resource.<p>
+     * 
+     * @return the structure id of the resource
+     */
+    public CmsUUID getStructureId() {
+
+        return m_structureId;
+    }
+
+    /** 
+     * Gets the tab configuration, which is an ordered map defining the tabs to display and their order, with the tab labels as values.
+     * 
+     * @return the tab configuration 
+     */
+    public LinkedHashMap<CmsResourceStatusTabId, String> getTabs() {
+
+        return m_tabs;
     }
 
     /**
@@ -389,6 +430,26 @@ public class CmsResourceStatusBean implements IsSerializable {
     public void setStateBean(CmsResourceState stateBean) {
 
         m_stateBean = stateBean;
+    }
+
+    /**
+     * Sets the structure id of the resource.<p>
+     * 
+     * @param structureId the structure id of the resource 
+     */
+    public void setStructureId(CmsUUID structureId) {
+
+        m_structureId = structureId;
+    }
+
+    /**
+     * Sets the tab configuration.<p>
+     * 
+     * @param tabs the tab configuration 
+     */
+    public void setTabs(LinkedHashMap<CmsResourceStatusTabId, String> tabs) {
+
+        m_tabs = tabs;
     }
 
     /**

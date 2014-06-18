@@ -228,7 +228,7 @@ public class CmsDynamicFunctionBean {
         // relate formatters to formats so we can pick the corresponding format after a formatter has been selected  
         CmsFormatterBean mainFormatter = createFormatterBean(m_mainFormat, true);
         formatsByFormatter.put(mainFormatter, m_mainFormat);
-        List<CmsFormatterBean> formatters = new ArrayList<CmsFormatterBean>();
+        List<I_CmsFormatterBean> formatters = new ArrayList<I_CmsFormatterBean>();
         for (Format format : m_otherFormats) {
             CmsFormatterBean formatter = createFormatterBean(format, false);
             formatsByFormatter.put(formatter, format);
@@ -236,7 +236,7 @@ public class CmsDynamicFunctionBean {
         }
         formatters.add(0, mainFormatter);
         CmsFormatterConfiguration formatterConfiguration = CmsFormatterConfiguration.create(cms, formatters);
-        CmsFormatterBean matchingFormatter = formatterConfiguration.getFormatter(type, width);
+        I_CmsFormatterBean matchingFormatter = formatterConfiguration.getDefaultFormatter(type, width);
         if (matchingFormatter == null) {
             return null;
         }
@@ -244,21 +244,19 @@ public class CmsDynamicFunctionBean {
     }
 
     /**
-     * Creates the formatter configuration for this dynamic function.<p>
-     * 
-     * @param cms the current CMS context
+     * Creates the formatter list for this dynamic function.<p>
      *  
-     * @return the formatter configuration for this dynamic function 
+     * @return the formatter list for this dynamic function 
      */
-    public CmsFormatterConfiguration getFormatterConfiguration(CmsObject cms) {
+    public List<CmsFormatterBean> getFormatters() {
 
         CmsFormatterBean mainFormatter = createFormatterBean(m_mainFormat, true);
         List<CmsFormatterBean> formatters = new ArrayList<CmsFormatterBean>();
+        formatters.add(mainFormatter);
         for (Format format : m_otherFormats) {
             formatters.add(createFormatterBean(format, false));
         }
-        formatters.add(0, mainFormatter);
-        return CmsFormatterConfiguration.create(cms, formatters);
+        return formatters;
     }
 
     /**

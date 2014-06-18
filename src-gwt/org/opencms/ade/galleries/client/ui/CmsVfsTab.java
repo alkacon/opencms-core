@@ -1,4 +1,5 @@
 /*
+
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
@@ -56,8 +57,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
@@ -93,13 +92,13 @@ public class CmsVfsTab extends A_CmsListTab {
         }
 
         /**
-         * @see org.opencms.ade.galleries.client.ui.A_CmsListTab.A_SelectionHandler#onDoubleClick(com.google.gwt.event.dom.client.DoubleClickEvent)
+         * @see org.opencms.ade.galleries.client.ui.A_CmsListTab.A_SelectionHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
          */
         @Override
-        public void onDoubleClick(DoubleClickEvent event) {
+        public void onClick(ClickEvent event) {
 
             if (isIncludeFiles()) {
-                super.onDoubleClick(event);
+                super.onClick(event);
             } else if (getTabHandler().hasSelectResource()) {
                 String selectPath = m_tabHandler.getSelectPath(m_vfsEntry);
                 getTabHandler().selectResource(
@@ -286,26 +285,19 @@ public class CmsVfsTab extends A_CmsListTab {
         }
         CmsLazyTreeItem result;
         SelectionHandler selectionHandler;
+        CmsCheckBox checkbox = null;
         if (isIncludeFiles()) {
-            final CmsCheckBox checkbox = new CmsCheckBox();
+            checkbox = new CmsCheckBox();
             result = new CmsLazyTreeItem(checkbox, dataValue, true);
             selectionHandler = new SelectionHandler(vfsEntry, checkbox);
             checkbox.addClickHandler(selectionHandler);
+            dataValue.addClickHandler(selectionHandler);
             dataValue.addButton(createSelectButton(selectionHandler));
         } else {
             result = new CmsLazyTreeItem(dataValue, true);
             selectionHandler = new SelectionHandler(vfsEntry, null);
         }
         // we need this in a final variable to access it in the click handler 
-        final CmsLazyTreeItem constResult = result;
-        dataValue.getLabelWidget().addClickHandler(new ClickHandler() {
-
-            public void onClick(ClickEvent e) {
-
-                constResult.setOpen(true);
-            }
-        });
-        dataValue.addDomHandler(selectionHandler, DoubleClickEvent.getType());
         if (getTabHandler().hasSelectResource()) {
             String selectPath = m_tabHandler.getSelectPath(vfsEntry);
             dataValue.addButton(createSelectResourceButton(
@@ -325,7 +317,11 @@ public class CmsVfsTab extends A_CmsListTab {
             }
             result.onFinishLoading();
             result.setOpen(true, false);
+            if (vfsEntry.getChildren().isEmpty()) {
+                result.setLeafStyle(true);
+            }
         }
+
         return result;
     }
 

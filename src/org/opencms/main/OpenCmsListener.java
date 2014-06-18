@@ -27,6 +27,7 @@
 
 package org.opencms.main;
 
+import java.lang.reflect.Method;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.util.Enumeration;
@@ -142,14 +143,22 @@ public class OpenCmsListener implements ServletContextListener, HttpSessionListe
             Driver driver = drivers.nextElement();
             try {
                 DriverManager.deregisterDriver(driver);
-                System.out.println(Messages.get().getBundle().key(
-                    Messages.LOG_ERROR_DERIGISTERING_JDBC_DRIVER_1,
-                    driver.getClass().getName()));
             } catch (Throwable e) {
                 System.out.println(Messages.get().getBundle().key(
                     Messages.ERR_DEREGISTERING_JDBC_DRIVER_1,
                     driver.getClass().getName()));
+                e.printStackTrace(System.out);
             }
+        }
+
+        try {
+            Class<?> cls = Class.forName("com.mysql.jdbc.AbandonedConnectionCleanupThread");
+            Method shutdownMethod = (cls == null ? null : cls.getMethod("shutdown"));
+            if (shutdownMethod != null) {
+                shutdownMethod.invoke(null);
+            }
+        } catch (Throwable e) {
+            System.out.println("Failed to shutdown MySQL connection cleanup thread: " + e.getMessage());
         }
     }
 }

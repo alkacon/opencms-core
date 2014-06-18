@@ -27,7 +27,7 @@
 
 package org.opencms.gwt.client.ui.contextmenu;
 
-import org.opencms.gwt.client.util.CmsCollectionUtil;
+import org.opencms.gwt.client.util.CmsClientCollectionUtil;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.util.CmsUUID;
 
@@ -155,7 +155,7 @@ public class CmsContextMenuEntry implements I_CmsContextMenuEntry {
      */
     public boolean hasSubMenu() {
 
-        if (!CmsCollectionUtil.isEmptyOrNull(getSubMenu())) {
+        if (!CmsClientCollectionUtil.isEmptyOrNull(getSubMenu())) {
             return true;
         }
         return false;

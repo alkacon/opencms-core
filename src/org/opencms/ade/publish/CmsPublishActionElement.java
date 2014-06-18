@@ -81,7 +81,7 @@ public class CmsPublishActionElement extends CmsGwtActionElement {
         CmsPublishData initData = CmsPublishService.prefetch(getRequest());
         String prefetchedData = exportDictionary(
             CmsPublishData.DICT_NAME,
-            I_CmsPublishService.class.getMethod("getInitData"),
+            I_CmsPublishService.class.getMethod("getInitData", java.util.HashMap.class),
             initData);
         sb.append(prefetchedData);
         sb.append(super.export());

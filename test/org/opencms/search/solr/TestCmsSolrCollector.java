@@ -28,13 +28,10 @@
 package org.opencms.search.solr;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.collectors.CmsSolrCollector;
 import org.opencms.file.collectors.I_CmsResourceCollector;
-import org.opencms.file.types.CmsResourceTypeFolder;
-import org.opencms.file.types.CmsResourceTypeJsp;
-import org.opencms.file.types.CmsResourceTypePlain;
-import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.fields.CmsSearchField;
@@ -60,25 +57,6 @@ public class TestCmsSolrCollector extends OpenCmsTestCase {
     public TestCmsSolrCollector(String arg0) {
 
         super(arg0);
-    }
-
-    /**
-     * Initializes the resources needed for the tests.<p>
-     * 
-     * @param cms the cms object
-     * @throws CmsException if something goes wrong
-     */
-    public static void initResources(CmsObject cms) throws CmsException {
-
-        cms.createResource("/file1", CmsResourceTypePlain.getStaticTypeId());
-        cms.createResource("/folder1", CmsResourceTypeFolder.getStaticTypeId());
-        cms.createResource("/folder1/file1", CmsResourceTypePlain.getStaticTypeId());
-        cms.createResource("/folder1/file2", CmsResourceTypePlain.getStaticTypeId());
-        cms.createResource("/folder1/file3", CmsResourceTypePlain.getStaticTypeId());
-        cms.createResource("/folder1/file4", CmsResourceTypePlain.getStaticTypeId());
-        cms.createResource("/folder1/fileJsp", CmsResourceTypeJsp.getJSPTypeId());
-        cms.createResource("/folder1/sub1", CmsResourceTypeFolder.getStaticTypeId());
-        cms.createResource("/folder1/sub1/file5", CmsResourceTypePlain.getStaticTypeId());
     }
 
     /**
@@ -112,6 +90,7 @@ public class TestCmsSolrCollector extends OpenCmsTestCase {
                         }
                     }
                 }
+
             }
 
             @Override
@@ -131,13 +110,13 @@ public class TestCmsSolrCollector extends OpenCmsTestCase {
      */
     public void testByQuery() throws Throwable {
 
-        CmsObject cms = getCmsObject();
         echo("Testing if Solr is able to do the same as: allInFolderPriorityDateDesc resource collector");
+        CmsObject cms = getCmsObject();
+        cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
 
         I_CmsResourceCollector collector = new CmsSolrCollector();
-
         StringBuffer q = new StringBuffer(128);
-        q.append("&fq=parent-folders:/sites/default/xmlcontent/");
+        q.append("&fq=parent-folders:\"/sites/default/xmlcontent/\"");
         q.append("&fq=type:article");
         q.append("&rows=" + 3);
         q.append("&sort=" + CmsSearchField.FIELD_DATE_LASTMODIFIED + " desc");
@@ -163,9 +142,11 @@ public class TestCmsSolrCollector extends OpenCmsTestCase {
     public void testByContext() throws Throwable {
 
         echo("Testing testByContext resource collector");
+        CmsObject cms = getCmsObject();
+        cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
 
         I_CmsResourceCollector collector = new CmsSolrCollector();
-        List<CmsResource> resources = collector.getResults(getCmsObject(), "byContext", null);
+        List<CmsResource> resources = collector.getResults(cms, "byContext", null);
         // assert that 10 files are returned
         assertEquals(10, resources.size());
     }
@@ -178,6 +159,8 @@ public class TestCmsSolrCollector extends OpenCmsTestCase {
     public void testByContextWithQuery() throws Throwable {
 
         echo("Testing testByContextWithQuery resource collector");
+        CmsObject cms = getCmsObject();
+        cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
 
         I_CmsResourceCollector collector = new CmsSolrCollector();
         StringBuffer q = new StringBuffer(128);
@@ -185,7 +168,7 @@ public class TestCmsSolrCollector extends OpenCmsTestCase {
         q.append("+type:article");
         q.append("&rows=" + 3);
         q.append("&sort=" + CmsSearchField.FIELD_DATE_LASTMODIFIED + " desc");
-        List<CmsResource> resources = collector.getResults(getCmsObject(), "byContext", q.toString());
+        List<CmsResource> resources = collector.getResults(cms, "byContext", q.toString());
 
         // assert that 3 files are returned
         assertEquals(3, resources.size());

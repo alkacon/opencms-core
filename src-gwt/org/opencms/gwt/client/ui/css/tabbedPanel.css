@@ -223,3 +223,12 @@
 .classicTabs.gwt-TabLayoutPanel .tabDisabled.gwt-TabLayoutPanelTab div.gwt-TabLayoutPanelTabInner div {
 	color:value("constants.css.textColorDisabledButton") !important;
 }
+
+/* disables text selection */
+.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab {
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-webkit-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}

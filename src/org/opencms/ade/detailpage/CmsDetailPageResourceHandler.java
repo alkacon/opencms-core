@@ -69,11 +69,11 @@ public class CmsDetailPageResourceHandler implements I_CmsResourceInit {
     }
 
     /**
-     * Returns the current detail content UID, or <code>null</code> if this is not a request to a content detail page.<p>
+     * Returns the current detail content UUID, or <code>null</code> if this is not a request to a content detail page.<p>
      * 
      * @param req the current request
      * 
-     * @return the current detail content UID, or <code>null</code> if this is not a request to a content detail page
+     * @return the current detail content UUID, or <code>null</code> if this is not a request to a content detail page
      */
     public static CmsUUID getDetailId(ServletRequest req) {
 
@@ -132,6 +132,7 @@ public class CmsDetailPageResourceHandler implements I_CmsResourceInit {
                 if (res != null) {
                     // response will be null if this run through the init handler is only for determining the locale
                     req.setAttribute(ATTR_DETAIL_CONTENT_RESOURCE, detailRes);
+                    cms.getRequestContext().setDetailResource(detailRes);
                 }
                 // set the resource path
                 cms.getRequestContext().setUri(cms.getSitePath(detailPage));
@@ -148,6 +149,7 @@ public class CmsDetailPageResourceHandler implements I_CmsResourceInit {
             LOG.error(msg.key(), e);
             throw new CmsResourceInitException(msg, e);
         }
+
         return null;
     }
 
@@ -162,11 +164,7 @@ public class CmsDetailPageResourceHandler implements I_CmsResourceInit {
      */
     protected boolean isValidDetailPage(CmsObject cms, CmsResource page, CmsResource detailRes) {
 
-        if (!OpenCms.getADEManager().isValidateDetailPages()) {
-            return true;
-        } else {
-            return OpenCms.getADEManager().isDetailPage(cms, page);
-        }
+        return OpenCms.getADEManager().isDetailPage(cms, page);
     }
 
 }

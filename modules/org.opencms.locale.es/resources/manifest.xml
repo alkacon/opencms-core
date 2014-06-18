@@ -3,20 +3,20 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>8.5.0</opencms_version>
+		<opencms_version>9.0.0</opencms_version>
 		<createdate>Thu, 12 Jun 2008 10:36:55 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
 	<module>
 		<name>org.opencms.locale.es</name>
-		<nicename><![CDATA[OpenCms 8 Spanish localization for the workplace]]></nicename>
+		<nicename><![CDATA[OpenCms 9 Spanish localization for the workplace]]></nicename>
 		<group>OpenCms Localization</group>
 		<class/>
 		<description><![CDATA[<p>This module contains the Spanish language localization files for the OpenCms workplace.</p>
 <p>Install this module if you want to use the Spanish version of the OpenCms Workplace.</p>
-<p><i>&copy; 2013 by OpenCms Hispano (http://www.opencmshispano.com).</i></p>]]></description>
-		<version>8.5.0</version>
+<p><i>&copy; 2014 by OpenCms Hispano (http://www.opencmshispano.com).</i></p>]]></description>
+		<version>9.0.0</version>
 		<authorname><![CDATA[OpenCms Hispano]]></authorname>
 		<authoremail><![CDATA[info@opencmshispano.es]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>

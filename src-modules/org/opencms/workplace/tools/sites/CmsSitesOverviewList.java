@@ -34,6 +34,7 @@ package org.opencms.workplace.tools.sites;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
@@ -76,6 +77,9 @@ public class CmsSitesOverviewList extends A_CmsListDialog {
 
     /** The message key prefix to be used for widget labels. */
     public static final String KEY_PREFIX_SITES = "sites";
+
+    /** The inactive icon for single delete action. */
+    protected static final String ICON_DELETE_INACTIVE = "list/delete_inactive.png";
 
     /** List column id. */
     protected static final String LIST_COLUMN_ACTIVE = "wsi";
@@ -192,7 +196,9 @@ public class CmsSitesOverviewList extends A_CmsListDialog {
         if (getParamListAction().equals(LIST_MACTION_REMOVE)) {
             List<String> selectedSites = new ArrayList<String>();
             for (CmsListItem item : getSelectedItems()) {
-                selectedSites.add(item.getId());
+                if (!OpenCms.getSiteManager().getDefaultSite().getSiteRoot().equals(item.getId())) {
+                    selectedSites.add(item.getId());
+                }
             }
             Map<String, String[]> params = new HashMap<String, String[]>();
             params.put(PARAM_SITES, new String[] {CmsStringUtil.listAsString(selectedSites, ",")});
@@ -346,7 +352,7 @@ public class CmsSitesOverviewList extends A_CmsListDialog {
         activateCol.setWidth("20");
         activateCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         activateCol.setListItemComparator(new CmsListItemActionIconComparator());
-        CmsListDirectAction jobActAction = new CmsListDirectAction(LIST_ACTION_ACTIVATE) {
+        CmsListDirectAction activateForConig = new CmsListDirectAction(LIST_ACTION_ACTIVATE) {
 
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
@@ -360,13 +366,13 @@ public class CmsSitesOverviewList extends A_CmsListDialog {
                 return super.isVisible();
             }
         };
-        jobActAction.setName(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_ACTIVATE_NAME_0));
-        jobActAction.setConfirmationMessage(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_ACTIVATE_CONF_0));
-        jobActAction.setIconPath(ICON_INACTIVE);
-        jobActAction.setHelpText(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_ACTIVATE_HELP_0));
-        activateCol.addDirectAction(jobActAction);
+        activateForConig.setName(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_ACTIVATE_NAME_0));
+        activateForConig.setConfirmationMessage(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_ACTIVATE_CONF_0));
+        activateForConig.setIconPath(ICON_INACTIVE);
+        activateForConig.setHelpText(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_ACTIVATE_HELP_0));
+        activateCol.addDirectAction(activateForConig);
         // direct action: deactivate job
-        CmsListDirectAction jobDeactAction = new CmsListDirectAction(LIST_ACTION_DEACTIVATE) {
+        CmsListDirectAction deactivateForConfig = new CmsListDirectAction(LIST_ACTION_DEACTIVATE) {
 
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
@@ -380,11 +386,12 @@ public class CmsSitesOverviewList extends A_CmsListDialog {
                 return super.isVisible();
             }
         };
-        jobDeactAction.setName(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_DEACTIVATE_NAME_0));
-        jobDeactAction.setConfirmationMessage(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_DEACTIVATE_CONF_0));
-        jobDeactAction.setIconPath(ICON_ACTIVE);
-        jobDeactAction.setHelpText(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_DEACTIVATE_HELP_0));
-        activateCol.addDirectAction(jobDeactAction);
+        deactivateForConfig.setName(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_DEACTIVATE_NAME_0));
+        deactivateForConfig.setConfirmationMessage(Messages.get().container(
+            Messages.GUI_SITES_LIST_ACTION_DEACTIVATE_CONF_0));
+        deactivateForConfig.setIconPath(ICON_ACTIVE);
+        deactivateForConfig.setHelpText(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_DEACTIVATE_HELP_0));
+        activateCol.addDirectAction(deactivateForConfig);
         metadata.addColumn(activateCol);
 
         // create remove column
@@ -395,10 +402,56 @@ public class CmsSitesOverviewList extends A_CmsListDialog {
         removeCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         removeCol.setSorteable(false);
         // add remove action
-        CmsListDirectAction removeAction = new CmsListDirectAction(LIST_ACTION_REMOVE);
-        removeAction.setName(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_REMOVE_NAME_0));
-        removeAction.setHelpText(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_REMOVE_HELP_0));
-        removeAction.setIconPath(ICON_DELETE);
+        CmsListDirectAction removeAction = new CmsListDirectAction(LIST_ACTION_REMOVE) {
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
+             */
+            @Override
+            public String getIconPath() {
+
+                if (!OpenCms.getSiteManager().getDefaultSite().getSiteRoot().equals(getItem().getId())) {
+                    return ICON_DELETE;
+                } else {
+                    return ICON_DELETE_INACTIVE;
+                }
+            }
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isEnabled()
+             */
+            @Override
+            public boolean isEnabled() {
+
+                return !OpenCms.getSiteManager().getDefaultSite().getSiteRoot().equals(getItem().getId());
+            }
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getName()
+             */
+            @Override
+            public CmsMessageContainer getName() {
+
+                if (!OpenCms.getSiteManager().getDefaultSite().getSiteRoot().equals(getItem().getId())) {
+                    return Messages.get().container(Messages.GUI_SITES_LIST_ACTION_REMOVE_NAME_0);
+                } else {
+                    return Messages.get().container(Messages.GUI_SITES_LIST_ACTION_DEFAULT_SITE_REMOVE_NAME_0);
+                }
+            }
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getHelpText()
+             */
+            @Override
+            public CmsMessageContainer getHelpText() {
+
+                if (!OpenCms.getSiteManager().getDefaultSite().getSiteRoot().equals(getItem().getId())) {
+                    return Messages.get().container(Messages.GUI_SITES_LIST_ACTION_REMOVE_HELP_0);
+                } else {
+                    return Messages.get().container(Messages.GUI_SITES_LIST_ACTION_DEFAULT_SITE_REMOVE_HELP_0);
+                }
+            }
+        };
         removeAction.setConfirmationMessage(Messages.get().container(Messages.GUI_SITES_LIST_MACTION_REMOVE_CONF_0));
         removeCol.addDirectAction(removeAction);
         metadata.addColumn(removeCol);

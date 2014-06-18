@@ -31,17 +31,18 @@
 
 package org.opencms.search.solr;
 
+import org.opencms.db.CmsPublishedResource;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.I_CmsIndexWriter;
 import org.opencms.search.I_CmsSearchDocument;
-import org.opencms.search.fields.CmsSearchField;
 
 import java.io.IOException;
 
 import org.apache.commons.logging.Log;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.common.SolrException;
 import org.apache.solr.common.SolrInputDocument;
 
 /**
@@ -53,6 +54,9 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
 
     /** The log object for this class. */
     protected static final Log LOG = CmsLog.getLog(CmsSolrIndexWriter.class);
+
+    /** The time to wait before a commit is sent to the Solr index.  */
+    private int m_commitMs = new Long(OpenCms.getSearchManager().getSolrServerConfiguration().getSolrCommitMs()).intValue();
 
     /** The Solr index. */
     private CmsSolrIndex m_index;
@@ -85,7 +89,6 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
         m_index = index;
         m_server = server;
         if (m_index != null) {
-            m_index.createIndexBackup();
             LOG.info(Messages.get().getBundle().key(
                 Messages.LOG_SOLR_WRITER_CREATE_2,
                 m_index.getName(),
@@ -94,7 +97,6 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
     }
 
     /**
-     * 
      * @see org.opencms.search.I_CmsIndexWriter#close()
      */
     public void close() {
@@ -133,8 +135,7 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
                     Messages.LOG_SOLR_WRITER_DELETE_ALL_2,
                     m_index.getName(),
                     m_index.getPath()));
-
-                m_server.deleteByQuery("*:*");
+                m_server.deleteByQuery("*:*", m_commitMs);
             } catch (SolrServerException e) {
                 throw new IOException(e.getLocalizedMessage(), e);
             }
@@ -142,19 +143,21 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
     }
 
     /**
-     * @see org.opencms.search.I_CmsIndexWriter#deleteDocuments(java.lang.String)
+     * @see org.opencms.search.I_CmsIndexWriter#deleteDocument(org.opencms.db.CmsPublishedResource)
      */
-    public void deleteDocuments(String rootPath) throws IOException {
+    public void deleteDocument(CmsPublishedResource resource) throws IOException {
 
         if ((m_server != null) && (m_index != null)) {
             try {
                 LOG.info(Messages.get().getBundle().key(
                     Messages.LOG_SOLR_WRITER_DOC_DELETE_3,
-                    rootPath,
+                    resource.getRootPath(),
                     m_index.getName(),
                     m_index.getPath()));
-                m_server.deleteByQuery(CmsSearchField.FIELD_PATH + ":" + rootPath + "*");
+                m_server.deleteById(resource.getStructureId().toString(), m_commitMs);
             } catch (SolrServerException e) {
+                throw new IOException(e.getLocalizedMessage(), e);
+            } catch (SolrException e) {
                 throw new IOException(e.getLocalizedMessage(), e);
             }
         }
@@ -182,8 +185,7 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
                         rootPath,
                         m_index.getName(),
                         m_index.getPath()));
-                    int commitMs = new Long(OpenCms.getSearchManager().getSolrServerConfiguration().getSolrCommitMs()).intValue();
-                    m_server.add((SolrInputDocument)document.getDocument(), commitMs);
+                    m_server.add((SolrInputDocument)document.getDocument(), m_commitMs);
                 } catch (SolrServerException e) {
                     throw new IOException(e.getLocalizedMessage(), e);
                 }

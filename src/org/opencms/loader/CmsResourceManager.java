@@ -60,7 +60,6 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.I_CmsHtmlConverter;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.CmsXmlContentDefinition;
-import org.opencms.xml.CmsXmlException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -602,22 +601,33 @@ public class CmsResourceManager {
      * 
      * @param cms the current CMS context 
      * @return the map from resource types to the forbidden contexts 
-     * 
-     * @throws CmsXmlException if something goes wrong 
      */
-    public Map<String, CmsDefaultSet<String>> getAllowedContextMap(CmsObject cms) throws CmsXmlException {
+    public Map<String, CmsDefaultSet<String>> getAllowedContextMap(CmsObject cms) {
 
         Map<String, CmsDefaultSet<String>> result = new HashMap<String, CmsDefaultSet<String>>();
         for (I_CmsResourceType resType : getResourceTypes()) {
             if (resType instanceof CmsResourceTypeXmlContent) {
-                String schema = ((CmsResourceTypeXmlContent)resType).getSchema();
-                if (schema != null) {
-                    CmsXmlContentDefinition contentDefinition = CmsXmlContentDefinition.unmarshal(cms, schema);
+                String schema = null;
+                try {
+                    schema = ((CmsResourceTypeXmlContent)resType).getSchema();
+                    if (schema != null) {
+                        CmsXmlContentDefinition contentDefinition = CmsXmlContentDefinition.unmarshal(cms, schema);
 
-                    CmsDefaultSet<String> allowedContexts = contentDefinition.getContentHandler().getAllowedTemplates();
-                    result.put(resType.getTypeName(), allowedContexts);
-                } else {
-                    LOG.info("No schema for XML type " + resType.getTypeName() + " / " + resType.getClass().getName());
+                        CmsDefaultSet<String> allowedContexts = contentDefinition.getContentHandler().getAllowedTemplates();
+                        result.put(resType.getTypeName(), allowedContexts);
+                    } else {
+                        LOG.info("No schema for XML type "
+                            + resType.getTypeName()
+                            + " / "
+                            + resType.getClass().getName());
+                    }
+                } catch (Exception e) {
+                    LOG.error("Error in getAllowedContextMap, schema="
+                        + schema
+                        + ", type="
+                        + resType.getTypeName()
+                        + ", "
+                        + e.getLocalizedMessage(), e);
                 }
             }
         }
@@ -1181,6 +1191,32 @@ public class CmsResourceManager {
         res.setContentType(getMimeType(resource.getName(), cms.getRequestContext().getEncoding()));
         I_CmsResourceLoader loader = getLoader(resource);
         loader.load(cms, resource, req, res);
+    }
+
+    /**
+     * Checks if there is a resource type with a given name whose id matches the given id.<p>
+     * 
+     * This will return 'false' if no resource type with the given name is registered.<p>
+     * 
+     * @param name a resource type name 
+     * @param id a resource type id 
+     * 
+     * @return true if a matching resource type with the given name and id was found 
+     */
+    public boolean matchResourceType(String name, int id) {
+
+        if (hasResourceType(name)) {
+            try {
+                return getResourceType(name).getTypeId() == id;
+            } catch (Exception e) {
+                // should never happen because we already checked with hasResourceType, still have to 
+                // catch it so the compiler is happy 
+                LOG.error(e.getLocalizedMessage(), e);
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
     /**

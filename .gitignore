@@ -3,6 +3,7 @@
 /.settings/*
 /test/data/WEB-INF/index
 /test/data/WEB-INF/config
+/gwt-unitCache
 Thumbs.db
 /xbuild.properties
 /modules/org.opencms.ade.containerpage/resources/system/modules/org.opencms.ade.containerpage/resources/containerpage
@@ -15,3 +16,6 @@ Thumbs.db
 /modules/org.opencms.ade.postupload/resources/system/modules/org.opencms.ade.postupload/resources/postupload
 /modules/org.opencms.ade.properties/resources/system/modules/org.opencms.ade.properties/resources/properties
 /modules/org.opencms.ade.publish/resources/system/modules/org.opencms.ade.publish/resources/publish
+/.gradle
+**/.gradle
+/hostedmode-war

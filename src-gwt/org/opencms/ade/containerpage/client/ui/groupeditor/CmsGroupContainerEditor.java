@@ -139,13 +139,21 @@ public final class CmsGroupContainerEditor extends A_CmsGroupEditor {
         if (INSTANCE != null) {
             CmsDebugLog.getInstance().printLine("group-container editor already open");
         } else {
-            INSTANCE = new CmsGroupContainerEditor(groupContainer, controller, handler);
-            RootPanel.get().add(INSTANCE);
-            INSTANCE.openDialog(Messages.get().key(Messages.GUI_GROUPCONTAINER_CAPTION_0));
-            INSTANCE.getGroupContainerWidget().refreshHighlighting();
-
+            CmsGroupContainerEditor editor = new CmsGroupContainerEditor(groupContainer, controller, handler);
+            RootPanel.get().add(editor);
+            editor.openDialog(Messages.get().key(Messages.GUI_GROUPCONTAINER_CAPTION_0));
+            editor.getGroupContainerWidget().refreshHighlighting();
+            INSTANCE = editor;
         }
         return INSTANCE;
+    }
+
+    /**
+     * Clears the instance reference.<p>
+     */
+    private static void clear() {
+
+        INSTANCE = null;
     }
 
     /**
@@ -263,7 +271,7 @@ public final class CmsGroupContainerEditor extends A_CmsGroupEditor {
     @Override
     protected void clearInstance() {
 
-        INSTANCE = null;
+        clear();
     }
 
     /**

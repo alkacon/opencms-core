@@ -12,7 +12,8 @@
     
     <xsd:complexType name="OpenCmsModuleType">
         <xsd:sequence>    
-	        <xsd:element name="TypeName" type="OpenCmsString" minOccurs="1" maxOccurs="1" />       
+	        <xsd:element name="TypeName" type="OpenCmsString" minOccurs="1" maxOccurs="1" />   
+	        <xsd:element name="Disabled" type="OpenCmsString" minOccurs="0" maxOccurs="1" />    
 	        <xsd:element name="Folder" type="OpenCmsADEFolderChoice" minOccurs="0" maxOccurs="1" />
 	        <xsd:element name="NamePattern" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
 	        <xsd:element name="Order" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
@@ -26,7 +27,11 @@
 			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
 			<layouts>
 				<layout element="TypeName" widget="org.opencms.widgets.CmsTypeComboWidget"  /> 
+				<layout element="Disabled" widget="SelectorWidget" configuration="true:%(key.disabled.true)|*false:%(key.disabled.false)|add:%(key.disabled.add)" />
 			</layouts>
+			<defaults>
+				<default element="Disabled" value="False"/>
+			</defaults>
         </xsd:appinfo>
     </xsd:annotation>
 </xsd:schema>

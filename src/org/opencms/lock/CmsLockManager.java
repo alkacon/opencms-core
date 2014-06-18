@@ -326,7 +326,7 @@ public final class CmsLockManager {
                 // dummy resource, i.e. the resource was not found in a previous readResource call 
                 continue;
             }
-            if (filter.isSharedExclusive() && (lockedResource.getSiblingCount() > 1)) {
+            if (filter.isSharedExclusive() && (lockedResource != null) && (lockedResource.getSiblingCount() > 1)) {
                 Iterator<CmsResource> itSiblings = internalReadSiblings(dbc, lockedResource).iterator();
                 while (itSiblings.hasNext()) {
                     CmsResource sibling = itSiblings.next();

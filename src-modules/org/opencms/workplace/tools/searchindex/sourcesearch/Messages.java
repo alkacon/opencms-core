@@ -45,9 +45,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SOURCESEARCH_SELECTFOLDER_DIALOG_MESSAGE_0 = "GUI_SOURCESEARCH_SELECTFOLDER_DIALOG_MESSAGE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_SOURCESEARCH_THREAD_NAME_0 = "GUI_SOURCESEARCH_THREAD_NAME_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String RPT_SOURCESEARCH_APPLY_PATTERN_ERROR_1 = "RPT_SOURCESEARCH_APPLY_PATTERN_ERROR_1";
 
     /** Message constant for key in the resource bundle. */
@@ -72,6 +69,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_SOURCESEARCH_ERROR_READING_RESOURCES_1 = "RPT_SOURCESEARCH_ERROR_READING_RESOURCES_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String RPT_SOURCESEARCH_INIT_CMS_OBJECT_FAILED_0 = "RPT_SOURCESEARCH_INIT_CMS_OBJECT_FAILED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String RPT_SOURCESEARCH_LOCKED_FILE_0 = "RPT_SOURCESEARCH_LOCKED_FILE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -84,9 +84,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_SOURCESEARCH_NO_FILES_FOUND_0 = "RPT_SOURCESEARCH_NO_FILES_FOUND_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String RPT_SOURCESEARCH_NO_FILES_TO_REPLACE_FOUND_0 = "RPT_SOURCESEARCH_NO_FILES_TO_REPLACE_FOUND_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String RPT_SOURCESEARCH_NO_FILES_TO_SEARCH_IN_0 = "RPT_SOURCESEARCH_NO_FILES_TO_SEARCH_IN_0";
 
     /** Message constant for key in the resource bundle. */
@@ -97,12 +94,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_SOURCESEARCH_NR_OF_FILES_TO_SEARCH_IN_1 = "RPT_SOURCESEARCH_NR_OF_FILES_TO_SEARCH_IN_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_SOURCESEARCH_NUMBER_OF_REPLACE_ERRORS_1 = "RPT_SOURCESEARCH_NUMBER_OF_REPLACE_ERRORS_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_SOURCESEARCH_NUMBER_OF_SEARCH_ERRORS_1 = "RPT_SOURCESEARCH_NUMBER_OF_SEARCH_ERRORS_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_SOURCESEARCH_PARAMETERS_0 = "RPT_SOURCESEARCH_PARAMETERS_0";
@@ -132,6 +123,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_SOURCESEARCH_PARAMETERS_SEARCHPATTERN_1 = "RPT_SOURCESEARCH_PARAMETERS_SEARCHPATTERN_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String RPT_SOURCESEARCH_REPLACE_ERROR_COUNT_1 = "RPT_SOURCESEARCH_REPLACE_ERROR_COUNT_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String RPT_SOURCESEARCH_REPLACE_FAILED_0 = "RPT_SOURCESEARCH_REPLACE_FAILED_0";
 
     /** Message constant for key in the resource bundle. */
@@ -139,6 +133,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_SOURCESEARCH_RESULT_0 = "RPT_SOURCESEARCH_RESULT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_SOURCESEARCH_SEARCH_ERROR_COUNT_1 = "RPT_SOURCESEARCH_SEARCH_ERROR_COUNT_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_SOURCESEARCH_SEARCH_FAILED_0 = "RPT_SOURCESEARCH_SEARCH_FAILED_0";
@@ -157,9 +154,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_SOURCESEARCH_UNLOCK_FILE_0 = "RPT_SOURCESEARCH_UNLOCK_FILE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_SOURCESEARCH_WRONG_ENVIRONMENT_REPLACING_0 = "RPT_SOURCESEARCH_WRONG_ENVIRONMENT_REPLACING_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.tools.searchindex.sourcesearch.messages";

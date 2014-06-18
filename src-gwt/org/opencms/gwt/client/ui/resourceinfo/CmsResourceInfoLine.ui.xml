@@ -16,7 +16,7 @@
 		}
 		
 		.mainTable .secondColumn {
-			width: 300px !important; 
+			width: 313px !important; 
 		}
 		 
 	</ui:style>

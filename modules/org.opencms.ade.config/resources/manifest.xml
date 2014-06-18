@@ -3,28 +3,28 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>8.5.0</opencms_version>
+		<opencms_version>9.0.0</opencms_version>
 		<createdate>Wed, 29 Jun 2011 08:58:42 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
 	<module>
 		<name>org.opencms.ade.config</name>
-		<nicename><![CDATA[OpenCms 8 ADE Configuration]]></nicename>
+		<nicename><![CDATA[OpenCms 9 ADE Configuration]]></nicename>
 		<group>OpenCms ADE</group>
 		<class />
 		<description><![CDATA[Configuration for OpenCms websites.<br>
-<i>(c) 2013 by Alkacon Software GmbH (http://www.alkacon.com).</i>]]></description>
-		<version>8.5.1</version>
+<i>&copy; 2014 by Alkacon Software GmbH (http://www.alkacon.com).</i>]]></description>
+		<version>9.0.1</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[sales@alkacon.com]]></authoremail>
 		<datecreated />
 		<userinstalled />
 		<dateinstalled />
 		<dependencies>
-			<dependency name="org.opencms.gwt" version="8.5.0"/>
-			<dependency name="org.opencms.workplace" version="8.5.0"/>
-			<dependency name="org.opencms.workplace.categories" version="8.5.0"/>
+			<dependency name="org.opencms.gwt" version="9.0.0"/>
+			<dependency name="org.opencms.workplace" version="9.0.0"/>
+			<dependency name="org.opencms.workplace.categories" version="7.0.0"/>
 		</dependencies>
 		<exportpoints>
 			<exportpoint uri="/system/modules/org.opencms.ade.config/classes/"
@@ -152,6 +152,26 @@
 				<param name="schema">/system/modules/org.opencms.ade.config/schemas/module_config.xsd
 				</param>
 			</type>
+			
+			<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration"
+				name="formatter_config" id="308">
+				<properties>
+					<property>
+						<name>locale-available</name>
+						<value><![CDATA[en]]></value>
+					</property>
+					<property>
+						<name>locale</name>
+						<value><![CDATA[en]]></value>
+					</property>
+					<property>
+						<name>search.exclude</name>
+						<value>all</value>
+					</property>
+				</properties>
+				<param name="schema">/system/modules/org.opencms.ade.config/schemas/formatters/new_formatter.xsd
+				</param>
+			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration"
 				name="seo_file" id="305">
 				<properties>
@@ -203,6 +223,26 @@
 				</properties>
 				<param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/inheritance_config.xsd
 				</param>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
+				name="xmlvfsbundle" id="306">
+				<properties>
+					<property>
+						<name>search.exclude</name>
+						<value>all</value>
+					</property>
+				</properties>
+				<param name="schema">/system/modules/org.opencms.ade.config/schemas/xmlvfsbundle.xsd</param>
+			</type>
+			
+			<type class="org.opencms.file.types.CmsResourceTypePlain"
+				name="propertyvfsbundle" id="307">
+				<properties>
+					<property>
+						<name>search.exclude</name>
+						<value>all</value>
+					</property>
+				</properties>
 			</type>
 		</resourcetypes>
 		<explorertypes>
@@ -314,7 +354,7 @@
 						<entry key="GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsEditProperties"
 							rule="containerpage-no-different-site" />
-						<entry key="GUI_EXPLORER_CONTEXT_RESOURCE_INFO_0" 
+						<entry key="GUI_EXPLORER_CONTEXT_PAGE_INFO_0" 
 							name="org.opencms.gwt.client.ui.contextmenu.CmsResourceInfo" 
 							rule="containerpage" /> 
 						<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0"
@@ -386,7 +426,7 @@
 					uri="newresource.jsp?newresourcetype=content_folder" order="491"
 					autosetnavigation="false" autosettitle="false" info="desc.configfolder" />
 				<accesscontrol>
-					<accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c" />
+					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c" />
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="sitemap_config" key="fileicon.sitemap_config"
@@ -506,6 +546,19 @@
 						permissions="+r+v+w+c" />
 				</accesscontrol>
 			</explorertype>
+			
+			<explorertype name="formatter_config" key="fileicon.formatter_config"
+				icon="formatter_config.png" bigicon="formatter_config_big.png" reference="xmlcontent">
+				<newresource page="otheroptions"
+					uri="newresource_xmlcontent.jsp?newresourcetype=formatter_config"
+					order="23" autosetnavigation="false" autosettitle="false"
+					info="desc.formatter_config" />
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER"
+						permissions="+r+v+w+c" />
+				</accesscontrol>
+			</explorertype>
+			
 			<explorertype name="inheritance_group" key="fileicon.inheritance_group"
 				icon="inheritancegroup.png" bigicon="inheritancegroup_big.png"
 				reference="xmlcontent">
@@ -525,6 +578,27 @@
 					uri="newresource_xmlcontent.jsp?newresourcetype=inheritance_config"
 					order="28" autosetnavigation="false" autosettitle="false"
 					info="desc.inheritance_config" />
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER"
+						permissions="+r+v+w+c" />
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="xmlvfsbundle" key="fileicon.xmlvfsbundle"
+				reference="xmlcontent">
+				<newresource page="otheroptions"
+					uri="newresource_xmlcontent.jsp?newresourcetype=xmlvfsbundle"
+					order="28" autosetnavigation="false" autosettitle="false"
+					info="desc.xmlvfsbundle" />
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER"
+						permissions="+r+v+w+c" />
+				</accesscontrol>
+			</explorertype>
+			
+			<explorertype name="propertyvfsbundle" key="fileicon.propertyvfsbundle"
+				reference="plain">
+				<newresource page="otheroptions" uri="newresource.jsp?newresourcetype=propertyvfsbundle"
+					order="30" autosetnavigation="false" autosettitle="false" info="desc.propertyvfsbundle" />
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER"
 						permissions="+r+v+w+c" />
@@ -712,7 +786,7 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Resource type configuration]]></value>
+					<value><![CDATA[Sitemap configuration file]]></value>
 				</property>
 				<property>
 					<name>locale</name>
@@ -876,6 +950,29 @@
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:24,h:24]]></value>
+				</property>
+			</properties>
+			<relations />
+			<accesscontrol />
+		</file>
+		
+		<file>
+			<source>system/workplace/resources/filetypes/navlevel.png
+			</source>
+			<destination>system/workplace/resources/filetypes/navlevel.png
+			</destination>
+			<type>image</type>
+			<uuidstructure>e20c5421-a4b5-4389-958e-5323d4b6843f</uuidstructure>
+			<uuidresource>4d1f707c-3e04-472b-b825-0ff4783f5a2f</uuidresource>
+			<datelastmodified>Wed, 04 May 2011 12:28:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
 				</property>
 			</properties>
 			<relations />
@@ -1152,6 +1249,51 @@
 			<relations />
 			<accesscontrol />
 		</file>
+		
+		<file>
+			<source>system/workplace/resources/filetypes/formatter_config.png
+			</source>
+			<destination>system/workplace/resources/filetypes/formatter_config.png
+			</destination>
+			<type>image</type>
+			<uuidstructure>5d011d07-c390-4eee-a3e7-a1f3be8348a5</uuidstructure>
+			<uuidresource>93c70ec4-cf18-45f2-87db-bd157a2d087d</uuidresource>
+			<datelastmodified>Wed, 29 Jun 2011 08:48:09 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 29 Jun 2011 08:48:01 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations />
+			<accesscontrol />
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/formatter_config_big.png
+			</source>
+			<destination>system/workplace/resources/filetypes/formatter_config_big.png
+			</destination>
+			<type>image</type>
+			<uuidstructure>eb5a0089-8f53-4c56-b050-ad80e0319c3e</uuidstructure>
+			<uuidresource>b35e207c-1df5-48ad-bfd2-9a1fa36d7bc8</uuidresource>
+			<datelastmodified>Wed, 29 Jun 2011 08:48:20 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 29 Jun 2011 08:48:01 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:24,h:24]]></value>
+				</property>
+			</properties>
+			<relations />
+			<accesscontrol />
+		</file>
 		<file>
 			<source>system/workplace/resources/filetypes/sitemap_config.png
 			</source>
@@ -1174,6 +1316,8 @@
 			<relations />
 			<accesscontrol />
 		</file>
+		
+		
 		<file>
 			<source>system/workplace/resources/filetypes/sitemap_config_big.png
 			</source>

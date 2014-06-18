@@ -36,7 +36,9 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsFileUtil;
+import org.opencms.util.CmsStringUtil;
 
+import java.lang.reflect.Constructor;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -68,6 +70,34 @@ public class CmsXmlSitemapActionElement extends CmsJspActionElement {
         super(pageContext, request, response);
     }
 
+    /** 
+     * Creates an XML sitemap generator instance given a class name and the root path for the sitemap.<p> 
+     * 
+     * @param className the class name of the sitemap generator (may be null for the default
+     * @param folderRootPath the root path of the start folder for the sitemap 
+     * @return the sitemap generator instance 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public CmsXmlSitemapGenerator createSitemapGenerator(String className, String folderRootPath) throws CmsException {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(className)) {
+            className = CmsXmlSitemapGenerator.class.getName();
+        }
+        try {
+            Class<? extends CmsXmlSitemapGenerator> generatorClass = Class.forName(className).asSubclass(
+                CmsXmlSitemapGenerator.class);
+            Constructor<? extends CmsXmlSitemapGenerator> constructor = generatorClass.getConstructor(String.class);
+            CmsXmlSitemapGenerator generator = constructor.newInstance(folderRootPath);
+            return generator;
+        } catch (Exception e) {
+            LOG.error("Could not create configured sitemap generator "
+                + className
+                + ", using the default class instead", e);
+            return new CmsXmlSitemapGenerator(folderRootPath);
+        }
+    }
+
     /**
      * Writes the XML sitemap to the response.<p>
      * 
@@ -78,7 +108,9 @@ public class CmsXmlSitemapActionElement extends CmsJspActionElement {
         CmsObject cms = getCmsObject();
         String baseFolderRootPath = CmsFileUtil.removeTrailingSeparator(CmsResource.getParentFolder(cms.getRequestContext().addSiteRoot(
             cms.getRequestContext().getUri())));
-        CmsXmlSitemapGenerator xmlSitemapGenerator = new CmsXmlSitemapGenerator(baseFolderRootPath);
+        CmsXmlSitemapGenerator xmlSitemapGenerator = createSitemapGenerator(
+            m_configuration.getSitemapGeneratorClassName(),
+            baseFolderRootPath);
         xmlSitemapGenerator.setComputeContainerPageDates(m_configuration.shouldComputeContainerPageModificationDates());
         CmsPathIncludeExcludeSet inexcludeSet = xmlSitemapGenerator.getIncludeExcludeSet();
         for (String include : m_configuration.getIncludes()) {

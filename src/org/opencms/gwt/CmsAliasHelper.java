@@ -104,6 +104,7 @@ public class CmsAliasHelper {
         }
         try {
             csvWriter.flush();
+            csvWriter.close();
         } catch (IOException e) {
             // can't happen
         }

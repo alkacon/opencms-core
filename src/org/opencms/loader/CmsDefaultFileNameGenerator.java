@@ -39,8 +39,10 @@ import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.content.CmsNumberSuffixNameSequence;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.collections.Factory;
 
@@ -98,6 +100,18 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
 
     /** Start sequence for macro with digits. */
     private static final String MACRO_NUMBER_START = "%(" + I_CmsFileNameGenerator.MACRO_NUMBER + ":";
+
+    /**
+     * Removes the file extension if it only consists of letters.<p>
+     * 
+     * @param path the path from which to remove the file extension
+     *  
+     * @return the path without the file extension 
+     */
+    public static String removeExtension(String path) {
+
+        return path.replaceFirst("\\.[a-zA-Z]*$", "");
+    }
 
     /**
      * Returns a new resource name based on the provided OpenCms user context and name pattern.<p>
@@ -175,6 +189,10 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
 
         String checkFileName, checkTempFileName;
         CmsMacroResolver resolver = CmsMacroResolver.newInstance();
+        Set<String> extensionlessNames = new HashSet<String>();
+        for (String name : fileNames) {
+            extensionlessNames.add(removeExtension(name));
+        }
 
         String macro = I_CmsFileNameGenerator.MACRO_NUMBER;
         int useDigits = defaultDigits;
@@ -197,7 +215,8 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
             checkFileName = resolver.resolveMacros(checkPattern);
             // get name of the resolved temp file
             checkTempFileName = CmsWorkplace.getTemporaryFileName(checkFileName);
-        } while (fileNames.contains(checkFileName) || fileNames.contains(checkTempFileName));
+        } while (extensionlessNames.contains(removeExtension(checkFileName))
+            || extensionlessNames.contains(removeExtension(checkTempFileName)));
 
         return checkFileName;
     }

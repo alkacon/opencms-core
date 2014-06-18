@@ -29,10 +29,14 @@ package org.opencms.ade.contenteditor.client.widgets;
 
 import com.alkacon.acacia.client.css.I_LayoutBundle;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
+import com.alkacon.geranium.client.I_HasResizeOnShow;
 
 import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsTextArea;
+import org.opencms.util.CmsStringUtil;
 
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.HasResizeHandlers;
 import com.google.gwt.event.logical.shared.ResizeEvent;
@@ -46,7 +50,7 @@ import com.google.gwt.user.client.ui.Composite;
  * Provides a display only widget, for use on a widget dialog.<p>
  *  
  * */
-public class CmsTextareaWidget extends Composite implements I_EditWidget, HasResizeHandlers {
+public class CmsTextareaWidget extends Composite implements I_EditWidget, HasResizeHandlers, I_HasResizeOnShow {
 
     /** Default number of rows to display. */
     private static final int DEFAULT_ROWS_NUMBER = 5;
@@ -66,10 +70,15 @@ public class CmsTextareaWidget extends Composite implements I_EditWidget, HasRes
         // All composites must call initWidget() in their constructors.
         initWidget(m_textarea);
         int configheight = DEFAULT_ROWS_NUMBER;
-        try {
-            configheight = Integer.parseInt(config);
-        } catch (Exception e) {
-            // do something with this exception.
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(config)) {
+            try {
+                int rows = Integer.parseInt(config);
+                if (rows > 0) {
+                    configheight = rows;
+                }
+            } catch (Exception e) {
+                // nothing to do
+            }
         }
         m_textarea.setRows(configheight);
         m_textarea.getTextArea().setStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().textAreaBox());
@@ -98,7 +107,7 @@ public class CmsTextareaWidget extends Composite implements I_EditWidget, HasRes
      */
     public HandlerRegistration addFocusHandler(FocusHandler handler) {
 
-        return null;
+        return addDomHandler(handler, FocusEvent.getType());
     }
 
     /**
@@ -162,6 +171,23 @@ public class CmsTextareaWidget extends Composite implements I_EditWidget, HasRes
     public void onAttachWidget() {
 
         super.onAttach();
+    }
+
+    /**
+     * @see com.alkacon.acacia.client.widgets.I_EditWidget#owns(com.google.gwt.dom.client.Element)
+     */
+    public boolean owns(Element element) {
+
+        return getElement().isOrHasChild(element);
+
+    }
+
+    /**
+     * @see com.alkacon.geranium.client.I_HasResizeOnShow#resizeOnShow()
+     */
+    public void resizeOnShow() {
+
+        m_textarea.resizeOnShow();
     }
 
     /**

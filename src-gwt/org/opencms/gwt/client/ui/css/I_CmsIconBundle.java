@@ -478,6 +478,22 @@ public interface I_CmsIconBundle extends ClientBundle {
      *
      * @return the image resource
      */
+    @Source("images/icons/uploadSmallIconActive.png")
+    ImageResource uploadSmallIconActive();
+
+    /**
+     * Access method.<p>
+     *
+     * @return the image resource
+     */
+    @Source("images/icons/uploadSmallIconDeactivated.png")
+    ImageResource uploadSmallIconDeactivated();
+
+    /**
+     * Access method.<p>
+     *
+     * @return the image resource
+     */
     @Source("images/icons/workplaceIcon.png")
     ImageResource workplaceIcon();
 }

@@ -32,10 +32,13 @@ function GetAttribute( element, attName, valueIfNull )
 
    return ( oValue == null ? valueIfNull : oValue ) ;
 }
-<%= wp.getJsp().getContent("/system/workplace/resources/editors/tinymce/jscripts/tiny_mce/tiny_mce_popup.js") %>
-/* Initialize important FCKeditor variables from editor. */
-var dialog     = window.parent;
+/* Initialize important variables from editor. */
 
+/** The editor frame. */
+var parentDialog=window.parent;
+
+/** The editor instance. */
+var editor=parentDialog.tinymce.activeEditor;
 
 /* Size of the preview area. */
 previewX = 600;
@@ -54,7 +57,9 @@ var modeType = "";
 /* Initializes the download gallery popup window. */
 function initPopup() {
    
-   $("#cancelbutton").click(function() {tinyMCEPopup.close(); } )
+   $("#cancelbutton").click(function() {
+       editor.windowManager.close();
+   });
    $("head").append("<style type='text/css'>#galleryitemlist { height: 457px !important; } #galleryitemlistinner {  height: 385px !important; } #categoryfolderlist { height: 515px !important; }</style>");
    $("#galleryresetsearchbutton").hide();
    $("#categoryresetsearchbutton").hide();
@@ -81,12 +86,11 @@ function Ok() {
       // convert to string before inserting 
       insertHtml(htmlContent.toString());
    }
-   tinyMCEPopup.close();
+   editor.windowManager.close();
 }
 
 // inserts the passed html fragment at the current cursor position
 function insertHtml(htmlContent) {
-   tinyMCEPopup.restoreSelection();
    window.parent.tinymce.activeEditor.execCommand("mceInsertContent", false, htmlContent); 
 }
 
@@ -97,7 +101,7 @@ function okPressed() {
       // convert to string before inserting 
       insertHtml(htmlContent.toString());
    }
-   tinyMCEPopup.close();
+   editor.windowManager.close();
 }
 
 

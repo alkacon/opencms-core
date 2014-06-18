@@ -74,6 +74,9 @@ public class JSONTokener {
     /** The last character. */
     private char m_lastChar;
 
+    /** Flag which controls whether JSONObjects created by this tokener are ordered. */
+    private boolean m_ordered;
+
     /** The reader. */
     private Reader m_reader;
 
@@ -420,7 +423,7 @@ public class JSONTokener {
                 return nextString(c);
             case '{':
                 back();
-                return new JSONObject(this);
+                return new JSONObject(this, m_ordered);
             case '[':
             case '(':
                 back();
@@ -502,6 +505,16 @@ public class JSONTokener {
             }
         }
         return s;
+    }
+
+    /**
+     * Sets a flag which makes JSONObjects created by this tokener ordered.<p>
+     * 
+     * @param ordered true if JSONObjects created by this should be ordered 
+     */
+    public void setOrdered(boolean ordered) {
+
+        m_ordered = ordered;
     }
 
     /**

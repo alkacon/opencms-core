@@ -32,31 +32,27 @@ var workplacePath="<%= cms.link("/system/workplace/") %>";
 function doShowCmsGalleries(editor, url) {
    var width = 685;
    var height = 502;
-   editor.windowManager.open({url: url, width : width, height: height, inline: "yes"}, {});
+   // HACK: check for IE8 and add some attributes to iframe to prevent layout issues
+   if (typeof document.addEventListener =='undefined'){
+       // let's call this iframe attribute injection
+       url+="\" allowtransparency=\"true\" scrolling=\"no\" frameborder=\"0\" framespacing=\"0"
+   }
+   editor.windowManager.open({
+       url: url, 
+       width : width, 
+       height: height, 
+       inline: "yes", 
+       classes: "opencmsDialog"
+   }, {});
+   var closeButton=window.document.createElement("div");
+   var currentEd=editor;
+   closeButton.onclick=function(){
+       currentEd.windowManager.close();
+   };
+   closeButton.setAttribute("class", "closeButton");
+   var windows= editor.windowManager.windows;
+   windows[windows.length-1].getEl().appendChild(closeButton);
 }
-
-/**
- * Processes context menu items, e.g. by replacing built-in image options with OpenCms specific image options.
- */
-function filterContextMenu(sender, menu, element) {
-   var otherItems = {};
-   for (var itemName in menu.items) {
-      if (/^mce_/.test(itemName)) {
-         var item = menu.items[itemName];
-         if (item.settings) {
-            if (item.settings.cmd == 'mceAdvImage' || item.settings.cmd == 'mceImage') {
-               continue;
-            }
-         }
-      }
-      otherItems[itemName] = item;
-   }
-   menu.items = otherItems;
-   if (element.nodeName === 'IMG') {
-      menu.add({title : '<fmt:message key="GUI_IMAGE_GALLERY_TITLE_0" />', icon : 'image', cmd : 'cmsImageGallery'});
-   }
-};
-
 
 /**
  * Searches for a frame by the specified name. Will only return siblings or ancestors.<p>
@@ -164,7 +160,13 @@ function createGalleryDialogUrl(path, typesParam, integrator) {
            // nothing to do
        }
    }
-   var searchParam = "&<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_RESOURCE_TYPES%>="+typesParam+"&<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_CURRENT_ELEMENT%>="+ ( path==null ? "" : path)+"&__locale="+elementLanguage;
+   var searchParam;
+   if (typesParam=="all"){
+       searchParam="&<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_TAB_CONFIG%>=selectAll";
+   }else{
+       searchParam="&<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_TAB_CONFIG%>=selectDoc&<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_RESOURCE_TYPES%>="+typesParam;
+   }
+   searchParam+="&<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_CURRENT_ELEMENT%>="+ ( path==null ? "" : path)+"&__locale="+elementLanguage;
    return "<%= cms.link("/system/modules/org.opencms.ade.galleries/gallery.jsp") %>?<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_GALLERY_MODE+"="+org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode.editor.name() %>" + searchParam + resParam + integratorParam + debugParam;
 }
 
@@ -363,13 +365,13 @@ tinymce.create('tinymce.opencms', {
       
       ed.addButton('OcmsImageGallery', {
          title: '<fmt:message key="GUI_IMAGE_GALLERY_TITLE_0" />',
-         image: '<%= org.opencms.workplace.CmsWorkplace.getResourceUri("editors/tinymce/toolbar/oc-imagegallery.gif") %>',
+         image: '<%= org.opencms.workplace.CmsWorkplace.getResourceUri("editors/tinymce/toolbar/oc-imagegallery.png") %>',
          cmd: "cmsImageGallery"
        });
       
       ed.addButton('OcmsDownloadGallery', {
          title: '<fmt:message key="GUI_DOWNLOAD_GALLERY_TITLE_0" />',
-         image: '<%= org.opencms.workplace.CmsWorkplace.getResourceUri("editors/tinymce/toolbar/oc-downloadgallery.gif") %>',
+         image: '<%= org.opencms.workplace.CmsWorkplace.getResourceUri("editors/tinymce/toolbar/oc-downloadgallery.png") %>',
          cmd: "cmsDownloadGallery"
       });
       
@@ -390,10 +392,18 @@ tinymce.create('tinymce.opencms', {
          image: '<%= org.opencms.workplace.CmsWorkplace.getResourceUri("editors/tinymce/toolbar/oc-linkgallery.gif") %>',
          cmd : 'cmsLinkGallery'
       });
-      
-      ed.onInit.add(function(ed) {
-         ed.plugins.contextmenu.onContextMenu.add(filterContextMenu);
-      });
+      ed.addMenuItem('OcmsImageGallery', {
+         text: '<fmt:message key="GUI_IMAGE_GALLERY_TITLE_0" />',
+         context: 'tools',
+         icon: 'image',
+         cmd: "cmsImageGallery"
+       });
+      ed.addMenuItem('OcmsDownloadGallery', {
+          text: '<fmt:message key="GUI_DOWNLOAD_GALLERY_TITLE_0" />',
+          context: 'tools',
+          icon: 'browse',
+          cmd: "cmsDownloadGallery"
+       });
    },
 
    getInfo : function() {
@@ -409,22 +419,16 @@ tinymce.create('tinymce.opencms', {
 
 window.cmsTinyMceFileBrowser = function(fieldId, currentValue, browserType, targetWindow) {
    var editor = tinymce.activeEditor;
+   var resourceType="all";
    if (browserType == "image") {
-      var integrator = "/system/workplace/editors/tinymce/filebrowser_gallery_integrator.js"
-      var url = createGalleryDialogUrl(currentValue, "image", integrator);
-      url = url + "&hideformats=true";
-   } else {
-      var url = "<cms:link>/system/workplace/views/explorer/tree_fs.jsp?type=pagelink&includefiles=true</cms:link>"; 
-      var integrator = "<cms:link>/system/workplace/editors/tinymce/filebrowser_integrator.js</cms:link>";
-      var url = "<cms:link>/system/workplace/views/explorer/tree_fs.jsp?type=pagelink&includefiles=true</cms:link>";
-      url = url + "&integrator=" + integrator;
-   }
-   var width = 685;
-   var height = 502;
+       resourceType=browserType;
+   } 
+   var integrator = "/system/workplace/editors/tinymce/filebrowser_gallery_integrator.js"
+   var url = createGalleryDialogUrl(currentValue, resourceType, integrator);
+   url = url + "&hideformats=true";
    editor.cmsTargetWindow = targetWindow;
    editor.cmsFieldId = fieldId; 
-   editor.windowManager.open({url: url, width : width, height: height, inline: "yes"}, {});
-   
+   doShowCmsGalleries(editor, url);
 }
 
 tinymce.PluginManager.add('opencms', tinymce.opencms);

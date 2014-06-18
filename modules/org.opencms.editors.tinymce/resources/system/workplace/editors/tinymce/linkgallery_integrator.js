@@ -33,7 +33,6 @@ function GetAttribute( element, attName, valueIfNull )
    return ( oValue == null ? valueIfNull : oValue ) ;
 }
 
-<%= wp.getJsp().getContent("/system/workplace/resources/editors/tinymce/jscripts/tiny_mce/tiny_mce_popup.js") %>
 
 /** The editor instance. */
 var parentDialog = window.parent; 
@@ -59,7 +58,9 @@ var modeType = "";
 
 /* Initializes the download gallery popup window. */
 function initPopup() {
-   $("#gallerycancelbutton").click(function() {tinyMCEPopup.close(); } )
+   $("#gallerycancelbutton").click(function() {
+       editor.windowManager.close();
+   });
    $("#categorycancelbutton").remove();
    $("#categoryokbutton").remove();
    $("#galleryresetsearchbutton").hide();
@@ -84,12 +85,11 @@ function Ok() {
    if (activeItem != null && activeItem != "") {
       link(activeItem.linkpath, activeItem.title, activeItem.description);
    }
-   tinyMCEPopup.close();
+   editor.windowManager.close();
    return true;
 }
 
 function link(uri, title, desc) {
-   tinyMCEPopup.restoreSelection();      
    if (hasSelectedText() == true) {
       // text selected.
       setLink(uri, title); 
@@ -177,7 +177,6 @@ function createLink(linkInformation){
    var path = linkInformation["href"];
    var title = linkInformation["title"];
    var target = linkInformation["target"];
-   tinyMCEPopup.restoreSelection();
    var a = _selectionMoveToAncestorNode('A') ;
    if (a) {
         // link present, manipulate it

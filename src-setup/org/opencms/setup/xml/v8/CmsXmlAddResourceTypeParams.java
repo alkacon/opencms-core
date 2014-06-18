@@ -195,7 +195,6 @@ public class CmsXmlAddResourceTypeParams extends A_CmsXmlVfs {
             m_xpaths.add(xp.toString().replace("{0}", org.opencms.file.types.CmsResourceTypePlain.class.getName()));
             m_xpaths.add(xp.toString().replace("{0}", org.opencms.file.types.CmsResourceTypeBinary.class.getName()));
             m_xpaths.add(xp.toString().replace("{0}", org.opencms.file.types.CmsResourceTypePointer.class.getName()));
-            m_xpaths.add(xp.toString().replace("{0}", org.opencms.file.types.CmsResourceTypeXmlPage.class.getName()));
             m_xpaths.add(xp.toString().replace("{0}", org.opencms.file.types.CmsResourceTypeXmlContent.class.getName()));
             // "/opencms/vfs/resources/resourcetypes/type[@class='org.opencms.file.types.CmsResourceTypeBinary']/param[@name='{0}']";
             xp = new StringBuffer(256);

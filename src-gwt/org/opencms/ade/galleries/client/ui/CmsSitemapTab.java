@@ -67,6 +67,9 @@ public class CmsSitemapTab extends A_CmsListTab {
     /** The tab handler. */
     CmsSitemapTabHandler m_handler;
 
+    /** Flag to disable the fillDefault method (used when the tab is filled in some other way). */
+    private boolean m_disableFillDefault;
+
     /** The initialized flag. */
     private boolean m_initialized;
 
@@ -91,7 +94,7 @@ public class CmsSitemapTab extends A_CmsListTab {
      * 
      * @param entries the root folders to display 
      */
-    public void fillInitially(List<CmsSitemapEntryBean> entries) {
+    public void fill(List<CmsSitemapEntryBean> entries) {
 
         clear();
         for (CmsSitemapEntryBean entry : entries) {
@@ -99,6 +102,29 @@ public class CmsSitemapTab extends A_CmsListTab {
             addWidgetToList(item);
         }
         m_initialized = true;
+    }
+
+    /** 
+     * Default way to fill the sitemap tab.<p>
+     * 
+     * @param entries the entries to fill the tab with 
+     */
+    public void fillDefault(List<CmsSitemapEntryBean> entries) {
+
+        if (!m_disableFillDefault) {
+            fill(entries);
+        }
+    }
+
+    /** 
+     * Fills the sitemap tab with preloaded data.<p>
+     * 
+     * @param entries the preloaded sitemap entries 
+     */
+    public void fillWithPreloadInfo(List<CmsSitemapEntryBean> entries) {
+
+        fill(entries);
+        m_disableFillDefault = true;
     }
 
     /**
@@ -121,13 +147,23 @@ public class CmsSitemapTab extends A_CmsListTab {
     }
 
     /**
+     * @see com.google.gwt.user.client.ui.Widget#onLoad()
+     */
+    @Override
+    public void onLoad() {
+
+        m_handler.initializeSitemapTab();
+
+    }
+
+    /**
      * Method which is called when the sitemap preload data is received.<p>
      * 
      * @param sitemapPreloadData the sitemap tree's preloaded root entry 
      */
     public void onReceiveSitemapPreloadData(CmsSitemapEntryBean sitemapPreloadData) {
 
-        fillInitially(Collections.singletonList(sitemapPreloadData));
+        fillWithPreloadInfo(Collections.singletonList(sitemapPreloadData));
         String siteRoot = sitemapPreloadData.getSiteRoot();
         if (siteRoot != null) {
             selectSite(siteRoot);
@@ -153,7 +189,7 @@ public class CmsSitemapTab extends A_CmsListTab {
     protected CmsLazyTreeItem createItem(final CmsSitemapEntryBean sitemapEntry) {
 
         CmsDataValue dataValue = new CmsDataValue(600, 3, CmsIconUtil.getResourceIconClasses(
-            sitemapEntry.getType(),
+            sitemapEntry.getImageType(),
             true), sitemapEntry.getDisplayName());
         dataValue.setUnselectable();
         if (sitemapEntry.isHiddenEntry()) {
@@ -178,13 +214,21 @@ public class CmsSitemapTab extends A_CmsListTab {
             result.setOpen(true, false);
             result.onFinishLoading();
         }
+        if ((sitemapEntry.getChildren() != null) && sitemapEntry.getChildren().isEmpty()) {
+            result.setLeafStyle(true);
+        }
         m_items.add(result);
-        final CmsLazyTreeItem constResult = result;
-        dataValue.getLabelWidget().addClickHandler(new ClickHandler() {
+        dataValue.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent e) {
 
-                constResult.setOpen(true);
+                if (getTabHandler().hasSelectResource()) {
+                    getTabHandler().selectResource(
+                        m_handler.getSelectPath(sitemapEntry),
+                        sitemapEntry.getStructureId(),
+                        sitemapEntry.getDisplayName(),
+                        sitemapEntry.getType());
+                }
             }
         });
         return result;

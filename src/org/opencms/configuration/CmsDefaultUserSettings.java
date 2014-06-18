@@ -118,15 +118,6 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
         createfolder
     }
 
-    /** 
-     * Array of the possible "button styles".
-     * Must be private because of Findbugs rule "MS".
-     */
-    private static final String[] BUTTON_STYLES = {"image", "textimage", "text"};
-
-    /** Array list for fast lookup of "button styles". */
-    public static final List<String> BUTTON_STYLES_LIST = Collections.unmodifiableList(Arrays.asList(BUTTON_STYLES));
-
     /** Constant for the publish related resources mode, checkbox disabled by default. */
     public static final CmsPublishRelatedResourcesMode PUBLISH_RELATED_RESOURCES_MODE_FALSE = CmsPublishRelatedResourcesMode.MODE_FALSE;
 
@@ -147,6 +138,15 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
 
     /** Publish button appearance: show never. */
     public static final String PUBLISHBUTTON_SHOW_NEVER = "never";
+
+    /** 
+     * Array of the possible "button styles".
+     * Must be private because of Findbugs rule "MS".
+     */
+    private static final String[] BUTTON_STYLES = {"image", "textimage", "text"};
+
+    /** Array list for fast lookup of "button styles". */
+    public static final List<String> BUTTON_STYLES_LIST = Collections.unmodifiableList(Arrays.asList(BUTTON_STYLES));
 
     /** Parameter for buttonstyle text & image. */
     private static final int BUTTONSTYLE_TEXTIMAGE = 1;

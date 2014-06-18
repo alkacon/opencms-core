@@ -31,7 +31,6 @@ import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
-import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -58,10 +57,11 @@ public class CmsEditOptionButton extends CmsPushButton implements I_CmsGroupEdit
     public CmsEditOptionButton(CmsContainerPageElementPanel elementWidget, CmsInheritanceContainerEditor editor) {
 
         super();
-        setImageClass(I_CmsButton.ButtonData.EDIT.getIconClass());
+        setImageClass(I_CmsButton.ButtonData.SELECTION.getIconClass());
         setButtonStyle(ButtonStyle.TRANSPARENT, null);
         setTitle(I_CmsButton.ButtonData.EDIT.getTitle());
         addStyleName(I_CmsButton.ButtonData.EDIT.getIconClass());
+        addStyleName(I_CmsButton.ButtonData.SELECTION.getIconClass());
         m_elementWidget = elementWidget;
         m_editor = editor;
     }
@@ -84,7 +84,8 @@ public class CmsEditOptionButton extends CmsPushButton implements I_CmsGroupEdit
      */
     public void onClick(ClickEvent event) {
 
-        CmsDomUtil.ensureMouseOut(m_elementWidget.getElementOptionBar().getElement());
+        clearHoverState();
+        m_elementWidget.getElementOptionBar().removeHighlighting();
         m_editor.getHandler().openEditorForElement(m_elementWidget, false);
         event.stopPropagation();
         event.preventDefault();

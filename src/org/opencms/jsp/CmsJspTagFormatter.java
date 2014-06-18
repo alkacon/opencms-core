@@ -35,6 +35,7 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.util.CmsJspContentAccessBean;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.I_CmsXmlDocument;
@@ -46,6 +47,8 @@ import java.util.Locale;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Implementation of the <code>&lt;cms:formatter var="..." val="..." /&gt;</code> tag, 
  * used to access and display XML content item information in a formatter.<p>
@@ -53,6 +56,9 @@ import javax.servlet.jsp.PageContext;
  * @since 8.0.0 
  */
 public class CmsJspTagFormatter extends CmsJspScopedVarBodyTagSuport {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsJspTagFormatter.class);
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -8232834808735187624L;
@@ -223,6 +229,11 @@ public class CmsJspTagFormatter extends CmsJspScopedVarBodyTagSuport {
             // get the resource name from the selected container
             m_element = OpenCms.getADEManager().getCurrentElement(pageContext.getRequest());
             m_element.initResource(m_cms);
+            if (m_cms.getRequestContext().getCurrentProject().isOnlineProject() && !m_element.isReleasedAndNotExpired()) {
+                throw new CmsException(Messages.get().container(
+                    Messages.ERR_RESOURCE_IS_NOT_RELEASE_OR_EXPIRED_1,
+                    m_element.getResource().getRootPath()));
+            }
             if (m_locale == null) {
                 // no locale set, use locale from users request context
                 m_locale = m_cms.getRequestContext().getLocale();
@@ -230,7 +241,8 @@ public class CmsJspTagFormatter extends CmsJspScopedVarBodyTagSuport {
 
             // load content and store it
             CmsJspContentAccessBean bean;
-            if (m_element.isInMemoryOnly() && (m_element.getResource() instanceof CmsFile)) {
+            if ((m_element.isInMemoryOnly() || m_element.isTemporaryContent())
+                && (m_element.getResource() instanceof CmsFile)) {
                 I_CmsXmlDocument xmlContent = CmsXmlContentFactory.unmarshal(m_cms, (CmsFile)m_element.getResource());
                 bean = new CmsJspContentAccessBean(m_cms, m_locale, xmlContent);
             } else {
@@ -249,6 +261,7 @@ public class CmsJspTagFormatter extends CmsJspScopedVarBodyTagSuport {
             }
 
         } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
             m_controller.setThrowable(e, m_cms.getRequestContext().getUri());
             throw new JspException(e);
         }

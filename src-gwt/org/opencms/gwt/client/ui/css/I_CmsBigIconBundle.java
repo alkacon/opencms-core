@@ -55,14 +55,14 @@ public interface I_CmsBigIconBundle extends ClientBundle {
      * Access method.<p>
      * @return an image resource
      */
-    @Source("images/icons/big/backBigIconDeactivated.png")
+    @Source("images/icons/big/resetBigIconActive.png")
     ImageResource backBigIconActive();
 
     /** 
      * Access method.<p>
      * @return an image resource
      */
-    @Source("images/icons/big/backBigIconDeactivated.png")
+    @Source("images/icons/big/resetBigIconDeactivated.png")
     ImageResource backBigIconDeactivated();
 
     /** 
@@ -153,8 +153,29 @@ public interface I_CmsBigIconBundle extends ClientBundle {
      * Access method.<p>
      * @return an image resource
      */
+    @Source("images/icons/big/elementsBigIcon.png")
+    ImageResource elementsBigIcon();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/icons/big/elementsBigIconChanged.png")
+    ImageResource elementsBigIconChanged();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
     @Source("images/icons/big/filetypeNavlevel.png")
     ImageResource fileTypeNavLevel();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/icons/big/galleryBigIcon.png")
+    ImageResource galleryBigIcon();
 
     /** 
      * Access method.<p>
@@ -262,6 +283,20 @@ public interface I_CmsBigIconBundle extends ClientBundle {
      */
     @Source("images/icons/big/publishBigIconDeactivated.png")
     ImageResource publishBigIconDeactivated();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/icons/big/redoBigIconActive.png")
+    ImageResource redoBigIconActive();
+
+    /** 
+    * Access method.<p>
+    * @return an image resource
+    */
+    @Source("images/icons/big/redoBigIconDeactivated.png")
+    ImageResource redoBigIconDeactivated();
 
     /** 
      * Access method.<p>

@@ -29,8 +29,10 @@ package org.opencms.ade.containerpage.client;
 
 import org.opencms.ade.containerpage.client.ui.CmsAddToFavoritesButton;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
+import org.opencms.ade.containerpage.client.ui.CmsToolbarAllGalleriesMenu;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarClipboardMenu;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarEditButton;
+import org.opencms.ade.containerpage.client.ui.CmsToolbarElementInfoButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarGalleryMenu;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarInfoButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarMoveButton;
@@ -101,6 +103,9 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     /** Add menu. */
     private CmsToolbarGalleryMenu m_add;
 
+    /** The button for the 'complete galleries' dialog. */
+    private CmsToolbarAllGalleriesMenu m_allGalleries;
+
     /** Add to favorites button. */
     private CmsAddToFavoritesButton m_addToFavorites;
 
@@ -115,6 +120,9 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
     /** Edit button. */
     private CmsToolbarEditButton m_edit;
+
+    /** Button for the elements information. */
+    private CmsToolbarElementInfoButton m_elementsInfo;
 
     /** Info button. */
     private CmsToolbarInfoButton m_info;
@@ -205,6 +213,8 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
                 ((I_CmsToolbarButton)button).setEnabled(false);
             }
         }
+        m_toolbar.setVisible(false);
+        m_toggleToolbarButton.setVisible(false);
     }
 
     /**
@@ -220,6 +230,8 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
                 ((I_CmsToolbarButton)button).setEnabled(true);
             }
         }
+        m_toolbar.setVisible(true);
+        m_toggleToolbarButton.setVisible(true);
     }
 
     /**
@@ -358,6 +370,9 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
                 I_CmsToolbarButton source = (I_CmsToolbarButton)event.getSource();
                 source.onToolbarClick();
+                if (source instanceof CmsPushButton) {
+                    ((CmsPushButton)source).clearHoverState();
+                }
             }
         };
 
@@ -414,6 +429,14 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         m_add.addClickHandler(clickHandler);
         m_toolbar.addLeft(m_add);
 
+        m_allGalleries = new CmsToolbarAllGalleriesMenu(containerpageHandler, dndHandler);
+        m_allGalleries.addClickHandler(clickHandler);
+        m_toolbar.addLeft(m_allGalleries);
+
+        m_elementsInfo = new CmsToolbarElementInfoButton(containerpageHandler, controller);
+        m_elementsInfo.addClickHandler(clickHandler);
+        m_toolbar.addLeft(m_elementsInfo);
+
         m_selection = new CmsToolbarSelectionButton(containerpageHandler);
         m_selection.addClickHandler(clickHandler);
         m_toolbar.addLeft(m_selection);
@@ -457,13 +480,12 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
         CmsContainerpageUtil containerpageUtil = new CmsContainerpageUtil(
             controller,
-            m_selection,
-            m_move,
             m_edit,
-            m_remove,
+            m_move,
             m_info,
             m_properties,
-            m_addToFavorites);
+            m_addToFavorites,
+            m_remove);
         controller.init(containerpageHandler, dndHandler, contentEditorHandler, containerpageUtil);
 
         // export open stack trace dialog function
@@ -489,11 +511,6 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     public void showToolbar(boolean show) {
 
         CmsToolbar.showToolbar(m_toolbar, show, m_toolbarVisibility);
-        if (show) {
-            RootPanel.getBodyElement().addClassName(I_CmsLayoutBundle.INSTANCE.containerpageCss().forceScrollbar());
-        } else {
-            RootPanel.getBodyElement().removeClassName(I_CmsLayoutBundle.INSTANCE.containerpageCss().forceScrollbar());
-        }
     }
 
     /**
@@ -523,18 +540,18 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
      * Exports the openMessageDialog method to the page context.<p>
      */
     private native void exportStacktraceDialogMethod() /*-{
-        $wnd.__openStacktraceDialog = function(event) {
-            event = (event) ? event : ((window.event) ? window.event : "");
-            var elem = (event.target) ? event.target : event.srcElement;
-            if (elem != null) {
-                var children = elem.getElementsByTagName("span");
-                if (children.length > 0) {
-                    var title = children[0].getAttribute("title");
-                    var content = children[0].innerHTML;
-                    @org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
-                }
-            }
-        }
-    }-*/;
+                                                       $wnd.__openStacktraceDialog = function(event) {
+                                                       event = (event) ? event : ((window.event) ? window.event : "");
+                                                       var elem = (event.target) ? event.target : event.srcElement;
+                                                       if (elem != null) {
+                                                       var children = elem.getElementsByTagName("span");
+                                                       if (children.length > 0) {
+                                                       var title = children[0].getAttribute("title");
+                                                       var content = children[0].innerHTML;
+                                                       @org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
+                                                       }
+                                                       }
+                                                       }
+                                                       }-*/;
 
 }
