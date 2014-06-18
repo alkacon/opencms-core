@@ -483,9 +483,13 @@ public final class CmsContentEditor extends EditorBase {
      * Loads the content definition for the given entity and executes the callback on success.<p>
      *
      * @param entityId the entity id
+     * @param editedEntity the currently edited entity
      * @param callback the callback
      */
-    public void loadDefinition(final String entityId, final I_CmsSimpleCallback<CmsContentDefinition> callback) {
+    public void loadDefinition(
+        final String entityId,
+        final I_Entity editedEntity,
+        final I_CmsSimpleCallback<CmsContentDefinition> callback) {
 
         CmsRpcAction<CmsContentDefinition> action = new CmsRpcAction<CmsContentDefinition>() {
 
@@ -493,7 +497,11 @@ public final class CmsContentEditor extends EditorBase {
             public void execute() {
 
                 start(0, true);
-                getService().loadDefinition(entityId, this);
+                getService().loadDefinition(
+                    entityId,
+                    editedEntity != null ? com.alkacon.acacia.shared.Entity.serializeEntity(editedEntity) : null,
+                    getSkipPaths(),
+                    this);
             }
 
             @Override
@@ -517,7 +525,7 @@ public final class CmsContentEditor extends EditorBase {
 
     /**
      * Loads the content definition for the given entity and executes the callback on success.<p>
-     *
+     * 
      * @param entityId the entity id
      * @param newLink the new link
      * @param modelFileId  the model file id
@@ -525,12 +533,12 @@ public final class CmsContentEditor extends EditorBase {
      * @param postCreateHandler the post-create handler class name (optional)
      * @param callback the callback
      */
-    public void loadDefinition(
+    public void loadInitialDefinition(
         final String entityId,
         final String newLink,
         final CmsUUID modelFileId,
-        final String mode,
         final String postCreateHandler,
+        final String mode,
         final I_CmsSimpleCallback<CmsContentDefinition> callback) {
 
         CmsRpcAction<CmsContentDefinition> action = new CmsRpcAction<CmsContentDefinition>() {
@@ -539,14 +547,13 @@ public final class CmsContentEditor extends EditorBase {
             public void execute() {
 
                 start(0, true);
-
-                getService().loadDefinition(
+                getService().loadInitialDefinition(
                     entityId,
                     newLink,
                     modelFileId,
                     CmsCoreProvider.get().getUri(),
-                    mode,
                     postCreateHandler,
+                    mode,
                     this);
             }
 
@@ -577,16 +584,12 @@ public final class CmsContentEditor extends EditorBase {
      * Loads the content definition for the given entity and executes the callback on success.<p>
      *
      * @param entityId the entity id
-     * @param lastLocale the last edited locale
-     * @param editedEntities the changed entities
-     * @param newLocale states if a new locale should be generated
+     * @param editedEntity the currently edited entity
      * @param callback the callback
      */
-    public void loadOtherLocale(
+    public void loadNewDefinition(
         final String entityId,
-        final String lastLocale,
-        final Map<String, com.alkacon.acacia.shared.Entity> editedEntities,
-        final boolean newLocale,
+        final I_Entity editedEntity,
         final I_CmsSimpleCallback<CmsContentDefinition> callback) {
 
         CmsRpcAction<CmsContentDefinition> action = new CmsRpcAction<CmsContentDefinition>() {
@@ -595,7 +598,11 @@ public final class CmsContentEditor extends EditorBase {
             public void execute() {
 
                 start(0, true);
-                getService().loadOtherLocale(entityId, lastLocale, getSkipPaths(), editedEntities, newLocale, this);
+                getService().loadNewDefinition(
+                    entityId,
+                    editedEntity != null ? com.alkacon.acacia.shared.Entity.serializeEntity(editedEntity) : null,
+                    getSkipPaths(),
+                    this);
             }
 
             @Override
@@ -643,7 +650,7 @@ public final class CmsContentEditor extends EditorBase {
         CmsUUID structureId = new CmsUUID(elementId);
         // make sure the resource is locked, if we are not creating a new one
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(newLink) || CmsCoreProvider.get().lock(structureId)) {
-            loadDefinition(
+            loadInitialDefinition(
                 CmsContentDefinition.uuidToEntityId(structureId, locale),
                 newLink,
                 modelFileId,
@@ -683,7 +690,7 @@ public final class CmsContentEditor extends EditorBase {
         m_locale = locale;
         m_onClose = onClose;
         if (CmsCoreProvider.get().lock(elementId)) {
-            loadDefinition(entityId, new I_CmsSimpleCallback<CmsContentDefinition>() {
+            loadInitialDefinition(entityId, null, null, null, null, new I_CmsSimpleCallback<CmsContentDefinition>() {
 
                 public void execute(CmsContentDefinition contentDefinition) {
 
@@ -757,8 +764,8 @@ public final class CmsContentEditor extends EditorBase {
         I_Type baseType = definition.getTypes().get(definition.getEntityTypeName());
         m_vie.registerTypes(baseType, definition.getTypes());
         for (I_Entity entity : definition.getEntities().values()) {
-            if (m_registeredEntities.contains(entity.getId())) {
-                Entity previousValue = (Entity)m_vie.getEntity(entity.getId());
+            Entity previousValue = (Entity)m_vie.getEntity(entity.getId());
+            if (previousValue != null) {
                 m_vie.changeEntityContentValues(previousValue, entity);
             } else {
                 m_vie.registerEntity(entity);
@@ -778,13 +785,25 @@ public final class CmsContentEditor extends EditorBase {
     /**
      * Saves the given entities.<p>
      *
-     * @param entities the entities to save
+     * @param clearOnSuccess <code>true</code> to clear the VIE instance on success
+     * @param callback the call back command
+     */
+    public void saveAndDeleteEntities(final boolean clearOnSuccess, final Command callback) {
+
+        final I_Entity entity = m_vie.getEntity(m_entityId);
+        saveAndDeleteEntities(entity, new ArrayList<String>(m_deletedEntities), clearOnSuccess, callback);
+    }
+
+    /**
+     * Saves the given entities.<p>
+     *
+     * @param lastEditedEntity the last edited entity
      * @param deletedEntites the deleted entity id's
      * @param clearOnSuccess <code>true</code> to clear the VIE instance on success
      * @param callback the call back command
      */
     public void saveAndDeleteEntities(
-        final List<com.alkacon.acacia.shared.Entity> entities,
+        final I_Entity lastEditedEntity,
         final List<String> deletedEntites,
         final boolean clearOnSuccess,
         final Command callback) {
@@ -796,7 +815,7 @@ public final class CmsContentEditor extends EditorBase {
 
                 start(200, true);
                 getService().saveAndDeleteEntities(
-                    entities,
+                    com.alkacon.acacia.shared.Entity.serializeEntity(lastEditedEntity),
                     deletedEntites,
                     getSkipPaths(),
                     m_locale,
@@ -819,30 +838,6 @@ public final class CmsContentEditor extends EditorBase {
             }
         };
         asyncCallback.execute();
-    }
-
-    /**
-     * Saves the given entities.<p>
-     *
-     * @param entities the entities to save
-     * @param deletedEntites the deleted entity id's
-     * @param clearOnSuccess <code>true</code> to clear the VIE instance on success
-     * @param callback the call back command
-     */
-    public void saveAndDeleteEntities(
-        final Set<String> entities,
-        final Set<String> deletedEntites,
-        final boolean clearOnSuccess,
-        final Command callback) {
-
-        List<com.alkacon.acacia.shared.Entity> changedEntites = new ArrayList<com.alkacon.acacia.shared.Entity>();
-        for (String entityId : entities) {
-            I_Entity entity = m_vie.getEntity(entityId);
-            if (entity != null) {
-                changedEntites.add(com.alkacon.acacia.shared.Entity.serializeEntity(entity));
-            }
-        }
-        saveAndDeleteEntities(changedEntites, new ArrayList<String>(deletedEntites), clearOnSuccess, callback);
     }
 
     /**
@@ -1048,8 +1043,25 @@ public final class CmsContentEditor extends EditorBase {
      *
      * @param targetLocales the target locales
      */
-    void copyLocales(Set<String> targetLocales) {
+    void copyLocales(final Set<String> targetLocales) {
 
+        final I_Entity entity = m_vie.getEntity(m_entityId);
+        CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+            @Override
+            public void execute() {
+
+                start(200, true);
+                getService().copyLocale(targetLocales, com.alkacon.acacia.shared.Entity.serializeEntity(entity), this);
+            }
+
+            @Override
+            protected void onResponse(Void result) {
+
+                stop(false);
+            }
+        };
+        action.execute();
         for (String targetLocale : targetLocales) {
             String targetId = getIdForLocale(targetLocale);
             if (!m_entityId.equals(targetId)) {
@@ -1328,7 +1340,7 @@ public final class CmsContentEditor extends EditorBase {
      */
     void save() {
 
-        saveAndDeleteEntities(m_changedEntityIds, m_deletedEntities, false, new Command() {
+        saveAndDeleteEntities(false, new Command() {
 
             public void execute() {
 
@@ -1339,16 +1351,6 @@ public final class CmsContentEditor extends EditorBase {
     }
 
     /**
-     * Saves the changed/deleted entities.<p>
-     * @param clearOnSuccess <code>true</code> to clear the VIE instance on success
-     * @param callback the call back command
-     */
-    void saveAndDeleteEntities(boolean clearOnSuccess, Command callback) {
-
-        saveAndDeleteEntities(m_changedEntityIds, m_deletedEntities, clearOnSuccess, callback);
-    }
-
-    /**
      * Saves the content and closes the editor.<p>
      */
     void saveAndExit() {
@@ -1356,7 +1358,7 @@ public final class CmsContentEditor extends EditorBase {
         boolean unlock = shouldUnlockAutomatically();
         // store the scroll position
         final int scrollTop = RootPanel.getBodyElement().getOwnerDocument().getScrollTop();
-        saveAndDeleteEntities(m_changedEntityIds, m_deletedEntities, unlock, new Command() {
+        saveAndDeleteEntities(unlock, new Command() {
 
             public void execute() {
 
@@ -1505,36 +1507,49 @@ public final class CmsContentEditor extends EditorBase {
         if (locale.equals(m_locale)) {
             return;
         }
-        String lastLocale = m_locale;
         m_locale = locale;
         m_basePanel.clear();
         destroyForm(false);
+        final I_Entity entity = m_vie.getEntity(m_entityId);
         m_entityId = getIdForLocale(locale);
         // if the content does not contain the requested locale yet, a new node will be created
         final boolean addedNewLocale = !m_contentLocales.contains(locale);
-        Map<String, com.alkacon.acacia.shared.Entity> editedEntities = new HashMap<String, com.alkacon.acacia.shared.Entity>();
-        for (String entityId : m_registeredEntities) {
-            I_Entity entity = m_vie.getEntity(entityId);
-            if (entity != null) {
-                editedEntities.put(entityId, com.alkacon.acacia.shared.Entity.serializeEntity(entity));
-            }
+        if (m_registeredEntities.contains(m_entityId)) {
+            unregistereEntity(m_entityId);
         }
-        loadOtherLocale(
-            m_entityId,
-            lastLocale,
-            editedEntities,
-            addedNewLocale,
-            new I_CmsSimpleCallback<CmsContentDefinition>() {
+        if (addedNewLocale) {
+            loadNewDefinition(m_entityId, entity, new I_CmsSimpleCallback<CmsContentDefinition>() {
+
+                public void execute(final CmsContentDefinition contentDefinition) {
+
+                    registerContentDefinition(contentDefinition);
+                    CmsNotification.get().sendBlocking(
+                        CmsNotification.Type.NORMAL,
+                        org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_LOADING_0));
+                    WidgetRegistry.getInstance().registerExternalWidgets(
+                        contentDefinition.getExternalWidgetConfigurations(),
+                        new Command() {
+
+                            public void execute() {
+
+                                setContentDefinition(contentDefinition);
+                                renderFormContent();
+                                setChanged();
+                                CmsNotification.get().hide();
+                            }
+                        });
+                }
+            });
+        } else {
+            loadDefinition(m_entityId, entity, new I_CmsSimpleCallback<CmsContentDefinition>() {
 
                 public void execute(CmsContentDefinition contentDefinition) {
 
                     setContentDefinition(contentDefinition);
                     renderFormContent();
-                    if (addedNewLocale) {
-                        setChanged();
-                    }
                 }
             });
+        }
     }
 
     /**
@@ -1544,16 +1559,10 @@ public final class CmsContentEditor extends EditorBase {
 
         m_basePanel.clear();
         destroyForm(false);
+        I_Entity entity = m_vie.getEntity(m_entityId);
         m_entityId = getIdForLocale(m_locale);
-        Map<String, com.alkacon.acacia.shared.Entity> editedEntities = new HashMap<String, com.alkacon.acacia.shared.Entity>();
-        for (String entityId : m_registeredEntities) {
-            I_Entity entity = m_vie.getEntity(entityId);
-            if (entity != null) {
-                editedEntities.put(entityId, com.alkacon.acacia.shared.Entity.serializeEntity(entity));
-            }
-        }
         ((CmsDefaultWidgetService)getWidgetService()).setSkipPaths(Collections.<String> emptyList());
-        loadOtherLocale(m_entityId, m_locale, editedEntities, false, new I_CmsSimpleCallback<CmsContentDefinition>() {
+        loadDefinition(m_entityId, entity, new I_CmsSimpleCallback<CmsContentDefinition>() {
 
             public void execute(CmsContentDefinition contentDefinition) {
 

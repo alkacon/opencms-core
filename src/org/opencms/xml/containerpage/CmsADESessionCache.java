@@ -31,6 +31,8 @@ import org.opencms.file.CmsObject;
 import org.opencms.jsp.util.CmsJspStandardContextBean.TemplateBean;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsCollectionsGenericWrapper;
+import org.opencms.util.CmsUUID;
+import org.opencms.xml.content.CmsXmlContent;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -66,6 +68,9 @@ public final class CmsADESessionCache {
     /** The tool-bar visibility flag. */
     private boolean m_toolbarVisible;
 
+    /** The cached XML content documents by structure id. */
+    private Map<CmsUUID, CmsXmlContent> m_xmlContents;
+
     /**
      * Initializes the session cache.<p>
      * 
@@ -83,6 +88,9 @@ public final class CmsADESessionCache {
         List<CmsContainerElementBean> adeRecentList = CmsCollectionsGenericWrapper.list(new NodeCachingLinkedList(
             maxElems));
         m_recentLists = Collections.synchronizedList(adeRecentList);
+
+        // XML content cache, used during XML content edit
+        m_xmlContents = Collections.synchronizedMap(new HashMap<CmsUUID, CmsXmlContent>());
     }
 
     /**
@@ -114,6 +122,18 @@ public final class CmsADESessionCache {
     public CmsContainerElementBean getCacheContainerElement(String key) {
 
         return m_containerElements.get(key);
+    }
+
+    /**
+     * Returns the cached XML content document.<p>
+     * 
+     * @param structureId the structure id
+     * 
+     * @return the XML document
+     */
+    public CmsXmlContent getCacheXmlContent(CmsUUID structureId) {
+
+        return m_xmlContents.get(structureId);
     }
 
     /**
@@ -189,6 +209,17 @@ public final class CmsADESessionCache {
         }
     }
 
+    /**
+     * Caches the given XML content document.<p>
+     * 
+     * @param structureId the structure id
+     * @param xmlContent the XML document
+     */
+    public void setCacheXmlContent(CmsUUID structureId, CmsXmlContent xmlContent) {
+
+        m_xmlContents.put(structureId, xmlContent);
+    }
+
     /** 
      * Sets the default initial setting for small element editability in this session.<p>
      * 
@@ -218,5 +249,15 @@ public final class CmsADESessionCache {
     public void setToolbarVisible(boolean toolbarVisible) {
 
         m_toolbarVisible = toolbarVisible;
+    }
+
+    /**
+     * Purges the XML content document by the given id from the cache.<p>
+     * 
+     * @param structureId the structure id
+     */
+    public void uncacheXmlContent(CmsUUID structureId) {
+
+        m_xmlContents.remove(structureId);
     }
 }

@@ -60,7 +60,8 @@ public class CmsCopyLocaleDialog extends CmsPopup {
 
         /**
          * The copy locale checkbox change handler.<p>
-         * @param locale
+         * 
+         * @param locale the locale to copy
          */
         CopyLocaleChangeHandler(String locale) {
 

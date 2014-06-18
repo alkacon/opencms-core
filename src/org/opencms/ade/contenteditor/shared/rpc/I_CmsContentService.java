@@ -37,7 +37,6 @@ import org.opencms.util.CmsUUID;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 /**
  * The content editor service interface.<p>
@@ -51,31 +50,55 @@ public interface I_CmsContentService extends I_ContentService {
     String PARAM_BACKLINK = "backlink";
 
     /**
-     * Loads the content definition for a given entity. <p>
-     *
-     * @param entityId the entity id/URI
-     *
-     * @return the content definition
-     *
-     * @throws Exception if something goes wrong processing the request
+     * Cancels the editing session.<p>
+     * Will unlock the resource and delete it if required.<p>
+     * 
+     * @param structureId the resource structure id
+     * @param delete <code>true</code> to delete the edited resource
+     * 
+     * @throws CmsRpcException if something goes wrong
      */
-    CmsContentDefinition loadDefinition(String entityId) throws Exception;
+    void cancelEdit(CmsUUID structureId, boolean delete) throws CmsRpcException;
+
+    /**
+     * Copies the given source locale to the target locales.<p>
+     * 
+     * @param locales the target locales
+     * @param sourceLocale the source locale
+     * 
+     * @throws CmsRpcException if something goes wrong
+     */
+    void copyLocale(Collection<String> locales, Entity sourceLocale) throws CmsRpcException;
 
     /**
      * Loads the content definition for a given entity.<p>
-     *
+     * 
+     * @param entityId the entity id/URI
+     * @param editedLocaleEntity the edited locale entity
+     * @param skipPaths the paths to skip during locale synchronization
+     * 
+     * @return the content definition
+     * 
+     * @throws Exception if something goes wrong processing the request
+     */
+    CmsContentDefinition loadDefinition(String entityId, Entity editedLocaleEntity, Collection<String> skipPaths)
+    throws Exception;
+
+    /**
+     * Loads the content definition for a given entity.<p>
+     * 
      * @param entityId the entity id/URI
      * @param newLink the new link
      * @param modelFileId  the optional model file id
      * @param editContext the container page currently being edited (may be null)
      * @param mode the content creation mode
      * @param postCreateHandler the post-create handler class name
-     *
+     * 
      * @return the content definition
-     *
+     * 
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    CmsContentDefinition loadDefinition(
+    CmsContentDefinition loadInitialDefinition(
         String entityId,
         String newLink,
         CmsUUID modelFileId,
@@ -84,24 +107,19 @@ public interface I_CmsContentService extends I_ContentService {
         String postCreateHandler) throws CmsRpcException;
 
     /**
-     * Loads another content locale with the given entity id.<p>
-     *
-     * @param entityId the entity id
-     * @param lastLocale the last edited locale
+     * Loads new entity definition.<p>
+     * This will load the entity representation of a new locale node.<p>
+     * 
+     * @param entityId the entity id/URI
+     * @param editedLocaleEntity the edited locale entity
      * @param skipPaths the paths to skip during locale synchronization
-     * @param editedEntities the edited entities
-     * @param newLocale states if a new locale should be generated
-     *
+     * 
      * @return the content definition
-     *
+     * 
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    CmsContentDefinition loadOtherLocale(
-        String entityId,
-        String lastLocale,
-        Collection<String> skipPaths,
-        Map<String, Entity> editedEntities,
-        boolean newLocale) throws CmsRpcException;
+    CmsContentDefinition loadNewDefinition(String entityId, Entity editedLocaleEntity, Collection<String> skipPaths)
+    throws CmsRpcException;
 
     /**
      * Returns the content definition of the resource requested through parameter 'resource'.<p>
@@ -115,7 +133,7 @@ public interface I_CmsContentService extends I_ContentService {
     /**
      * Saves and deletes the given entities. Returns a validation result in case of invalid entities.<p>
      *
-     * @param changedEntities the changed entities
+     * @param lastEditedEntity the last edited entity
      * @param deletedEntities the entity id's to delete
      * @param skipPaths the paths to skip during locale synchronization
      * @param lastEditedLocale the last edited locale
@@ -126,7 +144,7 @@ public interface I_CmsContentService extends I_ContentService {
      * @throws CmsRpcException if something goes wrong processing the request
      */
     ValidationResult saveAndDeleteEntities(
-        List<Entity> changedEntities,
+        Entity lastEditedEntity,
         List<String> deletedEntities,
         Collection<String> skipPaths,
         String lastEditedLocale,

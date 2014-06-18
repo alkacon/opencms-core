@@ -36,9 +36,9 @@ import org.opencms.util.CmsUUID;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
 
 /**
  * The content editor asynchronous service interface.<p>
@@ -46,50 +46,72 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public interface I_CmsContentServiceAsync extends I_ContentServiceAsync {
 
     /**
-     * Loads the content definition for a given type.<p>
-     *
-     * @param entityId the entity id/URI
+     * Cancels the editing session.<p>
+     * Will unlock the resource and delete it if required.<p>
+     * 
+     * @param structureId the resource structure id
+     * @param delete <code>true</code> to delete the edited resource
      * @param callback the asynchronous callback
      */
-    void loadDefinition(String entityId, AsyncCallback<CmsContentDefinition> callback);
+    @SynchronizedRpcRequest
+    void cancelEdit(CmsUUID structureId, boolean delete, AsyncCallback<Void> callback);
+
+    /**
+     * Copies the given source locale to the target locales.<p>
+     * 
+     * @param locales the target locales
+     * @param sourceLocale the source locale
+     * @param callback the asynchronous callback
+     */
+    void copyLocale(Collection<String> locales, Entity sourceLocale, AsyncCallback<Void> callback);
+
+    /**
+     * Loads the content definition for a given type.<p>
+     * 
+     * @param entityId the entity id/URI
+     * @param editedLocaleEntity the edited locale entity
+     * @param skipPaths the paths to skip during locale synchronization
+     * @param callback the asynchronous callback
+     */
+    void loadDefinition(
+        String entityId,
+        Entity editedLocaleEntity,
+        Collection<String> skipPaths,
+        AsyncCallback<CmsContentDefinition> callback);
 
     /**
      * Loads the content definition for a given type creating a new resource according to the new link and model file parameter.<p>
-     *
+     * 
      * @param entityId the entity id/URI
      * @param newLink the new link
      * @param modelFileId  the optional model file id
      * @param editContext the container page currently being edited (may be null)
-     *
      * @param mode the content creation mode
      * @param postCreateHandler the post-create handler class name
      * @param callback the asynchronous callback
      */
-    void loadDefinition(String entityId, String newLink, CmsUUID modelFileId,
-
-    String editContext,
-
-    String mode, String postCreateHandler,
-
-    AsyncCallback<CmsContentDefinition> callback);
+    void loadInitialDefinition(
+        String entityId,
+        String newLink,
+        CmsUUID modelFileId,
+        String editContext,
+        String mode,
+        String postCreateHandler,
+        AsyncCallback<CmsContentDefinition> callback);
 
     /**
      * Loads new entity definition.<p>
      * This will load the entity representation of a new locale node.<p>
-     *
-     * @param entityId the entity id
-     * @param lastLocale the last edited locale
+     * 
+     * @param entityId the entity id/URI
+     * @param editedLocaleEntity the edited locale entity
      * @param skipPaths the paths to skip during locale synchronization
-     * @param editedEntities the edited entities
-     * @param newLocale states if a new locale should be generated
      * @param callback the asynchronous callback
      */
-    void loadOtherLocale(
+    void loadNewDefinition(
         String entityId,
-        String lastLocale,
+        Entity editedLocaleEntity,
         Collection<String> skipPaths,
-        Map<String, Entity> editedEntities,
-        boolean newLocale,
         AsyncCallback<CmsContentDefinition> callback);
 
     /**
@@ -102,7 +124,7 @@ public interface I_CmsContentServiceAsync extends I_ContentServiceAsync {
     /**
      * Saves and deletes the given entities. Returns a validation result in case of invalid entities.<p>
      *
-     * @param changedEntities the changed entities
+     * @param lastEditedEntity the last edited entity
      * @param deletedEntities the entity id's to delete
      * @param skipPaths the paths to skip during locale synchronization
      * @param lastEditedLocale the last edited locale
@@ -110,7 +132,7 @@ public interface I_CmsContentServiceAsync extends I_ContentServiceAsync {
      * @param callback the asynchronous callback
      */
     void saveAndDeleteEntities(
-        List<Entity> changedEntities,
+        Entity lastEditedEntity,
         List<String> deletedEntities,
         Collection<String> skipPaths,
         String lastEditedLocale,

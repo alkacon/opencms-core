@@ -30,7 +30,7 @@ package org.opencms.ade.contenteditor.shared;
 /**
  * Constants used for content editor  integration.<p>
  */
-public class CmsEditorConstants {
+public final class CmsEditorConstants {
 
     /** Javascript attribute name. */
     public static final String ATTR_CONTEXT_ID = "contextId";
@@ -55,5 +55,12 @@ public class CmsEditorConstants {
 
     /** Constant for the "reuse" mode when dropping clipboard elements. */
     public static final String MODE_REUSE = "reuse";
+
+    /**
+     * Hiding the constructor.<p>
+     */
+    private CmsEditorConstants() {
+
+    }
 
 }
