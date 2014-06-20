@@ -127,6 +127,8 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.base.Optional;
+
 import cryptix.jce.provider.CryptixCrypto;
 
 /**
@@ -1508,6 +1510,7 @@ public final class OpenCmsCore {
 
         CmsException tmpException = null;
         CmsResource resource;
+        boolean handledSecure = false;
 
         try {
             // try to read the requested resource
@@ -1528,50 +1531,9 @@ public final class OpenCmsCore {
                     cms.getRequestContext().getUri()));
             }
 
-            // check online project
-            if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
-                // check if resource is secure
-                boolean secure = Boolean.valueOf(
-                    cms.readPropertyObject(cms.getSitePath(resource), CmsPropertyDefinition.PROPERTY_SECURE, true).getValue()).booleanValue();
-                if (secure) {
-                    // resource is secure, check site config
-                    CmsSite site = OpenCms.getSiteManager().getCurrentSite(cms);
-                    // check the secure url
-                    String secureUrl = null;
-                    try {
-                        secureUrl = site.getSecureUrl();
-                    } catch (Exception e) {
-                        LOG.error(
-                            Messages.get().getBundle().key(Messages.ERR_SECURE_SITE_NOT_CONFIGURED_1, resourceName),
-                            e);
-                        throw new CmsException(Messages.get().container(
-                            Messages.ERR_SECURE_SITE_NOT_CONFIGURED_1,
-                            resourceName), e);
-                    }
-                    boolean usingSec = true;
-                    if (req != null) {
-                        usingSec = req.getRequestURL().toString().toUpperCase().startsWith(secureUrl.toUpperCase());
-                    }
-                    if (site.isExclusiveUrl() && !usingSec) {
-                        resource = null;
-                        // secure resource without secure protocol, check error config
-                        if (site.isExclusiveError()) {
-                            // trigger 404 error
-                            throw new CmsVfsResourceNotFoundException(Messages.get().container(
-                                Messages.ERR_REQUEST_SECURE_RESOURCE_0));
-                        } else {
-                            // redirect
-                            String target = OpenCms.getLinkManager().getOnlineLink(
-                                cms,
-                                cms.getRequestContext().getUri());
-                            try {
-                                res.sendRedirect(target);
-                            } catch (Exception e) {
-                                // ignore, but should never happen
-                            }
-                        }
-                    }
-                }
+            resource = handleSecureResource(cms, req, res, resource, resourceName);
+            if (resource == null) {
+                handledSecure = true;
             }
         }
 
@@ -1601,6 +1563,11 @@ public final class OpenCmsCore {
                 throw new CmsVfsResourceNotFoundException(org.opencms.main.Messages.get().container(
                     org.opencms.main.Messages.ERR_PATH_NOT_FOUND_1,
                     resourceName));
+            }
+        } else {
+            if (!handledSecure) {
+                resource = handleSecureResource(cms, req, res, resource, cms.getRequestContext().getUri());
+                handledSecure = true;
             }
         }
 
@@ -2296,6 +2263,89 @@ public final class OpenCmsCore {
         }
 
         return m_authorizationHandler.getLoginFormURL(loginFormURL, params, callbackURL);
+    }
+
+    /**
+     * If we are in the Online project, check if the given resource is marked as secure, and handle it according to the secure server configuration.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param req the current request
+     * @param res the current response
+     * @param resource the resource to check 
+     * @param resourceName the resource path from the request 
+     * 
+     * @return the resource to replace the original resource 
+     * 
+     * @throws CmsException if something goes wrong 
+     * @throws CmsVfsResourceNotFoundException if the resource could not be found 
+     */
+    private CmsResource handleSecureResource(
+        CmsObject cms,
+        HttpServletRequest req,
+        HttpServletResponse res,
+        CmsResource resource,
+        String resourceName) throws CmsException, CmsVfsResourceNotFoundException {
+
+        // check online project
+        if (cms.getRequestContext().getCurrentProject().isOnlineProject() && (res != null)) {
+            // check if resource is secure
+            boolean secure = Boolean.valueOf(
+                cms.readPropertyObject(cms.getSitePath(resource), CmsPropertyDefinition.PROPERTY_SECURE, true).getValue()).booleanValue();
+            if (secure) {
+                CmsResource resource1 = resource;
+                // resource is secure, check site config
+                CmsSite site = OpenCms.getSiteManager().getCurrentSite(cms);
+                // check the secure url
+                String secureUrl = null;
+                try {
+                    secureUrl = site.getSecureUrl();
+                } catch (Exception e) {
+                    LOG.error(
+                        Messages.get().getBundle().key(Messages.ERR_SECURE_SITE_NOT_CONFIGURED_1, resourceName),
+                        e);
+                    throw new CmsException(Messages.get().container(
+                        Messages.ERR_SECURE_SITE_NOT_CONFIGURED_1,
+                        resourceName), e);
+                }
+                boolean usingSec = true;
+                if (req != null) {
+                    usingSec = req.getRequestURL().toString().toUpperCase().startsWith(secureUrl.toUpperCase());
+                }
+                if (site.isExclusiveUrl() && !usingSec) {
+                    resource1 = null;
+                    // secure resource without secure protocol, check error config
+                    if (site.isExclusiveError()) {
+                        // trigger 404 error
+                        throw new CmsVfsResourceNotFoundException(Messages.get().container(
+                            Messages.ERR_REQUEST_SECURE_RESOURCE_0));
+                    } else {
+                        // redirect
+                        String target = OpenCms.getLinkManager().getOnlineLink(cms, cms.getRequestContext().getUri());
+                        if (!target.toLowerCase().startsWith(secureUrl.toLowerCase())) {
+                            Optional<String> targetWithReplacedHost = CmsStringUtil.replacePrefix(
+                                target,
+                                site.getSiteMatcher().getUrl(),
+                                secureUrl,
+                                true);
+                            if (targetWithReplacedHost.isPresent()) {
+                                target = targetWithReplacedHost.get();
+                            }
+                            if (!target.toLowerCase().startsWith(secureUrl.toLowerCase())) {
+                                LOG.error("Failed to generate secure URL for " + target + ", site = " + site);
+                            }
+
+                        }
+                        try {
+                            res.sendRedirect(target);
+                        } catch (Exception e) {
+                            // ignore, but should never happen
+                        }
+                    }
+                }
+                resource = resource1;
+            }
+        }
+        return resource;
     }
 
     /**

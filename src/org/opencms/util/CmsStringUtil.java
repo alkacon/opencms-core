@@ -59,6 +59,7 @@ import org.apache.oro.text.perl.Perl5Util;
 import com.cybozu.labs.langdetect.Detector;
 import com.cybozu.labs.langdetect.DetectorFactory;
 import com.cybozu.labs.langdetect.LangDetectException;
+import com.google.common.base.Optional;
 
 /**
  * Provides String utility functions.<p>
@@ -1237,6 +1238,29 @@ public final class CmsStringUtil {
     public static String padRight(String input, int size) {
 
         return (new PrintfFormat("%-" + size + "s")).sprintf(input);
+    }
+
+    /**
+     * Replaces a constant prefix with another string constant in a given text.<p>
+     * 
+     * If the input string does not start with the given prefix, Optional.absent() is returned.<p>
+     * 
+     * @param text the text for which to replace the prefix 
+     * @param origPrefix the original prefix 
+     * @param newPrefix the replacement prefix
+     * @param ignoreCase if true, upper-/lower case differences will be ignored  
+     *  
+     * @return an Optional containing either the string with the replaced prefix, or an absent value if the prefix could not be replaced 
+     */
+    public static Optional<String> replacePrefix(String text, String origPrefix, String newPrefix, boolean ignoreCase) {
+
+        String prefixTestString = ignoreCase ? text.toLowerCase() : text;
+        origPrefix = ignoreCase ? origPrefix.toLowerCase() : origPrefix;
+        if (prefixTestString.startsWith(origPrefix)) {
+            return Optional.of(newPrefix + text.substring(origPrefix.length()));
+        } else {
+            return Optional.absent();
+        }
     }
 
     /**
