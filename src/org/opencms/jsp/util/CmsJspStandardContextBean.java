@@ -48,6 +48,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsCollectionsGenericWrapper;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsContainerBean;
@@ -65,6 +66,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.logging.Log;
@@ -769,6 +771,10 @@ public final class CmsJspStandardContextBean {
         } catch (CmsException e) {
             // should not happen
             m_cms = cms;
+        }
+
+        if(m_request instanceof HttpServletRequest) {
+            CmsRequestUtil.warpRequestTime(m_cms, (HttpServletRequest) m_request);
         }
     }
 
