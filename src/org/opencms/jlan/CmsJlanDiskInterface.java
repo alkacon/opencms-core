@@ -113,7 +113,9 @@ public class CmsJlanDiskInterface implements DiskInterface {
         List<String> nonEmptySegments = new ArrayList<String>();
         for (String segment : segments) {
             if (segment.length() > 0) {
-                String translatedSegment = OpenCms.getResourceManager().getFileTranslator().translateResource(segment);
+                String translatedSegment = "*".equals(segment)
+                ? "*"
+                : OpenCms.getResourceManager().getFileTranslator().translateResource(segment);
                 nonEmptySegments.add(translatedSegment);
             }
         }
