@@ -117,6 +117,10 @@ public class CmsCurrentPageProject implements I_CmsVirtualProject {
                 try {
                     CmsResource resource = cms.readResource(new CmsUUID(id), CmsResourceFilter.ALL);
                     resources.add(resource);
+                    CmsResource parent = cms.readParentFolder(resource.getStructureId());
+                    if (!parent.getState().isUnchanged()) {
+                        resources.add(parent);
+                    }
                 } catch (CmsException e) {
                     LOG.error(e.getLocalizedMessage(), e);
                 }
