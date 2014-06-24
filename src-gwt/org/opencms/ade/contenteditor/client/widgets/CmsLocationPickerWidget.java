@@ -28,6 +28,7 @@
 package org.opencms.ade.contenteditor.client.widgets;
 
 import com.alkacon.acacia.client.widgets.I_EditWidget;
+import com.alkacon.geranium.client.I_HasResizeOnShow;
 
 import org.opencms.gwt.client.ui.input.location.CmsLocationPicker;
 
@@ -45,7 +46,7 @@ import com.google.gwt.user.client.ui.Composite;
  * set in the configuration string of the xsd is shown.<p>
  *  
  * */
-public class CmsLocationPickerWidget extends Composite implements I_EditWidget {
+public class CmsLocationPickerWidget extends Composite implements I_EditWidget, I_HasResizeOnShow {
 
     /** Value of the activation. */
     private boolean m_active = true;
@@ -120,6 +121,14 @@ public class CmsLocationPickerWidget extends Composite implements I_EditWidget {
 
         return getElement().isOrHasChild(element);
 
+    }
+
+    /**
+     * @see com.alkacon.geranium.client.I_HasResizeOnShow#resizeOnShow()
+     */
+    public void resizeOnShow() {
+
+        m_locationPicker.resizeOnShow();
     }
 
     /**

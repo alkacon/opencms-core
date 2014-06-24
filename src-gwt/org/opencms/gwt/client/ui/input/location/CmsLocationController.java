@@ -360,6 +360,18 @@ public class CmsLocationController {
     }
 
     /**
+     * Ensures the preview map has the right size and is centered.<p>
+     */
+    protected native void onPreviewResize()/*-{
+                                           var map = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_previewMap;
+                                           if (map != null) {
+                                           $wnd.google.maps.event.trigger(map, 'resize');
+                                           var pos = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::getCurrentPosition()();
+                                           map.setCenter(pos);
+                                           }
+                                           }-*/;
+
+    /**
      * Called on map type change.<p>
      * 
      * @param type the map type
@@ -510,7 +522,7 @@ public class CmsLocationController {
                                  } else {
                                  marker.setPosition(pos);
                                  }
-                                 map.panTo(pos);
+                                 $wnd.google.maps.event.trigger(map, 'resize');
                                  map.setCenter(pos);
 
                                  }-*/;

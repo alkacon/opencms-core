@@ -27,6 +27,8 @@
 
 package org.opencms.gwt.client.ui.input.location;
 
+import com.alkacon.geranium.client.I_HasResizeOnShow;
+
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
@@ -54,7 +56,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 /**
  * A google maps based location picker widget.<p>
  */
-public class CmsLocationPicker extends Composite implements HasValueChangeHandlers<String> {
+public class CmsLocationPicker extends Composite implements HasValueChangeHandlers<String>, I_HasResizeOnShow {
 
     /**
      * @see com.google.gwt.uibinder.client.UiBinder
@@ -131,6 +133,14 @@ public class CmsLocationPicker extends Composite implements HasValueChangeHandle
     public String getStringValue() {
 
         return m_controller.getStringValue();
+    }
+
+    /**
+     * @see com.alkacon.geranium.client.I_HasResizeOnShow#resizeOnShow()
+     */
+    public void resizeOnShow() {
+
+        m_controller.onPreviewResize();
     }
 
     /**
