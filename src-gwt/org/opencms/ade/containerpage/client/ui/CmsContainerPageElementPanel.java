@@ -421,7 +421,11 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
                             Element target = event.getNativeEvent().getEventTarget().cast();
                             while ((target != null)
                                 && !target.getTagName().equalsIgnoreCase("a")
-                                && (target != getElement())) {
+                                && (target != getElement())
+                                // stop in case of a nested container element
+                                && !CmsDomUtil.hasClass(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElement(), target)
+                                // stop in case of a nested container 
+                                && !CmsDomUtil.hasClass(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragTarget(), target)) {
                                 if (CmsContentEditor.isEditable(target)) {
                                     EditorBase.markForInlineFocus(target);
                                     controller.getHandler().openEditorForElement(
