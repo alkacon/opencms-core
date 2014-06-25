@@ -38,6 +38,7 @@ import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -105,13 +106,13 @@ public class CmsUsersCsvDownloadDialog extends A_CmsUserDataImexportDialog {
      */
     public String generateCsv() {
 
-        Map objects = getData();
+        Map<String, List<String>> objects = getData();
 
         // get the data object from session
-        List groups = (List)objects.get("groups");
-        List roles = (List)objects.get("roles");
+        List<String> groups = objects.get("groups");
+        List<String> roles = objects.get("roles");
 
-        Map exportUsers = new HashMap();
+        Map<CmsUUID, CmsUser> exportUsers = new HashMap<CmsUUID, CmsUser>();
         try {
             if (((groups == null) || (groups.size() < 1)) && ((roles == null) || (roles.size() < 1))) {
                 exportUsers = getExportAllUsers(exportUsers);
@@ -127,10 +128,10 @@ public class CmsUsersCsvDownloadDialog extends A_CmsUserDataImexportDialog {
         CmsUserExportSettings settings = OpenCms.getImportExportManager().getUserExportSettings();
 
         String separator = CmsStringUtil.substitute(settings.getSeparator(), "\\t", "\t");
-        List values = settings.getColumns();
+        List<String> values = settings.getColumns();
 
         buffer.append("name");
-        Iterator itValues = values.iterator();
+        Iterator<String> itValues = values.iterator();
         while (itValues.hasNext()) {
             buffer.append(separator);
             buffer.append(itValues.next());
@@ -152,7 +153,7 @@ public class CmsUsersCsvDownloadDialog extends A_CmsUserDataImexportDialog {
             itValues = values.iterator();
             while (itValues.hasNext()) {
                 buffer.append(separator);
-                String curValue = (String)itValues.next();
+                String curValue = itValues.next();
                 try {
                     Method method = CmsUser.class.getMethod("get"
                         + curValue.substring(0, 1).toUpperCase()
@@ -191,8 +192,6 @@ public class CmsUsersCsvDownloadDialog extends A_CmsUserDataImexportDialog {
         res.setHeader(
             "Content-Disposition",
             new StringBuffer("attachment; filename=\"").append(filename).append("\"").toString());
-        res.setContentLength(buffer.length());
-
         return buffer.toString();
     }
 
@@ -250,9 +249,9 @@ public class CmsUsersCsvDownloadDialog extends A_CmsUserDataImexportDialog {
      * 
      * @return the export options data
      */
-    protected Map getData() {
+    protected Map<String, List<String>> getData() {
 
-        return (Map)((Map)getSettings().getDialogObject()).get(CmsUserDataExportDialog.class.getName());
+        return (Map<String, List<String>>)((Map<String, Object>)getSettings().getDialogObject()).get(CmsUserDataExportDialog.class.getName());
     }
 
     /**
@@ -274,13 +273,13 @@ public class CmsUsersCsvDownloadDialog extends A_CmsUserDataImexportDialog {
      * 
      * @throws CmsException if getting users failed
      */
-    protected Map getExportAllUsers(Map exportUsers) throws CmsException {
+    protected Map<CmsUUID, CmsUser> getExportAllUsers(Map<CmsUUID, CmsUser> exportUsers) throws CmsException {
 
-        List users = OpenCms.getOrgUnitManager().getUsers(getCms(), getParamOufqn(), false);
+        List<CmsUser> users = OpenCms.getOrgUnitManager().getUsers(getCms(), getParamOufqn(), false);
         if ((users != null) && (users.size() > 0)) {
-            Iterator itUsers = users.iterator();
+            Iterator<CmsUser> itUsers = users.iterator();
             while (itUsers.hasNext()) {
-                CmsUser user = (CmsUser)itUsers.next();
+                CmsUser user = itUsers.next();
                 if (!exportUsers.containsKey(user.getId())) {
                     exportUsers.put(user.getId(), user);
                 }
@@ -299,15 +298,16 @@ public class CmsUsersCsvDownloadDialog extends A_CmsUserDataImexportDialog {
      * 
      * @throws CmsException if getting groups or users of group failed
      */
-    protected Map getExportUsersFromGroups(List groups, Map exportUsers) throws CmsException {
+    protected Map<CmsUUID, CmsUser> getExportUsersFromGroups(List<String> groups, Map<CmsUUID, CmsUser> exportUsers)
+    throws CmsException {
 
         if ((groups != null) && (groups.size() > 0)) {
-            Iterator itGroups = groups.iterator();
+            Iterator<String> itGroups = groups.iterator();
             while (itGroups.hasNext()) {
-                List groupUsers = getCms().getUsersOfGroup((String)itGroups.next());
-                Iterator itGroupUsers = groupUsers.iterator();
+                List<CmsUser> groupUsers = getCms().getUsersOfGroup(itGroups.next());
+                Iterator<CmsUser> itGroupUsers = groupUsers.iterator();
                 while (itGroupUsers.hasNext()) {
-                    CmsUser groupUser = (CmsUser)itGroupUsers.next();
+                    CmsUser groupUser = itGroupUsers.next();
                     if (!exportUsers.containsKey(groupUser.getId())) {
                         exportUsers.put(groupUser.getId(), groupUser);
                     }
@@ -327,19 +327,20 @@ public class CmsUsersCsvDownloadDialog extends A_CmsUserDataImexportDialog {
      * 
      * @throws CmsException if getting roles or users of role failed
      */
-    protected Map getExportUsersFromRoles(List roles, Map exportUsers) throws CmsException {
+    protected Map<CmsUUID, CmsUser> getExportUsersFromRoles(List<String> roles, Map<CmsUUID, CmsUser> exportUsers)
+    throws CmsException {
 
         if ((roles != null) && (roles.size() > 0)) {
-            Iterator itRoles = roles.iterator();
+            Iterator<String> itRoles = roles.iterator();
             while (itRoles.hasNext()) {
-                List roleUsers = OpenCms.getRoleManager().getUsersOfRole(
+                List<CmsUser> roleUsers = OpenCms.getRoleManager().getUsersOfRole(
                     getCms(),
-                    CmsRole.valueOfGroupName((String)itRoles.next()).forOrgUnit(getParamOufqn()),
+                    CmsRole.valueOfGroupName(itRoles.next()).forOrgUnit(getParamOufqn()),
                     true,
                     false);
-                Iterator itRoleUsers = roleUsers.iterator();
+                Iterator<CmsUser> itRoleUsers = roleUsers.iterator();
                 while (itRoleUsers.hasNext()) {
-                    CmsUser roleUser = (CmsUser)itRoleUsers.next();
+                    CmsUser roleUser = itRoleUsers.next();
                     // contains
                     if (exportUsers.get(roleUser.getId()) == null) {
                         exportUsers.put(roleUser.getId(), roleUser);
