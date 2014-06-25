@@ -57,6 +57,7 @@ import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
@@ -64,9 +65,11 @@ import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.scheduler.CmsScheduledJobInfo;
 import org.opencms.scheduler.jobs.CmsPublishScheduledJob;
+import org.opencms.security.CmsPasswordInfo;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleManager;
+import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -98,6 +101,8 @@ import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Provides general core services.<p>
  * 
@@ -120,6 +125,9 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
     /** The xml-content editor URI. */
     private static final String EDITOR_URI = "/system/workplace/editors/editor.jsp";
+
+    /** The log instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsCoreService.class);
 
     /** Serialization uid. */
     private static final long serialVersionUID = 5915848952948986278L;
@@ -499,6 +507,34 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             result.add(bean);
         }
         return result;
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#changePassword(java.lang.String, java.lang.String, java.lang.String)
+     */
+    public String changePassword(String oldPassword, String newPassword, String newPasswordConfirm)
+    throws CmsRpcException {
+
+        System.out.println("changing password from " + oldPassword + " to " + newPassword);
+        CmsObject cms = getCmsObject();
+        CmsPasswordInfo passwordBean = new CmsPasswordInfo(cms);
+        Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+        try {
+            passwordBean.setCurrentPwd(oldPassword);
+            passwordBean.setNewPwd(newPassword);
+            passwordBean.setConfirmation(newPasswordConfirm);
+            passwordBean.applyChanges();
+            return null;
+        } catch (CmsSecurityException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            return e.getMessageContainer().key(wpLocale);
+        } catch (CmsIllegalArgumentException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+            return e.getMessageContainer().key(wpLocale);
+        } catch (Exception e) {
+            error(e);
+            return null; // will never be executed 
+        }
     }
 
     /**

@@ -58,6 +58,20 @@ import com.google.gwt.user.client.rpc.RemoteService;
 public interface I_CmsCoreService extends RemoteService {
 
     /**
+     * Changes the password of the current user.<p>
+     * 
+     * @param oldPassword the old password 
+     * @param newPassword the value entered for the new password 
+     * @param newPasswordConfirm the value entered for the confirmation of the new password 
+     * 
+     * @return an error message if an error occurred, or null if the password was successfully changed 
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    public String changePassword(String oldPassword, String newPassword, String newPasswordConfirm)
+    throws CmsRpcException;
+
+    /**
     * Creates a new UUID.<p>
     * 
     * @return the created UUID

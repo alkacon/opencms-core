@@ -58,6 +58,21 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
 public interface I_CmsCoreServiceAsync {
 
     /**
+     * Changes the password of the current user.<p>
+     * 
+     * @param oldPassword the old password 
+     * @param newPassword the value entered for the new password 
+     * @param newPasswordConfirm the value entered for the confirmation of the new password
+     *  
+     * @param callback the callback for the result 
+     */
+    void changePassword(
+        String oldPassword,
+        String newPassword,
+        String newPasswordConfirm,
+        AsyncCallback<String> callback);
+
+    /**
      * Creates a new UUID.<p>
      * 
      * @param callback the async callback
@@ -144,15 +159,6 @@ public interface I_CmsCoreServiceAsync {
     void getWorkplaceLink(CmsUUID structureId, AsyncCallback<String> callback);
 
     /**
-     * Locks the given resource with a temporary lock.<p>
-     * 
-     * @param structureId the resource structure id  
-     * @param callback the async callback
-     */
-    @SynchronizedRpcRequest
-    void lockTemp(CmsUUID structureId, AsyncCallback<String> callback);
-
-    /**
      * Locks the given resource with a temporary lock if it exists.<p>
      * If the resource does not exist yet, the closest existing ancestor folder will check if it is lockable.<p>
      * 
@@ -160,6 +166,15 @@ public interface I_CmsCoreServiceAsync {
      * @param callback the async callback
      */
     void lockIfExists(String sitePath, AsyncCallback<String> callback);
+
+    /**
+     * Locks the given resource with a temporary lock.<p>
+     * 
+     * @param structureId the resource structure id  
+     * @param callback the async callback
+     */
+    @SynchronizedRpcRequest
+    void lockTemp(CmsUUID structureId, AsyncCallback<String> callback);
 
     /**
      * Locks the given resource with a temporary lock additionally checking that 

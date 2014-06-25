@@ -442,6 +442,18 @@ public final class Messages {
     public static final String GUI_ORIGIN_SHARED_0 = "GUI_ORIGIN_SHARED_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PASSWORD_CHANGE_TITLE_0 = "GUI_PASSWORD_CHANGE_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PASSWORD_CONFIRM_0 = "GUI_PASSWORD_CONFIRM_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PASSWORD_NEW_0 = "GUI_PASSWORD_NEW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PASSWORD_OLD_0 = "GUI_PASSWORD_OLD_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PLEASE_WAIT_0 = "GUI_PLEASE_WAIT_0";
 
     /** Message constant for key in the resource bundle. */
