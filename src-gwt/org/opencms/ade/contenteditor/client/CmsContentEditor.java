@@ -1119,6 +1119,7 @@ public final class CmsContentEditor extends EditorBase {
             m_registeredEntities.remove(m_entityId);
             m_changedEntityIds.remove(m_entityId);
             m_deletedEntities.add(m_entityId);
+            getValidationHandler().getValidationContext().removeEntityId(m_entityId);
             unregistereEntity(m_entityId);
             enableSave();
             String nextLocale = null;
