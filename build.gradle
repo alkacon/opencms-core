@@ -794,6 +794,7 @@ task updater (dependsOn: setupJar, type: Zip){
         include 'classes/repository.properties'
         include 'sun-jaxws.xml'
         include 'wsdl/**'
+        include 'spellcheck/**'
     }
     from ("${project.buildDir}/libs") {
         include 'opencms.jar'
