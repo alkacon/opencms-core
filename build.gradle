@@ -871,7 +871,9 @@ task testSingle(type: Test, dependsOn: [compileTestJava]) {
             testCaseToRun='org/opencms/main/TestCmsSystemInfo*'
         }
     }
-    println "Running test case : ${testCaseToRun}"    
+    doFirst{
+        println "Running test case : ${testCaseToRun}"
+    }    
     include testCaseToRun
     // important: exclude all anonymous classes
     exclude '**/*$*.class'

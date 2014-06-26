@@ -225,7 +225,9 @@ public class TestCmsSystemInfo extends OpenCmsTestCase {
             value = info.get("build.info");
             assertEquals("Static version file", value[0]);
             assertEquals("build.info", value[1]);
-        } else if (versionId.startsWith("Release") || versionId.startsWith("Nightly")) {
+        } else if (versionId.startsWith("Release")
+            || versionId.startsWith("Nightly")
+            || versionId.startsWith("Milestone")) {
             // assume a build triggered by the Jenkins CI system
 
             Map<String, String[]> info = OpenCms.getSystemInfo().getBuildInfo();
