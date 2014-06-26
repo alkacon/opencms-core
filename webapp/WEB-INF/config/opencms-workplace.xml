@@ -375,6 +375,7 @@
 					<defaultproperties enabled="true" shownavigation="false">
 						<defaultproperty name="Title" />
 						<defaultproperty name="Description" />
+						<defaultproperty name="Copyright" />
 					</defaultproperties>
 					<contextmenu>
 						<entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp"
@@ -566,6 +567,7 @@
 				<editoptions>
 					<defaultproperties enabled="true" shownavigation="false">
 						<defaultproperty name="Title" />
+						<defaultproperty name="Copyright" />
 					</defaultproperties>
 					<contextmenu>
 						<entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp"
