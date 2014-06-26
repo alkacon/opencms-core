@@ -365,7 +365,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_defaults)) {
             String[] defaults = m_defaults.split("\\|");
             for (int i = 0; i < defaults.length; i++) {
-                cssIncludes.add(defaults[i]);
+                cssIncludes.add(defaults[i].trim());
             }
         }
 
@@ -465,7 +465,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_defaults)) {
             String[] defaults = m_defaults.split("\\|");
             for (int i = 0; i < defaults.length; i++) {
-                jsIncludes.add(defaults[i]);
+                jsIncludes.add(defaults[i].trim());
             }
         }
         collectHeadIncludesForContainerElement(
