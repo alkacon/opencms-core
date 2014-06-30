@@ -1566,8 +1566,12 @@ public final class OpenCmsCore {
             }
         } else {
             if (!handledSecure) {
-                resource = handleSecureResource(cms, req, res, resource, cms.getRequestContext().getUri());
-                handledSecure = true;
+                if (cms.getRequestContext().getDetailContentId() != null) {
+                    // in theory we should do this for all kinds of resource init handlers, 
+                    // but I'm not clear on how to handle this in general, so only do this for detail pages for now 
+                    resource = handleSecureResource(cms, req, res, resource, resourceName);
+                    handledSecure = true;
+                }
             }
         }
 
@@ -2288,9 +2292,16 @@ public final class OpenCmsCore {
 
         // check online project
         if (cms.getRequestContext().getCurrentProject().isOnlineProject() && (res != null)) {
-            // check if resource is secure
-            boolean secure = Boolean.valueOf(
-                cms.readPropertyObject(cms.getSitePath(resource), CmsPropertyDefinition.PROPERTY_SECURE, true).getValue()).booleanValue();
+            boolean secure = false;
+            try {
+                // check if resource is secure
+                secure = Boolean.valueOf(
+                    cms.readPropertyObject(cms.getSitePath(resource), CmsPropertyDefinition.PROPERTY_SECURE, true).getValue()).booleanValue();
+            } catch (CmsVfsResourceNotFoundException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
             if (secure) {
                 CmsResource resource1 = resource;
                 // resource is secure, check site config
@@ -2320,7 +2331,7 @@ public final class OpenCmsCore {
                             Messages.ERR_REQUEST_SECURE_RESOURCE_0));
                     } else {
                         // redirect
-                        String target = OpenCms.getLinkManager().getOnlineLink(cms, cms.getRequestContext().getUri());
+                        String target = OpenCms.getLinkManager().getOnlineLink(cms, resourceName);
                         if (!target.toLowerCase().startsWith(secureUrl.toLowerCase())) {
                             Optional<String> targetWithReplacedHost = CmsStringUtil.replacePrefix(
                                 target,
@@ -2331,7 +2342,7 @@ public final class OpenCmsCore {
                                 target = targetWithReplacedHost.get();
                             }
                             if (!target.toLowerCase().startsWith(secureUrl.toLowerCase())) {
-                                LOG.error("Failed to generate secure URL for " + target + ", site = " + site);
+                                LOG.warn("Failed to generate secure URL for " + target + ", site = " + site);
                             }
 
                         }
@@ -2344,6 +2355,7 @@ public final class OpenCmsCore {
                 }
                 resource = resource1;
             }
+
         }
         return resource;
     }
