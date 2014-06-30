@@ -27,6 +27,8 @@
 
 package org.opencms.xml.content;
 
+import org.opencms.util.CmsStringUtil;
+
 import java.io.Serializable;
 
 /**
@@ -319,6 +321,29 @@ public class CmsXmlContentProperty implements Serializable {
 
         return (m_preferFolder == null) || Boolean.valueOf(m_preferFolder).booleanValue();
 
+    }
+
+    /**
+     * Copies a property definition, but replaces an empty widget with a given widget.<p>
+     * 
+     * @param defaultWidget the widget to use if the set widget is empty 
+     * 
+     * @return the copied property definition
+     */
+    public CmsXmlContentProperty withDefaultWidget(String defaultWidget) {
+
+        return new CmsXmlContentProperty(
+            m_name,
+            m_type,
+            CmsStringUtil.isEmptyOrWhitespaceOnly(m_widget) ? defaultWidget : m_widget,
+            m_widgetConfiguration,
+            m_ruleRegex,
+            m_ruleType,
+            m_default,
+            m_niceName,
+            m_description,
+            m_error,
+            m_preferFolder);
     }
 
     /**

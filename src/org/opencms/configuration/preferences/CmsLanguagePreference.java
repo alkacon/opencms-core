@@ -1,0 +1,79 @@
+/*
+ * This library is part of OpenCms -
+ * the Open Source Content Management System
+ *
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package org.opencms.configuration.preferences;
+
+import org.opencms.file.CmsObject;
+import org.opencms.main.OpenCms;
+import org.opencms.workplace.commons.CmsPreferences;
+import org.opencms.workplace.commons.CmsPreferences.SelectOptions;
+import org.opencms.xml.content.CmsXmlContentProperty;
+
+import java.util.Locale;
+
+/**
+ * Workplace locale preference.<p>
+ */
+public class CmsLanguagePreference extends CmsBuiltinPreference {
+
+    /**
+     * Creates a new instance 
+     * 
+     * @param name the name
+     */
+    public CmsLanguagePreference(String name) {
+
+        super(name);
+        m_basic = true;
+    }
+
+    /**
+     * @see org.opencms.configuration.preferences.CmsBuiltinPreference#getPropertyDefinition(org.opencms.file.CmsObject)
+     */
+    @Override
+    public CmsXmlContentProperty getPropertyDefinition(CmsObject cms) {
+
+        Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+        String niceName = org.opencms.workplace.commons.Messages.get().getBundle(locale).key(
+            org.opencms.workplace.commons.Messages.GUI_LABEL_LANGUAGE_0);
+        SelectOptions options = CmsPreferences.getOptionsForLanguageStatic(locale, Locale.ENGLISH);
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(),//name
+            "string",//type
+            "select_notnull",//widget
+            options.toClientSelectWidgetConfiguration(),//widgetconfig
+            null,//regex
+            null,//ruletype
+            null,//default
+            niceName,//nicename
+            null,//description
+            null,//error
+            null//preferfolder
+        );
+        return prop;
+    }
+
+}

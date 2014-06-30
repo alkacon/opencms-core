@@ -43,7 +43,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-/**
+/** 
  * A user principal in the OpenCms permission system.<p>
  *
  * A user in OpenCms is uniquely defined by its user named returned by
@@ -201,19 +201,6 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
         } else {
             return user.getFullName();
         }
-    }
-
-    /**
-     * Returns the institution information of this user.<p>
-     * 
-     * This information is stored in the "additional information" storage map
-     * using the key <code>{@link CmsUserSettings#ADDITIONAL_INFO_INSTITUTION}</code>.<p>
-     * 
-     * @return the institution information of this user
-     */
-    public String getInstitution() {
-
-        return (String)getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_INSTITUTION);
     }
 
     /**
@@ -417,6 +404,19 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
         buf.append(getSimpleName());
         buf.append(")");
         return buf.toString();
+    }
+
+    /**
+     * Returns the institution information of this user.<p>
+     * 
+     * This information is stored in the "additional information" storage map
+     * using the key <code>{@link CmsUserSettings#ADDITIONAL_INFO_INSTITUTION}</code>.<p>
+     * 
+     * @return the institution information of this user
+     */
+    public String getInstitution() {
+
+        return (String)getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_INSTITUTION);
     }
 
     /**

@@ -61,6 +61,9 @@ public class CmsSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> implements 
     /** The widget type identifier. */
     private static final String WIDGET_TYPE = "select";
 
+    /** Widget type identifier (no null value). */
+    private static final String WIDGET_TYPE_NOTNULL = "select_notnull";
+
     /** The ghost value. */
     protected String m_ghostValue;
 
@@ -146,6 +149,18 @@ public class CmsSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> implements 
                 return new CmsSelectBox(widgetParams, true);
             }
         });
+
+        CmsWidgetFactoryRegistry.instance().registerFactory(WIDGET_TYPE_NOTNULL, new I_CmsFormWidgetFactory() {
+
+            /**
+             * @see org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory#createWidget(java.util.Map)
+             */
+            public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
+
+                return new CmsSelectBox(widgetParams, false);
+            }
+        });
+
     }
 
     /**

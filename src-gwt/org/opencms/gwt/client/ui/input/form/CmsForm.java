@@ -39,6 +39,7 @@ import org.opencms.gwt.shared.CmsValidationResult;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -578,10 +579,14 @@ public class CmsForm {
                         CmsExtendedValueChangeEvent extEvent = (CmsExtendedValueChangeEvent)event;
                         inhibitValidation = extEvent.isInhibitValidation();
                     }
-                    if ((event.getValue() instanceof String) || (event.getValue() == null)) {
+                    Object eventValue = event.getValue();
+                    if ((eventValue instanceof String) || (event.getValue() == null)) {
                         // only makes sense for strings 
                         defaultHandleValueChange(formField, (String)(event.getValue()), inhibitValidation);
+                    } else if (eventValue instanceof Date) {
+                        defaultHandleValueChange(formField, "" + ((Date)eventValue).getTime(), inhibitValidation);
                     }
+
                 }
             });
         }

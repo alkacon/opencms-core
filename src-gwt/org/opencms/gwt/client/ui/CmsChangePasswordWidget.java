@@ -113,7 +113,9 @@ public class CmsChangePasswordWidget extends Composite {
      */
     public static void showDialog() {
 
-        final CmsPopup popup = new CmsPopup(Messages.get().key(Messages.GUI_PASSWORD_CHANGE_TITLE_0), 500);
+        final CmsPopup popup = new CmsPopup(Messages.get().key(
+            Messages.GUI_PASSWORD_CHANGE_TITLE_1,
+            CmsCoreProvider.get().getUserInfo().getName()), 500);
         popup.setModal(true);
         popup.setGlassEnabled(true);
         CmsPushButton okButton = new CmsPushButton();

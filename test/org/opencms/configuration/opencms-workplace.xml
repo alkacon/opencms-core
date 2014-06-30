@@ -739,88 +739,63 @@
    	  </menurules>
     </explorertypes>
     <default-preferences>
-      <workplace-preferences>
-        <workplace-generaloptions>
-          <buttonstyle>textimage</buttonstyle>
-          <reporttype>extended</reporttype>
-          <uploadapplet>gwt</uploadapplet>
-          <publishbuttonappearance>always</publishbuttonappearance>
-          <listallprojects>false</listallprojects>
-          <publishnotification>false</publishnotification>
-          <show-fileuploadbutton>true</show-fileuploadbutton>
-          <allowbrokenrelations>false</allowbrokenrelations>
-          <publishrelatedresources>true</publishrelatedresources>
- 		  <newfolder-editproperties>true</newfolder-editproperties>
- 		  <newfolder-createindexpage>true</newfolder-createindexpage>
-    	  <show-uploadtypedialog>true</show-uploadtypedialog>
-        </workplace-generaloptions>
-        <workplace-startupsettings>
-          <locale>en</locale>
-          <project>Offline</project>
-          <workplaceview>/system/workplace/views/explorer/explorer_fs.jsp</workplaceview>
-          <folder>/</folder>
-          <site>/sites/default/</site>
-          <restrictexplorerview>false</restrictexplorerview>
-        </workplace-startupsettings>
-        <workplace-search>
-        	<searchindex-name>Offline project (VFS)</searchindex-name>
-        	<searchview-style>explorer</searchview-style>
-        </workplace-search>
-      </workplace-preferences>
-      <explorer-preferences>
-        <explorer-generaloptions>
-          <buttonstyle>textimage</buttonstyle>
-          <entries>50</entries>
-          <entryoptions>10,15,20,50</entryoptions>
-        </explorer-generaloptions>
-        <explorer-displayoptions>
-          <show-title>true</show-title>
-          <show-navtext>false</show-navtext>
-          <show-type>true</show-type>
-          <show-datelastmodified>true</show-datelastmodified>
-          <show-datecreated>false</show-datecreated>
-          <show-lockedby>false</show-lockedby>
-          <show-permissions>false</show-permissions>
-          <show-size>true</show-size>
-          <show-state>false</show-state>
-          <show-userlastmodified>false</show-userlastmodified>
-          <show-usercreated>false</show-usercreated>
-          <show-datereleased>true</show-datereleased>
-          <show-dateexpired>true</show-dateexpired>
-        </explorer-displayoptions>
-      </explorer-preferences>
-      <dialogs-preferences>
-        <dialogs-defaultsettings>
-          <filecopy>createresource</filecopy>
-          <foldercopy>preservesiblings</foldercopy>
-          <filedeletion>preservesiblings</filedeletion>
-          <directpublish>onlyresource</directpublish>
-          <showlock>false</showlock>
-          <showexportsettings>true</showexportsettings>
-          <expand-permissionsuser>false</expand-permissionsuser>
-          <expand-permissionsinherited>true</expand-permissionsinherited>
-          <permissions-inheritonfolder>true</permissions-inheritonfolder>
-        </dialogs-defaultsettings>
-      </dialogs-preferences>
-      <editors-preferences>
-        <editors-generaloptions>
-          <buttonstyle>image</buttonstyle>
-          <directeditstyle>image</directeditstyle>
-        </editors-generaloptions>
-        <editors-preferrededitors>
-          <editor type="plain" value="bestavailable"/>
-          <editor type="xmlpage" value="bestavailable"/>
-        </editors-preferrededitors>
-      </editors-preferences>
-      <galleries-preferences>
-        <startgalleries>
-          <startgallery type="downloadgallery" path="/demo_de/extra/extranet/dokumente/" />
-          <startgallery type="htmlgallery" path="/sites/default/demo_en/html/" />
-          <startgallery type="imagegallery" path="/sites/default/demo_en/images/" />
-          <startgallery type="linkgallery" path="/sites/default/demo_en/linkgallery/" />
-          <startgallery type="tablegallery" path="/sites/default/demo_en/table/" />
-        </startgalleries>
-      </galleries-preferences>
+      <preference name="old.allowBrokenRelations" value="false"/>
+      <preference name="old.dialogCopyFileMode" value="createresource"/>
+      <preference name="old.dialogCopyFolderMode" value="preservesiblings"/>
+      <preference name="old.dialogDeleteFileMode" value="preservesiblings"/>
+      <preference name="old.dialogExpandInheritedPermissions" value="true"/>
+      <preference name="old.dialogExpandUserPermissions" value="false"/>
+      <preference name="old.dialogPermissionsInheritOnFolder" value="true"/>
+      <preference name="old.dialogPublishSiblings" value="onlyresource"/>
+      <preference name="old.dialogShowExportSettings" value="true"/>
+      <preference name="old.dialogShowLock" value="false"/>
+      <preference name="old.directEditButtonStyle" value="image"/>
+      <preference name="old.editorButtonStyle" value="image"/>
+      <preference name="old.explorerButtonStyle" value="textimage"/>
+      <preference name="old.explorerFileEntries" value="50"/>
+      <preference name="old.explorerFileEntryOptions" value="10,15,20,50"/>
+      <preference name="old.listAllProjects" value="false"/>
+      <preference name="old.locale" value="en"/>
+      <preference name="old.newFolderCreateIndexPage" value="true"/>
+      <preference name="old.newFolderEditProperties" value="true"/>
+      <preference name="old.publishButtonAppearance" value="always"/>
+      <preference name="old.publishRelatedResourcesMode" value="true"/>
+      <preference name="old.restrictExplorerView" value="false"/>
+      <preference name="old.showExplorerFileDateCreated" value="false"/>
+      <preference name="old.showExplorerFileDateExpired" value="true"/>
+      <preference name="old.showExplorerFileDateLastModified" value="true"/>
+      <preference name="old.showExplorerFileDateReleased" value="true"/>
+      <preference name="old.showExplorerFileLockedBy" value="false"/>
+      <preference name="old.showExplorerFileNavText" value="false"/>
+      <preference name="old.showExplorerFilePermissions" value="false"/>
+      <preference name="old.showExplorerFileSize" value="true"/>
+      <preference name="old.showExplorerFileState" value="false"/>
+      <preference name="old.showExplorerFileTitle" value="true"/>
+      <preference name="old.showExplorerFileType" value="true"/>
+      <preference name="old.showExplorerFileUserCreated" value="false"/>
+      <preference name="old.showExplorerFileUserLastModified" value="false"/>
+      <preference name="old.showFileUploadButton" value="true"/>
+      <preference name="old.showPublishNotification" value="false"/>
+      <preference name="old.showUploadTypeDialog" value="true"/>
+      <preference name="old.startFolder" value="/"/>
+      <preference name="old.startProject" value="Offline"/>
+      <preference name="old.startSite" value="/sites/default/"/>
+      <preference name="old.startView" value="/system/workplace/views/explorer/explorer_fs.jsp"/>
+      <preference name="old.subsitemapCreationMode" value="convert"/>
+      <preference name="old.timeWarp" value="0"/>
+      <preference name="old.uploadAppletClientFolder"/>
+      <preference name="old.uploadVariant" value="gwt"/>
+      <preference name="old.workplaceButtonStyle" value="textimage"/>
+      <preference name="old.workplaceReportType" value="extended"/>
+      <preference name="old.workplaceSearchIndexName" value="Offline project (VFS)"/>
+      <preference name="old.workplaceSearchViewStyle" value="explorer"/>
+      <preference name="old.editor.plain" value="bestavailable"/>
+      <preference name="old.editor.xmlpage" value="bestavailable"/>
+      <preference name="old.gallery.tablegallery" value="/sites/default/demo_en/table/"/>
+      <preference name="old.gallery.linkgallery" value="/sites/default/demo_en/linkgallery/"/>
+      <preference name="old.gallery.imagegallery" value="/sites/default/demo_en/images/"/>
+      <preference name="old.gallery.downloadgallery" value="/demo_de/extra/extranet/dokumente/"/>
+      <preference name="old.gallery.htmlgallery" value="/sites/default/demo_en/html/"/>
     </default-preferences>
     <workplace-customfoot>
     	<color>InfoText</color>

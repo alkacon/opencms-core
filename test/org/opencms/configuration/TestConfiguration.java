@@ -73,8 +73,12 @@ public class TestConfiguration extends OpenCmsTestCase {
 
         // generate the configuration manager
         CmsConfigurationManager manager = new CmsConfigurationManager(inputFile);
+
         // now digest the XML
         manager.loadXmlConfiguration();
+        CmsWorkplaceConfiguration wpConfig = (CmsWorkplaceConfiguration)manager.getConfiguration(CmsWorkplaceConfiguration.class);
+        wpConfig.getWorkplaceManager().getDefaultUserSettings().initPreferences(wpConfig.getWorkplaceManager());
+
         // generate an output XML format
         List<I_CmsXmlConfiguration> allConfigurations = new ArrayList<I_CmsXmlConfiguration>();
         allConfigurations.add(manager);
@@ -94,7 +98,7 @@ public class TestConfiguration extends OpenCmsTestCase {
             InputSource source = new InputSource(new FileInputStream(xmlOrigFile));
             Document inputDoc = CmsXmlUtils.unmarshalHelper(source, new CmsXmlEntityResolver(null));
 
-            // output the document
+            // output the document 
             System.out.println("---");
             System.out.println(CmsXmlUtils.marshal(outputDoc, CmsEncoder.ENCODING_UTF_8));
             System.out.println("---");

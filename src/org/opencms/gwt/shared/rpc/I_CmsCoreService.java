@@ -37,12 +37,14 @@ import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsLockInfo;
 import org.opencms.gwt.shared.CmsResourceCategoryInfo;
 import org.opencms.gwt.shared.CmsReturnLinkInfo;
+import org.opencms.gwt.shared.CmsUserSettingsBean;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 
@@ -176,6 +178,15 @@ public interface I_CmsCoreService extends RemoteService {
     String getWorkplaceLink(CmsUUID structureId) throws CmsRpcException;
 
     /**
+     * Loads the user settings for the current user.<p>
+     * 
+     * @return the user settings for the current user 
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    CmsUserSettingsBean loadUserSettings() throws CmsRpcException;
+
+    /**
      * Locks the given resource with a temporary lock if it exists.<p>
      * If the resource does not exist yet, the closest existing ancestor folder will check if it is lockable.<p>
      * 
@@ -224,6 +235,16 @@ public interface I_CmsCoreService extends RemoteService {
      * @throws CmsRpcException if something goes wrong 
      */
     CmsCoreData prefetch() throws CmsRpcException;
+
+    /**
+     * Saves the user settings for the current user.<p>
+     * 
+     * @param userSettings the new values for the user settings 
+     * @param edited the keys of the user settings which were actually edited 
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    void saveUserSettings(Map<String, String> userSettings, Set<String> edited) throws CmsRpcException;
 
     /**
      * Applies the changes stored in the info bean to the vfs of OpenCms.<p>

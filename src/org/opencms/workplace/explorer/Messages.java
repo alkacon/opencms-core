@@ -108,6 +108,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_EXPLORER_CONTEXT_ADVANCED_HISTORY_0 = "GUI_EXPLORER_CONTEXT_ADVANCED_HISTORY_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_CONTEXT_USERSETTINGS_0 = "GUI_EXPLORER_CONTEXT_USERSETTINGS_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0 = "GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0";
 
     /** Message constant for key in the resource bundle. */

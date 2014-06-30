@@ -48,6 +48,7 @@ import org.opencms.gwt.shared.CmsCoreData.UserInfo;
 import org.opencms.gwt.shared.CmsLockInfo;
 import org.opencms.gwt.shared.CmsResourceCategoryInfo;
 import org.opencms.gwt.shared.CmsReturnLinkInfo;
+import org.opencms.gwt.shared.CmsUserSettingsBean;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
 import org.opencms.gwt.shared.rpc.I_CmsCoreService;
@@ -96,6 +97,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -158,7 +160,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             resUtil[0] = new CmsResourceUtil(cms, cms.readResource(structureId, CmsResourceFilter.ONLY_VISIBLE));
             CmsResource resource = resUtil[0].getResource();
             if (hasViewPermissions(cms, resource)) {
-
                 String fallbackType = resource.isFolder()
                 ? CmsResourceTypeFolder.getStaticTypeName()
                 : CmsResourceTypePlain.getStaticTypeName();
@@ -747,6 +748,63 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#loadUserSettings()
+     */
+    public CmsUserSettingsBean loadUserSettings() throws CmsRpcException {
+
+        CmsObject cms = getCmsObject();
+        CmsClientUserSettingConverter converter = new CmsClientUserSettingConverter(cms, getRequest(), getResponse());
+        try {
+            return converter.loadSettings();
+        } catch (Exception e) {
+            error(e);
+            return null;
+        }
+        //        CmsUserSettingsBean result = new CmsUserSettingsBean();
+        //        Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+        //        CmsMessages wpMessages = org.opencms.workplace.commons.Messages.get().getBundle(wpLocale);
+        //
+        //        CmsWorkplaceSettings workplaceSettings = CmsWorkplace.initAndStoreSettings(cms, getRequest().getSession());
+        //        SelectOptions options = CmsPreferences.getOptionsForLanguage(
+        //            workplaceSettings,
+        //            workplaceSettings.getUserSettings());
+        //
+        //        CmsXmlContentProperty languageProp = new CmsXmlContentProperty("language",//name
+        //            "string",//type
+        //            "select_notnull",//widget
+        //            options.toClientSelectWidgetConfiguration(),//widgetconfig
+        //            null,//regex
+        //            null,//ruletype
+        //            null,//default
+        //            wpMessages.key(org.opencms.workplace.commons.Messages.GUI_LABEL_LANGUAGE_0),//nicename
+        //            null,//description
+        //            null,//error
+        //            null//preferfolder
+        //        );
+        //        result.addSetting(wpLocale.toString(), languageProp);
+        //
+        //        for (int i = 0; i < 30; i++) {
+        //            String propName = "User setting " + i;
+        //            CmsXmlContentProperty prop = new CmsXmlContentProperty(propName,//name
+        //                "string",//type
+        //                "string",//widget
+        //                "",//widgetconfig
+        //                null,//regex
+        //                null,//ruletype
+        //                null,//default
+        //                null,//nicename
+        //                null,//description
+        //                null,//error
+        //                null//preferfolder
+        //            );
+        //
+        //            result.addSetting("cow" + i, prop);
+        //        }
+        //        return result;
+
+    }
+
+    /**
      * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#lockIfExists(java.lang.String)
      */
     public String lockIfExists(String sitePath) throws CmsRpcException {
@@ -892,6 +950,24 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             OpenCms.getWorkplaceManager().isKeepAlive(),
             OpenCms.getADEManager().getParameters(getCmsObject()));
         return data;
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#saveUserSettings(java.util.Map, java.util.Set)
+     */
+    public void saveUserSettings(Map<String, String> userSettings, Set<String> edited) throws CmsRpcException {
+
+        try {
+            CmsObject cms = getCmsObject();
+            CmsClientUserSettingConverter converter = new CmsClientUserSettingConverter(
+                cms,
+                getRequest(),
+                getResponse());
+            userSettings.keySet().retainAll(edited);
+            converter.saveSettings(userSettings);
+        } catch (Exception e) {
+            error(e);
+        }
     }
 
     /**

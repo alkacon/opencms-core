@@ -1441,6 +1441,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                 }
             }
 
+            getDefaultUserSettings().initPreferences(this);
+
             // configures the tool manager
             getToolManager().configure(cms);
 

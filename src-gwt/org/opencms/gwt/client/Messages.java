@@ -106,6 +106,9 @@ public final class Messages {
     public static final String GUI_CAPTION_DEFINE_PROPERTY_0 = "GUI_CAPTION_DEFINE_PROPERTY_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CHANGE_PASSWORD_BUTTON_0 = "GUI_CHANGE_PASSWORD_BUTTON_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CLOSE_0 = "GUI_CLOSE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -442,7 +445,7 @@ public final class Messages {
     public static final String GUI_ORIGIN_SHARED_0 = "GUI_ORIGIN_SHARED_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_PASSWORD_CHANGE_TITLE_0 = "GUI_PASSWORD_CHANGE_TITLE_0";
+    public static final String GUI_PASSWORD_CHANGE_TITLE_1 = "GUI_PASSWORD_CHANGE_TITLE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PASSWORD_CONFIRM_0 = "GUI_PASSWORD_CONFIRM_0";
@@ -807,6 +810,12 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_USAGE_EMPTY_0 = "GUI_USAGE_EMPTY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERSETTINGS_TAB_BASIC_0 = "GUI_USERSETTINGS_TAB_BASIC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERSETTINGS_TAB_EXTENDED_0 = "GUI_USERSETTINGS_TAB_EXTENDED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_YES_0 = "GUI_YES_0";

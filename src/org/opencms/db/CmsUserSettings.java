@@ -30,6 +30,7 @@ package org.opencms.db;
 import org.opencms.configuration.CmsDefaultUserSettings;
 import org.opencms.configuration.CmsWorkplaceConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
+import org.opencms.configuration.preferences.I_CmsPreference;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource.CmsResourceCopyMode;
 import org.opencms.file.CmsResource.CmsResourceDeleteMode;
@@ -45,10 +46,13 @@ import org.opencms.util.A_CmsModeStringEnumeration;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.commons.CmsPreferences;
 
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -135,6 +139,9 @@ public class CmsUserSettings {
         /** The gwt upload. */
         gwt
     }
+
+    /** Map used to store user-defined preferences. */
+    private Map<String, String> m_additionalPreferences = new LinkedHashMap<String, String>();
 
     /** Key for additional info address. */
     public static final String ADDITIONAL_INFO_ADDRESS = "USER_ADDRESS";
@@ -223,6 +230,9 @@ public class CmsUserSettings {
     /** Identifier prefix for all keys in the user additional info table. */
     public static final String PREFERENCES = "USERPREFERENCES_";
 
+    /** Prefix for additional info key for user defined preferences. */
+    public static final String PREFERENCES_ADDITIONAL_PREFIX = PREFERENCES + "additional_";
+
     /** Identifier for the synchronize setting key. */
     public static final String SYNC_DESTINATION = "DESTINATION";
 
@@ -287,7 +297,7 @@ public class CmsUserSettings {
     private int m_explorerSettings;
 
     /** The list of numbers in the preferences dialog, how much entries shown on a page. */
-    private String m_exporerFileEntryOptions;
+    private String m_explorerFileEntryOptions;
 
     /** Flag to determine if all projects should be list. */
     private boolean m_listAllProjects;
@@ -410,6 +420,26 @@ public class CmsUserSettings {
     public CmsUserSettings(CmsUser user) {
 
         init(user);
+    }
+
+    /**
+     * Gets the value for a user defined preference.<p>
+     * 
+     * @param name the name of the preference 
+     * @param useDefault true if the default value should be returned in case the preference is not set
+     * 
+     * @return the preference value 
+     */
+    public String getAdditionalPreference(String name, boolean useDefault) {
+
+        String value = m_additionalPreferences.get(name);
+        if ((value == null) && useDefault) {
+            I_CmsPreference pref = OpenCms.getWorkplaceManager().getDefaultUserSettings().getPreferences().get(name);
+            if (pref != null) {
+                value = pref.getDefaultValue();
+            }
+        }
+        return value;
     }
 
     /**
@@ -553,6 +583,16 @@ public class CmsUserSettings {
     }
 
     /**
+     * Returns the explorerFileEntryOptions.<p>
+     *
+     * @return the explorerFileEntryOptions
+     */
+    public String getExplorerFileEntryOptions() {
+
+        return m_explorerFileEntryOptions;
+    }
+
+    /**
      * Returns the explorer start settings.<p>
      * 
      * @return the explorer start settings
@@ -560,16 +600,6 @@ public class CmsUserSettings {
     public int getExplorerSettings() {
 
         return m_explorerSettings;
-    }
-
-    /**
-     * Returns the exporerFileEntryOptions.<p>
-     *
-     * @return the exporerFileEntryOptions
-     */
-    public String getExporerFileEntryOptions() {
-
-        return m_exporerFileEntryOptions;
     }
 
     /**
@@ -892,6 +922,9 @@ public class CmsUserSettings {
         } catch (ClassCastException e) {
             try {
                 m_timeWarp = Long.parseLong((String)timeWarpObj);
+                if (m_timeWarp < 0) {
+                    m_timeWarp = CmsContextInfo.CURRENT_TIME;
+                }
             } catch (Throwable t) {
                 m_timeWarp = CmsContextInfo.CURRENT_TIME;
             }
@@ -1153,6 +1186,20 @@ public class CmsUserSettings {
         }
         // upload applet client folder path
         m_uploadAppletClientFolder = (String)m_user.getAdditionalInfo(ADDITIONAL_INFO_UPLOADAPPLET_CLIENTFOLDER);
+
+        for (Map.Entry<String, Object> entry : m_user.getAdditionalInfo().entrySet()) {
+            String key = entry.getKey();
+            if (key.startsWith(CmsUserSettings.PREFERENCES_ADDITIONAL_PREFIX)) {
+                try {
+                    String value = (String)entry.getValue();
+                    m_additionalPreferences.put(
+                        key.substring(CmsUserSettings.PREFERENCES_ADDITIONAL_PREFIX.length()),
+                        value);
+                } catch (ClassCastException e) {
+                    LOG.warn(e.getLocalizedMessage(), e);
+                }
+            }
+        }
 
         try {
             save(null);
@@ -1525,9 +1572,40 @@ public class CmsUserSettings {
             m_user.deleteAdditionalInfo(ADDITIONAL_INFO_TIMEWARP);
         }
 
+        Set<String> additionalInfosToDelete = new HashSet<String>();
+        for (String key : m_user.getAdditionalInfo().keySet()) {
+            if (key.startsWith(PREFERENCES_ADDITIONAL_PREFIX)
+                && !m_additionalPreferences.containsKey(key.substring(PREFERENCES_ADDITIONAL_PREFIX.length()))) {
+                additionalInfosToDelete.add(key);
+            }
+        }
+        for (String key : additionalInfosToDelete) {
+            m_user.deleteAdditionalInfo(key);
+        }
+        for (Map.Entry<String, String> entry : m_additionalPreferences.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+            m_user.setAdditionalInfo(PREFERENCES_ADDITIONAL_PREFIX + key, value);
+        }
+
         // only write the updated user to the DB if we have the cms object
         if (cms != null) {
             cms.writeUser(m_user);
+        }
+    }
+
+    /**
+     * Sets an additional preference value.<p>
+     * 
+     * @param name the additional preference name 
+     * @param value the preference value 
+     */
+    public void setAdditionalPreference(String name, String value) {
+
+        if (value == null) {
+            m_additionalPreferences.remove(name);
+        } else {
+            m_additionalPreferences.put(name, value);
         }
     }
 
@@ -1672,6 +1750,16 @@ public class CmsUserSettings {
     }
 
     /**
+     * Sets the explorerFileEntryOptions.<p>
+     *
+     * @param explorerFileEntryOptions the explorerFileEntryOptions to set
+     */
+    public void setExplorerFileEntryOptions(String explorerFileEntryOptions) {
+
+        m_explorerFileEntryOptions = explorerFileEntryOptions;
+    }
+
+    /**
      * Sets the explorer start settings.<p>
      * 
      * @param settings explorer start settings to use
@@ -1679,16 +1767,6 @@ public class CmsUserSettings {
     public void setExplorerSettings(int settings) {
 
         m_explorerSettings = settings;
-    }
-
-    /**
-     * Sets the exporerFileEntryOptions.<p>
-     *
-     * @param exporerFileEntryOptions the exporerFileEntryOptions to set
-     */
-    public void setExporerFileEntryOptions(String exporerFileEntryOptions) {
-
-        m_exporerFileEntryOptions = exporerFileEntryOptions;
     }
 
     /**
@@ -1745,8 +1823,9 @@ public class CmsUserSettings {
 
         if (editorUri == null) {
             m_editorSettings.remove(resourceType);
+        } else {
+            m_editorSettings.put(resourceType, editorUri);
         }
-        m_editorSettings.put(resourceType, editorUri);
     }
 
     /**
@@ -2039,6 +2118,9 @@ public class CmsUserSettings {
      */
     public void setTimeWarp(long timewarp) {
 
+        if (timewarp < 0) {
+            timewarp = CmsContextInfo.CURRENT_TIME; // other negative values will break the workplace 
+        }
         m_timeWarp = timewarp;
     }
 
@@ -2278,4 +2360,5 @@ public class CmsUserSettings {
             m_explorerSettings &= ~setting;
         }
     }
+
 }
