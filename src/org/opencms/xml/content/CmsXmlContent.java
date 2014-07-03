@@ -133,6 +133,7 @@ public class CmsXmlContent extends A_CmsXmlDocument {
 
         // must set document first to be able to get the content definition
         m_document = document;
+
         // for the next line to work the document must already be available
         m_contentDefinition = getContentDefinition(resolver);
         // initialize the XML content structure
@@ -368,6 +369,23 @@ public class CmsXmlContent extends A_CmsXmlDocument {
         // return the value instance that was stored in the bookmarks 
         // just returning "newValue" isn't enough since this instance is NOT stored in the bookmarks
         return getBookmark(getBookmarkName(newValue.getPath(), locale));
+    }
+
+    /**
+     * @see java.lang.Object#clone()
+     */
+    @Override
+    public CmsXmlContent clone() {
+
+        CmsXmlContent clone = new CmsXmlContent();
+        clone.m_autoCorrectionEnabled = m_autoCorrectionEnabled;
+        clone.m_contentDefinition = m_contentDefinition;
+        clone.m_conversion = m_conversion;
+        clone.m_document = m_document;
+        clone.m_encoding = m_encoding;
+        clone.m_file = m_file;
+        clone.initDocument();
+        return clone;
     }
 
     /**
