@@ -224,6 +224,13 @@ public interface I_CmsXmlContentHandler {
     DisplayType getDisplayType(I_CmsXmlSchemaType type);
 
     /**
+     * Returns the editor change handlers.<p>
+     * 
+     * @return the editor change handlers
+     */
+    List<I_CmsXmlContentEditorChangeHandler> getEditorChangeHandlers();
+
+    /**
      * Returns the container page element formatter configuration for a given resource.<p>
      * 
      * @param cms the current users OpenCms context, used for selecting the right project
@@ -403,18 +410,18 @@ public interface I_CmsXmlContentHandler {
     boolean hasModifiableFormatters();
 
     /**
-     * Returns if there are visibility handlers configured for this content type.<p>
-     * 
-     * @return <code>true</code> if there are visibility handlers configured for this content type
-     */
-    boolean hasVisibilityHandlers();
-
-    /**
      * Returns if there are locale synchronized elements configured.<p>
      * 
      * @return <code>true</code> if there are locale synchronized elements configured
      */
     boolean hasSynchronizedElements();
+
+    /**
+     * Returns if there are visibility handlers configured for this content type.<p>
+     * 
+     * @return <code>true</code> if there are visibility handlers configured for this content type
+     */
+    boolean hasVisibilityHandlers();
 
     /**
      * Initializes this content handler for the given XML content definition by

@@ -245,6 +245,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** Constant for the "rule-type" appinfo attribute name. */
     public static final String APPINFO_ATTR_RULE_TYPE = "rule-type";
 
+    /** Constant for the "scope" appinfo attribute name. */
+    public static final String APPINFO_ATTR_SCOPE = "scope";
+
     /** Constant for the "searchcontent" appinfo attribute name. */
     public static final String APPINFO_ATTR_SEARCHCONTENT = "searchcontent";
 
@@ -298,6 +301,12 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /** Constant for the "defaults" appinfo element name. */
     public static final String APPINFO_DEFAULTS = "defaults";
+
+    /** Constant for the "editorchangehandler" appinfo element name. */
+    public static final String APPINFO_EDITOR_CHANGE_HANDLER = "editorchangehandler";
+
+    /** Constant for the "editorchangehandlers" appinfo element name. */
+    public static final String APPINFO_EDITOR_CHANGE_HANDLERS = "editorchangehandlers";
 
     /** Constant for the "forbidden-contexts" appinfo attribute name. */
     public static final String APPINFO_FORBIDDEN_CONTEXTS = "forbidden-contexts";
@@ -448,11 +457,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** The attribute name for the "prefer folder" option for properties. */
     private static final String APPINFO_ATTR_PREFERFOLDER = "PreferFolder";
 
-    /** Attribute name for the context used for resolving content mappings. */
-    private static final String ATTR_MAPPING_RESOLUTION_CONTEXT = "MAPPING_RESOLUTION_CONTEXT";
-
     /** The node name for the default complex widget configuration. */
     private static final Object APPINFO_DEFAULTWIDGET = "defaultwidget";
+
+    /** Attribute name for the context used for resolving content mappings. */
+    private static final String ATTR_MAPPING_RESOLUTION_CONTEXT = "MAPPING_RESOLUTION_CONTEXT";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDefaultXmlContentHandler.class);
@@ -552,6 +561,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /** The elements to display in ncompact view. */
     private HashMap<String, DisplayType> m_displayTypes;
+
+    /** The editor change handlers. */
+    private List<I_CmsXmlContentEditorChangeHandler> m_editorChangeHandlers;
 
     /** The visibility configurations by element path. */
     private Map<String, VisibilityConfiguration> m_visibilityConfigurations;
@@ -743,6 +755,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         } else {
             return DisplayType.none;
         }
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getEditorChangeHandlers()
+     */
+    public List<I_CmsXmlContentEditorChangeHandler> getEditorChangeHandlers() {
+
+        return Collections.unmodifiableList(m_editorChangeHandlers);
     }
 
     /**
@@ -1038,6 +1058,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                     initVisibilities(element, contentDefinition);
                 } else if (nodeName.equals(APPINFO_SYNCHRONIZATIONS)) {
                     initSynchronizations(element, contentDefinition);
+                } else if (nodeName.equals(APPINFO_EDITOR_CHANGE_HANDLERS)) {
+                    initEditorChangeHandlers(element);
                 }
             }
         }
@@ -2122,6 +2144,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         m_allowedTemplates.setDefaultMembership(true);
         m_displayTypes = new HashMap<String, DisplayType>();
         m_synchronizations = new ArrayList<String>();
+        m_editorChangeHandlers = new ArrayList<I_CmsXmlContentEditorChangeHandler>();
     }
 
     /**
@@ -2163,6 +2186,32 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             m_defaultWidgetInstance = (I_CmsComplexWidget)(Class.forName(m_defaultWidget).newInstance());
         } catch (Exception e) {
             LOG.error(e);
+        }
+    }
+
+    /**
+     * Initializes the editor change handlers.<p>
+     * 
+     * @param element the editorchangehandlers node of the app info
+     */
+    protected void initEditorChangeHandlers(Element element) {
+
+        Iterator<Element> i = CmsXmlGenericWrapper.elementIterator(element, APPINFO_EDITOR_CHANGE_HANDLER);
+        while (i.hasNext()) {
+            // iterate all "default" elements in the "defaults" node
+            Element handlerElement = i.next();
+            String handlerClass = handlerElement.attributeValue(APPINFO_ATTR_CLASS);
+            String configuration = handlerElement.attributeValue(APPINFO_ATTR_CONFIGURATION);
+            String scope = handlerElement.attributeValue(APPINFO_ATTR_SCOPE);
+            try {
+                I_CmsXmlContentEditorChangeHandler handler = (I_CmsXmlContentEditorChangeHandler)Class.forName(
+                    handlerClass).newInstance();
+                handler.setContfiguration(configuration);
+                handler.setScope(scope);
+                m_editorChangeHandlers.add(handler);
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
         }
     }
 
@@ -2665,7 +2714,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
         String strEnabledByDefault = root.attributeValue(ATTR_ENABLED_BY_DEFAULT);
         m_allowedTemplates.setDefaultMembership(safeParseBoolean(strEnabledByDefault, true));
-        @SuppressWarnings("unchecked")
         List<Element> elements = root.selectNodes(APPINFO_TEMPLATE);
         for (Element elem : elements) {
             boolean enabled = safeParseBoolean(elem.attributeValue(ATTR_ENABLED), true);
@@ -3322,8 +3370,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /**
      * Creates a search field mapping for the given mapping element and the locale.<p>
-     * @param contentDefinition
-     *
+     * 
+     * @param contentDefinition the content definition
      * @param element the mapping element configured in the schema
      * @param locale the locale
      *
