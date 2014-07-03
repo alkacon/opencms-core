@@ -27,6 +27,7 @@
 
 package org.opencms.ade.contenteditor.client;
 
+import com.alkacon.acacia.client.AttributeHandler;
 import com.alkacon.acacia.client.EditorBase;
 import com.alkacon.acacia.client.I_EntityRenderer;
 import com.alkacon.acacia.client.I_InlineFormParent;
@@ -40,6 +41,7 @@ import com.alkacon.acacia.shared.ValidationResult;
 import com.alkacon.vie.client.Entity;
 import com.alkacon.vie.client.Vie;
 import com.alkacon.vie.shared.I_Entity;
+import com.alkacon.vie.shared.I_EntityAttribute;
 import com.alkacon.vie.shared.I_Type;
 
 import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
@@ -118,6 +120,72 @@ import com.google.gwt.user.client.ui.SimplePanel;
  */
 public final class CmsContentEditor extends EditorBase {
 
+    /**
+     * Entity change handler to watch for changes within given scopes and call the editor change handlers accordingly.<p>
+     */
+    class EditorChangeHandler implements ValueChangeHandler<Entity> {
+
+        /** The scope values. */
+        Map<String, String> m_scopeValues;
+
+        /** The change handler registration. */
+        private HandlerRegistration m_handlerRegistration;
+
+        /** The observed entity. */
+        private Entity m_observerdEntity;
+
+        /**
+         * Constructor.<p>
+         * 
+         * @param entity the entity to observe
+         * @param changeScopes the value scopes to watch for changes
+         */
+        public EditorChangeHandler(Entity entity, Collection<String> changeScopes) {
+
+            m_observerdEntity = entity;
+            m_handlerRegistration = entity.addValueChangeHandler(this);
+            m_scopeValues = new HashMap<String, String>();
+            for (String scope : changeScopes) {
+                m_scopeValues.put(scope, CmsContentDefinition.getValueForPath(m_observerdEntity, scope));
+            }
+        }
+
+        /**
+         * Removes this observer from the entities change handler registration and clears registered listeners.<p>
+         */
+        public void clear() {
+
+            if (m_handlerRegistration != null) {
+                m_handlerRegistration.removeHandler();
+                m_handlerRegistration = null;
+            }
+            m_scopeValues.clear();
+            m_observerdEntity = null;
+        }
+
+        /**
+         * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
+         */
+        public void onValueChange(ValueChangeEvent<Entity> event) {
+
+            Entity entity = event.getValue();
+            Set<String> changedScopes = new HashSet<String>();
+            for (String scope : m_scopeValues.keySet()) {
+                String scopeValue = CmsContentDefinition.getValueForPath(entity, scope);
+                String previousValue = m_scopeValues.get(scope);
+                if (((scopeValue != null) && !scopeValue.equals(previousValue))
+                    || ((scopeValue == null) && (previousValue != null))) {
+                    // the value within this scope has changed, notify all listeners
+                    changedScopes.add(scope);
+                    m_scopeValues.put(scope, scopeValue);
+                }
+            }
+            if (!changedScopes.isEmpty()) {
+                callEditorChangeHanlders(changedScopes);
+            }
+        }
+    }
+
     /** The add change listener method name. */
     private static final String ADD_CHANGE_LISTENER_METHOD = "cmsAddEntityChangeListener";
 
@@ -174,6 +242,8 @@ public final class CmsContentEditor extends EditorBase {
 
     /** Flag indicating the resource needs to removed on cancel. */
     private boolean m_deleteOnCancel;
+
+    private EditorChangeHandler m_editorChangeHandler;
 
     /** The entity observer instance. */
     private CmsEntityObserver m_entityObserver;
@@ -972,6 +1042,34 @@ public final class CmsContentEditor extends EditorBase {
     }
 
     /**
+     * Calls the editor change handlers<p>
+     * 
+     * @param changedScopes the changed content value scopes
+     */
+    void callEditorChangeHanlders(final Set<String> changedScopes) {
+
+        I_Entity entity = m_vie.getEntity(m_entityId);
+        final com.alkacon.acacia.shared.Entity currentState = com.alkacon.acacia.shared.Entity.serializeEntity(entity);
+        CmsRpcAction<CmsContentDefinition> action = new CmsRpcAction<CmsContentDefinition>() {
+
+            @Override
+            public void execute() {
+
+                start(200, true);
+                getService().callEditorChangeHandlers(getEntityId(), currentState, getSkipPaths(), changedScopes, this);
+            }
+
+            @Override
+            protected void onResponse(CmsContentDefinition result) {
+
+                stop(false);
+                updateEditorValues(currentState, result.getEntity());
+            }
+        };
+        action.execute();
+    }
+
+    /**
      * Cancels the editing process.<p>
      */
     void cancelEdit() {
@@ -1230,6 +1328,7 @@ public final class CmsContentEditor extends EditorBase {
             });
             m_hideHelpBubblesButton.setVisible(false);
             setNativeResourceInfo(m_sitePath, m_locale);
+            initEntityObserver();
             renderInlineEntity(m_entityId, formParent);
         } else {
             initFormPanel();
@@ -1239,6 +1338,31 @@ public final class CmsContentEditor extends EditorBase {
             CmsNotification.get().send(Type.NORMAL, Messages.get().key(Messages.GUI_WARN_INVALID_XML_STRUCTURE_0));
             setChanged();
         }
+    }
+
+    /**
+     * Initializes the editor change handler.<p>
+     * 
+     * @param changeScopes the scopes to watch for changes
+     */
+    void initEditorChangeHandlers(Collection<String> changeScopes) {
+
+        if (m_editorChangeHandler != null) {
+            m_editorChangeHandler.clear();
+        }
+        m_editorChangeHandler = new EditorChangeHandler(getEntity(), changeScopes);
+    }
+
+    /**
+     * Initializes the entity observer.<p>
+     */
+    void initEntityObserver() {
+
+        if (m_entityObserver != null) {
+            m_entityObserver.clear();
+        }
+        m_entityObserver = new CmsEntityObserver(getCurrentEntity());
+        exportObserver();
     }
 
     /**
@@ -1328,11 +1452,10 @@ public final class CmsContentEditor extends EditorBase {
         SimplePanel content = new SimplePanel();
         content.setStyleName(I_LayoutBundle.INSTANCE.form().formParent());
         m_basePanel.add(content);
-        if (m_entityObserver != null) {
-            m_entityObserver.clear();
+        initEntityObserver();
+        if (m_definitions.get(m_locale).hasEditorChangeHandlers()) {
+            initEditorChangeHandlers(m_definitions.get(m_locale).getEditorChangeScopes());
         }
-        m_entityObserver = new CmsEntityObserver(getCurrentEntity());
-        exportObserver();
         renderEntityForm(m_entityId, m_tabInfos, content, m_basePanel.getElement());
     }
 
@@ -1607,6 +1730,20 @@ public final class CmsContentEditor extends EditorBase {
     }
 
     /**
+     * Updates the editor values.<p>
+     * 
+     * @param previous the previous entity state
+     * @param updated the updated entity state
+     */
+    void updateEditorValues(I_Entity previous, I_Entity updated) {
+
+        if (updated.getId().equals(m_entityId)) {
+            // only apply the changes to the same locale entity
+            updateEditorValues(previous, updated, getEntity(), Collections.<String> emptyList());
+        }
+    }
+
+    /**
      * Adds the change listener to the observer.<p>
      *
      * @param changeListener the change listener
@@ -1620,6 +1757,20 @@ public final class CmsContentEditor extends EditorBase {
 
             CmsDebugLog.getInstance().printLine("Exception occured during listener registration" + e.getMessage());
         }
+    }
+
+    /**
+     * Changes a simple type entity value.<p>
+     * 
+     * @param attributeName the attribute name
+     * @param index the value index
+     * @param value the value
+     * @param parentPathElements the parent path elements
+     */
+    private void changeSimpleValue(String attributeName, int index, String value, List<String> parentPathElements) {
+
+        AttributeHandler handler = getAttributeHandler(attributeName, parentPathElements);
+        handler.changeValue(value, index);
     }
 
     /**
@@ -1679,6 +1830,23 @@ public final class CmsContentEditor extends EditorBase {
                                         return self.@org.opencms.ade.contenteditor.client.CmsContentEditor::getCurrentEntity()();
                                         }
                                         }-*/;
+
+    /**
+     * Returns the attribute handler for the given attribute.<p>
+     * 
+     * @param attributeName the attribute name
+     * @param parentPathElements the parent path elements
+     * 
+     * @return the attribute handler
+     */
+    private AttributeHandler getAttributeHandler(String attributeName, List<String> parentPathElements) {
+
+        List<String> childPathElements = new ArrayList<String>(parentPathElements);
+        childPathElements.add(attributeName);
+        AttributeHandler handler = getRootAttributeHandler().getHandlerByPath(
+            childPathElements.toArray(new String[childPathElements.size()]));
+        return handler;
+    }
 
     /**
      * Returns the entity id for the given locale.<p>
@@ -1971,5 +2139,142 @@ public final class CmsContentEditor extends EditorBase {
             }
         });
         dialog.center();
+    }
+
+    /**
+     * Updates the editor values according to the given entity.<p>
+     * 
+     * @param previous the previous entity state
+     * @param updated the updated entity state
+     * @param target the target entity
+     * @param parentPathElements the parent path elements
+     */
+    private void updateEditorValues(
+        I_Entity previous,
+        I_Entity updated,
+        I_Entity target,
+        List<String> parentPathElements) {
+
+        for (String attributeName : m_vie.getType(target.getTypeName()).getAttributeNames()) {
+            AttributeHandler handler = getAttributeHandler(attributeName, parentPathElements);
+            if (previous.hasAttribute(attributeName)
+                && updated.hasAttribute(attributeName)
+                && target.hasAttribute(attributeName)) {
+                I_EntityAttribute updatedAttribute = updated.getAttribute(attributeName);
+                I_EntityAttribute previousAttribute = previous.getAttribute(attributeName);
+                I_EntityAttribute targetAttribute = target.getAttribute(attributeName);
+                if (updatedAttribute.isSimpleValue()) {
+                    if ((updatedAttribute.getValueCount() == previousAttribute.getValueCount())
+                        && (updatedAttribute.getValueCount() == targetAttribute.getValueCount())) {
+                        for (int i = 0; i < updatedAttribute.getValueCount(); i++) {
+                            if (!updatedAttribute.getSimpleValues().get(i).equals(
+                                previousAttribute.getSimpleValues().get(i))
+                                && previousAttribute.getSimpleValues().get(i).equals(
+                                    targetAttribute.getSimpleValues().get(i))) {
+
+                                changeSimpleValue(
+                                    attributeName,
+                                    i,
+                                    updatedAttribute.getSimpleValues().get(i),
+                                    parentPathElements);
+                            }
+                        }
+                    } else {
+                        if (targetAttribute.getValueCount() == previousAttribute.getValueCount()) {
+                            // only act, if the value count has not been altered while executing the server request 
+                            if (updatedAttribute.getValueCount() > previousAttribute.getValueCount()) {
+                                // new values have been added
+                                for (int i = 0; i < updatedAttribute.getValueCount(); i++) {
+                                    if (i >= previousAttribute.getSimpleValues().size()) {
+                                        handler.addNewAttributeValue(updatedAttribute.getSimpleValues().get(i));
+                                    } else if (!updatedAttribute.getSimpleValues().get(i).equals(
+                                        previousAttribute.getSimpleValues().get(i))
+                                        && previousAttribute.getSimpleValues().get(i).equals(
+                                            targetAttribute.getSimpleValues().get(i))) {
+                                        changeSimpleValue(
+                                            attributeName,
+                                            i,
+                                            updatedAttribute.getSimpleValues().get(i),
+                                            parentPathElements);
+                                    }
+                                }
+                            } else {
+                                // values have been removed
+                                for (int i = updatedAttribute.getValueCount() - 1; i >= 0; i--) {
+                                    if (i >= updatedAttribute.getSimpleValues().size()) {
+                                        handler.removeAttributeValue(i);
+                                    } else if (!updatedAttribute.getSimpleValues().get(i).equals(
+                                        previousAttribute.getSimpleValues().get(i))
+                                        && previousAttribute.getSimpleValues().get(i).equals(
+                                            targetAttribute.getSimpleValues().get(i))) {
+                                        changeSimpleValue(
+                                            attributeName,
+                                            i,
+                                            updatedAttribute.getSimpleValues().get(i),
+                                            parentPathElements);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    if (targetAttribute.getValueCount() == previousAttribute.getValueCount()) {
+                        // only act, if the value count has not been altered while executing the server request 
+                        if (updatedAttribute.getValueCount() > previousAttribute.getValueCount()) {
+                            // new values have been added
+                            for (int i = 0; i < updatedAttribute.getValueCount(); i++) {
+                                if (i >= previousAttribute.getSimpleValues().size()) {
+                                    handler.addNewAttributeValue(m_vie.registerEntity(
+                                        updatedAttribute.getComplexValues().get(i),
+                                        true));
+                                } else {
+                                    List<String> childPathElements = new ArrayList<String>(parentPathElements);
+                                    childPathElements.add(attributeName + "[" + i + "]");
+                                    updateEditorValues(
+                                        previousAttribute.getComplexValues().get(i),
+                                        updatedAttribute.getComplexValues().get(i),
+                                        targetAttribute.getComplexValues().get(i),
+                                        childPathElements);
+                                }
+                            }
+                        } else {
+                            // values have been removed
+                            for (int i = updatedAttribute.getValueCount() - 1; i >= 0; i--) {
+                                if (i >= updatedAttribute.getValueCount()) {
+
+                                    handler.removeAttributeValue(i);
+                                } else {
+                                    List<String> childPathElements = new ArrayList<String>(parentPathElements);
+                                    childPathElements.add(attributeName + "[" + i + "]");
+                                    updateEditorValues(
+                                        previousAttribute.getComplexValues().get(i),
+                                        updatedAttribute.getComplexValues().get(i),
+                                        targetAttribute.getComplexValues().get(i),
+                                        childPathElements);
+                                }
+                            }
+                        }
+                    }
+                }
+            } else if (previous.hasAttribute(attributeName) && target.hasAttribute(attributeName)) {
+                for (int i = target.getAttribute(attributeName).getValueCount() - 1; i >= 0; i--) {
+                    handler.removeAttributeValue(i);
+                }
+
+            } else if (!previous.hasAttribute(attributeName)
+                && !target.hasAttribute(attributeName)
+                && updated.hasAttribute(attributeName)) {
+                I_EntityAttribute updatedAttribute = updated.getAttribute(attributeName);
+                for (int i = 0; i < updatedAttribute.getValueCount(); i++) {
+                    if (updatedAttribute.isSimpleValue()) {
+                        handler.addNewAttributeValue(updatedAttribute.getSimpleValues().get(i));
+                    } else {
+                        handler.addNewAttributeValue(m_vie.registerEntity(
+                            updatedAttribute.getComplexValues().get(i),
+                            true));
+                    }
+                }
+            }
+        }
     }
 }

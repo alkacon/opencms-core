@@ -80,6 +80,7 @@ import org.opencms.xml.containerpage.CmsADESessionCache;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentErrorHandler;
 import org.opencms.xml.content.CmsXmlContentFactory;
+import org.opencms.xml.content.I_CmsXmlContentEditorChangeHandler;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
@@ -93,6 +94,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -263,6 +265,43 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             result = srv.prefetch();
         } finally {
             srv.clearThreadStorage();
+        }
+        return result;
+    }
+
+    /**
+     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#callEditorChangeHandlers(java.lang.String, com.alkacon.acacia.shared.Entity, java.util.Collection, java.util.Collection)
+     */
+    public CmsContentDefinition callEditorChangeHandlers(
+        String entityId,
+        Entity editedLocaleEntity,
+        Collection<String> skipPaths,
+        Collection<String> changedScopes) throws CmsRpcException {
+
+        CmsContentDefinition result = null;
+        CmsUUID structureId = CmsContentDefinition.entityIdToUuid(editedLocaleEntity.getId());
+
+        if (structureId != null) {
+            CmsObject cms = getCmsObject();
+            CmsResource resource = null;
+            Locale locale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(entityId));
+            try {
+                resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+                ensureLock(resource);
+                CmsFile file = cms.readFile(resource);
+                CmsXmlContent content = getContentDocument(file, true).clone();
+                checkAutoCorrection(cms, content);
+                synchronizeLocaleIndependentForEntity(file, content, skipPaths, editedLocaleEntity);
+                for (I_CmsXmlContentEditorChangeHandler handler : content.getContentDefinition().getContentHandler().getEditorChangeHandlers()) {
+                    Set<String> handlerScopes = evaluateScope(handler.getScope(), content.getContentDefinition());
+                    if (!Collections.disjoint(changedScopes, handlerScopes)) {
+                        handler.handleChange(cms, content, locale, changedScopes);
+                    }
+                }
+                result = readContentDefinition(file, content, entityId, locale, false);
+            } catch (Exception e) {
+                error(e);
+            }
         }
         return result;
     }
@@ -990,6 +1029,67 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
+     * Evaluates any wildcards in the given scope and returns all allowed permutations of it.<p>
+     * 
+     * a path like Paragraph* /Image should result in Paragraph[0]/Image, Paragraph[1]/Image and Paragraph[2]/Image
+     * in case max occurrence for Paragraph is 3
+     * 
+     * @param scope the scope
+     * @param definition the content definition
+     * 
+     * @return the evaluate scope permutations
+     */
+    private Set<String> evaluateScope(String scope, CmsXmlContentDefinition definition) {
+
+        Set<String> evaluatedScopes = new HashSet<String>();
+        if (scope.contains("*")) {
+            // evaluate wildcards to get all allowed permutations of the scope
+            // a path like Paragraph*/Image should result in Paragraph[0]/Image, Paragraph[1]/Image and Paragraph[2]/Image
+            // in case max occurrence for Paragraph is 3
+
+            String[] pathElements = scope.split("/");
+            String parentPath = "";
+
+            for (int i = 0; i < pathElements.length; i++) {
+                String elementName = pathElements[i];
+                boolean hasWildCard = elementName.endsWith("*");
+
+                if (hasWildCard) {
+                    elementName = elementName.substring(0, elementName.length() - 1);
+                    parentPath = CmsStringUtil.joinPaths(parentPath, elementName);
+                    I_CmsXmlSchemaType type = definition.getSchemaType(parentPath);
+                    Set<String> tempScopes = new HashSet<String>();
+                    for (int j = 0; j < type.getMaxOccurs(); j++) {
+                        if (evaluatedScopes.isEmpty()) {
+                            tempScopes.add(elementName + "[" + (j + 1) + "]");
+                        } else {
+
+                            for (String evScope : evaluatedScopes) {
+                                tempScopes.add(CmsStringUtil.joinPaths(evScope, elementName + "[" + (j + 1) + "]"));
+                            }
+                        }
+                    }
+                    evaluatedScopes = tempScopes;
+                } else {
+                    parentPath = CmsStringUtil.joinPaths(parentPath, elementName);
+                    Set<String> tempScopes = new HashSet<String>();
+                    if (evaluatedScopes.isEmpty()) {
+                        tempScopes.add(elementName);
+                    } else {
+                        for (String evScope : evaluatedScopes) {
+                            tempScopes.add(CmsStringUtil.joinPaths(evScope, elementName));
+                        }
+                    }
+                    evaluatedScopes = tempScopes;
+                }
+            }
+        } else {
+            evaluatedScopes.add(scope);
+        }
+        return evaluatedScopes;
+    }
+
+    /**
      * Evaluates the values of the locale independent fields and the paths to skip during locale synchronization.<p>
      *
      * @param content the XML content
@@ -1073,6 +1173,24 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             }
         }
         return locale;
+    }
+
+    /**
+     * Returns the change handler scopes.<p>
+     * 
+     * @param definition the content definition
+     * 
+     * @return the scopes
+     */
+    private Set<String> getChangeHandlerScopes(CmsXmlContentDefinition definition) {
+
+        List<I_CmsXmlContentEditorChangeHandler> changeHandlers = definition.getContentHandler().getEditorChangeHandlers();
+        Set<String> scopes = new HashSet<String>();
+        for (I_CmsXmlContentEditorChangeHandler handler : changeHandlers) {
+            String scope = handler.getScope();
+            scopes.addAll(evaluateScope(scope, definition));
+        }
+        return scopes;
     }
 
     /**
@@ -1276,6 +1394,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         boolean autoUnlock = OpenCms.getWorkplaceManager().shouldAcaciaUnlock();
         Map<String, Entity> entities = new HashMap<String, Entity>();
         entities.put(entityId, entity);
+
         return new CmsContentDefinition(
             entityId,
             entities,
@@ -1294,7 +1413,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             cms.getSitePath(file),
             typeName,
             performedAutoCorrection,
-            autoUnlock);
+            autoUnlock,
+            getChangeHandlerScopes(content.getContentDefinition()));
     }
 
     /**

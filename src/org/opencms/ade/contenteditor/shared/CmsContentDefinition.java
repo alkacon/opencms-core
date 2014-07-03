@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Contains all information needed for editing an XMLContent.<p>
@@ -102,6 +103,9 @@ public class CmsContentDefinition extends ContentDefinition {
     /** The content title. */
     private String m_title;
 
+    /** Indicates that editor change handlers are configured. */
+    private Set<String> m_editorChangeScopes;
+
     /**
      * Constructor for model file informations object.<p>
      * 
@@ -143,6 +147,7 @@ public class CmsContentDefinition extends ContentDefinition {
      * @param resourceType the resource type name
      * @param performedAutocorrection flag indicating the current content has an invalid XML structure and was auto corrected
      * @param autoUnlock false if the editor should not unlock resources automatically in standalone mode 
+     * @param editorChangeScopes the editor change handler scopes
      */
     public CmsContentDefinition(
         String entityId,
@@ -162,7 +167,8 @@ public class CmsContentDefinition extends ContentDefinition {
         String sitePath,
         String resourceType,
         boolean performedAutocorrection,
-        boolean autoUnlock) {
+        boolean autoUnlock,
+        Set<String> editorChangeScopes) {
 
         super(entityId, entities, configurations, types, tabInfos, true, locale);
         m_contentLocales = contentLocales;
@@ -177,6 +183,7 @@ public class CmsContentDefinition extends ContentDefinition {
         m_externalWidgetConfigurations = new ArrayList<CmsExternalWidgetConfiguration>(externalWidgetConfigurations);
         m_performedAutocorrection = performedAutocorrection;
         m_autoUnlock = autoUnlock;
+        m_editorChangeScopes = editorChangeScopes;
     }
 
     /**
@@ -424,6 +431,16 @@ public class CmsContentDefinition extends ContentDefinition {
     }
 
     /**
+     * Returns the editor change handler scopes.<p>
+     * 
+     * @return the editor change handler scopes
+     */
+    public Set<String> getEditorChangeScopes() {
+
+        return m_editorChangeScopes;
+    }
+
+    /**
      * Returns the external widget configurations.<p>
      *
      * @return the external widget configurations
@@ -521,6 +538,16 @@ public class CmsContentDefinition extends ContentDefinition {
     public String getTitle() {
 
         return m_title;
+    }
+
+    /**
+     * Returns <code>true</code> if any editor change handlers have been configured for this content type.<p>
+     * 
+     * @return <code>true</code> if any editor change handlers have been configured for this content type.<p>
+     */
+    public boolean hasEditorChangeHandlers() {
+
+        return (m_editorChangeScopes != null) && !m_editorChangeScopes.isEmpty();
     }
 
     /**

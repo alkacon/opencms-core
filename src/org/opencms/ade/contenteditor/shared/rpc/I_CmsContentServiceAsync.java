@@ -46,6 +46,22 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
 public interface I_CmsContentServiceAsync extends I_ContentServiceAsync {
 
     /**
+     * Calls the editor change handlers.<p>
+     * 
+     * @param entityId the edited entity id
+     * @param editedLocaleEntity the edited entity
+     * @param skipPaths the locale synchronization value paths to skip
+     * @param changedScopes the changed content value paths
+     * @param callback the asynchronous callback
+     */
+    void callEditorChangeHandlers(
+        String entityId,
+        Entity editedLocaleEntity,
+        Collection<String> skipPaths,
+        Collection<String> changedScopes,
+        AsyncCallback<CmsContentDefinition> callback);
+
+    /**
      * Cancels the editing session.<p>
      * Will unlock the resource and delete it if required.<p>
      * 

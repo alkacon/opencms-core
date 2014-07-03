@@ -50,6 +50,24 @@ public interface I_CmsContentService extends I_ContentService {
     String PARAM_BACKLINK = "backlink";
 
     /**
+     * Calls the editor change handlers.<p>
+     * 
+     * @param entityId the edited entity id
+     * @param editedLocaleEntity the edited entity
+     * @param skipPaths the locale synchronization value paths to skip
+     * @param changedScopes the changed content value paths
+     * 
+     * @return the changed content
+     * 
+     * @throws CmsRpcException in case anything goes wrong
+     */
+    CmsContentDefinition callEditorChangeHandlers(
+        String entityId,
+        Entity editedLocaleEntity,
+        Collection<String> skipPaths,
+        Collection<String> changedScopes) throws CmsRpcException;
+
+    /**
      * Cancels the editing session.<p>
      * Will unlock the resource and delete it if required.<p>
      * 
