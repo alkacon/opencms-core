@@ -42,6 +42,7 @@ import org.opencms.file.types.A_CmsResourceType;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeUnknown;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsVfsBundleManager;
@@ -60,6 +61,8 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.xml.CmsXmlException;
+import org.opencms.xml.content.CmsXmlContent;
+import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -466,6 +469,11 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
             for (CmsResource res : resources) {
                 if (lockResource(cms, res)) {
                     CmsFile file = cms.readFile(res);
+                    if (CmsResourceTypeXmlContent.isXmlContent(file)) {
+                        CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(getCms(), file);
+                        xmlContent.setAutoCorrectionEnabled(true);
+                        file = xmlContent.correctXmlStructure(getCms());
+                    }
                     String encoding = CmsLocaleManager.getResourceEncoding(cms, file);
                     String content = new String(file.getContents(), encoding);
                     content = content.replaceAll(sourceSchemaPath, targetSchemaPath);
@@ -883,6 +891,11 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
             String schemaPath = type.getConfiguration().get("schema");
             CmsResource res = getCms().readResource(schemaPath);
             CmsFile file = getCms().readFile(res);
+            if (CmsResourceTypeXmlContent.isXmlContent(file)) {
+                CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(getCms(), file);
+                xmlContent.setAutoCorrectionEnabled(true);
+                file = xmlContent.correctXmlStructure(getCms());
+            }
             String encoding = CmsLocaleManager.getResourceEncoding(getCms(), file);
             String content = new String(file.getContents(), encoding);
             content = content.replaceAll(formatterSourceFolder.getRootPath(), formatterTargetFolder.getRootPath());
@@ -894,8 +907,8 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
     /**
      * Initializes a thread to find and replace all occurrence of the module's path.<p>
      *
-     * @throws CmsException
-     * @throws UnsupportedEncodingException
+     * @throws CmsException in case writing the file fails
+     * @throws UnsupportedEncodingException in case of the wrong encoding
 
      */
     private void replaceModuleName() throws CmsException, UnsupportedEncodingException {
@@ -906,6 +919,11 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
             filter);
         for (CmsResource resource : resources) {
             CmsFile file = getCms().readFile(resource);
+            if (CmsResourceTypeXmlContent.isXmlContent(file)) {
+                CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(getCms(), file);
+                xmlContent.setAutoCorrectionEnabled(true);
+                file = xmlContent.correctXmlStructure(getCms());
+            }
             byte[] contents = file.getContents();
             String encoding = CmsLocaleManager.getResourceEncoding(getCms(), file);
             String content = new String(contents, encoding);
@@ -936,6 +954,11 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
         for (CmsResource resource : resources) {
             if (resource.isFile()) {
                 CmsFile file = getCms().readFile(resource);
+                if (CmsResourceTypeXmlContent.isXmlContent(file)) {
+                    CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(getCms(), file);
+                    xmlContent.setAutoCorrectionEnabled(true);
+                    file = xmlContent.correctXmlStructure(getCms());
+                }
                 String encoding = CmsLocaleManager.getResourceEncoding(getCms(), file);
                 String oldContent = new String(file.getContents(), encoding);
                 String newContent = oldContent.replaceAll(sourceModulePath, targetModulePath);
@@ -993,6 +1016,11 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
     throws CmsException, UnsupportedEncodingException {
 
         CmsFile file = getCms().readFile(resource);
+        if (CmsResourceTypeXmlContent.isXmlContent(file)) {
+            CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(getCms(), file);
+            xmlContent.setAutoCorrectionEnabled(true);
+            file = xmlContent.correctXmlStructure(getCms());
+        }
         String encoding = CmsLocaleManager.getResourceEncoding(getCms(), file);
         String content = new String(file.getContents(), encoding);
         content = transformation.apply(content);
