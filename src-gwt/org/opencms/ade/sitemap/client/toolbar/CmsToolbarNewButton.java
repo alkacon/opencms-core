@@ -74,7 +74,7 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
     private CmsList<I_CmsListItem> m_newElementsList;
 
     /** The special elements list. */
-    private CmsList<I_CmsListItem> m_specialList;
+    private CmsList<I_CmsListItem> m_detailList;
 
     /**
      * Constructor.<p>
@@ -106,29 +106,31 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
             hasTabs = true;
             addTab(createTab(m_newElementsList), Messages.get().key(Messages.GUI_NEW_PAGES_TAB_TITLE_0));
         }
-        m_specialList = new CmsList<I_CmsListItem>();
+        m_detailList = new CmsList<I_CmsListItem>();
         if (getController().getData().canEditDetailPages()) {
             for (CmsNewResourceInfo typeInfo : getController().getData().getResourceTypeInfos()) {
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(typeInfo.getCreateParameter())) {
                     CmsCreatableListItem item = makeDetailPageItem(typeInfo);
-                    m_specialList.add(item);
+                    m_detailList.add(item);
                 }
             }
         }
-        if (m_specialList.getWidgetCount() > 0) {
+
+        for (CmsNewResourceInfo typeInfo : getController().getData().getResourceTypeInfos()) {
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(typeInfo.getCreateParameter())) {
+                CmsCreatableListItem item = makeDetailPageItem(typeInfo);
+                m_detailList.add(item);
+            }
+        }
+        if (m_detailList.getWidgetCount() > 0) {
             hasTabs = true;
-            addTab(createTab(m_specialList), Messages.get().key(Messages.GUI_SPECIAL_TAB_TITLE_0));
+            addTab(createTab(m_detailList), Messages.get().key(Messages.GUI_SPECIAL_TAB_TITLE_0));
         }
 
         m_functionList = new CmsList<I_CmsListItem>();
         m_functionList.add(makeRedirectItem());
         m_functionList.add(makeNavigationLevelItem());
-        for (CmsNewResourceInfo typeInfo : getController().getData().getResourceTypeInfos()) {
-            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(typeInfo.getCreateParameter())) {
-                CmsCreatableListItem item = makeDetailPageItem(typeInfo);
-                m_functionList.add(item);
-            }
-        }
+
         if (m_functionList.getWidgetCount() > 0) {
             hasTabs = true;
             String tabLabel = Messages.get().key(Messages.GUI_FUNCTION_TAB_TITLE_0);
