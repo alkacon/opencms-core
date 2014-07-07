@@ -765,7 +765,7 @@ public class CmsPreferences extends CmsTabDialog {
 
         String emptyOption = OpenCms.getWorkplaceManager().getDefaultUserSettings().getExplorerFileEntryOptions();
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(emptyOption)) {
-            emptyOption = "10,25,50,100";
+            emptyOption = "50,100,200,300,400,500";
         }
         // remove all non digits without ',' 
         emptyOption = emptyOption.replaceAll("[^0-9|^,]", "");

@@ -201,7 +201,11 @@ public class CmsUserSettingsStringPropertyWrapper {
      */
     public String getExplorerFileEntryOptions() {
 
-        return "" + m_settings.getExplorerFileEntryOptions();
+        if (m_settings.getExplorerFileEntryOptions() == null) {
+            return "";
+        } else {
+            return "" + m_settings.getExplorerFileEntryOptions();
+        }
     }
 
     /**

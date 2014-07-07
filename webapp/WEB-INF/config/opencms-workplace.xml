@@ -1597,7 +1597,7 @@
             <preference name="old.editorButtonStyle" value="image"/>
             <preference name="old.explorerButtonStyle" value="textimage"/>
             <preference name="old.explorerFileEntries" value="50"/>
-            <preference name="old.explorerFileEntryOptions" value="null"/>
+            <preference name="old.explorerFileEntryOptions" value="50,100,200,300,400,500"/>
             <preference name="old.listAllProjects" value="false"/>
             <preference name="old.locale" value="en"/>
             <preference name="old.newFolderCreateIndexPage" value="true"/>
