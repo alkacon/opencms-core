@@ -6,7 +6,7 @@
 # you need to change the version number only here and no where else.
 # It can be accessed in OpenCms by OpenCms.getSystemInfo().getVersionNumber().
 #
-OPENCMS_VERSION_NUMBER="9.4.6"
+OPENCMS_VERSION_NUMBER="9.4.x"
 
 #
 # The type of build generated.
@@ -15,7 +15,7 @@ OPENCMS_VERSION_NUMBER="9.4.6"
 # "Release" for a release build
 # "Nightly" for a nightly build
 #
-OPENCMS_BUILD_TYPE="Milestone"
+OPENCMS_BUILD_TYPE="Nightly"
 
 #
 # The build system that was used.
