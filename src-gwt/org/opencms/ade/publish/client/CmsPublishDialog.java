@@ -38,12 +38,15 @@ import org.opencms.ade.publish.shared.CmsWorkflowResponse;
 import org.opencms.ade.publish.shared.rpc.I_CmsPublishService;
 import org.opencms.ade.publish.shared.rpc.I_CmsPublishServiceAsync;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.CmsEditableDataJSO;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler;
 import org.opencms.gwt.client.ui.resourceinfo.CmsResourceInfoView;
+import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -51,6 +54,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.Window;
@@ -294,6 +298,13 @@ public class CmsPublishDialog extends CmsPopup {
         final HashMap<String, String> params,
         final CloseHandler<PopupPanel> handler,
         final Runnable refreshAction) {
+
+        List<String> structureIds = Lists.newArrayList();
+        for (CmsEditableDataJSO editableData : CmsDomUtil.getAllEditableDataForPage()) {
+            structureIds.add("" + editableData.getStructureId());
+        }
+        String editableIdList = CmsStringUtil.listAsString(structureIds, ",");
+        params.put(CmsPublishOptions.PARAM_COLLECTOR_ITEMS, editableIdList);
 
         (new CmsRpcAction<CmsPublishData>() {
 

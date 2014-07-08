@@ -39,6 +39,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -48,6 +49,7 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 /**
  * Virtual project which includes the currently edited resource and all its related resources.
@@ -101,6 +103,42 @@ public class CmsCurrentPageProject implements I_CmsVirtualProject {
     public CmsUUID getProjectId() {
 
         return ID;
+    }
+
+    /**
+     * @see org.opencms.ade.publish.I_CmsVirtualProject#getRelatedResourceProvider(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsPublishOptions)
+     */
+    public I_CmsPublishRelatedResourceProvider getRelatedResourceProvider(
+        final CmsObject cmsObject,
+        final CmsPublishOptions options) {
+
+        return new I_CmsPublishRelatedResourceProvider() {
+
+            public Set<CmsResource> getAdditionalRelatedResources(CmsObject cms, CmsResource res) {
+
+                String pageId = options.getParameters().get(CmsPublishOptions.PARAM_CONTAINERPAGE);
+                if (!res.getStructureId().toString().equals(pageId)) {
+                    return Collections.emptySet();
+                }
+                String collectorItemsStr = options.getParameters().get(CmsPublishOptions.PARAM_COLLECTOR_ITEMS);
+                Set<CmsResource> result = Sets.newHashSet();
+                if (collectorItemsStr != null) {
+                    for (String token : collectorItemsStr.split(",")) {
+                        try {
+                            if (CmsUUID.isValidUUID(token)) {
+                                CmsResource collectorRes = cms.readResource(new CmsUUID(token), CmsResourceFilter.ALL);
+                                if (!collectorRes.getState().isUnchanged()) {
+                                    result.add(collectorRes);
+                                }
+                            }
+                        } catch (Exception e) {
+                            LOG.error("Error processing collector item " + token + ": " + e.getLocalizedMessage(), e);
+                        }
+                    }
+                }
+                return result;
+            }
+        };
     }
 
     /**

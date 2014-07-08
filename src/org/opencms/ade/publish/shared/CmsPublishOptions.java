@@ -39,6 +39,9 @@ import java.util.Map;
  */
 public class CmsPublishOptions implements Serializable {
 
+    /** Parameter name for the collector items. */
+    public static final String PARAM_COLLECTOR_ITEMS = "collectorItems";
+
     /** Parameter name for the container page structure id. */
     public static final String PARAM_CONTAINERPAGE = "containerpage";
 

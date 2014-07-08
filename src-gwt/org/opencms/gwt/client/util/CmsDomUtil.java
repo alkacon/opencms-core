@@ -29,6 +29,7 @@ package org.opencms.gwt.client.util;
 
 import com.alkacon.geranium.client.I_DescendantResizeHandler;
 
+import org.opencms.gwt.client.CmsEditableDataJSO;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
@@ -41,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.google.common.collect.Lists;
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -925,6 +927,23 @@ public final class CmsDomUtil {
     public static FormElement generateHiddenForm(String action, Method method, Target target, Map<String, String> values) {
 
         return generateHiddenForm(action, method, target.getRepresentation(), values);
+    }
+
+    /**
+     * Gets the edit data for all cms-editable elements in the page.<p>
+     * 
+     * @return the list of edit data
+     */
+    public static List<CmsEditableDataJSO> getAllEditableDataForPage() {
+
+        List<Element> elems = CmsDomUtil.getElementsByClass("cms-editable", Tag.div);
+        List<CmsEditableDataJSO> result = Lists.newArrayList();
+        for (Element elem : elems) {
+            String jsonData = elem.getAttribute("rel");
+            CmsEditableDataJSO data = CmsEditableDataJSO.parseEditableData(jsonData);
+            result.add(data);
+        }
+        return result;
     }
 
     /**

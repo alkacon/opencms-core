@@ -69,7 +69,7 @@ public class CmsNewLinkFunctionTable {
      * @param s the string to log
      */
     private static native void log(String s) /*-{
-                                             if ($wnd.console.log) {
+                                             if ($wnd.console && $wnd.console.log) {
                                              $wnd.console.log(s);
                                              }
                                              }-*/;

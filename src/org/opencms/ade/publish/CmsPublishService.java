@@ -311,11 +311,16 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
                     "" + OpenCms.getWorkflowManager().getResourceLimit()));
                 return result;
             }
+            I_CmsVirtualProject virtualProject = workflowManager.getRealOrVirtualProject(options.getProjectId());
+            I_CmsPublishRelatedResourceProvider relProvider = virtualProject.getRelatedResourceProvider(
+                getCmsObject(),
+                options);
             ResourceMap resourcesAndRelated = getResourcesAndRelated(
                 resources,
                 options.isIncludeRelated(),
                 options.isIncludeSiblings(),
-                (options.getProjectId() == null) || options.getProjectId().isNullUUID());
+                (options.getProjectId() == null) || options.getProjectId().isNullUUID(),
+                relProvider);
             formatter.initialize(options, resourcesAndRelated);
             List<CmsPublishResource> publishResources = formatter.getPublishResources();
             for (CmsPublishResource publishResource : getPublishResourcesFlatList(publishResources)) {
@@ -326,17 +331,13 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
             if ((options.getProjectId() == null) || options.getProjectId().isNullUUID()) {
                 groupHelper = new CmsDefaultPublishGroupHelper(locale);
             } else {
-                I_CmsVirtualProject virtualProject = OpenCms.getWorkflowManager().getRealOrVirtualProject(
-                    options.getProjectId());
                 String title = "";
-                if (virtualProject != null) {
-                    CmsProjectBean projectBean = virtualProject.getProjectBean(cms, options.getParameters());
-                    title = projectBean.getDefaultGroupName();
-                    if (title == null) {
-                        title = "";
-                    }
-                    autoSelectable = virtualProject.isAutoSelectable();
+                CmsProjectBean projectBean = virtualProject.getProjectBean(cms, options.getParameters());
+                title = projectBean.getDefaultGroupName();
+                if (title == null) {
+                    title = "";
                 }
+                autoSelectable = virtualProject.isAutoSelectable();
                 groupHelper = new CmsSinglePublishGroupHelper(locale, title);
             }
             results = groupHelper.getGroups(publishResources);
@@ -470,13 +471,16 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
      * @param includeRelated flag to control whether related resources should be included
      * @param includeSiblings flag to control whether siblings should be included
      * @param keepOriginalUnchangedResources flag which determines whether unchanged resources in the original resource list should be kept or removed
+     * @param relProvider the provider for additional related resources 
+     * 
      * @return the resources together with their related resources
      */
     private ResourceMap getResourcesAndRelated(
         List<CmsResource> resources,
         boolean includeRelated,
         boolean includeSiblings,
-        boolean keepOriginalUnchangedResources) {
+        boolean keepOriginalUnchangedResources,
+        I_CmsPublishRelatedResourceProvider relProvider) {
 
         Set<CmsResource> publishResources = new HashSet<CmsResource>();
         publishResources.addAll(resources);
@@ -488,7 +492,9 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
             CmsPublishRelationFinder relationFinder = new CmsPublishRelationFinder(
                 getCmsObject(),
                 publishResources,
-                keepOriginalUnchangedResources);
+                keepOriginalUnchangedResources,
+                relProvider);
+
             result = relationFinder.getPublishRelatedResources();
         } else {
             result = new ResourceMap();
