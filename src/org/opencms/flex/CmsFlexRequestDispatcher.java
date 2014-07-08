@@ -265,7 +265,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
         CmsFlexRequest f_req = controller.getCurrentRequest();
         CmsFlexResponse f_res = controller.getCurrentResponse();
 
-        if (f_req.containsIncludeCall(m_vfsTarget)) {
+        if (f_req.exceedsCallLimit(m_vfsTarget)) {
             // this resource was already included earlier, so we have a (probably endless) inclusion loop
             throw new ServletException(Messages.get().getBundle().key(
                 Messages.ERR_FLEXREQUESTDISPATCHER_INCLUSION_LOOP_1,
