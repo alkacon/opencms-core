@@ -218,7 +218,7 @@ public class CmsContainerBean {
     }
 
     /**
-     * Returns if this container is used on detail pages only
+     * Returns if this container is used on detail pages only.<p>
      * 
      * @return <code>true</code> if this container is used on detail pages only
      */

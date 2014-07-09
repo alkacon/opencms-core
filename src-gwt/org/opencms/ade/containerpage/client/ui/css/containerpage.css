@@ -2,24 +2,20 @@
 
 .showButtons, .hideButtons{}
 
-.menuTabContainer{
-	height: 486px;
-}
-
 .menuTabContainer > div >.gwt-TabLayoutPanel, .menuTabContainer > div{
 	border: none;
 }
 
 .menuTabContainer ul.clipboardList {
 	overflow: auto;
-	/* position relative is required to hide overflowing content caused by layout bug in IE7 */
-	position: relative;
+	position: absolute;
 	border: 1px solid value("constants.css.borderColor");
 	padding: 0 2px;
 	background: value("constants.css.backgroundColorDialog");
-}
-ul.clipboardList{
-	height: 441px;
+	top:6px;
+	left:6px;
+	right: 6px;
+	bottom: 6px;
 }
 
 .clipboardList > div  {

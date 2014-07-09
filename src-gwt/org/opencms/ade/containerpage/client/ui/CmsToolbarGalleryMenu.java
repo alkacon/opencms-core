@@ -33,12 +33,14 @@ import org.opencms.ade.containerpage.client.Messages;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.client.CmsGalleryFactory;
 import org.opencms.ade.galleries.client.I_CmsGalleryHandler;
+import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
 import org.opencms.ade.galleries.client.ui.CmsResultListItem;
 import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.A_CmsToolbarMenu;
 import org.opencms.gwt.client.ui.CmsListItemWidget.Background;
 import org.opencms.gwt.client.ui.CmsPopup;
+import org.opencms.gwt.client.ui.CmsToolbarPopup;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.input.CmsLabel;
@@ -90,13 +92,15 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu<CmsContainerpageHand
         if (!m_initialized) {
             SimplePanel tabsContainer = new SimplePanel();
             tabsContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().menuTabContainer());
+            int dialogHeight = CmsToolbarPopup.getAvailableHeight();
+            int dialogWidth = CmsToolbarPopup.getAvailableWidth();
+
             Predicate<CmsResultItemBean> resultDndFilter = Predicates.alwaysTrue();
             if (CmsContainerpageController.get().getData().getTemplateContextInfo().getCurrentContext() != null) {
                 resultDndFilter = new CmsTemplateContextResultDndFilter();
             }
             final Predicate<CmsResultItemBean> finalDndFilter = resultDndFilter;
-            //tabsContainer.add(CmsGalleryFactory.createDialog(m_dragHandler, m_popup, resultDndFilter));
-            tabsContainer.add(CmsGalleryFactory.createDialog(new I_CmsGalleryHandler() {
+            CmsGalleryDialog dialog = CmsGalleryFactory.createDialog(new I_CmsGalleryHandler() {
 
                 public boolean filterDnd(CmsResultItemBean resultBean) {
 
@@ -131,7 +135,10 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu<CmsContainerpageHand
                     }
                 }
 
-            }));
+            });
+            dialog.setDialogSize(dialogWidth, dialogHeight);
+            getPopup().setWidth(dialogWidth);
+            tabsContainer.add(dialog);
             m_contentPanel.add(tabsContainer);
             m_initialized = true;
         }

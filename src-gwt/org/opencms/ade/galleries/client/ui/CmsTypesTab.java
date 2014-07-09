@@ -112,9 +112,6 @@ public class CmsTypesTab extends A_CmsListTab {
         }
     }
 
-    /** Text metrics key. */
-    private static final String TM_TYPE_TAB = "TypeTab";
-
     /** The list of selection handlers. */
     List<SelectionHandler> m_selectionHandlers = Lists.newArrayList();
 
@@ -138,7 +135,6 @@ public class CmsTypesTab extends A_CmsListTab {
         super(GalleryTabId.cms_tab_types);
         m_tabHandler = tabHandler;
         m_dndHandler = dndHandler;
-        m_scrollList.truncate(TM_TYPE_TAB, CmsGalleryDialog.DIALOG_WIDTH);
         init();
     }
 

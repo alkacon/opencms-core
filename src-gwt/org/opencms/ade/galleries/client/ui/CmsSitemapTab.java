@@ -84,7 +84,6 @@ public class CmsSitemapTab extends A_CmsListTab {
     public CmsSitemapTab(CmsSitemapTabHandler handler) {
 
         super(GalleryTabId.cms_tab_sitemap);
-        m_scrollList.truncate("sitemap_tab", CmsGalleryDialog.DIALOG_WIDTH);
         m_handler = handler;
         init();
     }

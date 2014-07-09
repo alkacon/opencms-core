@@ -32,6 +32,7 @@ import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapLayoutBundle;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsMenuButton;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
+import org.opencms.gwt.client.ui.CmsToolbarPopup;
 import org.opencms.gwt.client.ui.I_CmsListItem;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -92,6 +93,10 @@ public abstract class A_CmsToolbarListMenuButton extends CmsMenuButton implement
         m_tabs = new CmsTabbedPanel<FlowPanel>();
         SimplePanel tabsContainer = new SimplePanel();
         tabsContainer.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.clipboardCss().menuTabContainer());
+        int dialogHeight = CmsToolbarPopup.getAvailableHeight();
+        int dialogWidth = CmsToolbarPopup.getAvailableWidth();
+        tabsContainer.setHeight(dialogHeight + "px");
+        getPopup().setWidth(dialogWidth);
         tabsContainer.add(m_tabs);
         FlowPanel content = new FlowPanel();
         content.add(tabsContainer);

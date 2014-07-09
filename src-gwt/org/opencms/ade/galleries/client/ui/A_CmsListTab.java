@@ -40,6 +40,7 @@ import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsListItem;
+import org.opencms.gwt.client.ui.I_CmsTruncable;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.externallink.CmsEditExternalLinkDialog;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
@@ -85,7 +86,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @since 8.0.
  */
-public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandler<String> {
+public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandler<String>, I_CmsTruncable {
 
     /** Selection handler to handle check box click events and double clicks on the list items. */
     protected abstract class A_SelectionHandler implements ClickHandler {
@@ -231,6 +232,9 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     /** Text metrics key. */
     private static final String TM_GALLERY_SORT = "gallerySort";
 
+    /** Text metrics key. */
+    private static final String TM_LIST_TAB = "ListTab";
+
     /** The ui-binder instance for this class. */
     private static I_CmsListTabUiBinder uiBinder = GWT.create(I_CmsListTabUiBinder.class);
 
@@ -302,6 +306,18 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     }
 
     /**
+     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#getRequiredHeight()
+     */
+    @Override
+    public int getRequiredHeight() {
+
+        int list = m_scrollList.getOffsetHeight();
+        list = list > 82 ? list : 82;
+        int options = m_options.getOffsetHeight();
+        return list + options + 15;
+    }
+
+    /**
      * Call on content change to update the layout.<p>
      */
     public void onContentChange() {
@@ -309,6 +325,16 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
             public void execute() {
+
+                Widget parent = getParent();
+                while (parent != null) {
+                    if (parent instanceof CmsGalleryDialog) {
+                        ((CmsGalleryDialog)parent).updateSizeForTab(A_CmsListTab.this);
+                        parent = null;
+                    } else {
+                        parent = parent.getParent();
+                    }
+                }
 
                 m_list.onResizeDescendant();
             }
@@ -361,6 +387,14 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.I_CmsTruncable#truncate(java.lang.String, int)
+     */
+    public void truncate(String textMetricsKey, int clientWidth) {
+
+        m_scrollList.truncate(TM_LIST_TAB, clientWidth);
+    }
+
+    /**
      * Adds a widget to the front of the list.<p>
      * 
      * @param listItem the list item to add 
@@ -368,8 +402,6 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     protected void addWidgetToFrontOfList(Widget listItem) {
 
         m_scrollList.insert(listItem, 0);
-        onContentChange();
-
     }
 
     /**
@@ -380,7 +412,6 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     protected void addWidgetToList(Widget listItem) {
 
         m_scrollList.add(listItem);
-        onContentChange();
     }
 
     /**
@@ -684,7 +715,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
                         getTabHandler().onSort(
                             m_sortSelectBox.getFormValueAsString(),
                             m_quickSearch.getFormValueAsString());
-
+                        onContentChange();
                     }
                 };
                 m_searchButton.setTitle(Messages.get().key(Messages.GUI_QUICK_FINDER_SEARCH_0));

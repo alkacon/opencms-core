@@ -36,6 +36,7 @@ import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.A_CmsToolbarMenu;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
+import org.opencms.gwt.client.ui.CmsToolbarPopup;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.util.CmsDebugLog;
 
@@ -107,6 +108,10 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu<CmsContainerpageHa
 
         SimplePanel tabsContainer = new SimplePanel();
         tabsContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().menuTabContainer());
+        int dialogHeight = CmsToolbarPopup.getAvailableHeight();
+        int dialogWidth = CmsToolbarPopup.getAvailableWidth();
+        tabsContainer.setHeight(dialogHeight + "px");
+        getPopup().setWidth(dialogWidth);
         tabsContainer.add(m_tabs);
         m_content.add(tabsContainer);
         setMenuWidget(m_content);

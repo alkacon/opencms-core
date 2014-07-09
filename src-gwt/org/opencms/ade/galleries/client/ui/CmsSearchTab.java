@@ -412,6 +412,15 @@ public class CmsSearchTab extends A_CmsTab {
     }
 
     /**
+     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#getRequiredHeight()
+     */
+    @Override
+    public int getRequiredHeight() {
+
+        return 210;
+    }
+
+    /**
      * @see org.opencms.ade.galleries.client.ui.A_CmsTab#getTabHandler()
      */
     @Override

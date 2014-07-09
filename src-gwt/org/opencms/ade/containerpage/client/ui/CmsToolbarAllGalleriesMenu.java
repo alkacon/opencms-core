@@ -43,6 +43,7 @@ import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.A_CmsToolbarMenu;
 import org.opencms.gwt.client.ui.CmsPopup;
+import org.opencms.gwt.client.ui.CmsToolbarPopup;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
 import org.opencms.gwt.client.ui.I_CmsButton;
 
@@ -136,7 +137,9 @@ public class CmsToolbarAllGalleriesMenu extends A_CmsToolbarMenu<CmsContainerpag
         if (!m_initialized) {
             SimplePanel tabsContainer = new SimplePanel();
             tabsContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().menuTabContainer());
-            tabsContainer.add(createDialog(configuration, new I_CmsGalleryHandler() {
+            int dialogHeight = CmsToolbarPopup.getAvailableHeight();
+            int dialogWidth = CmsToolbarPopup.getAvailableWidth();
+            CmsGalleryDialog dialog = createDialog(configuration, new I_CmsGalleryHandler() {
 
                 public boolean filterDnd(CmsResultItemBean resultBean) {
 
@@ -158,7 +161,10 @@ public class CmsToolbarAllGalleriesMenu extends A_CmsToolbarMenu<CmsContainerpag
                     // do nothing
                 }
 
-            }));
+            });
+            dialog.setDialogSize(dialogWidth, dialogHeight);
+            getPopup().setWidth(dialogWidth);
+            tabsContainer.add(dialog);
             m_contentPanel.add(tabsContainer);
             m_initialized = true;
         }

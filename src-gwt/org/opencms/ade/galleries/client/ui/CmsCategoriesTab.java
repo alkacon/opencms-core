@@ -33,9 +33,12 @@ import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
+import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsSimpleListItem;
+import org.opencms.gwt.client.ui.I_CmsListItem;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.category.CmsDataValue;
+import org.opencms.gwt.client.ui.tree.CmsTree;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.shared.CmsCategoryBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
@@ -48,6 +51,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.user.client.ui.Label;
 
 /**
@@ -99,9 +104,6 @@ public class CmsCategoriesTab extends A_CmsListTab {
         I_CmsGalleryProviderConstants.RESOURCE_TYPE_FOLDER,
         true);
 
-    /** Text metrics key. */
-    private static final String TM_CATEGORY_TAB = "CategoryTab";
-
     /** Map of the categories by path. */
     private Map<String, CmsCategoryBean> m_categories;
 
@@ -119,7 +121,6 @@ public class CmsCategoriesTab extends A_CmsListTab {
     public CmsCategoriesTab(CmsCategoriesTabHandler tabHandler) {
 
         super(GalleryTabId.cms_tab_categories);
-        m_scrollList.truncate(TM_CATEGORY_TAB, CmsGalleryDialog.DIALOG_WIDTH);
         m_tabHandler = tabHandler;
         m_isInitOpen = false;
         init();
@@ -254,6 +255,7 @@ public class CmsCategoriesTab extends A_CmsListTab {
      * @param treeEntries the root category entry
      * @param selectedCategories the categories to select after update
      */
+    @SuppressWarnings("unchecked")
     public void updateContentTree(List<CmsCategoryTreeEntry> treeEntries, List<String> selectedCategories) {
 
         clearList();
@@ -265,13 +267,31 @@ public class CmsCategoriesTab extends A_CmsListTab {
             for (CmsCategoryTreeEntry category : treeEntries) {
                 // set the category tree item and add to list 
                 CmsTreeItem treeItem = buildTreeItem(category, selectedCategories);
+                treeItem.setTree((CmsTree<CmsTreeItem>)m_scrollList);
                 addChildren(treeItem, category.getChildren(), selectedCategories);
                 addWidgetToList(treeItem);
-                treeItem.setOpen(true);
+                treeItem.setOpen(true, false);
             }
         } else {
             showIsEmptyLabel();
         }
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#createScrollList()
+     */
+    @Override
+    protected CmsList<? extends I_CmsListItem> createScrollList() {
+
+        CmsTree<CmsTreeItem> tree = new CmsTree<CmsTreeItem>();
+        tree.addOpenHandler(new OpenHandler<CmsTreeItem>() {
+
+            public void onOpen(OpenEvent<CmsTreeItem> event) {
+
+                onContentChange();
+            }
+        });
+        return tree;
     }
 
     /**

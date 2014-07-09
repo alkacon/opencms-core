@@ -29,7 +29,6 @@ package org.opencms.ade.galleries.client.preview;
 
 import org.opencms.ade.galleries.client.Messages;
 import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
-import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 
@@ -72,8 +71,7 @@ public abstract class A_CmsPreviewHandler<T extends CmsResourceInfoBean> impleme
         if (m_resourcePreview.getPreviewDialog().getGalleryMode() == GalleryMode.editor) {
             CmsPreviewUtil.enableEditorOk(false);
         }
-        m_resourcePreview.getGalleryDialog().getParentPanel().addStyleName(
-            I_CmsLayoutBundle.INSTANCE.previewDialogCss().hidePreview());
+        m_resourcePreview.getGalleryDialog().setPreviewVisible(false);
     }
 
     /**

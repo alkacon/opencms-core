@@ -243,6 +243,7 @@ public final class CmsContentEditor extends EditorBase {
     /** Flag indicating the resource needs to removed on cancel. */
     private boolean m_deleteOnCancel;
 
+    /** The entity value change handler calling configured editor change handlers. */
     private EditorChangeHandler m_editorChangeHandler;
 
     /** The entity observer instance. */
@@ -1042,7 +1043,7 @@ public final class CmsContentEditor extends EditorBase {
     }
 
     /**
-     * Calls the editor change handlers<p>
+     * Calls the editor change handlers.<p>
      * 
      * @param changedScopes the changed content value scopes
      */

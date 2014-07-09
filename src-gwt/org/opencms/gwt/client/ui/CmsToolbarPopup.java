@@ -27,6 +27,7 @@
 
 package org.opencms.gwt.client.ui;
 
+import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsPositionBean;
 
@@ -77,7 +78,34 @@ public class CmsToolbarPopup extends CmsPopup {
         setAutoHideEnabled(true);
         setWidth(DEFAULT_WIDTH);
         removePadding();
+    }
 
+    /**
+     * Calculates the popup height to use.<p>
+     * 
+     * @return the height
+     */
+    public static int getAvailableHeight() {
+
+        int height = CmsGalleryDialog.DEFAULT_DIALOG_HEIGHT;
+        if (Window.getClientHeight() > 600) {
+            height = (int)Math.ceil(Window.getClientHeight() * 0.75);
+        }
+        return height;
+    }
+
+    /**
+     * Calculates the popup width to use.<p>
+     * 
+     * @return the width
+     */
+    public static int getAvailableWidth() {
+
+        int width = CmsGalleryDialog.DEFAULT_DIALOG_WIDTH;
+        if (Window.getClientWidth() > 1200) {
+            width = 960;
+        }
+        return width;
     }
 
     /**

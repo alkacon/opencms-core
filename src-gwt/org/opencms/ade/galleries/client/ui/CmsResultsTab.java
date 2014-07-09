@@ -242,9 +242,6 @@ public class CmsResultsTab extends A_CmsListTab {
         }
     }
 
-    /** Text metrics key. */
-    private static final String TM_RESULT_TAB = "ResultTab";
-
     /** The handler for scrolling to the top of the scroll panel. */
     protected CmsResultsBackwardsScrollHandler m_backwardScrollHandler = new CmsResultsBackwardsScrollHandler(this);
 
@@ -297,7 +294,6 @@ public class CmsResultsTab extends A_CmsListTab {
         m_hasMoreResults = false;
         m_dndHandler = dndHandler;
         m_tabHandler = tabHandler;
-        m_scrollList.truncate(TM_RESULT_TAB, CmsGalleryDialog.DIALOG_WIDTH);
         m_params = new FlowPanel();
         m_params.setStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().tabParamsPanel());
         m_tab.insert(m_params, 0);
@@ -374,6 +370,15 @@ public class CmsResultsTab extends A_CmsListTab {
     }
 
     /**
+     * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#getRequiredHeight()
+     */
+    @Override
+    public int getRequiredHeight() {
+
+        return super.getRequiredHeight() + (m_params.isVisible() ? m_params.getOffsetHeight() : 21);
+    }
+
+    /**
      * Returns the delete handler.<p>
      * 
      * @param resourcePath the resource path of the resource
@@ -424,18 +429,14 @@ public class CmsResultsTab extends A_CmsListTab {
      */
     public void updateListSize() {
 
-        int tabHeight = m_tab.getElement().getClientHeight() - 13;
-        // sanity check on tab height
-        tabHeight = tabHeight > 0 ? tabHeight : 421;
         int paramsHeight = m_params.isVisible() ? m_params.getOffsetHeight()
             + CmsDomUtil.getCurrentStyleInt(m_params.getElement(), CmsDomUtil.Style.marginBottom) : 21;
         int optionsHeight = m_options.getOffsetHeight()
             + CmsDomUtil.getCurrentStyleInt(m_options.getElement(), CmsDomUtil.Style.marginBottom);
-        // 3 is some offset, because of the list border
-        int newListSize = tabHeight - paramsHeight - optionsHeight - 1;
-        // another sanity check, don't set any negative height 
-        if (newListSize > 0) {
-            m_list.getElement().getStyle().setHeight(newListSize, Unit.PX);
+        int listTop = paramsHeight + optionsHeight + 5;
+        // another sanity check, don't set any top value below 35
+        if (listTop > 35) {
+            m_list.getElement().getStyle().setTop(listTop, Unit.PX);
         }
     }
 
@@ -471,6 +472,7 @@ public class CmsResultsTab extends A_CmsListTab {
         } else {
             getList().removeStyleName(I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().tilingList());
         }
+        onContentChange();
     }
 
     /**

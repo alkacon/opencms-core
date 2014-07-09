@@ -51,7 +51,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class CmsGallerySearchBean implements IsSerializable {
 
     /** The default matches per page. */
-    public static final int DEFAULT_MATCHES_PER_PAGE = 20;
+    public static final int DEFAULT_MATCHES_PER_PAGE = 40;
 
     /** The default tab id to use when the gallery is opened. */
     public static final int DEFAULT_TAB_ID = 0;

@@ -140,11 +140,13 @@ public class CmsGalleriesTab extends A_CmsListTab {
 
             if (m_numItems == 0) {
                 setLoading(false);
+                onContentChange();
                 return false;
             }
             boolean hasMore = m_itemIterator.hasNext();
             if (!hasMore) {
                 setLoading(false);
+                onContentChange();
                 return false;
             } else {
                 CmsTreeItem treeItem = m_itemIterator.next();
@@ -264,9 +266,6 @@ public class CmsGalleriesTab extends A_CmsListTab {
     /** The batch size for adding new elements to the tab.<p> */
     protected static final int LOAD_BATCH_SIZE = 50;
 
-    /** Text metrics key. */
-    private static final String TM_GALLERY_TAB = "GalleryTab";
-
     /** An iterator which produces new list items which should be added to the tab.<p> */
     protected Iterator<CmsTreeItem> m_itemIterator;
 
@@ -293,7 +292,6 @@ public class CmsGalleriesTab extends A_CmsListTab {
     public CmsGalleriesTab(CmsGalleriesTabHandler tabHandler) {
 
         super(GalleryTabId.cms_tab_galleries);
-        m_scrollList.truncate(TM_GALLERY_TAB, CmsGalleryDialog.DIALOG_WIDTH);
         getList().addScrollHandler(new CmsScrollToBottomHandler(new Runnable() {
 
             public void run() {

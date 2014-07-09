@@ -952,6 +952,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         }
         String provider = getProviderName(resourceType);
         if (m_previewFactoryRegistration.containsKey(provider)) {
+            m_handler.m_galleryDialog.useMaxDimensions();
             m_currentPreview = m_previewFactoryRegistration.get(provider).getPreview(m_handler.m_galleryDialog);
             m_currentPreview.openPreview(resourcePath);
             m_handler.hideShowPreviewButton(false);
