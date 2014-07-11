@@ -30,8 +30,8 @@ var workplacePath="<%= cms.link("/system/workplace/") %>";
  * Opens the image gallery popup.
  */
 function doShowCmsGalleries(editor, url) {
-   var width = 685;
-   var height = 502;
+   var width = window.innerWidth;
+   var height = window.innerHeight;
    // HACK: check for IE8 and add some attributes to iframe to prevent layout issues
    if (typeof document.addEventListener =='undefined'){
        // let's call this iframe attribute injection
@@ -44,14 +44,6 @@ function doShowCmsGalleries(editor, url) {
        inline: "yes", 
        classes: "opencmsDialog"
    }, {});
-   var closeButton=window.document.createElement("div");
-   var currentEd=editor;
-   closeButton.onclick=function(){
-       currentEd.windowManager.close();
-   };
-   closeButton.setAttribute("class", "closeButton");
-   var windows= editor.windowManager.windows;
-   windows[windows.length-1].getEl().appendChild(closeButton);
 }
 
 /**
@@ -472,25 +464,3 @@ initOpenCmsTinyMCEPlugin();
 
 
 </fmt:bundle>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

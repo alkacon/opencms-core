@@ -152,6 +152,11 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
         return m_galleryMode == GalleryMode.editor;
     }
 
+    public boolean isViewMode() {
+
+        return m_galleryMode == GalleryMode.view;
+    }
+
     /**
      * Returns if the current gallery mode is the widget mode (used within xml-content editor etc.).<p>
      * 
@@ -253,7 +258,7 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
 
         StringBuffer sb = new StringBuffer();
         // var closeLink = '/system/workplace/views/explorer/explorer_files.jsp';
-        sb.append("var ").append(I_CmsGalleryProviderConstants.ATTR_CLOSE_LINK).append(" = \'").append(closeLink).append(
+        sb.append("var ").append(I_CmsGalleryProviderConstants.ATTR_CLOSE_LINK).append(" = \'").append(link(closeLink)).append(
             "\';");
         wrapScript(sb);
         return sb.toString();

@@ -1,19 +1,8 @@
 @external html-face, textboxGhostMode, scrollContainer, popupContent, gwt-ToggleButton, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled, mce-opencmsDialog, mce-window, mce-window-head, closeButton;
 
 /* TinyMCE plugin popup dialog styles, all used classes are external. */
-@sprite div.mce-opencmsDialog.mce-window{
-	gwt-image: "backgrounds.dialogBackground";
-    background-color: value("constants.css.backgroundColorDialogBorder");
-    background-position: center top;
-    background-repeat: repeat-x;
-    border-color: #606161 black black;
-    border-radius: 12px 12px 12px 12px;
-    border-style: solid;
-    border-width: 1px;
-    box-shadow: 6px 6px 12px #666666;
-    margin: 0;
-    padding: 6px 5px 5px;
-    overflow: visible;
+div.mce-opencmsDialog.mce-window{
+	background: transparent;
 }
 
 .mce-opencmsDialog.mce-window > .mce-window-head{
