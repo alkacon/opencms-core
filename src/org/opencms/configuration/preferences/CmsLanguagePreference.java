@@ -40,6 +40,11 @@ import java.util.Locale;
  */
 public class CmsLanguagePreference extends CmsBuiltinPreference {
 
+    /** The nice name. */
+    private static final String NICE_NAME = "%(key."
+        + org.opencms.workplace.commons.Messages.GUI_LABEL_LANGUAGE_0
+        + ")";
+
     /**
      * Creates a new instance 
      * 
@@ -55,11 +60,30 @@ public class CmsLanguagePreference extends CmsBuiltinPreference {
      * @see org.opencms.configuration.preferences.CmsBuiltinPreference#getPropertyDefinition(org.opencms.file.CmsObject)
      */
     @Override
+    public CmsXmlContentProperty getPropertyDefinition() {
+
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(),//name
+            "string",//type
+            null,//widget
+            null,//widgetconfig
+            null,//regex
+            null,//ruletype
+            null,//default
+            NICE_NAME,//nicename
+            null,//description
+            null,//error
+            null//preferfolder
+        );
+        return prop;
+    }
+
+    /**
+     * @see org.opencms.configuration.preferences.CmsBuiltinPreference#getPropertyDefinition(org.opencms.file.CmsObject)
+     */
+    @Override
     public CmsXmlContentProperty getPropertyDefinition(CmsObject cms) {
 
         Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
-        String niceName = org.opencms.workplace.commons.Messages.get().getBundle(locale).key(
-            org.opencms.workplace.commons.Messages.GUI_LABEL_LANGUAGE_0);
         SelectOptions options = CmsPreferences.getOptionsForLanguageStatic(locale, Locale.ENGLISH);
         CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(),//name
             "string",//type
@@ -68,7 +92,7 @@ public class CmsLanguagePreference extends CmsBuiltinPreference {
             null,//regex
             null,//ruletype
             null,//default
-            niceName,//nicename
+            NICE_NAME,//nicename
             null,//description
             null,//error
             null//preferfolder

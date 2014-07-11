@@ -379,10 +379,11 @@
 						<entry key="GUI_EXPLORER_CONTEXT_SHOW_WORKPLACE_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsShowWorkplace"
 							rule="containerpage" />
+						<entry key="GUI_EXPLORER_CONTEXT_USERSETTINGS_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEditUserSettings" rule="containerpage" />
 						<entry key="GUI_EXPLORER_CONTEXT_LOGOUT_0" 
 							name="org.opencms.gwt.client.ui.contextmenu.CmsLogout"
 							rule="containerpage" />
-					    <entry key="GUI_EXPLORER_CONTEXT_USERSETTINGS_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEditUserSettings" rule="containerpage" />
+					    
 						<entry key="GUI_EXPLORER_CONTEXT_ABOUT_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsAbout"
 							rule="containerpage" />

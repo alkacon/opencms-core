@@ -59,10 +59,10 @@ public class CmsSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> implements 
     private static final String TM_OPENER_LABEL = "OpenerLabel";
 
     /** The widget type identifier. */
-    private static final String WIDGET_TYPE = "select";
+    public static final String WIDGET_TYPE = "select";
 
     /** Widget type identifier (no null value). */
-    private static final String WIDGET_TYPE_NOTNULL = "select_notnull";
+    public static final String WIDGET_TYPE_NOTNULL = "select_notnull";
 
     /** The ghost value. */
     protected String m_ghostValue;

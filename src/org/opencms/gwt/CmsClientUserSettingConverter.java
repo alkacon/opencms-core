@@ -31,6 +31,7 @@ import org.opencms.configuration.CmsDefaultUserSettings;
 import org.opencms.configuration.preferences.I_CmsPreference;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsUserSettingsBean;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.i18n.CmsMultiMessages;
@@ -150,7 +151,7 @@ public class CmsClientUserSettingConverter {
         currentSettings.init(m_preferences.getUserSettings().getUser());
         for (I_CmsPreference pref : OpenCms.getWorkplaceManager().getDefaultUserSettings().getPreferences().values()) {
             String tab = pref.getTab();
-            if ("hidden".equals(tab)) {
+            if (CmsGwtConstants.TAB_HIDDEN.equals(tab)) {
                 continue;
             }
             CmsXmlContentProperty prop2 = pref.getPropertyDefinition(m_cms);
@@ -158,7 +159,7 @@ public class CmsClientUserSettingConverter {
             CmsXmlContentProperty resolvedProp = CmsXmlContentPropertyHelper.resolveMacrosInProperty(
                 prop2.withDefaultWidget("string"),
                 m_macroResolver);
-            result.addSetting(value, resolvedProp, "basic".equals(tab));
+            result.addSetting(value, resolvedProp, CmsGwtConstants.TAB_BASIC.equals(tab));
         }
         addAccountInfo(result);
         return result;

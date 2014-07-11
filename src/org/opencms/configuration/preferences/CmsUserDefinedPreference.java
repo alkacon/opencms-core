@@ -33,13 +33,15 @@ import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
-import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
 /**
  * Subclass for user-defined preferences.<p>
  */
-public class CmsUserDefinedPreference extends CmsPreferenceData implements I_CmsPreference {
+public class CmsUserDefinedPreference extends A_CmsPreference {
+
+    /** The configured preference data. */
+    private CmsPreferenceData m_preferenceData;
 
     /** 
      * Creates a new instance.<p>
@@ -51,7 +53,7 @@ public class CmsUserDefinedPreference extends CmsPreferenceData implements I_Cms
      */
     public CmsUserDefinedPreference(String name, String value, CmsXmlContentProperty prop, String tab) {
 
-        super(name, value, prop, tab);
+        m_preferenceData = new CmsPreferenceData(name, value, prop, tab);
     }
 
     /**
@@ -65,13 +67,11 @@ public class CmsUserDefinedPreference extends CmsPreferenceData implements I_Cms
         CmsXmlContentProperty prop = pref.getPropertyDefinition();
         for (String[] attrToSet : new String[][] {
             {I_CmsXmlConfiguration.A_VALUE, pref.getDefaultValue()},
-            {CmsWorkplaceConfiguration.A_TAB, pref.getTab()},
             {CmsWorkplaceConfiguration.A_NICE_NAME, prop.getNiceName()},
             {CmsWorkplaceConfiguration.A_DESCRIPTION, prop.getDescription()},
             {CmsWorkplaceConfiguration.A_WIDGET, prop.getWidget()},
             {CmsWorkplaceConfiguration.A_WIDGET_CONFIG, prop.getWidgetConfiguration()},
             {CmsWorkplaceConfiguration.A_RULE_REGEX, prop.getRuleRegex()},
-            {CmsWorkplaceConfiguration.A_RULE_TYPE, prop.getRuleType()},
             {CmsWorkplaceConfiguration.A_ERROR, prop.getError()}}) {
             String attrName = attrToSet[0];
             String value = attrToSet[1];
@@ -82,23 +82,36 @@ public class CmsUserDefinedPreference extends CmsPreferenceData implements I_Cms
     }
 
     /**
-     * @see org.opencms.configuration.preferences.I_CmsPreference#createConfigurationItem()
+     * @see org.opencms.configuration.preferences.I_CmsPreference#getDefaultValue()
      */
-    public Element createConfigurationItem() {
+    public String getDefaultValue() {
 
-        Element elem = DocumentHelper.createElement(CmsWorkplaceConfiguration.N_PREFERENCE);
-        elem.addAttribute(I_CmsXmlConfiguration.A_NAME, getName());
-        fillAttributes(this, elem);
-        return elem;
+        return m_preferenceData.getDefaultValue();
+    }
 
+    /**
+     * @see org.opencms.configuration.preferences.I_CmsPreference#getName()
+     */
+    public String getName() {
+
+        return m_preferenceData.getName();
     }
 
     /**
      * @see org.opencms.configuration.preferences.I_CmsPreference#getPropertyDefinition(org.opencms.file.CmsObject)
      */
+    @Override
     public CmsXmlContentProperty getPropertyDefinition(CmsObject cms) {
 
         return getPropertyDefinition();
+    }
+
+    /**
+     * @see org.opencms.configuration.preferences.I_CmsPreference#getTab()
+     */
+    public String getTab() {
+
+        return m_preferenceData.getTab();
     }
 
     /**
@@ -115,6 +128,15 @@ public class CmsUserDefinedPreference extends CmsPreferenceData implements I_Cms
     public void setValue(CmsDefaultUserSettings settings, String value) {
 
         settings.setAdditionalPreference(getName(), value);
+    }
+
+    /**
+     * @see org.opencms.configuration.preferences.A_CmsPreference#getPropertyDefinition()
+     */
+    @Override
+    protected CmsXmlContentProperty getPropertyDefinition() {
+
+        return m_preferenceData.getPropertyDefinition();
     }
 
 }

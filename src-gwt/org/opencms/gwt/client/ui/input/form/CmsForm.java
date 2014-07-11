@@ -585,6 +585,8 @@ public class CmsForm {
                         defaultHandleValueChange(formField, (String)(event.getValue()), inhibitValidation);
                     } else if (eventValue instanceof Date) {
                         defaultHandleValueChange(formField, "" + ((Date)eventValue).getTime(), inhibitValidation);
+                    } else if (eventValue instanceof Boolean) {
+                        defaultHandleValueChange(formField, "" + eventValue, inhibitValidation);
                     }
 
                 }

@@ -28,8 +28,8 @@
 package org.opencms.configuration.preferences;
 
 import org.opencms.configuration.CmsDefaultUserSettings;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsContextInfo;
-import org.opencms.main.OpenCms;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -736,7 +736,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      */
     public void setLocale(String s) {
 
-        m_settings.setLocale(OpenCms.getLocaleManager().getLocale(s));
+        m_settings.setLocale(CmsLocaleManager.getLocale(s));
     }
 
     /**

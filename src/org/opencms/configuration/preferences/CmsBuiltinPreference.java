@@ -28,22 +28,16 @@
 package org.opencms.configuration.preferences;
 
 import org.opencms.configuration.CmsDefaultUserSettings;
-import org.opencms.configuration.CmsWorkplaceConfiguration;
-import org.opencms.configuration.I_CmsXmlConfiguration;
-import org.opencms.file.CmsObject;
 import org.opencms.main.CmsLog;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
 
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
-
 /**
  * Preference subclass for built-in preferences accessed with a getter/setter pair via reflection.<p>
  */
-public class CmsBuiltinPreference implements I_CmsPreference {
+public class CmsBuiltinPreference extends A_CmsPreference {
 
     /** True if this is a basic preference. */
     protected boolean m_basic;
@@ -62,18 +56,6 @@ public class CmsBuiltinPreference implements I_CmsPreference {
     public CmsBuiltinPreference(String propName) {
 
         m_propName = propName;
-    }
-
-    /**
-     * @see org.opencms.configuration.preferences.I_CmsPreference#createConfigurationItem()
-     */
-    public Element createConfigurationItem() {
-
-        Element elem = DocumentHelper.createElement(CmsWorkplaceConfiguration.N_PREFERENCE);
-        elem.addAttribute(I_CmsXmlConfiguration.A_NAME, getName()).addAttribute(
-            I_CmsXmlConfiguration.A_VALUE,
-            getDefaultValue());
-        return elem;
     }
 
     /**
@@ -96,18 +78,19 @@ public class CmsBuiltinPreference implements I_CmsPreference {
      */
     public String getName() {
 
-        return "old." + m_propName;
+        return m_propName;
     }
 
     /**
-     * @see org.opencms.configuration.preferences.I_CmsPreference#getPropertyDefinition(org.opencms.file.CmsObject)
+     * @see org.opencms.configuration.preferences.A_CmsPreference#getPropertyDefinition()
      */
-    public CmsXmlContentProperty getPropertyDefinition(CmsObject cms) {
+    @Override
+    public CmsXmlContentProperty getPropertyDefinition() {
 
-        CmsXmlContentProperty prop = new CmsXmlContentProperty("old." + m_propName,//name
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(m_propName,//name
             "string",//type
-            "string",//widget
-            "",//widgetconfig
+            null,//widget
+            null,//widgetconfig
             null,//regex
             null,//ruletype
             null,//default

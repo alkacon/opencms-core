@@ -28,12 +28,9 @@
 package org.opencms.configuration.preferences;
 
 import org.opencms.configuration.CmsDefaultUserSettings;
-import org.opencms.configuration.CmsWorkplaceConfiguration;
-import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
-import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
 /**
@@ -65,12 +62,9 @@ public class CmsWrapperPreference implements I_CmsPreference {
      */
     public Element createConfigurationItem() {
 
-        Element elem = DocumentHelper.createElement(CmsWorkplaceConfiguration.N_PREFERENCE);
-        elem.addAttribute(I_CmsXmlConfiguration.A_NAME, getName());
-        elem.addAttribute(I_CmsXmlConfiguration.A_VALUE, m_wrappedPreference.getDefaultValue());
+        Element elem = m_wrappedPreference.createConfigurationItem();
         CmsUserDefinedPreference.fillAttributes(m_prefData, elem);
         return elem;
-
     }
 
     /**

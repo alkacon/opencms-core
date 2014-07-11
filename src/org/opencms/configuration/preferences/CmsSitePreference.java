@@ -28,7 +28,6 @@
 package org.opencms.configuration.preferences;
 
 import org.opencms.file.CmsObject;
-import org.opencms.i18n.CmsMessages;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.commons.CmsPreferences;
 import org.opencms.workplace.commons.CmsPreferences.SelectOptions;
@@ -40,6 +39,11 @@ import java.util.Locale;
  * Preference for the start site.<p>
  */
 public class CmsSitePreference extends CmsBuiltinPreference {
+
+    /** The nice name. */
+    private static final String NICE_NAME = "%(key."
+        + org.opencms.workplace.commons.Messages.GUI_PREF_STARTUP_SITE_0
+        + ")";
 
     /**
      * Creates a new instance.<p>
@@ -56,10 +60,30 @@ public class CmsSitePreference extends CmsBuiltinPreference {
      * @see org.opencms.configuration.preferences.CmsBuiltinPreference#getPropertyDefinition(org.opencms.file.CmsObject)
      */
     @Override
+    public CmsXmlContentProperty getPropertyDefinition() {
+
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(),//name
+            "string",//type
+            null,//widget
+            null,//widgetconfig
+            null,//regex
+            null,//ruletype
+            null,//default
+            NICE_NAME,//nicename
+            null,//description
+            null,//error
+            null//preferfolder
+        );
+        return prop;
+    }
+
+    /**
+     * @see org.opencms.configuration.preferences.CmsBuiltinPreference#getPropertyDefinition(org.opencms.file.CmsObject)
+     */
+    @Override
     public CmsXmlContentProperty getPropertyDefinition(CmsObject cms) {
 
         Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
-        CmsMessages wpMessages = org.opencms.workplace.commons.Messages.get().getBundle(locale);
         SelectOptions options = CmsPreferences.getSiteSelectOptionsStatic(cms, "DUMMY SITE VALUE", locale);
         CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(),//name
             "string",//type
@@ -68,7 +92,7 @@ public class CmsSitePreference extends CmsBuiltinPreference {
             null,//regex
             null,//ruletype
             null,//default
-            wpMessages.key(org.opencms.workplace.commons.Messages.GUI_PREF_STARTUP_SITE_0),//nicename
+            NICE_NAME,//nicename
             null,//description
             null,//error
             null//preferfolder

@@ -28,24 +28,18 @@
 package org.opencms.configuration.preferences;
 
 import org.opencms.configuration.CmsDefaultUserSettings;
-import org.opencms.configuration.CmsWorkplaceConfiguration;
-import org.opencms.configuration.I_CmsXmlConfiguration;
-import org.opencms.file.CmsObject;
 import org.opencms.xml.content.CmsXmlContentProperty;
-
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
 
 /**
  * Preference subclass for preferred editors.<p>
  */
-public class CmsEditorPreference implements I_CmsPreference {
+public class CmsEditorPreference extends A_CmsPreference {
 
     /** The preference default value. */
     private String m_value;
 
     /** Prefix used for editor preference settings. */
-    public static final String EDITOR_PREFIX = "old.editor.";
+    public static final String EDITOR_PREFIX = "editor.";
 
     /** The resource type for which this preference controls the editor to use. */
     private String m_editorType;
@@ -60,19 +54,6 @@ public class CmsEditorPreference implements I_CmsPreference {
 
         m_editorType = editorType;
         m_value = value;
-    }
-
-    /**
-     * @see org.opencms.configuration.preferences.I_CmsPreference#createConfigurationItem()
-     */
-    public Element createConfigurationItem() {
-
-        Element elem = DocumentHelper.createElement(CmsWorkplaceConfiguration.N_PREFERENCE);
-        elem.addAttribute(I_CmsXmlConfiguration.A_NAME, getName()).addAttribute(
-            I_CmsXmlConfiguration.A_VALUE,
-            getDefaultValue());
-        return elem;
-
     }
 
     /**
@@ -94,12 +75,13 @@ public class CmsEditorPreference implements I_CmsPreference {
     /**
      * @see org.opencms.configuration.preferences.I_CmsPreference#getPropertyDefinition(org.opencms.file.CmsObject)
      */
-    public CmsXmlContentProperty getPropertyDefinition(CmsObject cms) {
+    @Override
+    public CmsXmlContentProperty getPropertyDefinition() {
 
         CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(),//name
             "string",//type
-            "string",//widget
-            "",//widgetconfig
+            null,//widget
+            null,//widgetconfig
             null,//regex
             null,//ruletype
             null,//default

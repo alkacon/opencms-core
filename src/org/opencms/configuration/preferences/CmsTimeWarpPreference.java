@@ -27,12 +27,7 @@
 
 package org.opencms.configuration.preferences;
 
-import org.opencms.file.CmsObject;
-import org.opencms.i18n.CmsMessages;
-import org.opencms.main.OpenCms;
 import org.opencms.xml.content.CmsXmlContentProperty;
-
-import java.util.Locale;
 
 /**
  * Preference for the timewarp widget.<p>
@@ -55,19 +50,16 @@ public class CmsTimeWarpPreference extends CmsBuiltinPreference {
      * @see org.opencms.configuration.preferences.CmsBuiltinPreference#getPropertyDefinition(org.opencms.file.CmsObject)
      */
     @Override
-    public CmsXmlContentProperty getPropertyDefinition(CmsObject cms) {
-
-        Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
-        CmsMessages wpMessages = org.opencms.workplace.commons.Messages.get().getBundle(locale);
+    public CmsXmlContentProperty getPropertyDefinition() {
 
         CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(),//name
             "string",//type
             "datebox",//widget
-            "",//widgetconfig
+            null,//widgetconfig
             null,//regex
             null,//ruletype
             null,//default
-            wpMessages.key(org.opencms.workplace.commons.Messages.GUI_LABEL_TIMEWARP_0),//nicename
+            "%(key." + org.opencms.workplace.commons.Messages.GUI_LABEL_TIMEWARP_0 + ")",//nicename
             null,//description
             null,//error
             null//preferfolder

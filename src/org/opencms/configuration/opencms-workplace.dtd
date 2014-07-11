@@ -495,7 +495,11 @@
 				dialogs-preferences?,
 				editors-preferences?,
 				galleries-preferences?,
-				workflow-preferences?, preference*)>
+				workflow-preferences?, preference-tab*)>
+				
+				
+<!ELEMENT preference-tab (preference*)>
+<!ATTLIST preference-tab name (basic|extended|hidden) #REQUIRED>
 				
 <!ELEMENT preference EMPTY>
 <!ATTLIST preference 	name CDATA #REQUIRED
@@ -505,9 +509,7 @@
 						nice-name CDATA #IMPLIED
 						description CDATA #IMPLIED
 						rule-regex CDATA #IMPLIED
-						rule-type CDATA #IMPLIED
 						error CDATA #IMPLIED
-						tab CDATA #IMPLIED
 >
 
 <!--

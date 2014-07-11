@@ -49,6 +49,15 @@ public final class CmsGwtConstants {
     /** Type name for container pages. */
     public static final String TYPE_CONTAINERPAGE = "containerpage";
 
+    /** Tab id for the preference dialog. */
+    public static final String TAB_BASIC = "basic";
+
+    /** Tab id for the preference dialog. */
+    public static final String TAB_EXTENDED = "extended";
+
+    /** Tab id for the preference dialog. */
+    public static final String TAB_HIDDEN = "hidden";
+
     /** Name for the pseudo-type 'navlevel'. */
     public static final String TYPE_NAVLEVEL = "navlevel";
 

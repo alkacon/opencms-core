@@ -30,15 +30,20 @@ package org.opencms.gwt.client.ui.preferences;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
+import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
 import org.opencms.gwt.client.ui.input.form.CmsDialogFormHandler;
 import org.opencms.gwt.client.ui.input.form.CmsForm;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
+import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler;
+import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetMultiFactory;
 import org.opencms.gwt.shared.CmsUserSettingsBean;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -69,7 +74,22 @@ public class CmsUserSettingsDialog extends CmsFormDialog implements I_CmsFormSub
         for (Map.Entry<String, CmsXmlContentProperty> entry : userSettings.getConfiguration().entrySet()) {
             String key = entry.getKey();
             CmsXmlContentProperty settingDef = entry.getValue();
-            I_CmsFormField field = CmsBasicFormField.createField(settingDef);
+            I_CmsFormWidgetMultiFactory factory = new I_CmsFormWidgetMultiFactory() {
+
+                public I_CmsFormWidget createFormWidget(String widgetKey, Map<String, String> widgetParams) {
+
+                    if (CmsSelectBox.WIDGET_TYPE.equals(widgetKey)) {
+                        widgetKey = CmsSelectBox.WIDGET_TYPE_NOTNULL;
+                    }
+                    return CmsWidgetFactoryRegistry.instance().createFormWidget(widgetKey, widgetParams);
+                }
+            };
+            I_CmsFormField field = CmsBasicFormField.createField(
+                settingDef,
+                settingDef.getName(),
+                factory,
+                Collections.<String, String> emptyMap(),
+                false);
             if (userSettings.isBasic(settingDef.getName())) {
                 field.getLayoutData().put("basic", "true");
             }

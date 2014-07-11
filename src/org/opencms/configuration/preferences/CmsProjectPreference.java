@@ -39,6 +39,11 @@ import java.util.Locale;
  */
 public class CmsProjectPreference extends CmsBuiltinPreference {
 
+    /** The nice name. */
+    private static final String NICE_NAME = "%(key."
+        + org.opencms.workplace.commons.Messages.GUI_PREF_STARTUP_PROJECT_0
+        + ")";
+
     /**
      * Creates a new instance.<p>
      * 
@@ -54,11 +59,30 @@ public class CmsProjectPreference extends CmsBuiltinPreference {
      * @see org.opencms.configuration.preferences.CmsBuiltinPreference#getPropertyDefinition(org.opencms.file.CmsObject)
      */
     @Override
+    public CmsXmlContentProperty getPropertyDefinition() {
+
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(),//name
+            "string",//type
+            null,//widget
+            null,//widgetconfig
+            null,//regex
+            null,//ruletype
+            null,//default
+            NICE_NAME,//nicename
+            null,//description
+            null,//error
+            null//preferfolder
+        );
+        return prop;
+    }
+
+    /**
+     * @see org.opencms.configuration.preferences.CmsBuiltinPreference#getPropertyDefinition(org.opencms.file.CmsObject)
+     */
+    @Override
     public CmsXmlContentProperty getPropertyDefinition(CmsObject cms) {
 
         Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
-        String niceName = org.opencms.workplace.commons.Messages.get().getBundle(locale).key(
-            org.opencms.workplace.commons.Messages.GUI_PREF_STARTUP_PROJECT_0);
         CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(),//name
             "string",//type
             "select_notnull",//widget
@@ -66,7 +90,7 @@ public class CmsProjectPreference extends CmsBuiltinPreference {
             null,//regex
             null,//ruletype
             null,//default
-            niceName,//nicename
+            NICE_NAME,//nicename
             null,//description
             null,//error
             null//preferfolder) 

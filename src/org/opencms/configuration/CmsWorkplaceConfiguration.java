@@ -29,6 +29,7 @@ package org.opencms.configuration;
 
 import org.opencms.configuration.preferences.I_CmsPreference;
 import org.opencms.db.CmsExportPoint;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -62,9 +63,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.digester.CallMethodRule;
 import org.apache.commons.digester.Digester;
+import org.apache.commons.digester.Rule;
 
 import org.dom4j.Element;
+import org.xml.sax.Attributes;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
 
 /**
  * Import/Export master configuration class.<p>
@@ -394,6 +402,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     /** The name of the inherit permissions on folder node. */
     public static final String N_PERMISSIONSINHERITONFOLDER = "permissions-inheritonfolder";
 
+    /** The name of the preference-tab element. */
+    public static final String N_PREFERENCE_TAB = "preference-tab";
+
     /** The node name of the project node. */
     public static final String N_PROJECT = "project";
 
@@ -543,9 +554,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
     /** The 'rule-regex' attribute. */
     public static final String A_RULE_REGEX = "rule-regex";
-
-    /** The ''rule-type attribute. */
-    public static final String A_RULE_TYPE = "rule-type";
 
     /** The 'error' attribute. */
     public static final String A_ERROR = "error";
@@ -1494,10 +1502,27 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         //
         //            }
         //        }
-        for (I_CmsPreference pref : m_workplaceManager.getDefaultUserSettings().getPreferences().values()) {
-            Element elem = pref.createConfigurationItem();
-            if (elem != null) {
-                defaultPreferences.add(elem);
+
+        Multimap<String, I_CmsPreference> prefsByTab = Multimaps.index(
+            m_workplaceManager.getDefaultUserSettings().getPreferences().values(),
+            new Function<I_CmsPreference, String>() {
+
+                public String apply(I_CmsPreference input) {
+
+                    return input.getTab();
+                }
+            });
+
+        for (String tabName : new String[] {
+            CmsGwtConstants.TAB_BASIC,
+            CmsGwtConstants.TAB_EXTENDED,
+            CmsGwtConstants.TAB_HIDDEN}) {
+            Element preferenceTab = defaultPreferences.addElement(N_PREFERENCE_TAB).addAttribute("name", tabName);
+            for (I_CmsPreference pref : prefsByTab.get(tabName)) {
+                Element elem = pref.createConfigurationItem();
+                if (elem != null) {
+                    preferenceTab.add(elem);
+                }
             }
         }
 
@@ -1856,8 +1881,23 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam(xPathPrefix + "/" + N_STARTGALLERY, 0, A_TYPE);
         digester.addCallParam(xPathPrefix + "/" + N_STARTGALLERY, 1, A_PATH);
 
-        String prefPath = "*/" + N_WORKPLACE + "/" + N_DEFAULTPREFERENCES + "/" + N_PREFERENCE;
-        digester.addCallMethod(prefPath, "addPreference", 10);
+        digester.addRule("*/" + N_WORKPLACE + "/" + N_DEFAULTPREFERENCES + "/preference-tab", new Rule() {
+
+            @Override
+            public void begin(String namespace, String name, Attributes attributes) throws Exception {
+
+                getDigester().push(attributes.getValue("name"));
+            }
+
+            @Override
+            public void end(String namespace, String name) throws Exception {
+
+                getDigester().pop();
+            }
+        });
+
+        String prefPath = "*/" + N_WORKPLACE + "/" + N_DEFAULTPREFERENCES + "/preference-tab/" + N_PREFERENCE;
+        digester.addRule(prefPath, new CallMethodRule(1, "addPreference", 9));
         digester.addCallParam(prefPath, 0, A_NAME);
         digester.addCallParam(prefPath, 1, A_VALUE);
         digester.addCallParam(prefPath, 2, A_WIDGET);
@@ -1865,9 +1905,8 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam(prefPath, 4, A_NICE_NAME);
         digester.addCallParam(prefPath, 5, A_DESCRIPTION);
         digester.addCallParam(prefPath, 6, A_RULE_REGEX);
-        digester.addCallParam(prefPath, 7, A_RULE_TYPE);
-        digester.addCallParam(prefPath, 8, A_ERROR);
-        digester.addCallParam(prefPath, 9, A_TAB);
+        digester.addCallParam(prefPath, 7, A_ERROR);
+        digester.addCallParam(prefPath, 8, 0);
     }
 
     /**

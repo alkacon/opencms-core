@@ -162,7 +162,10 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     public static final String PUBLISHBUTTON_SHOW_NEVER = "never";
 
     /** Array list for fast lookup of "button styles". */
-    public static final List<String> BUTTON_STYLES_LIST = Collections.unmodifiableList(Arrays.asList(new String[] {"image", "textimage", "text"}));
+    public static final List<String> BUTTON_STYLES_LIST = Collections.unmodifiableList(Arrays.asList(new String[] {
+        "image",
+        "textimage",
+        "text"}));
 
     /** Parameter for buttonstyle text & image. */
     private static final int BUTTONSTYLE_TEXTIMAGE = 1;
@@ -216,7 +219,6 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      * @param niceName the nice name of the preference 
      * @param description the description of the preference 
      * @param ruleRegex the regex used for validation 
-     * @param ruleType the validation type 
      * @param error the validation error message 
      * @param tab the tab to display the preference on 
      */
@@ -228,7 +230,6 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
         String niceName,
         String description,
         String ruleRegex,
-        String ruleType,
         String error,
         String tab) {
 
@@ -238,7 +239,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
             widget,
             widgetConfig,
             ruleRegex,
-            ruleType,
+            null,
             null,
             niceName,
             description,
