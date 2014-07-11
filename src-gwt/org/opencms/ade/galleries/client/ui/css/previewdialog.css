@@ -53,6 +53,7 @@ div.previewDialog {
 
 .previewPanel {	
 	line-height: inherit;
+	height:100%;
 }
 
 .imagePanel {

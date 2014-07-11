@@ -142,6 +142,16 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
     }
 
     /**
+     * Returns the dialog width.<p>
+     * 
+     * @return the dialog width
+     */
+    public int getDialogWidth() {
+
+        return m_dialogWidth;
+    }
+
+    /**
      * Adds necessary attributes to the map.<p>
      * 
      * @param attributes the attribute map
@@ -154,6 +164,16 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
             m_imageAdvancedTab.getImageAttributes(attributes);
         }
         return attributes;
+    }
+
+    /**
+     * Returns the preview height.<p>
+     * 
+     * @return the preview height
+     */
+    public int getPreviewHeight() {
+
+        return m_previewHeight;
     }
 
     /**

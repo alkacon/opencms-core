@@ -40,10 +40,6 @@ import org.opencms.ade.galleries.shared.CmsSitemapEntryBean;
 import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
-import org.opencms.gwt.client.CmsCoreProvider;
-import org.opencms.gwt.client.ui.CmsPushButton;
-import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
-import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.shared.CmsCategoryBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.sort.CmsComparatorTitle;
@@ -55,13 +51,9 @@ import java.util.List;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Gallery dialog controller handler.<p>
@@ -211,29 +203,6 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
 
         m_mode = dialogBean.getMode();
         if (isFirstTime) {
-            if (m_mode.equals(I_CmsGalleryProviderConstants.GalleryMode.view)) {
-
-                RootPanel panel = RootPanel.get(I_CmsGalleryProviderConstants.GALLERY_DIALOG_ID);
-                panel.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popup());
-                panel.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupContent());
-                CmsPushButton closeButton = new CmsPushButton();
-                closeButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
-                closeButton.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().closePopup());
-                closeButton.setImageClass(I_CmsLayoutBundle.INSTANCE.dialogCss().closePopupImage());
-                closeButton.addClickHandler(new ClickHandler() {
-
-                    public void onClick(ClickEvent event) {
-
-                        String closeLink = getCloseLink() + "?resource=";
-                        Window.Location.assign(CmsCoreProvider.get().link(closeLink));
-                    }
-                });
-                panel.add(closeButton);
-                panel.setWidth("660px");
-                panel.getElement().getStyle().setProperty("margin", "20px auto");
-
-            }
-
             if ((dialogBean.getSitemapSiteSelectorOptions() == null)
                 || dialogBean.getSitemapSiteSelectorOptions().isEmpty()) {
                 controller.removeTab(GalleryTabId.cms_tab_sitemap);
@@ -484,16 +453,6 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
         m_galleryDialog.getResultsTab().showNoParamsMessage();
 
     }
-
-    /**
-     * Retrieves the close link global variable as a string.<p>
-     * 
-     * @return the close link
-     */
-    protected native String getCloseLink() /*-{
-
-                                           return $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::ATTR_CLOSE_LINK];
-                                           }-*/;
 
     /**
      * Causes the preloaded tree states to be displayed in the tree tabs.<p>

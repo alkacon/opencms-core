@@ -30,11 +30,14 @@
 .bottomPanel{
 	border: 1px solid value("constants.css.borderColor");
 	padding: 2px;
-	margin-top: 1px;
 	background: value("constants.css.backgroundColorDialog");
-	
+	position: absolute;
+	bottom: 1px;
+	left: 1px;
+	right: 1px;
 }
 .topPanel{
 	border: 1px solid value("constants.css.borderColor");
-	height: 457px;
+	margin: 1px;
+	overflow: hidden;
 }

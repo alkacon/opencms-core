@@ -336,12 +336,12 @@ public class CmsResultsTab extends A_CmsListTab {
         if (searchObj.getPage() == 1) {
             m_preset = null;
             getList().scrollToTop();
-            //      getList().getElement().getStyle().setDisplay(Display.NONE);
             clearList();
             showParams(paramPanels);
             m_backwardScrollHandler.updateSearchBean(searchObj);
             getList().getElement().getStyle().clearDisplay();
             scrollToPreset();
+
         } else {
             showParams(paramPanels);
             addContent(searchObj);

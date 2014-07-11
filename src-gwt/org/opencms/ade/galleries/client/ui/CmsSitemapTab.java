@@ -101,6 +101,7 @@ public class CmsSitemapTab extends A_CmsListTab {
             addWidgetToList(item);
         }
         m_initialized = true;
+        onContentChange();
     }
 
     /** 
@@ -257,6 +258,7 @@ public class CmsSitemapTab extends A_CmsListTab {
                                 target.addChild(item);
                             }
                             target.onFinishLoading();
+                            onContentChange();
                         }
                     };
 
@@ -272,6 +274,7 @@ public class CmsSitemapTab extends A_CmsListTab {
                 Set<CmsUUID> openItemIds = getOpenItemIds();
                 openItemIds.add(entry.getStructureId());
                 m_handler.onChangeTreeState(openItemIds);
+                onContentChange();
             }
 
         });

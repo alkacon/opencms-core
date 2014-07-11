@@ -313,8 +313,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
         int list = m_scrollList.getOffsetHeight();
         list = list > 82 ? list : 82;
-        int options = m_options.getOffsetHeight();
-        return list + options + 15;
+        return list + 35;
     }
 
     /**
@@ -329,7 +328,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
                 Widget parent = getParent();
                 while (parent != null) {
                     if (parent instanceof CmsGalleryDialog) {
-                        ((CmsGalleryDialog)parent).updateSizeForTab(A_CmsListTab.this);
+                        ((CmsGalleryDialog)parent).updateSizes();
                         parent = null;
                     } else {
                         parent = parent.getParent();

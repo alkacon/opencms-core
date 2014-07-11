@@ -34,6 +34,7 @@ import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.util.CmsPositionBean;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -100,9 +101,13 @@ implements ValueChangeHandler<CmsPositionBean>, HasValueChangeHandlers<CmsCroppi
     @UiField
     protected Label m_scaleLabel;
 
+    /** The top panel holding the cropping area. */
+    @UiField
+    protected Element m_topPanel;
     /** The height label. */
     @UiField
     protected Label m_widthDisplay;
+
     /** The height label. */
     @UiField
     protected Label m_widthLabel;
@@ -211,12 +216,13 @@ implements ValueChangeHandler<CmsPositionBean>, HasValueChangeHandlers<CmsCroppi
     public void show(CmsCroppingParamBean targetParam) {
 
         getElement().getStyle().setDisplay(Display.BLOCK);
+        m_topPanel.getStyle().setHeight(getElement().getOffsetHeight() - 33, Unit.PX);
         m_croppingParam = targetParam;
         m_displayCropping = new CmsCroppingParamBean();
         m_displayCropping.setTargetHeight(m_croppingParam.getOrgHeight());
         m_displayCropping.setTargetWidth(m_croppingParam.getOrgWidth());
         m_displayCropping = m_displayCropping.getRestrictedSizeParam(
-            getElement().getOffsetHeight() - 29,
+            getElement().getOffsetHeight() - 35,
             getElement().getOffsetWidth() - 4);
         m_image.setUrl(m_imagePath + "?" + m_displayCropping.toString());
         m_croppingPanel.getElement().getStyle().setWidth(m_displayCropping.getTargetWidth(), Unit.PX);

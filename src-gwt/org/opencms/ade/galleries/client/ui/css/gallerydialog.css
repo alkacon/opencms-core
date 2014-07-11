@@ -52,10 +52,6 @@ div.parentPanel div.criteriaList {
     top: 35px;
 }
 
-.listOnlyTab .criteriaList{
-	height: 441px;
-}
-
 div.selectboxWidth {
 	width: 200px;
 }
@@ -83,10 +79,6 @@ div.tabParamsPanel {
 div.tabOptions {
 	clear: both;
 	margin-bottom: 5px;
-}
-
-.listOnlyTab .tabOptions{
-	display: none;
 }
 
 .showParams div, .showParams div span{
