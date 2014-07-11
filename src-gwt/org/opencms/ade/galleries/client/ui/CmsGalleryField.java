@@ -531,7 +531,11 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
             m_popup = createPopup();
             m_popup.center();
         } else {
-            m_popup.searchElement(getCurrentElement());
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getCurrentElement())) {
+                m_popup.searchElement(getCurrentElement());
+            } else {
+                m_popup.center();
+            }
         }
     }
 
