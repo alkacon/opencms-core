@@ -2,14 +2,10 @@
 
 ul.clipboardList{
 	overflow: auto;
-	position: absolute;
 	border: 1px solid value("constants.css.borderColor");
 	padding: 0 2px;
 	background: value("constants.css.backgroundColorDialog");
-	top:6px;
-	left:6px;
-	right: 6px;
-	bottom: 6px;
+	min-height: 86px;
 }
 .listClearButton{
 	position: absolute;
