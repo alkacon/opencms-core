@@ -6,19 +6,22 @@
 	border: none;
 }
 
-.menuTabContainer ul.clipboardList {
-	overflow: auto;
-	position: absolute;
+.menuTabContainer div.clipboardList {
 	border: 1px solid value("constants.css.borderColor");
-	padding: 0 2px;
 	background: value("constants.css.backgroundColorDialog");
-	top:6px;
-	left:6px;
+	position: absolute;
+	top: 6px;
+	bottom:	6px;
+	left: 6px;
 	right: 6px;
-	bottom: 6px;
 }
 
-.clipboardList > div  {
+.menuTabContainer div.clipboardList ul{
+	min-height: 82px;
+	padding: 0 2px;
+}
+
+.clipboardList ul > div  {
 	margin: 2px;
 }
 

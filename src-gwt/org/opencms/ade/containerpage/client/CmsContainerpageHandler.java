@@ -583,6 +583,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                 while (it.hasNext()) {
                     addToFavorites(m_controller.getContainerpageUtil().createListItem(it.next()));
                 }
+                m_editor.getClipboard().updateSize();
             }
         });
     }
@@ -606,6 +607,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                 while (it.hasNext()) {
                     addToRecent(m_controller.getContainerpageUtil().createListItem(it.next()));
                 }
+                m_editor.getClipboard().updateSize();
             }
         });
     }

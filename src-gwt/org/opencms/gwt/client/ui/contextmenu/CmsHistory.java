@@ -32,7 +32,7 @@ import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPreviewDialog;
-import org.opencms.gwt.client.ui.CmsPreviewDialog.PreviewInfoProvider;
+import org.opencms.gwt.client.ui.CmsPreviewDialog.I_PreviewInfoProvider;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 import org.opencms.gwt.client.ui.history.CmsHistoryMessages;
 import org.opencms.gwt.client.ui.history.CmsResourceHistoryView;
@@ -181,7 +181,7 @@ public class CmsHistory implements I_CmsHasContextMenuCommand, I_CmsContextMenuC
 
                         stop(false);
                         CmsPreviewDialog dialog = CmsPreviewDialog.createPreviewDialog(result);
-                        dialog.setPreviewInfoProvider(new PreviewInfoProvider() {
+                        dialog.setPreviewInfoProvider(new I_PreviewInfoProvider() {
 
                             public void loadPreviewForLocale(String locale, AsyncCallback<CmsPreviewInfo> resultCallback) {
 

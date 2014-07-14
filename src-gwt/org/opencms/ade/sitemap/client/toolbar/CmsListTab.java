@@ -31,9 +31,11 @@ import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapLayoutBundle;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.I_CmsListItem;
 import org.opencms.gwt.client.ui.I_CmsTruncable;
 
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -55,6 +57,9 @@ public class CmsListTab extends Composite implements I_CmsTruncable {
     /** The main panel. */
     private FlowPanel m_panel;
 
+    /** The scroll panel. */
+    private CmsScrollPanel m_scrollPanel;
+
     /**
      * Constructor.<p>
      * 
@@ -62,13 +67,15 @@ public class CmsListTab extends Composite implements I_CmsTruncable {
      */
     public CmsListTab(CmsList<? extends I_CmsListItem> list) {
 
+        m_list = list;
         m_panel = new FlowPanel();
         initWidget(m_panel);
-        m_panel.add(list);
         setStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().tabPanel());
-        list.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll());
-        list.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.clipboardCss().clipboardList());
-        m_list = list;
+        m_scrollPanel = GWT.create(CmsScrollPanel.class);
+        m_scrollPanel.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll());
+        m_scrollPanel.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.clipboardCss().clipboardList());
+        m_panel.add(m_scrollPanel);
+        m_scrollPanel.add(m_list);
     }
 
     /**
@@ -93,7 +100,17 @@ public class CmsListTab extends Composite implements I_CmsTruncable {
      */
     public int getRequiredHeight() {
 
-        return m_list.getElement().getScrollHeight() + 12;
+        return m_list.getElement().getClientHeight() + 12;
+    }
+
+    /**
+     * Returns the scroll panel.<p>
+     * 
+     * @return the scroll panel
+     */
+    public CmsScrollPanel getScrollPanel() {
+
+        return m_scrollPanel;
     }
 
     /**

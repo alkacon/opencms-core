@@ -31,6 +31,7 @@ import org.opencms.ade.containerpage.client.Messages;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.CmsScrollPanel;
 
 import java.util.Iterator;
 
@@ -39,7 +40,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @since 8.0.0
  */
-public class CmsFavoriteTab extends Composite {
+public class CmsFavoriteTab extends A_CmsClipboardTab {
 
     /** The ui-binder interface for this widget. */
     interface I_CmsFavoriteTabUiBinder extends UiBinder<Widget, CmsFavoriteTab> {
@@ -85,6 +85,10 @@ public class CmsFavoriteTab extends Composite {
     @UiField
     protected CmsPushButton m_saveButton;
 
+    /** The scroll panel. */
+    @UiField
+    protected CmsScrollPanel m_scrollPanel;
+
     /**
      * Constructor.<p>
      * 
@@ -106,35 +110,43 @@ public class CmsFavoriteTab extends Composite {
     }
 
     /**
-     * Adds an item to the favorite list.<p>
-     * 
-     * @param item the item to add
+     * @see org.opencms.ade.containerpage.client.ui.A_CmsClipboardTab#addListItem(org.opencms.gwt.client.ui.CmsListItem)
      */
+    @Override
     public void addListItem(CmsListItem item) {
 
-        m_listPanel.add(item);
+        super.addListItem(item);
         if (m_listPanel.getWidgetCount() > 0) {
             m_editButton.enable();
         }
     }
 
     /**
-     * Clears the favorite list.<p>
+     * @see org.opencms.ade.containerpage.client.ui.A_CmsClipboardTab#clearList()
      */
+    @Override
     public void clearList() {
 
-        m_listPanel.clear();
+        super.clearList();
         m_editButton.disable(Messages.get().key(Messages.GUI_TAB_FAVORITES_NO_ELEMENTS_0));
     }
 
     /**
-     * Returns the favorite list drag target.<p>
-     * 
-     * @return the favorite list drag target
+     * @see org.opencms.ade.containerpage.client.ui.A_CmsClipboardTab#getList()
      */
-    public CmsList<CmsListItem> getListTarget() {
+    @Override
+    public CmsList<CmsListItem> getList() {
 
         return m_listPanel;
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.client.ui.A_CmsClipboardTab#getScrollPanel()
+     */
+    @Override
+    public CmsScrollPanel getScrollPanel() {
+
+        return m_scrollPanel;
     }
 
     /**
@@ -145,25 +157,6 @@ public class CmsFavoriteTab extends Composite {
     public Iterator<Widget> iterator() {
 
         return m_listPanel.iterator();
-    }
-
-    /**
-     * Replaces the item with the same id if present.<p>
-     * 
-     * @param item the new item
-     */
-    public void replaceItem(CmsListItem item) {
-
-        CmsListItem oldItem = m_listPanel.getItem(item.getId());
-        if (oldItem != null) {
-            int index = m_listPanel.getWidgetIndex(oldItem);
-            m_listPanel.removeItem(oldItem);
-            if (index >= m_listPanel.getWidgetCount()) {
-                m_listPanel.addItem(item);
-            } else {
-                m_listPanel.insertItem(item, index);
-            }
-        }
     }
 
     /**

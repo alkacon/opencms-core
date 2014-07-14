@@ -56,10 +56,10 @@ public final class CmsPreviewDialog extends CmsPopup {
     /**
      * Preview provider interface.<p>
      */
-    public interface PreviewInfoProvider {
+    public interface I_PreviewInfoProvider {
 
         /**
-         * Loads the preview information for the given locale 
+         * Loads the preview information for the given locale.<p>
          * 
          * @param locale the locale for which to load the preview 
          * @param resultCallback the callback to call with the result
@@ -86,7 +86,7 @@ public final class CmsPreviewDialog extends CmsPopup {
     private CmsSelectBox m_localeSelect;
 
     /** The preview info provider. */
-    private PreviewInfoProvider m_previewInfoProvider;
+    private I_PreviewInfoProvider m_previewInfoProvider;
 
     /** The site path of the preview resource. */
     private String m_sitePath;
@@ -219,7 +219,7 @@ public final class CmsPreviewDialog extends CmsPopup {
      * 
      * @param provider the preview info provider instance 
      */
-    public void setPreviewInfoProvider(PreviewInfoProvider provider) {
+    public void setPreviewInfoProvider(I_PreviewInfoProvider provider) {
 
         m_previewInfoProvider = provider;
     }

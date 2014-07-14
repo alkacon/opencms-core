@@ -44,6 +44,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -74,7 +76,7 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu<CmsContainerpageHa
     private CmsRecentTab m_recent;
 
     /** The favorite and recent list tabs. */
-    private CmsTabbedPanel<Widget> m_tabs;
+    CmsTabbedPanel<A_CmsClipboardTab> m_tabs;
 
     /**
      * Constructor.<p>
@@ -86,7 +88,7 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu<CmsContainerpageHa
         super(I_CmsButton.ButtonData.CLIPBOARD, handler);
 
         m_content = new FlowPanel();
-        m_tabs = new CmsTabbedPanel<Widget>();
+        m_tabs = new CmsTabbedPanel<A_CmsClipboardTab>();
         m_favorites = new CmsFavoriteTab(this);
         m_recent = new CmsRecentTab();
 
@@ -103,6 +105,14 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu<CmsContainerpageHa
                     m_favorites.saveFavorites();
                 }
                 CmsContainerpageController.get().saveClipboardTab(event.getSelectedItem().intValue());
+                Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+                    public void execute() {
+
+                        updateSize();
+                    }
+                });
+
             }
         });
 
@@ -187,13 +197,12 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu<CmsContainerpageHa
                 CmsContainerpageController.get().getContainerpageService().loadClipboardTab(this);
             }
 
-            @SuppressWarnings("synthetic-access")
             @Override
             protected void onResponse(Integer result) {
 
                 stop(false);
                 m_tabs.selectTab(result.intValue(), false);
-
+                updateSize();
             }
 
         };
@@ -261,5 +270,22 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu<CmsContainerpageHa
             }
         }
         getHandler().saveFavoriteList(clientIds);
+    }
+
+    /**
+     * Updates the popup size according to the tab contents.<p>
+     */
+    public void updateSize() {
+
+        int availableHeight = CmsToolbarPopup.getAvailableHeight();
+        int dialogWidth = CmsToolbarPopup.getAvailableWidth();
+
+        A_CmsClipboardTab tab = m_tabs.getWidget(m_tabs.getSelectedIndex());
+        int requiredHeight = tab.getRequiredHeight() + 31;
+        int dialogHeight = availableHeight > requiredHeight ? requiredHeight : availableHeight;
+        m_tabs.getParent().setHeight(dialogHeight + "px");
+        getPopup().setWidth(dialogWidth);
+        tab.getList().truncate("CLIPBOARD_TM", dialogWidth - 40);
+        tab.getScrollPanel().onResizeDescendant();
     }
 }

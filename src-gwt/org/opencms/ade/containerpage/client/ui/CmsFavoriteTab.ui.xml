@@ -18,7 +18,9 @@
 		}
 	</ui:style>
 	<g:FlowPanel addStyleNames="{resources.tabbedPanelCss.tabPanel}">
-		<cms:CmsList ui:field="m_listPanel" addStyleNames="{containerpage.containerpageCss.clipboardList} {resources.generalCss.cornerAll}" />
+		<cms:CmsScrollPanel ui:field="m_scrollPanel" addStyleNames="{containerpage.containerpageCss.clipboardList} {resources.generalCss.cornerAll}">
+			<cms:CmsList ui:field="m_listPanel"  />
+		</cms:CmsScrollPanel>
 		<g:FlowPanel ui:field="m_buttonEditingPanel" styleName="{style.buttonPanel}"><cms:CmsPushButton ui:field="m_saveButton" addStyleNames="{resources.buttonCss.cmsMinWidth}" /><cms:CmsPushButton ui:field="m_cancelButton" addStyleNames="{resources.buttonCss.cmsMinWidth}" /></g:FlowPanel>
 		<g:FlowPanel ui:field="m_buttonUsePanel" styleName="{style.buttonPanel}"><cms:CmsPushButton ui:field="m_editButton" addStyleNames="{resources.buttonCss.cmsMinWidth}" /></g:FlowPanel>
 	</g:FlowPanel>

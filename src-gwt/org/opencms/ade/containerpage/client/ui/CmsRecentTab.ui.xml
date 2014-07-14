@@ -5,6 +5,8 @@
 	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<ui:with field="containerpage" type="org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle"></ui:with>
 	<g:FlowPanel styleName="{resources.tabbedPanelCss.tabPanel}">
-		<cms:CmsList ui:field="m_listPanel" addStyleNames="{containerpage.containerpageCss.clipboardList} {resources.generalCss.cornerAll}" />
+		<cms:CmsScrollPanel ui:field="m_scrollPanel" addStyleNames="{containerpage.containerpageCss.clipboardList} {resources.generalCss.cornerAll}">
+			<cms:CmsList ui:field="m_listPanel"  />
+		</cms:CmsScrollPanel>
 	</g:FlowPanel>
 </ui:UiBinder> 
