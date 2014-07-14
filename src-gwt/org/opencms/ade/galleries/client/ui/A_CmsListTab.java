@@ -334,10 +334,17 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
                         parent = parent.getParent();
                     }
                 }
-
-                m_list.onResizeDescendant();
             }
         });
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#onResize()
+     */
+    @Override
+    public void onResize() {
+
+        m_list.onResizeDescendant();
     }
 
     /**

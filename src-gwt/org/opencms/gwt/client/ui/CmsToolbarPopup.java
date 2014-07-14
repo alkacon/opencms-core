@@ -88,8 +88,8 @@ public class CmsToolbarPopup extends CmsPopup {
     public static int getAvailableHeight() {
 
         int height = CmsGalleryDialog.DEFAULT_DIALOG_HEIGHT;
-        if (Window.getClientHeight() > 600) {
-            height = (int)Math.ceil(Window.getClientHeight() * 0.75);
+        if (Window.getClientHeight() > 590) {
+            height = (int)Math.ceil((Window.getClientHeight() - 50) * 0.9);
         }
         return height;
     }

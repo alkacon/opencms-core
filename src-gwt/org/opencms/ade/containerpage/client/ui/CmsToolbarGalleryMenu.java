@@ -63,11 +63,11 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu<CmsContainerpageHand
     /** The main content widget. */
     private FlowPanel m_contentPanel;
 
+    /** The gallery dialog instance. */
+    private CmsGalleryDialog m_dialog;
+
     /** The drag and drop handler for the gallery menu. */
     private CmsDNDHandler m_dragHandler;
-
-    /** Signals if the gallery was already opened. */
-    private boolean m_initialized;
 
     /**
      * Constructor.<p>
@@ -89,7 +89,7 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu<CmsContainerpageHand
     public void onToolbarActivate() {
 
         Document.get().getBody().addClassName(I_CmsButton.ButtonData.ADD.getIconClass());
-        if (!m_initialized) {
+        if (m_dialog == null) {
             SimplePanel tabsContainer = new SimplePanel();
             tabsContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().menuTabContainer());
             int dialogHeight = CmsToolbarPopup.getAvailableHeight();
@@ -100,7 +100,7 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu<CmsContainerpageHand
                 resultDndFilter = new CmsTemplateContextResultDndFilter();
             }
             final Predicate<CmsResultItemBean> finalDndFilter = resultDndFilter;
-            CmsGalleryDialog dialog = CmsGalleryFactory.createDialog(new I_CmsGalleryHandler() {
+            m_dialog = CmsGalleryFactory.createDialog(new I_CmsGalleryHandler() {
 
                 public boolean filterDnd(CmsResultItemBean resultBean) {
 
@@ -136,11 +136,15 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu<CmsContainerpageHand
                 }
 
             });
-            dialog.setDialogSize(dialogWidth, dialogHeight);
+            m_dialog.setDialogSize(dialogWidth, dialogHeight);
             getPopup().setWidth(dialogWidth);
-            tabsContainer.add(dialog);
+            tabsContainer.add(m_dialog);
             m_contentPanel.add(tabsContainer);
-            m_initialized = true;
+        } else {
+            int dialogWidth = CmsToolbarPopup.getAvailableWidth();
+            getPopup().setWidth(dialogWidth);
+            m_dialog.truncate("GALLERY_DIALOG_TM", dialogWidth);
+            m_dialog.updateSizes();
         }
     }
 

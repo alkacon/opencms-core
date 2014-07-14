@@ -115,6 +115,14 @@ public abstract class A_CmsTab extends Composite {
     }
 
     /**
+     * Adjust content when outer dimensions are changed.<p>
+     */
+    public void onResize() {
+
+        // implement if required
+    }
+
+    /**
      * Will be triggered when a tab is selected.<p>
      */
     public void onSelection() {

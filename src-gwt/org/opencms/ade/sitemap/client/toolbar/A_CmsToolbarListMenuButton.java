@@ -179,6 +179,7 @@ public abstract class A_CmsToolbarListMenuButton extends CmsMenuButton implement
     public void updateSize() {
 
         int width = CmsToolbarPopup.getAvailableWidth();
+        getPopup().setWidth(width);
         CmsListTab tab = m_tabs.getWidget(m_tabs.getSelectedIndex());
         tab.truncate(TM_LITST_MENU, width);
         int availableHeight = CmsToolbarPopup.getAvailableHeight();

@@ -67,8 +67,8 @@ public class CmsToolbarAllGalleriesMenu extends A_CmsToolbarMenu<CmsContainerpag
     /** The main content widget. */
     private FlowPanel m_contentPanel;
 
-    /** Signals if the gallery was already opened. */
-    private boolean m_initialized;
+    /** The gallery dialog instance. */
+    private CmsGalleryDialog m_dialog;
 
     /**
      * Constructor.<p>
@@ -134,12 +134,12 @@ public class CmsToolbarAllGalleriesMenu extends A_CmsToolbarMenu<CmsContainerpag
     protected void openDialog(I_CmsGalleryConfiguration configuration) {
 
         Document.get().getBody().addClassName(I_CmsButton.ButtonData.ADD.getIconClass());
-        if (!m_initialized) {
+        if (m_dialog == null) {
             SimplePanel tabsContainer = new SimplePanel();
             tabsContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().menuTabContainer());
             int dialogHeight = CmsToolbarPopup.getAvailableHeight();
             int dialogWidth = CmsToolbarPopup.getAvailableWidth();
-            CmsGalleryDialog dialog = createDialog(configuration, new I_CmsGalleryHandler() {
+            m_dialog = createDialog(configuration, new I_CmsGalleryHandler() {
 
                 public boolean filterDnd(CmsResultItemBean resultBean) {
 
@@ -162,11 +162,15 @@ public class CmsToolbarAllGalleriesMenu extends A_CmsToolbarMenu<CmsContainerpag
                 }
 
             });
-            dialog.setDialogSize(dialogWidth, dialogHeight);
+            m_dialog.setDialogSize(dialogWidth, dialogHeight);
             getPopup().setWidth(dialogWidth);
-            tabsContainer.add(dialog);
+            tabsContainer.add(m_dialog);
             m_contentPanel.add(tabsContainer);
-            m_initialized = true;
+        } else {
+            int dialogWidth = CmsToolbarPopup.getAvailableWidth();
+            getPopup().setWidth(dialogWidth);
+            m_dialog.truncate("GALLERY_DIALOG_TM", dialogWidth);
+            m_dialog.updateSizes();
         }
     }
 
@@ -195,7 +199,7 @@ public class CmsToolbarAllGalleriesMenu extends A_CmsToolbarMenu<CmsContainerpag
 
             }
         };
-        if (m_initialized) {
+        if (m_dialog != null) {
             openDialog(null);
         } else {
             action.execute();

@@ -606,11 +606,11 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
 
         if (height > 50) {
             m_height = height;
-            m_width = width;
             m_parentPanel.setHeight(m_height + "px");
-            m_parentPanel.setWidth(m_width + "px");
-            truncateTabs();
         }
+        m_width = width;
+        m_parentPanel.setWidth(m_width + "px");
+        truncateTabs();
     }
 
     /**
@@ -711,6 +711,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
             int height = tab.getRequiredHeight() + 42;
             int availableHeight = CmsToolbarPopup.getAvailableHeight();
             setDialogSize(m_width, height < availableHeight ? height : availableHeight);
+            tab.onResize();
         }
     }
 
