@@ -32,6 +32,7 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.A_CmsDirectEditButtons;
 import org.opencms.gwt.client.ui.CmsCreateModeSelectionDialog;
 import org.opencms.gwt.client.ui.CmsDeleteWarningDialog;
+import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Method;
@@ -42,6 +43,7 @@ import org.opencms.util.CmsUUID;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.collect.Maps;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.FormElement;
 import com.google.gwt.dom.client.Style;
@@ -106,6 +108,17 @@ public class CmsDirectEditButtons extends A_CmsDirectEditButtons implements I_Cm
     protected void deleteElement() {
 
         //CmsContainerpageController.get().deleteElement(m_editableData.getStructureId(), m_parentResourceId);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.A_CmsDirectEditButtons#getAdditionalButtons()
+     */
+    @Override
+    protected Map<Integer, CmsPushButton> getAdditionalButtons() {
+
+        Map<Integer, CmsPushButton> result = Maps.newHashMap();
+        result.put(Integer.valueOf(230), createInfoButton());
+        return result;
     }
 
     /**

@@ -31,13 +31,20 @@ import org.opencms.ade.containerpage.client.CmsContainerpageController;
 import org.opencms.gwt.client.ui.A_CmsDirectEditButtons;
 import org.opencms.gwt.client.ui.CmsCreateModeSelectionDialog;
 import org.opencms.gwt.client.ui.CmsDeleteWarningDialog;
+import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPositionBean;
 import org.opencms.util.CmsUUID;
 
+import java.util.Map;
+
+import com.google.common.collect.Maps;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -57,6 +64,30 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
     public CmsListCollectorEditor(Element editable, String parentId) {
 
         super(editable, parentId);
+    }
+
+    /**
+     * Creates the button to add an element to the user's favorites.<p>
+     * 
+     * @return the created button 
+     */
+    public CmsPushButton createFavButton() {
+
+        CmsPushButton favButton = new CmsPushButton();
+        favButton.setImageClass(I_CmsButton.ButtonData.ADD_TO_FAVORITES.getIconClass());
+        favButton.addStyleName(I_CmsButton.ButtonData.ADD_TO_FAVORITES.getIconClass());
+        favButton.setTitle(I_CmsButton.ButtonData.ADD_TO_FAVORITES.getTitle());
+        favButton.setButtonStyle(I_CmsButton.ButtonStyle.TRANSPARENT, null);
+        add(favButton);
+        favButton.addClickHandler(new ClickHandler() {
+
+            @SuppressWarnings("synthetic-access")
+            public void onClick(ClickEvent event) {
+
+                CmsContainerpageController.get().getHandler().addToFavorites("" + m_editableData.getStructureId());
+            }
+        });
+        return favButton;
     }
 
     /**
@@ -95,6 +126,18 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
     protected void deleteElement() {
 
         CmsContainerpageController.get().deleteElement(m_editableData.getStructureId().toString(), m_parentResourceId);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.A_CmsDirectEditButtons#getAdditionalButtons()
+     */
+    @Override
+    protected Map<Integer, CmsPushButton> getAdditionalButtons() {
+
+        Map<Integer, CmsPushButton> result = Maps.newHashMap();
+        result.put(Integer.valueOf(230), createFavButton());
+        result.put(Integer.valueOf(260), createInfoButton());
+        return result;
     }
 
     /**
