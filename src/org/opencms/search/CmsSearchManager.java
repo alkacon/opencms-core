@@ -37,6 +37,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.jsp.CmsJspTagContainer;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
@@ -2262,11 +2263,20 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                         CmsResource res = relation.getSource(adminCms, CmsResourceFilter.ALL);
                         if (CmsResourceTypeXmlContainerPage.isContainerPage(res)) {
                             containerPages.add(res);
+                            if (CmsJspTagContainer.isDetailContainersPage(adminCms, adminCms.getSitePath(res))) {
+                                addDetailContent(adminCms, containerPages, adminCms.getSitePath(res));
+                            }
                         } else if (OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName().equals(
                             CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME)) {
                             elementGroups.add(res);
                         }
                     }
+                }
+                if (CmsResourceTypeXmlContainerPage.getContainerPageTypeId() == pubRes.getType()) {
+                    addDetailContent(
+                        adminCms,
+                        containerPages,
+                        adminCms.getRequestContext().removeSiteRoot(pubRes.getRootPath()));
                 }
             } catch (CmsException e) {
                 LOG.error(e.getLocalizedMessage(), e);
@@ -2281,6 +2291,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     CmsResource res = relation.getSource(adminCms, CmsResourceFilter.ALL);
                     if (CmsResourceTypeXmlContainerPage.isContainerPage(res)) {
                         containerPages.add(res);
+                        if (CmsJspTagContainer.isDetailContainersPage(adminCms, adminCms.getSitePath(res))) {
+                            addDetailContent(adminCms, containerPages, adminCms.getSitePath(res));
+                        }
                     }
                 }
             } catch (CmsException e) {
@@ -2854,6 +2867,30 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     updateIndexIncremental(cms, index, report, resourcesToIndex);
                 } catch (CmsException e) {
                     LOG.error(Messages.get().getBundle().key(Messages.LOG_UPDATE_INDEX_FAILED_1, index.getName()), e);
+                }
+            }
+        }
+    }
+
+    /**
+     * Checks if the given containerpage is used as a detail containers and adds the related detail content to the resource set.<p>
+     * 
+     * @param adminCms the cms context
+     * @param containerPages the containerpages
+     * @param containerPage the container page site path
+     */
+    private void addDetailContent(CmsObject adminCms, Set<CmsResource> containerPages, String containerPage) {
+
+        if (CmsJspTagContainer.isDetailContainersPage(adminCms, containerPage)) {
+
+            try {
+                CmsResource detailRes = adminCms.readResource(
+                    CmsJspTagContainer.getDetailContentPath(containerPage),
+                    CmsResourceFilter.IGNORE_EXPIRATION);
+                containerPages.add(detailRes);
+            } catch (Throwable e) {
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn(e.getLocalizedMessage(), e);
                 }
             }
         }

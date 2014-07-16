@@ -34,6 +34,7 @@ import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
@@ -178,6 +179,21 @@ public class CmsJspTagContainer extends TagSupport {
             element.setFormatterId(null);
         }
         return formatterBean;
+    }
+
+    /**
+     * Returns the path to the associated detail content.<p>
+     * 
+     * @param detailContainersPage the detail containers page path
+     * 
+     * @return the path to the associated detail content
+     */
+    public static String getDetailContentPath(String detailContainersPage) {
+
+        String detailName = CmsResource.getName(detailContainersPage);
+        String parentFolder = CmsResource.getParentFolder(detailContainersPage);
+        detailName = CmsStringUtil.joinPaths(CmsResource.getParentFolder(parentFolder), detailName);
+        return detailName;
     }
 
     /**
@@ -342,6 +358,30 @@ public class CmsJspTagContainer extends TagSupport {
 
         CmsResource resource = element.getResource();
         return CmsXmlInheritGroupContainerHandler.loadInheritContainerElements(cms, resource);
+    }
+
+    /**
+     * Checks whether the given resource path is of a detail containers page.<p>
+     * 
+     * @param cms the cms context
+     * @param detailContainersPage the resource site path
+     * 
+     * @return <code>true</code> if the given resource path is of a detail containers page
+     */
+    public static boolean isDetailContainersPage(CmsObject cms, String detailContainersPage) {
+
+        boolean result = false;
+        try {
+            String detailName = CmsResource.getName(detailContainersPage);
+            String parentFolder = CmsResource.getParentFolder(detailContainersPage);
+            detailName = CmsStringUtil.joinPaths(CmsResource.getParentFolder(parentFolder), detailName);
+            result = parentFolder.endsWith("/" + DETAIL_CONTAINERS_FOLDER_NAME + "/")
+                && cms.existsResource(detailName, CmsResourceFilter.IGNORE_EXPIRATION);
+        } catch (Throwable t) {
+            // may happen in case string operations fail
+            LOG.debug(t.getLocalizedMessage(), t);
+        }
+        return result;
     }
 
     /**
