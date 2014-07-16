@@ -36,6 +36,8 @@ import org.opencms.gwt.client.ui.I_CmsButton.Size;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenu;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuCloseHandler;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
+import org.opencms.gwt.client.ui.css.I_CmsInputCss;
+import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
 import java.util.ArrayList;
@@ -51,6 +53,47 @@ import com.google.gwt.user.client.ui.FlexTable;
  * @since 8.0.0
  */
 public class CmsToolbarChooseEditorModeButton extends CmsMenuButton {
+
+    /**
+     * Context menu entry used to select a sitemap editor mode.<p>
+     */
+    class EditorModeEntry extends A_CmsSitemapModeEntry {
+
+        /** The sitemap editor mode. */
+        private EditorMode m_mode;
+
+        /**
+         * Creates a new entry.<p>
+         * 
+         * @param message the context menu item text 
+         * @param mode the editor mode
+         */
+        public EditorModeEntry(String message, EditorMode mode) {
+
+            super(message);
+            m_mode = mode;
+        }
+
+        /**
+         * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#execute()
+         */
+        public void execute() {
+
+            CmsSitemapView.getInstance().setEditorMode(m_mode);
+        }
+
+        /**
+         * @see org.opencms.ade.sitemap.client.toolbar.A_CmsSitemapModeEntry#getIconClass()
+         */
+        @Override
+        public String getIconClass() {
+
+            I_CmsInputCss inputCss = I_CmsInputLayoutBundle.INSTANCE.inputCss();
+            EditorMode currentMode = CmsSitemapView.getInstance().getEditorMode();
+            return (currentMode == m_mode) ? inputCss.checkBoxImageChecked() : "";
+        }
+
+    }
 
     /** The context menu entries. */
     private List<I_CmsContextMenuEntry> m_entries;
@@ -73,30 +116,7 @@ public class CmsToolbarChooseEditorModeButton extends CmsMenuButton {
         setMenuWidget(m_menuPanel);
         getPopup().addAutoHidePartner(getElement());
         getPopup().setWidth(0);
-        m_entries = new ArrayList<I_CmsContextMenuEntry>();
-        m_entries.add(new A_CmsSitemapModeEntry(Messages.get().key(Messages.GUI_ONLY_NAVIGATION_BUTTON_TITLE_0)) {
-
-            public void execute() {
-
-                CmsSitemapView.getInstance().setEditorMode(EditorMode.navigation);
-            }
-        });
-        m_entries.add(new A_CmsSitemapModeEntry(Messages.get().key(Messages.GUI_NON_NAVIGATION_BUTTON_TITLE_0)) {
-
-            public void execute() {
-
-                CmsSitemapView.getInstance().setEditorMode(EditorMode.vfs);
-            }
-        });
-        m_entries.add(new A_CmsSitemapModeEntry(Messages.get().key(Messages.GUI_ONLY_GALLERIES_BUTTON_TITLE_0)) {
-
-            public void execute() {
-
-                CmsSitemapView.getInstance().setEditorMode(EditorMode.galleries);
-            }
-        });
-
-        CmsContextMenu menu = new CmsContextMenu(m_entries, false, getPopup());
+        CmsContextMenu menu = createContextMenu();
         m_menuPanel.setWidget(0, 0, menu);
         // add the close handler for the menu
         getPopup().addCloseHandler(new CmsContextMenuCloseHandler(menu));
@@ -105,14 +125,38 @@ public class CmsToolbarChooseEditorModeButton extends CmsMenuButton {
             /**
              * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
              */
+            @SuppressWarnings("synthetic-access")
             public void onClick(ClickEvent event) {
 
                 if (!isOpen()) {
+                    m_menuPanel.setWidget(0, 0, createContextMenu()); // we have to create the menu every time because the active mode may change 
                     openMenu();
                 } else {
                     closeMenu();
                 }
             }
         });
+    }
+
+    /**
+     * Creates the menu widget for this button.<p>
+     * 
+     * @return the menu widget 
+     */
+    public CmsContextMenu createContextMenu() {
+
+        m_entries = new ArrayList<I_CmsContextMenuEntry>();
+        m_entries.add(new EditorModeEntry(
+            Messages.get().key(Messages.GUI_ONLY_NAVIGATION_BUTTON_TITLE_0),
+            EditorMode.navigation));
+        m_entries.add(new EditorModeEntry(
+            Messages.get().key(Messages.GUI_NON_NAVIGATION_BUTTON_TITLE_0),
+            EditorMode.vfs));
+        m_entries.add(new EditorModeEntry(
+            Messages.get().key(Messages.GUI_ONLY_GALLERIES_BUTTON_TITLE_0),
+            EditorMode.galleries));
+
+        CmsContextMenu menu = new CmsContextMenu(m_entries, false, getPopup());
+        return menu;
     }
 }
