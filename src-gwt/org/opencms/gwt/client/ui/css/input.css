@@ -95,6 +95,7 @@ div.textArea > div.disableTextArea {
 }
 div.textArea textarea{
 	border:none;
+	font-family: value("constants.css.fontFamilyMono");
 }
 
 .checkBox .gwt-ToggleButton {

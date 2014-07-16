@@ -990,7 +990,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the css class
          */
         String textAreaBoxPanel();
-
     }
 
     /** Header CSS. */

@@ -82,7 +82,7 @@ public class CmsTextareaWidget extends Composite implements I_EditWidget, HasRes
             }
         }
         m_textarea.setRows(configheight);
-        m_textarea.getTextArea().setStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().textAreaBox());
+        m_textarea.getTextArea().addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().textAreaBox());
         m_textarea.getTextAreaContainer().addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().textAreaBoxPanel());
         m_textarea.addValueChangeHandler(new ValueChangeHandler<String>() {
 

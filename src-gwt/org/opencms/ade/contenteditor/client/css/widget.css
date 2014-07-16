@@ -54,7 +54,7 @@ div.selectBoxPopup {
 	border: 1px solid #7788AA !important /*value("constants.css.borderColor")*/;
 }
 
-textarea.textAreaBox {
+div.textAreaBoxPanel textarea.textAreaBox {
 	background: none repeat scroll 0 0 transparent;
 	display: block;
 	color: value("constants.css.textColor");
@@ -63,7 +63,7 @@ textarea.textAreaBox {
 	border: none;
 	resize: none;
 	overflow: hidden;
-	font-family: value("constants.css.fontFamily");
+	font-family: value("constants.css.fontFamilyMono");
 	padding: 3px 0 0 3px;
 	outline:none;
 }
