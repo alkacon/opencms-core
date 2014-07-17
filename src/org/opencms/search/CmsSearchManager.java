@@ -32,6 +32,7 @@ import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
@@ -176,7 +177,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
          * 
          * @see org.opencms.main.I_CmsEventListener#cmsEvent(org.opencms.main.CmsEvent)
          */
-        @SuppressWarnings("unchecked")
         public void cmsEvent(CmsEvent event) {
 
             switch (event.getType()) {
@@ -241,7 +241,18 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 result = m_resourcesToIndex;
                 m_resourcesToIndex = new ArrayList<CmsPublishedResource>();
             }
-            findRelatedContainerPages(m_adminCms, result);
+            try {
+                CmsObject cms = m_adminCms;
+                CmsProject offline = getOfflineIndexProject();
+                if (offline != null) {
+                    // switch to the offline project if available
+                    cms = OpenCms.initCmsObject(m_adminCms);
+                    cms.getRequestContext().setCurrentProject(offline);
+                }
+                findRelatedContainerPages(cms, result);
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
             return result;
         }
 
@@ -2325,6 +2336,28 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             names.add(factory.getName());
         }
         return names;
+    }
+
+    /**
+     * Returns the a offline project used for offline indexing.<p>
+     * 
+     * @return the offline project if available
+     */
+    protected CmsProject getOfflineIndexProject() {
+
+        CmsProject result = null;
+        for (CmsSearchIndex index : m_offlineIndexes) {
+            try {
+                result = m_adminCms.readProject(index.getProject());
+
+                if (!result.isOnlineProject()) {
+                    break;
+                }
+            } catch (Exception e) {
+                // may be a missconfigured index, ignore
+            }
+        }
+        return result;
     }
 
     /** 
