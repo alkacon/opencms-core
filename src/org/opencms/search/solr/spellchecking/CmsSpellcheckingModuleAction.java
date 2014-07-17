@@ -70,21 +70,17 @@ public final class CmsSpellcheckingModuleAction implements I_CmsModuleAction {
 
                 // Although discouraged, use polling to make sure the indexing process does not start
                 // before OpenCms has reached runlevel 4
-                while (OpenCms.getRunLevel() != OpenCms.RUNLEVEL_4_SERVLET_ACCESS) {
+                while (OpenCms.getRunLevel() == OpenCms.RUNLEVEL_2_INITIALIZING) {
                     try {
-                        // break if running the CmsShell
-                        if (OpenCms.getRunLevel() == OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
-                            break;
-                        }
-                        // Repeat check every ten seconds
-                        Thread.sleep(10 * 1000);
+                        // Repeat check every five seconds
+                        Thread.sleep(5 * 1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
 
                 // Check whether indexing is needed if not running the shell
-                if ((OpenCms.getRunLevel() != OpenCms.RUNLEVEL_3_SHELL_ACCESS)
+                if ((OpenCms.getRunLevel() == OpenCms.RUNLEVEL_4_SERVLET_ACCESS)
                     && CmsSpellcheckDictionaryIndexer.updatingIndexNecessesary(adminCms)) {
                     CmsSolrSpellchecker spellchecker = OpenCms.getSearchManager().getSolrDictionary(adminCms);
                     spellchecker.parseAndAddDictionaries(adminCms);
@@ -93,10 +89,7 @@ public final class CmsSpellcheckingModuleAction implements I_CmsModuleAction {
 
         };
 
-        if (OpenCms.getRunLevel() != OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
-            new Thread(r, "CmsSpellcheckingModuleIndexingThread").start();
-        }
-
+        new Thread(r, "CmsSpellcheckingModuleIndexingThread").start();
     }
 
     /**

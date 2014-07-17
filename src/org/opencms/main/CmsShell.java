@@ -552,6 +552,11 @@ public class CmsShell {
                 "${user}@${project}:${siteroot}|${uri}>",
                 additionalCommands);
             shell.start(stream);
+            try {
+                stream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
