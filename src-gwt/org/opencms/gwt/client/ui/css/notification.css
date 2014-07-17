@@ -34,18 +34,8 @@ div.notificationOverlay {
 	background-color: value("constants.css.backgroundColorOverlay"); 
 }
 
-@if user.agent ie6 { 
-	.notificationOverlay { 
-		filter: literal("alpha(opacity = 50)"); 
-	}
-} @elif user.agent ie8 { 
-	.notificationOverlay { 
-		-ms-filter: "alpha(opacity = 50)";
-	}
-} @else {
-	.notificationOverlay { 
-		opacity: 0.5; 
-	}
+.notificationOverlay { 
+	opacity: 0.5; 
 }
 .popup div.notificationContainer{
 	top: 50px;
@@ -92,17 +82,7 @@ div.notificationMessage, span.notificationMessage {
 .blocking .notificationContainer .notificationMessage {
 	background: transparent;
 	border: none;
-}
-/** browser specific styles **/
-@if user.agent ie8 {
-	/** ie7, ie8 **/
-	.blocking .notificationContainer .notificationMessage{
-		-ms-filter: none; 
-	}
-} @else {
-	.blocking .notificationContainer .notificationMessage{
-		box-shadow: none;
-	}
+	box-shadow: none;
 }
 
 .notificationError .notificationMessage { 

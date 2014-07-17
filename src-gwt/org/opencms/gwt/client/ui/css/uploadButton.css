@@ -11,21 +11,13 @@ div.uploadButton input.uploadFileInput {
 	position: relative;
 }
 
-@if user.agent ie8 {
-	.uploadFileInput{
-		-ms-filter: "alpha(opacity = 0)";
-	}
-    .uploadButton {
-    	display: inline;
-    }
-} @else {
-    .uploadFileInput{
-        opacity: 0;
-    }
-    .uploadButton {
-    	display: inline-block;
-    } 
-}
+.uploadFileInput{
+    opacity: 0;
+ }
+ .uploadButton {
+  	display: inline-block;
+ } 
+
 .fileInfoTable {
 	width: 100%;
 }

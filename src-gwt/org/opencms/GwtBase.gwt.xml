@@ -13,7 +13,7 @@
 	<set-property-fallback name="locale" value="en"/>
 	<set-property name="locale" value="en,de,it"/>
 	<collapse-property name="locale" values="*" />
-	<set-property name="user.agent" value="ie8,ie9,ie10,gecko1_8,safari" />
+	<set-property name="user.agent" value="ie9,ie10,gecko1_8,safari" />
 
 	<define-property name="fileapi.support" values="formdata,no" />
 	<property-provider name="fileapi.support"><![CDATA[
@@ -56,13 +56,6 @@
 		<when-property-is name="fileapi.support" value="formdata" />
 	</replace-with>
 	
-    <replace-with class="org.opencms.gwt.client.util.impl.DocumentStyleImplIE6">
-        <when-type-assignable class="org.opencms.gwt.client.util.impl.DocumentStyleImpl"/>
-        <any>
-        	<when-property-is name="user.agent" value="ie8"/>
-        </any>
-    </replace-with>
-    
     <replace-with class="org.opencms.gwt.client.util.impl.DocumentStyleImplIE9">
         <when-type-assignable class="org.opencms.gwt.client.util.impl.DocumentStyleImpl"/>
         <any>
@@ -86,12 +79,6 @@
     	</any>
     </replace-with>
     
-    <replace-with class="org.opencms.gwt.client.util.impl.DOMImplIE">
-        <when-type-assignable class="org.opencms.gwt.client.util.impl.DOMImpl"/>
-        <any>
-        	<when-property-is name="user.agent" value="ie8"/>
-        </any>
-    </replace-with>
     <replace-with class="org.opencms.gwt.client.util.impl.DOMImpl">
         <when-type-assignable class="org.opencms.gwt.client.util.impl.DOMImpl"/>
         <any>

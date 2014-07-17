@@ -16,18 +16,8 @@
 	border-right: solid 5px value("constants.css.borderColorHighlight");
 }
 
-@if user.agent ie6 {
-	.positionIndicator {
-		filter: literal("alpha(opacity = 50)");
-	}
-} @elif user.agent ie8 {
-	.positionIndicator {
-		-ms-filter: "alpha(opacity = 50)";
-	}
-} @else {
-	.positionIndicator {
-        opacity: 0.5;
-	}
+.positionIndicator {
+    opacity: 0.5;
 }
 
 .positionIndicator *{

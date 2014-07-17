@@ -66,14 +66,8 @@ div.optionBar div, div.optionBar span {
 	z-index: 1;
 }
 
-@if user.agent ie8 {
-	div.expiredListElementOverlay {
-		-ms-filter: "alpha(opacity = 60)";
-	}
-} @else {
-	div.expiredListElementOverlay {
-        opacity: 0.6;
-	}
+div.expiredListElementOverlay {
+    opacity: 0.6;
 }
 
 .toolbarSelection .optionBar.cmsHovering{

@@ -1,15 +1,9 @@
 @external html-face, cmsState;
 
 .editorGallery {}
-@if user.agent ie8 {
-	div.editorGallery{
-		-ms-filter: none;
-	}
-} @else  {
-	div.editorGallery{
-		box-shadow: none;
-		border-radius: 0;
-	}
+div.editorGallery{
+	box-shadow: none;
+	border-radius: 0;
 }
 body.galleryBody, div.galleryBody {
 	margin:0px;
@@ -17,14 +11,6 @@ body.galleryBody, div.galleryBody {
 	overflow: hidden;
 }
 
-@if user.agent ie6 {
-body.galleryBody *{
-	zoom: 1;
-}
-body.galleryBody{
-	height: 499px;
-}
-}
 div.resultTabUpload{
 	float: right;
 	margin: 1px 1px 0 0;

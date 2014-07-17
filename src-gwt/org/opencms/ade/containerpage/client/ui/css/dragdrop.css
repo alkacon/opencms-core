@@ -64,14 +64,8 @@
 	width: 100%;
 	background: transparent;
 }
-@if user.agent ie8 {
-	.dragOverlay {
-		-ms-filter: "progid:DXImageTransform.Microsoft.Alpha( Opacity=0, FinishOpacity=0, Style=0, StartX=0,  FinishX=100, StartY=0, FinishY=100)";
-	}
-} @else {
-	.dragOverlay{
-		opacity: 0;
-	}
+.dragOverlay{
+	opacity: 0;
 }
 
 @sprite .placeholderOverlay{
@@ -84,13 +78,4 @@
 	height: 100%;
 	width: 100%;
 	
-}
-
-@if user.agent ie8 {
-	.dragTarget.dragging{
-		zoom: 1;
-	}
-	.currentTarget{
-		z-index: value("constants.css.zIndexInline");
-	}
 }

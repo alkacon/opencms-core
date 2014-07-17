@@ -88,15 +88,10 @@ div.expired{
 	z-index: 1;
 }
 
-@if user.agent ie8 {
-	.expired div.expiredOverlay, .hiddenElement div.hiddenElementOverlay, div.expiredListElementOverlay {
-		-ms-filter: "alpha(opacity = 60)";
-	}
-} @else {
-	.expired div.expiredOverlay, .hiddenElement div.hiddenElementOverlay, div.expiredListElementOverlay {
+.expired div.expiredOverlay, .hiddenElement div.hiddenElementOverlay, div.expiredListElementOverlay {
         opacity: 0.6;
-	}
 }
+
 
 div.toolbarToggle{
 	position: fixed;

@@ -84,23 +84,14 @@ div.frameDialog div.popupButtonPanel {
 	bottom:0px;
 }
 
-/** browser specific styles **/
-@if user.agent ie8 {
-	div.popupContent{
-		/** No shadow for IE7 and IE8. The necessary filter would prevent the use of other filters like opacity. */
-		
-		/** Ensure the proper background-color. */
-		background-color: value("constants.css.backgroundColorDialogBorder");
-	}
-} @else {
-	.popupContent{
-		box-shadow: 6px 6px 12px value("constants.css.boxShadowColorOther");
-		border-radius: 12px;
-	}
-	.popupMainContent, .caption{
-		border-radius: 8px;
-	}
+.popupContent{
+	box-shadow: 6px 6px 12px value("constants.css.boxShadowColorOther");
+	border-radius: 12px;
 }
+.popupMainContent, .caption{
+	border-radius: 8px;
+}
+
 
 .popupOverlay{
     background: value("constants.css.backgroundColorOverlay");
@@ -176,18 +167,8 @@ div.frameDialog div.popupButtonPanel {
 	margin-left: value("constants.css.defaultSpace");
 }
 
-@if user.agent ie6 {
-    .popupOverlay{
-        filter: literal("alpha(opacity = 50)");
-    }
-} @elif user.agent ie8 {
-	.popupOverlay{
-		-ms-filter: "alpha(opacity = 50)";
-	}
-} @else {
-    .popupOverlay{
-        opacity: 0.5;
-    }
+.popupOverlay{
+    opacity: 0.5;
 }
 
 

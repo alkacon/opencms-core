@@ -29,11 +29,7 @@ div.scrollable{
 	position: relative;
 	height:100%;
 }
-@if user.agent ie6 ie8{
-	div.scrollable, div.scrollPanel, div.scrollContainer{
-		zoom:1;
-	}
-}
+
 div.scrollContainer{
 	display:inline-block;
 }
