@@ -33,6 +33,7 @@ import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EntryType;
 import org.opencms.gwt.client.CmsEditableData;
 import org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog;
+import org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog.DialogOptions;
 import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 
 /**
@@ -63,17 +64,25 @@ public class CmsEditRedirectMenuEntry extends A_CmsSitemapMenuEntry {
         editableData.setElementLanguage("");
         editableData.setStructureId(getHoverbar().getEntry().getId());
         editableData.setSitePath(getHoverbar().getEntry().getSitePath());
-        CmsContentEditorDialog.get().openEditDialog(editableData, false, null, new I_CmsContentEditorHandler() {
+        DialogOptions dlgOptions = new DialogOptions();
+        dlgOptions.setSuggestedHeight(Integer.valueOf(700));
+        dlgOptions.setSuggestedWidth(Integer.valueOf(1000));
+        CmsContentEditorDialog.get().openEditDialog(
+            editableData,
+            false,
+            null,
+            dlgOptions,
+            new I_CmsContentEditorHandler() {
 
-            /**
-             * @see org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler#onClose(java.lang.String, boolean)
-             */
-            public void onClose(String sitePath, boolean isNew) {
+                /**
+                 * @see org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler#onClose(java.lang.String, boolean)
+                 */
+                public void onClose(String sitePath, boolean isNew) {
 
-                getHoverbar().getController().updateEntry(sitePath);
+                    getHoverbar().getController().updateEntry(sitePath);
 
-            }
-        });
+                }
+            });
     }
 
     /**

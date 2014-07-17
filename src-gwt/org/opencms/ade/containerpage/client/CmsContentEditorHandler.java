@@ -37,6 +37,7 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.CmsEditableData;
 import org.opencms.gwt.client.I_CmsEditableData;
 import org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog;
+import org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog.DialogOptions;
 import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.util.CmsUUID;
 
@@ -127,7 +128,12 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                 editableData.setElementLanguage(CmsCoreProvider.get().getLocale());
                 editableData.setStructureId(new CmsUUID(serverId));
                 editableData.setSitePath(element.getSitePath());
-                CmsContentEditorDialog.get().openEditDialog(editableData, false, null, CmsContentEditorHandler.this);
+                CmsContentEditorDialog.get().openEditDialog(
+                    editableData,
+                    false,
+                    null,
+                    new DialogOptions(),
+                    CmsContentEditorHandler.this);
             }
         };
 
@@ -195,7 +201,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
         }
         m_dependingElementId = dependingElementId;
         if (m_handler.m_controller.getData().isUseClassicEditor()) {
-            CmsContentEditorDialog.get().openEditDialog(editableData, isNew, mode, this);
+            CmsContentEditorDialog.get().openEditDialog(editableData, isNew, mode, new DialogOptions(), this);
         } else {
             String newLink = null;
             if (isNew) {

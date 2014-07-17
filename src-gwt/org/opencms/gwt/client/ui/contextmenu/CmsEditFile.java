@@ -32,6 +32,7 @@ import org.opencms.gwt.client.I_CmsEditableData;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.I_CmsToolbarHandler;
 import org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog;
+import org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog.DialogOptions;
 import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsMenuCommandParameters;
@@ -166,7 +167,7 @@ public final class CmsEditFile implements I_CmsHasContextMenuCommand, I_CmsConte
                 timer.schedule(10);
             }
         };
-        CmsContentEditorDialog.get().openEditDialog(editData, false, null, handler);
+        CmsContentEditorDialog.get().openEditDialog(editData, false, null, new DialogOptions(), handler);
     }
 
     /**

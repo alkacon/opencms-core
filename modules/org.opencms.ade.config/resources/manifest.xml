@@ -89,7 +89,7 @@
 				<param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/function.xsd
 				</param>
 			</type>
-			<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
+			<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration"
 				name="htmlredirect" id="15">
 				<properties>
 					<property>
@@ -99,6 +99,10 @@
 					<property>
 						<name>search.exclude</name>
 						<value>all</value>
+					</property>
+					<property>
+						<name>locale-available</name>
+						<value><![CDATA[en]]></value>
 					</property>
 				</properties>
 				<param name="schema">/system/modules/org.opencms.ade.sitemap/schemas/redirect.xsd

@@ -63,6 +63,59 @@ import com.google.gwt.user.client.ui.RootPanel;
  */
 public final class CmsContentEditorDialog {
 
+    /**
+     * Additional options for the editor dialog.<p>
+     */
+    public static class DialogOptions {
+
+        /** Suggested editor width. */
+        private Integer m_suggestedWidth;
+
+        /** Suggested editor height. */
+        private Integer m_suggestedHeight;
+
+        /**
+         * Returns the suggestedHeight.<p>
+         *
+         * @return the suggestedHeight
+         */
+        public Integer getSuggestedHeight() {
+
+            return m_suggestedHeight;
+        }
+
+        /**
+         * Returns the suggestedWidth.<p>
+         *
+         * @return the suggestedWidth
+         */
+        public Integer getSuggestedWidth() {
+
+            return m_suggestedWidth;
+        }
+
+        /**
+         * Sets the suggestedHeight.<p>
+         *
+         * @param suggestedHeight the suggestedHeight to set
+         */
+        public void setSuggestedHeight(Integer suggestedHeight) {
+
+            m_suggestedHeight = suggestedHeight;
+        }
+
+        /**
+         * Sets the suggestedWidth.<p>
+         *
+         * @param suggestedWidth the suggestedWidth to set
+         */
+        public void setSuggestedWidth(Integer suggestedWidth) {
+
+            m_suggestedWidth = suggestedWidth;
+        }
+
+    }
+
     /** Name of exported dialog close function. */
     private static final String CLOSING_METHOD_NAME = "cms_ade_closeEditorDialog";
 
@@ -128,6 +181,7 @@ public final class CmsContentEditorDialog {
         formValues.put("redirect", "true");
         formValues.put("directedit", "true");
         formValues.put("editcontext", CmsCoreProvider.get().getUri());
+        formValues.put("nofoot", "1");
         if (isNew) {
             formValues.put("newlink", editableData.getNewLink());
             formValues.put("editortitle", editableData.getNewTitle());
@@ -176,12 +230,14 @@ public final class CmsContentEditorDialog {
      * @param editableData the editable data
      * @param isNew <code>true</code> when creating a new resource
      * @param mode the content creation mode
+     * @param dlgOptions the additional dialog options 
      * @param editorHandler the editor handler
      */
     public void openEditDialog(
         final I_CmsEditableData editableData,
         boolean isNew,
         String mode,
+        final DialogOptions dlgOptions,
         I_CmsContentEditorHandler editorHandler) {
 
         m_mode = mode;
@@ -194,7 +250,7 @@ public final class CmsContentEditorDialog {
         m_editableData = editableData;
         m_editorHandler = editorHandler;
         if (m_isNew || (editableData.getStructureId() == null)) {
-            openDialog();
+            openDialog(dlgOptions);
         } else {
             CmsRpcAction<String> action = new CmsRpcAction<String>() {
 
@@ -210,7 +266,7 @@ public final class CmsContentEditorDialog {
 
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(result)) {
                         getEditableData().setSitePath(result);
-                        openDialog();
+                        openDialog(dlgOptions);
                     } else {
                         CmsAlertDialog alert = new CmsAlertDialog(
                             Messages.get().key(Messages.ERR_TITLE_ERROR_0),
@@ -272,8 +328,10 @@ public final class CmsContentEditorDialog {
 
     /**
      * Opens the dialog for the given sitepath.<p>
+     * 
+     * @param dlgOptions the additional dialog options 
      */
-    protected void openDialog() {
+    protected void openDialog(DialogOptions dlgOptions) {
 
         m_dialog = new CmsPopup(Messages.get().key(Messages.GUI_DIALOG_CONTENTEDITOR_TITLE_0)
             + " - "
@@ -283,11 +341,18 @@ public final class CmsContentEditorDialog {
         // calculate width
         int width = Window.getClientWidth();
         width = (width < 1350) ? width - 50 : 1300;
+        if (dlgOptions.getSuggestedWidth() != null) {
+            width = dlgOptions.getSuggestedWidth().intValue();
+        }
+
         m_dialog.setWidth(width);
 
         // calculate height
         int height = Window.getClientHeight() - 50;
         height = (height < 645) ? 645 : height;
+        if (dlgOptions.getSuggestedHeight() != null) {
+            height = dlgOptions.getSuggestedHeight().intValue();
+        }
         m_dialog.setHeight(height);
 
         m_dialog.setGlassEnabled(true);
