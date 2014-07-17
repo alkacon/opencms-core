@@ -32,7 +32,6 @@ div.overlay{
 	background: #000000;
 }
 
-@if user.agent ie6 { 
 div.overlay { 
 	opacity: 0.4;
 }
