@@ -289,6 +289,14 @@ public class CmsJspTagContainer extends TagSupport {
                     formatterBean = OpenCms.getADEManager().getCachedFormatters(
                         cms.getRequestContext().getCurrentProject().isOnlineProject()).getFormatters().get(
                         new CmsUUID(formatterConfigId));
+                } else if (CmsFormatterConfig.SCHEMA_FORMATTER_ID.equals(formatterConfigId)) {
+                    try {
+                        formatterBean = OpenCms.getResourceManager().getResourceType(element.getResource().getTypeId()).getFormattersForResource(
+                            cms,
+                            element.getResource()).getDefaultFormatter(containerType, containerWidth, allowNested);
+                    } catch (CmsLoaderException e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
                 }
             }
         } else {
