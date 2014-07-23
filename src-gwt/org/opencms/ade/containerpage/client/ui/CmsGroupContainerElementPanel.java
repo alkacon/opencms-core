@@ -40,6 +40,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -287,6 +288,7 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
 
         m_placeholderIndex = -1;
         m_placeholder = placeholder;
+        m_placeholder.getStyle().setDisplay(Display.NONE);
         repositionPlaceholder(x, y, orientation);
     }
 
@@ -451,6 +453,18 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
     public void setEditingPlaceholder(Element editingPlaceholder) {
 
         m_editingPlaceholder = editingPlaceholder;
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#setPlaceholderVisibility(boolean)
+     */
+    public void setPlaceholderVisibility(boolean visible) {
+
+        if (visible) {
+            m_placeholder.getStyle().clearDisplay();
+        } else {
+            m_placeholder.getStyle().setDisplay(Display.NONE);
+        }
     }
 
     /**

@@ -165,6 +165,13 @@ public interface I_CmsDropContainer extends I_CmsNestedDropTarget {
     void removeHighlighting();
 
     /**
+     * Sets the placeholder visibility.<p>
+     * 
+     * @param visible <code>true</code> to set the place holder visible 
+     */
+    void setPlaceholderVisibility(boolean visible);
+
+    /**
      * Shows list collector direct edit buttons (old direct edit style), if present.<p>
      */
     void showEditableListButtons();

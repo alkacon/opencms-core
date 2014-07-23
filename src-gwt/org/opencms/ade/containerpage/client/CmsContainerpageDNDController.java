@@ -377,7 +377,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         } else if ((target instanceof I_CmsDropContainer)
             && (draggable instanceof CmsContainerPageElementPanel)
             && isChangedPosition(target)) {
-
+            CmsDomUtil.showOverlay(draggable.getElement(), false);
             I_CmsDropContainer container = (I_CmsDropContainer)target;
             int count = container.getWidgetCount();
             handler.getPlaceholder().getStyle().setDisplay(Display.NONE);
@@ -390,6 +390,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             // changes are only relevant to the container page if not group-container editing
             changedContainerpage = !m_controller.isGroupcontainerEditing();
         } else if (draggable instanceof CmsContainerPageElementPanel) {
+            CmsDomUtil.showOverlay(draggable.getElement(), false);
             // to reset mouse over state remove and attach the option bar 
             CmsContainerPageElementPanel containerElement = (CmsContainerPageElementPanel)draggable;
             CmsElementOptionBar optionBar = containerElement.getElementOptionBar();
@@ -481,6 +482,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     public void onPositionedPlaceholder(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
 
         if (hasChangedPosition(target)) {
+            checkPlaceholderVisibility(target);
             updateHighlighting(false);
         }
     }
@@ -497,11 +499,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             if ((target != m_initialDropTarget) && (target instanceof I_CmsDropContainer)) {
                 ((I_CmsDropContainer)target).checkMaxElementsOnEnter();
             }
-        }
-        if (target != m_initialDropTarget) {
-            showOriginalPositionPlaceholder(draggable, true);
-        } else {
-            hideOriginalPositionPlaceholder(draggable);
         }
         if (target instanceof CmsContainerPageContainer) {
             CmsContainerPageContainer cont = (CmsContainerPageContainer)target;
@@ -526,7 +523,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 ((I_CmsDropContainer)target).checkMaxElementsOnLeave();
             }
         }
-        showOriginalPositionPlaceholder(draggable, false);
         updateHighlighting(false);
         if (target instanceof CmsContainerPageContainer) {
             String id = ((CmsContainerPageContainer)target).getContainerId();
@@ -646,6 +642,21 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     }
 
     /**
+     * Checks and sets if the place holder should be visible.<p>
+     *  
+     * @param target the target container
+     */
+    private void checkPlaceholderVisibility(I_CmsDropTarget target) {
+
+        if (target instanceof I_CmsDropContainer) {
+            I_CmsDropContainer container = (I_CmsDropContainer)target;
+            container.setPlaceholderVisibility((container != m_initialDropTarget)
+                || ((m_currentIndex - m_originalIndex) > 1)
+                || ((m_originalIndex - m_currentIndex) > 0));
+        }
+    }
+
+    /**
      * Checks if the placeholder position has changed.<p>
      * 
      * @param target the current drop target
@@ -671,17 +682,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
         handler.getDragHelper().getStyle().setDisplay(Display.NONE);
         handler.getPlaceholder().getStyle().setDisplay(Display.NONE);
-    }
-
-    /**
-     * Hides the the draggable on it'e original position.<p>
-     * 
-     * @param draggable the draggable
-     */
-    private void hideOriginalPositionPlaceholder(I_CmsDraggable draggable) {
-
-        draggable.getElement().getStyle().setDisplay(Display.NONE);
-        CmsDomUtil.showOverlay(draggable.getElement(), false);
     }
 
     /**
@@ -854,8 +854,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         }
         m_originalIndex = targetContainer.getWidgetIndex((Widget)draggable);
         targetContainer.getElement().insertBefore(placeholder, draggable.getElement());
-        draggable.getElement().getStyle().setDisplay(Display.NONE);
         targetContainer.getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragging());
+        CmsDomUtil.showOverlay(draggable.getElement(), true);
         targetContainer.highlightContainer();
     }
 
@@ -884,18 +884,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         handler.setCursorOffsetY(info.getOffsetY());
         handler.getDragHelper().getStyle().setDisplay(Display.BLOCK);
         handler.getPlaceholder().getStyle().clearDisplay();
-    }
-
-    /**
-     * Shows the draggable on it's original position.<p>
-     * 
-     * @param draggable the draggable
-     * @param withOverlay <code>true</code> to show the disabling overlay
-     */
-    private void showOriginalPositionPlaceholder(I_CmsDraggable draggable, boolean withOverlay) {
-
-        draggable.getElement().getStyle().clearDisplay();
-        CmsDomUtil.showOverlay(draggable.getElement(), withOverlay);
     }
 
     /** 

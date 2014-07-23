@@ -488,7 +488,7 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
     public void onStartDrag(I_CmsDropTarget target) {
 
         CmsDomUtil.addDisablingOverlay(getElement());
-        getElement().getStyle().setOpacity(0.5);
+        getElement().getStyle().setOpacity(0.7);
         removeHighlighting();
     }
 

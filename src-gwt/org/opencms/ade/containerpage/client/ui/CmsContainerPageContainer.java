@@ -45,6 +45,7 @@ import java.util.List;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -76,6 +77,9 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
         /** Flag indicating the element is positioned absolute. */
         private boolean m_isAbsolute;
 
+        /** Flag indicating if the given element is visible. */
+        private boolean m_isVisible;
+
         /**
          * Constructor.<p>
          * 
@@ -87,9 +91,13 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
             String positioning = CmsDomUtil.getCurrentStyle(m_element, Style.position);
             m_isAbsolute = Position.ABSOLUTE.getCssName().equals(positioning)
                 || Position.FIXED.getCssName().equals(positioning);
+
             if (!m_isAbsolute) {
-                m_elementPosition = CmsPositionBean.getInnerDimensions(element);
-                m_float = CmsDomUtil.getCurrentStyle(m_element, Style.floatCss);
+                m_isVisible = !Display.NONE.getCssName().equals(m_element.getStyle().getDisplay());
+                if (m_isVisible) {
+                    m_elementPosition = CmsPositionBean.getInnerDimensions(element);
+                    m_float = CmsDomUtil.getCurrentStyle(m_element, Style.floatCss);
+                }
             }
         }
 
@@ -179,6 +187,16 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
             return "right".equals(m_float);
         }
 
+        /**
+         * Returns if the given element is visible.<p>
+         * 
+         * @return <code>true</code> if the given element is visible
+         */
+        public boolean isVisible() {
+
+            return m_isVisible;
+        }
+
     }
 
     /** Flag indicating if this container is a detail view only container. */
@@ -192,6 +210,9 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
 
     /** The container type. */
     private String m_containerType;
+
+    /** The list of nested sub containers that are also valid drop targets during the current drag and drop. */
+    private List<I_CmsDropTarget> m_dnDChildren;
 
     /** The element position info cache. */
     private List<ElementPositionInfo> m_elementPositions;
@@ -217,11 +238,11 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     /** The drag and drop placeholder position index. */
     private int m_placeholderIndex = -1;
 
+    /** Flag indicating the current place holder visibility. */
+    private boolean m_placeholderVisible;
+
     /** Flag indicating the element positions need to be re-evaluated. */
     private boolean m_requiresPositionUpdate = true;
-
-    /** The list of nested sub containers that are also valid drop targets during the current drag and drop. */
-    private List<I_CmsDropTarget> m_dnDChildren;
 
     /**
      * Constructor.<p>
@@ -481,6 +502,8 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     public void insertPlaceholder(Element placeholder, int x, int y, Orientation orientation) {
 
         m_placeholder = placeholder;
+        m_placeholderVisible = false;
+        m_placeholder.getStyle().setDisplay(Display.NONE);
         m_requiresPositionUpdate = true;
         repositionPlaceholder(x, y, orientation);
     }
@@ -571,6 +594,22 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     }
 
     /**
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#setPlaceholderVisibility(boolean)
+     */
+    public void setPlaceholderVisibility(boolean visible) {
+
+        if (m_placeholderVisible != visible) {
+            m_placeholderVisible = visible;
+            m_requiresPositionUpdate = true;
+            if (m_placeholderVisible) {
+                m_placeholder.getStyle().clearDisplay();
+            } else {
+                m_placeholder.getStyle().setDisplay(Display.NONE);
+            }
+        }
+    }
+
+    /**
      * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#showEditableListButtons()
      */
     public void showEditableListButtons() {
@@ -623,7 +662,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
             if (info.getElement() == m_placeholder) {
                 indexCorrection = 1;
             }
-            if (info.isAbsolute()) {
+            if (info.isAbsolute() || !info.isVisible()) {
                 continue;
             }
 
