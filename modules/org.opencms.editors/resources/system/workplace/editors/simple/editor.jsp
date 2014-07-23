@@ -46,7 +46,7 @@ default:
 //////////////////// ACTION: show editor frame (default)
 
 %>
-
+<!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="content-type" content="text/html; charset=<%= wp.getEncoding() %>">

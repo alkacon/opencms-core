@@ -514,7 +514,7 @@ default:
 	wp.escapeParams();
 	wp.setParamAction(null);
 
-%><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+%><!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="content-type" content="text/html; charset=<%= wp.getEncoding() %>">
@@ -695,10 +695,10 @@ if (toolbarButtons.indexOf("table")>0)
 var plugins = "anchor,charmap,code,textcolor,autolink,lists,pagebreak,layer,table,save,hr,image,link,emoticons,insertdatetime,preview,media,searchreplace,print,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,template,wordcount,advlist,code,-opencms";
 if (contextmenu!="")
     plugins+=",contextmenu"
-
+function initTiny(){
 tinyMCE.init({
     // General options
-    toolbar_items_size: 'small',
+    statusbar : false,
     mode : "exact",
     elements : "tinymce_content",
     theme : "modern",
@@ -722,7 +722,7 @@ tinyMCE.init({
     
     // editor size
     width: "100%",
-    height: "100%",
+    height: getEditorHeight(),
     valid_children : "+body[style]",
     //element options
     extended_valid_elements : "style[dir<ltr?rtl|lang|media|title|type],link[charset|class|dir<ltr?rtl|href|hreflang|id|lang|media|onclick|ondblclick|onkeydown|onkeypress|onkeyup|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup|rel|rev|style|title|target|type]",
@@ -807,7 +807,7 @@ tinyMCE.init({
 	   });
 	}
 });
-
+}
 function setupTinyMCE(editor) {
    if (tinyMCE.isWebKit) {
       // fix weird layout problem in Chrome 
@@ -859,16 +859,16 @@ var tagBarHeight = 14;
 
 // calculate editor height in pixels
 function getEditorHeight(){
-	return document.getElementById('textarea-container').clientHeight -tagBarHeight;
+	return document.getElementById('textarea-container').clientHeight;
 }
 
 //-->
 </script>
 </head>
 
-<body class="buttons-head" unselectable="on" onunload="closeDialog();">
+<body class="buttons-head" unselectable="on" onload="initTiny();" onunload="closeDialog();">
 
-<form style="width:100%; height:100%; margin:0px; padding:0px; " name="EDITOR" id="EDITOR" method="post" action="<%= wp.getDialogRealUri() %>">
+<form style="display:block; position:absolute; top:5px; left:0px; right:0px; bottom:78px; margin:0px; padding:0px; " name="EDITOR" id="EDITOR" method="post" action="<%= wp.getDialogRealUri() %>">
 <input type="hidden" name="<%= CmsDialog.PARAM_ACTION %>" value="<%= wp.getParamAction() %>">
 <input type="hidden" name="<%= CmsDialog.PARAM_RESOURCE %>" value="<%= wp.getParamResource() %>">
 <input type="hidden" name="<%= CmsEditor.PARAM_TEMPFILE %>" value="<%= wp.getParamTempfile() %>">
@@ -880,9 +880,8 @@ function getEditorHeight(){
 <input type="hidden" name="<%= CmsEditor.PARAM_MODIFIED %>" value="<%= wp.getParamModified() %>">
 <input type="hidden" name="content" id="content" >
 
-<table cellspacing="0" cellpadding="0" border="0" style="width:100%; height:100%;">
+<div style="display: block; height: 100%; width: 100%;">
 
-<tr><td>
 <%= wp.buttonBar(CmsWorkplace.HTML_START) %>
 <%= wp.buttonBarStartTab(0, 0) %>
 <%
@@ -922,15 +921,8 @@ if (options.showElement("option.cleanup", displayOptions)) {
 <%= wp.button("javascript:buttonAction(2);", null, "preview", org.opencms.workplace.editors.Messages.GUI_BUTTON_PREVIEW_0, buttonStyle) %>
 <%= wp.buttonBarSpacer(5) %>
 <%= wp.buttonBar(CmsWorkplace.HTML_END) %>
-
-</td></tr>
-
-<tr>
-<td style="width:100%; height:100%;">
-<div id="textarea-container" class="cmsTinyMCE" style="width:100%; height:100%; background-color: /*begin-color Window*/#ffffff/*end-color*/;">
-<script language="javascript">
-document.write ('<textarea id="tinymce_content" name="tinymce_content" style="height:'+getEditorHeight()+'px; width:100%;"></textarea>');
-</script>
+<div id="textarea-container" class="cmsTinyMCE" style="position: absolute; top:24px; left: 0px; right: 0px; bottom: 0px; background-color: /*begin-color Window*/#ffffff/*end-color*/;">
+<textarea id="tinymce_content" name="tinymce_content"></textarea>
 </div>
 </td>
 </tr>
