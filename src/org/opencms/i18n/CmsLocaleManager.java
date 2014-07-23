@@ -949,15 +949,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
         m_localeHandler.initHandler(cms);
         // set default locale 
         m_defaultLocale = m_defaultLocales.get(0);
-        try {
-            // use a seed for initializing the language detection for making sure the
-            // same probabilities are detected for the same document contents
-            DetectorFactory.clear();
-            DetectorFactory.setSeed(42L);
-            DetectorFactory.loadProfile(loadProfiles(getAvailableLocales()));
-        } catch (Exception e) {
-            LOG.error(Messages.get().getBundle().key(Messages.INIT_I18N_LANG_DETECT_FAILED_0), e);
-        }
+        initLanguageDetection();
         // set initialized status
         m_initialized = true;
         if (CmsLog.INIT.isInfoEnabled()) {
@@ -1072,6 +1064,22 @@ public class CmsLocaleManager implements I_CmsEventListener {
     }
 
     /**
+     * Initializes the language detection.<p>
+     */
+    private void initLanguageDetection() {
+
+        try {
+            // use a seed for initializing the language detection for making sure the
+            // same probabilities are detected for the same document contents
+            DetectorFactory.clear();
+            DetectorFactory.setSeed(42L);
+            DetectorFactory.loadProfile(loadProfiles(getAvailableLocales()));
+        } catch (Exception e) {
+            LOG.error(Messages.get().getBundle().key(Messages.INIT_I18N_LANG_DETECT_FAILED_0), e);
+        }
+    }
+
+    /**
      * Load the profiles from the classpath.<p>
      * 
      * @param locales the locales to initialize.<p>
@@ -1084,14 +1092,26 @@ public class CmsLocaleManager implements I_CmsEventListener {
 
         List<String> profiles = new ArrayList<String>();
         for (Locale locale : locales) {
-            String lang = locale.getLanguage();
-            String profileFile = "profiles" + "/" + lang;
-            InputStream is = getClass().getClassLoader().getResourceAsStream(profileFile);
-            String profile = IOUtils.toString(is, "UTF-8");
-            if ((profile != null) && (profile.length() > 0)) {
-                profiles.add(profile);
+            try {
+                String lang = locale.getLanguage();
+                String profileFile = "profiles" + "/" + lang;
+                InputStream is = getClass().getClassLoader().getResourceAsStream(profileFile);
+                if (is != null) {
+                    String profile = IOUtils.toString(is, "UTF-8");
+                    if ((profile != null) && (profile.length() > 0)) {
+                        profiles.add(profile);
+                    }
+                    is.close();
+                } else {
+                    LOG.warn(Messages.get().getBundle().key(
+                        Messages.INIT_I18N_LAND_DETECT_PROFILE_NOT_AVAILABLE_1,
+                        locale));
+                }
+            } catch (Exception e) {
+                LOG.error(
+                    Messages.get().getBundle().key(Messages.INIT_I18N_LAND_DETECT_LOADING_PROFILE_FAILED_1, locale),
+                    e);
             }
-            is.close();
         }
         return profiles;
     }
