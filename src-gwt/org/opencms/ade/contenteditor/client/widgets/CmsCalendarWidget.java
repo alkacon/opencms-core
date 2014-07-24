@@ -177,11 +177,9 @@ public class CmsCalendarWidget extends Composite implements I_EditWidget {
         }
         m_active = active;
         if (m_active) {
-            getElement().setAttribute("contentEditable", "true");
             getElement().removeClassName(I_LayoutBundle.INSTANCE.form().inActive());
             getElement().focus();
         } else {
-            getElement().setAttribute("contentEditable", "false");
             getElement().addClassName(I_LayoutBundle.INSTANCE.form().inActive());
         }
         if (active) {
