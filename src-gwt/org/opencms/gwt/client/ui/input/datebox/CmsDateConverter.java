@@ -190,7 +190,7 @@ public final class CmsDateConverter {
      * 
      * @return the date created, or null if there was a parse error
      * 
-     * @throws Exception 
+     * @throws Exception in case the text can not be parsed to a date
      */
     public static Date toDate(final String dateText) throws Exception {
 
@@ -233,7 +233,7 @@ public final class CmsDateConverter {
      * 
      * @return the date created, or null if there was a parse error
      * 
-     * @throws Exception 
+     * @throws Exception in case the text can not be parsed to a date
      */
     public static Date toDayDate(final String dateText) throws Exception {
 
@@ -290,34 +290,34 @@ public final class CmsDateConverter {
      * @return <code>true</code> if the given time matches the regular expressions, <code>false</code> otherwise
      */
     public static native boolean validateTime(String time) /*-{
-        var hasMeridian = false;
-        var re = /^\d{1,2}[:]\d{2}([:]\d{2})?( [aApP][mM]?)?$/;
-        if (!re.test(time)) {
-            return false;
-        }
-        if (time.toLowerCase().indexOf("p") != -1) {
-            hasMeridian = true;
-        }
-        if (time.toLowerCase().indexOf("a") != -1) {
-            hasMeridian = true;
-        }
-        var values = time.split(":");
-        if ((parseFloat(values[0]) < 0) || (parseFloat(values[0]) > 23)) {
-            return false;
-        }
-        if (hasMeridian) {
-            if ((parseFloat(values[0]) < 1) || (parseFloat(values[0]) > 12)) {
-                return false;
-            }
-        }
-        if ((parseFloat(values[1]) < 0) || (parseFloat(values[1]) > 59)) {
-            return false;
-        }
-        if (values.length > 2) {
-            if ((parseFloat(values[2]) < 0) || (parseFloat(values[2]) > 59)) {
-                return false;
-            }
-        }
-        return true;
-    }-*/;
+                                                           var hasMeridian = false;
+                                                           var re = /^\d{1,2}[:]\d{2}([:]\d{2})?( [aApP][mM]?)?$/;
+                                                           if (!re.test(time)) {
+                                                           return false;
+                                                           }
+                                                           if (time.toLowerCase().indexOf("p") != -1) {
+                                                           hasMeridian = true;
+                                                           }
+                                                           if (time.toLowerCase().indexOf("a") != -1) {
+                                                           hasMeridian = true;
+                                                           }
+                                                           var values = time.split(":");
+                                                           if ((parseFloat(values[0]) < 0) || (parseFloat(values[0]) > 23)) {
+                                                           return false;
+                                                           }
+                                                           if (hasMeridian) {
+                                                           if ((parseFloat(values[0]) < 1) || (parseFloat(values[0]) > 12)) {
+                                                           return false;
+                                                           }
+                                                           }
+                                                           if ((parseFloat(values[1]) < 0) || (parseFloat(values[1]) > 59)) {
+                                                           return false;
+                                                           }
+                                                           if (values.length > 2) {
+                                                           if ((parseFloat(values[2]) < 0) || (parseFloat(values[2]) > 59)) {
+                                                           return false;
+                                                           }
+                                                           }
+                                                           return true;
+                                                           }-*/;
 }
