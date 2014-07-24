@@ -9,9 +9,15 @@
 			max-height: 250px;
 			margin: 0 2px;
 		}
+		
 		.root * {
 			zoom: 1;
 		}
+		
+		.root {
+			padding: 2px;
+		}
+		
 		.label {
 			padding: 6px;
 		}

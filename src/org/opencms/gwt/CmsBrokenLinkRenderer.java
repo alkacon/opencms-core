@@ -41,6 +41,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,8 +97,8 @@ public class CmsBrokenLinkRenderer {
     /**
      * The default method for rendering broken link sources.<p>
      * 
-     * @param target
-     * @param source
+     * @param target the link target
+     * @param source the link source
      * @return the list of broken link beans to display to the user 
      * 
      * @throws CmsException if something goes wrong
@@ -192,6 +193,7 @@ public class CmsBrokenLinkRenderer {
                         extraTitle = m_cms.readPropertyObject(firstPage, CmsPropertyDefinition.PROPERTY_TITLE, true).getValue();
                     }
                     result.add(createBrokenLinkBean(
+                        group.getStructureId(),
                         CmsResourceTypeXmlContainerPage.INHERIT_CONTAINER_CONFIG_TYPE_NAME,
                         title,
                         path,
@@ -227,6 +229,7 @@ public class CmsBrokenLinkRenderer {
     /**
      * Creates a broken link bean from the necessary values.<p>
      * 
+     * @param structureId the structure id of the resource 
      * @param type the resource type 
      * @param title the title 
      * @param path the path 
@@ -236,13 +239,14 @@ public class CmsBrokenLinkRenderer {
      * @return the created broken link bean 
      */
     protected CmsBrokenLinkBean createBrokenLinkBean(
+        CmsUUID structureId,
         String type,
         String title,
         String path,
         String extraTitle,
         String extraPath) {
 
-        CmsBrokenLinkBean result = new CmsBrokenLinkBean(title, path, type);
+        CmsBrokenLinkBean result = new CmsBrokenLinkBean(structureId, title, path, type);
         addPageInfo(result, extraTitle, extraPath);
         return result;
     }
@@ -263,7 +267,7 @@ public class CmsBrokenLinkRenderer {
         String title = titleProp.getValue(defaultTitle);
         String path = m_cms.getSitePath(resource);
         String subtitle = path;
-        return new CmsBrokenLinkBean(title, subtitle, typeName);
+        return new CmsBrokenLinkBean(resource.getStructureId(), title, subtitle, typeName);
     }
 
     /**

@@ -736,7 +736,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         String title = titleProp.getValue(defaultTitle);
         String path = cms.getSitePath(resource);
         String subtitle = path;
-        return new CmsBrokenLinkBean(title, subtitle);
+        return new CmsBrokenLinkBean(resource.getStructureId(), title, subtitle);
 
     }
 

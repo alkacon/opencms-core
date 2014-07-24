@@ -83,16 +83,16 @@ public class CmsPublishGroupPanel extends Composite {
     private static final int NUM_BUTTON_SLOTS = 4;
 
     /** The slot for the context menu button. */
-    private static final int SLOT_MENU = 0;
+    public static final int SLOT_MENU = 0;
 
     /** The slot for the preview button. */
-    private static final int SLOT_PREVIEW = 1;
+    public static final int SLOT_PREVIEW = 1;
 
     /** The slot for the 'remove' checkbox. */
-    private static final int SLOT_REMOVE = 2;
+    public static final int SLOT_REMOVE = 2;
 
     /** The slot for the warning symbol. */
-    private static final int SLOT_WARNING = 3;
+    public static final int SLOT_WARNING = 3;
 
     /** Text metrics key. */
     private static final String TM_PUBLISH_LIST = "PublishList";
@@ -129,6 +129,9 @@ public class CmsPublishGroupPanel extends Composite {
 
     /** A flag which indicates whether only resources with problems should be shown. */
     private boolean m_showProblemsOnly;
+
+    /** Button slot mapping for publish list items. */
+    public static int[] DEFAULT_SLOT_MAPPING = new int[] {0, 1, 2, 3};
 
     /**
      * Constructs a new instance.<p>
@@ -184,10 +187,11 @@ public class CmsPublishGroupPanel extends Composite {
      * Creates a basic list item widget for a given publish resource bean.<p>
      * 
      * @param resourceBean the publish resource bean
+     * @param slotMapping maps button slot ids to actual button indexes 
      * 
      * @return the list item widget representing the publish resource bean 
      */
-    public static CmsListItemWidget createListItemWidget(final CmsPublishResource resourceBean) {
+    public static CmsListItemWidget createListItemWidget(final CmsPublishResource resourceBean, int[] slotMapping) {
 
         CmsListInfoBean info = new CmsListInfoBean();
         info.setTitle(getTitle(resourceBean));
@@ -217,7 +221,7 @@ public class CmsPublishGroupPanel extends Composite {
             SimplePanel panel = new SimplePanel();
             panel.getElement().getStyle().setWidth(20, Unit.PX);
             panel.getElement().getStyle().setHeight(20, Unit.PX);
-            if (i == SLOT_WARNING) {
+            if (i == slotMapping[SLOT_WARNING]) {
                 panel.addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
             }
             itemWidget.addButton(panel);
@@ -227,7 +231,7 @@ public class CmsPublishGroupPanel extends Composite {
             Image warningImage = new Image(I_CmsImageBundle.INSTANCE.warningSmallImage());
             warningImage.setTitle(resourceBean.getInfo().getValue());
             warningImage.addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
-            fillButtonSlot(itemWidget, SLOT_WARNING, warningImage);
+            fillButtonSlot(itemWidget, SLOT_WARNING, warningImage, slotMapping);
         }
         String noPreviewReason = resourceBean.getInfo() == null ? null : resourceBean.getInfo().getNoPreviewReason();
         CmsPushButton previewButton = new CmsPushButton();
@@ -247,7 +251,7 @@ public class CmsPublishGroupPanel extends Composite {
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(noPreviewReason)) {
             previewButton.disable(noPreviewReason);
         }
-        fillButtonSlot(itemWidget, SLOT_PREVIEW, previewButton);
+        fillButtonSlot(itemWidget, SLOT_PREVIEW, previewButton, slotMapping);
         itemWidget.setUnselectable();
         itemWidget.setIcon(CmsIconUtil.getResourceIconClasses(resourceBean.getResourceType(), false));
         return itemWidget;
@@ -259,12 +263,16 @@ public class CmsPublishGroupPanel extends Composite {
      * @param listItemWidget the list item widget 
      * @param index the slot index 
      * @param widget the widget which should be displayed in the slot 
+     * @param slotMapping array mapping logical slot ids to button indexes 
      */
-    private static void fillButtonSlot(CmsListItemWidget listItemWidget, int index, Widget widget) {
+    private static void fillButtonSlot(CmsListItemWidget listItemWidget, int index, Widget widget, int[] slotMapping) {
 
-        SimplePanel panel = (SimplePanel)listItemWidget.getButton(index);
-        panel.clear();
-        panel.add(widget);
+        int realIndex = slotMapping[index];
+        if (realIndex >= 0) {
+            SimplePanel panel = (SimplePanel)listItemWidget.getButton(slotMapping[index]);
+            panel.clear();
+            panel.add(widget);
+        }
     }
 
     /** 
@@ -385,10 +393,10 @@ public class CmsPublishGroupPanel extends Composite {
      */
     private CmsTreeItem buildItem(final CmsPublishResource resourceBean, CmsPublishItemStatus status, boolean isSubItem) {
 
-        CmsListItemWidget itemWidget = createListItemWidget(resourceBean);
+        CmsListItemWidget itemWidget = createListItemWidget(resourceBean, DEFAULT_SLOT_MAPPING);
         CmsContextMenuButton button = new CmsContextMenuButton(resourceBean.getId(), m_contextMenuHandler);
 
-        fillButtonSlot(itemWidget, SLOT_MENU, button);
+        fillButtonSlot(itemWidget, SLOT_MENU, button, DEFAULT_SLOT_MAPPING);
 
         resourceBean.getId();
         final CmsStyleVariable styleVar = new CmsStyleVariable(itemWidget);
@@ -448,7 +456,7 @@ public class CmsPublishGroupPanel extends Composite {
                 }
             });
             if (resourceBean.isRemovable()) {
-                fillButtonSlot(itemWidget, SLOT_REMOVE, remover);
+                fillButtonSlot(itemWidget, SLOT_REMOVE, remover, DEFAULT_SLOT_MAPPING);
             }
             controller.update(status);
         }

@@ -27,6 +27,8 @@
 
 package org.opencms.gwt.shared;
 
+import org.opencms.util.CmsUUID;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -47,6 +49,9 @@ public class CmsBrokenLinkBean implements IsSerializable {
     /** The broken link info. */
     private Map<String, String> m_info = new LinkedHashMap<String, String>();
 
+    /** The structure id. */
+    private CmsUUID m_structureId;
+
     /** The title. */
     private String m_subtitle;
 
@@ -58,26 +63,30 @@ public class CmsBrokenLinkBean implements IsSerializable {
 
     /**
      * Constructor without a type parameter.<p>
-     * 
+     * @param structureId the structure id 
      * @param title the title 
      * @param subtitle the subtitle 
      */
-    public CmsBrokenLinkBean(String title, String subtitle) {
+    public CmsBrokenLinkBean(CmsUUID structureId, String title, String subtitle) {
 
-        this(title, subtitle, null);
+        this(structureId, title, subtitle, null);
+
     }
 
     /**
      * Constructor.<p>
+     * 
+     * @param structureId the structure id 
      * @param title the title 
      * @param subtitle the subtitle
      * @param type the resource type  
      */
-    public CmsBrokenLinkBean(String title, String subtitle, String type) {
+    public CmsBrokenLinkBean(CmsUUID structureId, String title, String subtitle, String type) {
 
         m_title = title;
         m_subtitle = subtitle;
         m_type = type;
+        m_structureId = structureId;
     }
 
     /**
@@ -109,6 +118,15 @@ public class CmsBrokenLinkBean implements IsSerializable {
     public void addInfo(String name, String value) {
 
         m_info.put(name, value);
+    }
+
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+
+        return (obj instanceof CmsBrokenLinkBean) && ((CmsBrokenLinkBean)obj).m_structureId.equals(m_structureId);
     }
 
     /**
@@ -160,6 +178,15 @@ public class CmsBrokenLinkBean implements IsSerializable {
     public String getType() {
 
         return m_type;
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+
+        return m_structureId.hashCode();
     }
 
 }

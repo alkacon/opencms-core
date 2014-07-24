@@ -955,6 +955,17 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
         }
         m_titleBox.setWidth(Math.max(0, width - 30) + "px");
         m_subtitle.truncate(textMetricsPrefix + TM_SUBTITLE, width);
+        truncateAdditionalInfo(textMetricsPrefix, widgetWidth);
+    }
+
+    /**
+     * Truncates the additional info items.<p>
+     * 
+     * @param textMetricsPrefix the text metrics prefix 
+     * @param widgetWidth the width to truncate to 
+     */
+    public void truncateAdditionalInfo(final String textMetricsPrefix, final int widgetWidth) {
+
         for (Widget addInfo : m_additionalInfo) {
             ((AdditionalInfoItem)addInfo).truncate(textMetricsPrefix, widgetWidth - 10);
         }

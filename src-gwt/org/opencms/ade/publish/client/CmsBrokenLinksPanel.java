@@ -98,6 +98,9 @@ public class CmsBrokenLinksPanel extends Composite {
     /** The publish dialog containing this widget. */
     private CmsPublishDialog m_publishDialog;
 
+    /** Button slot mapping for showing broken links. */
+    public static int[] SLOT_MAPPING;
+
     /**
      * Creates a new instance.<p>
      * 
@@ -116,6 +119,14 @@ public class CmsBrokenLinksPanel extends Composite {
         m_actionButtons = new ArrayList<CmsPushButton>();
     }
 
+    static {
+        SLOT_MAPPING = new int[4];
+        SLOT_MAPPING[CmsPublishGroupPanel.SLOT_WARNING] = 0;
+        SLOT_MAPPING[CmsPublishGroupPanel.SLOT_PREVIEW] = -1;
+        SLOT_MAPPING[CmsPublishGroupPanel.SLOT_REMOVE] = -1;
+        SLOT_MAPPING[CmsPublishGroupPanel.SLOT_MENU] = -1;
+    }
+
     /**
       * Adds a resource bean to be displayed.<p>
       * 
@@ -124,11 +135,12 @@ public class CmsBrokenLinksPanel extends Composite {
       */
     public CmsListItemWidget addEntry(CmsPublishResource res) {
 
-        CmsListItemWidget itemWidget = CmsPublishGroupPanel.createListItemWidget(res);
+        final CmsListItemWidget itemWidget = CmsPublishGroupPanel.createListItemWidget(res, SLOT_MAPPING);
         CmsTreeItem item = new CmsTreeItem(false, itemWidget);
+
         item.setOpen(true);
         for (CmsPublishResource subRes : res.getRelated()) {
-            CmsListItemWidget subWidget = CmsPublishGroupPanel.createListItemWidget(subRes);
+            final CmsListItemWidget subWidget = CmsPublishGroupPanel.createListItemWidget(subRes, SLOT_MAPPING);
             CmsTreeItem subItem = new CmsTreeItem(false, subWidget);
             item.addChild(subItem);
         }

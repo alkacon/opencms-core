@@ -107,7 +107,6 @@ import org.opencms.xml.page.CmsXmlPageFactory;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -119,11 +118,12 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.FactoryUtils;
-import org.apache.commons.collections.map.MultiValueMap;
 import org.apache.commons.logging.Log;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
 
 /**
  * A service class for reading the VFS tree.<p>
@@ -1354,7 +1354,10 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         String title = titleProp.getValue(defaultTitle);
         String path = cms.getSitePath(resource);
         String subtitle = path;
-        return new CmsBrokenLinkBean(title, subtitle, typeName);
+
+        CmsBrokenLinkBean result = new CmsBrokenLinkBean(resource.getStructureId(), title, subtitle, typeName);
+
+        return result;
     }
 
     /**
@@ -1425,6 +1428,34 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             result.add(makeEntryBean(res, root));
         }
         return result;
+    }
+
+    /**
+     * Adds additional info items for broken links.<p>
+     * 
+     * @param cms the CMS context to use 
+     * @param resource the resource from which the additional infos should be read 
+     * @param result the result in which to store the additional info 
+     */
+    private void addBrokenLinkAdditionalInfo(CmsObject cms, CmsResource resource, CmsBrokenLinkBean result) {
+
+        String dateLastModifiedLabel = org.opencms.workplace.commons.Messages.get().getBundle(
+            OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).key(
+            org.opencms.workplace.commons.Messages.GUI_LABEL_DATE_LAST_MODIFIED_0);
+        String dateLastModified = CmsVfsService.formatDateTime(cms, resource.getDateLastModified());
+
+        String userLastModifiedLabel = org.opencms.workplace.commons.Messages.get().getBundle(
+            OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).key(
+            org.opencms.workplace.commons.Messages.GUI_LABEL_USER_LAST_MODIFIED_0);
+        String userLastModified = "" + resource.getUserLastModified();
+        try {
+            userLastModified = cms.readUser(resource.getUserLastModified()).getName();
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+
+        result.addInfo(dateLastModifiedLabel, dateLastModified);
+        result.addInfo(userLastModifiedLabel, userLastModified);
     }
 
     /**
@@ -1641,23 +1672,32 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
      *
      * @throws CmsException if something goes wrong
      */
-    private List<CmsBrokenLinkBean> getBrokenLinkBeans(MultiValueMap linkMap) throws CmsException {
+    private List<CmsBrokenLinkBean> getBrokenLinkBeans(Multimap<CmsResource, CmsResource> linkMap) throws CmsException {
 
         CmsBrokenLinkRenderer brokenLinkRenderer = new CmsBrokenLinkRenderer(getCmsObject());
-        List<CmsBrokenLinkBean> result = new ArrayList<CmsBrokenLinkBean>();
-        for (CmsResource key : (Set<CmsResource>)linkMap.keySet()) {
 
-            CmsBrokenLinkBean parentBean = createSitemapBrokenLinkBean(key);
-            result.add(parentBean);
-            Collection<CmsResource> values = linkMap.getCollection(key);
-            for (CmsResource resource : values) {
-                List<CmsBrokenLinkBean> brokenLinkBeans = brokenLinkRenderer.renderBrokenLink(key, resource);
+        Multimap<CmsBrokenLinkBean, CmsBrokenLinkBean> resultMap = HashMultimap.create();
+
+        for (CmsResource source : linkMap.keySet()) {
+
+            for (CmsResource target : linkMap.get(source)) {
+                CmsBrokenLinkBean targetBean = createSitemapBrokenLinkBean(target);
+                addBrokenLinkAdditionalInfo(getCmsObject(), target, targetBean);
+                List<CmsBrokenLinkBean> brokenLinkBeans = brokenLinkRenderer.renderBrokenLink(target, source);
                 for (CmsBrokenLinkBean childBean : brokenLinkBeans) {
-                    parentBean.addChild(childBean);
+                    addBrokenLinkAdditionalInfo(getCmsObject(), source, childBean);
+                    resultMap.put(childBean, targetBean);
                 }
             }
         }
-        return result;
+
+        // now convert multimap representation to parent/child representation 
+        for (CmsBrokenLinkBean parent : resultMap.keySet()) {
+            for (CmsBrokenLinkBean child : resultMap.get(parent)) {
+                parent.addChild(child);
+            }
+        }
+        return Lists.newArrayList(resultMap.keySet());
     }
 
     /**
@@ -1692,13 +1732,11 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         for (CmsResource deleteRes : descendants) {
             deleteIds.add(deleteRes.getStructureId());
         }
-        MultiValueMap linkMap = MultiValueMap.decorate(
-            new HashMap<Object, Object>(),
-            FactoryUtils.instantiateFactory(HashSet.class));
+        Multimap<CmsResource, CmsResource> linkMap = HashMultimap.create();
         for (CmsResource resource : descendants) {
             List<CmsResource> linkSources = getLinkSources(cms, resource, deleteIds);
             for (CmsResource source : linkSources) {
-                linkMap.put(resource, source);
+                linkMap.put(source, resource);
             }
         }
 
