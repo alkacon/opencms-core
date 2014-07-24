@@ -54,6 +54,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplaceMessages;
@@ -78,9 +79,11 @@ import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 
 import java.io.IOException;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -511,6 +514,21 @@ public class CmsElementUtil {
                 noEditReason = Messages.get().getBundle().key(Messages.GUI_ELEMENT_RESOURCE_CAN_NOT_BE_EDITED_0);
             }
         }
+        CmsGallerySearchResult searchResult = CmsGallerySearch.searchById(
+            m_cms,
+            elementBean.getResource().getStructureId(),
+            m_locale);
+        String title = searchResult.getTitle();
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
+            elementBean.getResource().getName();
+        }
+        result.setTitle(title);
+        String subTitle = searchResult.getUserLastModified();
+        Date lastModDate = searchResult.getDateLastModified();
+        if (lastModDate != null) {
+            subTitle += " / " + CmsDateUtil.getDateTime(lastModDate, DateFormat.MEDIUM, wpLocale);
+        }
+        result.setSubTitle(subTitle);
         result.setClientId(elementBean.editorHash());
         result.setSitePath(elementBean.getSitePath());
         String typeName = OpenCms.getResourceManager().getResourceType(elementBean.getResource().getTypeId()).getTypeName();

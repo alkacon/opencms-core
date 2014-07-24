@@ -36,6 +36,9 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class CmsContainerElement implements IsSerializable {
 
+    /** HTML class used to identify containers. */
+    public static final String CLASS_CONTAINER = "cms_ade_container";
+
     /** HTML class used to identify container elements. */
     public static final String CLASS_CONTAINER_ELEMENT_END_MARKER = "cms_ade_element_end";
 
@@ -47,9 +50,6 @@ public class CmsContainerElement implements IsSerializable {
 
     /** HTML class used to identify group container elements. */
     public static final String CLASS_GROUP_CONTAINER_ELEMENT_MARKER = "cms_ade_groupcontainer";
-
-    /** HTML class used to identify containers. */
-    public static final String CLASS_CONTAINER = "cms_ade_container";
 
     /** The group container resource type name. */
     public static final String GROUP_CONTAINER_TYPE_NAME = "groupcontainer";
@@ -83,6 +83,12 @@ public class CmsContainerElement implements IsSerializable {
 
     /** The full site path. */
     private String m_sitePath;
+
+    /** The sub title. */
+    private String m_subTitle;
+
+    /** The title. */
+    private String m_title;
 
     /** 
      * Indicates if the current user has view permissions on the element resource. 
@@ -152,6 +158,26 @@ public class CmsContainerElement implements IsSerializable {
     public String getSitePath() {
 
         return m_sitePath;
+    }
+
+    /**
+     * Returns the sub title.<p>
+     * 
+     * @return the sub title
+     */
+    public String getSubTitle() {
+
+        return m_subTitle;
+    }
+
+    /**
+     * Returns the title.<p>
+     * 
+     * @return the title
+     */
+    public String getTitle() {
+
+        return m_title;
     }
 
     /**
@@ -324,6 +350,26 @@ public class CmsContainerElement implements IsSerializable {
     public void setSitePath(String sitePath) {
 
         m_sitePath = sitePath;
+    }
+
+    /**
+     * Sets the sub title.<p>
+     * 
+     * @param subTitle the sub title
+     */
+    public void setSubTitle(String subTitle) {
+
+        m_subTitle = subTitle;
+    }
+
+    /**
+     * Sets the title.<p>
+     * 
+     * @param title the title
+     */
+    public void setTitle(String title) {
+
+        m_title = title;
     }
 
     /**

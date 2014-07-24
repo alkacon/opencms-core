@@ -37,9 +37,12 @@ import org.opencms.ade.contenteditor.client.CmsContentEditor;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.CmsHighlightingBorder;
+import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Tag;
 import org.opencms.gwt.client.util.CmsPositionBean;
+import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -68,6 +71,7 @@ import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.AbsolutePanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -126,11 +130,23 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
     /** The parent drop target. */
     private I_CmsDropContainer m_parent;
 
+    /** The drag and drop parent div. */
+    private Element m_provisionalParent;
+
     /** Flag indicating if the element resource is currently released and not expired. */
     private boolean m_releasedAndNotExpired;
 
+    /** The resource type. */
+    private String m_resourceType;
+
     /** The element resource site-path. */
     private String m_sitePath;
+
+    /** The sub title. */
+    private String m_subTitle;
+
+    /** The resource title. */
+    private String m_title;
 
     /**
      * Indicates if the current user has view permissions on the element resource. 
@@ -152,6 +168,9 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
      * @param clientId the client id
      * @param sitePath the element site-path
      * @param noEditReason the no edit reason, if empty, editing is allowed
+     * @param title the resource title
+     * @param subTitle the sub title
+     * @param resourceType the resource type
      * @param hasSettings should be true if the element has settings which can be edited 
      * @param hasViewPermission indicates if the current user has view permissions on the element resource
      * @param hasWritePermission indicates if the current user has write permissions on the element resource
@@ -164,6 +183,9 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
         String clientId,
         String sitePath,
         String noEditReason,
+        String title,
+        String subTitle,
+        String resourceType,
         boolean hasSettings,
         boolean hasViewPermission,
         boolean hasWritePermission,
@@ -173,6 +195,9 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
         super(element);
         m_clientId = clientId;
         m_sitePath = sitePath;
+        m_title = title;
+        m_subTitle = subTitle;
+        m_resourceType = resourceType;
         m_noEditReason = noEditReason;
         m_hasSettings = hasSettings;
         m_parent = parent;
@@ -205,35 +230,35 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
      */
     public Element getDragHelper(I_CmsDropTarget target) {
 
-        Style optionStyle = m_elementOptionBar.getElement().getStyle();
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(optionStyle.getTop())) {
-            // in case the option bar has an especially set top offset, override the Y cursor offset
-            optionStyle.clearTop();
-            CmsContainerpageController.get().getDndHandler().setCursorOffsetY(12);
-        }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(optionStyle.getRight())) {
-            // in case the option bar has an especially set right offset, override the X cursor offset
-            optionStyle.clearRight();
-            CmsContainerpageController.get().getDndHandler().setCursorOffsetX(35);
-        }
-        Element helper = CmsDomUtil.clone(getElement());
-        target.getElement().appendChild(helper);
-        // preparing helper styles
-        String width = CmsDomUtil.getCurrentStyle(helper, CmsDomUtil.Style.width);
-        Style style = helper.getStyle();
-        style.setPosition(Position.ABSOLUTE);
-        style.setMargin(0, Unit.PX);
-        style.setProperty(CmsDomUtil.Style.width.name(), width);
-        style.setZIndex(I_CmsLayoutBundle.INSTANCE.constants().css().zIndexDND());
-        helper.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragging());
+        CmsListInfoBean info = new CmsListInfoBean(m_title, m_subTitle, null);
+        info.setResourceType(m_resourceType);
+        CmsListItemWidget helperWidget = new CmsListItemWidget(info);
+        helperWidget.setWidth("600px");
+        helperWidget.truncate("", 600);
+        Element helper = helperWidget.getElement();
+        Element button = DOM.createDiv();
+        button.appendChild((new Image(I_CmsImageBundle.INSTANCE.icons().moveIconActive())).getElement());
+        button.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragHandle());
+        helper.appendChild(button);
         helper.addClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().shadow());
-        if (!CmsDomUtil.hasBackground(helper)) {
-            helper.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElementBackground());
-        }
+        Element parentElement = getElement().getParentElement();
+        int elementTop = getElement().getAbsoluteTop();
+        int parentTop = parentElement.getAbsoluteTop();
+        m_provisionalParent = DOM.createElement(parentElement.getTagName());
+        RootPanel.getBodyElement().appendChild(m_provisionalParent);
+        m_provisionalParent.addClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().clearStyles());
+        m_provisionalParent.getStyle().setWidth(parentElement.getOffsetWidth(), Unit.PX);
+        m_provisionalParent.appendChild(helper);
+        Style style = helper.getStyle();
+        style.setWidth(helper.getOffsetWidth(), Unit.PX);
+        // the dragging class will set position absolute
+        helper.addClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().dragging());
+        style.setTop(elementTop - parentTop, Unit.PX);
+        m_provisionalParent.getStyle().setPosition(Position.ABSOLUTE);
+        m_provisionalParent.getStyle().setTop(parentTop, Unit.PX);
+        m_provisionalParent.getStyle().setLeft(parentElement.getAbsoluteLeft(), Unit.PX);
+        m_provisionalParent.getStyle().setZIndex(I_CmsLayoutBundle.INSTANCE.constants().css().zIndexDND());
 
-        if (!CmsDomUtil.hasBorder(helper)) {
-            helper.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElementBorder());
-        }
         return helper;
     }
 
@@ -850,10 +875,13 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
         CmsDomUtil.removeDisablingOverlay(getElement());
         m_elementOptionBar.getElement().removeClassName(
             org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering());
-        // using own implementation as GWT won't do it properly on IE7-8
-        CmsDomUtil.clearOpacity(getElement());
+        getElement().getStyle().clearOpacity();
         getElement().getStyle().clearDisplay();
         updateOptionBarPosition();
+        if (m_provisionalParent != null) {
+            m_provisionalParent.removeFromParent();
+            m_provisionalParent = null;
+        }
     }
 
     /**

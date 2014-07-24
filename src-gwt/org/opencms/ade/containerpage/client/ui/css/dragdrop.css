@@ -2,13 +2,11 @@
 	position: relative;
 }
 
-.dragging div.dragHandle{
+div.dragHandle{
 	position: absolute;
 	z-index: value("constants.css.zIndexInline");
-	top: 0px;
-	right: 0px;
-	left: 0px;
-	bottom: 0px;
+	top: 7px;
+	right: 3px;
 	padding: 2px;
 	text-align: right;
 	cursor: pointer;

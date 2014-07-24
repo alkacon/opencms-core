@@ -83,6 +83,8 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
      * @param sitePath the element site-path
      * @param resourceType the resource type name
      * @param noEditReason the no edit reason, if empty, editing is allowed
+     * @param title the resource title
+     * @param subTitle the sub title
      * @param hasSettings should be true if the element has settings which can be edited 
      * @param hasViewPermission indicates if the current user has view permissions on the element resource
      * @param hasWritePermission indicates if the current user has write permissions on the element resource
@@ -95,6 +97,8 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
         String sitePath,
         String resourceType,
         String noEditReason,
+        String title,
+        String subTitle,
         boolean hasSettings,
         boolean hasViewPermission,
         boolean hasWritePermission,
@@ -106,6 +110,9 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
             clientId,
             sitePath,
             noEditReason,
+            title,
+            subTitle,
+            resourceType,
             hasSettings,
             hasViewPermission,
             hasWritePermission,
