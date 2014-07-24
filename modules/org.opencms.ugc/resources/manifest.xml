@@ -168,7 +168,7 @@
 			<accesscontrol />
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.editors.usergenerated/classes/org/opencms/ugc
+			<destination>system/modules/org.opencms.ugc/classes/org/opencms/ugc
 			</destination>
 			<type>folder</type>
 			<uuidstructure>c34d5f87-bb12-11e3-a3c7-0ddf2cfaeffd</uuidstructure>
