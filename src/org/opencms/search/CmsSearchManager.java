@@ -1460,8 +1460,19 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      */
     public CmsSolrSpellchecker getSolrDictionary(CmsObject cms) {
 
-        return CmsSolrSpellchecker.getInstance(m_coreContainer, m_coreContainer.getCore("spellcheck"));
-
+        // get the core container that contains one core for each configured index
+        if (m_coreContainer == null) {
+            m_coreContainer = createCoreContainer();
+        }
+        SolrCore spellcheckCore = m_coreContainer.getCore(CmsSolrSpellchecker.SPELLCHECKER_INDEX_CORE);
+        if (spellcheckCore == null) {
+            LOG.error(Messages.get().getBundle().key(
+                Messages.ERR_SPELLCHECK_CORE_NOT_AVAILABLE_1,
+                CmsSolrSpellchecker.SPELLCHECKER_INDEX_CORE));
+            return null;
+        } else {
+            return CmsSolrSpellchecker.getInstance(m_coreContainer, spellcheckCore);
+        }
     }
 
     /**

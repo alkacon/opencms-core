@@ -83,7 +83,9 @@ public final class CmsSpellcheckingModuleAction implements I_CmsModuleAction {
                 if ((OpenCms.getRunLevel() == OpenCms.RUNLEVEL_4_SERVLET_ACCESS)
                     && CmsSpellcheckDictionaryIndexer.updatingIndexNecessesary(adminCms)) {
                     CmsSolrSpellchecker spellchecker = OpenCms.getSearchManager().getSolrDictionary(adminCms);
-                    spellchecker.parseAndAddDictionaries(adminCms);
+                    if (spellchecker != null) {
+                        spellchecker.parseAndAddDictionaries(adminCms);
+                    }
                 }
             }
 

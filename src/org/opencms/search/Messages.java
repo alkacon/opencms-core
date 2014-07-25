@@ -56,6 +56,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_DOCTYPE_NO_CLASS_DEF_0 = "ERR_DOCTYPE_NO_CLASS_DEF_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_SPELLCHECK_CORE_NOT_AVAILABLE_1 = "ERR_SPELLCHECK_CORE_NOT_AVAILABLE_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_DOCTYPE_NO_NAME_0 = "ERR_DOCTYPE_NO_NAME_0";
 
     /** Message constant for key in the resource bundle. */

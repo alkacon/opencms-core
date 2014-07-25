@@ -90,6 +90,18 @@ public final class CmsSpellcheckDictionaryIndexer {
     private static final int MAX_LIST_SIZE = 250000;
 
     /**
+     * FileFilter implementation that returns only directories whose name matches
+     * the spellchecker indices regex. 
+     */
+    private static final FileFilter SPELLCHECKING_DIRECTORY_NAME_FILTER = new FileFilter() {
+
+        public boolean accept(File f) {
+
+            return f.isDirectory() && f.getName().matches(INDEXES_REGEX);
+        }
+    };
+
+    /**
      * Default constructor is private as each method is static. 
      */
     private CmsSpellcheckDictionaryIndexer() {
@@ -97,136 +109,10 @@ public final class CmsSpellcheckDictionaryIndexer {
     }
 
     /**
-     * Checks whether a built of the indices is necessary. 
-     * @param cms The appropriate CmsObject instance. 
-     * @return true, if the spellcheck indices have to be rebuilt, otherwise false
-     */
-    public static boolean updatingIndexNecessesary(CmsObject cms) {
-
-        // Set request to the offline project. 
-        setCmsOfflineProject(cms);
-
-        // Check whether the spellcheck index directories are empty.
-        // If they are, the index has to be built obviously.  
-        if (isSolrSpellcheckIndexDirectoryEmpty()) {
-            return true;
-        }
-
-        // Compare the most recent date of a dictionary with the oldest timestamp
-        // that determines when an index has been built. 
-        long dateMostRecentDictionary = getMostRecentDate(cms);
-        long dateOldestIndexWrite = getOldestIndexDate(cms);
-
-        return dateMostRecentDictionary > dateOldestIndexWrite;
-    }
-
-    /**
-     * Returns whether the Solr spellchecking index directories are empty 
-     * (not initiliazed) or not. 
-     * @return true, if the directories contain no indexed data, otherwise false. 
-     */
-    private static boolean isSolrSpellcheckIndexDirectoryEmpty() {
-
-        final File path = new File(getSolrSpellcheckRfsPath());
-        final File[] directories = path.listFiles(SPELLCHECKING_DIRECTORY_NAME_FILTER);
-
-        // Each directory that has been created by Solr but hasn't been indexed yet
-        // contains exactly two files. If there are more files, at least one index has
-        // already been built, so return false in that case. 
-        for (final File directory : directories) {
-            if (directory.list().length > 2) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Returns the path in the RFS where the Solr spellcheck files reside. 
-     * @return String representation of Solrs spellcheck RFS path. 
-     */
-    private static String getSolrSpellcheckRfsPath() {
-
-        String sPath = OpenCms.getSystemInfo().getWebInfRfsPath();
-
-        if (!OpenCms.getSystemInfo().getWebInfRfsPath().endsWith(File.separator)) {
-            sPath += File.separator;
-        }
-
-        return sPath + "spellcheck" + File.separator + "data";
-    }
-
-    /**
-     * Returns the timestamp of the index whose index-built operation lies the 
-     * furthest back in the past. 
-     * 
-     * @param cms the OpenCms instance. 
-     * @return timestamp as type long. 
-     */
-    private static long getOldestIndexDate(CmsObject cms) {
-
-        final File path = new File(getSolrSpellcheckRfsPath());
-        final File[] directories = path.listFiles(SPELLCHECKING_DIRECTORY_NAME_FILTER);
-
-        // Initialize with the greatest value a long type can hold
-        long oldestIndexDate = Long.MAX_VALUE;
-
-        for (final File dir : directories) {
-            long date = dir.lastModified();
-            if (date < oldestIndexDate) {
-                oldestIndexDate = date;
-            }
-        }
-
-        // If no file(s) have been found oldestIndexDate is still holding
-        // Long.MAX_VALUE. In that case return Long.MIN_VALUE to ensure
-        // that no indexing operation takes place. 
-        if (Long.MAX_VALUE == oldestIndexDate) {
-            LOG.warn("It appears that no spellcheck indices have been found in " + getSolrSpellcheckRfsPath() + ". ");
-            return Long.MIN_VALUE;
-        }
-
-        return oldestIndexDate;
-    }
-
-    /**
-     * Determines and returns the timestamp of the most recently modified spellchecker file. 
-     * 
-     * @param cms the OpenCms instance. 
-     * @return timestamp of type long. 
-     */
-    private static long getMostRecentDate(CmsObject cms) {
-
-        long mostRecentDate = Long.MIN_VALUE;
-
-        try {
-            final List<CmsResource> resources = cms.getResourcesInFolder(
-                DEFAULT_DICTIONARY_DIRECTORY,
-                CmsResourceFilter.DEFAULT_FILES);
-
-            for (final CmsResource resource : resources) {
-                final String resourceName = resource.getName();
-                // Check whether the resource matches the desired patterns
-                if (resourceName.matches(DICTIONARY_NAME_REGEX)
-                    || resourceName.matches(ZIP_NAME_REGEX)
-                    || resourceName.matches(CUSTOM_DICTIONARY)) {
-                    if (resource.getDateLastModified() > mostRecentDate) {
-                        mostRecentDate = resource.getDateLastModified();
-                    }
-                }
-            }
-        } catch (CmsException e) {
-            LOG.error("Could not read spellchecker dictionaries. ");
-        }
-
-        return mostRecentDate;
-    }
-
-    /**
-     * Adds all dictionaries that are available in the default directory.  
+     * Adds all dictionaries that are available in the default directory. <p>
+     *  
      * @param server The SolrServer instance object. 
-     * @param cms
+     * @param cms the cms context
      */
     public static void parseAndAddDictionaries(SolrServer server, CmsObject cms) {
 
@@ -342,6 +228,204 @@ public final class CmsSpellcheckDictionaryIndexer {
     }
 
     /**
+     * Checks whether a built of the indices is necessary. 
+     * @param cms The appropriate CmsObject instance. 
+     * @return true, if the spellcheck indices have to be rebuilt, otherwise false
+     */
+    public static boolean updatingIndexNecessesary(CmsObject cms) {
+
+        // Set request to the offline project. 
+        setCmsOfflineProject(cms);
+
+        // Check whether the spellcheck index directories are empty.
+        // If they are, the index has to be built obviously.  
+        if (isSolrSpellcheckIndexDirectoryEmpty()) {
+            return true;
+        }
+
+        // Compare the most recent date of a dictionary with the oldest timestamp
+        // that determines when an index has been built. 
+        long dateMostRecentDictionary = getMostRecentDate(cms);
+        long dateOldestIndexWrite = getOldestIndexDate(cms);
+
+        return dateMostRecentDictionary > dateOldestIndexWrite;
+    }
+
+    /**
+     * Add a list of documents to the Solr server.<p>
+     * 
+     * @param server The SolrServer instance object. 
+     * @param documents The documents that should be added.
+     * @param commit boolean flag indicating whether a "commit" call should be made after adding the documents
+     *   
+     * @throws IOException in case something goes wrong
+     * @throws SolrServerException in case something goes wrong
+     */
+    static void addDocuments(SolrServer server, List<SolrInputDocument> documents, boolean commit)
+    throws IOException, SolrServerException {
+
+        if ((null == server) || (null == documents)) {
+            return;
+        }
+
+        if (!documents.isEmpty()) {
+            server.add(documents);
+        }
+
+        if (commit) {
+            server.commit();
+        }
+    }
+
+    /**
+     * Deletes all documents from the Solr server.<p> 
+     * 
+     * @param server The SolrServer instance object. 
+     * 
+     * @throws IOException in case something goes wrong
+     * @throws SolrServerException in case something goes wrong
+     */
+    static void deleteAllFiles(SolrServer server) throws IOException, SolrServerException {
+
+        if (null == server) {
+            return;
+        }
+
+        server.deleteByQuery("*:*");
+        server.commit();
+    }
+
+    /**
+     * Deletes a single document from the Solr server.<p>
+     * 
+     * @param server The SolrServer instance object. 
+     * @param lang The affected language. 
+     * @param word The word that should be removed. 
+     * 
+     * @throws IOException in case something goes wrong
+     * @throws SolrServerException in case something goes wrong
+     */
+    static void deleteDocument(SolrServer server, String lang, String word) throws IOException, SolrServerException {
+
+        if ((null == server)
+            || CmsStringUtil.isEmptyOrWhitespaceOnly(lang)
+            || CmsStringUtil.isEmptyOrWhitespaceOnly(word)) {
+            return;
+        }
+
+        // Make sure the parameter holding the word that should be deleted 
+        // contains just a single word 
+        if (word.trim().contains(" ")) {
+            final String query = String.format("entry_%s:%s", lang, word);
+            server.deleteByQuery(query);
+        }
+    }
+
+    /**
+     * Determines and returns the timestamp of the most recently modified spellchecker file.<p>
+     * 
+     * @param cms the OpenCms instance. 
+     * @return timestamp of type long. 
+     */
+    private static long getMostRecentDate(CmsObject cms) {
+
+        long mostRecentDate = Long.MIN_VALUE;
+
+        try {
+            final List<CmsResource> resources = cms.getResourcesInFolder(
+                DEFAULT_DICTIONARY_DIRECTORY,
+                CmsResourceFilter.DEFAULT_FILES);
+
+            for (final CmsResource resource : resources) {
+                final String resourceName = resource.getName();
+                // Check whether the resource matches the desired patterns
+                if (resourceName.matches(DICTIONARY_NAME_REGEX)
+                    || resourceName.matches(ZIP_NAME_REGEX)
+                    || resourceName.matches(CUSTOM_DICTIONARY)) {
+                    if (resource.getDateLastModified() > mostRecentDate) {
+                        mostRecentDate = resource.getDateLastModified();
+                    }
+                }
+            }
+        } catch (CmsException e) {
+            LOG.error("Could not read spellchecker dictionaries. ");
+        }
+
+        return mostRecentDate;
+    }
+
+    /**
+     * Returns the timestamp of the index whose index-built operation lies the 
+     * furthest back in the past.<p>
+     * 
+     * @param cms the OpenCms instance. 
+     * @return timestamp as type long. 
+     */
+    private static long getOldestIndexDate(CmsObject cms) {
+
+        final File path = new File(getSolrSpellcheckRfsPath());
+        final File[] directories = path.listFiles(SPELLCHECKING_DIRECTORY_NAME_FILTER);
+
+        // Initialize with the greatest value a long type can hold
+        long oldestIndexDate = Long.MAX_VALUE;
+
+        for (final File dir : directories) {
+            long date = dir.lastModified();
+            if (date < oldestIndexDate) {
+                oldestIndexDate = date;
+            }
+        }
+
+        // If no file(s) have been found oldestIndexDate is still holding
+        // Long.MAX_VALUE. In that case return Long.MIN_VALUE to ensure
+        // that no indexing operation takes place. 
+        if (Long.MAX_VALUE == oldestIndexDate) {
+            LOG.warn("It appears that no spellcheck indices have been found in " + getSolrSpellcheckRfsPath() + ". ");
+            return Long.MIN_VALUE;
+        }
+
+        return oldestIndexDate;
+    }
+
+    /**
+     * Returns the path in the RFS where the Solr spellcheck files reside. 
+     * @return String representation of Solrs spellcheck RFS path. 
+     */
+    private static String getSolrSpellcheckRfsPath() {
+
+        String sPath = OpenCms.getSystemInfo().getWebInfRfsPath();
+
+        if (!OpenCms.getSystemInfo().getWebInfRfsPath().endsWith(File.separator)) {
+            sPath += File.separator;
+        }
+
+        return sPath + "spellcheck" + File.separator + "data";
+    }
+
+    /**
+     * Returns whether the Solr spellchecking index directories are empty 
+     * (not initiliazed) or not. 
+     * @return true, if the directories contain no indexed data, otherwise false. 
+     */
+    private static boolean isSolrSpellcheckIndexDirectoryEmpty() {
+
+        final File path = new File(getSolrSpellcheckRfsPath());
+        final File[] directories = path.listFiles(SPELLCHECKING_DIRECTORY_NAME_FILTER);
+
+        // Each directory that has been created by Solr but hasn't been indexed yet
+        // contains exactly two files. If there are more files, at least one index has
+        // already been built, so return false in that case. 
+        if (directories != null) {
+            for (final File directory : directories) {
+                if (directory.list().length > 2) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
      * Parses the dictionary from an InputStream. 
      * 
      * @param server The SolrServer instance object. 
@@ -416,106 +500,4 @@ public final class CmsSpellcheckDictionaryIndexer {
             }
         }
     }
-
-    /**
-     * 
-     * @param server The SolrServer instance object. 
-     * @param document The SolrInputDocument containing the new word. 
-     * @param commit boolean flag indicating whether a "commit" call should be made after
-     * adding the documents. 
-     * @throws IOException
-     * @throws SolrServerException
-     */
-    static void addDocument(SolrServer server, SolrInputDocument document, boolean commit)
-    throws IOException, SolrServerException {
-
-        if ((null == server) || (null == document)) {
-            return;
-        }
-
-        server.add(document);
-        if (commit) {
-            server.commit();
-        }
-    }
-
-    /**
-     * Add a list of documents to the Solr server. 
-     * 
-     * @param server The SolrServer instance object. 
-     * @param documents The documents that should be added.
-     * @param commit boolean flag indicating whether a "commit" call should be made after
-     * adding the documents.  
-     * @throws IOException
-     * @throws SolrServerException
-     */
-    static void addDocuments(SolrServer server, List<SolrInputDocument> documents, boolean commit)
-    throws IOException, SolrServerException {
-
-        if ((null == server) || (null == documents)) {
-            return;
-        }
-
-        if (!documents.isEmpty()) {
-            server.add(documents);
-        }
-
-        if (commit) {
-            server.commit();
-        }
-    }
-
-    /**
-     * Deletes a single document from the Solr server. 
-     * 
-     * @param server The SolrServer instance object. 
-     * @param lang The affected language. 
-     * @param word The word that should be removed. 
-     * @throws IOException
-     * @throws SolrServerException
-     */
-    static void deleteDocument(SolrServer server, String lang, String word) throws IOException, SolrServerException {
-
-        if ((null == server)
-            || CmsStringUtil.isEmptyOrWhitespaceOnly(lang)
-            || CmsStringUtil.isEmptyOrWhitespaceOnly(word)) {
-            return;
-        }
-
-        // Make sure the parameter holding the word that should be deleted 
-        // contains just a single word 
-        if (word.trim().contains(" ")) {
-            final String query = String.format("entry_%s:%s", lang, word);
-            server.deleteByQuery(query);
-        }
-    }
-
-    /**
-     * Deletes all documents from the Solr server. 
-     * 
-     * @param server The SolrServer instance object. 
-     * @throws IOException
-     * @throws SolrServerException
-     */
-    static void deleteAllFiles(SolrServer server) throws IOException, SolrServerException {
-
-        if (null == server) {
-            return;
-        }
-
-        server.deleteByQuery("*:*");
-        server.commit();
-    }
-
-    /**
-     * FileFilter implementation that returns only directories whose name matches
-     * the spellchecker indices regex. 
-     */
-    private static final FileFilter SPELLCHECKING_DIRECTORY_NAME_FILTER = new FileFilter() {
-
-        public boolean accept(File f) {
-
-            return f.isDirectory() && f.getName().matches(INDEXES_REGEX);
-        }
-    };
 }

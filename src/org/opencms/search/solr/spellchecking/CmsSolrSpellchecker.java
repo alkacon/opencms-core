@@ -64,6 +64,9 @@ import org.apache.solr.core.SolrCore;
  */
 public final class CmsSolrSpellchecker {
 
+    /** The spellcheck core name. */
+    public static final String SPELLCHECKER_INDEX_CORE = "spellcheck";
+
     /** Logging facility for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSolrSpellchecker.class);
 
@@ -165,8 +168,9 @@ public final class CmsSolrSpellchecker {
      * @param res The HttpServletResponse object. 
      * @param servletRequest The ServletRequest object. 
      * @param cms The CmsObject object. 
-     * @throws CmsPermissionViolationException
-     * @throws IOException
+     * 
+     * @throws CmsPermissionViolationException in case of the anonymous guest user
+     * @throws IOException if writing the response fails
      */
     public void getSpellcheckingResult(
         final HttpServletResponse res,
@@ -294,9 +298,11 @@ public final class CmsSolrSpellchecker {
     /**
      * Returns the body of the request. This method is used to read posted JSON data. 
      * 
-     * @param request The request. 
+     * @param request The request.
+     *  
      * @return String representation of the request's body. 
-     * @throws IOException
+     * 
+     * @throws IOException in case reading the request fails
      */
     private String getRequestBody(ServletRequest request) throws IOException {
 
@@ -400,7 +406,8 @@ public final class CmsSolrSpellchecker {
      * Perform a security check against OpenCms. 
      * 
      * @param cms The OpenCms object. 
-     * @throws CmsPermissionViolationException
+     * 
+     * @throws CmsPermissionViolationException in case of the anonymous guest user
      */
     private void performPermissionCheck(CmsObject cms) throws CmsPermissionViolationException {
 
@@ -410,11 +417,11 @@ public final class CmsSolrSpellchecker {
     }
 
     /**
-     * Performs the actual spellcheck query using Solr. 
+     * Performs the actual spell check query using Solr. 
      * 
-     * @param request 
-     * @return Results of the Solr spellcheck of type SpellCheckResponse or null if something
-     * goes wrong. 
+     * @param request the spell check request 
+     * 
+     * @return Results of the Solr spell check of type SpellCheckResponse or null if something goes wrong. 
      */
     private SpellCheckResponse performSpellcheckQuery(CmsSpellcheckingRequest request) {
 
@@ -456,13 +463,15 @@ public final class CmsSolrSpellchecker {
      * 
      * @param res The HttpServletResponse object. 
      * @param request The spellchecking request object. 
-     * @throws IOException 
+     * 
+     * @throws IOException in case writing the response fails
      */
     private void sendResponse(final HttpServletResponse res, final CmsSpellcheckingRequest request) throws IOException {
 
         final PrintWriter pw = res.getWriter();
         final JSONObject response = getJsonFormattedSpellcheckResult(request);
         pw.println(response.toString());
+        pw.close();
     }
 
     /**
