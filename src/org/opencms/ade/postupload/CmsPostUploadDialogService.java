@@ -42,6 +42,7 @@ import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.CmsVfsService;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.property.CmsClientProperty;
+import org.opencms.gwt.shared.property.CmsPropertyModification;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
@@ -126,6 +127,26 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
 
             Map<String, CmsXmlContentProperty> propertyDefinitions = new LinkedHashMap<String, CmsXmlContentProperty>();
             Map<String, CmsClientProperty> clientProperties = new LinkedHashMap<String, CmsClientProperty>();
+
+            // add the file name to the list of properties to allow renaming the uploaded file
+            CmsXmlContentProperty fileNamePropDef = new CmsXmlContentProperty(
+                CmsPropertyModification.FILE_NAME_PROPERTY,
+                "string",
+                "string",
+                "",
+                "",
+                "",
+                "",
+                Messages.get().getBundle().key(Messages.GUI_UPLOAD_FILE_NAME_0),
+                "",
+                "",
+                "false");
+            propertyDefinitions.put(CmsPropertyModification.FILE_NAME_PROPERTY, fileNamePropDef);
+            clientProperties.put(CmsPropertyModification.FILE_NAME_PROPERTY, new CmsClientProperty(
+                CmsPropertyModification.FILE_NAME_PROPERTY,
+                res.getName(),
+                res.getName()));
+
             CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(getCmsObject(), res.getRootPath());
             Map<String, CmsXmlContentProperty> propertyConfiguration = configData.getPropertyConfigurationAsMap();
             for (String propertyName : defaultproperties) {

@@ -994,68 +994,6 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
-     * Updates properties for a resource and possibly its detail page.<p>
-     *
-     * @param cms the CMS context
-     * @param ownRes the resource
-     * @param propertyModifications the property modifications
-     *
-     * @throws CmsException if something goes wrong
-     */
-    public void internalUpdateProperties(
-        CmsObject cms,
-        CmsResource ownRes,
-        List<CmsPropertyModification> propertyModifications) throws CmsException {
-
-        Map<String, CmsProperty> ownProps = getPropertiesByName(cms.readPropertyObjects(ownRes, false));
-        // determine if the title property should be changed in case of a 'NavText' change
-        boolean changeOwnTitle = shouldChangeTitle(ownProps);
-
-        String hasNavTextChange = null;
-        List<CmsProperty> ownPropertyChanges = new ArrayList<CmsProperty>();
-        for (CmsPropertyModification propMod : propertyModifications) {
-            CmsProperty propToModify = null;
-            if (ownRes.getStructureId().equals(propMod.getId())) {
-
-                if (CmsPropertyDefinition.PROPERTY_NAVTEXT.equals(propMod.getName())) {
-                    hasNavTextChange = propMod.getValue();
-                } else if (CmsPropertyDefinition.PROPERTY_TITLE.equals(propMod.getName())) {
-                    changeOwnTitle = false;
-                }
-                propToModify = ownProps.get(propMod.getName());
-                if (propToModify == null) {
-                    propToModify = new CmsProperty(propMod.getName(), null, null);
-                }
-                ownPropertyChanges.add(propToModify);
-            } else {
-                throw new IllegalStateException("Invalid structure id in property changes!");
-            }
-            String newValue = propMod.getValue();
-            if (newValue == null) {
-                newValue = "";
-            }
-            if (propMod.isStructureValue()) {
-                propToModify.setStructureValue(newValue);
-            } else {
-                propToModify.setResourceValue(newValue);
-            }
-        }
-        if (hasNavTextChange != null) {
-            if (changeOwnTitle) {
-                CmsProperty titleProp = ownProps.get(CmsPropertyDefinition.PROPERTY_TITLE);
-                if (titleProp == null) {
-                    titleProp = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, null, null);
-                }
-                titleProp.setStructureValue(hasNavTextChange);
-                ownPropertyChanges.add(titleProp);
-            }
-        }
-        if (!ownPropertyChanges.isEmpty()) {
-            cms.writePropertyObjects(ownRes, ownPropertyChanges);
-        }
-    }
-
-    /**
      * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#loadLinkInfo(org.opencms.util.CmsUUID)
      */
     public CmsExternalLinkInfoBean loadLinkInfo(CmsUUID structureId) throws CmsRpcException {
@@ -1369,13 +1307,72 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     protected void internalSaveProperties(CmsPropertyChangeSet changes) throws CmsException {
 
         CmsObject cms = getCmsObject();
-        CmsResource target = cms.readResource(changes.getTargetStructureId(), CmsResourceFilter.IGNORE_EXPIRATION);
-        CmsLockActionRecord actionRecord = ensureLock(cms.getSitePath(target));
+        CmsResource resource = cms.readResource(changes.getTargetStructureId(), CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsLockActionRecord actionRecord = ensureLock(cms.getSitePath(resource));
         try {
-            internalUpdateProperties(cms, target, changes.getChanges());
+            Map<String, CmsProperty> ownProps = getPropertiesByName(cms.readPropertyObjects(resource, false));
+            // determine if the title property should be changed in case of a 'NavText' change
+            boolean changeOwnTitle = shouldChangeTitle(ownProps);
+
+            String hasNavTextChange = null;
+            List<CmsProperty> ownPropertyChanges = new ArrayList<CmsProperty>();
+            for (CmsPropertyModification propMod : changes.getChanges()) {
+                if (propMod.isFileNameProperty()) {
+                    // in case of the file name property, the resource needs to be renamed
+                    if (!resource.getStructureId().equals(propMod.getId())) {
+                        throw new IllegalStateException("Invalid structure id in property changes!");
+                    }
+                    CmsResource.checkResourceName(propMod.getValue());
+                    String oldSitePath = cms.getSitePath(resource);
+                    String parentPath = CmsResource.getParentFolder(oldSitePath);
+                    String newSitePath = CmsStringUtil.joinPaths(parentPath, propMod.getValue());
+                    cms.moveResource(oldSitePath, newSitePath);
+                    // read the resource again to update name and path
+                    resource = cms.readResource(resource.getStructureId(), CmsResourceFilter.IGNORE_EXPIRATION);
+                } else {
+                    CmsProperty propToModify = null;
+                    if (resource.getStructureId().equals(propMod.getId())) {
+
+                        if (CmsPropertyDefinition.PROPERTY_NAVTEXT.equals(propMod.getName())) {
+                            hasNavTextChange = propMod.getValue();
+                        } else if (CmsPropertyDefinition.PROPERTY_TITLE.equals(propMod.getName())) {
+                            changeOwnTitle = false;
+                        }
+                        propToModify = ownProps.get(propMod.getName());
+                        if (propToModify == null) {
+                            propToModify = new CmsProperty(propMod.getName(), null, null);
+                        }
+                        ownPropertyChanges.add(propToModify);
+                    } else {
+                        throw new IllegalStateException("Invalid structure id in property changes!");
+                    }
+                    String newValue = propMod.getValue();
+                    if (newValue == null) {
+                        newValue = "";
+                    }
+                    if (propMod.isStructureValue()) {
+                        propToModify.setStructureValue(newValue);
+                    } else {
+                        propToModify.setResourceValue(newValue);
+                    }
+                }
+            }
+            if (hasNavTextChange != null) {
+                if (changeOwnTitle) {
+                    CmsProperty titleProp = ownProps.get(CmsPropertyDefinition.PROPERTY_TITLE);
+                    if (titleProp == null) {
+                        titleProp = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, null, null);
+                    }
+                    titleProp.setStructureValue(hasNavTextChange);
+                    ownPropertyChanges.add(titleProp);
+                }
+            }
+            if (!ownPropertyChanges.isEmpty()) {
+                cms.writePropertyObjects(resource, ownPropertyChanges);
+            }
         } finally {
             if (actionRecord.getChange() == LockChange.locked) {
-                cms.unlockResource(cms.getSitePath(target));
+                cms.unlockResource(resource);
             }
         }
 
