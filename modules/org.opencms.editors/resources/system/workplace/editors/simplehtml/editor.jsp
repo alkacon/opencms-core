@@ -60,8 +60,7 @@ default:
 	wp.escapeParams();
 	wp.setParamAction(null);
 	
-%>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+%><!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="content-type" content="text/html; charset=<%= wp.getEncoding() %>">
