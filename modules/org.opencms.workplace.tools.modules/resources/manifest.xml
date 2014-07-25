@@ -15,7 +15,7 @@
 		<class/>
 		<description><![CDATA[<p>This module contains administration tools for managing the OpenCms modules.</p>
 <p><i>&copy; 2014 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>9.4.3</version>
+		<version>9.4.8</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
