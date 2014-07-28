@@ -2360,6 +2360,7 @@ public final class CmsContainerpageController {
                 @Override
                 public void execute() {
 
+                    start(0, true);
                     getContainerpageService().saveGroupContainer(
                         CmsCoreProvider.get().getStructureId(),
                         getData().getDetailId(),
@@ -2376,6 +2377,7 @@ public final class CmsContainerpageController {
                 @Override
                 protected void onResponse(CmsGroupContainerSaveResult saveResult) {
 
+                    stop(false);
                     Map<String, CmsContainerElementData> elementData = saveResult.getElementData();
                     m_elements.putAll(elementData);
                     try {
@@ -2418,6 +2420,7 @@ public final class CmsContainerpageController {
                 @Override
                 public void execute() {
 
+                    start(0, true);
                     getContainerpageService().saveInheritanceContainer(
                         CmsCoreProvider.get().getStructureId(),
                         getData().getDetailId(),
@@ -2433,6 +2436,7 @@ public final class CmsContainerpageController {
                 @Override
                 protected void onResponse(Map<String, CmsContainerElementData> result) {
 
+                    stop(false);
                     m_elements.putAll(result);
                     try {
                         replaceContainerElement(groupContainerElement, result.get(groupContainerElement.getId()));
