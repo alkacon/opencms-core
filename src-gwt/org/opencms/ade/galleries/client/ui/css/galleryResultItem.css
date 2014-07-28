@@ -30,6 +30,11 @@
 	line-height: 1px;
 }
 
+.tilingList.smallThumbnails div.imageTile{
+	width: 107px;
+	height: 75px;
+}
+
 @sprite .tilingList div.imageTile{
 	gwt-image: "coreImages.brokenImage";
 	display: block;
@@ -40,6 +45,11 @@
 	display: block;
 	width: 142px;
 	height: 100px;
+}
+
+.tilingList.smallThumbnails div.imageTile img {
+	width: 107px;
+	height: 75px;
 }
 
 .tilingList .tilingItem{

@@ -399,6 +399,15 @@ public final class Messages {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TAB_TYPES_CREATE_NEW_0 = "GUI_TAB_TYPES_CREATE_NEW_0";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_VIEW_LABEL_BIG_ICONS_0 = "GUI_VIEW_LABEL_BIG_ICONS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_VIEW_LABEL_DETAILS_0 = "GUI_VIEW_LABEL_DETAILS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_VIEW_LABEL_SMALL_ICONS_0 = "GUI_VIEW_LABEL_SMALL_ICONS_0";
+
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.galleries.clientmessages";
 

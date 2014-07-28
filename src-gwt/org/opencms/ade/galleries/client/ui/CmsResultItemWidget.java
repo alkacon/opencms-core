@@ -52,7 +52,7 @@ public class CmsResultItemWidget extends CmsListItemWidget {
     private static final String IMAGE_SCALE_PARAM = "?__scale=w:142,h:100,t:1,c:ffffff,r:2";
 
     /** The image resource type name. */
-    private static final String IMAGE_TYPE = "image";
+    public static final String IMAGE_TYPE = "image";
 
     /** Tile view flag. */
     private boolean m_hasTileView;

@@ -40,6 +40,8 @@ div.parentPanel div.criteriaList {
 
 div.selectboxWidth {
 	width: 200px;
+	display: inline-block;
+	margin-right: 3px;
 }
 
 div.listIcon {
@@ -51,8 +53,8 @@ div.listIcon {
 	background-position: 50% 50%;
 	height: auto;
 	border:1px solid value("constants.css.borderColor");
-	margin-right:1px;
-	margin-bottom:1px;
+	margin-right:3px;
+	margin-bottom:3px;
 	padding:2px;
 	background-color: value("constants.css.backgroundColorStateStandard");
 }
