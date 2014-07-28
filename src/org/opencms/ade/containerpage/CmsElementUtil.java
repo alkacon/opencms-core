@@ -289,20 +289,12 @@ public class CmsElementUtil {
         m_cms.getRequestContext().setLocale(m_locale);
         element.initResource(m_cms);
         CmsResourceUtil resUtil = new CmsResourceUtil(m_cms, element.getResource());
-        CmsUUID structureId = resUtil.getResource().getStructureId();
         CmsContainerElementData elementData = new CmsContainerElementData();
         setElementInfo(element, elementData);
 
         elementData.setLastModifiedDate(element.getResource().getDateLastModified());
         elementData.setLastModifiedByUser(m_cms.readUser(element.getResource().getUserLastModified()).getName());
         elementData.setNavText(resUtil.getNavText());
-        String title = resUtil.getTitle();
-        if (!structureId.isNullUUID()) {
-            CmsGallerySearchResult searchResult = CmsGallerySearch.searchById(m_cms, structureId, requestLocale);
-            title = searchResult.getTitle();
-        }
-        elementData.setTitle(title);
-
         Map<String, CmsXmlContentProperty> settingConfig = CmsXmlContentPropertyHelper.getPropertyInfo(
             m_cms,
             page,
@@ -514,25 +506,33 @@ public class CmsElementUtil {
                 noEditReason = Messages.get().getBundle().key(Messages.GUI_ELEMENT_RESOURCE_CAN_NOT_BE_EDITED_0);
             }
         }
-        CmsGallerySearchResult searchResult = CmsGallerySearch.searchById(
-            m_cms,
-            elementBean.getResource().getStructureId(),
-            m_locale);
-        String title = searchResult.getTitle();
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
-            elementBean.getResource().getName();
+        String typeName = OpenCms.getResourceManager().getResourceType(elementBean.getResource().getTypeId()).getTypeName();
+        result.setResourceType(typeName);
+        String title;
+        String subTitle;
+        if (elementBean.isInMemoryOnly()) {
+            title = CmsWorkplaceMessages.getResourceTypeName(wpLocale, typeName);
+            subTitle = CmsWorkplaceMessages.getResourceTypeDescription(wpLocale, typeName);
+        } else {
+            CmsGallerySearchResult searchResult = CmsGallerySearch.searchById(
+                m_cms,
+                elementBean.getResource().getStructureId(),
+                m_locale);
+            title = searchResult.getTitle();
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
+                elementBean.getResource().getName();
+            }
+            subTitle = searchResult.getUserLastModified();
+            Date lastModDate = searchResult.getDateLastModified();
+            if (lastModDate != null) {
+                subTitle += " / " + CmsDateUtil.getDateTime(lastModDate, DateFormat.MEDIUM, wpLocale);
+            }
         }
         result.setTitle(title);
-        String subTitle = searchResult.getUserLastModified();
-        Date lastModDate = searchResult.getDateLastModified();
-        if (lastModDate != null) {
-            subTitle += " / " + CmsDateUtil.getDateTime(lastModDate, DateFormat.MEDIUM, wpLocale);
-        }
         result.setSubTitle(subTitle);
         result.setClientId(elementBean.editorHash());
         result.setSitePath(elementBean.getSitePath());
-        String typeName = OpenCms.getResourceManager().getResourceType(elementBean.getResource().getTypeId()).getTypeName();
-        result.setResourceType(typeName);
+
         result.setNew(elementBean.isCreateNew());
         if (elementBean.isCreateNew()) {
             CmsResourceTypeConfig typeConfig = getConfigData().getResourceType(typeName);

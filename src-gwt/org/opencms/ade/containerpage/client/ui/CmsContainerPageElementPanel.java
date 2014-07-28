@@ -234,7 +234,7 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
         info.setResourceType(m_resourceType);
         CmsListItemWidget helperWidget = new CmsListItemWidget(info);
         helperWidget.setWidth("600px");
-        helperWidget.truncate("", 600);
+        helperWidget.truncate("ggg", 550);
         Element helper = helperWidget.getElement();
         Element button = DOM.createDiv();
         button.appendChild((new Image(I_CmsImageBundle.INSTANCE.icons().moveIconActive())).getElement());
