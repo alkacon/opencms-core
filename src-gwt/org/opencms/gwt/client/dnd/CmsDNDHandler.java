@@ -30,12 +30,14 @@ package org.opencms.gwt.client.dnd;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Style;
+import org.opencms.gwt.client.util.CmsFadeAnimation;
 import org.opencms.gwt.client.util.CmsMoveAnimation;
 import org.opencms.gwt.client.util.CmsPositionBean;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.animation.client.Animation;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
@@ -58,6 +60,16 @@ import com.google.gwt.user.client.ui.RootPanel;
  * @since 8.0.0
  */
 public class CmsDNDHandler implements MouseDownHandler {
+
+    /** The animation types. */
+    public enum AnimationType {
+        /** Fade animation. */
+        FADE,
+        /** Move animation. */
+        MOVE,
+        /** No animation. */
+        NONE
+    }
 
     /** The allowed drag and drop orientation. */
     public enum Orientation {
@@ -233,7 +245,7 @@ public class CmsDNDHandler implements MouseDownHandler {
     }
 
     /** Animation enabled flag. */
-    private boolean m_animationEnabled = true;
+    private AnimationType m_animationType = AnimationType.MOVE;
 
     /** The mouse x position of the current mouse event. */
     private int m_clientX;
@@ -245,7 +257,7 @@ public class CmsDNDHandler implements MouseDownHandler {
     private I_CmsDNDController m_controller;
 
     /** The current animation. */
-    private CmsMoveAnimation m_currentAnimation;
+    private Animation m_currentAnimation;
 
     /** The current drop target. */
     private I_CmsDropTarget m_currentTarget;
@@ -436,7 +448,7 @@ public class CmsDNDHandler implements MouseDownHandler {
      */
     public boolean isAnimationEnabled() {
 
-        return m_animationEnabled;
+        return (m_animationType != null) && (m_animationType != AnimationType.NONE);
     }
 
     /**
@@ -521,13 +533,13 @@ public class CmsDNDHandler implements MouseDownHandler {
     }
 
     /**
-     * Sets the animation enabled.<p>
+     * Sets the animation type.<p>
      *
-     * @param animationEnabled <code>true</code> to enable the animation
+     * @param animationType the animation type
      */
-    public void setAnimationEnabled(boolean animationEnabled) {
+    public void setAnimationType(AnimationType animationType) {
 
-        m_animationEnabled = animationEnabled;
+        m_animationType = animationType;
     }
 
     /**
@@ -961,18 +973,27 @@ public class CmsDNDHandler implements MouseDownHandler {
      * @param top absolute top of the animation end position
      * @param left absolute left of the animation end position
      */
+    @SuppressWarnings("incomplete-switch")
     private void showEndAnimation(Command callback, int top, int left) {
 
         if (!isAnimationEnabled() || (m_dragHelper == null)) {
             callback.execute();
             return;
         }
-        Element parentElement = m_dragHelper.getParentElement();
-        int endTop = top - parentElement.getAbsoluteTop();
-        int endLeft = left - parentElement.getAbsoluteLeft();
-        int startTop = CmsDomUtil.getCurrentStyleInt(m_dragHelper, Style.top);
-        int startLeft = CmsDomUtil.getCurrentStyleInt(m_dragHelper, Style.left);
-        m_currentAnimation = new CmsMoveAnimation(m_dragHelper, startTop, startLeft, endTop, endLeft, callback);
+        switch (m_animationType) {
+            case FADE:
+                m_currentAnimation = new CmsFadeAnimation(m_dragHelper, false, callback);
+                break;
+
+            case MOVE:
+                Element parentElement = m_dragHelper.getParentElement();
+                int endTop = top - parentElement.getAbsoluteTop();
+                int endLeft = left - parentElement.getAbsoluteLeft();
+                int startTop = CmsDomUtil.getCurrentStyleInt(m_dragHelper, Style.top);
+                int startLeft = CmsDomUtil.getCurrentStyleInt(m_dragHelper, Style.left);
+                m_currentAnimation = new CmsMoveAnimation(m_dragHelper, startTop, startLeft, endTop, endLeft, callback);
+                break;
+        }
         m_currentAnimation.run(300);
     }
 }

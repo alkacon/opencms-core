@@ -49,6 +49,7 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.CmsPingTimer;
 import org.opencms.gwt.client.dnd.CmsCompositeDNDController;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
+import org.opencms.gwt.client.dnd.CmsDNDHandler.AnimationType;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
@@ -360,7 +361,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         dndController.addController(new CmsContainerpageDNDController(controller));
         controller.setDndController(dndController);
         CmsDNDHandler dndHandler = new CmsDNDHandler(dndController);
-
+        dndHandler.setAnimationType(AnimationType.FADE);
         ClickHandler clickHandler = new ClickHandler() {
 
             /**
