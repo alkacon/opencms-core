@@ -598,7 +598,7 @@ allModuleNames.split(',').each{ moduleName ->
                 // to clean the output directory, delete it first
                 def dir = file(buildDir)
                 if (dir.exists()){
-                    delete{ delete dir }
+                    delete(dir)
                 }
                 dir.mkdirs()
             }
@@ -660,7 +660,7 @@ allModuleNames.split(',').each{ moduleName ->
             doFirst{
                 // to clean the output directory, delete it first
                 if (destDir.exists()){
-                    delete { delete destDir }
+                    delete(destDir)
                 }
                 destDir.mkdirs()
             }
