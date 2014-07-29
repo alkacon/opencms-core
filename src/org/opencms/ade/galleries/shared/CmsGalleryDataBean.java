@@ -110,6 +110,14 @@ public class CmsGalleryDataBean implements IsSerializable {
     private List<CmsSiteSelectorOption> m_vfsSiteSelectorOptions;
 
     /**
+     * Default constructor.<p>
+     */
+    public CmsGalleryDataBean() {
+
+        // do nothing 
+    }
+
+    /**
      * Returns the categories.<p>
      *
      * @return the categories

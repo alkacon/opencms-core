@@ -37,6 +37,7 @@ import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.ade.galleries.shared.CmsGalleryTreeEntry;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
+import org.opencms.ade.galleries.shared.CmsResourceTypeBean.TypeVisibility;
 import org.opencms.ade.galleries.shared.CmsSiteSelectorOption;
 import org.opencms.ade.galleries.shared.CmsSitemapEntryBean;
 import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
@@ -75,6 +76,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
@@ -643,22 +645,13 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         if (m_searchTypes != null) {
             return m_searchTypes;
         }
-        if ((m_configuration != null)
-            && (m_configuration.getSearchTypes() != null)
-            && (m_configuration.getSearchTypes().size() > 0)) {
-            m_searchTypes = new ArrayList<CmsResourceTypeBean>();
-            for (String typeName : m_configuration.getSearchTypes()) {
-                for (CmsResourceTypeBean type : m_dialogBean.getTypes()) {
-                    if (type.getType().equals(typeName) && !m_searchTypes.contains(type)) {
-                        m_searchTypes.add(type);
-                        break;
-                    }
-                }
+        m_searchTypes = Lists.newArrayList();
+        for (CmsResourceTypeBean type : m_dialogBean.getTypes()) {
+            if (type.getVisibility() != TypeVisibility.hidden) {
+                m_searchTypes.add(type);
             }
-            return m_searchTypes;
-        } else {
-            return m_dialogBean.getTypes();
         }
+        return m_searchTypes;
     }
 
     /**
@@ -1387,6 +1380,15 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
                 return;
         }
         m_handler.onUpdateTypes(types, m_searchObject.getTypes());
+    }
+
+    /**
+     * Updates the size of the active tab.<p>
+     */
+    public void updateActiveTabSize() {
+
+        m_handler.m_galleryDialog.updateSizes();
+
     }
 
     /**

@@ -178,4 +178,13 @@ public abstract class A_CmsTabHandler implements CloseHandler<PopupPanel> {
 
         m_controller.updateIndex();
     }
+
+    /**
+     * Updates the tab size.<p>
+     */
+    public void updateSize() {
+
+        m_controller.updateActiveTabSize();
+    }
+
 }

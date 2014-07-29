@@ -639,8 +639,8 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
             infoLabel.setStyleName(DIALOG_CSS.infoLabel());
             m_infoLabel = infoLabel;
             m_options.insert(infoLabel, 0);
-            createQuickBox();
         }
+        createQuickBox();
 
     }
 

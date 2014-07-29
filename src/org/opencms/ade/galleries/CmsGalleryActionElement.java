@@ -36,9 +36,15 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMod
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService;
 import org.opencms.ade.upload.CmsUploadActionElement;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.gwt.CmsGwtActionElement;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.widgets.CmsVfsFileWidget;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.util.Arrays;
@@ -46,6 +52,8 @@ import java.util.Arrays;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Gallery action used to generate the gallery dialog.<p>
@@ -61,6 +69,9 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
 
     /** The GWT module name. */
     public static final String GWT_MODULE_NAME = "galleries";
+
+    /** The log instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsGalleryActionElement.class);
 
     /** The gallery mode. */
     private GalleryMode m_galleryMode;
@@ -152,6 +163,11 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
         return m_galleryMode == GalleryMode.editor;
     }
 
+    /**
+     * Returns true if the gallery mode is set to 'view'.
+     * 
+     * @return true if the gallery mode is 'view' 
+     */
     public boolean isViewMode() {
 
         return m_galleryMode == GalleryMode.view;
@@ -182,9 +198,24 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
         conf.setGalleryPath(getRequest().getParameter(I_CmsGalleryProviderConstants.CONFIG_GALLERY_PATH));
         conf.setCurrentElement(getRequest().getParameter(I_CmsGalleryProviderConstants.CONFIG_CURRENT_ELEMENT));
         String resourceTypes = getRequest().getParameter(I_CmsGalleryProviderConstants.CONFIG_RESOURCE_TYPES);
+        String useLinkDefaultTypes = getRequest().getParameter(
+            I_CmsGalleryProviderConstants.PARAM_USE_LINK_DEFAULT_TYPES);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(resourceTypes)) {
             conf.setResourceTypes(Arrays.asList(resourceTypes.split(",")));
         }
+        if (Boolean.parseBoolean(useLinkDefaultTypes)) {
+            try {
+                CmsObject cms = getCmsObject();
+                CmsResource referenceResource = cms.readResource(
+                    conf.getReferencePath(),
+                    CmsResourceFilter.IGNORE_EXPIRATION);
+                String searchTypes = CmsVfsFileWidget.getDefaultSearchTypes(cms, referenceResource);
+                conf.setSearchTypes(CmsStringUtil.splitAsList(searchTypes, ","));
+            } catch (CmsException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
+        }
+
         String galleryTypes = getRequest().getParameter(I_CmsGalleryProviderConstants.CONFIG_GALLERY_TYPES);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(galleryTypes)) {
             conf.setGalleryTypes(galleryTypes.split(","));

@@ -37,6 +37,7 @@ import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.ade.galleries.shared.CmsGalleryTabConfiguration;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
+import org.opencms.ade.galleries.shared.CmsResourceTypeBean.TypeVisibility;
 import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.ade.galleries.shared.CmsSitemapEntryBean;
 import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
@@ -98,6 +99,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -114,6 +116,8 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 /**
@@ -228,6 +232,49 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
             m_resourceType = resourceType;
         }
+    }
+
+    /** Bean used to store a single type together with a flag indicating its visibility. */
+    class TypeWithVisibility {
+
+        /** The resource type. */
+        private I_CmsResourceType m_type;
+
+        /** True if the type should only be shown in the full list. */
+        private boolean m_onlyShowInFullList;
+
+        /**
+         * Creates a new instance.<p>
+         * 
+         * @param type the resource type 
+         * @param onlyShowInFullList the flag to control the visibility 
+         */
+        public TypeWithVisibility(I_CmsResourceType type, boolean onlyShowInFullList) {
+
+            m_type = type;
+            m_onlyShowInFullList = onlyShowInFullList;
+        }
+
+        /**
+         * Returns the type.<p>
+         *
+         * @return the type
+         */
+        public I_CmsResourceType getType() {
+
+            return m_type;
+        }
+
+        /**
+         * Returns the onlyShowInFullList.<p>
+         *
+         * @return the onlyShowInFullList
+         */
+        public boolean isOnlyShowInFullList() {
+
+            return m_onlyShowInFullList;
+        }
+
     }
 
     /** The key used for storing the last used gallery in adeview mode. */
@@ -1324,6 +1371,29 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     }
 
     /**
+     * Returns a list of resource types by a request parameter.<p>
+     * 
+     * @param resourceTypes the resource types parameter
+     * 
+     * @return the resource types
+     */
+    private List<I_CmsResourceType> convertTypeNamesToTypes(List<String> resourceTypes) {
+
+        List<I_CmsResourceType> result = new ArrayList<I_CmsResourceType>();
+        if (resourceTypes != null) {
+            for (String type : resourceTypes) {
+                try {
+                    result.add(getResourceManager().getResourceType(type.trim()));
+                } catch (Exception e) {
+                    logError(e);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Creates a resource type bean for the given type.<p>
      * 
      * @param type the resource type
@@ -1521,6 +1591,30 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     }
 
     /**
+     * Get default types for gallery together with visibility.<p>
+     * 
+     * @return the default types 
+     */
+    private List<TypeWithVisibility> getDefaultTypesForGallery() {
+
+        List<I_CmsResourceType> allTypes = OpenCms.getResourceManager().getResourceTypes();
+        List<I_CmsResourceType> fileTypes = Lists.newArrayList();
+        for (I_CmsResourceType type : allTypes) {
+            if (!type.isFolder()) {
+                fileTypes.add(type);
+            }
+        }
+
+        //CmsObject cms = getCmsObject();
+        //CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, "/");
+        List<TypeWithVisibility> result = Lists.newArrayList();
+        for (I_CmsResourceType type : fileTypes) {
+            result.add(new TypeWithVisibility(type, false));
+        }
+        return result;
+    }
+
+    /**
      * Generates a list of available galleries for the given gallery-type.<p>
      * 
      * @param galleryTypeId the gallery-type
@@ -1619,7 +1713,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 types = getResourceTypeBeans(
                     conf.getGalleryMode(),
                     data.getReferenceSitePath(),
-                    conf.getResourceTypes());
+                    conf.getResourceTypes(),
+                    conf.getSearchTypes());
                 data.setTypes(types);
                 Map<String, CmsGalleryTypeInfo> galleryTypeInfos = readGalleryInfosByTypeBeans(types);
                 // in case the 'gallerytypes' parameter is set, allow only the given galleries
@@ -1721,7 +1816,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 types = getResourceTypeBeans(
                     conf.getGalleryMode(),
                     data.getReferenceSitePath(),
-                    conf.getResourceTypes());
+                    conf.getResourceTypes(),
+                    conf.getSearchTypes());
                 data.setTypes(types);
                 Map<String, CmsGalleryTypeInfo> adeGalleryTypeInfos = readGalleryInfosByTypeBeans(types);
                 data.setGalleries(buildGalleriesList(adeGalleryTypeInfos));
@@ -1799,6 +1895,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * @param galleryMode the gallery mode
      * @param referenceSitePath the reference site-path to check permissions for
      * @param resourceTypesList the resource types parameter
+     * @param typesForTypeTab the types which should be shown in the types tab according to the gallery configuration 
      * 
      * @return the resource types
      * 
@@ -1807,16 +1904,28 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     private List<CmsResourceTypeBean> getResourceTypeBeans(
         GalleryMode galleryMode,
         String referenceSitePath,
-        List<String> resourceTypesList) throws CmsRpcException {
+        List<String> resourceTypesList,
+        final List<String> typesForTypeTab) throws CmsRpcException {
 
         List<I_CmsResourceType> resourceTypes = null;
         List<String> creatableTypes = null;
+        Set<String> hidden = Sets.newHashSet();
         switch (galleryMode) {
             case editor:
             case view:
             case adeView:
             case widget:
-                resourceTypes = readResourceTypesFromRequest(resourceTypesList);
+                resourceTypes = convertTypeNamesToTypes(resourceTypesList);
+                if (resourceTypes.size() == 0) {
+                    List<TypeWithVisibility> typeWrappers = getDefaultTypesForGallery();
+                    resourceTypes = Lists.newArrayList();
+                    for (TypeWithVisibility wrapper : typeWrappers) {
+                        resourceTypes.add(wrapper.getType());
+                        if (wrapper.isOnlyShowInFullList()) {
+                            hidden.add(wrapper.getType().getTypeName());
+                        }
+                    }
+                }
                 creatableTypes = Collections.<String> emptyList();
                 break;
             case ade:
@@ -1850,7 +1959,39 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 resourceTypes = Collections.<I_CmsResourceType> emptyList();
                 creatableTypes = Collections.<String> emptyList();
         }
-        return buildTypesList(resourceTypes, creatableTypes);
+        List<CmsResourceTypeBean> result = buildTypesList(resourceTypes, creatableTypes);
+
+        for (CmsResourceTypeBean typeBean : result) {
+            if ((typesForTypeTab != null) && (typesForTypeTab.size() > 0)) {
+                if (!typesForTypeTab.contains(typeBean.getType())) {
+                    typeBean.setVisibility(TypeVisibility.showOptional);
+                }
+            }
+        }
+        if ((typesForTypeTab != null) && (typesForTypeTab.size() > 0)) {
+            Collections.sort(result, new Comparator<CmsResourceTypeBean>() {
+
+                public int compare(CmsResourceTypeBean first, CmsResourceTypeBean second) {
+
+                    return ComparisonChain.start().compare(searchTypeRank(first), searchTypeRank(second)).compare(
+                        first.getType(),
+                        second.getType()).result();
+                }
+
+                int searchTypeRank(CmsResourceTypeBean type) {
+
+                    int index = typesForTypeTab.indexOf(type.getType());
+                    if (index == -1) {
+                        return Integer.MAX_VALUE;
+                    } else {
+                        return index;
+                    }
+                }
+            });
+
+        }
+
+        return result;
     }
 
     /**
@@ -2168,31 +2309,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             }
         }
         return galleryTypeInfos;
-    }
-
-    /**
-     * Returns a list of resource types by a request parameter.<p>
-     * 
-     * @param resourceTypes the resource types parameter
-     * 
-     * @return the resource types
-     */
-    private List<I_CmsResourceType> readResourceTypesFromRequest(List<String> resourceTypes) {
-
-        List<I_CmsResourceType> result = new ArrayList<I_CmsResourceType>();
-        if (resourceTypes != null) {
-            for (String type : resourceTypes) {
-                try {
-                    result.add(getResourceManager().getResourceType(type.trim()));
-                } catch (Exception e) {
-                    logError(e);
-                }
-            }
-        }
-        if (result.size() == 0) {
-            result = getResourceManager().getResourceTypes();
-        }
-        return result;
     }
 
     /**

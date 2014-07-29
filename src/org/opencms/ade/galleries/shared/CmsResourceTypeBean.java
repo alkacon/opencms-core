@@ -41,6 +41,19 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSerializable {
 
+    /** Enum representing the visibility of a resource type in the bean. */
+    public enum TypeVisibility {
+        /** Never displayed. */
+        hidden,
+        /** The user may choose to display the type, but it's not shown by default. */
+        showOptional,
+        /** Always show the type. */
+        showAlways
+    }
+
+    /** Visibility of this type. */
+    private TypeVisibility m_visibility = TypeVisibility.showAlways;
+
     /** Flag to indicate if the current user may create a new resource of this type. */
     private boolean m_creatableType;
 
@@ -123,6 +136,16 @@ public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSeria
     }
 
     /**
+     * Gets the visibility.<p>
+     * 
+     * @return the visibility 
+     */
+    public TypeVisibility getVisibility() {
+
+        return m_visibility;
+    }
+
+    /**
      * Returns if the current user may create a new resource of this type.<p>
      *
      * @return <code>true</code> if the current user may create a new resource of this type
@@ -201,4 +224,16 @@ public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSeria
 
         m_typeId = typeId;
     }
+
+    /**
+     * Sets the visibility.<p>
+     * 
+     * @param visibility the new visibility 
+     */
+    public void setVisibility(TypeVisibility visibility) {
+
+        m_visibility = visibility;
+
+    }
+
 }

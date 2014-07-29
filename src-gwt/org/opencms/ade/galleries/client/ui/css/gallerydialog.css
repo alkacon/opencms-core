@@ -192,3 +192,20 @@ div.noParamsMessage > table {
 	vertical-align: middle;
 	padding: 15px 15px 15px 0px;
 }
+
+.typesFull {} 
+
+.typesImportant .shouldOnlyShowInFullTypeList {
+	display: none; 
+} 
+
+.shouldOnlyShowInFullTypeList {}
+
+.typeModeSwitch * {
+	font-weight: normal !important; 
+} 
+
+.typeModeSwitch { 
+	margin-top: 3px; 
+	float: left; 
+}

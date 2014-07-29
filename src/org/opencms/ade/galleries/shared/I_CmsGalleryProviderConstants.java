@@ -242,6 +242,9 @@ public interface I_CmsGalleryProviderConstants {
     /** The key for the flag which controls whether the select button should be shown. */
     String KEY_SHOW_SELECT = "showSelect";
 
+    /** The parameter used to tell the gallery dialog to use the standard set of resource types from the VfsFileWidget. */
+    String PARAM_USE_LINK_DEFAULT_TYPES = "useLinkDefaultTypes";
+
     /** The folder resource type name. */
     String RESOURCE_TYPE_FOLDER = "folder";
 
@@ -253,4 +256,5 @@ public interface I_CmsGalleryProviderConstants {
 
     /** Path to the host page. */
     String VFS_OPEN_GALLERY_PATH = "/system/modules/org.opencms.ade.galleries/gallery.jsp";
+
 }

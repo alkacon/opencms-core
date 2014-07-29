@@ -212,6 +212,12 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * 
          * @return the CSS class name
          */
+        String shouldOnlyShowInFullTypeList();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String showParams();
 
         /** Access method.<p>
@@ -231,6 +237,24 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * @return the CSS class name
          */
         String tabParamsPanel();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String typeModeSwitch();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String typesFull();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String typesImportant();
     }
 
     /** The base gallery field CSS. */
