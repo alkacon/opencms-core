@@ -295,6 +295,37 @@ public class TestFormSession extends OpenCmsTestCase {
     }
 
     /**
+     * Tests the add values method.<p>
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public void testDeleteValues() throws Exception {
+
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
+        CmsXmlContentDefinition definition = unmarshalDefinition(resolver);
+        CmsXmlEntityResolver.cacheSystemId(
+            SCHEMA_ID_TEXTBLOCK,
+            definition.getSchema().asXML().getBytes(CmsEncoder.ENCODING_UTF_8));
+        String fileContent = CmsFileUtil.readFile("org/opencms/ugc/tb_00002.xml", CmsEncoder.ENCODING_UTF_8);
+        // now create the XML content
+        CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(fileContent, CmsEncoder.ENCODING_UTF_8, resolver);
+        CmsUgcSession session = new CmsUgcSession(getCmsObject());
+        Locale editLocale = new Locale("en");
+        Map<String, String> values = new HashMap<String, String>();
+        values.put("Paragraph/Link[1]", null);
+        values.put("Paragraph/Link[2]", null);
+        values.put("Paragraph/Link[3]", null);
+        values.put("Paragraph/Link[4]", null);
+        session.addContentValues(xmlContent, editLocale, values);
+
+        String fileContentNoLinks = CmsFileUtil.readFile(
+            "org/opencms/ugc/tb_00002_no_links.xml",
+            CmsEncoder.ENCODING_UTF_8);
+        // all content values should be restored
+        assertEquals(fileContentNoLinks, new String(xmlContent.marshal(), CmsEncoder.ENCODING_UTF_8));
+    }
+
+    /**
      * Tests that editing multiple files in a single form session causes an error.<p>
      * 
      * @throws Exception - 
@@ -403,14 +434,18 @@ public class TestFormSession extends OpenCmsTestCase {
             "Parent path should come before child path",
             -1,
             comp.compare("Paragraph[1]", "Paragraph[1]/Headline[1]"));
-        assertEquals("Index 2 should come before index 11", -1, comp.compare("Paragraph[2]", "Paragraph[11]"));
+        // elements with the same name should be listed in reverse order to avoid deletion issues
+        assertEquals(
+            "Index 2 should come after index 11 as they are required to be in reverse order",
+            1,
+            comp.compare("Paragraph[2]", "Paragraph[11]"));
         assertEquals("A should come before B", -1, comp.compare("A[1]", "B[1]"));
         assertEquals("A should come before B at lower levels", -1, comp.compare("Foo[1]/A[1]", "Foo[1]/B[1]"));
 
     }
 
     /**
-     * Tests that the session queue does not allow more than maxLength waiting entries 
+     * Tests that the session queue does not allow more than maxLength waiting entries.<p>
      * 
      * @throws Exception if something goes wrong 
      */

@@ -99,9 +99,9 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
 
                         return ComparisonChain.start().compare(
                             CmsXmlUtils.removeXpathIndex(first),
-                            CmsXmlUtils.removeXpathIndex(second)).compare(
-                            CmsXmlUtils.getXpathIndexInt(first),
-                            CmsXmlUtils.getXpathIndexInt(second)).result();
+                            CmsXmlUtils.removeXpathIndex(second))
+                        // use reverse order on indexed elements to avoid delete issues
+                        .compare(CmsXmlUtils.getXpathIndexInt(second), CmsXmlUtils.getXpathIndexInt(first)).result();
                     }
                 };
                 result = elementOrdering.lexicographical().compare(Arrays.asList(o1Elements), Arrays.asList(o2Elements));
@@ -140,20 +140,6 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
     /** 
      * Constructor.<p>
      * 
-     * @param cms the cms context
-     * @param configuration the form configuration
-     * 
-     * @throws CmsException if creating the session project fails
-     */
-    public CmsUgcSession(CmsObject cms, CmsUgcConfiguration configuration)
-    throws CmsException {
-
-        this(cms, cms, configuration);
-    }
-
-    /** 
-     * Constructor.<p>
-     * 
      * @param adminCms the cms context with admin privileges 
      * @param cms the cms context
      * @param configuration the form configuration
@@ -184,6 +170,20 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
         project.setFlags(CmsProject.PROJECT_HIDDEN_IN_SELECTOR);
         m_adminCms.writeProject(project);
         m_cms.getRequestContext().setCurrentProject(project);
+    }
+
+    /** 
+     * Constructor.<p>
+     * 
+     * @param cms the cms context
+     * @param configuration the form configuration
+     * 
+     * @throws CmsException if creating the session project fails
+     */
+    public CmsUgcSession(CmsObject cms, CmsUgcConfiguration configuration)
+    throws CmsException {
+
+        this(cms, cms, configuration);
     }
 
     /**

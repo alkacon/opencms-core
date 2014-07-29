@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<BootstrapTextblocks xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.opencms.org/textblock.xsd">
+  <BootstrapTextblock language="en">
+    <Title><![CDATA[Full width example]]></Title>
+    <Paragraph>
+      <Text name="Text0">
+        <links/>
+        <content><![CDATA[<h1>OpenCms is easy to use</h1>
+<p>Lonsetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+<h2>OpenCms is fun to work with</h2>
+<p>consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>]]></content>
+      </Text>
+      <Image>
+        <Image><![CDATA[/sites/default/.galleries/samples/02.jpg]]></Image>
+        <Title><![CDATA[Gerbera]]></Title>
+      </Image>
+    </Paragraph>
+  </BootstrapTextblock>
+</BootstrapTextblocks>

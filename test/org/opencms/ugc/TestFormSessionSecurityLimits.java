@@ -33,8 +33,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
-import org.opencms.ugc.CmsUgcConfiguration;
-import org.opencms.ugc.CmsUgcSessionSecurityUtil;
 import org.opencms.ugc.shared.CmsUgcException;
 import org.opencms.util.CmsUUID;
 
