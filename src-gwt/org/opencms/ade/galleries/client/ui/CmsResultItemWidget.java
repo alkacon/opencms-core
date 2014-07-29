@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.HTML;
 public class CmsResultItemWidget extends CmsListItemWidget {
 
     /** Standard image tile scale parameter. */
-    private static final String IMAGE_SCALE_PARAM = "?__scale=w:142,h:100,t:1,c:ffffff,r:2";
+    private static final String IMAGE_SCALE_PARAM = "?__scale=w:200,h:150,t:1,c:ffffff,r:0";
 
     /** The image resource type name. */
     public static final String IMAGE_TYPE = "image";

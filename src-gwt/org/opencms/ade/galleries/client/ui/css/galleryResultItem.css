@@ -30,26 +30,22 @@
 	line-height: 1px;
 }
 
-.tilingList.smallThumbnails div.imageTile{
-	width: 107px;
-	height: 75px;
-}
-
 @sprite .tilingList div.imageTile{
 	gwt-image: "coreImages.brokenImage";
+	background-position: center;
 	display: block;
-	width: 142px;
-	height: 100px;
+	width: 200px;
+	height: 150px;
 }
 .tilingList div.imageTile img {
 	display: block;
-	width: 142px;
-	height: 100px;
+	width: 200px;
+	height: 150px;
 }
 
-.tilingList.smallThumbnails div.imageTile img {
-	width: 107px;
-	height: 75px;
+.tilingList.smallThumbnails div.imageTile, .tilingList.smallThumbnails div.imageTile img {
+	width: 96px;
+	height: 72px;
 }
 
 .tilingList .tilingItem{

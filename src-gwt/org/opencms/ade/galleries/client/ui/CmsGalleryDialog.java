@@ -707,6 +707,9 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
      */
     public void updateSizeForTab(A_CmsTab tab) {
 
+        if (tab == m_resultsTab) {
+            m_resultsTab.updateListSize();
+        }
         if (!m_previewVisible) {
             int height = tab.getRequiredHeight() + 42;
             int availableHeight = CmsToolbarPopup.getAvailableHeight();
@@ -720,9 +723,6 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
      */
     public void updateSizes() {
 
-        if (m_resultsTab != null) {
-            m_resultsTab.updateListSize();
-        }
         int tabIndex = m_tabbedPanel.getSelectedIndex();
         if (tabIndex >= 0) {
             updateSizeForTab(m_tabbedPanel.getWidget(tabIndex));

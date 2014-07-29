@@ -358,7 +358,8 @@ public class CmsVfsTab extends A_CmsListTab {
                                 target.addChild(item);
                             }
                             target.onFinishLoading();
-                            CmsVfsTab.this.onContentChange();
+                            target.setOpen(true, false);
+                            onContentChange();
                         }
                     };
 
