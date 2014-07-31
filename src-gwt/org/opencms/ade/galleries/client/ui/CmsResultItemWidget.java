@@ -48,11 +48,11 @@ import com.google.gwt.user.client.ui.HTML;
  */
 public class CmsResultItemWidget extends CmsListItemWidget {
 
-    /** Standard image tile scale parameter. */
-    private static final String IMAGE_SCALE_PARAM = "?__scale=w:200,h:150,t:1,c:ffffff,r:0";
-
     /** The image resource type name. */
     public static final String IMAGE_TYPE = "image";
+
+    /** Standard image tile scale parameter. */
+    private static final String IMAGE_SCALE_PARAM = "?__scale=t:1,c:ffffff,r:0";
 
     /** Tile view flag. */
     private boolean m_hasTileView;
@@ -78,11 +78,22 @@ public class CmsResultItemWidget extends CmsListItemWidget {
             if (src == null) {
                 src = CmsCoreProvider.get().link(infoBean.getPath());
             }
+            String timeParam = "&time=" + System.currentTimeMillis();
             // insert tile view image div
-            HTML imageTile = new HTML("<img src=\"" + src + IMAGE_SCALE_PARAM
-            // add time stamp to override image caching
-                + "&time="
-                + System.currentTimeMillis()
+            HTML imageTile = new HTML("<img src=\"" + src + getBigImageScaleParam()
+            // add time stamp to override browser image caching
+                + timeParam
+                + "\" class=\""
+                + I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().bigImage()
+                + "\" />"
+                // using a second image tag for the small thumbnail variant
+                + "<img src=\""
+                + src
+                + getSmallImageScaleParam(infoBean)
+                // add time stamp to override browser image caching
+                + timeParam
+                + "\" class=\""
+                + I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().smallImage()
                 + "\" />");
             imageTile.setStyleName(I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().imageTile());
             m_tooltipHandler = new CmsToolTipHandler(imageTile, generateTooltipHtml(infoBean));
@@ -132,5 +143,53 @@ public class CmsResultItemWidget extends CmsListItemWidget {
             }
         }
         return result.toString();
+    }
+
+    /**
+     * Returns the scale parameter for big thumbnail images.<p>
+     * 
+     * @return the scale parameter
+     */
+    private String getBigImageScaleParam() {
+
+        return IMAGE_SCALE_PARAM
+            + ",w:"
+            + I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().bigImageWidth()
+            + ",h:"
+            + I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().bigImageHeight();
+    }
+
+    /**
+     * Returns the scale parameter for small thumbnail images.<p>
+     * 
+     * @param infoBean the resource info
+     * 
+     * @return the scale parameter
+     */
+    private String getSmallImageScaleParam(CmsResultItemBean infoBean) {
+
+        String result = null;
+        if (infoBean.getDimension() != null) {
+            String[] sizes = infoBean.getDimension().split("x");
+            try {
+                int width = Integer.parseInt(sizes[0].trim());
+                int height = Integer.parseInt(sizes[1].trim());
+                // only use the small image dimensions in case of dimensions smaller than the big thumbnail
+                if ((I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().bigImageWidth() > width)
+                    || (I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().bigImageHeight() > height)) {
+                    result = IMAGE_SCALE_PARAM
+                        + ",w:"
+                        + I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().smallImageWidth()
+                        + ",h:"
+                        + I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().smallImageHeight();
+                }
+            } catch (Exception e) {
+                // failed parsing the dimensions, will use big image
+            }
+        }
+        if (result == null) {
+            result = getBigImageScaleParam();
+        }
+        return result;
     }
 }

@@ -1,10 +1,15 @@
 @external cms_type_icon;
+
+@def smallImageWidth 96;
+@def smallImageHeight 72;
+@def bigImageWidth 200;
+@def bigImageHeight 150;
+
 /** unused classes **/
 .itemAdditional, .inlineEditable, .open, .itemActive, .itemRed, .itemBlue, .itemYellow, .disabledItem, .itemTitle, .cms_type_icon,
 .itemAdditionalTitle, .itemAdditionalValue, .dragging,
 .cmsState, .cmsState-up, .cmsState-up-hovering, .cmsState-up-disabled, .cmsState-down, .cmsState-down-hovering,
 .cmsState-down-disabled, .export, .hidden, .secure, .redirect, .normal, .lockSharedOpen, .lockSharedClosed, .stateIcon, .lockOpen, .lockClosed, .titleInput, .copyModel {}
-
 
 @sprite li.expired div.itemContent{
 	gwt-image: "backgrounds.invalidStateBackground";
@@ -34,18 +39,23 @@
 	gwt-image: "coreImages.brokenImage";
 	background-position: center;
 	display: block;
-	width: 200px;
-	height: 150px;
+	width: value("galleryResultItemCss.bigImageWidth","px");
+	height: value("galleryResultItemCss.bigImageHeight","px");
 }
-.tilingList div.imageTile img {
+.tilingList div.imageTile img.bigImage {
 	display: block;
-	width: 200px;
-	height: 150px;
+	width: value("galleryResultItemCss.bigImageWidth","px");
+	height: value("galleryResultItemCss.bigImageHeight","px");
 }
 
-.tilingList.smallThumbnails div.imageTile, .tilingList.smallThumbnails div.imageTile img {
-	width: 96px;
-	height: 72px;
+.tilingList.smallThumbnails div.imageTile img.bigImage, .tilingList div.imageTile img.smallImage{
+	display: none;
+}
+
+.tilingList.smallThumbnails div.imageTile, .tilingList.smallThumbnails div.imageTile img.smallImage {
+	display: block;
+	width: value("galleryResultItemCss.smallImageWidth","px");
+	height: value("galleryResultItemCss.smallImageHeight","px");
 }
 
 .tilingList .tilingItem{

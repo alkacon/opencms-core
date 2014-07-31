@@ -322,7 +322,7 @@ public class CmsResultsTab extends A_CmsListTab {
         views.put(BIG, Messages.get().key(Messages.GUI_VIEW_LABEL_BIG_ICONS_0));
         m_selectView = new CmsSelectBox(views);
         m_selectView.addStyleName(DIALOG_CSS.selectboxWidth());
-        m_selectView.selectValue("big");
+        m_selectView.selectValue(SMALL);
         addWidgetToOptions(m_selectView);
         m_selectView.addValueChangeHandler(new ValueChangeHandler<String>() {
 

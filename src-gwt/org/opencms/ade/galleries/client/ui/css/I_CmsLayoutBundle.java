@@ -359,6 +359,26 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * 
          * @return the CSS class name
          */
+        String bigImage();
+
+        /**
+         * Big image height constant.<p>
+         * 
+         * @return the big image height
+         */
+        int bigImageHeight();
+
+        /**
+         * Big image width constant.<p>
+         * 
+         * @return the big image width
+         */
+        int bigImageWidth();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String expired();
 
         /** Access method.<p>
@@ -366,6 +386,26 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * @return the CSS class name
          */
         String imageTile();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String smallImage();
+
+        /**
+         * Small image height constant.<p>
+         * 
+         * @return the small image height
+         */
+        int smallImageHeight();
+
+        /**
+         * Small image width constant.<p>
+         * 
+         * @return the small image width
+         */
+        int smallImageWidth();
 
         /** Access method.<p>
          * 
