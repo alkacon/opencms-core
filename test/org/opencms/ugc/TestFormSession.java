@@ -428,7 +428,7 @@ public class TestFormSession extends OpenCmsTestCase {
      */
     public void testPathComparator() throws Exception {
 
-        PathComparator comp = new PathComparator();
+        PathComparator comp = new PathComparator(true);
         assertEquals("Equal paths should be equal", 0, comp.compare("Title[1]", "Title[1]"));
         assertEquals(
             "Parent path should come before child path",

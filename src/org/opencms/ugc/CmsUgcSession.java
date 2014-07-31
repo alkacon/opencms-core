@@ -78,6 +78,45 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
      */
     public static class PathComparator implements Comparator<String> {
 
+        /** Ordering for comparing single xpath components. */
+        private Ordering<String> m_elementOrdering;
+
+        /**
+         * Constructor.<p>
+         * 
+         * @param isDeleteOrder <code>true</code> if ordering for deletes is required
+         */
+        public PathComparator(boolean isDeleteOrder) {
+
+            if (isDeleteOrder) {
+                m_elementOrdering = new Ordering<String>() {
+
+                    @Override
+                    public int compare(String first, String second) {
+
+                        return ComparisonChain.start().compare(
+                            CmsXmlUtils.removeXpathIndex(first),
+                            CmsXmlUtils.removeXpathIndex(second))
+                        // use reverse order on indexed elements to avoid delete issues
+                        .compare(CmsXmlUtils.getXpathIndexInt(second), CmsXmlUtils.getXpathIndexInt(first)).result();
+                    }
+                };
+            } else {
+                m_elementOrdering = new Ordering<String>() {
+
+                    @Override
+                    public int compare(String first, String second) {
+
+                        return ComparisonChain.start().compare(
+                            CmsXmlUtils.removeXpathIndex(first),
+                            CmsXmlUtils.removeXpathIndex(second))
+                        // use regular order on indexed elements
+                        .compare(CmsXmlUtils.getXpathIndexInt(first), CmsXmlUtils.getXpathIndexInt(second)).result();
+                    }
+                };
+            }
+        }
+
         /**
          * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
          */
@@ -91,20 +130,9 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
             } else {
                 String[] o1Elements = o1.split("/");
                 String[] o2Elements = o2.split("/");
-                // ordering for comparing single xpath components 
-                Ordering<String> elementOrdering = new Ordering<String>() {
-
-                    @Override
-                    public int compare(String first, String second) {
-
-                        return ComparisonChain.start().compare(
-                            CmsXmlUtils.removeXpathIndex(first),
-                            CmsXmlUtils.removeXpathIndex(second))
-                        // use reverse order on indexed elements to avoid delete issues
-                        .compare(CmsXmlUtils.getXpathIndexInt(second), CmsXmlUtils.getXpathIndexInt(first)).result();
-                    }
-                };
-                result = elementOrdering.lexicographical().compare(Arrays.asList(o1Elements), Arrays.asList(o2Elements));
+                result = m_elementOrdering.lexicographical().compare(
+                    Arrays.asList(o1Elements),
+                    Arrays.asList(o2Elements));
             }
             return result;
         }
@@ -517,31 +545,20 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
     protected void addContentValue(CmsXmlContent content, Locale locale, String path, String value) {
 
         boolean hasValue = content.hasValue(path, locale);
-        if (value != null) {
-            if (!hasValue) {
-                String[] pathElements = path.split("/");
-                String currentPath = pathElements[0];
-                for (int i = 0; i < pathElements.length; i++) {
-                    if (i > 0) {
-                        currentPath = CmsStringUtil.joinPaths(currentPath, pathElements[i]);
-                    }
-                    while (!content.hasValue(currentPath, locale)) {
-                        content.addValue(m_cms, currentPath, locale, CmsXmlUtils.getXpathIndexInt(currentPath) - 1);
-                    }
+        if (!hasValue) {
+            String[] pathElements = path.split("/");
+            String currentPath = pathElements[0];
+            for (int i = 0; i < pathElements.length; i++) {
+                if (i > 0) {
+                    currentPath = CmsStringUtil.joinPaths(currentPath, pathElements[i]);
                 }
-            }
-            content.getValue(path, locale).setStringValue(m_cms, value);
-        } else {
-            if (hasValue) {
-                int index = CmsXmlUtils.getXpathIndexInt(path) - 1;
-                I_CmsXmlContentValue val = content.getValue(path, locale);
-                if (index >= val.getMinOccurs()) {
-                    content.removeValue(path, locale, index);
-                } else {
-                    val.setStringValue(m_cms, "");
+                while (!content.hasValue(currentPath, locale)) {
+                    content.addValue(m_cms, currentPath, locale, CmsXmlUtils.getXpathIndexInt(currentPath) - 1);
                 }
             }
         }
+        content.getValue(path, locale).setStringValue(m_cms, value);
+
     }
 
     /**
@@ -579,16 +596,46 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
             content.addLocale(m_cms, locale);
         }
         List<String> paths = new ArrayList<String>(contentValues.keySet());
-        Collections.sort(paths, new PathComparator());
+        // first delete all null values
+        // use reverse index ordering for similar elements 
+        Collections.sort(paths, new PathComparator(true));
         String lastDelete = "///";
         for (String path : paths) {
             // skip values where the parent node has been deleted
-            if (!path.startsWith(lastDelete)) {
-                String value = contentValues.get(path);
-                if (value == null) {
-                    lastDelete = path;
-                }
+            if ((contentValues.get(path) == null) && !path.startsWith(lastDelete)) {
+                lastDelete = path;
+
+                deleteContentValue(content, locale, path);
+            }
+        }
+        // now add the new or changed values
+        // use regular ordering
+        Collections.sort(paths, new PathComparator(false));
+        for (String path : paths) {
+            String value = contentValues.get(path);
+            if (value != null) {
                 addContentValue(content, locale, path, value);
+            }
+        }
+    }
+
+    /**
+     * Deletes the given value path from the content document.<p>
+     * 
+     * @param content the content document
+     * @param locale the content locale
+     * @param path the value XPath
+     */
+    protected void deleteContentValue(CmsXmlContent content, Locale locale, String path) {
+
+        boolean hasValue = content.hasValue(path, locale);
+        if (hasValue) {
+            int index = CmsXmlUtils.getXpathIndexInt(path) - 1;
+            I_CmsXmlContentValue val = content.getValue(path, locale);
+            if (index >= val.getMinOccurs()) {
+                content.removeValue(path, locale, index);
+            } else {
+                val.setStringValue(m_cms, "");
             }
         }
     }

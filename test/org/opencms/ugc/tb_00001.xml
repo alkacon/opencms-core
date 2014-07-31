@@ -16,7 +16,19 @@
         <Title><![CDATA[Gerbera]]></Title>
       </Image>
       <Link>
-        <Text><![CDATA[More information]]></Text>
+        <Text><![CDATA[Link1]]></Text>
+        <URI><![CDATA[/sites/default/demo/]]></URI>
+      </Link>
+      <Link>
+        <Text><![CDATA[Link2]]></Text>
+        <URI><![CDATA[/sites/default/demo/]]></URI>
+      </Link>
+      <Link>
+        <Text><![CDATA[Link3]]></Text>
+        <URI><![CDATA[/sites/default/demo/]]></URI>
+      </Link>
+      <Link>
+        <Text><![CDATA[Link4]]></Text>
         <URI><![CDATA[/sites/default/demo/]]></URI>
       </Link>
     </Paragraph>
