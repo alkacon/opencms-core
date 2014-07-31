@@ -44,8 +44,8 @@ import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
-import org.opencms.gwt.client.ui.CmsDialogNotificationWidget;
 import org.opencms.gwt.client.ui.CmsNotification;
+import org.opencms.gwt.client.ui.CmsNotificationWidget;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabbedPanelStyle;
@@ -746,7 +746,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
 
         I_CmsNotificationWidget oldWidget = CmsNotification.get().getWidget();
         if (oldWidget == null) {
-            CmsDialogNotificationWidget newWidget = new CmsDialogNotificationWidget();
+            CmsNotificationWidget newWidget = new CmsNotificationWidget();
             CmsNotification.get().setWidget(newWidget);
             RootPanel.get().add(newWidget);
         }

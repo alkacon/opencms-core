@@ -5,7 +5,7 @@
 	<ui:with field="images" type="org.opencms.gwt.client.ui.css.I_CmsImageBundle" />
 	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<g:FlowPanel ui:field="m_panel" styleName="{resources.toolbarCss.toolbar}">
-		<cms:CmsToolbarNotificationWidget />
+		<cms:CmsNotificationWidget />
 		<g:FlowPanel styleName="{resources.toolbarCss.toolbarBackground}">
 			<g:HorizontalPanel styleName="{resources.toolbarCss.toolbarContent}" >
 				<g:cell horizontalAlignment="ALIGN_LEFT" verticalAlignment="ALIGN_MIDDLE">

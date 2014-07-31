@@ -61,6 +61,7 @@ import org.opencms.gwt.client.ui.CmsInfoHeader;
 import org.opencms.gwt.client.ui.CmsModelSelectDialog;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsNotification.Type;
+import org.opencms.gwt.client.ui.CmsNotificationMessage;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsToggleButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
@@ -1648,7 +1649,7 @@ public final class CmsContentEditor extends EditorBase {
                 public void execute(final CmsContentDefinition contentDefinition) {
 
                     registerContentDefinition(contentDefinition);
-                    CmsNotification.get().sendBlocking(
+                    final CmsNotificationMessage message = CmsNotification.get().sendBusy(
                         CmsNotification.Type.NORMAL,
                         org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_LOADING_0));
                     WidgetRegistry.getInstance().registerExternalWidgets(
@@ -1660,7 +1661,7 @@ public final class CmsContentEditor extends EditorBase {
                                 setContentDefinition(contentDefinition);
                                 renderFormContent();
                                 setChanged();
-                                CmsNotification.get().hide();
+                                CmsNotification.get().removeMessage(message);
                             }
                         });
                 }

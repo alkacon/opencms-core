@@ -29,6 +29,7 @@ package org.opencms.ugc.client;
 
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsNotification.Type;
+import org.opencms.gwt.client.ui.CmsNotificationMessage;
 import org.opencms.ugc.client.export.I_CmsBooleanCallback;
 
 /**
@@ -42,15 +43,21 @@ public class CmsRequestCounter {
     /** The callback used to enable or disable the wait indicator. */
     private I_CmsBooleanCallback m_callback = new I_CmsBooleanCallback() {
 
+        private CmsNotificationMessage m_message;
+
         /**
          * @see org.opencms.ugc.client.export.I_CmsBooleanCallback#call(boolean)
          */
         public void call(boolean b) {
 
             if (b) {
-                CmsNotification.get().sendBlocking(Type.NORMAL, "Loading");
-            } else {
-                CmsNotification.get().hide();
+                // check if the message is already showing
+                if (m_message == null) {
+                    m_message = CmsNotification.get().sendBusy(Type.NORMAL, "Loading");
+                }
+            } else if (m_message != null) {
+                CmsNotification.get().removeMessage(m_message);
+                m_message = null;
             }
         }
     };
@@ -79,7 +86,7 @@ public class CmsRequestCounter {
     }
 
     /**
-     * Sets the callback 
+     * Sets the callback.<p>
      * 
      * @param callback the callback 
      */

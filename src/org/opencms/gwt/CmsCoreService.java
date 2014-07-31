@@ -55,11 +55,13 @@ import org.opencms.gwt.shared.rpc.I_CmsCoreService;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.lock.CmsLock;
+import org.opencms.main.CmsBroadcast;
 import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.CmsSessionInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.relations.CmsCategory;
@@ -103,6 +105,7 @@ import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.collections.Buffer;
 import org.apache.commons.logging.Log;
 
 /**
@@ -544,6 +547,46 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     public CmsUUID createUUID() {
 
         return new CmsUUID();
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getBroadcast()
+     */
+    public String getBroadcast() {
+
+        CmsSessionInfo sessionInfo = OpenCms.getSessionManager().getSessionInfo(getRequest().getSession());
+        if (sessionInfo == null) {
+            return null;
+        }
+        String sessionId = sessionInfo.getSessionId().toString();
+        Buffer messageQueue = OpenCms.getSessionManager().getBroadcastQueue(sessionId);
+        if (!messageQueue.isEmpty()) {
+            CmsMessages messages = org.opencms.workplace.Messages.get().getBundle(
+                OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject()));
+            // create message String
+            StringBuffer result = new StringBuffer(512);
+            // the user has pending messages, display them all
+            while (!messageQueue.isEmpty()) {
+                CmsBroadcast broadcastMessage = (CmsBroadcast)messageQueue.remove();
+                result.append("<p>[");
+                result.append(messages.getDateTime(broadcastMessage.getSendTime()));
+                result.append("] ");
+                result.append(messages.key(org.opencms.workplace.Messages.GUI_LABEL_BROADCASTMESSAGEFROM_0));
+                result.append(" <b>");
+                if (broadcastMessage.getUser() != null) {
+                    result.append(broadcastMessage.getUser().getName());
+                } else {
+                    // system message
+                    result.append(messages.key(org.opencms.workplace.Messages.GUI_LABEL_BROADCAST_FROM_SYSTEM_0));
+                }
+                result.append("</b>:</p>\n<p>\n");
+                result.append(broadcastMessage.getMessage().replaceAll("\\n", "&nbsp;</p>\n<p>\n"));
+                result.append("\n</p><p></p>");
+            }
+            return result.toString();
+        }
+        // no message pending, return null
+        return null;
     }
 
     /**

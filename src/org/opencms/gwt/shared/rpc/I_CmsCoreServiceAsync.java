@@ -81,6 +81,8 @@ public interface I_CmsCoreServiceAsync {
      */
     void createUUID(AsyncCallback<CmsUUID> callback);
 
+    void getBroadcast(AsyncCallback<String> callback);
+
     /**
      * Returns the categories for the given search parameters.<p>
      * 

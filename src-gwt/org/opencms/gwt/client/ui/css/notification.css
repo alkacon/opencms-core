@@ -54,12 +54,32 @@ div.notificationContainer {
 	display: none;
 }
 
-.blocking .loadingAnimation{
-	display: inline-block;
+
+
+.notificationContainer div.closeButton{
+	position: absolute;
+	top:2px;
+	right: 2px;
+}
+
+div.notificationContainer, .notificationContainer div.messagesPanel > div{
+	text-align: center;
+}
+.notificationMessage div.messageContent{
+	dislay: inline-block;
+}
+
+.notificationMessage div.messageContent p{
+	margin: 4px 0px;
+	text-align: left;
+}
+
+.notificationMessage div.messageContent br{
+	display: block;
 }
 
 div.notificationMessage, span.notificationMessage {
-	font-weight: bold; 
+	font-weight: normal; 
 	font-size: value("constants.css.fontSizeBig");
 	padding: 5px 15px; 
 	line-height: value("constants.css.lineHeightBig");
@@ -71,18 +91,21 @@ div.notificationMessage, span.notificationMessage {
     overflow: auto;
     border-width: 2px;
     border-style: solid;
-    text-align: center;
+    position: relative;
+    text-align: left;
+}
+
+
+div.notificationMessage b, span.notificationMessage b{
+	font-weight: bold;
 }
 
 .popup div.notificationMessage, .popup span.notificationMessage {
 	max-width: 80%;
 	min-width: 40%;
 }
-
-.blocking .notificationContainer .notificationMessage {
-	background: transparent;
-	border: none;
-	box-shadow: none;
+.busy .loadingAnimation{
+	display: inline-block;
 }
 
 .notificationError .notificationMessage { 

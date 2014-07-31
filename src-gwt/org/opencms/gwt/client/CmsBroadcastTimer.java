@@ -27,27 +27,30 @@
 
 package org.opencms.gwt.client;
 
+import org.opencms.gwt.client.ui.CmsNotification;
+import org.opencms.gwt.client.ui.CmsNotification.Type;
+
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.StatusCodeException;
 
 /**
- * A timer which sends an RPC call regularly to keep the session alive.<p>
+ * A timer which sends an RPC call regularly to keep the session alive and receive workplace broadcasts.<p>
  * 
- * @since 8.0.0
+ * @since 9.5.0
  */
-public class CmsPingTimer {
+public class CmsBroadcastTimer {
 
     /**
      * The interval for the RPC calls.<p>
      */
-    public static final int PING_INTERVAL = 1000 * 60 * 5;
+    public static final int PING_INTERVAL = 1000 * 10;
 
     /**
      * The static instance.<p>
      */
-    private static CmsPingTimer INSTANCE;
+    private static CmsBroadcastTimer INSTANCE;
 
     /** Flag indicating if the ping timer should keep running. */
     private static boolean m_keepRunning;
@@ -71,7 +74,7 @@ public class CmsPingTimer {
 
         if (INSTANCE == null) {
             m_keepRunning = true;
-            CmsPingTimer timer = new CmsPingTimer();
+            CmsBroadcastTimer timer = new CmsBroadcastTimer();
             timer.run();
             INSTANCE = timer;
         }
@@ -96,21 +99,23 @@ public class CmsPingTimer {
 
             public boolean execute() {
 
-                if (CmsPingTimer.shouldKeepRunning()) {
-                    CmsCoreProvider.getService().ping(new AsyncCallback<Void>() {
+                if (CmsBroadcastTimer.shouldKeepRunning()) {
+                    CmsCoreProvider.getService().getBroadcast(new AsyncCallback<String>() {
 
                         public void onFailure(Throwable caught) {
 
                             // in case of a status code exception abort, indicates the session is no longer valid
                             if ((caught instanceof StatusCodeException)
                                 && (((StatusCodeException)caught).getStatusCode() == 500)) {
-                                CmsPingTimer.abort();
+                                CmsBroadcastTimer.abort();
                             }
                         }
 
-                        public void onSuccess(Void result) {
+                        public void onSuccess(String result) {
 
-                            //do nothing
+                            if (result != null) {
+                                CmsNotification.get().sendAlert(Type.WARNING, result);
+                            }
                         }
                     });
                     return true;

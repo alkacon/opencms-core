@@ -49,7 +49,7 @@ import org.opencms.ade.sitemap.shared.CmsSitemapData.EditorMode;
 import org.opencms.ade.sitemap.shared.CmsSitemapInfo;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.A_CmsEntryPoint;
-import org.opencms.gwt.client.CmsPingTimer;
+import org.opencms.gwt.client.CmsBroadcastTimer;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.CmsInfoHeader;
@@ -593,7 +593,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
     public void onModuleLoad() {
 
         super.onModuleLoad();
-        CmsPingTimer.start();
+        CmsBroadcastTimer.start();
         m_instance = this;
         RootPanel rootPanel = RootPanel.get();
         m_editorMode = EditorMode.navigation;

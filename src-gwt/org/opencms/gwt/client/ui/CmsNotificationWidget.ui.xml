@@ -4,9 +4,9 @@
 	<ui:with field="style" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<g:HTMLPanel>
 		<div class="{style.notificationCss.notificationOverlay}" />
-		<div ui:field="m_container" class="{style.notificationCss.notificationContainer}" >
+		<div class="{style.notificationCss.notificationContainer}" >
 			<span class="{style.notificationCss.loadingAnimation}"></span><br />
-			<span ui:field="m_message" class="{style.notificationCss.notificationMessage} {style.generalCss.cornerAll} {style.generalCss.shadow}"></span>
+			<g:FlowPanel ui:field="m_messages" styleName="{style.notificationCss.messagesPanel}"/>
 		</div>
 	</g:HTMLPanel>
 </ui:UiBinder> 

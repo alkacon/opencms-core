@@ -92,7 +92,6 @@ import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -644,18 +643,6 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
             CmsNotification.get().send(
                 CmsNotification.Type.WARNING,
                 "should be deactivated: " + element.getNoEditReason());
-            Timer timer = new Timer() {
-
-                /**
-                 * @see com.google.gwt.user.client.Timer#run()
-                 */
-                @Override
-                public void run() {
-
-                    CmsNotification.get().hide();
-                }
-            };
-            timer.schedule(2000);
             return;
         }
 

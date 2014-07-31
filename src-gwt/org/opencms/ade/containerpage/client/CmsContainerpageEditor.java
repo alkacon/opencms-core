@@ -46,7 +46,7 @@ import org.opencms.ade.containerpage.client.ui.CmsToolbarSitemapButton;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.CmsCoreProvider;
-import org.opencms.gwt.client.CmsPingTimer;
+import org.opencms.gwt.client.CmsBroadcastTimer;
 import org.opencms.gwt.client.dnd.CmsCompositeDNDController;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.dnd.CmsDNDHandler.AnimationType;
@@ -347,7 +347,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     public void onModuleLoad() {
 
         super.onModuleLoad();
-        CmsPingTimer.start();
+        CmsBroadcastTimer.start();
         JavaScriptObject window = CmsDomUtil.getWindow();
         CmsDomUtil.setAttribute(window, "__hideEditorCloseButton", "true");
         I_CmsLayoutBundle.INSTANCE.containerpageCss().ensureInjected();

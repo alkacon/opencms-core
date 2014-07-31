@@ -82,6 +82,8 @@ public interface I_CmsCoreService extends RemoteService {
     */
     CmsUUID createUUID() throws CmsRpcException;
 
+    String getBroadcast() throws CmsRpcException;
+
     /**
      * Returns the categories for the given search parameters.<p>
      * 
