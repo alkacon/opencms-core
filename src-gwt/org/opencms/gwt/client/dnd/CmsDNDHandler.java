@@ -27,10 +27,11 @@
 
 package org.opencms.gwt.client.dnd;
 
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.util.A_CmsAnimation;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Style;
-import org.opencms.gwt.client.util.CmsFadeAnimation;
 import org.opencms.gwt.client.util.CmsMoveAnimation;
 import org.opencms.gwt.client.util.CmsPositionBean;
 
@@ -41,6 +42,7 @@ import com.google.gwt.animation.client.Animation;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
@@ -63,12 +65,12 @@ public class CmsDNDHandler implements MouseDownHandler {
 
     /** The animation types. */
     public enum AnimationType {
-        /** Fade animation. */
-        FADE,
         /** Move animation. */
         MOVE,
         /** No animation. */
-        NONE
+        NONE,
+        /** Fade animation. */
+        SPECIAL
     }
 
     /** The allowed drag and drop orientation. */
@@ -244,6 +246,107 @@ public class CmsDNDHandler implements MouseDownHandler {
 
     }
 
+    /**
+     * Fancy animation fading out the helper and shrinking away the original element.<p>
+     */
+    class SpecialAnimation extends A_CmsAnimation {
+
+        /** The helper element. */
+        private Element m_helper;
+
+        /** If the original should be hidden. */
+        private boolean m_hideOriginal;
+
+        /** The original element. */
+        private Element m_original;
+
+        /** The original element height. */
+        private int m_originalHeight;
+
+        /** The original element opacity. */
+        private double m_originalOpacity;
+
+        /** The original  element width. */
+        private int m_originalWidth;
+
+        /** The optional overlay. */
+        private Element m_overlay;
+
+        /**
+         * Constructor.<p>
+         * 
+         * @param helper the helper element
+         * @param original the original element
+         * @param overlay the optional overlay to fade away
+         * @param callback the on complete callback
+         * @param hideOriginal if the original should be hidden
+         */
+        public SpecialAnimation(
+            Element helper,
+            Element original,
+            Element overlay,
+            Command callback,
+            boolean hideOriginal) {
+
+            super(callback);
+            m_helper = helper;
+            m_original = original;
+            m_hideOriginal = hideOriginal;
+            m_overlay = overlay;
+        }
+
+        /**
+         * @see com.google.gwt.animation.client.Animation#run(int)
+         */
+        @Override
+        public void run(int duration) {
+
+            m_original.getStyle().setOverflow(Overflow.HIDDEN);
+
+            if (m_hideOriginal) {
+                m_original.addClassName(I_CmsLayoutBundle.INSTANCE.generalCss().clearFix());
+                m_originalHeight = CmsDomUtil.getCurrentStyleInt(m_original, Style.height);
+                m_originalWidth = CmsDomUtil.getCurrentStyleInt(m_original, Style.width);
+            } else {
+                m_originalOpacity = CmsDomUtil.getCurrentStyleFloat(m_original, Style.opacity);
+            }
+            super.run(duration);
+        }
+
+        /**
+         * @see org.opencms.gwt.client.util.A_CmsAnimation#onComplete()
+         */
+        @Override
+        protected void onComplete() {
+
+            super.onComplete();
+            m_original.getStyle().clearHeight();
+            m_original.getStyle().clearWidth();
+            m_original.getStyle().clearOverflow();
+            m_original.removeClassName(I_CmsLayoutBundle.INSTANCE.generalCss().clearFix());
+        }
+
+        /**
+         * @see com.google.gwt.animation.client.Animation#onUpdate(double)
+         */
+        @Override
+        protected void onUpdate(double progress) {
+
+            m_helper.getStyle().setOpacity(-progress + 1);
+            if (m_overlay != null) {
+                m_overlay.getStyle().setOpacity(-progress + 1);
+            }
+
+            if (m_hideOriginal) {
+                m_original.getStyle().setHeight(m_originalHeight - (m_originalHeight * progress), Unit.PX);
+                m_original.getStyle().setWidth(m_originalWidth - (m_originalWidth * progress), Unit.PX);
+            } else {
+                m_original.getStyle().setOpacity(m_originalOpacity + ((1 - m_originalOpacity) * progress));
+            }
+
+        }
+    }
+
     /** Animation enabled flag. */
     private AnimationType m_animationType = AnimationType.MOVE;
 
@@ -292,11 +395,11 @@ public class CmsDNDHandler implements MouseDownHandler {
     /** Current scroll direction. */
     private Direction m_scrollDirection;
 
-    /** Flag if automatic scrolling is enabled. */
-    private boolean m_scrollEnabled = true;
-
     /** The scroll parent. */
     private Element m_scrollElement;
+
+    /** Flag if automatic scrolling is enabled. */
+    private boolean m_scrollEnabled = true;
 
     /** Scroll timer. */
     private Timer m_scrollTimer;
@@ -673,7 +776,7 @@ public class CmsDNDHandler implements MouseDownHandler {
                 clear();
             }
         };
-        showEndAnimation(callback, m_startTop, m_startLeft);
+        showEndAnimation(callback, m_startTop, m_startLeft, false);
     }
 
     /**
@@ -704,7 +807,7 @@ public class CmsDNDHandler implements MouseDownHandler {
             }
         };
         CmsPositionBean placeholderPosition = CmsPositionBean.getInnerDimensions(m_placeholder);
-        showEndAnimation(callback, placeholderPosition.getTop(), placeholderPosition.getLeft());
+        showEndAnimation(callback, placeholderPosition.getTop(), placeholderPosition.getLeft(), true);
     }
 
     /**
@@ -972,17 +1075,28 @@ public class CmsDNDHandler implements MouseDownHandler {
      * @param callback the callback to execute
      * @param top absolute top of the animation end position
      * @param left absolute left of the animation end position
+     * @param isDrop if the animation is done on drop
      */
     @SuppressWarnings("incomplete-switch")
-    private void showEndAnimation(Command callback, int top, int left) {
+    private void showEndAnimation(Command callback, int top, int left, boolean isDrop) {
 
         if (!isAnimationEnabled() || (m_dragHelper == null)) {
             callback.execute();
             return;
         }
         switch (m_animationType) {
-            case FADE:
-                m_currentAnimation = new CmsFadeAnimation(m_dragHelper, false, callback);
+            case SPECIAL:
+                List<Element> overlays = CmsDomUtil.getElementsByClass(
+                    I_CmsLayoutBundle.INSTANCE.generalCss().disablingOverlay(),
+                    m_draggable.getElement());
+                Element overlay = overlays.size() > 0 ? overlays.get(0) : null;
+                m_currentAnimation = new SpecialAnimation(
+                    m_dragHelper,
+                    m_draggable.getElement(),
+                    overlay,
+                    callback,
+                    isDrop);
+
                 break;
 
             case MOVE:
@@ -994,6 +1108,7 @@ public class CmsDNDHandler implements MouseDownHandler {
                 m_currentAnimation = new CmsMoveAnimation(m_dragHelper, startTop, startLeft, endTop, endLeft, callback);
                 break;
         }
-        m_currentAnimation.run(300);
+        m_currentAnimation.run(400);
+
     }
 }

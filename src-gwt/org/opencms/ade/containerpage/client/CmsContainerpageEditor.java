@@ -361,7 +361,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         dndController.addController(new CmsContainerpageDNDController(controller));
         controller.setDndController(dndController);
         CmsDNDHandler dndHandler = new CmsDNDHandler(dndController);
-        dndHandler.setAnimationType(AnimationType.FADE);
+        dndHandler.setAnimationType(AnimationType.SPECIAL);
         ClickHandler clickHandler = new ClickHandler() {
 
             /**
