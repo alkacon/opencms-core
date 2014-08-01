@@ -327,7 +327,12 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
      */
     private String getContextInfo(CmsContainerPageElementPanel element) {
 
-        CmsContainerPageContainer container = (CmsContainerPageContainer)element.getParentTarget();
+        CmsContainerPageContainer container;
+        if (m_handler.m_controller.isGroupcontainerEditing()) {
+            container = (CmsContainerPageContainer)((CmsContainerPageElementPanel)element.getParentTarget()).getParentTarget();
+        } else {
+            container = (CmsContainerPageContainer)element.getParentTarget();
+        }
         return "{"
             + CmsCntPageData.JSONKEY_ELEMENT_ID
             + ":'"
