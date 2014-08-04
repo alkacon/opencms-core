@@ -272,7 +272,6 @@ public class CmsJspTagResourceLoad extends CmsJspScopedVarBodyTagSuport implemen
         init(container);
 
         hasMoreResources();
-
         return isScopeVarSet() ? SKIP_BODY : EVAL_BODY_INCLUDE;
     }
 

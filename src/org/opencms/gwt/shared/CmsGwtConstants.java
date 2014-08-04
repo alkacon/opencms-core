@@ -49,6 +49,9 @@ public final class CmsGwtConstants {
     /** Type name for container pages. */
     public static final String TYPE_CONTAINERPAGE = "containerpage";
 
+    /** CSS class name used for the DOM elements containing collector information. */
+    public static final String CLASS_COLLECTOR_INFO = "cms-collector-info";
+
     /** Tab id for the preference dialog. */
     public static final String TAB_BASIC = "basic";
 
@@ -60,6 +63,9 @@ public final class CmsGwtConstants {
 
     /** Name for the pseudo-type 'navlevel'. */
     public static final String TYPE_NAVLEVEL = "navlevel";
+
+    /** Name for configuration  setting to limit collector results while computing publish lists for collectors. */
+    public static final String COLLECTOR_PUBLISH_LIST_LIMIT = "collectorPublishListLimit";
 
     /**
      * Hide constructor.<p>

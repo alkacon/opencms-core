@@ -46,6 +46,7 @@ import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler;
 import org.opencms.gwt.client.ui.resourceinfo.CmsResourceInfoView;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -56,6 +57,7 @@ import java.util.Map;
 
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
@@ -302,6 +304,14 @@ public class CmsPublishDialog extends CmsPopup {
         List<String> structureIds = Lists.newArrayList();
         for (CmsEditableDataJSO editableData : CmsDomUtil.getAllEditableDataForPage()) {
             structureIds.add("" + editableData.getStructureId());
+        }
+
+        List<Element> collectorInfos = CmsDomUtil.getElementsByClass(CmsGwtConstants.CLASS_COLLECTOR_INFO);
+        int j = 1;
+        for (Element elem : collectorInfos) {
+            String infoJson = elem.getAttribute("rel");
+            params.put(CmsPublishOptions.PARAM_COLLECTOR_INFO + "." + j, infoJson);
+            j += 1;
         }
         String editableIdList = CmsStringUtil.listAsString(structureIds, ",");
         params.put(CmsPublishOptions.PARAM_COLLECTOR_ITEMS, editableIdList);

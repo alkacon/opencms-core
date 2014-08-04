@@ -52,6 +52,12 @@ public class CmsDirectEditParams {
     /** The edit target VFS resource name. */
     protected String m_resourceName;
 
+    /** The collector name. */
+    protected String m_collectorName;
+
+    /** The collector params. */
+    protected String m_collectorParams;
+
     /** ID to identify the contentload instance. */
     private String m_id;
 
@@ -119,6 +125,26 @@ public class CmsDirectEditParams {
     public CmsDirectEditButtonSelection getButtonSelection() {
 
         return m_options;
+    }
+
+    /**
+     * Returns the collectorName.<p>
+     *
+     * @return the collectorName
+     */
+    public String getCollectorName() {
+
+        return m_collectorName;
+    }
+
+    /**
+     * Returns the collectorParams.<p>
+     *
+     * @return the collectorParams
+     */
+    public String getCollectorParams() {
+
+        return m_collectorParams;
     }
 
     /**
@@ -209,6 +235,26 @@ public class CmsDirectEditParams {
     public String getResourceName() {
 
         return m_resourceName;
+    }
+
+    /**
+     * Sets the collectorName.<p>
+     *
+     * @param collectorName the collectorName to set
+     */
+    public void setCollectorName(String collectorName) {
+
+        m_collectorName = collectorName;
+    }
+
+    /**
+     * Sets the collectorParams.<p>
+     *
+     * @param collectorParams the collectorParams to set
+     */
+    public void setCollectorParams(String collectorParams) {
+
+        m_collectorParams = collectorParams;
     }
 
     /**

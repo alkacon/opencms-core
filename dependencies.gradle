@@ -51,6 +51,7 @@ dependencies {
     distribution group: 'com.google.guava', name: 'guava', version: '15.0'
     distribution group: 'com.google.guava', name: 'guava-gwt', version: '15.0'
     distribution group: 'com.google.gwt', name: 'gwt-servlet', version: '2.6.1'
+    distribution group: 'org.json', name: 'json', version: '20140107'
     distribution group: 'com.google.code.findbugs', name: 'jsr305', version: '2.0.1'
     distribution group: 'com.spatial4j', name: 'spatial4j', version: '0.3'
     distribution group: 'com.sun.org.apache.xml.internal', name: 'resolver', version: '20050927'

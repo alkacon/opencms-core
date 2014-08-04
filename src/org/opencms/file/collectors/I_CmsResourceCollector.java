@@ -194,6 +194,27 @@ public interface I_CmsResourceCollector extends Comparable<I_CmsResourceCollecto
     List<CmsResource> getResults(CmsObject cms, String collectorName, String param)
     throws CmsDataAccessException, CmsException;
 
+    /** 
+     * Returns a list of {@link org.opencms.file.CmsResource} Objects that are 
+     * gathered in the VFS using the named collector.<p>
+     * 
+     * This method takes as a parameter the desired number of results. If this number is -1, 
+     * the number of results will only depend on the collector parameters. If it is positive, any given result 
+     * number in the collector parameter string will not be used.
+     * 
+     * @param cms the current CmsObject 
+     * @param collectorName the name of the collector to use
+     * @param params an optional collector parameter
+     * @param numResults the desired number of results (overrides result number possibl
+     * 
+     * @return a list of CmsXmlContent objects
+     * 
+     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if the parameter attribute of the corresponding collector tag is invalid
+     */
+    List<CmsResource> getResults(CmsObject cms, String collectorName, String params, int numResults)
+    throws CmsException;
+
     /**
      * Sets the default collector name to use for collecting resources.<p>
      * 

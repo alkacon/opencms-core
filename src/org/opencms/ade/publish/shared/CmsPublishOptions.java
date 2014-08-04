@@ -42,6 +42,9 @@ public class CmsPublishOptions implements Serializable {
     /** Parameter name for the collector items. */
     public static final String PARAM_COLLECTOR_ITEMS = "collectorItems";
 
+    /** The collector information. */
+    public static final String PARAM_COLLECTOR_INFO = "collectorInfo";
+
     /** Parameter name for the container page structure id. */
     public static final String PARAM_CONTAINERPAGE = "containerpage";
 

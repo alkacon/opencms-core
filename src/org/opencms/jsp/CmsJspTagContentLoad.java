@@ -293,10 +293,18 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
         // check if there are more files to iterate
         boolean hasMoreContent = m_collectorResult.size() > 0;
         if (m_isFirstLoop) {
+
+            if (!m_cms.getRequestContext().getCurrentProject().isOnlineProject() && (m_collector != null)) {
+                CmsContentLoadCollectorInfo info = new CmsContentLoadCollectorInfo();
+                info.setCollectorName(m_collectorName);
+                info.setCollectorParams(m_collectorParam);
+                info.setId(m_contentInfoBean.getId());
+                CmsJspTagEditable.getDirectEditProvider(pageContext).insertDirectEditListMetadata(pageContext, info);
+            }
             m_isFirstLoop = false;
             if (!hasMoreContent && m_editEmpty && (m_directEditLinkForNew != null)) {
                 try {
-                    CmsJspTagEditable.insertEditEmpty(pageContext, this, m_directEditMode);
+                    CmsJspTagEditable.insertEditEmpty(pageContext, this, m_directEditMode, m_contentInfoBean.getId());
                 } catch (CmsException e) {
                     throw new JspException(e);
                 }
@@ -351,6 +359,8 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
                     m_directEditLinkForNew);
                 params.setPostCreateHandler(m_postCreateHandler);
                 params.setId(m_contentInfoBean.getId());
+                params.setCollectorName(m_collectorName);
+                params.setCollectorParams(m_param);
                 m_directEditOpen = CmsJspTagEditable.startDirectEdit(pageContext, params);
             }
 

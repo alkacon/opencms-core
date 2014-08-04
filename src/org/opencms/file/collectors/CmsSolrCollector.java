@@ -146,7 +146,16 @@ public class CmsSolrCollector extends A_CmsResourceCollector {
     /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getResults(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
-    public List<CmsResource> getResults(CmsObject cms, String name, String param) throws CmsException {
+    public List<CmsResource> getResults(CmsObject cms, String collectorName, String param)
+    throws CmsDataAccessException, CmsException {
+
+        return getResults(cms, collectorName, param, -1);
+    }
+
+    /**
+     * @see org.opencms.file.collectors.I_CmsResourceCollector#getResults(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
+     */
+    public List<CmsResource> getResults(CmsObject cms, String name, String param, int numResults) throws CmsException {
 
         name = name == null ? COLLECTORS[1] : name;
         Map<String, String> paramsAsMap = getParamsAsMap(param);
@@ -155,6 +164,9 @@ public class CmsSolrCollector extends A_CmsResourceCollector {
         boolean excludeTimerange = Boolean.valueOf(paramsAsMap.get(CmsCollectorData.PARAM_EXCLUDETIMERANGE)).booleanValue();
         if (excludeTimerange) {
             q.removeExpiration();
+        }
+        if (numResults > 0) {
+            q.setRows(Integer.valueOf(numResults));
         }
         CmsSolrIndex index = CmsSearchManager.getIndexSolr(cms, pm);
         return new ArrayList<CmsResource>(index.search(cms, q, true));

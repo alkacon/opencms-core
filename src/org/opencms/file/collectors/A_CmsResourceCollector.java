@@ -392,4 +392,18 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
 
         return result;
     }
+
+    /**
+     * Shrinks a List to fit a maximum size.<p>
+     *
+     * @param result a List
+     * @param maxSize the maximum size of the List
+     * @param explicitNumResults the value of the numResults parameter given to the getResults method (this overrides maxSize if it is positive)
+     *
+     * @return the reduced list
+     */
+    protected List<CmsResource> shrinkToFit(List<CmsResource> result, int maxSize, int explicitNumResults) {
+
+        return shrinkToFit(result, explicitNumResults > 0 ? explicitNumResults : maxSize);
+    }
 }

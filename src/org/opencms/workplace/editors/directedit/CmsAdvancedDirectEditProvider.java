@@ -28,6 +28,9 @@
 package org.opencms.workplace.editors.directedit;
 
 import org.opencms.ade.contenteditor.shared.CmsEditorConstants;
+import org.opencms.gwt.shared.CmsGwtConstants;
+import org.opencms.gwt.shared.I_CmsCollectorInfoFactory;
+import org.opencms.gwt.shared.I_CmsContentLoadCollectorInfo;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
@@ -44,6 +47,10 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.logging.Log;
+
+import com.google.web.bindery.autobean.shared.AutoBean;
+import com.google.web.bindery.autobean.shared.AutoBeanCodex;
+import com.google.web.bindery.autobean.vm.AutoBeanFactorySource;
 
 /**
  * Provider for the OpenCms AdvancedDirectEdit.<p>
@@ -130,6 +137,29 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
     }
 
     /**
+     * @see org.opencms.workplace.editors.directedit.A_CmsDirectEditProvider#insertDirectEditListMetadata(javax.servlet.jsp.PageContext, org.opencms.gwt.shared.I_CmsContentLoadCollectorInfo)
+     */
+    @Override
+    public void insertDirectEditListMetadata(PageContext context, I_CmsContentLoadCollectorInfo info)
+    throws JspException {
+
+        if (m_cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+            // the metadata is only needed for editing 
+            return;
+        }
+        I_CmsCollectorInfoFactory collectorInfoFactory = AutoBeanFactorySource.create(I_CmsCollectorInfoFactory.class);
+        AutoBean<I_CmsContentLoadCollectorInfo> collectorInfoAutoBean = collectorInfoFactory.wrapCollectorInfo(info);
+        String serializedCollectorInfo = AutoBeanCodex.encode(collectorInfoAutoBean).getPayload();
+
+        String marker = "<div class='"
+            + CmsGwtConstants.CLASS_COLLECTOR_INFO
+            + "' style='display: none !important;' rel='"
+            + CmsEncoder.escapeXml(serializedCollectorInfo)
+            + "'></div>";
+        print(context, marker);
+    }
+
+    /**
      * @see org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider#insertDirectEditStart(javax.servlet.jsp.PageContext, org.opencms.workplace.editors.directedit.CmsDirectEditParams)
      */
     public boolean insertDirectEditStart(PageContext context, CmsDirectEditParams params) throws JspException {
@@ -210,7 +240,7 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
      * @param resourceInfo contains information about the resource to edit
      *
      * @return the start HTML for an enabled direct edit button
-     * @throws JSONException
+     * @throws JSONException if a JSON handling error occurs 
      */
     public String startDirectEditEnabled(CmsDirectEditParams params, CmsDirectEditResourceInfo resourceInfo)
     throws JSONException {
