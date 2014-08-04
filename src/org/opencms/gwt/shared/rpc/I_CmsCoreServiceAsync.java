@@ -29,6 +29,7 @@ package org.opencms.gwt.shared.rpc;
 
 import org.opencms.db.CmsResourceState;
 import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
+import org.opencms.gwt.shared.CmsBroadcastMessage;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
@@ -81,7 +82,12 @@ public interface I_CmsCoreServiceAsync {
      */
     void createUUID(AsyncCallback<CmsUUID> callback);
 
-    void getBroadcast(AsyncCallback<String> callback);
+    /**
+     * Returns the latest messages for the current user.<p>
+     * 
+     * @param callback the async callback
+     */
+    void getBroadcast(AsyncCallback<List<CmsBroadcastMessage>> callback);
 
     /**
      * Returns the categories for the given search parameters.<p>

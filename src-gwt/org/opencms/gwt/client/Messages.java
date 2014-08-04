@@ -37,6 +37,9 @@ import org.opencms.gwt.client.util.CmsMessages;
 public final class Messages {
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_BROADCAST_SEND_BY_1 = "GUI_BROADCAST_SEND_BY_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_DATEBOX_INVALID_DATE_FORMAT_0 = "ERR_DATEBOX_INVALID_DATE_FORMAT_0";
 
     /** Message constant for key in the resource bundle. */

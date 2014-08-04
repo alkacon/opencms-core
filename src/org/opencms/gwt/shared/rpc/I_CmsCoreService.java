@@ -30,6 +30,7 @@ package org.opencms.gwt.shared.rpc;
 import org.opencms.db.CmsResourceState;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
+import org.opencms.gwt.shared.CmsBroadcastMessage;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
@@ -70,8 +71,7 @@ public interface I_CmsCoreService extends RemoteService {
      * 
      * @throws CmsRpcException if something goes wrong 
      */
-    public String changePassword(String oldPassword, String newPassword, String newPasswordConfirm)
-    throws CmsRpcException;
+    String changePassword(String oldPassword, String newPassword, String newPasswordConfirm) throws CmsRpcException;
 
     /**
     * Creates a new UUID.<p>
@@ -82,7 +82,14 @@ public interface I_CmsCoreService extends RemoteService {
     */
     CmsUUID createUUID() throws CmsRpcException;
 
-    String getBroadcast() throws CmsRpcException;
+    /**
+     * Returns the latest messages for the current user.<p>
+     * 
+     * @return the messages
+     * 
+     * @throws CmsRpcException if anything goes wrong
+     */
+    List<CmsBroadcastMessage> getBroadcast() throws CmsRpcException;
 
     /**
      * Returns the categories for the given search parameters.<p>

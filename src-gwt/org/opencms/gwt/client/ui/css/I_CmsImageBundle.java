@@ -98,6 +98,12 @@ public interface I_CmsImageBundle extends ClientBundle {
         *
         * @return the CSS class name
         */
+        String dialogCloseIcon();
+
+        /** Access method.<p>
+        *
+        * @return the CSS class name
+        */
         String directoryIcon();
 
         /** Access method.<p>

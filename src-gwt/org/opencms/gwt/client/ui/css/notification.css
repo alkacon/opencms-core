@@ -54,7 +54,20 @@ div.notificationContainer {
 	display: none;
 }
 
+/** Broadcast messages */
+p.messageTime{
+	font-size: 10px;
+	line-height: 10px;
+	color: value("constants.css.textColorDisabled");
+}
 
+div.messageWrap{
+	background-color: value("constants.css.backgroundColorDialog");
+	border-top: 1px solid value("constants.css.borderColor");
+	margin: 0 -15px -5px;
+	padding: 0 15px 5px;
+}
+/** Broadcast messages */
 
 .notificationContainer div.closeButton{
 	position: absolute;

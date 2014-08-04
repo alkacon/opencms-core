@@ -40,6 +40,7 @@ import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
+import org.opencms.gwt.shared.CmsBroadcastMessage;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
@@ -552,7 +553,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     /**
      * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getBroadcast()
      */
-    public String getBroadcast() {
+    public List<CmsBroadcastMessage> getBroadcast() {
 
         CmsSessionInfo sessionInfo = OpenCms.getSessionManager().getSessionInfo(getRequest().getSession());
         if (sessionInfo == null) {
@@ -563,27 +564,19 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         if (!messageQueue.isEmpty()) {
             CmsMessages messages = org.opencms.workplace.Messages.get().getBundle(
                 OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject()));
-            // create message String
-            StringBuffer result = new StringBuffer(512);
+            List<CmsBroadcastMessage> result = new ArrayList<CmsBroadcastMessage>();
             // the user has pending messages, display them all
             while (!messageQueue.isEmpty()) {
                 CmsBroadcast broadcastMessage = (CmsBroadcast)messageQueue.remove();
-                result.append("<p>[");
-                result.append(messages.getDateTime(broadcastMessage.getSendTime()));
-                result.append("] ");
-                result.append(messages.key(org.opencms.workplace.Messages.GUI_LABEL_BROADCASTMESSAGEFROM_0));
-                result.append(" <b>");
-                if (broadcastMessage.getUser() != null) {
-                    result.append(broadcastMessage.getUser().getName());
-                } else {
-                    // system message
-                    result.append(messages.key(org.opencms.workplace.Messages.GUI_LABEL_BROADCAST_FROM_SYSTEM_0));
-                }
-                result.append("</b>:</p>\n<p>\n");
-                result.append(broadcastMessage.getMessage().replaceAll("\\n", "&nbsp;</p>\n<p>\n"));
-                result.append("\n</p><p></p>");
+                CmsBroadcastMessage message = new CmsBroadcastMessage(
+                    broadcastMessage.getUser() != null
+                    ? broadcastMessage.getUser().getName()
+                    : messages.key(org.opencms.workplace.Messages.GUI_LABEL_BROADCAST_FROM_SYSTEM_0),
+                    messages.getDateTime(broadcastMessage.getSendTime()),
+                    broadcastMessage.getMessage());
+                result.add(message);
             }
-            return result.toString();
+            return result;
         }
         // no message pending, return null
         return null;

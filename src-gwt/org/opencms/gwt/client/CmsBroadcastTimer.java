@@ -29,6 +29,10 @@ package org.opencms.gwt.client;
 
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsNotification.Type;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.shared.CmsBroadcastMessage;
+
+import java.util.List;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
@@ -52,11 +56,11 @@ public class CmsBroadcastTimer {
      */
     private static CmsBroadcastTimer INSTANCE;
 
-    /** Flag indicating if the ping timer should keep running. */
+    /** Flag indicating if the timer should keep running. */
     private static boolean m_keepRunning;
 
     /**
-     * Aborts the ping timer.<p>
+     * Aborts the timer.<p>
      */
     public static void abort() {
 
@@ -81,13 +85,34 @@ public class CmsBroadcastTimer {
     }
 
     /**
-     * Returns if the ping timer should keep running.<p>
+     * Returns if the timer should keep running.<p>
      * 
      * @return <code>true</code>  if the ping timer should keep running
      */
     protected static boolean shouldKeepRunning() {
 
         return m_keepRunning;
+    }
+
+    /**
+     * Generates the HTML for a single broadcast message.<p>
+     * 
+     * @param message the message
+     * 
+     * @return the HTML string
+     */
+    protected String createMessageHtml(CmsBroadcastMessage message) {
+
+        StringBuffer result = new StringBuffer();
+        result.append("<p class=\"").append(I_CmsLayoutBundle.INSTANCE.notificationCss().messageTime()).append("\">");
+        result.append(message.getTime());
+        result.append("</p><p>");
+        result.append(Messages.get().key(Messages.GUI_BROADCAST_SEND_BY_1, message.getUser()));
+        result.append("</p><div class=\"").append(I_CmsLayoutBundle.INSTANCE.notificationCss().messageWrap()).append(
+            "\"><p>\n");
+        result.append(message.getMessage().replaceAll("\\n", "&nbsp;</p><p>"));
+        result.append("\n</p></div>");
+        return result.toString();
     }
 
     /**
@@ -100,7 +125,7 @@ public class CmsBroadcastTimer {
             public boolean execute() {
 
                 if (CmsBroadcastTimer.shouldKeepRunning()) {
-                    CmsCoreProvider.getService().getBroadcast(new AsyncCallback<String>() {
+                    CmsCoreProvider.getService().getBroadcast(new AsyncCallback<List<CmsBroadcastMessage>>() {
 
                         public void onFailure(Throwable caught) {
 
@@ -111,10 +136,12 @@ public class CmsBroadcastTimer {
                             }
                         }
 
-                        public void onSuccess(String result) {
+                        public void onSuccess(List<CmsBroadcastMessage> result) {
 
                             if (result != null) {
-                                CmsNotification.get().sendAlert(Type.WARNING, result);
+                                for (CmsBroadcastMessage message : result) {
+                                    CmsNotification.get().sendAlert(Type.WARNING, createMessageHtml(message));
+                                }
                             }
                         }
                     });

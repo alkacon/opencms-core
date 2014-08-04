@@ -74,7 +74,7 @@ public class CmsNotificationMessage extends Composite {
      */
     public CmsNotificationMessage(CmsNotification.Mode mode, CmsNotification.Type type, String message) {
 
-        m_closeButton = new CmsPushButton(I_CmsImageBundle.INSTANCE.style().closeIcon());
+        m_closeButton = new CmsPushButton(I_CmsImageBundle.INSTANCE.style().dialogCloseIcon());
         m_closeButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
         initWidget(uiBinder.createAndBindUi(this));
         m_messageContent.setInnerHTML(message);
