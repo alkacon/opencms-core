@@ -135,8 +135,8 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
     protected Map<Integer, CmsPushButton> getAdditionalButtons() {
 
         Map<Integer, CmsPushButton> result = Maps.newHashMap();
-        result.put(Integer.valueOf(230), createFavButton());
-        result.put(Integer.valueOf(260), createInfoButton());
+        result.put(Integer.valueOf(130), createFavButton());
+        result.put(Integer.valueOf(160), createInfoButton());
         return result;
     }
 

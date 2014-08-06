@@ -117,7 +117,7 @@ public class CmsDirectEditButtons extends A_CmsDirectEditButtons implements I_Cm
     protected Map<Integer, CmsPushButton> getAdditionalButtons() {
 
         Map<Integer, CmsPushButton> result = Maps.newHashMap();
-        result.put(Integer.valueOf(230), createInfoButton());
+        result.put(Integer.valueOf(130), createInfoButton());
         return result;
     }
 

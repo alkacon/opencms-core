@@ -27,11 +27,13 @@
 
 package org.opencms.gwt.client.ui;
 
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.CmsEditableDataJSO;
 import org.opencms.gwt.client.ui.resourceinfo.CmsResourceInfoDialog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsNewLinkFunctionTable;
 import org.opencms.gwt.client.util.CmsPositionBean;
+import org.opencms.gwt.client.util.I_CmsUniqueActiveItem;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -62,7 +64,8 @@ import com.google.gwt.user.client.ui.RootPanel;
  *
  * @since 8.0.0
  */
-public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMouseOverHandlers, HasMouseOutHandlers {
+public abstract class A_CmsDirectEditButtons extends FlowPanel
+implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
 
     /**
      * Button handler for this  class.<p>
@@ -100,14 +103,7 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
         @Override
         public void onHoverIn(MouseOverEvent event) {
 
-            if (activeBar != null) {
-                try {
-                    activeBar.removeHighlightingAndBar();
-                } catch (Throwable t) {
-                    // ignore
-                }
-            }
-            activeBar = null;
+            CmsCoreProvider.get().getFlyoutMenuContainer().setActiveItem(A_CmsDirectEditButtons.this);
             addHighlightingAndBar();
         }
 
@@ -131,9 +127,6 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
         }
 
     }
-
-    /** The currently active option bar. */
-    /*default */static A_CmsDirectEditButtons activeBar;
 
     /** The timer used for hiding the option bar. */
     /*default */static Timer timer;
@@ -232,6 +225,14 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
             buttonMap.putAll(getAdditionalButtons());
             for (CmsPushButton button : buttonMap.values()) {
                 add(button);
+                button.addClickHandler(new ClickHandler() {
+
+                    public void onClick(ClickEvent e) {
+
+                        CmsCoreProvider.get().getFlyoutMenuContainer().clearIfMatches(A_CmsDirectEditButtons.this);
+
+                    }
+                });
             }
 
             if (m_editableData.isUnreleasedOrExpired()) {
@@ -281,7 +282,7 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
 
                 CmsResourceInfoDialog.load(
                     m_editableData.getStructureId(),
-                    false,
+                    true,
                     Collections.<CmsUUID> emptyList(),
                     null);
             }
@@ -320,6 +321,14 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
     public boolean isValid() {
 
         return RootPanel.getBodyElement().isOrHasChild(m_markerTag);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.util.I_CmsUniqueActiveItem#onDeactivate()
+     */
+    public void onDeactivate() {
+
+        removeHighlightingAndBar();
     }
 
     /**
@@ -376,7 +385,6 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
         timer = null;
         highlightElement();
         getElement().addClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering());
-        activeBar = this;
     }
 
     /**
@@ -412,10 +420,6 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
      */
     protected void removeHighlightingAndBar() {
 
-        timer = null;
-        if (activeBar == this) {
-            activeBar = null;
-        }
         removeHighlighting();
         getElement().removeClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering());
     }

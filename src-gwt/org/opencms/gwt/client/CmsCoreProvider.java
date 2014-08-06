@@ -33,6 +33,7 @@ import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
+import org.opencms.gwt.client.util.CmsUniqueActiveItemContainer;
 import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.CmsLockInfo;
 import org.opencms.gwt.shared.rpc.I_CmsCoreService;
@@ -73,6 +74,9 @@ public final class CmsCoreProvider extends CmsCoreData {
 
     /** The vfs-service instance. */
     private static I_CmsVfsServiceAsync VFS_SERVICE;
+
+    /** The unique active item container for the flyout menu. */
+    private CmsUniqueActiveItemContainer m_activeFlyoutMenu = new CmsUniqueActiveItemContainer();
 
     /** The client time when the data is loaded. */
     private long m_clientTime;
@@ -273,6 +277,17 @@ public final class CmsCoreProvider extends CmsCoreData {
     public EventBus getEventBus() {
 
         return m_eventBus;
+    }
+
+    /**
+     * Gets the unique active item container which holds a reference to the currently active content element flyout menu.<p>
+     * 
+     * @return the unique active item container for flyout menus 
+     */
+    public CmsUniqueActiveItemContainer getFlyoutMenuContainer() {
+
+        return m_activeFlyoutMenu;
+
     }
 
     /**
