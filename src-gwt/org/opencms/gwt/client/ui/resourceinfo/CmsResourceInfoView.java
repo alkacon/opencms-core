@@ -32,9 +32,13 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
+import org.opencms.gwt.client.ui.contextmenu.CmsAbout;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuButton;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler;
+import org.opencms.gwt.client.ui.contextmenu.CmsEditUserSettings;
 import org.opencms.gwt.client.ui.contextmenu.CmsLogout;
+import org.opencms.gwt.client.ui.contextmenu.CmsOpenSeoDialog;
+import org.opencms.gwt.client.ui.contextmenu.CmsShowWorkplace;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
 import org.opencms.gwt.client.util.CmsResourceStateUtil;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
@@ -71,7 +75,14 @@ public class CmsResourceInfoView extends Composite {
         static {
             m_filteredActions.add(CmsGwtConstants.ACTION_TEMPLATECONTEXTS);
             m_filteredActions.add(CmsGwtConstants.ACTION_EDITSMALLELEMENTS);
-            m_filteredActions.add(CmsLogout.class.getName());
+            for (Class<?> cls : new Class[] {
+                CmsEditUserSettings.class,
+                CmsAbout.class,
+                CmsShowWorkplace.class,
+                CmsOpenSeoDialog.class,
+                CmsLogout.class}) {
+                m_filteredActions.add(cls.getName());
+            }
         }
 
         /**
