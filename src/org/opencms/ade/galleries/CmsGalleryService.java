@@ -1423,6 +1423,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         if (preview != null) {
             result.setPreviewProviderName(preview.getPreviewName());
         }
+        if (type.isFolder()) {
+            result.setVisibility(TypeVisibility.hidden);
+        }
         result.setCreatableType(creatable);
         return result;
     }
@@ -1595,23 +1598,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * 
      * @return the default types 
      */
-    private List<TypeWithVisibility> getDefaultTypesForGallery() {
+    private List<I_CmsResourceType> getDefaultTypesForGallery() {
 
-        List<I_CmsResourceType> allTypes = OpenCms.getResourceManager().getResourceTypes();
-        List<I_CmsResourceType> fileTypes = Lists.newArrayList();
-        for (I_CmsResourceType type : allTypes) {
-            if (!type.isFolder()) {
-                fileTypes.add(type);
-            }
-        }
-
-        //CmsObject cms = getCmsObject();
-        //CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, "/");
-        List<TypeWithVisibility> result = Lists.newArrayList();
-        for (I_CmsResourceType type : fileTypes) {
-            result.add(new TypeWithVisibility(type, false));
-        }
-        return result;
+        return OpenCms.getResourceManager().getResourceTypes();
     }
 
     /**
@@ -1909,7 +1898,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
         List<I_CmsResourceType> resourceTypes = null;
         List<String> creatableTypes = null;
-        Set<String> hidden = Sets.newHashSet();
         switch (galleryMode) {
             case editor:
             case view:
@@ -1917,14 +1905,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             case widget:
                 resourceTypes = convertTypeNamesToTypes(resourceTypesList);
                 if (resourceTypes.size() == 0) {
-                    List<TypeWithVisibility> typeWrappers = getDefaultTypesForGallery();
-                    resourceTypes = Lists.newArrayList();
-                    for (TypeWithVisibility wrapper : typeWrappers) {
-                        resourceTypes.add(wrapper.getType());
-                        if (wrapper.isOnlyShowInFullList()) {
-                            hidden.add(wrapper.getType().getTypeName());
-                        }
-                    }
+                    resourceTypes = Lists.newArrayList(getDefaultTypesForGallery());
                 }
                 creatableTypes = Collections.<String> emptyList();
                 break;
@@ -1964,7 +1945,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         for (CmsResourceTypeBean typeBean : result) {
             if ((typesForTypeTab != null) && (typesForTypeTab.size() > 0)) {
                 if (!typesForTypeTab.contains(typeBean.getType())) {
-                    typeBean.setVisibility(TypeVisibility.showOptional);
+                    if (typeBean.getVisibility() != TypeVisibility.hidden) {
+                        typeBean.setVisibility(TypeVisibility.showOptional);
+                    }
                 }
             }
         }
