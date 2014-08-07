@@ -27,8 +27,7 @@
 
 package org.opencms.ade.contenteditor.client.widgets;
 
-import com.alkacon.acacia.client.widgets.I_EditWidget;
-
+import org.opencms.acacia.client.widgets.I_EditWidget;
 import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.input.CmsGroupSelection;
@@ -113,7 +112,7 @@ public class CmsGroupWidget extends Composite implements I_EditWidget {
     }
 
     /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
+     * @see org.opencms.acacia.client.widgets.I_EditWidget#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
      */
     public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
 
@@ -139,7 +138,7 @@ public class CmsGroupWidget extends Composite implements I_EditWidget {
     }
 
     /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#isActive()
+     * @see org.opencms.acacia.client.widgets.I_EditWidget#isActive()
      */
     public boolean isActive() {
 
@@ -147,7 +146,7 @@ public class CmsGroupWidget extends Composite implements I_EditWidget {
     }
 
     /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#onAttachWidget()
+     * @see org.opencms.acacia.client.widgets.I_EditWidget#onAttachWidget()
      */
     public void onAttachWidget() {
 
@@ -155,7 +154,7 @@ public class CmsGroupWidget extends Composite implements I_EditWidget {
     }
 
     /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#owns(com.google.gwt.dom.client.Element)
+     * @see org.opencms.acacia.client.widgets.I_EditWidget#owns(com.google.gwt.dom.client.Element)
      */
     public boolean owns(Element element) {
 
@@ -165,7 +164,7 @@ public class CmsGroupWidget extends Composite implements I_EditWidget {
     }
 
     /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#setActive(boolean)
+     * @see org.opencms.acacia.client.widgets.I_EditWidget#setActive(boolean)
      */
     public void setActive(boolean active) {
 
@@ -194,7 +193,7 @@ public class CmsGroupWidget extends Composite implements I_EditWidget {
     }
 
     /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#setName(java.lang.String)
+     * @see org.opencms.acacia.client.widgets.I_EditWidget#setName(java.lang.String)
      */
     public void setName(String name) {
 

@@ -27,23 +27,22 @@
 
 package org.opencms.ade.contenteditor.client;
 
-import com.alkacon.acacia.client.AttributeHandler;
-import com.alkacon.acacia.client.EditorBase;
-import com.alkacon.acacia.client.I_EntityRenderer;
-import com.alkacon.acacia.client.I_InlineFormParent;
-import com.alkacon.acacia.client.UndoRedoHandler;
-import com.alkacon.acacia.client.UndoRedoHandler.UndoRedoState;
-import com.alkacon.acacia.client.ValidationContext;
-import com.alkacon.acacia.client.ValueFocusHandler;
-import com.alkacon.acacia.client.css.I_LayoutBundle;
-import com.alkacon.acacia.shared.TabInfo;
-import com.alkacon.acacia.shared.ValidationResult;
-import com.alkacon.vie.client.Entity;
-import com.alkacon.vie.client.Vie;
-import com.alkacon.vie.shared.I_Entity;
-import com.alkacon.vie.shared.I_EntityAttribute;
-import com.alkacon.vie.shared.I_Type;
-
+import org.opencms.acacia.client.AttributeHandler;
+import org.opencms.acacia.client.EditorBase;
+import org.opencms.acacia.client.I_EntityRenderer;
+import org.opencms.acacia.client.I_InlineFormParent;
+import org.opencms.acacia.client.UndoRedoHandler;
+import org.opencms.acacia.client.UndoRedoHandler.UndoRedoState;
+import org.opencms.acacia.client.ValidationContext;
+import org.opencms.acacia.client.ValueFocusHandler;
+import org.opencms.acacia.client.css.I_LayoutBundle;
+import org.opencms.acacia.client.entity.Entity;
+import org.opencms.acacia.client.entity.Vie;
+import org.opencms.acacia.shared.I_Entity;
+import org.opencms.acacia.shared.I_EntityAttribute;
+import org.opencms.acacia.shared.I_Type;
+import org.opencms.acacia.shared.TabInfo;
+import org.opencms.acacia.shared.ValidationResult;
 import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.ade.contenteditor.shared.CmsComplexWidgetData;
 import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
@@ -479,7 +478,7 @@ public final class CmsContentEditor extends EditorBase {
                                                                                                               var instance = changeListener;
                                                                                                               var nat = {
                                                                                                               onChange : function(entity) {
-                                                                                                              instance.@org.opencms.ade.contenteditor.client.I_CmsEntityChangeListener::onEntityChange(Lcom/alkacon/vie/client/Entity;)(entity);
+                                                                                                              instance.@org.opencms.ade.contenteditor.client.I_CmsEntityChangeListener::onEntityChange(Lorg/opencms/acacia/client/entity/Entity;)(entity);
                                                                                                               }
                                                                                                               }
                                                                                                               var method = $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD];
@@ -543,7 +542,7 @@ public final class CmsContentEditor extends EditorBase {
     }
 
     /**
-     * @see com.alkacon.acacia.client.EditorBase#getService()
+     * @see org.opencms.acacia.client.EditorBase#getService()
      */
     @Override
     public I_CmsContentServiceAsync getService() {
@@ -571,7 +570,7 @@ public final class CmsContentEditor extends EditorBase {
                 start(0, true);
                 getService().loadDefinition(
                     entityId,
-                    editedEntity != null ? com.alkacon.acacia.shared.Entity.serializeEntity(editedEntity) : null,
+                    editedEntity != null ? org.opencms.acacia.shared.Entity.serializeEntity(editedEntity) : null,
                     getSkipPaths(),
                     this);
             }
@@ -672,7 +671,7 @@ public final class CmsContentEditor extends EditorBase {
                 start(0, true);
                 getService().loadNewDefinition(
                     entityId,
-                    editedEntity != null ? com.alkacon.acacia.shared.Entity.serializeEntity(editedEntity) : null,
+                    editedEntity != null ? org.opencms.acacia.shared.Entity.serializeEntity(editedEntity) : null,
                     getSkipPaths(),
                     this);
             }
@@ -887,7 +886,7 @@ public final class CmsContentEditor extends EditorBase {
 
                 start(200, true);
                 getService().saveAndDeleteEntities(
-                    com.alkacon.acacia.shared.Entity.serializeEntity(lastEditedEntity),
+                    org.opencms.acacia.shared.Entity.serializeEntity(lastEditedEntity),
                     deletedEntites,
                     getSkipPaths(),
                     m_locale,
@@ -933,7 +932,7 @@ public final class CmsContentEditor extends EditorBase {
     }
 
     /**
-     * @see com.alkacon.acacia.client.EditorBase#clearEditor()
+     * @see org.opencms.acacia.client.EditorBase#clearEditor()
      */
     @Override
     protected void clearEditor() {
@@ -995,7 +994,7 @@ public final class CmsContentEditor extends EditorBase {
     }
 
     /**
-     * @see com.alkacon.acacia.client.EditorBase#getContextUri()
+     * @see org.opencms.acacia.client.EditorBase#getContextUri()
      */
     @Override
     protected String getContextUri() {
@@ -1014,7 +1013,7 @@ public final class CmsContentEditor extends EditorBase {
     }
 
     /**
-     * @see com.alkacon.acacia.client.EditorBase#getHtmlContextInfo()
+     * @see org.opencms.acacia.client.EditorBase#getHtmlContextInfo()
      */
     @Override
     protected String getHtmlContextInfo() {
@@ -1051,7 +1050,7 @@ public final class CmsContentEditor extends EditorBase {
     void callEditorChangeHanlders(final Set<String> changedScopes) {
 
         I_Entity entity = m_vie.getEntity(m_entityId);
-        final com.alkacon.acacia.shared.Entity currentState = com.alkacon.acacia.shared.Entity.serializeEntity(entity);
+        final org.opencms.acacia.shared.Entity currentState = org.opencms.acacia.shared.Entity.serializeEntity(entity);
         CmsRpcAction<CmsContentDefinition> action = new CmsRpcAction<CmsContentDefinition>() {
 
             @Override
@@ -1152,7 +1151,7 @@ public final class CmsContentEditor extends EditorBase {
             public void execute() {
 
                 start(200, true);
-                getService().copyLocale(targetLocales, com.alkacon.acacia.shared.Entity.serializeEntity(entity), this);
+                getService().copyLocale(targetLocales, org.opencms.acacia.shared.Entity.serializeEntity(entity), this);
             }
 
             @Override

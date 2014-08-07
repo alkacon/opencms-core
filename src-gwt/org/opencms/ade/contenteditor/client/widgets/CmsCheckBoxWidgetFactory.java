@@ -27,15 +27,14 @@
 
 package org.opencms.ade.contenteditor.client.widgets;
 
-import com.alkacon.acacia.client.I_WidgetFactory;
-import com.alkacon.acacia.client.widgets.FormWidgetWrapper;
-import com.alkacon.acacia.client.widgets.I_EditWidget;
-import com.alkacon.acacia.client.widgets.I_FormEditWidget;
-import com.alkacon.geranium.client.util.DomUtil;
-
+import org.opencms.acacia.client.I_WidgetFactory;
+import org.opencms.acacia.client.widgets.FormWidgetWrapper;
+import org.opencms.acacia.client.widgets.I_EditWidget;
+import org.opencms.acacia.client.widgets.I_FormEditWidget;
 import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry;
 import org.opencms.gwt.client.I_CmsHasInit;
+import org.opencms.gwt.client.util.CmsDomUtil;
 
 import com.google.gwt.dom.client.Element;
 
@@ -62,13 +61,13 @@ public class CmsCheckBoxWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
         }
 
         /**
-         * @see com.alkacon.acacia.client.widgets.FormWidgetWrapper#setWidgetInfo(java.lang.String, java.lang.String)
+         * @see org.opencms.acacia.client.widgets.FormWidgetWrapper#setWidgetInfo(java.lang.String, java.lang.String)
          */
         @Override
         public void setWidgetInfo(String label, String help) {
 
             super.setWidgetInfo(label, help);
-            m_checkBoxWidget.setTitle(DomUtil.stripHtml(help));
+            m_checkBoxWidget.setTitle(CmsDomUtil.stripHtml(help));
         }
     }
 
@@ -84,7 +83,7 @@ public class CmsCheckBoxWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
     }
 
     /**
-     * @see com.alkacon.acacia.client.I_WidgetFactory#createFormWidget(java.lang.String)
+     * @see org.opencms.acacia.client.I_WidgetFactory#createFormWidget(java.lang.String)
      */
     public I_FormEditWidget createFormWidget(String configuration) {
 
@@ -95,7 +94,7 @@ public class CmsCheckBoxWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
     }
 
     /**
-     * @see com.alkacon.acacia.client.I_WidgetFactory#createInlineWidget(java.lang.String, com.google.gwt.dom.client.Element)
+     * @see org.opencms.acacia.client.I_WidgetFactory#createInlineWidget(java.lang.String, com.google.gwt.dom.client.Element)
      */
     public I_EditWidget createInlineWidget(String configuration, Element element) {
 

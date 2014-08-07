@@ -27,12 +27,11 @@
 
 package org.opencms.ade.contenteditor.client.widgets;
 
-import com.alkacon.acacia.client.I_WidgetFactory;
-import com.alkacon.acacia.client.widgets.FormWidgetWrapper;
-import com.alkacon.acacia.client.widgets.I_EditWidget;
-import com.alkacon.acacia.client.widgets.I_FormEditWidget;
-import com.alkacon.acacia.client.widgets.TinyMCEWidget;
-
+import org.opencms.acacia.client.I_WidgetFactory;
+import org.opencms.acacia.client.widgets.FormWidgetWrapper;
+import org.opencms.acacia.client.widgets.I_EditWidget;
+import org.opencms.acacia.client.widgets.I_FormEditWidget;
+import org.opencms.acacia.client.widgets.TinyMCEWidget;
 import org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry;
 import org.opencms.gwt.client.I_CmsHasInit;
 
@@ -55,7 +54,7 @@ public class CmsTextareaWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
     }
 
     /**
-     * @see com.alkacon.acacia.client.I_WidgetFactory#createFormWidget(java.lang.String)
+     * @see org.opencms.acacia.client.I_WidgetFactory#createFormWidget(java.lang.String)
      */
     public I_FormEditWidget createFormWidget(String configuration) {
 
@@ -63,7 +62,7 @@ public class CmsTextareaWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
     }
 
     /**
-     * @see com.alkacon.acacia.client.I_WidgetFactory#createInlineWidget(java.lang.String, com.google.gwt.dom.client.Element)
+     * @see org.opencms.acacia.client.I_WidgetFactory#createInlineWidget(java.lang.String, com.google.gwt.dom.client.Element)
      */
     public I_EditWidget createInlineWidget(String configuration, Element element) {
 

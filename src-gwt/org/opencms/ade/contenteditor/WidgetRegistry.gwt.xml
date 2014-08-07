@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module>
-	<inherits name="com.alkacon.acacia.AcaciaBare" />
+	<inherits name="org.opencms.acacia.AcaciaBare" />
 	<source path="widgetregistry/client" />
 	<source path="shared" />
 	<set-configuration-property name="CssResource.style" value="stable" /> 

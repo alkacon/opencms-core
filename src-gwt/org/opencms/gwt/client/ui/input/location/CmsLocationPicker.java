@@ -27,8 +27,7 @@
 
 package org.opencms.gwt.client.ui.input.location;
 
-import com.alkacon.geranium.client.I_HasResizeOnShow;
-
+import org.opencms.gwt.client.I_HasResizeOnShow;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
@@ -136,7 +135,7 @@ public class CmsLocationPicker extends Composite implements HasValueChangeHandle
     }
 
     /**
-     * @see com.alkacon.geranium.client.I_HasResizeOnShow#resizeOnShow()
+     * @see org.opencms.gwt.client.I_HasResizeOnShow#resizeOnShow()
      */
     public void resizeOnShow() {
 

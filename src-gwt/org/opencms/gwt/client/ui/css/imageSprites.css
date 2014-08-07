@@ -204,7 +204,16 @@
     vertical-align: middle;
 }
 
-
+@sprite .cmsState-down .bullsEyeIcon, .cmsState-up-hovering .bullsEyeIcon, .cmsState-down-hovering .bullsEyeIcon{
+    gwt-image: "icons.selectionIconActive";
+    display: inline-block;
+    vertical-align: middle;
+}
+@sprite .cmsState-up .bullsEyeIcon, .cmsState-up-disabled .bullsEyeIcon, .cmsState-down-disabled .bullsEyeIcon{
+    gwt-image: "icons.selectionIconDeactivated";
+    display: inline-block;
+    vertical-align: middle;
+}
 
 @sprite .cmsState-down .lockIcon, .cmsState-up-hovering .lockIcon, .cmsState-down-hovering .lockIcon{
     gwt-image: "icons.lockIconActive";

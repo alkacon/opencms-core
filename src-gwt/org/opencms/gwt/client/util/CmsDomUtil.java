@@ -27,9 +27,8 @@
 
 package org.opencms.gwt.client.util;
 
-import com.alkacon.geranium.client.I_DescendantResizeHandler;
-
 import org.opencms.gwt.client.CmsEditableDataJSO;
+import org.opencms.gwt.client.I_DescendantResizeHandler;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
@@ -1708,7 +1707,7 @@ public final class CmsDomUtil {
                                                                }-*/;
 
     /**
-     * Calls {@link com.alkacon.geranium.client.I_DescendantResizeHandler#onResizeDescendant()} on the closest resizable ancestor.<p>
+     * Calls {@link org.opencms.gwt.client.I_DescendantResizeHandler#onResizeDescendant()} on the closest resizable ancestor.<p>
      *
      * @param parent the parent widget
      */

@@ -27,8 +27,7 @@
 
 package org.opencms.gwt.client.ui;
 
-import com.alkacon.geranium.client.I_DescendantResizeHandler;
-
+import org.opencms.gwt.client.I_DescendantResizeHandler;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsPositionBean;
@@ -399,7 +398,7 @@ public class CmsScrollBar extends FocusPanel implements I_DescendantResizeHandle
     }
 
     /**
-     * @see com.alkacon.geranium.client.I_DescendantResizeHandler#onResizeDescendant()
+     * @see org.opencms.gwt.client.I_DescendantResizeHandler#onResizeDescendant()
      */
     public void onResizeDescendant() {
 

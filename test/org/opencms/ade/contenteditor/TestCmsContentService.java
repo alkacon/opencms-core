@@ -27,9 +27,8 @@
 
 package org.opencms.ade.contenteditor;
 
-import com.alkacon.acacia.shared.Entity;
-import com.alkacon.vie.shared.I_Type;
-
+import org.opencms.acacia.shared.Entity;
+import org.opencms.acacia.shared.I_Type;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;

@@ -27,8 +27,7 @@
 
 package org.opencms.ade.contenteditor.client;
 
-import com.alkacon.vie.client.Entity;
-
+import org.opencms.acacia.client.entity.Entity;
 import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.gwt.client.util.CmsDebugLog;

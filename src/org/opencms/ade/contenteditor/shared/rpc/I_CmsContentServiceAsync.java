@@ -27,10 +27,9 @@
 
 package org.opencms.ade.contenteditor.shared.rpc;
 
-import com.alkacon.acacia.shared.Entity;
-import com.alkacon.acacia.shared.ValidationResult;
-import com.alkacon.acacia.shared.rpc.I_ContentServiceAsync;
-
+import org.opencms.acacia.shared.Entity;
+import org.opencms.acacia.shared.ValidationResult;
+import org.opencms.acacia.shared.rpc.I_ContentServiceAsync;
 import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
 import org.opencms.util.CmsUUID;
 

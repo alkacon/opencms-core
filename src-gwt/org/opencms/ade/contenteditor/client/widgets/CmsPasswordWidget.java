@@ -27,9 +27,8 @@
 
 package org.opencms.ade.contenteditor.client.widgets;
 
-import com.alkacon.acacia.client.css.I_LayoutBundle;
-import com.alkacon.acacia.client.widgets.I_EditWidget;
-
+import org.opencms.acacia.client.css.I_LayoutBundle;
+import org.opencms.acacia.client.widgets.I_EditWidget;
 import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
@@ -126,7 +125,7 @@ public class CmsPasswordWidget extends Composite implements I_EditWidget {
     }
 
     /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#isActive()
+     * @see org.opencms.acacia.client.widgets.I_EditWidget#isActive()
      */
     public boolean isActive() {
 
@@ -134,7 +133,7 @@ public class CmsPasswordWidget extends Composite implements I_EditWidget {
     }
 
     /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#onAttachWidget()
+     * @see org.opencms.acacia.client.widgets.I_EditWidget#onAttachWidget()
      */
     public void onAttachWidget() {
 
@@ -142,7 +141,7 @@ public class CmsPasswordWidget extends Composite implements I_EditWidget {
     }
 
     /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#owns(com.google.gwt.dom.client.Element)
+     * @see org.opencms.acacia.client.widgets.I_EditWidget#owns(com.google.gwt.dom.client.Element)
      */
     public boolean owns(Element element) {
 
@@ -152,7 +151,7 @@ public class CmsPasswordWidget extends Composite implements I_EditWidget {
     }
 
     /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#setActive(boolean)
+     * @see org.opencms.acacia.client.widgets.I_EditWidget#setActive(boolean)
      */
     public void setActive(boolean active) {
 
@@ -179,7 +178,7 @@ public class CmsPasswordWidget extends Composite implements I_EditWidget {
     }
 
     /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#setName(java.lang.String)
+     * @see org.opencms.acacia.client.widgets.I_EditWidget#setName(java.lang.String)
      */
     public void setName(String name) {
 

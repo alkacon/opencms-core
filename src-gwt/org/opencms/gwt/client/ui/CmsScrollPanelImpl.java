@@ -27,8 +27,7 @@
 
 package org.opencms.gwt.client.ui;
 
-import com.alkacon.geranium.client.I_DescendantResizeHandler;
-
+import org.opencms.gwt.client.I_DescendantResizeHandler;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Style;
@@ -251,7 +250,7 @@ public class CmsScrollPanelImpl extends CmsScrollPanel {
     }
 
     /**
-     * @see com.alkacon.geranium.client.I_DescendantResizeHandler#onResizeDescendant()
+     * @see org.opencms.gwt.client.ui.CmsScrollPanel#onResizeDescendant()
      */
     @Override
     public void onResizeDescendant() {

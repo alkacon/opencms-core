@@ -27,9 +27,8 @@
 
 package org.opencms.ade.containerpage.client.ui;
 
-import com.alkacon.acacia.client.EditorBase;
-import com.alkacon.acacia.client.I_InlineFormParent;
-
+import org.opencms.acacia.client.EditorBase;
+import org.opencms.acacia.client.I_InlineFormParent;
 import org.opencms.ade.containerpage.client.CmsContainerpageController;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.shared.CmsInheritanceInfo;
@@ -217,7 +216,7 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
     }
 
     /**
-     * @see com.alkacon.acacia.client.I_InlineFormParent#adoptWidget(com.google.gwt.user.client.ui.IsWidget)
+     * @see org.opencms.acacia.client.I_InlineFormParent#adoptWidget(com.google.gwt.user.client.ui.IsWidget)
      */
     public void adoptWidget(IsWidget widget) {
 
@@ -548,7 +547,7 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
     }
 
     /**
-     * @see com.alkacon.acacia.client.I_InlineFormParent#replaceHtml(java.lang.String)
+     * @see org.opencms.acacia.client.I_InlineFormParent#replaceHtml(java.lang.String)
      */
     public void replaceHtml(String html) {
 

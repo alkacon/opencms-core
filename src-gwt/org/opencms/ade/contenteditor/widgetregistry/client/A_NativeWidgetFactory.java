@@ -27,8 +27,8 @@
 
 package org.opencms.ade.contenteditor.widgetregistry.client;
 
-import com.alkacon.acacia.client.I_WidgetFactory;
-import com.alkacon.acacia.client.widgets.I_EditWidget;
+import org.opencms.acacia.client.I_WidgetFactory;
+import org.opencms.acacia.client.widgets.I_EditWidget;
 
 import com.google.gwt.dom.client.Element;
 

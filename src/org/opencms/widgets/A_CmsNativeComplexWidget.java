@@ -27,8 +27,7 @@
 
 package org.opencms.widgets;
 
-import com.alkacon.acacia.shared.AcaciaConstants;
-
+import org.opencms.acacia.shared.AcaciaConstants;
 import org.opencms.ade.contenteditor.shared.CmsComplexWidgetData;
 import org.opencms.ade.contenteditor.shared.CmsExternalWidgetConfiguration;
 import org.opencms.file.CmsObject;

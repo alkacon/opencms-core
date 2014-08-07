@@ -27,7 +27,7 @@
 
 package org.opencms.ade.contenteditor.client;
 
-import com.alkacon.vie.client.Entity;
+import org.opencms.acacia.client.entity.Entity;
 
 import com.google.gwt.core.client.JavaScriptObject;
 
@@ -50,7 +50,7 @@ public final class CmsEntityChangeListenerWrapper implements I_CmsEntityChangeLi
     }
 
     /**
-     * @see org.opencms.ade.contenteditor.client.I_CmsEntityChangeListener#onEntityChange(com.alkacon.vie.client.Entity)
+     * @see org.opencms.ade.contenteditor.client.I_CmsEntityChangeListener#onEntityChange(org.opencms.acacia.client.entity.Entity)
      */
     public void onEntityChange(Entity entity) {
 

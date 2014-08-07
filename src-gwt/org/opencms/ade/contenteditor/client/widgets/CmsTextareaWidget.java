@@ -27,11 +27,10 @@
 
 package org.opencms.ade.contenteditor.client.widgets;
 
-import com.alkacon.acacia.client.css.I_LayoutBundle;
-import com.alkacon.acacia.client.widgets.I_EditWidget;
-import com.alkacon.geranium.client.I_HasResizeOnShow;
-
+import org.opencms.acacia.client.css.I_LayoutBundle;
+import org.opencms.acacia.client.widgets.I_EditWidget;
 import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.I_HasResizeOnShow;
 import org.opencms.gwt.client.ui.input.CmsTextArea;
 import org.opencms.util.CmsStringUtil;
 
@@ -159,7 +158,7 @@ public class CmsTextareaWidget extends Composite implements I_EditWidget, HasRes
     }
 
     /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#isActive()
+     * @see org.opencms.acacia.client.widgets.I_EditWidget#isActive()
      */
     public boolean isActive() {
 
@@ -167,7 +166,7 @@ public class CmsTextareaWidget extends Composite implements I_EditWidget, HasRes
     }
 
     /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#onAttachWidget()
+     * @see org.opencms.acacia.client.widgets.I_EditWidget#onAttachWidget()
      */
     public void onAttachWidget() {
 
@@ -175,7 +174,7 @@ public class CmsTextareaWidget extends Composite implements I_EditWidget, HasRes
     }
 
     /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#owns(com.google.gwt.dom.client.Element)
+     * @see org.opencms.acacia.client.widgets.I_EditWidget#owns(com.google.gwt.dom.client.Element)
      */
     public boolean owns(Element element) {
 
@@ -184,7 +183,7 @@ public class CmsTextareaWidget extends Composite implements I_EditWidget, HasRes
     }
 
     /**
-     * @see com.alkacon.geranium.client.I_HasResizeOnShow#resizeOnShow()
+     * @see org.opencms.gwt.client.I_HasResizeOnShow#resizeOnShow()
      */
     public void resizeOnShow() {
 
@@ -192,7 +191,7 @@ public class CmsTextareaWidget extends Composite implements I_EditWidget, HasRes
     }
 
     /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#setActive(boolean)
+     * @see org.opencms.acacia.client.widgets.I_EditWidget#setActive(boolean)
      */
     public void setActive(boolean active) {
 
@@ -218,7 +217,7 @@ public class CmsTextareaWidget extends Composite implements I_EditWidget, HasRes
     }
 
     /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#setName(java.lang.String)
+     * @see org.opencms.acacia.client.widgets.I_EditWidget#setName(java.lang.String)
      */
     public void setName(String name) {
 

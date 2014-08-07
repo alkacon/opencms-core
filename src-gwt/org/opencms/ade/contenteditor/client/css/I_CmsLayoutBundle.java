@@ -27,8 +27,7 @@
 
 package org.opencms.ade.contenteditor.client.css;
 
-import com.alkacon.acacia.client.css.I_LayoutBundle.I_Widgets;
-
+import org.opencms.acacia.client.css.I_LayoutBundle.I_Widgets;
 import org.opencms.gwt.client.ui.css.I_CmsFloatDecoratedPanelCss;
 
 import com.google.gwt.core.client.GWT;

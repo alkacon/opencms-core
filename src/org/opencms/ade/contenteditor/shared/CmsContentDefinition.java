@@ -27,14 +27,13 @@
 
 package org.opencms.ade.contenteditor.shared;
 
-import com.alkacon.acacia.shared.AttributeConfiguration;
-import com.alkacon.acacia.shared.ContentDefinition;
-import com.alkacon.acacia.shared.Entity;
-import com.alkacon.acacia.shared.TabInfo;
-import com.alkacon.vie.shared.I_Entity;
-import com.alkacon.vie.shared.I_EntityAttribute;
-import com.alkacon.vie.shared.I_Type;
-
+import org.opencms.acacia.shared.AttributeConfiguration;
+import org.opencms.acacia.shared.ContentDefinition;
+import org.opencms.acacia.shared.Entity;
+import org.opencms.acacia.shared.I_Entity;
+import org.opencms.acacia.shared.I_EntityAttribute;
+import org.opencms.acacia.shared.I_Type;
+import org.opencms.acacia.shared.TabInfo;
 import org.opencms.gwt.shared.CmsModelResourceInfo;
 import org.opencms.util.CmsUUID;
 

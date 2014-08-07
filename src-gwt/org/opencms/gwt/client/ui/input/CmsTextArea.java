@@ -27,9 +27,8 @@
 
 package org.opencms.gwt.client.ui.input;
 
-import com.alkacon.geranium.client.I_HasResizeOnShow;
-
 import org.opencms.gwt.client.I_CmsHasInit;
+import org.opencms.gwt.client.I_HasResizeOnShow;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
@@ -295,7 +294,7 @@ I_HasResizeOnShow {
     }
 
     /**
-     * @see com.alkacon.geranium.client.I_HasResizeOnShow#resizeOnShow()
+     * @see org.opencms.gwt.client.I_HasResizeOnShow#resizeOnShow()
      */
     public void resizeOnShow() {
 

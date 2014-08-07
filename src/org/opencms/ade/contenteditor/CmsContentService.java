@@ -27,16 +27,15 @@
 
 package org.opencms.ade.contenteditor;
 
-import com.alkacon.acacia.shared.AttributeConfiguration;
-import com.alkacon.acacia.shared.ContentDefinition;
-import com.alkacon.acacia.shared.Entity;
-import com.alkacon.acacia.shared.EntityHtml;
-import com.alkacon.acacia.shared.Type;
-import com.alkacon.acacia.shared.ValidationResult;
-import com.alkacon.vie.shared.I_Entity;
-import com.alkacon.vie.shared.I_EntityAttribute;
-import com.alkacon.vie.shared.I_Type;
-
+import org.opencms.acacia.shared.AttributeConfiguration;
+import org.opencms.acacia.shared.ContentDefinition;
+import org.opencms.acacia.shared.Entity;
+import org.opencms.acacia.shared.EntityHtml;
+import org.opencms.acacia.shared.I_Entity;
+import org.opencms.acacia.shared.I_EntityAttribute;
+import org.opencms.acacia.shared.I_Type;
+import org.opencms.acacia.shared.Type;
+import org.opencms.acacia.shared.ValidationResult;
 import org.opencms.ade.containerpage.CmsContainerpageService;
 import org.opencms.ade.containerpage.CmsElementUtil;
 import org.opencms.ade.containerpage.shared.CmsCntPageData;
@@ -270,7 +269,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
-     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#callEditorChangeHandlers(java.lang.String, com.alkacon.acacia.shared.Entity, java.util.Collection, java.util.Collection)
+     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#callEditorChangeHandlers(java.lang.String, org.opencms.acacia.shared.Entity, java.util.Collection, java.util.Collection)
      */
     public CmsContentDefinition callEditorChangeHandlers(
         String entityId,
@@ -327,7 +326,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
-     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#copyLocale(java.util.Collection, com.alkacon.acacia.shared.Entity)
+     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#copyLocale(java.util.Collection, org.opencms.acacia.shared.Entity)
      */
     public void copyLocale(Collection<String> locales, Entity sourceLocale) throws CmsRpcException {
 
@@ -352,7 +351,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
-     * @see com.alkacon.acacia.shared.rpc.I_ContentService#loadContentDefinition(java.lang.String)
+     * @see org.opencms.acacia.shared.rpc.I_ContentService#loadContentDefinition(java.lang.String)
      */
     public ContentDefinition loadContentDefinition(String entityId) throws CmsRpcException {
 
@@ -360,7 +359,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
-     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadDefinition(java.lang.String, com.alkacon.acacia.shared.Entity, java.util.Collection)
+     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadDefinition(java.lang.String, org.opencms.acacia.shared.Entity, java.util.Collection)
      */
     public CmsContentDefinition loadDefinition(String entityId, Entity editedLocaleEntity, Collection<String> skipPaths)
     throws CmsRpcException {
@@ -429,7 +428,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
-     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadNewDefinition(java.lang.String, com.alkacon.acacia.shared.Entity, java.util.Collection)
+     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadNewDefinition(java.lang.String, org.opencms.acacia.shared.Entity, java.util.Collection)
      */
     public CmsContentDefinition loadNewDefinition(
         String entityId,
@@ -526,7 +525,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
-     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#saveAndDeleteEntities(com.alkacon.acacia.shared.Entity, java.util.List, java.util.Collection, java.lang.String, boolean)
+     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#saveAndDeleteEntities(org.opencms.acacia.shared.Entity, java.util.List, java.util.Collection, java.lang.String, boolean)
      */
     public ValidationResult saveAndDeleteEntities(
         Entity lastEditedEntity,
@@ -583,7 +582,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
-     * @see com.alkacon.acacia.shared.rpc.I_ContentService#saveEntities(java.util.List)
+     * @see org.opencms.acacia.shared.rpc.I_ContentService#saveEntities(java.util.List)
      */
     public ValidationResult saveEntities(List<Entity> entities) {
 
@@ -591,7 +590,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
-     * @see com.alkacon.acacia.shared.rpc.I_ContentService#saveEntity(com.alkacon.acacia.shared.Entity)
+     * @see org.opencms.acacia.shared.rpc.I_ContentService#saveEntity(org.opencms.acacia.shared.Entity)
      */
     public ValidationResult saveEntity(Entity entity) {
 
@@ -599,7 +598,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
-     * @see com.alkacon.acacia.shared.rpc.I_ContentService#updateEntityHtml(com.alkacon.acacia.shared.Entity, java.lang.String, java.lang.String)
+     * @see org.opencms.acacia.shared.rpc.I_ContentService#updateEntityHtml(org.opencms.acacia.shared.Entity, java.lang.String, java.lang.String)
      */
     public EntityHtml updateEntityHtml(Entity entity, String contextUri, String htmlContextInfo) throws Exception {
 
@@ -664,7 +663,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
-     * @see com.alkacon.acacia.shared.rpc.I_ContentService#validateEntities(java.util.List)
+     * @see org.opencms.acacia.shared.rpc.I_ContentService#validateEntities(java.util.List)
      */
     public ValidationResult validateEntities(List<Entity> changedEntities) throws CmsRpcException {
 

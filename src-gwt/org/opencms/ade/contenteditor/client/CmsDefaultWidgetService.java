@@ -27,11 +27,10 @@
 
 package org.opencms.ade.contenteditor.client;
 
-import com.alkacon.acacia.client.WidgetService;
-import com.alkacon.acacia.client.widgets.FormWidgetWrapper;
-import com.alkacon.acacia.client.widgets.I_EditWidget;
-import com.alkacon.acacia.client.widgets.TinyMCEWidget;
-
+import org.opencms.acacia.client.WidgetService;
+import org.opencms.acacia.client.widgets.FormWidgetWrapper;
+import org.opencms.acacia.client.widgets.I_EditWidget;
+import org.opencms.acacia.client.widgets.TinyMCEWidget;
 import org.opencms.ade.contenteditor.client.widgets.CmsFileWidget;
 import org.opencms.ade.contenteditor.client.widgets.CmsGalleryWidget;
 import org.opencms.ade.contenteditor.client.widgets.CmsImageGalleryWidget;
@@ -54,7 +53,7 @@ public class CmsDefaultWidgetService extends WidgetService {
     private Map<String, String> m_syncValues;
 
     /**
-     * @see com.alkacon.acacia.client.WidgetService#addChangedOrderPath(java.lang.String)
+     * @see org.opencms.acacia.client.WidgetService#addChangedOrderPath(java.lang.String)
      */
     @Override
     public void addChangedOrderPath(String attributePath) {
@@ -63,7 +62,7 @@ public class CmsDefaultWidgetService extends WidgetService {
     }
 
     /**
-     * @see com.alkacon.acacia.client.WidgetService#getDefaultAttributeValue(java.lang.String, java.lang.String)
+     * @see org.opencms.acacia.client.WidgetService#getDefaultAttributeValue(java.lang.String, java.lang.String)
      */
     @Override
     public String getDefaultAttributeValue(String attributeName, String simpleValuePath) {
@@ -115,7 +114,7 @@ public class CmsDefaultWidgetService extends WidgetService {
     }
 
     /**
-     * @see com.alkacon.acacia.client.WidgetService#shouldRemoveLastValueAfterUnfocus(com.alkacon.acacia.client.widgets.I_EditWidget)
+     * @see org.opencms.acacia.client.WidgetService#shouldRemoveLastValueAfterUnfocus(org.opencms.acacia.client.widgets.I_EditWidget)
      */
     @Override
     public boolean shouldRemoveLastValueAfterUnfocus(I_EditWidget widget) {

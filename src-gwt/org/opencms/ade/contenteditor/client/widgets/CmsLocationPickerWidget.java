@@ -27,9 +27,8 @@
 
 package org.opencms.ade.contenteditor.client.widgets;
 
-import com.alkacon.acacia.client.widgets.I_EditWidget;
-import com.alkacon.geranium.client.I_HasResizeOnShow;
-
+import org.opencms.acacia.client.widgets.I_EditWidget;
+import org.opencms.gwt.client.I_HasResizeOnShow;
 import org.opencms.gwt.client.ui.input.location.CmsLocationPicker;
 
 import com.google.gwt.dom.client.Element;
@@ -74,7 +73,7 @@ public class CmsLocationPickerWidget extends Composite implements I_EditWidget, 
     }
 
     /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
+     * @see org.opencms.acacia.client.widgets.I_EditWidget#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
      */
     public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
 
@@ -99,7 +98,7 @@ public class CmsLocationPickerWidget extends Composite implements I_EditWidget, 
     }
 
     /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#isActive()
+     * @see org.opencms.acacia.client.widgets.I_EditWidget#isActive()
      */
     public boolean isActive() {
 
@@ -107,7 +106,7 @@ public class CmsLocationPickerWidget extends Composite implements I_EditWidget, 
     }
 
     /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#onAttachWidget()
+     * @see org.opencms.acacia.client.widgets.I_EditWidget#onAttachWidget()
      */
     public void onAttachWidget() {
 
@@ -115,7 +114,7 @@ public class CmsLocationPickerWidget extends Composite implements I_EditWidget, 
     }
 
     /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#owns(com.google.gwt.dom.client.Element)
+     * @see org.opencms.acacia.client.widgets.I_EditWidget#owns(com.google.gwt.dom.client.Element)
      */
     public boolean owns(Element element) {
 
@@ -124,7 +123,7 @@ public class CmsLocationPickerWidget extends Composite implements I_EditWidget, 
     }
 
     /**
-     * @see com.alkacon.geranium.client.I_HasResizeOnShow#resizeOnShow()
+     * @see org.opencms.gwt.client.I_HasResizeOnShow#resizeOnShow()
      */
     public void resizeOnShow() {
 
@@ -132,7 +131,7 @@ public class CmsLocationPickerWidget extends Composite implements I_EditWidget, 
     }
 
     /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#setActive(boolean)
+     * @see org.opencms.acacia.client.widgets.I_EditWidget#setActive(boolean)
      */
     public void setActive(boolean active) {
 
@@ -148,7 +147,7 @@ public class CmsLocationPickerWidget extends Composite implements I_EditWidget, 
     }
 
     /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#setName(java.lang.String)
+     * @see org.opencms.acacia.client.widgets.I_EditWidget#setName(java.lang.String)
      */
     public void setName(String name) {
 

@@ -70,6 +70,13 @@ public interface I_CmsImageBundle extends ClientBundle {
          */
         String arrowUpIcon();
 
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS class name
+         */
+        String bullsEyeIcon();
+
         /** Access method.<p>
         *
         * @return the CSS class name
