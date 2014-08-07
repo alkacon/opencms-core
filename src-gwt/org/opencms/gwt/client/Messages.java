@@ -815,6 +815,9 @@ public final class Messages {
     public static final String GUI_USAGE_EMPTY_0 = "GUI_USAGE_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERSETTINGS_TAB_ACCOUNT_0 = "GUI_USERSETTINGS_TAB_ACCOUNT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_USERSETTINGS_TAB_BASIC_0 = "GUI_USERSETTINGS_TAB_BASIC_0";
 
     /** Message constant for key in the resource bundle. */

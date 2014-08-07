@@ -34,7 +34,6 @@
 		padding: 2px;
 		border-radius: 4px;
 		height: 470px; 
-		background-color: #fff; 
 	}
 	
 	.passwordButton {
@@ -42,11 +41,15 @@
 		margin-top: 20px;
 	}
 	
+	.tab {
+		background-color: red; 
+	}
+	
 	</ui:style>
 	
 	
 	<g:FlowPanel>
-		<g:FlowPanel ui:field="m_basicTab">
+		<g:FlowPanel ui:field="m_basicTab" addStyleNames="{style.tab}">
 		<g:FlowPanel addStyleNames="{style.border}">
 		
 			<cms:CmsScrollPanel addStyleNames="{style.scrollable}">
@@ -58,7 +61,7 @@
 		</g:FlowPanel>
 			
 		
-		<g:FlowPanel ui:field="m_extendedTab">
+		<g:FlowPanel ui:field="m_extendedTab" addStyleNames="{style.tab}">
 				<g:FlowPanel addStyleNames="{style.border}">
 			<cms:CmsScrollPanel addStyleNames="{style.scrollable}">
 				<g:FlowPanel  addStyleNames="{style.scrollContainer}" >
@@ -68,7 +71,7 @@
 			</g:FlowPanel>
 		</g:FlowPanel>
 		
-		<g:FlowPanel ui:field="m_accountInfoTab">
+		<g:FlowPanel ui:field="m_accountInfoTab" addStyleNames="{style.tab}">
 				<g:FlowPanel addStyleNames="{style.border}">
 				<g:FlowPanel ui:field="m_accountInfoPanel" addStyleNames="{style.accountInfo}"></g:FlowPanel>
 				<cms:CmsPushButton addStyleNames="{style.passwordButton}" ui:field="m_passwordButton" />

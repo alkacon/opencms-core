@@ -30,6 +30,7 @@ package org.opencms.gwt.client.ui.css;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.resources.client.CssResource.ImportedWithPrefix;
 import com.google.gwt.resources.client.CssResource.Shared;
 
 /**
@@ -748,6 +749,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     }
 
     /** The context menu CSS classes. */
+    @ImportedWithPrefix("fieldset")
     public interface I_CmsFieldsetCss extends CssResource {
 
         /** 

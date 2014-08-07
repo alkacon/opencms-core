@@ -30,6 +30,7 @@ package org.opencms.gwt.client.ui.input;
 import org.opencms.gwt.client.I_CmsHasInit;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
+import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 import org.opencms.gwt.client.util.CmsMessages;
@@ -93,12 +94,17 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
     /** A map of titles for the select options which should  be displayed on mouseover. */
     private Map<String, String> m_titles = new HashMap<String, String>();
 
+    /** CSS style name for combo boxes. */
+    public static final String CSS_CLASS = I_CmsInputLayoutBundle.INSTANCE.inputCss().comboBox();
+
     /**
      * Default constructor.<p>
      */
     public CmsComboBox() {
 
         super();
+        addStyleName(CSS_CLASS);
+
     }
 
     /**
@@ -112,6 +118,7 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
     public CmsComboBox(Map<String, String> items) {
 
         super();
+        addStyleName(CSS_CLASS);
         setItems(items);
     }
 
@@ -124,6 +131,7 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
     public CmsComboBox(Map<String, String> items, boolean addNullOption) {
 
         super();
+        addStyleName(CSS_CLASS);
         if (items.containsKey(NO_SELECTION_TEXT)) {
             m_noSelectionText = items.get(NO_SELECTION_TEXT);
             m_noSelectionOpenerText = items.get(NO_SELECTION_OPENER_TEXT);

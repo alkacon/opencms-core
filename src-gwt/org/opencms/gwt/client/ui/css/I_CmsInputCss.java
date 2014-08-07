@@ -110,6 +110,13 @@ public interface I_CmsInputCss extends I_CmsGlobalWidgetCss {
      * 
      * @return the css class
      */
+    String comboBox();
+
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
     String comboBoxOpener();
 
     /**
@@ -153,6 +160,13 @@ public interface I_CmsInputCss extends I_CmsGlobalWidgetCss {
      * @return the css class
      */
     String formDescriptionLabel();
+
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
+    String formGradientBackground();
 
     /**
      * Css class reader.<p>

@@ -33,6 +33,7 @@ import org.opencms.ade.containerpage.client.ui.groupeditor.CmsInheritanceContain
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.gwt.client.ui.CmsFieldSet;
+import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsMultiCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
@@ -194,6 +195,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
             formFieldPanel = new CmsInfoBoxFormFieldPanel(infoBean);
         }
         getForm().setWidget(formFieldPanel);
+        formFieldPanel.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().formGradientBackground());
         I_CmsFormSubmitHandler submitHandler = new I_CmsFormSubmitHandler() {
 
             /**

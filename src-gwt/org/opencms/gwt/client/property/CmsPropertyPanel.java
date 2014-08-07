@@ -33,6 +33,7 @@ import org.opencms.gwt.client.ui.CmsFieldSet;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
+import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.form.A_CmsFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
@@ -144,6 +145,11 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
         m_groups.put(TAB_SIMPLE, m_simpleTab);
         m_groups.put(TAB_SHARED, m_sharedTab);
         m_groups.put(TAB_INDIVIDUAL, m_individualTab);
+
+        m_simpleTabWrapper.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().formGradientBackground());
+        m_individualTabWrapper.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().formGradientBackground());
+        m_sharedTabWrapper.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().formGradientBackground());
+
         CmsScrollPanel scrollPanel = GWT.create(CmsScrollPanel.class);
         scrollPanel.setWidget(m_simpleTabWrapper);
         m_tabPanel.add(scrollPanel, Messages.get().key(Messages.GUI_PROPERTY_TAB_SIMPLE_0));
@@ -216,6 +222,7 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
 
         String used = Messages.get().key(Messages.GUI_PROPERTY_BLOCK_USED_0);
         CmsFieldSet usedFieldSet = new CmsFieldSet();
+        usedFieldSet.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().formGradientBackground());
         usedFieldSet.setLegend(used);
         usedFieldSet.setAnimationDuration(50);
 
