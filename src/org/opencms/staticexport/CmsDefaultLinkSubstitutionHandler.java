@@ -471,13 +471,17 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
         String context = OpenCms.getSystemInfo().getOpenCmsContext();
         if ((context != null) && path.startsWith(context)) {
             // URI is starting with opencms context
-            String siteRoot = null;
-            if (basePath != null) {
-                siteRoot = OpenCms.getSiteManager().getSiteRoot(basePath);
-            }
 
             // cut context from path
             path = path.substring(context.length());
+
+            String siteRoot = null;
+            CmsSite explicitTargetSite = OpenCms.getSiteManager().getSiteForRootPath(path);
+            if (explicitTargetSite != null) {
+                siteRoot = explicitTargetSite.getSiteRoot();
+            } else if (basePath != null) {
+                siteRoot = OpenCms.getSiteManager().getSiteRoot(basePath);
+            }
 
             if (siteRoot != null) {
                 // special case: relative path contains a site root, i.e. we are in the root site
