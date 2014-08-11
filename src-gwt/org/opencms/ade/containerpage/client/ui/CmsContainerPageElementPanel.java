@@ -27,8 +27,8 @@
 
 package org.opencms.ade.containerpage.client.ui;
 
-import org.opencms.acacia.client.EditorBase;
-import org.opencms.acacia.client.I_InlineFormParent;
+import org.opencms.acacia.client.CmsEditorBase;
+import org.opencms.acacia.client.I_CmsInlineFormParent;
 import org.opencms.ade.containerpage.client.CmsContainerpageController;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.shared.CmsInheritanceInfo;
@@ -80,7 +80,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * @since 8.0.0
  */
 public class CmsContainerPageElementPanel extends AbsolutePanel
-implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
+implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /** Highlighting border for this element. */
     protected CmsHighlightingBorder m_highlighting;
@@ -216,7 +216,7 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
     }
 
     /**
-     * @see org.opencms.acacia.client.I_InlineFormParent#adoptWidget(com.google.gwt.user.client.ui.IsWidget)
+     * @see org.opencms.acacia.client.I_CmsInlineFormParent#adoptWidget(com.google.gwt.user.client.ui.IsWidget)
      */
     public void adoptWidget(IsWidget widget) {
 
@@ -451,7 +451,7 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
                                 // stop in case of a nested container 
                                 && !CmsDomUtil.hasClass(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragTarget(), target)) {
                                 if (CmsContentEditor.isEditable(target)) {
-                                    EditorBase.markForInlineFocus(target);
+                                    CmsEditorBase.markForInlineFocus(target);
                                     controller.getHandler().openEditorForElement(
                                         CmsContainerPageElementPanel.this,
                                         true);
@@ -547,7 +547,7 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
     }
 
     /**
-     * @see org.opencms.acacia.client.I_InlineFormParent#replaceHtml(java.lang.String)
+     * @see org.opencms.acacia.client.I_CmsInlineFormParent#replaceHtml(java.lang.String)
      */
     public void replaceHtml(String html) {
 

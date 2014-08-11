@@ -27,9 +27,8 @@
 
 package org.opencms.ade.contenteditor.shared.rpc;
 
-import org.opencms.acacia.shared.Entity;
-import org.opencms.acacia.shared.ValidationResult;
-import org.opencms.acacia.shared.rpc.I_ContentService;
+import org.opencms.acacia.shared.CmsEntity;
+import org.opencms.acacia.shared.CmsValidationResult;
 import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.util.CmsUUID;
@@ -40,7 +39,7 @@ import java.util.List;
 /**
  * The content editor service interface.<p>
  */
-public interface I_CmsContentService extends I_ContentService {
+public interface I_CmsContentService extends org.opencms.acacia.shared.rpc.I_CmsContentService {
 
     /** The content definition dictionary name. */
     String DICT_CONTENT_DEFINITION = "com_alkacon_acacia_shared_ContentDefinition";
@@ -62,7 +61,7 @@ public interface I_CmsContentService extends I_ContentService {
      */
     CmsContentDefinition callEditorChangeHandlers(
         String entityId,
-        Entity editedLocaleEntity,
+        CmsEntity editedLocaleEntity,
         Collection<String> skipPaths,
         Collection<String> changedScopes) throws CmsRpcException;
 
@@ -85,7 +84,7 @@ public interface I_CmsContentService extends I_ContentService {
      * 
      * @throws CmsRpcException if something goes wrong
      */
-    void copyLocale(Collection<String> locales, Entity sourceLocale) throws CmsRpcException;
+    void copyLocale(Collection<String> locales, CmsEntity sourceLocale) throws CmsRpcException;
 
     /**
      * Loads the content definition for a given entity.<p>
@@ -98,7 +97,7 @@ public interface I_CmsContentService extends I_ContentService {
      * 
      * @throws Exception if something goes wrong processing the request
      */
-    CmsContentDefinition loadDefinition(String entityId, Entity editedLocaleEntity, Collection<String> skipPaths)
+    CmsContentDefinition loadDefinition(String entityId, CmsEntity editedLocaleEntity, Collection<String> skipPaths)
     throws Exception;
 
     /**
@@ -135,7 +134,7 @@ public interface I_CmsContentService extends I_ContentService {
      * 
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    CmsContentDefinition loadNewDefinition(String entityId, Entity editedLocaleEntity, Collection<String> skipPaths)
+    CmsContentDefinition loadNewDefinition(String entityId, CmsEntity editedLocaleEntity, Collection<String> skipPaths)
     throws CmsRpcException;
 
     /**
@@ -160,8 +159,8 @@ public interface I_CmsContentService extends I_ContentService {
      *
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    ValidationResult saveAndDeleteEntities(
-        Entity lastEditedEntity,
+    CmsValidationResult saveAndDeleteEntities(
+        CmsEntity lastEditedEntity,
         List<String> deletedEntities,
         Collection<String> skipPaths,
         String lastEditedLocale,

@@ -27,15 +27,15 @@
 
 package org.opencms.ade.contenteditor.widgetregistry.client;
 
-import org.opencms.acacia.client.I_WidgetFactory;
-import org.opencms.acacia.client.widgets.I_EditWidget;
+import org.opencms.acacia.client.I_CmsWidgetFactory;
+import org.opencms.acacia.client.widgets.I_CmsEditWidget;
 
 import com.google.gwt.dom.client.Element;
 
 /**
  * Use this widget factory to use stand alone widgets.<p>
  */
-public abstract class A_NativeWidgetFactory implements I_WidgetFactory {
+public abstract class A_NativeWidgetFactory implements I_CmsWidgetFactory {
 
     /**
      * Exports the widget factory.<p>
@@ -88,7 +88,7 @@ public abstract class A_NativeWidgetFactory implements I_WidgetFactory {
      */
     private NativeEditWidget createNativeWidget(String configuration) {
 
-        I_EditWidget widget = createFormWidget(configuration);
+        I_CmsEditWidget widget = createFormWidget(configuration);
         return NativeEditWidget.wrapWidget(widget);
     }
 

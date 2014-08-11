@@ -27,8 +27,8 @@
 
 package org.opencms.ade.contenteditor;
 
-import org.opencms.acacia.shared.Entity;
-import org.opencms.acacia.shared.Type;
+import org.opencms.acacia.shared.CmsEntity;
+import org.opencms.acacia.shared.CmsType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
@@ -123,7 +123,7 @@ public class TestCmsContentService extends OpenCmsTestCase {
         CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
         CmsContentTypeVisitor visitor = new CmsContentTypeVisitor(getCmsObject(), null, locale);
         visitor.visitTypes(definition, locale);
-        Entity result = null;
+        CmsEntity result = null;
 
         if (xmlcontent.hasLocale(locale)) {
             Element element = xmlcontent.getLocaleNode(locale);
@@ -149,7 +149,7 @@ public class TestCmsContentService extends OpenCmsTestCase {
         content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-definition-1.xsd", CmsEncoder.ENCODING_UTF_8);
         CmsXmlContentDefinition definition = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_1, resolver);
         baseTypeName = CmsContentService.getTypeUri(definition);
-        Map<String, Type> registeredTypes = service.readTypes(definition, new Locale("en"));
+        Map<String, CmsType> registeredTypes = service.readTypes(definition, new Locale("en"));
 
         assertFalse("Registered types should not be empty", registeredTypes.isEmpty());
         assertTrue("Registered types should contain type: " + baseTypeName, registeredTypes.containsKey(baseTypeName));

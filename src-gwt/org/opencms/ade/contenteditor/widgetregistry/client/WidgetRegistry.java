@@ -27,8 +27,8 @@
 
 package org.opencms.ade.contenteditor.widgetregistry.client;
 
-import org.opencms.acacia.client.I_EntityRenderer;
-import org.opencms.acacia.client.I_WidgetFactory;
+import org.opencms.acacia.client.I_CmsEntityRenderer;
+import org.opencms.acacia.client.I_CmsWidgetFactory;
 import org.opencms.ade.contenteditor.shared.CmsExternalWidgetConfiguration;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
@@ -56,17 +56,17 @@ public final class WidgetRegistry {
     private static WidgetRegistry INSTANCE;
 
     /** Map of registered renderers by name. */
-    private Map<String, I_EntityRenderer> m_renderers = new HashMap<String, I_EntityRenderer>();
+    private Map<String, I_CmsEntityRenderer> m_renderers = new HashMap<String, I_CmsEntityRenderer>();
 
     /** The widget registry. */
-    private Map<String, I_WidgetFactory> m_widgetRegistry;
+    private Map<String, I_CmsWidgetFactory> m_widgetRegistry;
 
     /**
      * Constructor.<p>
      */
     private WidgetRegistry() {
 
-        m_widgetRegistry = new HashMap<String, I_WidgetFactory>();
+        m_widgetRegistry = new HashMap<String, I_CmsWidgetFactory>();
         exportWidgetRegistration();
     }
 
@@ -88,7 +88,7 @@ public final class WidgetRegistry {
      * 
      * @param renderer the renderer to add 
      */
-    public void addRenderer(I_EntityRenderer renderer) {
+    public void addRenderer(I_CmsEntityRenderer renderer) {
 
         m_renderers.put(renderer.getName(), renderer);
     }
@@ -98,7 +98,7 @@ public final class WidgetRegistry {
      * 
      * @return the renderers 
      */
-    public Collection<I_EntityRenderer> getRenderers() {
+    public Collection<I_CmsEntityRenderer> getRenderers() {
 
         return m_renderers.values();
     }
@@ -108,7 +108,7 @@ public final class WidgetRegistry {
      * 
      * @return the registered widget factories
      */
-    public Map<String, I_WidgetFactory> getWidgetFactories() {
+    public Map<String, I_CmsWidgetFactory> getWidgetFactories() {
 
         return m_widgetRegistry;
     }
@@ -182,7 +182,7 @@ public final class WidgetRegistry {
      * @param widgetName the widget name 
      * @param widgetFactory the widget
      */
-    public void registerWidgetFactory(String widgetName, I_WidgetFactory widgetFactory) {
+    public void registerWidgetFactory(String widgetName, I_CmsWidgetFactory widgetFactory) {
 
         m_widgetRegistry.put(widgetName, widgetFactory);
     }

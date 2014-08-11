@@ -27,15 +27,15 @@
 
 package org.opencms.ade.contenteditor.client;
 
-import org.opencms.acacia.client.WidgetService;
-import org.opencms.acacia.client.widgets.FormWidgetWrapper;
-import org.opencms.acacia.client.widgets.I_EditWidget;
-import org.opencms.acacia.client.widgets.TinyMCEWidget;
-import org.opencms.ade.contenteditor.client.widgets.CmsFileWidget;
-import org.opencms.ade.contenteditor.client.widgets.CmsGalleryWidget;
-import org.opencms.ade.contenteditor.client.widgets.CmsImageGalleryWidget;
-import org.opencms.ade.contenteditor.client.widgets.CmsTextareaWidget;
-import org.opencms.ade.contenteditor.client.widgets.CmsTextboxWidget;
+import org.opencms.acacia.client.CmsWidgetService;
+import org.opencms.acacia.client.widgets.CmsFileWidget;
+import org.opencms.acacia.client.widgets.CmsGalleryWidget;
+import org.opencms.acacia.client.widgets.CmsImageGalleryWidget;
+import org.opencms.acacia.client.widgets.CmsTextareaWidget;
+import org.opencms.acacia.client.widgets.CmsTextboxWidget;
+import org.opencms.acacia.client.widgets.CmsFormWidgetWrapper;
+import org.opencms.acacia.client.widgets.I_CmsEditWidget;
+import org.opencms.acacia.client.widgets.CmsTinyMCEWidget;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Collection;
@@ -44,7 +44,7 @@ import java.util.Map;
 /**
  * Default OpenCms widget service implementation.<p>
  */
-public class CmsDefaultWidgetService extends WidgetService {
+public class CmsDefaultWidgetService extends CmsWidgetService {
 
     /** The paths to be skipped during locale synchronization. */
     private Collection<String> m_skipPaths;
@@ -53,7 +53,7 @@ public class CmsDefaultWidgetService extends WidgetService {
     private Map<String, String> m_syncValues;
 
     /**
-     * @see org.opencms.acacia.client.WidgetService#addChangedOrderPath(java.lang.String)
+     * @see org.opencms.acacia.client.CmsWidgetService#addChangedOrderPath(java.lang.String)
      */
     @Override
     public void addChangedOrderPath(String attributePath) {
@@ -62,7 +62,7 @@ public class CmsDefaultWidgetService extends WidgetService {
     }
 
     /**
-     * @see org.opencms.acacia.client.WidgetService#getDefaultAttributeValue(java.lang.String, java.lang.String)
+     * @see org.opencms.acacia.client.CmsWidgetService#getDefaultAttributeValue(java.lang.String, java.lang.String)
      */
     @Override
     public String getDefaultAttributeValue(String attributeName, String simpleValuePath) {
@@ -114,17 +114,17 @@ public class CmsDefaultWidgetService extends WidgetService {
     }
 
     /**
-     * @see org.opencms.acacia.client.WidgetService#shouldRemoveLastValueAfterUnfocus(org.opencms.acacia.client.widgets.I_EditWidget)
+     * @see org.opencms.acacia.client.CmsWidgetService#shouldRemoveLastValueAfterUnfocus(org.opencms.acacia.client.widgets.I_CmsEditWidget)
      */
     @Override
-    public boolean shouldRemoveLastValueAfterUnfocus(I_EditWidget widget) {
+    public boolean shouldRemoveLastValueAfterUnfocus(I_CmsEditWidget widget) {
 
-        if (widget instanceof FormWidgetWrapper) {
-            widget = ((FormWidgetWrapper)widget).getEditWidget();
+        if (widget instanceof CmsFormWidgetWrapper) {
+            widget = ((CmsFormWidgetWrapper)widget).getEditWidget();
         }
         if ((widget instanceof CmsTextareaWidget)
             || (widget instanceof CmsTextboxWidget)
-            || (widget instanceof TinyMCEWidget)) {
+            || (widget instanceof CmsTinyMCEWidget)) {
             String value = widget.getValue();
             if (" ".equals(value)) {
                 return false;

@@ -27,9 +27,8 @@
 
 package org.opencms.ade.contenteditor.shared.rpc;
 
-import org.opencms.acacia.shared.Entity;
-import org.opencms.acacia.shared.ValidationResult;
-import org.opencms.acacia.shared.rpc.I_ContentServiceAsync;
+import org.opencms.acacia.shared.CmsEntity;
+import org.opencms.acacia.shared.CmsValidationResult;
 import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
 import org.opencms.util.CmsUUID;
 
@@ -42,7 +41,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
 /**
  * The content editor asynchronous service interface.<p>
  */
-public interface I_CmsContentServiceAsync extends I_ContentServiceAsync {
+public interface I_CmsContentServiceAsync extends org.opencms.acacia.shared.rpc.I_CmsContentServiceAsync {
 
     /**
      * Calls the editor change handlers.<p>
@@ -55,7 +54,7 @@ public interface I_CmsContentServiceAsync extends I_ContentServiceAsync {
      */
     void callEditorChangeHandlers(
         String entityId,
-        Entity editedLocaleEntity,
+        CmsEntity editedLocaleEntity,
         Collection<String> skipPaths,
         Collection<String> changedScopes,
         AsyncCallback<CmsContentDefinition> callback);
@@ -78,7 +77,7 @@ public interface I_CmsContentServiceAsync extends I_ContentServiceAsync {
      * @param sourceLocale the source locale
      * @param callback the asynchronous callback
      */
-    void copyLocale(Collection<String> locales, Entity sourceLocale, AsyncCallback<Void> callback);
+    void copyLocale(Collection<String> locales, CmsEntity sourceLocale, AsyncCallback<Void> callback);
 
     /**
      * Loads the content definition for a given type.<p>
@@ -90,7 +89,7 @@ public interface I_CmsContentServiceAsync extends I_ContentServiceAsync {
      */
     void loadDefinition(
         String entityId,
-        Entity editedLocaleEntity,
+        CmsEntity editedLocaleEntity,
         Collection<String> skipPaths,
         AsyncCallback<CmsContentDefinition> callback);
 
@@ -125,7 +124,7 @@ public interface I_CmsContentServiceAsync extends I_ContentServiceAsync {
      */
     void loadNewDefinition(
         String entityId,
-        Entity editedLocaleEntity,
+        CmsEntity editedLocaleEntity,
         Collection<String> skipPaths,
         AsyncCallback<CmsContentDefinition> callback);
 
@@ -147,11 +146,11 @@ public interface I_CmsContentServiceAsync extends I_ContentServiceAsync {
      * @param callback the asynchronous callback
      */
     void saveAndDeleteEntities(
-        Entity lastEditedEntity,
+        CmsEntity lastEditedEntity,
         List<String> deletedEntities,
         Collection<String> skipPaths,
         String lastEditedLocale,
         boolean clearOnSuccess,
-        AsyncCallback<ValidationResult> callback);
+        AsyncCallback<CmsValidationResult> callback);
 
 }

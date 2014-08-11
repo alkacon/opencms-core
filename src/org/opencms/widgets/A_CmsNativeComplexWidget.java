@@ -27,7 +27,7 @@
 
 package org.opencms.widgets;
 
-import org.opencms.acacia.shared.ContentDefinition;
+import org.opencms.acacia.shared.CmsContentDefinition;
 import org.opencms.ade.contenteditor.shared.CmsComplexWidgetData;
 import org.opencms.ade.contenteditor.shared.CmsExternalWidgetConfiguration;
 import org.opencms.file.CmsObject;
@@ -94,9 +94,9 @@ public abstract class A_CmsNativeComplexWidget implements I_CmsComplexWidget {
 
         List<String> scripts = new ArrayList<String>(getScripts(cms));
         List<String> styles = new ArrayList<String>(getStyleSheets(cms));
-        String init = m_configurationMap.get(ContentDefinition.PARAM_INIT_CALL);
+        String init = m_configurationMap.get(CmsContentDefinition.PARAM_INIT_CALL);
         CmsExternalWidgetConfiguration config = new CmsExternalWidgetConfiguration(getName(), init, scripts, styles);
-        return new CmsComplexWidgetData(ContentDefinition.NATIVE_RENDERER, m_jsonConfig.toString(), config);
+        return new CmsComplexWidgetData(CmsContentDefinition.NATIVE_RENDERER, m_jsonConfig.toString(), config);
     }
 
     /**
@@ -110,7 +110,7 @@ public abstract class A_CmsNativeComplexWidget implements I_CmsComplexWidget {
 
         m_configuration = config;
         m_configurationMap = CmsStringUtil.splitAsMap(config, "|", ":");
-        m_configurationMap.put(ContentDefinition.PARAM_INIT_CALL, INIT_FUNCTION_PREFIX + getName());
+        m_configurationMap.put(CmsContentDefinition.PARAM_INIT_CALL, INIT_FUNCTION_PREFIX + getName());
         m_jsonConfig = new JSONObject(new HashMap<String, Object>(m_configurationMap));
     }
 

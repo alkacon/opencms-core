@@ -27,12 +27,11 @@
 
 package org.opencms.ade.contenteditor.shared;
 
-import org.opencms.acacia.shared.AttributeConfiguration;
-import org.opencms.acacia.shared.ContentDefinition;
-import org.opencms.acacia.shared.Entity;
-import org.opencms.acacia.shared.EntityAttribute;
-import org.opencms.acacia.shared.TabInfo;
-import org.opencms.acacia.shared.Type;
+import org.opencms.acacia.shared.CmsAttributeConfiguration;
+import org.opencms.acacia.shared.CmsEntity;
+import org.opencms.acacia.shared.CmsEntityAttribute;
+import org.opencms.acacia.shared.CmsTabInfo;
+import org.opencms.acacia.shared.CmsType;
 import org.opencms.gwt.shared.CmsModelResourceInfo;
 import org.opencms.util.CmsUUID;
 
@@ -45,7 +44,7 @@ import java.util.Set;
 /**
  * Contains all information needed for editing an XMLContent.<p>
  */
-public class CmsContentDefinition extends ContentDefinition {
+public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDefinition {
 
     /** The entity id prefix. */
     private static final String ENTITY_ID_PREFIX = "http://opencms.org/resources/";
@@ -149,12 +148,12 @@ public class CmsContentDefinition extends ContentDefinition {
      */
     public CmsContentDefinition(
         String entityId,
-        Map<String, Entity> entities,
-        Map<String, AttributeConfiguration> configurations,
+        Map<String, CmsEntity> entities,
+        Map<String, CmsAttributeConfiguration> configurations,
         Collection<CmsExternalWidgetConfiguration> externalWidgetConfigurations,
         Map<String, CmsComplexWidgetData> complexWidgetData,
-        Map<String, Type> types,
-        List<TabInfo> tabInfos,
+        Map<String, CmsType> types,
+        List<CmsTabInfo> tabInfos,
         String locale,
         List<String> contentLocales,
         Map<String, String> availableLocales,
@@ -230,7 +229,7 @@ public class CmsContentDefinition extends ContentDefinition {
      * 
      * @return the value
      */
-    public static String getValueForPath(Entity entity, String path) {
+    public static String getValueForPath(CmsEntity entity, String path) {
 
         String result = null;
         if (path.startsWith("/")) {
@@ -244,12 +243,14 @@ public class CmsContentDefinition extends ContentDefinition {
             attributeName = path;
             path = null;
         }
-        int index = ContentDefinition.extractIndex(attributeName);
+        int index = org.opencms.acacia.shared.CmsContentDefinition.extractIndex(attributeName);
         if (index > 0) {
             index--;
         }
-        attributeName = entity.getTypeName() + "/" + ContentDefinition.removeIndex(attributeName);
-        EntityAttribute attribute = entity.getAttribute(attributeName);
+        attributeName = entity.getTypeName()
+            + "/"
+            + org.opencms.acacia.shared.CmsContentDefinition.removeIndex(attributeName);
+        CmsEntityAttribute attribute = entity.getAttribute(attributeName);
         if (!((attribute == null) || (attribute.isComplexValue() && (path == null)))) {
             if (attribute.isSimpleValue()) {
                 if ((path == null) && (attribute.getValueCount() > 0)) {
@@ -257,7 +258,7 @@ public class CmsContentDefinition extends ContentDefinition {
                     result = values.get(index);
                 }
             } else if (attribute.getValueCount() > (index)) {
-                List<Entity> values = attribute.getComplexValues();
+                List<CmsEntity> values = attribute.getComplexValues();
                 result = getValueForPath(values.get(index), path);
             }
         }
@@ -275,20 +276,20 @@ public class CmsContentDefinition extends ContentDefinition {
      * @param considerDefaults if default values should be added according to minimum occurrence settings
      */
     public static void transfereValues(
-        Entity original,
-        Entity target,
+        CmsEntity original,
+        CmsEntity target,
         List<String> transferAttributes,
-        Map<String, Type> entityTypes,
-        Map<String, AttributeConfiguration> attributeConfigurations,
+        Map<String, CmsType> entityTypes,
+        Map<String, CmsAttributeConfiguration> attributeConfigurations,
         boolean considerDefaults) {
 
-        Type entityType = entityTypes.get(target.getTypeName());
+        CmsType entityType = entityTypes.get(target.getTypeName());
         for (String attributeName : entityType.getAttributeNames()) {
-            Type attributeType = entityTypes.get(entityType.getAttributeTypeName(attributeName));
+            CmsType attributeType = entityTypes.get(entityType.getAttributeTypeName(attributeName));
             if (transferAttributes.contains(attributeName)) {
 
                 target.removeAttribute(attributeName);
-                EntityAttribute attribute = original != null ? original.getAttribute(attributeName) : null;
+                CmsEntityAttribute attribute = original != null ? original.getAttribute(attributeName) : null;
                 if (attribute != null) {
                     if (attributeType.isSimpleType()) {
                         for (String value : attribute.getSimpleValues()) {
@@ -302,7 +303,7 @@ public class CmsContentDefinition extends ContentDefinition {
                             }
                         }
                     } else {
-                        for (Entity value : attribute.getComplexValues()) {
+                        for (CmsEntity value : attribute.getComplexValues()) {
                             target.addAttributeValue(attributeName, value);
                         }
                         if (considerDefaults) {
@@ -328,12 +329,14 @@ public class CmsContentDefinition extends ContentDefinition {
                 }
             } else {
                 if (!attributeType.isSimpleType()) {
-                    EntityAttribute targetAttribute = target.getAttribute(attributeName);
-                    EntityAttribute originalAttribute = original != null ? original.getAttribute(attributeName) : null;
+                    CmsEntityAttribute targetAttribute = target.getAttribute(attributeName);
+                    CmsEntityAttribute originalAttribute = original != null
+                    ? original.getAttribute(attributeName)
+                    : null;
                     if (targetAttribute != null) {
                         for (int i = 0; i < targetAttribute.getComplexValues().size(); i++) {
-                            Entity subTarget = targetAttribute.getComplexValues().get(i);
-                            Entity subOriginal = (originalAttribute != null)
+                            CmsEntity subTarget = targetAttribute.getComplexValues().get(i);
+                            CmsEntity subOriginal = (originalAttribute != null)
                                 && (originalAttribute.getComplexValues().size() > i)
                             ? originalAttribute.getComplexValues().get(i)
                             : null;
@@ -373,14 +376,14 @@ public class CmsContentDefinition extends ContentDefinition {
      * 
      * @return the created entity
      */
-    protected static Entity createDefaultValueEntity(
-        Type entityType,
-        Map<String, Type> entityTypes,
-        Map<String, AttributeConfiguration> attributeConfigurations) {
+    protected static CmsEntity createDefaultValueEntity(
+        CmsType entityType,
+        Map<String, CmsType> entityTypes,
+        Map<String, CmsAttributeConfiguration> attributeConfigurations) {
 
-        Entity result = new Entity(null, entityType.getId());
+        CmsEntity result = new CmsEntity(null, entityType.getId());
         for (String attributeName : entityType.getAttributeNames()) {
-            Type attributeType = entityTypes.get(entityType.getAttributeTypeName(attributeName));
+            CmsType attributeType = entityTypes.get(entityType.getAttributeTypeName(attributeName));
             for (int i = 0; i < entityType.getAttributeMinOccurrence(attributeName); i++) {
                 if (attributeType.isSimpleType()) {
                     result.addAttributeValue(

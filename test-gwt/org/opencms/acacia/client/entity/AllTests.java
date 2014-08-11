@@ -45,7 +45,7 @@ public class AllTests extends GWTTestSuite {
     public static Test suite() {
 
         TestSuite suite = new TestSuite("Test for a Maps Application");
-        suite.addTestSuite(VieTest.class);
+        suite.addTestSuite(EntityBackendTest.class);
         return suite;
     }
 }

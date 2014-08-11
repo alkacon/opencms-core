@@ -27,9 +27,9 @@
 
 package org.opencms.ade.contenteditor;
 
-import org.opencms.acacia.shared.AttributeConfiguration;
-import org.opencms.acacia.shared.TabInfo;
-import org.opencms.acacia.shared.Type;
+import org.opencms.acacia.shared.CmsAttributeConfiguration;
+import org.opencms.acacia.shared.CmsTabInfo;
+import org.opencms.acacia.shared.CmsType;
 import org.opencms.ade.contenteditor.shared.CmsComplexWidgetData;
 import org.opencms.ade.contenteditor.shared.CmsExternalWidgetConfiguration;
 import org.opencms.file.CmsFile;
@@ -72,7 +72,7 @@ public class CmsContentTypeVisitor {
         private String m_attributeName;
 
         /** The attribute type configuration. */
-        private AttributeConfiguration m_config;
+        private CmsAttributeConfiguration m_config;
 
         /** The configured display type. */
         private DisplayType m_configuredType;
@@ -92,7 +92,7 @@ public class CmsContentTypeVisitor {
          * @param rule the applied rule
          */
         protected DisplayTypeEvaluator(
-            AttributeConfiguration config,
+            CmsAttributeConfiguration config,
             DisplayType configuredType,
             DisplayType defaultType,
             EvaluationRule rule) {
@@ -122,7 +122,7 @@ public class CmsContentTypeVisitor {
          * 
          * @return the attribute configuration 
          */
-        protected AttributeConfiguration getEvaluatedConfiguration(DisplayType predecessor, DisplayType successor) {
+        protected CmsAttributeConfiguration getEvaluatedConfiguration(DisplayType predecessor, DisplayType successor) {
 
             DisplayType resultingType = m_configuredType;
 
@@ -216,7 +216,7 @@ public class CmsContentTypeVisitor {
     }
 
     /** The attribute configurations. */
-    private Map<String, AttributeConfiguration> m_attributeConfigurations;
+    private Map<String, CmsAttributeConfiguration> m_attributeConfigurations;
 
     /** The CMS context used for this visitor. */
     private CmsObject m_cms;
@@ -243,10 +243,10 @@ public class CmsContentTypeVisitor {
     private CmsMultiMessages m_messages;
 
     /** The registered types. */
-    private Map<String, Type> m_registeredTypes;
+    private Map<String, CmsType> m_registeredTypes;
 
     /** The tab informations. */
-    private List<TabInfo> m_tabInfos;
+    private List<CmsTabInfo> m_tabInfos;
 
     /** The widget configurations. */
     private Map<String, CmsExternalWidgetConfiguration> m_widgetConfigurations;
@@ -303,7 +303,7 @@ public class CmsContentTypeVisitor {
      *
      * @return the tabInfos
      */
-    public List<TabInfo> getTabInfos() {
+    public List<CmsTabInfo> getTabInfos() {
 
         return m_tabInfos;
     }
@@ -375,9 +375,9 @@ public class CmsContentTypeVisitor {
         }
         // generate a new multi messages object and add the messages from the workplace
 
-        m_attributeConfigurations = new HashMap<String, AttributeConfiguration>();
+        m_attributeConfigurations = new HashMap<String, CmsAttributeConfiguration>();
         m_widgetConfigurations = new HashMap<String, CmsExternalWidgetConfiguration>();
-        m_registeredTypes = new HashMap<String, Type>();
+        m_registeredTypes = new HashMap<String, CmsType>();
         m_localeSynchronizations = new ArrayList<String>();
         m_tabInfos = collectTabInfos(xmlContentDefinition);
         readTypes(xmlContentDefinition, "");
@@ -388,7 +388,7 @@ public class CmsContentTypeVisitor {
      * 
      * @return the attribute configurations
      */
-    protected Map<String, AttributeConfiguration> getAttributeConfigurations() {
+    protected Map<String, CmsAttributeConfiguration> getAttributeConfigurations() {
 
         return m_attributeConfigurations;
     }
@@ -408,7 +408,7 @@ public class CmsContentTypeVisitor {
      * 
      * @return the types
      */
-    protected Map<String, Type> getTypes() {
+    protected Map<String, CmsType> getTypes() {
 
         return m_registeredTypes;
     }
@@ -430,16 +430,16 @@ public class CmsContentTypeVisitor {
      * 
      * @return the tab informations
      */
-    private List<TabInfo> collectTabInfos(CmsXmlContentDefinition definition) {
+    private List<CmsTabInfo> collectTabInfos(CmsXmlContentDefinition definition) {
 
-        List<TabInfo> result = new ArrayList<TabInfo>();
+        List<CmsTabInfo> result = new ArrayList<CmsTabInfo>();
         if (definition.getContentHandler().getTabs() != null) {
             for (CmsXmlContentTab xmlTab : definition.getContentHandler().getTabs()) {
                 String tabName = m_messages.keyDefault(A_CmsWidget.LABEL_PREFIX
                     + definition.getInnerName()
                     + "."
                     + xmlTab.getTabName(), xmlTab.getTabName());
-                result.add(new TabInfo(tabName, xmlTab.getIdName(), xmlTab.getStartName(), xmlTab.isCollapsed()));
+                result.add(new CmsTabInfo(tabName, xmlTab.getIdName(), xmlTab.getStartName(), xmlTab.isCollapsed()));
             }
         }
         return result;
@@ -524,7 +524,7 @@ public class CmsContentTypeVisitor {
             return true;
         }
         if (m_tabInfos != null) {
-            for (TabInfo info : m_tabInfos) {
+            for (CmsTabInfo info : m_tabInfos) {
                 if (info.isCollapsed()
                     && path.startsWith(info.getStartName())
                     && !path.substring(info.getStartName().length() + 1).contains("/")) {
@@ -624,7 +624,7 @@ public class CmsContentTypeVisitor {
         }
         boolean localeSynchronized = m_contentHandler.hasSynchronizedElements()
             && m_contentHandler.getSynchronizations().contains(path.substring(1));
-        AttributeConfiguration result = new AttributeConfiguration(
+        CmsAttributeConfiguration result = new CmsAttributeConfiguration(
             label,
             getHelp(schemaType),
             widgetName,
@@ -658,19 +658,19 @@ public class CmsContentTypeVisitor {
      * 
      * @return the type 
      */
-    private Type readTypes(CmsXmlContentDefinition xmlContentDefinition, String path) {
+    private CmsType readTypes(CmsXmlContentDefinition xmlContentDefinition, String path) {
 
         String typeName = CmsContentService.getTypeUri(xmlContentDefinition);
         if (m_registeredTypes.containsKey(typeName)) {
             return m_registeredTypes.get(typeName);
         }
-        Type type = new Type(typeName);
+        CmsType type = new CmsType(typeName);
         type.setChoiceMaxOccurrence(xmlContentDefinition.getChoiceMaxOccurs());
         m_registeredTypes.put(typeName, type);
         if (type.isChoice()) {
-            Type choiceType = new Type(typeName + "/" + Type.CHOICE_ATTRIBUTE_NAME);
+            CmsType choiceType = new CmsType(typeName + "/" + CmsType.CHOICE_ATTRIBUTE_NAME);
             m_registeredTypes.put(choiceType.getId(), choiceType);
-            type.addAttribute(Type.CHOICE_ATTRIBUTE_NAME, choiceType, 1, xmlContentDefinition.getChoiceMaxOccurs());
+            type.addAttribute(CmsType.CHOICE_ATTRIBUTE_NAME, choiceType, 1, xmlContentDefinition.getChoiceMaxOccurs());
             type = choiceType;
         }
         ArrayList<DisplayTypeEvaluator> evaluators = new ArrayList<DisplayTypeEvaluator>();
@@ -682,11 +682,11 @@ public class CmsContentTypeVisitor {
             DisplayTypeEvaluator ev = readConfiguration((A_CmsXmlContentValue)subType, childPath);
             ev.setAttributeName(subAttributeName);
             evaluators.add(ev);
-            Type subEntityType;
+            CmsType subEntityType;
             if (subType.isSimpleType()) {
                 subTypeName = CmsContentService.TYPE_NAME_PREFIX + subType.getTypeName();
                 if (!m_registeredTypes.containsKey(subTypeName)) {
-                    subEntityType = new Type(subTypeName);
+                    subEntityType = new CmsType(subTypeName);
                     m_registeredTypes.put(subTypeName, subEntityType);
                 } else {
                     subEntityType = m_registeredTypes.get(subTypeName);
@@ -702,7 +702,7 @@ public class CmsContentTypeVisitor {
         for (int i = 0; i < evaluators.size(); i++) {
             DisplayTypeEvaluator ev = evaluators.get(i);
             DisplayType successor = ((i + 1) < evaluators.size()) ? evaluators.get(i + 1).getProposedType() : null;
-            AttributeConfiguration evaluated = ev.getEvaluatedConfiguration(predecessor, successor);
+            CmsAttributeConfiguration evaluated = ev.getEvaluatedConfiguration(predecessor, successor);
             m_attributeConfigurations.put(ev.getAttributeName(), evaluated);
             if (evaluated.isLocaleSynchronized()) {
                 m_localeSynchronizations.add(ev.getAttributeName());
