@@ -1,0 +1,11 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+			 xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:with type="org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle" field="inputRes" />
+	<ui:with type="org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle" field="editorRes" />
+
+	<g:HTMLPanel styleName="{editorRes.widgetCss.inputField}">
+		<div class="{editorRes.widgetCss.textBox}"><g:TextBox ui:field="m_textbox" /></div>
+		<g:FocusPanel ui:field="m_fadePanel" styleName="{inputRes.inputCss.fader}" />
+	</g:HTMLPanel>
+</ui:UiBinder>
