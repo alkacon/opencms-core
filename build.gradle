@@ -85,6 +85,14 @@ configurations {
         transitive = false
         extendsFrom modulesCompile
     }
+    
+    testGwtCompile{
+        description = 'needed to run GWT test cases'
+        transitive = false
+        extendsFrom gwtCompile
+    }
+    
+    testGwtRuntime{ transitive = false }
 
     setupCompile {
         transitive = false
@@ -123,6 +131,13 @@ sourceSets{
         resources.srcDir 'src-modules'
         resources.srcDir 'src-setup'
     }
+    
+    testGwt {
+        java.srcDir 'src-gwt'
+        resources.srcDir 'src-gwt'
+        java.srcDir 'test-gwt'
+        resources.srcDir 'test-gwt'
+    }
 }
 
 // adding generated dependencies during configuration phase to avoid build path problems in IDE
@@ -134,6 +149,8 @@ sourceSets.test.compileClasspath += fileTree('webapp/setup/database'){ include '
 sourceSets.test.compileClasspath += files("$buildDir/classes/setup") { builtBy 'setupClasses' }
 sourceSets.test.compileClasspath += files("$buildDir/classes/modules") { builtBy 'modulesClasses' }
 sourceSets.test.compileClasspath += files("$buildDir/classes/gwt") { builtBy 'gwtClasses' }
+sourceSets.testGwt.compileClasspath += files("$buildDir/classes/main") { builtBy 'compileJava' }
+sourceSets.testGwt.compileClasspath += files("$buildDir/classes/modules") { builtBy 'modulesClasses' }
 
 
 
@@ -912,6 +929,26 @@ task sourcesJarTest(type: Jar) {
     from sourceSets.test.allSource
     classifier = 'sources'
     baseName 'opencms-test'
+}
+
+
+task testGwt(type: Test, dependsOn: [compileTestGwtJava]) {
+    classpath=sourceSets.testGwt.runtimeClasspath
+    classpath += files("${projectDir}/src")
+    classpath += files("${projectDir}/src-gwt")
+    classpath += files("${projectDir}/test-gwt")
+    useJUnit()
+    include 'org/opencms/client/test/AllTests*'
+    // important: exclude all anonymous classes
+    exclude '**/*$*.class'
+    scanForTestClasses false
+    testClassesDir = sourceSets.testGwt.output.classesDir
+    systemProperties['gwt.args'] = "-logLevel WARN"
+    systemProperties['java.awt.headless'] = "true"
+    maxHeapSize = max_heap_size
+    jvmArgs '-XX:MaxPermSize=256m'
+    testLogging.showStandardStreams = true
+    ignoreFailures true
 }
 
 artifacts {
