@@ -33,7 +33,7 @@ dependencies {
     testGwtCompile group: 'junit', name: 'junit', version: '4.11'
 	
     distribution group: 'antlr', name: 'antlr', version: '2.7.7'
-    distribution group: 'com.alkacon', name: 'alkacon-simapi', version: '1.0.0'
+    distribution group: 'com.alkacon', name: 'alkacon-simapi', version: '1.0.1'
     distribution group: 'com.alkacon', name: 'alkacon-diff', version: '0.9.2'
 
     distribution group: 'org.safehaus.jug', name: 'jug', version: '2.0.0', classifier: 'lgpl'
