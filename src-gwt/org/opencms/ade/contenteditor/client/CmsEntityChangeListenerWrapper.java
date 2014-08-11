@@ -27,7 +27,7 @@
 
 package org.opencms.ade.contenteditor.client;
 
-import org.opencms.acacia.client.entity.Entity;
+import org.opencms.acacia.shared.Entity;
 
 import com.google.gwt.core.client.JavaScriptObject;
 
@@ -50,7 +50,7 @@ public final class CmsEntityChangeListenerWrapper implements I_CmsEntityChangeLi
     }
 
     /**
-     * @see org.opencms.ade.contenteditor.client.I_CmsEntityChangeListener#onEntityChange(org.opencms.acacia.client.entity.Entity)
+     * @see org.opencms.ade.contenteditor.client.I_CmsEntityChangeListener#onEntityChange(org.opencms.acacia.shared.Entity)
      */
     public void onEntityChange(Entity entity) {
 
@@ -63,7 +63,7 @@ public final class CmsEntityChangeListenerWrapper implements I_CmsEntityChangeLi
      * @param entity the changed entiy
      */
     private native void onChange(Entity entity) /*-{
-        var listener = this.@org.opencms.ade.contenteditor.client.CmsEntityChangeListenerWrapper::m_wrappedListener;
-        listener.onChange(entity);
-    }-*/;
+                                                  var listener = this.@org.opencms.ade.contenteditor.client.CmsEntityChangeListenerWrapper::m_wrappedListener;
+                                                  listener.onChange(entity);
+                                                  }-*/;
 }

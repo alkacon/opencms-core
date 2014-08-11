@@ -35,7 +35,7 @@ import java.util.List;
 /**
  * Serializable entity attribute implementation.<p>
  */
-public class EntityAttribute implements I_EntityAttribute, Serializable {
+public class EntityAttribute implements Serializable {
 
     /** Serial version id. */
     private static final long serialVersionUID = 8283921354261037725L;
@@ -89,7 +89,9 @@ public class EntityAttribute implements I_EntityAttribute, Serializable {
     }
 
     /**
-     * @see org.opencms.acacia.shared.I_EntityAttribute#getAttributeName()
+     * Returns the attribute name.<p>
+     * 
+     * @return the attribute name
      */
     public String getAttributeName() {
 
@@ -97,25 +99,31 @@ public class EntityAttribute implements I_EntityAttribute, Serializable {
     }
 
     /**
-     * @see org.opencms.acacia.shared.I_EntityAttribute#getComplexValue()
+     * Returns the first complex value in the list.<p>
+     * 
+     * @return the first complex value
      */
-    public I_Entity getComplexValue() {
+    public Entity getComplexValue() {
 
         return m_entityValues.get(0);
     }
 
     /**
-     * @see org.opencms.acacia.shared.I_EntityAttribute#getComplexValues()
+     * Returns the list of complex values.<p>
+     * 
+     * @return the list of complex values
      */
-    public List<I_Entity> getComplexValues() {
+    public List<Entity> getComplexValues() {
 
-        List<I_Entity> result = new ArrayList<I_Entity>();
+        List<Entity> result = new ArrayList<Entity>();
         result.addAll(m_entityValues);
         return Collections.unmodifiableList(result);
     }
 
     /**
-     * @see org.opencms.acacia.shared.I_EntityAttribute#getSimpleValue()
+     * Returns the first simple value in the list.<p>
+     * 
+     * @return the first simple value
      */
     public String getSimpleValue() {
 
@@ -123,7 +131,9 @@ public class EntityAttribute implements I_EntityAttribute, Serializable {
     }
 
     /**
-     * @see org.opencms.acacia.shared.I_EntityAttribute#getSimpleValues()
+     * Returns the list of simple values.<p>
+     * 
+     * @return the list of simple values
      */
     public List<String> getSimpleValues() {
 
@@ -131,7 +141,9 @@ public class EntityAttribute implements I_EntityAttribute, Serializable {
     }
 
     /**
-     * @see org.opencms.acacia.shared.I_EntityAttribute#getValueCount()
+     * Returns the number of values set for this attribute.<p>
+     * 
+     * @return the number of values
      */
     public int getValueCount() {
 
@@ -142,7 +154,9 @@ public class EntityAttribute implements I_EntityAttribute, Serializable {
     }
 
     /**
-     * @see org.opencms.acacia.shared.I_EntityAttribute#isComplexValue()
+     * Returns if the is a complex type value.<p>
+     * 
+     * @return <code>true</code> if this is a complex type value
      */
     public boolean isComplexValue() {
 
@@ -150,7 +164,9 @@ public class EntityAttribute implements I_EntityAttribute, Serializable {
     }
 
     /**
-     * @see org.opencms.acacia.shared.I_EntityAttribute#isSimpleValue()
+     * Returns if the is a simple type value.<p>
+     * 
+     * @return <code>true</code> if this is a simple type value
      */
     public boolean isSimpleValue() {
 
@@ -158,7 +174,9 @@ public class EntityAttribute implements I_EntityAttribute, Serializable {
     }
 
     /**
-     * @see org.opencms.acacia.shared.I_EntityAttribute#isSingleValue()
+     * Returns if this is a single value attribute.<p>
+     * 
+     * @return <code>true</code> if this is a single value attribute
      */
     public boolean isSingleValue() {
 

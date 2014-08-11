@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module>
+	<inherits name="org.opencms.GwtBase" />
 	<inherits name="org.timepedia.exporter.Exporter" />
   	<set-property name="export" value="yes" />
 	<source path="client" />

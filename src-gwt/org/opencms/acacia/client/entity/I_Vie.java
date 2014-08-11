@@ -27,8 +27,8 @@
 
 package org.opencms.acacia.client.entity;
 
-import org.opencms.acacia.shared.I_Entity;
-import org.opencms.acacia.shared.I_Type;
+import org.opencms.acacia.shared.Entity;
+import org.opencms.acacia.shared.Type;
 
 import java.util.List;
 import java.util.Map;
@@ -41,20 +41,12 @@ import com.google.gwt.dom.client.Element;
 public interface I_Vie {
 
     /**
-     * Binds a given callback to the entities of vie.<p>
-     * 
-     * @param functionName the name of the function
-     * @param callback the function that should be executed
-     */
-    void bindFunctionToEntities(String functionName, I_EntityCallback callback);
-
-    /**
      * Changes the original entities content to the given new content.<p>
      * 
      * @param original the original entity to change
      * @param newContent the new content entity
      */
-    void changeEntityContentValues(Entity original, I_Entity newContent);
+    void changeEntityContentValues(Entity original, Entity newContent);
 
     /**
      * Clears all entities from VIE.<p>
@@ -69,7 +61,7 @@ public interface I_Vie {
      * 
      * @return the new entity
      */
-    I_Entity createEntity(String entityId, String entityType);
+    Entity createEntity(String entityId, String entityType);
 
     /**
      * Creates a new type.<p>
@@ -78,16 +70,7 @@ public interface I_Vie {
      * 
      * @return the new type
      */
-    I_Type createType(String id);
-
-    /**
-     * Returns all attribute elements within a given context.<p>
-     * 
-     * @param context the context to search within
-     * 
-     * @return the elements
-     */
-    List<Element> getAttributeElements(Element context);
+    Type createType(String id);
 
     /**
      * Returns DOM elements displaying the given attribute's value.<p>
@@ -98,7 +81,7 @@ public interface I_Vie {
      * 
      * @return the elements
      */
-    List<Element> getAttributeElements(I_Entity entity, String attributeName, Element context);
+    List<Element> getAttributeElements(Entity entity, String attributeName, Element context);
 
     /**
      * Returns DOM elements displaying the given attribute's value.<p>
@@ -112,38 +95,13 @@ public interface I_Vie {
     List<Element> getAttributeElements(String entityId, String attributeName, Element context);
 
     /**
-     * Returns the element subject.<p>
-     * 
-     * @param element the DOM element
-     * 
-     * @return the elements subject
-     */
-    String getElementPredicate(Element element);
-
-    /**
-     * Returns the element subject.<p>
-     * 
-     * @param element the DOM element
-     * 
-     * @return the elements subject
-     */
-    String getElementSubject(Element element);
-
-    /**
-     * Returns the entities of vie.<p>
-     * 
-     * @return the entities
-     */
-    I_EntityCollection getEntities();
-
-    /**
      * Returns the entity with the given id.<p>
      * 
      * @param entityId the entity id
      * 
      * @return the entity
      */
-    I_Entity getEntity(String entityId);
+    Entity getEntity(String entityId);
 
     /**
      * Returns the type with the given id/name.<p>
@@ -152,16 +110,7 @@ public interface I_Vie {
      * 
      * @return the type
      */
-    I_Type getType(String id);
-
-    /**
-     * Executes the load function on the VIE instance.<p>
-     * 
-     * @param service the name of the service to use
-     * @param selector the jQuery selector to specify the HTML-Elements inside the DOM to search for entities
-     * @param callback the callback that is executed on success 
-     */
-    void load(String service, String selector, I_EntityArrayCallback callback);
+    Type getType(String id);
 
     /**
      * Registers the given entity within the VIE model.<p>
@@ -170,7 +119,7 @@ public interface I_Vie {
      * 
      * @return the new registered entity object
      */
-    I_Entity registerEntity(I_Entity entity);
+    Entity registerEntity(Entity entity);
 
     /**
      * Registers the given entity within the VIE model.<p>
@@ -180,7 +129,7 @@ public interface I_Vie {
      * 
      * @return the new registered entity object
      */
-    I_Entity registerEntity(I_Entity entity, boolean discardIds);
+    Entity registerEntity(Entity entity, boolean discardIds);
 
     /**
      * Registers the type and it's sub-types.<p>
@@ -188,7 +137,7 @@ public interface I_Vie {
      * @param type the type to register
      * @param types the available types
      */
-    void registerTypes(I_Type type, Map<String, I_Type> types);
+    void registerTypes(Type type, Map<String, Type> types);
 
     /**
      * Removes the given entity from VIE.<p>

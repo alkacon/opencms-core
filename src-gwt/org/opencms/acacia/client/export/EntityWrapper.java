@@ -27,7 +27,7 @@
 
 package org.opencms.acacia.client.export;
 
-import org.opencms.acacia.shared.I_Entity;
+import org.opencms.acacia.shared.Entity;
 
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
@@ -41,7 +41,7 @@ import org.timepedia.exporter.client.Exportable;
 public class EntityWrapper implements Exportable {
 
     /** The entity wrapped by this wrapper. */
-    private I_Entity m_entity;
+    private Entity m_entity;
 
     /**
      * Default constructor.<p>
@@ -55,7 +55,7 @@ public class EntityWrapper implements Exportable {
      * 
      * @param entity the entity to be wrapped 
      */
-    public EntityWrapper(I_Entity entity) {
+    public EntityWrapper(Entity entity) {
 
         m_entity = entity;
     }
@@ -108,7 +108,7 @@ public class EntityWrapper implements Exportable {
      * 
      * @return the wrapped entity  
      */
-    public I_Entity getEntity() {
+    public Entity getEntity() {
 
         return m_entity;
     }
@@ -238,7 +238,7 @@ public class EntityWrapper implements Exportable {
      * 
      * @param entity the entity to wrap 
      */
-    public void setEntity(I_Entity entity) {
+    public void setEntity(Entity entity) {
 
         m_entity = entity;
     }

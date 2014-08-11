@@ -35,10 +35,9 @@ import org.opencms.acacia.client.I_InlineFormParent;
 import org.opencms.acacia.client.I_InlineHtmlUpdateHandler;
 import org.opencms.acacia.client.I_WidgetService;
 import org.opencms.acacia.client.css.I_LayoutBundle;
-import org.opencms.acacia.client.entity.Entity;
 import org.opencms.acacia.client.entity.Vie;
-import org.opencms.acacia.shared.I_Entity;
-import org.opencms.acacia.shared.I_Type;
+import org.opencms.acacia.shared.Entity;
+import org.opencms.acacia.shared.Type;
 import org.opencms.gwt.client.ui.CmsHighlightingBorder;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
@@ -78,7 +77,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 /**
  * Widget allowing form based editing for parts of a content to enhance the in-line editing.<p>
  */
-public class InlineEntityWidget extends Composite {
+public final class InlineEntityWidget extends Composite {
 
     /**
      * Flow panel with handling descendant resizes to reposition pop-up.<p>
@@ -153,12 +152,12 @@ public class InlineEntityWidget extends Composite {
     /**
      * The UI binder interface.<p>
      */
-    interface InlineEntityWidgetUiBinder extends UiBinder<FlowPanel, InlineEntityWidget> {
+    interface I_InlineEntityWidgetUiBinder extends UiBinder<FlowPanel, InlineEntityWidget> {
         // nothing to do
     }
 
     /** The UI binder instance. */
-    private static InlineEntityWidgetUiBinder uiBinder = GWT.create(InlineEntityWidgetUiBinder.class);
+    private static I_InlineEntityWidgetUiBinder uiBinder = GWT.create(I_InlineEntityWidgetUiBinder.class);
 
     /** The add button. */
     @UiField
@@ -212,7 +211,7 @@ public class InlineEntityWidget extends Composite {
     private Timer m_overlayTimer;
 
     /** The parent of the entity to edit. */
-    private I_Entity m_parentEntity;
+    private Entity m_parentEntity;
 
     /** Flag indicating the popup has been closed. */
     private boolean m_popupClosed;
@@ -249,7 +248,7 @@ public class InlineEntityWidget extends Composite {
     private InlineEntityWidget(
         Element referenceElement,
         I_InlineFormParent formParent,
-        I_Entity parentEntity,
+        Entity parentEntity,
         AttributeHandler attributeHandler,
         int attributeIndex,
         I_InlineHtmlUpdateHandler htmlUpdateHandler,
@@ -287,7 +286,7 @@ public class InlineEntityWidget extends Composite {
     public static InlineEntityWidget createWidgetForEntity(
         Element element,
         I_InlineFormParent formParent,
-        I_Entity parentEntity,
+        Entity parentEntity,
         AttributeHandler attributeHandler,
         int attributeIndex,
         I_InlineHtmlUpdateHandler htmlUpdateHandler,
@@ -457,7 +456,7 @@ public class InlineEntityWidget extends Composite {
         m_overlayTimer = new Timer() {
 
             /** Timer run counter. */
-            private int timerRuns = 0;
+            private int m_timerRuns;
 
             /**
              * @see com.google.gwt.user.client.Timer#run()
@@ -466,10 +465,10 @@ public class InlineEntityWidget extends Composite {
             public void run() {
 
                 InlineEditOverlay.updateCurrentOverlayPosition();
-                if (timerRuns > 3) {
+                if (m_timerRuns > 3) {
                     cancel();
                 }
-                timerRuns++;
+                m_timerRuns++;
             }
         };
         m_overlayTimer.scheduleRepeating(100);
@@ -598,14 +597,14 @@ public class InlineEntityWidget extends Composite {
         });
         m_hasChanges = false;
         m_requireShowPopup = false;
-        m_entityChangeHandlerRegistration = ((Entity)m_parentEntity).addValueChangeHandler(new ValueChangeHandler<Entity>() {
+        m_entityChangeHandlerRegistration = m_parentEntity.addValueChangeHandler(new ValueChangeHandler<Entity>() {
 
             public void onValueChange(ValueChangeEvent<Entity> event) {
 
                 onEntityChange();
             }
         });
-        I_Type type = Vie.getInstance().getType(m_parentEntity.getTypeName());
+        Type type = Vie.getInstance().getType(m_parentEntity.getTypeName());
         FlowPanel formPanel = new FormPanel();
         formPanel.setStyleName(I_LayoutBundle.INSTANCE.form().formParent());
         formPanel.getElement().getStyle().setMargin(0, Unit.PX);

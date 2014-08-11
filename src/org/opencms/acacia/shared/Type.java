@@ -35,9 +35,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Serializable {@link org.opencms.acacia.shared.I_Type} implementation.<p>
+ * Entity attribute type data.<p>
  */
-public class Type implements I_Type, Serializable {
+public class Type implements Serializable {
 
     /** The choice attribute name. */
     public static final String CHOICE_ATTRIBUTE_NAME = "ATTRIBUTE_CHOICE";
@@ -61,7 +61,7 @@ public class Type implements I_Type, Serializable {
     private List<String> m_names;
 
     /** The attribute types. */
-    private Map<String, String> m_types;
+    private Map<String, Type> m_types;
 
     /**
      * Constructor.<p>
@@ -80,15 +80,20 @@ public class Type implements I_Type, Serializable {
     protected Type() {
 
         m_names = new ArrayList<String>();
-        m_types = new HashMap<String, String>();
+        m_types = new HashMap<String, Type>();
         m_maxs = new HashMap<String, Integer>();
         m_mins = new HashMap<String, Integer>();
     }
 
     /**
-     * @see org.opencms.acacia.shared.I_Type#addAttribute(java.lang.String, java.lang.String, int, int)
+     * Adds an attribute to the type.<p>
+     * 
+     * @param attributeName the attribute name
+     * @param attributeType the attribute type
+     * @param minOccurrence the minimum occurrence of this attribute
+     * @param maxOccurrence the axnimum occurrence of this attribute
      */
-    public void addAttribute(String attributeName, String attributeType, int minOccurrence, int maxOccurrence) {
+    public void addAttribute(String attributeName, Type attributeType, int minOccurrence, int maxOccurrence) {
 
         m_names.add(attributeName);
         m_types.put(attributeName, attributeType);
@@ -97,7 +102,11 @@ public class Type implements I_Type, Serializable {
     }
 
     /**
-     * @see org.opencms.acacia.shared.I_Type#getAttributeMaxOccurrence(java.lang.String)
+     * Returns the maximum occurrence of the given attribute.<p>
+     * 
+     * @param attributeName the attribute name
+     * 
+     * @return the maximum occurrence
      */
     public int getAttributeMaxOccurrence(String attributeName) {
 
@@ -105,7 +114,11 @@ public class Type implements I_Type, Serializable {
     }
 
     /**
-     * @see org.opencms.acacia.shared.I_Type#getAttributeMinOccurrence(java.lang.String)
+     * Returns the minimum occurrence of the given attribute.<p>
+     * 
+     * @param attributeName the attribute name
+     * 
+     * @return the minimum occurrence
      */
     public int getAttributeMinOccurrence(String attributeName) {
 
@@ -113,7 +126,9 @@ public class Type implements I_Type, Serializable {
     }
 
     /**
-     * @see org.opencms.acacia.shared.I_Type#getAttributeNames()
+     * The names of the attributes of this type.<p>
+     * 
+     * @return the attribute names
      */
     public List<String> getAttributeNames() {
 
@@ -121,23 +136,33 @@ public class Type implements I_Type, Serializable {
     }
 
     /**
-     * @see org.opencms.acacia.shared.I_Type#getAttributeType(java.lang.String)
+     * Returns the type of the given attribute.<p>
+     * 
+     * @param attributeName the attribute name
+     * 
+     * @return the type of the given attribute
      */
-    public I_Type getAttributeType(String attributeName) {
-
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.I_Type#getAttributeTypeName(java.lang.String)
-     */
-    public String getAttributeTypeName(String attributeName) {
+    public Type getAttributeType(String attributeName) {
 
         return m_types.get(attributeName);
     }
 
     /**
-     * @see org.opencms.acacia.shared.I_Type#getChoiceMaxOccurrence()
+     * Returns the type name of the given attribute.<p>
+     * 
+     * @param attributeName the attribute name
+     * 
+     * @return the type name of the given attribute
+     */
+    public String getAttributeTypeName(String attributeName) {
+
+        return m_types.get(attributeName).getId();
+    }
+
+    /**
+     * Returns the maximum choice occurrence.<p>
+     * 
+     * @return the maximum choice occurrence
      */
     public int getChoiceMaxOccurrence() {
 
@@ -145,7 +170,9 @@ public class Type implements I_Type, Serializable {
     }
 
     /**
-     * @see org.opencms.acacia.shared.I_Type#getId()
+     * Returns the name of the type.<p>
+     * 
+     * @return the name of the type
      */
     public String getId() {
 
@@ -153,7 +180,9 @@ public class Type implements I_Type, Serializable {
     }
 
     /**
-     * @see org.opencms.acacia.shared.I_Type#isChoice()
+     * Returns if this is a choice type.<p>
+     * 
+     * @return <code>true</code> if this is a choice type
      */
     public boolean isChoice() {
 
@@ -161,7 +190,9 @@ public class Type implements I_Type, Serializable {
     }
 
     /**
-     * @see org.opencms.acacia.shared.I_Type#isSimpleType()
+     * Returns if this is a simple type. Simple types have no attributes.<p>
+     * 
+     * @return <code>true</code> if this is a simple type
      */
     public boolean isSimpleType() {
 
@@ -169,7 +200,9 @@ public class Type implements I_Type, Serializable {
     }
 
     /**
-     * @see org.opencms.acacia.shared.I_Type#setChoiceMaxOccurrence(int)
+     * Sets the maximum choice occurrence.<p>
+     * 
+     * @param choiceMaxOccurrence the maximum choice occurrence
      */
     public void setChoiceMaxOccurrence(int choiceMaxOccurrence) {
 

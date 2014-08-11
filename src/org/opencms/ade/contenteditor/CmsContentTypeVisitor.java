@@ -28,7 +28,6 @@
 package org.opencms.ade.contenteditor;
 
 import org.opencms.acacia.shared.AttributeConfiguration;
-import org.opencms.acacia.shared.I_Type;
 import org.opencms.acacia.shared.TabInfo;
 import org.opencms.acacia.shared.Type;
 import org.opencms.ade.contenteditor.shared.CmsComplexWidgetData;
@@ -244,7 +243,7 @@ public class CmsContentTypeVisitor {
     private CmsMultiMessages m_messages;
 
     /** The registered types. */
-    private Map<String, I_Type> m_registeredTypes;
+    private Map<String, Type> m_registeredTypes;
 
     /** The tab informations. */
     private List<TabInfo> m_tabInfos;
@@ -378,7 +377,7 @@ public class CmsContentTypeVisitor {
 
         m_attributeConfigurations = new HashMap<String, AttributeConfiguration>();
         m_widgetConfigurations = new HashMap<String, CmsExternalWidgetConfiguration>();
-        m_registeredTypes = new HashMap<String, I_Type>();
+        m_registeredTypes = new HashMap<String, Type>();
         m_localeSynchronizations = new ArrayList<String>();
         m_tabInfos = collectTabInfos(xmlContentDefinition);
         readTypes(xmlContentDefinition, "");
@@ -409,7 +408,7 @@ public class CmsContentTypeVisitor {
      * 
      * @return the types
      */
-    protected Map<String, I_Type> getTypes() {
+    protected Map<String, Type> getTypes() {
 
         return m_registeredTypes;
     }
@@ -656,12 +655,14 @@ public class CmsContentTypeVisitor {
      * 
      * @param xmlContentDefinition the XML content definition
      * @param path the element path
+     * 
+     * @return the type 
      */
-    private void readTypes(CmsXmlContentDefinition xmlContentDefinition, String path) {
+    private Type readTypes(CmsXmlContentDefinition xmlContentDefinition, String path) {
 
         String typeName = CmsContentService.getTypeUri(xmlContentDefinition);
         if (m_registeredTypes.containsKey(typeName)) {
-            return;
+            return m_registeredTypes.get(typeName);
         }
         Type type = new Type(typeName);
         type.setChoiceMaxOccurrence(xmlContentDefinition.getChoiceMaxOccurs());
@@ -669,11 +670,7 @@ public class CmsContentTypeVisitor {
         if (type.isChoice()) {
             Type choiceType = new Type(typeName + "/" + Type.CHOICE_ATTRIBUTE_NAME);
             m_registeredTypes.put(choiceType.getId(), choiceType);
-            type.addAttribute(
-                Type.CHOICE_ATTRIBUTE_NAME,
-                choiceType.getId(),
-                1,
-                xmlContentDefinition.getChoiceMaxOccurs());
+            type.addAttribute(Type.CHOICE_ATTRIBUTE_NAME, choiceType, 1, xmlContentDefinition.getChoiceMaxOccurs());
             type = choiceType;
         }
         ArrayList<DisplayTypeEvaluator> evaluators = new ArrayList<DisplayTypeEvaluator>();
@@ -685,17 +682,21 @@ public class CmsContentTypeVisitor {
             DisplayTypeEvaluator ev = readConfiguration((A_CmsXmlContentValue)subType, childPath);
             ev.setAttributeName(subAttributeName);
             evaluators.add(ev);
+            Type subEntityType;
             if (subType.isSimpleType()) {
                 subTypeName = CmsContentService.TYPE_NAME_PREFIX + subType.getTypeName();
                 if (!m_registeredTypes.containsKey(subTypeName)) {
-                    m_registeredTypes.put(subTypeName, new Type(subTypeName));
+                    subEntityType = new Type(subTypeName);
+                    m_registeredTypes.put(subTypeName, subEntityType);
+                } else {
+                    subEntityType = m_registeredTypes.get(subTypeName);
                 }
             } else {
                 CmsXmlContentDefinition subTypeDefinition = ((CmsXmlNestedContentDefinition)subType).getNestedContentDefinition();
                 subTypeName = CmsContentService.getTypeUri(subTypeDefinition);
-                readTypes(subTypeDefinition, childPath);
+                subEntityType = readTypes(subTypeDefinition, childPath);
             }
-            type.addAttribute(subAttributeName, subTypeName, subType.getMinOccurs(), subType.getMaxOccurs());
+            type.addAttribute(subAttributeName, subEntityType, subType.getMinOccurs(), subType.getMaxOccurs());
         }
         DisplayType predecessor = null;
         for (int i = 0; i < evaluators.size(); i++) {
@@ -708,5 +709,6 @@ public class CmsContentTypeVisitor {
             }
             predecessor = DisplayType.valueOf(evaluated.getDisplayType());
         }
+        return type;
     }
 }

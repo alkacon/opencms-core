@@ -33,9 +33,8 @@ import org.opencms.acacia.client.entity.I_Vie;
 import org.opencms.acacia.client.ui.AttributeValueView;
 import org.opencms.acacia.client.ui.InlineEntityWidget;
 import org.opencms.acacia.client.widgets.I_FormEditWidget;
-import org.opencms.acacia.shared.I_Entity;
-import org.opencms.acacia.shared.I_EntityAttribute;
-import org.opencms.acacia.shared.I_Type;
+import org.opencms.acacia.shared.Entity;
+import org.opencms.acacia.shared.EntityAttribute;
 import org.opencms.acacia.shared.Type;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
@@ -68,7 +67,7 @@ public class AttributeHandler extends RootHandler {
     private String m_attributeName;
 
     /** The attribute type. */
-    private I_Type m_attributeType;
+    private Type m_attributeType;
 
     /** Registered attribute values. */
     private List<AttributeValueView> m_attributeValueViews;
@@ -77,10 +76,10 @@ public class AttributeHandler extends RootHandler {
     private CmsDNDHandler m_dndHandler;
 
     /** The entity. */
-    private I_Entity m_entity;
+    private Entity m_entity;
 
     /** The entity type. */
-    private I_Type m_entityType;
+    private Type m_entityType;
 
     /** The parent attribute handler. */
     private I_AttributeHandler m_parentHandler;
@@ -102,7 +101,7 @@ public class AttributeHandler extends RootHandler {
      * @param attributeName the attribute name
      * @param widgetService the widget service
      */
-    public AttributeHandler(I_Vie vie, I_Entity entity, String attributeName, I_WidgetService widgetService) {
+    public AttributeHandler(I_Vie vie, Entity entity, String attributeName, I_WidgetService widgetService) {
 
         // single value handling is disable by default
         m_singleValueIndex = -1;
@@ -113,7 +112,7 @@ public class AttributeHandler extends RootHandler {
         m_attributeValueViews = new ArrayList<AttributeValueView>();
         if (!getAttributeType().isSimpleType()) {
             int count = 0;
-            I_EntityAttribute attribute = entity.getAttribute(attributeName);
+            EntityAttribute attribute = entity.getAttribute(attributeName);
             if (attribute != null) {
                 count = attribute.getValueCount();
             }
@@ -185,7 +184,7 @@ public class AttributeHandler extends RootHandler {
 
         // make sure not to add more values than allowed
         int maxOccurrence = getEntityType().getAttributeMaxOccurrence(m_attributeName);
-        I_EntityAttribute attribute = m_entity.getAttribute(m_attributeName);
+        EntityAttribute attribute = m_entity.getAttribute(m_attributeName);
         boolean mayHaveMore = ((attribute == null) || (attribute.getValueCount() < maxOccurrence));
         if (mayHaveMore) {
             if (getAttributeType().isSimpleType()) {
@@ -222,7 +221,7 @@ public class AttributeHandler extends RootHandler {
                 }
                 valueWidget.setValueWidget(widget, defaultValue, defaultValue, true);
             } else {
-                I_Entity value = m_vie.createEntity(null, getAttributeType().getId());
+                Entity value = m_vie.createEntity(null, getAttributeType().getId());
                 insertValueAfterReference(value, reference);
             }
             UndoRedoHandler handler = UndoRedoHandler.getInstance();
@@ -238,11 +237,11 @@ public class AttributeHandler extends RootHandler {
      * 
      * @param value the value entity
      */
-    public void addNewAttributeValue(I_Entity value) {
+    public void addNewAttributeValue(Entity value) {
 
         // make sure not to add more values than allowed
         int maxOccurrence = getEntityType().getAttributeMaxOccurrence(m_attributeName);
-        I_EntityAttribute attribute = m_entity.getAttribute(m_attributeName);
+        EntityAttribute attribute = m_entity.getAttribute(m_attributeName);
         boolean mayHaveMore = ((attribute == null) || (attribute.getValueCount() < maxOccurrence));
         if (mayHaveMore && value.getTypeName().equals(m_attributeType)) {
             m_entity.addAttributeValue(m_attributeName, value);
@@ -280,7 +279,7 @@ public class AttributeHandler extends RootHandler {
 
         // make sure not to add more values than allowed
         int maxOccurrence = getEntityType().getAttributeMaxOccurrence(m_attributeName);
-        I_EntityAttribute attribute = m_entity.getAttribute(m_attributeName);
+        EntityAttribute attribute = m_entity.getAttribute(m_attributeName);
         boolean mayHaveMore = ((attribute == null) || (attribute.getValueCount() < maxOccurrence));
         if (mayHaveMore && getAttributeType().isSimpleType()) {
             I_FormEditWidget widget = m_widgetService.getAttributeFormWidget(m_attributeName);
@@ -326,7 +325,7 @@ public class AttributeHandler extends RootHandler {
 
         // make sure not to add more values than allowed
         int maxOccurrence = getEntityType().getAttributeMaxOccurrence(m_attributeName);
-        I_EntityAttribute attribute = m_entity.getAttribute(m_attributeName);
+        EntityAttribute attribute = m_entity.getAttribute(m_attributeName);
         boolean mayHaveMore = ((attribute == null) || (attribute.getValueCount() < maxOccurrence));
         if (mayHaveMore) {
             if (getAttributeType().isSimpleType()) {
@@ -340,7 +339,7 @@ public class AttributeHandler extends RootHandler {
                     m_widgetService.addChangedOrderPath(getSimplePath(-1));
                 }
             } else {
-                I_Entity value = m_vie.createEntity(null, m_attributeType.getId());
+                Entity value = m_vie.createEntity(null, m_attributeType.getId());
                 if ((attribute == null) || (attribute.getValueCount() == (referenceIndex + 1))) {
                     m_entity.addAttributeValue(m_attributeName, value);
                 } else {
@@ -411,20 +410,20 @@ public class AttributeHandler extends RootHandler {
      * @param value the entity into which the new entities for the given path should be inserted 
      * @param choicePath the path of choice attributes 
      */
-    public void createNestedEntitiesForChoicePath(I_Entity value, List<String> choicePath) {
+    public void createNestedEntitiesForChoicePath(Entity value, List<String> choicePath) {
 
-        I_Entity parentValue = value;
+        Entity parentValue = value;
         for (String attributeChoice : choicePath) {
-            I_Type choiceType = m_vie.getType(parentValue.getTypeName()).getAttributeType(Type.CHOICE_ATTRIBUTE_NAME);
-            I_Entity choice = m_vie.createEntity(null, choiceType.getId());
+            Type choiceType = m_vie.getType(parentValue.getTypeName()).getAttributeType(Type.CHOICE_ATTRIBUTE_NAME);
+            Entity choice = m_vie.createEntity(null, choiceType.getId());
             parentValue.addAttributeValue(Type.CHOICE_ATTRIBUTE_NAME, choice);
-            I_Type choiceOptionType = choiceType.getAttributeType(attributeChoice);
+            Type choiceOptionType = choiceType.getAttributeType(attributeChoice);
             if (choiceOptionType.isSimpleType()) {
                 String choiceValue = m_widgetService.getDefaultAttributeValue(attributeChoice, getSimplePath(0));
                 choice.addAttributeValue(attributeChoice, choiceValue);
                 break;
             } else {
-                I_Entity choiceValue = m_vie.createEntity(null, choiceOptionType.getId());
+                Entity choiceValue = m_vie.createEntity(null, choiceOptionType.getId());
                 choice.addAttributeValue(attributeChoice, choiceValue);
                 parentValue = choiceValue;
             }
@@ -463,7 +462,7 @@ public class AttributeHandler extends RootHandler {
      * 
      * @return the attribute type
      */
-    public I_Type getAttributeType() {
+    public Type getAttributeType() {
 
         if (m_attributeType == null) {
             m_attributeType = getEntityType().getAttributeType(m_attributeName);
@@ -614,11 +613,11 @@ public class AttributeHandler extends RootHandler {
         AttributeValueView valueWidget = null;
         if (isChoiceHandler()) {
             removeHandlers(currentPosition);
-            I_Entity value = m_entity.getAttribute(m_attributeName).getComplexValues().get(currentPosition);
+            Entity value = m_entity.getAttribute(m_attributeName).getComplexValues().get(currentPosition);
             m_entity.removeAttributeValue(m_attributeName, currentPosition);
             m_entity.insertAttributeValue(m_attributeName, value, targetPosition);
             String attributeChoice = getChoiceName(targetPosition);
-            I_Type optionType = getAttributeType().getAttributeType(attributeChoice);
+            Type optionType = getAttributeType().getAttributeType(attributeChoice);
             valueWidget = new AttributeValueView(
                 this,
                 m_widgetService.getAttributeLabel(attributeChoice),
@@ -663,7 +662,7 @@ public class AttributeHandler extends RootHandler {
                 true);
         } else {
             removeHandlers(currentPosition);
-            I_Entity value = m_entity.getAttribute(m_attributeName).getComplexValues().get(currentPosition);
+            Entity value = m_entity.getAttribute(m_attributeName).getComplexValues().get(currentPosition);
             m_entity.removeAttributeValue(m_attributeName, currentPosition);
             m_entity.insertAttributeValue(m_attributeName, value, targetPosition);
             valueWidget = new AttributeValueView(
@@ -787,7 +786,7 @@ public class AttributeHandler extends RootHandler {
         AttributeValueView parentView = null;
         boolean removeParent = false;
 
-        I_EntityAttribute attribute = m_entity.getAttribute(m_attributeName);
+        EntityAttribute attribute = m_entity.getAttribute(m_attributeName);
         if (isChoiceHandler() && attribute.isSingleValue()) {
             // removing last choice value, so remove choice itself 
             parentHandler = (AttributeHandler)m_parentHandler;
@@ -807,7 +806,7 @@ public class AttributeHandler extends RootHandler {
             if (attribute.isComplexValue()) {
                 removeHandlers(index);
             }
-            I_Entity value = attribute.getComplexValues().get(index);
+            Entity value = attribute.getComplexValues().get(index);
             m_entity.removeAttributeValue(m_attributeName, index);
             m_vie.removeEntity(value.getId());
             reference.removeFromParent();
@@ -845,7 +844,7 @@ public class AttributeHandler extends RootHandler {
      */
     public void removeAttributeValueFromEntity(int valueIndex) {
 
-        I_EntityAttribute attribute = m_entity.getAttribute(m_attributeName);
+        EntityAttribute attribute = m_entity.getAttribute(m_attributeName);
         if (attribute.isSingleValue()) {
             if (attribute.isComplexValue()) {
                 removeHandlers(0);
@@ -854,7 +853,7 @@ public class AttributeHandler extends RootHandler {
         } else {
             if (attribute.isComplexValue()) {
                 removeHandlers(valueIndex);
-                I_Entity value = attribute.getComplexValues().get(valueIndex);
+                Entity value = attribute.getComplexValues().get(valueIndex);
                 m_entity.removeAttributeValue(m_attributeName, valueIndex);
                 m_vie.removeEntity(value.getId());
             } else {
@@ -951,7 +950,7 @@ public class AttributeHandler extends RootHandler {
             minOccurrence = getEntityType().getAttributeMinOccurrence(m_attributeName);
             maxOccurrence = getEntityType().getAttributeMaxOccurrence(m_attributeName);
         }
-        I_EntityAttribute attribute = m_entity.getAttribute(m_attributeName);
+        EntityAttribute attribute = m_entity.getAttribute(m_attributeName);
         boolean mayHaveMore = (maxOccurrence > minOccurrence)
             && ((((attribute == null) && (!getAttributeType().isSimpleType() || (inlineWidget != null))) || ((attribute != null) && (attribute.getValueCount() < maxOccurrence))));
         boolean needsRemove = false;
@@ -1024,9 +1023,9 @@ public class AttributeHandler extends RootHandler {
     private void addChoiceOption(AttributeValueView reference, List<String> choicePath) {
 
         String attributeChoice = choicePath.get(0);
-        I_Type optionType = getAttributeType().getAttributeType(attributeChoice);
+        Type optionType = getAttributeType().getAttributeType(attributeChoice);
         int valueIndex = reference.getValueIndex() + 1;
-        I_Entity choiceEntity = m_vie.createEntity(null, getAttributeType().getId());
+        Entity choiceEntity = m_vie.createEntity(null, getAttributeType().getId());
         AttributeValueView valueWidget = reference;
         if (reference.hasValue()) {
             valueWidget = new AttributeValueView(
@@ -1053,7 +1052,7 @@ public class AttributeHandler extends RootHandler {
             choiceEntity.addAttributeValue(attributeChoice, defaultValue);
             valueWidget.setValueWidget(widget, defaultValue, defaultValue, true);
         } else {
-            I_Entity value = m_vie.createEntity(null, optionType.getId());
+            Entity value = m_vie.createEntity(null, optionType.getId());
             choiceEntity.addAttributeValue(attributeChoice, value);
             List<String> remainingAttributeNames = tail(choicePath);
             createNestedEntitiesForChoicePath(value, remainingAttributeNames);
@@ -1072,19 +1071,19 @@ public class AttributeHandler extends RootHandler {
      */
     private void addComplexChoiceValue(AttributeValueView reference, List<String> choicePath) {
 
-        I_Entity value = m_vie.createEntity(null, getAttributeType().getId());
-        I_Entity parentValue = value;
+        Entity value = m_vie.createEntity(null, getAttributeType().getId());
+        Entity parentValue = value;
         for (String attributeChoice : choicePath) {
-            I_Type choiceType = m_vie.getType(parentValue.getTypeName()).getAttributeType(Type.CHOICE_ATTRIBUTE_NAME);
-            I_Entity choice = m_vie.createEntity(null, choiceType.getId());
+            Type choiceType = m_vie.getType(parentValue.getTypeName()).getAttributeType(Type.CHOICE_ATTRIBUTE_NAME);
+            Entity choice = m_vie.createEntity(null, choiceType.getId());
             parentValue.addAttributeValue(Type.CHOICE_ATTRIBUTE_NAME, choice);
-            I_Type choiceOptionType = choiceType.getAttributeType(attributeChoice);
+            Type choiceOptionType = choiceType.getAttributeType(attributeChoice);
             if (choiceOptionType.isSimpleType()) {
                 String choiceValue = m_widgetService.getDefaultAttributeValue(attributeChoice, getSimplePath(0));
                 choice.addAttributeValue(attributeChoice, choiceValue);
                 break;
             } else {
-                I_Entity choiceValue = m_vie.createEntity(null, choiceOptionType.getId());
+                Entity choiceValue = m_vie.createEntity(null, choiceOptionType.getId());
                 choice.addAttributeValue(attributeChoice, choiceValue);
                 parentValue = choiceValue;
             }
@@ -1104,7 +1103,7 @@ public class AttributeHandler extends RootHandler {
     private void changeEntityValue(String value, int valueIndex) {
 
         if (getEntityType().isChoice()) {
-            I_Entity choice = m_entity.getAttribute(Type.CHOICE_ATTRIBUTE_NAME).getComplexValues().get(valueIndex);
+            Entity choice = m_entity.getAttribute(Type.CHOICE_ATTRIBUTE_NAME).getComplexValues().get(valueIndex);
             String attributeName = getChoiceName(valueIndex);
             if (attributeName != null) {
                 choice.setAttributeValue(attributeName, value, 0);
@@ -1124,7 +1123,7 @@ public class AttributeHandler extends RootHandler {
     private String getChoiceName(int valueIndex) {
 
         if (isChoiceHandler()) {
-            I_Entity choice = m_entity.getAttribute(Type.CHOICE_ATTRIBUTE_NAME).getComplexValues().get(valueIndex);
+            Entity choice = m_entity.getAttribute(Type.CHOICE_ATTRIBUTE_NAME).getComplexValues().get(valueIndex);
             if (choice != null) {
                 for (String option : getAttributeType().getAttributeNames()) {
                     if (choice.hasAttribute(option)) {
@@ -1142,7 +1141,7 @@ public class AttributeHandler extends RootHandler {
      * 
      * @return the entity type
      */
-    private I_Type getEntityType() {
+    private Type getEntityType() {
 
         if (m_entityType == null) {
             m_entityType = m_vie.getType(m_entity.getTypeName());
@@ -1156,7 +1155,7 @@ public class AttributeHandler extends RootHandler {
      * @param value the entity value
      * @param reference the reference
      */
-    private void insertValueAfterReference(I_Entity value, AttributeValueView reference) {
+    private void insertValueAfterReference(Entity value, AttributeValueView reference) {
 
         int valueIndex = -1;
         if (reference.getElement().getNextSiblingElement() == null) {

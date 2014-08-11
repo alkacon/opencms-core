@@ -511,6 +511,18 @@ public final class TinyMCEWidget extends A_EditWidget implements HasResizeHandle
      */
     native void initNative() /*-{
 
+                             function merge() {
+                             var result = {}, length = arguments.length;
+                             for (i = 0; i < length; i++) {
+                             for (key in arguments[i]) {
+                             if (arguments[i].hasOwnProperty(key)) {
+                             result[key] = arguments[i][key];
+                             }
+                             }
+                             }
+                             return result;
+                             }
+
                              var self = this;
                              var needsRefocus = self.@org.opencms.acacia.client.widgets.TinyMCEWidget::shouldReceiveFocus()();
                              var elementId = self.@org.opencms.acacia.client.widgets.TinyMCEWidget::m_id;
@@ -531,11 +543,11 @@ public final class TinyMCEWidget extends A_EditWidget implements HasResizeHandle
                              if (@org.opencms.acacia.client.widgets.TinyMCEWidget::NO_HTML_EDIT == options) {
                              // disallow any formatting
                              defaults = {
-                             selector : mainElement.tagName+"#"+ elementId,
+                             selector : mainElement.tagName + "#" + elementId,
                              entity_encoding : "raw",
                              mode : "exact",
                              plugins : "paste",
-                             paste_as_text: true,
+                             paste_as_text : true,
                              toolbar : "undo,redo",
                              menubar : false,
                              toolbar_items_size : 'small'
@@ -551,7 +563,7 @@ public final class TinyMCEWidget extends A_EditWidget implements HasResizeHandle
                              mode : "exact",
                              theme : "modern",
                              plugins : "autolink,lists,pagebreak,layer,table,save,hr,image,link,emoticons,spellchecker,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,noneditable,visualchars,nonbreaking,template,wordcount,advlist",
-                             paste_as_text: true,
+                             paste_as_text : true,
                              menubar : false,
                              toolbar_items_size : 'small'
                              };
@@ -578,8 +590,7 @@ public final class TinyMCEWidget extends A_EditWidget implements HasResizeHandle
                              }
                              // extend the defaults with any given options
                              if (options != null) {
-                             var vie = @org.opencms.acacia.client.entity.Vie::getInstance()();
-                             vie.jQuery.extend(defaults, options);
+                             defaults = merge(defaults, options);
                              if (this.@org.opencms.acacia.client.widgets.TinyMCEWidget::m_inline) {
                              delete defaults.content_css;
                              } else {
@@ -673,7 +684,7 @@ public final class TinyMCEWidget extends A_EditWidget implements HasResizeHandle
      * Removes the editor.<p>
      */
     private native void detachEditor() /*-{
-                                       
+
                                        var ed = this.@org.opencms.acacia.client.widgets.TinyMCEWidget::m_editor;
                                        if (ed != null) {
                                        ed.remove();

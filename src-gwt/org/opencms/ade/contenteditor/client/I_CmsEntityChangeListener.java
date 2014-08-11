@@ -27,7 +27,7 @@
 
 package org.opencms.ade.contenteditor.client;
 
-import org.opencms.acacia.client.entity.Entity;
+import org.opencms.acacia.shared.Entity;
 
 /**
  * The entity change listener interface.<p>

@@ -53,7 +53,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Helper class for controlling visibility of button hover bars of attribute value views.<p>
  */
-public class ButtonBarHandler implements MouseOverHandler, MouseOutHandler {
+public final class ButtonBarHandler implements MouseOverHandler, MouseOutHandler {
 
     /** Global instance of the button bar handler. */
     public static final ButtonBarHandler INSTANCE = new ButtonBarHandler();

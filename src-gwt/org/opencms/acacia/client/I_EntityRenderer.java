@@ -27,7 +27,7 @@
 
 package org.opencms.acacia.client;
 
-import org.opencms.acacia.shared.I_Entity;
+import org.opencms.acacia.shared.Entity;
 import org.opencms.acacia.shared.TabInfo;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 
@@ -48,14 +48,24 @@ public interface I_EntityRenderer {
      * 
      * @return the configured copy of the renderer 
      */
-    public I_EntityRenderer configure(String configuration);
+    I_EntityRenderer configure(String configuration);
 
     /**
      * Gets the name of the renderer (should be unique for each renderer class).<p>
      * 
      * @return the renderer name 
      */
-    public String getName();
+    String getName();
+
+    /**
+     * Renders a single attribute value. Used for inline editing to show a fragment of the form.<p>
+     * 
+     * @param parentEntity the parent entity
+     * @param attributeHandler the attribute handler
+     * @param attributeIndex the value index
+     * @param context the parent widget
+     */
+    void renderAttributeValue(Entity parentEntity, AttributeHandler attributeHandler, int attributeIndex, Panel context);
 
     /**
      * Renders the given entity into a form with tabs.<p>
@@ -68,26 +78,12 @@ public interface I_EntityRenderer {
      * 
      * @return the tabbed panel 
      */
-    public CmsTabbedPanel<FlowPanel> renderForm(
-        I_Entity entity,
+    CmsTabbedPanel<FlowPanel> renderForm(
+        Entity entity,
         List<TabInfo> tabInfos,
         Panel context,
         I_AttributeHandler parentHandler,
         int attributeIndex);
-
-    /**
-     * Renders a single attribute value. Used for inline editing to show a fragment of the form.<p>
-     * 
-     * @param parentEntity the parent entity
-     * @param attributeHandler the attribute handler
-     * @param attributeIndex the value index
-     * @param context the parent widget
-     */
-    void renderAttributeValue(
-        I_Entity parentEntity,
-        AttributeHandler attributeHandler,
-        int attributeIndex,
-        Panel context);
 
     /**
      * Renders the given entity into a form.<p>
@@ -97,7 +93,7 @@ public interface I_EntityRenderer {
      * @param parentHandler the parent attribute handler
      * @param attributeIndex the attribute index
      */
-    void renderForm(I_Entity entity, Panel context, I_AttributeHandler parentHandler, int attributeIndex);
+    void renderForm(Entity entity, Panel context, I_AttributeHandler parentHandler, int attributeIndex);
 
     /**
      * Injects editing widgets into the given DOM context to enable editing of the given entity.<p>
@@ -106,7 +102,7 @@ public interface I_EntityRenderer {
      * @param formParent formParent the form parent widget
      * @param updateHandler handles updates on the HTML required  due to entity data changes
      */
-    void renderInline(I_Entity entity, I_InlineFormParent formParent, I_InlineHtmlUpdateHandler updateHandler);
+    void renderInline(Entity entity, I_InlineFormParent formParent, I_InlineHtmlUpdateHandler updateHandler);
 
     /**
      * Injects editing widgets into the given DOM context to enable editing of the given entity attribute.<p>
@@ -119,7 +115,7 @@ public interface I_EntityRenderer {
      * @param maxOccurrence the maximum occurrence of this attribute
      */
     void renderInline(
-        I_Entity parentEntity,
+        Entity parentEntity,
         String attributeName,
         I_InlineFormParent formParent,
         I_InlineHtmlUpdateHandler updateHandler,

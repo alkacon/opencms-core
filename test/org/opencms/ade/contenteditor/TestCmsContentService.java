@@ -28,7 +28,7 @@
 package org.opencms.ade.contenteditor;
 
 import org.opencms.acacia.shared.Entity;
-import org.opencms.acacia.shared.I_Type;
+import org.opencms.acacia.shared.Type;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
@@ -99,29 +99,6 @@ public class TestCmsContentService extends OpenCmsTestCase {
     }
 
     /**
-     * Tests the read types method.<p>
-     * 
-     * @throws Exception if something fails 
-     */
-    public void testReadTypes() throws Exception {
-
-        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
-        String baseTypeName = "OpenCmsMultitest";
-        CmsContentService service = new CmsContentService();
-        service.setCms(getCmsObject());
-        String content;
-        // unmarshal content definition
-        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-definition-1.xsd", CmsEncoder.ENCODING_UTF_8);
-        CmsXmlContentDefinition definition = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_1, resolver);
-        baseTypeName = CmsContentService.getTypeUri(definition);
-        Map<String, I_Type> registeredTypes = service.readTypes(definition, new Locale("en"));
-
-        assertFalse("Registered types should not be empty", registeredTypes.isEmpty());
-        assertTrue("Registered types should contain type: " + baseTypeName, registeredTypes.containsKey(baseTypeName));
-        assertEquals("Should contain 5 types, the base type and 4 simple types", 5, registeredTypes.size());
-    }
-
-    /**
      * Tests the read entity method.<p>
      * 
      * @throws Exception if something fails 
@@ -154,5 +131,28 @@ public class TestCmsContentService extends OpenCmsTestCase {
         }
         assertNotNull("Result should not be null", result);
         // TODO: check out the result some more to ensure success
+    }
+
+    /**
+     * Tests the read types method.<p>
+     * 
+     * @throws Exception if something fails 
+     */
+    public void testReadTypes() throws Exception {
+
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
+        String baseTypeName = "OpenCmsMultitest";
+        CmsContentService service = new CmsContentService();
+        service.setCms(getCmsObject());
+        String content;
+        // unmarshal content definition
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-definition-1.xsd", CmsEncoder.ENCODING_UTF_8);
+        CmsXmlContentDefinition definition = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_1, resolver);
+        baseTypeName = CmsContentService.getTypeUri(definition);
+        Map<String, Type> registeredTypes = service.readTypes(definition, new Locale("en"));
+
+        assertFalse("Registered types should not be empty", registeredTypes.isEmpty());
+        assertTrue("Registered types should contain type: " + baseTypeName, registeredTypes.containsKey(baseTypeName));
+        assertEquals("Should contain 5 types, the base type and 4 simple types", 5, registeredTypes.size());
     }
 }

@@ -43,7 +43,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * The attribute value view highlighting handler.<p>
  */
-public class ValueFocusHandler implements MouseOverHandler, MouseOutHandler, MouseDownHandler {
+public final class ValueFocusHandler implements MouseOverHandler, MouseOutHandler, MouseDownHandler {
 
     /** The handler instance. */
     private static ValueFocusHandler INSTANCE;

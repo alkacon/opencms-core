@@ -27,7 +27,7 @@
 
 package org.opencms.acacia.client.export;
 
-import org.opencms.acacia.shared.I_Type;
+import org.opencms.acacia.shared.Type;
 
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
@@ -41,7 +41,7 @@ import org.timepedia.exporter.client.Exportable;
 public class TypeWrapper implements Exportable {
 
     /** The wrapped type object. */
-    private I_Type m_type;
+    private Type m_type;
 
     /**
      * Default constructor.
@@ -55,7 +55,7 @@ public class TypeWrapper implements Exportable {
      * 
      * @param type the type object to wrap 
      */
-    public TypeWrapper(I_Type type) {
+    public TypeWrapper(Type type) {
 
         m_type = type;
     }

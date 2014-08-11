@@ -37,6 +37,18 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class ContentDefinition implements IsSerializable {
 
+    /** The name of the native renderer. */
+    public static final String NATIVE_RENDERER = "native";
+
+    /** The member name for the form rendering function. */
+    public static final String FUNCTION_RENDER_FORM = "renderForm";
+
+    /** The member name for the inline rendering function. */
+    public static final String FUNCTION_RENDER_INLINE = "renderInline";
+
+    /** The parameter name for the initialization function. */
+    public static final String PARAM_INIT_CALL = "init";
+
     /** The attribute configurations. */
     private Map<String, AttributeConfiguration> m_configurations;
 
@@ -56,7 +68,7 @@ public class ContentDefinition implements IsSerializable {
     private List<TabInfo> m_tabInfos;
 
     /** The types defining the entity. */
-    private Map<String, I_Type> m_types;
+    private Map<String, Type> m_types;
 
     /**
      * Constructor.<p>
@@ -73,7 +85,7 @@ public class ContentDefinition implements IsSerializable {
         String entityId,
         Map<String, Entity> entities,
         Map<String, AttributeConfiguration> configurations,
-        Map<String, I_Type> types,
+        Map<String, Type> types,
         List<TabInfo> tabInfos,
         boolean groupOptionalFields,
         String locale) {
@@ -208,7 +220,7 @@ public class ContentDefinition implements IsSerializable {
      *
      * @return the types
      */
-    public Map<String, I_Type> getTypes() {
+    public Map<String, Type> getTypes() {
 
         return m_types;
     }

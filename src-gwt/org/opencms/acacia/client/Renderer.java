@@ -33,9 +33,8 @@ import org.opencms.acacia.client.ui.AttributeValueView;
 import org.opencms.acacia.client.ui.InlineEntityWidget;
 import org.opencms.acacia.client.ui.ValuePanel;
 import org.opencms.acacia.client.widgets.I_EditWidget;
-import org.opencms.acacia.shared.I_Entity;
-import org.opencms.acacia.shared.I_EntityAttribute;
-import org.opencms.acacia.shared.I_Type;
+import org.opencms.acacia.shared.Entity;
+import org.opencms.acacia.shared.EntityAttribute;
 import org.opencms.acacia.shared.TabInfo;
 import org.opencms.acacia.shared.Type;
 import org.opencms.gwt.client.I_HasResizeOnShow;
@@ -51,7 +50,6 @@ import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -110,7 +108,7 @@ public class Renderer implements I_EntityRenderer {
     /**
      * Handles the size of a tabbed panel.<p>
      */
-    protected class TabSizeHandler implements SelectionHandler<Integer>, ValueChangeHandler<I_Entity>, ResizeHandler {
+    protected class TabSizeHandler implements SelectionHandler<Integer>, ValueChangeHandler<Entity>, ResizeHandler {
 
         /** The context panel. */
         private Panel m_context;
@@ -149,7 +147,7 @@ public class Renderer implements I_EntityRenderer {
         /**
          * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
          */
-        public void onValueChange(ValueChangeEvent<I_Entity> event) {
+        public void onValueChange(ValueChangeEvent<Entity> event) {
 
             triggerHeightAdjustment();
         }
@@ -250,7 +248,7 @@ public class Renderer implements I_EntityRenderer {
      * 
      * @return the list of nested choice attribute name paths  
      */
-    public static List<ChoiceMenuEntryBean> getChoiceEntries(I_Type attributeType, boolean startingAtChoiceAttribute) {
+    public static List<ChoiceMenuEntryBean> getChoiceEntries(Type attributeType, boolean startingAtChoiceAttribute) {
 
         ChoiceMenuEntryBean rootEntry = new ChoiceMenuEntryBean(null);
         collectChoiceEntries(attributeType, startingAtChoiceAttribute, rootEntry);
@@ -267,7 +265,7 @@ public class Renderer implements I_EntityRenderer {
     public static void setAttributeChoice(
         I_WidgetService widgetService,
         AttributeValueView valueWidget,
-        I_Type attributeType) {
+        Type attributeType) {
 
         if (attributeType.isChoice()) {
             List<ChoiceMenuEntryBean> menuEntries = getChoiceEntries(attributeType, false);
@@ -285,17 +283,17 @@ public class Renderer implements I_EntityRenderer {
      * @param currentEntry the current menu entry bean  
      */
     private static void collectChoiceEntries(
-        I_Type startType,
+        Type startType,
         boolean startingAtChoiceAttribute,
         ChoiceMenuEntryBean currentEntry) {
 
         if (startingAtChoiceAttribute || startType.isChoice()) {
-            I_Type choiceType = startingAtChoiceAttribute
+            Type choiceType = startingAtChoiceAttribute
             ? startType
             : startType.getAttributeType(Type.CHOICE_ATTRIBUTE_NAME);
             for (String choiceName : choiceType.getAttributeNames()) {
                 ChoiceMenuEntryBean subEntry = currentEntry.addChild(choiceName);
-                I_Type includedType = choiceType.getAttributeType(choiceName);
+                Type includedType = choiceType.getAttributeType(choiceName);
                 collectChoiceEntries(includedType, false, subEntry);
             }
         }
@@ -318,19 +316,19 @@ public class Renderer implements I_EntityRenderer {
     }
 
     /**
-     * @see org.opencms.acacia.client.I_EntityRenderer#renderAttributeValue(org.opencms.acacia.shared.I_Entity, org.opencms.acacia.client.AttributeHandler, int, com.google.gwt.user.client.ui.Panel)
+     * @see org.opencms.acacia.client.I_EntityRenderer#renderAttributeValue(org.opencms.acacia.shared.Entity, org.opencms.acacia.client.AttributeHandler, int, com.google.gwt.user.client.ui.Panel)
      */
     public void renderAttributeValue(
-        I_Entity parentEntity,
+        Entity parentEntity,
         AttributeHandler attributeHandler,
         int attributeIndex,
         Panel context) {
 
-        I_Type entityType = m_vie.getType(parentEntity.getTypeName());
-        I_Type attributeType = attributeHandler.getAttributeType();
+        Type entityType = m_vie.getType(parentEntity.getTypeName());
+        Type attributeType = attributeHandler.getAttributeType();
         String attributeName = attributeHandler.getAttributeName();
         int minOccurrence = entityType.getAttributeMinOccurrence(attributeName);
-        I_EntityAttribute attribute = parentEntity.getAttribute(attributeName);
+        EntityAttribute attribute = parentEntity.getAttribute(attributeName);
         if ((attribute == null) && (minOccurrence > 0)) {
             attribute = createEmptyAttribute(parentEntity, attributeName, attributeHandler, minOccurrence);
         }
@@ -379,11 +377,10 @@ public class Renderer implements I_EntityRenderer {
     }
 
     /**
-     * @see org.opencms.acacia.client.I_EntityRenderer#renderForm(org.opencms.acacia.shared.I_Entity, java.util.List, com.google.gwt.user.client.ui.Panel, org.opencms.acacia.client.I_AttributeHandler, int)
+     * @see org.opencms.acacia.client.I_EntityRenderer#renderForm(org.opencms.acacia.shared.Entity, java.util.List, com.google.gwt.user.client.ui.Panel, org.opencms.acacia.client.I_AttributeHandler, int)
      */
-    @SuppressWarnings("unchecked")
     public CmsTabbedPanel<FlowPanel> renderForm(
-        I_Entity entity,
+        Entity entity,
         List<TabInfo> tabInfos,
         Panel context,
         I_AttributeHandler parentHandler,
@@ -401,13 +398,11 @@ public class Renderer implements I_EntityRenderer {
             CmsTabbedPanel<FlowPanel> tabbedPanel = new CmsTabbedPanel<FlowPanel>(CmsTabbedPanelStyle.classicTabs);
             final TabSizeHandler tabSizeHandler = new TabSizeHandler(tabbedPanel, context);
             tabbedPanel.addSelectionHandler(tabSizeHandler);
-            if (entity instanceof HasValueChangeHandlers) {
-                ((HasValueChangeHandlers<I_Entity>)entity).addValueChangeHandler(tabSizeHandler);
-            }
+            entity.addValueChangeHandler(tabSizeHandler);
             // adjust the tab panel height after a delay as some widgets may need time to initialize
             Scheduler.get().scheduleFixedDelay(new RepeatingCommand() {
 
-                private int counter = 0;
+                private int m_counter;
 
                 /**
                  * @see com.google.gwt.core.client.Scheduler.RepeatingCommand#execute()
@@ -415,8 +410,8 @@ public class Renderer implements I_EntityRenderer {
                 public boolean execute() {
 
                     tabSizeHandler.adjustContextHeight();
-                    counter++;
-                    return counter < 6;
+                    m_counter++;
+                    return m_counter < 6;
                 }
             }, 200);
             AttributeHandler.setResizeHandler(tabSizeHandler);
@@ -427,7 +422,7 @@ public class Renderer implements I_EntityRenderer {
             TabInfo nextTab = tabIt.next();
             FlowPanel tabPanel = createTab();
             tabbedPanel.addNamed(tabPanel, currentTab.getTabName(), currentTab.getTabId());
-            I_Type entityType = m_vie.getType(entity.getTypeName());
+            Type entityType = m_vie.getType(entity.getTypeName());
             List<String> attributeNames = entityType.getAttributeNames();
             AttributeValueView lastCompactView = null;
             boolean collapsed = currentTab.isCollapsed()
@@ -457,9 +452,9 @@ public class Renderer implements I_EntityRenderer {
                 }
                 AttributeHandler handler = new AttributeHandler(m_vie, entity, attributeName, m_widgetService);
                 parentHandler.setHandler(attributeIndex, attributeName, handler);
-                I_Type attributeType = entityType.getAttributeType(attributeName);
+                Type attributeType = entityType.getAttributeType(attributeName);
                 int minOccurrence = entityType.getAttributeMinOccurrence(attributeName);
-                I_EntityAttribute attribute = entity.getAttribute(attributeName);
+                EntityAttribute attribute = entity.getAttribute(attributeName);
                 // only single complex values may be collapsed
                 if (collapsed
                     && (attribute != null)
@@ -496,27 +491,27 @@ public class Renderer implements I_EntityRenderer {
     }
 
     /**
-     * @see org.opencms.acacia.client.I_EntityRenderer#renderForm(org.opencms.acacia.shared.I_Entity, com.google.gwt.user.client.ui.Panel, org.opencms.acacia.client.I_AttributeHandler, int)
+     * @see org.opencms.acacia.client.I_EntityRenderer#renderForm(org.opencms.acacia.shared.Entity, com.google.gwt.user.client.ui.Panel, org.opencms.acacia.client.I_AttributeHandler, int)
      */
-    public void renderForm(I_Entity entity, Panel context, I_AttributeHandler parentHandler, int attributeIndex) {
+    public void renderForm(Entity entity, Panel context, I_AttributeHandler parentHandler, int attributeIndex) {
 
         context.addStyleName(ENTITY_CLASS);
         context.getElement().setAttribute("typeof", entity.getTypeName());
         context.getElement().setAttribute("about", entity.getId());
-        I_Type entityType = m_vie.getType(entity.getTypeName());
+        Type entityType = m_vie.getType(entity.getTypeName());
         AttributeValueView lastCompactView = null;
         if (entityType.isChoice()) {
-            I_EntityAttribute attribute = entity.getAttribute(Type.CHOICE_ATTRIBUTE_NAME);
+            EntityAttribute attribute = entity.getAttribute(Type.CHOICE_ATTRIBUTE_NAME);
             assert (attribute != null) && attribute.isComplexValue() : "a choice type must have a choice attribute";
             AttributeHandler handler = new AttributeHandler(m_vie, entity, Type.CHOICE_ATTRIBUTE_NAME, m_widgetService);
             parentHandler.setHandler(attributeIndex, Type.CHOICE_ATTRIBUTE_NAME, handler);
             ValuePanel attributeElement = new ValuePanel();
-            for (I_Entity choiceEntity : attribute.getComplexValues()) {
-                I_Type choiceType = m_vie.getType(choiceEntity.getTypeName());
-                List<I_EntityAttribute> choiceAttributes = choiceEntity.getAttributes();
+            for (Entity choiceEntity : attribute.getComplexValues()) {
+                Type choiceType = m_vie.getType(choiceEntity.getTypeName());
+                List<EntityAttribute> choiceAttributes = choiceEntity.getAttributes();
                 assert (choiceAttributes.size() == 1) && choiceAttributes.get(0).isSingleValue() : "each choice entity may only have a single attribute with a single value";
-                I_EntityAttribute choiceAttribute = choiceAttributes.get(0);
-                I_Type attributeType = choiceType.getAttributeType(choiceAttribute.getAttributeName());
+                EntityAttribute choiceAttribute = choiceAttributes.get(0);
+                Type attributeType = choiceType.getAttributeType(choiceAttribute.getAttributeName());
                 I_EntityRenderer renderer = m_widgetService.getRendererForAttribute(
                     choiceAttribute.getAttributeName(),
                     attributeType);
@@ -553,13 +548,13 @@ public class Renderer implements I_EntityRenderer {
                     continue;
                 }
                 int minOccurrence = entityType.getAttributeMinOccurrence(attributeName);
-                I_EntityAttribute attribute = entity.getAttribute(attributeName);
+                EntityAttribute attribute = entity.getAttribute(attributeName);
                 AttributeHandler handler = new AttributeHandler(m_vie, entity, attributeName, m_widgetService);
                 parentHandler.setHandler(attributeIndex, attributeName, handler);
                 if ((attribute == null) && (minOccurrence > 0)) {
                     attribute = createEmptyAttribute(entity, attributeName, handler, minOccurrence);
                 }
-                I_Type attributeType = entityType.getAttributeType(attributeName);
+                Type attributeType = entityType.getAttributeType(attributeName);
                 ValuePanel attributeElement = new ValuePanel();
                 context.add(attributeElement);
                 lastCompactView = renderAttribute(
@@ -580,14 +575,14 @@ public class Renderer implements I_EntityRenderer {
     }
 
     /**
-     * @see org.opencms.acacia.client.I_EntityRenderer#renderInline(org.opencms.acacia.shared.I_Entity, org.opencms.acacia.client.I_InlineFormParent, org.opencms.acacia.client.I_InlineHtmlUpdateHandler)
+     * @see org.opencms.acacia.client.I_EntityRenderer#renderInline(org.opencms.acacia.shared.Entity, org.opencms.acacia.client.I_InlineFormParent, org.opencms.acacia.client.I_InlineHtmlUpdateHandler)
      */
-    public void renderInline(I_Entity entity, I_InlineFormParent formParent, I_InlineHtmlUpdateHandler updateHandler) {
+    public void renderInline(Entity entity, I_InlineFormParent formParent, I_InlineHtmlUpdateHandler updateHandler) {
 
-        I_Type entityType = m_vie.getType(entity.getTypeName());
+        Type entityType = m_vie.getType(entity.getTypeName());
         List<String> attributeNames = entityType.getAttributeNames();
         for (String attributeName : attributeNames) {
-            I_Type attributeType = entityType.getAttributeType(attributeName);
+            Type attributeType = entityType.getAttributeType(attributeName);
             I_EntityRenderer renderer = m_widgetService.getRendererForAttribute(attributeName, attributeType);
             renderer.renderInline(
                 entity,
@@ -600,17 +595,17 @@ public class Renderer implements I_EntityRenderer {
     }
 
     /**
-     * @see org.opencms.acacia.client.I_EntityRenderer#renderInline(org.opencms.acacia.shared.I_Entity, java.lang.String, org.opencms.acacia.client.I_InlineFormParent, org.opencms.acacia.client.I_InlineHtmlUpdateHandler, int, int)
+     * @see org.opencms.acacia.client.I_EntityRenderer#renderInline(org.opencms.acacia.shared.Entity, java.lang.String, org.opencms.acacia.client.I_InlineFormParent, org.opencms.acacia.client.I_InlineHtmlUpdateHandler, int, int)
      */
     public void renderInline(
-        I_Entity parentEntity,
+        Entity parentEntity,
         String attributeName,
         I_InlineFormParent formParent,
         I_InlineHtmlUpdateHandler updateHandler,
         int minOccurrence,
         int maxOccurrence) {
 
-        I_EntityAttribute attribute = parentEntity.getAttribute(attributeName);
+        EntityAttribute attribute = parentEntity.getAttribute(attributeName);
         if (attribute != null) {
             List<Element> elements = m_vie.getAttributeElements(parentEntity, attributeName, formParent.getElement());
             if (!elements.isEmpty()) {
@@ -650,7 +645,7 @@ public class Renderer implements I_EntityRenderer {
                 }
             }
             if (attribute.isComplexValue()) {
-                for (I_Entity entity : attribute.getComplexValues()) {
+                for (Entity entity : attribute.getComplexValues()) {
                     renderInline(entity, formParent, updateHandler);
                 }
             }
@@ -681,14 +676,14 @@ public class Renderer implements I_EntityRenderer {
      * 
      * @return the entity attribute
      */
-    protected I_EntityAttribute createEmptyAttribute(
-        I_Entity parentEntity,
+    protected EntityAttribute createEmptyAttribute(
+        Entity parentEntity,
         String attributeName,
         AttributeHandler handler,
         int minOccurrence) {
 
-        I_EntityAttribute result = null;
-        I_Type attributeType = m_vie.getType(parentEntity.getTypeName()).getAttributeType(attributeName);
+        EntityAttribute result = null;
+        Type attributeType = m_vie.getType(parentEntity.getTypeName()).getAttributeType(attributeName);
         if (attributeType.isSimpleType()) {
             for (int i = 0; i < minOccurrence; i++) {
                 parentEntity.addAttributeValue(
@@ -734,9 +729,9 @@ public class Renderer implements I_EntityRenderer {
      * @return the last attribute view that was rendered in compact mode if present
      */
     private AttributeValueView renderAttribute(
-        I_Type entityType,
-        I_Type attributeType,
-        I_EntityAttribute attribute,
+        Type entityType,
+        Type attributeType,
+        EntityAttribute attribute,
         AttributeHandler handler,
         ValuePanel attributeElement,
         String attributeName,
@@ -851,7 +846,7 @@ public class Renderer implements I_EntityRenderer {
      * @param valueWidget the value widget
      * @param attributeType the attribute type
      */
-    private void setAttributeChoice(AttributeValueView valueWidget, I_Type attributeType) {
+    private void setAttributeChoice(AttributeValueView valueWidget, Type attributeType) {
 
         setAttributeChoice(m_widgetService, valueWidget, attributeType);
     }

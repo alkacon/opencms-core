@@ -27,7 +27,6 @@
 
 package org.opencms.acacia.client;
 
-import org.opencms.acacia.client.entity.Entity;
 import org.opencms.acacia.client.entity.I_Vie;
 import org.opencms.acacia.client.entity.Vie;
 import org.opencms.acacia.client.ui.InlineEditOverlay;
@@ -37,10 +36,10 @@ import org.opencms.acacia.client.widgets.I_FormEditWidget;
 import org.opencms.acacia.client.widgets.StringWidget;
 import org.opencms.acacia.client.widgets.TinyMCEWidget;
 import org.opencms.acacia.shared.ContentDefinition;
+import org.opencms.acacia.shared.Entity;
 import org.opencms.acacia.shared.EntityHtml;
-import org.opencms.acacia.shared.I_Entity;
-import org.opencms.acacia.shared.I_Type;
 import org.opencms.acacia.shared.TabInfo;
+import org.opencms.acacia.shared.Type;
 import org.opencms.acacia.shared.ValidationResult;
 import org.opencms.acacia.shared.rpc.I_ContentServiceAsync;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
@@ -264,9 +263,9 @@ public class EditorBase implements I_InlineHtmlUpdateHandler {
      */
     public void addEntityChangeHandler(String entityId, ValueChangeHandler<Entity> handler) {
 
-        I_Entity entity = m_vie.getEntity(entityId);
+        Entity entity = m_vie.getEntity(entityId);
         if (entity != null) {
-            ((Entity)entity).addValueChangeHandler(handler);
+            entity.addValueChangeHandler(handler);
         }
     }
 
@@ -302,7 +301,7 @@ public class EditorBase implements I_InlineHtmlUpdateHandler {
      */
     public Entity getCurrentEntity() {
 
-        return (Entity)m_vie.getEntity(m_entityId);
+        return m_vie.getEntity(m_entityId);
     }
 
     /**
@@ -347,7 +346,7 @@ public class EditorBase implements I_InlineHtmlUpdateHandler {
     public void registerContentDefinition(ContentDefinition definition) {
 
         m_widgetService.addConfigurations(definition.getConfigurations());
-        I_Type baseType = definition.getTypes().get(definition.getEntityTypeName());
+        Type baseType = definition.getTypes().get(definition.getEntityTypeName());
         m_vie.registerTypes(baseType, definition.getTypes());
         m_vie.registerEntity(definition.getEntity());
     }
@@ -371,11 +370,11 @@ public class EditorBase implements I_InlineHtmlUpdateHandler {
      */
     public void renderEntityForm(String entityId, List<TabInfo> tabInfos, Panel context, Element scrollParent) {
 
-        Entity entity = (Entity)m_vie.getEntity(entityId);
+        Entity entity = m_vie.getEntity(entityId);
         if (entity != null) {
             boolean initUndo = (m_entity == null) || !entity.getId().equals(m_entity.getId());
             m_entity = entity;
-            I_Type type = m_vie.getType(m_entity.getTypeName());
+            Type type = m_vie.getType(m_entity.getTypeName());
             m_formPanel = new FlowPanel();
             context.add(m_formPanel);
             AttributeHandler.setScrollElement(scrollParent);
@@ -412,11 +411,11 @@ public class EditorBase implements I_InlineHtmlUpdateHandler {
      */
     public void renderEntityForm(String entityId, Panel context, Element scrollParent) {
 
-        Entity entity = (Entity)m_vie.getEntity(entityId);
+        Entity entity = m_vie.getEntity(entityId);
         if (entity != null) {
             boolean initUndo = (m_entity == null) || !entity.getId().equals(m_entity.getId());
             m_entity = entity;
-            I_Type type = m_vie.getType(m_entity.getTypeName());
+            Type type = m_vie.getType(m_entity.getTypeName());
             m_formPanel = new FlowPanel();
             context.add(m_formPanel);
             AttributeHandler.setScrollElement(scrollParent);
@@ -447,13 +446,13 @@ public class EditorBase implements I_InlineHtmlUpdateHandler {
      */
     public void renderInlineEntity(String entityId, I_InlineFormParent formParent) {
 
-        m_entity = (Entity)m_vie.getEntity(entityId);
+        m_entity = m_vie.getEntity(entityId);
         if (m_entity != null) {
             m_rootHandler = new RootHandler();
             m_validationHandler.setContentService(m_service);
             m_validationHandler.registerEntity(m_entity);
             m_validationHandler.setRootHandler(m_rootHandler);
-            I_Type type = m_vie.getType(m_entity.getTypeName());
+            Type type = m_vie.getType(m_entity.getTypeName());
             ButtonBarHandler.INSTANCE.setWidgetService(m_widgetService);
             m_widgetService.getRendererForType(type).renderInline(m_entity, formParent, this);
             UndoRedoHandler.getInstance().initialize(m_entity, this, m_rootHandler);
@@ -465,11 +464,11 @@ public class EditorBase implements I_InlineHtmlUpdateHandler {
      * 
      * @param newContent the entity data
      */
-    public void rerenderForm(I_Entity newContent) {
+    public void rerenderForm(Entity newContent) {
 
         m_validationHandler.setPaused(true, m_entity);
         m_vie.changeEntityContentValues(m_entity, newContent);
-        I_Type type = m_vie.getType(m_entity.getTypeName());
+        Type type = m_vie.getType(m_entity.getTypeName());
         if ((m_tabInfos != null) && !m_tabInfos.isEmpty()) {
             int currentTab = m_formTabs.getSelectedIndex();
             m_formPanel.clear();
@@ -496,10 +495,7 @@ public class EditorBase implements I_InlineHtmlUpdateHandler {
      * @param clearOnSuccess <code>true</code> to clear the VIE instance on success
      * @param callback the call back command
      */
-    public void saveEntities(
-        List<org.opencms.acacia.shared.Entity> entities,
-        final boolean clearOnSuccess,
-        final Command callback) {
+    public void saveEntities(List<Entity> entities, final boolean clearOnSuccess, final Command callback) {
 
         AsyncCallback<ValidationResult> asyncCallback = new AsyncCallback<ValidationResult>() {
 
@@ -531,11 +527,11 @@ public class EditorBase implements I_InlineHtmlUpdateHandler {
      */
     public void saveEntities(Set<String> entityIds, boolean clearOnSuccess, Command callback) {
 
-        List<org.opencms.acacia.shared.Entity> entities = new ArrayList<org.opencms.acacia.shared.Entity>();
+        List<Entity> entities = new ArrayList<Entity>();
         for (String entityId : entityIds) {
-            I_Entity entity = m_vie.getEntity(entityId);
+            Entity entity = m_vie.getEntity(entityId);
             if (entity != null) {
-                entities.add(org.opencms.acacia.shared.Entity.serializeEntity(entity));
+                entities.add(entity);
             }
         }
         saveEntities(entities, clearOnSuccess, callback);
@@ -548,7 +544,7 @@ public class EditorBase implements I_InlineHtmlUpdateHandler {
      * @param clearOnSuccess <code>true</code> to clear all entities from VIE on success
      * @param callback the callback executed on success
      */
-    public void saveEntity(I_Entity entity, final boolean clearOnSuccess, final Command callback) {
+    public void saveEntity(Entity entity, final boolean clearOnSuccess, final Command callback) {
 
         AsyncCallback<ValidationResult> asyncCallback = new AsyncCallback<ValidationResult>() {
 
@@ -565,7 +561,7 @@ public class EditorBase implements I_InlineHtmlUpdateHandler {
                 }
             }
         };
-        getService().saveEntity(org.opencms.acacia.shared.Entity.serializeEntity(entity), asyncCallback);
+        getService().saveEntity(entity, asyncCallback);
     }
 
     /**
@@ -577,7 +573,7 @@ public class EditorBase implements I_InlineHtmlUpdateHandler {
      */
     public void saveEntity(String entityId, boolean clearOnSuccess, Command callback) {
 
-        I_Entity entity = m_vie.getEntity(entityId);
+        Entity entity = m_vie.getEntity(entityId);
         saveEntity(entity, clearOnSuccess, callback);
     }
 
@@ -589,7 +585,7 @@ public class EditorBase implements I_InlineHtmlUpdateHandler {
      */
     public void saveEntity(String entityId, Command callback) {
 
-        I_Entity entity = m_vie.getEntity(entityId);
+        Entity entity = m_vie.getEntity(entityId);
         saveEntity(entity, false, callback);
     }
 
@@ -611,11 +607,7 @@ public class EditorBase implements I_InlineHtmlUpdateHandler {
                 onSuccess.execute();
             }
         };
-        getService().updateEntityHtml(
-            org.opencms.acacia.shared.Entity.serializeEntity(getCurrentEntity()),
-            getContextUri(),
-            getHtmlContextInfo(),
-            callback);
+        getService().updateEntityHtml(getCurrentEntity(), getContextUri(), getHtmlContextInfo(), callback);
     }
 
     /**

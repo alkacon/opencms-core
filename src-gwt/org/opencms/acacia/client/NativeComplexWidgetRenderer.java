@@ -30,9 +30,9 @@ package org.opencms.acacia.client;
 import org.opencms.acacia.client.css.I_LayoutBundle;
 import org.opencms.acacia.client.entity.I_Vie;
 import org.opencms.acacia.client.entity.Vie;
-import org.opencms.acacia.shared.AcaciaConstants;
-import org.opencms.acacia.shared.I_Entity;
-import org.opencms.acacia.shared.I_EntityAttribute;
+import org.opencms.acacia.shared.ContentDefinition;
+import org.opencms.acacia.shared.Entity;
+import org.opencms.acacia.shared.EntityAttribute;
 import org.opencms.acacia.shared.TabInfo;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 
@@ -103,14 +103,14 @@ public class NativeComplexWidgetRenderer implements I_EntityRenderer {
      */
     public String getName() {
 
-        return AcaciaConstants.NATIVE_RENDERER;
+        return ContentDefinition.NATIVE_RENDERER;
     }
 
     /**
-     * @see org.opencms.acacia.client.I_EntityRenderer#renderAttributeValue(org.opencms.acacia.shared.I_Entity, org.opencms.acacia.client.AttributeHandler, int, com.google.gwt.user.client.ui.Panel)
+     * @see org.opencms.acacia.client.I_EntityRenderer#renderAttributeValue(org.opencms.acacia.shared.Entity, org.opencms.acacia.client.AttributeHandler, int, com.google.gwt.user.client.ui.Panel)
      */
     public void renderAttributeValue(
-        I_Entity parentEntity,
+        Entity parentEntity,
         AttributeHandler attributeHandler,
         int attributeIndex,
         Panel context) {
@@ -119,10 +119,10 @@ public class NativeComplexWidgetRenderer implements I_EntityRenderer {
     }
 
     /**
-     * @see org.opencms.acacia.client.I_EntityRenderer#renderForm(org.opencms.acacia.shared.I_Entity, java.util.List, com.google.gwt.user.client.ui.Panel, org.opencms.acacia.client.I_AttributeHandler, int)
+     * @see org.opencms.acacia.client.I_EntityRenderer#renderForm(org.opencms.acacia.shared.Entity, java.util.List, com.google.gwt.user.client.ui.Panel, org.opencms.acacia.client.I_AttributeHandler, int)
      */
     public CmsTabbedPanel<FlowPanel> renderForm(
-        I_Entity entity,
+        Entity entity,
         List<TabInfo> tabInfos,
         Panel context,
         I_AttributeHandler parentHandler,
@@ -133,10 +133,10 @@ public class NativeComplexWidgetRenderer implements I_EntityRenderer {
     }
 
     /**
-     * @see org.opencms.acacia.client.I_EntityRenderer#renderForm(org.opencms.acacia.shared.I_Entity, com.google.gwt.user.client.ui.Panel, org.opencms.acacia.client.I_AttributeHandler, int)
+     * @see org.opencms.acacia.client.I_EntityRenderer#renderForm(org.opencms.acacia.shared.Entity, com.google.gwt.user.client.ui.Panel, org.opencms.acacia.client.I_AttributeHandler, int)
      */
     public void renderForm(
-        final I_Entity entity,
+        final Entity entity,
         Panel context,
         final I_AttributeHandler parentHandler,
         final int attributeIndex) {
@@ -144,7 +144,7 @@ public class NativeComplexWidgetRenderer implements I_EntityRenderer {
         context.addStyleName(ENTITY_CLASS);
         context.getElement().setAttribute("typeof", entity.getTypeName());
         context.getElement().setAttribute("about", entity.getId());
-        String initFunction = AcaciaConstants.FUNCTION_RENDER_FORM;
+        String initFunction = ContentDefinition.FUNCTION_RENDER_FORM;
         renderNative(
             getNativeInstance(),
             initFunction,
@@ -155,28 +155,28 @@ public class NativeComplexWidgetRenderer implements I_EntityRenderer {
     }
 
     /**
-     * @see org.opencms.acacia.client.I_EntityRenderer#renderInline(org.opencms.acacia.shared.I_Entity, org.opencms.acacia.client.I_InlineFormParent, org.opencms.acacia.client.I_InlineHtmlUpdateHandler)
+     * @see org.opencms.acacia.client.I_EntityRenderer#renderInline(org.opencms.acacia.shared.Entity, org.opencms.acacia.client.I_InlineFormParent, org.opencms.acacia.client.I_InlineHtmlUpdateHandler)
      */
-    public void renderInline(I_Entity entity, I_InlineFormParent formParent, I_InlineHtmlUpdateHandler updateHandler) {
+    public void renderInline(Entity entity, I_InlineFormParent formParent, I_InlineHtmlUpdateHandler updateHandler) {
 
         notSupported();
     }
 
     /**
-     * @see org.opencms.acacia.client.I_EntityRenderer#renderInline(org.opencms.acacia.shared.I_Entity, java.lang.String, org.opencms.acacia.client.I_InlineFormParent, org.opencms.acacia.client.I_InlineHtmlUpdateHandler, int, int)
+     * @see org.opencms.acacia.client.I_EntityRenderer#renderInline(org.opencms.acacia.shared.Entity, java.lang.String, org.opencms.acacia.client.I_InlineFormParent, org.opencms.acacia.client.I_InlineHtmlUpdateHandler, int, int)
      */
     public void renderInline(
-        I_Entity parentEntity,
+        Entity parentEntity,
         String attributeName,
         I_InlineFormParent formParent,
         I_InlineHtmlUpdateHandler updateHandler,
         int minOccurrence,
         int maxOccurrence) {
 
-        I_EntityAttribute attribute = parentEntity.getAttribute(attributeName);
-        String renderInline = AcaciaConstants.FUNCTION_RENDER_INLINE;
+        EntityAttribute attribute = parentEntity.getAttribute(attributeName);
+        String renderInline = ContentDefinition.FUNCTION_RENDER_INLINE;
         if (attribute != null) {
-            List<I_Entity> values = attribute.getComplexValues();
+            List<Entity> values = attribute.getComplexValues();
             List<Element> elements = Vie.getInstance().getAttributeElements(
                 parentEntity,
                 attributeName,
@@ -184,7 +184,7 @@ public class NativeComplexWidgetRenderer implements I_EntityRenderer {
             for (int i = 0; i < elements.size(); i++) {
                 Element element = elements.get(i);
                 if (i < values.size()) {
-                    I_Entity value = values.get(i);
+                    Entity value = values.get(i);
                     renderNative(
                         getNativeInstance(),
                         renderInline,
@@ -220,7 +220,7 @@ public class NativeComplexWidgetRenderer implements I_EntityRenderer {
     protected JavaScriptObject getNativeInstance() {
 
         if (m_nativeInstance == null) {
-            m_nativeInstance = createNativeInstance(m_jsonConfig.get(AcaciaConstants.PARAM_INIT_CALL).isString().stringValue());
+            m_nativeInstance = createNativeInstance(m_jsonConfig.get(ContentDefinition.PARAM_INIT_CALL).isString().stringValue());
         }
         return m_nativeInstance;
     }
@@ -239,7 +239,7 @@ public class NativeComplexWidgetRenderer implements I_EntityRenderer {
         JavaScriptObject nativeRenderer,
         String renderFunction,
         com.google.gwt.dom.client.Element element,
-        I_Entity entity,
+        Entity entity,
         I_Vie vie,
         JavaScriptObject config) /*-{
                                  var entityWrapper = new $wnd.acacia.EntityWrapper();

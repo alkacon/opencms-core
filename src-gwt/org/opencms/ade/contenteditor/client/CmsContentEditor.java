@@ -36,12 +36,11 @@ import org.opencms.acacia.client.UndoRedoHandler.UndoRedoState;
 import org.opencms.acacia.client.ValidationContext;
 import org.opencms.acacia.client.ValueFocusHandler;
 import org.opencms.acacia.client.css.I_LayoutBundle;
-import org.opencms.acacia.client.entity.Entity;
 import org.opencms.acacia.client.entity.Vie;
-import org.opencms.acacia.shared.I_Entity;
-import org.opencms.acacia.shared.I_EntityAttribute;
-import org.opencms.acacia.shared.I_Type;
+import org.opencms.acacia.shared.Entity;
+import org.opencms.acacia.shared.EntityAttribute;
 import org.opencms.acacia.shared.TabInfo;
+import org.opencms.acacia.shared.Type;
 import org.opencms.acacia.shared.ValidationResult;
 import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.ade.contenteditor.shared.CmsComplexWidgetData;
@@ -59,7 +58,6 @@ import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.CmsInfoHeader;
 import org.opencms.gwt.client.ui.CmsModelSelectDialog;
 import org.opencms.gwt.client.ui.CmsNotification;
-import org.opencms.gwt.client.ui.CmsNotification.Type;
 import org.opencms.gwt.client.ui.CmsNotificationMessage;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsToggleButton;
@@ -73,6 +71,7 @@ import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.util.CmsDebugLog;
+import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.util.CmsStringUtil;
@@ -93,6 +92,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.Style.VerticalAlign;
@@ -405,8 +405,8 @@ public final class CmsContentEditor extends EditorBase {
      */
     public static boolean hasEditable(Element element) {
 
-        List<Element> children = Vie.getInstance().find("[property^=\"opencms://\"]", element);
-        return (children != null) && !children.isEmpty();
+        NodeList<Element> children = CmsDomUtil.querySelectorAll("[property^=\"opencms://\"]", element);
+        return (children != null) && (children.getLength() > 0);
     }
 
     /**
@@ -454,9 +454,10 @@ public final class CmsContentEditor extends EditorBase {
     public static boolean setEditable(Element element, boolean editable) {
 
         I_CmsLayoutBundle.INSTANCE.editorCss().ensureInjected();
-        List<Element> children = Vie.getInstance().select("[property^=\"opencms://\"]", element);
-        if (children.size() > 0) {
-            for (Element child : children) {
+        NodeList<Element> children = CmsDomUtil.querySelectorAll("[property^=\"opencms://\"]", element);
+        if (children.getLength() > 0) {
+            for (int i = 0; i < children.getLength(); i++) {
+                Element child = children.getItem(i);
                 if (editable) {
                     child.addClassName(I_CmsLayoutBundle.INSTANCE.editorCss().inlineEditable());
                 } else {
@@ -478,7 +479,7 @@ public final class CmsContentEditor extends EditorBase {
                                                                                                               var instance = changeListener;
                                                                                                               var nat = {
                                                                                                               onChange : function(entity) {
-                                                                                                              instance.@org.opencms.ade.contenteditor.client.I_CmsEntityChangeListener::onEntityChange(Lorg/opencms/acacia/client/entity/Entity;)(entity);
+                                                                                                              instance.@org.opencms.ade.contenteditor.client.I_CmsEntityChangeListener::onEntityChange(Lorg/opencms/acacia/shared/Entity;)(entity);
                                                                                                               }
                                                                                                               }
                                                                                                               var method = $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD];
@@ -559,7 +560,7 @@ public final class CmsContentEditor extends EditorBase {
      */
     public void loadDefinition(
         final String entityId,
-        final I_Entity editedEntity,
+        final Entity editedEntity,
         final I_CmsSimpleCallback<CmsContentDefinition> callback) {
 
         CmsRpcAction<CmsContentDefinition> action = new CmsRpcAction<CmsContentDefinition>() {
@@ -568,11 +569,7 @@ public final class CmsContentEditor extends EditorBase {
             public void execute() {
 
                 start(0, true);
-                getService().loadDefinition(
-                    entityId,
-                    editedEntity != null ? org.opencms.acacia.shared.Entity.serializeEntity(editedEntity) : null,
-                    getSkipPaths(),
-                    this);
+                getService().loadDefinition(entityId, editedEntity, getSkipPaths(), this);
             }
 
             @Override
@@ -660,7 +657,7 @@ public final class CmsContentEditor extends EditorBase {
      */
     public void loadNewDefinition(
         final String entityId,
-        final I_Entity editedEntity,
+        final Entity editedEntity,
         final I_CmsSimpleCallback<CmsContentDefinition> callback) {
 
         CmsRpcAction<CmsContentDefinition> action = new CmsRpcAction<CmsContentDefinition>() {
@@ -669,11 +666,7 @@ public final class CmsContentEditor extends EditorBase {
             public void execute() {
 
                 start(0, true);
-                getService().loadNewDefinition(
-                    entityId,
-                    editedEntity != null ? org.opencms.acacia.shared.Entity.serializeEntity(editedEntity) : null,
-                    getSkipPaths(),
-                    this);
+                getService().loadNewDefinition(entityId, editedEntity, getSkipPaths(), this);
             }
 
             @Override
@@ -832,10 +825,10 @@ public final class CmsContentEditor extends EditorBase {
     public void registerContentDefinition(CmsContentDefinition definition) {
 
         getWidgetService().addConfigurations(definition.getConfigurations());
-        I_Type baseType = definition.getTypes().get(definition.getEntityTypeName());
+        Type baseType = definition.getTypes().get(definition.getEntityTypeName());
         m_vie.registerTypes(baseType, definition.getTypes());
-        for (I_Entity entity : definition.getEntities().values()) {
-            Entity previousValue = (Entity)m_vie.getEntity(entity.getId());
+        for (Entity entity : definition.getEntities().values()) {
+            Entity previousValue = m_vie.getEntity(entity.getId());
             if (previousValue != null) {
                 m_vie.changeEntityContentValues(previousValue, entity);
             } else {
@@ -861,7 +854,7 @@ public final class CmsContentEditor extends EditorBase {
      */
     public void saveAndDeleteEntities(final boolean clearOnSuccess, final Command callback) {
 
-        final I_Entity entity = m_vie.getEntity(m_entityId);
+        final Entity entity = m_vie.getEntity(m_entityId);
         saveAndDeleteEntities(entity, new ArrayList<String>(m_deletedEntities), clearOnSuccess, callback);
     }
 
@@ -874,7 +867,7 @@ public final class CmsContentEditor extends EditorBase {
      * @param callback the call back command
      */
     public void saveAndDeleteEntities(
-        final I_Entity lastEditedEntity,
+        final Entity lastEditedEntity,
         final List<String> deletedEntites,
         final boolean clearOnSuccess,
         final Command callback) {
@@ -886,7 +879,7 @@ public final class CmsContentEditor extends EditorBase {
 
                 start(200, true);
                 getService().saveAndDeleteEntities(
-                    org.opencms.acacia.shared.Entity.serializeEntity(lastEditedEntity),
+                    lastEditedEntity,
                     deletedEntites,
                     getSkipPaths(),
                     m_locale,
@@ -1049,8 +1042,8 @@ public final class CmsContentEditor extends EditorBase {
      */
     void callEditorChangeHanlders(final Set<String> changedScopes) {
 
-        I_Entity entity = m_vie.getEntity(m_entityId);
-        final org.opencms.acacia.shared.Entity currentState = org.opencms.acacia.shared.Entity.serializeEntity(entity);
+        final Entity entity = m_vie.getEntity(m_entityId);
+        final org.opencms.acacia.shared.Entity currentState = entity.createDeepCopy(null);
         CmsRpcAction<CmsContentDefinition> action = new CmsRpcAction<CmsContentDefinition>() {
 
             @Override
@@ -1144,14 +1137,14 @@ public final class CmsContentEditor extends EditorBase {
      */
     void copyLocales(final Set<String> targetLocales) {
 
-        final I_Entity entity = m_vie.getEntity(m_entityId);
+        final Entity entity = m_vie.getEntity(m_entityId);
         CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
 
             @Override
             public void execute() {
 
                 start(200, true);
-                getService().copyLocale(targetLocales, org.opencms.acacia.shared.Entity.serializeEntity(entity), this);
+                getService().copyLocale(targetLocales, entity, this);
             }
 
             @Override
@@ -1336,7 +1329,9 @@ public final class CmsContentEditor extends EditorBase {
             renderFormContent();
         }
         if (contentDefinition.isPerformedAutocorrection()) {
-            CmsNotification.get().send(Type.NORMAL, Messages.get().key(Messages.GUI_WARN_INVALID_XML_STRUCTURE_0));
+            CmsNotification.get().send(
+                CmsNotification.Type.NORMAL,
+                Messages.get().key(Messages.GUI_WARN_INVALID_XML_STRUCTURE_0));
             setChanged();
         }
     }
@@ -1635,7 +1630,7 @@ public final class CmsContentEditor extends EditorBase {
         m_locale = locale;
         m_basePanel.clear();
         destroyForm(false);
-        final I_Entity entity = m_vie.getEntity(m_entityId);
+        final Entity entity = m_vie.getEntity(m_entityId);
         m_entityId = getIdForLocale(locale);
         // if the content does not contain the requested locale yet, a new node will be created
         final boolean addedNewLocale = !m_contentLocales.contains(locale);
@@ -1684,7 +1679,7 @@ public final class CmsContentEditor extends EditorBase {
 
         m_basePanel.clear();
         destroyForm(false);
-        I_Entity entity = m_vie.getEntity(m_entityId);
+        Entity entity = m_vie.getEntity(m_entityId);
         m_entityId = getIdForLocale(m_locale);
         ((CmsDefaultWidgetService)getWidgetService()).setSkipPaths(Collections.<String> emptyList());
         loadDefinition(m_entityId, entity, new I_CmsSimpleCallback<CmsContentDefinition>() {
@@ -1736,7 +1731,7 @@ public final class CmsContentEditor extends EditorBase {
      * @param previous the previous entity state
      * @param updated the updated entity state
      */
-    void updateEditorValues(I_Entity previous, I_Entity updated) {
+    void updateEditorValues(Entity previous, Entity updated) {
 
         if (updated.getId().equals(m_entityId)) {
             // only apply the changes to the same locale entity
@@ -2150,20 +2145,16 @@ public final class CmsContentEditor extends EditorBase {
      * @param target the target entity
      * @param parentPathElements the parent path elements
      */
-    private void updateEditorValues(
-        I_Entity previous,
-        I_Entity updated,
-        I_Entity target,
-        List<String> parentPathElements) {
+    private void updateEditorValues(Entity previous, Entity updated, Entity target, List<String> parentPathElements) {
 
         for (String attributeName : m_vie.getType(target.getTypeName()).getAttributeNames()) {
             AttributeHandler handler = getAttributeHandler(attributeName, parentPathElements);
             if (previous.hasAttribute(attributeName)
                 && updated.hasAttribute(attributeName)
                 && target.hasAttribute(attributeName)) {
-                I_EntityAttribute updatedAttribute = updated.getAttribute(attributeName);
-                I_EntityAttribute previousAttribute = previous.getAttribute(attributeName);
-                I_EntityAttribute targetAttribute = target.getAttribute(attributeName);
+                EntityAttribute updatedAttribute = updated.getAttribute(attributeName);
+                EntityAttribute previousAttribute = previous.getAttribute(attributeName);
+                EntityAttribute targetAttribute = target.getAttribute(attributeName);
                 if (updatedAttribute.isSimpleValue()) {
                     if ((updatedAttribute.getValueCount() == previousAttribute.getValueCount())
                         && (updatedAttribute.getValueCount() == targetAttribute.getValueCount())) {
@@ -2265,7 +2256,7 @@ public final class CmsContentEditor extends EditorBase {
             } else if (!previous.hasAttribute(attributeName)
                 && !target.hasAttribute(attributeName)
                 && updated.hasAttribute(attributeName)) {
-                I_EntityAttribute updatedAttribute = updated.getAttribute(attributeName);
+                EntityAttribute updatedAttribute = updated.getAttribute(attributeName);
                 for (int i = 0; i < updatedAttribute.getValueCount(); i++) {
                     if (updatedAttribute.isSimpleValue()) {
                         handler.addNewAttributeValue(updatedAttribute.getSimpleValues().get(i));

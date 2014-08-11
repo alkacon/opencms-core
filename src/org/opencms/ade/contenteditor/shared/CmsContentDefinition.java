@@ -30,10 +30,9 @@ package org.opencms.ade.contenteditor.shared;
 import org.opencms.acacia.shared.AttributeConfiguration;
 import org.opencms.acacia.shared.ContentDefinition;
 import org.opencms.acacia.shared.Entity;
-import org.opencms.acacia.shared.I_Entity;
-import org.opencms.acacia.shared.I_EntityAttribute;
-import org.opencms.acacia.shared.I_Type;
+import org.opencms.acacia.shared.EntityAttribute;
 import org.opencms.acacia.shared.TabInfo;
+import org.opencms.acacia.shared.Type;
 import org.opencms.gwt.shared.CmsModelResourceInfo;
 import org.opencms.util.CmsUUID;
 
@@ -154,7 +153,7 @@ public class CmsContentDefinition extends ContentDefinition {
         Map<String, AttributeConfiguration> configurations,
         Collection<CmsExternalWidgetConfiguration> externalWidgetConfigurations,
         Map<String, CmsComplexWidgetData> complexWidgetData,
-        Map<String, I_Type> types,
+        Map<String, Type> types,
         List<TabInfo> tabInfos,
         String locale,
         List<String> contentLocales,
@@ -231,7 +230,7 @@ public class CmsContentDefinition extends ContentDefinition {
      * 
      * @return the value
      */
-    public static String getValueForPath(I_Entity entity, String path) {
+    public static String getValueForPath(Entity entity, String path) {
 
         String result = null;
         if (path.startsWith("/")) {
@@ -250,7 +249,7 @@ public class CmsContentDefinition extends ContentDefinition {
             index--;
         }
         attributeName = entity.getTypeName() + "/" + ContentDefinition.removeIndex(attributeName);
-        I_EntityAttribute attribute = entity.getAttribute(attributeName);
+        EntityAttribute attribute = entity.getAttribute(attributeName);
         if (!((attribute == null) || (attribute.isComplexValue() && (path == null)))) {
             if (attribute.isSimpleValue()) {
                 if ((path == null) && (attribute.getValueCount() > 0)) {
@@ -258,7 +257,7 @@ public class CmsContentDefinition extends ContentDefinition {
                     result = values.get(index);
                 }
             } else if (attribute.getValueCount() > (index)) {
-                List<I_Entity> values = attribute.getComplexValues();
+                List<Entity> values = attribute.getComplexValues();
                 result = getValueForPath(values.get(index), path);
             }
         }
@@ -276,20 +275,20 @@ public class CmsContentDefinition extends ContentDefinition {
      * @param considerDefaults if default values should be added according to minimum occurrence settings
      */
     public static void transfereValues(
-        I_Entity original,
-        I_Entity target,
+        Entity original,
+        Entity target,
         List<String> transferAttributes,
-        Map<String, I_Type> entityTypes,
+        Map<String, Type> entityTypes,
         Map<String, AttributeConfiguration> attributeConfigurations,
         boolean considerDefaults) {
 
-        I_Type entityType = entityTypes.get(target.getTypeName());
+        Type entityType = entityTypes.get(target.getTypeName());
         for (String attributeName : entityType.getAttributeNames()) {
-            I_Type attributeType = entityTypes.get(entityType.getAttributeTypeName(attributeName));
+            Type attributeType = entityTypes.get(entityType.getAttributeTypeName(attributeName));
             if (transferAttributes.contains(attributeName)) {
 
                 target.removeAttribute(attributeName);
-                I_EntityAttribute attribute = original != null ? original.getAttribute(attributeName) : null;
+                EntityAttribute attribute = original != null ? original.getAttribute(attributeName) : null;
                 if (attribute != null) {
                     if (attributeType.isSimpleType()) {
                         for (String value : attribute.getSimpleValues()) {
@@ -303,7 +302,7 @@ public class CmsContentDefinition extends ContentDefinition {
                             }
                         }
                     } else {
-                        for (I_Entity value : attribute.getComplexValues()) {
+                        for (Entity value : attribute.getComplexValues()) {
                             target.addAttributeValue(attributeName, value);
                         }
                         if (considerDefaults) {
@@ -329,14 +328,12 @@ public class CmsContentDefinition extends ContentDefinition {
                 }
             } else {
                 if (!attributeType.isSimpleType()) {
-                    I_EntityAttribute targetAttribute = target.getAttribute(attributeName);
-                    I_EntityAttribute originalAttribute = original != null
-                    ? original.getAttribute(attributeName)
-                    : null;
+                    EntityAttribute targetAttribute = target.getAttribute(attributeName);
+                    EntityAttribute originalAttribute = original != null ? original.getAttribute(attributeName) : null;
                     if (targetAttribute != null) {
                         for (int i = 0; i < targetAttribute.getComplexValues().size(); i++) {
-                            I_Entity subTarget = targetAttribute.getComplexValues().get(i);
-                            I_Entity subOriginal = (originalAttribute != null)
+                            Entity subTarget = targetAttribute.getComplexValues().get(i);
+                            Entity subOriginal = (originalAttribute != null)
                                 && (originalAttribute.getComplexValues().size() > i)
                             ? originalAttribute.getComplexValues().get(i)
                             : null;
@@ -377,13 +374,13 @@ public class CmsContentDefinition extends ContentDefinition {
      * @return the created entity
      */
     protected static Entity createDefaultValueEntity(
-        I_Type entityType,
-        Map<String, I_Type> entityTypes,
+        Type entityType,
+        Map<String, Type> entityTypes,
         Map<String, AttributeConfiguration> attributeConfigurations) {
 
         Entity result = new Entity(null, entityType.getId());
         for (String attributeName : entityType.getAttributeNames()) {
-            I_Type attributeType = entityTypes.get(entityType.getAttributeTypeName(attributeName));
+            Type attributeType = entityTypes.get(entityType.getAttributeTypeName(attributeName));
             for (int i = 0; i < entityType.getAttributeMinOccurrence(attributeName); i++) {
                 if (attributeType.isSimpleType()) {
                     result.addAttributeValue(

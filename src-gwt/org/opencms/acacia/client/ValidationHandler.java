@@ -29,7 +29,6 @@ package org.opencms.acacia.client;
 
 import org.opencms.acacia.shared.ContentDefinition;
 import org.opencms.acacia.shared.Entity;
-import org.opencms.acacia.shared.I_Entity;
 import org.opencms.acacia.shared.ValidationResult;
 import org.opencms.acacia.shared.rpc.I_ContentServiceAsync;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
@@ -50,7 +49,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 /** 
  * Validation handler.<p>
  */
-public final class ValidationHandler implements ValueChangeHandler<I_Entity>, HasValueChangeHandlers<ValidationContext> {
+public final class ValidationHandler implements ValueChangeHandler<Entity>, HasValueChangeHandlers<ValidationContext> {
 
     /**
      * The validation timer.<p>
@@ -58,14 +57,14 @@ public final class ValidationHandler implements ValueChangeHandler<I_Entity>, Ha
     protected class ValidationTimer extends Timer {
 
         /** The entity to validate. */
-        private I_Entity m_entity;
+        private Entity m_entity;
 
         /**
          * Constructor.<p>
          * 
          * @param entity the entity to validate
          */
-        protected ValidationTimer(I_Entity entity) {
+        protected ValidationTimer(Entity entity) {
 
             m_entity = entity;
         }
@@ -196,7 +195,7 @@ public final class ValidationHandler implements ValueChangeHandler<I_Entity>, Ha
     /**
      * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
      */
-    public void onValueChange(final ValueChangeEvent<I_Entity> event) {
+    public void onValueChange(final ValueChangeEvent<Entity> event) {
 
         if (!m_paused) {
             if (m_validationTimer != null) {
@@ -212,20 +211,16 @@ public final class ValidationHandler implements ValueChangeHandler<I_Entity>, Ha
      * 
      * @param entity the entity
      */
-    @SuppressWarnings("unchecked")
-    public void registerEntity(I_Entity entity) {
+    public void registerEntity(Entity entity) {
 
         if (m_validationContext == null) {
             m_validationContext = new ValidationContext();
-        }
-        if (!(entity instanceof HasValueChangeHandlers)) {
-            throw new RuntimeException("The entity does not implement the HasChangeHandlers interface.");
         }
         if (m_handlerRegistration != null) {
             m_handlerRegistration.removeHandler();
         }
         m_paused = false;
-        m_handlerRegistration = ((HasValueChangeHandlers<I_Entity>)entity).addValueChangeHandler(this);
+        m_handlerRegistration = entity.addValueChangeHandler(this);
     }
 
     /**
@@ -254,7 +249,7 @@ public final class ValidationHandler implements ValueChangeHandler<I_Entity>, Ha
      * @param paused <code>true</code> to pause the validation
      * @param entity the entity will be revalidated when setting paused to <code>false</code>
      */
-    public void setPaused(boolean paused, I_Entity entity) {
+    public void setPaused(boolean paused, Entity entity) {
 
         if (paused != m_paused) {
             m_paused = paused;
@@ -289,7 +284,7 @@ public final class ValidationHandler implements ValueChangeHandler<I_Entity>, Ha
      * @param handler the handler
      * @return {@link HandlerRegistration} used to remove the handler
      */
-    protected final <H extends EventHandler> HandlerRegistration addHandler(final H handler, GwtEvent.Type<H> type) {
+    protected <H extends EventHandler> HandlerRegistration addHandler(final H handler, GwtEvent.Type<H> type) {
 
         return ensureHandlers().addHandlerToSource(type, this, handler);
     }
@@ -299,24 +294,22 @@ public final class ValidationHandler implements ValueChangeHandler<I_Entity>, Ha
      * 
      * @param entity the entity
      */
-    protected void validate(final I_Entity entity) {
+    protected void validate(final Entity entity) {
 
         if (!m_validating) {
             m_validating = true;
-            m_contentService.validateEntities(
-                Collections.singletonList(Entity.serializeEntity(entity)),
-                new AsyncCallback<ValidationResult>() {
+            m_contentService.validateEntities(Collections.singletonList(entity), new AsyncCallback<ValidationResult>() {
 
-                    public void onFailure(Throwable caught) {
+                public void onFailure(Throwable caught) {
 
-                        // can be ignored
-                    }
+                    // can be ignored
+                }
 
-                    public void onSuccess(ValidationResult result) {
+                public void onSuccess(ValidationResult result) {
 
-                        displayValidation(entity.getId(), result);
-                    }
-                });
+                    displayValidation(entity.getId(), result);
+                }
+            });
         }
     }
 

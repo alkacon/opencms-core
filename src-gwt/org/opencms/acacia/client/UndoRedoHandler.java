@@ -29,7 +29,6 @@ package org.opencms.acacia.client;
 
 import org.opencms.acacia.client.UndoRedoHandler.UndoRedoState;
 import org.opencms.acacia.shared.Entity;
-import org.opencms.acacia.shared.I_Entity;
 
 import java.util.Stack;
 
@@ -45,7 +44,7 @@ import com.google.gwt.user.client.Timer;
 /**
  * Handler for the undo redo function.<p>
  */
-public class UndoRedoHandler implements HasValueChangeHandlers<UndoRedoState> {
+public final class UndoRedoHandler implements HasValueChangeHandlers<UndoRedoState> {
 
     /** The change types. */
     public enum ChangeType {
@@ -189,19 +188,19 @@ public class UndoRedoHandler implements HasValueChangeHandlers<UndoRedoState> {
         /**
          * Constructor.<p>
          * 
-         * @param entityData the chane entity data
+         * @param entity the chane entity data
          * @param entityId the entity id
          * @param attributeName the attribute name
          * @param valueIndex the value index
          * @param type the change type
          */
-        Change(Entity entityData, String entityId, String attributeName, int valueIndex, ChangeType type) {
+        Change(Entity entity, String entityId, String attributeName, int valueIndex, ChangeType type) {
 
             m_entityId = entityId;
             m_attributeName = attributeName;
             m_valueIndex = valueIndex;
             m_type = type;
-            m_entityData = entityData;
+            m_entityData = entity;
         }
 
         /**
@@ -271,7 +270,7 @@ public class UndoRedoHandler implements HasValueChangeHandlers<UndoRedoState> {
     private EditorBase m_editor;
 
     /** The edited entity. */
-    private I_Entity m_entity;
+    private Entity m_entity;
 
     /** The event bus. */
     private SimpleEventBus m_eventBus;
@@ -395,14 +394,14 @@ public class UndoRedoHandler implements HasValueChangeHandlers<UndoRedoState> {
      * @param editor the editor instance
      * @param rootHandler the root attribute handler
      */
-    public void initialize(I_Entity entity, EditorBase editor, RootHandler rootHandler) {
+    public void initialize(Entity entity, EditorBase editor, RootHandler rootHandler) {
 
         m_undo.clear();
         m_redo.clear();
         m_entity = entity;
         m_editor = editor;
         m_rootHandler = rootHandler;
-        m_current = new Change(Entity.serializeEntity(m_entity), null, null, 0, null);
+        m_current = new Change(m_entity.cloneEntity(), null, null, 0, null);
         fireStateChange();
     }
 
@@ -459,7 +458,7 @@ public class UndoRedoHandler implements HasValueChangeHandlers<UndoRedoState> {
      * @param handler the handler
      * @return {@link HandlerRegistration} used to remove the handler
      */
-    protected final <H extends EventHandler> HandlerRegistration addHandler(final H handler, GwtEvent.Type<H> type) {
+    protected <H extends EventHandler> HandlerRegistration addHandler(final H handler, GwtEvent.Type<H> type) {
 
         return ensureHandlers().addHandlerToSource(type, this, handler);
     }
@@ -475,7 +474,8 @@ public class UndoRedoHandler implements HasValueChangeHandlers<UndoRedoState> {
     void internalAddChange(String valuePath, String attributeName, int valueIndex, ChangeType changeType) {
 
         m_changeTimer = null;
-        Entity currentData = Entity.serializeEntity(m_entity);
+        //TODO: keep the IDs, otherwise redo will not work
+        Entity currentData = m_entity.cloneEntity();
         if (!currentData.equals(m_current.getEntityData())) {
             m_undo.push(m_current);
             m_current = new Change(currentData, valuePath, attributeName, valueIndex, changeType);

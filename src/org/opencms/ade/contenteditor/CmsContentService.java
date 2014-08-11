@@ -30,10 +30,8 @@ package org.opencms.ade.contenteditor;
 import org.opencms.acacia.shared.AttributeConfiguration;
 import org.opencms.acacia.shared.ContentDefinition;
 import org.opencms.acacia.shared.Entity;
+import org.opencms.acacia.shared.EntityAttribute;
 import org.opencms.acacia.shared.EntityHtml;
-import org.opencms.acacia.shared.I_Entity;
-import org.opencms.acacia.shared.I_EntityAttribute;
-import org.opencms.acacia.shared.I_Type;
 import org.opencms.acacia.shared.Type;
 import org.opencms.acacia.shared.ValidationResult;
 import org.opencms.ade.containerpage.CmsContainerpageService;
@@ -786,7 +784,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         Entity result = newEntity;
 
         List<Element> elements = element.elements();
-        I_Type type = visitor.getTypes().get(typeName);
+        Type type = visitor.getTypes().get(typeName);
         boolean isChoice = type.isChoice();
         String choiceTypeName = null;
         // just needed for choice attributes
@@ -872,7 +870,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      *
      * @return the types of the given content definition
      */
-    protected Map<String, I_Type> readTypes(CmsXmlContentDefinition xmlContentDefinition, Locale locale) {
+    protected Map<String, Type> readTypes(CmsXmlContentDefinition xmlContentDefinition, Locale locale) {
 
         CmsContentTypeVisitor visitor = new CmsContentTypeVisitor(getCmsObject(), null, locale);
         visitor.visitTypes(xmlContentDefinition, locale);
@@ -948,17 +946,17 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         CmsObject cms,
         CmsXmlContent content,
         String parentPath,
-        I_Entity entity,
+        Entity entity,
         Locale contentLocale) {
 
-        for (I_EntityAttribute attribute : entity.getAttributes()) {
+        for (EntityAttribute attribute : entity.getAttributes()) {
             if (Type.CHOICE_ATTRIBUTE_NAME.equals(attribute.getAttributeName())) {
-                List<I_Entity> choiceEntities = attribute.getComplexValues();
+                List<Entity> choiceEntities = attribute.getComplexValues();
                 for (int i = 0; i < choiceEntities.size(); i++) {
-                    List<I_EntityAttribute> choiceAttributes = choiceEntities.get(i).getAttributes();
+                    List<EntityAttribute> choiceAttributes = choiceEntities.get(i).getAttributes();
                     // each choice entity may only have a single attribute with a single value
                     assert (choiceAttributes.size() == 1) && choiceAttributes.get(0).isSingleValue() : "each choice entity may only have a single attribute with a single value";
-                    I_EntityAttribute choiceAttribute = choiceAttributes.get(0);
+                    EntityAttribute choiceAttribute = choiceAttributes.get(0);
                     String elementPath = parentPath + getElementName(choiceAttribute.getAttributeName());
                     if (choiceAttribute.isSimpleValue()) {
                         String value = choiceAttribute.getSimpleValue();
@@ -968,7 +966,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                         }
                         field.setStringValue(cms, value);
                     } else {
-                        I_Entity child = choiceAttribute.getComplexValue();
+                        Entity child = choiceAttribute.getComplexValue();
                         I_CmsXmlContentValue field = content.getValue(elementPath, contentLocale, i);
                         if (field == null) {
                             field = content.addValue(cms, elementPath, contentLocale, i);
@@ -990,9 +988,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
                     }
                 } else {
-                    List<I_Entity> entities = attribute.getComplexValues();
+                    List<Entity> entities = attribute.getComplexValues();
                     for (int i = 0; i < entities.size(); i++) {
-                        I_Entity child = entities.get(i);
+                        Entity child = entities.get(i);
                         I_CmsXmlContentValue field = content.getValue(elementPath, contentLocale, i);
                         if (field == null) {
                             field = content.addValue(cms, elementPath, contentLocale, i);

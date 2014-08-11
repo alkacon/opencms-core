@@ -37,7 +37,7 @@ import org.opencms.acacia.client.ValueFocusHandler;
 import org.opencms.acacia.client.css.I_LayoutBundle;
 import org.opencms.acacia.client.widgets.I_EditWidget;
 import org.opencms.acacia.client.widgets.I_FormEditWidget;
-import org.opencms.acacia.shared.I_Entity;
+import org.opencms.acacia.shared.Entity;
 import org.opencms.gwt.client.I_DescendantResizeHandler;
 import org.opencms.gwt.client.I_HasResizeOnShow;
 import org.opencms.gwt.client.dnd.I_CmsDragHandle;
@@ -649,7 +649,7 @@ implements I_CmsDraggable, I_HasResizeOnShow, HasMouseOverHandlers, HasMouseOutH
      * @param renderer the entity renderer
      * @param value the value entity
      */
-    public void setValueEntity(I_EntityRenderer renderer, I_Entity value) {
+    public void setValueEntity(I_EntityRenderer renderer, Entity value) {
 
         if (m_hasValue) {
             throw new RuntimeException("Value has already been set");

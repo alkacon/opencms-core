@@ -34,10 +34,32 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.SimpleEventBus;
+
 /**
  * Serializable entity implementation.<p>
  */
-public class Entity implements I_Entity, Serializable {
+public class Entity implements HasValueChangeHandlers<Entity>, Serializable {
+
+    /**
+     * Handles child entity changes.<p>
+     */
+    protected class EntityChangeHandler implements ValueChangeHandler<Entity> {
+
+        /**
+         * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
+         */
+        public void onValueChange(ValueChangeEvent<Entity> event) {
+
+            fireChange();
+        }
+    }
 
     /** The serial version id. */
     private static final long serialVersionUID = -6933931178070025267L;
@@ -53,6 +75,15 @@ public class Entity implements I_Entity, Serializable {
 
     /** The type name. */
     private String m_typeName;
+
+    /** The event bus. */
+    private transient SimpleEventBus m_eventBus;
+
+    /** The child entites change handler. */
+    private transient EntityChangeHandler m_childChangeHandler = new EntityChangeHandler();
+
+    /** The handler registrations. */
+    private transient Map<String, HandlerRegistration> m_changeHandlerRegistry;
 
     /**
      * Constructor.<p>
@@ -74,6 +105,7 @@ public class Entity implements I_Entity, Serializable {
 
         m_simpleAttributes = new HashMap<String, List<String>>();
         m_entityAttributes = new HashMap<String, List<Entity>>();
+        m_changeHandlerRegistry = new HashMap<String, HandlerRegistration>();
     }
 
     /**
@@ -84,7 +116,7 @@ public class Entity implements I_Entity, Serializable {
      * 
      * @return the value
      */
-    public static String getValueForPath(I_Entity entity, String[] pathElements) {
+    public static String getValueForPath(Entity entity, String[] pathElements) {
 
         String result = null;
         if ((pathElements != null) && (pathElements.length >= 1)) {
@@ -94,7 +126,7 @@ public class Entity implements I_Entity, Serializable {
                 index--;
             }
             attributeName = entity.getTypeName() + "/" + ContentDefinition.removeIndex(attributeName);
-            I_EntityAttribute attribute = entity.getAttribute(attributeName);
+            EntityAttribute attribute = entity.getAttribute(attributeName);
             if (!((attribute == null) || (attribute.isComplexValue() && (pathElements.length == 1)))) {
                 if (attribute.isSimpleValue()) {
                     if ((pathElements.length == 1) && (attribute.getValueCount() > 0)) {
@@ -106,7 +138,7 @@ public class Entity implements I_Entity, Serializable {
                     for (int i = 1; i < pathElements.length; i++) {
                         childPathElements[i - 1] = pathElements[i];
                     }
-                    List<I_Entity> values = attribute.getComplexValues();
+                    List<Entity> values = attribute.getComplexValues();
                     result = getValueForPath(values.get(index), childPathElements);
                 }
             }
@@ -115,80 +147,32 @@ public class Entity implements I_Entity, Serializable {
     }
 
     /**
-     * Returns a serializable version of the given entity.<p>
-     * 
-     * @param entity the entity
-     * 
-     * @return the serializable version
+     * Adds the given attribute value.<p>
+     *
+     * @param attributeName the attribute name
+     * @param value the attribute value
      */
-    public static Entity serializeEntity(I_Entity entity) {
-
-        Entity result = new Entity(entity.getId(), entity.getTypeName());
-        for (I_EntityAttribute attribute : entity.getAttributes()) {
-            if (attribute.isSimpleValue()) {
-                List<String> values = attribute.getSimpleValues();
-                for (String value : values) {
-                    result.addAttributeValue(attribute.getAttributeName(), value);
-                }
-            } else {
-                List<I_Entity> values = attribute.getComplexValues();
-                for (I_Entity value : values) {
-                    result.addAttributeValue(attribute.getAttributeName(), serializeEntity(value));
-                }
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Transforms into a serializable entity instance.<p>
-     * 
-     * @param entity the entity to transform
-     * 
-     * @return the new entity
-     */
-    public static Entity transformToSerializableEntity(I_Entity entity) {
-
-        if (entity instanceof Entity) {
-            return (Entity)entity;
-        }
-        Entity result = new Entity(entity.getId(), entity.getTypeName());
-        for (I_EntityAttribute attribute : entity.getAttributes()) {
-            if (attribute.isSimpleValue()) {
-                for (String value : attribute.getSimpleValues()) {
-                    result.addAttributeValue(attribute.getAttributeName(), value);
-                }
-            } else {
-                for (I_Entity value : attribute.getComplexValues()) {
-                    result.addAttributeValue(attribute.getAttributeName(), transformToSerializableEntity(value));
-                }
-            }
-        }
-        return result;
-    }
-
-    /**
-     * @see org.opencms.acacia.shared.I_Entity#addAttributeValue(java.lang.String, org.opencms.acacia.shared.I_Entity)
-     */
-    public void addAttributeValue(String attributeName, I_Entity value) {
+    public void addAttributeValue(String attributeName, Entity value) {
 
         if (m_simpleAttributes.containsKey(attributeName)) {
             throw new RuntimeException("Attribute already exists with a simple type value.");
         }
-        if (!(value instanceof Entity)) {
-            value = transformToSerializableEntity(value);
-        }
         if (m_entityAttributes.containsKey(attributeName)) {
-            m_entityAttributes.get(attributeName).add((Entity)value);
+            m_entityAttributes.get(attributeName).add(value);
         } else {
             List<Entity> values = new ArrayList<Entity>();
-            values.add((Entity)value);
+            values.add(value);
             m_entityAttributes.put(attributeName, values);
         }
+        registerChangeHandler(value);
+        fireChange();
     }
 
     /**
-     * @see org.opencms.acacia.shared.I_Entity#addAttributeValue(java.lang.String, java.lang.String)
+     * Adds the given attribute value.<p>
+     *
+     * @param attributeName the attribute name
+     * @param value the attribute value
      */
     public void addAttributeValue(String attributeName, String value) {
 
@@ -202,28 +186,84 @@ public class Entity implements I_Entity, Serializable {
             values.add(value);
             m_simpleAttributes.put(attributeName, values);
         }
+        fireChange();
     }
 
     /**
-     * @see org.opencms.acacia.shared.I_Entity#createDeepCopy(java.lang.String)
+     * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
+     */
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<Entity> handler) {
+
+        return addHandler(handler, ValueChangeEvent.getType());
+    }
+
+    /**
+     * Clones the given entity keeping all entity ids.<p>
+     * 
+     * @return returns the cloned instance
+     */
+    public Entity cloneEntity() {
+
+        Entity clone = new Entity(getId(), getTypeName());
+        for (EntityAttribute attribute : getAttributes()) {
+            if (attribute.isSimpleValue()) {
+                List<String> values = attribute.getSimpleValues();
+                for (String value : values) {
+                    clone.addAttributeValue(attribute.getAttributeName(), value);
+                }
+            } else {
+                List<Entity> values = attribute.getComplexValues();
+                for (Entity value : values) {
+                    clone.addAttributeValue(attribute.getAttributeName(), value.cloneEntity());
+                }
+            }
+        }
+        return clone;
+    }
+
+    /**
+     * Creates a deep copy of this entity.<p>
+     * 
+     * @param entityId the id of the new entity, if <code>null</code> a generic id will be used
+     * 
+     * @return the entity copy
      */
     public Entity createDeepCopy(String entityId) {
 
         Entity result = new Entity(entityId, getTypeName());
-        for (I_EntityAttribute attribute : getAttributes()) {
+        for (EntityAttribute attribute : getAttributes()) {
             if (attribute.isSimpleValue()) {
                 List<String> values = attribute.getSimpleValues();
                 for (String value : values) {
                     result.addAttributeValue(attribute.getAttributeName(), value);
                 }
             } else {
-                List<I_Entity> values = attribute.getComplexValues();
-                for (I_Entity value : values) {
+                List<Entity> values = attribute.getComplexValues();
+                for (Entity value : values) {
                     result.addAttributeValue(attribute.getAttributeName(), value.createDeepCopy(null));
                 }
             }
         }
         return result;
+    }
+
+    /**
+     * Ensures that the change event is also fired on child entity change.<p>
+     */
+    public void ensureChangeHandlers() {
+
+        if (!m_changeHandlerRegistry.isEmpty()) {
+            for (HandlerRegistration reg : m_changeHandlerRegistry.values()) {
+                reg.removeHandler();
+            }
+            m_changeHandlerRegistry.clear();
+        }
+        for (List<Entity> attr : m_entityAttributes.values()) {
+            for (Entity child : attr) {
+                registerChangeHandler(child);
+                child.ensureChangeHandlers();
+            }
+        }
     }
 
     /**
@@ -258,9 +298,21 @@ public class Entity implements I_Entity, Serializable {
     }
 
     /**
-     * @see org.opencms.acacia.shared.I_Entity#getAttribute(java.lang.String)
+     * @see com.google.gwt.event.shared.HasHandlers#fireEvent(com.google.gwt.event.shared.GwtEvent)
      */
-    public I_EntityAttribute getAttribute(String attributeName) {
+    public void fireEvent(GwtEvent<?> event) {
+
+        ensureHandlers().fireEventFromSource(event, this);
+    }
+
+    /**
+     * Returns an attribute.<p>
+     *
+     * @param attributeName the attribute name
+     *
+     * @return the attribute value
+     */
+    public EntityAttribute getAttribute(String attributeName) {
 
         if (m_simpleAttributes.containsKey(attributeName)) {
             return EntityAttribute.createSimpleAttribute(attributeName, m_simpleAttributes.get(attributeName));
@@ -272,11 +324,13 @@ public class Entity implements I_Entity, Serializable {
     }
 
     /**
-     * @see org.opencms.acacia.shared.I_Entity#getAttributes()
+     * Returns all entity attributes.<p>
+     * 
+     * @return the entity attributes
      */
-    public List<I_EntityAttribute> getAttributes() {
+    public List<EntityAttribute> getAttributes() {
 
-        List<I_EntityAttribute> result = new ArrayList<I_EntityAttribute>();
+        List<EntityAttribute> result = new ArrayList<EntityAttribute>();
         for (String name : m_simpleAttributes.keySet()) {
             result.add(getAttribute(name));
         }
@@ -316,7 +370,9 @@ public class Entity implements I_Entity, Serializable {
     }
 
     /**
-     * @see org.opencms.acacia.shared.I_Entity#getId()
+     * Returns the entity id.<p>
+     *
+     * @return the id
      */
     public String getId() {
 
@@ -324,7 +380,9 @@ public class Entity implements I_Entity, Serializable {
     }
 
     /**
-     * @see org.opencms.acacia.shared.I_Entity#getTypeName()
+     * Returns the entity type name.<p>
+     * 
+     * @return the entity type name
      */
     public String getTypeName() {
 
@@ -332,7 +390,11 @@ public class Entity implements I_Entity, Serializable {
     }
 
     /**
-     * @see org.opencms.acacia.shared.I_Entity#hasAttribute(java.lang.String)
+     * Returns if the entity has the given attribute.<p>
+     *
+     * @param attributeName the attribute name
+     *
+     * @return <code>true</code> if the entity has the given attribute
      */
     public boolean hasAttribute(String attributeName) {
 
@@ -340,19 +402,38 @@ public class Entity implements I_Entity, Serializable {
     }
 
     /**
-     * @see org.opencms.acacia.shared.I_Entity#insertAttributeValue(java.lang.String, org.opencms.acacia.shared.I_Entity, int)
+     * @see java.lang.Object#hashCode()
      */
-    public void insertAttributeValue(String attributeName, I_Entity value, int index) {
+    @Override
+    public int hashCode() {
 
-        if (m_entityAttributes.containsKey(attributeName)) {
-            m_entityAttributes.get(attributeName).add(index, (Entity)value);
-        } else {
-            setAttributeValue(attributeName, value);
-        }
+        return super.hashCode();
     }
 
     /**
-     * @see org.opencms.acacia.shared.I_Entity#insertAttributeValue(java.lang.String, java.lang.String, int)
+     * Inserts a new attribute value at the given index.<p>
+     * 
+     * @param attributeName the attribute name
+     * @param value the attribute value
+     * @param index the value index
+     */
+    public void insertAttributeValue(String attributeName, Entity value, int index) {
+
+        if (m_entityAttributes.containsKey(attributeName)) {
+            m_entityAttributes.get(attributeName).add(index, value);
+        } else {
+            setAttributeValue(attributeName, value);
+        }
+        registerChangeHandler(value);
+        fireChange();
+    }
+
+    /**
+     * Inserts a new attribute value at the given index.<p>
+     * 
+     * @param attributeName the attribute name
+     * @param value the attribute value
+     * @param index the value index
      */
     public void insertAttributeValue(String attributeName, String value, int index) {
 
@@ -361,90 +442,113 @@ public class Entity implements I_Entity, Serializable {
         } else {
             setAttributeValue(attributeName, value);
         }
+        fireChange();
     }
 
     /**
-     * @see org.opencms.acacia.shared.I_Entity#removeAttribute(java.lang.String)
+     * Removes the given attribute.<p>
+     *
+     * @param attributeName the attribute name
      */
     public void removeAttribute(String attributeName) {
 
         removeAttributeSilent(attributeName);
+        fireChange();
     }
 
     /**
-     * @see org.opencms.acacia.shared.I_Entity#removeAttributeSilent(java.lang.String)
+     * Removes the attribute without triggering any change events.<p>
+     *
+     * @param attributeName the attribute name
      */
     public void removeAttributeSilent(String attributeName) {
 
-        m_simpleAttributes.remove(attributeName);
-        m_entityAttributes.remove(attributeName);
+        EntityAttribute attr = getAttribute(attributeName);
+        if (attr != null) {
+            if (attr.isSimpleValue()) {
+                m_simpleAttributes.remove(attributeName);
+            } else {
+                for (Entity child : attr.getComplexValues()) {
+                    removeChildChangeHandler(child);
+                }
+                m_entityAttributes.remove(attributeName);
+            }
+        }
     }
 
     /**
-     * @see org.opencms.acacia.shared.I_Entity#removeAttributeValue(java.lang.String, int)
+     * Removes a specific attribute value.<p>
+     * 
+     * @param attributeName the attribute name
+     * @param index the value index
      */
     public void removeAttributeValue(String attributeName, int index) {
 
         if (m_simpleAttributes.containsKey(attributeName)) {
             List<String> values = m_simpleAttributes.get(attributeName);
             if ((values.size() == 1) && (index == 0)) {
-                removeAttribute(attributeName);
+                removeAttributeSilent(attributeName);
             } else {
                 values.remove(index);
             }
         } else if (m_entityAttributes.containsKey(attributeName)) {
             List<Entity> values = m_entityAttributes.get(attributeName);
             if ((values.size() == 1) && (index == 0)) {
-                removeAttribute(attributeName);
+                removeAttributeSilent(attributeName);
             } else {
-                values.remove(index);
+                Entity child = values.remove(index);
+                removeChildChangeHandler(child);
             }
         }
-
+        fireChange();
     }
 
     /**
-     * @see org.opencms.acacia.shared.I_Entity#setAttributeValue(java.lang.String, org.opencms.acacia.shared.I_Entity)
+     * Sets the given attribute value. Will remove all previous attribute values.<p>
+     *
+     * @param attributeName the attribute name
+     * @param value the attribute value
      */
-    public void setAttributeValue(String attributeName, I_Entity value) {
+    public void setAttributeValue(String attributeName, Entity value) {
 
-        // make sure there is no simple attribute value set
-        m_simpleAttributes.remove(attributeName);
-        if (!(value instanceof Entity)) {
-            value = transformToSerializableEntity(value);
-        }
-        List<Entity> values = new ArrayList<Entity>();
-        values.add((Entity)value);
-        m_entityAttributes.put(attributeName, values);
+        // make sure there is no attribute value set
+        removeAttributeSilent(attributeName);
+        addAttributeValue(attributeName, value);
     }
 
     /**
-     * @see org.opencms.acacia.shared.I_Entity#setAttributeValue(java.lang.String, org.opencms.acacia.shared.I_Entity, int)
+     * Sets the given attribute value at the given index.<p>
+     * 
+     * @param attributeName the attribute name
+     * @param value the attribute value
+     * @param index the value index
      */
-    public void setAttributeValue(String attributeName, I_Entity value, int index) {
+    public void setAttributeValue(String attributeName, Entity value, int index) {
 
         if (m_simpleAttributes.containsKey(attributeName)) {
             throw new RuntimeException("Attribute already exists with a simple type value.");
-        }
-        if (!(value instanceof Entity)) {
-            // ensure serializable entity
-            value = transformToSerializableEntity(value);
         }
         if (!m_entityAttributes.containsKey(attributeName)) {
             if (index != 0) {
                 throw new IndexOutOfBoundsException();
             } else {
-                List<Entity> values = new ArrayList<Entity>();
-                values.add((Entity)value);
-                m_entityAttributes.put(attributeName, values);
+                addAttributeValue(attributeName, value);
             }
         } else {
-            m_entityAttributes.get(attributeName).add(index, (Entity)value);
+            if (m_entityAttributes.get(attributeName).size() > index) {
+                Entity child = m_entityAttributes.get(attributeName).remove(index);
+                removeChildChangeHandler(child);
+            }
+            m_entityAttributes.get(attributeName).add(index, value);
+            fireChange();
         }
     }
 
     /**
-     * @see org.opencms.acacia.shared.I_Entity#setAttributeValue(java.lang.String, java.lang.String)
+     * Sets the given attribute value. Will remove all previous attribute values.<p>
+     *
+     * @param attributeName the attribute name
+     * @param value the attribute value
      */
     public void setAttributeValue(String attributeName, String value) {
 
@@ -452,10 +556,15 @@ public class Entity implements I_Entity, Serializable {
         List<String> values = new ArrayList<String>();
         values.add(value);
         m_simpleAttributes.put(attributeName, values);
+        fireChange();
     }
 
     /**
-     * @see org.opencms.acacia.shared.I_Entity#setAttributeValue(java.lang.String, java.lang.String, int)
+     * Sets the given attribute value at the given index.<p>
+     * 
+     * @param attributeName the attribute name
+     * @param value the attribute value
+     * @param index the value index
      */
     public void setAttributeValue(String attributeName, String value, int index) {
 
@@ -466,17 +575,21 @@ public class Entity implements I_Entity, Serializable {
             if (index != 0) {
                 throw new IndexOutOfBoundsException();
             } else {
-                List<String> values = new ArrayList<String>();
-                values.add(value);
-                m_simpleAttributes.put(attributeName, values);
+                addAttributeValue(attributeName, value);
             }
         } else {
+            if (m_simpleAttributes.get(attributeName).size() > index) {
+                m_simpleAttributes.get(attributeName).remove(index);
+            }
             m_simpleAttributes.get(attributeName).add(index, value);
+            fireChange();
         }
     }
 
     /**
-     * @see org.opencms.acacia.shared.I_Entity#toJSON()
+     * Returns the JSON string representation of this entity.<p>
+     * 
+     * @return the JSON string representation of this entity
      */
     public String toJSON() {
 
@@ -520,5 +633,63 @@ public class Entity implements I_Entity, Serializable {
     public String toString() {
 
         return toJSON();
+    }
+
+    /**
+     * Adds this handler to the widget.
+     * 
+     * @param <H> the type of handler to add
+     * @param type the event type
+     * @param handler the handler
+     * @return {@link HandlerRegistration} used to remove the handler
+     */
+    protected final <H extends EventHandler> HandlerRegistration addHandler(final H handler, GwtEvent.Type<H> type) {
+
+        return ensureHandlers().addHandlerToSource(type, this, handler);
+    }
+
+    /**
+     * Fires the change event for this entity.<p>
+     */
+    void fireChange() {
+
+        ValueChangeEvent.fire(this, this);
+    }
+
+    /**
+     * Lazy initializing the handler manager.<p>
+     * 
+     * @return the handler manager
+     */
+    private SimpleEventBus ensureHandlers() {
+
+        if (m_eventBus == null) {
+            m_eventBus = new SimpleEventBus();
+        }
+        return m_eventBus;
+    }
+
+    /**
+     * Adds the value change handler to the given entity.<p>
+     * 
+     * @param child the child entity
+     */
+    private void registerChangeHandler(Entity child) {
+
+        HandlerRegistration reg = child.addValueChangeHandler(m_childChangeHandler);
+        m_changeHandlerRegistry.put(child.getId(), reg);
+    }
+
+    /**
+     * Removes the child entity change handler.<p>
+     * 
+     * @param child the child entity
+     */
+    private void removeChildChangeHandler(Entity child) {
+
+        HandlerRegistration reg = m_changeHandlerRegistry.remove(child.getId());
+        if (reg != null) {
+            reg.removeHandler();
+        }
     }
 }

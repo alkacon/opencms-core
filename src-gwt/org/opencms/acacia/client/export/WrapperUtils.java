@@ -27,15 +27,23 @@
 
 package org.opencms.acacia.client.export;
 
-import org.opencms.acacia.shared.I_Entity;
-import org.opencms.acacia.shared.I_EntityAttribute;
+import org.opencms.acacia.shared.Entity;
+import org.opencms.acacia.shared.EntityAttribute;
 
 import java.util.List;
 
 /**
  * Utility class with helper methods for wrapping objects.<p>
  */
-public class WrapperUtils {
+public final class WrapperUtils {
+
+    /**
+     * Hiding constructor.<p>
+     */
+    private WrapperUtils() {
+
+        // nothing to do
+    }
 
     /**
      * Creates an array of entity attribute wrappers for a list of entity attributes.<p>
@@ -43,7 +51,7 @@ public class WrapperUtils {
      * @param attributes the list of attributes 
      * @return the array of attribute wrappers 
      */
-    public static EntityAttributeWrapper[] arrayFromEntityAttributeList(List<I_EntityAttribute> attributes) {
+    public static EntityAttributeWrapper[] arrayFromEntityAttributeList(List<EntityAttribute> attributes) {
 
         EntityAttributeWrapper[] result = new EntityAttributeWrapper[attributes.size()];
         for (int i = 0; i < attributes.size(); i++) {
@@ -58,7 +66,7 @@ public class WrapperUtils {
      * @param entities the list of entities 
      * @return the array of entity wrappers 
      */
-    public static EntityWrapper[] arrayFromEntityList(List<I_Entity> entities) {
+    public static EntityWrapper[] arrayFromEntityList(List<Entity> entities) {
 
         EntityWrapper[] result = new EntityWrapper[entities.size()];
         for (int i = 0; i < entities.size(); i++) {

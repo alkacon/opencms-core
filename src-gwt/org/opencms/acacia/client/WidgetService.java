@@ -33,7 +33,7 @@ import org.opencms.acacia.client.widgets.I_FormEditWidget;
 import org.opencms.acacia.client.widgets.StringWidget;
 import org.opencms.acacia.shared.AttributeConfiguration;
 import org.opencms.acacia.shared.ContentDefinition;
-import org.opencms.acacia.shared.I_Type;
+import org.opencms.acacia.shared.Type;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -206,17 +206,17 @@ public class WidgetService implements I_WidgetService {
     }
 
     /**
-     * @see org.opencms.acacia.client.I_WidgetService#getRendererForAttribute(java.lang.String, org.opencms.acacia.shared.I_Type)
+     * @see org.opencms.acacia.client.I_WidgetService#getRendererForAttribute(java.lang.String, org.opencms.acacia.shared.Type)
      */
-    public I_EntityRenderer getRendererForAttribute(String attributeName, I_Type attributeType) {
+    public I_EntityRenderer getRendererForAttribute(String attributeName, Type attributeType) {
 
         return getRendererForAttribute(attributeName);
     }
 
     /**
-     * @see org.opencms.acacia.client.I_WidgetService#getRendererForType(org.opencms.acacia.shared.I_Type)
+     * @see org.opencms.acacia.client.I_WidgetService#getRendererForType(org.opencms.acacia.shared.Type)
      */
-    public I_EntityRenderer getRendererForType(I_Type entityType) {
+    public I_EntityRenderer getRendererForType(Type entityType) {
 
         if (m_rendererByType.containsKey(entityType.getId())) {
             return m_rendererByType.get(entityType.getId());

@@ -30,7 +30,7 @@ package org.opencms.acacia.client;
 import org.opencms.acacia.client.widgets.I_EditWidget;
 import org.opencms.acacia.client.widgets.I_FormEditWidget;
 import org.opencms.acacia.shared.AttributeConfiguration;
-import org.opencms.acacia.shared.I_Type;
+import org.opencms.acacia.shared.Type;
 
 import java.util.Map;
 
@@ -40,13 +40,6 @@ import com.google.gwt.dom.client.Element;
  * Provides widget renderer for entity attributes.<p>
  */
 public interface I_WidgetService {
-
-    /** 
-     * Adds a renderer.<p>
-     * 
-     * @param renderer the renderer to add 
-     */
-    public void addRenderer(I_EntityRenderer renderer);
 
     /**
      * Adds the given path to the list of paths where child attributes have change their order.<p>
@@ -61,6 +54,13 @@ public interface I_WidgetService {
      * @param configurations the configurations to add
      */
     void addConfigurations(Map<String, AttributeConfiguration> configurations);
+
+    /** 
+     * Adds a renderer.<p>
+     * 
+     * @param renderer the renderer to add 
+     */
+    void addRenderer(I_EntityRenderer renderer);
 
     /**
      * Registers the given widget factory with the service.<p>
@@ -125,7 +125,7 @@ public interface I_WidgetService {
      * 
      * @return the renderer
      */
-    I_EntityRenderer getRendererForAttribute(String attributeName, I_Type attributeType);
+    I_EntityRenderer getRendererForAttribute(String attributeName, Type attributeType);
 
     /**
      * Returns the renderer for the given entity type.<p>
@@ -134,7 +134,7 @@ public interface I_WidgetService {
      * 
      * @return the renderer
      */
-    I_EntityRenderer getRendererForType(I_Type entityType);
+    I_EntityRenderer getRendererForType(Type entityType);
 
     /**
      * Returns the if the attribute widget should be displayed in compact view.<p>
@@ -173,7 +173,7 @@ public interface I_WidgetService {
     void registerComplexWidgetAttribute(String attrName, String renderer, String configuration);
 
     /**
-     * Sets the default renderer 
+     * Sets the default renderer.<p>
      * 
      * @param renderer the default renderer 
      */
