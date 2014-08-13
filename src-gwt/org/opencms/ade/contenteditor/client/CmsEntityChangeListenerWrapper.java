@@ -63,7 +63,8 @@ public final class CmsEntityChangeListenerWrapper implements I_CmsEntityChangeLi
      * @param entity the changed entiy
      */
     private native void onChange(CmsEntity entity) /*-{
-                                                  var listener = this.@org.opencms.ade.contenteditor.client.CmsEntityChangeListenerWrapper::m_wrappedListener;
-                                                  listener.onChange(entity);
-                                                  }-*/;
+                                                   var listener = this.@org.opencms.ade.contenteditor.client.CmsEntityChangeListenerWrapper::m_wrappedListener;
+                                                   var wrappedEntity=new $wnd.acacia.CmsEntityWrapper(entity);
+                                                   listener.onChange(wrappedEntity);
+                                                   }-*/;
 }

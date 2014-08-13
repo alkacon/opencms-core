@@ -28,8 +28,8 @@
 package org.opencms.acacia.client;
 
 import org.opencms.acacia.client.css.I_CmsLayoutBundle;
-import org.opencms.acacia.client.entity.I_CmsEntityBackend;
 import org.opencms.acacia.client.entity.CmsEntityBackend;
+import org.opencms.acacia.client.entity.I_CmsEntityBackend;
 import org.opencms.acacia.shared.CmsContentDefinition;
 import org.opencms.acacia.shared.CmsEntity;
 import org.opencms.acacia.shared.CmsEntityAttribute;
@@ -157,7 +157,10 @@ public class CmsNativeComplexWidgetRenderer implements I_CmsEntityRenderer {
     /**
      * @see org.opencms.acacia.client.I_CmsEntityRenderer#renderInline(org.opencms.acacia.shared.CmsEntity, org.opencms.acacia.client.I_CmsInlineFormParent, org.opencms.acacia.client.I_CmsInlineHtmlUpdateHandler)
      */
-    public void renderInline(CmsEntity entity, I_CmsInlineFormParent formParent, I_CmsInlineHtmlUpdateHandler updateHandler) {
+    public void renderInline(
+        CmsEntity entity,
+        I_CmsInlineFormParent formParent,
+        I_CmsInlineHtmlUpdateHandler updateHandler) {
 
         notSupported();
     }
@@ -242,9 +245,9 @@ public class CmsNativeComplexWidgetRenderer implements I_CmsEntityRenderer {
         CmsEntity entity,
         I_CmsEntityBackend vie,
         JavaScriptObject config) /*-{
-                                 var entityWrapper = new $wnd.acacia.EntityWrapper();
+                                 var entityWrapper = new $wnd.acacia.CmsEntityWrapper();
                                  entityWrapper.setEntity(entity);
-                                 var vieWrapper = new $wnd.acacia.VieWrapper();
+                                 var vieWrapper = new $wnd.acacia.CmsEntityBackendWrapper();
                                  if (nativeRenderer && nativeRenderer[renderFunction]) {
                                  nativeRenderer[renderFunction](element, entityWrapper, vieWrapper,
                                  config);

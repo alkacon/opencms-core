@@ -32,10 +32,10 @@ import org.opencms.acacia.client.entity.CmsEntityBackend;
 import org.opencms.acacia.client.entity.I_CmsEntityBackend;
 import org.opencms.acacia.client.ui.CmsInlineEditOverlay;
 import org.opencms.acacia.client.widgets.CmsFormWidgetWrapper;
-import org.opencms.acacia.client.widgets.I_CmsEditWidget;
-import org.opencms.acacia.client.widgets.I_CmsFormEditWidget;
 import org.opencms.acacia.client.widgets.CmsStringWidget;
 import org.opencms.acacia.client.widgets.CmsTinyMCEWidget;
+import org.opencms.acacia.client.widgets.I_CmsEditWidget;
+import org.opencms.acacia.client.widgets.I_CmsFormEditWidget;
 import org.opencms.acacia.shared.CmsContentDefinition;
 import org.opencms.acacia.shared.CmsEntity;
 import org.opencms.acacia.shared.CmsEntityHtml;
@@ -103,8 +103,8 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
     /** The id of the edited entity. */
     protected String m_entityId;
 
-    /** The VIE instance. */
-    protected I_CmsEntityBackend m_vie;
+    /** The entity back-end instance. */
+    protected I_CmsEntityBackend m_entityBackend;
 
     /** The in-line edit overlay hiding other content. */
     private CmsInlineEditOverlay m_editOverlay;
@@ -155,9 +155,9 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
         I_CmsWidgetsLayoutBundle.INSTANCE.widgetCss().ensureInjected();
         I_CmsWidgetsLayoutBundle.INSTANCE.galleryWidgetsCss().ensureInjected();
         m_service = service;
-        m_vie = CmsEntityBackend.getInstance();
+        m_entityBackend = CmsEntityBackend.getInstance();
         m_widgetService = widgetService;
-        I_CmsEntityRenderer renderer = new CmsRenderer(m_vie, m_widgetService);
+        I_CmsEntityRenderer renderer = new CmsRenderer(m_entityBackend, m_widgetService);
         m_widgetService.setDefaultRenderer(renderer);
         m_widgetService.addWidgetFactory("string", new I_CmsWidgetFactory() {
 
@@ -266,7 +266,7 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
      */
     public void addEntityChangeHandler(String entityId, ValueChangeHandler<CmsEntity> handler) {
 
-        CmsEntity entity = m_vie.getEntity(entityId);
+        CmsEntity entity = m_entityBackend.getEntity(entityId);
         if (entity != null) {
             entity.addValueChangeHandler(handler);
         }
@@ -285,7 +285,7 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
     }
 
     /**
-     * Destroys the form and related resources. Also clears all entities from VIE<p>
+     * Destroys the form and related resources. Also clears all entities from the entity back-end<p>
      * 
      * @param clearEntities <code>true</code> to also clear all entities
      */
@@ -293,7 +293,7 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
 
         CmsValueFocusHandler.getInstance().destroy();
         if (clearEntities) {
-            m_vie.clearEntities();
+            m_entityBackend.clearEntities();
         }
     }
 
@@ -304,7 +304,7 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
      */
     public CmsEntity getCurrentEntity() {
 
-        return m_vie.getEntity(m_entityId);
+        return m_entityBackend.getEntity(m_entityId);
     }
 
     /**
@@ -350,8 +350,8 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
 
         m_widgetService.addConfigurations(definition.getConfigurations());
         CmsType baseType = definition.getTypes().get(definition.getEntityTypeName());
-        m_vie.registerTypes(baseType, definition.getTypes());
-        m_vie.registerEntity(definition.getEntity());
+        m_entityBackend.registerTypes(baseType, definition.getTypes());
+        m_entityBackend.registerEntity(definition.getEntity());
     }
 
     /**
@@ -373,11 +373,11 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
      */
     public void renderEntityForm(String entityId, List<CmsTabInfo> tabInfos, Panel context, Element scrollParent) {
 
-        CmsEntity entity = m_vie.getEntity(entityId);
+        CmsEntity entity = m_entityBackend.getEntity(entityId);
         if (entity != null) {
             boolean initUndo = (m_entity == null) || !entity.getId().equals(m_entity.getId());
             m_entity = entity;
-            CmsType type = m_vie.getType(m_entity.getTypeName());
+            CmsType type = m_entityBackend.getType(m_entity.getTypeName());
             m_formPanel = new FlowPanel();
             context.add(m_formPanel);
             CmsAttributeHandler.setScrollElement(scrollParent);
@@ -414,11 +414,11 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
      */
     public void renderEntityForm(String entityId, Panel context, Element scrollParent) {
 
-        CmsEntity entity = m_vie.getEntity(entityId);
+        CmsEntity entity = m_entityBackend.getEntity(entityId);
         if (entity != null) {
             boolean initUndo = (m_entity == null) || !entity.getId().equals(m_entity.getId());
             m_entity = entity;
-            CmsType type = m_vie.getType(m_entity.getTypeName());
+            CmsType type = m_entityBackend.getType(m_entity.getTypeName());
             m_formPanel = new FlowPanel();
             context.add(m_formPanel);
             CmsAttributeHandler.setScrollElement(scrollParent);
@@ -449,13 +449,13 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
      */
     public void renderInlineEntity(String entityId, I_CmsInlineFormParent formParent) {
 
-        m_entity = m_vie.getEntity(entityId);
+        m_entity = m_entityBackend.getEntity(entityId);
         if (m_entity != null) {
             m_rootHandler = new CmsRootHandler();
             m_validationHandler.setContentService(m_service);
             m_validationHandler.registerEntity(m_entity);
             m_validationHandler.setRootHandler(m_rootHandler);
-            CmsType type = m_vie.getType(m_entity.getTypeName());
+            CmsType type = m_entityBackend.getType(m_entity.getTypeName());
             CmsButtonBarHandler.INSTANCE.setWidgetService(m_widgetService);
             m_widgetService.getRendererForType(type).renderInline(m_entity, formParent, this);
             CmsUndoRedoHandler.getInstance().initialize(m_entity, this, m_rootHandler);
@@ -470,8 +470,8 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
     public void rerenderForm(CmsEntity newContent) {
 
         m_validationHandler.setPaused(true, m_entity);
-        m_vie.changeEntityContentValues(m_entity, newContent);
-        CmsType type = m_vie.getType(m_entity.getTypeName());
+        m_entityBackend.changeEntityContentValues(m_entity, newContent);
+        CmsType type = m_entityBackend.getType(m_entity.getTypeName());
         if ((m_tabInfos != null) && !m_tabInfos.isEmpty()) {
             int currentTab = m_formTabs.getSelectedIndex();
             m_formPanel.clear();
@@ -495,7 +495,7 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
      * Saves the given entities.<p>
      * 
      * @param entities the entities to save
-     * @param clearOnSuccess <code>true</code> to clear the VIE instance on success
+     * @param clearOnSuccess <code>true</code> to clear the entity back-end instance on success
      * @param callback the call back command
      */
     public void saveEntities(List<CmsEntity> entities, final boolean clearOnSuccess, final Command callback) {
@@ -525,14 +525,14 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
      * Saves the given entity.<p>
      * 
      * @param entityIds the entity ids
-     * @param clearOnSuccess <code>true</code> to clear all entities from VIE on success
+     * @param clearOnSuccess <code>true</code> to clear all entities from entity back-end on success
      * @param callback the callback executed on success
      */
     public void saveEntities(Set<String> entityIds, boolean clearOnSuccess, Command callback) {
 
         List<CmsEntity> entities = new ArrayList<CmsEntity>();
         for (String entityId : entityIds) {
-            CmsEntity entity = m_vie.getEntity(entityId);
+            CmsEntity entity = m_entityBackend.getEntity(entityId);
             if (entity != null) {
                 entities.add(entity);
             }
@@ -544,7 +544,7 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
      * Saves the given entity.<p>
      * 
      * @param entity the entity
-     * @param clearOnSuccess <code>true</code> to clear all entities from VIE on success
+     * @param clearOnSuccess <code>true</code> to clear all entities from entity back-end on success
      * @param callback the callback executed on success
      */
     public void saveEntity(CmsEntity entity, final boolean clearOnSuccess, final Command callback) {
@@ -571,12 +571,12 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
      * Saves the given entity.<p>
      * 
      * @param entityId the entity id
-     * @param clearOnSuccess <code>true</code> to clear all entities from VIE on success
+     * @param clearOnSuccess <code>true</code> to clear all entities from entity back-end on success
      * @param callback the callback executed on success
      */
     public void saveEntity(String entityId, boolean clearOnSuccess, Command callback) {
 
-        CmsEntity entity = m_vie.getEntity(entityId);
+        CmsEntity entity = m_entityBackend.getEntity(entityId);
         saveEntity(entity, clearOnSuccess, callback);
     }
 
@@ -588,7 +588,7 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
      */
     public void saveEntity(String entityId, Command callback) {
 
-        CmsEntity entity = m_vie.getEntity(entityId);
+        CmsEntity entity = m_entityBackend.getEntity(entityId);
         saveEntity(entity, false, callback);
     }
 

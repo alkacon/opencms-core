@@ -31,6 +31,7 @@ import org.opencms.acacia.client.css.I_CmsLayoutBundle.I_Widgets;
 import org.opencms.gwt.client.ui.css.I_CmsFloatDecoratedPanelCss;
 
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.resources.client.CssResource.Shared;
 
 /**
  * CSS resource bundle for the acacia editor widgets.<p>
@@ -38,6 +39,7 @@ import com.google.gwt.core.shared.GWT;
 public interface I_CmsWidgetsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLayoutBundle {
 
     /** The gallery widget CSS. */
+    @Shared
     interface I_CmsGalleryWidgetsCss
     extends I_Widgets, I_CmsLocationPickerBase,
     org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.I_CmsGalleryFieldBaseCss {
@@ -45,6 +47,7 @@ public interface I_CmsWidgetsLayoutBundle extends org.opencms.gwt.client.ui.css.
     }
 
     /** The XML content widget CSS. */
+    @Shared
     interface I_CmsWidgetCss extends I_Widgets, I_CmsFloatDecoratedPanelCss, I_CmsGlobalWidgetCss {
 
         /**

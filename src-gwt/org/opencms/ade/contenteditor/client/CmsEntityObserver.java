@@ -111,12 +111,14 @@ public class CmsEntityObserver implements ValueChangeHandler<CmsEntity> {
 
         CmsEntity entity = event.getValue();
         for (String scope : m_scopeValues.keySet()) {
+            System.out.println("checking scope " + scope + " on change");
             String scopeValue = CmsContentDefinition.getValueForPath(entity, scope);
             String previousValue = m_scopeValues.get(scope);
             if (((scopeValue != null) && !scopeValue.equals(previousValue))
                 || ((scopeValue == null) && (previousValue != null))) {
                 // the value within this scope has changed, notify all listeners
                 if (m_changeListeners.containsKey(scope)) {
+                    System.out.println("calling listeners on changed scope " + scope);
                     for (I_CmsEntityChangeListener changeListener : m_changeListeners.get(scope)) {
                         try {
                             changeListener.onEntityChange(entity);

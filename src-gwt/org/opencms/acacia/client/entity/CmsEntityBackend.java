@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
@@ -46,17 +47,17 @@ import com.google.gwt.dom.client.NodeList;
  */
 public final class CmsEntityBackend implements I_CmsEntityBackend {
 
+    /** The instance. */
+    private static CmsEntityBackend INSTANCE;
+
+    /** CmsEntity id counter. */
+    private int m_count;
+
     /** The registered entities. */
     private Map<String, CmsEntity> m_entities;
 
     /** The registered types. */
     private Map<String, CmsType> m_types;
-
-    /** CmsEntity id counter. */
-    private int m_count;
-
-    /** The instance. */
-    private static CmsEntityBackend INSTANCE;
 
     /**
      * Constructor.<p>
@@ -65,6 +66,33 @@ public final class CmsEntityBackend implements I_CmsEntityBackend {
 
         m_entities = new HashMap<String, CmsEntity>();
         m_types = new HashMap<String, CmsType>();
+    }
+
+    /**
+     * Method to create an entity object from a wrapped instance.<p>
+     * 
+     * @param entityWrapper the wrappe entity
+     * 
+     * @return the entity
+     */
+    public static CmsEntity createFromNativeWrapper(JavaScriptObject entityWrapper) {
+
+        CmsEntity result = new CmsEntity(null, getEntityType(entityWrapper));
+        String[] simpleAttr = getSimpleAttributeNames(entityWrapper);
+        for (int i = 0; i < simpleAttr.length; i++) {
+            String[] simpleAttrValues = getSimpleAttributeValues(entityWrapper, simpleAttr[i]);
+            for (int j = 0; j < simpleAttrValues.length; j++) {
+                result.addAttributeValue(simpleAttr[i], simpleAttrValues[j]);
+            }
+        }
+        String[] complexAttr = getComplexAttributeNames(entityWrapper);
+        for (int i = 0; i < complexAttr.length; i++) {
+            JavaScriptObject[] complexAttrValues = getComplexAttributeValues(entityWrapper, complexAttr[i]);
+            for (int j = 0; j < complexAttrValues.length; j++) {
+                result.addAttributeValue(complexAttr[i], createFromNativeWrapper(complexAttrValues[j]));
+            }
+        }
+        return result;
     }
 
     /**
@@ -79,6 +107,79 @@ public final class CmsEntityBackend implements I_CmsEntityBackend {
         }
         return INSTANCE;
     }
+
+    /**
+     * Returns the complex attribute names of the given entity.<p>
+     * 
+     * @param entityWrapper the wrapped entity
+     * 
+     * @return the complex attribute names
+     */
+    private static native String[] getComplexAttributeNames(JavaScriptObject entityWrapper)/*-{
+                                                                                           var attr = entityWrapper.getAttributes();
+                                                                                           var result = [];
+                                                                                           for (i = 0; i < attr.length; i++) {
+                                                                                           if (!attr[i].isSimpleValue()) {
+                                                                                           result.push(attr[i].getAttributeName());
+                                                                                           }
+                                                                                           }
+                                                                                           return result;
+                                                                                           }-*/;
+
+    /**
+     * Returns the complex attribute values of the given entity.<p>
+     * 
+     * @param entityWrapper the wrapped entity
+     * @param attributeName the attribute name
+     * 
+     * @return the complex attribute values
+     */
+    private static native JavaScriptObject[] getComplexAttributeValues(
+        JavaScriptObject entityWrapper,
+        String attributeName)/*-{
+                             return entityWrapper.getAttribute(attributeName).getComplexValues();
+                             }-*/;
+
+    /**
+     * Returns the entity type.<p>
+     * 
+     * @param entityWrapper the wrapped entity
+     * 
+     * @return the entity type name
+     */
+    private static native String getEntityType(JavaScriptObject entityWrapper)/*-{
+                                                                              return entityWrapper.getTypeName();
+                                                                              }-*/;
+
+    /**
+     * Returns the simple attribute names of the given entity.<p>
+     * 
+     * @param entityWrapper the wrapped entity
+     * 
+     * @return the simple attribute names
+     */
+    private static native String[] getSimpleAttributeNames(JavaScriptObject entityWrapper)/*-{
+                                                                                          var attr = entityWrapper.getAttributes();
+                                                                                          var result = [];
+                                                                                          for (i = 0; i < attr.length; i++) {
+                                                                                          if (attr[i].isSimpleValue()) {
+                                                                                          result.push(attr[i].getAttributeName());
+                                                                                          }
+                                                                                          }
+                                                                                          return result;
+                                                                                          }-*/;
+
+    /**
+     * Returns the simple attribute values of the given entity.<p>
+     * 
+     * @param entityWrapper the wrapped entity
+     * @param attributeName the attribute name
+     * 
+     * @return the simple attribute values
+     */
+    private static native String[] getSimpleAttributeValues(JavaScriptObject entityWrapper, String attributeName)/*-{
+                                                                                                                 return entityWrapper.getAttribute(attributeName).getSimpleValues();
+                                                                                                                 }-*/;
 
     /**
      * @see org.opencms.acacia.client.entity.I_CmsEntityBackend#changeEntityContentValues(org.opencms.acacia.shared.CmsEntity, org.opencms.acacia.shared.CmsEntity)
