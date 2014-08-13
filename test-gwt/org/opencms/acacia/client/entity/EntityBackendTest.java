@@ -69,7 +69,7 @@ public class EntityBackendTest extends GWTTestCase {
      */
     public void testCopyAndRemoveEntity() {
 
-        I_CmsEntityBackend vie = getVieInstance();
+        I_CmsEntityBackend vie = getBackendInstance();
         CmsType simpleType = vie.createType(SIMPLE_TYPE_ID);
         CmsType complex = vie.createType(COMPLEX_TYPE_ID);
         complex.addAttribute(ATTRIBUTE_NAME, simpleType, 1, 3);
@@ -104,7 +104,7 @@ public class EntityBackendTest extends GWTTestCase {
 
         String entityId = "http://myEntityId";
         String entityType = "cms:myType";
-        I_CmsEntityBackend vie = getVieInstance();
+        I_CmsEntityBackend vie = getBackendInstance();
         vie.createType(entityType);
         CmsEntity entity = vie.createEntity(entityId, entityType);
         assertNotNull("The newly created entity should not be null", entity);
@@ -118,7 +118,7 @@ public class EntityBackendTest extends GWTTestCase {
     public void testCreateType() {
 
         String typeId = "cms:mySimpleType";
-        CmsType type = getVieInstance().createType(typeId);
+        CmsType type = getBackendInstance().createType(typeId);
         assertNotNull("The newly created type should not be null", type);
         assertEquals("The type id should match the initial id", typeId, type.getId());
         assertTrue("This should be a simple type, as it has no attributes.", type.isSimpleType());
@@ -129,7 +129,7 @@ public class EntityBackendTest extends GWTTestCase {
      */
     public void testEntityAttribute() {
 
-        I_CmsEntityBackend vie = getVieInstance();
+        I_CmsEntityBackend vie = getBackendInstance();
 
         CmsType simple = vie.createType(SIMPLE_TYPE_ID);
         CmsType complex = vie.createType(COMPLEX_TYPE_ID);
@@ -188,7 +188,7 @@ public class EntityBackendTest extends GWTTestCase {
      */
     public void testEntityEvents() {
 
-        I_CmsEntityBackend vie = getVieInstance();
+        I_CmsEntityBackend vie = getBackendInstance();
         CmsType simpleType = vie.createType(SIMPLE_TYPE_ID);
         CmsType complex = vie.createType(COMPLEX_TYPE_ID);
         complex.addAttribute(ATTRIBUTE_NAME, simpleType, 1, 3);
@@ -213,7 +213,7 @@ public class EntityBackendTest extends GWTTestCase {
      */
     public void testSameValueAttributes() {
 
-        I_CmsEntityBackend vie = getVieInstance();
+        I_CmsEntityBackend vie = getBackendInstance();
         String mySimple = "simple:mySimple";
         String myComplex = "complex:myComplex";
         String myComplexNested = "complex:myComplexNested";
@@ -244,7 +244,7 @@ public class EntityBackendTest extends GWTTestCase {
 
         Document.get().getBody().setInnerHTML(
             "<div about='http://testEntity'><div property='" + ATTRIBUTE_NAME + "'>my value</div></div>");
-        List<com.google.gwt.dom.client.Element> elements = getVieInstance().getAttributeElements(
+        List<com.google.gwt.dom.client.Element> elements = getBackendInstance().getAttributeElements(
             "http://testEntity",
             ATTRIBUTE_NAME,
             null);
@@ -253,7 +253,7 @@ public class EntityBackendTest extends GWTTestCase {
         assertEquals("my value", elements.get(0).getInnerText());
         Document.get().getBody().setInnerHTML(
             "<div about='http://testEntity' property='" + ATTRIBUTE_NAME + "'>my value</div>");
-        elements = getVieInstance().getAttributeElements("http://testEntity", ATTRIBUTE_NAME, null);
+        elements = getBackendInstance().getAttributeElements("http://testEntity", ATTRIBUTE_NAME, null);
         assertNotNull(elements);
         assertEquals(1, elements.size());
         assertEquals("my value", elements.get(0).getInnerText());
@@ -282,7 +282,7 @@ public class EntityBackendTest extends GWTTestCase {
      * 
      * @return the {@link CmsEntityBackend} instance
      */
-    private I_CmsEntityBackend getVieInstance() {
+    private I_CmsEntityBackend getBackendInstance() {
 
         return new CmsEntityBackend();
     }

@@ -44,7 +44,7 @@ public class AllTests extends GWTTestSuite {
      */
     public static Test suite() {
 
-        TestSuite suite = new TestSuite("Test for a Maps Application");
+        TestSuite suite = new TestSuite("Runs all GWT based tests");
         suite.addTest(org.opencms.acacia.client.entity.AllTests.suite());
         return suite;
     }
