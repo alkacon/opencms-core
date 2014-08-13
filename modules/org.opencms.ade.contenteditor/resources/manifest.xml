@@ -124,26 +124,6 @@
       <accesscontrol/>
     </file>
     <file>
-      <source>system/modules/org.opencms.ade.contenteditor/resources/org.opencms.ade.contenteditor.scripts.js</source>
-      <destination>system/modules/org.opencms.ade.contenteditor/resources/org.opencms.ade.contenteditor.scripts.js</destination>
-      <type>plain</type>
-      <uuidstructure>4b7782dd-f057-11e1-b5f5-15b3be0b5948</uuidstructure>
-      <uuidresource>4b7782de-f057-11e1-b5f5-15b3be0b5948</uuidresource>
-      <datelastmodified>Mon, 27 Aug 2012 14:55:51 GMT</datelastmodified>
-      <userlastmodified>Admin</userlastmodified>
-      <datecreated>Mon, 27 Aug 2012 14:55:51 GMT</datecreated>
-      <usercreated>Admin</usercreated>
-      <flags>0</flags>
-      <properties>
-        <property>
-          <name>Title</name>
-          <value><![CDATA[org.opencms.ade.contenteditor.scripts]]></value>
-        </property>
-      </properties>
-      <relations/>
-      <accesscontrol/>
-    </file>
-    <file>
       <destination>system/modules/org.opencms.ade.contenteditor/resources/contenteditor</destination>
       <type>folder</type>
       <uuidstructure>ce2722a1-53db-11e1-af11-e5cbe0b4d4f3</uuidstructure>
