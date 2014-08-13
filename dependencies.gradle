@@ -15,7 +15,7 @@ dependencies {
             classifier = 'sources'
         }
     }
-    compile group: 'org.timepedia.exporter', name: 'gwtexporter', version: '2.4.0'
+    compile group: 'org.timepedia.exporter', name: 'gwtexporter', version: '2.5.1'
 
     componentsCompile group: 'org.apache.ant', name: 'ant', version: '1.8.4'
     componentsCompile group: 'ant-contrib', name: 'ant-contrib', version: '1.0b3'
