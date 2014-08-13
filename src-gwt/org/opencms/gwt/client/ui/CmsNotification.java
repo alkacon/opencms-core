@@ -135,7 +135,9 @@ public final class CmsNotification {
     public void removeMessage(CmsNotificationMessage message) {
 
         m_messages.remove(message);
-        m_widget.removeMessage(message);
+        if (hasWidget()) {
+            m_widget.removeMessage(message);
+        }
     }
 
     /**
@@ -148,7 +150,9 @@ public final class CmsNotification {
 
         final CmsNotificationMessage notificationMessage = new CmsNotificationMessage(Mode.NORMAL, type, message);
         m_messages.add(notificationMessage);
-        m_widget.addMessage(notificationMessage);
+        if (hasWidget()) {
+            m_widget.addMessage(notificationMessage);
+        }
         Timer timer = new Timer() {
 
             @Override
@@ -171,7 +175,9 @@ public final class CmsNotification {
 
         CmsNotificationMessage notificationMessage = new CmsNotificationMessage(Mode.ALERT, type, message);
         m_messages.add(notificationMessage);
-        m_widget.addMessage(notificationMessage);
+        if (hasWidget()) {
+            m_widget.addMessage(notificationMessage);
+        }
     }
 
     /**
@@ -186,7 +192,9 @@ public final class CmsNotification {
 
         CmsNotificationMessage notificationMessage = new CmsNotificationMessage(Mode.BUSY, type, message);
         m_messages.add(notificationMessage);
-        m_widget.addMessage(notificationMessage);
+        if (hasWidget()) {
+            m_widget.addMessage(notificationMessage);
+        }
         return notificationMessage;
     }
 
@@ -223,7 +231,9 @@ public final class CmsNotification {
 
         CmsNotificationMessage notificationMessage = new CmsNotificationMessage(Mode.STICKY, type, message);
         m_messages.add(notificationMessage);
-        m_widget.addMessage(notificationMessage);
+        if (hasWidget()) {
+            m_widget.addMessage(notificationMessage);
+        }
         return notificationMessage;
     }
 
