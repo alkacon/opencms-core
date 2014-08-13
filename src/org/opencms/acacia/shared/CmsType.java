@@ -156,7 +156,8 @@ public class CmsType implements Serializable {
      */
     public String getAttributeTypeName(String attributeName) {
 
-        return m_types.get(attributeName).getId();
+        CmsType attrType = m_types.get(attributeName);
+        return attrType == null ? null : attrType.getId();
     }
 
     /**

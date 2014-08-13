@@ -667,11 +667,11 @@ public class CmsContentTypeVisitor {
         CmsType type = new CmsType(typeName);
         type.setChoiceMaxOccurrence(xmlContentDefinition.getChoiceMaxOccurs());
         m_registeredTypes.put(typeName, type);
+        CmsType choiceType = null;
         if (type.isChoice()) {
-            CmsType choiceType = new CmsType(typeName + "/" + CmsType.CHOICE_ATTRIBUTE_NAME);
+            choiceType = new CmsType(typeName + "/" + CmsType.CHOICE_ATTRIBUTE_NAME);
             m_registeredTypes.put(choiceType.getId(), choiceType);
             type.addAttribute(CmsType.CHOICE_ATTRIBUTE_NAME, choiceType, 1, xmlContentDefinition.getChoiceMaxOccurs());
-            type = choiceType;
         }
         ArrayList<DisplayTypeEvaluator> evaluators = new ArrayList<DisplayTypeEvaluator>();
         for (I_CmsXmlSchemaType subType : xmlContentDefinition.getTypeSequence()) {
@@ -696,7 +696,11 @@ public class CmsContentTypeVisitor {
                 subTypeName = CmsContentService.getTypeUri(subTypeDefinition);
                 subEntityType = readTypes(subTypeDefinition, childPath);
             }
-            type.addAttribute(subAttributeName, subEntityType, subType.getMinOccurs(), subType.getMaxOccurs());
+            if (choiceType != null) {
+                choiceType.addAttribute(subAttributeName, subEntityType, subType.getMinOccurs(), subType.getMaxOccurs());
+            } else {
+                type.addAttribute(subAttributeName, subEntityType, subType.getMinOccurs(), subType.getMaxOccurs());
+            }
         }
         DisplayType predecessor = null;
         for (int i = 0; i < evaluators.size(); i++) {
