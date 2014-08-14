@@ -35,6 +35,7 @@ import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
@@ -1113,8 +1114,14 @@ public class CmsJspTagContainer extends TagSupport {
                     printElementWrapperTagStart(isOnline, cms, subelement, false);
                     standardContext.setElement(subelement);
                     try {
-                        String formatterSitePath = cms.getRequestContext().removeSiteRoot(
-                            subElementFormatterConfig.getJspRootPath());
+                        String formatterSitePath;
+                        try {
+                            CmsResource formatterResource = cms.readResource(subElementFormatterConfig.getJspStructureId());
+                            formatterSitePath = cms.getSitePath(formatterResource);
+                        } catch (CmsVfsResourceNotFoundException ex) {
+                            formatterSitePath = cms.getRequestContext().removeSiteRoot(
+                                subElementFormatterConfig.getJspRootPath());
+                        }
                         if (shouldShowSubElementInContext) {
                             CmsJspTagInclude.includeTagAction(
                                 pageContext,
@@ -1167,7 +1174,13 @@ public class CmsJspTagContainer extends TagSupport {
                 String formatter = null;
                 try {
                     if (formatterConfig != null) {
-                        formatter = cms.getRequestContext().removeSiteRoot(formatterConfig.getJspRootPath());
+                        try {
+                            CmsResource formatterResource = cms.readResource(formatterConfig.getJspStructureId());
+                            formatter = cms.getSitePath(formatterResource);
+                        } catch (CmsVfsResourceNotFoundException ex) {
+                            formatter = cms.getRequestContext().removeSiteRoot(formatterConfig.getJspRootPath());
+                        }
+                        formatter = cms.getSitePath(cms.readResource(formatterConfig.getJspStructureId()));
                     } else {
                         formatter = cms.getSitePath(cms.readResource(element.getFormatterId()));
                     }
@@ -1189,7 +1202,12 @@ public class CmsJspTagContainer extends TagSupport {
                         // skip this element, it has no formatter for this container type defined
                         return false;
                     }
-                    formatter = cms.getRequestContext().removeSiteRoot(elementFormatterBean.getJspRootPath());
+                    try {
+                        CmsResource formatterResource = cms.readResource(elementFormatterBean.getJspStructureId());
+                        formatter = cms.getSitePath(formatterResource);
+                    } catch (CmsVfsResourceNotFoundException ex) {
+                        formatter = cms.getRequestContext().removeSiteRoot(elementFormatterBean.getJspRootPath());
+                    }
                 }
 
                 printElementWrapperTagStart(isOnline, cms, element, false);
