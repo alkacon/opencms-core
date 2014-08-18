@@ -250,7 +250,7 @@ public class CmsDefaultResourceStatusProvider {
 
         for (CmsResource relationResource : relationSources.values()) {
             try {
-                CmsResourceStatusRelationBean relationBean = createRelationBean(cms, relationResource);
+                CmsResourceStatusRelationBean relationBean = createRelationBean(cms, contentLocale, relationResource);
                 result.getRelationSources().add(relationBean);
             } catch (CmsVfsResourceNotFoundException notfound) {
                 LOG.error(notfound.getLocalizedMessage(), notfound);
@@ -258,7 +258,7 @@ public class CmsDefaultResourceStatusProvider {
             }
         }
         if (includeTargets) {
-            result.getRelationTargets().addAll(getTargets(cms, structureId, additionalStructureIds));
+            result.getRelationTargets().addAll(getTargets(cms, contentLocale, structureId, additionalStructureIds));
         }
         result.setTabs(getTabClientData(cms, resource));
         return result;
@@ -268,6 +268,7 @@ public class CmsDefaultResourceStatusProvider {
      * Gets the list of relation targets for a resource.<p>
      * 
      * @param cms the current CMS context 
+     * @param locale the locale 
      * @param structureId the structure id of the resource for which we want the relation targets 
      * @param additionalStructureIds structure ids of additional resources to include with the relation target
      *  
@@ -277,6 +278,7 @@ public class CmsDefaultResourceStatusProvider {
      */
     protected List<CmsResourceStatusRelationBean> getTargets(
         CmsObject cms,
+        String locale,
         CmsUUID structureId,
         List<CmsUUID> additionalStructureIds) throws CmsException {
 
@@ -288,7 +290,7 @@ public class CmsDefaultResourceStatusProvider {
         List<CmsResourceStatusRelationBean> result = new ArrayList<CmsResourceStatusRelationBean>();
         for (CmsResource target : listBean.getResources()) {
             try {
-                CmsResourceStatusRelationBean relationBean = createRelationBean(cms, target);
+                CmsResourceStatusRelationBean relationBean = createRelationBean(cms, locale, target);
                 result.add(relationBean);
             } catch (CmsException e) {
                 LOG.error(e.getLocalizedMessage(), e);
@@ -301,16 +303,28 @@ public class CmsDefaultResourceStatusProvider {
     /** 
      * Creates a bean for a single resource which is part of a relation list.<p> 
      * 
-     * @param cms the current CMS context 
+     * @param cms the current CMS context
+     * @param locale the locale 
      * @param relationResource the resource 
      * 
      * @return the status bean for the resource
      * 
      * @throws CmsException if something goes wrong 
      */
-    CmsResourceStatusRelationBean createRelationBean(CmsObject cms, CmsResource relationResource) throws CmsException {
+    CmsResourceStatusRelationBean createRelationBean(CmsObject cms, String locale, CmsResource relationResource)
+    throws CmsException {
 
         CmsListInfoBean sourceBean = CmsVfsService.getPageInfo(cms, relationResource);
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(locale)) {
+            Locale realLocale = CmsLocaleManager.getLocale(locale);
+            CmsGallerySearchResult result = CmsGallerySearch.searchById(
+                cms,
+                relationResource.getStructureId(),
+                realLocale);
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(result.getTitle())) {
+                sourceBean.setTitle(result.getTitle());
+            }
+        }
         String link = null;
         try {
             link = OpenCms.getLinkManager().substituteLink(cms, relationResource);

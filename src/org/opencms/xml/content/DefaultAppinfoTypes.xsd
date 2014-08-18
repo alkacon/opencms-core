@@ -63,6 +63,7 @@
 	<xsd:complexType name="OpenCmsDefaultAppinfoDefault">
 		<xsd:attribute name="element" type="xsd:string" use="required" />
 		<xsd:attribute name="value" type="xsd:string" use="required" />
+		<xsd:attribute name="resolveMacros" type="xsd:boolean" use="optional" />
 	</xsd:complexType>
 
 	<xsd:complexType name="OpenCmsDefaultAppinfoMappings">
@@ -74,6 +75,7 @@
 	<xsd:complexType name="OpenCmsDefaultAppinfoMapping">
 		<xsd:attribute name="element" type="xsd:string" use="required" />
 		<xsd:attribute name="mapto" type="xsd:string" use="required" />
+		<xsd:attribute name="useDefault" type="xsd:boolean" use="optional" />
 	</xsd:complexType>
 
 	<xsd:complexType name="OpenCmsDefaultAppinfoLayouts">

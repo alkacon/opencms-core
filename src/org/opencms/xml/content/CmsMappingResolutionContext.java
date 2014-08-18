@@ -172,6 +172,16 @@ public class CmsMappingResolutionContext {
     }
 
     /**
+     * Finalizes the mappings.<p>
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public void finalizeMappings() throws CmsException {
+
+        commitUrlNameMappings();
+    }
+
+    /**
      * Sets the CMS context to use.<p>
      * 
      * @param cms the CMS context 

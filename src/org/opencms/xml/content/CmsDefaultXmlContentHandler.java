@@ -58,6 +58,7 @@ import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldMapping;
 import org.opencms.search.fields.CmsSearchFieldMappingType;
 import org.opencms.search.fields.I_CmsSearchFieldMapping;
+import org.opencms.search.galleries.CmsGalleryNameMacroResolver;
 import org.opencms.search.solr.CmsSolrField;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPrincipal;
@@ -238,6 +239,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /** Constant for the "regex" appinfo attribute name. */
     public static final String APPINFO_ATTR_REGEX = "regex";
+
+    /** Constant for the "resolveMacros" attribute name. */
+    public static final String APPINFO_ATTR_RESOLVE_MACROS = "resolveMacros";
 
     /** Constant for the "rule-regex" appinfo attribute name. */
     public static final String APPINFO_ATTR_RULE_REGEX = "rule-regex";
@@ -469,6 +473,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** The principal list separator. */
     private static final String PRINCIPAL_LIST_SEPARATOR = ",";
 
+    /** The 'useDefault' attribute name. */
+    private static final String APPINFO_ATTR_USE_DEFAULT = "useDefault";
+
     /** The set of allowed templates. */
     protected CmsDefaultSet<String> m_allowedTemplates = new CmsDefaultSet<String>();
 
@@ -568,6 +575,12 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** The visibility configurations by element path. */
     private Map<String, VisibilityConfiguration> m_visibilityConfigurations;
 
+    /** The paths of values for which no macros should be resolved when getting the default value. */
+    private Set<String> m_nonMacroResolvableDefaults = new HashSet<String>();
+
+    /** A set of keys identifying the mappings which should use default values if the corresponding values are not set in the XML content. */
+    private Set<String> m_mappingsUsingDefault = new HashSet<String>();
+
     /**
      * Creates a new instance of the default XML content handler.<p>
      */
@@ -604,6 +617,25 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                 APPINFO_SCHEMA_FILE), e);
         }
         CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_SYSTEM_ID, appinfoSchema);
+    }
+
+    /**
+     * Copies a given CMS context and set the copy's site root to '/'.<p>
+     *  
+     * @param cms the CMS context to copy 
+     * @return the copy 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public CmsObject createRootCms(CmsObject cms) throws CmsException {
+
+        CmsObject rootCms = OpenCms.initCmsObject(cms);
+        Object logEntry = cms.getRequestContext().getAttribute(CmsLogEntry.ATTR_LOG_ENTRY);
+        if (logEntry != null) {
+            rootCms.getRequestContext().setAttribute(CmsLogEntry.ATTR_LOG_ENTRY, logEntry);
+        }
+        rootCms.getRequestContext().setSiteRoot("/");
+        return rootCms;
     }
 
     /**
@@ -700,9 +732,13 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                 }
             }
             // return the default value with processed macros
-            CmsMacroResolver resolver = CmsMacroResolver.newInstance().setCmsObject(newCms).setMessages(
-                getMessages(locale));
-            return resolver.resolveMacros(defaultValue);
+            String result = defaultValue;
+            if (!m_nonMacroResolvableDefaults.contains(path)) {
+                CmsMacroResolver resolver = CmsMacroResolver.newInstance().setCmsObject(newCms).setMessages(
+                    getMessages(locale));
+                result = resolver.resolveMacros(defaultValue);
+            }
+            return result;
         }
         // no default value is available
         return null;
@@ -806,7 +842,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
      */
     public List<String> getMappings(String elementName) {
 
-        return m_elementMappings.get(elementName);
+        List<String> result = m_elementMappings.get(elementName);
+        if (result == null) {
+            result = Collections.emptyList();
+        }
+        return result;
     }
 
     /**
@@ -1302,10 +1342,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         // pass the mapping context as a request context attribute to preserve interface compatibility 
         cms.getRequestContext().setAttribute(ATTR_MAPPING_RESOLUTION_CONTEXT, mappingContext);
         content.resolveMappings(cms);
-        cms.getRequestContext().removeAttribute(ATTR_MAPPING_RESOLUTION_CONTEXT);
         // ensure all property or permission mappings of deleted optional values are removed
         removeEmptyMappings(cms, file, content);
-        mappingContext.commitUrlNameMappings();
+        resolveDefaultMappings(cms, file, content);
+        cms.getRequestContext().removeAttribute(ATTR_MAPPING_RESOLUTION_CONTEXT);
+        mappingContext.finalizeMappings();
         // write categories (if there is a category widget present)
         file = writeCategories(cms, file, content);
         // return the result
@@ -1317,322 +1358,21 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
      */
     public void resolveMapping(CmsObject cms, CmsXmlContent content, I_CmsXmlContentValue value) throws CmsException {
 
-        if (!value.isSimpleType()) {
-            // no mappings for a nested schema are possible
-            // note that the sub-elements of the nested schema ARE mapped by the node visitor,
-            // it's just the nested schema value itself that does not support mapping
-            return;
-        }
-        CmsMappingResolutionContext context = (CmsMappingResolutionContext)(cms.getRequestContext().getAttribute(ATTR_MAPPING_RESOLUTION_CONTEXT));
-
-        // get the original VFS file from the content
-        CmsFile file = content.getFile();
-        if (file == null) {
+        if (content.getFile() == null) {
             throw new CmsXmlException(Messages.get().container(Messages.ERR_XMLCONTENT_RESOLVE_FILE_NOT_FOUND_0));
         }
 
         // get the mappings for the element name
-        List<String> mappings = getMappings(value.getPath());
-        if (mappings == null) {
-            // nothing to do if we have no mappings at all
-            return;
+        boolean valueIsSimple = value.isSimpleType();
+        String valuePath = value.getPath();
+        int valueIndex = value.getIndex();
+        Locale valueLocale = value.getLocale();
+        CmsObject rootCms1 = createRootCms(cms);
+        String originalStringValue = null;
+        if (valueIsSimple) {
+            originalStringValue = value.getStringValue(rootCms1);
         }
-        // create OpenCms user context initialized with "/" as site root to read all siblings
-        CmsObject rootCms = OpenCms.initCmsObject(cms);
-        Object logEntry = cms.getRequestContext().getAttribute(CmsLogEntry.ATTR_LOG_ENTRY);
-        if (logEntry != null) {
-            rootCms.getRequestContext().setAttribute(CmsLogEntry.ATTR_LOG_ENTRY, logEntry);
-        }
-        rootCms.getRequestContext().setSiteRoot("/");
-        // read all siblings of the file
-        List<CmsResource> siblings = rootCms.readSiblings(
-            content.getFile().getRootPath(),
-            CmsResourceFilter.IGNORE_EXPIRATION);
-
-        Set<CmsResource> urlNameMappingResources = new HashSet<CmsResource>();
-        boolean mapToUrlName = false;
-        urlNameMappingResources.add(content.getFile());
-        // since 7.0.2 multiple mappings are possible
-        for (String mapping : mappings) {
-
-            // for multiple language mappings, we need to ensure
-            // a) all siblings are handled
-            // b) only the "right" locale is mapped to a sibling
-            if (CmsStringUtil.isNotEmpty(mapping)) {
-                for (int i = (siblings.size() - 1); i >= 0; i--) {
-                    // get filename
-                    String filename = (siblings.get(i)).getRootPath();
-                    Locale locale = OpenCms.getLocaleManager().getDefaultLocale(rootCms, filename);
-                    if (mapping.startsWith(MAPTO_URLNAME)) {
-                        // should be written regardless of whether there is a sibling with the correct locale
-                        mapToUrlName = true;
-                    }
-                    if (!locale.equals(value.getLocale())) {
-                        // only map property if the locale fits
-                        continue;
-                    }
-
-                    // make sure the file is locked
-                    CmsLock lock = rootCms.getLock(filename);
-                    if (lock.isUnlocked()) {
-                        rootCms.lockResource(filename);
-                    } else if (!lock.isDirectlyOwnedInProjectBy(rootCms)) {
-                        rootCms.changeLock(filename);
-                    }
-
-                    // get the string value of the current node
-                    String stringValue = value.getStringValue(rootCms);
-                    if (mapping.startsWith(MAPTO_PERMISSION) && (value.getIndex() == 0)) {
-
-                        // map value to a permission
-                        // example of a mapping: mapto="permission:GROUP:+r+v|GROUP.ALL_OTHERS:|GROUP.Projectmanagers:+r+v+w+c"
-
-                        // get permission(s) to set
-                        String permissionMappings = mapping.substring(MAPTO_PERMISSION.length());
-                        String mainMapping = permissionMappings;
-                        Map<String, String> permissionsToSet = new HashMap<String, String>();
-
-                        // separate permission to set for element value from other permissions to set
-                        int sepIndex = permissionMappings.indexOf('|');
-                        if (sepIndex != -1) {
-                            mainMapping = permissionMappings.substring(0, sepIndex);
-                            permissionMappings = permissionMappings.substring(sepIndex + 1);
-                            permissionsToSet = CmsStringUtil.splitAsMap(permissionMappings, "|", ":");
-                        }
-
-                        // determine principal type and permission string to set
-                        String principalType = I_CmsPrincipal.PRINCIPAL_GROUP;
-                        String permissionString = mainMapping;
-                        sepIndex = mainMapping.indexOf(':');
-                        if (sepIndex != -1) {
-                            principalType = mainMapping.substring(0, sepIndex);
-                            permissionString = mainMapping.substring(sepIndex + 1);
-                        }
-                        if (permissionString.toLowerCase().indexOf('o') == -1) {
-                            permissionString += "+o";
-                        }
-
-                        // remove all existing permissions from the file
-                        List<CmsAccessControlEntry> aces = rootCms.getAccessControlEntries(filename, false);
-                        for (Iterator<CmsAccessControlEntry> j = aces.iterator(); j.hasNext();) {
-                            CmsAccessControlEntry ace = j.next();
-                            if (ace.getPrincipal().equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID)) {
-                                // remove the entry "All others", which has to be treated in a special way
-                                rootCms.rmacc(
-                                    filename,
-                                    CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_NAME,
-                                    CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID.toString());
-                            } else {
-                                // this is a group or user principal
-                                I_CmsPrincipal principal = CmsPrincipal.readPrincipal(rootCms, ace.getPrincipal());
-                                if (principal.isGroup()) {
-                                    rootCms.rmacc(filename, I_CmsPrincipal.PRINCIPAL_GROUP, principal.getName());
-                                } else if (principal.isUser()) {
-                                    rootCms.rmacc(filename, I_CmsPrincipal.PRINCIPAL_USER, principal.getName());
-                                }
-                            }
-                        }
-
-                        // set additional permissions that are defined in mapping
-                        for (Iterator<Map.Entry<String, String>> j = permissionsToSet.entrySet().iterator(); j.hasNext();) {
-                            Map.Entry<String, String> entry = j.next();
-                            sepIndex = entry.getKey().indexOf('.');
-                            if (sepIndex != -1) {
-                                String type = entry.getKey().substring(0, sepIndex);
-                                String name = entry.getKey().substring(sepIndex + 1);
-                                String permissions = entry.getValue();
-                                if (permissions.toLowerCase().indexOf('o') == -1) {
-                                    permissions += "+o";
-                                }
-                                try {
-                                    rootCms.chacc(filename, type, name, permissions);
-                                } catch (CmsException e) {
-                                    // setting permission did not work
-                                    LOG.error(e);
-                                }
-                            }
-                        }
-
-                        // set permission(s) using the element value(s)
-                        // the set with all selected principals
-                        TreeSet<String> allPrincipals = new TreeSet<String>();
-                        String path = CmsXmlUtils.removeXpathIndex(value.getPath());
-                        List<I_CmsXmlContentValue> values = content.getValues(path, locale);
-                        Iterator<I_CmsXmlContentValue> j = values.iterator();
-                        while (j.hasNext()) {
-                            I_CmsXmlContentValue val = j.next();
-                            String principalName = val.getStringValue(rootCms);
-                            // the prinicipal name can be a principal list
-                            List<String> principalNames = CmsStringUtil.splitAsList(
-                                principalName,
-                                PRINCIPAL_LIST_SEPARATOR);
-                            // iterate over the principals
-                            Iterator<String> iterPrincipals = principalNames.iterator();
-                            while (iterPrincipals.hasNext()) {
-                                // get the next principal
-                                String principal = iterPrincipals.next();
-                                allPrincipals.add(principal);
-                            }
-                        }
-                        // iterate over the set with all principals and set the permissions
-                        Iterator<String> iterAllPricinipals = allPrincipals.iterator();
-                        while (iterAllPricinipals.hasNext()) {
-                            // get the next principal
-                            String principal = iterAllPricinipals.next();
-                            rootCms.chacc(filename, principalType, principal, permissionString);
-                        }
-                        // special case: permissions are written only to one sibling, end loop
-                        i = 0;
-                    } else if (mapping.startsWith(MAPTO_PROPERTY_LIST) && (value.getIndex() == 0)) {
-
-                        boolean mapToShared;
-                        int prefixLength;
-                        // check which mapping is used (shared or individual)
-                        if (mapping.startsWith(MAPTO_PROPERTY_LIST_SHARED)) {
-                            mapToShared = true;
-                            prefixLength = MAPTO_PROPERTY_LIST_SHARED.length();
-                        } else if (mapping.startsWith(MAPTO_PROPERTY_LIST_INDIVIDUAL)) {
-                            mapToShared = false;
-                            prefixLength = MAPTO_PROPERTY_LIST_INDIVIDUAL.length();
-                        } else {
-                            mapToShared = false;
-                            prefixLength = MAPTO_PROPERTY_LIST.length();
-                        }
-
-                        // this is a property list mapping
-                        String property = mapping.substring(prefixLength);
-
-                        String path = CmsXmlUtils.removeXpathIndex(value.getPath());
-                        List<I_CmsXmlContentValue> values = content.getValues(path, locale);
-                        Iterator<I_CmsXmlContentValue> j = values.iterator();
-                        StringBuffer result = new StringBuffer(values.size() * 64);
-                        while (j.hasNext()) {
-                            I_CmsXmlContentValue val = j.next();
-                            result.append(val.getStringValue(rootCms));
-                            if (j.hasNext()) {
-                                result.append(CmsProperty.VALUE_LIST_DELIMITER);
-                            }
-                        }
-
-                        CmsProperty p;
-                        if (mapToShared) {
-                            // map to shared value
-                            p = new CmsProperty(property, null, result.toString());
-                        } else {
-                            // map to individual value
-                            p = new CmsProperty(property, result.toString(), null);
-                        }
-                        // write the created list string value in the selected property
-                        rootCms.writePropertyObject(filename, p);
-                        if (mapToShared) {
-                            // special case: shared mappings must be written only to one sibling, end loop
-                            i = 0;
-                        }
-
-                    } else if (mapping.startsWith(MAPTO_PROPERTY)) {
-
-                        boolean mapToShared;
-                        int prefixLength;
-                        // check which mapping is used (shared or individual)
-                        if (mapping.startsWith(MAPTO_PROPERTY_SHARED)) {
-                            mapToShared = true;
-                            prefixLength = MAPTO_PROPERTY_SHARED.length();
-                        } else if (mapping.startsWith(MAPTO_PROPERTY_INDIVIDUAL)) {
-                            mapToShared = false;
-                            prefixLength = MAPTO_PROPERTY_INDIVIDUAL.length();
-                        } else {
-                            mapToShared = false;
-                            prefixLength = MAPTO_PROPERTY.length();
-                        }
-
-                        // this is a property mapping
-                        String property = mapping.substring(prefixLength);
-
-                        CmsProperty p;
-                        if (mapToShared) {
-                            // map to shared value
-                            p = new CmsProperty(property, null, stringValue);
-                        } else {
-                            // map to individual value
-                            p = new CmsProperty(property, stringValue, null);
-                        }
-                        // just store the string value in the selected property
-                        rootCms.writePropertyObject(filename, p);
-                        if (mapToShared) {
-                            // special case: shared mappings must be written only to one sibling, end loop
-                            i = 0;
-                        }
-                    } else if (mapping.startsWith(MAPTO_URLNAME)) {
-                        // we write the actual mappings later
-                        urlNameMappingResources.add(siblings.get(i));
-                    } else if (mapping.startsWith(MAPTO_ATTRIBUTE)) {
-
-                        // this is an attribute mapping
-                        String attribute = mapping.substring(MAPTO_ATTRIBUTE.length());
-                        switch (ATTRIBUTES.indexOf(attribute)) {
-                            case 0: // date released
-                                long date = 0;
-                                try {
-                                    date = Long.valueOf(stringValue).longValue();
-                                } catch (NumberFormatException e) {
-                                    // ignore, value can be a macro
-                                }
-                                if (date == 0) {
-                                    date = CmsResource.DATE_RELEASED_DEFAULT;
-                                }
-                                // set the sibling release date
-                                rootCms.setDateReleased(filename, date, false);
-                                // set current file release date
-                                if (filename.equals(rootCms.getSitePath(file))) {
-                                    file.setDateReleased(date);
-                                }
-                                break;
-                            case 1: // date expired
-                                date = 0;
-                                try {
-                                    date = Long.valueOf(stringValue).longValue();
-                                } catch (NumberFormatException e) {
-                                    // ignore, value can be a macro
-                                }
-                                if (date == 0) {
-                                    date = CmsResource.DATE_EXPIRED_DEFAULT;
-                                }
-                                // set the sibling expired date
-                                rootCms.setDateExpired(filename, date, false);
-                                // set current file expired date
-                                if (filename.equals(rootCms.getSitePath(file))) {
-                                    file.setDateExpired(date);
-                                }
-                                break;
-                            default:
-                                // ignore invalid / other mappings
-                        }
-                    }
-                }
-            }
-        }
-        if (mapToUrlName) {
-            for (CmsResource resourceForUrlNameMapping : urlNameMappingResources) {
-                if (!CmsResource.isTemporaryFileName(resourceForUrlNameMapping.getRootPath())) {
-                    String mappedName = value.getStringValue(cms);
-                    if (!CmsStringUtil.isEmptyOrWhitespaceOnly(mappedName)) {
-                        mappedName = mappedName.trim();
-                        context.addUrlNameMapping(
-                            mappedName,
-                            value.getLocale(),
-                            resourceForUrlNameMapping.getStructureId());
-                    }
-                }
-            }
-        }
-
-        // make sure the original is locked
-        CmsLock lock = rootCms.getLock(file);
-        if (lock.isUnlocked()) {
-            rootCms.lockResource(file.getRootPath());
-        } else if (!lock.isExclusiveOwnedBy(rootCms.getRequestContext().getCurrentUser())) {
-            rootCms.changeLock(file.getRootPath());
-        }
+        resolveMapping(cms, content, valuePath, valueIsSimple, valueIndex, valueLocale, originalStringValue);
     }
 
     /**
@@ -1766,11 +1506,15 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
      * @param contentDefinition the XML content definition this XML content handler belongs to
      * @param elementName the element name to map
      * @param defaultValue the default value to use
+     * @param resolveMacrosValue the value of the 'resolveMacros' attribute 
      *
      * @throws CmsXmlException in case an unknown element name is used
      */
-    protected void addDefault(CmsXmlContentDefinition contentDefinition, String elementName, String defaultValue)
-    throws CmsXmlException {
+    protected void addDefault(
+        CmsXmlContentDefinition contentDefinition,
+        String elementName,
+        String defaultValue,
+        String resolveMacrosValue) throws CmsXmlException {
 
         if (contentDefinition.getSchemaType(elementName) == null) {
             throw new CmsXmlException(org.opencms.xml.types.Messages.get().container(
@@ -1780,6 +1524,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         // store mappings as xpath to allow better control about what is mapped
         String xpath = CmsXmlUtils.createXpath(elementName, 1);
         m_defaultValues.put(xpath, defaultValue);
+
+        // macros are resolved by default 
+        if ((resolveMacrosValue != null) && !Boolean.parseBoolean(resolveMacrosValue)) {
+            m_nonMacroResolvableDefaults.add(xpath);
+        }
     }
 
     /**
@@ -1849,11 +1598,15 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
      * @param contentDefinition the XML content definition this XML content handler belongs to
      * @param elementName the element name to map
      * @param mapping the mapping to use
+     * @param useDefault the 'useDefault' attribute
      *
      * @throws CmsXmlException in case an unknown element name is used
      */
-    protected void addMapping(CmsXmlContentDefinition contentDefinition, String elementName, String mapping)
-    throws CmsXmlException {
+    protected void addMapping(
+        CmsXmlContentDefinition contentDefinition,
+        String elementName,
+        String mapping,
+        String useDefault) throws CmsXmlException {
 
         if (contentDefinition.getSchemaType(elementName) == null) {
             throw new CmsXmlException(Messages.get().container(
@@ -1869,6 +1622,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             // there should not really be THAT much multiple mappings per value...
             values = new ArrayList<String>(4);
             m_elementMappings.put(xpath, values);
+        }
+        if (Boolean.parseBoolean(useDefault)) {
+            m_mappingsUsingDefault.add(xpath + ":" + mapping);
         }
         values.add(mapping);
         if (mapping.startsWith(MAPTO_PROPERTY) && mapping.endsWith(":" + CmsPropertyDefinition.PROPERTY_TITLE)) {
@@ -2166,9 +1922,10 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             Element element = i.next();
             String elementName = element.attributeValue(APPINFO_ATTR_ELEMENT);
             String defaultValue = element.attributeValue(APPINFO_ATTR_VALUE);
+            String resolveMacrosValue = element.attributeValue(APPINFO_ATTR_RESOLVE_MACROS);
             if ((elementName != null) && (defaultValue != null)) {
                 // add a default value mapping for the element
-                addDefault(contentDefinition, elementName, defaultValue);
+                addDefault(contentDefinition, elementName, defaultValue, resolveMacrosValue);
             }
         }
     }
@@ -2341,9 +2098,10 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             // this is a mapping node
             String elementName = element.attributeValue(APPINFO_ATTR_ELEMENT);
             String maptoName = element.attributeValue(APPINFO_ATTR_MAPTO);
+            String useDefault = element.attributeValue(APPINFO_ATTR_USE_DEFAULT);
             if ((elementName != null) && (maptoName != null)) {
                 // add the element mapping
-                addMapping(contentDefinition, elementName, maptoName);
+                addMapping(contentDefinition, elementName, maptoName, useDefault);
             }
         }
     }
@@ -2985,6 +2743,44 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     }
 
     /**
+     * Resolves those mappings for which no content value exists and useDefault is set to true.<p>
+     *  
+     * @param cms the CMS context to use 
+     * @param file the content file 
+     * @param content the content object 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    protected void resolveDefaultMappings(CmsObject cms, CmsFile file, CmsXmlContent content) throws CmsException {
+
+        for (Map.Entry<String, List<String>> e : m_elementMappings.entrySet()) {
+            String path = e.getKey();
+            List<String> mappings = e.getValue();
+            if (mappings == null) {
+                // nothing to do if we have no mappings at all
+                continue;
+            }
+            for (int v = mappings.size() - 1; v >= 0; v--) {
+                String mapping = mappings.get(v);
+                if (!isMappingUsingDefault(path, mapping)) {
+                    continue;
+                }
+                for (Locale locale : content.getLocales()) {
+                    if (content.hasValue(path, locale)) {
+                        continue;
+                    } else {
+                        String defaultValue = getDefault(cms, file, null, path, locale);
+                        if (defaultValue != null) {
+                            resolveMapping(cms, content, path, true, 0, locale, defaultValue);
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
+    /**
      * Validates if the given <code>appinfo</code> element node from the XML content definition schema
      * is valid according the the capabilities of this content handler.<p>
      *
@@ -3444,6 +3240,354 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             result = result.substring(0, result.length() - 1);
         }
         return result;
+    }
+
+    /** 
+     * Checks if the given mapping has the 'useDefault' flag set to true.<p>
+     * 
+     * @param path the mapping path 
+     * @param mapping the mapping type 
+     * 
+     * @return true if 'useDefault' is enabled for this mapping 
+     */
+    private boolean isMappingUsingDefault(String path, String mapping) {
+
+        String key = path + ":" + mapping;
+        return m_mappingsUsingDefault.contains(key);
+    }
+
+    /**
+     * Helper method which does most of the mapping resolution work.<p>
+     * 
+     * @param cms the CMS context to use 
+     * @param content the content object 
+     * @param valuePath the xpath of the value 
+     * @param valueIsSimple true if this is a simple value 
+     * @param valueIndex the index of the value 
+     * @param valueLocale the locale of the value 
+     * @param originalStringValue the value as a string 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    private void resolveMapping(
+        CmsObject cms,
+        CmsXmlContent content,
+        String valuePath,
+        boolean valueIsSimple,
+        int valueIndex,
+        Locale valueLocale,
+        String originalStringValue) throws CmsException {
+
+        CmsObject rootCms = createRootCms(cms);
+        // get the original VFS file from the content
+        CmsFile file = content.getFile();
+        if (!valueIsSimple) {
+            // no mappings for a nested schema are possible
+            // note that the sub-elements of the nested schema ARE mapped by the node visitor,
+            // it's just the nested schema value itself that does not support mapping
+            return;
+        }
+
+        List<String> mappings = getMappings(valuePath);
+        if (mappings.size() == 0) {
+            // nothing to do if we have no mappings at all
+            return;
+        }
+        // create OpenCms user context initialized with "/" as site root to read all siblings
+        // read all siblings of the file
+        List<CmsResource> siblings = rootCms.readSiblings(
+            content.getFile().getRootPath(),
+            CmsResourceFilter.IGNORE_EXPIRATION);
+
+        Set<CmsResource> urlNameMappingResources = new HashSet<CmsResource>();
+        boolean mapToUrlName = false;
+        urlNameMappingResources.add(content.getFile());
+        // since 7.0.2 multiple mappings are possible
+
+        // get the string value of the current node
+
+        CmsGalleryNameMacroResolver resolver = new CmsGalleryNameMacroResolver(rootCms, content, valueLocale);
+        resolver.setKeepEmptyMacros(true);
+        String stringValue = resolver.resolveMacros(originalStringValue);
+
+        for (String mapping : mappings) {
+
+            // for multiple language mappings, we need to ensure
+            // a) all siblings are handled
+            // b) only the "right" locale is mapped to a sibling
+            if (CmsStringUtil.isNotEmpty(mapping)) {
+                for (int i = (siblings.size() - 1); i >= 0; i--) {
+                    // get filename
+                    String filename = (siblings.get(i)).getRootPath();
+                    if (mapping.startsWith(MAPTO_URLNAME)) {
+                        // should be written regardless of whether there is a sibling with the correct locale
+                        mapToUrlName = true;
+                    }
+                    {
+                        Locale locale = OpenCms.getLocaleManager().getDefaultLocale(rootCms, filename);
+                        if (!locale.equals(valueLocale)) {
+                            // only map property if the locale fits
+                            continue;
+                        }
+                    }
+
+                    // make sure the file is locked
+                    CmsLock lock = rootCms.getLock(filename);
+                    if (lock.isUnlocked()) {
+                        rootCms.lockResource(filename);
+                    } else if (!lock.isDirectlyOwnedInProjectBy(rootCms)) {
+                        rootCms.changeLock(filename);
+                    }
+
+                    if (mapping.startsWith(MAPTO_PERMISSION) && (valueIndex == 0)) {
+
+                        // map value to a permission
+                        // example of a mapping: mapto="permission:GROUP:+r+v|GROUP.ALL_OTHERS:|GROUP.Projectmanagers:+r+v+w+c"
+
+                        // get permission(s) to set
+                        String permissionMappings = mapping.substring(MAPTO_PERMISSION.length());
+                        String mainMapping = permissionMappings;
+                        Map<String, String> permissionsToSet = new HashMap<String, String>();
+
+                        // separate permission to set for element value from other permissions to set
+                        int sepIndex = permissionMappings.indexOf('|');
+                        if (sepIndex != -1) {
+                            mainMapping = permissionMappings.substring(0, sepIndex);
+                            permissionMappings = permissionMappings.substring(sepIndex + 1);
+                            permissionsToSet = CmsStringUtil.splitAsMap(permissionMappings, "|", ":");
+                        }
+
+                        // determine principal type and permission string to set
+                        String principalType = I_CmsPrincipal.PRINCIPAL_GROUP;
+                        String permissionString = mainMapping;
+                        sepIndex = mainMapping.indexOf(':');
+                        if (sepIndex != -1) {
+                            principalType = mainMapping.substring(0, sepIndex);
+                            permissionString = mainMapping.substring(sepIndex + 1);
+                        }
+                        if (permissionString.toLowerCase().indexOf('o') == -1) {
+                            permissionString += "+o";
+                        }
+
+                        // remove all existing permissions from the file
+                        List<CmsAccessControlEntry> aces = rootCms.getAccessControlEntries(filename, false);
+                        for (Iterator<CmsAccessControlEntry> j = aces.iterator(); j.hasNext();) {
+                            CmsAccessControlEntry ace = j.next();
+                            if (ace.getPrincipal().equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID)) {
+                                // remove the entry "All others", which has to be treated in a special way
+                                rootCms.rmacc(
+                                    filename,
+                                    CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_NAME,
+                                    CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID.toString());
+                            } else {
+                                // this is a group or user principal
+                                I_CmsPrincipal principal = CmsPrincipal.readPrincipal(rootCms, ace.getPrincipal());
+                                if (principal.isGroup()) {
+                                    rootCms.rmacc(filename, I_CmsPrincipal.PRINCIPAL_GROUP, principal.getName());
+                                } else if (principal.isUser()) {
+                                    rootCms.rmacc(filename, I_CmsPrincipal.PRINCIPAL_USER, principal.getName());
+                                }
+                            }
+                        }
+
+                        // set additional permissions that are defined in mapping
+                        for (Iterator<Map.Entry<String, String>> j = permissionsToSet.entrySet().iterator(); j.hasNext();) {
+                            Map.Entry<String, String> entry = j.next();
+                            sepIndex = entry.getKey().indexOf('.');
+                            if (sepIndex != -1) {
+                                String type = entry.getKey().substring(0, sepIndex);
+                                String name = entry.getKey().substring(sepIndex + 1);
+                                String permissions = entry.getValue();
+                                if (permissions.toLowerCase().indexOf('o') == -1) {
+                                    permissions += "+o";
+                                }
+                                try {
+                                    rootCms.chacc(filename, type, name, permissions);
+                                } catch (CmsException e) {
+                                    // setting permission did not work
+                                    LOG.error(e);
+                                }
+                            }
+                        }
+
+                        // set permission(s) using the element value(s)
+                        // the set with all selected principals
+                        TreeSet<String> allPrincipals = new TreeSet<String>();
+                        String path = CmsXmlUtils.removeXpathIndex(valuePath);
+                        List<I_CmsXmlContentValue> values = content.getValues(path, valueLocale);
+                        Iterator<I_CmsXmlContentValue> j = values.iterator();
+                        while (j.hasNext()) {
+                            I_CmsXmlContentValue val = j.next();
+                            String principalName = val.getStringValue(rootCms);
+                            // the prinicipal name can be a principal list
+                            List<String> principalNames = CmsStringUtil.splitAsList(
+                                principalName,
+                                PRINCIPAL_LIST_SEPARATOR);
+                            // iterate over the principals
+                            Iterator<String> iterPrincipals = principalNames.iterator();
+                            while (iterPrincipals.hasNext()) {
+                                // get the next principal
+                                String principal = iterPrincipals.next();
+                                allPrincipals.add(principal);
+                            }
+                        }
+                        // iterate over the set with all principals and set the permissions
+                        Iterator<String> iterAllPricinipals = allPrincipals.iterator();
+                        while (iterAllPricinipals.hasNext()) {
+                            // get the next principal
+                            String principal = iterAllPricinipals.next();
+                            rootCms.chacc(filename, principalType, principal, permissionString);
+                        }
+                        // special case: permissions are written only to one sibling, end loop
+                        i = 0;
+                    } else if (mapping.startsWith(MAPTO_PROPERTY_LIST) && (valueIndex == 0)) {
+
+                        boolean mapToShared;
+                        int prefixLength;
+                        // check which mapping is used (shared or individual)
+                        if (mapping.startsWith(MAPTO_PROPERTY_LIST_SHARED)) {
+                            mapToShared = true;
+                            prefixLength = MAPTO_PROPERTY_LIST_SHARED.length();
+                        } else if (mapping.startsWith(MAPTO_PROPERTY_LIST_INDIVIDUAL)) {
+                            mapToShared = false;
+                            prefixLength = MAPTO_PROPERTY_LIST_INDIVIDUAL.length();
+                        } else {
+                            mapToShared = false;
+                            prefixLength = MAPTO_PROPERTY_LIST.length();
+                        }
+
+                        // this is a property list mapping
+                        String property = mapping.substring(prefixLength);
+
+                        String path = CmsXmlUtils.removeXpathIndex(valuePath);
+                        List<I_CmsXmlContentValue> values = content.getValues(path, valueLocale);
+                        Iterator<I_CmsXmlContentValue> j = values.iterator();
+                        StringBuffer result = new StringBuffer(values.size() * 64);
+                        while (j.hasNext()) {
+                            I_CmsXmlContentValue val = j.next();
+                            result.append(val.getStringValue(rootCms));
+                            if (j.hasNext()) {
+                                result.append(CmsProperty.VALUE_LIST_DELIMITER);
+                            }
+                        }
+
+                        CmsProperty p;
+                        if (mapToShared) {
+                            // map to shared value
+                            p = new CmsProperty(property, null, result.toString());
+                        } else {
+                            // map to individual value
+                            p = new CmsProperty(property, result.toString(), null);
+                        }
+                        // write the created list string value in the selected property
+                        rootCms.writePropertyObject(filename, p);
+                        if (mapToShared) {
+                            // special case: shared mappings must be written only to one sibling, end loop
+                            i = 0;
+                        }
+
+                    } else if (mapping.startsWith(MAPTO_PROPERTY)) {
+
+                        boolean mapToShared;
+                        int prefixLength;
+                        // check which mapping is used (shared or individual)
+                        if (mapping.startsWith(MAPTO_PROPERTY_SHARED)) {
+                            mapToShared = true;
+                            prefixLength = MAPTO_PROPERTY_SHARED.length();
+                        } else if (mapping.startsWith(MAPTO_PROPERTY_INDIVIDUAL)) {
+                            mapToShared = false;
+                            prefixLength = MAPTO_PROPERTY_INDIVIDUAL.length();
+                        } else {
+                            mapToShared = false;
+                            prefixLength = MAPTO_PROPERTY.length();
+                        }
+
+                        // this is a property mapping
+                        String property = mapping.substring(prefixLength);
+
+                        CmsProperty p;
+                        if (mapToShared) {
+                            // map to shared value
+                            p = new CmsProperty(property, null, stringValue);
+                        } else {
+                            // map to individual value
+                            p = new CmsProperty(property, stringValue, null);
+                        }
+                        // just store the string value in the selected property
+                        rootCms.writePropertyObject(filename, p);
+                        if (mapToShared) {
+                            // special case: shared mappings must be written only to one sibling, end loop
+                            i = 0;
+                        }
+                    } else if (mapping.startsWith(MAPTO_URLNAME)) {
+                        // we write the actual mappings later
+                        urlNameMappingResources.add(siblings.get(i));
+                    } else if (mapping.startsWith(MAPTO_ATTRIBUTE)) {
+
+                        // this is an attribute mapping
+                        String attribute = mapping.substring(MAPTO_ATTRIBUTE.length());
+                        switch (ATTRIBUTES.indexOf(attribute)) {
+                            case 0: // date released
+                                long date = 0;
+                                try {
+                                    date = Long.valueOf(stringValue).longValue();
+                                } catch (NumberFormatException e) {
+                                    // ignore, value can be a macro
+                                }
+                                if (date == 0) {
+                                    date = CmsResource.DATE_RELEASED_DEFAULT;
+                                }
+                                // set the sibling release date
+                                rootCms.setDateReleased(filename, date, false);
+                                // set current file release date
+                                if (filename.equals(rootCms.getSitePath(file))) {
+                                    file.setDateReleased(date);
+                                }
+                                break;
+                            case 1: // date expired
+                                date = 0;
+                                try {
+                                    date = Long.valueOf(stringValue).longValue();
+                                } catch (NumberFormatException e) {
+                                    // ignore, value can be a macro
+                                }
+                                if (date == 0) {
+                                    date = CmsResource.DATE_EXPIRED_DEFAULT;
+                                }
+                                // set the sibling expired date
+                                rootCms.setDateExpired(filename, date, false);
+                                // set current file expired date
+                                if (filename.equals(rootCms.getSitePath(file))) {
+                                    file.setDateExpired(date);
+                                }
+                                break;
+                            default:
+                                // ignore invalid / other mappings
+                        }
+                    }
+                }
+            }
+        }
+        if (mapToUrlName) {
+            CmsMappingResolutionContext context = (CmsMappingResolutionContext)(cms.getRequestContext().getAttribute(ATTR_MAPPING_RESOLUTION_CONTEXT));
+            for (CmsResource resourceForUrlNameMapping : urlNameMappingResources) {
+                if (!CmsResource.isTemporaryFileName(resourceForUrlNameMapping.getRootPath())) {
+                    String mappedName = stringValue;
+                    if (!CmsStringUtil.isEmptyOrWhitespaceOnly(mappedName)) {
+                        mappedName = mappedName.trim();
+                        context.addUrlNameMapping(mappedName, valueLocale, resourceForUrlNameMapping.getStructureId());
+                    }
+                }
+            }
+        }
+
+        // make sure the original is locked
+        CmsLock lock = rootCms.getLock(file);
+        if (lock.isUnlocked()) {
+            rootCms.lockResource(file.getRootPath());
+        } else if (!lock.isExclusiveOwnedBy(rootCms.getRequestContext().getCurrentUser())) {
+            rootCms.changeLock(file.getRootPath());
+        }
     }
 
     /**

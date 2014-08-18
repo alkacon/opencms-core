@@ -48,17 +48,24 @@ import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.A_CmsXmlDocument;
+import org.opencms.xml.CmsXmlContentDefinition;
+import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.I_CmsXmlContentHandler;
+import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.I_CmsXmlContentValue;
+import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
+
+import com.google.common.collect.Sets;
 
 /**
  * Special document text extraction factory for the gallery index that creates multiple fields for the content
@@ -67,6 +74,9 @@ import org.apache.commons.logging.Log;
  * @since 8.0.0 
  */
 public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
+
+    /** Mapping name used to indicate that the value should be used for the gallery name. */
+    public static final String MAPPING_GALLERY_NAME = "galleryName";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDocumentXmlContent.class);
@@ -79,6 +89,32 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
     public CmsGalleryDocumentXmlContent(String name) {
 
         super(name);
+    }
+
+    /**
+     * Collects a list of all possible XPaths for a content definition.<p>
+     * 
+     * @param cms the CMS context to use 
+     * @param def the content definition 
+     * @param path the path of the given content definition 
+     * @param result the set used to collect the XPaths  
+     */
+    public static void collectSchemaXpathsForSimpleValues(
+        CmsObject cms,
+        CmsXmlContentDefinition def,
+        String path,
+        Set<String> result) {
+
+        List<I_CmsXmlSchemaType> nestedTypes = def.getTypeSequence();
+        for (I_CmsXmlSchemaType nestedType : nestedTypes) {
+            String subPath = path + "/" + nestedType.getName();
+            if (nestedType instanceof CmsXmlNestedContentDefinition) {
+                CmsXmlContentDefinition nestedDef = ((CmsXmlNestedContentDefinition)nestedType).getNestedContentDefinition();
+                collectSchemaXpathsForSimpleValues(cms, nestedDef, subPath, result);
+            } else {
+                result.add(subPath);
+            }
+        }
     }
 
     /**
@@ -134,6 +170,7 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
                 locales.append(' ');
                 StringBuffer content = new StringBuffer();
                 boolean hasTitleMapping = false;
+                String galleryNameTemplate = null;
                 for (String xpath : xmlContent.getNames(locale)) {
                     I_CmsXmlContentValue value = xmlContent.getValue(xpath, locale);
                     if (value.getContentDefinition().getContentHandler().isSearchable(value)) {
@@ -144,8 +181,10 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
                             content.append('\n');
                         }
                     }
+
                     List<String> mappings = xmlContent.getHandler().getMappings(value.getPath());
-                    if ((mappings != null) && (mappings.size() > 0)) {
+
+                    if (mappings.size() > 0) {
                         // mappings are defined, lets check if we have mappings that interest us
                         for (String mapping : mappings) {
                             if (mapping.startsWith(I_CmsXmlContentHandler.MAPTO_PROPERTY)) {
@@ -168,15 +207,67 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
                                         putMappingValue(xmlContent, fieldName, locale, items, extracted);
                                     }
                                 }
+                            } else if (mapping.equals(MAPPING_GALLERY_NAME)) {
+                                galleryNameTemplate = value.getPlainText(cms);
+                                LOG.info("Found gallery name template for "
+                                    + resource.getRootPath()
+                                    + ":"
+                                    + galleryNameTemplate);
+
                             }
                         }
                     }
                 }
+                if (galleryNameTemplate == null) {
+                    // In the loop above, we only looked at mappings for values which are actually there.
+                    // But the galleryName mapping should use the configured default value if the value is not 
+                    // present in the content. So we need to find the xpath for which the galleryName mapping is defined,
+                    // if any.
+
+                    Set<String> xpaths = Sets.newHashSet();
+                    collectSchemaXpathsForSimpleValues(cms, xmlContent.getContentDefinition(), "", xpaths);
+                    for (String xpath : xpaths) {
+                        // mappings always are stored with indexes, so we add them to the xpath 
+                        List<String> mappings = xmlContent.getHandler().getMappings(CmsXmlUtils.createXpath(xpath, 1));
+                        for (String mapping : mappings) {
+                            if (mapping.equals(MAPPING_GALLERY_NAME)) {
+                                galleryNameTemplate = xmlContent.getHandler().getDefault(
+                                    cms,
+                                    xmlContent.getFile(),
+                                    null,
+                                    xpath,
+                                    locale);
+                                LOG.info("Using default value for gallery name template in "
+                                    + resource.getRootPath()
+                                    + ": "
+                                    + galleryNameTemplate);
+                                break;
+                            }
+                        }
+                    }
+                }
+
                 if (!hasTitleMapping) {
                     // in case no title mapping present, use the title property for all locales
                     String title = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
                     putMappingValue(xmlContent, CmsSearchField.FIELD_TITLE_UNSTORED, locale, items, title);
                 }
+
+                if (galleryNameTemplate != null) {
+                    CmsGalleryNameMacroResolver macroResolver = new CmsGalleryNameMacroResolver(cms, xmlContent, locale);
+                    String galleryName = macroResolver.resolveMacros(galleryNameTemplate);
+                    LOG.info("Using gallery name mapping '"
+                        + galleryNameTemplate
+                        + "' for '"
+                        + resource.getRootPath()
+                        + "' in locale "
+                        + locale
+                        + ", resulting in gallery name '"
+                        + galleryName
+                        + "'");
+                    putMappingValue(xmlContent, CmsSearchField.FIELD_TITLE_UNSTORED, locale, items, galleryName);
+                }
+
                 if (content.length() > 0) {
                     // append language individual content field
                     items.put(
