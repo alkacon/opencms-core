@@ -443,23 +443,25 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
                         // check if the event target is a child 
                         if (getElement().isOrHasChild(eventTarget)) {
                             Element target = event.getNativeEvent().getEventTarget().cast();
-                            while ((target != null)
-                                && !target.getTagName().equalsIgnoreCase("a")
-                                && (target != getElement())
-                                // stop in case of a nested container element
-                                && !CmsDomUtil.hasClass(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElement(), target)
-                                // stop in case of a nested container 
-                                && !CmsDomUtil.hasClass(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragTarget(), target)) {
-                                if (CmsContentEditor.isEditable(target)) {
-                                    CmsEditorBase.markForInlineFocus(target);
-                                    controller.getHandler().openEditorForElement(
-                                        CmsContainerPageElementPanel.this,
-                                        true);
-                                    removeEditorHandler();
-                                    event.cancel();
-                                    break;
-                                } else {
-                                    target = target.getParentElement();
+                            // check if the target closest ancestor drag element is this element
+                            Element parentContainerElement = CmsDomUtil.getAncestor(
+                                target,
+                                I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElement());
+                            if (parentContainerElement == getElement()) {
+                                while ((target != null)
+                                    && !target.getTagName().equalsIgnoreCase("a")
+                                    && (target != getElement())) {
+                                    if (CmsContentEditor.isEditable(target)) {
+                                        CmsEditorBase.markForInlineFocus(target);
+                                        controller.getHandler().openEditorForElement(
+                                            CmsContainerPageElementPanel.this,
+                                            true);
+                                        removeEditorHandler();
+                                        event.cancel();
+                                        break;
+                                    } else {
+                                        target = target.getParentElement();
+                                    }
                                 }
                             }
                         }
