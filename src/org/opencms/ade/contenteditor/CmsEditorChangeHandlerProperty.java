@@ -92,12 +92,12 @@ public class CmsEditorChangeHandlerProperty extends A_CmsXmlContentEditorChangeH
     }
 
     /**
-     * @see org.opencms.xml.content.I_CmsXmlContentEditorChangeHandler#setContfiguration(java.lang.String)
+     * @see org.opencms.xml.content.I_CmsXmlContentEditorChangeHandler#setConfiguration(java.lang.String)
      */
     @Override
-    public void setContfiguration(String configuration) {
+    public void setConfiguration(String configuration) {
 
-        super.setContfiguration(configuration);
+        super.setConfiguration(configuration);
         String[] temp = m_configuration.split("\\|");
         if (temp.length == 2) {
             m_propertyName = temp[0];

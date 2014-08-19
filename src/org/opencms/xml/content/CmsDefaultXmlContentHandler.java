@@ -1963,7 +1963,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             try {
                 I_CmsXmlContentEditorChangeHandler handler = (I_CmsXmlContentEditorChangeHandler)Class.forName(
                     handlerClass).newInstance();
-                handler.setContfiguration(configuration);
+                handler.setConfiguration(configuration);
                 handler.setScope(scope);
                 m_editorChangeHandlers.add(handler);
             } catch (Exception e) {

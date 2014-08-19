@@ -70,7 +70,7 @@ public interface I_CmsXmlContentEditorChangeHandler {
      * 
      * @param configuration the configuration
      */
-    void setContfiguration(String configuration);
+    void setConfiguration(String configuration);
 
     /**
      * Sets the scope to observe for changes.<p>

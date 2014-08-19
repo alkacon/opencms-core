@@ -85,9 +85,9 @@ public abstract class A_CmsXmlContentEditorChangeHandler implements I_CmsXmlCont
     }
 
     /**
-     * @see org.opencms.xml.content.I_CmsXmlContentEditorChangeHandler#setContfiguration(java.lang.String)
+     * @see org.opencms.xml.content.I_CmsXmlContentEditorChangeHandler#setConfiguration(java.lang.String)
      */
-    public void setContfiguration(String configuration) {
+    public void setConfiguration(String configuration) {
 
         m_configuration = configuration;
     }
