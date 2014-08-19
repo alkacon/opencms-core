@@ -613,8 +613,7 @@ public class CmsJspTagContainer extends TagSupport {
     public String getName() {
 
         if ((m_parentContainer != null) && (m_parentElement != null)) {
-            String elementId = m_parentElement.getInstanceId();
-            return m_parentContainer.getName() + "-" + elementId + "-" + m_name;
+            return m_parentElement.getInstanceId() + "-" + m_name;
         }
         return m_name;
     }
