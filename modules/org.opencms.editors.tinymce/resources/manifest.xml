@@ -674,7 +674,7 @@
 			<accesscontrol />
 		</file>
 		<file>
-			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/bg.js
+			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/bg_BG.js
 			</source>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/bg.js
 			</destination>
@@ -914,7 +914,7 @@
 			<accesscontrol />
 		</file>
 		<file>
-			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/en.js
+			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/en_GB.js
 			</source>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/en.js
 			</destination>
@@ -1152,10 +1152,8 @@
 			<accesscontrol />
 		</file>
 		<file>
-			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/gd.js
-			</source>
-			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/gd.js
-			</destination>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/gd.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/gd.js</destination>
 			<type>plain</type>
 			<uuidstructure>b5c1fbbc-8e55-11e3-b849-094876801169</uuidstructure>
 			<uuidresource>b5c1fbbd-8e55-11e3-b849-094876801169</uuidresource>
@@ -1196,7 +1194,7 @@
 			<accesscontrol />
 		</file>
 		<file>
-			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/he.js
+			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/he_IL.js
 			</source>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/he.js
 			</destination>
@@ -1260,7 +1258,7 @@
 			<accesscontrol />
 		</file>
 		<file>
-			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/hu.js
+			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/hu_HU.js
 			</source>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/hu.js
 			</destination>
@@ -1346,7 +1344,7 @@
 			<accesscontrol />
 		</file>
 		<file>
-			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/is.js
+			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/is_IS.js
 			</source>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/is.js
 			</destination>
@@ -1432,7 +1430,7 @@
 			<accesscontrol />
 		</file>
 		<file>
-			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/ka.js
+			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/ka_GE.js
 			</source>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/ka.js
 			</destination>
@@ -1496,7 +1494,7 @@
 			<accesscontrol />
 		</file>
 		<file>
-			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/km.js
+			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/km_KH.js
 			</source>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/km.js
 			</destination>
@@ -1538,7 +1536,7 @@
 			<accesscontrol />
 		</file>
 		<file>
-			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/ko.js
+			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/ko_KR.js
 			</source>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/ko.js
 			</destination>
@@ -1646,7 +1644,7 @@
 			<accesscontrol />
 		</file>
 		<file>
-			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/ml.js
+			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/ml_IN.js
 			</source>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/ml.js
 			</destination>
@@ -1688,7 +1686,7 @@
 			<accesscontrol />
 		</file>
 		<file>
-			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/nb.js
+			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/nb_NO.js
 			</source>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/nb.js
 			</destination>
@@ -1774,7 +1772,7 @@
 			<accesscontrol />
 		</file>
 		<file>
-			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/pt.js
+			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/pt_PT.js
 			</source>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/pt.js
 			</destination>
@@ -1904,7 +1902,7 @@
 			<accesscontrol />
 		</file>
 		<file>
-			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/si.js
+			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/si_LK.js
 			</source>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/si.js
 			</destination>
@@ -1968,7 +1966,7 @@
 			<accesscontrol />
 		</file>
 		<file>
-			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/sl.js
+			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/sl_SI.js
 			</source>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/sl.js
 			</destination>
@@ -2032,7 +2030,7 @@
 			<accesscontrol />
 		</file>
 		<file>
-			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/sv.js
+			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/sv_SE.js
 			</source>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/sv.js
 			</destination>
@@ -2140,7 +2138,7 @@
 			<accesscontrol />
 		</file>
 		<file>
-			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/th.js
+			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/th_TH.js
 			</source>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/th.js
 			</destination>
@@ -2182,7 +2180,7 @@
 			<accesscontrol />
 		</file>
 		<file>
-			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/tr.js
+			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/tr_TR.js
 			</source>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/tr.js
 			</destination>
@@ -2334,7 +2332,7 @@
 			<accesscontrol />
 		</file>
 		<file>
-			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/zh.js
+			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/zh_TW.js
 			</source>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/zh.js
 			</destination>
