@@ -299,41 +299,20 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
                 report.print(
                     org.opencms.report.Messages.get().container(Messages.RPT_SOURCESEARCH_COULD_NOT_READ_FILE_0),
                     I_CmsReport.FORMAT_ERROR);
+                report.addError(e);
                 report.println(
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_FAILED_0),
                     I_CmsReport.FORMAT_ERROR);
                 m_errorSearch += 1;
+                LOG.error(
+                    org.opencms.report.Messages.get().container(Messages.RPT_SOURCESEARCH_COULD_NOT_READ_FILE_0),
+                    e);
                 continue;
             }
         }
 
         // report results
         reportResults(replace, report, resources.size());
-    }
-
-    /**
-     * Reads the content as byte array of the given resource and prints a message to the report.<p>
-     * 
-     * @param report the report
-     * @param counter the counter
-     * @param resCount the total resource count
-     * @param resource the file to get the content for
-     */
-    private void report(I_CmsReport report, int counter, int resCount, CmsResource resource) {
-
-        // report entries
-        report.print(
-            org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_SUCCESSION_2,
-                String.valueOf(counter),
-                String.valueOf(resCount)),
-            I_CmsReport.FORMAT_NOTE);
-        report.print(org.opencms.report.Messages.get().container(
-            org.opencms.report.Messages.RPT_ARGUMENT_1,
-            report.removeSiteRoot(resource.getRootPath())));
-        report.print(
-            org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0),
-            I_CmsReport.FORMAT_DEFAULT);
     }
 
     /**
@@ -393,8 +372,8 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
 
     /**
      * Performs the replacement in content.<p>
-     * @param cmsObject 
      * 
+     * @param cmsObject the cms context 
      * @param report the report to print messages to
      * @param file the file object
      * @param contents the byte content
@@ -497,6 +476,31 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
             return xmlContent.marshal();
         }
         return null;
+    }
+
+    /**
+     * Reads the content as byte array of the given resource and prints a message to the report.<p>
+     * 
+     * @param report the report
+     * @param counter the counter
+     * @param resCount the total resource count
+     * @param resource the file to get the content for
+     */
+    private void report(I_CmsReport report, int counter, int resCount, CmsResource resource) {
+
+        // report entries
+        report.print(
+            org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_SUCCESSION_2,
+                String.valueOf(counter),
+                String.valueOf(resCount)),
+            I_CmsReport.FORMAT_NOTE);
+        report.print(org.opencms.report.Messages.get().container(
+            org.opencms.report.Messages.RPT_ARGUMENT_1,
+            report.removeSiteRoot(resource.getRootPath())));
+        report.print(
+            org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0),
+            I_CmsReport.FORMAT_DEFAULT);
     }
 
     /**
@@ -663,15 +667,16 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
     }
 
     /**
+     * Writes the file contents.<p>
      * 
-     * @param cmsObject
-     * @param report
-     * @param file
-     * @param result
+     * @param cmsObject the cms context
+     * @param report the report
+     * @param file the file to write
+     * @param content the file content
      * 
      * @return success flag
      */
-    private boolean writeContent(CmsObject cmsObject, I_CmsReport report, CmsFile file, byte[] result) {
+    private boolean writeContent(CmsObject cmsObject, I_CmsReport report, CmsFile file, byte[] content) {
 
         boolean success = true;
 
@@ -696,7 +701,7 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
 
         // write the file content
         try {
-            file.setContents(result);
+            file.setContents(content);
             cmsObject.writeFile(file);
         } catch (Exception e) {
             m_errorUpdate += 1;
@@ -731,6 +736,5 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
         }
 
         return success;
-
     }
 }
