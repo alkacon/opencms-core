@@ -191,8 +191,25 @@ public class CmsHtmlWidgetFactory implements I_CmsWidgetFactory, I_CmsHasInit {
                                                                                 options.paste_as_text=config.tinyMceOptions.paste_text_sticky_default ? true : false;
                                                                                 }
                                                                                 if (config.spellcheck_url){
+                                                                                    options.spellchecker_language = config.spellcheck_language;
                                                                                 options.spellchecker_languages = config.spellcheck_language;
                                                                                 options.spellchecker_rpc_url = config.spellcheck_url;
+                                                                                options.spellchecker_callback= function(method, text, success, failure) {
+                                                                                $wnd.tinymce.util.JSONRequest.sendRPC({
+                                                                                url: config.spellcheck_url,
+                                                                                method: "spellcheck",
+                                                                                params: {
+                                                                                lang: this.getLanguage(),
+                                                                                words: text.match(this.getWordCharPattern())
+                                                                                },
+                                                                                success: function(result) {
+                                                                                success(result);
+                                                                                },
+                                                                                error: function(error, xhr) {
+                                                                                failure("Spellcheck error:" + xhr.status);
+                                                                                }
+                                                                                });
+                                                                                };
                                                                                 }
                                                                                 }
 
