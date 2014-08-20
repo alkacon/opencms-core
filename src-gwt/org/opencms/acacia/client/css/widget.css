@@ -5,7 +5,7 @@ div.mce-opencmsDialog.mce-window{
 	background: transparent;
 }
 
-.mce-opencmsDialog.mce-window > .mce-window-head{
+.mce-opencmsDialog.mce-window .mce-window-head{
 	display: none;
 }
 
