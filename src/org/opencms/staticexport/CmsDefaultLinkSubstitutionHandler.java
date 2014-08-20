@@ -69,6 +69,9 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDefaultLinkSubstitutionHandler.class);
 
+    /** Prefix used for request context attributes to control whether a different site root should be used in appendServerPrefix. */
+    public static final String OVERRIDE_SITEROOT_PREFIX = "OVERRIDE_SITEROOT:";
+
     /**
      * Returns the resource root path in the OpenCms VFS for the given link, or <code>null</code> in
      * case the link points to an external site.<p>
@@ -109,6 +112,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
         }
         // make sure we have an absolute link
         String absoluteLink = CmsLinkManager.getAbsoluteUri(link, cms.getRequestContext().getUri());
+        String overrideSiteRoot = null;
 
         String vfsName;
         String parameters;
@@ -163,14 +167,19 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                 detailPage = finder.getDetailPage(cms, rootVfsName, cms.getRequestContext().getUri());
             }
             if (detailPage != null) {
-                if (detailPage.startsWith(targetSiteRoot)) {
+                CmsSite detailPageSite = OpenCms.getSiteManager().getSiteForRootPath(detailPage);
+                if (detailPageSite != null) {
+                    targetSite = detailPageSite;
+                    overrideSiteRoot = targetSiteRoot = targetSite.getSiteRoot();
                     detailPage = detailPage.substring(targetSiteRoot.length());
                     if (!detailPage.startsWith("/")) {
                         detailPage = "/" + detailPage;
                     }
                 }
+                String originalSiteRoot = cms.getRequestContext().getSiteRoot();
                 try {
-                    CmsResource element = cms.readResource(vfsName);
+                    cms.getRequestContext().setSiteRoot("");
+                    CmsResource element = cms.readResource(rootVfsName);
                     detailContent = element;
                     Locale locale = cms.getRequestContext().getLocale();
                     List<Locale> defaultLocales = OpenCms.getLocaleManager().getDefaultLocales();
@@ -178,8 +187,12 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                         detailPage,
                         cms.getDetailName(element, locale, defaultLocales),
                         "/");
+
                 } catch (CmsVfsException e) {
                     LOG.error(e.getLocalizedMessage(), e);
+                } finally {
+                    cms.getRequestContext().setSiteRoot(originalSiteRoot);
+
                 }
             }
         } catch (CmsVfsResourceNotFoundException e) {
@@ -354,6 +367,9 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
 
         if ((anchor != null) && (resultLink != null)) {
             resultLink = resultLink.concat(anchor);
+        }
+        if (overrideSiteRoot != null) {
+            cms.getRequestContext().setAttribute(OVERRIDE_SITEROOT_PREFIX + resultLink, overrideSiteRoot);
         }
 
         return serverPrefix.concat(resultLink);

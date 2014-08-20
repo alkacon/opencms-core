@@ -75,6 +75,62 @@ public class TestLiveConfig extends OpenCmsTestCase {
     }
 
     /**
+     * Tests cross-site detail page links.<p>
+     * 
+     * @throws Exception
+     */
+    public void testCrossSiteDetailPageLinks1() throws Exception {
+
+        // Link from site foo to site bar, where a detail page exists in foo 
+
+        CmsObject cms = getCmsObject();
+        cms.getRequestContext().setSiteRoot("/sites/foo");
+        String rootPath = "/sites/bar/.content/blogentries/be_00001.xml";
+        CmsResource res = rootCms().readResource(rootPath);
+        String link = OpenCms.getLinkManager().getOnlineLink(cms, rootPath);
+        assertEquals("http://foo.org/data/opencms/main/blog/" + res.getStructureId() + "/", link);
+        System.out.println(link);
+    }
+
+    /**
+     * Tests cross-site detail page links.<p>
+     * 
+     * @throws Exception
+     */
+    public void testCrossSiteDetailPageLinks1a() throws Exception {
+
+        // Link from site foo to site bar, where a detail page exists in foo
+        // (using a site path that also exists in site foo) 
+
+        OpenCmsTestLogAppender.setBreakOnError(false);
+        CmsObject cms = getCmsObject();
+        cms.getRequestContext().setSiteRoot("/sites/foo");
+        String rootPath = "/sites/bar/.content/blogentries/be_00002.xml";
+        CmsResource res = rootCms().readResource(rootPath);
+        String link = OpenCms.getLinkManager().getOnlineLink(cms, rootPath);
+        assertEquals("http://foo.org/data/opencms/main/blog/" + res.getStructureId() + "/", link);
+        System.out.println(link);
+    }
+
+    /**
+     * Tests cross-site detail page links.<p>
+     * 
+     * @throws Exception
+     */
+    public void testCrossSiteDetailPageLinks2() throws Exception {
+
+        // Link from site bar to site foo, where a detail page exists in foo 
+
+        CmsObject cms = getCmsObject();
+        cms.getRequestContext().setSiteRoot("/sites/bar");
+        String rootPath = "/sites/foo/.content/blogentries/be_00001.xml";
+        CmsResource res = rootCms().readResource(rootPath);
+        String link = OpenCms.getLinkManager().getOnlineLink(cms, rootPath);
+        assertEquals("http://foo.org/data/opencms/main/blog/" + res.getStructureId() + "/", link);
+        System.out.println(link);
+    }
+
+    /**
      * Tests deletion of configuration files.<p>
      * 
      * @throws Exception

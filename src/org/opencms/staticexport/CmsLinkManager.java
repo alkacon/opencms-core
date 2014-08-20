@@ -684,9 +684,11 @@ public class CmsLinkManager {
             // this indicates source and target link are in the same site
             String serverPrefix;
             if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+                String overrideSiteRoot = (String)(cms.getRequestContext().getAttribute(CmsDefaultLinkSubstitutionHandler.OVERRIDE_SITEROOT_PREFIX
+                    + link));
                 // on online project, get the real site name from the site manager
                 CmsSite currentSite = OpenCms.getSiteManager().getSite(
-                    resourceName,
+                    overrideSiteRoot != null ? overrideSiteRoot : resourceName,
                     cms.getRequestContext().getSiteRoot());
                 serverPrefix = currentSite.getServerPrefix(cms, resourceName);
             } else {

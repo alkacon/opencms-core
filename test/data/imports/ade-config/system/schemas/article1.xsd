@@ -12,6 +12,7 @@
 
 	<xsd:complexType name="OpenCmsArticle1">
 		<xsd:sequence>
+			<xsd:element name="Name" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="Text" type="OpenCmsString" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
@@ -19,10 +20,13 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
+			<mappings>
+				<mapping element="Name" mapto="urlName" />
+			</mappings>
 			<formatters>
 				<formatter minwidth="1" maxwidth="2" uri="/system/formatters/article1_f1.jsp" searchcontent="false" />
 				<formatter minwidth="3" maxwidth="4" uri="/system/formatters/article1_f2.jsp" searchcontent="true" />
-			</formatters>									
+			</formatters>
 		</xsd:appinfo>
 	</xsd:annotation>  
 </xsd:schema>
