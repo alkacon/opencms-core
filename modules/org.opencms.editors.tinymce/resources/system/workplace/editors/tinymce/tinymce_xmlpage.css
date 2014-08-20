@@ -23,15 +23,21 @@
 	height: 100%;
 }
 #textarea-container > .mce-container > .mce-container-body{
-	display: table;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-direction: column;
+	flex-direction: column;
 }
 #textarea-container .mce-edit-area {
-	display: table-row-group;
+	-webkit-flex: 3;
+	flex: 3;
+	position: relative;
 }
-#textarea-container > .mce-container > .mce-container-body > .mce-first{
-	display: table-caption;
-}
-#textarea-container > .mce-container > .mce-container-body > .mce-statusbar{
-	display: table-footer-group;
-	height: 30px;
+
+#tinymce_content_ifr{
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
 }
