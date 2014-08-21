@@ -210,14 +210,18 @@ public class CmsJspTagContainer extends TagSupport {
         CmsJspStandardContextBean standardContext = CmsJspStandardContextBean.getInstance(req);
         CmsContainerPageBean detailOnlyPage = standardContext.getDetailOnlyPage();
         if (standardContext.isDetailRequest() && (detailOnlyPage == null)) {
+
             try {
-                String resourceName = getDetailOnlyPageName(cms.getSitePath(standardContext.getDetailContent()));
-                if (cms.existsResource(resourceName)) {
+                CmsObject rootCms = OpenCms.initCmsObject(cms);
+                rootCms.getRequestContext().setSiteRoot("");
+
+                String resourceName = getDetailOnlyPageName(standardContext.getDetailContent().getRootPath());
+                if (rootCms.existsResource(resourceName)) {
                     CmsXmlContainerPage xmlContainerPage = CmsXmlContainerPageFactory.unmarshal(
-                        cms,
-                        cms.readResource(resourceName),
+                        rootCms,
+                        rootCms.readResource(resourceName),
                         req);
-                    detailOnlyPage = xmlContainerPage.getContainerPage(cms);
+                    detailOnlyPage = xmlContainerPage.getContainerPage(rootCms);
                     standardContext.setDetailOnlyPage(detailOnlyPage);
                 }
             } catch (CmsException e) {

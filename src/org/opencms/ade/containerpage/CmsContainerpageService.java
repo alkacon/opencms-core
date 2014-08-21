@@ -730,15 +730,17 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             String noEditReason;
             String detailContainerPage = null;
             if (detailResource != null) {
-                detailContainerPage = CmsJspTagContainer.getDetailOnlyPageName(cms.getSitePath(detailResource));
-                if (cms.existsResource(detailContainerPage)) {
-                    noEditReason = getNoEditReason(cms, cms.readResource(detailContainerPage));
+                CmsObject rootCms = OpenCms.initCmsObject(cms);
+                rootCms.getRequestContext().setSiteRoot("");
+                detailContainerPage = CmsJspTagContainer.getDetailOnlyPageName(detailResource.getRootPath());
+                if (rootCms.existsResource(detailContainerPage)) {
+                    noEditReason = getNoEditReason(rootCms, rootCms.readResource(detailContainerPage));
                 } else {
                     String permissionFolder = CmsResource.getFolderPath(detailContainerPage);
-                    if (!cms.existsResource(permissionFolder)) {
+                    if (!rootCms.existsResource(permissionFolder)) {
                         permissionFolder = CmsResource.getParentFolder(permissionFolder);
                     }
-                    noEditReason = getNoEditReason(cms, cms.readResource(permissionFolder));
+                    noEditReason = getNoEditReason(rootCms, rootCms.readResource(permissionFolder));
                 }
             } else {
                 noEditReason = getNoEditReason(cms, containerPage);
@@ -795,30 +797,32 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
         CmsObject cms = getCmsObject();
         try {
+            CmsObject rootCms = OpenCms.initCmsObject(cms);
+            rootCms.getRequestContext().setSiteRoot("");
             CmsResource containerpage;
             ensureSession();
-            if (cms.existsResource(detailContainerResource)) {
-                containerpage = cms.readResource(detailContainerResource);
+            if (rootCms.existsResource(detailContainerResource)) {
+                containerpage = rootCms.readResource(detailContainerResource);
             } else {
                 String parentFolder = CmsResource.getFolderPath(detailContainerResource);
                 // ensure the parent folder exists
-                if (!cms.existsResource(parentFolder)) {
-                    CmsResource parentRes = cms.createResource(
+                if (!rootCms.existsResource(parentFolder)) {
+                    CmsResource parentRes = rootCms.createResource(
                         parentFolder,
                         OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.getStaticTypeName()).getTypeId());
                     // set the search exclude property on parent folder
-                    cms.writePropertyObject(parentFolder, new CmsProperty(
+                    rootCms.writePropertyObject(parentFolder, new CmsProperty(
                         CmsPropertyDefinition.PROPERTY_SEARCH_EXCLUDE,
                         CmsSearchIndex.PROPERTY_SEARCH_EXCLUDE_VALUE_ALL,
                         null));
                     tryUnlock(parentRes);
                 }
-                containerpage = cms.createResource(
+                containerpage = rootCms.createResource(
                     detailContainerResource,
                     CmsResourceTypeXmlContainerPage.getContainerPageTypeId());
             }
             ensureLock(containerpage);
-            saveContainers(cms, containerpage, detailContainerResource, containers);
+            saveContainers(rootCms, containerpage, detailContainerResource, containers);
         } catch (Throwable e) {
             error(e);
         }
