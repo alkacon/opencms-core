@@ -79,6 +79,9 @@ public class CmsADEConfigDataInternal {
     /** The resource from which the configuration data was read. */
     private CmsResource m_resource;
 
+    /** True if detail pages from this sitemap should be preferred when linking to contents inside this sitemap. */
+    private boolean m_preferDetailPagesForLocalContents;
+
     /**
      * Creates a new configuration data instance.<p>
 
@@ -93,7 +96,8 @@ public class CmsADEConfigDataInternal {
      * @param modelPages the model page configuration
      * @param functionReferences the function reference configuration 
      * @param discardInheritedModelPages the "discard  inherited model pages" flag 
-     * @param createContentsLocally the "create contents locally" flag 
+     * @param createContentsLocally the "create contents locally" flag
+     * @param preferDetailPagesForLocalContents the "preferDetailPagesForLocalContents" flag  
      * @param formatterChangeSet the formatter changes 
      */
     public CmsADEConfigDataInternal(
@@ -109,6 +113,7 @@ public class CmsADEConfigDataInternal {
         List<CmsFunctionReference> functionReferences,
         boolean discardInheritedModelPages,
         boolean createContentsLocally,
+        boolean preferDetailPagesForLocalContents,
         CmsFormatterChangeSet formatterChangeSet) {
 
         m_resource = resource;
@@ -124,6 +129,7 @@ public class CmsADEConfigDataInternal {
         m_discardInheritedProperties = discardInheritedProperties;
         m_discardInheritedModelPages = discardInheritedModelPages;
         m_createContentsLocally = createContentsLocally;
+        m_preferDetailPagesForLocalContents = preferDetailPagesForLocalContents;
         m_formatterChangeSet = formatterChangeSet;
     }
 
@@ -278,6 +284,16 @@ public class CmsADEConfigDataInternal {
     public boolean isModuleConfig() {
 
         return m_isModuleConfig;
+    }
+
+    /**
+     * Returns true if detail pages from this sitemap should be preferred for creating links to detail contents located inside this sitemap.<p>
+     * 
+     * @return true if detail pages from this sitemap should be preferred 
+     */
+    public boolean isPreferDetailPagesForLocalContents() {
+
+        return m_preferDetailPagesForLocalContents;
     }
 
     /** 

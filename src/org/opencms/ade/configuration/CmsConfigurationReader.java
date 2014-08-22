@@ -152,6 +152,9 @@ public class CmsConfigurationReader {
     /** The folder path node name. */
     public static final String N_PATH = "Path";
 
+    /** The  PreferDetailPagesForLocalContents node name. */
+    public static final String N_PREFER_DETAIL_PAGES_FOR_LOCAL_CONTENTS = "PreferDetailPagesForLocalContents";
+
     /** The prefer folder node name. */
     public static final String N_PREFER_FOLDER = "PreferFolder";
 
@@ -367,6 +370,7 @@ public class CmsConfigurationReader {
         boolean discardInheritedModelPages = getBoolean(root, N_DISCARD_MODEL_PAGES);
 
         boolean createContentsLocally = getBoolean(root, N_CREATE_CONTENTS_LOCALLY);
+        boolean preferDetailPagesForLocalContents = getBoolean(root, N_PREFER_DETAIL_PAGES_FOR_LOCAL_CONTENTS);
 
         boolean isModuleConfig = OpenCms.getResourceManager().getResourceType(content.getFile().getTypeId()).getTypeName().equals(
             CmsADEManager.MODULE_CONFIG_TYPE);
@@ -383,6 +387,7 @@ public class CmsConfigurationReader {
             m_functionReferences,
             discardInheritedModelPages,
             createContentsLocally,
+            preferDetailPagesForLocalContents,
             formatterChangeSet);
         return result;
     }

@@ -73,6 +73,7 @@ import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -356,16 +357,18 @@ public class CmsADEManager {
         }
         String originRootPath = cms.getRequestContext().addSiteRoot(originPath);
         CmsADEConfigData configData = lookupConfiguration(cms, originRootPath);
-        List<CmsDetailPageInfo> pageInfo = configData.getDetailPagesForType(resType);
-        if ((pageInfo == null) || pageInfo.isEmpty()) {
-            // in case no detail page is found for the base URI try to fetch it for the page root path
-            configData = lookupConfiguration(cms, pageRootPath);
-            pageInfo = configData.getDetailPagesForType(resType);
-            if ((pageInfo == null) || pageInfo.isEmpty()) {
-                return null;
+        CmsADEConfigData targetConfigData = lookupConfiguration(cms, pageRootPath);
+        boolean targetFirst = targetConfigData.isPreferDetailPagesForLocalContents();
+        List<CmsADEConfigData> configs = targetFirst ? Arrays.asList(targetConfigData, configData) : Arrays.asList(
+            configData,
+            targetConfigData);
+        for (CmsADEConfigData config : configs) {
+            List<CmsDetailPageInfo> pageInfo = config.getDetailPagesForType(resType);
+            if ((pageInfo != null) && !pageInfo.isEmpty()) {
+                return pageInfo.get(0).getUri();
             }
         }
-        return pageInfo.get(0).getUri();
+        return null;
     }
 
     /**

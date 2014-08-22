@@ -645,6 +645,16 @@ public class CmsADEConfigData {
     }
 
     /**
+     * Returns true if detail pages from this sitemap should be preferred for links to contents in this sitemap.<p>
+     * 
+     * @return true if detail pages from this sitemap should be preferred for links to contents in this sitemap
+     */
+    public boolean isPreferDetailPagesForLocalContents() {
+
+        return m_data.isPreferDetailPagesForLocalContents();
+    }
+
+    /**
      * Fetches the parent configuration of this configuration.<p>
      * 
      * If this configuration is a sitemap configuration with no direct parent configuration, 
