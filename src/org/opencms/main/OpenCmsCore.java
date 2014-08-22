@@ -1696,7 +1696,10 @@ public final class OpenCmsCore {
                     // of files to be exported just by varying the request parameters!
                     String url = OpenCms.getStaticExportManager().getRfsName(cms, uri);
                     String siteRoot = cms.getRequestContext().getSiteRoot();
-                    url = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot).getUrl() + url;
+                    CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot);
+                    if (site != null) {
+                        url = site.getUrl() + url;
+                    }
                     res.sendRedirect(url);
                     return;
                 }
