@@ -82,7 +82,7 @@ public class CmsJspTagElementSetting extends TagSupport {
         try {
             CmsContainerElementBean currentElement = OpenCms.getADEManager().getCurrentElement(req);
             currentElement.initResource(cms);
-            return currentElement.getSettings();
+            return currentElement.getElementSettings();
         } catch (CmsException e) {
             // most likely we are not in a container page
             LOG.debug(e.getLocalizedMessage(), e);

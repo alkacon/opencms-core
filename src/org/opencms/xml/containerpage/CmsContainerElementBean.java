@@ -66,7 +66,7 @@ public class CmsContainerElementBean implements Cloneable {
     private transient String m_editorHash;
 
     /** The element's structure id. */
-    private final CmsUUID m_elementId;
+    private CmsUUID m_elementId;
 
     /** The formatter's structure id. */
     private CmsUUID m_formatterId;
@@ -125,6 +125,15 @@ public class CmsContainerElementBean implements Cloneable {
         }
         m_editorHash = clientId;
         m_createNew = createNew;
+    }
+
+    /**
+     * Constructor to enable wrapped elements.<p>
+     */
+    protected CmsContainerElementBean() {
+
+        m_elementId = null;
+        m_createNew = false;
     }
 
     /**
@@ -317,6 +326,17 @@ public class CmsContainerElementBean implements Cloneable {
     }
 
     /**
+     * Returns the element settings including default values for settings not set.<p>
+     * Will return <code>null</code> if the element bean has not been initialized with {@link #initResource(org.opencms.file.CmsObject)}.<p>
+     *
+     * @return the element settings
+     */
+    public Map<String, String> getElementSettings() {
+
+        return m_settings;
+    }
+
+    /**
      * Returns the structure id of the formatter of this element.<p>
      *
      * @return the structure id of the formatter of this element
@@ -378,17 +398,6 @@ public class CmsContainerElementBean implements Cloneable {
     public CmsResource getResource() {
 
         return m_resource;
-    }
-
-    /**
-     * Returns the element settings including default values for settings not set.<p>
-     * Will return <code>null</code> if the element bean has not been initialized with {@link #initResource(org.opencms.file.CmsObject)}.<p>
-     *
-     * @return the element settings
-     */
-    public Map<String, String> getSettings() {
-
-        return m_settings;
     }
 
     /**

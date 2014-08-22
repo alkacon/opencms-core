@@ -618,7 +618,7 @@ public class CmsElementUtil {
         String content = null;
         I_CmsFormatterBean formatter;
 
-        String formatterId = element.getSettings().get(
+        String formatterId = element.getElementSettings().get(
             CmsFormatterConfig.getSettingsKeyForContainer(container.getName()));
         if (formatterId != null) {
             Map<String, I_CmsFormatterBean> formatters = configs.getFormatterSelection(
