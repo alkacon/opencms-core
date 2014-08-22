@@ -178,11 +178,8 @@ public class CmsElementUtil {
         }
 
         m_standardContext = CmsJspStandardContextBean.getInstance(req);
-
-        CmsXmlContainerPage xmlContainerPage = CmsXmlContainerPageFactory.unmarshal(
-            cms,
-            m_page = m_cms.readResource(currentPageUri),
-            req);
+        m_page = m_cms.readResource(currentPageUri);
+        CmsXmlContainerPage xmlContainerPage = CmsXmlContainerPageFactory.unmarshal(cms, m_page, req);
         CmsContainerPageBean containerPage = xmlContainerPage.getContainerPage(cms);
         m_standardContext.setPage(containerPage);
     }
