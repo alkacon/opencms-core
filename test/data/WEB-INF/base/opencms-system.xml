@@ -48,6 +48,7 @@
 			<site server="http://localhost:8080" uri="/sites/default/">
 				<secure server="https://localhost:443" />
 			</site>
+			<!-- If you add sites here, you also need to change the number of expected sites in TestCmsSiteConfiguration. -->
 			<site server="http://localhost:8081" uri="/sites/default/folder1/" />
 			<site server="http://localhost:8082" uri="/sites/testsite/" />
 			<site server="http://foo.org" uri="/sites/foo/" />
