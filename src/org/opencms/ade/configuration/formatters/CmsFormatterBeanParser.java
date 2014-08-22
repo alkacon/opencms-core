@@ -46,8 +46,8 @@ import org.opencms.xml.types.CmsXmlVfsFileValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -194,7 +194,7 @@ public class CmsFormatterBeanParser {
     private String m_resourceType;
 
     /** Parsed field. */
-    private Map<String, CmsXmlContentProperty> m_settings = new HashMap<String, CmsXmlContentProperty>();
+    private Map<String, CmsXmlContentProperty> m_settings = new LinkedHashMap<String, CmsXmlContentProperty>();
 
     /**
      * Creates a new parser instance.<p>
