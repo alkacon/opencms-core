@@ -53,6 +53,9 @@ public class CmsResourceTypeInfoBean {
     /** The resource type schema. */
     private String m_schema;
 
+    /** The schema type name. */
+    private String m_schemaTypeName;
+
     /** The small icon image. */
     private String m_smallIcon;
 
@@ -127,6 +130,16 @@ public class CmsResourceTypeInfoBean {
     public String getSchema() {
 
         return m_schema;
+    }
+
+    /**
+     * Returns the schema type name.<p>
+     *
+     * @return the schema type name
+     */
+    public String getSchemaTypeName() {
+
+        return m_schemaTypeName;
     }
 
     /**
@@ -217,6 +230,16 @@ public class CmsResourceTypeInfoBean {
     public void setSchema(String schema) {
 
         m_schema = schema;
+    }
+
+    /**
+     * Sets the schema type name.<p>
+     *
+     * @param schemaTypeName the schema type name to set
+     */
+    public void setSchemaTypeName(String schemaTypeName) {
+
+        m_schemaTypeName = schemaTypeName;
     }
 
     /**
