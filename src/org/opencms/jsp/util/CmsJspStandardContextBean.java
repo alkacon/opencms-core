@@ -43,6 +43,7 @@ import org.opencms.flex.CmsFlexController;
 import org.opencms.flex.CmsFlexRequest;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.jsp.CmsJspBean;
+import org.opencms.jsp.CmsJspTagContainer;
 import org.opencms.jsp.CmsJspTagEditable;
 import org.opencms.jsp.Messages;
 import org.opencms.loader.CmsTemplateContextManager;
@@ -507,9 +508,9 @@ public final class CmsJspStandardContextBean {
          */
         public Object transform(Object arg0) {
 
-            return new ElementSettingWrapper(
-                m_transformElement.getElementSettings().get(arg0),
-                m_formatter.getSettings().get(arg0) != null);
+            return new ElementSettingWrapper(m_transformElement.getElementSettings().get(arg0), m_formatter != null
+            ? m_formatter.getSettings().get(arg0) != null
+            : m_transformElement.getElementSettings().get(arg0) != null);
         }
     }
 
@@ -1398,6 +1399,26 @@ public final class CmsJspStandardContextBean {
                 for (CmsContainerElementBean element : container.getElements()) {
                     m_elementInstances.put(element.getInstanceId(), element);
                     m_parentContainers.put(element.getInstanceId(), container);
+                    try {
+                        if (element.isGroupContainer(m_cms) || element.isInheritedContainer(m_cms)) {
+                            List<CmsContainerElementBean> children;
+                            if (element.isGroupContainer(m_cms)) {
+                                children = CmsJspTagContainer.getGroupContainerElements(
+                                    m_cms,
+                                    element,
+                                    m_request,
+                                    container.getType());
+                            } else {
+                                children = CmsJspTagContainer.getInheritedContainerElements(m_cms, element);
+                            }
+                            for (CmsContainerElementBean childElement : children) {
+                                m_elementInstances.put(childElement.getInstanceId(), childElement);
+                                m_parentContainers.put(childElement.getInstanceId(), container);
+                            }
+                        }
+                    } catch (CmsException e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
                 }
             }
             // also add detail only data
