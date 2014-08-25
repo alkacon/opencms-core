@@ -331,7 +331,7 @@ public class CmsContainerElementBean implements Cloneable {
      *
      * @return the element settings
      */
-    public Map<String, String> getElementSettings() {
+    public Map<String, String> getSettings() {
 
         return m_settings;
     }

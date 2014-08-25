@@ -1167,9 +1167,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         }
 
         I_CmsFormatterBean formatter = null;
-        if ((element.getElementSettings() != null)
-            && element.getElementSettings().containsKey(CmsFormatterConfig.getSettingsKeyForContainer(container.getName()))) {
-            String formatterConfigId = element.getElementSettings().get(
+        if ((element.getSettings() != null)
+            && element.getSettings().containsKey(CmsFormatterConfig.getSettingsKeyForContainer(container.getName()))) {
+            String formatterConfigId = element.getSettings().get(
                 CmsFormatterConfig.getSettingsKeyForContainer(container.getName()));
             if (CmsUUID.isValidUUID(formatterConfigId)) {
                 formatter = OpenCms.getADEManager().getCachedFormatters(false).getFormatters().get(

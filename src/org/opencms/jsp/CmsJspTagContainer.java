@@ -174,7 +174,7 @@ public class CmsJspTagContainer extends TagSupport {
             if (formatterConfigId == null) {
                 formatterConfigId = CmsFormatterConfig.SCHEMA_FORMATTER_ID;
             }
-            element.getElementSettings().put(settingsKey, formatterConfigId);
+            element.getSettings().put(settingsKey, formatterConfigId);
             element.setFormatterId(formatterBean.getJspStructureId());
         } else {
             element.setFormatterId(null);
@@ -274,7 +274,7 @@ public class CmsJspTagContainer extends TagSupport {
         String settingsKey = CmsFormatterConfig.getSettingsKeyForContainer(containerName);
         if ((element.getFormatterId() != null) && !element.getFormatterId().isNullUUID()) {
 
-            if (!element.getElementSettings().containsKey(settingsKey)) {
+            if (!element.getSettings().containsKey(settingsKey)) {
                 for (I_CmsFormatterBean formatter : adeConfig.getFormatters(cms, element.getResource()).getAllMatchingFormatters(
                     containerType,
                     containerWidth,
@@ -289,7 +289,7 @@ public class CmsJspTagContainer extends TagSupport {
                     }
                 }
             } else {
-                String formatterConfigId = element.getElementSettings().get(settingsKey);
+                String formatterConfigId = element.getSettings().get(settingsKey);
                 if (CmsUUID.isValidUUID(formatterConfigId)) {
                     formatterBean = OpenCms.getADEManager().getCachedFormatters(
                         cms.getRequestContext().getCurrentProject().isOnlineProject()).getFormatters().get(
@@ -305,8 +305,8 @@ public class CmsJspTagContainer extends TagSupport {
                 }
             }
         } else {
-            if (element.getElementSettings().containsKey(settingsKey)) {
-                String formatterConfigId = element.getElementSettings().get(settingsKey);
+            if (element.getSettings().containsKey(settingsKey)) {
+                String formatterConfigId = element.getSettings().get(settingsKey);
                 if (CmsUUID.isValidUUID(formatterConfigId)) {
                     formatterBean = OpenCms.getADEManager().getCachedFormatters(
                         cms.getRequestContext().getCurrentProject().isOnlineProject()).getFormatters().get(
@@ -1276,7 +1276,7 @@ public class CmsJspTagContainer extends TagSupport {
             // ignore and log
             LOG.error(e.getLocalizedMessage(), e);
         }
-        Map<String, String> settings = element.getElementSettings();
+        Map<String, String> settings = element.getSettings();
         if (settings == null) {
             return true;
         }
