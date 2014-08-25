@@ -80,7 +80,7 @@ public class CmsNotificationMessage extends Composite {
         m_messageContent.setInnerHTML(message);
         addStyleName(classForType(type));
         m_mode = mode;
-        if (!CmsNotification.Mode.ALERT.equals(m_mode)) {
+        if (!CmsNotification.Mode.BROADCAST.equals(m_mode)) {
             m_closeButton.setVisible(false);
         }
     }
@@ -92,7 +92,7 @@ public class CmsNotificationMessage extends Composite {
      */
     public boolean isBlockingMode() {
 
-        return CmsNotification.Mode.ALERT.equals(m_mode) || CmsNotification.Mode.BUSY.equals(m_mode);
+        return CmsNotification.Mode.BUSY.equals(m_mode);
     }
 
     /**

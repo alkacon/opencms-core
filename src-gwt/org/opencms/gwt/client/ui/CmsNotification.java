@@ -47,7 +47,7 @@ public final class CmsNotification {
     public static enum Mode {
 
         /** Alert mode. */
-        ALERT,
+        BROADCAST,
 
         /** Blocking mode. */
         BUSY,
@@ -173,7 +173,7 @@ public final class CmsNotification {
      */
     public void sendAlert(Type type, String message) {
 
-        CmsNotificationMessage notificationMessage = new CmsNotificationMessage(Mode.ALERT, type, message);
+        CmsNotificationMessage notificationMessage = new CmsNotificationMessage(Mode.BROADCAST, type, message);
         m_messages.add(notificationMessage);
         if (hasWidget()) {
             m_widget.addMessage(notificationMessage);
