@@ -58,7 +58,7 @@ import org.dom4j.Node;
  * @see CmsJspContentAccessBean
  * @see org.opencms.jsp.CmsJspTagContentAccess
  */
-public final class CmsJspContentAccessValueWrapper {
+public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper {
 
     /**
      * Provides a Map with Booleans that 
@@ -69,6 +69,7 @@ public final class CmsJspContentAccessValueWrapper {
         /**
          * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
          */
+        @Override
         public Object transform(Object input) {
 
             return Boolean.valueOf(obtainContentValue().getDocument().hasValue(
@@ -86,6 +87,7 @@ public final class CmsJspContentAccessValueWrapper {
         /**
          * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
          */
+        @Override
         public Object transform(Object input) {
 
             if ((obtainCmsObject() != null)
@@ -106,6 +108,7 @@ public final class CmsJspContentAccessValueWrapper {
         /**
          * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
          */
+        @Override
         public Object transform(Object input) {
 
             List<I_CmsXmlContentValue> values = obtainContentValue().getDocument().getSubValues(
@@ -131,6 +134,7 @@ public final class CmsJspContentAccessValueWrapper {
         /**
          * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
          */
+        @Override
         public Object transform(Object input) {
 
             List<I_CmsXmlContentValue> values = obtainContentValue().getDocument().getValues(
@@ -156,6 +160,7 @@ public final class CmsJspContentAccessValueWrapper {
         /**
          * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
          */
+        @Override
         public Object transform(Object input) {
 
             I_CmsXmlContentValue value = obtainContentValue().getDocument().getValue(
@@ -174,6 +179,7 @@ public final class CmsJspContentAccessValueWrapper {
         /**
          * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
          */
+        @Override
         public Object transform(Object input) {
 
             Node node = obtainContentValue().getElement().selectSingleNode(input.toString());
@@ -322,6 +328,7 @@ public final class CmsJspContentAccessValueWrapper {
      * 
      * @return <code>true</code> in case this value actually exists in the XML content it was requested from
      */
+    @Override
     public boolean getExists() {
 
         return m_contentValue != null;
@@ -395,6 +402,7 @@ public final class CmsJspContentAccessValueWrapper {
      * 
      * @return <code>true</code> in case the value is empty
      */
+    @Override
     public boolean getIsEmpty() {
 
         if (m_contentValue == null) {
@@ -426,6 +434,7 @@ public final class CmsJspContentAccessValueWrapper {
      * 
      * @return <code>true</code> in case the value is empty or whitespace only
      */
+    @Override
     public boolean getIsEmptyOrWhitespaceOnly() {
 
         if (m_contentValue == null) {
@@ -457,6 +466,7 @@ public final class CmsJspContentAccessValueWrapper {
      * 
      * @return <code>true</code> in case the value is set
      */
+    @Override
     public boolean getIsSet() {
 
         return !getIsEmptyOrWhitespaceOnly();

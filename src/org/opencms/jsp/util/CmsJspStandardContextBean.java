@@ -89,9 +89,6 @@ public final class CmsJspStandardContextBean {
      */
     public class CmsContainerElementWrapper extends CmsContainerElementBean {
 
-        /** The element formatter configuration, lazy initialized. */
-        private I_CmsFormatterBean m_formatter;
-
         /** The wrapped element instance. */
         private CmsContainerElementBean m_wrappedElement;
 
@@ -131,19 +128,6 @@ public final class CmsJspStandardContextBean {
         public boolean equals(Object obj) {
 
             return m_wrappedElement.equals(obj);
-        }
-
-        /**
-         * Returns the elements formatter configuration.<p>
-         * 
-         * @return the formatter configuration
-         */
-        public I_CmsFormatterBean getFormatter() {
-
-            if (m_formatter == null) {
-                m_formatter = getElementFormatter(m_wrappedElement);
-            }
-            return m_formatter;
         }
 
         /**
@@ -209,6 +193,16 @@ public final class CmsJspStandardContextBean {
         public CmsResource getResource() {
 
             return m_wrappedElement.getResource();
+        }
+
+        /**
+         * Returns a lazy initialized setting map.<p>
+         * 
+         * @return the settings
+         */
+        public Map<String, ElementSettingWrapper> getSetting() {
+
+            return CmsCollectionsGenericWrapper.createLazyMap(new SettingsTransformer(m_wrappedElement));
         }
 
         /**
@@ -409,6 +403,127 @@ public final class CmsJspStandardContextBean {
                 LOG.warn(e.getLocalizedMessage(), e);
                 return "[Error reading detail page for type =" + type + "=]";
             }
+        }
+    }
+
+    /**
+     * Element setting value wrapper.<p>
+     */
+    public class ElementSettingWrapper extends A_CmsJspValueWrapper {
+
+        /** Flag indicating the setting has been configured. */
+        private boolean m_exists;
+
+        /** The wrapped value. */
+        private String m_value;
+
+        /**
+         * Constructor.<p>
+         * 
+         * @param value the wrapped value
+         * @param exists flag indicating the setting has been configured
+         */
+        ElementSettingWrapper(String value, boolean exists) {
+
+            m_value = value;
+            m_exists = exists;
+        }
+
+        /**
+         * Returns if the setting has been configured.<p>
+         * 
+         * @return <code>true</code> if the setting has been configured
+         */
+        @Override
+        public boolean getExists() {
+
+            return m_exists;
+        }
+
+        /**
+         * Returns if the setting value is null or empty.<p>
+         * 
+         * @return <code>true</code> if the setting value is null or empty
+         */
+        @Override
+        public boolean getIsEmpty() {
+
+            return CmsStringUtil.isEmpty(m_value);
+        }
+
+        /**
+         * Returns if the setting value is null or white space only.<p>
+         * 
+         * @return <code>true</code> if the setting value is null or white space only
+         */
+        @Override
+        public boolean getIsEmptyOrWhitespaceOnly() {
+
+            return CmsStringUtil.isEmptyOrWhitespaceOnly(m_value);
+        }
+
+        /**
+         * @see org.opencms.jsp.util.A_CmsJspValueWrapper#getIsSet()
+         */
+        @Override
+        public boolean getIsSet() {
+
+            return getExists() && getIsEmpty();
+        }
+
+        /**
+         * Returns the value.<p>
+         * 
+         * @return the value
+         */
+        public String getValue() {
+
+            return m_value;
+        }
+
+        /**
+         * Returns the string value.<p>
+         * 
+         * @return the string value
+         */
+        @Override
+        public String toString() {
+
+            return m_value != null ? m_value : "";
+        }
+    }
+
+    /**
+     * The element setting transformer.<p>
+     */
+    public class SettingsTransformer implements Transformer {
+
+        /** The element formatter config. */
+        private I_CmsFormatterBean m_formatter;
+
+        /** The element. */
+        private CmsContainerElementBean m_transformElement;
+
+        /**
+         * Constructor.<p>
+         * 
+         * @param element the element
+         */
+        SettingsTransformer(CmsContainerElementBean element) {
+
+            m_transformElement = element;
+            m_formatter = getElementFormatter(element);
+        }
+
+        /**
+         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         */
+        @Override
+        public Object transform(Object arg0) {
+
+            return new ElementSettingWrapper(m_transformElement.getSettings().get(arg0), m_formatter != null
+            ? m_formatter.getSettings().get(arg0) != null
+            : m_transformElement.getSettings().get(arg0) != null);
         }
     }
 
