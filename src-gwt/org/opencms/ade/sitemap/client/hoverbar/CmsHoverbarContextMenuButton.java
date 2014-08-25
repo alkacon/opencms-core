@@ -40,7 +40,6 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -70,7 +69,6 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton {
     public CmsHoverbarContextMenuButton(final CmsSitemapHoverbar hoverbar) {
 
         super(null, I_CmsImageBundle.INSTANCE.buttonCss().hoverbarContext());
-        getElement().getStyle().setMarginTop(-3, Unit.PX);
         // create the menu panel (it's a table because of ie6)
         m_menuPanel = new FlexTable();
         // set a style name for the menu table
