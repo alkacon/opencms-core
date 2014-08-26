@@ -254,7 +254,7 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
      */
     public void highlightContainer() {
 
-        highlightContainer(CmsPositionBean.getInnerDimensions(getElement(), 3, false));
+        highlightContainer(CmsPositionBean.getBoundingClientRect(getElement()));
     }
 
     /**
@@ -349,7 +349,7 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
      */
     public void refreshHighlighting() {
 
-        refreshHighlighting(CmsPositionBean.getInnerDimensions(getElement(), 3, false));
+        refreshHighlighting(CmsPositionBean.getBoundingClientRect(getElement()));
     }
 
     /**
@@ -428,7 +428,7 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
                 break;
         }
         if (oldIndex != m_placeholderIndex) {
-            m_ownPosition = CmsPositionBean.getInnerDimensions(getElement(), 3, false);
+            m_ownPosition = CmsPositionBean.getBoundingClientRect(getElement());
         }
     }
 
@@ -507,6 +507,6 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
      */
     public void updatePositionInfo() {
 
-        m_ownPosition = CmsPositionBean.getInnerDimensions(getElement(), 3, false);
+        m_ownPosition = CmsPositionBean.getBoundingClientRect(getElement());
     }
 }

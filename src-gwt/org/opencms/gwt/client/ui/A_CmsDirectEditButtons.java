@@ -309,7 +309,7 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
             m_highlighting = new CmsHighlightingBorder(m_position, CmsHighlightingBorder.BorderColor.red);
             RootPanel.get().add(m_highlighting);
         } else {
-            m_highlighting.setPosition(CmsPositionBean.getInnerDimensions(getElement()));
+            m_highlighting.setPosition(CmsPositionBean.getBoundingClientRect(getElement()));
         }
     }
 

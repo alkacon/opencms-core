@@ -408,12 +408,12 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     public void highlightElement() {
 
         if (m_highlighting == null) {
-            m_highlighting = new CmsHighlightingBorder(CmsPositionBean.getInnerDimensions(getElement()), isNew()
+            m_highlighting = new CmsHighlightingBorder(CmsPositionBean.getBoundingClientRect(getElement()), isNew()
             ? CmsHighlightingBorder.BorderColor.blue
             : CmsHighlightingBorder.BorderColor.red);
             RootPanel.get().add(m_highlighting);
         } else {
-            m_highlighting.setPosition(CmsPositionBean.getInnerDimensions(getElement()));
+            m_highlighting.setPosition(CmsPositionBean.getBoundingClientRect(getElement()));
         }
     }
 
@@ -742,7 +742,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         if (RootPanel.getBodyElement().isOrHasChild(getElement())) {
             int absoluteTop = getElement().getAbsoluteTop();
             int absoluteRight = getElement().getAbsoluteRight();
-            CmsPositionBean dimensions = CmsPositionBean.getInnerDimensions(getElement());
+            CmsPositionBean dimensions = CmsPositionBean.getBoundingClientRect(getElement());
             if (Math.abs(absoluteTop - dimensions.getTop()) > 20) {
                 absoluteTop = (dimensions.getTop() - absoluteTop) + 2;
                 m_elementOptionBar.getElement().getStyle().setTop(absoluteTop, Unit.PX);

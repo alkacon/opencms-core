@@ -88,7 +88,7 @@ public class CmsSmallElementsHandler {
 
         assert widget.isAttached();
         return (CmsPositionBean.generatePositionInfo(widget.getElement()).getHeight() < NECESSARY_HEIGHT)
-            && (CmsPositionBean.getInnerDimensions(widget.getElement()).getHeight() < NECESSARY_HEIGHT);
+            && (CmsPositionBean.getBoundingClientRect(widget.getElement()).getHeight() < NECESSARY_HEIGHT);
 
     }
 

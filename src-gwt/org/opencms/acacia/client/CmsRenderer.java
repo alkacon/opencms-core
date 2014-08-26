@@ -159,7 +159,7 @@ public class CmsRenderer implements I_CmsEntityRenderer {
 
             int tabIndex = m_tabbedPanel.getSelectedIndex();
             FlowPanel tab = m_tabbedPanel.getWidget(tabIndex);
-            int height = CmsPositionBean.getInnerDimensions(tab.getElement(), 1, false).getHeight();
+            int height = CmsPositionBean.getInnerDimensions(tab.getElement()).getHeight();
             m_context.getElement().getStyle().setHeight(50 + height, Unit.PX);
         }
 
@@ -503,7 +503,11 @@ public class CmsRenderer implements I_CmsEntityRenderer {
         if (entityType.isChoice()) {
             CmsEntityAttribute attribute = entity.getAttribute(CmsType.CHOICE_ATTRIBUTE_NAME);
             assert (attribute != null) && attribute.isComplexValue() : "a choice type must have a choice attribute";
-            CmsAttributeHandler handler = new CmsAttributeHandler(m_vie, entity, CmsType.CHOICE_ATTRIBUTE_NAME, m_widgetService);
+            CmsAttributeHandler handler = new CmsAttributeHandler(
+                m_vie,
+                entity,
+                CmsType.CHOICE_ATTRIBUTE_NAME,
+                m_widgetService);
             parentHandler.setHandler(attributeIndex, CmsType.CHOICE_ATTRIBUTE_NAME, handler);
             CmsValuePanel attributeElement = new CmsValuePanel();
             for (CmsEntity choiceEntity : attribute.getComplexValues()) {
@@ -577,7 +581,10 @@ public class CmsRenderer implements I_CmsEntityRenderer {
     /**
      * @see org.opencms.acacia.client.I_CmsEntityRenderer#renderInline(org.opencms.acacia.shared.CmsEntity, org.opencms.acacia.client.I_CmsInlineFormParent, org.opencms.acacia.client.I_CmsInlineHtmlUpdateHandler)
      */
-    public void renderInline(CmsEntity entity, I_CmsInlineFormParent formParent, I_CmsInlineHtmlUpdateHandler updateHandler) {
+    public void renderInline(
+        CmsEntity entity,
+        I_CmsInlineFormParent formParent,
+        I_CmsInlineHtmlUpdateHandler updateHandler) {
 
         CmsType entityType = m_vie.getType(entity.getTypeName());
         List<String> attributeNames = entityType.getAttributeNames();
@@ -609,7 +616,11 @@ public class CmsRenderer implements I_CmsEntityRenderer {
         if (attribute != null) {
             List<Element> elements = m_vie.getAttributeElements(parentEntity, attributeName, formParent.getElement());
             if (!elements.isEmpty()) {
-                CmsAttributeHandler handler = new CmsAttributeHandler(m_vie, parentEntity, attributeName, m_widgetService);
+                CmsAttributeHandler handler = new CmsAttributeHandler(
+                    m_vie,
+                    parentEntity,
+                    attributeName,
+                    m_widgetService);
                 for (int i = 0; i < elements.size(); i++) {
                     Element element = elements.get(i);
                     I_CmsEditWidget widget = m_widgetService.getAttributeInlineWidget(attributeName, element);
@@ -652,7 +663,11 @@ public class CmsRenderer implements I_CmsEntityRenderer {
         } else {
             List<Element> elements = m_vie.getAttributeElements(parentEntity, attributeName, formParent.getElement());
             if (!elements.isEmpty() && (elements.size() == 1)) {
-                CmsAttributeHandler handler = new CmsAttributeHandler(m_vie, parentEntity, attributeName, m_widgetService);
+                CmsAttributeHandler handler = new CmsAttributeHandler(
+                    m_vie,
+                    parentEntity,
+                    attributeName,
+                    m_widgetService);
                 CmsInlineEntityWidget.createWidgetForEntity(
                     elements.get(0),
                     formParent,

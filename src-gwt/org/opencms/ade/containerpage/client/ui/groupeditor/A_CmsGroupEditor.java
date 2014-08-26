@@ -174,7 +174,7 @@ public abstract class A_CmsGroupEditor extends Composite {
             }
         }
         m_parentContainer = (CmsContainerPageContainer)m_groupContainer.getParentTarget();
-        m_groupContainerPosition = CmsPositionBean.getInnerDimensions(m_groupContainer.getElement());
+        m_groupContainerPosition = CmsPositionBean.getBoundingClientRect(m_groupContainer.getElement());
         m_editingPlaceholder = createPlaceholder(m_groupContainer.getElement());
         m_groupContainer.setEditingPlaceholder(m_editingPlaceholder);
         m_groupContainer.setEditingMarker(m_containerMarker);

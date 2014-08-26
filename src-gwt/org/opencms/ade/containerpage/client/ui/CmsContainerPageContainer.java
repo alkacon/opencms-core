@@ -95,7 +95,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
             if (!m_isAbsolute) {
                 m_isVisible = !Display.NONE.getCssName().equals(m_element.getStyle().getDisplay());
                 if (m_isVisible) {
-                    m_elementPosition = CmsPositionBean.getInnerDimensions(element);
+                    m_elementPosition = CmsPositionBean.getBoundingClientRect(element);
                     m_float = CmsDomUtil.getCurrentStyle(m_element, Style.floatCss);
                 }
             }
@@ -470,7 +470,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
      */
     public void highlightContainer() {
 
-        highlightContainer(CmsPositionBean.getInnerDimensions(getElement(), 3, false));
+        highlightContainer(CmsPositionBean.getBoundingClientRect(getElement()));
     }
 
     /**
@@ -540,7 +540,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     public void refreshHighlighting() {
 
         if (m_highlighting != null) {
-            refreshHighlighting(CmsPositionBean.getInnerDimensions(getElement(), 3, false));
+            refreshHighlighting(CmsPositionBean.getBoundingClientRect(getElement()));
         }
     }
 
@@ -640,7 +640,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
      */
     public void updatePositionInfo() {
 
-        m_ownPosition = CmsPositionBean.getInnerDimensions(getElement(), 3, false);
+        m_ownPosition = CmsPositionBean.getBoundingClientRect(getElement());
     }
 
     /**
@@ -747,6 +747,6 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
             m_elementPositions.add(new ElementPositionInfo((Element)node));
         }
         m_requiresPositionUpdate = false;
-        m_ownPosition = CmsPositionBean.getInnerDimensions(getElement(), 3, false);
+        m_ownPosition = CmsPositionBean.getBoundingClientRect(getElement());
     }
 }

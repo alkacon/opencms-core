@@ -806,7 +806,7 @@ public class CmsDNDHandler implements MouseDownHandler {
                 clear();
             }
         };
-        CmsPositionBean placeholderPosition = CmsPositionBean.getInnerDimensions(m_placeholder);
+        CmsPositionBean placeholderPosition = CmsPositionBean.getBoundingClientRect(m_placeholder);
         showEndAnimation(callback, placeholderPosition.getTop(), placeholderPosition.getLeft(), true);
     }
 

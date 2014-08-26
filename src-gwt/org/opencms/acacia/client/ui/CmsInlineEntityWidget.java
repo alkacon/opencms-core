@@ -325,11 +325,11 @@ public final class CmsInlineEntityWidget extends Composite {
         if (visible) {
             if (m_highlighting == null) {
                 m_highlighting = new CmsHighlightingBorder(
-                    CmsPositionBean.getInnerDimensions(m_referenceElement),
+                    CmsPositionBean.getBoundingClientRect(m_referenceElement),
                     CmsHighlightingBorder.BorderColor.red);
                 RootPanel.get().add(m_highlighting);
             } else {
-                m_highlighting.setPosition(CmsPositionBean.getInnerDimensions(m_referenceElement));
+                m_highlighting.setPosition(CmsPositionBean.getBoundingClientRect(m_referenceElement));
             }
         } else {
             if (m_highlighting != null) {
@@ -526,7 +526,7 @@ public final class CmsInlineEntityWidget extends Composite {
     void positionPopup() {
 
         if (m_referenceElement != null) {
-            CmsPositionBean referencePosition = CmsPositionBean.getInnerDimensions(m_referenceElement);
+            CmsPositionBean referencePosition = CmsPositionBean.getBoundingClientRect(m_referenceElement);
             int currentTop = m_popup.getAbsoluteTop();
             int windowHeight = Window.getClientHeight();
             int scrollTop = Window.getScrollTop();

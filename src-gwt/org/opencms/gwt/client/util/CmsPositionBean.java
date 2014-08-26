@@ -27,7 +27,11 @@
 
 package org.opencms.gwt.client.util;
 
+import org.opencms.gwt.client.util.CmsDomUtil.Style;
+
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.UIObject;
 
@@ -125,7 +129,6 @@ public class CmsPositionBean {
      * @param posB the second position to check
      * @param margin the required margin
      */
-    @SuppressWarnings("incomplete-switch")
     public static void avoidCollision(CmsPositionBean posA, CmsPositionBean posB, int margin) {
 
         Direction dir = null;
@@ -183,7 +186,9 @@ public class CmsPositionBean {
                 posB.setHeight(posB.getHeight() - diff);
 
                 posA.setHeight(posA.getHeight() - diff);
-
+                break;
+            default:
+                // nothing to do
         }
     }
 
@@ -250,6 +255,20 @@ public class CmsPositionBean {
     }
 
     /**
+     * Returns the bounding rectangle dimensions of the element including all floated elements.<p>
+     * 
+     * @param panel the panel
+     * 
+     * @return the position info
+     */
+    public static CmsPositionBean getBoundingClientRect(Element panel) {
+
+        CmsPositionBean result = new CmsPositionBean();
+        getBoundingClientRect(panel, result, Window.getScrollLeft(), Window.getScrollTop());
+        return result;
+    }
+
+    /**
      * Returns a position info representing the dimensions of all visible child elements of the given panel (excluding elements with position:absolute).
      * If the panel has no visible child elements, it's outer dimensions are returned.<p>
      * 
@@ -259,24 +278,57 @@ public class CmsPositionBean {
      */
     public static CmsPositionBean getInnerDimensions(Element panel) {
 
-        return getInnerDimensions(panel, 2, false);
-    }
-
-    /**
-     * Returns a position info representing the dimensions of all visible child elements of the given panel (excluding elements with position:absolute).
-     * If the panel has no visible child elements, it's outer dimensions are returned.<p>
-     * 
-     * @param panel the panel
-     * @param levels the levels to traverse down the DOM tree
-     * @param includeSelf <code>true</code> to include the outer dimensions of the given panel
-     * 
-     * @return the position info
-     */
-    public static CmsPositionBean getInnerDimensions(Element panel, int levels, boolean includeSelf) {
-
-        CmsPositionBean result = new CmsPositionBean();
-        getBoundingClientRect(panel, result, Window.getScrollLeft(), Window.getScrollTop());
-        return result;
+        boolean first = true;
+        int top = 0;
+        int left = 0;
+        int bottom = 0;
+        int right = 0;
+        Element child = panel.getFirstChildElement();
+        while (child != null) {
+            String tagName = child.getTagName();
+            if (tagName.equalsIgnoreCase("br")
+                || tagName.equalsIgnoreCase("tr")
+                || tagName.equalsIgnoreCase("thead")
+                || tagName.equalsIgnoreCase("tfoot")
+                || tagName.equalsIgnoreCase("script")
+                || tagName.equalsIgnoreCase("style")) {
+                // ignore tags with no relevant position info
+                child = child.getNextSiblingElement();
+                continue;
+            }
+            String positioning = CmsDomUtil.getCurrentStyle(child, Style.position);
+            if (!Display.NONE.getCssName().equals(CmsDomUtil.getCurrentStyle(child, Style.display))
+                && !(positioning.equalsIgnoreCase(Position.ABSOLUTE.getCssName()) || positioning.equalsIgnoreCase(Position.FIXED.getCssName()))) {
+                CmsPositionBean childDimensions = getBoundingClientRect(child);
+                if (first) {
+                    first = false;
+                    top = childDimensions.getTop();
+                    left = childDimensions.getLeft();
+                    bottom = top + childDimensions.getHeight();
+                    right = left + childDimensions.getWidth();
+                } else {
+                    int wTop = childDimensions.getTop();
+                    top = top < wTop ? top : wTop;
+                    int wLeft = childDimensions.getLeft();
+                    left = left < wLeft ? left : wLeft;
+                    int wBottom = wTop + childDimensions.getHeight();
+                    bottom = bottom > wBottom ? bottom : wBottom;
+                    int wRight = wLeft + childDimensions.getWidth();
+                    right = right > wRight ? right : wRight;
+                }
+            }
+            child = child.getNextSiblingElement();
+        }
+        if (!first) {
+            CmsPositionBean result = new CmsPositionBean();
+            result.setHeight(bottom - top);
+            result.setWidth(right - left);
+            result.setTop(top);
+            result.setLeft(left);
+            return result;
+        } else {
+            return getBoundingClientRect(panel);
+        }
     }
 
     /**

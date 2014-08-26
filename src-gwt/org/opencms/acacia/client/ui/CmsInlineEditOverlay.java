@@ -349,7 +349,7 @@ public class CmsInlineEditOverlay extends Composite implements HasClickHandlers 
      */
     public void updatePosition() {
 
-        setPosition(CmsPositionBean.getInnerDimensions(m_element));
+        setPosition(CmsPositionBean.getBoundingClientRect(m_element));
         for (Widget widget : m_buttonPanel) {
             if (widget instanceof CmsInlineEntityWidget) {
                 ((CmsInlineEntityWidget)widget).positionWidget();
