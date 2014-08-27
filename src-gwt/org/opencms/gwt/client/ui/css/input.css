@@ -404,7 +404,7 @@ div.selectHover, div.selectorPopup.selectBoxSelector div.selectBoxCell.selectHov
 }
 
 div.selectBoxOpener {
-	margin: 2px 12px 2px 5px;
+	margin: 3px 12px 3px 5px;
 	cursor: pointer;
 }
 
