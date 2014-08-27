@@ -27,13 +27,10 @@
 
 package org.opencms.main;
 
-import org.opencms.configuration.CmsParameterConfiguration;
-import org.opencms.file.CmsResource;
-import org.opencms.util.CmsFileUtil;
-
 import java.io.File;
 import java.net.URL;
 
+import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.PropertyConfigurator;
@@ -64,7 +61,7 @@ public final class CmsLog {
     public static final String FOLDER_LOGS = "logs" + File.separatorChar;
 
     /** Log for initialization messages. */
-    public static final Log INIT = LogFactory.getLog("org.opencms.init");
+    public static Log INIT;
 
     /** The absolute path to the folder of the main OpenCms log file (in the "real" file system). */
     private static String m_logFileRfsFolder;
@@ -84,29 +81,36 @@ public final class CmsLog {
      * Initializes the OpenCms logger configuration.<p>
      */
     static {
+        //
+        // DO NOT USE ANY OPENCMS CLASSES THAT USE STATIC LOGGER INSTANCES IN THIS STATIC BLOCK
+        // OTHERWISE THEIR LOGGER WOULD NOT BE INITIALIZED PROPERLY
+        //
         try {
             // look for the log4j.properties that shipped with OpenCms
             URL url = Loader.getResource("log4j.properties");
             if (url != null) {
                 // found some log4j properties, let's see if these are the ones used by OpenCms
-                String path = CmsFileUtil.normalizePath(url, '/');
+                File log4jProps = new File(url.getPath());
+                String path = log4jProps.getAbsolutePath();
                 // in a default OpenCms configuration, the following path would point to the OpenCms "WEB-INF" folder
-                String webInfPath = CmsResource.getParentFolder(CmsResource.getFolderPath(path));
+                String webInfPath = log4jProps.getParent();
+                webInfPath = webInfPath.substring(0, webInfPath.lastIndexOf(File.separatorChar) + 1);
+
                 // check for the OpenCms configuration file
                 // check for the OpenCms tld file
                 String tldFilePath = webInfPath + CmsSystemInfo.FILE_TLD;
                 File tldFile = new File(tldFilePath);
                 if (tldFile.exists()) {
                     // assume this is a default OpenCms log configuration                
-                    CmsParameterConfiguration configuration = new CmsParameterConfiguration(path);
+                    ExtendedProperties configuration = new ExtendedProperties(path);
                     // check if OpenCms should set the log file environment variable
                     boolean setLogFile = configuration.getBoolean("opencms.set.logfile", false);
                     if (setLogFile) {
                         // set "opencms.log" variable 
-                        String logFilePath = CmsFileUtil.normalizePath(webInfPath + FOLDER_LOGS + FILE_LOG, '/');
+                        String logFilePath = webInfPath + FOLDER_LOGS + FILE_LOG;
                         File logFile = new File(logFilePath);
                         m_logFileRfsPath = logFile.getAbsolutePath();
-                        m_logFileRfsFolder = CmsFileUtil.normalizePath(logFile.getParent() + '/', File.separatorChar);
+                        m_logFileRfsFolder = logFile.getParent() + File.separatorChar;
                         System.setProperty("opencms.logfile", m_logFileRfsPath);
                         System.setProperty("opencms.logfolder", m_logFileRfsFolder);
                         // re-read the configuration with the new environment variable available
@@ -114,6 +118,7 @@ public final class CmsLog {
                     }
                 }
                 // can't localize this message since this would end in an endless logger init loop
+                INIT = LogFactory.getLog("org.opencms.init");
                 INIT.info(". Log4j config file    : " + path);
             }
         } catch (SecurityException e) {
