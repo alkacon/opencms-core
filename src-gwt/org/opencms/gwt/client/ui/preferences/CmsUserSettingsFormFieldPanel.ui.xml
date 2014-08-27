@@ -8,7 +8,7 @@
 	<ui:style type="org.opencms.gwt.client.ui.preferences.CmsUserSettingsFormFieldPanel.ExternalStyle">
 	.scrollable { 
 		/*width: 550px;*/ 
-		max-height: 475px;
+		max-height: 470px;
 	} 
 	
 	.scrollContainer { 
