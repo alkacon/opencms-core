@@ -136,7 +136,7 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
         m_simpleTabWrapper.add(m_simpleTab);
         m_simpleTab.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
         m_simpleTab.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.propertiesCss().vfsModeSimplePropertiesBox());
-
+        m_simpleTab.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().formGradientBackground());
         m_sharedTabWrapper.add(createListItemWidget(info));
         m_sharedTabWrapper.add(m_sharedTab);
 
@@ -145,11 +145,6 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
         m_groups.put(TAB_SIMPLE, m_simpleTab);
         m_groups.put(TAB_SHARED, m_sharedTab);
         m_groups.put(TAB_INDIVIDUAL, m_individualTab);
-
-        m_simpleTabWrapper.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().formGradientBackground());
-        m_individualTabWrapper.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().formGradientBackground());
-        m_sharedTabWrapper.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().formGradientBackground());
-
         CmsScrollPanel scrollPanel = GWT.create(CmsScrollPanel.class);
         scrollPanel.setWidget(m_simpleTabWrapper);
         m_tabPanel.add(scrollPanel, Messages.get().key(Messages.GUI_PROPERTY_TAB_SIMPLE_0));
@@ -228,6 +223,7 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
 
         String unused = Messages.get().key(Messages.GUI_PROPERTY_BLOCK_UNUSED_0);
         CmsFieldSet unusedFieldSet = new CmsFieldSet();
+        unusedFieldSet.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().formGradientBackground());
         unusedFieldSet.setOpen(false);
         unusedFieldSet.setLegend(unused);
         unusedFieldSet.setAnimationDuration(50);
