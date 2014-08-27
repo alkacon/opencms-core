@@ -238,6 +238,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         m_uploadButton.setImageClass(I_CmsImageBundle.INSTANCE.style().uploadSmallIcon());
         m_uploadButton.removeStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
         m_main = uibinder.createAndBindUi(this);
+        m_main.getElement().getStyle().setBackgroundColor("white");
         initWidget(m_main);
         m_allowUploads = allowUploads;
         if (m_allowUploads) {

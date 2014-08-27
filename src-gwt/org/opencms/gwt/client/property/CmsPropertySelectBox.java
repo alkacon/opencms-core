@@ -89,9 +89,9 @@ public class CmsPropertySelectBox extends CmsSelectBox {
     public void updateStyle() {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_selectedValue)) {
-            addStyleName(CSS.transparentSelectBox());
+            addStyleName(CSS.noSelectionSelectBox());
         } else {
-            removeStyleName(CSS.transparentSelectBox());
+            removeStyleName(CSS.noSelectionSelectBox());
         }
     }
 

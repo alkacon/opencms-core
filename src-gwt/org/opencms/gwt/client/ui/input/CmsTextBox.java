@@ -333,7 +333,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
              */
             public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
 
-                return new CmsTextBox();
+                return new CmsTextBox().colorWhite();
             }
         });
     }
@@ -388,6 +388,17 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
     public void blur() {
 
         m_textbox.getElement().blur();
+    }
+
+    /**
+     * Sets the background color to white.<p>
+     * 
+     * @return this widget 
+     */
+    public CmsTextBox colorWhite() {
+
+        getTextBoxContainer().addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().textBoxPanelWhite());
+        return this;
     }
 
     /**

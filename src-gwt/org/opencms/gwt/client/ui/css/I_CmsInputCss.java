@@ -285,6 +285,13 @@ public interface I_CmsInputCss extends I_CmsGlobalWidgetCss {
      * 
      * @return the css class
      */
+    String noSelectionSelectBox();
+
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
     String opener();
 
     /**
@@ -442,6 +449,13 @@ public interface I_CmsInputCss extends I_CmsGlobalWidgetCss {
      * 
      * @return the css class
      */
+    String textBoxPanelWhite();
+
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
     String textBoxReadOnly();
 
     /**
@@ -450,13 +464,6 @@ public interface I_CmsInputCss extends I_CmsGlobalWidgetCss {
      * @return the css class
      */
     String textBoxWidget();
-
-    /**
-     * Css class reader.<p>
-     * 
-     * @return the css class
-     */
-    String transparentSelectBox();
 
     /**
      * Css class reader.<p>

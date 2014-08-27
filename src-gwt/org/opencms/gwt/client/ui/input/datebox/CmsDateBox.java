@@ -283,6 +283,7 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
     public CmsDateBox() {
 
         initWidget(uiBinder.createAndBindUi(this));
+        m_box.colorWhite();
 
         m_popup = new CmsPopup();
         m_ampmGroup = new CmsRadioButtonGroup();
@@ -299,6 +300,7 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
 
         CmsDateBoxHandler dateBoxHandler = new CmsDateBoxHandler();
         m_picker.addValueChangeHandler(dateBoxHandler);
+
         m_box.addBlurHandler(dateBoxHandler);
         m_box.addClickHandler(dateBoxHandler);
         m_box.addKeyPressHandler(dateBoxHandler);

@@ -34,13 +34,6 @@ input.textBox:focus{
 	box-shadow:none;
 }
 
-.multiCheckboxPanel {
-	border: 1px solid value("constants.css.borderColor");
-	overflow:hidden;
-}
-
-
-
 .highTextBoxes .textBox {
 	height: 20px;
 }
@@ -49,6 +42,30 @@ input.textboxGhostMode {
 	font-style: oblique;
 	color: value("constants.css.textColorDisabled") /*!important*/;
 }
+
+.textBoxPanelWhite {
+	background-color: white; 
+}
+
+
+
+.textBoxPanelDisabled {
+	background-color: value("constants.css.backgroundColorDisabled");
+}
+
+.textBoxPanelDisabled * {
+	color: value("constants.css.textColorDisabled");
+	cursor: default;
+}
+
+
+.textBoxPanelError {
+	border: 1px solid value("constants.css.borderColorHighlight");
+	background-color: value("constants.css.backgroundColorInputError");
+	overflow:hidden;
+}
+
+
 
 .weakText * {
 	font-style: oblique !important;
@@ -61,6 +78,12 @@ input.textBoxReadOnly {
 	background-color: value("constants.css.backgroundColorDisabled");
 }
 
+.textBoxPanel {
+	border: 1px solid value("constants.css.borderColor");
+	overflow:hidden;
+}
+
+
 .colorPicker {
 background-color: transparent;
     border-radius: 3px 3px 3px 3px;
@@ -72,10 +95,6 @@ background-color: transparent;
 
 
 
-.textBoxPanel {
-	border: 1px solid value("constants.css.borderColor");
-	overflow:hidden;
-}
 
 div.textArea {
     overflow:hidden;
@@ -235,20 +254,7 @@ div.textArea textarea{
 }
 
 
-.textBoxPanelDisabled {
-	background-color: value("constants.css.backgroundColorDisabled");
-}
 
-.textBoxPanelDisabled * {
-	color: value("constants.css.textColorDisabled");
-	cursor: default;
-}
-
-.textBoxPanelError {
-	border: 1px solid value("constants.css.borderColorHighlight");
-	background-color: value("constants.css.backgroundColorInputError");
-	overflow:hidden;
-}
 
 .formLabel {
 	font-weight: normal;
@@ -326,16 +332,17 @@ div.error, .error {
 	background-color: value("constants.css.backgroundColorStateHover");
 }
 
-.transparentSelectBox .openerNoHover.selectBoxSelected, .transparentSelectBox .openerHover.selectBoxSelected {
+.noSelectionSelectBox .openerNoHover.selectBoxSelected, .noSelectionSelectBox .openerHover.selectBoxSelected {
 	background-image: none !important;
 	font-style: oblique !important; 
+	background-color: white !important; 
 }
 
-.transparentSelectBox * {
-	background-color: transparent !important; 
-}
+/*.noSelectionSelectBox * {
+	background-color: white !important; 
+}*/
 
-.transparentSelectBox .selectBoxOpener {
+.noSelectionSelectBox .selectBoxOpener {
 	color: value("constants.css.textColorDisabled") !important; 
 }
 
@@ -645,5 +652,9 @@ div.formDescriptionLabel {
 	margin-top: 2px; 
 }
 
+.multiCheckboxPanel {
+	border: 1px solid value("constants.css.borderColor");
+	overflow:hidden;
+}
 
 
