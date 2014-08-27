@@ -29,7 +29,6 @@ package org.opencms.gwt.client.ui.resourceinfo;
 
 import org.opencms.db.CmsResourceState;
 import org.opencms.gwt.client.CmsCoreProvider;
-import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.contextmenu.CmsAbout;
@@ -235,7 +234,7 @@ public class CmsResourceInfoView extends Composite {
         m_status = status;
         CmsListItemWidget infoBox = new CmsListItemWidget(status.getListInfo());
         infoBox.addButton(new CmsContextMenuButton(status.getStructureId(), new ContextMenuHandler()));
-        m_infoBoxContainer.add(new CmsListItem(infoBox));
+        m_infoBoxContainer.add(infoBox);
         m_dateCreated.setText(status.getDateCreated());
         m_dateExpired.setText(status.getDateExpired());
         m_dateLastModified.setText(status.getDateLastModified());

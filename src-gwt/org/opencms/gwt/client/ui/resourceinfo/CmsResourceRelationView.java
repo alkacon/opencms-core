@@ -123,9 +123,8 @@ public class CmsResourceRelationView extends Composite {
         infoBoxPanel.getElement().getStyle().setMarginTop(2, Style.Unit.PX);
         CmsListItemWidget infoWidget = new CmsListItemWidget(status.getListInfo());
         infoWidget.addButton(new CmsContextMenuButton(status.getStructureId(), new ContextMenuHandler()));
-        CmsListItem infoItem = new CmsListItem(infoWidget);
         m_panel.add(infoBoxPanel);
-        infoBoxPanel.add(infoItem);
+        infoBoxPanel.add(infoWidget);
         CmsFieldSet fieldset = new CmsFieldSet();
         CmsScrollPanel scrollPanel = GWT.create(CmsScrollPanel.class);
         m_scrollPanel = scrollPanel;
