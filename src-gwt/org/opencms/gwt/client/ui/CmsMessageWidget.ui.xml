@@ -30,8 +30,8 @@
 			overflow-x: auto;
 		}
 	</ui:style>
-	<div class="{style.outercontainer}" >
-	<table class="{style.main} {resources.generalCss.cornerAll}">
+	<div class="{style.outercontainer} {resources.generalCss.cornerAll}" >
+	<table class="{style.main} ">
 		<tr><td><div ui:field="m_icon" class="{style.icon}" /></td><td><div ui:field="m_message" class="{style.message}"></div></td></tr>
 	</table>
 	</div>
