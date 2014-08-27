@@ -6,7 +6,7 @@
 # you need to change the version number only here and no where else.
 # It can be accessed in OpenCms by OpenCms.getSystemInfo().getVersionNumber().
 #
-OPENCMS_VERSION_NUMBER="$OpenCmsNumber"
+OPENCMS_VERSION_NUMBER="${OpenCmsNumber:-9.4.x}"
 
 #
 # The type of build generated.
@@ -15,12 +15,12 @@ OPENCMS_VERSION_NUMBER="$OpenCmsNumber"
 # "Release" for a release build
 # "Nightly" for a nightly build
 #
-OPENCMS_BUILD_TYPE="$OpenCmsBuildType"
+OPENCMS_BUILD_TYPE="${OpenCmsBuildType:-Manual}"
 
 #
 # The build system that was used.
 #
-OPENCMS_BUILD_SYSTEM="Jenkins CI"
+OPENCMS_BUILD_SYSTEM="${OpenCmsBuildSystem:-Jenkins}"
 
 # The output path/filename where the properties are written.
 # 
@@ -38,10 +38,11 @@ OUTPUT_FILE="$WORKSPACE/opencms/src/org/opencms/main/version.properties"
 # These will be provided to OpenCms as list of variables that 
 # can be accessed by OpenCms.getSystemInfo().getBuildInfo().
 #
-OPENCMS_BUILD_NUMBER=$JENKINS_BUILD_NUMBER
+OPENCMS_BUILD_NUMBER="${JENKINS_BUILD_NUMBER:-Unknown}"
 OPENCMS_BUILD_DATE=$(date +"%Y-%m-%d %H:%M")
-OPENCMS_GIT_ID=${GIT_COMMIT:0:7}
-OPENCMS_GIT_BRANCH=$GIT_BRANCH
+GIT_COMMIT="${GIT_COMMIT:-Unknown}"
+OPENCMS_GIT_ID="${GIT_COMMIT:0:7}"
+OPENCMS_GIT_BRANCH="${GIT_BRANCH:-Unknown}"
 
 #
 # The OpenCms version ID.
@@ -58,6 +59,8 @@ OPENCMS_VERSION_ID="$OPENCMS_BUILD_TYPE $OPENCMS_BUILD_NUMBER ($OPENCMS_GIT_BRAN
 echo "# "
 echo "# OpenCms Version Information:"
 echo "# "
+echo "# Build Type    : $OPENCMS_BUILD_TYPE"
+echo "# Build System  : $OPENCMS_BUILD_SYSTEM"
 echo "# Version Number: $OPENCMS_VERSION_NUMBER"
 echo "# Version ID    : $OPENCMS_VERSION_ID"
 echo "# Version File  : $OUTPUT_FILE"
