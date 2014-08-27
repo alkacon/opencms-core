@@ -39,6 +39,7 @@ import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
+import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.form.CmsForm;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormHandler;
@@ -263,6 +264,7 @@ public class CmsSeoOptionsDialog extends CmsPopup implements I_CmsFormHandler {
     public void show() {
 
         m_propertyFieldset.addContent(m_propertyEditor.getForm().getWidget());
+        m_propertyFieldset.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().formGradientBackground());
         super.show();
         notifyWidgetsOfOpen();
     }
