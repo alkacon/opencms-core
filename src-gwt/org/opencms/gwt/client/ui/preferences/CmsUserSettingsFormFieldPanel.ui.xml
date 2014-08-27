@@ -4,6 +4,7 @@
 	xmlns:cms="urn:import:org.opencms.gwt.client.ui"
 	xmlns:cmsi="urn:import:org.opencms.gwt.client.ui.input"
 	> 
+	<ui:with type="org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle" field="inputRes" />
 	<ui:style type="org.opencms.gwt.client.ui.preferences.CmsUserSettingsFormFieldPanel.ExternalStyle">
 	.scrollable { 
 		/*width: 550px;*/ 
@@ -50,7 +51,7 @@
 	
 	<g:FlowPanel>
 		<g:FlowPanel ui:field="m_basicTab" addStyleNames="{style.tab}">
-		<g:FlowPanel addStyleNames="{style.border}">
+		<g:FlowPanel addStyleNames="{style.border} {inputRes.inputCss.formGradientBackground}">
 		
 			<cms:CmsScrollPanel addStyleNames="{style.scrollable}">
 				<g:FlowPanel addStyleNames="{style.scrollContainer}" >
@@ -62,7 +63,7 @@
 			
 		
 		<g:FlowPanel ui:field="m_extendedTab" addStyleNames="{style.tab}">
-				<g:FlowPanel addStyleNames="{style.border}">
+				<g:FlowPanel addStyleNames="{style.border}  {inputRes.inputCss.formGradientBackground}">
 			<cms:CmsScrollPanel addStyleNames="{style.scrollable}">
 				<g:FlowPanel  addStyleNames="{style.scrollContainer}" >
 					<g:FlowPanel ui:field="m_extendedSettingsPanel" />
@@ -72,7 +73,7 @@
 		</g:FlowPanel>
 		
 		<g:FlowPanel ui:field="m_accountInfoTab" addStyleNames="{style.tab}">
-				<g:FlowPanel addStyleNames="{style.border}">
+				<g:FlowPanel addStyleNames="{style.border} {inputRes.inputCss.formGradientBackground}">
 				<g:FlowPanel ui:field="m_accountInfoPanel" addStyleNames="{style.accountInfo}"></g:FlowPanel>
 				<cms:CmsPushButton addStyleNames="{style.passwordButton}" ui:field="m_passwordButton" />
 				</g:FlowPanel>

@@ -35,7 +35,6 @@ import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabbedPanelStyle;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonColor;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsTruncable;
-import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.form.A_CmsFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.CmsFormRow;
@@ -146,9 +145,6 @@ public class CmsUserSettingsFormFieldPanel extends A_CmsFormFieldPanel {
         m_tabPanel.add(m_basicTab, Messages.get().key(Messages.GUI_USERSETTINGS_TAB_BASIC_0));
         m_tabPanel.add(m_extendedTab, Messages.get().key(Messages.GUI_USERSETTINGS_TAB_EXTENDED_0));
         m_tabPanel.add(m_accountInfoTab, Messages.get().key(Messages.GUI_USERSETTINGS_TAB_ACCOUNT_0));
-        for (Widget tab : new Widget[] {m_basicTab, m_extendedTab, m_accountInfoTab}) {
-            tab.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().formGradientBackground());
-        }
 
         FlexTable table = new FlexTable();
         table.setCellSpacing(5);
