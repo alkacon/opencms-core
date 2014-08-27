@@ -299,7 +299,9 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
                 info.setCollectorName(m_collectorName);
                 info.setCollectorParams(m_collectorParam);
                 info.setId(m_contentInfoBean.getId());
-                CmsJspTagEditable.getDirectEditProvider(pageContext).insertDirectEditListMetadata(pageContext, info);
+                if (CmsJspTagEditable.getDirectEditProvider(pageContext) != null) {
+                    CmsJspTagEditable.getDirectEditProvider(pageContext).insertDirectEditListMetadata(pageContext, info);
+                }
             }
             m_isFirstLoop = false;
             if (!hasMoreContent && m_editEmpty && (m_directEditLinkForNew != null)) {
