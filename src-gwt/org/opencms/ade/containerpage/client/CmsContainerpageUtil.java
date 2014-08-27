@@ -394,7 +394,6 @@ public class CmsContainerpageUtil {
                 listItem.disableEdit(Messages.get().key(Messages.GUI_CLIPBOARD_ITEM_CAN_NOT_BE_EDITED_0), false);
             }
         }
-        listItem.initMoveHandle(m_controller.getDndHandler(), true);
         String clientId = containerElement.getClientId();
         String serverId = CmsContainerpageController.getServerId(clientId);
         if (CmsUUID.isValidUUID(serverId)) {
@@ -406,9 +405,9 @@ public class CmsContainerpageUtil {
                     Window.Location.reload();
                 }
             });
-            listItem.getListItemWidget().addButton(button);
+            listItem.getListItemWidget().addButtonToFront(button);
         }
-
+        listItem.initMoveHandle(m_controller.getDndHandler(), true);
         return listItem;
     }
 

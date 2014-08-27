@@ -1041,7 +1041,7 @@ public final class CmsContentEditor extends CmsEditorBase {
     void callEditorChangeHanlders(final Set<String> changedScopes) {
 
         final CmsEntity entity = m_entityBackend.getEntity(m_entityId);
-        final org.opencms.acacia.shared.CmsEntity currentState = entity.createDeepCopy(null);
+        final org.opencms.acacia.shared.CmsEntity currentState = entity.createDeepCopy(m_entityId);
         CmsRpcAction<CmsContentDefinition> action = new CmsRpcAction<CmsContentDefinition>() {
 
             @Override

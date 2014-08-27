@@ -27,11 +27,13 @@
 
 package org.opencms.ade.containerpage.client.ui;
 
+import org.opencms.ade.containerpage.client.CmsContainerpageController;
 import org.opencms.ade.containerpage.client.Messages;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.client.ui.CmsPreviewDialog;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
@@ -39,6 +41,7 @@ import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsAdditionalInfoBean;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.util.CmsUUID;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -74,6 +77,22 @@ public class CmsMenuListItem extends CmsListItem {
         }
         setId(element.getClientId());
         getListItemWidget().setIcon(CmsIconUtil.getResourceIconClasses(element.getResourceType(), false));
+
+        CmsPushButton previewButton = new CmsPushButton();
+        previewButton.setImageClass(I_CmsImageBundle.INSTANCE.style().previewIcon());
+        previewButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        previewButton.setTitle(org.opencms.gwt.client.Messages.get().key(
+            org.opencms.gwt.client.Messages.GUI_SHOW_PREVIEW_0));
+        previewButton.addClickHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+
+                CmsPushButton button = (CmsPushButton)event.getSource();
+                button.clearHoverState();
+                CmsPreviewDialog.showPreviewForResource(new CmsUUID(CmsContainerpageController.getServerId(getId())));
+            }
+        });
+        getListItemWidget().addButton(previewButton);
 
         m_removeButton = new CmsPushButton();
         m_removeButton.setImageClass(I_CmsImageBundle.INSTANCE.style().removeIcon());

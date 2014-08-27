@@ -34,6 +34,7 @@ import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPopup;
+import org.opencms.gwt.client.ui.CmsPreviewDialog;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.CmsSimpleListItem;
@@ -191,11 +192,27 @@ public class CmsResourceRelationView extends Composite {
                     relationBean.getStructureId(),
                     new CmsResourceInfoView.ContextMenuHandler());
                 item.getListItemWidget().addButton(button);
+                final CmsResourceStatusRelationBean currentRelationBean = relationBean;
+                CmsPushButton previewButton = new CmsPushButton();
+                previewButton.setImageClass(I_CmsImageBundle.INSTANCE.style().previewIcon());
+                previewButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+                previewButton.setTitle(org.opencms.gwt.client.Messages.get().key(
+                    org.opencms.gwt.client.Messages.GUI_SHOW_PREVIEW_0));
+                previewButton.addClickHandler(new ClickHandler() {
+
+                    public void onClick(ClickEvent event) {
+
+                        CmsPushButton source = (CmsPushButton)event.getSource();
+                        source.clearHoverState();
+                        CmsPreviewDialog.showPreviewForResource(currentRelationBean.getStructureId());
+                    }
+                });
+                item.getListItemWidget().addButton(previewButton);
+
                 final boolean isContainerpage = CmsGwtConstants.TYPE_CONTAINERPAGE.equals(relationBean.getInfoBean().getResourceType());
                 final boolean isXmlContent = relationBean.isXmlContent();
                 final boolean isEditable = isXmlContent || isContainerpage;
                 if (isEditable) {
-                    final CmsResourceStatusRelationBean currentRelationBean = relationBean;
 
                     m_editButton = new CmsPushButton();
                     m_editButton.setImageClass(I_CmsImageBundle.INSTANCE.style().editIcon());
