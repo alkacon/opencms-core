@@ -85,6 +85,7 @@ public class CmsTestConfigData extends CmsADEConfigData {
             new ArrayList<CmsFunctionReference>(),
             false,
             false,
+            false,
             new CmsFormatterChangeSet()), null);
     }
 
