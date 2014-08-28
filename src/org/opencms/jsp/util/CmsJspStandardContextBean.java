@@ -468,7 +468,7 @@ public final class CmsJspStandardContextBean {
         @Override
         public boolean getIsSet() {
 
-            return getExists() && getIsEmpty();
+            return getExists() && !getIsEmpty();
         }
 
         /**
