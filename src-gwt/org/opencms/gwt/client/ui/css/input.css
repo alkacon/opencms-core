@@ -418,6 +418,10 @@ div.selectBoxOpener {
 	cursor: pointer;
 }
 
+.comboBoxOpener { 
+   margin: 1px 12px 1px 5px; 
+}  
+
 .selectBoxSelected .comboBoxOpener{
 	border: medium none;
     color: value("constants.css.textColor");
