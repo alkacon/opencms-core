@@ -38,6 +38,8 @@ import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.solr.CmsSolrIndex;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.widgets.CmsCheckboxWidget;
+import org.opencms.widgets.CmsComboWidget;
 import org.opencms.widgets.CmsInputWidget;
 import org.opencms.widgets.CmsSelectWidget;
 import org.opencms.widgets.CmsSelectWidgetOption;
@@ -55,6 +57,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -139,9 +142,9 @@ public class CmsSourceSearchDialog extends CmsWidgetDialog {
         // create export file name block
         result.append(createWidgetBlockStart(key(org.opencms.workplace.tools.searchindex.Messages.GUI_SOURCESEARCH_ADMIN_TOOL_BLOCK_0)));
         if (m_solrEnabled) {
-            result.append(createDialogRowsHtml(0, 7));
+            result.append(createDialogRowsHtml(0, 9));
         } else {
-            result.append(createDialogRowsHtml(0, 6));
+            result.append(createDialogRowsHtml(0, 8));
         }
         result.append(createWidgetBlockEnd());
         // close table
@@ -163,6 +166,21 @@ public class CmsSourceSearchDialog extends CmsWidgetDialog {
         CmsVfsFileWidget vfsw = new CmsVfsFileWidget(false, getCms().getRequestContext().getSiteRoot());
         addWidget(new CmsWidgetDialogParameter(m_settings, "paths", "/", PAGES[0], vfsw, 1, 50));
         addWidget(new CmsWidgetDialogParameter(m_settings, "types", "", PAGES[0], new CmsTypeComboWidget(), 0, 1));
+        // Get list of available locales
+        List<CmsSelectWidgetOption> options = new ArrayList<CmsSelectWidgetOption>();
+        for (final Locale locale : OpenCms.getLocaleManager().getAvailableLocales()) {
+            CmsSelectWidgetOption option = new CmsSelectWidgetOption(locale.toString());
+            options.add(option);
+        }
+        addWidget(new CmsWidgetDialogParameter(m_settings, "locale", "", PAGES[0], new CmsComboWidget(options), 1, 1));
+        addWidget(new CmsWidgetDialogParameter(
+            m_settings,
+            "onlyContentValues",
+            "false",
+            PAGES[0],
+            new CmsCheckboxWidget(),
+            1,
+            1));
         addWidget(new CmsWidgetDialogParameter(m_settings, "xpath", "", PAGES[0], new CmsInputWidget(), 0, 1));
         CmsSelectWidget indexOptions = new CmsSelectWidget(getSolrIndexOptions());
         addWidget(new CmsWidgetDialogParameter(m_settings, "source", "", PAGES[0], indexOptions, 1, 1));

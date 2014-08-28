@@ -51,8 +51,14 @@ public class CmsSearchReplaceSettings {
     /** The force replacement flag. */
     private boolean m_forceReplace;
 
+    /** When replacing XML content, replace-operation only applies to this locale. */
+    private String m_locale;
+
     /** Display message. */
     private String m_message;
+
+    /** Flag indicating if only content values should be searched and replaced. */
+    private boolean m_onlyContentValues;
 
     /** The paths to collect resources. */
     private List<String> m_paths = new LinkedList<String>();
@@ -88,6 +94,16 @@ public class CmsSearchReplaceSettings {
 
         super();
         m_paths.add("/");
+    }
+
+    /**
+     * Returns the locale.<p>
+     *
+     * @return the locale
+     */
+    public String getLocale() {
+
+        return m_locale;
     }
 
     /**
@@ -210,6 +226,16 @@ public class CmsSearchReplaceSettings {
     }
 
     /**
+     * Returns if only content values should be searched and replaced.<p>
+     *
+     * @return if only content values should be searched and replaced
+     */
+    public boolean isOnlyContentValues() {
+
+        return m_onlyContentValues;
+    }
+
+    /**
      * Returns <code>true</code> if Solr index is selected and a query was entered.<p>
      * 
      * @return <code>true</code> if Solr index is selected and a query was entered
@@ -235,11 +261,31 @@ public class CmsSearchReplaceSettings {
     }
 
     /**
+     * Sets the locale.<p>
+     *
+     * @param locale the locale to set
+     */
+    public void setLocale(String locale) {
+
+        m_locale = locale;
+    }
+
+    /**
      * @param message the message to set
      */
     public void setMessage(final String message) {
 
         // nop, this is hardcoded... just has to be here for "bean - convention".
+    }
+
+    /**
+     * Sets if only content values should be searched and replaced.<p>
+     *
+     * @param onlyContentValue if only content values should be searched and replaced
+     */
+    public void setOnlyContentValues(boolean onlyContentValue) {
+
+        m_onlyContentValues = onlyContentValue;
     }
 
     /**

@@ -52,9 +52,11 @@ import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -83,7 +85,7 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
     private int m_lockedFiles;
 
     /** The found resources. */
-    private List<CmsResource> m_matchedResources = new ArrayList<CmsResource>();
+    private Set<CmsResource> m_matchedResources = new HashSet<CmsResource>();
 
     /** The current session. */
     private HttpSession m_session;
@@ -176,12 +178,12 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
         // in other projects there is replaced, if the replace pattern is not empty
         boolean replace = false;
         if (CmsStringUtil.isEmpty(m_settings.getReplacepattern()) && !m_settings.isForceReplace()) {
-            // empty search pattern, search only   
+            // empty replace pattern, search only   
             report.println(
                 Messages.get().container(Messages.RPT_SOURCESEARCH_PARAMETERS_EMPTY_REPLACEPATTERN_0),
                 I_CmsReport.FORMAT_NOTE);
         } else {
-            // not empty search pattern, search and replace   
+            // not empty replace pattern, search and replace   
             replace = true;
             report.println(
                 Messages.get().container(Messages.RPT_SOURCESEARCH_PARAMETERS_NOTEMPTY_REPLACEPATTERN_0),
@@ -280,7 +282,7 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
                 // search and replace
                 byte[] result = null;
                 boolean xpath = false;
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_settings.getXpath())
+                if ((CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_settings.getXpath()) || m_settings.isOnlyContentValues())
                     && CmsResourceTypeXmlContent.isXmlContent(resource)) {
                     xpath = true;
                 }
@@ -390,6 +392,17 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
         byte[] contents,
         boolean replace) throws Exception {
 
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_settings.getLocale())) {
+            Locale contentLocale = CmsLocaleManager.getMainLocale(cmsObject, file);
+            if (!contentLocale.toString().equalsIgnoreCase(m_settings.getLocale())) {
+                // content does not match the requested locale, skip it
+                report.println(
+                    Messages.get().container(Messages.RPT_SOURCESEARCH_NOT_MATCHED_0),
+                    I_CmsReport.FORMAT_NOTE);
+                return null;
+            }
+        }
+
         String encoding = CmsLocaleManager.getResourceEncoding(cmsObject, file);
         String content = new String(contents, encoding);
 
@@ -429,7 +442,13 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
         // loop over the locales of the content
         boolean modified = false;
         boolean matched = false;
+        String requestedLocale = m_settings.getLocale();
         for (Locale locale : xmlContent.getLocales()) {
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(requestedLocale)
+                && !locale.toString().equalsIgnoreCase(requestedLocale)) {
+                // does not match the requested locale, skip it
+                continue;
+            }
             // loop over the available element paths of the current content locale
             List<String> paths = xmlContent.getNames(locale);
             for (String xpath : paths) {
@@ -438,7 +457,8 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
                 if (value.isSimpleType()) {
                     try {
                         String currPath = value.getPath();
-                        if (currPath.equals(m_settings.getXpath())
+                        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_settings.getXpath())
+                            || currPath.equals(m_settings.getXpath())
                             || (CmsXmlUtils.removeXpath(currPath).equals(m_settings.getXpath()))) {
                             // xpath match
                             String oldVal = value.getStringValue(cmsObject);
