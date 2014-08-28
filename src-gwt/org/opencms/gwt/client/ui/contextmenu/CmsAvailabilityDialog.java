@@ -38,6 +38,7 @@ import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
+import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsLabel;
@@ -149,6 +150,8 @@ public class CmsAvailabilityDialog extends CmsPopup implements I_CmsHasContextMe
         super(Messages.get().key(Messages.GUI_DIALOG_AVAILABILITY_TITLE_0), 439);
         setModal(true);
         setGlassEnabled(true);
+        addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().highTextBoxes());
+        addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().showDisabledAsGhostMode());
     }
 
     /**
@@ -306,6 +309,7 @@ public class CmsAvailabilityDialog extends CmsPopup implements I_CmsHasContextMe
         publishScheduledField.addContent(createTwoColumnRow(
             Messages.get().key(Messages.GUI_DIALOG_AVAILABILITY_PUB_SCHEDULED_DATE_0),
             publishScheduled));
+        publishScheduledField.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().formGradientBackground());
         m_panel.add(publishScheduledField);
 
         // create the release and expiration field
@@ -324,6 +328,7 @@ public class CmsAvailabilityDialog extends CmsPopup implements I_CmsHasContextMe
             Messages.get().key(Messages.GUI_DIALOG_AVAILABILITY_EXPIRED_DATE_0),
             dateExpired));
         addClickHandlerToInputCheckbox(m_dateExpiredCheck, m_dateExpired);
+        availabilityField.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().formGradientBackground());
         m_panel.add(availabilityField);
 
         // create the notification setting field
@@ -354,6 +359,7 @@ public class CmsAvailabilityDialog extends CmsPopup implements I_CmsHasContextMe
                     m_modifySiblings));
             }
             notificationField.addContent(createResposibles());
+            notificationField.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().formGradientBackground());
             m_panel.add(notificationField);
         }
 

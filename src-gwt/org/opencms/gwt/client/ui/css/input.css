@@ -58,6 +58,18 @@ input.textboxGhostMode {
 	cursor: default;
 }
 
+.showDisabledAsGhostMode .textBoxPanelDisabled { 
+	background-color: white;
+}
+
+.showDisabledAsGhostMode .textBoxPanelDisabled input {
+	font-style: oblique; 
+	color: value("constants.css.textColorDisabled");
+}
+	
+	
+	
+
 
 .textBoxPanelError {
 	border: 1px solid value("constants.css.borderColorHighlight");

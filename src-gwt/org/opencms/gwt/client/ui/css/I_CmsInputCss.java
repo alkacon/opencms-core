@@ -395,6 +395,13 @@ public interface I_CmsInputCss extends I_CmsGlobalWidgetCss {
      */
     String separator();
 
+    /** 
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
+    String showDisabledAsGhostMode();
+
     /**
      * Css class reader.<p>
      * 
