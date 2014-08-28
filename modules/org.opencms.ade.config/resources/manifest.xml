@@ -358,6 +358,9 @@
 						<entry key="GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsEditProperties"
 							rule="containerpage-no-different-site" />
+						<entry key="GUI_EXPLORER_CONTEXT_PREVIEW_0"
+							name="org.opencms.gwt.client.ui.contextmenu.CmsPreview"
+							rule="containerpage" />
 						<entry key="GUI_EXPLORER_CONTEXT_PAGE_INFO_0" 
 							name="org.opencms.gwt.client.ui.contextmenu.CmsResourceInfo" 
 							rule="containerpage" /> 
