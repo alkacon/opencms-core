@@ -255,15 +255,13 @@ div.textArea textarea{
 
 
 
-.radioButtonGroup *, .multiCheckBox *, .textBoxPanel *, .formWidgetContainer * {
+.radioButtonGroup *, .multiCheckBox *, .textBoxPanel *, .formLabel, .formWidgetContainer * {
 	font-size: inherit;
 	font-family: inherit;
 	color: value("constants.css.textColor");
 }
 
-.formLabel {
-	color: #7788AA; 
-}
+
 
 
 
@@ -612,9 +610,6 @@ div.formLabel {
 	float: left;
 }
 
-div.formRow:hover div.formLabel { 
-	text-decoration: underline; 
-}
 
 div.formWidgetContainer {
 	width: widgetContainerWidth;
