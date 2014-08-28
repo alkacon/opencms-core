@@ -304,13 +304,13 @@
 		<xsd:attribute name="element" type="xsd:string" use="required" />
 	</xsd:complexType>
 	
-	<xsd:complexType name="OpenCmsDefaultAppinfoEditorchangehandlers">
+	<xsd:complexType name="OpenCmsDefaultAppinfoEditorChangeHandlers">
 		<xsd:sequence>
-			<xsd:element name="editorchangehandler" type="OpenCmsDefaultAppinfoEditorchangehandler" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="editorchangehandler" type="OpenCmsDefaultAppinfoEditorChangeHandler" minOccurs="0" maxOccurs="unbounded" />
 		</xsd:sequence>
 	</xsd:complexType>
 	
-	<xsd:complexType name="OpenCmsDefaultAppinfoEditorchangehandler">
+	<xsd:complexType name="OpenCmsDefaultAppinfoEditorChangeHandler">
 		<xsd:attribute name="class" type="xsd:string" use="required" />
 		<xsd:attribute name="scope" type="xsd:string" use="optional" />
 		<xsd:attribute name="configuration" type="xsd:string" use="optional" />
