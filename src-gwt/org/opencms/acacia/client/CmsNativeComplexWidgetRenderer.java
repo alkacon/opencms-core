@@ -29,7 +29,6 @@ package org.opencms.acacia.client;
 
 import org.opencms.acacia.client.css.I_CmsLayoutBundle;
 import org.opencms.acacia.client.entity.CmsEntityBackend;
-import org.opencms.acacia.client.entity.I_CmsEntityBackend;
 import org.opencms.acacia.shared.CmsContentDefinition;
 import org.opencms.acacia.shared.CmsEntity;
 import org.opencms.acacia.shared.CmsEntityAttribute;
@@ -150,29 +149,32 @@ public class CmsNativeComplexWidgetRenderer implements I_CmsEntityRenderer {
             initFunction,
             context.getElement(),
             entity,
-            CmsEntityBackend.getInstance(),
             m_jsonConfig.isObject().getJavaScriptObject());
     }
 
     /**
-     * @see org.opencms.acacia.client.I_CmsEntityRenderer#renderInline(org.opencms.acacia.shared.CmsEntity, org.opencms.acacia.client.I_CmsInlineFormParent, org.opencms.acacia.client.I_CmsInlineHtmlUpdateHandler)
+     * @see org.opencms.acacia.client.I_CmsEntityRenderer#renderInline(org.opencms.acacia.shared.CmsEntity, org.opencms.acacia.client.I_CmsInlineFormParent, org.opencms.acacia.client.I_CmsInlineHtmlUpdateHandler, org.opencms.acacia.client.I_CmsAttributeHandler, int)
      */
     public void renderInline(
         CmsEntity entity,
         I_CmsInlineFormParent formParent,
-        I_CmsInlineHtmlUpdateHandler updateHandler) {
+        I_CmsInlineHtmlUpdateHandler updateHandler,
+        I_CmsAttributeHandler parentHandler,
+        int attributeIndex) {
 
         notSupported();
     }
 
     /**
-     * @see org.opencms.acacia.client.I_CmsEntityRenderer#renderInline(org.opencms.acacia.shared.CmsEntity, java.lang.String, org.opencms.acacia.client.I_CmsInlineFormParent, org.opencms.acacia.client.I_CmsInlineHtmlUpdateHandler, int, int)
+     * @see org.opencms.acacia.client.I_CmsEntityRenderer#renderInline(org.opencms.acacia.shared.CmsEntity, java.lang.String, org.opencms.acacia.client.I_CmsInlineFormParent, org.opencms.acacia.client.I_CmsInlineHtmlUpdateHandler, org.opencms.acacia.client.I_CmsAttributeHandler, int, int, int)
      */
     public void renderInline(
         CmsEntity parentEntity,
         String attributeName,
         I_CmsInlineFormParent formParent,
         I_CmsInlineHtmlUpdateHandler updateHandler,
+        I_CmsAttributeHandler parentHandler,
+        int attributeIndex,
         int minOccurrence,
         int maxOccurrence) {
 
@@ -188,13 +190,7 @@ public class CmsNativeComplexWidgetRenderer implements I_CmsEntityRenderer {
                 Element element = elements.get(i);
                 if (i < values.size()) {
                     CmsEntity value = values.get(i);
-                    renderNative(
-                        getNativeInstance(),
-                        renderInline,
-                        element,
-                        value,
-                        CmsEntityBackend.getInstance(),
-                        m_jsonConfig.getJavaScriptObject());
+                    renderNative(getNativeInstance(), renderInline, element, value, m_jsonConfig.getJavaScriptObject());
                 }
             }
         }
@@ -235,7 +231,6 @@ public class CmsNativeComplexWidgetRenderer implements I_CmsEntityRenderer {
      * @param renderFunction the name of the render function 
      * @param element the element in which to render the entity 
      * @param entity the entity to render 
-     * @param vie the VIE wrapper to use 
      * @param config the configuration 
      */
     protected native void renderNative(
@@ -243,13 +238,12 @@ public class CmsNativeComplexWidgetRenderer implements I_CmsEntityRenderer {
         String renderFunction,
         com.google.gwt.dom.client.Element element,
         CmsEntity entity,
-        I_CmsEntityBackend vie,
         JavaScriptObject config) /*-{
                                  var entityWrapper = new $wnd.acacia.CmsEntityWrapper();
                                  entityWrapper.setEntity(entity);
-                                 var vieWrapper = new $wnd.acacia.CmsEntityBackendWrapper();
+                                 var backEndWrapper = new $wnd.acacia.CmsEntityBackendWrapper();
                                  if (nativeRenderer && nativeRenderer[renderFunction]) {
-                                 nativeRenderer[renderFunction](element, entityWrapper, vieWrapper,
+                                 nativeRenderer[renderFunction](element, entityWrapper, backEndWrapper,
                                  config);
                                  } else if ($wnd.console) {
                                  $wnd.console.log("Rendering function not found: " + renderFunction);

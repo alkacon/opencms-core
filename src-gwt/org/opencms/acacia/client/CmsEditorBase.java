@@ -451,13 +451,17 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
 
         m_entity = m_entityBackend.getEntity(entityId);
         if (m_entity != null) {
-            m_rootHandler = new CmsRootHandler();
+            if (m_rootHandler == null) {
+                m_rootHandler = new CmsRootHandler();
+            } else {
+                m_rootHandler.clearHandlers();
+            }
             m_validationHandler.setContentService(m_service);
             m_validationHandler.registerEntity(m_entity);
             m_validationHandler.setRootHandler(m_rootHandler);
             CmsType type = m_entityBackend.getType(m_entity.getTypeName());
             CmsButtonBarHandler.INSTANCE.setWidgetService(m_widgetService);
-            m_widgetService.getRendererForType(type).renderInline(m_entity, formParent, this);
+            m_widgetService.getRendererForType(type).renderInline(m_entity, formParent, this, m_rootHandler, 0);
             CmsUndoRedoHandler.getInstance().initialize(m_entity, this, m_rootHandler);
         }
     }

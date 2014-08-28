@@ -1321,6 +1321,9 @@ public final class CmsContentEditor extends CmsEditorBase {
             m_hideHelpBubblesButton.setVisible(false);
             setNativeResourceInfo(m_sitePath, m_locale);
             initEntityObserver();
+            if (m_definitions.get(m_locale).hasEditorChangeHandlers()) {
+                initEditorChangeHandlers(m_definitions.get(m_locale).getEditorChangeScopes());
+            }
             renderInlineEntity(m_entityId, formParent);
         } else {
             initFormPanel();

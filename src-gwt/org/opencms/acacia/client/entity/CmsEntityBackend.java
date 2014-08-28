@@ -255,11 +255,11 @@ public final class CmsEntityBackend implements I_CmsEntityBackend {
 
         String selector = "[about='"
             + entityId
-            + "'][property='"
+            + "'][property*='"
             + attributeName
             + "'], [about='"
             + entityId
-            + "'] [property='"
+            + "'] [property*='"
             + attributeName
             + "']";
         if (context == null) {

@@ -65,7 +65,11 @@ public interface I_CmsEntityRenderer {
      * @param attributeIndex the value index
      * @param context the parent widget
      */
-    void renderAttributeValue(CmsEntity parentEntity, CmsAttributeHandler attributeHandler, int attributeIndex, Panel context);
+    void renderAttributeValue(
+        CmsEntity parentEntity,
+        CmsAttributeHandler attributeHandler,
+        int attributeIndex,
+        Panel context);
 
     /**
      * Renders the given entity into a form with tabs.<p>
@@ -101,8 +105,15 @@ public interface I_CmsEntityRenderer {
      * @param entity the entity to render
      * @param formParent formParent the form parent widget
      * @param updateHandler handles updates on the HTML required  due to entity data changes
+     * @param parentHandler the parent attribute handler
+     * @param attributeIndex the attribute index
      */
-    void renderInline(CmsEntity entity, I_CmsInlineFormParent formParent, I_CmsInlineHtmlUpdateHandler updateHandler);
+    void renderInline(
+        CmsEntity entity,
+        I_CmsInlineFormParent formParent,
+        I_CmsInlineHtmlUpdateHandler updateHandler,
+        I_CmsAttributeHandler parentHandler,
+        int attributeIndex);
 
     /**
      * Injects editing widgets into the given DOM context to enable editing of the given entity attribute.<p>
@@ -111,6 +122,8 @@ public interface I_CmsEntityRenderer {
      * @param attributeName the attribute name
      * @param formParent the form parent widget
      * @param updateHandler handles updates on the HTML required  due to entity data changes
+     * @param parentHandler the parent attribute handler
+     * @param attributeIndex the attribute index
      * @param minOccurrence the minimum occurrence of this attribute
      * @param maxOccurrence the maximum occurrence of this attribute
      */
@@ -119,6 +132,8 @@ public interface I_CmsEntityRenderer {
         String attributeName,
         I_CmsInlineFormParent formParent,
         I_CmsInlineHtmlUpdateHandler updateHandler,
+        I_CmsAttributeHandler parentHandler,
+        int attributeIndex,
         int minOccurrence,
         int maxOccurrence);
 }

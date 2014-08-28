@@ -87,8 +87,8 @@ public class CmsAttributeHandler extends CmsRootHandler {
     /** The single value index. */
     private int m_singleValueIndex;
 
-    /** The VIE instance. */
-    private I_CmsEntityBackend m_vie;
+    /** The entity back end instance. */
+    private I_CmsEntityBackend m_entityBackEnd;
 
     /** The widget service. */
     private I_CmsWidgetService m_widgetService;
@@ -96,16 +96,20 @@ public class CmsAttributeHandler extends CmsRootHandler {
     /**
      * Constructor.<p>
      * 
-     * @param vie the VIE instance
+     * @param entityBackEnd the entity back end instance
      * @param entity the entity
      * @param attributeName the attribute name
      * @param widgetService the widget service
      */
-    public CmsAttributeHandler(I_CmsEntityBackend vie, CmsEntity entity, String attributeName, I_CmsWidgetService widgetService) {
+    public CmsAttributeHandler(
+        I_CmsEntityBackend entityBackEnd,
+        CmsEntity entity,
+        String attributeName,
+        I_CmsWidgetService widgetService) {
 
         // single value handling is disable by default
         m_singleValueIndex = -1;
-        m_vie = vie;
+        m_entityBackEnd = entityBackEnd;
         m_entity = entity;
         m_attributeName = attributeName;
         m_widgetService = widgetService;
@@ -221,7 +225,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
                 }
                 valueWidget.setValueWidget(widget, defaultValue, defaultValue, true);
             } else {
-                CmsEntity value = m_vie.createEntity(null, getAttributeType().getId());
+                CmsEntity value = m_entityBackEnd.createEntity(null, getAttributeType().getId());
                 insertValueAfterReference(value, reference);
             }
             CmsUndoRedoHandler handler = CmsUndoRedoHandler.getInstance();
@@ -339,7 +343,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
                     m_widgetService.addChangedOrderPath(getSimplePath(-1));
                 }
             } else {
-                CmsEntity value = m_vie.createEntity(null, m_attributeType.getId());
+                CmsEntity value = m_entityBackEnd.createEntity(null, m_attributeType.getId());
                 if ((attribute == null) || (attribute.getValueCount() == (referenceIndex + 1))) {
                     m_entity.addAttributeValue(m_attributeName, value);
                 } else {
@@ -414,8 +418,9 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
         CmsEntity parentValue = value;
         for (String attributeChoice : choicePath) {
-            CmsType choiceType = m_vie.getType(parentValue.getTypeName()).getAttributeType(CmsType.CHOICE_ATTRIBUTE_NAME);
-            CmsEntity choice = m_vie.createEntity(null, choiceType.getId());
+            CmsType choiceType = m_entityBackEnd.getType(parentValue.getTypeName()).getAttributeType(
+                CmsType.CHOICE_ATTRIBUTE_NAME);
+            CmsEntity choice = m_entityBackEnd.createEntity(null, choiceType.getId());
             parentValue.addAttributeValue(CmsType.CHOICE_ATTRIBUTE_NAME, choice);
             CmsType choiceOptionType = choiceType.getAttributeType(attributeChoice);
             if (choiceOptionType.isSimpleType()) {
@@ -423,7 +428,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
                 choice.addAttributeValue(attributeChoice, choiceValue);
                 break;
             } else {
-                CmsEntity choiceValue = m_vie.createEntity(null, choiceOptionType.getId());
+                CmsEntity choiceValue = m_entityBackEnd.createEntity(null, choiceOptionType.getId());
                 choice.addAttributeValue(attributeChoice, choiceValue);
                 parentValue = choiceValue;
             }
@@ -442,7 +447,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
         m_dndHandler = null;
         m_entity = null;
         m_entityType = null;
-        m_vie = null;
+        m_entityBackEnd = null;
         m_widgetService = null;
     }
 
@@ -808,7 +813,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
             }
             CmsEntity value = attribute.getComplexValues().get(index);
             m_entity.removeAttributeValue(m_attributeName, index);
-            m_vie.removeEntity(value.getId());
+            m_entityBackEnd.removeEntity(value.getId());
             reference.removeFromParent();
             m_attributeValueViews.remove(reference);
 
@@ -855,7 +860,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
                 removeHandlers(valueIndex);
                 CmsEntity value = attribute.getComplexValues().get(valueIndex);
                 m_entity.removeAttributeValue(m_attributeName, valueIndex);
-                m_vie.removeEntity(value.getId());
+                m_entityBackEnd.removeEntity(value.getId());
             } else {
                 m_entity.removeAttributeValue(m_attributeName, valueIndex);
             }
@@ -1025,7 +1030,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
         String attributeChoice = choicePath.get(0);
         CmsType optionType = getAttributeType().getAttributeType(attributeChoice);
         int valueIndex = reference.getValueIndex() + 1;
-        CmsEntity choiceEntity = m_vie.createEntity(null, getAttributeType().getId());
+        CmsEntity choiceEntity = m_entityBackEnd.createEntity(null, getAttributeType().getId());
         CmsAttributeValueView valueWidget = reference;
         if (reference.hasValue()) {
             valueWidget = new CmsAttributeValueView(
@@ -1052,7 +1057,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
             choiceEntity.addAttributeValue(attributeChoice, defaultValue);
             valueWidget.setValueWidget(widget, defaultValue, defaultValue, true);
         } else {
-            CmsEntity value = m_vie.createEntity(null, optionType.getId());
+            CmsEntity value = m_entityBackEnd.createEntity(null, optionType.getId());
             choiceEntity.addAttributeValue(attributeChoice, value);
             List<String> remainingAttributeNames = tail(choicePath);
             createNestedEntitiesForChoicePath(value, remainingAttributeNames);
@@ -1071,11 +1076,12 @@ public class CmsAttributeHandler extends CmsRootHandler {
      */
     private void addComplexChoiceValue(CmsAttributeValueView reference, List<String> choicePath) {
 
-        CmsEntity value = m_vie.createEntity(null, getAttributeType().getId());
+        CmsEntity value = m_entityBackEnd.createEntity(null, getAttributeType().getId());
         CmsEntity parentValue = value;
         for (String attributeChoice : choicePath) {
-            CmsType choiceType = m_vie.getType(parentValue.getTypeName()).getAttributeType(CmsType.CHOICE_ATTRIBUTE_NAME);
-            CmsEntity choice = m_vie.createEntity(null, choiceType.getId());
+            CmsType choiceType = m_entityBackEnd.getType(parentValue.getTypeName()).getAttributeType(
+                CmsType.CHOICE_ATTRIBUTE_NAME);
+            CmsEntity choice = m_entityBackEnd.createEntity(null, choiceType.getId());
             parentValue.addAttributeValue(CmsType.CHOICE_ATTRIBUTE_NAME, choice);
             CmsType choiceOptionType = choiceType.getAttributeType(attributeChoice);
             if (choiceOptionType.isSimpleType()) {
@@ -1083,7 +1089,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
                 choice.addAttributeValue(attributeChoice, choiceValue);
                 break;
             } else {
-                CmsEntity choiceValue = m_vie.createEntity(null, choiceOptionType.getId());
+                CmsEntity choiceValue = m_entityBackEnd.createEntity(null, choiceOptionType.getId());
                 choice.addAttributeValue(attributeChoice, choiceValue);
                 parentValue = choiceValue;
             }
@@ -1144,7 +1150,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
     private CmsType getEntityType() {
 
         if (m_entityType == null) {
-            m_entityType = m_vie.getType(m_entity.getTypeName());
+            m_entityType = m_entityBackEnd.getType(m_entity.getTypeName());
         }
         return m_entityType;
     }
