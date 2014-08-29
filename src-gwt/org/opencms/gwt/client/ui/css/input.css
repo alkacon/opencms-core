@@ -30,6 +30,11 @@ input.textBox {
 	height: auto;
 	vertical-align: baseline;
 }
+
+.comboBoxOpener input {
+	outline: none;
+}
+
 input.textBox:focus{
 	box-shadow:none;
 }
