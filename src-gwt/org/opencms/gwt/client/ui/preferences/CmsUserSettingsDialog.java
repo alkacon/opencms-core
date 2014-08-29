@@ -29,6 +29,8 @@ package org.opencms.gwt.client.ui.preferences;
 
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
+import org.opencms.gwt.client.ui.CmsPopup;
+import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
@@ -40,12 +42,18 @@ import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetMultiFactory;
+import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.CmsDomUtil.Style;
 import org.opencms.gwt.shared.CmsUserSettingsBean;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
+import com.google.gwt.dom.client.Element;
 
 /**
  * Dialog used for changing the user settings.<p>
@@ -58,6 +66,12 @@ public class CmsUserSettingsDialog extends CmsFormDialog implements I_CmsFormSub
     /** The panel used to edit the preferences. */
     CmsUserSettingsFormFieldPanel m_panel;
 
+    /** The dialog width. */
+    public static final int WIDTH = 1000;
+
+    /** The old tab index. */
+    private int m_oldTabIndex = 0;
+
     /** 
      * Creates a new widget instance.<p>
      * 
@@ -66,7 +80,7 @@ public class CmsUserSettingsDialog extends CmsFormDialog implements I_CmsFormSub
      */
     public CmsUserSettingsDialog(CmsUserSettingsBean userSettings, Runnable finishAction) {
 
-        super("User settings", new CmsForm(false), 1000);
+        super("User settings", new CmsForm(false), WIDTH);
         m_finishAction = finishAction;
         m_panel = new CmsUserSettingsFormFieldPanel(userSettings);
 
@@ -100,13 +114,22 @@ public class CmsUserSettingsDialog extends CmsFormDialog implements I_CmsFormSub
         handler.setSubmitHandler(this);
         getForm().setFormHandler(handler);
         getForm().render();
-        m_panel.truncate("asdfasdfmjsdb", 1000);
+        m_panel.truncate("formFieldPanel", WIDTH);
         getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().hideCaption());
         setMainContent(m_panel);
         setModal(true);
-        setHeight(600);
         setGlassEnabled(true);
         removePadding();
+    }
+
+    /** 
+     * Gets the width of the account information widget.<p>
+     * 
+     * @return the width 
+     */
+    public static String getAccountInfoWidth() {
+
+        return (WIDTH - 28) + "px";
     }
 
     /**
@@ -131,7 +154,7 @@ public class CmsUserSettingsDialog extends CmsFormDialog implements I_CmsFormSub
 
                 stop(false);
                 CmsUserSettingsDialog dlg = new CmsUserSettingsDialog(result, finishAction);
-                dlg.centerHorizontally(90);
+                dlg.centerHorizontally(50);
             }
         };
 
@@ -163,6 +186,52 @@ public class CmsUserSettingsDialog extends CmsFormDialog implements I_CmsFormSub
             }
         };
         action.execute();
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.Widget#onLoad()
+     */
+    @Override
+    protected void onLoad() {
+
+        super.onLoad();
+        Scheduler.get().scheduleFixedDelay(new RepeatingCommand() {
+
+            public boolean execute() {
+
+                if (!CmsUserSettingsDialog.this.isAttached() || !CmsUserSettingsDialog.this.isVisible()) {
+                    return false;
+                }
+                updateHeight();
+                return true;
+            }
+
+        }, 200);
+    }
+
+    /**
+     * Updates the panel height depending on the content of the current tab.<p>
+     */
+    protected void updateHeight() {
+
+        CmsPopup dialog = this;
+        int tabIndex = m_panel.getTabPanel().getSelectedIndex();
+        boolean changedTab = tabIndex != m_oldTabIndex;
+        m_oldTabIndex = tabIndex;
+        CmsScrollPanel tabWidget = m_panel.getTabPanel().getWidget(tabIndex);
+        Element innerElement = tabWidget.getWidget().getElement();
+        int contentHeight = CmsDomUtil.getCurrentStyleInt(innerElement, Style.height);
+        int spaceLeft = dialog.getAvailableHeight(0);
+        int newHeight = Math.min(spaceLeft, contentHeight) + 50;
+        boolean changedHeight = m_panel.getTabPanel().getOffsetHeight() != newHeight;
+        if (changedHeight || changedTab) {
+            m_panel.getTabPanel().setHeight(newHeight + "px");
+            int selectedIndex = m_panel.getTabPanel().getSelectedIndex();
+            CmsScrollPanel widget = m_panel.getTabPanel().getWidget(selectedIndex);
+            widget.setHeight((newHeight - 44) + "px");
+            widget.onResizeDescendant();
+            //dialog.center();
+        }
     }
 
 }

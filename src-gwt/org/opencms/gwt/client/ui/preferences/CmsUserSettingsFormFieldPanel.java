@@ -30,6 +30,7 @@ package org.opencms.gwt.client.ui.preferences;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsChangePasswordWidget;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabbedPanelStyle;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonColor;
@@ -91,7 +92,7 @@ public class CmsUserSettingsFormFieldPanel extends A_CmsFormFieldPanel {
 
     /** Tab. */
     @UiField
-    protected FlowPanel m_accountInfoTab;
+    protected CmsScrollPanel m_accountInfoTab;
 
     /** Form field container. */
     @UiField
@@ -99,7 +100,7 @@ public class CmsUserSettingsFormFieldPanel extends A_CmsFormFieldPanel {
 
     /** Tab. */
     @UiField
-    protected FlowPanel m_basicTab;
+    protected CmsScrollPanel m_basicTab;
 
     /** Form field container. */
     @UiField
@@ -107,7 +108,7 @@ public class CmsUserSettingsFormFieldPanel extends A_CmsFormFieldPanel {
 
     /** Tab. */
     @UiField
-    protected FlowPanel m_extendedTab;
+    protected CmsScrollPanel m_extendedTab;
 
     /** Button for changing the password. */
     @UiField
@@ -120,7 +121,8 @@ public class CmsUserSettingsFormFieldPanel extends A_CmsFormFieldPanel {
     ExternalStyle style;
 
     /** The tab panel. */
-    private CmsTabbedPanel<FlowPanel> m_tabPanel = new CmsTabbedPanel<FlowPanel>(CmsTabbedPanelStyle.buttonTabs);
+    private CmsTabbedPanel<CmsScrollPanel> m_tabPanel = new CmsTabbedPanel<CmsScrollPanel>(
+        CmsTabbedPanelStyle.buttonTabs);
 
     /**
      * Creates a new instance.<p>
@@ -190,6 +192,16 @@ public class CmsUserSettingsFormFieldPanel extends A_CmsFormFieldPanel {
 
         // TODO Auto-generated method stub
         return null;
+    }
+
+    /** 
+     * Gets the tab panel.<p>
+     * 
+     * @return the tab panel 
+     */
+    public CmsTabbedPanel<CmsScrollPanel> getTabPanel() {
+
+        return m_tabPanel;
     }
 
     /**
