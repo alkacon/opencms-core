@@ -209,7 +209,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
         addHoverHandlers(m_opener);
         addMainPanelHoverHandlers(m_panel);
         m_openClose = new CmsPushButton(
-            I_CmsImageBundle.INSTANCE.style().triangleRight(),
+            I_CmsImageBundle.INSTANCE.style().triangleDown(),
             I_CmsImageBundle.INSTANCE.style().triangleDown());
         m_openClose.setButtonStyle(ButtonStyle.TRANSPARENT, null);
         m_openClose.addStyleName(CSS.selectIcon());
