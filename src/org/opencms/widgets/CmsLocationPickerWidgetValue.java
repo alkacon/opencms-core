@@ -89,16 +89,6 @@ public class CmsLocationPickerWidgetValue {
         }
 
         /**
-         * Returns the mode.<p>
-         * 
-         * @return the mode
-         */
-        public String getMode() {
-
-            return m_modeValue;
-        }
-
-        /**
          * Parses the client side mode representation, required as 'static' is a java keyword.<p>
          * 
          * @param mode the mode name
@@ -114,6 +104,16 @@ public class CmsLocationPickerWidgetValue {
                 result = staticMode;
             }
             return result;
+        }
+
+        /**
+         * Returns the mode.<p>
+         * 
+         * @return the mode
+         */
+        public String getMode() {
+
+            return m_modeValue;
         }
 
         /**
@@ -414,6 +414,22 @@ public class CmsLocationPickerWidgetValue {
     public void setWidth(int width) {
 
         m_width = width;
+    }
+
+    /**
+     * Sets the value that is wrapped.
+     * The method is added for convenient usage of the class in JSPs.
+     * In a formatter JSP you can use
+     * <pre><code>
+     * <jsp:useBean id="map" class="org.opencms.widgets.CmsLocationPickerWidgetValue" />
+     * <jsp:setProperty name="map" property="wrappedValue" value="${content.value.Map}" />
+     * </code></pre>
+     * instead of setting the value directly via the constructor.
+     * @param value The string value that should be wrapped as CmsLocationPickerWidgetValue.
+     */
+    public void setWrappedValue(final String value) {
+
+        parseOptions(value);
     }
 
     /**
