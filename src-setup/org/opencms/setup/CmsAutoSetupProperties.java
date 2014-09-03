@@ -39,7 +39,9 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 
 /**
- * Reads and manages the test.properties file.<p>
+ * Reads and manages the configuration file for the OpenCms auto-setup.<p>
+ * Note that each property set in the file is overwritten if the identical property is set as Java system property (what is used, e.g., by the setup wizard).
+ * Moreover, the property <code>setup.install.components</code> can be set via an accordingly named environment variable.
  * 
  * @since 6.0.0
  */
@@ -48,73 +50,97 @@ public final class CmsAutoSetupProperties {
     /** The log object for this class. */
     public static final Log LOG = CmsLog.getLog(CmsAutoSetupProperties.class);
 
-    /** A property file key. */
+    /** The property key <code>db.connection.url</code> for providing the JDBC connection string, 
+     * e.g., <code>jdbc:mysql://localhost:3306/</code> for the default MySQL installation. 
+     */
     public static final String PROP_DB_CONNECTION_URL = "db.connection.url";
 
-    /** A property file key. */
+    /** The property key <code>db.create.db</code> for specifying if the database should be created during the setup.<P>
+     *  Set to <code>true</code> to create the database automatically, or <code>false</code> if it should not.<P>
+     *  NOTE: Automatic database creation is not supported for all DBMSs.
+     */
     public static final String PROP_DB_CREATE_DB = "db.create.db";
 
-    /** A property file key. */
+    /** The property key <code>db.create.pwd</code> for specifying the password for the database user that is used during the setup connection. */
     public static final String PROP_DB_CREATE_PWD = "db.create.pwd";
 
-    /** A property file key. */
+    /** The property key <code>db.create.tables</code> for specifying if the database tables in the OpenCms database should be created.<P>
+     *  Set to <code>true</code> to create the database automatically, or <code>false</code> if it should not.<P>
+     */
     public static final String PROP_DB_CREATE_TABLES = "db.create.tables";
 
-    /** A property file key. */
+    /** The property key <code>db.create.user</code> for specifying the name of the database user that is used during the setup connection. 
+     *  NOTE: The user must have administration permissions. The user data is deleted, when the setup is finished.
+     * */
     public static final String PROP_DB_CREATE_USER = "db.create.user";
 
-    /** A property file key. */
+    /** The property key <code>db.default.tablespace</code> necessary dependent on the chosen DBMS. */
     public static final String PROP_DB_DEFAULT_TABLESPACE = "db.default.tablespace";
 
-    /** A property file key. */
+    /** The property key <code>db.dropDb</code> for specifying if an existing database should be dropped when the setup is configured to create a database with the same name.
+     *  Set to <code>true</code> if existing databases should be dropped when necessary, or to <code>false</code> if not.
+     */
     public static final String PROP_DB_DROP_DB = "db.dropDb";
 
-    /** A property file key. */
+    /** The property key <code>db.index.tablespace</code> necessary dependent on the chosen DBMS. */
     public static final String PROP_DB_INDEX_TABLESPACE = "db.index.tablespace";
 
-    /** A property file key. */
+    /** The property key <code>db.jdbc.driver</code> for specifying the fully qualified name of the Java class implementing the JDBC driver to use for the connection.<P>
+     * Hint: The names can be found in the <code>database.properties</code> file in the webapp' folders <code>setup/database/<db.product>/</code>.
+     * */
     public static final String PROP_DB_JDBC_DRIVER = "db.jdbc.driver";
 
-    /** A property file key. */
+    /** The property key <code>db.name</code> for specifying the name of the database used by OpenCms, e.g. choose "opencms". */
     public static final String PROP_DB_NAME = "db.name";
 
-    /** A property file key. */
+    /** The property key <code>db.product</code> for specifying the used DBMS. Values should match the folders under the OpenCms webapp's folder <code>setup/database/</code>. */
     public static final String PROP_DB_PRODUCT = "db.product";
 
-    /** A property file key. */
+    /** The property key <code>db.provider</code> for specifying the database provider. This either <code>jpa</code> or the DBMS' product name. <P>
+     * Hint: The available providers are defined as constants in {@link org.opencms.setup.CmsSetupBean}. */
     public static final String PROP_DB_PROVIDER = "db.provider";
 
-    /** A property file key. */
+    /** The property key <code>db.template.db</code> necessary dependent of the chosen DBMS. */
     public static final String PROP_DB_TEMPLATE_DB = "db.template.db";
 
-    /** A property file key. */
+    /** The property key <code>db.temporary.tablespace</code> necessary dependent of the chosen DBMS.. */
     public static final String PROP_DB_TEMPORARY_TABLESPACE = "db.temporary.tablespace";
 
-    /** A property file key. */
+    /** The property key <code>db.worker.pwd</code> for providing the password of the database user that is used when running OpenCms after the setup.
+    *  CAUTION: For security reasons, the user should not have administration permissions.
+    *  The user data is stored in the <code>opencms.properties</code> file after the setup.
+    */
     public static final String PROP_DB_WORKER_PWD = "db.worker.pwd";
 
-    /** A property file key. */
+    /** The property key <code>db.worker.user</code> for providing the name of the database user that is used for the connection when running OpenCms after the setup.     
+     *  CAUTION: For security reasons, the user should not have administration permissions.
+     *  The user data is stored in the <code>opencms.properties</code> file after the setup.
+    . */
     public static final String PROP_DB_WORKER_USER = "db.worker.user";
 
-    /** A property file key. */
+    /** The property key <code>server.ethernet.address</code>. Specify a valid MAC-Address. It is used internally by OpenCms. (If not given, the address is generated automatically.) */
     public static final String PROP_SERVER_ETHERNET_ADDRESS = "server.ethernet.address";
 
-    /** A property file key. */
+    /** The property key <code>server.name</code> for specifying the server's name. Special server names are of particular interest in a cluster installation.*/
     public static final String PROP_SERVER_NAME = "server.name";
 
-    /** A property file key. */
+    /** The property key <code>server.servlet.mapping</code> for specifying the name of the OpenCms servlet (by default opencms). */
     public static final String PROP_SERVER_SERVLET_MAPPING = "server.servlet.mapping";
 
-    /** A property file key. */
+    /** The property key <code>server.url</code> for specifying the server's URL. It is used, e.g., for the site configuration. */
     public static final String PROP_SERVER_URL = "server.url";
 
-    /** A property file key. */
+    /** The property key <code>setup.default.webapp</code>. Provide the default webapp in your servlet container (Default: ROOT). */
     public static final String PROP_SETUP_DEFAULT_WEBAPP = "setup.default.webapp";
 
-    /** A property file key. */
+    /** The property key <code>setup.install.components</code> to choose the components that should be installed during the setup.<P>
+     * The available components are configured in <code>setup/components.properties</code> in the webapp's folder.<P>
+     * NOTE: You can specify the components to install also as Java system property (highest priority) or via an environment variable (second choice).
+     * The value specified in the configuration file is only the third choice.
+     */
     public static final String PROP_SETUP_INSTALL_COMPONENTS = "setup.install.components";
 
-    /** A property file key. */
+    /** The property key <code>setup.webapp.path</code> to specify the path of the OpenCms webapp to install, e.g., <code>/var/lib/tomcat7/webapps/opencms</code>. */
     public static final String PROP_SETUP_WEBAPP_PATH = "setup.webapp.path";
 
     /** The configuration from <code>opencms.properties</code>. */
