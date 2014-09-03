@@ -189,7 +189,7 @@ public final class CmsAutoSetupProperties {
     private String m_jdbcDriver;
 
     /** The servlet mapping. */
-    private String m_serveltMapping;
+    private String m_servletMapping;
 
     /** The server name. */
     private String m_serverName;
@@ -252,7 +252,7 @@ public final class CmsAutoSetupProperties {
         m_serverUrl = addProperty(PROP_SERVER_URL);
         m_serverName = addProperty(PROP_SERVER_NAME);
         m_ethernetAddress = addProperty(PROP_SERVER_ETHERNET_ADDRESS);
-        m_serveltMapping = addProperty(PROP_SERVER_SERVLET_MAPPING);
+        m_servletMapping = addProperty(PROP_SERVER_SERVLET_MAPPING);
 
         if (System.getProperty(PROP_SETUP_INSTALL_COMPONENTS) != null) {
             m_configuration.put(PROP_SETUP_INSTALL_COMPONENTS, System.getProperty(PROP_SETUP_INSTALL_COMPONENTS));
@@ -375,7 +375,7 @@ public final class CmsAutoSetupProperties {
      */
     public String getServeltMapping() {
 
-        return m_serveltMapping;
+        return m_servletMapping;
     }
 
     /**
