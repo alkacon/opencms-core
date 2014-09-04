@@ -88,7 +88,6 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.CmsUriSplitter;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.commons.CmsPreferences;
@@ -2051,16 +2050,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     private CmsWorkplaceSettings getWorkplaceSettings() {
 
         if (m_workplaceSettings == null) {
-            m_workplaceSettings = (CmsWorkplaceSettings)getRequest().getSession().getAttribute(
-                CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
-            // ensure workplace settings attribute is set
-            if (m_workplaceSettings == null) {
-                // creating any instance of {@link org.opencms.workplace.CmsWorkplaceSettings} and store it
-                m_workplaceSettings = CmsWorkplace.initWorkplaceSettings(getCmsObject(), null, false);
-                getRequest().getSession().setAttribute(
-                    CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS,
-                    m_workplaceSettings);
-            }
+            m_workplaceSettings = CmsWorkplace.getWorkplaceSettings(getCmsObject(), getRequest());
         }
         return m_workplaceSettings;
     }

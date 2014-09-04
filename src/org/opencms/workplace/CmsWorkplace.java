@@ -486,6 +486,31 @@ public abstract class CmsWorkplace {
     }
 
     /**
+     * Returns the workplace settings of the current user.<p>
+     * 
+     * @param cms the cms context
+     * @param req the request
+     * 
+     * @return the workplace settings or <code>null</code> if the user is not logged in
+     */
+    public static CmsWorkplaceSettings getWorkplaceSettings(CmsObject cms, HttpServletRequest req) {
+
+        HttpSession session = req.getSession(false);
+        CmsWorkplaceSettings workplaceSettings = null;
+        if (session != null) {
+            // all logged in user will have a session
+            workplaceSettings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
+            // ensure workplace settings attribute is set
+            if (workplaceSettings == null) {
+                // creating any instance of {@link org.opencms.workplace.CmsWorkplaceSettings} and store it
+                workplaceSettings = initWorkplaceSettings(cms, null, false);
+                storeSettings(session, workplaceSettings);
+            }
+        }
+        return workplaceSettings;
+    }
+
+    /**
      * Updates the user settings in the given workplace settings for the current user, reading the user settings
      * from the database if required.<p>
      * 
