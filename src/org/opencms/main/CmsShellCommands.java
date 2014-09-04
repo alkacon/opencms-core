@@ -184,7 +184,7 @@ class CmsShellCommands implements I_CmsShellCommands {
                 name,
                 description,
                 OpenCms.getDefaultUsers().getGroupUsers(),
-                OpenCms.getDefaultUsers().getGroupProjectmanagers(),
+                OpenCms.getDefaultUsers().getGroupAdministrators(),
                 CmsProject.PROJECT_TYPE_NORMAL);
             m_cms.getRequestContext().setCurrentProject(project);
             m_cms.copyResourceToProject("/");

@@ -82,7 +82,7 @@ public class TestUser extends OpenCmsTestCase {
             @Override
             protected void setUp() {
 
-                setupOpenCms("simpletest", "/sites/default/", false);
+                setupOpenCms("simpletest", "/", false);
             }
 
             @Override

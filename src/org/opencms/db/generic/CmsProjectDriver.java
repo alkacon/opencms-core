@@ -695,9 +695,6 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         String usersGroup = OpenCms.getDefaultUsers().getGroupUsers();
         CmsGroup users = m_driverManager.readGroup(dbc, usersGroup);
 
-        String projectmanagersGroup = OpenCms.getDefaultUsers().getGroupProjectmanagers();
-        CmsGroup projectmanager = m_driverManager.readGroup(dbc, projectmanagersGroup);
-
         ////////////////////////////////////////////////////////////////////////////////////////////
         // online project stuff
         ////////////////////////////////////////////////////////////////////////////////////////////
@@ -708,7 +705,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             CmsProject.ONLINE_PROJECT_ID,
             admin,
             users,
-            projectmanager,
+            administrators,
             CmsProject.ONLINE_PROJECT_NAME,
             "The Online project",
             I_CmsPrincipal.FLAG_ENABLED,

@@ -31,7 +31,6 @@ import org.opencms.configuration.CmsDefaultUserSettings;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsContextInfo;
 
-// TODO: Auto-generated Javadoc
 /**
  * Bean used to access the built-in preferences via reflection.<p>
  * 

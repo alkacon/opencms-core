@@ -2192,12 +2192,6 @@ public class CmsUserDriver implements I_CmsUserDriver {
                     }
                     String groupName = ouFqn + role.getGroupName();
                     int flags = I_CmsPrincipal.FLAG_ENABLED | I_CmsPrincipal.FLAG_GROUP_ROLE;
-                    if ((role == CmsRole.WORKPLACE_USER) || (role == CmsRole.PROJECT_MANAGER)) {
-                        flags |= I_CmsPrincipal.FLAG_GROUP_PROJECT_USER;
-                    }
-                    if (role == CmsRole.PROJECT_MANAGER) {
-                        flags |= I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER;
-                    }
                     createGroup(dbc, CmsUUID.getConstantUUID(groupName), groupName, "A system role group", flags, null);
 
                 }
@@ -2221,7 +2215,6 @@ public class CmsUserDriver implements I_CmsUserDriver {
         String administratorsGroup = ouFqn + OpenCms.getDefaultUsers().getGroupAdministrators();
         String guestGroup = ouFqn + OpenCms.getDefaultUsers().getGroupGuests();
         String usersGroup = ouFqn + OpenCms.getDefaultUsers().getGroupUsers();
-        String projectmanagersGroup = ouFqn + OpenCms.getDefaultUsers().getGroupProjectmanagers();
         String guestUser = ouFqn + OpenCms.getDefaultUsers().getUserGuest();
         String adminUser = ouFqn + OpenCms.getDefaultUsers().getUserAdmin();
         String exportUser = ouFqn + OpenCms.getDefaultUsers().getUserExport();
@@ -2232,7 +2225,6 @@ public class CmsUserDriver implements I_CmsUserDriver {
                 // check the flags of existing groups, for compatibility checks
                 internalUpdateRoleGroup(dbc, administratorsGroup, CmsRole.ROOT_ADMIN);
                 internalUpdateRoleGroup(dbc, usersGroup, CmsRole.WORKPLACE_USER.forOrgUnit(ouFqn));
-                internalUpdateRoleGroup(dbc, projectmanagersGroup, CmsRole.PROJECT_MANAGER.forOrgUnit(ouFqn));
             }
             return;
         }
@@ -2248,7 +2240,6 @@ public class CmsUserDriver implements I_CmsUserDriver {
             Messages.GUI_DEFAULTGROUP_ROOT_USERS_DESCRIPTION_0,
             null));
         createGroup(dbc, CmsUUID.getConstantUUID(usersGroup), usersGroup, groupDescription, I_CmsPrincipal.FLAG_ENABLED
-            | I_CmsPrincipal.FLAG_GROUP_PROJECT_USER
             | CmsRole.WORKPLACE_USER.getVirtualGroupFlags(), parentGroup);
 
         if (parentOu != null) {
@@ -2270,20 +2261,8 @@ public class CmsUserDriver implements I_CmsUserDriver {
             CmsUUID.getConstantUUID(administratorsGroup),
             administratorsGroup,
             CmsMacroResolver.localizedKeyMacro(Messages.GUI_DEFAULTGROUP_ROOT_ADMINS_DESCRIPTION_0, null),
-            I_CmsPrincipal.FLAG_ENABLED | I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER | flags,
+            I_CmsPrincipal.FLAG_ENABLED | flags,
             null);
-
-        parentGroup = ouFqn + OpenCms.getDefaultUsers().getGroupUsers();
-        createGroup(
-            dbc,
-            CmsUUID.getConstantUUID(projectmanagersGroup),
-            projectmanagersGroup,
-            CmsMacroResolver.localizedKeyMacro(Messages.GUI_DEFAULTGROUP_ROOT_PROJMANS_DESCRIPTION_0, null),
-            I_CmsPrincipal.FLAG_ENABLED
-                | I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER
-                | I_CmsPrincipal.FLAG_GROUP_PROJECT_USER
-                | CmsRole.PROJECT_MANAGER.getVirtualGroupFlags(),
-            parentGroup);
 
         CmsUser guest = createUser(
             dbc,

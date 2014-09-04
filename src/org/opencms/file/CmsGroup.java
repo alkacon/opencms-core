@@ -131,26 +131,6 @@ public class CmsGroup extends CmsPrincipal {
     }
 
     /**
-     * Returns <code>true</code> if this group is enabled as a project user group.<p> 
-     * 
-     * @return <code>true</code> if this group is enabled as a project user group 
-     */
-    public boolean isProjectCoWorker() {
-
-        return (getFlags() & I_CmsPrincipal.FLAG_GROUP_PROJECT_USER) == I_CmsPrincipal.FLAG_GROUP_PROJECT_USER;
-    }
-
-    /**
-     * Returns <code>true</code> if this group is enabled as a project manager group.<p> 
-     * 
-     * @return <code>true</code> if this group is enabled as a project manager group
-     */
-    public boolean isProjectManager() {
-
-        return (getFlags() & I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER) == I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER;
-    }
-
-    /**
      * Checks if this group is a role group.<p>
      * 
      * @return <code>true</code> if this group is a role group
@@ -187,30 +167,6 @@ public class CmsGroup extends CmsPrincipal {
     public void setParentId(CmsUUID parentId) {
 
         m_parentId = parentId;
-    }
-
-    /**
-     * Sets the project user flag for this group to the given value.<p>
-     * 
-     * @param value the value to set
-     */
-    public void setProjectCoWorker(boolean value) {
-
-        if (isProjectCoWorker() != value) {
-            setFlags(getFlags() ^ I_CmsPrincipal.FLAG_GROUP_PROJECT_USER);
-        }
-    }
-
-    /**
-     * Sets the project manager flag for this group to the given value.<p>
-     * 
-     * @param value the value to set
-     */
-    public void setProjectManager(boolean value) {
-
-        if (isProjectManager() != value) {
-            setFlags(getFlags() ^ I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER);
-        }
     }
 
     /**

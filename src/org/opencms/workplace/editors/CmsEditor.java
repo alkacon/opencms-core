@@ -817,10 +817,6 @@ public abstract class CmsEditor extends CmsEditorBase {
                         getParamTempfile(),
                         I_CmsPrincipal.PRINCIPAL_GROUP,
                         OpenCms.getDefaultUsers().getGroupUsers());
-                    cms.rmacc(
-                        getParamTempfile(),
-                        I_CmsPrincipal.PRINCIPAL_GROUP,
-                        OpenCms.getDefaultUsers().getGroupProjectmanagers());
                 }
             } finally {
                 // make sure the project is reset in case of any exception

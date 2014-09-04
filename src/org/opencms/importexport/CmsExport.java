@@ -1076,7 +1076,7 @@ public class CmsExport {
                 LOG.debug(message.key(), e);
             }
 
-            managers = defaultUsers.getGroupProjectmanagers();
+            managers = defaultUsers.getGroupAdministrators();
             report.println(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
             report.print(message, I_CmsReport.FORMAT_ERROR);
         }

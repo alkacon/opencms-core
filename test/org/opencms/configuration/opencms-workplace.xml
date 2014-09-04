@@ -1166,67 +1166,108 @@
 			</menurules>
 		</explorertypes>
 		<default-preferences>
-			<preference-tab name="basic">
-				<preference name="locale" value="en" nice-name="%(key.GUI_LABEL_LANGUAGE_0)" />
-				<preference name="startFolder" nice-name="%(key.GUI_PREF_STARTUP_FOLDER_0)" />
-				<preference name="startProject" nice-name="%(key.GUI_PREF_STARTUP_PROJECT_0)" />
-				<preference name="startSite" nice-name="%(key.GUI_PREF_STARTUP_SITE_0)" />
-				<preference name="timeWarp" value="0"
-					nice-name="%(key.GUI_LABEL_TIMEWARP_0)" widget="datebox" />
-			</preference-tab>
-			<preference-tab name="extended">
-				<preference name="allowBrokenRelations" value="true" />
-				<preference name="dialogCopyFileMode" value="createsibling" />
-				<preference name="dialogCopyFolderMode" value="preservesiblings" />
-				<preference name="dialogDeleteFileMode" value="preservesiblings" />
-				<preference name="dialogExpandInheritedPermissions"
-					value="false" />
-				<preference name="dialogExpandUserPermissions" value="false" />
-				<preference name="dialogPermissionsInheritOnFolder"
-					value="false" />
-				<preference name="dialogPublishSiblings" value="onlyresource" />
-				<preference name="dialogShowExportSettings" value="false" />
-				<preference name="dialogShowLock" value="false" />
-				<preference name="directEditButtonStyle" value="image" />
-				<preference name="editorButtonStyle" value="image" />
-				<preference name="explorerButtonStyle" value="textimage" />
-				<preference name="explorerFileEntries" value="50" />
-				<preference name="explorerFileEntryOptions" value="" />
-				<preference name="listAllProjects" value="false" />
-				<preference name="newFolderCreateIndexPage" value="true" />
-				<preference name="newFolderEditProperties" value="true" />
-				<preference name="publishButtonAppearance" value="always" />
-				<preference name="publishRelatedResourcesMode" value="null" />
-				<preference name="restrictExplorerView" value="false" />
-				<preference name="showExplorerFileDateCreated" value="false" />
-				<preference name="showExplorerFileDateExpired" value="false" />
-				<preference name="showExplorerFileDateLastModified"
-					value="false" />
-				<preference name="showExplorerFileDateReleased" value="false" />
-				<preference name="showExplorerFileLockedBy" value="false" />
-				<preference name="showExplorerFileNavText" value="false" />
-				<preference name="showExplorerFilePermissions" value="false" />
-				<preference name="showExplorerFileSize" value="false" />
-				<preference name="showExplorerFileState" value="false" />
-				<preference name="showExplorerFileTitle" value="false" />
-				<preference name="showExplorerFileType" value="false" />
-				<preference name="showExplorerFileUserCreated" value="false" />
-				<preference name="showExplorerFileUserLastModified"
-					value="false" />
-				<preference name="showFileUploadButton" value="true" />
-				<preference name="showPublishNotification" value="false" />
-				<preference name="showUploadTypeDialog" value="true" />
-				<preference name="startView" />
-				<preference name="uploadAppletClientFolder" />
-				<preference name="uploadVariant" value="gwt" />
-				<preference name="workplaceButtonStyle" value="textimage" />
-				<preference name="workplaceReportType" value="simple" />
-				<preference name="workplaceSearchIndexName" value="Offline project (VFS)" />
-				<preference name="workplaceSearchViewStyle" value="explorer" />
-			</preference-tab>
-			<preference-tab name="hidden">
-				<preference name="subsitemapCreationMode" value="convert" />
-			</preference-tab>
+            <preference-tab name="basic">
+                <preference name="locale" value="en"
+                    nice-name="%(key.GUI_LABEL_LANGUAGE_0)" />
+                <preference name="startProject" value="Offline"
+                    nice-name="%(key.GUI_PREF_STARTUP_PROJECT_0)" />
+                <preference name="startSite" value="/sites/default/"
+                    nice-name="%(key.GUI_PREF_STARTUP_SITE_0)" />
+                <preference name="startFolder" value="/"
+                    nice-name="%(key.GUI_PREF_STARTUP_FOLDER_0)" />
+                <preference name="timeWarp" value="0"
+                    nice-name="%(key.GUI_LABEL_TIMEWARP_0)" widget="datebox" />
+            </preference-tab>
+            <preference-tab name="extended">
+                <preference name="allowBrokenRelations" value="false"
+                    widget="checkbox" />
+                <preference name="dialogCopyFileMode" value="createresource"
+                    widget="select"
+                    widget-config="createresource:%(key.GUI_COPY_AS_NEW_0)|createsibling:%(key.GUI_PREF_COPY_AS_SIBLING_0)" />
+                <preference name="dialogCopyFolderMode" value="preservesiblings"
+                    widget="select"
+                    widget-config="createsibling:%(key.GUI_PREF_COPY_AS_SIBLINGS_0)|preservesiblings:%(key.GUI_PREF_PRESERVE_SIBLINGS_RESOURCES_0)|createresource:%(key.GUI_PREF_COPY_AS_NEW_0)" />
+                <preference name="dialogDeleteFileMode" value="preservesiblings"
+                    widget="select"
+                    widget-config="preservesiblings:%(key.GUI_PREF_PRESERVE_SIBLINGS_0)|deletesiblings:%(key.GUI_PREF_DELETE_SIBLINGS_0)" />
+                <preference name="dialogExpandInheritedPermissions"
+                    value="true" widget="checkbox" />
+                <preference name="dialogExpandUserPermissions" value="false"
+                    widget="checkbox" />
+                <preference name="dialogPermissionsInheritOnFolder"
+                    value="false" widget="checkbox" />
+                <preference name="dialogPublishSiblings" value="onlyresource" />
+                <preference name="dialogShowExportSettings" value="true"
+                    widget="checkbox" />
+                <preference name="dialogShowLock" value="false" widget="checkbox" />
+                <preference name="explorerFileEntries" value="50" widget="combo"
+                    widget-config="50:50|100:100|200:20|300:300|400:400|500:500|2147483647:%(key.GUI_LABEL_UNLIMITED_0)" />
+                <preference name="listAllProjects" value="false" widget="checkbox" />
+                <preference name="newFolderCreateIndexPage" value="true"
+                    widget="checkbox" />
+                <preference name="newFolderEditProperties" value="true"
+                    widget="checkbox" />
+                <preference name="publishButtonAppearance" value="always" />
+                <preference name="restrictExplorerView" value="false"
+                    widget="checkbox" />
+                <preference name="showExplorerFileDateCreated" value="false"
+                    widget="checkbox" />
+                <preference name="showExplorerFileDateExpired" value="true"
+                    widget="checkbox" />
+                <preference name="showExplorerFileDateLastModified"
+                    value="true" widget="checkbox" />
+                <preference name="showExplorerFileDateReleased" value="true"
+                    widget="checkbox" />
+                <preference name="showExplorerFileLockedBy" value="false"
+                    widget="checkbox" />
+                <preference name="showExplorerFileNavText" value="false"
+                    widget="checkbox" />
+                <preference name="showExplorerFilePermissions" value="false"
+                    widget="checkbox" />
+                <preference name="showExplorerFileSize" value="true"
+                    widget="checkbox" />
+                <preference name="showExplorerFileState" value="false"
+                    widget="checkbox" />
+                <preference name="showExplorerFileTitle" value="true"
+                    widget="checkbox" />
+                <preference name="showExplorerFileType" value="true"
+                    widget="checkbox" />
+                <preference name="showExplorerFileUserCreated" value="false"
+                    widget="checkbox" />
+                <preference name="showExplorerFileUserLastModified"
+                    value="false" widget="checkbox" />
+                <preference name="showFileUploadButton" value="true"
+                    widget="checkbox" />
+                <preference name="showPublishNotification" value="false"
+                    widget="checkbox" />
+                <preference name="showUploadTypeDialog" value="true"
+                    widget="checkbox" />
+                <preference name="startView"
+                    value="/system/workplace/views/explorer/directEdit.jsp" />
+                <preference name="uploadVariant" value="gwt" widget="select"
+                    widget-config="basic:%(key.GUI_PREF_USE_UPLOAD_BASIC_0)|gwt:%(key.GUI_PREF_USE_UPLOAD_GWT_0)" />
+                <preference name="workplaceReportType" value="extended" />
+                <preference name="workplaceSearchIndexName" value="Offline project EN (VFS)" />
+                <preference name="workplaceSearchViewStyle" value="explorer" />
+                <preference name="editor.plain" value="bestavailable" />
+                <preference name="editor.xmlcontent" value="bestavailable" />
+                <preference name="editor.xmlpage" value="bestavailable" />
+                <preference name="gallery.linkgallery" />
+                <preference name="gallery.tablegallery" />
+                <preference name="gallery.imagegallery" />
+                <preference name="gallery.downloadgallery" />
+                <preference name="gallery.htmlgallery" />
+            </preference-tab>
+            <preference-tab name="hidden">
+                <preference name="workplaceButtonStyle" value="textimage" />
+                <preference name="directEditButtonStyle" value="image" />
+                <preference name="editorButtonStyle" value="image" />
+                <preference name="explorerButtonStyle" value="textimage" />
+                <preference name="subsitemapCreationMode" value="convert" />
+                <preference name="publishRelatedResourcesMode" value="true" />
+                <preference name="explorerFileEntryOptions" value="50,100,200,300,400,500" />
+                <preference name="uploadAppletClientFolder" value="" />
+            </preference-tab>
 		</default-preferences>
 		<workplace-customfoot>
 			<color>InfoText</color>

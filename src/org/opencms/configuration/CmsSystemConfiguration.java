@@ -1021,15 +1021,14 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_RUNTIMECLASSES + "/" + N_RUNTIMEINFO, 0, A_CLASS);
 
         // add default users rule
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS, "setCmsDefaultUsers", 8);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS, "setCmsDefaultUsers", 7);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_USER_ADMIN, 0);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_USER_GUEST, 1);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_USER_EXPORT, 2);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_USER_DELETEDRESOURCE, 3);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_GROUP_ADMINISTRATORS, 4);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_GROUP_PROJECTMANAGERS, 5);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_GROUP_USERS, 6);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_GROUP_GUESTS, 7);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_GROUP_USERS, 5);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_GROUP_GUESTS, 6);
 
         // add defaultContentEncoding rule
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_DEFAULT_CONTENT_ENCODING, "setDefaultContentEncoding", 1);
@@ -1466,8 +1465,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         }
         // create <group-administrators> subnode
         defaultusersElement.addElement(N_GROUP_ADMINISTRATORS).addText(m_cmsDefaultUsers.getGroupAdministrators());
-        // create <group-projectmanagers> subnode
-        defaultusersElement.addElement(N_GROUP_PROJECTMANAGERS).addText(m_cmsDefaultUsers.getGroupProjectmanagers());
         // create <group-users> subnode
         defaultusersElement.addElement(N_GROUP_USERS).addText(m_cmsDefaultUsers.getGroupUsers());
         // create <group-guests> subnode
@@ -2267,7 +2264,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
      * @param userExport the name of the export user
      * @param userDeletedResource the name of the deleted resource user, can be <code>null</code>
      * @param groupAdministrators the name of the administrators group
-     * @param groupProjectmanagers the name of the project managers group
      * @param groupUsers the name of the users group
      * @param groupGuests the name of the guests group
      */
@@ -2278,7 +2274,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         String userExport,
         String userDeletedResource,
         String groupAdministrators,
-        String groupProjectmanagers,
         String groupUsers,
         String groupGuests) {
 
@@ -2291,7 +2286,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             userExport,
             userDeletedResource,
             groupAdministrators,
-            groupProjectmanagers,
             groupUsers,
             groupGuests);
 
@@ -2311,9 +2305,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             CmsLog.INIT.info(Messages.get().getBundle().key(
                 Messages.INIT_ADMIN_GROUP_1,
                 m_cmsDefaultUsers.getGroupAdministrators()));
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.INIT_PROJECT_MANAGERS_GROUP_1,
-                m_cmsDefaultUsers.getGroupProjectmanagers()));
             CmsLog.INIT.info(Messages.get().getBundle().key(
                 Messages.INIT_USERS_GROUP_1,
                 m_cmsDefaultUsers.getGroupUsers()));

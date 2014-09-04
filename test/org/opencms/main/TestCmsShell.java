@@ -116,7 +116,7 @@ public class TestCmsShell extends OpenCmsTestCase {
         cms.getRequestContext().setCurrentProject(cms.readProject("_setupProject"));
 
         // import the "simpletest" files
-        importResources(cms, "simpletest", "/sites/default/");
+        importResources(cms, "simpletest", "/");
 
         // publish the current project by script
         script = new File(getTestDataPath("scripts/script_publish.txt"));

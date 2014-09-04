@@ -48,12 +48,6 @@ public interface I_CmsPrincipal extends Principal {
     /** This flag is set for enabled principals in the database. */
     int FLAG_ENABLED = 0;
 
-    /** Flag to indicate a group is a potential project manager group. */
-    int FLAG_GROUP_PROJECT_MANAGER = 2;
-
-    /** Flag to indicate a group is a potential project user group. */
-    int FLAG_GROUP_PROJECT_USER = 4;
-
     /** Flag to indicate a role group. */
     int FLAG_GROUP_ROLE = 1048576; // 2^20 >> FLAG_CORE_LIMIT 
 

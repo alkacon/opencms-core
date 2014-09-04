@@ -119,15 +119,12 @@ public class TestPermissions extends OpenCmsTestCase {
 
         cms.createUser("testAdmin", "secret", "", null);
         cms.addUserToGroup("testAdmin", OpenCms.getDefaultUsers().getGroupAdministrators());
-        cms.createUser("testProjectmanager", "secret", "", null);
-        cms.addUserToGroup("testProjectmanager", OpenCms.getDefaultUsers().getGroupProjectmanagers());
         cms.createUser("testUser", "secret", "", null);
         cms.addUserToGroup("testUser", OpenCms.getDefaultUsers().getGroupUsers());
         cms.createUser("testGuest", "secret", "", null);
         cms.addUserToGroup("testGuest", OpenCms.getDefaultUsers().getGroupGuests());
 
         assertEquals("+r+w+v+c+d", cms.getPermissions(resourcename, "testAdmin").getPermissionString());
-        assertEquals("+r+w+v", cms.getPermissions(resourcename, "testProjectmanager").getPermissionString());
         assertEquals("+r+w+v", cms.getPermissions(resourcename, "testUser").getPermissionString());
         assertEquals("+r+v", cms.getPermissions(resourcename, "testGuest").getPermissionString());
     }
@@ -369,25 +366,6 @@ public class TestPermissions extends OpenCmsTestCase {
             fail("Publish permissions unavailable but should be available for user Admin");
         }
 
-        // add user "test1" to project manager group
-        cms.addUserToGroup("test1", OpenCms.getDefaultUsers().getGroupProjectmanagers());
-
-        cms.loginUser("test1", "test1");
-        // first check in "online" project
-        assertEquals(CmsProject.ONLINE_PROJECT_ID, cms.getRequestContext().getCurrentProject().getUuid());
-        try {
-            OpenCms.getPublishManager().getPublishList(cms, cms.readResource(resource), false);
-            fail("Publish permissions available but should not be available for user test1 in online project");
-        } catch (Exception e) {
-            // ok, ignore
-        }
-        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
-        try {
-            OpenCms.getPublishManager().getPublishList(cms, cms.readResource(resource), false);
-        } catch (Exception e) {
-            fail("Publish permissions unavailable but should be available for user test1 because he is a project manager");
-        }
-
         // create a new folder
         String folder = "/newfolder/";
         cms.loginUser("Admin", "admin");
@@ -404,14 +382,6 @@ public class TestPermissions extends OpenCmsTestCase {
             folder,
             I_CmsPrincipal.PRINCIPAL_GROUP,
             OpenCms.getDefaultUsers().getGroupUsers(),
-            0,
-            0,
-            CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE + CmsAccessControlEntry.ACCESS_FLAGS_INHERIT);
-        // also for "Project managers" to avoid conflicts with other tests in this suite
-        cms.chacc(
-            folder,
-            I_CmsPrincipal.PRINCIPAL_GROUP,
-            OpenCms.getDefaultUsers().getGroupProjectmanagers(),
             0,
             0,
             CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE + CmsAccessControlEntry.ACCESS_FLAGS_INHERIT);
@@ -591,14 +561,6 @@ public class TestPermissions extends OpenCmsTestCase {
             0,
             0,
             CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE);
-        // also for "Project managers" to avoid conflicts with other tests in this suite
-        cms.chacc(
-            resource,
-            I_CmsPrincipal.PRINCIPAL_GROUP,
-            OpenCms.getDefaultUsers().getGroupProjectmanagers(),
-            0,
-            0,
-            CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE);
         // allow only read for user "test1"
         cms.chacc(
             resource,
@@ -667,14 +629,6 @@ public class TestPermissions extends OpenCmsTestCase {
             folder,
             I_CmsPrincipal.PRINCIPAL_GROUP,
             OpenCms.getDefaultUsers().getGroupUsers(),
-            0,
-            0,
-            CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE + CmsAccessControlEntry.ACCESS_FLAGS_INHERIT);
-        // also for "Project managers" to avoid conflicts with other tests in this suite
-        cms.chacc(
-            folder,
-            I_CmsPrincipal.PRINCIPAL_GROUP,
-            OpenCms.getDefaultUsers().getGroupProjectmanagers(),
             0,
             0,
             CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE + CmsAccessControlEntry.ACCESS_FLAGS_INHERIT);

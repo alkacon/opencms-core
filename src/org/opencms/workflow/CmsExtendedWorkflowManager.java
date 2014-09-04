@@ -155,7 +155,7 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
      */
     public String getWorkflowProjectManagerGroup() {
 
-        return getParameter(PARAM_WORKFLOW_PROJECT_MANAGER_GROUP, OpenCms.getDefaultUsers().getGroupProjectmanagers());
+        return getParameter(PARAM_WORKFLOW_PROJECT_MANAGER_GROUP, OpenCms.getDefaultUsers().getGroupAdministrators());
     }
 
     /**
@@ -165,7 +165,7 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
      */
     public String getWorkflowProjectUserGroup() {
 
-        return getParameter(PARAM_WORKFLOW_PROJECT_USER_GROUP, OpenCms.getDefaultUsers().getGroupProjectmanagers());
+        return getParameter(PARAM_WORKFLOW_PROJECT_USER_GROUP, OpenCms.getDefaultUsers().getGroupAdministrators());
     }
 
     /**
@@ -386,7 +386,7 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
      * Removes a project if there are no longer any resources which have been last modified in that project.<p>
      *
      * @param project the project
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     protected void cleanupProjectIfEmpty(CmsProject project) throws CmsException {
 

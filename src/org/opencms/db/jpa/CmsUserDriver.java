@@ -678,7 +678,6 @@ public class CmsUserDriver implements I_CmsUserDriver {
 
             q.setParameter(1, CmsOrganizationalUnit.getSimpleName(groupFqn));
             q.setParameter(2, CmsOrganizationalUnit.SEPARATOR + CmsOrganizationalUnit.getParentFqn(groupFqn));
-            @SuppressWarnings("unchecked")
             List<CmsDAOGroups> res = q.getResultList();
             for (CmsDAOGroups g : res) {
                 m_sqlManager.remove(dbc, g);
@@ -727,7 +726,6 @@ public class CmsUserDriver implements I_CmsUserDriver {
 
             q.setParameter(1, CmsOrganizationalUnit.getSimpleName(userFqn));
             q.setParameter(2, CmsOrganizationalUnit.SEPARATOR + CmsOrganizationalUnit.getParentFqn(userFqn));
-            @SuppressWarnings("unchecked")
             List<CmsDAOUsers> res = q.getResultList();
             for (CmsDAOUsers u : res) {
                 m_sqlManager.remove(dbc, u);
@@ -764,7 +762,6 @@ public class CmsUserDriver implements I_CmsUserDriver {
             Query q = m_sqlManager.createQuery(dbc, C_USERDATA_READ_1);
 
             q.setParameter(1, userId.toString());
-            @SuppressWarnings("unchecked")
             List<CmsDAOUserData> res = q.getResultList();
             for (CmsDAOUserData ud : res) {
                 m_sqlManager.remove(dbc, ud);
@@ -895,7 +892,6 @@ public class CmsUserDriver implements I_CmsUserDriver {
             q.setParameter(1, ouFqn);
             q.setParameter(2, Integer.valueOf(I_CmsPrincipal.FLAG_GROUP_ROLE));
 
-            @SuppressWarnings("unchecked")
             List<CmsDAOGroups> res = q.getResultList();
 
             // create new Cms group objects
@@ -992,7 +988,6 @@ public class CmsUserDriver implements I_CmsUserDriver {
                 param += "%";
             }
             q.setParameter(1, param);
-            @SuppressWarnings("unchecked")
             List<CmsDAOUsers> res = q.getResultList();
             // create new Cms group objects
             for (CmsDAOUsers u : res) {
@@ -1136,7 +1131,6 @@ public class CmsUserDriver implements I_CmsUserDriver {
                 String resId = resource.toString();
                 q.setParameter(1, resId);
             }
-            @SuppressWarnings("unchecked")
             List<I_CmsDAOAccessControl> res = q.getResultList();
             // create new CmsAccessControlEntry and add to list
             for (I_CmsDAOAccessControl ac : res) {
@@ -1204,7 +1198,6 @@ public class CmsUserDriver implements I_CmsUserDriver {
                 // create statement
                 Query q = m_sqlManager.createQuery(dbc, C_GROUPS_GET_CHILD_1);
                 q.setParameter(1, parent.getId().toString());
-                @SuppressWarnings("unchecked")
                 List<CmsDAOGroups> res = q.getResultList();
                 // create new Cms group objects
                 for (CmsDAOGroups g : res) {
@@ -1307,7 +1300,6 @@ public class CmsUserDriver implements I_CmsUserDriver {
             q.setParameter(2, ouFqnParam);
             q.setParameter(3, Integer.valueOf(I_CmsPrincipal.FLAG_GROUP_ROLE));
 
-            @SuppressWarnings("unchecked")
             List<Object[]> res = q.getResultList();
 
             for (Object[] o : res) {
@@ -1438,7 +1430,6 @@ public class CmsUserDriver implements I_CmsUserDriver {
             Query q = m_sqlManager.createQuery(dbc, C_USERDATA_READ_1);
 
             q.setParameter(1, userId.toString());
-            @SuppressWarnings("unchecked")
             List<CmsDAOUserData> res = q.getResultList();
             // read the infos
             for (CmsDAOUserData ud : res) {
@@ -1505,7 +1496,6 @@ public class CmsUserDriver implements I_CmsUserDriver {
             q.setParameter(1, CmsOrganizationalUnit.getSimpleName(groupFqn));
             q.setParameter(2, CmsOrganizationalUnit.SEPARATOR + CmsOrganizationalUnit.getParentFqn(groupFqn));
 
-            @SuppressWarnings("unchecked")
             List<CmsDAOUsers> res = q.getResultList();
 
             for (CmsDAOUsers u : res) {
@@ -1527,7 +1517,6 @@ public class CmsUserDriver implements I_CmsUserDriver {
         try {
             Query q = m_sqlManager.createQuery(dbc, project, C_ACCESS_REMOVE_ALL_1);
             q.setParameter(1, resource.toString());
-            @SuppressWarnings("unchecked")
             List<I_CmsDAOAccessControl> res = q.getResultList();
             for (I_CmsDAOAccessControl ac : res) {
                 m_sqlManager.remove(dbc, ac);
@@ -1549,7 +1538,6 @@ public class CmsUserDriver implements I_CmsUserDriver {
         try {
             Query q = m_sqlManager.createQuery(dbc, onlineProject, C_ACCESS_REMOVE_ALL_FOR_PRINCIPAL_1);
             q.setParameter(1, principal.toString());
-            @SuppressWarnings("unchecked")
             List<I_CmsDAOAccessControl> res = q.getResultList();
             for (I_CmsDAOAccessControl ac : res) {
                 m_sqlManager.remove(dbc, ac);
@@ -1557,7 +1545,6 @@ public class CmsUserDriver implements I_CmsUserDriver {
 
             q = m_sqlManager.createQuery(dbc, project, C_ACCESS_REMOVE_ALL_FOR_PRINCIPAL_1);
             q.setParameter(1, principal.toString());
-            @SuppressWarnings("unchecked")
             List<I_CmsDAOAccessControl> res1 = q.getResultList();
             for (I_CmsDAOAccessControl ac : res1) {
                 m_sqlManager.remove(dbc, ac);
@@ -1579,7 +1566,6 @@ public class CmsUserDriver implements I_CmsUserDriver {
 
             q.setParameter(1, resource.toString());
             q.setParameter(2, principal.toString());
-            @SuppressWarnings("unchecked")
             List<I_CmsDAOAccessControl> res = q.getResultList();
             for (I_CmsDAOAccessControl ac : res) {
                 m_sqlManager.remove(dbc, ac);
@@ -1721,7 +1707,6 @@ public class CmsUserDriver implements I_CmsUserDriver {
 
             q.setParameter(1, user.getId().toString());
 
-            @SuppressWarnings("unchecked")
             List<CmsDAOUsers> res = q.getResultList();
 
             for (CmsDAOUsers u : res) {
@@ -1754,7 +1739,6 @@ public class CmsUserDriver implements I_CmsUserDriver {
                 q.setParameter(1, acEntry.getResource().toString());
                 q.setParameter(2, acEntry.getPrincipal().toString());
 
-                @SuppressWarnings("unchecked")
                 List<I_CmsDAOAccessControl> res = q.getResultList();
 
                 for (I_CmsDAOAccessControl a : res) {
@@ -1788,7 +1772,6 @@ public class CmsUserDriver implements I_CmsUserDriver {
                 Query q = m_sqlManager.createQuery(dbc, C_GROUPS_WRITE_GROUP_4);
 
                 q.setParameter(1, group.getId().toString());
-                @SuppressWarnings("unchecked")
                 List<CmsDAOGroups> res = q.getResultList();
 
                 for (CmsDAOGroups g : res) {
@@ -1869,7 +1852,6 @@ public class CmsUserDriver implements I_CmsUserDriver {
             Query q = m_sqlManager.createQuery(dbc, C_USERS_SET_PWD_3);
             q.setParameter(1, CmsOrganizationalUnit.getSimpleName(userFqn));
             q.setParameter(2, CmsOrganizationalUnit.SEPARATOR + CmsOrganizationalUnit.getParentFqn(userFqn));
-            @SuppressWarnings("unchecked")
             List<CmsDAOUsers> res = q.getResultList();
 
             for (CmsDAOUsers u : res) {
@@ -1905,7 +1887,6 @@ public class CmsUserDriver implements I_CmsUserDriver {
                 Query q = m_sqlManager.createQuery(dbc, C_USERS_WRITE_6);
                 // write data to database
                 q.setParameter(1, user.getId().toString());
-                @SuppressWarnings("unchecked")
                 List<CmsDAOUsers> res = q.getResultList();
 
                 for (CmsDAOUsers u : res) {
@@ -2046,12 +2027,6 @@ public class CmsUserDriver implements I_CmsUserDriver {
                     }
                     String groupName = ouFqn + role.getGroupName();
                     int flags = I_CmsPrincipal.FLAG_ENABLED | I_CmsPrincipal.FLAG_GROUP_ROLE;
-                    if ((role == CmsRole.WORKPLACE_USER) || (role == CmsRole.PROJECT_MANAGER)) {
-                        flags |= I_CmsPrincipal.FLAG_GROUP_PROJECT_USER;
-                    }
-                    if (role == CmsRole.PROJECT_MANAGER) {
-                        flags |= I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER;
-                    }
                     createGroup(dbc, CmsUUID.getConstantUUID(groupName), groupName, "A system role group", flags, null);
 
                 }
@@ -2075,7 +2050,6 @@ public class CmsUserDriver implements I_CmsUserDriver {
         String administratorsGroup = ouFqn + OpenCms.getDefaultUsers().getGroupAdministrators();
         String guestGroup = ouFqn + OpenCms.getDefaultUsers().getGroupGuests();
         String usersGroup = ouFqn + OpenCms.getDefaultUsers().getGroupUsers();
-        String projectmanagersGroup = ouFqn + OpenCms.getDefaultUsers().getGroupProjectmanagers();
         String guestUser = ouFqn + OpenCms.getDefaultUsers().getUserGuest();
         String adminUser = ouFqn + OpenCms.getDefaultUsers().getUserAdmin();
         String exportUser = ouFqn + OpenCms.getDefaultUsers().getUserExport();
@@ -2086,7 +2060,6 @@ public class CmsUserDriver implements I_CmsUserDriver {
                 // check the flags of existing groups, for compatibility checks
                 internalUpdateRoleGroup(dbc, administratorsGroup, CmsRole.ROOT_ADMIN);
                 internalUpdateRoleGroup(dbc, usersGroup, CmsRole.WORKPLACE_USER.forOrgUnit(ouFqn));
-                internalUpdateRoleGroup(dbc, projectmanagersGroup, CmsRole.PROJECT_MANAGER.forOrgUnit(ouFqn));
             }
             return;
         }
@@ -2102,7 +2075,6 @@ public class CmsUserDriver implements I_CmsUserDriver {
             Messages.GUI_DEFAULTGROUP_ROOT_USERS_DESCRIPTION_0,
             null));
         createGroup(dbc, CmsUUID.getConstantUUID(usersGroup), usersGroup, groupDescription, I_CmsPrincipal.FLAG_ENABLED
-            | I_CmsPrincipal.FLAG_GROUP_PROJECT_USER
             | CmsRole.WORKPLACE_USER.getVirtualGroupFlags(), parentGroup);
 
         if (parentOu != null) {
@@ -2124,20 +2096,8 @@ public class CmsUserDriver implements I_CmsUserDriver {
             CmsUUID.getConstantUUID(administratorsGroup),
             administratorsGroup,
             CmsMacroResolver.localizedKeyMacro(Messages.GUI_DEFAULTGROUP_ROOT_ADMINS_DESCRIPTION_0, null),
-            I_CmsPrincipal.FLAG_ENABLED | I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER | flags,
+            I_CmsPrincipal.FLAG_ENABLED | flags,
             null);
-
-        parentGroup = ouFqn + OpenCms.getDefaultUsers().getGroupUsers();
-        createGroup(
-            dbc,
-            CmsUUID.getConstantUUID(projectmanagersGroup),
-            projectmanagersGroup,
-            CmsMacroResolver.localizedKeyMacro(Messages.GUI_DEFAULTGROUP_ROOT_PROJMANS_DESCRIPTION_0, null),
-            I_CmsPrincipal.FLAG_ENABLED
-                | I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER
-                | I_CmsPrincipal.FLAG_GROUP_PROJECT_USER
-                | CmsRole.PROJECT_MANAGER.getVirtualGroupFlags(),
-            parentGroup);
 
         CmsUser guest = createUser(
             dbc,

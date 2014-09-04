@@ -66,6 +66,16 @@ import junit.framework.TestSuite;
 public class TestOrganizationalUnits extends OpenCmsTestCase {
 
     /**
+     * Default JUnit constructor.<p>
+     * 
+     * @param arg0 JUnit parameters
+     */
+    public TestOrganizationalUnits(String arg0) {
+
+        super(arg0);
+    }
+
+    /**
      * Returns all organizational unit dependent roles.<p>
      * 
      * @param ouFqn the organizational unit
@@ -132,16 +142,6 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         };
 
         return wrapper;
-    }
-
-    /**
-     * Default JUnit constructor.<p>
-     * 
-     * @param arg0 JUnit parameters
-     */
-    public TestOrganizationalUnits(String arg0) {
-
-        super(arg0);
     }
 
     /**
@@ -643,7 +643,6 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         List rootGroups = OpenCms.getOrgUnitManager().getGroups(cms, rootOu.getName(), false);
         assertEquals(7, rootGroups.size());
         assertTrue(rootGroups.contains(cms.readGroup(OpenCms.getDefaultUsers().getGroupAdministrators())));
-        assertTrue(rootGroups.contains(cms.readGroup(OpenCms.getDefaultUsers().getGroupProjectmanagers())));
         assertTrue(rootGroups.contains(cms.readGroup(OpenCms.getDefaultUsers().getGroupUsers())));
         assertTrue(rootGroups.contains(cms.readGroup(OpenCms.getDefaultUsers().getGroupGuests())));
         assertTrue(rootGroups.contains(cms.readGroup("group1")));
@@ -653,7 +652,6 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         List rootSubGroups = OpenCms.getOrgUnitManager().getGroups(cms, rootOu.getName(), true);
         assertEquals(8, rootSubGroups.size());
         assertTrue(rootSubGroups.contains(cms.readGroup(OpenCms.getDefaultUsers().getGroupAdministrators())));
-        assertTrue(rootSubGroups.contains(cms.readGroup(OpenCms.getDefaultUsers().getGroupProjectmanagers())));
         assertTrue(rootSubGroups.contains(cms.readGroup(OpenCms.getDefaultUsers().getGroupUsers())));
         assertTrue(rootSubGroups.contains(cms.readGroup(OpenCms.getDefaultUsers().getGroupGuests())));
         assertTrue(rootSubGroups.contains(cms.readGroup("group1")));
@@ -1437,7 +1435,6 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         List rootGroups = OpenCms.getOrgUnitManager().getGroups(cms, rootOu.getName(), false);
         assertEquals(7, rootGroups.size());
         assertTrue(rootGroups.contains(cms.readGroup(OpenCms.getDefaultUsers().getGroupAdministrators())));
-        assertTrue(rootGroups.contains(cms.readGroup(OpenCms.getDefaultUsers().getGroupProjectmanagers())));
         assertTrue(rootGroups.contains(cms.readGroup(OpenCms.getDefaultUsers().getGroupUsers())));
         assertTrue(rootGroups.contains(cms.readGroup(OpenCms.getDefaultUsers().getGroupGuests())));
         assertTrue(rootGroups.contains(cms.readGroup("group1")));
@@ -1447,7 +1444,6 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         List rootSubGroups = OpenCms.getOrgUnitManager().getGroups(cms, rootOu.getName(), true);
         assertEquals(7, rootSubGroups.size());
         assertTrue(rootSubGroups.contains(cms.readGroup(OpenCms.getDefaultUsers().getGroupAdministrators())));
-        assertTrue(rootSubGroups.contains(cms.readGroup(OpenCms.getDefaultUsers().getGroupProjectmanagers())));
         assertTrue(rootSubGroups.contains(cms.readGroup(OpenCms.getDefaultUsers().getGroupUsers())));
         assertTrue(rootSubGroups.contains(cms.readGroup(OpenCms.getDefaultUsers().getGroupGuests())));
         assertTrue(rootSubGroups.contains(cms.readGroup("group1")));
