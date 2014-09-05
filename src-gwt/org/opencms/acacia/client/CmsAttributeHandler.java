@@ -810,10 +810,12 @@ public class CmsAttributeHandler extends CmsRootHandler {
             int index = reference.getValueIndex();
             if (attribute.isComplexValue()) {
                 removeHandlers(index);
+                CmsEntity value = attribute.getComplexValues().get(index);
+                m_entity.removeAttributeValue(m_attributeName, index);
+                m_entityBackEnd.removeEntity(value.getId());
+            } else {
+                m_entity.removeAttributeValue(m_attributeName, index);
             }
-            CmsEntity value = attribute.getComplexValues().get(index);
-            m_entity.removeAttributeValue(m_attributeName, index);
-            m_entityBackEnd.removeEntity(value.getId());
             reference.removeFromParent();
             m_attributeValueViews.remove(reference);
 
