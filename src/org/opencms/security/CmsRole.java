@@ -78,22 +78,32 @@ public final class CmsRole {
     /** The "ADMINISTRATOR" role, which is a parent to all organizational unit roles. */
     public static final CmsRole ADMINISTRATOR;
 
+    /** The "CATEGORY_MANAGER" role. */
+    public static final CmsRole CATEGORY_MANAGER;
+
+    /** The "CONTENT_CREATOR" role. */
+    public static final CmsRole CONTENT_CREATOR;
+
     /** The "EXPORT_DATABASE" role. */
     public static final CmsRole DATABASE_MANAGER;
 
     /** The "DEVELOPER" role. */
     public static final CmsRole DEVELOPER;
 
+    /** The "GALLERY_MANAGER" role. */
+    public static final CmsRole GALLERY_MANAGER;
+
     /** Identifier for role principals. */
     public static final String PRINCIPAL_ROLE = "ROLE";
 
-    /** The "DIRECT_EDIT_USER" role. */
-    // public static final CmsRole DIRECT_EDIT_USER;
     /** The "PROJECT_MANAGER" role. */
     public static final CmsRole PROJECT_MANAGER;
 
     /** The "ROOT_ADMIN" role, which is a parent to all other roles. */
     public static final CmsRole ROOT_ADMIN;
+
+    /** The "SITEMAP_MANAGER" role. */
+    public static final CmsRole SITEMAP_MANAGER;
 
     /** The "VFS_MANAGER" role. */
     public static final CmsRole VFS_MANAGER;
@@ -205,8 +215,20 @@ public final class CmsRole {
         ACCOUNT_MANAGER = new CmsRole("ACCOUNT_MANAGER", CmsRole.ADMINISTRATOR, "RoleAccountManagers");
         VFS_MANAGER = new CmsRole("VFS_MANAGER", CmsRole.ADMINISTRATOR, "RoleVfsManagers");
         DEVELOPER = new CmsRole("DEVELOPER", CmsRole.VFS_MANAGER, "RoleDevelopers");
-        WORKPLACE_USER = new CmsRole("WORKPLACE_USER", CmsRole.ADMINISTRATOR, "RoleWorkplaceUsers");
-        // DIRECT_EDIT_USER = new CmsRole("DIRECT_EDIT_USER", CmsRole.WORKPLACE_USER, "RoleDirectEditUsers");
+        WORKPLACE_USER = new CmsRole("WORKPLACE_USER", CmsRole.DEVELOPER, "RoleWorkplaceUsers");
+
+        // the following roles all include the workplace user role
+        PROJECT_MANAGER.m_children.add(WORKPLACE_USER);
+        ACCOUNT_MANAGER.m_children.add(WORKPLACE_USER);
+
+        GALLERY_MANAGER = new CmsRole("GALLERY_MANAGER", CmsRole.WORKPLACE_USER, "RoleGalleryManager");
+        CATEGORY_MANAGER = new CmsRole("CATEGORY_MANAGER", CmsRole.WORKPLACE_USER, "RoleCategoryManager");
+        SITEMAP_MANAGER = new CmsRole("SITEMAP_MANAGER", CmsRole.GALLERY_MANAGER, "RoleSitemapManager");
+
+        // the category manger role also includes the sitemap manager role
+        CATEGORY_MANAGER.m_children.add(SITEMAP_MANAGER);
+
+        CONTENT_CREATOR = new CmsRole("CONTENT_CREATOR", CmsRole.SITEMAP_MANAGER, "RoleContentCreator");
 
         // create a lookup list for the system roles
         SYSTEM_ROLES = Collections.unmodifiableList(Arrays.asList(new CmsRole[] {
@@ -218,9 +240,11 @@ public final class CmsRole {
             ACCOUNT_MANAGER,
             VFS_MANAGER,
             DEVELOPER,
-            WORKPLACE_USER
-        // DIRECT_EDIT_USER
-        }));
+            WORKPLACE_USER,
+            GALLERY_MANAGER,
+            CATEGORY_MANAGER,
+            SITEMAP_MANAGER,
+            CONTENT_CREATOR}));
 
         // now initialize all system roles
         for (int i = 0; i < SYSTEM_ROLES.size(); i++) {
@@ -465,7 +489,11 @@ public final class CmsRole {
             }
             children.add(child);
             if (recursive) {
-                children.addAll(child.getChildren(true));
+                for (CmsRole grandChild : child.getChildren(true)) {
+                    if (!children.contains(grandChild)) {
+                        children.add(grandChild);
+                    }
+                }
             }
         }
         return children;

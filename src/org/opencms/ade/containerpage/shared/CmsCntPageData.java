@@ -113,6 +113,9 @@ public final class CmsCntPageData implements IsSerializable {
     /** Flag indicating to use the classic XmlContent editor. */
     private boolean m_useClassicEditor;
 
+    /** Flag indicating if the current user has the sitemap manager role. */
+    private boolean m_sitemapManager;
+
     /**
      * Constructor.<p>
      * 
@@ -133,6 +136,7 @@ public final class CmsCntPageData implements IsSerializable {
         String noEditReason,
         String requestParams,
         String sitemapUri,
+        boolean sitemapManager,
         CmsUUID detailId,
         String detailContainerPage,
         Map<String, String> newTypes,
@@ -146,6 +150,7 @@ public final class CmsCntPageData implements IsSerializable {
         m_noEditReason = noEditReason;
         m_requestParams = requestParams;
         m_sitemapUri = sitemapUri;
+        m_sitemapManager = sitemapManager;
         m_newTypes = newTypes;
         m_lastModified = lastModified;
         m_lockInfo = lockInfo;
@@ -293,6 +298,16 @@ public final class CmsCntPageData implements IsSerializable {
     public boolean isEditSmallElementsInitially() {
 
         return m_editSmallElementsInitially;
+    }
+
+    /**
+     * Returns if the current user has the sitemap manager role.<p>
+     *
+     * @return if the current user has the sitemap manager role
+     */
+    public boolean isSitemapManager() {
+
+        return m_sitemapManager;
     }
 
     /**

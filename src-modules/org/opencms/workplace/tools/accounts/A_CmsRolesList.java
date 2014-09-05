@@ -187,23 +187,6 @@ public abstract class A_CmsRolesList extends A_CmsListDialog {
                 parent = parent.getParentRole();
             }
             String hiddenName = dependency;
-            if (role.forOrgUnit(null).equals(CmsRole.WORKPLACE_USER)) {
-                // add all roles as parent of the workplace user role
-                dependency = "";
-                Iterator<CmsRole> itWuParents = pRoles.iterator();
-                while (itWuParents.hasNext()) {
-                    CmsRole wuParent = itWuParents.next();
-                    if (wuParent.forOrgUnit(null).equals(CmsRole.WORKPLACE_USER)
-                        || (wuParent.forOrgUnit(null).equals(CmsRole.ROOT_ADMIN))) {
-                        continue;
-                    }
-                    String roleName = wuParent.getName(locale);
-                    if (dependency.length() > 0) {
-                        roleName += ", ";
-                    }
-                    dependency = roleName + dependency;
-                }
-            }
             item.set(LIST_COLUMN_DEPENDENCY, dependency);
             if (hiddenName.length() > 0) {
                 hiddenName = CmsRole.ROOT_ADMIN.getName(locale) + ", " + hiddenName;

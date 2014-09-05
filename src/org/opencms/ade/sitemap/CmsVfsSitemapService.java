@@ -101,6 +101,8 @@ import org.opencms.main.OpenCms;
 import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.CmsRole;
+import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.site.CmsSite;
 import org.opencms.util.CmsDateUtil;
@@ -273,6 +275,15 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             service.clearThreadStorage();
         }
         return result;
+    }
+
+    /**
+     * @see org.opencms.gwt.CmsGwtService#checkPermissions(org.opencms.file.CmsObject)
+     */
+    @Override
+    public void checkPermissions(CmsObject cms) throws CmsRoleViolationException {
+
+        OpenCms.getRoleManager().checkRole(cms, CmsRole.SITEMAP_MANAGER);
     }
 
     /**
@@ -491,6 +502,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         CmsObject cms = getCmsObject();
 
         try {
+            OpenCms.getRoleManager().checkRole(cms, CmsRole.SITEMAP_MANAGER);
             String openPath = getRequest().getParameter(CmsCoreData.PARAM_PATH);
             if (!isValidOpenPath(cms, openPath)) {
                 // if no path is supplied, start from root
@@ -633,6 +645,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 aliasImportUrl,
                 canEditAliases,
                 OpenCms.getWorkplaceManager().getDefaultUserSettings().getSubsitemapCreationMode() == CmsDefaultUserSettings.SubsitemapCreationMode.createfolder,
+                OpenCms.getRoleManager().hasRole(cms, CmsRole.GALLERY_MANAGER),
+                OpenCms.getRoleManager().hasRole(cms, CmsRole.CATEGORY_MANAGER),
                 subsitemapFolderTypeInfos,
                 editorMode,
                 defaultGalleryFolder);

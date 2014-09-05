@@ -194,8 +194,8 @@ public class CmsLoginHelper extends CmsWorkplace {
             return false;
         }
 
-        // only for workplace users, so that direct edit works
-        if (OpenCms.getRoleManager().hasRole(getCms(), CmsRole.WORKPLACE_USER)) {
+        // only for content creators so that direct edit works
+        if (OpenCms.getRoleManager().hasRole(getCms(), CmsRole.CONTENT_CREATOR)) {
             // get / create the workplace settings 
             CmsWorkplaceSettings wpSettings = getSettings();
             if (wpSettings == null) {

@@ -82,6 +82,7 @@ import org.opencms.search.CmsSearchManager;
 import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.CmsRole;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
@@ -745,10 +746,17 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             } else {
                 noEditReason = getNoEditReason(cms, containerPage);
             }
+
+            String sitemapPath = "";
+            boolean sitemapManager = OpenCms.getRoleManager().hasRole(cms, CmsRole.SITEMAP_MANAGER);
+            if (sitemapManager) {
+                sitemapPath = CmsADEManager.PATH_SITEMAP_EDITOR_JSP;
+            }
             data = new CmsCntPageData(
                 noEditReason,
                 CmsRequestUtil.encodeParams(request),
-                CmsADEManager.PATH_SITEMAP_EDITOR_JSP,
+                sitemapPath,
+                sitemapManager,
                 detailResource != null ? detailResource.getStructureId() : null,
                 detailContainerPage,
                 getNewTypes(cms, request),

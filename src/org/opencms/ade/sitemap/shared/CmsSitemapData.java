@@ -148,6 +148,10 @@ public class CmsSitemapData implements IsSerializable {
     /** The available templates. */
     private Map<String, CmsClientTemplateBean> m_templates;
 
+    private boolean m_galleryManager;
+
+    private boolean m_categoryManager;
+
     /**
      * Constructor.<p>
      */
@@ -216,6 +220,8 @@ public class CmsSitemapData implements IsSerializable {
         String aliasImportUrl,
         boolean canEditAliases,
         boolean createNewFoldersForSubsitemaps,
+        boolean galleryManager,
+        boolean categoryManager,
         List<CmsListInfoBean> subsitemapTypeInfos,
         EditorMode editorMode,
         String defaultGalleryFolder) {
@@ -246,6 +252,8 @@ public class CmsSitemapData implements IsSerializable {
         m_aliasImportUrl = aliasImportUrl;
         m_canEditAliases = canEditAliases;
         m_createNewFolderForSubsitemap = createNewFoldersForSubsitemaps;
+        m_galleryManager = galleryManager;
+        m_categoryManager = categoryManager;
         m_sitemapFolderTypeInfos = subsitemapTypeInfos;
         m_editorMode = editorMode;
         m_defaultGalleryFolder = defaultGalleryFolder;
@@ -513,6 +521,16 @@ public class CmsSitemapData implements IsSerializable {
     }
 
     /**
+     * Returns if the current user has the category manager role.<p>
+     *
+     * @return if the current user has the category manager role
+     */
+    public boolean isCategoryManager() {
+
+        return m_categoryManager;
+    }
+
+    /**
      * Returns true if new folders should be created for subsitemaps.<p>
      * 
      * @return true if new folders should be created for subsitemaps 
@@ -530,6 +548,16 @@ public class CmsSitemapData implements IsSerializable {
     public boolean isDisplayToolbar() {
 
         return m_displayToolbar;
+    }
+
+    /**
+     * Returns if the current user has the gallery manager role.<p>
+     *
+     * @return if the current user has the gallery manager role
+     */
+    public boolean isGalleryManager() {
+
+        return m_galleryManager;
     }
 
     /**

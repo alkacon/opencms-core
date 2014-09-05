@@ -700,7 +700,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
         if (!CmsProject.ONLINE_PROJECT_NAME.equals(getProject())) {
             // only if the user has the role Workplace user, he is allowed to access the Offline index
             try {
-                OpenCms.getRoleManager().checkRole(cms, CmsRole.WORKPLACE_USER);
+                OpenCms.getRoleManager().checkRole(cms, CmsRole.CONTENT_CREATOR);
             } catch (CmsRoleViolationException e) {
                 throw new CmsSearchException(Messages.get().container(
                     Messages.LOG_SOLR_ERR_SEARCH_PERMISSION_VIOLATION_2,

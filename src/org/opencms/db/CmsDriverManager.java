@@ -689,13 +689,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 // here we say readroles = true, to prevent an unlimited recursive calls
                 addUserToGroup(dbc, username, virtualGroup.getName(), true);
             }
-            // if setting a role that is not the workplace user role ensure the user is also wp user
-            CmsRole wpUser = CmsRole.WORKPLACE_USER.forOrgUnit(group.getOuFqn());
-            if (!role.equals(wpUser)
-                && !role.getChildren(true).contains(wpUser)
-                && !m_securityManager.hasRole(dbc, user, wpUser)) {
-                addUserToGroup(dbc, username, wpUser.getGroupName(), true);
-            }
         }
 
         //add this user to the group
@@ -3949,7 +3942,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     if (includeChildOus && role.getOuFqn().startsWith(ouFqn)) {
                         allGroups.add(group);
                     }
-                    if (directGroupsOnly) {
+                    if (directGroupsOnly || (!includeChildOus && !role.getOuFqn().equals(ouFqn))) {
+                        // if roles of child OUs are not requested and the role does not belong to the requested OU don't include the role children
                         continue;
                     }
                     // get the child roles
@@ -8165,19 +8159,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         if (readRoles) {
             CmsRole role = CmsRole.valueOf(group);
-            // the workplace user role can only be removed if no other user has no other role
-            if (role.equals(CmsRole.WORKPLACE_USER.forOrgUnit(role.getOuFqn()))) {
-                if (getGroupsOfUser(
-                    dbc,
-                    username,
-                    role.getOuFqn(),
-                    false,
-                    true,
-                    true,
-                    dbc.getRequestContext().getRemoteAddress()).size() > 1) {
-                    return;
-                }
-            }
             // update virtual groups
             Iterator<CmsGroup> it = getVirtualGroupsForRole(dbc, role).iterator();
             while (it.hasNext()) {
