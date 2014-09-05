@@ -547,10 +547,10 @@ public class OpenCmsTestCase extends TestCase {
      * 
      * @return the test suite for the given class 
      * 
-     * @throws NoSuchMethodException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
+     * @throws NoSuchMethodException in case of problems
+     * @throws InstantiationException in case of problems
+     * @throws IllegalAccessException in case of problems
+     * @throws InvocationTargetException in case of problems
      */
     public static TestSuite generateTestSuite(Class<? extends Test> testClass)
     throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
@@ -703,14 +703,16 @@ public class OpenCmsTestCase extends TestCase {
 
         // open the test script 
         File script;
-        FileInputStream stream = null;
         CmsObject cms = null;
 
         try {
+            FileInputStream stream = null;
+
             // start the shell with the base script
             script = new File(getTestDataPath("scripts/script_import.txt"));
             stream = new FileInputStream(script);
             m_shell.start(stream);
+            stream.close();
 
             // log in the Admin user and switch to the setup project
             cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
@@ -726,6 +728,7 @@ public class OpenCmsTestCase extends TestCase {
             script = new File(getTestDataPath("scripts/script_import_publish.txt"));
             stream = new FileInputStream(script);
             m_shell.start(stream);
+            stream.close();
             OpenCms.getPublishManager().waitWhileRunning();
 
             // switch to the "Offline" project
@@ -821,6 +824,8 @@ public class OpenCmsTestCase extends TestCase {
         if (path != null) {
             CmsFileUtil.purgeDirectory(new File(path));
         }
+
+        printInfoBox("Finished OpenCms test class:", getCurrentTestClass());
     }
 
     /**
@@ -932,6 +937,8 @@ public class OpenCmsTestCase extends TestCase {
         String specialConfigFolder,
         boolean publish) {
 
+        printInfoBox("Setting up OpenCms test class:", getCurrentTestClass());
+
         // intialize a new resource storage
         m_resourceStorages = new HashMap<String, OpenCmsTestResourceStorage>();
 
@@ -978,19 +985,22 @@ public class OpenCmsTestCase extends TestCase {
 
         // open the test script 
         File script;
-        FileInputStream stream = null;
         CmsObject cms = null;
 
         try {
+            FileInputStream stream = null;
+
             // start the shell with the base script
             script = new File(getTestDataPath("scripts/script_base.txt"));
             stream = new FileInputStream(script);
             m_shell.start(stream);
+            stream.close();
 
             // add the default folders by script
             script = new File(getTestDataPath("scripts/script_default_folders.txt"));
             stream = new FileInputStream(script);
             m_shell.start(stream);
+            stream.close();
 
             // log in the Admin user and switch to the setup project
             cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
@@ -1069,6 +1079,33 @@ public class OpenCmsTestCase extends TestCase {
             }
             fail(setupDb.getErrors().get(0));
         }
+    }
+
+    /**
+     * Returns the class name of the current test class from the current stack trace.<p>
+     * 
+     * Methods in this class, that is {@link OpenCmsTestCase} are ignored.<p>
+     * 
+     * @return the class name of the current test class from the current stack trace
+     */
+    protected static String getCurrentTestClass() {
+
+        String result = "unknown";
+        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+        for (int i = 1; i < stackTraceElements.length; i++) {
+            // skip first method in stack, this is always ".getStackTrace()"
+            result = stackTraceElements[i].getClassName();
+            if (!result.endsWith(OpenCmsTestCase.class.getName())) {
+                // first method name NOT from this class is what we want
+                int pos = result.indexOf('$');
+                // cut off any trailing "$1" just because it looks nicer in the output 
+                if (pos != -1) {
+                    result = result.substring(0, pos);
+                }
+                break;
+            }
+        }
+        return result;
     }
 
     /**
@@ -1189,6 +1226,22 @@ public class OpenCmsTestCase extends TestCase {
         CmsResource result = cms.createResource(vfsPath, type, content, properties);
         cms.unlockResource(vfsPath);
         return result;
+    }
+
+    /**
+     * Prints  a nicely formatted info box to System.out.<p> 
+     * 
+     * @param line1 the first line to print
+     * @param line2 the secound line to print
+     */
+    protected static void printInfoBox(String line1, String line2) {
+
+        System.out.println("\n\n +-------------------------------------------------------------------------"
+            + "\n | "
+            + line1
+            + "\n | "
+            + line2
+            + "\n +-------------------------------------------------------------------------\n");
     }
 
     /**
@@ -3363,7 +3416,7 @@ public class OpenCmsTestCase extends TestCase {
      * Deletes a given resource if possible.<p>
      * 
      * @param path the path of the resource to delete 
-     * @throws CmsException
+     * @throws CmsException in case somthing goes wrong
      */
     protected void delete(String path) throws CmsException {
 
@@ -3490,6 +3543,24 @@ public class OpenCmsTestCase extends TestCase {
         m_shell = new CmsShell(getTestDataPath("WEB-INF" + File.separator), null, null, "${user}@${project}>", null);
 
         OpenCmsTestLogAppender.setBreakOnError(true);
+    }
+
+    /**
+     * Overrides the main test start method in order to output automatic markers.<p>
+     * 
+     * @see junit.framework.TestCase#runTest()
+     */
+    @Override
+    protected void runTest() throws Throwable {
+
+        Method runMethod = null;
+        try {
+            runMethod = getClass().getMethod(getName(), (Class[])null);
+            printInfoBox("Running OpenCms test case:", getClass().getName() + "#" + runMethod.getName());
+        } catch (NoSuchMethodException e) {
+            fail("Method \"" + getName() + "\" not found");
+        }
+        super.runTest();
     }
 
     /**
