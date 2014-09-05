@@ -98,7 +98,7 @@ public class CmsGwtService extends RemoteServiceServlet {
      */
     public void checkPermissions(CmsObject cms) throws CmsRoleViolationException {
 
-        OpenCms.getRoleManager().checkRole(cms, CmsRole.CONTENT_CREATOR);
+        OpenCms.getRoleManager().checkRole(cms, CmsRole.ELEMENT_AUTHOR);
     }
 
     /**

@@ -212,7 +212,7 @@
 					</permissionset>
 				</accessentry>
 				<accessentry>
-					<uuidprincipal>ROLE.CONTENT_CREATOR</uuidprincipal>
+					<uuidprincipal>ROLE.ELEMENT_AUTHOR</uuidprincipal>
 					<flags>518</flags>
 					<permissionset>
 						<allowed>5</allowed>

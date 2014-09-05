@@ -748,7 +748,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             }
 
             String sitemapPath = "";
-            boolean sitemapManager = OpenCms.getRoleManager().hasRole(cms, CmsRole.SITEMAP_MANAGER);
+            boolean sitemapManager = OpenCms.getRoleManager().hasRole(cms, CmsRole.EDITOR);
             if (sitemapManager) {
                 sitemapPath = CmsADEManager.PATH_SITEMAP_EDITOR_JSP;
             }

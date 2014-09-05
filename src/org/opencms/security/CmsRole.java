@@ -79,10 +79,10 @@ public final class CmsRole {
     public static final CmsRole ADMINISTRATOR;
 
     /** The "CATEGORY_MANAGER" role. */
-    public static final CmsRole CATEGORY_MANAGER;
+    public static final CmsRole CATEGORY_EDITOR;
 
     /** The "CONTENT_CREATOR" role. */
-    public static final CmsRole CONTENT_CREATOR;
+    public static final CmsRole ELEMENT_AUTHOR;
 
     /** The "EXPORT_DATABASE" role. */
     public static final CmsRole DATABASE_MANAGER;
@@ -91,7 +91,7 @@ public final class CmsRole {
     public static final CmsRole DEVELOPER;
 
     /** The "GALLERY_MANAGER" role. */
-    public static final CmsRole GALLERY_MANAGER;
+    public static final CmsRole GALLERY_EDITOR;
 
     /** Identifier for role principals. */
     public static final String PRINCIPAL_ROLE = "ROLE";
@@ -103,7 +103,7 @@ public final class CmsRole {
     public static final CmsRole ROOT_ADMIN;
 
     /** The "SITEMAP_MANAGER" role. */
-    public static final CmsRole SITEMAP_MANAGER;
+    public static final CmsRole EDITOR;
 
     /** The "VFS_MANAGER" role. */
     public static final CmsRole VFS_MANAGER;
@@ -221,14 +221,14 @@ public final class CmsRole {
         PROJECT_MANAGER.m_children.add(WORKPLACE_USER);
         ACCOUNT_MANAGER.m_children.add(WORKPLACE_USER);
 
-        GALLERY_MANAGER = new CmsRole("GALLERY_MANAGER", CmsRole.WORKPLACE_USER, "RoleGalleryManager");
-        CATEGORY_MANAGER = new CmsRole("CATEGORY_MANAGER", CmsRole.WORKPLACE_USER, "RoleCategoryManager");
-        SITEMAP_MANAGER = new CmsRole("SITEMAP_MANAGER", CmsRole.GALLERY_MANAGER, "RoleSitemapManager");
+        GALLERY_EDITOR = new CmsRole("GALLERY_EDITOR", CmsRole.WORKPLACE_USER, "RoleGalleryEditor");
+        CATEGORY_EDITOR = new CmsRole("CATEGORY_EDITOR", CmsRole.WORKPLACE_USER, "RoleCategoryEditor");
+        EDITOR = new CmsRole("EDITOR", CmsRole.GALLERY_EDITOR, "RoleEditor");
 
         // the category manger role also includes the sitemap manager role
-        CATEGORY_MANAGER.m_children.add(SITEMAP_MANAGER);
+        CATEGORY_EDITOR.m_children.add(EDITOR);
 
-        CONTENT_CREATOR = new CmsRole("CONTENT_CREATOR", CmsRole.SITEMAP_MANAGER, "RoleContentCreator");
+        ELEMENT_AUTHOR = new CmsRole("ELEMENT_AUTHOR", CmsRole.EDITOR, "RoleElementAuthor");
 
         // create a lookup list for the system roles
         SYSTEM_ROLES = Collections.unmodifiableList(Arrays.asList(new CmsRole[] {
@@ -241,10 +241,10 @@ public final class CmsRole {
             VFS_MANAGER,
             DEVELOPER,
             WORKPLACE_USER,
-            GALLERY_MANAGER,
-            CATEGORY_MANAGER,
-            SITEMAP_MANAGER,
-            CONTENT_CREATOR}));
+            GALLERY_EDITOR,
+            CATEGORY_EDITOR,
+            EDITOR,
+            ELEMENT_AUTHOR}));
 
         // now initialize all system roles
         for (int i = 0; i < SYSTEM_ROLES.size(); i++) {

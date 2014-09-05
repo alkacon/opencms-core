@@ -1910,7 +1910,7 @@ public final class OpenCmsCore {
         // get the right site for the request
         String siteRoot = null;
         if (cms.getRequestContext().getUri().startsWith("/system/workplace/")
-            && getRoleManager().hasRole(cms, CmsRole.CONTENT_CREATOR)) {
+            && getRoleManager().hasRole(cms, CmsRole.ELEMENT_AUTHOR)) {
             // keep the site root for workplace requests
             siteRoot = cms.getRequestContext().getSiteRoot();
         } else {
@@ -2570,7 +2570,7 @@ public final class OpenCmsCore {
                     CmsObject newCms = initCmsObject(m_adminCms, contextInfo);
 
                     if (contextInfo.getRequestedUri().startsWith("/system/workplace/")
-                        && getRoleManager().hasRole(newCms, CmsRole.CONTENT_CREATOR)) {
+                        && getRoleManager().hasRole(newCms, CmsRole.ELEMENT_AUTHOR)) {
                         // set the default project of the user for workplace users
                         CmsUserSettings settings = new CmsUserSettings(newCms);
                         // set the configured start site

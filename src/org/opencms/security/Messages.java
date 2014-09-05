@@ -152,10 +152,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_ROLE_DESCRIPTION_ADMINISTRATOR_0 = "GUI_ROLE_DESCRIPTION_ADMINISTRATOR_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_ROLE_DESCRIPTION_CATEGORY_MANAGER_0 = "GUI_ROLE_DESCRIPTION_CATEGORY_MANAGER_0";
+    public static final String GUI_ROLE_DESCRIPTION_CATEGORY_EDITOR_0 = "GUI_ROLE_DESCRIPTION_CATEGORY_EDITOR_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_ROLE_DESCRIPTION_CONTENT_CREATOR_0 = "GUI_ROLE_DESCRIPTION_CONTENT_CREATOR_0";
+    public static final String GUI_ROLE_DESCRIPTION_ELEMENT_AUTHOR_0 = "GUI_ROLE_DESCRIPTION_ELEMENT_AUTHOR_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ROLE_DESCRIPTION_DATABASE_MANAGER_0 = "GUI_ROLE_DESCRIPTION_DATABASE_MANAGER_0";
@@ -164,7 +164,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_ROLE_DESCRIPTION_DEVELOPER_0 = "GUI_ROLE_DESCRIPTION_DEVELOPER_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_ROLE_DESCRIPTION_GALLERY_MANAGER_0 = "GUI_ROLE_DESCRIPTION_GALLERY_MANAGER_0";
+    public static final String GUI_ROLE_DESCRIPTION_GALLERY_EDITOR_0 = "GUI_ROLE_DESCRIPTION_GALLERY_EDITOR_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ROLE_DESCRIPTION_PROJECT_MANAGER_0 = "GUI_ROLE_DESCRIPTION_PROJECT_MANAGER_0";
@@ -173,7 +173,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_ROLE_DESCRIPTION_ROOT_ADMIN_0 = "GUI_ROLE_DESCRIPTION_ROOT_ADMIN_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_ROLE_DESCRIPTION_SITEMAP_MANAGER_0 = "GUI_ROLE_DESCRIPTION_SITEMAP_MANAGER_0";
+    public static final String GUI_ROLE_DESCRIPTION_EDITOR_0 = "GUI_ROLE_DESCRIPTION_EDITOR_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ROLE_DESCRIPTION_VFS_MANAGER_0 = "GUI_ROLE_DESCRIPTION_VFS_MANAGER_0";
@@ -191,10 +191,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_ROLENAME_ADMINISTRATOR_0 = "GUI_ROLENAME_ADMINISTRATOR_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_ROLENAME_CATEGORY_MANAGER_0 = "GUI_ROLENAME_CATEGORY_MANAGER_0";
+    public static final String GUI_ROLENAME_CATEGORY_EDITOR_0 = "GUI_ROLENAME_CATEGORY_EDITOR_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_ROLENAME_CONTENT_CREATOR_0 = "GUI_ROLENAME_CONTENT_CREATOR_0";
+    public static final String GUI_ROLENAME_ELEMENT_AUTHOR_0 = "GUI_ROLENAME_ELEMENT_AUTHOR_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ROLENAME_DATABASE_MANAGER_0 = "GUI_ROLENAME_DATABASE_MANAGER_0";
@@ -203,7 +203,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_ROLENAME_DEVELOPER_0 = "GUI_ROLENAME_DEVELOPER_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_ROLENAME_GALLERY_MANAGER_0 = "GUI_ROLENAME_GALLERY_MANAGER_0";
+    public static final String GUI_ROLENAME_GALLERY_EDITOR_0 = "GUI_ROLENAME_GALLERY_EDITOR_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ROLENAME_PROJECT_MANAGER_0 = "GUI_ROLENAME_PROJECT_MANAGER_0";
@@ -212,7 +212,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_ROLENAME_ROOT_ADMIN_0 = "GUI_ROLENAME_ROOT_ADMIN_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_ROLENAME_SITEMAP_MANAGER_0 = "GUI_ROLENAME_SITEMAP_MANAGER_0";
+    public static final String GUI_ROLENAME_EDITOR_0 = "GUI_ROLENAME_EDITOR_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ROLENAME_VFS_MANAGER_0 = "GUI_ROLENAME_VFS_MANAGER_0";

@@ -283,7 +283,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     @Override
     public void checkPermissions(CmsObject cms) throws CmsRoleViolationException {
 
-        OpenCms.getRoleManager().checkRole(cms, CmsRole.SITEMAP_MANAGER);
+        OpenCms.getRoleManager().checkRole(cms, CmsRole.EDITOR);
     }
 
     /**
@@ -502,7 +502,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         CmsObject cms = getCmsObject();
 
         try {
-            OpenCms.getRoleManager().checkRole(cms, CmsRole.SITEMAP_MANAGER);
+            OpenCms.getRoleManager().checkRole(cms, CmsRole.EDITOR);
             String openPath = getRequest().getParameter(CmsCoreData.PARAM_PATH);
             if (!isValidOpenPath(cms, openPath)) {
                 // if no path is supplied, start from root
@@ -645,8 +645,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 aliasImportUrl,
                 canEditAliases,
                 OpenCms.getWorkplaceManager().getDefaultUserSettings().getSubsitemapCreationMode() == CmsDefaultUserSettings.SubsitemapCreationMode.createfolder,
-                OpenCms.getRoleManager().hasRole(cms, CmsRole.GALLERY_MANAGER),
-                OpenCms.getRoleManager().hasRole(cms, CmsRole.CATEGORY_MANAGER),
+                OpenCms.getRoleManager().hasRole(cms, CmsRole.GALLERY_EDITOR),
+                OpenCms.getRoleManager().hasRole(cms, CmsRole.CATEGORY_EDITOR),
                 subsitemapFolderTypeInfos,
                 editorMode,
                 defaultGalleryFolder);

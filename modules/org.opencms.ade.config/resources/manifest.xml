@@ -282,7 +282,7 @@
 					order="25" autosetnavigation="false" autosettitle="false"
 					info="desc.containerpage" />
 				<accesscontrol>
-					<accessentry principal="ROLE.CONTENT_CREATOR"
+					<accessentry principal="ROLE.ELEMENT_AUTHOR"
 						permissions="+r+v+w" />
 					<accessentry principal="ROLE.SITEMAP_MANAGER"
 						permissions="+r+v+w+c" />
@@ -416,7 +416,7 @@
 					order="26" autosetnavigation="false" autosettitle="false"
 					info="desc.groupcontainer" />
 				<accesscontrol>
-					<accessentry principal="ROLE.CONTENT_CREATOR"
+					<accessentry principal="ROLE.ELEMENT_AUTHOR"
 						permissions="+r+v+w+c" />
 				</accesscontrol>
 			</explorertype>
@@ -600,7 +600,7 @@
 					order="27" autosetnavigation="false" autosettitle="false"
 					info="desc.inheritance_group" />
 				<accesscontrol>
-					<accessentry principal="ROLE.CONTENT_CREATOR"
+					<accessentry principal="ROLE.ELEMENT_AUTHOR"
 						permissions="+r+v+w+c" />
 				</accesscontrol>
 			</explorertype>
@@ -612,7 +612,7 @@
 					order="28" autosetnavigation="false" autosettitle="false"
 					info="desc.inheritance_config" />
 				<accesscontrol>
-					<accessentry principal="ROLE.CONTENT_CREATOR"
+					<accessentry principal="ROLE.ELEMENT_AUTHOR"
 						permissions="+r+v+w+c" />
 				</accesscontrol>
 			</explorertype>
