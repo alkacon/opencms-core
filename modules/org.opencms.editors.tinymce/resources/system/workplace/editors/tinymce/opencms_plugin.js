@@ -11,8 +11,8 @@
 %><%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %><% 
     CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response); 
    pageContext.setAttribute("cms", cms);
-   CmsDialog dialog = new CmsDialog(pageContext, request, response);
-   pageContext.setAttribute("locale", dialog.getLocale().toString());
+   Locale locale=OpenCms.getWorkplaceManager().getWorkplaceLocale(cms.getCmsObject());
+   pageContext.setAttribute("locale", locale.toString());
     String itemResType = CmsResourceTypeImage.getStaticTypeName();
     CmsEditorDisplayOptions options = OpenCms.getWorkplaceManager().getEditorDisplayOptions();
 Properties displayOptions = options.getDisplayOptions(cms);
