@@ -27,6 +27,7 @@
 
 package org.opencms.file;
 
+import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.relations.CmsRelation;
@@ -51,6 +52,9 @@ import org.apache.log4j.spi.LoggingEvent;
 
 /**
  * Test class for the CmsLinkRewriter class.<p>
+ */
+/**
+ *
  */
 public class TestLinkRewriter extends OpenCmsTestCase {
 
@@ -103,7 +107,7 @@ public class TestLinkRewriter extends OpenCmsTestCase {
     /**
      * Creates a new test suite instance.<p>
      * 
-     * @param name
+     * @param name test case init parameter
      */
     public TestLinkRewriter(String name) {
 
@@ -191,6 +195,7 @@ public class TestLinkRewriter extends OpenCmsTestCase {
      * 
      * @throws CmsException if something goes wrong 
      */
+    @Override
     public void delete(String directory) throws CmsException {
 
         CmsObject cms = getCmsObject();
@@ -307,7 +312,7 @@ public class TestLinkRewriter extends OpenCmsTestCase {
     /**
      * Tests that the link rewriting process can handle missing files in the target folder structure.<p>
      * 
-     * @throws Exception
+     * @throws Exception in case the test fails
      */
     public void testAdjustWithMissingFile() throws Exception {
 
@@ -336,7 +341,7 @@ public class TestLinkRewriter extends OpenCmsTestCase {
     /**
      * Tests whether the link rewriting works in the system folder.<p>
      * 
-     * @throws Exception
+     * @throws Exception in case the test fails
      */
     public void testCopy() throws Exception {
 
@@ -356,7 +361,7 @@ public class TestLinkRewriter extends OpenCmsTestCase {
     /**
      * Tests whether the link rewriting works in the current site.<p>
      * 
-     * @throws Exception 
+     * @throws Exception in case the test fails
      */
     public void testCopyToSite() throws Exception {
 
@@ -380,7 +385,7 @@ public class TestLinkRewriter extends OpenCmsTestCase {
     /**
      * Tests whether the encoding is converted correctly when rewriting links.<p>
      * 
-     * @throws Exception 
+     * @throws Exception in case the test fails
      */
     public void testEncodingConversion() throws Exception {
 
@@ -410,7 +415,7 @@ public class TestLinkRewriter extends OpenCmsTestCase {
     /**
      * Tests that the link rewriting fails if one of two folder arguments is a subfolder of the other.<p>
      * 
-     * @throws Exception
+     * @throws Exception in case the test fails
      */
     public void testFailIfTargetIsSubdirectory() throws Exception {
 
@@ -431,9 +436,9 @@ public class TestLinkRewriter extends OpenCmsTestCase {
     /**
      * Tests relation adjustments for multiple source files.<p>
      * 
-     * @throws CmsException 
+     * @throws Exception in case the test fails
      */
-    public void testMultiCopy() throws CmsException {
+    public void testMultiCopy() throws Exception {
 
         CmsObject cms = getCmsObject();
         cms.lockResource("/system/multibase2");
@@ -455,15 +460,47 @@ public class TestLinkRewriter extends OpenCmsTestCase {
     /**
      * Tests that an error when rewriting a file will not throw an exception, but will be written to the log.<p>
      * 
-     * @throws Exception
+     * @throws Exception in case the test fails
      */
     public void testNotAbort() throws Exception {
 
         CmsObject cms = getCmsObject();
+
         ExpectErrorLogHandler handler = new ExpectErrorLogHandler("xml validation error");
         try {
             OpenCmsTestLogAppender.setBreakOnError(false);
             OpenCmsTestLogAppender.setHandler(handler);
+
+            // Setup: Create a XML content that is wrong according to the schema        
+            String wrongContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
+                + "\r\n"
+                + "<LinkSequences xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"internal://org/opencms/file/links.xsd\">\r\n"
+                + "  <LinkSequence language=\"en\">\r\n"
+                + "  <Text>Correct node</Text>\r\n"
+                + "  <!-- This 2nd Text node is intentionally wrong according to the schema! --> \r\n"
+                + "  <Text>Wrong node</Text>\r\n"
+                + "\r\n"
+                + "    <Link>\r\n"
+                + "       <link type=\"WEAK\">\r\n"
+                + "        <target><![CDATA[/system/w/wrong.html]]></target>\r\n"
+                + "        <uuid>00000000-0020-0000-0000-000000000000</uuid>\r\n"
+                + "      </link>\r\n"
+                + "    </Link>\r\n"
+                + "  </LinkSequence>\r\n"
+                + "</LinkSequences>";
+
+            // Must create the resource as plain and change to XmlContent otherwise creation will throw Exception
+            cms.createResource(
+                "/system/w/kaputt.html",
+                CmsResourceTypePlain.getStaticTypeId(),
+                wrongContent.getBytes(),
+                null);
+            // get type id from existing resource
+            int type = cms.readResource("/system/w/wrong.html").getTypeId();
+            // change type to XmlContent
+            cms.chtype("/system/w/kaputt.html", type);
+
+            printExceptionWarning();
             cms.copyResource("/system/w", "/system/w2");
             cms.adjustLinks("/system/w", "/system/w2");
         } finally {
@@ -477,7 +514,7 @@ public class TestLinkRewriter extends OpenCmsTestCase {
      * Test to verify that the files under /system/base have been created correctly by the test setup (not really necessary,
      * just to make sure that e.g. a faulty manifest.xml is not the cause of other test failures).
      * 
-     * @throws Exception 
+     * @throws Exception in case the test fails
      */
     public void testVerifySetup() throws Exception {
 

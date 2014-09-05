@@ -231,6 +231,9 @@ public final class OpenCmsCore {
     /** The publish manager instance. */
     private CmsPublishManager m_publishManager;
 
+    /** The VFS bundle manager. */
+    private CmsVfsBundleManager m_vfsBundleManager;
+
     /** The repository manager. */
     private CmsRepositoryManager m_repositoryManager;
 
@@ -1358,8 +1361,8 @@ public final class OpenCmsCore {
             // initialize the search manager
             m_searchManager.initialize(initCmsObject(adminCms));
 
-            CmsVfsBundleManager vfsBundleManager = new CmsVfsBundleManager(adminCms);
-            vfsBundleManager.reload(true);
+            // initialize the VFS bundle manager
+            m_vfsBundleManager = new CmsVfsBundleManager(adminCms);
 
             // initialize the workplace manager
             m_workplaceManager.initialize(initCmsObject(adminCms));
@@ -1768,6 +1771,16 @@ public final class OpenCmsCore {
                 } catch (Throwable e) {
                     CmsLog.INIT.error(
                         Messages.get().getBundle().key(Messages.LOG_ERROR_SEARCH_MANAGER_SHUTDOWN_1, e.getMessage()),
+                        e);
+                }
+                try {
+                    // VFS bundle manager must be shut down early since there is a background thread ongoing that reloads from the VFS
+                    if (m_vfsBundleManager != null) {
+                        m_vfsBundleManager.shutDown();
+                    }
+                } catch (Throwable e) {
+                    CmsLog.INIT.error(
+                        Messages.get().getBundle().key(Messages.LOG_ERROR_VFSBUNDLE_MANAGER_SHUTDOWN_1, e.getMessage()),
                         e);
                 }
                 try {
