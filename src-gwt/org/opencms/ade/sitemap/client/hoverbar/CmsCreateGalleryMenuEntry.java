@@ -69,7 +69,8 @@ public class CmsCreateGalleryMenuEntry extends A_CmsSitemapMenuEntry {
     @Override
     public void onShow() {
 
-        if (CmsSitemapView.getInstance().isGalleryMode()) {
+        // only gallery managers are allowed to create galleries
+        if (CmsSitemapView.getInstance().isGalleryMode() && getHoverbar().getController().getData().isGalleryManager()) {
             setVisible(true);
         } else {
             setVisible(false);

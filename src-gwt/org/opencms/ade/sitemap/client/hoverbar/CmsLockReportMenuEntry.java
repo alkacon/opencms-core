@@ -27,6 +27,7 @@
 
 package org.opencms.ade.sitemap.client.hoverbar;
 
+import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
@@ -77,7 +78,8 @@ public class CmsLockReportMenuEntry extends A_CmsSitemapMenuEntry {
     @Override
     public void onShow() {
 
-        setVisible(true);
+        setVisible(!CmsSitemapView.getInstance().isGalleryMode()
+            || getHoverbar().getController().getData().isGalleryManager());
     }
 
 }

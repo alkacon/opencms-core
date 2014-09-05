@@ -269,14 +269,16 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         boolean hasGalleries = false;
         for (CmsGalleryType type : types) {
             CmsGalleryTreeItem typeItem = new CmsGalleryTreeItem(type);
-            CmsHoverbarCreateGalleryButton createButton = new CmsHoverbarCreateGalleryButton(
-                type.getTypeId(),
-                galleriesFolderId);
-            CmsSitemapHoverbar hoverbar = CmsSitemapHoverbar.installOn(
-                m_controller,
-                typeItem,
-                Collections.<Widget> singleton(createButton));
-            createButton.setHoverbar(hoverbar);
+            if (m_controller.getData().isGalleryManager()) {
+                CmsHoverbarCreateGalleryButton createButton = new CmsHoverbarCreateGalleryButton(
+                    type.getTypeId(),
+                    galleriesFolderId);
+                CmsSitemapHoverbar hoverbar = CmsSitemapHoverbar.installOn(
+                    m_controller,
+                    typeItem,
+                    Collections.<Widget> singleton(createButton));
+                createButton.setHoverbar(hoverbar);
+            }
             m_galleryTypeItems.put(type.getTypeName(), typeItem);
             if (galleries.get(type).isEmpty()) {
                 // hide all empty gallery types

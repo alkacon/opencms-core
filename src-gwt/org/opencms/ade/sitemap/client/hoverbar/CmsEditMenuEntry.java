@@ -180,7 +180,8 @@ public class CmsEditMenuEntry extends A_CmsSitemapMenuEntry {
     public void onShow() {
 
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
-        boolean show = (entry != null);
+        boolean show = (entry != null)
+            && (!CmsSitemapView.getInstance().isGalleryMode() || getHoverbar().getController().getData().isGalleryManager());
         setVisible(show);
     }
 

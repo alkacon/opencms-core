@@ -45,8 +45,8 @@ import org.opencms.ade.containerpage.client.ui.CmsToolbarSettingsButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarSitemapButton;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.A_CmsEntryPoint;
-import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.CmsBroadcastTimer;
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.dnd.CmsCompositeDNDController;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.dnd.CmsDNDHandler.AnimationType;
@@ -447,9 +447,13 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         m_toolbar.addRight(m_context);
 
         m_sitemap = new CmsToolbarSitemapButton(containerpageHandler);
-        m_sitemap.addClickHandler(clickHandler);
-        m_toolbar.addRight(m_sitemap);
-
+        if (controller.getData().isSitemapManager()) {
+            m_sitemap.addClickHandler(clickHandler);
+            m_toolbar.addRight(m_sitemap);
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(controller.getData().getSitemapUri())) {
+                m_sitemap.setEnabled(false);
+            }
+        }
         Window.addCloseHandler(new CloseHandler<Window>() {
 
             public void onClose(CloseEvent<Window> event) {
@@ -461,10 +465,6 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
         RootPanel.get().addStyleName(
             org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().hideButtonShowSmallElements());
-
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(controller.getData().getSitemapUri())) {
-            m_sitemap.setEnabled(false);
-        }
 
         m_reset = new CmsToolbarResetButton(containerpageHandler);
         m_reset.addClickHandler(clickHandler);
