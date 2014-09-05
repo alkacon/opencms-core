@@ -787,7 +787,7 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
     /**
      * Tests saving XML contents with links from/to various sites.<p>
      * 
-     * @throws Exception 
+     * @throws Exception in case the test fails
      */
     public void testSiteLinks() throws Exception {
 
@@ -813,7 +813,11 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
         // (R)oot
         CmsResource r = createTestFile("/system/testfile-system.html");
 
-        for (String targetMacro : new String[] {"${TARGET}", "${TARGET2}"}) {
+        // Macros to replace, have to be real URLs of existing files in order to avoid console Exception log output because of malforme URLs
+        String target1 = createTestFile("/shared/target-1.html").getRootPath();
+        String target2 = createTestFile("/shared/target-2.html").getRootPath();
+
+        for (String targetMacro : new String[] {target1, target2}) {
 
             // from default site 
             checkSetLink("/sites/default", w, targetMacro, "/testfile-w.html", w);
