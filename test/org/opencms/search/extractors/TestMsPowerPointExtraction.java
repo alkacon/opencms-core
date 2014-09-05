@@ -27,27 +27,17 @@
 
 package org.opencms.search.extractors;
 
+import org.opencms.test.OpenCmsTestCase;
+
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
 /**
  * Tests the text extraction form a Pdf file.<p>
  */
-public class TestMsPowerPointExtraction extends TestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     * 
-     * @param arg0 JUnit parameters
-     */
-    public TestMsPowerPointExtraction(String arg0) {
-
-        super(arg0);
-    }
+public class TestMsPowerPointExtraction extends OpenCmsTestCase {
 
     /**
      * Tests the PowerPoint text extraction for old OLE2 documents.<p>

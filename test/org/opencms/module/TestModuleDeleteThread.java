@@ -108,9 +108,6 @@ public class TestModuleDeleteThread extends OpenCmsTestCase {
         // get a reference to the CmsObject
         CmsObject cms = getCmsObject();
 
-        // list for the module - used later
-        List moduleDeleteList;
-
         // create a new blank module
         String moduleName = "org.opencms.test.testModuleDeleteThread";
         CmsModule module1 = new CmsModule(
@@ -137,7 +134,7 @@ public class TestModuleDeleteThread extends OpenCmsTestCase {
         }
 
         // create two CmsModuleDeleteThread's for testing
-        moduleDeleteList = new ArrayList();
+        List<String> moduleDeleteList = new ArrayList<String>();
         moduleDeleteList.add(moduleName);
         // create a single Thread to delete the module
         CmsModuleDeleteThread thread1 = new CmsModuleDeleteThread(cms, moduleDeleteList, false);
@@ -176,11 +173,13 @@ public class TestModuleDeleteThread extends OpenCmsTestCase {
         OpenCms.getModuleManager().addModule(cms, module2);
 
         // Create two CmsModuleDeleteThread's for testing
-        moduleDeleteList = new ArrayList();
+        moduleDeleteList = new ArrayList<String>();
         moduleDeleteList.add(moduleName);
         echo("Created a new module again and try to delete it - this time with two threads at once");
         CmsModuleDeleteThread thread_parallel_1 = new CmsModuleDeleteThread(cms, moduleDeleteList, false);
         CmsModuleDeleteThread thread_parallel_2 = new CmsModuleDeleteThread(cms, moduleDeleteList, false);
+
+        printExceptionWarning();
 
         // start the threads
         thread_parallel_1.start();
@@ -203,80 +202,6 @@ public class TestModuleDeleteThread extends OpenCmsTestCase {
     }
 
     /**
-     * Test to delete a module with non-existing resources using the module delete thread.<p>
-     * 
-     * @throws Exception in case the test fails
-     */
-    public void testModuleResourcesDeleteThread() throws Exception {
-
-        echo("Test to delete a module with non-existing resources using the module delete thread");
-
-        CmsObject cms = getCmsObject();
-        String moduleName = "org.opencms.test.testModuleResourcesDeleteThread";
-
-        String res1 = "/system/modules/tests/test1/";
-        String res2 = "/system/modules/tests/test2/";
-        String res3 = "/system/modules/tests/test3/";
-        String res4 = "/system/modules/tests/test4/";
-
-        List resources = new ArrayList();
-        resources.add(res1);
-        resources.add(res2);
-        resources.add(res3);
-        resources.add(res4);
-
-        CmsModule module1 = new CmsModule(
-            moduleName,
-            "Test to delete a module with non-existing resources using the module delete thread",
-            "ModuleGroup",
-            null,
-            null,
-            new CmsModuleVersion("1.0"),
-            "Olaf Watteroth",
-            "watterot@inf.fu-berlin.de",
-            System.currentTimeMillis(),
-            null,
-            0L,
-            null,
-            null,
-            resources,
-            null);
-
-        OpenCms.getModuleManager().addModule(cms, module1);
-        module1 = OpenCms.getModuleManager().getModule(moduleName);
-
-        assertEquals(0, module1.getParameters().size());
-        assertEquals(4, module1.getResources().size());
-
-        // Now its new code
-        echo("Module created. Now try to delete it");
-        // Now try to delete this module after it was added
-        // Create a CmsModuleDeleteThread's for testing
-        List module = new ArrayList();
-        module.add(moduleName);
-
-        // Create a single Thread to delete the module
-        CmsModuleDeleteThread thread1 = new CmsModuleDeleteThread(cms, module, false);
-
-        // Start the threads
-        thread1.start();
-
-        // Wait till the thread finish
-        thread1.join();
-
-        while (thread1.isAlive()) {
-            // Check if thread1 is still running and wait to finish
-            Thread.sleep(1000);
-        }
-
-        // try to get the deleted module
-        module1 = OpenCms.getModuleManager().getModule(moduleName);
-        // test if the module is null - it should be 'cause it was deleted
-        echo("Test if the module still exists");
-        assertNull(module1);
-    }
-
-    /**
      * Test to delete a module with non-existing resources using the CmsModuleManager.<p>
      * 
      * @throws Throwable if something goes wrong
@@ -293,7 +218,7 @@ public class TestModuleDeleteThread extends OpenCmsTestCase {
         String res3 = "/system/modules/tests/test3/";
         String res4 = "/system/modules/tests/test4/";
 
-        List resources = new ArrayList();
+        List<String> resources = new ArrayList<String>();
         resources.add(res1);
         resources.add(res2);
         resources.add(res3);
@@ -333,5 +258,79 @@ public class TestModuleDeleteThread extends OpenCmsTestCase {
         echo("Now check if module was deleted");
         assertNull(module1);
         echo("Test finished");
+    }
+
+    /**
+     * Test to delete a module with non-existing resources using the module delete thread.<p>
+     * 
+     * @throws Exception in case the test fails
+     */
+    public void testModuleResourcesDeleteThread() throws Exception {
+
+        echo("Test to delete a module with non-existing resources using the module delete thread");
+
+        CmsObject cms = getCmsObject();
+        String moduleName = "org.opencms.test.testModuleResourcesDeleteThread";
+
+        String res1 = "/system/modules/tests/test1/";
+        String res2 = "/system/modules/tests/test2/";
+        String res3 = "/system/modules/tests/test3/";
+        String res4 = "/system/modules/tests/test4/";
+
+        List<String> resources = new ArrayList<String>();
+        resources.add(res1);
+        resources.add(res2);
+        resources.add(res3);
+        resources.add(res4);
+
+        CmsModule module1 = new CmsModule(
+            moduleName,
+            "Test to delete a module with non-existing resources using the module delete thread",
+            "ModuleGroup",
+            null,
+            null,
+            new CmsModuleVersion("1.0"),
+            "Olaf Watteroth",
+            "watterot@inf.fu-berlin.de",
+            System.currentTimeMillis(),
+            null,
+            0L,
+            null,
+            null,
+            resources,
+            null);
+
+        OpenCms.getModuleManager().addModule(cms, module1);
+        module1 = OpenCms.getModuleManager().getModule(moduleName);
+
+        assertEquals(0, module1.getParameters().size());
+        assertEquals(4, module1.getResources().size());
+
+        // Now its new code
+        echo("Module created. Now try to delete it");
+        // Now try to delete this module after it was added
+        // Create a CmsModuleDeleteThread's for testing
+        List<String> module = new ArrayList<String>();
+        module.add(moduleName);
+
+        // Create a single Thread to delete the module
+        CmsModuleDeleteThread thread1 = new CmsModuleDeleteThread(cms, module, false);
+
+        // Start the threads
+        thread1.start();
+
+        // Wait till the thread finish
+        thread1.join();
+
+        while (thread1.isAlive()) {
+            // Check if thread1 is still running and wait to finish
+            Thread.sleep(1000);
+        }
+
+        // try to get the deleted module
+        module1 = OpenCms.getModuleManager().getModule(moduleName);
+        // test if the module is null - it should be 'cause it was deleted
+        echo("Test if the module still exists");
+        assertNull(module1);
     }
 }

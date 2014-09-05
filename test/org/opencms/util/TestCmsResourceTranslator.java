@@ -29,14 +29,12 @@ package org.opencms.util;
 
 import org.opencms.test.OpenCmsTestCase;
 
-import junit.framework.TestCase;
-
 /** 
  * Test cases for the resource translator.<p> 
  * 
  * @since 6.0.0
  */
-public class TestCmsResourceTranslator extends TestCase {
+public class TestCmsResourceTranslator extends OpenCmsTestCase {
 
     // default rules (same as in "opencms.properties")
     private static String[] rules = {

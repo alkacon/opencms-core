@@ -27,18 +27,18 @@
 
 package org.opencms.i18n;
 
+import org.opencms.test.OpenCmsTestCase;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
-import junit.framework.TestCase;
 
 /**
  * Tests for the OpenCms locale manager.<p>
  * 
  * @since 6.0.0
  */
-public class TestCmsLocaleManager extends TestCase {
+public class TestCmsLocaleManager extends OpenCmsTestCase {
 
     /**
      * Tests selection of the default locale.<p>

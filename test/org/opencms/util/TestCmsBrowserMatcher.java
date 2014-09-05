@@ -27,17 +27,17 @@
 
 package org.opencms.util;
 
+import org.opencms.test.OpenCmsTestCase;
+
 import java.util.ArrayList;
 import java.util.regex.Pattern;
-
-import junit.framework.TestCase;
 
 /** 
  * Test case for browser matcher.<p>
  * 
  * @since 6.0.0
  */
-public class TestCmsBrowserMatcher extends TestCase {
+public class TestCmsBrowserMatcher extends OpenCmsTestCase {
 
     private static String[] browser = {
         "MSIE_6.x",
@@ -77,16 +77,6 @@ public class TestCmsBrowserMatcher extends TestCase {
         "^Mozilla/5\\.0 \\(.* rv:1.0.2\\) Gecko/2003\\d* Netscape/.*$",
         "^Mozilla/5\\.0 \\(.* rv:1.0.1\\) Gecko/2002\\d* Netscape/.*$",
         ".*"};
-
-    /**
-     * Default JUnit constructor.<p>
-     * 
-     * @param arg0 JUnit parameters
-     */
-    public TestCmsBrowserMatcher(String arg0) {
-
-        super(arg0);
-    }
 
     /**
      * Tests the browser matching regular expressions.<p>

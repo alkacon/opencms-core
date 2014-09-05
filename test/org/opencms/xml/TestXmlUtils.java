@@ -27,12 +27,12 @@
 
 package org.opencms.xml;
 
-import junit.framework.TestCase;
+import org.opencms.test.OpenCmsTestCase;
 
 /**
  * @since 6.0.0
  */
-public class TestXmlUtils extends TestCase {
+public class TestXmlUtils extends OpenCmsTestCase {
 
     /**
      * Test case for the Xpath generation methods.

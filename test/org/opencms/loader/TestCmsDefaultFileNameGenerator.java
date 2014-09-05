@@ -27,16 +27,16 @@
 
 package org.opencms.loader;
 
+import org.opencms.test.OpenCmsTestCase;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 /**
  * Tests the default file name generation.<p>
  */
-public class TestCmsDefaultFileNameGenerator extends TestCase {
+public class TestCmsDefaultFileNameGenerator extends OpenCmsTestCase {
 
     /** List of names with 5 digits. */
     public static final List<String> NAMES_5 = Arrays.asList(new String[] {"/file_00001.xml", "/file_00002.xml"});

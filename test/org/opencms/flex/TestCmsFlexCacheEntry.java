@@ -27,22 +27,12 @@
 
 package org.opencms.flex;
 
-import junit.framework.TestCase;
+import org.opencms.test.OpenCmsTestCase;
 
 /**
  * Tests for the CmsFlexCacheEntry.<p>
  */
-public class TestCmsFlexCacheEntry extends TestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     * 
-     * @param arg0 JUnit parameters
-     */
-    public TestCmsFlexCacheEntry(String arg0) {
-
-        super(arg0);
-    }
+public class TestCmsFlexCacheEntry extends OpenCmsTestCase {
 
     /**
      * Tests the method getAbsoluteUri.<p>

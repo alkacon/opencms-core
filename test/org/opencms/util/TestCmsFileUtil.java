@@ -27,17 +27,17 @@
 
 package org.opencms.util;
 
+import org.opencms.test.OpenCmsTestCase;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 
-import junit.framework.TestCase;
-
 /**
  * @since 6.2.2
  */
-public class TestCmsFileUtil extends TestCase {
+public class TestCmsFileUtil extends OpenCmsTestCase {
 
     /**
      * An input stream that provides 24 bytes of data in two chunks, the first of 16 bytes,

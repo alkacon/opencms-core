@@ -27,24 +27,14 @@
 
 package org.opencms.importexport;
 
-import junit.framework.TestCase;
+import org.opencms.test.OpenCmsTestCase;
 
 /**
  * Basic test cases for import/export utilities.<p>
  * 
  * @since 6.0.0
  */
-public class TestCmsImport extends TestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     * 
-     * @param arg0 JUnit parameters
-     */
-    public TestCmsImport(String arg0) {
-
-        super(arg0);
-    }
+public class TestCmsImport extends OpenCmsTestCase {
 
     /**
      * Runs a test for the conversion of the digest encoding.<p>

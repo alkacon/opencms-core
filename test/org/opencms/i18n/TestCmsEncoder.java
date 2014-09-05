@@ -33,14 +33,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 
-import junit.framework.TestCase;
-
 /**
  * Tests for the CmsEncoder.<p>
  * 
  * @since 6.0.0
  */
-public class TestCmsEncoder extends TestCase {
+public class TestCmsEncoder extends OpenCmsTestCase {
 
     private static final String ENC_ISO_8859_1 = CmsEncoder.ENCODING_ISO_8859_1;
     private static final String ENC_ISO_8859_15 = "ISO-8859-15";

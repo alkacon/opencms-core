@@ -27,16 +27,16 @@
 
 package org.opencms.i18n;
 
-import java.util.Locale;
+import org.opencms.test.OpenCmsTestCase;
 
-import junit.framework.TestCase;
+import java.util.Locale;
 
 /**
  * Tests for the CmsMessages.<p>
  * 
  * @since 6.0.0
  */
-public class TestCmsMessages extends TestCase {
+public class TestCmsMessages extends OpenCmsTestCase {
 
     /**
      * Tests if message will be returned in the correct locale.<p>

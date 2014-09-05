@@ -27,26 +27,64 @@
 
 package org.opencms.configuration;
 
+import org.opencms.test.OpenCmsTestCase;
+
 import java.io.File;
 import java.net.URL;
-
-import junit.framework.TestCase;
 
 import org.apache.commons.collections.ExtendedProperties;
 
 /**
  * Test cases for the parameter configuration.<p>
  */
-public class TestParameterConfiguration extends TestCase {
+public class TestParameterConfiguration extends OpenCmsTestCase {
 
     /**
-     * Default JUnit constructor.<p>
+     * Tests escaping and unescaping values in the parameter configuration.<p>
      * 
-     * @param arg0 JUnit parameters
+     * @throws Exception
      */
-    public TestParameterConfiguration(String arg0) {
+    public void testEscapeUnescapeParameterConfiguration() throws Exception {
 
-        super(arg0);
+        CmsParameterConfiguration config = new CmsParameterConfiguration();
+
+        config.add("test1", "test, eins");
+        assertEquals("test, eins", config.get("test1"));
+
+        config.add("test2", "test \\\\ zwei");
+        assertEquals("test \\\\ zwei", config.get("test2"));
+
+        config.add("test3", "test \\= drei");
+        assertEquals("test \\= drei", config.get("test3"));
+
+    }
+
+    /**
+     * Test merging the parameter configuration.<p>
+     * 
+     * @throws Exception
+     */
+    public void testMergeParameterConfiguration() throws Exception {
+
+        CmsParameterConfiguration config1 = new CmsParameterConfiguration();
+        String p = "testParam";
+        config1.add(p, "1");
+        config1.add(p, "2");
+        config1.add(p, "3");
+        config1.add("x", "y");
+
+        CmsParameterConfiguration config2 = new CmsParameterConfiguration();
+        config2.add(p, "a");
+        config2.add(p, "b");
+        config2.add(p, "c");
+        config2.add("v", "w");
+
+        config1.putAll(config2);
+
+        assertEquals("1,2,3,a,b,c", config1.get(p));
+        assertEquals(6, config1.getList(p).size());
+        assertEquals("y", config1.get("x"));
+        assertEquals("w", config1.get("v"));
     }
 
     /**
@@ -81,53 +119,5 @@ public class TestParameterConfiguration extends TestCase {
             assertTrue("Key '" + key + "' not found in CmsConfiguration", extProp.containsKey(key));
             assertTrue("Objects for '" + key + "' not equal", value.equals(extProp.getProperty(key)));
         }
-    }
-
-    /**
-     * Test merging the parameter configuration.<p>
-     * 
-     * @throws Exception
-     */
-    public void testMergeParameterConfiguration() throws Exception {
-
-        CmsParameterConfiguration config1 = new CmsParameterConfiguration();
-        String p = "testParam";
-        config1.add(p, "1");
-        config1.add(p, "2");
-        config1.add(p, "3");
-        config1.add("x", "y");
-
-        CmsParameterConfiguration config2 = new CmsParameterConfiguration();
-        config2.add(p, "a");
-        config2.add(p, "b");
-        config2.add(p, "c");
-        config2.add("v", "w");
-
-        config1.putAll(config2);
-
-        assertEquals("1,2,3,a,b,c", config1.get(p));
-        assertEquals(6, config1.getList(p).size());
-        assertEquals("y", config1.get("x"));
-        assertEquals("w", config1.get("v"));
-    }
-
-    /**
-     * Tests escaping and unescaping values in the parameter configuration.<p>
-     * 
-     * @throws Exception
-     */
-    public void testEscapeUnescapeParameterConfiguration() throws Exception {
-
-        CmsParameterConfiguration config = new CmsParameterConfiguration();
-
-        config.add("test1", "test, eins");
-        assertEquals("test, eins", config.get("test1"));
-
-        config.add("test2", "test \\\\ zwei");
-        assertEquals("test \\\\ zwei", config.get("test2"));
-
-        config.add("test3", "test \\= drei");
-        assertEquals("test \\= drei", config.get("test3"));
-
     }
 }

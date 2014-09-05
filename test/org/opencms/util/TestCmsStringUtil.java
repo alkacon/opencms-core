@@ -28,28 +28,17 @@
 package org.opencms.util;
 
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.test.OpenCmsTestCase;
 
 import java.util.Arrays;
 import java.util.List;
-
-import junit.framework.TestCase;
 
 import com.google.common.base.Optional;
 
 /** 
  * Test cases for {@link org.opencms.util.CmsStringUtil}.<p>
  */
-public class TestCmsStringUtil extends TestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     * 
-     * @param arg0 JUnit parameters
-     */
-    public TestCmsStringUtil(String arg0) {
-
-        super(arg0);
-    }
+public class TestCmsStringUtil extends OpenCmsTestCase {
 
     /**
      * Tests content replacement during import.<p>

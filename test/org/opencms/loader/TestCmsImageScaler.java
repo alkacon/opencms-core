@@ -28,14 +28,13 @@
 package org.opencms.loader;
 
 import org.opencms.jsp.CmsJspTagImage;
+import org.opencms.test.OpenCmsTestCase;
 import org.opencms.util.CmsFileUtil;
-
-import junit.framework.TestCase;
 
 /**
  * Tests the OpenCms image scaler.<p>
  */
-public class TestCmsImageScaler extends TestCase {
+public class TestCmsImageScaler extends OpenCmsTestCase {
 
     /**
      * Tests the image downscaling option.<p>

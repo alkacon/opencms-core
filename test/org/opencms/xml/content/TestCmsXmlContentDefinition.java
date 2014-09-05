@@ -28,6 +28,7 @@
 package org.opencms.xml.content;
 
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.test.OpenCmsTestCase;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
@@ -38,8 +39,6 @@ import org.opencms.xml.types.CmsXmlStringValue;
 import java.io.StringWriter;
 import java.util.Locale;
 
-import junit.framework.TestCase;
-
 import org.dom4j.Document;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
@@ -48,7 +47,10 @@ import org.dom4j.io.XMLWriter;
  * Tests for generating an XML content definition.<p>
  * 
  */
-public class TestCmsXmlContentDefinition extends TestCase {
+public class TestCmsXmlContentDefinition extends OpenCmsTestCase {
+
+    /** The schema id. */
+    private static final String SCHEMA_SYSTEM_ID_1B = "http://www.opencms.org/test1b.xsd";
 
     /**
      * Default JUnit constructor.<p>
@@ -163,9 +165,6 @@ public class TestCmsXmlContentDefinition extends TestCase {
         // output the schema XML
         System.out.println(content.toString());
     }
-
-    /** The schema id. */
-    private static final String SCHEMA_SYSTEM_ID_1B = "http://www.opencms.org/test1b.xsd";
 
     /** 
      * Tests XML content definition with a different inner / outer sequence name.<p>

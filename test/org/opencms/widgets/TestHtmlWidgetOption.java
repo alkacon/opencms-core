@@ -27,28 +27,17 @@
 
 package org.opencms.widgets;
 
+import org.opencms.test.OpenCmsTestCase;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Map;
 
-import junit.framework.TestCase;
-
 /** 
  * Test cases for the parsing of select widget options.<p>
  * 
  */
-public class TestHtmlWidgetOption extends TestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     * 
-     * @param arg0 JUnit parameters
-     */
-    public TestHtmlWidgetOption(String arg0) {
-
-        super(arg0);
-    }
+public class TestHtmlWidgetOption extends OpenCmsTestCase {
 
     /**
      * Tests parsing of the embedded gallery configuration.<p>

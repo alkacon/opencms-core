@@ -217,7 +217,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
         String res4 = "/system/modules/tests/test4/";
         String res5 = "/system/modules/tests/test5/";
 
-        List resources = new ArrayList();
+        List<String> resources = new ArrayList<String>();
         resources.add(res1);
         resources.add(res2);
         resources.add(res3);
@@ -231,7 +231,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
         //  test - set resources based on "additionalresources"
         additionalResources += sep + "-" + sep + res5;
 
-        Map parameters = new HashMap();
+        Map<String, String> parameters = new HashMap<String, String>();
         parameters.put("additionalresources", additionalResources);
 
         module1 = new CmsModule(
@@ -298,7 +298,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
         CmsModule module;
         module = CmsModuleImportExportHandler.readModuleFromImport(moduleFile);
 
-        List dependencies = OpenCms.getModuleManager().checkDependencies(
+        List<CmsModuleDependency> dependencies = OpenCms.getModuleManager().checkDependencies(
             module,
             CmsModuleManager.DEPENDENCY_MODE_IMPORT);
 
@@ -627,6 +627,62 @@ public class TestModuleOperations extends OpenCmsTestCase {
     }
 
     /**
+     * Tests a module import with an unknown resource type class.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testModuleImportMissingResTypeClass() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing a module import with an unknown resource type class");
+
+        String moduleName = "org.opencms.test.modules.test4";
+
+        String moduleFile = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
+            "packages/" + moduleName + ".zip");
+
+        printExceptionWarning();
+
+        try {
+            // importing this module will generate an expected error in the log
+            OpenCmsTestLogAppender.setBreakOnError(false);
+            OpenCms.getImportExportManager().importData(
+                cms,
+                new CmsShellReport(cms.getRequestContext().getLocale()),
+                new CmsImportParameters(moduleFile, "/", true));
+        } finally {
+            OpenCmsTestLogAppender.setBreakOnError(true);
+        }
+
+        // basic check if the module was imported correctly
+        if (!OpenCms.getModuleManager().hasModule(moduleName)) {
+            fail("Module '" + moduleName + "' was not imported!");
+        }
+
+        CmsModule module = OpenCms.getModuleManager().getModule(moduleName);
+        // now check the other module data
+        assertEquals(module.getNiceName(), "OpenCms configuration test module 4");
+        assertEquals(module.getDescription(), "Test 4 for the OpenCms module import: Missing classes");
+        assertEquals(module.getVersion(), new CmsModuleVersion("1.0"));
+        assertEquals(module.getActionClass(), "org.opencms.missing.moduleClass");
+        assertEquals(module.getAuthorName(), "Alexander Kandzior");
+        assertEquals(module.getAuthorEmail(), "alex@opencms.org");
+        assertEquals(module.getExportPoints().size(), 0);
+        assertEquals(module.getResources().size(), 0);
+        assertEquals(module.getParameter("param1"), "value1");
+        assertEquals(module.getParameter("param2"), "value2");
+
+        // check for the new resource type
+        I_CmsResourceType missingType = OpenCms.getResourceManager().getResourceType("missing");
+        assertNotNull(missingType);
+        // check configured and actual class name
+        assertEquals(missingType.getClassName(), "org.opencms.missing.resourceTypeClass");
+        assertEquals(missingType.getTypeId(), 88);
+        assertEquals(missingType.getLoaderId(), CmsDumpLoader.RESOURCE_LOADER_ID);
+        assertEquals(missingType.getClass().getName(), CmsResourceTypeUnknown.class.getName());
+    }
+
+    /**
      * Tests a update of a module that contains a new resource type.<p>
      * 
      * This test was added because there was an issue where modules with a resource 
@@ -679,60 +735,6 @@ public class TestModuleOperations extends OpenCmsTestCase {
         if (!OpenCms.getModuleManager().hasModule(moduleName)) {
             fail("Module '" + moduleName + "' was not imported!");
         }
-    }
-
-    /**
-     * Tests a module import with an unknown resource type class.<p>
-     * 
-     * @throws Throwable if something goes wrong
-     */
-    public void testModuleImportMissingResTypeClass() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing a module import with an unknown resource type class");
-
-        String moduleName = "org.opencms.test.modules.test4";
-
-        String moduleFile = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
-            "packages/" + moduleName + ".zip");
-
-        try {
-            // importing this module will generate an expected error in the log
-            OpenCmsTestLogAppender.setBreakOnError(false);
-            OpenCms.getImportExportManager().importData(
-                cms,
-                new CmsShellReport(cms.getRequestContext().getLocale()),
-                new CmsImportParameters(moduleFile, "/", true));
-        } finally {
-            OpenCmsTestLogAppender.setBreakOnError(true);
-        }
-
-        // basic check if the module was imported correctly
-        if (!OpenCms.getModuleManager().hasModule(moduleName)) {
-            fail("Module '" + moduleName + "' was not imported!");
-        }
-
-        CmsModule module = OpenCms.getModuleManager().getModule(moduleName);
-        // now check the other module data
-        assertEquals(module.getNiceName(), "OpenCms configuration test module 4");
-        assertEquals(module.getDescription(), "Test 4 for the OpenCms module import: Missing classes");
-        assertEquals(module.getVersion(), new CmsModuleVersion("1.0"));
-        assertEquals(module.getActionClass(), "org.opencms.missing.moduleClass");
-        assertEquals(module.getAuthorName(), "Alexander Kandzior");
-        assertEquals(module.getAuthorEmail(), "alex@opencms.org");
-        assertEquals(module.getExportPoints().size(), 0);
-        assertEquals(module.getResources().size(), 0);
-        assertEquals(module.getParameter("param1"), "value1");
-        assertEquals(module.getParameter("param2"), "value2");
-
-        // check for the new resource type
-        I_CmsResourceType missingType = OpenCms.getResourceManager().getResourceType("missing");
-        assertNotNull(missingType);
-        // check configured and actual class name
-        assertEquals(missingType.getClassName(), "org.opencms.missing.resourceTypeClass");
-        assertEquals(missingType.getTypeId(), 88);
-        assertEquals(missingType.getLoaderId(), CmsDumpLoader.RESOURCE_LOADER_ID);
-        assertEquals(missingType.getClass().getName(), CmsResourceTypeUnknown.class.getName());
     }
 
     /**

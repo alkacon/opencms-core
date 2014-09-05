@@ -237,6 +237,14 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Default JUnit constructor.<p>
+     */
+    public OpenCmsTestCase() {
+
+        super(null);
+    }
+
+    /**
+     * Default JUnit constructor.<p>
      * 
      * @param arg0 JUnit parameters
      */
@@ -247,6 +255,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * JUnit constructor.<p>
+     * 
      * @param arg0 JUnit parameters
      * @param initialize indicates if the configuration will be initialized
      */
