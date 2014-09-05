@@ -508,7 +508,7 @@ public class OpenCmsTestCase extends TestCase {
      * @return the wrapped test 
      */
     public static Test generateSetupTestWrapper(
-        Class<? extends Test> testClass,
+        final Class<? extends Test> testClass,
         final String importFolder,
         final String targetFolder) {
 
@@ -522,7 +522,7 @@ public class OpenCmsTestCase extends TestCase {
                 @Override
                 protected void setUp() {
 
-                    setupOpenCms(importFolder, targetFolder);
+                    setupOpenCms(importFolder, targetFolder, null, testClass.getName());
                 }
 
                 /**
@@ -531,7 +531,7 @@ public class OpenCmsTestCase extends TestCase {
                 @Override
                 protected void tearDown() {
 
-                    removeOpenCms();
+                    removeOpenCms(testClass.getName());
                 }
             };
             return wrapper;
@@ -768,10 +768,21 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
-     * Removes the initialized OpenCms database and all 
-     * temporary files created during the test run.<p>
+     * Removes the initialized OpenCms database and all temporary files created during the test run.<p>
+     * 
+     * Tries to ascertain the name of the test class from the stack trace.<p>
      */
     public static void removeOpenCms() {
+
+        removeOpenCms(getCurrentTestClass());
+    }
+
+    /**
+     * Removes the initialized OpenCms database and all temporary files created during the test run.<p>
+     * 
+     * @param testName the name of the test class (for writing it to the console)
+     */
+    public static void removeOpenCms(String testName) {
 
         // ensure logging does not throw exceptions
         OpenCmsTestLogAppender.setBreakOnError(false);
@@ -825,7 +836,7 @@ public class OpenCmsTestCase extends TestCase {
             CmsFileUtil.purgeDirectory(new File(path));
         }
 
-        printInfoBox("Finished OpenCms test class:", getCurrentTestClass());
+        printInfoBox(new String[] {"Finished OpenCms test class:", testName});
     }
 
     /**
@@ -861,11 +872,18 @@ public class OpenCmsTestCase extends TestCase {
      * 
      * @param importFolder the folder to import in the "real" FS
      * @param targetFolder the target folder of the import in the VFS
+     * 
      * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/" 
      */
     public static CmsObject setupOpenCms(String importFolder, String targetFolder) {
 
-        return setupOpenCms(importFolder, targetFolder, getTestDataPath("WEB-INF/config." + m_dbProduct + "/"), true);
+        return setupOpenCms(
+            importFolder,
+            targetFolder,
+            getTestDataPath("WEB-INF/config." + m_dbProduct + "/"),
+            null,
+            getCurrentTestClass(),
+            true);
     }
 
     /**
@@ -875,11 +893,18 @@ public class OpenCmsTestCase extends TestCase {
      * @param importFolder the folder to import in the "real" FS
      * @param targetFolder the target folder of the import in the VFS
      * @param publish flag to signalize if the publish script should be called
+     * 
      * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/" 
      */
     public static CmsObject setupOpenCms(String importFolder, String targetFolder, boolean publish) {
 
-        return setupOpenCms(importFolder, targetFolder, getTestDataPath("WEB-INF/config." + m_dbProduct + "/"), publish);
+        return setupOpenCms(
+            importFolder,
+            targetFolder,
+            getTestDataPath("WEB-INF/config." + m_dbProduct + "/"),
+            null,
+            getCurrentTestClass(),
+            publish);
     }
 
     /**
@@ -889,6 +914,7 @@ public class OpenCmsTestCase extends TestCase {
      * @param importFolder the folder to import in the "real" FS
      * @param targetFolder the target folder of the import in the VFS
      * @param specialConfigFolder the folder that contains the special configuration files for this setup
+     * 
      * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/" 
      */
     public static CmsObject setupOpenCms(String importFolder, String targetFolder, String specialConfigFolder) {
@@ -898,6 +924,7 @@ public class OpenCmsTestCase extends TestCase {
             targetFolder,
             getTestDataPath("WEB-INF/config." + m_dbProduct + "/"),
             getTestDataPath(specialConfigFolder),
+            getCurrentTestClass(),
             true);
     }
 
@@ -914,7 +941,34 @@ public class OpenCmsTestCase extends TestCase {
      */
     public static CmsObject setupOpenCms(String importFolder, String targetFolder, String configFolder, boolean publish) {
 
-        return setupOpenCms(importFolder, targetFolder, configFolder, null, publish);
+        return setupOpenCms(importFolder, targetFolder, configFolder, null, getCurrentTestClass(), publish);
+    }
+
+    /**
+     * Sets up a complete OpenCms instance with configuration from the config-ori folder, 
+     * creating the usual projects, and importing a default database.<p>
+     * 
+     * @param importFolder the folder to import in the "real" FS
+     * @param targetFolder the target folder of the import in the VFS
+     * @param specialConfigFolder the folder that contains the special configuration files for this setup
+     * @param testName the name of the test class (for writing it to the console)
+     * 
+     * 
+     * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/" 
+     */
+    public static CmsObject setupOpenCms(
+        String importFolder,
+        String targetFolder,
+        String specialConfigFolder,
+        String testName) {
+
+        return setupOpenCms(
+            importFolder,
+            targetFolder,
+            getTestDataPath("WEB-INF/config." + m_dbProduct + "/"),
+            specialConfigFolder != null ? getTestDataPath(specialConfigFolder) : null,
+            testName,
+            true);
     }
 
     /**
@@ -925,7 +979,7 @@ public class OpenCmsTestCase extends TestCase {
      * @param targetFolder the target folder of the import in the VFS
      * @param configFolder the folder to copy the standard configuration files from
      * @param specialConfigFolder the folder that contains the special configuration fiiles for this setup
-
+     * @param testName the name of the test class (for writing it to the console)
      * @param publish publish only if set
      * 
      * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/" 
@@ -935,9 +989,15 @@ public class OpenCmsTestCase extends TestCase {
         String targetFolder,
         String configFolder,
         String specialConfigFolder,
+        String testName,
         boolean publish) {
 
-        printInfoBox("Setting up OpenCms test class:", getCurrentTestClass());
+        printInfoBox(new String[] {
+            "Setting up OpenCms test class:",
+            testName,
+            "",
+            "Importing from: " + importFolder,
+            "Importing to  : " + targetFolder});
 
         // intialize a new resource storage
         m_resourceStorages = new HashMap<String, OpenCmsTestResourceStorage>();
@@ -1095,7 +1155,7 @@ public class OpenCmsTestCase extends TestCase {
         for (int i = 1; i < stackTraceElements.length; i++) {
             // skip first method in stack, this is always ".getStackTrace()"
             result = stackTraceElements[i].getClassName();
-            if (!result.endsWith(OpenCmsTestCase.class.getName())) {
+            if (result.indexOf(OpenCmsTestCase.class.getName()) == -1) {
                 // first method name NOT from this class is what we want
                 int pos = result.indexOf('$');
                 // cut off any trailing "$1" just because it looks nicer in the output 
@@ -1229,19 +1289,25 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
+     * Prints a message to System.out that Exceptions on the console are expected.<p>
+     */
+    protected static void printExceptionWarning() {
+
+        printInfoBox(new String[] {"ATTENTION: Exceptions in the console output are expected !"});
+    }
+
+    /**
      * Prints  a nicely formatted info box to System.out.<p> 
      * 
-     * @param line1 the first line to print
-     * @param line2 the secound line to print
+     * @param lines the lines to print
      */
-    protected static void printInfoBox(String line1, String line2) {
+    protected static void printInfoBox(String[] lines) {
 
-        System.out.println("\n\n +-------------------------------------------------------------------------"
-            + "\n | "
-            + line1
-            + "\n | "
-            + line2
-            + "\n +-------------------------------------------------------------------------\n");
+        System.out.print("\n\n +------------------------------------------------------------------------------");
+        for (String line : lines) {
+            System.out.print("\n | " + line);
+        }
+        System.out.println("\n +------------------------------------------------------------------------------\n");
     }
 
     /**
@@ -1564,8 +1630,6 @@ public class OpenCmsTestCase extends TestCase {
             if (permission != null) {
                 excludeList.add(principal);
             }
-
-            // TODO: This is the code to recalculate the permission set if necessary. Its not completed yet!
 
             Map<CmsUUID, String> parents = getParents(cms, resourceName);
             List<CmsAccessControlEntry> aceList = cms.getAccessControlEntries(resourceName);
@@ -3556,7 +3620,7 @@ public class OpenCmsTestCase extends TestCase {
         Method runMethod = null;
         try {
             runMethod = getClass().getMethod(getName(), (Class[])null);
-            printInfoBox("Running OpenCms test case:", getClass().getName() + "#" + runMethod.getName());
+            printInfoBox(new String[] {"Running OpenCms test case:", getClass().getName() + "#" + runMethod.getName()});
         } catch (NoSuchMethodException e) {
             fail("Method \"" + getName() + "\" not found");
         }
