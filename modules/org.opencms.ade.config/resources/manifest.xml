@@ -271,7 +271,7 @@
 					order="27" autosetnavigation="true" autosettitle="true"
 					info="desc.htmlredirect" />
 				<accesscontrol>
-					<accessentry principal="ROLE.SITEMAP_MANAGER"
+					<accessentry principal="ROLE.EDITOR"
 						permissions="+r+v+w+c" />
 				</accesscontrol>
 			</explorertype>
@@ -284,7 +284,7 @@
 				<accesscontrol>
 					<accessentry principal="ROLE.ELEMENT_AUTHOR"
 						permissions="+r+v+w" />
-					<accessentry principal="ROLE.SITEMAP_MANAGER"
+					<accessentry principal="ROLE.EDITOR"
 						permissions="+r+v+w+c" />
 				</accesscontrol>
 				<editoptions>
@@ -452,7 +452,7 @@
 					uri="newresource.jsp?newresourcetype=content_folder" order="491"
 					autosetnavigation="false" autosettitle="false" info="desc.configfolder" />
 				<accesscontrol>
-					<accessentry principal="ROLE.SITEMAP_MANAGER"
+					<accessentry principal="ROLE.EDITOR"
 						permissions="+r+v+w+c" />
 				</accesscontrol>
 			</explorertype>
@@ -464,7 +464,7 @@
 					order="21" autosetnavigation="false" autosettitle="false"
 					info="desc.sitemap_config" />
 				<accesscontrol>
-					<accessentry principal="ROLE.SITEMAP_MANAGER"
+					<accessentry principal="ROLE.EDITOR"
 						permissions="+r+v+w+c" />
 				</accesscontrol>
 				<editoptions>
