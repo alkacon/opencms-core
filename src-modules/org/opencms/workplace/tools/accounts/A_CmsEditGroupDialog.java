@@ -309,22 +309,9 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
             // create the widgets for the first dialog page
             result.append(dialogBlockStart(key(Messages.GUI_GROUP_EDITOR_LABEL_IDENTIFICATION_BLOCK_0)));
             result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(0, 4));
+            result.append(createDialogRowsHtml(0, 3));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
-            boolean webuserOu = false;
-            try {
-                webuserOu = OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), getParamOufqn()).hasFlagWebuser();
-            } catch (CmsException e) {
-                // ignore
-            }
-            if (!webuserOu) {
-                result.append(dialogBlockStart(key(Messages.GUI_GROUP_EDITOR_LABEL_FLAGS_BLOCK_0)));
-                result.append(createWidgetTableStart());
-                result.append(createDialogRowsHtml(5, 6));
-                result.append(createWidgetTableEnd());
-                result.append(dialogBlockEnd());
-            }
         }
 
         result.append(createWidgetTableEnd());
