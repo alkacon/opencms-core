@@ -5,7 +5,7 @@
 	xsi:noNamespaceSchemaLocation="opencms://system/schemas/article1.xsd">
   
 	<Article1 language="en">
-		<Name>NameBar</String>
+		<Name>NameBar</Name>
 		<Text>TextBar</Text>
 	</Article1>
 </Articles1>

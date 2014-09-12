@@ -21,7 +21,7 @@
 	<xsd:annotation>
 		<xsd:appinfo>
 			<mappings>
-				<mapping element="Name" mapto="urlName" />
+				
 			</mappings>
 			<formatters>
 				<formatter minwidth="1" maxwidth="2" uri="/system/formatters/article1_f1.jsp" searchcontent="false" />

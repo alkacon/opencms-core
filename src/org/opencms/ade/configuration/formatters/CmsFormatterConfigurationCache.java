@@ -253,7 +253,7 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
 
             if (formatterRes == null) {
                 // normal case if resources get deleted, should not be written to the error channel
-                LOG.info(e.getLocalizedMessage(), e);
+                LOG.info("Could not read formatter with id " + structureId);
             } else {
                 LOG.error("Error while trying to read formatter configuration "
                     + formatterRes.getRootPath()

@@ -684,6 +684,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
      */
     public void testReverseLookup() throws Exception {
 
+        publish();
         writeConfiguration(1, "a");
         writeConfiguration(2, "b");
         writeConfiguration(3, "c");
@@ -950,7 +951,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         try {
             OpenCmsTestLogAppender.setBreakOnError(false);
             OpenCmsTestLogAppender.setHandler(logHandler);
-
+            publish();
             writeConfiguration(1, "a");
             writeConfiguration(2, "b");
             writeConfiguration(3, "c");

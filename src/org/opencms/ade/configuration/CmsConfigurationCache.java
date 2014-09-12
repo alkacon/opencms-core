@@ -33,6 +33,7 @@ import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -523,7 +524,11 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
                 return null;
             }
         } catch (Exception e) {
-            LOG.warn(e.getLocalizedMessage(), e);
+            if (e instanceof CmsVfsResourceNotFoundException) {
+                LOG.info("Configuration file with ID " + id + " was not found.");
+            } else {
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
             return null;
 
         }

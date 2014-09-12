@@ -86,6 +86,7 @@ public final class AllTests {
 
         suite.addTest(org.opencms.setup.AllTests.suite());
         suite.addTest(org.opencms.ade.configuration.AllTests.suite());
+        suite.addTest(org.opencms.ade.containerpage.inherited.AllTests.suite());
         suite.addTest(org.opencms.ade.sitemap.AllTests.suite());
         suite.addTest(org.opencms.cache.AllTests.suite());
         suite.addTest(org.opencms.configuration.AllTests.suite());
