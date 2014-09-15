@@ -113,6 +113,7 @@ public class CmsContainerpageUtil {
      */
     public void consumeContainerElements(I_CmsDropContainer container) {
 
+        boolean containsElements = false;
         // the drag element widgets are created from the existing DOM elements,
         Element child = container.getElement().getFirstChildElement();
         while (child != null) {
@@ -123,6 +124,7 @@ public class CmsContainerpageUtil {
                 CmsContainerElement.CLASS_GROUP_CONTAINER_ELEMENT_MARKER,
                 child);
             if (isContainerElement || isGroupcontainerElement) {
+                containsElements = true;
                 String serializedData = child.getAttribute("rel");
                 CmsContainerElement elementData = null;
                 try {
@@ -234,7 +236,8 @@ public class CmsContainerpageUtil {
                         groupContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().emptyGroupContainer());
                     }
                     // important: adding the option-bar only after the group-containers have been consumed
-                    if (!m_controller.isDetailPage() || container.isDetailView() || container.isDetailOnly()) {
+                    if (container.isEditable()
+                        && (!m_controller.isDetailPage() || container.isDetailView() || container.isDetailOnly())) {
                         //only allow editing if either element of detail only container or not in detail view
                         addOptionBar(groupContainer);
                     }
@@ -242,7 +245,12 @@ public class CmsContainerpageUtil {
                 }
             } else {
                 Element sibling = child.getNextSiblingElement();
-                container.getElement().removeChild(child);
+                if (!containsElements && (sibling == null) && (container instanceof CmsContainerPageContainer)) {
+                    // this element is no container element and is the container only child, assume it is an empty container marker
+                    ((CmsContainerPageContainer)container).setEmptyContainerElement(child);
+                } else {
+                    container.getElement().removeChild(child);
+                }
                 child = sibling;
                 continue;
             }
@@ -412,6 +420,21 @@ public class CmsContainerpageUtil {
     }
 
     /**
+     * Returns if the given container is editable.<p>
+     * 
+     * @param dragParent the parent container
+     * 
+     * @return <code>true</code> if the given container is editable
+     */
+    public boolean isContainerEditable(I_CmsDropContainer dragParent) {
+
+        boolean isSubElement = dragParent instanceof CmsGroupContainerElementPanel;
+        boolean isContainerEditable = dragParent.isEditable()
+            && (isSubElement || !m_controller.isDetailPage() || dragParent.isDetailView() || dragParent.isDetailOnly());
+        return isContainerEditable;
+    }
+
+    /**
      * Returns the container page controller.<p>
      *
      * @return the container page controller
@@ -461,11 +484,7 @@ public class CmsContainerpageUtil {
             elementData.hasWritePermission(),
             elementData.isReleasedAndNotExpired(),
             elementData.isNewEditorDisabled());
-        boolean isSubElement = dragParent instanceof CmsGroupContainerElementPanel;
-        boolean isContainerEditable = isSubElement
-            || !m_controller.isDetailPage()
-            || dragParent.isDetailView()
-            || dragParent.isDetailOnly();
+        boolean isContainerEditable = isContainerEditable(dragParent);
         if (isContainerEditable) {
             addOptionBar(dragElement);
         }
@@ -474,7 +493,7 @@ public class CmsContainerpageUtil {
         if (!m_controller.getData().isUseClassicEditor()
             && m_controller.hasActiveSelection()
             && isContainerEditable
-            && (!isSubElement || m_controller.isGroupcontainerEditing())) {
+            && (!(dragParent instanceof CmsGroupContainerElementPanel) || m_controller.isGroupcontainerEditing())) {
             dragElement.initInlineEditor(m_controller);
         }
         return dragElement;

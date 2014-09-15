@@ -629,9 +629,11 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     CmsContainer container = new CmsContainer(
                         containerName,
                         containerType,
+                        null,
                         containerWidth,
                         maxElements,
                         detailView,
+                        true,
                         Collections.<CmsContainerElement> emptyList(),
                         null,
                         null);

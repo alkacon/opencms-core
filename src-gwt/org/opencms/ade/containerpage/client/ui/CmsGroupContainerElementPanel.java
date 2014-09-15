@@ -62,6 +62,9 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
     /** The editing placeholder. Used within group-container editing. */
     private Element m_editingPlaceholder;
 
+    /** The cached highlighting position. */
+    private CmsPositionBean m_ownPosition;
+
     /** The placeholder element. */
     private Element m_placeholder;
 
@@ -70,9 +73,6 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
 
     /** The resource type name. */
     private String m_resourceType;
-
-    /** The cached highlighting position. */
-    private CmsPositionBean m_ownPosition;
 
     /**
      * Constructor.<p>
@@ -313,6 +313,14 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
     public boolean isDetailView() {
 
         return false;
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#isEditable()
+     */
+    public boolean isEditable() {
+
+        return hasWritePermission();
     }
 
     /**

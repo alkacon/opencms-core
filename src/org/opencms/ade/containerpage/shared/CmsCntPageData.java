@@ -122,6 +122,7 @@ public final class CmsCntPageData implements IsSerializable {
      * @param noEditReason the reason why the current user is not allowed to edit the current container page
      * @param requestParams the original request parameters
      * @param sitemapUri the current sitemap URI
+     * @param sitemapManager if the user has the sitemap manager role
      * @param detailId the detail resource id, if available
      * @param detailContainerPage the detail view container resource path
      * @param newTypes the map of available types and their new resource id's

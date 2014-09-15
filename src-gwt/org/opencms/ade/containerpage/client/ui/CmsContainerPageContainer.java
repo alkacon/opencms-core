@@ -38,6 +38,7 @@ import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Style;
 import org.opencms.gwt.client.util.CmsPositionBean;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -214,8 +215,17 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     /** The list of nested sub containers that are also valid drop targets during the current drag and drop. */
     private List<I_CmsDropTarget> m_dnDChildren;
 
+    /** Flag indicating if the container is editable by the current user. */
+    private boolean m_editable;
+
     /** The element position info cache. */
     private List<ElementPositionInfo> m_elementPositions;
+
+    /** The content to display in case the container is empty. */
+    private String m_emptyContainerContent;
+
+    /** The element to display in case the container is empty. */
+    private Element m_emptyContainerElement;
 
     /** Highlighting border for this container. */
     private CmsHighlightingBorder m_highlighting;
@@ -262,6 +272,8 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
         m_isDetailView = containerData.isDetailView();
         m_detailOnly = containerData.isDetailOnly();
         m_configuredWidth = containerData.getWidth();
+        m_editable = containerData.isEditable();
+        m_emptyContainerContent = containerData.getEmptyContainerContent();
         addStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragTarget());
         onAttach();
     }
@@ -301,7 +313,8 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
      */
     public void checkMaxElementsOnEnter() {
 
-        if (getWidgetCount() >= m_maxElements) {
+        int count = getWidgetCount();
+        if (count >= m_maxElements) {
             Widget overflowElement = null;
             int index = 0;
             for (Widget widget : this) {
@@ -320,6 +333,11 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
                 m_overflowingElement.removeFromParent();
             }
         }
+        if (count == 0) {
+            if (m_emptyContainerElement != null) {
+                m_emptyContainerElement.getStyle().setDisplay(Display.NONE);
+            }
+        }
     }
 
     /**
@@ -329,6 +347,9 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
 
         if (m_overflowingElement != null) {
             add(m_overflowingElement);
+        }
+        if (m_emptyContainerElement != null) {
+            m_emptyContainerElement.getStyle().clearDisplay();
         }
     }
 
@@ -527,6 +548,14 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     }
 
     /**
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#isEditable()
+     */
+    public boolean isEditable() {
+
+        return m_editable;
+    }
+
+    /**
      * @see org.opencms.gwt.client.dnd.I_CmsDropTarget#onDrop(org.opencms.gwt.client.dnd.I_CmsDraggable)
      */
     public void onDrop(I_CmsDraggable draggable) {
@@ -578,6 +607,24 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
         }
         m_placeholderIndex = -1;
         m_requiresPositionUpdate = true;
+
+        // check if the empty container content should be displayed or removed
+        if (getWidgetCount() == 0) {
+            if (m_emptyContainerElement != null) {
+                m_emptyContainerElement.getStyle().clearDisplay();
+            } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_emptyContainerContent)) {
+                // add empty container element
+                try {
+                    m_emptyContainerElement = CmsDomUtil.createElement(m_emptyContainerContent);
+                    getElement().appendChild(m_emptyContainerElement);
+                } catch (Exception e) {
+                    CmsDebugLog.getInstance().printLine(e.getMessage());
+                }
+            }
+        } else if (m_emptyContainerElement != null) {
+            m_emptyContainerElement.removeFromParent();
+            m_emptyContainerElement = null;
+        }
     }
 
     /**
@@ -591,6 +638,16 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
         int newPlaceholderIndex = internalRepositionPlaceholder(x, y);
         m_requiresPositionUpdate = newPlaceholderIndex != m_placeholderIndex;
         m_placeholderIndex = newPlaceholderIndex;
+    }
+
+    /**
+     * Sets the empty container element.<p>
+     * 
+     * @param emptyContainerElement the empty container element
+     */
+    public void setEmptyContainerElement(Element emptyContainerElement) {
+
+        m_emptyContainerElement = emptyContainerElement;
     }
 
     /**

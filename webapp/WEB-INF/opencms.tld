@@ -1634,7 +1634,7 @@
         </description>
         <name>container</name>
         <tag-class>org.opencms.jsp.CmsJspTagContainer</tag-class>
-        <body-content>empty</body-content>
+        <body-content>JSP</body-content>
         <attribute>
         	<description><![CDATA[
         	  A unique name for the container that is used to identify it in a container page.
@@ -1722,6 +1722,14 @@
         	  </DL>
         	]]></description>
         	<name>detailonly</name>
+        	<required>false</required>
+        	<rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+        	<description><![CDATA[
+        	  A comma separated list of OpenCms principals that are allowed to edit the container content. If empty it defaults to ROLE.ELEMENT_AUTHOR.
+        	]]></description>
+        	<name>editableby</name>
         	<required>false</required>
         	<rtexprvalue>true</rtexprvalue>
         </attribute>

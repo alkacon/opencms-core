@@ -44,6 +44,9 @@ public class CmsContainer implements IsSerializable {
     /** Flag indicating this container is used for detail views. */
     private boolean m_detailView;
 
+    /** Flag indicating the container is editable by the current user. */
+    private boolean m_editable;
+
     /** List of the contained elements id's. */
     private List<CmsContainerElement> m_elements;
 
@@ -65,14 +68,19 @@ public class CmsContainer implements IsSerializable {
     /** The width of the container. */
     private int m_width;
 
+    /** The content to display in case the container is empty. */
+    private String m_emptyContainerContent;
+
     /**
      * Constructor.<p>
      * 
      * @param name the container name, also used as id within a container-page
      * @param type the container type
+     * @param emptyContainerContent content to display in case the container is empty
      * @param width the width of the container 
      * @param maxElements the maximum number of elements displayed by this container
      * @param detailView flag indicating this container is used for detail views
+     * @param editable flag indicating the container is editable by the current user
      * @param elements the container elements id's
      * @param parentContainerName the parent container name
      * @param parentInstanceId the parent instance id
@@ -80,9 +88,11 @@ public class CmsContainer implements IsSerializable {
     public CmsContainer(
         String name,
         String type,
+        String emptyContainerContent,
         int width,
         int maxElements,
         boolean detailView,
+        boolean editable,
         List<CmsContainerElement> elements,
         String parentContainerName,
         String parentInstanceId) {
@@ -90,9 +100,11 @@ public class CmsContainer implements IsSerializable {
         m_elements = elements;
         m_name = name;
         m_type = type;
+        m_emptyContainerContent = emptyContainerContent;
         m_maxElements = maxElements;
         m_width = width;
         m_detailView = detailView;
+        m_editable = editable;
         m_parentContainerName = parentContainerName;
         m_parentInstanceId = parentInstanceId;
     }
@@ -113,6 +125,16 @@ public class CmsContainer implements IsSerializable {
     public List<CmsContainerElement> getElements() {
 
         return m_elements;
+    }
+
+    /**
+     * Returns the content to display in case the container is empty.<p>
+     *
+     * @return the content to display in case the container is empty
+     */
+    public String getEmptyContainerContent() {
+
+        return m_emptyContainerContent;
     }
 
     /**
@@ -193,6 +215,16 @@ public class CmsContainer implements IsSerializable {
     public boolean isDetailView() {
 
         return m_detailView;
+    }
+
+    /**
+     * Returns if the container is editable by the current user.<p>
+     * 
+     * @return <code>true</code> if the container is editable by the current user
+     */
+    public boolean isEditable() {
+
+        return m_editable;
     }
 
     /**

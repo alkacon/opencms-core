@@ -272,7 +272,17 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
         service.setSessionCache(new CmsADESessionCache(cms));
         CmsContainerElement element = new CmsContainerElement();
         element.setClientId("" + c.getStructureId());
-        CmsContainer container = new CmsContainer("cnt", "content", 500, 999, false, Arrays.asList(element), null, null);
+        CmsContainer container = new CmsContainer(
+            "cnt",
+            "content",
+            null,
+            500,
+            999,
+            false,
+            false,
+            Arrays.asList(element),
+            null,
+            null);
         service.saveContainerpage(containerPage.getStructureId(), Arrays.asList(container));
 
         CmsXmlContainerPage cntPage = CmsXmlContainerPageFactory.unmarshal(cms, containerPage);

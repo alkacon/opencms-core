@@ -32,6 +32,7 @@ import org.opencms.ade.containerpage.CmsContainerpageService;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
+import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -48,6 +49,8 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
+import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -77,7 +80,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.TagSupport;
+import javax.servlet.jsp.tagext.BodyContent;
+import javax.servlet.jsp.tagext.BodyTagSupport;
 
 import org.apache.commons.logging.Log;
 
@@ -86,7 +90,7 @@ import org.apache.commons.logging.Log;
  * 
  * @since 8.0
  */
-public class CmsJspTagContainer extends TagSupport {
+public class CmsJspTagContainer extends BodyTagSupport {
 
     /** Default number of max elements in the container in case no value has been set. */
     public static final String DEFAULT_MAX_ELEMENTS = "100";
@@ -108,11 +112,17 @@ public class CmsJspTagContainer extends TagSupport {
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -1228397990961282556L;
 
+    /** The evaluated body content if available. */
+    private String m_bodyContent;
+
     /** States if this container should only be displayed on detail pages. */
     private boolean m_detailOnly;
 
     /** The detail-view attribute value. */
     private boolean m_detailView;
+
+    /** The editable by tag attribute. A comma separated list of OpenCms principals. */
+    private String m_editableBy;
 
     /** The maxElements attribute value. */
     private String m_maxElements;
@@ -438,39 +448,32 @@ public class CmsJspTagContainer extends TagSupport {
     }
 
     /**
+     * @see javax.servlet.jsp.tagext.BodyTagSupport#doAfterBody()
+     */
+    @SuppressWarnings("resource")
+    @Override
+    public int doAfterBody() {
+
+        // store the evaluated body content for later use
+        BodyContent bc = getBodyContent();
+        if (bc != null) {
+            m_bodyContent = bc.getString();
+            try {
+                bc.clear();
+            } catch (IOException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        return SKIP_BODY;
+    }
+
+    /**
      * @see javax.servlet.jsp.tagext.TagSupport#doEndTag()
      */
     @Override
     public int doEndTag() throws JspException {
 
-        m_type = null;
-        m_name = null;
-        m_maxElements = null;
-        m_tag = null;
-        m_tagClass = null;
-        m_detailView = false;
-        m_detailOnly = false;
-        m_width = null;
-        // reset the current element
-        CmsJspStandardContextBean.getInstance(pageContext.getRequest()).setElement(m_parentElement);
-        CmsJspStandardContextBean.getInstance(pageContext.getRequest()).setContainer(m_parentContainer);
-        m_parentElement = null;
-        m_parentContainer = null;
-        return super.doEndTag();
-    }
-
-    /**
-     * Internal action method.<p>
-     * 
-     * @return SKIP_BODY
-     * @throws JspException in case something goes wrong
-     * @see javax.servlet.jsp.tagext.Tag#doStartTag()
-     */
-    @Override
-    public int doStartTag() throws JspException {
-
         ServletRequest req = pageContext.getRequest();
-
         // This will always be true if the page is called through OpenCms 
         if (CmsFlexController.isCmsRequest(req)) {
 
@@ -482,7 +485,6 @@ public class CmsJspTagContainer extends TagSupport {
                 CmsJspStandardContextBean standardContext = CmsJspStandardContextBean.getInstance(req);
                 m_parentElement = standardContext.getElement();
                 m_parentContainer = standardContext.getContainer();
-
                 CmsContainerPageBean containerPage = standardContext.getPage();
                 if (containerPage == null) {
                     // get the container page itself, checking the history first
@@ -501,7 +503,7 @@ public class CmsJspTagContainer extends TagSupport {
                 if (detailOnly) {
                     if (detailContent == null) {
                         // this is no detail page, so the detail only container will not be rendered at all
-                        return SKIP_BODY;
+                        return EVAL_PAGE;
                     } else {
                         CmsContainerPageBean detailOnlyPage = getDetailOnlyPage(cms, req);
                         if (detailOnlyPage != null) {
@@ -533,7 +535,7 @@ public class CmsJspTagContainer extends TagSupport {
                         tagName,
                         getName(),
                         getTagClass(),
-                        isOnline ? null : getContainerData(maxElements, isUsedAsDetailView, detailOnly)));
+                        isOnline ? null : getContainerData(cms, maxElements, isUsedAsDetailView, detailOnly)));
 
                 standardContext.setContainer(container);
                 // validate the type
@@ -577,6 +579,10 @@ public class CmsJspTagContainer extends TagSupport {
                         }
                     }
                 }
+                if ((numRenderedElements == 0) && (m_bodyContent != null)) {
+                    // the container is empty, print the evaluated body content
+                    pageContext.getOut().print(m_bodyContent);
+                }
                 // close tag for container
                 pageContext.getOut().print(getTagClose(tagName));
             } catch (Exception ex) {
@@ -586,7 +592,38 @@ public class CmsJspTagContainer extends TagSupport {
                 throw new javax.servlet.jsp.JspException(ex);
             }
         }
-        return SKIP_BODY;
+
+        // clear all members so the tag object may be reused
+        m_type = null;
+        m_name = null;
+        m_maxElements = null;
+        m_tag = null;
+        m_tagClass = null;
+        m_detailView = false;
+        m_detailOnly = false;
+        m_width = null;
+        m_editableBy = null;
+        m_bodyContent = null;
+        // reset the current element
+        CmsJspStandardContextBean.getInstance(pageContext.getRequest()).setElement(m_parentElement);
+        CmsJspStandardContextBean.getInstance(pageContext.getRequest()).setContainer(m_parentContainer);
+        m_parentElement = null;
+        m_parentContainer = null;
+        return super.doEndTag();
+    }
+
+    /**
+     * Internal action method.<p>
+     * 
+     * @return EVAL_BODY_BUFFERED
+     * 
+     * @see javax.servlet.jsp.tagext.Tag#doStartTag()
+     */
+    @Override
+    public int doStartTag() {
+
+        // everything is done within the doEndTag method once the body has been evaluated
+        return EVAL_BODY_BUFFERED;
     }
 
     /**
@@ -597,6 +634,16 @@ public class CmsJspTagContainer extends TagSupport {
     public String getDetailview() {
 
         return String.valueOf(m_detailView);
+    }
+
+    /**
+     * Returns the editable by tag attribute.<p>
+     *
+     * @return the editable by tag attribute
+     */
+    public String getEditableby() {
+
+        return m_editableBy;
     }
 
     /**
@@ -685,6 +732,16 @@ public class CmsJspTagContainer extends TagSupport {
     }
 
     /**
+     * Sets the editable by tag attribute.<p>
+     *
+     * @param editableBy the editable by tag attribute to set
+     */
+    public void setEditableby(String editableBy) {
+
+        m_editableBy = editableBy;
+    }
+
+    /**
      * Sets the maxElements attribute value.<p>
      *
      * @param maxElements the maxElements value to set
@@ -747,13 +804,14 @@ public class CmsJspTagContainer extends TagSupport {
     /**
      * Returns the serialized data of the given container.<p>
      * 
+     * @param cms the cms context
      * @param maxElements the maximum number of elements allowed within this container
      * @param isDetailView <code>true</code> if this container is currently being used for the detail view
      * @param isDetailOnly <code>true</code> if this is a detail only container
      * 
      * @return the serialized container data
      */
-    protected String getContainerData(int maxElements, boolean isDetailView, boolean isDetailOnly) {
+    protected String getContainerData(CmsObject cms, int maxElements, boolean isDetailView, boolean isDetailOnly) {
 
         int width = -1;
         try {
@@ -766,9 +824,11 @@ public class CmsJspTagContainer extends TagSupport {
         CmsContainer cont = new CmsContainer(
             getName(),
             getType(),
+            m_bodyContent,
             width,
             maxElements,
             isDetailView,
+            isEditable(cms),
             null,
             m_parentContainer != null ? m_parentContainer.getName() : null,
             m_parentElement != null ? m_parentElement.getInstanceId() : null);
@@ -780,6 +840,76 @@ public class CmsJspTagContainer extends TagSupport {
             LOG.error(e.getLocalizedMessage(), e);
         }
 
+        return result;
+    }
+
+    /**
+     * Returns if the container is editable by the current user.<p>
+     * 
+     * @param cms the cms context
+     * 
+     * @return <code>true</code> if the container is editable by the current user
+     */
+    protected boolean isEditable(CmsObject cms) {
+
+        boolean result = false;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_editableBy)) {
+            String[] principals = m_editableBy.split(",");
+            List<CmsGroup> groups = null;
+            for (int i = 0; i < principals.length; i++) {
+                String key = principals[i];
+                // get the principal name from the principal String
+                String principal = key.substring(key.indexOf('.') + 1, key.length());
+
+                if (key.startsWith(I_CmsPrincipal.PRINCIPAL_GROUP)) {
+                    // read the group
+                    principal = OpenCms.getImportExportManager().translateGroup(principal);
+                    try {
+                        CmsGroup group = cms.readGroup(principal);
+                        if (groups == null) {
+                            try {
+                                groups = cms.getGroupsOfUser(cms.getRequestContext().getCurrentUser().getName(), false);
+                            } catch (Exception ex) {
+                                if (LOG.isErrorEnabled()) {
+                                    LOG.error(ex.getLocalizedMessage(), ex);
+                                }
+                                groups = Collections.emptyList();
+                            }
+                        }
+                        result = groups.contains(group);
+                    } catch (CmsException e) {
+                        if (LOG.isErrorEnabled()) {
+                            LOG.error(e.getLocalizedMessage(), e);
+                        }
+                    }
+                } else if (key.startsWith(I_CmsPrincipal.PRINCIPAL_USER)) {
+                    // read the user
+                    principal = OpenCms.getImportExportManager().translateUser(principal);
+                    try {
+                        result = cms.getRequestContext().getCurrentUser().equals(cms.readUser(principal));
+                    } catch (CmsException e) {
+                        if (LOG.isErrorEnabled()) {
+                            LOG.error(e.getLocalizedMessage(), e);
+                        }
+                    }
+                } else {
+                    // read the role with role name
+                    CmsRole role = CmsRole.valueOfRoleName(principal);
+                    if (role == null) {
+                        // try to read the role in the old fashion with group name
+                        role = CmsRole.valueOfGroupName(principal);
+                    }
+                    if (role != null) {
+                        result = OpenCms.getRoleManager().hasRole(cms, role);
+                    }
+                }
+                if (result) {
+                    break;
+                }
+            }
+        } else {
+            result = OpenCms.getRoleManager().hasRole(cms, CmsRole.ELEMENT_AUTHOR);
+        }
         return result;
     }
 

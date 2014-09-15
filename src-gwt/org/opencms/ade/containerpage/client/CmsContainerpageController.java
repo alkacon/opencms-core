@@ -266,9 +266,11 @@ public final class CmsContainerpageController {
             m_resultContainers.add(new CmsContainer(
                 m_containerName,
                 m_currentContainer.getType(),
+                null,
                 m_currentContainer.getWidth(),
                 m_currentContainer.getMaxElements(),
                 m_currentContainer.isDetailView(),
+                true,
                 m_currentElements,
                 m_currentContainer.getParentContainerName(),
                 m_currentContainer.getParentInstanceId()));

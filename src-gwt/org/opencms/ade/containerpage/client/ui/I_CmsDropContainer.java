@@ -148,6 +148,13 @@ public interface I_CmsDropContainer extends I_CmsNestedDropTarget {
     boolean isDetailView();
 
     /**
+     * Returns if the container is editable by the current user.<p>
+     * 
+     * @return <code>true</code> if the container is editable by the current user
+     */
+    boolean isEditable();
+
+    /**
      * Refreshes position and dimension of the highlighting border. Call when anything changed during the drag process.<p>
      */
     void refreshHighlighting();
