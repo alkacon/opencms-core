@@ -35,8 +35,6 @@ import org.opencms.gwt.client.util.I_CmsUniqueActiveItem;
 
 import java.util.Iterator;
 
-import com.google.gwt.dom.client.Style.Display;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.HasMouseOutHandlers;
 import com.google.gwt.event.dom.client.HasMouseOverHandlers;
 import com.google.gwt.event.dom.client.MouseOutEvent;
@@ -152,7 +150,6 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
                 }
             }
         }
-        optionBar.initWidth();
         return optionBar;
     }
 
@@ -200,20 +197,6 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
     public int getCalculatedWidth() {
 
         return m_calculatedWidth;
-    }
-
-    /**
-     * Calculates and sets the width of the option bar.<p>
-     */
-    public void initWidth() {
-
-        m_calculatedWidth = 0;
-        for (Widget w : m_panel) {
-            if (!Display.NONE.getCssName().equalsIgnoreCase(w.getElement().getStyle().getDisplay())) {
-                m_calculatedWidth += 20;
-            }
-        }
-        getElement().getStyle().setWidth(m_calculatedWidth, Unit.PX);
     }
 
     /**

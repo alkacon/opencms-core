@@ -560,6 +560,5 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
                 }
             }
         }
-        elementWidget.getElementOptionBar().initWidth();
     }
 }
