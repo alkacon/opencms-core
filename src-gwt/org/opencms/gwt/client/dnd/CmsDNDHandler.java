@@ -1077,7 +1077,6 @@ public class CmsDNDHandler implements MouseDownHandler {
      * @param left absolute left of the animation end position
      * @param isDrop if the animation is done on drop
      */
-    @SuppressWarnings("incomplete-switch")
     private void showEndAnimation(Command callback, int top, int left, boolean isDrop) {
 
         if (!isAnimationEnabled() || (m_dragHelper == null)) {
@@ -1107,8 +1106,10 @@ public class CmsDNDHandler implements MouseDownHandler {
                 int startLeft = CmsDomUtil.getCurrentStyleInt(m_dragHelper, Style.left);
                 m_currentAnimation = new CmsMoveAnimation(m_dragHelper, startTop, startLeft, endTop, endLeft, callback);
                 break;
+
+            default:
+                // nothing to do
         }
         m_currentAnimation.run(400);
-
     }
 }
