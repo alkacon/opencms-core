@@ -1176,15 +1176,11 @@ public final class CmsContainerpageController {
     public Map<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> getContainerTargets() {
 
         Map<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> result = new HashMap<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer>();
-        if (isDetailPage()) {
-            // in case of a detail page, regular containers are not considered a drop target
-            for (Entry<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> entry : m_targetContainers.entrySet()) {
-                if (entry.getValue().isDetailOnly() || entry.getValue().isDetailView()) {
-                    result.put(entry.getKey(), entry.getValue());
-                }
+        for (Entry<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> entry : m_targetContainers.entrySet()) {
+            if (entry.getValue().isEditable()
+                && (!isDetailPage() || (entry.getValue().isDetailOnly() || entry.getValue().isDetailView()))) {
+                result.put(entry.getKey(), entry.getValue());
             }
-        } else {
-            result.putAll(m_targetContainers);
         }
         return result;
     }
