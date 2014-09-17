@@ -140,6 +140,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The "webserver" attribute. */
     public static final String A_WEBSERVER = "webserver";
 
+    /** The "usePermanentRedirects" attribute. */
+    public static final String A_USE_PERMANENT_REDIRECTS = "usePermanentRedirects";
+
     /** The name of the DTD for this configuration. */
     public static final String CONFIGURATION_DTD_NAME = "opencms-system.dtd";
 
@@ -981,7 +984,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_SITES, "setSiteManager");
 
         // add site configuration rule
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, "addSite", 9);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, "addSite", 10);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, 0, A_SERVER);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, 1, A_URI);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, 2, A_TITLE);
@@ -991,7 +994,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 6, A_SERVER);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 7, A_EXCLUSIVE);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 8, A_ERROR);
-
+        digester.addCallParam(
+            "*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_SECURE,
+            5,
+            A_USE_PERMANENT_REDIRECTS);
         // add an alias to the currently configured site
         digester.addCallMethod(
             "*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_ALIAS,
@@ -1417,8 +1423,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             if (site.hasSecureServer()) {
                 Element secureElem = siteElement.addElement(N_SECURE);
                 secureElem.addAttribute(A_SERVER, site.getSecureUrl());
+
                 secureElem.addAttribute(A_EXCLUSIVE, String.valueOf(site.isExclusiveUrl()));
                 secureElem.addAttribute(A_ERROR, String.valueOf(site.isExclusiveError()));
+                if (site.usesPermanentRedirects()) {
+                    secureElem.addAttribute(A_USE_PERMANENT_REDIRECTS, Boolean.TRUE.toString());
+                }
             }
             // create <alias server=""/> subnode(s)
             Iterator<CmsSiteMatcher> aliasIterator = site.getAliases().iterator();

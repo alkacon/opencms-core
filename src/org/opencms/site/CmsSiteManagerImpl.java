@@ -185,7 +185,8 @@ public final class CmsSiteManagerImpl {
             Boolean.toString(site.isWebserver()),
             secureUrl,
             Boolean.toString(site.isExclusiveUrl()),
-            Boolean.toString(site.isExclusiveError()));
+            Boolean.toString(site.isExclusiveError()),
+            Boolean.toString(site.usesPermanentRedirects()));
 
         // re-initialize, will freeze the state when finished
         initialize(cms);
@@ -209,6 +210,7 @@ public final class CmsSiteManagerImpl {
      * @param exclusive if set to <code>true</code>, secure resources will only be available using the configured secure url
      * @param error if exclusive, and set to <code>true</code> will generate a 404 error, 
      *                             if set to <code>false</code> will redirect to secure URL
+     * @param usePermanentRedirects if set to "true", permanent redirects should be used when redirecting to the secure URL                           
      * 
      * @throws CmsConfigurationException if the site contains a server name, that is already assigned
      */
@@ -221,7 +223,8 @@ public final class CmsSiteManagerImpl {
         String webserver,
         String secureServer,
         String exclusive,
-        String error) throws CmsConfigurationException {
+        String error,
+        String usePermanentRedirects) throws CmsConfigurationException {
 
         if (m_frozen) {
             throw new CmsRuntimeException(Messages.get().container(Messages.ERR_CONFIG_FROZEN_0));
@@ -261,6 +264,7 @@ public final class CmsSiteManagerImpl {
             site.setSecureServer(matcher);
             site.setExclusiveUrl(Boolean.valueOf(exclusive).booleanValue());
             site.setExclusiveError(Boolean.valueOf(error).booleanValue());
+            site.setUsePermanentRedirects(Boolean.valueOf(usePermanentRedirects).booleanValue());
             addServer(matcher, site);
         }
 

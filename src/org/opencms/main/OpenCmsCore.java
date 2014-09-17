@@ -2364,10 +2364,15 @@ public final class OpenCmsCore {
                             if (!target.toLowerCase().startsWith(secureUrl.toLowerCase())) {
                                 LOG.warn("Failed to generate secure URL for " + target + ", site = " + site);
                             }
-
                         }
+
                         try {
-                            res.sendRedirect(target);
+                            if (site.usesPermanentRedirects()) {
+                                res.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+                                res.setHeader("Location", target);
+                            } else {
+                                res.sendRedirect(target);
+                            }
                         } catch (Exception e) {
                             // ignore, but should never happen
                         }

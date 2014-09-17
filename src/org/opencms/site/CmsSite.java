@@ -82,6 +82,9 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     /** Indicates whether this site should be considered when writing the web server configuration. */
     private boolean m_webserver = true;
 
+    /** True if permanent redirects should be used when redirecting to the secure URL of this site. */
+    private boolean m_usesPermanentRedirects;
+
     /**
      * Constructs a new site object without title and id information,
      * this is to be used for lookup purposes only.<p>
@@ -511,6 +514,16 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     }
 
     /**
+     * Enables use of permanent redirects instead of temporary redirects to the secure site.<p>
+     * 
+     * @param usePermanentRedirects true if permanent redirects should be used  
+     */
+    public void setUsePermanentRedirects(boolean usePermanentRedirects) {
+
+        m_usesPermanentRedirects = usePermanentRedirects;
+    }
+
+    /**
      * Sets the web server.<p>
      *
      * @param webserver the web server to set
@@ -543,6 +556,16 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
             result.append(" (no title)");
         }
         return result.toString();
+    }
+
+    /** 
+     * Returns true if permanent redirects should be used for redirecting to the secure URL for this site.<p>
+     * 
+     * @return true if permanent redirects should be used 
+     */
+    public boolean usesPermanentRedirects() {
+
+        return m_usesPermanentRedirects;
     }
 
     /**
