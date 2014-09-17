@@ -829,6 +829,11 @@ public class CmsSolrIndex extends CmsSearchIndex {
             long visibleHitCount = hitCount;
             float maxScore = 0;
 
+            // If we're using a postprocessor, (re-)initialize it before using it 
+            if (m_postProcessor != null) {
+                m_postProcessor.init();
+            }
+
             // process found documents
             List<CmsSearchResource> allDocs = new ArrayList<CmsSearchResource>();
             int cnt = 0;
@@ -849,7 +854,9 @@ public class CmsSolrIndex extends CmsSearchIndex {
                                         (SolrInputDocument)searchDoc.getDocument());
                                 }
                                 resourceDocumentList.add(new CmsSearchResource(resource, searchDoc));
-                                solrDocumentList.add(doc);
+                                if (null != doc) {
+                                    solrDocumentList.add(doc);
+                                }
                                 maxScore = maxScore < searchDoc.getScore() ? searchDoc.getScore() : maxScore;
                             }
                             allDocs.add(new CmsSearchResource(resource, searchDoc));
