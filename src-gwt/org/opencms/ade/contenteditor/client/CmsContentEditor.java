@@ -1990,7 +1990,7 @@ public final class CmsContentEditor extends CmsEditorBase {
                                 // ignore 
                             }
 
-                        });
+                        }, null);
 
                     }
                 });

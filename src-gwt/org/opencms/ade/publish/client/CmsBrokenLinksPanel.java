@@ -122,7 +122,7 @@ public class CmsBrokenLinksPanel extends Composite {
     static {
         SLOT_MAPPING = new int[4];
         SLOT_MAPPING[CmsPublishGroupPanel.SLOT_WARNING] = 0;
-        SLOT_MAPPING[CmsPublishGroupPanel.SLOT_PREVIEW] = -1;
+        SLOT_MAPPING[CmsPublishGroupPanel.SLOT_EDIT] = -1;
         SLOT_MAPPING[CmsPublishGroupPanel.SLOT_REMOVE] = -1;
         SLOT_MAPPING[CmsPublishGroupPanel.SLOT_MENU] = -1;
     }

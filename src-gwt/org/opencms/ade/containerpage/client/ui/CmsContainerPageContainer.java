@@ -309,6 +309,29 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     }
 
     /**
+     * Check if the empty container content should be displayed or removed.<p>
+     */
+    public void checkEmptyContainers() {
+
+        if (getWidgetCount() == 0) {
+            if (m_emptyContainerElement != null) {
+                m_emptyContainerElement.getStyle().clearDisplay();
+            } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_emptyContainerContent)) {
+                // add empty container element
+                try {
+                    m_emptyContainerElement = CmsDomUtil.createElement(m_emptyContainerContent);
+                    getElement().appendChild(m_emptyContainerElement);
+                } catch (Exception e) {
+                    CmsDebugLog.getInstance().printLine(e.getMessage());
+                }
+            }
+        } else if (m_emptyContainerElement != null) {
+            m_emptyContainerElement.removeFromParent();
+            m_emptyContainerElement = null;
+        }
+    }
+
+    /**
      * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#checkMaxElementsOnEnter()
      */
     public void checkMaxElementsOnEnter() {
@@ -609,22 +632,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
         m_requiresPositionUpdate = true;
 
         // check if the empty container content should be displayed or removed
-        if (getWidgetCount() == 0) {
-            if (m_emptyContainerElement != null) {
-                m_emptyContainerElement.getStyle().clearDisplay();
-            } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_emptyContainerContent)) {
-                // add empty container element
-                try {
-                    m_emptyContainerElement = CmsDomUtil.createElement(m_emptyContainerContent);
-                    getElement().appendChild(m_emptyContainerElement);
-                } catch (Exception e) {
-                    CmsDebugLog.getInstance().printLine(e.getMessage());
-                }
-            }
-        } else if (m_emptyContainerElement != null) {
-            m_emptyContainerElement.removeFromParent();
-            m_emptyContainerElement = null;
-        }
+        checkEmptyContainers();
     }
 
     /**

@@ -51,6 +51,7 @@ import org.opencms.gwt.client.ui.I_CmsAcceptDeclineCancelHandler;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 import org.opencms.gwt.client.ui.I_CmsModelSelectHandler;
 import org.opencms.gwt.client.ui.I_CmsToolbarButton;
+import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.gwt.client.ui.contextmenu.A_CmsContextMenuItem;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuEntry;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
@@ -397,6 +398,14 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     public Map<String, I_CmsContextMenuCommand> getContextMenuCommands() {
 
         return m_editor.getContextMenuCommands();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#getEditorHandler()
+     */
+    public I_CmsContentEditorHandler getEditorHandler() {
+
+        return m_controller.getContentEditorHandler();
     }
 
     /**
@@ -1263,7 +1272,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                 openPublish();
             }
 
-        });
+        }, m_controller.getContentEditorHandler());
     }
 
     /**

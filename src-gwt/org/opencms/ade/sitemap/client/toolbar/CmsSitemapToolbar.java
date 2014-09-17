@@ -58,6 +58,8 @@ public class CmsSitemapToolbar extends CmsToolbar {
     /** The new menu button. */
     private CmsToolbarNewButton m_newMenuButton;
 
+    private CmsSitemapToolbarHandler m_toolbarHandler;
+
     /**
      * Constructor.<p>
      * 
@@ -92,8 +94,8 @@ public class CmsSitemapToolbar extends CmsToolbar {
                 }
             }
         };
-        m_contextMenuButton = new CmsToolbarContextButton(new CmsSitemapToolbarHandler(
-            controller.getData().getContextMenuEntries()));
+        m_toolbarHandler = new CmsSitemapToolbarHandler(controller.getData().getContextMenuEntries());
+        m_contextMenuButton = new CmsToolbarContextButton(m_toolbarHandler);
         m_contextMenuButton.addClickHandler(clickHandler);
         addRight(m_contextMenuButton);
         addRight(new CmsToolbarGoBackButton(this, controller));
@@ -123,6 +125,11 @@ public class CmsSitemapToolbar extends CmsToolbar {
     public CmsToolbarContextButton getContextMenuButton() {
 
         return m_contextMenuButton;
+    }
+
+    public CmsSitemapToolbarHandler getToolbarHandler() {
+
+        return m_toolbarHandler;
     }
 
     /**

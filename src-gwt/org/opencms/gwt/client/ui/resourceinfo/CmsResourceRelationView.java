@@ -40,6 +40,8 @@ import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.CmsSimpleListItem;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog;
+import org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog.DialogOptions;
+import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuButton;
 import org.opencms.gwt.client.ui.contextmenu.CmsLogout;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
@@ -47,6 +49,7 @@ import org.opencms.gwt.client.ui.resourceinfo.CmsResourceInfoView.ContextMenuHan
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsResourceStatusBean;
 import org.opencms.gwt.shared.CmsResourceStatusRelationBean;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -54,7 +57,6 @@ import java.util.List;
 import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.FormElement;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -64,7 +66,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
@@ -231,16 +232,20 @@ public class CmsResourceRelationView extends Composite {
                                 editableData.setElementLanguage(CmsCoreProvider.get().getLocale());
                                 editableData.setStructureId(currentRelationBean.getStructureId());
                                 editableData.setSitePath(currentRelationBean.getSitePath());
-                                FormElement form = CmsContentEditorDialog.generateForm(
+                                CmsContentEditorDialog.get().openEditDialog(
                                     editableData,
                                     false,
-                                    "_blank",
-                                    null);
-                                RootPanel.get().getElement().appendChild(form);
-                                form.submit();
-                                if (m_popup != null) {
-                                    m_popup.hide();
-                                }
+                                    null,
+                                    new DialogOptions(),
+                                    new I_CmsContentEditorHandler() {
+
+                                        public void onClose(String sitePath, CmsUUID structureId, boolean isNew) {
+
+                                            if (m_popup != null) {
+                                                m_popup.hide();
+                                            }
+                                        }
+                                    });
                                 ((CmsPushButton)event.getSource()).clearHoverState();
                             }
                         }

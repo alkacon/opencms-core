@@ -147,7 +147,7 @@ public final class CmsEditFile implements I_CmsHasContextMenuCommand, I_CmsConte
 
         I_CmsContentEditorHandler handler = new I_CmsContentEditorHandler() {
 
-            public void onClose(String sitePath, boolean isNew) {
+            public void onClose(String sitePath, CmsUUID id, boolean isNew) {
 
                 if (!m_reload) {
                     return;

@@ -278,7 +278,6 @@ public final class CmsContentEditorDialog {
             };
             action.execute();
         }
-
     }
 
     /**
@@ -289,7 +288,7 @@ public final class CmsContentEditorDialog {
         if (m_dialog != null) {
             m_dialog.hide();
             m_dialog = null;
-            m_editorHandler.onClose(m_editableData.getSitePath(), m_isNew);
+            m_editorHandler.onClose(m_editableData.getSitePath(), m_editableData.getStructureId(), m_isNew);
             m_editorHandler = null;
         }
         if (m_form != null) {

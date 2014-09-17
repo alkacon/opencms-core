@@ -39,6 +39,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
+import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
@@ -1039,6 +1040,16 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     }
 
     /**
+     * Returns the content editor handler.<p>
+     * 
+     * @return the content editor handler
+     */
+    I_CmsContentEditorHandler getEditorHandler() {
+
+        return m_publishDialog.getEditorHandler();
+    }
+
+    /**
      * Adds a new group panel.<p>
      *
      * @param group the publish group for which a panel should be added
@@ -1057,6 +1068,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
             m_model,
             m_selectionControllers,
             getContextMenuHandler(),
+            getEditorHandler(),
             m_showProblemsOnly);
         if (m_model.hasSingleGroup()) {
             groupPanel.hideGroupSelectCheckBox();

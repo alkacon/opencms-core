@@ -220,9 +220,6 @@ public class CmsResourceInfoView extends Composite {
     @UiField
     protected HasText m_userLastModified;
 
-    /** Resource status bean. */
-    private CmsResourceStatusBean m_status;
-
     /**
      * Creates a new widget instance.<p>
      *
@@ -231,7 +228,6 @@ public class CmsResourceInfoView extends Composite {
     public CmsResourceInfoView(CmsResourceStatusBean status) {
 
         initWidget(uiBinder.createAndBindUi(this));
-        m_status = status;
         CmsListItemWidget infoBox = new CmsListItemWidget(status.getListInfo());
         infoBox.addButton(new CmsContextMenuButton(status.getStructureId(), new ContextMenuHandler()));
         m_infoBoxContainer.add(infoBox);

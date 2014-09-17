@@ -1545,7 +1545,11 @@ public final class CmsContainerpageController {
                                     }
                                 };
                             }
+                            I_CmsDropContainer container = element.getParentTarget();
                             element.removeFromParent();
+                            if (container instanceof CmsContainerPageContainer) {
+                                ((CmsContainerPageContainer)container).checkEmptyContainers();
+                            }
                             cleanUpContainers();
                             setPageChanged(nextActions);
                         }
@@ -1916,9 +1920,11 @@ public final class CmsContainerpageController {
             }
         } else {
             for (org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer container : m_targetContainers.values()) {
-                for (Widget element : container) {
-                    if (element instanceof CmsContainerPageElementPanel) {
-                        ((CmsContainerPageElementPanel)element).initInlineEditor(this);
+                if (m_containerpageUtil.isContainerEditable(container)) {
+                    for (Widget element : container) {
+                        if (element instanceof CmsContainerPageElementPanel) {
+                            ((CmsContainerPageElementPanel)element).initInlineEditor(this);
+                        }
                     }
                 }
             }
@@ -2043,9 +2049,13 @@ public final class CmsContainerpageController {
             if (id != null) {
                 addToRecentList(id, null);
             }
+            I_CmsDropContainer container = dragElement.getParentTarget();
             switch (removeMode) {
                 case saveAndCheckReferences:
                     dragElement.removeFromParent();
+                    if (container instanceof CmsContainerPageContainer) {
+                        ((CmsContainerPageContainer)container).checkEmptyContainers();
+                    }
                     cleanUpContainers();
                     Runnable checkReferencesAction = new Runnable() {
 
@@ -2062,6 +2072,9 @@ public final class CmsContainerpageController {
                 case silent:
                 default:
                     dragElement.removeFromParent();
+                    if (container instanceof CmsContainerPageContainer) {
+                        ((CmsContainerPageContainer)container).checkEmptyContainers();
+                    }
                     cleanUpContainers();
                     setPageChanged();
                     break;

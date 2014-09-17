@@ -32,12 +32,15 @@ import org.opencms.ade.publish.client.CmsPublishSelectPanel.CheckBoxUpdate;
 import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.CmsEditableData;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
-import org.opencms.gwt.client.ui.CmsPreviewDialog;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsSimpleListItem;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
+import org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog;
+import org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog.DialogOptions;
+import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuButton;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
@@ -50,7 +53,6 @@ import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
@@ -76,23 +78,26 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class CmsPublishGroupPanel extends Composite {
 
-    /** The CSS bundle used for this widget. */
-    protected static final I_CmsPublishCss CSS = I_CmsPublishLayoutBundle.INSTANCE.publishCss();
+    /** Button slot mapping for publish list items. */
+    public static int[] DEFAULT_SLOT_MAPPING = new int[] {0, 1, 2, 3};
 
-    /** The number of button slits. */
-    private static final int NUM_BUTTON_SLOTS = 4;
+    /** The slot for the preview button. */
+    public static final int SLOT_EDIT = 1;
 
     /** The slot for the context menu button. */
     public static final int SLOT_MENU = 0;
-
-    /** The slot for the preview button. */
-    public static final int SLOT_PREVIEW = 1;
 
     /** The slot for the 'remove' checkbox. */
     public static final int SLOT_REMOVE = 2;
 
     /** The slot for the warning symbol. */
     public static final int SLOT_WARNING = 3;
+
+    /** The CSS bundle used for this widget. */
+    protected static final I_CmsPublishCss CSS = I_CmsPublishLayoutBundle.INSTANCE.publishCss();
+
+    /** The number of button slits. */
+    private static final int NUM_BUTTON_SLOTS = 4;
 
     /** Text metrics key. */
     private static final String TM_PUBLISH_LIST = "PublishList";
@@ -105,6 +110,9 @@ public class CmsPublishGroupPanel extends Composite {
 
     /** The handler which is called when the publish item selection changes. */
     protected I_CmsPublishSelectionChangeHandler m_selectionChangeHandler;
+
+    /** The content editor handler. */
+    I_CmsContentEditorHandler m_editorHandler;
 
     /** The context menu handler. */
     private CmsContextMenuHandler m_contextMenuHandler;
@@ -130,9 +138,6 @@ public class CmsPublishGroupPanel extends Composite {
     /** A flag which indicates whether only resources with problems should be shown. */
     private boolean m_showProblemsOnly;
 
-    /** Button slot mapping for publish list items. */
-    public static int[] DEFAULT_SLOT_MAPPING = new int[] {0, 1, 2, 3};
-
     /**
      * Constructs a new instance.<p>
      * 
@@ -143,6 +148,7 @@ public class CmsPublishGroupPanel extends Composite {
      * @param model the data model for the publish resources
      * @param controllersById the map of selection controllers to which this panel's selection controllers should be added
      * @param menuHandler the context menu handler 
+     * @param editorHandler the content editor handler
      * @param showProblemsOnly if true, sets this panel into "show resources with problems only" mode
      */
     public CmsPublishGroupPanel(
@@ -153,6 +159,7 @@ public class CmsPublishGroupPanel extends Composite {
         CmsPublishDataModel model,
         Map<CmsUUID, CmsPublishItemSelectionController> controllersById,
         CmsContextMenuHandler menuHandler,
+        I_CmsContentEditorHandler editorHandler,
         boolean showProblemsOnly) {
 
         initWidget(m_panel);
@@ -160,6 +167,7 @@ public class CmsPublishGroupPanel extends Composite {
         m_model = model;
         m_groupIndex = groupIndex;
         m_contextMenuHandler = menuHandler;
+        m_editorHandler = editorHandler;
         m_publishResources = model.getGroups().get(groupIndex).getResources();
         m_controllersById = controllersById;
         m_panel.truncate(TM_PUBLISH_LIST, CmsPublishDialog.DIALOG_WIDTH);
@@ -233,25 +241,6 @@ public class CmsPublishGroupPanel extends Composite {
             warningImage.addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
             fillButtonSlot(itemWidget, SLOT_WARNING, warningImage, slotMapping);
         }
-        String noPreviewReason = resourceBean.getInfo() == null ? null : resourceBean.getInfo().getNoPreviewReason();
-        CmsPushButton previewButton = new CmsPushButton();
-        previewButton.setImageClass(I_CmsImageBundle.INSTANCE.style().previewIcon());
-        previewButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
-        previewButton.setTitle(org.opencms.gwt.client.Messages.get().key(
-            org.opencms.gwt.client.Messages.GUI_SHOW_PREVIEW_0));
-        previewButton.addClickHandler(new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-
-                CmsPushButton button = (CmsPushButton)event.getSource();
-                button.clearHoverState();
-                CmsPreviewDialog.showPreviewForResource(resourceBean.getId());
-            }
-        });
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(noPreviewReason)) {
-            previewButton.disable(noPreviewReason);
-        }
-        fillButtonSlot(itemWidget, SLOT_PREVIEW, previewButton, slotMapping);
         itemWidget.setUnselectable();
         itemWidget.setIcon(CmsIconUtil.getResourceIconClasses(resourceBean.getResourceType(), false));
         return itemWidget;
@@ -394,8 +383,31 @@ public class CmsPublishGroupPanel extends Composite {
     private CmsTreeItem buildItem(final CmsPublishResource resourceBean, CmsPublishItemStatus status, boolean isSubItem) {
 
         CmsListItemWidget itemWidget = createListItemWidget(resourceBean, DEFAULT_SLOT_MAPPING);
-        CmsContextMenuButton button = new CmsContextMenuButton(resourceBean.getId(), m_contextMenuHandler);
+        if (m_editorHandler != null) {
+            CmsPushButton editButton = new CmsPushButton();
+            editButton.setImageClass(I_CmsImageBundle.INSTANCE.style().editIcon());
+            editButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+            editButton.setTitle(org.opencms.gwt.client.Messages.get().key(
+                org.opencms.gwt.client.Messages.GUI_BUTTON_ELEMENT_EDIT_0));
+            editButton.addClickHandler(new ClickHandler() {
 
+                public void onClick(ClickEvent event) {
+
+                    CmsPushButton button = (CmsPushButton)event.getSource();
+                    button.clearHoverState();
+                    CmsEditableData editableData = new CmsEditableData();
+                    editableData.setStructureId(resourceBean.getId());
+                    CmsContentEditorDialog.get().openEditDialog(
+                        editableData,
+                        false,
+                        null,
+                        new DialogOptions(),
+                        m_editorHandler);
+                }
+            });
+            fillButtonSlot(itemWidget, SLOT_EDIT, editButton, DEFAULT_SLOT_MAPPING);
+        }
+        CmsContextMenuButton button = new CmsContextMenuButton(resourceBean.getId(), m_contextMenuHandler);
         fillButtonSlot(itemWidget, SLOT_MENU, button, DEFAULT_SLOT_MAPPING);
 
         resourceBean.getId();

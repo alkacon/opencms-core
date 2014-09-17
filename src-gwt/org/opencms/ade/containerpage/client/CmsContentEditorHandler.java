@@ -86,10 +86,13 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler#onClose(java.lang.String, boolean)
+     * @see org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler#onClose(java.lang.String, org.opencms.util.CmsUUID, boolean)
      */
-    public void onClose(String sitePath, boolean isNew) {
+    public void onClose(String sitePath, CmsUUID structureId, boolean isNew) {
 
+        if (m_currentElementId == null) {
+            m_currentElementId = structureId.toString();
+        }
         if (m_dependingElementId != null) {
             m_handler.reloadElements(m_currentElementId, m_dependingElementId);
             m_dependingElementId = null;
@@ -147,7 +150,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                 public void execute() {
 
                     addClosedEditorHistoryItem();
-                    onClose(element.getSitePath(), false);
+                    onClose(element.getSitePath(), new CmsUUID(serverId), false);
                 }
             };
             if (inline && CmsContentEditor.hasEditable(element.getElement())) {
@@ -224,7 +227,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                     public void execute() {
 
                         addClosedEditorHistoryItem();
-                        onClose(editableData.getSitePath(), isNew);
+                        onClose(editableData.getSitePath(), editableData.getStructureId(), isNew);
                     }
                 });
         }
@@ -252,7 +255,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                 public void execute() {
 
                     addClosedEditorHistoryItem();
-                    onClose(null, false);
+                    onClose(null, new CmsUUID(getCurrentElementId()), false);
                 }
             };
             String editorLocale = CmsCoreProvider.get().getLocale();

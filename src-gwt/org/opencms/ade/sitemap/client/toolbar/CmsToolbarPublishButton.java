@@ -32,6 +32,7 @@ import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
+import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 
 import java.util.HashMap;
 
@@ -48,6 +49,8 @@ import com.google.gwt.user.client.ui.PopupPanel;
  */
 public class CmsToolbarPublishButton extends CmsPushButton {
 
+    private I_CmsContentEditorHandler m_editorHandler;
+
     /**
      * Constructor.<p>
      * 
@@ -56,6 +59,7 @@ public class CmsToolbarPublishButton extends CmsPushButton {
      */
     public CmsToolbarPublishButton(final CmsSitemapToolbar toolbar, final CmsSitemapController controller) {
 
+        m_editorHandler = toolbar.getToolbarHandler().getEditorHandler();
         setImageClass(I_CmsButton.ButtonData.PUBLISH.getIconClass());
         setTitle(I_CmsButton.ButtonData.PUBLISH.getTitle());
         setButtonStyle(ButtonStyle.IMAGE, null);
@@ -95,6 +99,6 @@ public class CmsToolbarPublishButton extends CmsPushButton {
                 openPublish();
             }
 
-        });
+        }, m_editorHandler);
     }
 }
