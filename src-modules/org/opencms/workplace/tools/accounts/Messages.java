@@ -68,6 +68,15 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_ADD_SELECTED_USERS_0 = "ERR_ADD_SELECTED_USERS_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_ADD_TO_ADMINISTRATORS_GROUP_0 = "ERR_ADD_TO_ADMINISTRATORS_GROUP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ADD_TO_GUESTS_GROUP_0 = "ERR_ADD_TO_GUESTS_GROUP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ADD_TO_USERS_GROUP_0 = "ERR_ADD_TO_USERS_GROUP_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_ADD_USER_TO_GROUP_0 = "ERR_ADD_USER_TO_GROUP_0";
 
     /** Message constant for key in the resource bundle. */
