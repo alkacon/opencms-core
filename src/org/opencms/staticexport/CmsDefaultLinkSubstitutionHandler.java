@@ -609,7 +609,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             fragment = "";
         }
 
-        String query = uri.getQuery();
+        String query = uri.getRawQuery();
         if (query != null) {
             query = "?" + query;
         } else {
