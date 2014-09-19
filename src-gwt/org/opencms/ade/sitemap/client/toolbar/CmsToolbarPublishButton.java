@@ -49,6 +49,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  */
 public class CmsToolbarPublishButton extends CmsPushButton {
 
+    /** The content editor handler. */
     private I_CmsContentEditorHandler m_editorHandler;
 
     /**

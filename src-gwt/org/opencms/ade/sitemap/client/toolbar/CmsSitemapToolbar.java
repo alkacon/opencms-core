@@ -58,6 +58,7 @@ public class CmsSitemapToolbar extends CmsToolbar {
     /** The new menu button. */
     private CmsToolbarNewButton m_newMenuButton;
 
+    /** The sitemap toolbar handler. */
     private CmsSitemapToolbarHandler m_toolbarHandler;
 
     /**
@@ -67,6 +68,7 @@ public class CmsSitemapToolbar extends CmsToolbar {
      */
     public CmsSitemapToolbar(CmsSitemapController controller) {
 
+        m_toolbarHandler = new CmsSitemapToolbarHandler(controller.getData().getContextMenuEntries());
         addLeft(new CmsToolbarPublishButton(this, controller));
         m_newMenuButton = new CmsToolbarNewButton(this, controller);
         if (controller.isEditable() && (controller.getData().getDefaultNewElementInfo() != null)) {
@@ -94,12 +96,11 @@ public class CmsSitemapToolbar extends CmsToolbar {
                 }
             }
         };
-        m_toolbarHandler = new CmsSitemapToolbarHandler(controller.getData().getContextMenuEntries());
+
         m_contextMenuButton = new CmsToolbarContextButton(m_toolbarHandler);
         m_contextMenuButton.addClickHandler(clickHandler);
         addRight(m_contextMenuButton);
         addRight(new CmsToolbarGoBackButton(this, controller));
-
         setGalleriesMode(false);
     }
 
@@ -127,6 +128,11 @@ public class CmsSitemapToolbar extends CmsToolbar {
         return m_contextMenuButton;
     }
 
+    /**
+     * Returns the toolbar handler.<p>
+     * 
+     * @return the toolbar handler
+     */
     public CmsSitemapToolbarHandler getToolbarHandler() {
 
         return m_toolbarHandler;
