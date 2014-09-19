@@ -265,17 +265,16 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
     }
 
     /**
+     * Adds the configuration for embedded gallery widgets the the JSON object.<p>
+     * 
      * @param result the  JSON object to modify
-     *
-     * For descriptions of the other  parameters, see the getConfiguration() method.<p>
-     *
-     * @param cms
-     * @param schemaType
-     * @param messages
-     * @param resource
-     * @param contentLocale
-     * @throws JSONException
-     *
+     * @param cms the OpenCms context
+     * @param schemaType the schema type
+     * @param messages the messages
+     * @param resource the edited resource
+     * @param contentLocale the content locale
+     * 
+     * @throws JSONException in case JSON manipulation fails 
      */
     protected void addEmbeddedGalleryOptions(
         JSONObject result,
