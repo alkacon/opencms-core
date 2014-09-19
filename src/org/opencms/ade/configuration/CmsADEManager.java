@@ -153,6 +153,9 @@ public class CmsADEManager {
     /** Default recent list size constant. */
     public static final int DEFAULT_RECENT_LIST_SIZE = 10;
 
+    /** The name of the edit group configuration file type. */
+    public static final String EDIT_GROUP_TYPE = "editgroup";
+
     /** The name of the module configuration file type. */
     public static final String MODULE_CONFIG_TYPE = "module_config";
 
@@ -185,6 +188,9 @@ public class CmsADEManager {
 
     /** The detail page finder. */
     private I_CmsDetailPageFinder m_detailPageFinder = new CmsSitemapDetailPageFinder();
+
+    /** The edit group configuration file type. */
+    private I_CmsResourceType m_editGroupType;
 
     /** The initialization status. */
     private Status m_initStatus = Status.notInitialized;
@@ -404,6 +410,29 @@ public class CmsADEManager {
     public Set<String> getDetailPageTypes(CmsObject cms) {
 
         return getCacheState(isOnline(cms)).getDetailPageTypes();
+    }
+
+    /**
+     * Returns the available edit groups.<p>
+     * 
+     * @param cms the cms context
+     * 
+     * @return the edit groups
+     */
+    public Map<CmsUUID, CmsEditGroup> getEditGroups(CmsObject cms) {
+
+        CmsConfigurationCache cache = getCache(isOnline(cms));
+        return cache.getState().getEditGroups();
+    }
+
+    /**
+     * Gets the edit group configuration resource type.<p>
+     * 
+     * @return the edit group configuration resource type 
+     */
+    public I_CmsResourceType getEditGroupType() {
+
+        return m_editGroupType;
     }
 
     /**
@@ -732,11 +761,20 @@ public class CmsADEManager {
                 m_initStatus = Status.initializing;
                 m_configType = OpenCms.getResourceManager().getResourceType(CONFIG_TYPE);
                 m_moduleConfigType = OpenCms.getResourceManager().getResourceType(MODULE_CONFIG_TYPE);
+                m_editGroupType = OpenCms.getResourceManager().getResourceType(EDIT_GROUP_TYPE);
                 CmsProject temp = getTempfileProject(m_onlineCms);
                 m_offlineCms = OpenCms.initCmsObject(m_onlineCms);
                 m_offlineCms.getRequestContext().setCurrentProject(temp);
-                m_onlineCache = new CmsConfigurationCache(m_onlineCms, m_configType, m_moduleConfigType);
-                m_offlineCache = new CmsConfigurationCache(m_offlineCms, m_configType, m_moduleConfigType);
+                m_onlineCache = new CmsConfigurationCache(
+                    m_onlineCms,
+                    m_configType,
+                    m_moduleConfigType,
+                    m_editGroupType);
+                m_offlineCache = new CmsConfigurationCache(
+                    m_offlineCms,
+                    m_configType,
+                    m_moduleConfigType,
+                    m_editGroupType);
                 m_onlineCache.initialize();
                 m_offlineCache.initialize();
                 m_onlineContainerConfigurationCache = new CmsContainerConfigurationCache(m_onlineCms, "online");

@@ -113,7 +113,6 @@ public class CmsGlobalConfigurationCacheEventHandler implements I_CmsEventListen
 
             return m_onlineCache;
         }
-
     }
 
     /** The logger instance for this class. */

@@ -88,6 +88,11 @@
 				<param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/group_container.xsd
 				</param>
 			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
+				name="editgroup" id="18">
+				<param name="schema">/system/modules/org.opencms.ade.config/schemas/edit_group.xsd
+				</param>
+			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeJsp" name="containerpage_template"
 				id="21" />
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
@@ -418,6 +423,17 @@
 				<accesscontrol>
 					<accessentry principal="ROLE.ELEMENT_AUTHOR"
 						permissions="+r+v+w+c" />
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="editgroup" key="fileicon.editgroup"
+				icon="function.png" bigicon="function_big.png" reference="xmlcontent">
+				<newresource page="structurecontent"
+					uri="newresource_xmlcontent.jsp?newresourcetype=editgroup" order="999"
+					autosetnavigation="false" autosettitle="false" info="desc.editgroup" />
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER"
+						permissions="+r+v-w-c" />
+					<accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c" />
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="function" key="fileicon.function"

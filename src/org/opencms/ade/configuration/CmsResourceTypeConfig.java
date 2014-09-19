@@ -207,7 +207,8 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
 
     /**
      * Checks whether the cms context is in the offline project and throws an exception otherwise.<p>
-     * @param cms
+     * 
+     * @param cms the cms context
      */
     public void checkOffline(CmsObject cms) {
 

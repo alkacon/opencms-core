@@ -45,7 +45,7 @@ public class CmsSynchronizedUpdateSet<U> {
     /** 
      * Adds a new update.<p>
      * 
-     * @param update 
+     * @param update the update
      */
     public synchronized void add(U update) {
 

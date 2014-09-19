@@ -78,22 +78,27 @@ public class CmsADEConfigCacheState {
     /** The configurations from the sitemap / VFS. */
     private Map<String, CmsADEConfigDataInternal> m_siteConfigurationsByPath = new HashMap<String, CmsADEConfigDataInternal>();
 
+    /** The avalable edit groups. */
+    private Map<CmsUUID, CmsEditGroup> m_editGroups;
+
     /**
      * Creates a new configuration cache state.<p>
      * 
      * @param cms the CMS context to use 
      * @param siteConfigurations the map of sitemap configuration beans by structure id 
      * @param moduleConfigs the complete list of module configurations
+     * @param editGroups the availabel edit groups
      */
-    public CmsADEConfigCacheState(CmsObject cms,
-
-    Map<CmsUUID, CmsADEConfigDataInternal> siteConfigurations,
-
-    List<CmsADEConfigDataInternal> moduleConfigs) {
+    public CmsADEConfigCacheState(
+        CmsObject cms,
+        Map<CmsUUID, CmsADEConfigDataInternal> siteConfigurations,
+        List<CmsADEConfigDataInternal> moduleConfigs,
+        Map<CmsUUID, CmsEditGroup> editGroups) {
 
         m_cms = cms;
         m_siteConfigurations = siteConfigurations;
         m_moduleConfigurations = moduleConfigs;
+        m_editGroups = editGroups;
         for (CmsADEConfigDataInternal data : siteConfigurations.values()) {
             if (data.getBasePath() != null) {
                 // In theory, the base path should never be null 
@@ -122,7 +127,8 @@ public class CmsADEConfigCacheState {
         return new CmsADEConfigCacheState(
             cms,
             Collections.<CmsUUID, CmsADEConfigDataInternal> emptyMap(),
-            Collections.<CmsADEConfigDataInternal> emptyList());
+            Collections.<CmsADEConfigDataInternal> emptyList(),
+            Collections.<CmsUUID, CmsEditGroup> emptyMap());
     }
 
     /**
@@ -154,12 +160,14 @@ public class CmsADEConfigCacheState {
      * 
      * @param sitemapUpdates a map containing changed sitemap configurations indexed by structure id (the map values are null if the corresponding sitemap configuration is not valid or could not be found) 
      * @param moduleUpdates the list of *all* module configurations, or null if no module configuration update is needed
+     * @param editGroupUpdates the updated edit groups, or null if no update needed
      *  
      * @return the new configuration state 
      */
     public CmsADEConfigCacheState createUpdatedCopy(
         Map<CmsUUID, CmsADEConfigDataInternal> sitemapUpdates,
-        List<CmsADEConfigDataInternal> moduleUpdates) {
+        List<CmsADEConfigDataInternal> moduleUpdates,
+        Map<CmsUUID, CmsEditGroup> editGroupUpdates) {
 
         Map<CmsUUID, CmsADEConfigDataInternal> newSitemapConfigs = Maps.newHashMap(m_siteConfigurations);
         if (sitemapUpdates != null) {
@@ -177,7 +185,12 @@ public class CmsADEConfigCacheState {
         if (moduleUpdates != null) {
             newModuleConfigs = moduleUpdates;
         }
-        return new CmsADEConfigCacheState(m_cms, newSitemapConfigs, newModuleConfigs);
+        Map<CmsUUID, CmsEditGroup> newEditGroups = m_editGroups;
+        if (editGroupUpdates != null) {
+            newEditGroups = editGroupUpdates;
+        }
+
+        return new CmsADEConfigCacheState(m_cms, newSitemapConfigs, newModuleConfigs, newEditGroups);
     }
 
     /**
@@ -199,6 +212,16 @@ public class CmsADEConfigCacheState {
         }
         m_detailPageTypes = result;
         return result;
+    }
+
+    /**
+     * Returns the edit groups.<p>
+     * 
+     * @return the edit groups
+     */
+    public Map<CmsUUID, CmsEditGroup> getEditGroups() {
+
+        return Collections.unmodifiableMap(m_editGroups);
     }
 
     /** 

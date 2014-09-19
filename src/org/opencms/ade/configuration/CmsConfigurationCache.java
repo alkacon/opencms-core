@@ -43,6 +43,7 @@ import org.opencms.util.CmsUUID;
 import org.opencms.util.CmsWaitHandle;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -71,6 +72,9 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
 
     /** ID which is used to signal that the complete configuration should be reloaded. */
     public static final CmsUUID ID_UPDATE_ALL = CmsUUID.getConstantUUID("all");
+
+    /** ID which is used to signal that the edit groups should be updated. */
+    public static final CmsUUID ID_UPDATE_EDIT_GROUPS = CmsUUID.getConstantUUID("editgroups");
 
     /** ID which is used to signal that the folder types should be updated. */
     public static final CmsUUID ID_UPDATE_FOLDERTYPES = CmsUUID.getConstantUUID("foldertypes");
@@ -118,6 +122,9 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
         }
     });
 
+    /** The edit group resource type. */
+    private I_CmsResourceType m_editGroupType;
+
     /** A cache which stores resources' paths by their structure IDs. */
     private ConcurrentHashMap<CmsUUID, String> m_pathCache = new ConcurrentHashMap<CmsUUID, String>();
 
@@ -143,13 +150,18 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
      * @param cms the CMS object used for reading the configuration data
      * @param configType the sitemap configuration file type 
      * @param moduleConfigType the module configuration file type 
+     * @param editGroupType the edit group resource type
      */
-    public CmsConfigurationCache(CmsObject cms, I_CmsResourceType configType, I_CmsResourceType moduleConfigType) {
+    public CmsConfigurationCache(
+        CmsObject cms,
+        I_CmsResourceType configType,
+        I_CmsResourceType moduleConfigType,
+        I_CmsResourceType editGroupType) {
 
         m_cms = cms;
         m_configType = configType;
         m_moduleConfigType = moduleConfigType;
-
+        m_editGroupType = editGroupType;
     }
 
     /** 
@@ -299,7 +311,8 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
             }
         }
         List<CmsADEConfigDataInternal> moduleConfigs = loadModuleConfiguration();
-        CmsADEConfigCacheState result = new CmsADEConfigCacheState(m_cms, siteConfigurations, moduleConfigs);
+        Map<CmsUUID, CmsEditGroup> editGroups = loadEditGroups();
+        CmsADEConfigCacheState result = new CmsADEConfigCacheState(m_cms, siteConfigurations, moduleConfigs, editGroups);
         long endTime = System.currentTimeMillis();
         if (LOG.isDebugEnabled()) {
             LOG.debug("readCompleteConfiguration took " + (endTime - beginTime) + "ms");
@@ -394,6 +407,26 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
         return rootPath.endsWith(CmsADEManager.CONFIG_SUFFIX) && (type == m_configType.getTypeId());
     }
 
+    /**
+     * Loads the available edit groups.<p>
+     * 
+     * @return the edit groups
+     */
+    protected Map<CmsUUID, CmsEditGroup> loadEditGroups() {
+
+        Map<CmsUUID, CmsEditGroup> editGroups = new HashMap<CmsUUID, CmsEditGroup>();
+        try {
+            CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(m_editGroupType.getTypeId());
+            List<CmsResource> groups = m_cms.readResources("/", filter);
+            for (CmsResource res : groups) {
+                editGroups.put(res.getStructureId(), new CmsEditGroup(res));
+            }
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        return editGroups;
+    }
+
     /** 
      * Loads a list of module configurations from the VFS.<p>
      * 
@@ -435,6 +468,7 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
                     m_state = readCompleteConfiguration();
                 } else {
                     boolean updateModules = updateIds.remove(ID_UPDATE_MODULES);
+                    boolean updateEditGroups = updateIds.remove(ID_UPDATE_EDIT_GROUPS);
                     updateIds.remove(ID_UPDATE_FOLDERTYPES); // folder types are always updated when the update set is not empty, so at this point we don't care whether the id for folder type updates actually is in the update set 
                     Map<CmsUUID, CmsADEConfigDataInternal> updateMap = Maps.newHashMap();
                     for (CmsUUID structureId : updateIds) {
@@ -446,7 +480,11 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
                     if (updateModules) {
                         moduleConfigs = loadModuleConfiguration();
                     }
-                    m_state = oldState.createUpdatedCopy(updateMap, moduleConfigs);
+                    Map<CmsUUID, CmsEditGroup> editGroups = null;
+                    if (updateEditGroups) {
+                        editGroups = loadEditGroups();
+                    }
+                    m_state = oldState.createUpdatedCopy(updateMap, moduleConfigs, editGroups);
                 }
             }
         } catch (Exception e) {
@@ -472,6 +510,8 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
             m_updateSet.add(structureId);
         } else if (isModuleConfiguration(rootPath, type)) {
             m_updateSet.add(ID_UPDATE_MODULES);
+        } else if (isEditGroup(type)) {
+            m_updateSet.add(ID_UPDATE_EDIT_GROUPS);
         } else if (m_state.getFolderTypes().containsKey(rootPath)) {
             m_updateSet.add(ID_UPDATE_FOLDERTYPES);
         }
@@ -496,6 +536,8 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
         } else if (isModuleConfiguration(rootPath, type)) {
             LOG.info("Changed module configuration file " + rootPath + "(" + structureId + ")");
             m_updateSet.add(ID_UPDATE_MODULES);
+        } else if (isEditGroup(type)) {
+            m_updateSet.add(ID_UPDATE_EDIT_GROUPS);
         } else if (m_state.getFolderTypes().containsKey(rootPath)) {
             m_updateSet.add(ID_UPDATE_FOLDERTYPES);
         }
@@ -532,6 +574,18 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
             return null;
 
         }
+    }
+
+    /**
+     * Checks if the given type id is of the edit group type.<p>
+     * 
+     * @param type the type id to check
+     * 
+     * @return <code>true</code> if the given type id is of the edit group type
+     */
+    private boolean isEditGroup(int type) {
+
+        return type == m_editGroupType.getTypeId();
     }
 
 }
