@@ -110,7 +110,7 @@ import org.apache.commons.logging.Log;
 public class CmsElementUtil {
 
     /** The maximum number of nested container levels. */
-    public static final int MAX_NESTING_LEVEL = 2;
+    public static final int MAX_NESTING_LEVEL = 5;
 
     /** Static reference to the log. */
     private static final Log LOG = CmsLog.getLog(org.opencms.ade.containerpage.CmsElementUtil.class);
