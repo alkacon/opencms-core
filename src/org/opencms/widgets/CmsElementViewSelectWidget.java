@@ -27,7 +27,7 @@
 
 package org.opencms.widgets;
 
-import org.opencms.ade.configuration.CmsEditGroup;
+import org.opencms.ade.configuration.CmsElementView;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 
@@ -35,14 +35,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A widget to select an edit group.<p>
+ * A widget to select an element view.<p>
  */
-public class CmsEditGroupSelectWidget extends CmsSelectWidget {
+public class CmsElementViewSelectWidget extends CmsSelectWidget {
 
     /**
      * Constructor.<p>
      */
-    public CmsEditGroupSelectWidget() {
+    public CmsElementViewSelectWidget() {
 
         super();
     }
@@ -53,7 +53,7 @@ public class CmsEditGroupSelectWidget extends CmsSelectWidget {
     @Override
     public I_CmsWidget newInstance() {
 
-        return new CmsEditGroupSelectWidget();
+        return new CmsElementViewSelectWidget();
     }
 
     /**
@@ -66,12 +66,17 @@ public class CmsEditGroupSelectWidget extends CmsSelectWidget {
         I_CmsWidgetParameter param) {
 
         List<CmsSelectWidgetOption> options = new ArrayList<CmsSelectWidgetOption>();
-        for (CmsEditGroup group : OpenCms.getADEManager().getEditGroups(cms).values()) {
-            options.add(new CmsSelectWidgetOption(cms.getSitePath(group.getResource()), false, group.getTitle(
-                cms,
-                widgetDialog.getLocale()), group.getDescription(cms, widgetDialog.getLocale())));
+        for (CmsElementView view : OpenCms.getADEManager().getElementViews(cms).values()) {
+            String value = "";
+            if (view.getResource() != null) {
+                value = cms.getSitePath(view.getResource());
+            }
+            options.add(new CmsSelectWidgetOption(
+                value,
+                false,
+                view.getTitle(cms, widgetDialog.getLocale()),
+                view.getDescription(cms, widgetDialog.getLocale())));
         }
-
         return options;
     }
 }

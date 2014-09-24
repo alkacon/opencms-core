@@ -1,15 +1,15 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
     <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
 
-    <xsd:element name="EditGroups" type="OpenCmsEditGroups" />
+    <xsd:element name="ElementViews" type="OpenCmsElementViews" />
 
-    <xsd:complexType name="OpenCmsEditGroups">
+    <xsd:complexType name="OpenCmsElementViews">
         <xsd:sequence>
-            <xsd:element name="EditGroup" type="OpenCmsEditGroup" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="ElementView" type="OpenCmsElementView" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
     </xsd:complexType>
     
-    <xsd:complexType name="OpenCmsEditGroup">
+    <xsd:complexType name="OpenCmsElementView">
         <xsd:sequence>
             <xsd:element name="Title" type="OpenCmsString" />
             <xsd:element name="Description" type="OpenCmsString" />

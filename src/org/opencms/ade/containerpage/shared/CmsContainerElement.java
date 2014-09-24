@@ -27,6 +27,8 @@
 
 package org.opencms.ade.containerpage.shared;
 
+import org.opencms.util.CmsUUID;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -59,6 +61,9 @@ public class CmsContainerElement implements IsSerializable {
 
     /** The element client id. */
     private String m_clientId;
+
+    /** The element view this element belongs to by it's type. */
+    private CmsUUID m_elementView;
 
     /** Flag to indicate that this element may have settings. */
     private boolean m_hasSettings;
@@ -118,6 +123,16 @@ public class CmsContainerElement implements IsSerializable {
     public String getClientId() {
 
         return m_clientId;
+    }
+
+    /**
+     * Returns the element view this element belongs to by it's type.<p>
+     *
+     * @return the element view
+     */
+    public CmsUUID getElementView() {
+
+        return m_elementView;
     }
 
     /**
@@ -270,6 +285,16 @@ public class CmsContainerElement implements IsSerializable {
     public void setClientId(String clientId) {
 
         m_clientId = clientId;
+    }
+
+    /**
+     * Sets the element view.<p>
+     *
+     * @param elementView the element view to set
+     */
+    public void setElementView(CmsUUID elementView) {
+
+        m_elementView = elementView;
     }
 
     /**

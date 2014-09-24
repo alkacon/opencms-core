@@ -218,6 +218,34 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>system/workplace/locales/de/messages/org/opencms/ade/configuration</destination>
+			<type>folder</type>
+			<uuidstructure>5b114358-43ef-11e4-99b7-1fa826c9e7f4</uuidstructure>
+			<datelastmodified>Wed, 24 Sep 2014 13:33:23 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 24 Sep 2014 13:33:23 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/messages/org/opencms/ade/configuration/messages_de.properties</source>
+			<destination>system/workplace/locales/de/messages/org/opencms/ade/configuration/messages_de.properties</destination>
+			<type>plain</type>
+			<uuidstructure>6a42e18a-43ef-11e4-99b7-1fa826c9e7f4</uuidstructure>
+			<uuidresource>6a42e18b-43ef-11e4-99b7-1fa826c9e7f4</uuidresource>
+			<datelastmodified>Wed, 24 Sep 2014 13:33:48 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 24 Sep 2014 13:33:48 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/locales/de/messages/org/opencms/ade/containerpage</destination>
 			<type>folder</type>
 			<uuidstructure>6adf6a86-762c-11e0-bcc1-4dcd2ca9d6dc</uuidstructure>

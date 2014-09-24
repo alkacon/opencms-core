@@ -531,13 +531,15 @@ public class CmsElementUtil {
         result.setSitePath(elementBean.getSitePath());
 
         result.setNew(elementBean.isCreateNew());
-        if (elementBean.isCreateNew()) {
-            CmsResourceTypeConfig typeConfig = getConfigData().getResourceType(typeName);
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(noEditReason)
-                && ((typeConfig == null) || !typeConfig.checkCreatable(m_cms))) {
-                String niceName = CmsWorkplaceMessages.getResourceTypeName(wpLocale, typeName);
-                noEditReason = Messages.get().getBundle().key(Messages.GUI_CONTAINERPAGE_TYPE_NOT_CREATABLE_1, niceName);
-            }
+        CmsResourceTypeConfig typeConfig = getConfigData().getResourceType(typeName);
+        if (typeConfig != null) {
+            result.setElementView(typeConfig.getElementView());
+        }
+        if (elementBean.isCreateNew()
+            && CmsStringUtil.isEmptyOrWhitespaceOnly(noEditReason)
+            && ((typeConfig == null) || !typeConfig.checkCreatable(m_cms))) {
+            String niceName = CmsWorkplaceMessages.getResourceTypeName(wpLocale, typeName);
+            noEditReason = Messages.get().getBundle().key(Messages.GUI_CONTAINERPAGE_TYPE_NOT_CREATABLE_1, niceName);
         }
         result.setHasSettings(hasSettings(m_cms, elementBean.getResource()));
         CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);

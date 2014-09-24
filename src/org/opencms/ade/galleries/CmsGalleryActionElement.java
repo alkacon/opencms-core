@@ -130,7 +130,7 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
      */
     public String exportForContainerpage() throws Exception {
 
-        return export(GalleryMode.ade);
+        return ClientMessages.get().export(getRequest());
     }
 
     /**

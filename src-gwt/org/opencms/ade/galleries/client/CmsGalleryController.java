@@ -51,9 +51,7 @@ import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService;
 import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryServiceAsync;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
-import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.client.ui.CmsDeleteWarningDialog;
-import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.util.CmsClientCollectionUtil;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsJsUtil;
@@ -87,7 +85,6 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 
 /**
@@ -134,7 +131,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     private boolean m_galleriesChanged;
 
     /** The gallery service instance. */
-    private I_CmsGalleryServiceAsync m_gallerySvc;
+    private static I_CmsGalleryServiceAsync m_gallerySvc;
 
     /** Flag which indicates whether the site selector should be shown. */
     private boolean m_isShowSiteSelector = true;
@@ -161,8 +158,13 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
      * Constructor.<p>
      * 
      * @param handler the controller handler 
+     * @param dialogBean the gallery data
+     * @param searchBean the prefetched search
      */
-    public CmsGalleryController(CmsGalleryControllerHandler handler) {
+    public CmsGalleryController(
+        CmsGalleryControllerHandler handler,
+        CmsGalleryDataBean dialogBean,
+        CmsGallerySearchBean searchBean) {
 
         m_handler = handler;
         m_eventBus = new SimpleEventBus();
@@ -175,21 +177,9 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             m_handler.m_galleryDialog.setImageFormats(config.getImageFormats());
             m_handler.m_galleryDialog.setImageFormatNames(config.getImageFormatNames());
         }
-
-        // get initial search for gallery
-        try {
-            m_searchObject = (CmsGallerySearchBean)CmsRpcPrefetcher.getSerializedObjectFromDictionary(
-                getGalleryService(),
-                CmsGallerySearchBean.DICT_NAME);
-            m_dialogBean = (CmsGalleryDataBean)CmsRpcPrefetcher.getSerializedObjectFromDictionary(
-                getGalleryService(),
-                CmsGalleryDataBean.DICT_NAME);
-            m_dialogMode = m_dialogBean.getMode();
-        } catch (SerializationException e) {
-            CmsErrorDialog.handleException(new Exception(
-                "Deserialization of gallery data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
-                e));
-        }
+        m_dialogBean = dialogBean;
+        m_searchObject = searchBean;
+        m_dialogMode = m_dialogBean.getMode();
 
         if (m_searchObject == null) {
             m_searchObject = new CmsGallerySearchBean();
@@ -279,6 +269,20 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     public static void registerPreviewFactory(String previewProviderName, I_CmsPreviewFactory factory) {
 
         m_previewFactoryRegistration.put(previewProviderName, factory);
+    }
+
+    /**
+     * Returns the gallery service instance.<p>
+     * 
+     * @return the gallery service instance
+     */
+    protected static I_CmsGalleryServiceAsync getGalleryService() {
+
+        if (m_gallerySvc == null) {
+            I_CmsGalleryServiceAsync service = createGalleryService();
+            m_gallerySvc = service;
+        }
+        return m_gallerySvc;
     }
 
     /**
@@ -1518,20 +1522,6 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         m_handler.onTypesTabSelection();
     }
 
-    /**
-     * Returns the gallery service instance.<p>
-     * 
-     * @return the gallery service instance
-     */
-    protected I_CmsGalleryServiceAsync getGalleryService() {
-
-        if (m_gallerySvc == null) {
-            I_CmsGalleryServiceAsync service = createGalleryService();
-            m_gallerySvc = service;
-        }
-        return m_gallerySvc;
-    }
-
     /** 
      * Returns the sitemap service instance.<p>
      * 
@@ -1651,7 +1641,10 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
                 }
                 ArrayList<String> availableTypes = new ArrayList<String>();
                 for (CmsResourceTypeBean type : m_dialogBean.getTypes()) {
-                    availableTypes.add(type.getType());
+                    // exclude deactivated types
+                    if (!type.isDeactivated()) {
+                        availableTypes.add(type.getType());
+                    }
                 }
                 preparedSearchObj.setTypes(availableTypes);
                 // at least one gallery is selected 

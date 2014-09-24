@@ -420,21 +420,6 @@ public class CmsContainerpageUtil {
     }
 
     /**
-     * Returns if the given container is editable.<p>
-     * 
-     * @param dragParent the parent container
-     * 
-     * @return <code>true</code> if the given container is editable
-     */
-    public boolean isContainerEditable(I_CmsDropContainer dragParent) {
-
-        boolean isSubElement = dragParent instanceof CmsGroupContainerElementPanel;
-        boolean isContainerEditable = dragParent.isEditable()
-            && (isSubElement || !m_controller.isDetailPage() || dragParent.isDetailView() || dragParent.isDetailOnly());
-        return isContainerEditable;
-    }
-
-    /**
      * Returns the container page controller.<p>
      *
      * @return the container page controller
@@ -483,17 +468,12 @@ public class CmsContainerpageUtil {
             elementData.hasViewPermission(),
             elementData.hasWritePermission(),
             elementData.isReleasedAndNotExpired(),
-            elementData.isNewEditorDisabled());
-        boolean isContainerEditable = isContainerEditable(dragParent);
-        if (isContainerEditable) {
+            elementData.isNewEditorDisabled(),
+            elementData.getElementView());
+        if (m_controller.isInlineEditable(dragElement, dragParent)) {
             addOptionBar(dragElement);
         }
-        // only enable inline editing for the new content editor
-        // also ignore group container sub-elements unless group editing
-        if (!m_controller.getData().isUseClassicEditor()
-            && m_controller.hasActiveSelection()
-            && isContainerEditable
-            && (!(dragParent instanceof CmsGroupContainerElementPanel) || m_controller.isGroupcontainerEditing())) {
+        if (m_controller.requiresOptionBar(dragElement, dragParent)) {
             dragElement.initInlineEditor(m_controller);
         }
         return dragElement;
@@ -525,7 +505,8 @@ public class CmsContainerpageUtil {
             elementData.hasSettings(dragParent.getContainerId()),
             elementData.hasViewPermission(),
             elementData.hasWritePermission(),
-            elementData.isReleasedAndNotExpired());
+            elementData.isReleasedAndNotExpired(),
+            elementData.getElementView());
         return groupContainer;
     }
 

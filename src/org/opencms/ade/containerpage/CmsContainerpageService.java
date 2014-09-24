@@ -29,6 +29,7 @@ package org.opencms.ade.containerpage;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsADEManager;
+import org.opencms.ade.configuration.CmsElementView;
 import org.opencms.ade.configuration.CmsResourceTypeConfig;
 import org.opencms.ade.containerpage.inherited.CmsInheritanceReference;
 import org.opencms.ade.containerpage.inherited.CmsInheritanceReferenceParser;
@@ -38,6 +39,7 @@ import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.containerpage.shared.CmsCreateElementData;
+import org.opencms.ade.containerpage.shared.CmsElementViewInfo;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.ade.containerpage.shared.CmsGroupContainer;
 import org.opencms.ade.containerpage.shared.CmsGroupContainerSaveResult;
@@ -46,6 +48,8 @@ import org.opencms.ade.containerpage.shared.CmsInheritanceInfo;
 import org.opencms.ade.containerpage.shared.CmsRemovedElementStatus;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
 import org.opencms.ade.detailpage.CmsDetailPageResourceHandler;
+import org.opencms.ade.galleries.CmsGalleryService;
+import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
@@ -55,6 +59,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsDefaultResourceStatusProvider;
 import org.opencms.gwt.CmsGwtActionElement;
@@ -114,7 +119,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -583,6 +587,60 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getGalleryDataForPage(java.util.List, org.opencms.util.CmsUUID, java.lang.String, java.lang.String)
+     */
+    public CmsGalleryDataBean getGalleryDataForPage(
+        List<CmsContainer> containers,
+        CmsUUID elementView,
+        String uri,
+        String locale) throws CmsRpcException {
+
+        CmsGalleryDataBean data = null;
+        try {
+
+            CmsObject cms = getCmsObject();
+
+            CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
+                cms,
+                cms.getRequestContext().addSiteRoot(uri));
+            List<I_CmsResourceType> resourceTypes = new ArrayList<I_CmsResourceType>();
+            List<String> disabledTypes = new ArrayList<String>();
+            for (CmsResourceTypeConfig typeConfig : config.getResourceTypes()) {
+                if (typeConfig.isAddDisabled() || !elementView.equals(typeConfig.getElementView())) {
+                    continue;
+                }
+                if (typeConfig.checkViewable(cms, uri)) {
+                    String typeName = typeConfig.getTypeName();
+                    I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(typeName);
+                    resourceTypes.add(resType);
+                    if (!config.hasFormatters(cms, resType, containers)) {
+                        disabledTypes.add(typeName);
+                    }
+                }
+            }
+            List<String> creatableTypes = new ArrayList<String>();
+            for (CmsResourceTypeConfig typeConfig : config.getCreatableTypes(getCmsObject())) {
+                if (typeConfig.isAddDisabled()
+                    || !elementView.equals(typeConfig.getElementView())
+                    || disabledTypes.contains(typeConfig.getTypeName())) {
+                    continue;
+                }
+                String typeName = typeConfig.getTypeName();
+                creatableTypes.add(typeName);
+            }
+
+            CmsGalleryService srv = new CmsGalleryService();
+            srv.setCms(cms);
+            srv.setRequest(getRequest());
+            data = srv.getInitialSettingsForContainerPage(resourceTypes, creatableTypes, disabledTypes, uri, locale);
+
+        } catch (Exception e) {
+            error(e);
+        }
+        return data;
+    }
+
+    /**
      * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getNewElementData(org.opencms.util.CmsUUID, org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.util.Collection, boolean, java.lang.String)
      */
     public CmsContainerElementData getNewElementData(
@@ -759,13 +817,14 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 sitemapManager,
                 detailResource != null ? detailResource.getStructureId() : null,
                 detailContainerPage,
-                getNewTypes(cms, request),
                 lastModified,
                 getLockInfo(containerPage),
                 cms.getRequestContext().getLocale().toString(),
                 useClassicEditor,
                 info,
-                isEditSmallElements(request, cms));
+                isEditSmallElements(request, cms),
+                getElementViews(),
+                getSessionCache().getElementView());
         } catch (Throwable e) {
             error(e);
         }
@@ -977,6 +1036,14 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         } catch (Throwable t) {
             error(t);
         }
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#setElementView(org.opencms.util.CmsUUID)
+     */
+    public void setElementView(CmsUUID elementView) {
+
+        getSessionCache().setElementView(elementView);
     }
 
     /**
@@ -1307,6 +1374,39 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
+     * Returns the available element views.<p>
+     * 
+     * @return the element views
+     */
+    private List<CmsElementViewInfo> getElementViews() {
+
+        List<CmsElementViewInfo> result = new ArrayList<CmsElementViewInfo>();
+        CmsObject cms = getCmsObject();
+
+        // collect the actually used element view ids
+        CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
+            cms,
+            cms.getRequestContext().addSiteRoot(cms.getRequestContext().getUri()));
+        Set<CmsUUID> usedIds = new HashSet<CmsUUID>();
+        for (CmsResourceTypeConfig typeConfig : config.getResourceTypes()) {
+            usedIds.add(typeConfig.getElementView());
+        }
+
+        Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+        for (CmsElementView view : OpenCms.getADEManager().getElementViews(cms).values()) {
+            // add only element view that are used within the type configuration and the user has sufficient permissions for
+            if (usedIds.contains(view.getId()) && view.hasPermission(cms)) {
+                result.add(new CmsElementViewInfo(
+                    view.getTitle(cms, wpLocale),
+                    view.getDescription(cms, wpLocale),
+                    view.getId()));
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Helper method for converting a CmsGroupContainer to a CmsGroupContainerBean when saving a group container.<p>
      * 
      * @param groupContainer the group-container data
@@ -1539,35 +1639,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * Returns the map a resource type to be newly created for this container-page.<p>
-     * 
-     * @param cms the current cms object
-     * @param request the current request
-     * 
-     * @return the map a resource type to be newly created for this container-page
-     * 
-     * @throws CmsRpcException if something goes wrong reading the ADE configuration
-     */
-    private Map<String, String> getNewTypes(CmsObject cms, HttpServletRequest request) throws CmsRpcException {
-
-        Map<String, String> result = new LinkedHashMap<String, String>();
-        CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(
-            cms,
-            cms.getRequestContext().getRootUri());
-        try {
-            List<CmsResourceTypeConfig> types = configData.getCreatableTypes(cms);
-            for (CmsResourceTypeConfig type : types) {
-                result.put(type.getTypeName(), CmsUUID.getNullUUID().toString());
-            }
-            return result;
-
-        } catch (CmsException e) {
-            error(e);
-            return null;
-        }
-    }
-
-    /**
      * Returns the no-edit reason for the given resource.<p>
      * 
      * @param cms the current cms object
@@ -1753,5 +1824,4 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         list.add(0, element);
         return list;
     }
-
 }

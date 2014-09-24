@@ -102,6 +102,9 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     /** The direct edit bar instances. */
     private Map<Element, CmsListCollectorEditor> m_editables;
 
+    /** The element element view. */
+    private CmsUUID m_elementView;
+
     /** The editor click handler registration. */
     private HandlerRegistration m_editorClickHandlerRegistration;
 
@@ -175,6 +178,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
      * @param hasWritePermission indicates if the current user has write permissions on the element resource
      * @param releasedAndNotExpired <code>true</code> if the element resource is currently released and not expired
      * @param disableNewEditor flag to disable the new editor for this element 
+     * @param elementView theelement view of the element 
      */
     public CmsContainerPageElementPanel(
         Element element,
@@ -189,7 +193,8 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         boolean hasViewPermission,
         boolean hasWritePermission,
         boolean releasedAndNotExpired,
-        boolean disableNewEditor) {
+        boolean disableNewEditor,
+        CmsUUID elementView) {
 
         super(element);
         m_clientId = clientId;
@@ -205,6 +210,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         setWritePermission(hasWritePermission);
         setReleasedAndNotExpired(releasedAndNotExpired);
         getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElement());
+        m_elementView = elementView;
     }
 
     /**
@@ -269,6 +275,16 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     public CmsElementOptionBar getElementOptionBar() {
 
         return m_elementOptionBar;
+    }
+
+    /**
+     * Returns the elements element view.<p>
+     * 
+     * @return the element view
+     */
+    public CmsUUID getElementView() {
+
+        return m_elementView;
     }
 
     /**
@@ -563,9 +579,9 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     }
 
     /**
-     * Sets the elementOptionBar.<p>
+     * Sets the element option bar.<p>
      *
-     * @param elementOptionBar the elementOptionBar to set
+     * @param elementOptionBar the element option bar to set
      */
     public void setElementOptionBar(CmsElementOptionBar elementOptionBar) {
 
@@ -573,8 +589,10 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
             m_elementOptionBar.removeFromParent();
         }
         m_elementOptionBar = elementOptionBar;
-        insert(m_elementOptionBar, 0);
-        updateOptionBarPosition();
+        if (m_elementOptionBar != null) {
+            insert(m_elementOptionBar, 0);
+            updateOptionBarPosition();
+        }
     }
 
     /**

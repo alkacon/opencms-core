@@ -92,6 +92,7 @@ import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.commons.CmsPreferences;
 import org.opencms.workplace.explorer.CmsResourceUtil;
+import org.opencms.xml.containerpage.CmsADESessionCache;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -293,6 +294,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /** The workplace locale from the current user's settings. */
     private Locale m_wpLocale;
+
+    /** The session cache. */
+    private CmsADESessionCache m_sessionCache;
 
     /**
      * Returns the initial gallery settings.<p>
@@ -535,6 +539,62 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             error(t);
             return null; // will never be reached 
         }
+    }
+
+    /**
+     * Returns the initial gallery data for the container page editor.<p>
+     * 
+     * @param resourceTypes the available resource types
+     * @param creatableTypes the creatable types
+     * @param deactivatedTypes the disabled types
+     * @param uri the page URI
+     * @param locale the content locale
+     * 
+     * @return the gallery data
+     */
+    public CmsGalleryDataBean getInitialSettingsForContainerPage(
+        List<I_CmsResourceType> resourceTypes,
+        List<String> creatableTypes,
+        List<String> deactivatedTypes,
+        String uri,
+        String locale) {
+
+        CmsGalleryDataBean data = null;
+        try {
+            data = new CmsGalleryDataBean();
+            data.setMode(GalleryMode.ade);
+            data.setGalleryStoragePrefix("");
+            data.setLocales(buildLocalesMap());
+            data.setLocale(locale);
+
+            data.setVfsRootFolders(getRootEntries());
+
+            data.setScope(getWorkplaceSettings().getLastSearchScope());
+            data.setTabIds(GalleryMode.ade.getTabs());
+            data.setReferenceSitePath(getCmsObject().getRequestContext().getUri());
+            List<CmsResourceTypeBean> types = buildTypesList(resourceTypes, creatableTypes, deactivatedTypes, null);
+            data.setTypes(types);
+            Map<String, CmsGalleryTypeInfo> adeGalleryTypeInfos = readGalleryInfosByTypeBeans(types);
+            data.setGalleries(buildGalleriesList(adeGalleryTypeInfos));
+            data.setStartTab(GalleryTabId.cms_tab_types);
+
+            CmsSiteSelectorOptionBuilder optionBuilder = new CmsSiteSelectorOptionBuilder(getCmsObject());
+            optionBuilder.addNormalSites(true, getWorkplaceSettings().getUserSettings().getStartFolder());
+            optionBuilder.addSharedSite();
+            data.setVfsSiteSelectorOptions(optionBuilder.getOptions());
+
+            CmsSiteSelectorOptionBuilder sitemapOptionBuilder = new CmsSiteSelectorOptionBuilder(getCmsObject());
+            sitemapOptionBuilder.addNormalSites(false, null);
+            if (data.getReferenceSitePath() != null) {
+                sitemapOptionBuilder.addCurrentSubsite(getCmsObject().addSiteRoot(data.getReferenceSitePath()));
+            }
+            data.setSitemapSiteSelectorOptions(sitemapOptionBuilder.getOptions());
+            data.setDefaultScope(OpenCms.getWorkplaceManager().getGalleryDefaultScope());
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return data;
     }
 
     /**
@@ -1370,6 +1430,60 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     }
 
     /**
+     * Returns the resource types beans.<p>
+     * 
+     * @param resourceTypes the resource types
+     * @param creatableTypes the creatable types
+     * @param deactivatedTypes the deactivated types
+     * @param typesForTypeTab the types which should be shown in the types tab according to the gallery configuration 
+     * 
+     * @return the resource types
+     */
+    private List<CmsResourceTypeBean> buildTypesList(
+        List<I_CmsResourceType> resourceTypes,
+        List<String> creatableTypes,
+        List<String> deactivatedTypes,
+        final List<String> typesForTypeTab) {
+
+        List<CmsResourceTypeBean> result = buildTypesList(resourceTypes, creatableTypes);
+
+        for (CmsResourceTypeBean typeBean : result) {
+            if ((typesForTypeTab != null) && (typesForTypeTab.size() > 0)) {
+                if (!typesForTypeTab.contains(typeBean.getType())) {
+                    if (typeBean.getVisibility() != TypeVisibility.hidden) {
+                        typeBean.setVisibility(TypeVisibility.showOptional);
+                    }
+                }
+            }
+            typeBean.setDeactivated(deactivatedTypes.contains(typeBean.getType()));
+        }
+        if ((typesForTypeTab != null) && (typesForTypeTab.size() > 0)) {
+            Collections.sort(result, new Comparator<CmsResourceTypeBean>() {
+
+                public int compare(CmsResourceTypeBean first, CmsResourceTypeBean second) {
+
+                    return ComparisonChain.start().compare(searchTypeRank(first), searchTypeRank(second)).compare(
+                        first.getType(),
+                        second.getType()).result();
+                }
+
+                int searchTypeRank(CmsResourceTypeBean type) {
+
+                    int index = typesForTypeTab.indexOf(type.getType());
+                    if (index == -1) {
+                        return Integer.MAX_VALUE;
+                    } else {
+                        return index;
+                    }
+                }
+            });
+
+        }
+
+        return result;
+    }
+
+    /**
      * Returns a list of resource types by a request parameter.<p>
      * 
      * @param resourceTypes the resource types parameter
@@ -1915,8 +2029,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                     CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
                         getCmsObject(),
                         getCmsObject().getRequestContext().addSiteRoot(getCmsObject().getRequestContext().getUri()));
+                    CmsUUID elementView = getSessionCache().getElementView();
                     for (CmsResourceTypeConfig typeConfig : config.getResourceTypes()) {
-                        if (typeConfig.isAddDisabled()) {
+                        if (typeConfig.isAddDisabled() || !elementView.equals(typeConfig.getElementView())) {
                             continue;
                         }
                         if (typeConfig.checkViewable(getCmsObject(), referenceSitePath)) {
@@ -1925,7 +2040,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                         }
                     }
                     for (CmsResourceTypeConfig typeConfig : config.getCreatableTypes(getCmsObject())) {
-                        if (typeConfig.isAddDisabled()) {
+                        if (typeConfig.isAddDisabled() || !elementView.equals(typeConfig.getElementView())) {
                             continue;
                         }
                         String typeName = typeConfig.getTypeName();
@@ -1939,41 +2054,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 resourceTypes = Collections.<I_CmsResourceType> emptyList();
                 creatableTypes = Collections.<String> emptyList();
         }
-        List<CmsResourceTypeBean> result = buildTypesList(resourceTypes, creatableTypes);
-
-        for (CmsResourceTypeBean typeBean : result) {
-            if ((typesForTypeTab != null) && (typesForTypeTab.size() > 0)) {
-                if (!typesForTypeTab.contains(typeBean.getType())) {
-                    if (typeBean.getVisibility() != TypeVisibility.hidden) {
-                        typeBean.setVisibility(TypeVisibility.showOptional);
-                    }
-                }
-            }
-        }
-        if ((typesForTypeTab != null) && (typesForTypeTab.size() > 0)) {
-            Collections.sort(result, new Comparator<CmsResourceTypeBean>() {
-
-                public int compare(CmsResourceTypeBean first, CmsResourceTypeBean second) {
-
-                    return ComparisonChain.start().compare(searchTypeRank(first), searchTypeRank(second)).compare(
-                        first.getType(),
-                        second.getType()).result();
-                }
-
-                int searchTypeRank(CmsResourceTypeBean type) {
-
-                    int index = typesForTypeTab.indexOf(type.getType());
-                    if (index == -1) {
-                        return Integer.MAX_VALUE;
-                    } else {
-                        return index;
-                    }
-                }
-            });
-
-        }
-
-        return result;
+        return buildTypesList(resourceTypes, creatableTypes, Collections.<String> emptyList(), typesForTypeTab);
     }
 
     /**
@@ -2014,6 +2095,19 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             error(e);
         }
         return rootFolders;
+    }
+
+    /**
+     * Returns the session cache.<p>
+     * 
+     * @return the session cache
+     */
+    private CmsADESessionCache getSessionCache() {
+
+        if (m_sessionCache == null) {
+            m_sessionCache = CmsADESessionCache.getCache(getRequest(), getCmsObject());
+        }
+        return m_sessionCache;
     }
 
     /**
@@ -2256,7 +2350,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         Map<String, CmsGalleryTypeInfo> galleryTypeInfos = new HashMap<String, CmsGalleryTypeInfo>();
         for (CmsResourceTypeBean typeBean : resourceTypes) {
             try {
-                addGalleriesForType(galleryTypeInfos, typeBean.getType());
+                if (!typeBean.isDeactivated()) {
+                    addGalleriesForType(galleryTypeInfos, typeBean.getType());
+                }
             } catch (CmsLoaderException e1) {
                 logError(e1);
             }

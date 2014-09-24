@@ -29,6 +29,7 @@ package org.opencms.ade.configuration;
 
 import org.opencms.ade.configuration.formatters.CmsFormatterChangeSet;
 import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCacheState;
+import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -43,6 +44,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
+import org.opencms.xml.containerpage.CmsXmlDynamicFunctionHandler;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
@@ -338,36 +340,12 @@ public class CmsADEConfigData {
      */
     public CmsFormatterConfiguration getFormatters(CmsObject cms, CmsResource res) {
 
-        int resTypeId = res.getTypeId();
         try {
-            I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(resTypeId);
-            String typeName = resType.getTypeName();
-            CmsFormatterConfigurationCacheState formatterCacheState = getCachedFormatters();
-            CmsFormatterConfiguration schemaFormatters = getFormattersFromSchema(cms, res);
-            List<I_CmsFormatterBean> formatters = new ArrayList<I_CmsFormatterBean>();
-            Set<String> types = new HashSet<String>();
-            types.add(typeName);
-            for (CmsFormatterChangeSet changeSet : getFormatterChangeSets()) {
-                if (changeSet != null) {
-                    changeSet.applyToTypes(types);
-                }
-            }
-            if (types.contains(typeName)) {
-                for (I_CmsFormatterBean formatter : schemaFormatters.getAllFormatters()) {
-                    formatters.add(formatter);
-                }
-            }
-            Map<CmsUUID, I_CmsFormatterBean> externalFormattersById = Maps.newHashMap();
-            for (I_CmsFormatterBean formatter : formatterCacheState.getFormattersForType(typeName, true)) {
-                externalFormattersById.put(new CmsUUID(formatter.getId()), formatter);
-            }
-            applyAllFormatterChanges(externalFormattersById, formatterCacheState);
-            for (I_CmsFormatterBean formatter : externalFormattersById.values()) {
-                if (typeName.equals(formatter.getResourceTypeName())) {
-                    formatters.add(formatter);
-                }
-            }
-            return CmsFormatterConfiguration.create(cms, formatters);
+            int resTypeId = res.getTypeId();
+            return getFormatters(
+                cms,
+                OpenCms.getResourceManager().getResourceType(resTypeId),
+                getFormattersFromSchema(cms, res));
         } catch (CmsLoaderException e) {
             LOG.warn(e.getLocalizedMessage(), e);
             return null;
@@ -586,6 +564,40 @@ public class CmsADEConfigData {
     }
 
     /**
+     * Checks if there are any matching formatters for the given set of containers.<p>
+     *
+     * @param cms the current CMS context 
+     * @param resType the resource type for which the formatter configuration should be retrieved  
+     * @param containers the page containers
+     * 
+     * @return if there are any matching formatters
+     */
+    public boolean hasFormatters(CmsObject cms, I_CmsResourceType resType, Collection<CmsContainer> containers) {
+
+        try {
+            if (CmsXmlDynamicFunctionHandler.TYPE_FUNCTION.equals(resType.getTypeName())) {
+                // dynamic function may match any container
+                return true;
+            }
+            CmsXmlContentDefinition def = CmsXmlContentDefinition.getContentDefinitionForType(
+                cms,
+                resType.getTypeName());
+            CmsFormatterConfiguration schemaFormatters = def.getContentHandler().getFormatterConfiguration(cms, null);
+            CmsFormatterConfiguration formatters = getFormatters(cms, resType, schemaFormatters);
+            for (CmsContainer cont : containers) {
+                if (cont.isEditable()
+                    && (formatters.getAllMatchingFormatters(cont.getType(), cont.getWidth(), true).size() > 0)) {
+                    return true;
+                }
+            }
+        } catch (CmsException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+
+        }
+        return false;
+    }
+
+    /**
      * Returns the value of the "create contents locally" flag.<p>
      * 
      * If this flag is set, contents of types configured in a super-sitemap will be created in the sub-sitemap (if the user
@@ -758,6 +770,48 @@ public class CmsADEConfigData {
             }
         }
         return result;
+    }
+
+    /**
+     * Gets the formatter configuration for a resource type.<p>
+     *
+     * @param cms the current CMS context 
+     * @param resType the resource type
+     * @param schemaFormatters the resource schema formatters
+     * 
+     * @return the configuration of formatters for the resource type
+     */
+    protected CmsFormatterConfiguration getFormatters(
+        CmsObject cms,
+        I_CmsResourceType resType,
+        CmsFormatterConfiguration schemaFormatters) {
+
+        String typeName = resType.getTypeName();
+        CmsFormatterConfigurationCacheState formatterCacheState = getCachedFormatters();
+        List<I_CmsFormatterBean> formatters = new ArrayList<I_CmsFormatterBean>();
+        Set<String> types = new HashSet<String>();
+        types.add(typeName);
+        for (CmsFormatterChangeSet changeSet : getFormatterChangeSets()) {
+            if (changeSet != null) {
+                changeSet.applyToTypes(types);
+            }
+        }
+        if (types.contains(typeName)) {
+            for (I_CmsFormatterBean formatter : schemaFormatters.getAllFormatters()) {
+                formatters.add(formatter);
+            }
+        }
+        Map<CmsUUID, I_CmsFormatterBean> externalFormattersById = Maps.newHashMap();
+        for (I_CmsFormatterBean formatter : formatterCacheState.getFormattersForType(typeName, true)) {
+            externalFormattersById.put(new CmsUUID(formatter.getId()), formatter);
+        }
+        applyAllFormatterChanges(externalFormattersById, formatterCacheState);
+        for (I_CmsFormatterBean formatter : externalFormattersById.values()) {
+            if (typeName.equals(formatter.getResourceTypeName())) {
+                formatters.add(formatter);
+            }
+        }
+        return CmsFormatterConfiguration.create(cms, formatters);
     }
 
     /**

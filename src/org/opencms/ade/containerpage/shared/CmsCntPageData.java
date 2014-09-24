@@ -30,7 +30,7 @@ package org.opencms.ade.containerpage.shared;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.util.CmsUUID;
 
-import java.util.Map;
+import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -44,11 +44,17 @@ public final class CmsCntPageData implements IsSerializable {
     /** Name of the used dictionary. */
     public static final String DICT_NAME = "org_opencms_ade_containerpage";
 
+    /** Key 'detailElementId' for the detail content id. */
+    public static final String JSONKEY_DETAIL_ELEMENT_ID = "detailElementId";
+
     /** Key 'isDetailOnly' used within the JSON representation of a container object. */
     public static final String JSONKEY_DETAILONLY = "isDetailOnly";
 
     /** Key 'isDetailView' used within the JSON representation of a container object. */
     public static final String JSONKEY_DETAILVIEW = "isDetailView";
+
+    /** Key 'elementId' for the element id. */
+    public static final String JSONKEY_ELEMENT_ID = "elementId";
 
     /** Key 'elements' used within the JSON representation of a container object. */
     public static final String JSONKEY_ELEMENTS = "elements";
@@ -65,12 +71,6 @@ public final class CmsCntPageData implements IsSerializable {
     /** Key 'width' used within the JSON representation of a container object. */
     public static final String JSONKEY_WIDTH = "width";
 
-    /** Key 'elementId' for the element id. */
-    public static final String JSONKEY_ELEMENT_ID = "elementId";
-
-    /** Key 'detailElementId' for the detail content id. */
-    public static final String JSONKEY_DETAIL_ELEMENT_ID = "detailElementId";
-
     /** The editor back-link URI. */
     private static final String BACKLINK_URI = "/system/modules/org.opencms.ade.containerpage/editor-backlink.html";
 
@@ -86,6 +86,12 @@ public final class CmsCntPageData implements IsSerializable {
     /** Flag which determines whether small elements should be editable initially. */
     private boolean m_editSmallElementsInitially;
 
+    /** The current element view. */
+    private CmsUUID m_elementView;
+
+    /** The element views. */
+    private List<CmsElementViewInfo> m_elementViews;
+
     /** The date at which the container page was last modified. */
     private long m_lastModified;
 
@@ -95,14 +101,14 @@ public final class CmsCntPageData implements IsSerializable {
     /** The lock information, if the page is locked by another user. */
     private String m_lockInfo;
 
-    /** The map of available types and their new resource id's. */
-    private Map<String, String> m_newTypes;
-
     /** The reason why the user is not able to edit the current container page. */
     private String m_noEditReason;
 
     /** The original request parameters. */
     private String m_requestParams;
+
+    /** Flag indicating if the current user has the sitemap manager role. */
+    private boolean m_sitemapManager;
 
     /** The current sitemap URI. */
     private String m_sitemapUri;
@@ -113,9 +119,6 @@ public final class CmsCntPageData implements IsSerializable {
     /** Flag indicating to use the classic XmlContent editor. */
     private boolean m_useClassicEditor;
 
-    /** Flag indicating if the current user has the sitemap manager role. */
-    private boolean m_sitemapManager;
-
     /**
      * Constructor.<p>
      * 
@@ -125,13 +128,14 @@ public final class CmsCntPageData implements IsSerializable {
      * @param sitemapManager if the user has the sitemap manager role
      * @param detailId the detail resource id, if available
      * @param detailContainerPage the detail view container resource path
-     * @param newTypes the map of available types and their new resource id's
      * @param lastModified the last modification date of the page 
      * @param lockInfo lock information, if the page is locked by another user
      * @param locale the content locale
      * @param useClassicEditor <code>true</code> to use the classic XmlContent editor
      * @param contextInfo the template context information 
      * @param showSmallElementsInitially flag which controls whether small elements should be shown initially 
+     * @param elementViews the element views
+     * @param elementView the current element view
      */
     public CmsCntPageData(
         String noEditReason,
@@ -140,19 +144,19 @@ public final class CmsCntPageData implements IsSerializable {
         boolean sitemapManager,
         CmsUUID detailId,
         String detailContainerPage,
-        Map<String, String> newTypes,
         long lastModified,
         String lockInfo,
         String locale,
         boolean useClassicEditor,
         CmsTemplateContextInfo contextInfo,
-        boolean showSmallElementsInitially) {
+        boolean showSmallElementsInitially,
+        List<CmsElementViewInfo> elementViews,
+        CmsUUID elementView) {
 
         m_noEditReason = noEditReason;
         m_requestParams = requestParams;
         m_sitemapUri = sitemapUri;
         m_sitemapManager = sitemapManager;
-        m_newTypes = newTypes;
         m_lastModified = lastModified;
         m_lockInfo = lockInfo;
         m_locale = locale;
@@ -161,6 +165,8 @@ public final class CmsCntPageData implements IsSerializable {
         m_useClassicEditor = useClassicEditor;
         m_templateContextInfo = contextInfo;
         m_editSmallElementsInitially = showSmallElementsInitially;
+        m_elementViews = elementViews;
+        m_elementView = elementView;
     }
 
     /**
@@ -222,6 +228,26 @@ public final class CmsCntPageData implements IsSerializable {
     }
 
     /**
+     * Returns the current element view.<p>
+     * 
+     * @return the current element view
+     */
+    public CmsUUID getElementView() {
+
+        return m_elementView;
+    }
+
+    /**
+     * Returns the available element views.<p>
+     * 
+     * @return the element views
+     */
+    public List<CmsElementViewInfo> getElementViews() {
+
+        return m_elementViews;
+    }
+
+    /**
      * Returns the content locale.<p>
      *
      * @return the locale
@@ -239,16 +265,6 @@ public final class CmsCntPageData implements IsSerializable {
     public String getLockInfo() {
 
         return m_lockInfo;
-    }
-
-    /**
-     * Returns the map of available types and their new resource id's.<p>
-     * 
-     * @return the map of available types and their new resource id's
-     */
-    public Map<String, String> getNewTypes() {
-
-        return m_newTypes;
     }
 
     /**

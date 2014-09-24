@@ -28,6 +28,7 @@
 package org.opencms.ade.detailpage;
 
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.containerpage.CmsXmlDynamicFunctionHandler;
 
 import java.io.Serializable;
 
@@ -105,7 +106,7 @@ public class CmsDetailPageInfo implements Serializable {
     public String getIconType() {
 
         if (m_type.startsWith(FUNCTION_PREFIX)) {
-            return "function";
+            return CmsXmlDynamicFunctionHandler.TYPE_FUNCTION;
         } else {
             return m_type;
         }

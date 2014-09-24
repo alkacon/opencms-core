@@ -43,7 +43,7 @@ import org.opencms.util.CmsUUID;
 import org.opencms.util.CmsWaitHandle;
 
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -73,8 +73,8 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
     /** ID which is used to signal that the complete configuration should be reloaded. */
     public static final CmsUUID ID_UPDATE_ALL = CmsUUID.getConstantUUID("all");
 
-    /** ID which is used to signal that the edit groups should be updated. */
-    public static final CmsUUID ID_UPDATE_EDIT_GROUPS = CmsUUID.getConstantUUID("editgroups");
+    /** ID which is used to signal that the element views should be updated. */
+    public static final CmsUUID ID_UPDATE_ELEMENT_VIEWS = CmsUUID.getConstantUUID("elementViews");
 
     /** ID which is used to signal that the folder types should be updated. */
     public static final CmsUUID ID_UPDATE_FOLDERTYPES = CmsUUID.getConstantUUID("foldertypes");
@@ -122,8 +122,8 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
         }
     });
 
-    /** The edit group resource type. */
-    private I_CmsResourceType m_editGroupType;
+    /** The element view resource type. */
+    private I_CmsResourceType m_elementViewType;
 
     /** A cache which stores resources' paths by their structure IDs. */
     private ConcurrentHashMap<CmsUUID, String> m_pathCache = new ConcurrentHashMap<CmsUUID, String>();
@@ -150,18 +150,18 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
      * @param cms the CMS object used for reading the configuration data
      * @param configType the sitemap configuration file type 
      * @param moduleConfigType the module configuration file type 
-     * @param editGroupType the edit group resource type
+     * @param elementViewType the element view resource type
      */
     public CmsConfigurationCache(
         CmsObject cms,
         I_CmsResourceType configType,
         I_CmsResourceType moduleConfigType,
-        I_CmsResourceType editGroupType) {
+        I_CmsResourceType elementViewType) {
 
         m_cms = cms;
         m_configType = configType;
         m_moduleConfigType = moduleConfigType;
-        m_editGroupType = editGroupType;
+        m_elementViewType = elementViewType;
     }
 
     /** 
@@ -311,8 +311,12 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
             }
         }
         List<CmsADEConfigDataInternal> moduleConfigs = loadModuleConfiguration();
-        Map<CmsUUID, CmsEditGroup> editGroups = loadEditGroups();
-        CmsADEConfigCacheState result = new CmsADEConfigCacheState(m_cms, siteConfigurations, moduleConfigs, editGroups);
+        Map<CmsUUID, CmsElementView> elementViews = loadElementViews();
+        CmsADEConfigCacheState result = new CmsADEConfigCacheState(
+            m_cms,
+            siteConfigurations,
+            moduleConfigs,
+            elementViews);
         long endTime = System.currentTimeMillis();
         if (LOG.isDebugEnabled()) {
             LOG.debug("readCompleteConfiguration took " + (endTime - beginTime) + "ms");
@@ -408,23 +412,24 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
     }
 
     /**
-     * Loads the available edit groups.<p>
+     * Loads the available element views.<p>
      * 
-     * @return the edit groups
+     * @return the element views
      */
-    protected Map<CmsUUID, CmsEditGroup> loadEditGroups() {
+    protected Map<CmsUUID, CmsElementView> loadElementViews() {
 
-        Map<CmsUUID, CmsEditGroup> editGroups = new HashMap<CmsUUID, CmsEditGroup>();
+        Map<CmsUUID, CmsElementView> elementViews = new LinkedHashMap<CmsUUID, CmsElementView>();
+        elementViews.put(CmsElementView.DEFAULT_ELEMENT_VIEW.getId(), CmsElementView.DEFAULT_ELEMENT_VIEW);
         try {
-            CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(m_editGroupType.getTypeId());
+            CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(m_elementViewType.getTypeId());
             List<CmsResource> groups = m_cms.readResources("/", filter);
             for (CmsResource res : groups) {
-                editGroups.put(res.getStructureId(), new CmsEditGroup(res));
+                elementViews.put(res.getStructureId(), new CmsElementView(res));
             }
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
         }
-        return editGroups;
+        return elementViews;
     }
 
     /** 
@@ -468,7 +473,7 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
                     m_state = readCompleteConfiguration();
                 } else {
                     boolean updateModules = updateIds.remove(ID_UPDATE_MODULES);
-                    boolean updateEditGroups = updateIds.remove(ID_UPDATE_EDIT_GROUPS);
+                    boolean updateElementViews = updateIds.remove(ID_UPDATE_ELEMENT_VIEWS);
                     updateIds.remove(ID_UPDATE_FOLDERTYPES); // folder types are always updated when the update set is not empty, so at this point we don't care whether the id for folder type updates actually is in the update set 
                     Map<CmsUUID, CmsADEConfigDataInternal> updateMap = Maps.newHashMap();
                     for (CmsUUID structureId : updateIds) {
@@ -480,11 +485,11 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
                     if (updateModules) {
                         moduleConfigs = loadModuleConfiguration();
                     }
-                    Map<CmsUUID, CmsEditGroup> editGroups = null;
-                    if (updateEditGroups) {
-                        editGroups = loadEditGroups();
+                    Map<CmsUUID, CmsElementView> elementViews = null;
+                    if (updateElementViews) {
+                        elementViews = loadElementViews();
                     }
-                    m_state = oldState.createUpdatedCopy(updateMap, moduleConfigs, editGroups);
+                    m_state = oldState.createUpdatedCopy(updateMap, moduleConfigs, elementViews);
                 }
             }
         } catch (Exception e) {
@@ -510,8 +515,8 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
             m_updateSet.add(structureId);
         } else if (isModuleConfiguration(rootPath, type)) {
             m_updateSet.add(ID_UPDATE_MODULES);
-        } else if (isEditGroup(type)) {
-            m_updateSet.add(ID_UPDATE_EDIT_GROUPS);
+        } else if (isElementView(type)) {
+            m_updateSet.add(ID_UPDATE_ELEMENT_VIEWS);
         } else if (m_state.getFolderTypes().containsKey(rootPath)) {
             m_updateSet.add(ID_UPDATE_FOLDERTYPES);
         }
@@ -536,8 +541,8 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
         } else if (isModuleConfiguration(rootPath, type)) {
             LOG.info("Changed module configuration file " + rootPath + "(" + structureId + ")");
             m_updateSet.add(ID_UPDATE_MODULES);
-        } else if (isEditGroup(type)) {
-            m_updateSet.add(ID_UPDATE_EDIT_GROUPS);
+        } else if (isElementView(type)) {
+            m_updateSet.add(ID_UPDATE_ELEMENT_VIEWS);
         } else if (m_state.getFolderTypes().containsKey(rootPath)) {
             m_updateSet.add(ID_UPDATE_FOLDERTYPES);
         }
@@ -577,15 +582,15 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
     }
 
     /**
-     * Checks if the given type id is of the edit group type.<p>
+     * Checks if the given type id is of the element view type.<p>
      * 
      * @param type the type id to check
      * 
-     * @return <code>true</code> if the given type id is of the edit group type
+     * @return <code>true</code> if the given type id is of the element view type
      */
-    private boolean isEditGroup(int type) {
+    private boolean isElementView(int type) {
 
-        return type == m_editGroupType.getTypeId();
+        return type == m_elementViewType.getTypeId();
     }
 
 }

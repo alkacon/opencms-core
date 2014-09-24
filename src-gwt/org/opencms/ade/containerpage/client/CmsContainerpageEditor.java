@@ -500,9 +500,11 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
         List<CmsContainerPageElementPanel> elemWidgets = getAllContainerPageElements();
         for (CmsContainerPageElementPanel elemWidget : elemWidgets) {
-            if (CmsContainerpageController.get().getContainerpageUtil().isContainerEditable(
-                elemWidget.getParentTarget())) {
+            if (CmsContainerpageController.get().requiresOptionBar(elemWidget, elemWidget.getParentTarget())) {
                 CmsContainerpageController.get().getContainerpageUtil().addOptionBar(elemWidget);
+            } else {
+                // otherwise remove any present option bar
+                elemWidget.setElementOptionBar(null);
             }
         }
     }

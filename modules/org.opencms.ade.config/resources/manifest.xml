@@ -89,8 +89,8 @@
 				</param>
 			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
-				name="editgroup" id="18">
-				<param name="schema">/system/modules/org.opencms.ade.config/schemas/edit_group.xsd
+				name="elementview" id="18">
+				<param name="schema">/system/modules/org.opencms.ade.config/schemas/element_view.xsd
 				</param>
 			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeJsp" name="containerpage_template"
@@ -389,6 +389,8 @@
 							name="org.opencms.gwt.client.ui.contextmenu.CmsCategories" rule="containerpage-no-different-site" />
 						<entry key="TEMPLATECONTEXTS" name="templatecontexts" rule="containerpage" /><!-- 
 							Entry is processed on the client side, the message key doesn't exist -->
+						<entry key="SELECTELEMENTVIEW" name="selectelementview" rule="containerpage" /><!-- 
+							Entry is processed on the client side, the message key doesn't exist -->
 						<entry key="GUI_EXPLORER_CONTEXT_SEO_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsOpenSeoDialog"
 							rule="containerpage-no-different-site" />
@@ -425,11 +427,11 @@
 						permissions="+r+v+w+c" />
 				</accesscontrol>
 			</explorertype>
-			<explorertype name="editgroup" key="fileicon.editgroup"
+			<explorertype name="elementview" key="fileicon.elementview"
 				icon="function.png" bigicon="function_big.png" reference="xmlcontent">
 				<newresource page="structurecontent"
-					uri="newresource_xmlcontent.jsp?newresourcetype=editgroup" order="999"
-					autosetnavigation="false" autosettitle="false" info="desc.editgroup" />
+					uri="newresource_xmlcontent.jsp?newresourcetype=elementview" order="999"
+					autosetnavigation="false" autosettitle="false" info="desc.elementview" />
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER"
 						permissions="+r+v-w-c" />

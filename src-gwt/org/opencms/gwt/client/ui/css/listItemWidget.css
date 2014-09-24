@@ -210,6 +210,12 @@ div.itemAdditionalValue{
 	height:16px;
 }
 
+@sprite li.expired div.itemContent{
+	gwt-image: "backgrounds.invalidStateBackground";
+	background-position: 50% 50%;
+	height: auto;
+}
+
 /** These styles are for dragging. */
 li.dragging, div.dragging{
 	list-style-type: none !important;

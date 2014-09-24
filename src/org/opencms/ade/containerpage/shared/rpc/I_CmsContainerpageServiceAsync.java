@@ -36,6 +36,7 @@ import org.opencms.ade.containerpage.shared.CmsGroupContainer;
 import org.opencms.ade.containerpage.shared.CmsGroupContainerSaveResult;
 import org.opencms.ade.containerpage.shared.CmsInheritanceContainer;
 import org.opencms.ade.containerpage.shared.CmsRemovedElementStatus;
+import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collection;
@@ -213,6 +214,22 @@ public interface I_CmsContainerpageServiceAsync {
         AsyncCallback<List<CmsContainerElementData>> callback);
 
     /**
+     * Returns the gallery configuration data according to the current page containers and the selected element view.<p>
+     * 
+     * @param containers the page containers
+     * @param elementView the element view
+     * @param uri the page URI
+     * @param locale the content locale
+     * @param callback the call-back executed on response
+     */
+    void getGalleryDataForPage(
+        List<CmsContainer> containers,
+        CmsUUID elementView,
+        String uri,
+        String locale,
+        AsyncCallback<CmsGalleryDataBean> callback);
+
+    /**
      * Returns new container element data for the given resource type name.<p>
      * 
      * @param  pageStructureId the container page structure id
@@ -366,6 +383,14 @@ public interface I_CmsContainerpageServiceAsync {
      * @param callback the callback for the response 
      */
     void setEditSmallElements(boolean editSmallElements, AsyncCallback<Void> callback);
+
+    /**
+     * Sets the element view.<p>
+     * 
+     * @param elementView the element view
+     * @param callback the call-back executed on response
+     */
+    void setElementView(CmsUUID elementView, AsyncCallback<Void> callback);
 
     /**
      * Generates request builder to make a synchronized RPC call saving the container-page.<p>

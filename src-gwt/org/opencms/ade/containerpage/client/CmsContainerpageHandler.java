@@ -34,6 +34,7 @@ import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElementPanel;
 import org.opencms.ade.containerpage.client.ui.CmsSmallElementsHandler;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
+import org.opencms.ade.containerpage.shared.CmsElementViewInfo;
 import org.opencms.ade.publish.client.CmsPublishDialog;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.gwt.client.CmsCoreProvider;
@@ -969,6 +970,8 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
             return createTemplateContextSelectionMenuEntry(structureId);
         } else if (menuEntryBean.getName().equals(CmsGwtConstants.ACTION_EDITSMALLELEMENTS)) {
             return createToggleEditSmallElementsMenuEntry();
+        } else if (menuEntryBean.getName().equals(CmsGwtConstants.ACTION_SELECTELEMENTVIEW)) {
+            return createElementViewSelectionMenuEntry();
         } else {
             return super.transformSingleEntry(structureId, menuEntryBean);
         }
@@ -999,6 +1002,60 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                 m_editor.getClipboard().replaceRecentItem(
                     m_controller.getContainerpageUtil().createListItem(elementData));
             }
+        }
+    }
+
+    /**
+     * Creates the element view selection menu entry, returns <code>null</code> in case no other views available.<p>
+     * 
+     * @return the menu entry
+     */
+    protected I_CmsContextMenuEntry createElementViewSelectionMenuEntry() {
+
+        List<CmsElementViewInfo> elementViews = m_controller.getData().getElementViews();
+        if (elementViews.size() > 1) {
+            CmsContextMenuEntry parentEntry = new CmsContextMenuEntry(this, null, new I_CmsContextMenuCommand() {
+
+                public void execute(
+                    CmsUUID innerStructureId,
+                    I_CmsContextMenuHandler handler,
+                    CmsContextMenuEntryBean bean) {
+
+                    // do nothing 
+                }
+
+                public A_CmsContextMenuItem getItemWidget(
+                    CmsUUID innerStructureId,
+                    I_CmsContextMenuHandler handler,
+                    CmsContextMenuEntryBean bean) {
+
+                    return null;
+                }
+
+                public boolean hasItemWidget() {
+
+                    return false;
+                }
+
+            });
+            CmsContextMenuEntryBean parentBean = new CmsContextMenuEntryBean();
+
+            parentBean.setLabel(Messages.get().key(Messages.GUI_SELECT_ELEMENT_VIEW_0));
+            parentBean.setActive(true);
+            parentBean.setVisible(true);
+            parentEntry.setBean(parentBean);
+            List<I_CmsContextMenuEntry> viewEntries = new ArrayList<I_CmsContextMenuEntry>();
+            for (CmsElementViewInfo viewInfo : elementViews) {
+                viewEntries.add(createMenuEntryForElementView(
+                    viewInfo,
+                    m_controller.getElementView().equals(viewInfo.getElementViewId()),
+                    this));
+            }
+
+            parentEntry.setSubMenu(viewEntries);
+            return parentEntry;
+        } else {
+            return null;
         }
     }
 
@@ -1047,8 +1104,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
      */
     protected I_CmsContextMenuEntry createTemplateContextSelectionMenuEntry(CmsUUID structureId) {
 
-        CmsContainerpageController controller = CmsContainerpageController.get();
-        final CmsTemplateContextInfo info = controller.getData().getTemplateContextInfo();
+        final CmsTemplateContextInfo info = m_controller.getData().getTemplateContextInfo();
         if ((info.getCookieName() != null) && info.shouldShowTemplateContextContextMenuEntry()) {
             CmsContextMenuEntry parentEntry = new CmsContextMenuEntry(this, structureId, new I_CmsContextMenuCommand() {
 
@@ -1148,8 +1204,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
      */
     protected I_CmsContextMenuEntry createToggleEditSmallElementsMenuEntry() {
 
-        final CmsContainerpageController controller = CmsContainerpageController.get();
-        final CmsSmallElementsHandler smallElementsHandler = controller.getSmallElementsHandler();
+        final CmsSmallElementsHandler smallElementsHandler = m_controller.getSmallElementsHandler();
         final boolean isActive = smallElementsHandler.areSmallElementsEditable();
         CmsContextMenuEntryBean entryBean = new CmsContextMenuEntryBean();
         String baseMessage = Messages.get().key(Messages.GUI_EDIT_SMALL_ELEMENTS_0);
@@ -1273,6 +1328,65 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
             }
 
         }, m_controller.getContentEditorHandler());
+    }
+
+    /**
+     * Sets the element view.<p>
+     * 
+     * @param elementView the element view
+     */
+    protected void setElementView(CmsUUID elementView) {
+
+        m_controller.setElementView(elementView);
+    }
+
+    /**
+     * Creates the menu entry for a single element view.<p>
+     * 
+     * @param elementView the element view
+     * @param isActive if the group is the currently active group
+     * @param handler the menu handler
+     * 
+     * @return the menu entry
+     */
+    private CmsContextMenuEntry createMenuEntryForElementView(
+        final CmsElementViewInfo elementView,
+        boolean isActive,
+        I_CmsContextMenuHandler handler) {
+
+        CmsContextMenuEntry menuEntry = new CmsContextMenuEntry(handler, null, new I_CmsContextMenuCommand() {
+
+            public void execute(
+                CmsUUID innerStructureId,
+                I_CmsContextMenuHandler innerHandler,
+                CmsContextMenuEntryBean bean) {
+
+                setElementView(elementView.getElementViewId());
+            }
+
+            public A_CmsContextMenuItem getItemWidget(
+                CmsUUID innerStructureId,
+                I_CmsContextMenuHandler innerHandler,
+                CmsContextMenuEntryBean bean) {
+
+                return null;
+            }
+
+            public boolean hasItemWidget() {
+
+                return false;
+            }
+        });
+        CmsContextMenuEntryBean bean = new CmsContextMenuEntryBean();
+        bean.setLabel(elementView.getTitle());
+
+        I_CmsInputCss inputCss = I_CmsInputLayoutBundle.INSTANCE.inputCss();
+        bean.setIconClass(isActive ? inputCss.checkBoxImageChecked() : "");
+        bean.setActive(!isActive);
+        bean.setVisible(true);
+        menuEntry.setBean(bean);
+        return menuEntry;
+
     }
 
     /**

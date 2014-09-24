@@ -139,6 +139,9 @@ public final class Messages {
     public static final String GUI_EDIT_SMALL_ELEMENTS_0 = "GUI_EDIT_SMALL_ELEMENTS_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SELECT_ELEMENT_VIEW_0 = "GUI_SELECT_ELEMENT_VIEW_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_FORMATTERS_LEGEND_0 = "GUI_FORMATTERS_LEGEND_0";
 
     /** Message constant for key in the resource bundle. */

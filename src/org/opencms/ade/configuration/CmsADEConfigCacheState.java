@@ -78,8 +78,8 @@ public class CmsADEConfigCacheState {
     /** The configurations from the sitemap / VFS. */
     private Map<String, CmsADEConfigDataInternal> m_siteConfigurationsByPath = new HashMap<String, CmsADEConfigDataInternal>();
 
-    /** The avalable edit groups. */
-    private Map<CmsUUID, CmsEditGroup> m_editGroups;
+    /** The available element views. */
+    private Map<CmsUUID, CmsElementView> m_elementViews;
 
     /**
      * Creates a new configuration cache state.<p>
@@ -87,18 +87,18 @@ public class CmsADEConfigCacheState {
      * @param cms the CMS context to use 
      * @param siteConfigurations the map of sitemap configuration beans by structure id 
      * @param moduleConfigs the complete list of module configurations
-     * @param editGroups the availabel edit groups
+     * @param elementViews the available element views
      */
     public CmsADEConfigCacheState(
         CmsObject cms,
         Map<CmsUUID, CmsADEConfigDataInternal> siteConfigurations,
         List<CmsADEConfigDataInternal> moduleConfigs,
-        Map<CmsUUID, CmsEditGroup> editGroups) {
+        Map<CmsUUID, CmsElementView> elementViews) {
 
         m_cms = cms;
         m_siteConfigurations = siteConfigurations;
         m_moduleConfigurations = moduleConfigs;
-        m_editGroups = editGroups;
+        m_elementViews = elementViews;
         for (CmsADEConfigDataInternal data : siteConfigurations.values()) {
             if (data.getBasePath() != null) {
                 // In theory, the base path should never be null 
@@ -128,7 +128,7 @@ public class CmsADEConfigCacheState {
             cms,
             Collections.<CmsUUID, CmsADEConfigDataInternal> emptyMap(),
             Collections.<CmsADEConfigDataInternal> emptyList(),
-            Collections.<CmsUUID, CmsEditGroup> emptyMap());
+            Collections.<CmsUUID, CmsElementView> emptyMap());
     }
 
     /**
@@ -160,14 +160,14 @@ public class CmsADEConfigCacheState {
      * 
      * @param sitemapUpdates a map containing changed sitemap configurations indexed by structure id (the map values are null if the corresponding sitemap configuration is not valid or could not be found) 
      * @param moduleUpdates the list of *all* module configurations, or null if no module configuration update is needed
-     * @param editGroupUpdates the updated edit groups, or null if no update needed
+     * @param elementViewUpdates the updated element views, or null if no update needed
      *  
      * @return the new configuration state 
      */
     public CmsADEConfigCacheState createUpdatedCopy(
         Map<CmsUUID, CmsADEConfigDataInternal> sitemapUpdates,
         List<CmsADEConfigDataInternal> moduleUpdates,
-        Map<CmsUUID, CmsEditGroup> editGroupUpdates) {
+        Map<CmsUUID, CmsElementView> elementViewUpdates) {
 
         Map<CmsUUID, CmsADEConfigDataInternal> newSitemapConfigs = Maps.newHashMap(m_siteConfigurations);
         if (sitemapUpdates != null) {
@@ -185,12 +185,12 @@ public class CmsADEConfigCacheState {
         if (moduleUpdates != null) {
             newModuleConfigs = moduleUpdates;
         }
-        Map<CmsUUID, CmsEditGroup> newEditGroups = m_editGroups;
-        if (editGroupUpdates != null) {
-            newEditGroups = editGroupUpdates;
+        Map<CmsUUID, CmsElementView> newElementViews = m_elementViews;
+        if (elementViewUpdates != null) {
+            newElementViews = elementViewUpdates;
         }
 
-        return new CmsADEConfigCacheState(m_cms, newSitemapConfigs, newModuleConfigs, newEditGroups);
+        return new CmsADEConfigCacheState(m_cms, newSitemapConfigs, newModuleConfigs, newElementViews);
     }
 
     /**
@@ -215,13 +215,13 @@ public class CmsADEConfigCacheState {
     }
 
     /**
-     * Returns the edit groups.<p>
+     * Returns the element views.<p>
      * 
-     * @return the edit groups
+     * @return the element views
      */
-    public Map<CmsUUID, CmsEditGroup> getEditGroups() {
+    public Map<CmsUUID, CmsElementView> getElementViews() {
 
-        return Collections.unmodifiableMap(m_editGroups);
+        return Collections.unmodifiableMap(m_elementViews);
     }
 
     /** 

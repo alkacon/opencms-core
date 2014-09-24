@@ -144,7 +144,7 @@ public class CmsResultsTabHandler extends A_CmsTabHandler {
      * Will be triggered when the result item is clicked.<p>
      * 
      * @param resourcePath the resource path of the result
-     * @param resourceType 
+     * @param resourceType the resource type
      */
     public void openPreview(String resourcePath, String resourceType) {
 

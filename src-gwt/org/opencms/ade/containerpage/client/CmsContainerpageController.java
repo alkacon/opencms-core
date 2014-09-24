@@ -51,6 +51,7 @@ import org.opencms.ade.containerpage.shared.CmsRemovedElementStatus;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageServiceAsync;
 import org.opencms.ade.contenteditor.client.CmsContentEditor;
+import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.dnd.CmsCompositeDNDController;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
@@ -606,6 +607,9 @@ public final class CmsContainerpageController {
     /** The container data. */
     Map<String, CmsContainer> m_containers;
 
+    /** The gallery data update timer. */
+    Timer m_galleryUpdateTimer;
+
     /** The container-page handler. */
     CmsContainerpageHandler m_handler;
 
@@ -638,6 +642,9 @@ public final class CmsContainerpageController {
 
     /** Edit button position timer. */
     private Timer m_editButtonsPositionTimer;
+
+    /** The current element view. */
+    private CmsUUID m_elementView;
 
     /** The currently editing group-container editor. */
     private A_CmsGroupEditor m_groupEditor;
@@ -674,6 +681,7 @@ public final class CmsContainerpageController {
             m_data = (CmsCntPageData)CmsRpcPrefetcher.getSerializedObjectFromDictionary(
                 getContainerpageService(),
                 CmsCntPageData.DICT_NAME);
+            m_elementView = m_data.getElementView();
         } catch (SerializationException e) {
             CmsErrorDialog.handleException(new Exception(
                 "Deserialization of page data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
@@ -873,6 +881,9 @@ public final class CmsContainerpageController {
         for (CmsContainerPageContainer cont : m_targetContainers.values()) {
             Element elem = cont.getElement();
             CmsContainerpageEditor.getZIndexManager().addContainer(cont.getContainerId(), elem);
+        }
+        if (removed.size() > 0) {
+            scheduleGalleryUpdate();
         }
     }
 
@@ -1259,6 +1270,16 @@ public final class CmsContainerpageController {
 
         MultiElementAction action = new MultiElementAction(clientIds, callback);
         action.execute();
+    }
+
+    /**
+     * Returns the current element view.<p>
+     * 
+     * @return the current element view
+     */
+    public CmsUUID getElementView() {
+
+        return m_elementView;
     }
 
     /**
@@ -1664,6 +1685,8 @@ public final class CmsContainerpageController {
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(historyToken)) {
             m_contentEditorHandler.openEditorForHistory(historyToken);
         }
+
+        updateGalleryData();
     }
 
     /**
@@ -1673,7 +1696,27 @@ public final class CmsContainerpageController {
      */
     public void initializeSubContainers(CmsContainerPageElementPanel containerElement) {
 
+        int containerCount = m_targetContainers.size();
         m_targetContainers.putAll(m_containerpageUtil.consumeContainers(m_containers, containerElement.getElement()));
+        if (m_targetContainers.size() > containerCount) {
+            // in case new containers have been added, the gallery data needs to be updated
+            scheduleGalleryUpdate();
+        }
+    }
+
+    /**
+     * Returns if the given container is editable.<p>
+     * 
+     * @param dragParent the parent container
+     * 
+     * @return <code>true</code> if the given container is editable
+     */
+    public boolean isContainerEditable(I_CmsDropContainer dragParent) {
+
+        boolean isSubElement = dragParent instanceof CmsGroupContainerElementPanel;
+        boolean isContainerEditable = dragParent.isEditable()
+            && (isSubElement || !isDetailPage() || dragParent.isDetailView() || dragParent.isDetailOnly());
+        return isContainerEditable;
     }
 
     /**
@@ -1716,6 +1759,23 @@ public final class CmsContainerpageController {
     public boolean isGroupcontainerEditing() {
 
         return m_groupEditor != null;
+    }
+
+    /**
+     * Checks whether the given element should be inline editable.<p>
+     * 
+     * @param element the element
+     * @param dragParent the element parent
+     * 
+     * @return <code>true</code> if the element should be inline editable
+     */
+    public boolean isInlineEditable(CmsContainerPageElementPanel element, I_CmsDropContainer dragParent) {
+
+        return !getData().isUseClassicEditor()
+            && hasActiveSelection()
+            && m_elementView.equals(element.getElementView())
+            && isContainerEditable(dragParent)
+            && (!(dragParent instanceof CmsGroupContainerElementPanel) || isGroupcontainerEditing());
     }
 
     /**
@@ -1910,15 +1970,18 @@ public final class CmsContainerpageController {
         }
         if (isGroupcontainerEditing()) {
             for (Widget element : m_groupEditor.getGroupContainerWidget()) {
-                if ((element instanceof CmsContainerPageElementPanel)) {
+                if (((element instanceof CmsContainerPageElementPanel) && isInlineEditable(
+                    (CmsContainerPageElementPanel)element,
+                    m_groupEditor.getGroupContainerWidget()))) {
                     ((CmsContainerPageElementPanel)element).initInlineEditor(this);
                 }
             }
         } else {
             for (org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer container : m_targetContainers.values()) {
-                if (m_containerpageUtil.isContainerEditable(container)) {
+                if (isContainerEditable(container)) {
                     for (Widget element : container) {
-                        if (element instanceof CmsContainerPageElementPanel) {
+                        if ((element instanceof CmsContainerPageElementPanel)
+                            && isInlineEditable((CmsContainerPageElementPanel)element, container)) {
                             ((CmsContainerPageElementPanel)element).initInlineEditor(this);
                         }
                     }
@@ -2118,6 +2181,19 @@ public final class CmsContainerpageController {
         }
         cleanUpContainers();
         return replacer;
+    }
+
+    /**
+     * Checks whether the given element should display the option bar.<p>
+     * 
+     * @param element the element
+     * @param dragParent the element parent
+     * 
+     * @return <code>true</code> if the given element should display the option bar
+     */
+    public boolean requiresOptionBar(CmsContainerPageElementPanel element, I_CmsDropContainer dragParent) {
+
+        return m_elementView.equals(element.getElementView()) && isContainerEditable(dragParent);
     }
 
     /**
@@ -2494,6 +2570,33 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Sets the element view.<p>
+     * 
+     * @param elementView the element view
+     */
+    public void setElementView(final CmsUUID elementView) {
+
+        m_elementView = elementView;
+        CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+            @Override
+            public void execute() {
+
+                getContainerpageService().setElementView(elementView, this);
+            }
+
+            @Override
+            protected void onResponse(Void result) {
+
+                // nothing to do
+            }
+        };
+        action.execute();
+        m_handler.m_editor.reinitializeButtons();
+        updateGalleryData();
+    }
+
+    /**
      * Marks the page as changed.<p>
      * 
      * @param nextActions the actions to perform after the page has been marked as changed 
@@ -2853,6 +2956,26 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Schedules an update of the gallery data according to the current element view and the editable containers.<p>
+     */
+    protected void scheduleGalleryUpdate() {
+
+        // only if not already scheduled 
+        if (m_galleryUpdateTimer != null) {
+            m_galleryUpdateTimer = new Timer() {
+
+                @Override
+                public void run() {
+
+                    m_galleryUpdateTimer = null;
+                    updateGalleryData();
+                }
+            };
+            m_galleryUpdateTimer.schedule(50);
+        }
+    }
+
+    /**
      * Sets the page changed flag and initializes the window closing handler if necessary.<p>
      * 
      * @param changed if <code>true</code> the page has changed
@@ -2932,6 +3055,22 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Returns the pages of editable containers.<p>
+     * 
+     * @return the containers
+     */
+    List<CmsContainer> getEditableContainers() {
+
+        List<CmsContainer> containers = new ArrayList<CmsContainer>();
+        for (CmsContainer container : m_containers.values()) {
+            if (isContainerEditable(m_targetContainers.get(container.getName()))) {
+                containers.add(container);
+            }
+        }
+        return containers;
+    }
+
+    /**
      * Handles a window resize to reset highlighting and the edit button positions.<p>
      */
     void handleResize() {
@@ -2956,6 +3095,34 @@ public final class CmsContainerpageController {
             };
             m_resizeTimer.schedule(300);
         }
+    }
+
+    /**
+     * Updates the gallery data according to the current element view and the editable containers.<p>
+     * This method should only be called from the gallery update timer to avoid unnecessary requests.<p>
+     */
+    void updateGalleryData() {
+
+        CmsRpcAction<CmsGalleryDataBean> dataAction = new CmsRpcAction<CmsGalleryDataBean>() {
+
+            @Override
+            public void execute() {
+
+                getContainerpageService().getGalleryDataForPage(
+                    getEditableContainers(),
+                    getElementView(),
+                    CmsCoreProvider.get().getUri(),
+                    getData().getLocale(),
+                    this);
+            }
+
+            @Override
+            protected void onResponse(CmsGalleryDataBean result) {
+
+                m_handler.m_editor.getAdd().updateGalleryData(result);
+            }
+        };
+        dataAction.execute();
     }
 
     /**

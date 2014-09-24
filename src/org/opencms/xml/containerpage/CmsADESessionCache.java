@@ -27,6 +27,7 @@
 
 package org.opencms.xml.containerpage;
 
+import org.opencms.ade.configuration.CmsElementView;
 import org.opencms.file.CmsObject;
 import org.opencms.jsp.util.CmsJspStandardContextBean.TemplateBean;
 import org.opencms.main.OpenCms;
@@ -55,6 +56,9 @@ public final class CmsADESessionCache {
 
     /** The container elements. */
     private Map<String, CmsContainerElementBean> m_containerElements;
+
+    /** The current element view id. */
+    private CmsUUID m_elementView;
 
     /** Flag which controls whether small elements should be shown. */
     private boolean m_isEditSmallElements;
@@ -91,6 +95,8 @@ public final class CmsADESessionCache {
 
         // XML content cache, used during XML content edit
         m_xmlContents = Collections.synchronizedMap(new HashMap<CmsUUID, CmsXmlContent>());
+        // use the default element view
+        m_elementView = CmsElementView.DEFAULT_ELEMENT_VIEW.getId();
     }
 
     /**
@@ -134,6 +140,16 @@ public final class CmsADESessionCache {
     public CmsXmlContent getCacheXmlContent(CmsUUID structureId) {
 
         return m_xmlContents.get(structureId);
+    }
+
+    /**
+     * Returns the current element view id.<p>
+     * 
+     * @return the current element view id
+     */
+    public CmsUUID getElementView() {
+
+        return m_elementView;
     }
 
     /**
@@ -218,6 +234,16 @@ public final class CmsADESessionCache {
     public void setCacheXmlContent(CmsUUID structureId, CmsXmlContent xmlContent) {
 
         m_xmlContents.put(structureId, xmlContent);
+    }
+
+    /**
+     * Sets the current element view id.<p>
+     * 
+     * @param elementView the current element view id
+     */
+    public void setElementView(CmsUUID elementView) {
+
+        m_elementView = elementView;
     }
 
     /** 

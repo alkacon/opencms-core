@@ -171,19 +171,26 @@ public class CmsTypesTab extends A_CmsListTab {
             listItemWidget.setIcon(CmsIconUtil.getResourceIconClasses(typeBean.getType(), false));
             listItemWidget.setUnselectable();
             CmsCheckBox checkBox = new CmsCheckBox();
-            SelectionHandler selectionHandler = new SelectionHandler(typeBean.getType(), checkBox);
-            checkBox.addClickHandler(selectionHandler);
-            listItemWidget.addClickHandler(selectionHandler);
-            if ((selectedTypes != null) && selectedTypes.contains(typeBean.getType())) {
-                checkBox.setChecked(true);
-            }
-            listItemWidget.addButton(createSelectButton(selectionHandler));
             CmsListItem listItem = new CmsListItem(checkBox, listItemWidget);
-            listItem.setId(typeBean.getType());
-            if (typeBean.isCreatableType() && (m_dndHandler != null)) {
-                listItem.initMoveHandle(m_dndHandler, true);
-                listItem.getMoveHandle().setTitle(Messages.get().key(Messages.GUI_TAB_TYPES_CREATE_NEW_0));
+            if (typeBean.isDeactivated()) {
+                checkBox.disable("");
+                listItem.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().expired());
+            } else {
+                SelectionHandler selectionHandler = new SelectionHandler(typeBean.getType(), checkBox);
+                checkBox.addClickHandler(selectionHandler);
+                listItemWidget.addClickHandler(selectionHandler);
+                if ((selectedTypes != null) && selectedTypes.contains(typeBean.getType())) {
+                    checkBox.setChecked(true);
+                }
+                listItemWidget.addButton(createSelectButton(selectionHandler));
+
+                if (typeBean.isCreatableType() && (m_dndHandler != null)) {
+                    listItem.initMoveHandle(m_dndHandler, true);
+                    listItem.getMoveHandle().setTitle(Messages.get().key(Messages.GUI_TAB_TYPES_CREATE_NEW_0));
+                }
             }
+            listItem.setId(typeBean.getType());
+
             if (typeBean.getVisibility() == TypeVisibility.showOptional) {
                 listItem.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().shouldOnlyShowInFullTypeList());
             }

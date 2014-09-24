@@ -49,6 +49,7 @@ import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentRootLocation;
 import org.opencms.xml.content.I_CmsXmlContentLocation;
 import org.opencms.xml.content.I_CmsXmlContentValueLocation;
+import org.opencms.xml.types.CmsXmlVfsFileValue;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -103,6 +104,9 @@ public class CmsConfigurationReader {
 
     /** The display name node name. */
     public static final String N_DISPLAY_NAME = "DisplayName";
+
+    /** The element view node name. */
+    public static final String N_ELEMENT_VIEW = "ElementView";
 
     /** The error node name. */
     public static final String N_ERROR = "Error";
@@ -524,6 +528,17 @@ public class CmsConfigurationReader {
             }
         }
 
+        I_CmsXmlContentValueLocation elementViewLoc = node.getSubValue(N_ELEMENT_VIEW);
+        CmsUUID elementView = CmsElementView.DEFAULT_ELEMENT_VIEW.getId();
+        if (elementViewLoc != null) {
+            try {
+                CmsXmlVfsFileValue elementViewValue = (CmsXmlVfsFileValue)elementViewLoc.getValue();
+                elementView = elementViewValue.getLink(m_cms).getStructureId();
+            } catch (Exception e) {
+                // in case parsing the link fails, the default element view will be used
+            }
+        }
+
         List<I_CmsFormatterBean> formatters = new ArrayList<I_CmsFormatterBean>();
         for (I_CmsXmlContentValueLocation formatterLoc : node.getSubValues(N_FORMATTER)) {
             CmsFormatterBean formatter = parseFormatter(typeName, formatterLoc);
@@ -536,6 +551,7 @@ public class CmsConfigurationReader {
             namePattern,
             detailPagesDisabled,
             addDisabled,
+            elementView,
             order);
         m_resourceTypeConfigs.add(typeConfig);
     }

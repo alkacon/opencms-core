@@ -35,6 +35,7 @@ import org.opencms.ade.galleries.client.CmsGalleryFactory;
 import org.opencms.ade.galleries.client.I_CmsGalleryHandler;
 import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
 import org.opencms.ade.galleries.client.ui.CmsResultListItem;
+import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.A_CmsToolbarMenu;
@@ -60,14 +61,80 @@ import com.google.gwt.user.client.ui.SimplePanel;
  */
 public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu<CmsContainerpageHandler> {
 
-    /** The main content widget. */
-    private FlowPanel m_contentPanel;
+    /**
+     * The gallery handler for the container page editor.<p>
+     */
+    class GalleryHandler implements I_CmsGalleryHandler {
+
+        /** The drag and drop filter. */
+        private Predicate<CmsResultItemBean> m_dndFilter;
+
+        /**
+         * Constructor.<p>
+         * 
+         * @param dndFilter the drag and drop filter
+         */
+        GalleryHandler(Predicate<CmsResultItemBean> dndFilter) {
+
+            m_dndFilter = dndFilter;
+        }
+
+        /**
+         * @see org.opencms.ade.galleries.client.I_CmsGalleryHandler#filterDnd(org.opencms.ade.galleries.shared.CmsResultItemBean)
+         */
+        public boolean filterDnd(CmsResultItemBean resultBean) {
+
+            if (m_dndFilter != null) {
+                return m_dndFilter.apply(resultBean);
+            } else {
+                return true;
+            }
+        }
+
+        /**
+         * @see org.opencms.ade.galleries.client.I_CmsGalleryHandler#getAutoHideParent()
+         */
+        public I_CmsAutoHider getAutoHideParent() {
+
+            return getPopup();
+        }
+
+        /**
+         * @see org.opencms.ade.galleries.client.I_CmsGalleryHandler#getDndHandler()
+         */
+        public CmsDNDHandler getDndHandler() {
+
+            return getDragHandler();
+        }
+
+        /**
+         * @see org.opencms.ade.galleries.client.I_CmsGalleryHandler#processResultItem(org.opencms.ade.galleries.client.ui.CmsResultListItem)
+         */
+        public void processResultItem(CmsResultListItem item) {
+
+            if (item.getResult().isCopyModel()) {
+                item.getListItemWidget().setBackground(Background.YELLOW);
+                CmsLabel titleWidget = item.getListItemWidget().getTitleWidget();
+                titleWidget.getElement().getStyle().setFontStyle(FontStyle.OBLIQUE);
+                String newText = Messages.get().key(Messages.GUI_COPY_MODEL_TITLE_WRAPPER_1, titleWidget.getText());
+                titleWidget.setText(newText);
+                item.getListItemWidget().setStateIcon(StateIcon.copy);
+            }
+        }
+
+    }
 
     /** The gallery dialog instance. */
     private CmsGalleryDialog m_dialog;
 
     /** The drag and drop handler for the gallery menu. */
     private CmsDNDHandler m_dragHandler;
+
+    /** The gallery data. */
+    private CmsGalleryDataBean m_galleryData;
+
+    /** The gallery dialog container. */
+    private SimplePanel m_tabsContainer;
 
     /**
      * Constructor.<p>
@@ -79,8 +146,11 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu<CmsContainerpageHand
 
         super(I_CmsButton.ButtonData.ADD, handler);
         m_dragHandler = dragHandler;
-        m_contentPanel = new FlowPanel();
-        setMenuWidget(m_contentPanel);
+        FlowPanel contentPanel = new FlowPanel();
+        m_tabsContainer = new SimplePanel();
+        m_tabsContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().menuTabContainer());
+        contentPanel.add(m_tabsContainer);
+        setMenuWidget(contentPanel);
     }
 
     /**
@@ -90,56 +160,17 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu<CmsContainerpageHand
 
         Document.get().getBody().addClassName(I_CmsButton.ButtonData.ADD.getIconClass());
         if (m_dialog == null) {
-            SimplePanel tabsContainer = new SimplePanel();
-            tabsContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().menuTabContainer());
             int dialogHeight = CmsToolbarPopup.getAvailableHeight();
             int dialogWidth = CmsToolbarPopup.getAvailableWidth();
-
             Predicate<CmsResultItemBean> resultDndFilter = Predicates.alwaysTrue();
             if (CmsContainerpageController.get().getData().getTemplateContextInfo().getCurrentContext() != null) {
                 resultDndFilter = new CmsTemplateContextResultDndFilter();
             }
             final Predicate<CmsResultItemBean> finalDndFilter = resultDndFilter;
-            m_dialog = CmsGalleryFactory.createDialog(new I_CmsGalleryHandler() {
-
-                public boolean filterDnd(CmsResultItemBean resultBean) {
-
-                    if (finalDndFilter != null) {
-                        return finalDndFilter.apply(resultBean);
-                    } else {
-                        return true;
-                    }
-                }
-
-                public I_CmsAutoHider getAutoHideParent() {
-
-                    return getPopup();
-                }
-
-                public CmsDNDHandler getDndHandler() {
-
-                    return getDragHandler();
-                }
-
-                public void processResultItem(CmsResultListItem item) {
-
-                    if (item.getResult().isCopyModel()) {
-                        item.getListItemWidget().setBackground(Background.YELLOW);
-                        CmsLabel titleWidget = item.getListItemWidget().getTitleWidget();
-                        titleWidget.getElement().getStyle().setFontStyle(FontStyle.OBLIQUE);
-                        String newText = Messages.get().key(
-                            Messages.GUI_COPY_MODEL_TITLE_WRAPPER_1,
-                            titleWidget.getText());
-                        titleWidget.setText(newText);
-                        item.getListItemWidget().setStateIcon(StateIcon.copy);
-                    }
-                }
-
-            });
+            m_dialog = CmsGalleryFactory.createDialog(new GalleryHandler(finalDndFilter), m_galleryData);
             m_dialog.setDialogSize(dialogWidth, dialogHeight);
             getPopup().setWidth(dialogWidth);
-            tabsContainer.add(m_dialog);
-            m_contentPanel.add(tabsContainer);
+            m_tabsContainer.add(m_dialog);
         } else {
             int dialogWidth = CmsToolbarPopup.getAvailableWidth();
             getPopup().setWidth(dialogWidth);
@@ -154,6 +185,20 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu<CmsContainerpageHand
     public void onToolbarDeactivate() {
 
         Document.get().getBody().removeClassName(I_CmsButton.ButtonData.ADD.getIconClass());
+    }
+
+    /**
+     * Updates the gallery data.<p>
+     * 
+     * @param galleryData the gallery data
+     */
+    public void updateGalleryData(CmsGalleryDataBean galleryData) {
+
+        if (m_dialog != null) {
+            m_dialog.removeFromParent();
+            m_dialog = null;
+        }
+        m_galleryData = galleryData;
     }
 
     /**

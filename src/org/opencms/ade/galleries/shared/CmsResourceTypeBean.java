@@ -45,17 +45,17 @@ public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSeria
     public enum TypeVisibility {
         /** Never displayed. */
         hidden,
-        /** The user may choose to display the type, but it's not shown by default. */
-        showOptional,
         /** Always show the type. */
-        showAlways
+        showAlways,
+        /** The user may choose to display the type, but it's not shown by default. */
+        showOptional
     }
-
-    /** Visibility of this type. */
-    private TypeVisibility m_visibility = TypeVisibility.showAlways;
 
     /** Flag to indicate if the current user may create a new resource of this type. */
     private boolean m_creatableType;
+
+    /** The deactivated flag. */
+    private boolean m_deactivated;
 
     /** The description. */
     private String m_description;
@@ -74,6 +74,9 @@ public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSeria
 
     /** The resource type id. */
     private int m_typeId;
+
+    /** Visibility of this type. */
+    private TypeVisibility m_visibility = TypeVisibility.showAlways;
 
     /**
      * Returns the description.<p>
@@ -156,6 +159,16 @@ public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSeria
     }
 
     /**
+     * Returns if the type is deactivated.<p>
+     *
+     * @return if the type is deactivated
+     */
+    public boolean isDeactivated() {
+
+        return m_deactivated;
+    }
+
+    /**
      * Sets flag to indicate if the current user may create a new resource of this type.<p>
      *
      * @param creatableType <code>true</code> if the current user may create a new resource of this type
@@ -163,6 +176,16 @@ public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSeria
     public void setCreatableType(boolean creatableType) {
 
         m_creatableType = creatableType;
+    }
+
+    /**
+     * Sets the type deactivated.<p>
+     *
+     * @param deactivated if the type is deactivated
+     */
+    public void setDeactivated(boolean deactivated) {
+
+        m_deactivated = deactivated;
     }
 
     /**

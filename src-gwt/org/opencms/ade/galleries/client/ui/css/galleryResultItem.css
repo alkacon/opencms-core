@@ -6,16 +6,12 @@
 @def bigImageHeight 150;
 
 /** unused classes **/
-.itemAdditional, .inlineEditable, .open, .itemActive, .itemRed, .itemBlue, .itemYellow, .disabledItem, .itemTitle, .cms_type_icon,
+.itemAdditional, .inlineEditable, .open, .itemActive, .itemRed, .itemBlue, .itemYellow, .disabledItem, .itemTitle, .cms_type_icon, .expired,
 .itemAdditionalTitle, .itemAdditionalValue, .dragging,
 .cmsState, .cmsState-up, .cmsState-up-hovering, .cmsState-up-disabled, .cmsState-down, .cmsState-down-hovering,
 .cmsState-down-disabled, .export, .hidden, .secure, .redirect, .normal, .lockSharedOpen, .lockSharedClosed, .stateIcon, .lockOpen, .lockClosed, .titleInput, .copyModel {}
 
-@sprite li.expired div.itemContent{
-	gwt-image: "backgrounds.invalidStateBackground";
-	background-position: 50% 50%;
-	height: auto;
-}
+
 
 .tilingItem .imageTile, .tilingList .tilingItem .titleRow, .tilingList .tilingItem .itemIcon, .tilingList .tilingItem .itemAdditional{
 	display: none;

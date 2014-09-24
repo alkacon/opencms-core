@@ -36,6 +36,7 @@ import org.opencms.ade.containerpage.shared.CmsGroupContainer;
 import org.opencms.ade.containerpage.shared.CmsGroupContainerSaveResult;
 import org.opencms.ade.containerpage.shared.CmsInheritanceContainer;
 import org.opencms.ade.containerpage.shared.CmsRemovedElementStatus;
+import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.util.CmsUUID;
 
@@ -227,6 +228,24 @@ public interface I_CmsContainerpageService extends RemoteService {
         String locale) throws CmsRpcException;
 
     /**
+     * Returns the gallery configuration data according to the current page containers and the selected element view.<p>
+     * 
+     * @param containers the page containers
+     * @param elementView the element view
+     * @param uri the page URI
+     * @param locale the content locale
+     * 
+     * @return the gallery data
+     * 
+     * @throws CmsRpcException in case something goes wrong
+     */
+    CmsGalleryDataBean getGalleryDataForPage(
+        List<CmsContainer> containers,
+        CmsUUID elementView,
+        String uri,
+        String locale) throws CmsRpcException;
+
+    /**
      * Returns new container element data for the given resource type name.<p>
      * 
      * @param pageStructureId the container page structure id
@@ -393,6 +412,15 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @throws CmsRpcException if something goes wrong 
      */
     void setEditSmallElements(boolean editSmallElements) throws CmsRpcException;
+
+    /**
+     * Sets the element view.<p>
+     * 
+     * @param elementView the element view
+     * 
+     * @throws CmsRpcException if something goes wrong processing the request
+     */
+    void setElementView(CmsUUID elementView) throws CmsRpcException;
 
     /**
      * Saves the container-page in a synchronized RPC call.<p>

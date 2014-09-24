@@ -35,6 +35,7 @@ import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.CmsHighlightingBorder;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPositionBean;
+import org.opencms.util.CmsUUID;
 
 import java.util.Iterator;
 import java.util.List;
@@ -89,6 +90,7 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
      * @param hasViewPermission indicates if the current user has view permissions on the element resource
      * @param hasWritePermission indicates if the current user has write permissions on the element resource
      * @param releasedAndNotExpired <code>true</code> if the element resource is currently released and not expired
+     * @param elementView the element view of the element 
      */
     public CmsGroupContainerElementPanel(
         Element element,
@@ -102,7 +104,8 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
         boolean hasSettings,
         boolean hasViewPermission,
         boolean hasWritePermission,
-        boolean releasedAndNotExpired) {
+        boolean releasedAndNotExpired,
+        CmsUUID elementView) {
 
         super(
             element,
@@ -117,7 +120,8 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
             hasViewPermission,
             hasWritePermission,
             releasedAndNotExpired,
-            true);
+            true,
+            elementView);
         m_resourceType = resourceType;
     }
 
