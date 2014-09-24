@@ -27,19 +27,19 @@
 
 package org.opencms.ade.configuration;
 
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProperty;
-import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.search.galleries.CmsGallerySearch;
-import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.content.CmsXmlContent;
+import org.opencms.xml.content.CmsXmlContentFactory;
+import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.Locale;
 
@@ -53,11 +53,26 @@ public class CmsElementView {
     /** The default element view. */
     public static final CmsElementView DEFAULT_ELEMENT_VIEW = new CmsElementView(null);
 
+    /** The default element view title key. */
+    public static final String GUI_ELEMENT_VIEW_DEFAULT_TITLE_0 = "GUI_ELEMENT_VIEW_DEFAULT_TITLE_0";
+
+    /** The title node. */
+    public static final String N_TITLE = "Title";
+
+    /** The title key node. */
+    public static final String N_TITLE_KEY = "TitleKey";
+
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsElementView.class);
 
-    /** The group resource. */
+    /** The view resource. */
     private CmsResource m_resource;
+
+    /** The view title. */
+    private String m_title;
+
+    /** The title localization key. */
+    private String m_titleKey;
 
     /**
      * Constructor.<p>
@@ -67,38 +82,6 @@ public class CmsElementView {
     public CmsElementView(CmsResource resource) {
 
         m_resource = resource;
-    }
-
-    /**
-     * Returns the element view description.<p>
-     * 
-     * @param cms the cms context
-     * @param locale the locale
-     * 
-     * @return the description
-     */
-    public String getDescription(CmsObject cms, Locale locale) {
-
-        String result = "";
-        if (m_resource != null) {
-            try {
-                CmsGallerySearchResult search = CmsGallerySearch.searchById(cms, m_resource.getStructureId(), locale);
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(search.getTitle())) {
-                    result = search.getDescription();
-                } else {
-                    CmsProperty prop = cms.readPropertyObject(
-                        m_resource,
-                        CmsPropertyDefinition.PROPERTY_DESCRIPTION,
-                        false);
-                    result = prop.getValue();
-                }
-            } catch (CmsException e) {
-                LOG.error(e.getLocalizedMessage(), e);
-            }
-        } else {
-            result = Messages.get().getBundle(locale).key(Messages.GUI_ELEMENT_VIEW_DEFAULT_DESCRIPTION_0);
-        }
-        return result;
     }
 
     /**
@@ -136,23 +119,37 @@ public class CmsElementView {
      */
     public String getTitle(CmsObject cms, Locale locale) {
 
-        String result = "";
-        if (m_resource != null) {
-            try {
-                CmsGallerySearchResult search = CmsGallerySearch.searchById(cms, m_resource.getStructureId(), locale);
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(search.getTitle())) {
-                    result = search.getTitle();
-                } else {
-                    CmsProperty prop = cms.readPropertyObject(m_resource, CmsPropertyDefinition.PROPERTY_TITLE, false);
-                    result = prop.getValue();
+        if (m_title == null) {
+            if (m_resource == null) {
+                // the default view
+                m_title = "Default";
+                m_titleKey = GUI_ELEMENT_VIEW_DEFAULT_TITLE_0;
+            } else {
+                try {
+                    CmsFile configFile = cms.readFile(m_resource);
+                    CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, configFile);
+                    if (content.hasLocale(CmsConfigurationReader.DEFAULT_LOCALE)) {
+                        m_title = content.getValue(N_TITLE, CmsConfigurationReader.DEFAULT_LOCALE).getStringValue(cms);
+                        I_CmsXmlContentValue titleKey = content.getValue(
+                            N_TITLE_KEY,
+                            CmsConfigurationReader.DEFAULT_LOCALE);
+                        if ((titleKey != null)
+                            && CmsStringUtil.isNotEmptyOrWhitespaceOnly(titleKey.getStringValue(cms))) {
+                            m_titleKey = titleKey.getStringValue(cms);
+                        }
+                    }
+                } catch (CmsException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
                 }
-            } catch (CmsException e) {
-                LOG.error(e.getLocalizedMessage(), e);
             }
-        } else {
-            result = Messages.get().getBundle(locale).key(Messages.GUI_ELEMENT_VIEW_DEFAULT_TITLE_0);
+
         }
-        return result;
+        if (m_titleKey == null) {
+            return m_title;
+        } else {
+            return OpenCms.getWorkplaceManager().getMessages(locale).key(m_titleKey);
+        }
     }
 
     /**

@@ -36,26 +36,21 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class CmsElementViewInfo implements IsSerializable {
 
-    /** The description. */
-    String m_description;
-
     /** The element view id. */
-    CmsUUID m_elementViewId;
+    private CmsUUID m_elementViewId;
 
     /** The title. */
-    String m_title;
+    private String m_title;
 
     /**
      * Constructor.<p>
      * 
      * @param title the title
-     * @param description the description
      * @param elementViewId the element view id
      */
-    public CmsElementViewInfo(String title, String description, CmsUUID elementViewId) {
+    public CmsElementViewInfo(String title, CmsUUID elementViewId) {
 
         m_title = title;
-        m_description = description;
         m_elementViewId = elementViewId;
     }
 
@@ -64,16 +59,6 @@ public class CmsElementViewInfo implements IsSerializable {
      */
     protected CmsElementViewInfo() {
 
-    }
-
-    /**
-     * Returns the description.<p>
-     *
-     * @return the description
-     */
-    public String getDescription() {
-
-        return m_description;
     }
 
     /**

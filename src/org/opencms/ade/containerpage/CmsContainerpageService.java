@@ -1396,10 +1396,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         for (CmsElementView view : OpenCms.getADEManager().getElementViews(cms).values()) {
             // add only element view that are used within the type configuration and the user has sufficient permissions for
             if (usedIds.contains(view.getId()) && view.hasPermission(cms)) {
-                result.add(new CmsElementViewInfo(
-                    view.getTitle(cms, wpLocale),
-                    view.getDescription(cms, wpLocale),
-                    view.getId()));
+                result.add(new CmsElementViewInfo(view.getTitle(cms, wpLocale), view.getId()));
             }
         }
 

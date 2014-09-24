@@ -71,11 +71,7 @@ public class CmsElementViewSelectWidget extends CmsSelectWidget {
             if (view.getResource() != null) {
                 value = cms.getSitePath(view.getResource());
             }
-            options.add(new CmsSelectWidgetOption(
-                value,
-                false,
-                view.getTitle(cms, widgetDialog.getLocale()),
-                view.getDescription(cms, widgetDialog.getLocale())));
+            options.add(new CmsSelectWidgetOption(value, false, view.getTitle(cms, widgetDialog.getLocale())));
         }
         return options;
     }

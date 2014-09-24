@@ -89,7 +89,7 @@
 				</param>
 			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
-				name="elementview" id="18">
+				name="elementview" id="310">
 				<param name="schema">/system/modules/org.opencms.ade.config/schemas/element_view.xsd
 				</param>
 			</type>
