@@ -9,11 +9,11 @@
 			<resource uri="/system/login/" />
 		</localizedfolders>
 		<dialoghandlers>
-			<!-- Dialog handlers are configurable for the workplace dialogs: delete,
-				lock/unlock and file properties. If OpenCms does not start because a customized
-				dialog handler class is not found, use the following default dialog handler
-				classes: Delete dialog: org.opencms.workplace.commons.CmsDelete Lock dialog:
-				org.opencms.workplace.commons.CmsLock Property dialog: org.opencms.workplace.commons.CmsPropertyAdvanced
+			<!-- Dialog handlers are configurable for the workplace dialogs: delete, 
+				lock/unlock and file properties. If OpenCms does not start because a customized 
+				dialog handler class is not found, use the following default dialog handler 
+				classes: Delete dialog: org.opencms.workplace.commons.CmsDelete Lock dialog: 
+				org.opencms.workplace.commons.CmsLock Property dialog: org.opencms.workplace.commons.CmsPropertyAdvanced 
 				// -->
 			<dialoghandler class="org.opencms.workplace.commons.CmsDelete" />
 			<dialoghandler class="org.opencms.workplace.commons.CmsLock" />
@@ -1096,78 +1096,109 @@
 			</menurules>
 		</explorertypes>
 		<default-preferences>
-			<workplace-preferences>
-				<workplace-generaloptions>
-					<buttonstyle>textimage</buttonstyle>
-					<reporttype>extended</reporttype>
-					<uploadapplet>gwt</uploadapplet>
-					<publishbuttonappearance>always</publishbuttonappearance>
-					<listallprojects>false</listallprojects>
-					<publishnotification>true</publishnotification>
-					<show-fileuploadbutton>true</show-fileuploadbutton>
-					<allowbrokenrelations>false</allowbrokenrelations>
-					<publishrelatedresources>true</publishrelatedresources>
-					<newfolder-editproperties>true</newfolder-editproperties>
-					<newfolder-createindexpage>true</newfolder-createindexpage>
-					<show-uploadtypedialog>true</show-uploadtypedialog>
-				</workplace-generaloptions>
-				<workplace-startupsettings>
-					<locale>en</locale>
-					<project>Offline</project>
-					<workplaceview>/system/workplace/views/explorer/explorer_fs.jsp</workplaceview>
-					<folder>/</folder>
-					<site>/sites/default/</site>
-					<restrictexplorerview>false</restrictexplorerview>
-				</workplace-startupsettings>
-				<workplace-search>
-					<searchindex-name>Offline project (VFS)</searchindex-name>
-					<searchview-style>explorer</searchview-style>
-				</workplace-search>
-			</workplace-preferences>
-			<explorer-preferences>
-				<explorer-generaloptions>
-					<buttonstyle>textimage</buttonstyle>
-					<entries>50</entries>
-				</explorer-generaloptions>
-				<explorer-displayoptions>
-					<show-title>true</show-title>
-					<show-navtext>false</show-navtext>
-					<show-type>true</show-type>
-					<show-datelastmodified>true</show-datelastmodified>
-					<show-datecreated>false</show-datecreated>
-					<show-lockedby>false</show-lockedby>
-					<show-permissions>false</show-permissions>
-					<show-size>true</show-size>
-					<show-state>false</show-state>
-					<show-userlastmodified>false</show-userlastmodified>
-					<show-usercreated>false</show-usercreated>
-					<show-datereleased>true</show-datereleased>
-					<show-dateexpired>true</show-dateexpired>
-				</explorer-displayoptions>
-			</explorer-preferences>
-			<dialogs-preferences>
-				<dialogs-defaultsettings>
-					<filecopy>createresource</filecopy>
-					<foldercopy>preservesiblings</foldercopy>
-					<filedeletion>preservesiblings</filedeletion>
-					<directpublish>onlyresource</directpublish>
-					<showlock>false</showlock>
-					<showexportsettings>true</showexportsettings>
-					<expand-permissionsuser>false</expand-permissionsuser>
-					<expand-permissionsinherited>true</expand-permissionsinherited>
-					<permissions-inheritonfolder>true</permissions-inheritonfolder>
-				</dialogs-defaultsettings>
-			</dialogs-preferences>
-			<editors-preferences>
-				<editors-generaloptions>
-					<buttonstyle>image</buttonstyle>
-					<directeditstyle>image</directeditstyle>
-				</editors-generaloptions>
-				<editors-preferrededitors>
-					<editor type="plain" value="bestavailable" />
-					<editor type="xmlpage" value="bestavailable" />
-				</editors-preferrededitors>
-			</editors-preferences>
+			<preference-tab name="basic">
+				<preference name="locale" value="en"
+					nice-name="%(key.GUI_LABEL_LANGUAGE_0)" />
+				<preference name="startProject" value="Offline"
+					nice-name="%(key.GUI_PREF_STARTUP_PROJECT_0)" />
+				<preference name="startSite" value="/sites/default/"
+					nice-name="%(key.GUI_PREF_STARTUP_SITE_0)" />
+				<preference name="startFolder" value="/"
+					nice-name="%(key.GUI_PREF_STARTUP_FOLDER_0)" />
+				<preference name="elementView" nice-name="%(key.GUI_PREF_ELEMENT_VIEW_0)" />
+				<preference name="timeWarp" value="0"
+					nice-name="%(key.GUI_LABEL_TIMEWARP_0)" widget="datebox" />
+			</preference-tab>
+			<preference-tab name="extended">
+				<preference name="allowBrokenRelations" value="false"
+					widget="checkbox" />
+				<preference name="dialogCopyFileMode" value="createresource"
+					widget="select"
+					widget-config="createresource:%(key.GUI_COPY_AS_NEW_0)|createsibling:%(key.GUI_PREF_COPY_AS_SIBLING_0)" />
+				<preference name="dialogCopyFolderMode" value="preservesiblings"
+					widget="select"
+					widget-config="createsibling:%(key.GUI_PREF_COPY_AS_SIBLINGS_0)|preservesiblings:%(key.GUI_PREF_PRESERVE_SIBLINGS_RESOURCES_0)|createresource:%(key.GUI_PREF_COPY_AS_NEW_0)" />
+				<preference name="dialogDeleteFileMode" value="preservesiblings"
+					widget="select"
+					widget-config="preservesiblings:%(key.GUI_PREF_PRESERVE_SIBLINGS_0)|deletesiblings:%(key.GUI_PREF_DELETE_SIBLINGS_0)" />
+				<preference name="dialogExpandInheritedPermissions"
+					value="true" widget="checkbox" />
+				<preference name="dialogExpandUserPermissions" value="false"
+					widget="checkbox" />
+				<preference name="dialogPermissionsInheritOnFolder"
+					value="false" widget="checkbox" />
+				<preference name="dialogPublishSiblings" value="onlyresource" />
+				<preference name="dialogShowExportSettings" value="true"
+					widget="checkbox" />
+				<preference name="dialogShowLock" value="false" widget="checkbox" />
+				<preference name="explorerFileEntries" value="50" widget="combo"
+					widget-config="50:50|100:100|200:20|300:300|400:400|500:500|2147483647:%(key.GUI_LABEL_UNLIMITED_0)" />
+				<preference name="listAllProjects" value="false" widget="checkbox" />
+				<preference name="newFolderCreateIndexPage" value="true"
+					widget="checkbox" />
+				<preference name="newFolderEditProperties" value="true"
+					widget="checkbox" />
+				<preference name="publishButtonAppearance" value="always" />
+				<preference name="restrictExplorerView" value="false"
+					widget="checkbox" />
+				<preference name="showExplorerFileDateCreated" value="false"
+					widget="checkbox" />
+				<preference name="showExplorerFileDateExpired" value="true"
+					widget="checkbox" />
+				<preference name="showExplorerFileDateLastModified"
+					value="true" widget="checkbox" />
+				<preference name="showExplorerFileDateReleased" value="true"
+					widget="checkbox" />
+				<preference name="showExplorerFileLockedBy" value="false"
+					widget="checkbox" />
+				<preference name="showExplorerFileNavText" value="false"
+					widget="checkbox" />
+				<preference name="showExplorerFilePermissions" value="false"
+					widget="checkbox" />
+				<preference name="showExplorerFileSize" value="true"
+					widget="checkbox" />
+				<preference name="showExplorerFileState" value="false"
+					widget="checkbox" />
+				<preference name="showExplorerFileTitle" value="true"
+					widget="checkbox" />
+				<preference name="showExplorerFileType" value="true"
+					widget="checkbox" />
+				<preference name="showExplorerFileUserCreated" value="false"
+					widget="checkbox" />
+				<preference name="showExplorerFileUserLastModified"
+					value="false" widget="checkbox" />
+				<preference name="showFileUploadButton" value="true"
+					widget="checkbox" />
+				<preference name="showPublishNotification" value="false"
+					widget="checkbox" />
+				<preference name="showUploadTypeDialog" value="true"
+					widget="checkbox" />
+				<preference name="startView"
+					value="/system/workplace/views/explorer/directEdit.jsp" />
+				<preference name="uploadVariant" value="gwt" widget="select"
+					widget-config="basic:%(key.GUI_PREF_USE_UPLOAD_BASIC_0)|gwt:%(key.GUI_PREF_USE_UPLOAD_GWT_0)" />
+				<preference name="workplaceReportType" value="extended" />
+				<preference name="workplaceSearchIndexName" value="Offline project EN (VFS)" />
+				<preference name="workplaceSearchViewStyle" value="explorer" />
+				<preference name="editor.plain" value="bestavailable" />
+				<preference name="editor.xmlcontent" value="bestavailable" />
+				<preference name="editor.xmlpage" value="bestavailable" />
+				<preference name="gallery.linkgallery" />
+				<preference name="gallery.tablegallery" />
+				<preference name="gallery.imagegallery" />
+				<preference name="gallery.downloadgallery" />
+				<preference name="gallery.htmlgallery" />
+			</preference-tab>
+			<preference-tab name="hidden">
+				<preference name="workplaceButtonStyle" value="textimage" />
+				<preference name="directEditButtonStyle" value="image" />
+				<preference name="editorButtonStyle" value="image" />
+				<preference name="explorerButtonStyle" value="textimage" />
+				<preference name="subsitemapCreationMode" value="convert" />
+				<preference name="publishRelatedResourcesMode" value="true" />
+				<preference name="explorerFileEntryOptions" value="50,100,200,300,400,500" />
+				<preference name="uploadAppletClientFolder" value="" />
+			</preference-tab>
 		</default-preferences>
 		<tool-manager>
 			<roots>
