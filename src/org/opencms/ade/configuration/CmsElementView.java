@@ -190,7 +190,7 @@ public class CmsElementView {
 
         try {
             if (m_resource != null) {
-                return cms.hasPermissions(m_resource, CmsPermissionSet.ACCESS_READ);
+                return cms.hasPermissions(m_resource, CmsPermissionSet.ACCESS_VIEW);
             } else {
                 return OpenCms.getRoleManager().hasRole(cms, CmsRole.ELEMENT_AUTHOR);
             }
