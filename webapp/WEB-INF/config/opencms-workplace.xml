@@ -1572,6 +1572,8 @@
 					nice-name="%(key.GUI_PREF_ELEMENT_VIEW_0)" />
 				<preference name="timeWarp" value="0"
 					nice-name="%(key.GUI_LABEL_TIMEWARP_0)" widget="datebox" />
+			    <preference name="elementReuseMode" value="reuse" nice-name="%(key.GUI_PREF_REUSE_MODE_0)" widget="select" widget-config="reuse:%(key.GUI_PREF_REUSE_MODE_REUSE_0)|copy:%(key.GUI_PREF_REUSE_MODE_COPY_0)|ask:%(key.GUI_PREF_REUSE_MODE_ASK_0)" />
+		
 			</preference-tab>
 			<preference-tab name="extended">
 				<preference name="allowBrokenRelations" value="false"

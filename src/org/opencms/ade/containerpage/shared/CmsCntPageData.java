@@ -41,6 +41,19 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public final class CmsCntPageData implements IsSerializable {
 
+    /** Enum representing the different ways dropping elements on a container page can be handled. */
+    public enum ElementReuseMode {
+
+        /** The user will be asked whether they want the 'copy' or 'reuse' behavior. */
+        ask,
+
+        /** The dropped element will be copied, and the container page will link to the copy. */
+        copy,
+
+        /** The container page will link to the dropped element. */
+        reuse
+    }
+
     /** Name of the used dictionary. */
     public static final String DICT_NAME = "org_opencms_ade_containerpage";
 
@@ -107,6 +120,9 @@ public final class CmsCntPageData implements IsSerializable {
     /** The original request parameters. */
     private String m_requestParams;
 
+    /** The element reuse mode. */
+    private ElementReuseMode m_reuseMode;
+
     /** Flag indicating if the current user has the sitemap manager role. */
     private boolean m_sitemapManager;
 
@@ -136,6 +152,7 @@ public final class CmsCntPageData implements IsSerializable {
      * @param showSmallElementsInitially flag which controls whether small elements should be shown initially 
      * @param elementViews the element views
      * @param elementView the current element view
+     * @param reuseMode the element reuse mode 
      */
     public CmsCntPageData(
         String noEditReason,
@@ -151,7 +168,8 @@ public final class CmsCntPageData implements IsSerializable {
         CmsTemplateContextInfo contextInfo,
         boolean showSmallElementsInitially,
         List<CmsElementViewInfo> elementViews,
-        CmsUUID elementView) {
+        CmsUUID elementView,
+        ElementReuseMode reuseMode) {
 
         m_noEditReason = noEditReason;
         m_requestParams = requestParams;
@@ -167,6 +185,7 @@ public final class CmsCntPageData implements IsSerializable {
         m_editSmallElementsInitially = showSmallElementsInitially;
         m_elementViews = elementViews;
         m_elementView = elementView;
+        m_reuseMode = reuseMode;
     }
 
     /**
@@ -225,6 +244,16 @@ public final class CmsCntPageData implements IsSerializable {
     public String getEditorUri() {
 
         return EDITOR_URI;
+    }
+
+    /** 
+     * Gets the element reuse mode.<p>
+     * 
+     * @return the element reuse mode 
+     */
+    public ElementReuseMode getElementReuseMode() {
+
+        return m_reuseMode;
     }
 
     /**

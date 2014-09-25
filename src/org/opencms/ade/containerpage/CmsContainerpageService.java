@@ -35,6 +35,7 @@ import org.opencms.ade.containerpage.inherited.CmsInheritanceReference;
 import org.opencms.ade.containerpage.inherited.CmsInheritanceReferenceParser;
 import org.opencms.ade.containerpage.inherited.CmsInheritedContainerState;
 import org.opencms.ade.containerpage.shared.CmsCntPageData;
+import org.opencms.ade.containerpage.shared.CmsCntPageData.ElementReuseMode;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
@@ -92,6 +93,8 @@ import org.opencms.util.CmsPair;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.editors.CmsWorkplaceEditorManager;
 import org.opencms.workplace.explorer.CmsNewResourceXmlContent;
 import org.opencms.workplace.explorer.CmsResourceUtil;
@@ -130,6 +133,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 /**
@@ -142,6 +146,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     /** Additional info key for storing the "edit small elements" setting on the user. */
     public static final String ADDINFO_EDIT_SMALL_ELEMENTS = "EDIT_SMALL_ELEMENTS";
 
+    /** Session attribute name used to store the selected clipboard tab. */
+    public static final String ATTR_CLIPBOARD_TAB = "clipboardtab";
+
     /** Static reference to the log. */
     private static final Log LOG = CmsLog.getLog(CmsContainerpageService.class);
 
@@ -151,8 +158,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     /** The session cache. */
     private CmsADESessionCache m_sessionCache;
 
-    /** Session attribute name used to store the selected clipboard tab. */
-    public static final String ATTR_CLIPBOARD_TAB = "clipboardtab";
+    /** The workplace settings. */
+    private CmsWorkplaceSettings m_workplaceSettings;
 
     /**
      * Generates the model resource data list.<p>
@@ -808,15 +815,15 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             if (sitemapManager) {
                 sitemapPath = CmsADEManager.PATH_SITEMAP_EDITOR_JSP;
             }
+            CmsCntPageData.ElementReuseMode reuseMode = ElementReuseMode.reuse;
+            String reuseModeString = getWorkplaceSettings().getUserSettings().getAdditionalPreference(
+                "elementReuseMode",
+                true);
 
-            // collect the element view infos
-            CmsUUID elementView = getSessionCache().getElementView();
-            Map<CmsUUID, CmsElementViewInfo> elementViews = getElementViews();
-            List<CmsElementViewInfo> views = new ArrayList<CmsElementViewInfo>(elementViews.values());
-            if (!elementViews.containsKey(elementView) && !views.isEmpty()) {
-                // in case the element view can not be used on the current page select the first available
-                elementView = views.get(0).getElementViewId();
-                getSessionCache().setElementView(elementView);
+            try {
+                reuseMode = ElementReuseMode.valueOf(reuseModeString);
+            } catch (Exception e) {
+                LOG.info("Invalid reuse mode : " + reuseModeString);
             }
 
             data = new CmsCntPageData(
@@ -832,8 +839,10 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 useClassicEditor,
                 info,
                 isEditSmallElements(request, cms),
-                views,
-                elementView);
+                Lists.newArrayList(getElementViews().values()),
+                getSessionCache().getElementView(),
+                reuseMode);
+
         } catch (Throwable e) {
             error(e);
         }
@@ -1684,6 +1693,19 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             m_sessionCache = CmsADESessionCache.getCache(getRequest(), getCmsObject());
         }
         return m_sessionCache;
+    }
+
+    /**
+     * Returns the workplace settings of the current user.<p>
+     * 
+     * @return the workplace settings
+     */
+    private CmsWorkplaceSettings getWorkplaceSettings() {
+
+        if (m_workplaceSettings == null) {
+            m_workplaceSettings = CmsWorkplace.getWorkplaceSettings(getCmsObject(), getRequest());
+        }
+        return m_workplaceSettings;
     }
 
     /**

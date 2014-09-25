@@ -41,7 +41,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 /**
  * Dialog for selecting between copying and reusing an element dropped from the clipboard into the page.<p>
  */
-public class CmsClipboardDropModeSelectionDialog extends CmsCreateModeSelectionDialog {
+public class CmsDroppedElementModeSelectionDialog extends CmsCreateModeSelectionDialog {
 
     /**
      * Creates a new instance.<p>
@@ -50,7 +50,7 @@ public class CmsClipboardDropModeSelectionDialog extends CmsCreateModeSelectionD
      * 
      * @param createModeCallback the callback to call with the result 
      */
-    public CmsClipboardDropModeSelectionDialog(CmsListInfoBean info, AsyncCallback<String> createModeCallback) {
+    public CmsDroppedElementModeSelectionDialog(CmsListInfoBean info, AsyncCallback<String> createModeCallback) {
 
         super(info, createModeCallback);
     }
@@ -77,7 +77,7 @@ public class CmsClipboardDropModeSelectionDialog extends CmsCreateModeSelectionD
             protected void onResponse(CmsListInfoBean result) {
 
                 stop(false);
-                (new CmsClipboardDropModeSelectionDialog(result, createModeCallback)).center();
+                (new CmsDroppedElementModeSelectionDialog(result, createModeCallback)).center();
             }
         };
         action.execute();

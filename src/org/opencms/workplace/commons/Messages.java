@@ -132,13 +132,10 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PREF_UPLOAD_VARIANT_NOT_FOUND_0 = "ERR_PREF_UPLOAD_VARIANT_NOT_FOUND_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PROGRESS_INTERRUPTED_0 = "ERR_PROGRESS_INTERRUPTED_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PROGRESS_START_INVALID_LIST_0 = "ERR_PROGRESS_START_INVALID_LIST_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PROGRESS_START_THREAD_EXISTS_0 = "ERR_PROGRESS_START_THREAD_EXISTS_0";
 
@@ -1104,6 +1101,18 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREF_RESTRICT_EXPLORER_VIEW_0 = "GUI_PREF_RESTRICT_EXPLORER_VIEW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREF_REUSE_MODE_0 = "GUI_PREF_REUSE_MODE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREF_REUSE_MODE_ASK_0 = "GUI_PREF_REUSE_MODE_ASK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREF_REUSE_MODE_COPY_0 = "GUI_PREF_REUSE_MODE_COPY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREF_REUSE_MODE_REUSE_0 = "GUI_PREF_REUSE_MODE_REUSE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREF_SEARCH_RESULT_0 = "GUI_PREF_SEARCH_RESULT_0";

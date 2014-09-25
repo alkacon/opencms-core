@@ -27,14 +27,14 @@
 
 package org.opencms.ade.containerpage.client;
 
-import org.opencms.ade.containerpage.client.ui.CmsClipboardDropModeSelectionDialog;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
+import org.opencms.ade.containerpage.client.ui.CmsDroppedElementModeSelectionDialog;
 import org.opencms.ade.containerpage.client.ui.CmsElementOptionBar;
 import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElementPanel;
-import org.opencms.ade.containerpage.client.ui.CmsMenuListItem;
 import org.opencms.ade.containerpage.client.ui.I_CmsDropContainer;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.containerpage.shared.CmsCntPageData.ElementReuseMode;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.contenteditor.shared.CmsEditorConstants;
@@ -45,6 +45,7 @@ import org.opencms.gwt.client.dnd.I_CmsDNDController;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.CmsList;
+import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPositionBean;
@@ -245,8 +246,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     public void onDrop(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
 
         boolean changedContainerpage = false;
-        boolean isFromClipboard = draggable instanceof CmsMenuListItem;
-        CmsContainerPageElementPanel clipboardContainerElement = null;
+        boolean isListItem = draggable instanceof CmsListItem;
+        CmsContainerPageElementPanel listContainerElement = null;
         final boolean[] triggerReload = {false};
 
         if (target != m_initialDropTarget) {
@@ -265,8 +266,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                         CmsContainerElementData elementData = m_controller.getCachedElement(m_draggableId);
 
                         containerElement = m_controller.getContainerpageUtil().createElement(elementData, container);
-                        if (isFromClipboard) {
-                            clipboardContainerElement = containerElement;
+                        if (isListItem) {
+                            listContainerElement = containerElement;
                         }
                         m_controller.addToRecentList(m_draggableId, null);
                     }
@@ -332,27 +333,23 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
         };
 
-        if (clipboardContainerElement != null) {
-            final CmsContainerPageElementPanel finalClipboardContainerElement = clipboardContainerElement;
+        if (listContainerElement != null) {
+            final CmsContainerPageElementPanel finalListContainerElement = listContainerElement;
             final String serverIdStr = CmsContainerpageController.getServerId(m_draggableId);
             CmsUUID structureId = new CmsUUID(serverIdStr);
-
-            // when dropping elements from the clipboard into the page, we ask the user if the dropped element should 
-            // be used, or a copy of it. If the user wants a copy, we copy the corresponding resource and replace the element
-            // in the page 
 
             AsyncCallback<String> modeCallback = new AsyncCallback<String>() {
 
                 public void onFailure(Throwable caught) {
 
-                    finalClipboardContainerElement.removeFromParent();
+                    finalListContainerElement.removeFromParent();
                 }
 
                 public void onSuccess(String result) {
 
                     if (Objects.equal(result, CmsEditorConstants.MODE_COPY)) {
                         final CmsContainerpageController controller = CmsContainerpageController.get();
-                        CmsContainerElementData data = controller.getCachedElement(finalClipboardContainerElement.getId());
+                        CmsContainerElementData data = controller.getCachedElement(finalListContainerElement.getId());
                         final Map<String, String> settings = data.getSettings();
                         controller.copyElement(serverIdStr, new AsyncCallback<CmsUUID>() {
 
@@ -372,9 +369,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                                         public void execute(CmsContainerElementData newData) {
 
                                             try {
-                                                controller.replaceContainerElement(
-                                                    finalClipboardContainerElement,
-                                                    newData);
+                                                controller.replaceContainerElement(finalListContainerElement, newData);
                                                 controller.setPageChanged(checkReload);
                                             } catch (Exception e) {
                                                 throw new RuntimeException(e);
@@ -390,8 +385,22 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
                 }
             };
-            CmsClipboardDropModeSelectionDialog.showDialog(structureId, modeCallback);
-
+            ElementReuseMode reuseMode = CmsContainerpageController.get().getData().getElementReuseMode();
+            switch (reuseMode) {
+                case ask:
+                    // when dropping elements from the into the page, we ask the user if the dropped element should 
+                    // be used, or a copy of it. If the user wants a copy, we copy the corresponding resource and replace the element
+                    // in the page 
+                    CmsDroppedElementModeSelectionDialog.showDialog(structureId, modeCallback);
+                    break;
+                case copy:
+                    modeCallback.onSuccess(CmsEditorConstants.MODE_COPY);
+                    break;
+                case reuse:
+                default:
+                    modeCallback.onSuccess(CmsEditorConstants.MODE_REUSE);
+                    break;
+            }
         } else {
             if (changedContainerpage) {
                 m_controller.setPageChanged(checkReload);
