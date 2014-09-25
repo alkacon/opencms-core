@@ -529,7 +529,7 @@ public class CmsConfigurationReader {
         }
 
         I_CmsXmlContentValueLocation elementViewLoc = node.getSubValue(N_ELEMENT_VIEW);
-        CmsUUID elementView = CmsElementView.DEFAULT_ELEMENT_VIEW.getId();
+        CmsUUID elementView = null;
         if (elementViewLoc != null) {
             try {
                 CmsXmlVfsFileValue elementViewValue = (CmsXmlVfsFileValue)elementViewLoc.getValue();

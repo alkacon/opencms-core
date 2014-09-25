@@ -42,6 +42,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.CmsWaitHandle;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -418,16 +419,25 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
      */
     protected Map<CmsUUID, CmsElementView> loadElementViews() {
 
-        Map<CmsUUID, CmsElementView> elementViews = new LinkedHashMap<CmsUUID, CmsElementView>();
-        elementViews.put(CmsElementView.DEFAULT_ELEMENT_VIEW.getId(), CmsElementView.DEFAULT_ELEMENT_VIEW);
+        List<CmsElementView> views = new ArrayList<CmsElementView>();
+        views.add(CmsElementView.DEFAULT_ELEMENT_VIEW);
         try {
             CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(m_elementViewType.getTypeId());
             List<CmsResource> groups = m_cms.readResources("/", filter);
             for (CmsResource res : groups) {
-                elementViews.put(res.getStructureId(), new CmsElementView(res));
+                try {
+                    views.add(new CmsElementView(m_cms, res));
+                } catch (Exception e) {
+                    LOG.error(e.getMessage(), e);
+                }
             }
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
+        }
+        Collections.sort(views, new CmsElementView.ElementViewComparator());
+        Map<CmsUUID, CmsElementView> elementViews = new LinkedHashMap<CmsUUID, CmsElementView>();
+        for (CmsElementView view : views) {
+            elementViews.put(view.getId(), view);
         }
         return elementViews;
     }

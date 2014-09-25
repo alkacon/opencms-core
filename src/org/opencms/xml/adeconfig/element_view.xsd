@@ -12,7 +12,8 @@
     <xsd:complexType name="OpenCmsElementView">
         <xsd:sequence>
             <xsd:element name="Title" type="OpenCmsString" />
-            <xsd:element name="TitleKey" type="OpenCmsString" minOccurs="0" />
+            <xsd:element name="TitleKey" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="Order" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>

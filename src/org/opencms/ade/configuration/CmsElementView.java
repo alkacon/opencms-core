@@ -41,6 +41,7 @@ import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
+import java.util.Comparator;
 import java.util.Locale;
 
 import org.apache.commons.logging.Log;
@@ -50,8 +51,28 @@ import org.apache.commons.logging.Log;
  */
 public class CmsElementView {
 
+    /**
+     * The element view comparator.<p>
+     */
+    public static class ElementViewComparator implements Comparator<CmsElementView> {
+
+        /**
+         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+         */
+        public int compare(CmsElementView o1, CmsElementView o2) {
+
+            int result;
+            if (o1.getOrder() == o2.getOrder()) {
+                result = o1.m_title.compareTo(o2.m_title);
+            } else {
+                result = o1.getOrder() > o2.getOrder() ? 1 : -1;
+            }
+            return result;
+        }
+    }
+
     /** The default element view. */
-    public static final CmsElementView DEFAULT_ELEMENT_VIEW = new CmsElementView(null);
+    public static final CmsElementView DEFAULT_ELEMENT_VIEW = new CmsElementView();
 
     /** The default element view title key. */
     public static final String GUI_ELEMENT_VIEW_DEFAULT_TITLE_0 = "GUI_ELEMENT_VIEW_DEFAULT_TITLE_0";
@@ -62,6 +83,9 @@ public class CmsElementView {
     /** The title key node. */
     public static final String N_TITLE_KEY = "TitleKey";
 
+    /** The order node. */
+    public static final String N_ORDER = "Order";
+
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsElementView.class);
 
@@ -69,19 +93,38 @@ public class CmsElementView {
     private CmsResource m_resource;
 
     /** The view title. */
-    private String m_title;
+    String m_title;
 
     /** The title localization key. */
     private String m_titleKey;
 
+    /** The order. */
+    private int m_order;
+
     /**
      * Constructor.<p>
      * 
+     * @param cms the cms context
      * @param resource the group resource
+     * 
+     * @throws Exception  if parsing the resource fails
      */
-    public CmsElementView(CmsResource resource) {
+    public CmsElementView(CmsObject cms, CmsResource resource)
+    throws Exception {
 
         m_resource = resource;
+        init(cms);
+    }
+
+    /**
+     * Constructor for the default element view.<p>
+     */
+    private CmsElementView() {
+
+        // the default view
+        m_title = "Default";
+        m_titleKey = GUI_ELEMENT_VIEW_DEFAULT_TITLE_0;
+        m_order = Integer.MIN_VALUE;
     }
 
     /**
@@ -97,6 +140,16 @@ public class CmsElementView {
             // only in case of the default element view
             return CmsUUID.getNullUUID();
         }
+    }
+
+    /**
+     * The order.<p>
+     * 
+     * @return the order
+     */
+    public int getOrder() {
+
+        return m_order;
     }
 
     /**
@@ -119,32 +172,6 @@ public class CmsElementView {
      */
     public String getTitle(CmsObject cms, Locale locale) {
 
-        if (m_title == null) {
-            if (m_resource == null) {
-                // the default view
-                m_title = "Default";
-                m_titleKey = GUI_ELEMENT_VIEW_DEFAULT_TITLE_0;
-            } else {
-                try {
-                    CmsFile configFile = cms.readFile(m_resource);
-                    CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, configFile);
-                    if (content.hasLocale(CmsConfigurationReader.DEFAULT_LOCALE)) {
-                        m_title = content.getValue(N_TITLE, CmsConfigurationReader.DEFAULT_LOCALE).getStringValue(cms);
-                        I_CmsXmlContentValue titleKey = content.getValue(
-                            N_TITLE_KEY,
-                            CmsConfigurationReader.DEFAULT_LOCALE);
-                        if ((titleKey != null)
-                            && CmsStringUtil.isNotEmptyOrWhitespaceOnly(titleKey.getStringValue(cms))) {
-                            m_titleKey = titleKey.getStringValue(cms);
-                        }
-                    }
-                } catch (CmsException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-
-        }
         if (m_titleKey == null) {
             return m_title;
         } else {
@@ -171,5 +198,33 @@ public class CmsElementView {
             LOG.error(e.getLocalizedMessage(), e);
         }
         return false;
+    }
+
+    /**
+     * Parses the edit view resource.<p>
+     * 
+     * @param cms the cms context
+     * @throws Exception if parsing the resource fails
+     */
+    private void init(CmsObject cms) throws Exception {
+
+        CmsFile configFile = cms.readFile(m_resource);
+        CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, configFile);
+        m_title = content.getValue(N_TITLE, CmsConfigurationReader.DEFAULT_LOCALE).getStringValue(cms);
+        I_CmsXmlContentValue titleKey = content.getValue(N_TITLE_KEY, CmsConfigurationReader.DEFAULT_LOCALE);
+        if ((titleKey != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(titleKey.getStringValue(cms))) {
+            m_titleKey = titleKey.getStringValue(cms);
+        }
+        I_CmsXmlContentValue orderVal = content.getValue(N_ORDER, CmsConfigurationReader.DEFAULT_LOCALE);
+        if (orderVal != null) {
+            try {
+                m_order = Integer.parseInt(orderVal.getStringValue(cms));
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+                m_order = Integer.MAX_VALUE;
+            }
+        } else {
+            m_order = Integer.MAX_VALUE;
+        }
     }
 }

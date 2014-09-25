@@ -345,7 +345,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      */
     public CmsUUID getElementView() {
 
-        return m_elementView;
+        return m_elementView == null ? CmsElementView.DEFAULT_ELEMENT_VIEW.getId() : m_elementView;
     }
 
     /**
@@ -472,8 +472,9 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
 
         CmsFolderOrName folderOrName = childConfig.m_folderOrName != null ? childConfig.m_folderOrName : m_folderOrName;
         String namePattern = childConfig.m_namePattern != null ? childConfig.m_namePattern : m_namePattern;
+        CmsUUID elementView = childConfig.m_elementView != null ? childConfig.m_elementView : m_elementView;
         return new CmsResourceTypeConfig(m_typeName, false, folderOrName, namePattern, isDetailPagesDisabled()
-            || childConfig.isDetailPagesDisabled(), childConfig.isAddDisabled(), m_elementView, m_order);
+            || childConfig.isDetailPagesDisabled(), childConfig.isAddDisabled(), elementView, m_order);
 
     }
 
