@@ -119,6 +119,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -810,6 +811,17 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             if (sitemapManager) {
                 sitemapPath = CmsADEManager.PATH_SITEMAP_EDITOR_JSP;
             }
+
+            // collect the element view infos
+            CmsUUID elementView = getSessionCache().getElementView();
+            Map<CmsUUID, CmsElementViewInfo> elementViews = getElementViews();
+            List<CmsElementViewInfo> views = new ArrayList<CmsElementViewInfo>(elementViews.values());
+            if (!elementViews.containsKey(elementView) && !views.isEmpty()) {
+                // in case the element view can not be used on the current page select the first available
+                elementView = views.get(0).getElementViewId();
+                getSessionCache().setElementView(elementView);
+            }
+
             data = new CmsCntPageData(
                 noEditReason,
                 CmsRequestUtil.encodeParams(request),
@@ -823,8 +835,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 useClassicEditor,
                 info,
                 isEditSmallElements(request, cms),
-                getElementViews(),
-                getSessionCache().getElementView());
+                views,
+                elementView);
         } catch (Throwable e) {
             error(e);
         }
@@ -1378,9 +1390,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * 
      * @return the element views
      */
-    private List<CmsElementViewInfo> getElementViews() {
+    private Map<CmsUUID, CmsElementViewInfo> getElementViews() {
 
-        List<CmsElementViewInfo> result = new ArrayList<CmsElementViewInfo>();
+        Map<CmsUUID, CmsElementViewInfo> result = new LinkedHashMap<CmsUUID, CmsElementViewInfo>();
         CmsObject cms = getCmsObject();
 
         // collect the actually used element view ids
@@ -1396,10 +1408,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         for (CmsElementView view : OpenCms.getADEManager().getElementViews(cms).values()) {
             // add only element view that are used within the type configuration and the user has sufficient permissions for
             if (usedIds.contains(view.getId()) && view.hasPermission(cms)) {
-                result.add(new CmsElementViewInfo(view.getTitle(cms, wpLocale), view.getId()));
+                result.put(view.getId(), new CmsElementViewInfo(view.getTitle(cms, wpLocale), view.getId()));
             }
         }
-
         return result;
     }
 
