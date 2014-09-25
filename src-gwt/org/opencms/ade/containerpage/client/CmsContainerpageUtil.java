@@ -470,10 +470,10 @@ public class CmsContainerpageUtil {
             elementData.isReleasedAndNotExpired(),
             elementData.isNewEditorDisabled(),
             elementData.getElementView());
-        if (m_controller.isInlineEditable(dragElement, dragParent)) {
+        if (m_controller.requiresOptionBar(dragElement, dragParent)) {
             addOptionBar(dragElement);
         }
-        if (m_controller.requiresOptionBar(dragElement, dragParent)) {
+        if (m_controller.isInlineEditable(dragElement, dragParent)) {
             dragElement.initInlineEditor(m_controller);
         }
         return dragElement;

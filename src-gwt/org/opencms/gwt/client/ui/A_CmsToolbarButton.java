@@ -81,8 +81,7 @@ implements I_CmsToolbarButton {
      */
     public boolean isActive() {
 
-        return m_isActive;
-        //return isDown();
+        return isDown();
     }
 
     /**
