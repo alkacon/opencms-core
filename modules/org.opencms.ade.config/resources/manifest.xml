@@ -88,8 +88,22 @@
 				<param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/group_container.xsd
 				</param>
 			</type>
-			<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
+			<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration"
 				name="elementview" id="310">
+				<properties>
+					<property>
+						<name>search.exclude</name>
+						<value>true</value>
+					</property>
+					<property>
+						<name>locale-available</name>
+						<value><![CDATA[en]]></value>
+					</property>
+					<property>
+						<name>locale</name>
+						<value><![CDATA[en]]></value>
+					</property>
+				</properties>
 				<param name="schema">/system/modules/org.opencms.ade.config/schemas/element_view.xsd
 				</param>
 			</type>
@@ -276,8 +290,7 @@
 					order="27" autosetnavigation="true" autosettitle="true"
 					info="desc.htmlredirect" />
 				<accesscontrol>
-					<accessentry principal="ROLE.EDITOR"
-						permissions="+r+v+w+c" />
+					<accessentry principal="ROLE.EDITOR" permissions="+r+v+w+c" />
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="containerpage" key="fileicon.containerpage"
@@ -289,8 +302,7 @@
 				<accesscontrol>
 					<accessentry principal="ROLE.ELEMENT_AUTHOR"
 						permissions="+r+v+w" />
-					<accessentry principal="ROLE.EDITOR"
-						permissions="+r+v+w+c" />
+					<accessentry principal="ROLE.EDITOR" permissions="+r+v+w+c" />
 				</accesscontrol>
 				<editoptions>
 					<defaultproperties enabled="true" shownavigation="true">
@@ -389,8 +401,9 @@
 							name="org.opencms.gwt.client.ui.contextmenu.CmsCategories" rule="containerpage-no-different-site" />
 						<entry key="TEMPLATECONTEXTS" name="templatecontexts" rule="containerpage" /><!-- 
 							Entry is processed on the client side, the message key doesn't exist -->
-						<entry key="SELECTELEMENTVIEW" name="selectelementview" rule="containerpage" /><!-- 
-							Entry is processed on the client side, the message key doesn't exist -->
+						<entry key="SELECTELEMENTVIEW" name="selectelementview"
+							rule="containerpage" /><!-- Entry is processed on the client side, 
+							the message key doesn't exist -->
 						<entry key="GUI_EXPLORER_CONTEXT_SEO_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsOpenSeoDialog"
 							rule="containerpage-no-different-site" />
@@ -470,8 +483,7 @@
 					uri="newresource.jsp?newresourcetype=content_folder" order="491"
 					autosetnavigation="false" autosettitle="false" info="desc.configfolder" />
 				<accesscontrol>
-					<accessentry principal="ROLE.EDITOR"
-						permissions="+r+v+w+c" />
+					<accessentry principal="ROLE.EDITOR" permissions="+r+v+w+c" />
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="sitemap_config" key="fileicon.sitemap_config"
@@ -482,8 +494,7 @@
 					order="21" autosetnavigation="false" autosettitle="false"
 					info="desc.sitemap_config" />
 				<accesscontrol>
-					<accessentry principal="ROLE.EDITOR"
-						permissions="+r+v+w+c" />
+					<accessentry principal="ROLE.EDITOR" permissions="+r+v+w+c" />
 				</accesscontrol>
 				<editoptions>
 					<defaultproperties enabled="true" shownavigation="true">

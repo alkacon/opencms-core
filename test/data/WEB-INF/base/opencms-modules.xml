@@ -132,8 +132,22 @@
 					<param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/group_container.xsd
 					</param>
 				</type>
-				<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
-					name="elementview" id="18">
+				<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration"
+					name="elementview" id="310">
+					<properties>
+						<property>
+							<name>search.exclude</name>
+							<value>true</value>
+						</property>
+						<property>
+							<name>locale-available</name>
+							<value><![CDATA[en]]></value>
+						</property>
+						<property>
+							<name>locale</name>
+							<value><![CDATA[en]]></value>
+						</property>
+					</properties>
 					<param name="schema">/system/modules/org.opencms.ade.config/schemas/element_view.xsd
 					</param>
 				</type>
