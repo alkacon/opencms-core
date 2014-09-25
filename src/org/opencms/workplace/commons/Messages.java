@@ -1043,6 +1043,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_PREF_EDITOR_BEST_0 = "GUI_PREF_EDITOR_BEST_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREF_ELEMENT_VIEW_0 = "GUI_PREF_ELEMENT_VIEW_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PREF_FILES_PER_PAGE_0 = "GUI_PREF_FILES_PER_PAGE_0";
 
     /** Message constant for key in the resource bundle. */

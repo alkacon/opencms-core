@@ -1568,6 +1568,8 @@
 					nice-name="%(key.GUI_PREF_STARTUP_SITE_0)" />
 				<preference name="startFolder" value="/"
 					nice-name="%(key.GUI_PREF_STARTUP_FOLDER_0)" />
+				<preference name="elementView"
+					nice-name="%(key.GUI_PREF_ELEMENT_VIEW_0)" />
 				<preference name="timeWarp" value="0"
 					nice-name="%(key.GUI_LABEL_TIMEWARP_0)" widget="datebox" />
 			</preference-tab>

@@ -174,6 +174,17 @@ public class CmsUserSettingsStringPropertyWrapper {
     }
 
     /**
+     * Gets the element view.
+     *
+     * @return the element view
+     */
+    @PrefMetadata(type = CmsElementViewPreference.class)
+    public String getElementView() {
+
+        return m_settings.getAdditionalPreference(CmsElementViewPreference.PREFERENCE_NAME, false);
+    }
+
+    /**
      * Gets the explorer button style.
      *
      * @return the explorer button style
@@ -685,6 +696,16 @@ public class CmsUserSettingsStringPropertyWrapper {
     public void setEditorButtonStyle(String s) {
 
         m_settings.setEditorButtonStyle(s);
+    }
+
+    /**
+     * Sets the element view.<p>
+     * 
+     * @param elementView the element view
+     */
+    public void setElementView(String elementView) {
+
+        m_settings.setAdditionalPreference(CmsElementViewPreference.PREFERENCE_NAME, elementView);
     }
 
     /**
