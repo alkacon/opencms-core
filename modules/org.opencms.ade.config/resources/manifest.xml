@@ -429,7 +429,7 @@
 			</explorertype>
 			<explorertype name="elementview" key="fileicon.elementview"
 				icon="function.png" bigicon="function_big.png" reference="xmlcontent">
-				<newresource page="structurecontent"
+				<newresource page="otheroptions"
 					uri="newresource_xmlcontent.jsp?newresourcetype=elementview" order="999"
 					autosetnavigation="false" autosettitle="false" info="desc.elementview" />
 				<accesscontrol>
