@@ -140,6 +140,9 @@ public final class CmsAutoSetupProperties {
      */
     public static final String PROP_SETUP_INSTALL_COMPONENTS = "setup.install.components";
 
+    /** The property key <code>setup.show.progress</code> to specify if dots '.' should be printed to the real STDOUT while a setup is in progress. */
+    public static final String PROP_SETUP_SHOW_PROGRESS = "setup.show.progress";
+
     /** The property key <code>setup.webapp.path</code> to specify the path of the OpenCms webapp to install, e.g., <code>/var/lib/tomcat7/webapps/opencms</code>. */
     public static final String PROP_SETUP_WEBAPP_PATH = "setup.webapp.path";
 
@@ -167,7 +170,7 @@ public final class CmsAutoSetupProperties {
     /** The database to use. */
     private String m_dbProduct;
 
-    /** The db privider (sql or jpa). */
+    /** The db provider (sql or jpa). */
     private String m_dbProvider;
 
     /** The default table space for oracle DBs. */
@@ -218,6 +221,9 @@ public final class CmsAutoSetupProperties {
     /** The db user pwd for production. */
     private String m_workerUser;
 
+    /** Indicates if dots '.' should be printed to the real STDOUT while a setup is in progress. */
+    private boolean m_showProgress;
+
     /**
      * Public constructor.<p>
      * 
@@ -253,6 +259,7 @@ public final class CmsAutoSetupProperties {
         m_serverName = addProperty(PROP_SERVER_NAME);
         m_ethernetAddress = addProperty(PROP_SERVER_ETHERNET_ADDRESS);
         m_servletMapping = addProperty(PROP_SERVER_SERVLET_MAPPING);
+        m_showProgress = Boolean.valueOf(addProperty(PROP_SETUP_SHOW_PROGRESS)).booleanValue();
 
         if (System.getProperty(PROP_SETUP_INSTALL_COMPONENTS) != null) {
             m_configuration.put(PROP_SETUP_INSTALL_COMPONENTS, System.getProperty(PROP_SETUP_INSTALL_COMPONENTS));
@@ -419,7 +426,9 @@ public final class CmsAutoSetupProperties {
     }
 
     /**
-     * @return the path to the webapp test directory
+     * Returns the setupWebappPath.<p>
+     * 
+     * @return the setupWebappPath
      */
     public String getSetupWebappPath() {
 
@@ -504,6 +513,16 @@ public final class CmsAutoSetupProperties {
     public boolean isDropDb() {
 
         return m_dropDb;
+    }
+
+    /**
+     * Indicates if dots '.' should be printed to the real STDOUT while a setup is in progress.<p>
+     *
+     * @return true if dots '.' should be printed to the real STDOUT while a setup is in progress
+     */
+    public boolean isShowProgress() {
+
+        return m_showProgress;
     }
 
     /**
