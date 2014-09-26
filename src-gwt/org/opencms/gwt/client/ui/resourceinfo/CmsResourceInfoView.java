@@ -74,6 +74,7 @@ public class CmsResourceInfoView extends Composite {
         static {
             m_filteredActions.add(CmsGwtConstants.ACTION_TEMPLATECONTEXTS);
             m_filteredActions.add(CmsGwtConstants.ACTION_EDITSMALLELEMENTS);
+            m_filteredActions.add(CmsGwtConstants.ACTION_SELECTELEMENTVIEW);
             for (Class<?> cls : new Class[] {
                 CmsEditUserSettings.class,
                 CmsAbout.class,

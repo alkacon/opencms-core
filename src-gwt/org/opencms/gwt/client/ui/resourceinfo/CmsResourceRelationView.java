@@ -140,6 +140,7 @@ public class CmsResourceRelationView extends Composite {
     static {
         m_filteredActions.add(CmsGwtConstants.ACTION_TEMPLATECONTEXTS);
         m_filteredActions.add(CmsGwtConstants.ACTION_EDITSMALLELEMENTS);
+        m_filteredActions.add(CmsGwtConstants.ACTION_SELECTELEMENTVIEW);
         m_filteredActions.add(CmsLogout.class.getName());
     }
 
