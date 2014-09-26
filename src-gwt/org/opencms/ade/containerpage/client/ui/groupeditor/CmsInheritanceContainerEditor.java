@@ -204,6 +204,15 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
     }
 
     /**
+     * @see org.opencms.ade.containerpage.client.ui.groupeditor.A_CmsGroupEditor#reinitializeButtons()
+     */
+    @Override
+    public void reinitializeButtons() {
+
+        // nothing to do, will be handled else where
+    }
+
+    /**
      * Either removes the locally configured element or hides the inherited element.<p>
      * 
      * @param elementWidget the element widget
@@ -233,8 +242,12 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
      */
     public void setOptionBar(CmsContainerPageElementPanel elementWidget) {
 
-        elementWidget.setElementOptionBar(createOptionBar(elementWidget));
-        updateButtonVisibility(elementWidget);
+        if (elementWidget.hasViewPermission()) {
+            elementWidget.setElementOptionBar(createOptionBar(elementWidget));
+            updateButtonVisibility(elementWidget);
+        } else {
+            elementWidget.setElementOptionBar(null);
+        }
     }
 
     /**

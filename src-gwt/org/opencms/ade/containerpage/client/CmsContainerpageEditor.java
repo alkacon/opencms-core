@@ -28,7 +28,6 @@
 package org.opencms.ade.containerpage.client;
 
 import org.opencms.ade.containerpage.client.ui.CmsAddToFavoritesButton;
-import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarAllGalleriesMenu;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarClipboardMenu;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarEditButton;
@@ -60,16 +59,11 @@ import org.opencms.gwt.client.ui.I_CmsToolbarButton;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommandInitializer;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.util.CmsStringUtil;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -198,7 +192,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
      */
     public void disableEditing(String reason) {
 
-        reinitializeButtons();
+        CmsContainerpageController.get().reinitializeButtons();
         m_save.disable(reason);
         m_add.disable(reason);
         m_clipboard.disable(reason);
@@ -494,22 +488,6 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     }
 
     /**
-     * Reinitializes the buttons in the container element menus.<p>
-     */
-    public void reinitializeButtons() {
-
-        List<CmsContainerPageElementPanel> elemWidgets = getAllContainerPageElements();
-        for (CmsContainerPageElementPanel elemWidget : elemWidgets) {
-            if (CmsContainerpageController.get().requiresOptionBar(elemWidget, elemWidget.getParentTarget())) {
-                CmsContainerpageController.get().getContainerpageUtil().addOptionBar(elemWidget);
-            } else {
-                // otherwise remove any present option bar
-                elemWidget.setElementOptionBar(null);
-            }
-        }
-    }
-
-    /**
      * Shows the tool-bar.<p>
      * 
      * @param show if <code>true</code> the tool-bar will be shown
@@ -517,29 +495,6 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     public void showToolbar(boolean show) {
 
         CmsToolbar.showToolbar(m_toolbar, show, m_toolbarVisibility);
-    }
-
-    /**
-     * Helper method to get all current container page elements.<p>
-     * 
-     * @return the list of current container page elements 
-     */
-    protected List<CmsContainerPageElementPanel> getAllContainerPageElements() {
-
-        List<CmsContainerPageElementPanel> elemWidgets = new ArrayList<CmsContainerPageElementPanel>();
-        for (Entry<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> entry : CmsContainerpageController.get().getContainerTargets().entrySet()) {
-            Iterator<Widget> elIt = entry.getValue().iterator();
-            while (elIt.hasNext()) {
-                try {
-                    org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel elementWidget = (org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel)elIt.next();
-                    elemWidgets.add(elementWidget);
-                } catch (ClassCastException e) {
-                    // no proper container element, skip it (this should never happen!)
-                    CmsDebugLog.getInstance().printLine("WARNING: there is an inappropriate element within a container");
-                }
-            }
-        }
-        return elemWidgets;
     }
 
     /**

@@ -1772,6 +1772,7 @@ public final class CmsContainerpageController {
     public boolean isInlineEditable(CmsContainerPageElementPanel element, I_CmsDropContainer dragParent) {
 
         return !getData().isUseClassicEditor()
+            && CmsStringUtil.isEmptyOrWhitespaceOnly(element.getNoEditReason())
             && hasActiveSelection()
             && m_elementView.equals(element.getElementView())
             && isContainerEditable(dragParent)
@@ -1956,6 +1957,27 @@ public final class CmsContainerpageController {
 
         // causes synchronous RPC call 
         unlockContainerpage();
+    }
+
+    /**
+     * Reinitializes the buttons in the container element menus.<p>
+     */
+    public void reinitializeButtons() {
+
+        if (isGroupcontainerEditing()) {
+            m_groupEditor.reinitializeButtons();
+        } else {
+            List<CmsContainerPageElementPanel> elemWidgets = getAllContainerPageElements();
+
+            for (CmsContainerPageElementPanel elemWidget : elemWidgets) {
+                if (requiresOptionBar(elemWidget, elemWidget.getParentTarget())) {
+                    getContainerpageUtil().addOptionBar(elemWidget);
+                } else {
+                    // otherwise remove any present option bar
+                    elemWidget.setElementOptionBar(null);
+                }
+            }
+        }
     }
 
     /**
@@ -2193,7 +2215,9 @@ public final class CmsContainerpageController {
      */
     public boolean requiresOptionBar(CmsContainerPageElementPanel element, I_CmsDropContainer dragParent) {
 
-        return m_elementView.equals(element.getElementView()) && isContainerEditable(dragParent);
+        return element.hasViewPermission()
+            && (m_elementView.equals(element.getElementView()) || isGroupcontainerEditing())
+            && isContainerEditable(dragParent);
     }
 
     /**
@@ -2592,7 +2616,7 @@ public final class CmsContainerpageController {
             }
         };
         action.execute();
-        m_handler.m_editor.reinitializeButtons();
+        reinitializeButtons();
         updateGalleryData();
     }
 
@@ -2777,6 +2801,29 @@ public final class CmsContainerpageController {
         removeEditButtonsPositionTimer();
         m_handler.deactivateCurrentButton();
         m_handler.disableToolbarButtons();
+    }
+
+    /**
+     * Helper method to get all current container page elements.<p>
+     * 
+     * @return the list of current container page elements 
+     */
+    protected List<CmsContainerPageElementPanel> getAllContainerPageElements() {
+
+        List<CmsContainerPageElementPanel> elemWidgets = new ArrayList<CmsContainerPageElementPanel>();
+        for (Entry<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> entry : CmsContainerpageController.get().getContainerTargets().entrySet()) {
+            Iterator<Widget> elIt = entry.getValue().iterator();
+            while (elIt.hasNext()) {
+                try {
+                    org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel elementWidget = (org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel)elIt.next();
+                    elemWidgets.add(elementWidget);
+                } catch (ClassCastException e) {
+                    // no proper container element, skip it (this should never happen!)
+                    CmsDebugLog.getInstance().printLine("WARNING: there is an inappropriate element within a container");
+                }
+            }
+        }
+        return elemWidgets;
     }
 
     /**

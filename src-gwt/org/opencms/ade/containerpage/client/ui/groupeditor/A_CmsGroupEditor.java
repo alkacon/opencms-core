@@ -248,6 +248,11 @@ public abstract class A_CmsGroupEditor extends Composite {
     }
 
     /**
+     * Reinitializes the option bar buttons on the contained elements.<p>
+     */
+    public abstract void reinitializeButtons();
+
+    /**
      * Shows the editor pop-up.<p>
      */
     public void showPopup() {
@@ -409,7 +414,7 @@ public abstract class A_CmsGroupEditor extends Composite {
             }
         }
         clearInstance();
-        this.removeFromParent();
+        removeFromParent();
         if (!m_controller.getData().isUseClassicEditor()) {
             for (Widget element : m_groupContainer) {
                 if (element instanceof CmsContainerPageElementPanel) {
@@ -417,6 +422,8 @@ public abstract class A_CmsGroupEditor extends Composite {
                 }
             }
         }
+        m_controller.reinitializeButtons();
+        m_controller.reInitInlineEditing();
         m_controller.fireEvent(new CmsContainerpageEvent(EventType.elementEdited));
     }
 
