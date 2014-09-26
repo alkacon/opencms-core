@@ -176,6 +176,7 @@ task javadocComponents(type: Javadoc, dependsOn: componentsJar) {
     source = sourceSets.components.allJava
     classpath = project.sourceSets.components.compileClasspath
     destinationDir = file("${buildDir}/docs/javadocComponents")
+    failOnError = false
 }
 
 task javadocJarComponents(type: Jar, dependsOn: javadocComponents) {
@@ -253,6 +254,8 @@ javadoc {
         stylesheetFile= file("${projectDir}/doc/javadoc/stylesheet.css")
         header = "<script type=\"text/javascript\"> if (window.location.href.indexOf(\"overview-frame\") == -1) { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.alkacon.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/Alkacon.png\\\" /></a>\"); } else { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.opencms.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/OpenCms.png\\\" /></a>\"); }</script>"
     }
+
+    failOnError = false
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
@@ -312,6 +315,7 @@ task javadocModules(type: Javadoc, dependsOn: jar) {
     source = sourceSets.modules.allJava
     classpath = project.sourceSets.modules.compileClasspath
     destinationDir = file("${buildDir}/docs/javadocModules")
+    failOnError = false
 }
 
 task javadocGwt(type: Javadoc, dependsOn: jar) {
@@ -339,6 +343,7 @@ task javadocGwt(type: Javadoc, dependsOn: jar) {
     source = sourceSets.gwt.allJava
     classpath = project.sourceSets.gwt.compileClasspath
     destinationDir = file("${buildDir}/docs/javadocGwt")
+    failOnError = false
 }
 
 task javadocJarGwt(type: Jar, dependsOn: javadocGwt) {
@@ -397,6 +402,8 @@ task javadocSetup(type: Javadoc, dependsOn: jar) {
         stylesheetFile= file("${projectDir}/doc/javadoc/stylesheet.css")
         header = "<script type=\"text/javascript\"> if (window.location.href.indexOf(\"overview-frame\") == -1) { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.alkacon.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/Alkacon.png\\\" /></a>\"); } else { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.opencms.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/OpenCms.png\\\" /></a>\"); }</script>"
     }
+
+    failOnError = false
 }
 
 task javadocJarSetup(type: Jar, dependsOn: javadocSetup) {
@@ -575,6 +582,7 @@ allModuleNames.split(',').each{ moduleName ->
             source = sourceSets[moduleName].allJava
             classpath = project.sourceSets[moduleName].compileClasspath
             destinationDir = file("${buildDir}/docs/javadoc${moduleName}")
+            failOnError = false
             
         }
 
@@ -917,6 +925,7 @@ task javadocTest(type: Javadoc, dependsOn: jar) {
     source = sourceSets.test.allJava
     classpath = project.sourceSets.test.compileClasspath
     destinationDir = file("${buildDir}/docs/javadocTest")
+    failOnError = false
 }
 
 task javadocJarTest(type: Jar, dependsOn: javadocTest) {
@@ -1354,9 +1363,3 @@ tasks.withType(JavaCompile) {
 tasks.withType(Javadoc) {
     options.addStringOption("sourcepath", "")
 }
-
-
-        
-
-
-
