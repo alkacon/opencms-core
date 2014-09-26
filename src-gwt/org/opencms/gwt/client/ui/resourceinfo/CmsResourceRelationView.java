@@ -48,6 +48,7 @@ import org.opencms.gwt.client.ui.resourceinfo.CmsResourceInfoView.ContextMenuHan
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsResourceStatusBean;
 import org.opencms.gwt.shared.CmsResourceStatusRelationBean;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -195,7 +196,8 @@ public class CmsResourceRelationView extends Composite {
                 final CmsResourceStatusRelationBean currentRelationBean = relationBean;
                 final boolean isContainerpage = CmsGwtConstants.TYPE_CONTAINERPAGE.equals(relationBean.getInfoBean().getResourceType());
                 final boolean isXmlContent = relationBean.isXmlContent();
-                final boolean isEditable = isXmlContent || isContainerpage;
+                final boolean isEditable = (isXmlContent || isContainerpage)
+                    && relationBean.getPermissionInfo().hasWritePermission();
                 if (isEditable) {
 
                     m_editButton = new CmsPushButton();
@@ -203,7 +205,11 @@ public class CmsResourceRelationView extends Composite {
                     m_editButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
                     m_editButton.setTitle(org.opencms.gwt.client.Messages.get().key(
                         org.opencms.gwt.client.Messages.GUI_BUTTON_ELEMENT_EDIT_0));
-                    m_editButton.setEnabled(true);
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(relationBean.getPermissionInfo().getNoEditReason())) {
+                        m_editButton.disable(relationBean.getPermissionInfo().getNoEditReason());
+                    } else {
+                        m_editButton.setEnabled(true);
+                    }
                     item.getListItemWidget().addButton(m_editButton);
                     m_editButton.addClickHandler(new ClickHandler() {
 

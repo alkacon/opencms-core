@@ -27,6 +27,7 @@
 
 package org.opencms.ade.containerpage.shared;
 
+import org.opencms.gwt.shared.CmsPermissionInfo;
 import org.opencms.util.CmsUUID;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -77,9 +78,6 @@ public class CmsContainerElement implements IsSerializable {
     /** Flag which controls whether the new editor is disabled for this element. */
     private boolean m_newEditorDisabled;
 
-    /** The no edit reason. If empty editing is allowed. */
-    private String m_noEditReason;
-
     /** Flag indicating if the given resource is released and not expired. */
     private boolean m_releasedAndNotExpired = true;
 
@@ -95,17 +93,8 @@ public class CmsContainerElement implements IsSerializable {
     /** The title. */
     private String m_title;
 
-    /** 
-     * Indicates if the current user has view permissions on the element resource. 
-     * Without view permissions, the element can neither be edited, nor moved. 
-     **/
-    private boolean m_viewPermission;
-
-    /** 
-     * Indicates if the current user has write permissions on the element resource. 
-     * Without write permissions, the element can not be edited. 
-     **/
-    private boolean m_writePermission;
+    /** The permission info for the element resource. */
+    private CmsPermissionInfo m_permissionInfo;
 
     /**
      * Default constructor.<p>
@@ -152,7 +141,7 @@ public class CmsContainerElement implements IsSerializable {
      */
     public String getNoEditReason() {
 
-        return m_noEditReason;
+        return m_permissionInfo.getNoEditReason();
     }
 
     /**
@@ -214,7 +203,7 @@ public class CmsContainerElement implements IsSerializable {
      */
     public boolean hasViewPermission() {
 
-        return m_viewPermission;
+        return m_permissionInfo.hasViewPermission();
     }
 
     /**
@@ -224,7 +213,7 @@ public class CmsContainerElement implements IsSerializable {
      */
     public boolean hasWritePermission() {
 
-        return m_writePermission;
+        return m_permissionInfo.hasWritePermission();
     }
 
     /**
@@ -338,13 +327,13 @@ public class CmsContainerElement implements IsSerializable {
     }
 
     /**
-     * Sets the no edit reason.<p>
+     * Sets the permission info.<p>
      *
-     * @param noEditReason the no edit reason to set
+     * @param permissionInfo the permission info to set
      */
-    public void setNoEditReason(String noEditReason) {
+    public void setPermissionInfo(CmsPermissionInfo permissionInfo) {
 
-        m_noEditReason = noEditReason;
+        m_permissionInfo = permissionInfo;
     }
 
     /**
@@ -396,25 +385,4 @@ public class CmsContainerElement implements IsSerializable {
 
         m_title = title;
     }
-
-    /**
-     * Sets if the current user has view permissions for the element resource.<p>
-     *
-     * @param viewPermission the view permission to set
-     */
-    public void setViewPermission(boolean viewPermission) {
-
-        m_viewPermission = viewPermission;
-    }
-
-    /**
-     * Sets the user write permission.<p>
-     *
-     * @param writePermission the user write permission to set
-     */
-    public void setWritePermission(boolean writePermission) {
-
-        m_writePermission = writePermission;
-    }
-
 }

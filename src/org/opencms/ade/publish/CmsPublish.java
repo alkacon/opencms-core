@@ -37,6 +37,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.gwt.CmsVfsService;
+import org.opencms.gwt.shared.CmsPermissionInfo;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -318,15 +319,22 @@ public class CmsPublish {
      * @param relation the relation to use
      *  
      * @return the publish resource bean for the relation target 
+     * 
+     * @throws CmsException if something goes wrong
      */
-    public CmsPublishResource relationToBean(CmsRelation relation) {
+    public CmsPublishResource relationToBean(CmsRelation relation) throws CmsException {
 
+        CmsPermissionInfo permissionInfo = OpenCms.getADEManager().getPermissionInfo(
+            m_cms,
+            relation.getTarget(m_cms, CmsResourceFilter.ALL),
+            null);
         return new CmsPublishResource(
             relation.getTargetId(),
             relation.getTargetPath(),
             relation.getTargetPath(),
             CmsResourceTypePlain.getStaticTypeName(),
             CmsResourceState.STATE_UNCHANGED,
+            permissionInfo,
             0,
             null,
             null,
@@ -356,20 +364,24 @@ public class CmsPublish {
      * @param related the list of related resources
      * 
      * @return the publish resource bean
+     * 
+     * @throws CmsException if something goes wrong 
      */
     protected CmsPublishResource resourceToBean(
         CmsResource resource,
         CmsPublishResourceInfo info,
         boolean removable,
-        List<CmsPublishResource> related) {
+        List<CmsPublishResource> related) throws CmsException {
 
         CmsResourceUtil resUtil = new CmsResourceUtil(m_cms, resource);
+        CmsPermissionInfo permissionInfo = OpenCms.getADEManager().getPermissionInfo(m_cms, resource, null);
         CmsPublishResource pubResource = new CmsPublishResource(
             resource.getStructureId(),
             resUtil.getFullPath(),
             resUtil.getTitle(),
             resUtil.getResourceTypeName(),
             resource.getState(),
+            permissionInfo,
             resource.getDateLastModified(),
             resUtil.getUserLastModified(),
             CmsVfsService.formatDateTime(m_cms, resource.getDateLastModified()),

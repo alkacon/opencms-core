@@ -45,6 +45,9 @@ public class CmsResourceStatusRelationBean implements IsSerializable {
     /** A link to the resource. */
     private String m_link;
 
+    /** The permission info. */
+    private CmsPermissionInfo m_permissionInfo;
+
     /** The site path of the resource. */
     private String m_sitePath;
 
@@ -57,12 +60,18 @@ public class CmsResourceStatusRelationBean implements IsSerializable {
      * @param infoBean the list info bean 
      * @param link the link to the resource 
      * @param structureId the structure id of the resource 
+     * @param permissionInfo the permission info
      */
-    public CmsResourceStatusRelationBean(CmsListInfoBean infoBean, String link, CmsUUID structureId) {
+    public CmsResourceStatusRelationBean(
+        CmsListInfoBean infoBean,
+        String link,
+        CmsUUID structureId,
+        CmsPermissionInfo permissionInfo) {
 
         m_infoBean = infoBean;
         m_link = link;
         m_structureId = structureId;
+        m_permissionInfo = permissionInfo;
     }
 
     /**
@@ -91,6 +100,16 @@ public class CmsResourceStatusRelationBean implements IsSerializable {
     public String getLink() {
 
         return m_link;
+    }
+
+    /**
+     * Returns the permission info.<p>
+     *
+     * @return the permission info
+     */
+    public CmsPermissionInfo getPermissionInfo() {
+
+        return m_permissionInfo;
     }
 
     /**
@@ -135,7 +154,8 @@ public class CmsResourceStatusRelationBean implements IsSerializable {
 
     /** 
      * Marks this bean as belonging to an XML content resource.<p>
-     * @param isXmlContent
+     * 
+     * @param isXmlContent if the resource is an XML content
      */
     public void setIsXmlContent(boolean isXmlContent) {
 

@@ -30,6 +30,7 @@ package org.opencms.ade.configuration;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -190,7 +191,11 @@ public class CmsElementView {
 
         try {
             if (m_resource != null) {
-                return cms.hasPermissions(m_resource, CmsPermissionSet.ACCESS_VIEW);
+                return cms.hasPermissions(
+                    m_resource,
+                    CmsPermissionSet.ACCESS_VIEW,
+                    false,
+                    CmsResourceFilter.IGNORE_EXPIRATION.addRequireVisible());
             } else {
                 return OpenCms.getRoleManager().hasRole(cms, CmsRole.ELEMENT_AUTHOR);
             }

@@ -112,7 +112,6 @@ import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.explorer.CmsExplorerTypeAccess;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
-import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.workplace.galleries.A_CmsAjaxGallery;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.I_CmsXmlDocument;
@@ -2694,8 +2693,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         clientEntry.setInNavigation(isRoot || navElement.isInNavigation());
         String type = OpenCms.getResourceManager().getResourceType(ownResource).getTypeName();
         clientEntry.setResourceTypeName(type);
-        String noEditReason = new CmsResourceUtil(cms, ownResource).getNoEditReason(getWorkplaceLocale(), true);
-        clientEntry.setNoEditReason(noEditReason);
+        clientEntry.setPermissionInfo(OpenCms.getADEManager().getPermissionInfo(cms, ownResource, null));
         return clientEntry;
     }
 

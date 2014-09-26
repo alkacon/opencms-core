@@ -27,8 +27,6 @@
 
 package org.opencms.ade.publish.shared;
 
-import org.opencms.util.CmsStringUtil;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -59,9 +57,6 @@ public class CmsPublishResourceInfo implements IsSerializable {
 
     /** Flag to hide the publish resource. */
     private boolean m_hidden;
-
-    /** The no preview available reason. */
-    private String m_noPreviewReason;
 
     /** The additional info type.*/
     private Type m_type;
@@ -104,16 +99,6 @@ public class CmsPublishResourceInfo implements IsSerializable {
     }
 
     /**
-     * Returns the no preview available reason.<p>
-     *
-     * @return the no preview available reason
-     */
-    public String getNoPreviewReason() {
-
-        return m_noPreviewReason;
-    }
-
-    /**
      * Returns the type.<p>
      *
      * @return the type
@@ -134,16 +119,6 @@ public class CmsPublishResourceInfo implements IsSerializable {
     }
 
     /**
-     * Returns if the no preview available reason is set.<p>
-     *
-     * @return <code>true</code> if the no preview available reason is not empty
-     */
-    public boolean hasNoPreviewReason() {
-
-        return CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_noPreviewReason);
-    }
-
-    /**
      * Returns if there is a problem type set.<p>
      *
      * @return <code>true</code> if the problem type is set
@@ -161,15 +136,5 @@ public class CmsPublishResourceInfo implements IsSerializable {
     public boolean isHidden() {
 
         return m_hidden;
-    }
-
-    /**
-     * Sets the no preview available reason.<p>
-     *
-     * @param noPreviewReason the no preview available reason
-     */
-    public void setNoPreviewReason(String noPreviewReason) {
-
-        m_noPreviewReason = noPreviewReason;
     }
 }

@@ -72,70 +72,11 @@ public class CmsContainerElementData extends CmsContainerElement {
     /** The contained sub-item id's. */
     private List<String> m_subItems = new ArrayList<String>();
 
-    /** The element title property. */
-    private String m_title;
-
     /** The supported container types of a group-container. */
     private Set<String> m_types;
 
     /** The formatter configurations by container. */
     private Map<String, Map<String, CmsFormatterConfig>> m_formatters;
-
-    /**
-     * Returns if there are alternative formatters available for the given container.<p>
-     * 
-     * @param containerName the container name
-     * 
-     * @return <code>true</code> if there are alternative formatters available for the given container
-     */
-    public boolean hasAlternativeFormatters(String containerName) {
-
-        return (m_formatters.get(containerName) != null) && (m_formatters.get(containerName).size() > 1);
-    }
-
-    /**
-     * Sets the formatter configurations.<p>
-     *
-     * @param formatters the formatter configurations to set
-     */
-    public void setFormatters(Map<String, Map<String, CmsFormatterConfig>> formatters) {
-
-        m_formatters = formatters;
-    }
-
-    /**
-     * Returns the current formatter configuration.<p>
-     * 
-     * @param containerName the current container name
-     *
-     * @return the current formatter configuration
-     */
-    public CmsFormatterConfig getFormatterConfig(String containerName) {
-
-        String formatterId = getSettings().get(CmsFormatterConfig.getSettingsKeyForContainer(containerName));
-        CmsFormatterConfig formatterConfig = null;
-        if ((formatterId != null)
-            && getFormatters().containsKey(containerName)
-            && getFormatters().get(containerName).containsKey(formatterId)) {
-            // if the settings contain the formatter id, use the matching config
-            formatterConfig = getFormatters().get(containerName).get(formatterId);
-        } else if (getFormatters().containsKey(containerName) && !getFormatters().get(containerName).isEmpty()) {
-            // otherwise use the first entry for the given container
-            formatterConfig = getFormatters().get(containerName).values().iterator().next();
-        }
-
-        return formatterConfig;
-    }
-
-    /**
-     * Returns the formatter configurations.<p>
-     *
-     * @return the formatter configurations
-     */
-    public Map<String, Map<String, CmsFormatterConfig>> getFormatters() {
-
-        return m_formatters;
-    }
 
     /**
      * Returns the contents.<p>
@@ -194,6 +135,40 @@ public class CmsContainerElementData extends CmsContainerElement {
             }
         }
         return result;
+    }
+
+    /**
+     * Returns the current formatter configuration.<p>
+     * 
+     * @param containerName the current container name
+     *
+     * @return the current formatter configuration
+     */
+    public CmsFormatterConfig getFormatterConfig(String containerName) {
+
+        String formatterId = getSettings().get(CmsFormatterConfig.getSettingsKeyForContainer(containerName));
+        CmsFormatterConfig formatterConfig = null;
+        if ((formatterId != null)
+            && getFormatters().containsKey(containerName)
+            && getFormatters().get(containerName).containsKey(formatterId)) {
+            // if the settings contain the formatter id, use the matching config
+            formatterConfig = getFormatters().get(containerName).get(formatterId);
+        } else if (getFormatters().containsKey(containerName) && !getFormatters().get(containerName).isEmpty()) {
+            // otherwise use the first entry for the given container
+            formatterConfig = getFormatters().get(containerName).values().iterator().next();
+        }
+
+        return formatterConfig;
+    }
+
+    /**
+     * Returns the formatter configurations.<p>
+     *
+     * @return the formatter configurations
+     */
+    public Map<String, Map<String, CmsFormatterConfig>> getFormatters() {
+
+        return m_formatters;
     }
 
     /**
@@ -298,16 +273,6 @@ public class CmsContainerElementData extends CmsContainerElement {
     }
 
     /**
-     * Returns the title.<p>
-     *
-     * @return the title
-     */
-    public String getTitle() {
-
-        return m_title;
-    }
-
-    /**
      * Returns the supported container types.<p>
      *
      * @return the supported container types
@@ -315,6 +280,18 @@ public class CmsContainerElementData extends CmsContainerElement {
     public Set<String> getTypes() {
 
         return m_types;
+    }
+
+    /**
+     * Returns if there are alternative formatters available for the given container.<p>
+     * 
+     * @param containerName the container name
+     * 
+     * @return <code>true</code> if there are alternative formatters available for the given container
+     */
+    public boolean hasAlternativeFormatters(String containerName) {
+
+        return (m_formatters.get(containerName) != null) && (m_formatters.get(containerName).size() > 1);
     }
 
     /**
@@ -345,6 +322,16 @@ public class CmsContainerElementData extends CmsContainerElement {
     public void setDescription(String description) {
 
         m_description = description;
+    }
+
+    /**
+     * Sets the formatter configurations.<p>
+     *
+     * @param formatters the formatter configurations to set
+     */
+    public void setFormatters(Map<String, Map<String, CmsFormatterConfig>> formatters) {
+
+        m_formatters = formatters;
     }
 
     /**
@@ -418,16 +405,6 @@ public class CmsContainerElementData extends CmsContainerElement {
     }
 
     /**
-     * Sets the title.<p>
-     *
-     * @param title the title to set
-     */
-    public void setTitle(String title) {
-
-        m_title = title;
-    }
-
-    /**
      * Sets the supported container types.<p>
      *
      * @param types the supported container types to set
@@ -444,7 +421,7 @@ public class CmsContainerElementData extends CmsContainerElement {
     public String toString() {
 
         StringBuffer result = new StringBuffer();
-        result.append("Title: ").append(m_title).append("  File: ").append(getSitePath()).append("  ClientId: ").append(
+        result.append("Title: ").append(getTitle()).append("  File: ").append(getSitePath()).append("  ClientId: ").append(
             getClientId());
         return result.toString();
     }

@@ -53,6 +53,7 @@ import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
@@ -383,7 +384,7 @@ public class CmsPublishGroupPanel extends Composite {
     private CmsTreeItem buildItem(final CmsPublishResource resourceBean, CmsPublishItemStatus status, boolean isSubItem) {
 
         CmsListItemWidget itemWidget = createListItemWidget(resourceBean, DEFAULT_SLOT_MAPPING);
-        if (m_editorHandler != null) {
+        if ((m_editorHandler != null) && resourceBean.getPermissionInfo().hasWritePermission()) {
             CmsPushButton editButton = new CmsPushButton();
             editButton.setImageClass(I_CmsImageBundle.INSTANCE.style().editIcon());
             editButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
@@ -405,11 +406,15 @@ public class CmsPublishGroupPanel extends Composite {
                         m_editorHandler);
                 }
             });
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(resourceBean.getPermissionInfo().getNoEditReason())) {
+                editButton.disable(resourceBean.getPermissionInfo().getNoEditReason());
+            }
             fillButtonSlot(itemWidget, SLOT_EDIT, editButton, DEFAULT_SLOT_MAPPING);
         }
-        CmsContextMenuButton button = new CmsContextMenuButton(resourceBean.getId(), m_contextMenuHandler);
-        fillButtonSlot(itemWidget, SLOT_MENU, button, DEFAULT_SLOT_MAPPING);
-
+        if (resourceBean.getPermissionInfo().hasViewPermission()) {
+            CmsContextMenuButton button = new CmsContextMenuButton(resourceBean.getId(), m_contextMenuHandler);
+            fillButtonSlot(itemWidget, SLOT_MENU, button, DEFAULT_SLOT_MAPPING);
+        }
         resourceBean.getId();
         final CmsStyleVariable styleVar = new CmsStyleVariable(itemWidget);
         styleVar.setValue(CSS.itemToKeep());

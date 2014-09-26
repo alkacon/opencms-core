@@ -43,9 +43,12 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.gwt.shared.CmsPermissionInfo;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.json.JSONArray;
@@ -59,9 +62,12 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
+import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.containerpage.CmsADECache;
 import org.opencms.xml.containerpage.CmsADECacheSettings;
@@ -583,6 +589,60 @@ public class CmsADEManager {
             }
         }
         return result;
+    }
+
+    /**
+     * Returns the permission info for the given resource.<p>
+     * 
+     * @param cms the cms context
+     * @param resource the resource
+     * @param contextPath the context path
+     * 
+     * @return the permission info
+     * 
+     * @throws CmsException if checking the permissions fails
+     */
+    public CmsPermissionInfo getPermissionInfo(CmsObject cms, CmsResource resource, String contextPath)
+    throws CmsException {
+
+        boolean hasView = cms.hasPermissions(
+            resource,
+            CmsPermissionSet.ACCESS_VIEW,
+            false,
+            CmsResourceFilter.IGNORE_EXPIRATION.addRequireVisible());
+        boolean hasWrite = false;
+        if (hasView) {
+            I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
+            CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
+            hasView = settings.getAccess().getPermissions(cms, resource).requiresViewPermission();
+            if (hasView
+                && CmsResourceTypeXmlContent.isXmlContent(resource)
+                && !CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
+                if (contextPath == null) {
+                    contextPath = resource.getRootPath();
+                }
+                CmsResourceTypeConfig localConfigData = lookupConfiguration(cms, contextPath).getResourceType(
+                    type.getTypeName());
+                if (localConfigData != null) {
+                    Map<CmsUUID, CmsElementView> elmenetViews = getElementViews(cms);
+                    hasView = elmenetViews.containsKey(localConfigData.getElementView())
+                        && elmenetViews.get(localConfigData.getElementView()).hasPermission(cms);
+                }
+            }
+            // the user may only have write permissions if he is allowed to view the resource
+            hasWrite = hasView
+                && cms.hasPermissions(
+                    resource,
+                    CmsPermissionSet.ACCESS_WRITE,
+                    false,
+                    CmsResourceFilter.IGNORE_EXPIRATION)
+                && settings.getAccess().getPermissions(cms, resource).requiresWritePermission();
+        }
+
+        String noEdit = new CmsResourceUtil(cms, resource).getNoEditReason(
+            OpenCms.getWorkplaceManager().getWorkplaceLocale(cms),
+            true);
+        return new CmsPermissionInfo(hasView, hasWrite, noEdit);
     }
 
     /**

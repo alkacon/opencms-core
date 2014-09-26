@@ -35,7 +35,6 @@ import org.opencms.ade.publish.shared.CmsPublishGroupList;
 import org.opencms.ade.publish.shared.CmsPublishListToken;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.ade.publish.shared.CmsPublishResource;
-import org.opencms.ade.publish.shared.CmsPublishResourceInfo;
 import org.opencms.ade.publish.shared.CmsWorkflow;
 import org.opencms.ade.publish.shared.CmsWorkflowAction;
 import org.opencms.ade.publish.shared.CmsWorkflowActionParams;
@@ -48,7 +47,6 @@ import org.opencms.file.CmsUser;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsRpcException;
-import org.opencms.gwt.CmsVfsService;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -61,7 +59,6 @@ import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsMultiDialog;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -323,9 +320,6 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
                 relProvider);
             formatter.initialize(options, resourcesAndRelated);
             List<CmsPublishResource> publishResources = formatter.getPublishResources();
-            for (CmsPublishResource publishResource : getPublishResourcesFlatList(publishResources)) {
-                checkPreview(publishResource);
-            }
             A_CmsPublishGroupHelper<CmsPublishResource, CmsPublishGroup> groupHelper;
             boolean autoSelectable = true;
             if ((options.getProjectId() == null) || options.getProjectId().isNullUUID()) {
@@ -397,29 +391,6 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
     }
 
     /**
-     * Checks if there is any reason to deactivate the preview function.<p>
-     *
-     * @param publishResource the publish resource to check
-     */
-    private void checkPreview(CmsPublishResource publishResource) {
-
-        CmsObject cms = getCmsObject();
-        String noPreviewReason = null;
-        try {
-            CmsResource resource = cms.readResource(publishResource.getId(), CmsResourceFilter.ONLY_VISIBLE);
-            noPreviewReason = CmsVfsService.getNoPreviewReason(cms, resource);
-        } catch (CmsException e) {
-            noPreviewReason = e.getLocalizedMessage(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
-        }
-        if (noPreviewReason != null) {
-            if (publishResource.getInfo() == null) {
-                publishResource.setInfo(new CmsPublishResourceInfo(null, null));
-            }
-            publishResource.getInfo().setNoPreviewReason(noPreviewReason);
-        }
-    }
-
-    /**
      * Returns the cached publish options, creating it if it doesn't already exist.<p>
      *
      * @return the cached publish options
@@ -445,23 +416,6 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
 
         CmsUser user = getCmsObject().getRequestContext().getCurrentUser();
         return (String)user.getAdditionalInfo(PARAM_WORKFLOW_ID);
-    }
-
-    /**
-     * Creates a list which contains all publish resources from a given list, as well as the related publish resources they contain.<p>
-     *
-     * @param publishResources the original publish resource list
-     *
-     * @return the flattened publish resource list
-     */
-    private List<CmsPublishResource> getPublishResourcesFlatList(Collection<CmsPublishResource> publishResources) {
-
-        List<CmsPublishResource> result = new ArrayList<CmsPublishResource>();
-        for (CmsPublishResource pubRes : publishResources) {
-            result.add(pubRes);
-            result.addAll(pubRes.getRelated());
-        }
-        return result;
     }
 
     /**

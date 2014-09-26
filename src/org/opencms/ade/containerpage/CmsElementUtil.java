@@ -42,8 +42,8 @@ import org.opencms.ade.detailpage.CmsDetailPageResourceHandler;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
+import org.opencms.gwt.shared.CmsPermissionInfo;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.jsp.util.CmsJspStandardContextBean.TemplateBean;
 import org.opencms.loader.CmsTemplateContextManager;
@@ -53,7 +53,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchResult;
-import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -62,7 +61,6 @@ import org.opencms.workplace.editors.CmsWorkplaceEditorManager;
 import org.opencms.workplace.editors.directedit.CmsAdvancedDirectEditProvider;
 import org.opencms.workplace.editors.directedit.CmsDirectEditMode;
 import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
-import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.containerpage.CmsADESessionCache;
 import org.opencms.xml.containerpage.CmsContainerBean;
@@ -464,53 +462,47 @@ public class CmsElementUtil {
     throws CmsException {
 
         Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms);
-        String noEditReason = "";
         // reinitializing resource to avoid caching issues
         elementBean.initResource(m_cms);
         boolean newEditorDisabled = !CmsWorkplaceEditorManager.checkAcaciaEditorAvailable(
             m_cms,
             elementBean.getResource());
         result.setNewEditorDisabled(newEditorDisabled);
+        String typeName = OpenCms.getResourceManager().getResourceType(elementBean.getResource().getTypeId()).getTypeName();
+        result.setResourceType(typeName);
+        CmsPermissionInfo permissionInfo;
+        String title;
+        String subTitle;
         if (!elementBean.isInMemoryOnly()) {
+            permissionInfo = OpenCms.getADEManager().getPermissionInfo(
+                m_cms,
+                elementBean.getResource(),
+                m_page.getRootPath());
             if (CmsResourceTypeXmlContent.isXmlContent(elementBean.getResource())) {
-                result.setWritePermission(m_cms.hasPermissions(
-                    elementBean.getResource(),
-                    CmsPermissionSet.ACCESS_WRITE,
-                    false,
-                    CmsResourceFilter.IGNORE_EXPIRATION));
-                noEditReason = new CmsResourceUtil(m_cms, elementBean.getResource()).getNoEditReason(wpLocale, true);
-                if (CmsStringUtil.isEmptyOrWhitespaceOnly(noEditReason) && elementBean.isInheritedContainer(m_cms)) {
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(permissionInfo.getNoEditReason())
+                    && elementBean.isInheritedContainer(m_cms)) {
                     String requestUri = m_cms.getRequestContext().getUri();
                     String folderPath = CmsResource.getFolderPath(requestUri);
                     String configPath = CmsStringUtil.joinPaths(
                         folderPath,
                         CmsContainerConfigurationCache.INHERITANCE_CONFIG_FILE_NAME);
                     if (m_cms.existsResource(configPath)) {
-                        noEditReason = new CmsResourceUtil(m_cms, m_cms.readResource(configPath)).getNoEditReason(
+                        permissionInfo.setNoEditReason(new CmsResourceUtil(m_cms, m_cms.readResource(configPath)).getNoEditReason(
                             wpLocale,
-                            true);
+                            true));
                     } else {
                         if (!m_cms.getLock(folderPath).isLockableBy(m_cms.getRequestContext().getCurrentUser())) {
-                            noEditReason = org.opencms.workplace.explorer.Messages.get().getBundle(wpLocale).key(
+                            permissionInfo.setNoEditReason(org.opencms.workplace.explorer.Messages.get().getBundle(
+                                wpLocale).key(
                                 org.opencms.workplace.explorer.Messages.GUI_NO_EDIT_REASON_LOCK_1,
-                                new CmsResourceUtil(m_cms, m_cms.readResource(folderPath)).getLockedByName());
+                                new CmsResourceUtil(m_cms, m_cms.readResource(folderPath)).getLockedByName()));
                         }
                     }
-                } else {
-                    noEditReason = new CmsResourceUtil(m_cms, elementBean.getResource()).getNoEditReason(wpLocale, true);
                 }
             } else {
-                noEditReason = Messages.get().getBundle().key(Messages.GUI_ELEMENT_RESOURCE_CAN_NOT_BE_EDITED_0);
+                permissionInfo.setNoEditReason(Messages.get().getBundle().key(
+                    Messages.GUI_ELEMENT_RESOURCE_CAN_NOT_BE_EDITED_0));
             }
-        }
-        String typeName = OpenCms.getResourceManager().getResourceType(elementBean.getResource().getTypeId()).getTypeName();
-        result.setResourceType(typeName);
-        String title;
-        String subTitle;
-        if (elementBean.isInMemoryOnly()) {
-            title = CmsWorkplaceMessages.getResourceTypeName(wpLocale, typeName);
-            subTitle = CmsWorkplaceMessages.getResourceTypeDescription(wpLocale, typeName);
-        } else {
             CmsGallerySearchResult searchResult = CmsGallerySearch.searchById(
                 m_cms,
                 elementBean.getResource().getStructureId(),
@@ -524,6 +516,10 @@ public class CmsElementUtil {
             if (lastModDate != null) {
                 subTitle += " / " + CmsDateUtil.getDateTime(lastModDate, DateFormat.MEDIUM, wpLocale);
             }
+        } else {
+            permissionInfo = new CmsPermissionInfo(true, true, "");
+            title = CmsWorkplaceMessages.getResourceTypeName(wpLocale, typeName);
+            subTitle = CmsWorkplaceMessages.getResourceTypeDescription(wpLocale, typeName);
         }
         result.setTitle(title);
         result.setSubTitle(subTitle);
@@ -536,27 +532,16 @@ public class CmsElementUtil {
             result.setElementView(typeConfig.getElementView());
         }
         if (elementBean.isCreateNew()
-            && CmsStringUtil.isEmptyOrWhitespaceOnly(noEditReason)
+            && CmsStringUtil.isEmptyOrWhitespaceOnly(permissionInfo.getNoEditReason())
             && ((typeConfig == null) || !typeConfig.checkCreatable(m_cms))) {
             String niceName = CmsWorkplaceMessages.getResourceTypeName(wpLocale, typeName);
-            noEditReason = Messages.get().getBundle().key(Messages.GUI_CONTAINERPAGE_TYPE_NOT_CREATABLE_1, niceName);
+            permissionInfo.setNoEditReason(Messages.get().getBundle().key(
+                Messages.GUI_CONTAINERPAGE_TYPE_NOT_CREATABLE_1,
+                niceName));
         }
         result.setHasSettings(hasSettings(m_cms, elementBean.getResource()));
-        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
-
-        // although the addRequireVisible seems redundant, it is actually needed because of a weird bug
-        // in the default permission handler.
-        result.setViewPermission(elementBean.isInMemoryOnly()
-            || (m_cms.hasPermissions(
-                elementBean.getResource(),
-                CmsPermissionSet.ACCESS_VIEW,
-                false,
-                CmsResourceFilter.IGNORE_EXPIRATION.addRequireVisible()) && settings.getAccess().getPermissions(
-                m_cms,
-                elementBean.getResource()).requiresViewPermission()));
-
+        result.setPermissionInfo(permissionInfo);
         result.setReleasedAndNotExpired(elementBean.isReleasedAndNotExpired());
-        result.setNoEditReason(noEditReason);
         return result;
     }
 
