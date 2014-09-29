@@ -2240,7 +2240,7 @@ public class CmsUserDriver implements I_CmsUserDriver {
             Messages.GUI_DEFAULTGROUP_ROOT_USERS_DESCRIPTION_0,
             null));
         createGroup(dbc, CmsUUID.getConstantUUID(usersGroup), usersGroup, groupDescription, I_CmsPrincipal.FLAG_ENABLED
-            | CmsRole.WORKPLACE_USER.getVirtualGroupFlags(), parentGroup);
+            | CmsRole.ELEMENT_AUTHOR.getVirtualGroupFlags(), parentGroup);
 
         if (parentOu != null) {
             // default users/groups(except the users group) are only for the root ou
