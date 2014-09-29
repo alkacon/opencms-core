@@ -995,13 +995,20 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     private List<CmsSelectWidgetOption> getRoles() {
 
         List<CmsSelectWidgetOption> roleOptions = new ArrayList<CmsSelectWidgetOption>();
-        roleOptions.add(new CmsSelectWidgetOption(NO_ROLE, true, "No role"));
+        roleOptions.add(new CmsSelectWidgetOption(NO_ROLE, false, Messages.get().getBundle(getLocale()).key(
+            Messages.GUI_USER_EDITOR_NO_ROLE_0)));
         try {
-            List<CmsRole> roles = OpenCms.getRoleManager().getRoles(getCms(), m_paramOufqn, false);
-            for (CmsRole role : roles) {
-                roleOptions.add(new CmsSelectWidgetOption(role.getRoleName(), false, role.getDisplayName(
-                    getCms(),
-                    getLocale())));
+            // ensure the role sorting matches the system roles order
+            Map<String, CmsRole> ouRoles = new HashMap<String, CmsRole>();
+            for (CmsRole role : OpenCms.getRoleManager().getRoles(getCms(), m_paramOufqn, false)) {
+                ouRoles.put(role.getRoleName(), role);
+            }
+            for (CmsRole sysRole : CmsRole.getSystemRoles()) {
+                if (ouRoles.containsKey(sysRole.getRoleName())) {
+                    CmsRole role = ouRoles.get(sysRole.getRoleName());
+                    roleOptions.add(new CmsSelectWidgetOption(role.getRoleName(), role.getRoleName().equals(
+                        CmsRole.ELEMENT_AUTHOR.getRoleName()), role.getDisplayName(getCms(), getLocale())));
+                }
             }
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);

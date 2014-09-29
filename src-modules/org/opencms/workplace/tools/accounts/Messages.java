@@ -1409,6 +1409,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_USER_EDITOR_LABEL_STARTUPSETTINGS_BLOCK_0 = "GUI_USER_EDITOR_LABEL_STARTUPSETTINGS_BLOCK_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_USER_EDITOR_NO_ROLE_0 = "GUI_USER_EDITOR_NO_ROLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_USER_SENDEMAIL_ADMIN_TOOL_GROUP_0 = "GUI_USER_SENDEMAIL_ADMIN_TOOL_GROUP_0";
 
     /** Message constant for key in the resource bundle. */
