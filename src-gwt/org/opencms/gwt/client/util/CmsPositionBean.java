@@ -156,39 +156,41 @@ public class CmsPositionBean {
         }
 
         diff = (int)Math.ceil((1.0 * (diff + margin)) / 2);
-        switch (dir) {
-            case left:
-                // move the left border of a
-                posA.setLeft(posA.getLeft() + diff);
-                posA.setWidth(posA.getWidth() - diff);
+        if (dir != null) {
+            switch (dir) {
+                case left:
+                    // move the left border of a
+                    posA.setLeft(posA.getLeft() + diff);
+                    posA.setWidth(posA.getWidth() - diff);
 
-                // move the right border of b
-                posB.setWidth(posB.getWidth() - diff);
-                break;
+                    // move the right border of b
+                    posB.setWidth(posB.getWidth() - diff);
+                    break;
 
-            case right:
-                // move the left border of b
-                posB.setLeft(posB.getLeft() + diff);
-                posB.setWidth(posB.getWidth() - diff);
+                case right:
+                    // move the left border of b
+                    posB.setLeft(posB.getLeft() + diff);
+                    posB.setWidth(posB.getWidth() - diff);
 
-                // move the right border of a
-                posA.setWidth(posA.getWidth() - diff);
-                break;
+                    // move the right border of a
+                    posA.setWidth(posA.getWidth() - diff);
+                    break;
 
-            case top:
-                posA.setTop(posA.getTop() + diff);
-                posA.setHeight(posA.getHeight() - diff);
+                case top:
+                    posA.setTop(posA.getTop() + diff);
+                    posA.setHeight(posA.getHeight() - diff);
 
-                posB.setHeight(posB.getHeight() - diff);
-                break;
-            case bottom:
-                posB.setTop(posB.getTop() + diff);
-                posB.setHeight(posB.getHeight() - diff);
+                    posB.setHeight(posB.getHeight() - diff);
+                    break;
+                case bottom:
+                    posB.setTop(posB.getTop() + diff);
+                    posB.setHeight(posB.getHeight() - diff);
 
-                posA.setHeight(posA.getHeight() - diff);
-                break;
-            default:
-                // nothing to do
+                    posA.setHeight(posA.getHeight() - diff);
+                    break;
+                default:
+                    // nothing to do
+            }
         }
     }
 
@@ -204,19 +206,19 @@ public class CmsPositionBean {
     public static boolean checkCollision(CmsPositionBean posA, CmsPositionBean posB, int margin) {
 
         // check for non collision is easier
-        if ((posA.getLeft() - margin) > (posB.getLeft() + posB.getWidth())) {
+        if ((posA.getLeft() - margin) >= (posB.getLeft() + posB.getWidth())) {
             // posA is right of posB
             return false;
         }
-        if ((posA.getLeft() + posA.getWidth()) < (posB.getLeft() - margin)) {
+        if ((posA.getLeft() + posA.getWidth()) <= (posB.getLeft() - margin)) {
             // posA is left of posB
             return false;
         }
-        if ((posA.getTop() - margin) > (posB.getTop() + posB.getHeight())) {
+        if ((posA.getTop() - margin) >= (posB.getTop() + posB.getHeight())) {
             // posA is bellow posB
             return false;
         }
-        if ((posA.getTop() + posA.getHeight()) < (posB.getTop() - margin)) {
+        if ((posA.getTop() + posA.getHeight()) <= (posB.getTop() - margin)) {
             // posA is above posB
             return false;
         }

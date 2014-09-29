@@ -80,6 +80,9 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class CmsContainerpageDNDController implements I_CmsDNDController {
 
+    /** The container highlighting offset. */
+    public static final int HIGHLIGHTING_OFFSET = 4;
+
     /** The minimum margin set to empty containers. */
     private static final int MINIMUM_CONTAINER_MARGIN = 10;
 
@@ -153,7 +156,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     /**
      * @see org.opencms.gwt.client.dnd.I_CmsDNDController#onDragStart(org.opencms.gwt.client.dnd.I_CmsDraggable, org.opencms.gwt.client.dnd.I_CmsDropTarget, org.opencms.gwt.client.dnd.CmsDNDHandler)
      */
-    public boolean onDragStart(I_CmsDraggable draggable, I_CmsDropTarget target, final CmsDNDHandler handler) {
+    public boolean onDragStart(final I_CmsDraggable draggable, I_CmsDropTarget target, final CmsDNDHandler handler) {
 
         installDragOverlay();
         m_currentTarget = null;
@@ -198,7 +201,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
              */
             public void execute(CmsContainerElementData arg) {
 
-                prepareHelperElements(arg, handler);
+                prepareHelperElements(arg, handler, draggable);
             }
         };
         if (isNewId(clientId)) {
@@ -458,8 +461,12 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
      * 
      * @param elementData the element data
      * @param handler the drag and drop handler
+     * @param draggable the draggable
      */
-    protected void prepareHelperElements(CmsContainerElementData elementData, CmsDNDHandler handler) {
+    protected void prepareHelperElements(
+        CmsContainerElementData elementData,
+        CmsDNDHandler handler,
+        I_CmsDraggable draggable) {
 
         if (!handler.isDragging()) {
             return;
@@ -507,7 +514,10 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         }
         if (!m_controller.isEditingDisabled()) {
             for (CmsContainerPageContainer container : m_controller.getContainerTargets().values()) {
-
+                if (draggable.getElement().isOrHasChild(container.getElement())) {
+                    // skip containers that are children of the draggable element
+                    continue;
+                }
                 if ((container != m_initialDropTarget)
                     && !container.isDetailView()
                     && (elementData.getContents().get(container.getContainerId()) != null)) {
@@ -819,28 +829,27 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 containers.put((I_CmsDropContainer)target, ((I_CmsDropContainer)target).getPositionInfo());
             }
         }
-        int padding = 4;
         List<I_CmsDropContainer> containersToMatch = new ArrayList<I_CmsDropContainer>(containers.keySet());
         for (I_CmsDropContainer contA : containers.keySet()) {
             containersToMatch.remove(contA);
             for (I_CmsDropContainer contB : containersToMatch) {
                 CmsPositionBean posA = containers.get(contA);
                 CmsPositionBean posB = containers.get(contB);
-                if (CmsPositionBean.checkCollision(posA, posB, padding * 3)) {
+                if (CmsPositionBean.checkCollision(posA, posB, HIGHLIGHTING_OFFSET * 3)) {
                     if (contA.hasDnDChildren() && contA.getDnDChildren().contains(contB)) {
-                        if (!posA.isInside(posB, padding)) {
+                        if (!posA.isInside(posB, HIGHLIGHTING_OFFSET)) {
                             // the nested container is not completely inside the other
                             // increase the size of the outer container
-                            posA.ensureSurrounds(posB, padding);
+                            posA.ensureSurrounds(posB, HIGHLIGHTING_OFFSET);
                         }
                     } else if (contB.hasDnDChildren() && contB.getDnDChildren().contains(contA)) {
-                        if (!posB.isInside(posA, padding)) {
+                        if (!posB.isInside(posA, HIGHLIGHTING_OFFSET)) {
                             // the nested container is not completely inside the other
                             // increase the size of the outer container
-                            posB.ensureSurrounds(posA, padding);
+                            posB.ensureSurrounds(posA, HIGHLIGHTING_OFFSET);
                         }
                     } else {
-                        CmsPositionBean.avoidCollision(posA, posB, padding * 3);
+                        CmsPositionBean.avoidCollision(posA, posB, HIGHLIGHTING_OFFSET * 3);
                     }
                 }
             }

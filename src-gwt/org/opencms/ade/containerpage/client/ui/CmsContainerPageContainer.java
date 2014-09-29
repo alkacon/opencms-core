@@ -27,6 +27,7 @@
 
 package org.opencms.ade.containerpage.client.ui;
 
+import org.opencms.ade.containerpage.client.CmsContainerpageDNDController;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
@@ -528,7 +529,10 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
         }
         // cache the position info, to be used during drag and drop
         m_ownPosition = positionInfo;
-        m_highlighting = new CmsHighlightingBorder(m_ownPosition, CmsHighlightingBorder.BorderColor.red);
+        m_highlighting = new CmsHighlightingBorder(
+            m_ownPosition,
+            CmsHighlightingBorder.BorderColor.red,
+            CmsContainerpageDNDController.HIGHLIGHTING_OFFSET);
         RootPanel.get().add(m_highlighting);
     }
 
