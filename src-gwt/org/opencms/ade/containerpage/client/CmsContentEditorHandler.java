@@ -240,8 +240,8 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
      */
     public void openEditorForHistory(String historyHash) {
 
-        m_handler.m_controller.setContentEditing(true);
         if (historyHash.startsWith(EDITOR_HASH_KEY)) {
+            m_handler.m_controller.setContentEditing(true);
             String id = historyHash.substring(EDITOR_HASH_KEY.length(), historyHash.indexOf(";"));
             if (id.contains(",")) {
                 String[] ids = id.split(",");
@@ -260,8 +260,14 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
             };
             String editorLocale = CmsCoreProvider.get().getLocale();
             CmsContentEditor.getInstance().openFormEditor(
-
-            getEditorContext(), editorLocale, m_currentElementId, null, null, null, null, onClose);
+                getEditorContext(),
+                editorLocale,
+                m_currentElementId,
+                null,
+                null,
+                null,
+                null,
+                onClose);
         } else {
             closeContentEditor();
         }
@@ -305,7 +311,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
 
     /**
      * Adds a history item for the opened editor.<p>
-     * Use the prihibitReturn flag to deny a return to the opened editor through the browser history.
+     * Use the prohibitReturn flag to deny a return to the opened editor through the browser history.
      * Use this feature for inline editing or when opening the editor for new resources.<p>
      *
      * @param prohibitReturn if <code>true</code> returning to the opened editor through the browser history is denied
