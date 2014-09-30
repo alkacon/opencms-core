@@ -313,7 +313,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
         int list = m_scrollList.getOffsetHeight();
         list = list > 82 ? list : 82;
-        return list + 35;
+        return list + 40;
     }
 
     /**

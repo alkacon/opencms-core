@@ -40,6 +40,7 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams
 import org.opencms.ade.upload.client.ui.CmsDialogUploadButtonHandler;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsList;
+import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsListItem;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuButton;
@@ -70,6 +71,8 @@ import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Timer;
@@ -548,6 +551,13 @@ public class CmsResultsTab extends A_CmsListTab {
         }
         CmsUUID structureId = new CmsUUID(resultItem.getClientId());
         listItem.getListItemWidget().addButton(new CmsContextMenuButton(structureId, m_contextMenuHandler));
+        listItem.getListItemWidget().addOpenHandler(new OpenHandler<CmsListItemWidget>() {
+
+            public void onOpen(OpenEvent<CmsListItemWidget> event) {
+
+                onContentChange();
+            }
+        });
         if (m_tabHandler.hasSelectResource()) {
             SelectHandler selectHandler = new SelectHandler(
                 resultItem.getPath(),
