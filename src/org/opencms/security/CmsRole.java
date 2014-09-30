@@ -39,10 +39,12 @@ import org.opencms.util.CmsUUID;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -249,6 +251,25 @@ public final class CmsRole {
         // now initialize all system roles
         for (int i = 0; i < SYSTEM_ROLES.size(); i++) {
             (SYSTEM_ROLES.get(i)).initialize();
+        }
+    }
+
+    /**
+     * Applies the system role order to a list of roles.<p>
+     * 
+     * @param roles the roles
+     */
+    public static void applySystemRoleOrder(List<CmsRole> roles) {
+
+        Map<String, CmsRole> ouRoles = new HashMap<String, CmsRole>();
+        for (CmsRole role : roles) {
+            ouRoles.put(role.getRoleName(), role);
+        }
+        roles.clear();
+        for (CmsRole sysRole : CmsRole.getSystemRoles()) {
+            if (ouRoles.containsKey(sysRole.getRoleName())) {
+                roles.add(ouRoles.get(sysRole.getRoleName()));
+            }
         }
     }
 

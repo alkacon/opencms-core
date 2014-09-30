@@ -45,9 +45,11 @@ import org.opencms.workplace.list.CmsListOrderEnum;
 import org.opencms.workplace.list.I_CmsListFormatter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * User roles overview view.<p>
@@ -169,34 +171,30 @@ public abstract class A_CmsRolesList extends A_CmsListDialog {
 
         List<CmsListItem> ret = new ArrayList<CmsListItem>();
         List<CmsRole> roles = getRoles();
-        List<CmsRole> pRoles = new ArrayList<CmsRole>(roles);
-        Iterator<CmsRole> itRoles = roles.iterator();
-        while (itRoles.hasNext()) {
-            CmsRole role = itRoles.next();
-            CmsListItem item = getList().newItem(role.getGroupName());
-            Locale locale = getCms().getRequestContext().getLocale();
-            item.set(LIST_COLUMN_NAME, role.getName(locale));
-            String dependency = "";
-            CmsRole parent = role;
-            while ((parent.getParentRole() != null) && (parent.getParentRole().getParentRole() != null)) {
-                String roleName = parent.getParentRole().getName(locale);
-                if (dependency.length() > 0) {
-                    roleName += ", ";
+        Locale locale = getCms().getRequestContext().getLocale();
+        Map<String, String> dependencies = new HashMap<String, String>();
+        for (CmsRole role : roles) {
+            for (CmsRole child : role.getChildren(true)) {
+                String deps = dependencies.get(child.getRoleName());
+                if (deps == null) {
+                    deps = "";
+                } else {
+                    deps += ", ";
                 }
-                dependency = roleName + dependency;
-                parent = parent.getParentRole();
+                deps += role.getName(locale);
+                dependencies.put(child.getRoleName(), deps);
             }
-            String hiddenName = dependency;
+        }
+        for (CmsRole role : roles) {
+            CmsListItem item = getList().newItem(role.getGroupName());
+
+            item.set(LIST_COLUMN_NAME, role.getName(locale));
+            String dependency = dependencies.get(role.getRoleName());
+            if (dependency == null) {
+                dependency = "";
+            }
             item.set(LIST_COLUMN_DEPENDENCY, dependency);
-            if (hiddenName.length() > 0) {
-                hiddenName = CmsRole.ROOT_ADMIN.getName(locale) + ", " + hiddenName;
-            } else {
-                hiddenName = CmsRole.ROOT_ADMIN.getName(locale);
-            }
-            if (role.getParentRole() != null) {
-                hiddenName += ", " + role.getName(locale);
-            }
-            item.set(LIST_COLUMN_HIDDEN_NAME, hiddenName);
+            item.set(LIST_COLUMN_HIDDEN_NAME, "" + (1000 + dependency.length()));
             item.set(LIST_COLUMN_GROUP_NAME, role.getGroupName());
             ret.add(item);
         }
