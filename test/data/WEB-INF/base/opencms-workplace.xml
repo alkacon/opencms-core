@@ -920,7 +920,7 @@
 				<accesscontrol>
 					<accessentry principal="DEFAULT" permissions="+r+v" />
 					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c" />
-					<accessentry principal="ROLE.RoleWorkplaceUsers"
+					<accessentry principal="ROLE.ELEMENT_AUTHOR"
 						permissions="+r+v+w+c" />
 				</accesscontrol>
 			</defaultaccesscontrol>
