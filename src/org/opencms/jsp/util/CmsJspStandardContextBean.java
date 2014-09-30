@@ -1308,11 +1308,18 @@ public final class CmsJspStandardContextBean {
         }
         I_CmsFormatterBean formatter = null;
         CmsContainerBean container = m_parentContainers.get(element.getInstanceId());
-        String formatterConfigId = element.getSettings().get(
-            CmsFormatterConfig.getSettingsKeyForContainer(container.getName()));
-        if (CmsUUID.isValidUUID(formatterConfigId)) {
-            formatter = OpenCms.getADEManager().getCachedFormatters(false).getFormatters().get(
-                new CmsUUID(formatterConfigId));
+        if (container == null) {
+            // use the current container
+            container = getContainer();
+        }
+        String containerName = container.getName();
+        Map<String, String> settings = element.getSettings();
+        if (settings != null) {
+            String formatterConfigId = settings.get(CmsFormatterConfig.getSettingsKeyForContainer(containerName));
+            if (CmsUUID.isValidUUID(formatterConfigId)) {
+                formatter = OpenCms.getADEManager().getCachedFormatters(false).getFormatters().get(
+                    new CmsUUID(formatterConfigId));
+            }
         }
         if (formatter == null) {
             try {
