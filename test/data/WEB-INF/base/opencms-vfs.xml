@@ -786,7 +786,6 @@
 					alias="ImageGalleryWidget" />
 				<widget class="org.opencms.widgets.CmsTypeComboWidget" alias="TypeComboWidget" />
 				<widget class="org.opencms.widgets.CmsLocationPickerWidget" alias="LocationPickerWidget" />
-				<widget class="org.opencms.widgets.CmsElementViewSelectWidget" alias="ElementViewWidget" />
 			</widgets>
 			<schematypes>
 				<schematype class="org.opencms.xml.types.CmsXmlBooleanValue"
