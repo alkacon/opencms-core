@@ -228,6 +228,78 @@ public final class CmsContainerpageController {
     /** 
      * Visitor implementation which is used to gather the container contents for saving.<p>
      */
+    protected class PageStateVisitor implements I_PageContentVisitor {
+
+        /** The current container name. */
+        protected String m_containerName;
+
+        /** The contaienr which is currently being processed. */
+        protected CmsContainer m_currentContainer;
+
+        /** The list of collected containers. */
+        protected List<CmsContainer> m_resultContainers = new ArrayList<CmsContainer>();
+
+        /** The list of elements of the currently processed container which have already been processed. */
+        List<CmsContainerElement> m_currentElements;
+
+        /**
+         * @see org.opencms.ade.containerpage.client.CmsContainerpageController.I_PageContentVisitor#beginContainer(java.lang.String, org.opencms.ade.containerpage.shared.CmsContainer)
+         */
+        public boolean beginContainer(String name, CmsContainer container) {
+
+            m_currentContainer = container;
+            m_containerName = name;
+            m_currentElements = new ArrayList<CmsContainerElement>();
+            return true;
+        }
+
+        /**
+         * @see org.opencms.ade.containerpage.client.CmsContainerpageController.I_PageContentVisitor#endContainer()
+         */
+        public void endContainer() {
+
+            m_resultContainers.add(new CmsContainer(
+                m_containerName,
+                m_currentContainer.getType(),
+                null,
+                m_currentContainer.getWidth(),
+                m_currentContainer.getMaxElements(),
+                m_currentContainer.isDetailView(),
+                true,
+                m_currentElements,
+                m_currentContainer.getParentContainerName(),
+                m_currentContainer.getParentInstanceId()));
+        }
+
+        /**
+         * Gets the list of collected containers.<p>
+         * 
+         * @return the list of containers 
+         */
+        public List<CmsContainer> getContainers() {
+
+            return m_resultContainers;
+        }
+
+        /**
+         * @see org.opencms.ade.containerpage.client.CmsContainerpageController.I_PageContentVisitor#handleElement(org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel)
+         */
+        public void handleElement(CmsContainerPageElementPanel elementWidget) {
+
+            CmsContainerElement element = new CmsContainerElement();
+            element.setClientId(elementWidget.getId());
+            element.setResourceType(elementWidget.getNewType());
+            element.setNew(elementWidget.isNew());
+            element.setSitePath(elementWidget.getSitePath());
+            element.setNewEditorDisabled(elementWidget.isNewEditorDisabled());
+            m_currentElements.add(element);
+        }
+
+    }
+
+    /** 
+     * Visitor implementation which is used to gather the container contents for saving.<p>
+     */
     protected class SaveDataVisitor implements I_PageContentVisitor {
 
         /** The current container name. */
@@ -368,7 +440,7 @@ public final class CmsContainerpageController {
                     getData().getDetailId(),
                     getRequestParams(),
                     m_clientIds,
-                    new ArrayList<CmsContainer>(m_containers.values()),
+                    getPageState(),
                     !isGroupcontainerEditing(),
                     getLocale(),
 
@@ -427,7 +499,7 @@ public final class CmsContainerpageController {
                 getData().getDetailId(),
                 getRequestParams(),
                 m_clientIds,
-                new ArrayList<CmsContainer>(m_containers.values()),
+                getPageState(),
                 !isGroupcontainerEditing(),
                 getLocale(),
 
@@ -547,7 +619,7 @@ public final class CmsContainerpageController {
                     getData().getDetailId(),
                     getRequestParams(),
                     clientIds,
-                    new ArrayList<CmsContainer>(m_containers.values()),
+                    getPageState(),
                     !isGroupcontainerEditing(),
                     getLocale(),
 
@@ -605,7 +677,7 @@ public final class CmsContainerpageController {
     protected Map<String, CmsContainerElementData> m_newElements;
 
     /** The container data. */
-    Map<String, CmsContainer> m_containers;
+    private Map<String, CmsContainer> m_containers;
 
     /** The gallery data update timer. */
     Timer m_galleryUpdateTimer;
@@ -1310,7 +1382,7 @@ public final class CmsContainerpageController {
                     getRequestParams(),
                     clientId,
                     settings,
-                    new ArrayList<CmsContainer>(m_containers.values()),
+                    getPageState(),
                     !isGroupcontainerEditing(),
                     getLocale(),
                     this);
@@ -1410,7 +1482,7 @@ public final class CmsContainerpageController {
                         getData().getDetailId(),
                         getRequestParams(),
                         resourceType,
-                        new ArrayList<CmsContainer>(m_containers.values()),
+                        getPageState(),
                         !isGroupcontainerEditing(),
                         getLocale(),
                         this);
@@ -1842,7 +1914,7 @@ public final class CmsContainerpageController {
                 getContainerpageService().getFavoriteList(
                     CmsCoreProvider.get().getStructureId(),
                     getData().getDetailId(),
-                    new ArrayList<CmsContainer>(m_containers.values()),
+                    getPageState(),
                     !isGroupcontainerEditing(),
                     getLocale(),
                     this);
@@ -1881,7 +1953,7 @@ public final class CmsContainerpageController {
                 getContainerpageService().getRecentList(
                     CmsCoreProvider.get().getStructureId(),
                     getData().getDetailId(),
-                    new ArrayList<CmsContainer>(m_containers.values()),
+                    getPageState(),
                     !isGroupcontainerEditing(),
                     getLocale(),
                     this);
@@ -2477,7 +2549,7 @@ public final class CmsContainerpageController {
                         getData().getDetailId(),
                         getRequestParams(),
                         groupContainer,
-                        new ArrayList<CmsContainer>(m_containers.values()),
+                        getPageState(),
                         getLocale(),
                         this);
                 }
@@ -2536,7 +2608,7 @@ public final class CmsContainerpageController {
                         CmsCoreProvider.get().getStructureId(),
                         getData().getDetailId(),
                         inheritanceContainer,
-                        new ArrayList<CmsContainer>(m_containers.values()),
+                        getPageState(),
                         getLocale(),
                         this);
                 }
@@ -2870,6 +2942,18 @@ public final class CmsContainerpageController {
         processPageContent(visitor);
         return visitor.getContainers();
 
+    }
+
+    /**
+     * Returns the containers of the page in their current state.<p>
+     * 
+     * @return the containers of the page
+     */
+    protected List<CmsContainer> getPageState() {
+
+        PageStateVisitor visitor = new PageStateVisitor();
+        processPageContent(visitor);
+        return visitor.getContainers();
     }
 
     /**

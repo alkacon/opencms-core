@@ -143,6 +143,46 @@ public class CmsElementUtil {
 
     /**
      * Creates a new instance.<p>
+     * Use this constructor to set the current container page state.<p>
+     *
+     * @param cms the cms context
+     * @param currentPageUri the current page uri
+     * @param containerPage the container page bean with the current container state
+     * @param detailContentId the detail content structure id
+     * @param req the http request
+     * @param res the http response
+     * @param locale the content locale
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public CmsElementUtil(
+        CmsObject cms,
+        String currentPageUri,
+        CmsContainerPageBean containerPage,
+        CmsUUID detailContentId,
+        HttpServletRequest req,
+        HttpServletResponse res,
+        Locale locale)
+    throws CmsException {
+
+        m_cms = OpenCms.initCmsObject(cms);
+        m_req = req;
+        m_res = res;
+        m_currentPageUri = currentPageUri;
+        m_locale = locale;
+        // initializing request for standard context bean
+        req.setAttribute(CmsJspStandardContextBean.ATTRIBUTE_CMS_OBJECT, m_cms);
+        if (detailContentId != null) {
+            CmsResource detailRes = m_cms.readResource(detailContentId);
+            req.setAttribute(CmsDetailPageResourceHandler.ATTR_DETAIL_CONTENT_RESOURCE, detailRes);
+        }
+        m_standardContext = CmsJspStandardContextBean.getInstance(req);
+        m_page = m_cms.readResource(currentPageUri);
+        m_standardContext.setPage(containerPage);
+    }
+
+    /**
+     * Creates a new instance.<p>
      *
      * @param cms the cms context
      * @param currentPageUri the current page uri
@@ -164,7 +204,6 @@ public class CmsElementUtil {
 
         m_cms = OpenCms.initCmsObject(cms);
         m_req = req;
-
         m_res = res;
         m_currentPageUri = currentPageUri;
         m_locale = locale;
@@ -174,7 +213,6 @@ public class CmsElementUtil {
             CmsResource detailRes = m_cms.readResource(detailContentId);
             req.setAttribute(CmsDetailPageResourceHandler.ATTR_DETAIL_CONTENT_RESOURCE, detailRes);
         }
-
         m_standardContext = CmsJspStandardContextBean.getInstance(req);
         m_page = m_cms.readResource(currentPageUri);
         CmsXmlContainerPage xmlContainerPage = CmsXmlContainerPageFactory.unmarshal(cms, m_page, req);
@@ -230,36 +268,6 @@ public class CmsElementUtil {
         element.setTemporaryFile(elementFile);
         CmsFormatterConfiguration configs = getFormatterConfiguration(element.getResource());
         return getContentByContainer(element, container, configs, allowNested);
-    }
-
-    /**
-     * Returns the rendered element content for all the given containers.
-     *
-     * @param element the element to render
-     * @param containers the containers the element appears in
-     * @param allowNested if nested containers are allowed
-     *
-     * @return a map from container names to rendered page contents
-     */
-    public Map<String, String> getContentsByContainerName(
-        CmsContainerElementBean element,
-        Collection<CmsContainer> containers,
-        boolean allowNested) {
-
-        CmsFormatterConfiguration configs = getFormatterConfiguration(element.getResource());
-        Map<String, String> result = new HashMap<String, String>();
-        for (CmsContainer container : containers) {
-            String content = getContentByContainer(
-                element,
-                container,
-                configs,
-                allowNested && checkContainerTreeLevel(container, containers));
-            if (content != null) {
-                content = removeScriptTags(content);
-            }
-            result.put(container.getName(), content);
-        }
-        return result;
     }
 
     /**
@@ -625,6 +633,36 @@ public class CmsElementUtil {
             }
         }
         return content;
+    }
+
+    /**
+     * Returns the rendered element content for all the given containers.
+     *
+     * @param element the element to render
+     * @param containers the containers the element appears in
+     * @param allowNested if nested containers are allowed
+     *
+     * @return a map from container names to rendered page contents
+     */
+    private Map<String, String> getContentsByContainerName(
+        CmsContainerElementBean element,
+        Collection<CmsContainer> containers,
+        boolean allowNested) {
+
+        CmsFormatterConfiguration configs = getFormatterConfiguration(element.getResource());
+        Map<String, String> result = new HashMap<String, String>();
+        for (CmsContainer container : containers) {
+            String content = getContentByContainer(
+                element,
+                container,
+                configs,
+                allowNested && checkContainerTreeLevel(container, containers));
+            if (content != null) {
+                content = removeScriptTags(content);
+            }
+            result.put(container.getName(), content);
+        }
+        return result;
     }
 
     /**

@@ -530,13 +530,10 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             CmsResource pageResource = cms.readResource(pageStructureId);
             String containerpageUri = cms.getSitePath(pageResource);
             Locale contentLocale = CmsLocaleManager.getLocale(locale);
-            CmsElementUtil elemUtil = new CmsElementUtil(
-                cms,
-                containerpageUri,
-                detailContentId,
-                getRequest(),
-                getResponse(),
-                contentLocale);
+            CmsElementUtil elemUtil = new CmsElementUtil(cms, containerpageUri, generateContainerPageForContainers(
+                containers,
+                pageResource.getRootPath()), detailContentId, getRequest(), getResponse(), contentLocale);
+
             CmsContainerElementBean elementBean = getCachedElement(clientId);
             elementBean.initResource(cms);
 
@@ -1123,6 +1120,27 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
+     * Generates the XML container page bean for the given containers.<p>
+     * 
+     * @param containers the containers
+     * @param containerpageRootPath the container page root path
+     * 
+     * @return the container page bean
+     */
+    private CmsContainerPageBean generateContainerPageForContainers(
+        Collection<CmsContainer> containers,
+        String containerpageRootPath) {
+
+        List<CmsContainerBean> containerBeans = new ArrayList<CmsContainerBean>();
+        for (CmsContainer container : containers) {
+            CmsContainerBean containerBean = getContainerBeanToSave(container, containerpageRootPath);
+            containerBeans.add(containerBean);
+        }
+        CmsContainerPageBean page = new CmsContainerPageBean(containerBeans);
+        return page;
+    }
+
+    /**
      * Reads the cached element-bean for the given client-side-id from cache.<p>
      * 
      * @param clientId the client-side-id
@@ -1174,11 +1192,11 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * Helper method for converting a CmsContainer to a CmsContainerBean when saving a container page.<p>
      * 
      * @param container the container for which the CmsContainerBean should be created
-     * @param containerpage the container page resource 
+     * @param containerpageRootPath the container page root path 
      *  
      * @return a container bean
      */
-    private CmsContainerBean getContainerBeanToSave(CmsContainer container, CmsResource containerpage) {
+    private CmsContainerBean getContainerBeanToSave(CmsContainer container, String containerpageRootPath) {
 
         CmsObject cms = getCmsObject();
         List<CmsContainerElementBean> elements = new ArrayList<CmsContainerElementBean>();
@@ -1186,7 +1204,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             try {
                 CmsContainerElementBean newElementBean = getContainerElementBeanToSave(
                     cms,
-                    containerpage,
+                    containerpageRootPath,
                     container,
                     elementData);
                 if (newElementBean != null) {
@@ -1208,7 +1226,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * Converts container page element data to a bean which can be saved in a container page.<p>
      * 
      * @param cms the current CMS context 
-     * @param containerpage the container page resource 
+     * @param containerpageRootPath the container page root path
      * @param container the container containing the element 
      * @param elementData the data for the single element 
      * 
@@ -1218,7 +1236,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      */
     private CmsContainerElementBean getContainerElementBeanToSave(
         CmsObject cms,
-        CmsResource containerpage,
+        String containerpageRootPath,
         CmsContainer container,
         CmsContainerElement elementData) throws CmsException {
 
@@ -1240,7 +1258,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         // check if there is a valid formatter
         int containerWidth = container.getWidth();
 
-        CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, containerpage.getRootPath());
+        CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, containerpageRootPath);
         CmsFormatterConfiguration formatters = config.getFormatters(cms, resource);
         String typeName = OpenCms.getResourceManager().getResourceType(resource).getTypeName();
         String containerType = null;
@@ -1338,13 +1356,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         Locale locale) throws CmsException {
 
         CmsObject cms = getCmsObject();
-        CmsElementUtil elemUtil = new CmsElementUtil(
-            cms,
-            uriParam,
-            detailContentId,
-            getRequest(),
-            getResponse(),
-            locale);
+        CmsElementUtil elemUtil = new CmsElementUtil(cms, uriParam, generateContainerPageForContainers(
+            containers,
+            cms.getRequestContext().addSiteRoot(uriParam)), detailContentId, getRequest(), getResponse(), locale);
         Map<String, CmsContainerElementData> result = new HashMap<String, CmsContainerElementData>();
         Set<String> ids = new HashSet<String>();
         Iterator<String> it = clientIds.iterator();
@@ -1553,6 +1567,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         CmsElementUtil elemUtil = new CmsElementUtil(
             cms,
             containerpageUri,
+            generateContainerPageForContainers(containers, cms.getRequestContext().addSiteRoot(containerpageUri)),
             detailContentId,
             getRequest(),
             getResponse(),
@@ -1626,13 +1641,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         Locale locale) throws CmsException {
 
         CmsObject cms = getCmsObject();
-        CmsElementUtil elemUtil = new CmsElementUtil(
-            cms,
-            uriParam,
-            detailContentId,
-            getRequest(),
-            getResponse(),
-            locale);
+        CmsElementUtil elemUtil = new CmsElementUtil(cms, uriParam, generateContainerPageForContainers(
+            containers,
+            cms.getRequestContext().addSiteRoot(uriParam)), detailContentId, getRequest(), getResponse(), locale);
         CmsContainerElementBean elementBean = getSessionCache().getCacheContainerElement(resourceTypeName);
         if (elementBean == null) {
             elementBean = CmsContainerElementBean.createElementForResourceType(
@@ -1772,12 +1783,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         String containerpageUri,
         List<CmsContainer> containers) throws CmsException {
 
-        List<CmsContainerBean> containerBeans = new ArrayList<CmsContainerBean>();
-        for (CmsContainer container : containers) {
-            CmsContainerBean containerBean = getContainerBeanToSave(container, containerpage);
-            containerBeans.add(containerBean);
-        }
-        CmsContainerPageBean page = new CmsContainerPageBean(containerBeans);
+        CmsContainerPageBean page = generateContainerPageForContainers(containers, containerpage.getRootPath());
         CmsXmlContainerPage xmlCnt = CmsXmlContainerPageFactory.unmarshal(cms, cms.readFile(containerpageUri));
         xmlCnt.save(cms, page);
     }

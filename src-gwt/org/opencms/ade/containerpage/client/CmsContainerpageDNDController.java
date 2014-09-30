@@ -605,12 +605,12 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
      */
     private void initNestedContainers() {
 
-        for (CmsContainer container : m_controller.m_containers.values()) {
+        for (CmsContainer container : m_controller.getContainers().values()) {
             if (container.isSubContainer()) {
                 CmsContainerPageContainer containerWidget = m_controller.m_targetContainers.get(container.getName());
                 // check if the sub container is a valid drop targets
                 if (m_dragInfos.keySet().contains(containerWidget)) {
-                    CmsContainer parentContainer = m_controller.m_containers.get(container.getParentContainerName());
+                    CmsContainer parentContainer = m_controller.getContainers().get(container.getParentContainerName());
                     // add the container to all it's ancestors as a dnd child
                     while (parentContainer != null) {
                         if (m_dragInfos.keySet().contains(
@@ -618,7 +618,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                             m_controller.m_targetContainers.get(parentContainer.getName()).addDndChild(containerWidget);
                         }
                         if (parentContainer.isSubContainer()) {
-                            parentContainer = m_controller.m_containers.get(parentContainer.getParentContainerName());
+                            parentContainer = m_controller.getContainers().get(parentContainer.getParentContainerName());
                         } else {
                             parentContainer = null;
                         }
