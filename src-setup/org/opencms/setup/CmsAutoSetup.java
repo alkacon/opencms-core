@@ -89,7 +89,7 @@ public class CmsAutoSetup {
 
         String path = null;
 
-        if ((args[0] != null) && args[0].startsWith(PARAM_CONFIG_PATH)) {
+        if ((args.length>0) && (args[0] != null) && args[0].startsWith(PARAM_CONFIG_PATH)) {
             if ((args.length == 2) && (args[1] != null) && new File(args[1]).exists()) {
                 path = args[1];
             } else {
@@ -97,7 +97,7 @@ public class CmsAutoSetup {
             }
         }
 
-        if (new File(path).exists()) {
+        if ((null != path) && (new File(path).exists())) {
             System.out.println("Using config file: " + path + ":");
             try {
                 CmsAutoSetupProperties props = new CmsAutoSetupProperties(path);
