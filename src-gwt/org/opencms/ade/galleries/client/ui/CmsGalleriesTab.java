@@ -56,6 +56,7 @@ import java.util.Map;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Label;
 
 /**
@@ -361,6 +362,24 @@ public class CmsGalleriesTab extends A_CmsListTab {
 
         return m_loading;
 
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#onSelection()
+     */
+    @Override
+    public void onSelection() {
+
+        super.onSelection();
+        Timer timer = new Timer() {
+
+            @Override
+            public void run() {
+
+                m_quickSearch.setFocus(true);
+            }
+        };
+        timer.schedule(20);
     }
 
     /**
