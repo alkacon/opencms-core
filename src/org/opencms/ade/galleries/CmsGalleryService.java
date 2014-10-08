@@ -571,7 +571,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
             data.setScope(getWorkplaceSettings().getLastSearchScope());
             data.setTabIds(GalleryMode.ade.getTabs());
-            data.setReferenceSitePath(getCmsObject().getRequestContext().getUri());
+            data.setReferenceSitePath(uri);
             List<CmsResourceTypeBean> types = buildTypesList(resourceTypes, creatableTypes, deactivatedTypes, null);
             data.setTypes(types);
             Map<String, CmsGalleryTypeInfo> adeGalleryTypeInfos = readGalleryInfosByTypeBeans(types);
