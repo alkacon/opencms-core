@@ -10,29 +10,8 @@
     a:visited { color:#b31b34; text-decoration:none; }
     a:hover { color:#b31b34; text-decoration:underline; }
    .center { text-align: center; }
+   body { overflow: hidden; }
 </style>
-
-<script type="text/javascript">
-$(function() { 
-    setTimeout(function() {
-        window.timerId = setInterval(function() {
-            scrollBy(0, 1);
-            if($(window).scrollTop() + $(window).height() == $(document).height()) {
-                clearInterval(window.timerId);
-            }
-        } , 20);
-    } , 1000);
-    
-    $("body").click(function() {
-        clearInterval(window.timerId);
-    }); 
-    
-    
-});
-
-
-</script>
-
 </head>
 <body>
     <div class="center">
