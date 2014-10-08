@@ -30,6 +30,8 @@ package org.opencms.ade.sitemap.shared.rpc;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsGalleryFolderEntry;
 import org.opencms.ade.sitemap.shared.CmsGalleryType;
+import org.opencms.ade.sitemap.shared.CmsModelPageEntry;
+import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.gwt.shared.alias.CmsAliasEditValidationReply;
@@ -73,6 +75,20 @@ public interface I_CmsSitemapServiceAsync {
         AsyncCallback<CmsGalleryFolderEntry> callback);
 
     /**
+     * Creates a new model page.<p>
+     * 
+     * @param entryPointUri the uri of the entry point 
+     * @param title the title for the model page 
+     * @param copyId the structure id of the resource to copy to create a new model page; if null, the model page is created as an empty container page
+     * @param resultCallback the callback for the result 
+     */
+    void createNewModelPage(
+        String entryPointUri,
+        String title,
+        CmsUUID copyId,
+        AsyncCallback<CmsModelPageEntry> resultCallback);
+
+    /**
      * Creates a sub-sitemap of the given sitemap starting from the given entry.<p>
      * 
      * @param entryId the structure id of the sitemap entry to create a sub sitemap of
@@ -113,6 +129,22 @@ public interface I_CmsSitemapServiceAsync {
      */
     void getGalleryData(String entryPointUri, AsyncCallback<Map<CmsGalleryType, List<CmsGalleryFolderEntry>>> callback);
 
+    /** 
+     * Gets the model pages for the given structure id of the sitemap root folder.<p>
+     * 
+     * @param id structure id of a folder
+     * @param callback the callback for the result  
+     */
+    void getModelPages(CmsUUID id, AsyncCallback<List<CmsModelPageEntry>> callback);
+
+    /** 
+     * Loads the model page data for the "add" menu.<p>
+     * 
+     * @param entryPointUri the entry point uri
+     * @param resultCallback the callback for the result  
+     */
+    void getNewElementInfo(String entryPointUri, AsyncCallback<List<CmsNewResourceInfo>> resultCallback);
+
     /**
      * Merges a sub-sitemap into it's parent sitemap.<p>
      * 
@@ -130,6 +162,15 @@ public interface I_CmsSitemapServiceAsync {
      * @param callback the async callback
      */
     void prefetch(String sitemapUri, AsyncCallback<CmsSitemapData> callback);
+
+    /**
+     * Removes a model page from the current sitemap configuration.<p>
+     * 
+     * @param baseUri the base uri for the current sitemap 
+     * @param modelPageId structure id of the model page to remove
+     * @param callback the callback
+     */
+    void removeModelPage(String baseUri, CmsUUID modelPageId, AsyncCallback<Void> callback);
 
     /**
      * Saves the change to the given sitemap.<p>

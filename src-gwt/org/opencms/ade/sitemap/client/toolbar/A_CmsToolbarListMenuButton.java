@@ -65,7 +65,7 @@ public abstract class A_CmsToolbarListMenuButton extends CmsMenuButton implement
     private CmsSitemapController m_controller;
 
     /** The tab panel. */
-    private CmsTabbedPanel<CmsListTab> m_tabs;
+    protected CmsTabbedPanel<CmsListTab> m_tabs;
 
     /** The toolbar instance. */
     private CmsSitemapToolbar m_toolbar;
@@ -129,8 +129,7 @@ public abstract class A_CmsToolbarListMenuButton extends CmsMenuButton implement
                     getToolbar().onButtonActivation(A_CmsToolbarListMenuButton.this);
                     if (!m_initialized) {
                         // lazy initialization
-                        initContent();
-                        m_initialized = true;
+                        m_initialized = initContent();
                     }
 
                     openMenu();
@@ -211,6 +210,8 @@ public abstract class A_CmsToolbarListMenuButton extends CmsMenuButton implement
 
     /**
      * Initializes the menu tabs.<p>
+     * 
+     * @return true if the content does not need to be initialized the next time the menu is opened 
      */
-    protected abstract void initContent();
+    protected abstract boolean initContent();
 }

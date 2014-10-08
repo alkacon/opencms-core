@@ -498,6 +498,30 @@ public final class Messages {
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.sitemap.clientmessages";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODEL_PAGES_0 = "GUI_MODEL_PAGES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPY_MODEL_PAGE_0 = "GUI_COPY_MODEL_PAGE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDIT_MODELPAGE_CONTEXTMENU_0 = "GUI_EDIT_MODELPAGE_CONTEXTMENU_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CREATE_MODEL_PAGE_BUTTON_TITLE_0 = "GUI_CREATE_MODEL_PAGE_BUTTON_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODEL_PAGE_TREE_ROOT_TITLE_0 = "GUI_MODEL_PAGE_TREE_ROOT_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPY_MODEL_PAGE_DIALOG_TITLE_0 = "GUI_COPY_MODEL_PAGE_DIALOG_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODEL_PAGE_TITLE_LABEL_0 = "GUI_MODEL_PAGE_TITLE_LABEL_0";
+
+    /**  Message constant for key in the resource bundle. */
+    public static final String GUI_CREATE_MODEL_PAGE_DIALOG_TITLE_0 = "GUI_CREATE_MODEL_PAGE_DIALOG_TITLE_0";
+
     /** Static instance member. */
     private static CmsMessages INSTANCE;
 

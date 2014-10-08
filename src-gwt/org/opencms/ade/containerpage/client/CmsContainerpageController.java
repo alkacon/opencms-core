@@ -2263,6 +2263,9 @@ public final class CmsContainerpageController {
                     replacer.setNewType(containerElement.getNewType());
                 }
             }
+            if (containerElement.isOverrideNew()) {
+                replacer.setNewType(elementData.getResourceType());
+            }
             if (isGroupcontainerEditing() && (containerElement.getInheritanceInfo() != null)) {
                 // in case of inheritance container editing, keep the inheritance info
                 replacer.setInheritanceInfo(containerElement.getInheritanceInfo());

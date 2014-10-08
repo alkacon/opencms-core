@@ -65,10 +65,12 @@ public class CmsFieldsetFormFieldPanel extends A_CmsFormFieldPanel {
     public CmsFieldsetFormFieldPanel(CmsListInfoBean info, String legend) {
 
         m_panel = new FlowPanel();
-        CmsListItemWidget liWidget = new CmsListItemWidget(info);
-        liWidget.truncate(TM_INFOBOX, CmsFormDialog.STANDARD_DIALOG_WIDTH - 50);
-        liWidget.setStateIcon(StateIcon.standard);
-        m_panel.add(liWidget);
+        if (info != null) {
+            CmsListItemWidget liWidget = new CmsListItemWidget(info);
+            liWidget.truncate(TM_INFOBOX, CmsFormDialog.STANDARD_DIALOG_WIDTH - 50);
+            liWidget.setStateIcon(StateIcon.standard);
+            m_panel.add(liWidget);
+        }
         m_fieldSet = new CmsFieldSet();
         m_fieldSet.setLegend(legend);
         m_fieldSet.getElement().getStyle().setMarginTop(10, Style.Unit.PX);

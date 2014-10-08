@@ -32,6 +32,7 @@ import org.opencms.ade.containerpage.client.Messages;
 import org.opencms.ade.containerpage.client.ui.groupeditor.CmsInheritanceContainerEditor;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsFieldSet;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
@@ -60,6 +61,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -95,6 +97,9 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
 
     /** The element setting values. */
     private Map<String, String> m_settings;
+
+    /** Checkbox to set the 'createNew' status. */
+    private CmsCheckBox m_createNewCheckBox;
 
     /**
      * Constructor.<p>
@@ -151,6 +156,23 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
                 });
                 formatterFieldset.add(m_formatterSelect);
             }
+            if (CmsCoreProvider.get().getUserInfo().isDeveloper()
+                && CmsContainerpageController.get().getData().isModelPage()) {
+                CmsFieldSet createNewFieldSet = new CmsFieldSet();
+                createNewFieldSet.setLegend(org.opencms.ade.containerpage.client.Messages.get().key(
+                    org.opencms.ade.containerpage.client.Messages.GUI_CREATE_NEW_LEGEND_0
+
+                ));
+                createNewFieldSet.getElement().getStyle().setMarginTop(10, Unit.PX);
+                m_createNewCheckBox = new CmsCheckBox(org.opencms.ade.containerpage.client.Messages.get().key(
+                    org.opencms.ade.containerpage.client.Messages.GUI_CREATE_NEW_LABEL_0));
+                createNewFieldSet.add(m_createNewCheckBox);
+                fieldSetPanel.getMainPanel().insert(createNewFieldSet, 1);
+                m_createNewCheckBox.setChecked(elementWidget.isCreateNew());
+            } else {
+                m_createNewCheckBox = null;
+            }
+
             if (m_contextInfo.shouldShowElementTemplateContextSelection()) {
                 String templateContexts = m_settings.get(CmsTemplateContextInfo.SETTING);
                 if (templateContexts == null) {
@@ -319,6 +341,9 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
             if ((value != null) && (value.length() > 0)) {
                 filteredFieldValues.put(key, value);
             }
+        }
+        if (m_createNewCheckBox != null) {
+            m_elementWidget.setIsNew(m_createNewCheckBox.isChecked());
         }
         m_controller.reloadElementWithSettings(
             m_elementWidget,

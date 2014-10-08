@@ -68,7 +68,7 @@ public class CmsAddToNavMenuEntry extends A_CmsSitemapMenuEntry {
 
         CmsSitemapController controller = getHoverbar().getController();
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
-        boolean show = !CmsSitemapView.getInstance().isGalleryMode()
+        boolean show = !CmsSitemapView.getInstance().isSpecialMode()
             && !controller.isRoot(entry.getSitePath())
             && !entry.isInNavigation();
         if (show && entry.isFolderDefaultPage()) {

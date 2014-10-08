@@ -90,7 +90,7 @@ public class CmsEditRedirectMenuEntry extends A_CmsSitemapMenuEntry {
     public void onShow() {
 
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
-        boolean show = !CmsSitemapView.getInstance().isGalleryMode()
+        boolean show = !CmsSitemapView.getInstance().isSpecialMode()
             && (entry != null)
             && (entry.getEntryType() == EntryType.redirect);
         setVisible(show);

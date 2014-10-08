@@ -252,6 +252,12 @@ public final class Messages {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_REUSE_ELEMENT_0 = "GUI_REUSE_ELEMENT_0";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CREATE_NEW_LEGEND_0 = "GUI_CREATE_NEW_LEGEND_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CREATE_NEW_LABEL_0 = "GUI_CREATE_NEW_LABEL_0";
+
     /** Static instance member. */
     private static CmsMessages INSTANCE;
 

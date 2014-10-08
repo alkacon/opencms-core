@@ -31,23 +31,27 @@ import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.gwt.client.ui.CmsDeleteWarningDialog;
+import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
+
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
- * The context menu entry for "bumping" a detail page, i.e. making it the default detail page for its type.<p>
+ * Sitemap context menu delete entry.<p>
  * 
  * @since 8.0.0
  */
-public class CmsBumpDetailPageMenuEntry extends A_CmsSitemapMenuEntry {
+public class CmsDeleteModelPageMenuEntry extends A_CmsSitemapMenuEntry {
 
     /**
      * Constructor.<p>
      * 
      * @param hoverbar the hoverbar 
      */
-    public CmsBumpDetailPageMenuEntry(CmsSitemapHoverbar hoverbar) {
+    public CmsDeleteModelPageMenuEntry(CmsSitemapHoverbar hoverbar) {
 
         super(hoverbar);
-        setLabel(Messages.get().key(Messages.GUI_HOVERBAR_MAKE_DEFAULT_0));
+        setLabel(Messages.get().key(Messages.GUI_HOVERBAR_DELETE_0));
         setActive(true);
     }
 
@@ -56,9 +60,42 @@ public class CmsBumpDetailPageMenuEntry extends A_CmsSitemapMenuEntry {
      */
     public void execute() {
 
-        CmsSitemapController controller = getHoverbar().getController();
-        CmsClientSitemapEntry entry = getHoverbar().getEntry();
-        controller.bump(entry);
+        final CmsClientSitemapEntry entry = getHoverbar().getEntry();
+        getHoverbar().getController().removeModelPage(getHoverbar().getEntry().getId(), new AsyncCallback<Void>() {
+
+            public void onFailure(Throwable caught) {
+
+                // TODO Auto-generated method stub
+
+            }
+
+            public void onSuccess(Void result) {
+
+                I_CmsConfirmDialogHandler handler = new I_CmsConfirmDialogHandler() {
+
+                    /**
+                     * @see org.opencms.gwt.client.ui.I_CmsCloseDialogHandler#onClose()
+                     */
+                    public void onClose() {
+
+                        // do nothing 
+                    }
+
+                    /**
+                     * @see org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler#onOk()
+                     */
+                    public void onOk() {
+
+                        getHoverbar().getController().delete(entry.getSitePath());
+                    }
+                };
+                CmsDeleteWarningDialog dialog = new CmsDeleteWarningDialog(entry.getSitePath());
+                dialog.setHandler(handler);
+                dialog.loadAndShow(null);
+            }
+
+        });
+
     }
 
     /**
@@ -69,12 +106,15 @@ public class CmsBumpDetailPageMenuEntry extends A_CmsSitemapMenuEntry {
 
         CmsSitemapController controller = getHoverbar().getController();
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
-        boolean show = !CmsSitemapView.getInstance().isSpecialMode()
-            && (entry != null)
-            && controller.isDetailPage(entry)
-            && controller.getData().canEditDetailPages()
-            && !controller.getDetailPageTable().isDefaultDetailPage(entry.getId());
+        // gallery folders may only be deleted by gallery managers
+        boolean show = CmsSitemapView.getInstance().isModelPageMode();
         setVisible(show);
-
+        if (show && !entry.isEditable()) {
+            setActive(false);
+            setDisabledReason(controller.getNoEditReason(entry));
+        } else {
+            setActive(true);
+            setDisabledReason(null);
+        }
     }
 }

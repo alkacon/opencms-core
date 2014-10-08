@@ -30,6 +30,8 @@ package org.opencms.ade.sitemap.shared.rpc;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsGalleryFolderEntry;
 import org.opencms.ade.sitemap.shared.CmsGalleryType;
+import org.opencms.ade.sitemap.shared.CmsModelPageEntry;
+import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.gwt.CmsRpcException;
@@ -72,6 +74,18 @@ public interface I_CmsSitemapService extends RemoteService {
      */
     CmsGalleryFolderEntry createNewGalleryFolder(String parentFolder, String title, int folderTypeId)
     throws CmsRpcException;
+
+    /**
+     * Creates a new model page.<p>
+     * 
+     * @param entryPointUri the uri of the entry point 
+     * @param title the title for the model page 
+     * @param copyId the structure id of the resource to copy to create a new model page; if null, the model page is created as an empty container page
+     *   
+     * @return a bean representing the created model page 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    CmsModelPageEntry createNewModelPage(String entryPointUri, String title, CmsUUID copyId) throws CmsRpcException;
 
     /**
      * Creates a sub-sitemap of the given sitemap starting from the given entry.<p>
@@ -127,6 +141,26 @@ public interface I_CmsSitemapService extends RemoteService {
      */
     Map<CmsGalleryType, List<CmsGalleryFolderEntry>> getGalleryData(String entryPointUri) throws CmsRpcException;
 
+    /** 
+     * Gets the model pages for the given structure id of the sitemap root folder.<p>
+     * 
+     * @param rootId structure id of a folder 
+     * @return the model pages available in the given folder 
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    List<CmsModelPageEntry> getModelPages(CmsUUID rootId) throws CmsRpcException;
+
+    /** 
+     * Loads the model page data for the "add" menu.<p>
+     * 
+     * @param entryPointUri the entry point uri 
+     * @return the list of resource info beans for the model pages 
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    List<CmsNewResourceInfo> getNewElementInfo(String entryPointUri) throws CmsRpcException;
+
     /**
      * Merges a sub-sitemap into it's parent sitemap.<p>
      * 
@@ -149,6 +183,16 @@ public interface I_CmsSitemapService extends RemoteService {
      * @throws CmsRpcException if something goes wrong 
      */
     CmsSitemapData prefetch(String sitemapUri) throws CmsRpcException;
+
+    /**
+     * Removes a model page from the current sitemap configuration.<p>
+     * 
+     * @param baseUri the base uri for the current sitemap 
+     * @param modelPageId structure id of the model page to remove
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    void removeModelPage(String baseUri, CmsUUID modelPageId) throws CmsRpcException;
 
     /**
      * Saves the change to the given sitemap.<p>

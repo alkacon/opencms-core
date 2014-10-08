@@ -84,7 +84,7 @@ public class CmsAvailabilityMenuEntry extends A_CmsSitemapMenuEntry {
 
         CmsSitemapController controller = getHoverbar().getController();
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
-        boolean show = !CmsSitemapView.getInstance().isGalleryMode() && (entry != null);
+        boolean show = !CmsSitemapView.getInstance().isSpecialMode() && (entry != null);
         setVisible(show);
         if (show && (entry != null) && !entry.isEditable()) {
             setActive(false);

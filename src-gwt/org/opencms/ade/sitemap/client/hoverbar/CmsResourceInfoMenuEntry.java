@@ -68,7 +68,7 @@ public class CmsResourceInfoMenuEntry extends A_CmsSitemapMenuEntry {
     @Override
     public void onShow() {
 
-        setVisible(!CmsSitemapView.getInstance().isGalleryMode());
+        setVisible(!CmsSitemapView.getInstance().isSpecialMode());
     }
 
 }

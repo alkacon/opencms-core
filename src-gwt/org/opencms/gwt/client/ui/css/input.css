@@ -91,6 +91,10 @@ input.textboxGhostMode {
 
 .textBoxWidget, .checkBox {}
 
+.checkBox .html-face {
+	font-weight: normal; 
+}
+
 input.textBoxReadOnly {
 	background-color: value("constants.css.backgroundColorDisabled");
 }

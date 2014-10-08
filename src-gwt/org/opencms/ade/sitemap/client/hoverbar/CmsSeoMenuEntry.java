@@ -132,7 +132,7 @@ public class CmsSeoMenuEntry extends A_CmsSitemapMenuEntry {
     public void onShow() {
 
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
-        boolean show = !CmsSitemapView.getInstance().isGalleryMode() && (entry != null) && entry.isEditable();
+        boolean show = !CmsSitemapView.getInstance().isSpecialMode() && (entry != null) && entry.isEditable();
         setVisible(show);
     }
 }

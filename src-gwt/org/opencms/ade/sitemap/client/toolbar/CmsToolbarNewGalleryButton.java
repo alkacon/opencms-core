@@ -73,9 +73,9 @@ public class CmsToolbarNewGalleryButton extends A_CmsToolbarListMenuButton {
      * @see org.opencms.ade.sitemap.client.toolbar.A_CmsToolbarListMenuButton#initContent()
      */
     @Override
-    protected void initContent() {
+    protected boolean initContent() {
 
-        // nothing to do
+        return true;
     }
 
     /**

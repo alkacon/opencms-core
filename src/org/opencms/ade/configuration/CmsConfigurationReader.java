@@ -303,6 +303,16 @@ public class CmsConfigurationReader {
         return new ArrayList<CmsFunctionReference>(m_functionReferences);
     }
 
+    /**
+     * Returns the modelPageConfigs.<p>
+     *
+     * @return the modelPageConfigs
+     */
+    public List<CmsModelPageConfig> getModelPageConfigs() {
+
+        return m_modelPageConfigs;
+    }
+
     /** 
      * Parses the formatters to add.<p>
      * 

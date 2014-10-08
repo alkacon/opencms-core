@@ -75,6 +75,9 @@ public class CmsContainerElementData extends CmsContainerElement {
     /** The supported container types of a group-container. */
     private Set<String> m_types;
 
+    /** The title. */
+    private String m_title;
+
     /** The formatter configurations by container. */
     private Map<String, Map<String, CmsFormatterConfig>> m_formatters;
 
@@ -277,6 +280,12 @@ public class CmsContainerElementData extends CmsContainerElement {
      *
      * @return the supported container types
      */
+    @Override
+    public String getTitle() {
+
+        return m_title;
+    }
+
     public Set<String> getTypes() {
 
         return m_types;
@@ -402,6 +411,17 @@ public class CmsContainerElementData extends CmsContainerElement {
     public void setSubItems(List<String> subItems) {
 
         m_subItems = subItems;
+    }
+
+    /**
+     * Sets the title.<p>
+     *
+     * @param title the title to set
+     */
+    @Override
+    public void setTitle(String title) {
+
+        m_title = title;
     }
 
     /**

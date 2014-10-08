@@ -1050,6 +1050,16 @@ public class CmsADEManager {
         // do nothing 
     }
 
+    /** 
+     * Waits until the next time the cache is updated.<p>
+     * 
+     * @param online true if we want to wait for the online cache, false for the offline cache 
+     */
+    public void waitForCacheUpdate(boolean online) {
+
+        getCache(online).getWaitHandleForUpdateTask().enter(2 * CmsConfigurationCache.TASK_DELAY_MILLIS);
+    }
+
     /**
      * Waits until the formatter cache has finished updating itself.<p>
      * 

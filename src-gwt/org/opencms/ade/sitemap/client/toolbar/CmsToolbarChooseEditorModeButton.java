@@ -101,12 +101,18 @@ public class CmsToolbarChooseEditorModeButton extends CmsMenuButton {
     /** The main content widget. */
     private FlexTable m_menuPanel;
 
+    /** True if we can edit model pages. */
+    private boolean m_canEditModelPages;
+
     /**
      * Constructor.<p>
+     * 
+     * @param canEditModelPages true if editing model pages should be enabled 
      */
-    public CmsToolbarChooseEditorModeButton() {
+    public CmsToolbarChooseEditorModeButton(boolean canEditModelPages) {
 
         super(null, I_CmsButton.ButtonData.SITEMAP.getIconClass());
+        m_canEditModelPages = canEditModelPages;
         setTitle(Messages.get().key(Messages.GUI_SELECT_VIEW_0));
         m_menuPanel = new FlexTable();
         // set a style name for the menu table
@@ -155,6 +161,9 @@ public class CmsToolbarChooseEditorModeButton extends CmsMenuButton {
         m_entries.add(new EditorModeEntry(
             Messages.get().key(Messages.GUI_ONLY_GALLERIES_BUTTON_TITLE_0),
             EditorMode.galleries));
+        if (m_canEditModelPages) {
+            m_entries.add(new EditorModeEntry(Messages.get().key(Messages.GUI_MODEL_PAGES_0), EditorMode.modelpages));
+        }
 
         CmsContextMenu menu = new CmsContextMenu(m_entries, false, getPopup());
         return menu;

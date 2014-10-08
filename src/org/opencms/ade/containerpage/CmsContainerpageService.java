@@ -30,6 +30,7 @@ package org.opencms.ade.containerpage;
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.ade.configuration.CmsElementView;
+import org.opencms.ade.configuration.CmsModelPageConfig;
 import org.opencms.ade.configuration.CmsResourceTypeConfig;
 import org.opencms.ade.containerpage.inherited.CmsInheritanceReference;
 import org.opencms.ade.containerpage.inherited.CmsInheritanceReferenceParser;
@@ -779,6 +780,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         try {
             CmsTemplateContextInfo info = OpenCms.getTemplateContextManager().getContextInfoBean(cms, request);
             CmsResource containerPage = getContainerpage(cms);
+            boolean isModelPage = isModelPage(cms, containerPage);
+
             TemplateBean templateBean = (TemplateBean)getRequest().getAttribute(
                 CmsTemplateContextManager.ATTR_TEMPLATE_BEAN);
             CmsADESessionCache sessionCache = CmsADESessionCache.getCache(getRequest(), cms);
@@ -841,8 +844,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 isEditSmallElements(request, cms),
                 Lists.newArrayList(getElementViews().values()),
                 getSessionCache().getElementView(),
-                reuseMode);
-
+                reuseMode,
+                isModelPage);
         } catch (Throwable e) {
             error(e);
         }
@@ -1787,6 +1790,25 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         } else {
             return Boolean.valueOf(editSmallElementsStr).booleanValue();
         }
+    }
+
+    /**
+     * Checks if a page is a model page.<p>
+     * 
+     * @param cms the CMS context to use 
+     * @param containerPage the page to check 
+     * 
+     * @return true if the resource is a model page 
+     */
+    private boolean isModelPage(CmsObject cms, CmsResource containerPage) {
+
+        CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, containerPage.getRootPath());
+        for (CmsModelPageConfig modelConfig : config.getModelPages()) {
+            if (modelConfig.getResource().getStructureId().equals(containerPage.getStructureId())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

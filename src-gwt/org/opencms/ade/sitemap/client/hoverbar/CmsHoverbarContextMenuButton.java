@@ -84,6 +84,9 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton {
         m_entries.add(new CmsGotoMenuEntry(hoverbar));
         m_entries.add(new CmsOpenGalleryMenuEntry(hoverbar));
         m_entries.add(new CmsEditRedirectMenuEntry(hoverbar));
+        m_entries.add(new CmsEditModelPageMenuEntry(hoverbar));
+        m_entries.add(new CmsDeleteModelPageMenuEntry(hoverbar));
+        m_entries.add(new CmsCopyModelPageMenuEntry(hoverbar));
         m_entries.add(new CmsEditMenuEntry(hoverbar));
         m_entries.add(new CmsCreateGalleryMenuEntry(hoverbar));
         m_entries.add(new CmsResourceInfoMenuEntry(hoverbar));

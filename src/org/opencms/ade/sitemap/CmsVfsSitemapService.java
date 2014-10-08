@@ -39,6 +39,7 @@ import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EntryType;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
 import org.opencms.ade.sitemap.shared.CmsGalleryFolderEntry;
 import org.opencms.ade.sitemap.shared.CmsGalleryType;
+import org.opencms.ade.sitemap.shared.CmsModelPageEntry;
 import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange.ChangeType;
@@ -253,6 +254,26 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
+     * Creates a client property bean from a server-side property.<p>
+     *
+     * @param prop the property from which to create the client property
+     * @param preserveOrigin if true, the origin will be copied into the new object
+     *
+     * @return the new client property
+     */
+    public static CmsClientProperty createClientProperty(CmsProperty prop, boolean preserveOrigin) {
+
+        CmsClientProperty result = new CmsClientProperty(
+            prop.getName(),
+            prop.getStructureValue(),
+            prop.getResourceValue());
+        if (preserveOrigin) {
+            result.setOrigin(prop.getOrigin());
+        }
+        return result;
+    }
+
+    /**
      * Fetches the sitemap data.<p>
      *
      * @param request the current request
@@ -319,6 +340,30 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             error(e);
         }
         return folderEntry;
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#createNewModelPage(java.lang.String, java.lang.String, org.opencms.util.CmsUUID)
+     */
+    public CmsModelPageEntry createNewModelPage(String entryPointUri, String title, CmsUUID copyId)
+    throws CmsRpcException {
+
+        try {
+            CmsObject cms = getCmsObject();
+            CmsResource rootResource = cms.readResource(entryPointUri);
+            CmsModelPageHelper helper = new CmsModelPageHelper(getCmsObject(), rootResource);
+            CmsResource page = helper.createPageInModelFolder(title, copyId);
+            String configPath = CmsStringUtil.joinPaths(entryPointUri, ".content/.config");
+            CmsResource configResource = cms.readResource(configPath);
+            helper.addModelPageToSitemapConfiguration(configResource, page, false);
+
+            CmsModelPageEntry result = helper.createModelPageEntry(page);
+            OpenCms.getADEManager().waitForCacheUpdate(false);
+            return result;
+        } catch (Throwable e) {
+            error(e);
+            return null;
+        }
     }
 
     /**
@@ -453,6 +498,42 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#getModelPages(org.opencms.util.CmsUUID)
+     */
+    public List<CmsModelPageEntry> getModelPages(CmsUUID rootId) throws CmsRpcException {
+
+        try {
+            CmsObject cms = getCmsObject();
+            CmsResource rootResource = cms.readResource(rootId);
+            CmsModelPageHelper modelPageHelper = new CmsModelPageHelper(getCmsObject(), rootResource);
+            List<CmsModelPageEntry> entries = modelPageHelper.getModelPages();
+            return entries;
+        } catch (Throwable e) {
+            error(e);
+            return null; // will  never be reached 
+        }
+
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#getNewElementInfo(java.lang.String)
+     */
+    public List<CmsNewResourceInfo> getNewElementInfo(String entryPointUri) throws CmsRpcException {
+
+        try {
+            CmsObject cms = getCmsObject();
+            String rootPath = cms.getRequestContext().addSiteRoot(entryPointUri);
+            CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, rootPath);
+            Locale locale = getLocaleForNewResourceInfos(cms, config);
+            List<CmsNewResourceInfo> result = getNewResourceInfos(cms, config, locale);
+            return result;
+        } catch (Throwable e) {
+            error(e);
+            return null;
+        }
+    }
+
+    /**
      * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#mergeSubSitemap(java.lang.String, org.opencms.util.CmsUUID)
      */
     public CmsSitemapChange mergeSubSitemap(String entryPoint, CmsUUID subSitemapId) throws CmsRpcException {
@@ -518,6 +599,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot);
             boolean isSecure = site.hasSecureServer();
             String parentSitemap = null;
+
             if (configData.getBasePath() != null) {
                 CmsADEConfigData parentConfigData = OpenCms.getADEManager().lookupConfiguration(
                     cms,
@@ -535,7 +617,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             boolean canEditDetailPages = false;
             boolean isOnlineProject = CmsProject.isOnlineProject(cms.getRequestContext().getCurrentProject().getUuid());
             String defaultGalleryFolder = GALLERIES_FOLDER_NAME;
-            Locale locale = CmsLocaleManager.getDefaultLocale();
+            Locale locale = getLocaleForNewResourceInfos(cms, configData);
+
             try {
                 String basePath = configData.getBasePath();
                 CmsObject rootCms = OpenCms.initCmsObject(cms);
@@ -549,7 +632,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                     && CmsStringUtil.isNotEmptyOrWhitespaceOnly(galleryFolderProp.getValue())) {
                     defaultGalleryFolder = galleryFolderProp.getValue();
                 }
-                locale = CmsLocaleManager.getMainLocale(cms, baseDir);
             } catch (CmsException e) {
                 LOG.warn(e.getLocalizedMessage(), e);
             }
@@ -649,10 +731,33 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 subsitemapFolderTypeInfos,
                 editorMode,
                 defaultGalleryFolder);
+
+            CmsUUID rootId = cms.readResource("/", CmsResourceFilter.ALL).getStructureId();
+            result.setSiteRootId(rootId);
         } catch (Throwable e) {
             error(e);
         }
         return result;
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#removeModelPage(java.lang.String, org.opencms.util.CmsUUID)
+     */
+    public void removeModelPage(String entryPointUri, CmsUUID id) throws CmsRpcException {
+
+        try {
+            CmsObject cms = getCmsObject();
+            CmsResource rootResource = cms.readResource(entryPointUri);
+            CmsModelPageHelper helper = new CmsModelPageHelper(getCmsObject(), rootResource);
+            String configPath = CmsStringUtil.joinPaths(entryPointUri, ".content/.config");
+            CmsResource configResource = cms.readResource(configPath);
+            helper.removeModelPage(configResource, id);
+            OpenCms.getADEManager().waitForCacheUpdate(false);
+        } catch (Throwable e) {
+            error(e);
+
+        }
+
     }
 
     /**
@@ -1198,26 +1303,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
-     * Creates a client property bean from a server-side property.<p>
-     *
-     * @param prop the property from which to create the client property
-     * @param preserveOrigin if true, the origin will be copied into the new object
-     *
-     * @return the new client property
-     */
-    private CmsClientProperty createClientProperty(CmsProperty prop, boolean preserveOrigin) {
-
-        CmsClientProperty result = new CmsClientProperty(
-            prop.getName(),
-            prop.getStructureValue(),
-            prop.getResourceValue());
-        if (preserveOrigin) {
-            result.setOrigin(prop.getOrigin());
-        }
-        return result;
-    }
-
-    /**
      * Creates a navigation level type info.<p>
      *
      * @return the navigation level type info bean
@@ -1323,6 +1408,13 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 content = cms.readFile(copyPage).getContents();
                 properties = cms.readPropertyObjects(copyPage, false);
             }
+            List<CmsProperty> filteredProperties = new ArrayList<CmsProperty>();
+            for (CmsProperty property : properties) {
+                if (!property.getName().equals(CmsPropertyDefinition.PROPERTY_DESCRIPTION)) {
+                    filteredProperties.add(property);
+                }
+            }
+            properties = filteredProperties;
             if (isRedirectType(change.getNewResourceTypeId())) {
                 entryPath = CmsStringUtil.joinPaths(cms.getSitePath(parentFolder), change.getName());
                 newRes = cms.createResource(
@@ -1902,6 +1994,29 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             }
         }
         return galleryTree;
+    }
+
+    /**
+     * Gets the locale to use for creating the new resource info beans.<p>
+     *  
+     * @param cms the CMS context 
+     * @param configData  the sitemap configuration
+     *  
+     * @return the locale to use 
+     */
+    private Locale getLocaleForNewResourceInfos(CmsObject cms, CmsADEConfigData configData) {
+
+        Locale locale = CmsLocaleManager.getDefaultLocale();
+        try {
+            String basePath = configData.getBasePath();
+            CmsObject rootCms = OpenCms.initCmsObject(cms);
+            rootCms.getRequestContext().setSiteRoot("");
+            CmsResource baseDir = rootCms.readResource(basePath, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+            locale = CmsLocaleManager.getMainLocale(cms, baseDir);
+        } catch (CmsException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+        }
+        return locale;
     }
 
     /**
@@ -2832,5 +2947,4 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             cms.writePropertyObjects(defaultFileRes, defaultFilePropertyChanges);
         }
     }
-
 }

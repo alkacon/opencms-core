@@ -80,9 +80,10 @@ public final class CmsSitemapHoverbar extends FlowPanel {
      * 
      * @param controller the controller
      * @param entryId sitemap entry id
-     * @param isGallery <code>true</code> if in galleries view
+     * @param moveable <code>true</code> if in galleries view
+     * @param contextmenu flag to control whether the context menu should be shown s 
      */
-    private CmsSitemapHoverbar(CmsSitemapController controller, CmsUUID entryId, boolean isGallery) {
+    private CmsSitemapHoverbar(CmsSitemapController controller, CmsUUID entryId, boolean moveable, boolean contextmenu) {
 
         m_controller = controller;
         m_entryId = entryId;
@@ -90,8 +91,10 @@ public final class CmsSitemapHoverbar extends FlowPanel {
         m_enabled = true;
         setStyleName(I_CmsImageBundle.INSTANCE.buttonCss().hoverbar());
         if (controller.isEditable()) {
-            add(new CmsHoverbarContextMenuButton(this));
-            if (!isGallery) {
+            if (contextmenu) {
+                add(new CmsHoverbarContextMenuButton(this));
+            }
+            if (moveable) {
                 add(new CmsHoverbarMoveButton(this));
             }
         } else {
@@ -107,10 +110,11 @@ public final class CmsSitemapHoverbar extends FlowPanel {
      * @param controller the controller
      * @param entryId sitemap entry id
      * @param sitePath the entry site path
+     * @param contextmenu flag to control whether the context menu should be shown 
      */
-    private CmsSitemapHoverbar(CmsSitemapController controller, CmsUUID entryId, String sitePath) {
+    private CmsSitemapHoverbar(CmsSitemapController controller, CmsUUID entryId, String sitePath, boolean contextmenu) {
 
-        this(controller, entryId, true);
+        this(controller, entryId, false, contextmenu);
         m_sitePath = sitePath;
     }
 
@@ -140,7 +144,7 @@ public final class CmsSitemapHoverbar extends FlowPanel {
      */
     public static void installOn(CmsSitemapController controller, CmsTreeItem treeItem, CmsUUID entryId) {
 
-        CmsSitemapHoverbar hoverbar = new CmsSitemapHoverbar(controller, entryId, false);
+        CmsSitemapHoverbar hoverbar = new CmsSitemapHoverbar(controller, entryId, true, true);
         installHoverbar(hoverbar, treeItem.getListItemWidget());
     }
 
@@ -151,10 +155,16 @@ public final class CmsSitemapHoverbar extends FlowPanel {
      * @param treeItem the item to hover
      * @param entryId the entry id
      * @param sitePath the entry site path
+     * @param contextmenu flag to control whether the context menu should be shown 
      */
-    public static void installOn(CmsSitemapController controller, CmsTreeItem treeItem, CmsUUID entryId, String sitePath) {
+    public static void installOn(
+        CmsSitemapController controller,
+        CmsTreeItem treeItem,
+        CmsUUID entryId,
+        String sitePath,
+        boolean contextmenu) {
 
-        CmsSitemapHoverbar hoverbar = new CmsSitemapHoverbar(controller, entryId, sitePath);
+        CmsSitemapHoverbar hoverbar = new CmsSitemapHoverbar(controller, entryId, sitePath, contextmenu);
         installHoverbar(hoverbar, treeItem.getListItemWidget());
     }
 
@@ -340,7 +350,7 @@ public final class CmsSitemapHoverbar extends FlowPanel {
 
         CmsClientSitemapEntry entry = getEntry();
         if ((entry == null) && (m_sitePath != null)) {
-            m_controller.loadPath(m_sitePath, callback);
+            m_controller.loadPath(m_sitePath, true, callback);
         } else {
             callback.onSuccess(entry);
         }

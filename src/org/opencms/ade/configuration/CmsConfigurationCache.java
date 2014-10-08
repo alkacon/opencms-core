@@ -84,10 +84,10 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
     public static final CmsUUID ID_UPDATE_MODULES = CmsUUID.getNullUUID();
 
     /** The interval at which the tasks which checks for configuration updates runs, in milliseconds. */
-    public static final int TASK_DELAY_MILLIS = 10 * 1000;
+    public static final int TASK_DELAY_MILLIS = 3 * 1000;
 
     /** Debug flag. */
-    protected static boolean DEBUG = false;
+    protected static boolean DEBUG;
 
     /** The log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsConfigurationCache.class);

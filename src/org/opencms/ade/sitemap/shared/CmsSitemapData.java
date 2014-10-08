@@ -31,6 +31,7 @@ import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.gwt.shared.property.CmsClientTemplateBean;
+import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.List;
@@ -52,7 +53,9 @@ public class CmsSitemapData implements IsSerializable {
         /** The navigation mode. */
         navigation,
         /** The VFS mode. */
-        vfs
+        vfs,
+        /** The model page mode. */
+        modelpages
     }
 
     /** Name of the used js variable. */
@@ -148,9 +151,14 @@ public class CmsSitemapData implements IsSerializable {
     /** The available templates. */
     private Map<String, CmsClientTemplateBean> m_templates;
 
+    /** Flag indicating whether user is gallery manager. */
     private boolean m_galleryManager;
 
+    /** Flag indicating whether user is category manager. */
     private boolean m_categoryManager;
+
+    /** The structure id of the site root. */
+    private CmsUUID m_siteRootId;
 
     /**
      * Constructor.<p>
@@ -188,7 +196,9 @@ public class CmsSitemapData implements IsSerializable {
      * @param canEditDetailPages flag to indicate whether detail pages can be edited
      * @param aliasImportUrl the URL of the JSP used to import aliases 
      * @param canEditAliases flag to indicate whether the current user can edit the alias table 
-     * @param createNewFoldersForSubsitemaps flag to control whether new folders should be created for subsitemaps 
+     * @param createNewFoldersForSubsitemaps flag to control whether new folders should be created for subsitemaps
+     * @param galleryManager true if the user is a gallery manager 
+     * @param categoryManager true if the user is a category manager  
      * @param subsitemapTypeInfos the type information beans for the available subsitemap folder types 
      * @param editorMode the editor mode
      * @param defaultGalleryFolder default gallery parent folder
@@ -257,6 +267,7 @@ public class CmsSitemapData implements IsSerializable {
         m_sitemapFolderTypeInfos = subsitemapTypeInfos;
         m_editorMode = editorMode;
         m_defaultGalleryFolder = defaultGalleryFolder;
+
     }
 
     /**
@@ -410,6 +421,23 @@ public class CmsSitemapData implements IsSerializable {
         return m_newRedirectElementInfo;
     }
 
+    /** 
+     * Gets the new resource info with a given structure id.<p>
+     * 
+     * @param id the structure id 
+     * 
+     * @return the new resource info with the given id 
+     */
+    public CmsNewResourceInfo getNewResourceInfoById(CmsUUID id) {
+
+        for (CmsNewResourceInfo info : m_newElementInfos) {
+            if (info.getCopyResourceId().equals(id)) {
+                return info;
+            }
+        }
+        return null;
+    }
+
     /**
      * Returns the reason why the current sitemap is not editable.<p>
      *
@@ -500,6 +528,16 @@ public class CmsSitemapData implements IsSerializable {
         return m_sitemapInfo;
     }
 
+    /** 
+     * Gets the structure id of the site root.<p>
+     * 
+     * @return the structure id of the site root 
+     */
+    public CmsUUID getSiteRootId() {
+
+        return m_siteRootId;
+    }
+
     /**
      * Returns the list info beans for the available sitemap folder types.<p>
      * 
@@ -570,6 +608,16 @@ public class CmsSitemapData implements IsSerializable {
         return m_isSecure;
     }
 
+    /** 
+     * Sets the new element infos.<p>
+     * 
+     * @param newElementInfos the new element infos 
+     */
+    public void setNewElementInfos(List<CmsNewResourceInfo> newElementInfos) {
+
+        m_newElementInfos = newElementInfos;
+    }
+
     /**
      * Sets the return page code.<p>
      *
@@ -578,6 +626,16 @@ public class CmsSitemapData implements IsSerializable {
     public void setReturnCode(String returnCode) {
 
         m_returnCode = returnCode;
+    }
+
+    /** 
+     * Sets the site root structure id .<p>
+     * 
+     * @param id the site root id 
+     */
+    public void setSiteRootId(CmsUUID id) {
+
+        m_siteRootId = id;
     }
 
 }

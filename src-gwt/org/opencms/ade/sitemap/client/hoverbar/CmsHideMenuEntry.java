@@ -68,7 +68,7 @@ public class CmsHideMenuEntry extends A_CmsSitemapMenuEntry {
 
         CmsSitemapController controller = getHoverbar().getController();
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
-        boolean show = !CmsSitemapView.getInstance().isGalleryMode()
+        boolean show = !CmsSitemapView.getInstance().isSpecialMode()
             && entry.isInNavigation()
             && !entry.isHiddenNavigationEntry();
         setVisible(show);

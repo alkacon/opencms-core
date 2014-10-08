@@ -65,7 +65,7 @@ public class CmsParentSitemapMenuEntry extends A_CmsSitemapMenuEntry {
     public void onShow() {
 
         CmsSitemapController controller = getHoverbar().getController();
-        boolean show = !CmsSitemapView.getInstance().isGalleryMode()
+        boolean show = !CmsSitemapView.getInstance().isSpecialMode()
             && controller.isRoot(getHoverbar().getEntry().getSitePath())
             && (controller.getData().getParentSitemap() != null);
         setVisible(show);

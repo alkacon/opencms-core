@@ -43,6 +43,7 @@ import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
 import org.opencms.ade.sitemap.shared.CmsGalleryFolderEntry;
 import org.opencms.ade.sitemap.shared.CmsGalleryType;
+import org.opencms.ade.sitemap.shared.CmsModelPageEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.CmsSitemapData.EditorMode;
@@ -66,6 +67,7 @@ import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
 import org.opencms.gwt.client.ui.tree.CmsTree;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.client.ui.tree.I_CmsLazyOpenHandler;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.gwt.shared.CmsIconUtil;
@@ -85,6 +87,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.collect.Maps;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style.Display;
@@ -171,6 +174,9 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
     /** The gallery tree widget. */
     private CmsTree<CmsGalleryTreeItem> m_galleryTree;
 
+    /** Tree for the model page editor mode. */
+    private CmsTree<CmsModelPageTreeItem> m_modelPageTree;
+
     /** The gallery folder items by id. */
     private Map<CmsUUID, CmsGalleryTreeItem> m_galleryTreeItems;
 
@@ -191,6 +197,15 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
     /** Label to display to no galleries in this sub site message. */
     private Label m_noGalleriesLabel;
+
+    /** The tree items for the model page mode, indexed by structure id. */
+    private Map<CmsUUID, CmsModelPageTreeItem> m_modelPageTreeItems = Maps.newHashMap();
+
+    /** Root tree item for the model page mode. */
+    private CmsModelPageTreeItem m_modelPageRoot;
+
+    /** Model page data beans for the model page mode. */
+    private Map<CmsUUID, CmsModelPageEntry> m_modelPageData = Maps.newHashMap();
 
     /**
      * Returns the instance.<p>
@@ -304,6 +319,38 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         }
     }
 
+    /** 
+     * Displays the model page data in a tree.<p>
+     * 
+     * @param modelPageData the model page data 
+     */
+    public void displayModelPages(List<CmsModelPageEntry> modelPageData) {
+
+        m_modelPageTree.clear();
+        m_modelPageTreeItems.clear();
+        CmsModelPageTreeItem root = CmsModelPageTreeItem.createRootItem();
+        m_modelPageRoot = root;
+        CmsHoverbarCreateModelPageButton createButton = new CmsHoverbarCreateModelPageButton();
+        CmsSitemapHoverbar hoverbar = CmsSitemapHoverbar.installOn(
+            m_controller,
+            m_modelPageRoot,
+            Collections.<Widget> singleton(createButton));
+        createButton.setHoverbar(hoverbar);
+        m_modelPageTree.add(root);
+        for (CmsModelPageEntry entry : modelPageData) {
+            m_modelPageData.put(entry.getStructureId(), entry);
+            CmsModelPageTreeItem treeItem = new CmsModelPageTreeItem(entry);
+            CmsSitemapHoverbar.installOn(
+                m_controller,
+                treeItem,
+                entry.getStructureId(),
+                entry.getSitePath(),
+                entry.getSitePath() != null);
+            m_modelPageTreeItems.put(entry.getStructureId(), treeItem);
+            root.addChild(treeItem);
+        }
+    }
+
     /**
      * Displays a newly created gallery folder.<p>
      * 
@@ -333,6 +380,24 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         // in case the type item had been hidden
         typeItem.getElement().getStyle().clearDisplay();
         m_noGalleriesLabel.getElement().getStyle().setDisplay(Display.NONE);
+    }
+
+    /**
+     * Adds a new model page to the model page view.<p>
+     * 
+     * @param modelPageData the data for the new model page 
+     */
+    public void displayNewModelPage(CmsModelPageEntry modelPageData) {
+
+        CmsModelPageTreeItem treeItem = new CmsModelPageTreeItem(modelPageData);
+        CmsSitemapHoverbar.installOn(
+            m_controller,
+            treeItem,
+            modelPageData.getStructureId(),
+            modelPageData.getSitePath(),
+            modelPageData.getSitePath() != null);
+        m_modelPageTreeItems.put(modelPageData.getStructureId(), treeItem);
+        m_modelPageRoot.addChild(treeItem);
     }
 
     /**
@@ -396,6 +461,18 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
             }
         }
         return iconClass;
+    }
+
+    /**
+     * Gets the model page bean with the given structure id.<p>
+     * 
+     * @param id a structure id 
+     * 
+     * @return the model page bean with the given id 
+     */
+    public CmsModelPageEntry getModelPageEntry(CmsUUID id) {
+
+        return m_modelPageData.get(id);
     }
 
     /**
@@ -506,6 +583,16 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         return EditorMode.galleries == m_editorMode;
     }
 
+    /** 
+     * Checks if the sitemap editor is in 'model page mode'.<p>
+     * 
+     * @return true if we are in model page view 
+     */
+    public boolean isModelPageMode() {
+
+        return EditorMode.modelpages == m_editorMode;
+    }
+
     /**
      * Returns if the current sitemap editor mode is navigation.<p>
      * 
@@ -514,6 +601,16 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
     public boolean isNavigationMode() {
 
         return EditorMode.navigation == m_editorMode;
+    }
+
+    /**
+     * Returns true if we are not currently displaying the navigation or VFS tree.<p>
+     * 
+     * @return true if we are not currently in navigation or VFS mode 
+     */
+    public boolean isSpecialMode() {
+
+        return isGalleryMode() || (EditorMode.modelpages == m_editorMode);
     }
 
     /**
@@ -566,6 +663,9 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         if (m_editorMode == EditorMode.galleries) {
             applyChangeToGalleryTree(changeEvent);
         }
+        if (m_editorMode == EditorMode.modelpages) {
+            applyChangeToModelPages(changeEvent);
+        }
     }
 
     /**
@@ -574,16 +674,18 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
     public void onLoad(CmsSitemapLoadEvent event) {
 
         CmsSitemapTreeItem target = getTreeItem(event.getEntry().getId());
-        target.getTree().setAnimationEnabled(false);
-        target.clearChildren();
-        for (CmsClientSitemapEntry child : event.getEntry().getSubEntries()) {
-            CmsSitemapTreeItem childItem = createSitemapItem(child);
-            target.addChild(childItem);
-        }
-        target.onFinishLoading();
-        target.getTree().setAnimationEnabled(true);
-        if (event.isSetOpen()) {
-            target.setOpen(true);
+        if (target != null) {
+            target.getTree().setAnimationEnabled(false);
+            target.clearChildren();
+            for (CmsClientSitemapEntry child : event.getEntry().getSubEntries()) {
+                CmsSitemapTreeItem childItem = createSitemapItem(child);
+                target.addChild(childItem);
+            }
+            target.onFinishLoading();
+            target.getTree().setAnimationEnabled(true);
+            if (event.isSetOpen()) {
+                target.setOpen(true);
+            }
         }
         m_controller.recomputeProperties();
     }
@@ -678,17 +780,14 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         page.add(m_tree);
 
         m_galleryTree = new CmsTree<CmsGalleryTreeItem>();
+        m_modelPageTree = new CmsTree<CmsModelPageTreeItem>();
         m_galleryTree.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().galleriesMode());
-        //        m_galleryTree.addOpenHandler(new OpenHandler<CmsGalleryTreeItem>() {
-        //
-        //            public void onOpen(OpenEvent<CmsGalleryTreeItem> event) {
-        //
-        //                ensureEntriesLoaded(event.getTarget());
-        //            }
-        //        });
+        m_modelPageTree.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().modelPageMode());
+
         m_galleryTreeItems = new HashMap<CmsUUID, CmsGalleryTreeItem>();
         m_galleryTypeItems = new HashMap<String, CmsGalleryTreeItem>();
         page.add(m_galleryTree);
+        page.add(m_modelPageTree);
         m_noGalleriesLabel = new Label();
         m_noGalleriesLabel.setStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().textMedium());
         m_noGalleriesLabel.getElement().setInnerHTML(Messages.get().key(Messages.GUI_NO_GALLERIES_AVAILABLE_0));
@@ -730,23 +829,30 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
             switch (m_editorMode) {
                 case galleries:
                     m_tree.getElement().getStyle().setDisplay(Display.NONE);
-                    m_noGalleriesLabel.getElement().getStyle().clearDisplay();
-                    m_galleryTree.getElement().getStyle().clearDisplay();
+                    setGalleriesVisible(true);
+                    setModelPagesVisible(false);
                     getController().loadGalleries();
                     break;
                 case navigation:
                     m_tree.getElement().getStyle().clearDisplay();
-                    m_galleryTree.getElement().getStyle().setDisplay(Display.NONE);
-                    m_noGalleriesLabel.getElement().getStyle().setDisplay(Display.NONE);
+                    setGalleriesVisible(false);
+                    setModelPagesVisible(false);
                     m_toolbar.setNewEnabled(true, null);
                     m_inNavigationStyle.setValue(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().navMode());
                     break;
                 case vfs:
                     m_tree.getElement().getStyle().clearDisplay();
-                    m_galleryTree.getElement().getStyle().setDisplay(Display.NONE);
-                    m_noGalleriesLabel.getElement().getStyle().setDisplay(Display.NONE);
+                    setGalleriesVisible(false);
                     m_toolbar.setNewEnabled(false, Messages.get().key(Messages.GUI_TOOLBAR_NEW_DISABLE_0));
                     m_inNavigationStyle.setValue(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().vfsMode());
+                    setModelPagesVisible(false);
+                    break;
+                case modelpages:
+                    m_tree.getElement().getStyle().setDisplay(Display.NONE);
+                    setGalleriesVisible(false);
+                    setModelPagesVisible(true);
+                    getController().loadModelPages();
+
                     break;
                 default:
             }
@@ -820,6 +926,38 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
     }
 
     /**
+     * Shows or hides the tree for the gallery mode.<p>
+     * 
+     * @param visible true if the tree should be shown 
+     */
+    protected void setGalleriesVisible(boolean visible) {
+
+        if (visible) {
+            m_noGalleriesLabel.getElement().getStyle().clearDisplay();
+            m_galleryTree.getElement().getStyle().clearDisplay();
+        } else {
+            m_galleryTree.getElement().getStyle().setDisplay(Display.NONE);
+            m_noGalleriesLabel.getElement().getStyle().setDisplay(Display.NONE);
+
+        }
+    }
+
+    /**
+     * Shows or hides the tree for the model page mode.<p>
+     * 
+     * @param visible true if the model pages should be shown 
+     */
+    protected void setModelPagesVisible(boolean visible) {
+
+        if (visible) {
+            m_modelPageTree.getElement().getStyle().clearDisplay();
+        } else {
+            m_modelPageTree.getElement().getStyle().setDisplay(Display.NONE);
+        }
+
+    }
+
+    /**
      * Builds the tree items initially.<p>
      * 
      * @param page the page
@@ -874,6 +1012,8 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
      */
     private void applyChangeToGalleryTree(CmsSitemapChangeEvent changeEvent) {
 
+        CmsDebugLog.consoleLog("gallery change: " + changeEvent.getChange().getChangeType());
+
         CmsSitemapChange change = changeEvent.getChange();
         switch (change.getChangeType()) {
             case delete:
@@ -925,6 +1065,65 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         }
     }
 
+    /** 
+     * Applies sitemap changes to the model page mode.<p>
+     * 
+     * @param changeEvent the change event to apply to the model page mode 
+     */
+    private void applyChangeToModelPages(CmsSitemapChangeEvent changeEvent) {
+
+        CmsSitemapChange change = changeEvent.getChange();
+        switch (change.getChangeType()) {
+            case delete:
+
+                CmsModelPageTreeItem deleteItem = m_modelPageTreeItems.get(change.getEntryId());
+                if (deleteItem != null) {
+                    deleteItem.removeFromParent();
+                }
+
+                break;
+
+            case undelete:
+            case create:
+                String typeName = m_controller.getGalleryType(new Integer(change.getNewResourceTypeId())).getTypeName();
+                if (typeName != null) {
+                    CmsModelPageEntry modelPage = new CmsModelPageEntry();
+                    modelPage.setSitePath(change.getSitePath());
+                    modelPage.setResourceType(typeName);
+                    modelPage.setStructureId(change.getEntryId());
+                    modelPage.setOwnProperties(change.getOwnProperties());
+                    CmsModelPageTreeItem folderItem = new CmsModelPageTreeItem(modelPage);
+                    CmsSitemapHoverbar.installOn(m_controller, folderItem, modelPage.getStructureId());
+                    m_modelPageRoot.addChild(folderItem);
+                    m_modelPageTreeItems.put(modelPage.getStructureId(), folderItem);
+                }
+                break;
+
+            case modify:
+                CmsModelPageTreeItem changeItem = m_modelPageTreeItems.get(change.getEntryId());
+                if (changeItem != null) {
+                    CmsListItemWidget widget = changeItem.getListItemWidget();
+                    for (CmsPropertyModification mod : change.getPropertyChanges()) {
+                        if (mod.getName().equals(CmsClientProperty.PROPERTY_TITLE)) {
+                            widget.setTitleLabel(mod.getValue());
+                        }
+                    }
+                    String oldPath = changeItem.getSitePath();
+                    if ((change.getName() != null) && !oldPath.endsWith("/" + change.getName())) {
+                        String newPath = CmsResource.getParentFolder(oldPath) + change.getName() + "/";
+                        changeItem.updateSitePath(newPath);
+                    }
+
+                }
+                break;
+            case bumpDetailPage:
+            case clipboardOnly:
+            case remove:
+            default:
+                // nothing to do    
+        }
+    }
+
     /**
      * Create a gallery folder tree item.<p>
      * 
@@ -939,7 +1138,8 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
             m_controller,
             folderItem,
             galleryFolder.getStructureId(),
-            galleryFolder.getSitePath());
+            galleryFolder.getSitePath(),
+            true);
         return folderItem;
     }
 

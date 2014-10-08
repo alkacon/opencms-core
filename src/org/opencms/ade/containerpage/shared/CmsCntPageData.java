@@ -120,6 +120,9 @@ public final class CmsCntPageData implements IsSerializable {
     /** The original request parameters. */
     private String m_requestParams;
 
+    /** True if the container page is a model page. */
+    private boolean m_isModelPage;
+
     /** The element reuse mode. */
     private ElementReuseMode m_reuseMode;
 
@@ -153,6 +156,7 @@ public final class CmsCntPageData implements IsSerializable {
      * @param elementViews the element views
      * @param elementView the current element view
      * @param reuseMode the element reuse mode 
+     * @param isModelPage true if this is a model page 
      */
     public CmsCntPageData(
         String noEditReason,
@@ -169,7 +173,8 @@ public final class CmsCntPageData implements IsSerializable {
         boolean showSmallElementsInitially,
         List<CmsElementViewInfo> elementViews,
         CmsUUID elementView,
-        ElementReuseMode reuseMode) {
+        ElementReuseMode reuseMode,
+        boolean isModelPage) {
 
         m_noEditReason = noEditReason;
         m_requestParams = requestParams;
@@ -186,6 +191,7 @@ public final class CmsCntPageData implements IsSerializable {
         m_elementViews = elementViews;
         m_elementView = elementView;
         m_reuseMode = reuseMode;
+        m_isModelPage = isModelPage;
     }
 
     /**
@@ -344,6 +350,16 @@ public final class CmsCntPageData implements IsSerializable {
     public boolean isEditSmallElementsInitially() {
 
         return m_editSmallElementsInitially;
+    }
+
+    /** 
+     * True if the container page is a model page.<P>
+     * 
+     * @return true if this is a model page 
+     */
+    public boolean isModelPage() {
+
+        return m_isModelPage;
     }
 
     /**

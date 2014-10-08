@@ -162,6 +162,9 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
      **/
     private boolean m_writePermission;
 
+    /** Boolean object which, if it is set, overrides the 'new' status when saving. */
+    private Boolean m_overrideNew;
+
     /**
      * Constructor.<p>
      * 
@@ -487,6 +490,16 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         }
     }
 
+    /** 
+     * Checks if this element has 'createNew' status, i.e. will be copied when using this page as a model for a new container page.<p>
+     * 
+     * @return true if this element has createNew status 
+     */
+    public boolean isCreateNew() {
+
+        return isNew() && m_clientId.matches("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}.*$");
+    }
+
     /**
      * Returns if this is e newly created element.<p>
      * 
@@ -494,6 +507,9 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
      */
     public boolean isNew() {
 
+        if (m_overrideNew != null) {
+            return m_overrideNew.booleanValue();
+        }
         return m_newType != null;
     }
 
@@ -505,6 +521,16 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     public boolean isNewEditorDisabled() {
 
         return m_disableNewEditor;
+    }
+
+    /**
+     * Returns true if the 'new' status is overridden and forced to be true.<p>
+     * 
+     * @return true if the 'new' status is overridden and forced to be true 
+     */
+    public boolean isOverrideNew() {
+
+        return (m_overrideNew != null) && m_overrideNew.booleanValue();
     }
 
     /**
@@ -613,6 +639,17 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     public void setInheritanceInfo(CmsInheritanceInfo inheritanceInfo) {
 
         m_inheritanceInfo = inheritanceInfo;
+    }
+
+    /** 
+     * Forces the 'new' status of the element to a specific value.<p>
+     * 
+     * @param isNew true if the element should be set to 'new' status 
+     */
+    public void setIsNew(boolean isNew) {
+
+        m_overrideNew = Boolean.valueOf(isNew);
+
     }
 
     /**

@@ -29,6 +29,7 @@ package org.opencms.ade.sitemap.client.toolbar;
 
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsGalleryType;
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsToggleButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
@@ -81,7 +82,7 @@ public class CmsSitemapToolbar extends CmsToolbar {
             addLeft(m_newGalleryMenuButton);
         }
 
-        addLeft(new CmsToolbarChooseEditorModeButton());
+        addLeft(new CmsToolbarChooseEditorModeButton(CmsCoreProvider.get().getUserInfo().isDeveloper()));
         ClickHandler clickHandler = new ClickHandler() {
 
             /**
@@ -164,6 +165,7 @@ public class CmsSitemapToolbar extends CmsToolbar {
             m_newGalleryMenuButton.getElement().getStyle().clearDisplay();
             m_newMenuButton.getElement().getStyle().setDisplay(Display.NONE);
         } else {
+
             m_newMenuButton.getElement().getStyle().clearDisplay();
             m_newGalleryMenuButton.getElement().getStyle().setDisplay(Display.NONE);
         }

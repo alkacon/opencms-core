@@ -98,7 +98,7 @@ public class CmsToolbarClipboardButton extends A_CmsToolbarListMenuButton {
      * @see org.opencms.ade.sitemap.client.toolbar.A_CmsToolbarListMenuButton#initContent()
      */
     @Override
-    protected void initContent() {
+    protected boolean initContent() {
 
         CmsToolbarClipboardView view = new CmsToolbarClipboardView(this, getController());
         m_modifiedTab = createTab(view.getModified());
@@ -128,5 +128,6 @@ public class CmsToolbarClipboardButton extends A_CmsToolbarListMenuButton {
         });
         m_deletedTab.setClearButtonEnabled(m_clearDeleted);
         addTab(m_deletedTab, Messages.get().key(Messages.GUI_CLIPBOARD_DELETED_TITLE_0));
+        return true;
     }
 }
