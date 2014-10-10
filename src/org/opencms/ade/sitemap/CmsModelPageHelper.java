@@ -41,6 +41,7 @@ import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.gwt.CmsVfsService;
+import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.lock.CmsLock;
@@ -293,7 +294,15 @@ public class CmsModelPageHelper {
             }
             result.setResourceType(OpenCms.getResourceManager().getResourceType(resource).getTypeName());
             result.setStructureId(resource.getStructureId());
-            result.setListInfoBean(CmsVfsService.getPageInfo(m_cms, resource));
+            CmsListInfoBean infoBean = CmsVfsService.getPageInfo(m_cms, resource);
+            CmsProperty descProperty = m_cms.readPropertyObject(
+                resource,
+                CmsPropertyDefinition.PROPERTY_DESCRIPTION,
+                false);
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(descProperty.getValue())) {
+                infoBean.setSubTitle(descProperty.getValue());
+            }
+            result.setListInfoBean(infoBean);
             return result;
         } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);
