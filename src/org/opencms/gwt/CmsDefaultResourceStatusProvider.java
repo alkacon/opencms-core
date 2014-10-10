@@ -336,6 +336,9 @@ public class CmsDefaultResourceStatusProvider {
         CmsPermissionInfo permissionInfo) throws CmsException {
 
         CmsListInfoBean sourceBean = CmsVfsService.getPageInfo(cms, relationResource);
+        sourceBean.setMarkChangedState(true);
+        sourceBean.setResourceState(relationResource.getState());
+
         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(locale)) {
             Locale realLocale = CmsLocaleManager.getLocale(locale);
             CmsGallerySearchResult result = CmsGallerySearch.searchById(

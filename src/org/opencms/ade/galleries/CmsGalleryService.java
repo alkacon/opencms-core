@@ -237,11 +237,11 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     /** Bean used to store a single type together with a flag indicating its visibility. */
     class TypeWithVisibility {
 
-        /** The resource type. */
-        private I_CmsResourceType m_type;
-
         /** True if the type should only be shown in the full list. */
         private boolean m_onlyShowInFullList;
+
+        /** The resource type. */
+        private I_CmsResourceType m_type;
 
         /**
          * Creates a new instance.<p>
@@ -289,14 +289,14 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     /** The instance of the resource manager. */
     CmsResourceManager m_resourceManager;
 
+    /** The session cache. */
+    private CmsADESessionCache m_sessionCache;
+
     /** The workplace settings of the current user. */
     private CmsWorkplaceSettings m_workplaceSettings;
 
     /** The workplace locale from the current user's settings. */
     private Locale m_wpLocale;
-
-    /** The session cache. */
-    private CmsADESessionCache m_sessionCache;
 
     /**
      * Returns the initial gallery settings.<p>
@@ -1295,6 +1295,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
         // resource path as id
         bean.setPath(path);
+
         // title
         bean.setTitle(CmsStringUtil.isEmptyOrWhitespaceOnly(sResult.getTitle())
         ? CmsResource.getName(sResult.getPath())
@@ -1369,6 +1370,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             }
         }
 
+        bean.setResourceState(resultResource.getState());
         bean.addAdditionalInfo(
             Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_SIZE_0),
             (sResult.getLength() / 1000) + " kb");
@@ -1386,6 +1388,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
         bean.setNoEditReson(new CmsResourceUtil(cms, resultResource).getNoEditReason(OpenCms.getWorkplaceManager().getWorkplaceLocale(
             cms)));
+        bean.setMarkChangedState(true);
         return bean;
     }
 
