@@ -30,6 +30,7 @@ package org.opencms.ade.sitemap.client.toolbar;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.shared.CmsSitemapData.EditorMode;
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsMenuButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.Size;
@@ -79,7 +80,7 @@ public class CmsToolbarChooseEditorModeButton extends CmsMenuButton {
          */
         public void execute() {
 
-            CmsSitemapView.getInstance().setEditorMode(m_mode);
+            CmsSitemapView.getInstance().onBeforeSetEditorMode(m_mode);
         }
 
         /**
@@ -95,14 +96,14 @@ public class CmsToolbarChooseEditorModeButton extends CmsMenuButton {
 
     }
 
+    /** True if we can edit model pages. */
+    private boolean m_canEditModelPages;
+
     /** The context menu entries. */
     private List<I_CmsContextMenuEntry> m_entries;
 
     /** The main content widget. */
     private FlexTable m_menuPanel;
-
-    /** True if we can edit model pages. */
-    private boolean m_canEditModelPages;
 
     /**
      * Constructor.<p>
@@ -163,6 +164,11 @@ public class CmsToolbarChooseEditorModeButton extends CmsMenuButton {
             EditorMode.galleries));
         if (m_canEditModelPages) {
             m_entries.add(new EditorModeEntry(Messages.get().key(Messages.GUI_MODEL_PAGES_0), EditorMode.modelpages));
+        }
+        if (CmsCoreProvider.get().getUserInfo().isCategoryManager()) {
+            m_entries.add(new EditorModeEntry(
+                Messages.get().key(Messages.GUI_CONTEXTMENU_CATEGORY_MODE_0),
+                EditorMode.categories));
         }
 
         CmsContextMenu menu = new CmsContextMenu(m_entries, false, getPopup());

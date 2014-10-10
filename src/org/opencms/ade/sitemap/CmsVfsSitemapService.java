@@ -41,6 +41,7 @@ import org.opencms.ade.sitemap.shared.CmsGalleryFolderEntry;
 import org.opencms.ade.sitemap.shared.CmsGalleryType;
 import org.opencms.ade.sitemap.shared.CmsModelPageEntry;
 import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
+import org.opencms.ade.sitemap.shared.CmsSitemapCategoryData;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange.ChangeType;
 import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
@@ -74,6 +75,7 @@ import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.CmsTemplateFinder;
 import org.opencms.gwt.shared.CmsBrokenLinkBean;
+import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsClientLock;
 import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
@@ -99,6 +101,8 @@ import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsCategory;
+import org.opencms.relations.CmsCategoryService;
 import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.security.CmsPermissionSet;
@@ -205,6 +209,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     /** The path to the JSP used to upload aliases. */
     public static final String ALIAS_IMPORT_PATH = "/system/modules/org.opencms.ade.sitemap/pages/import-aliases.jsp";
 
+    /** The galleries folder name. */
+    public static final String GALLERIES_FOLDER_NAME = ".galleries";
+
     /** The configuration key for the functionDetail attribute in the container.info property. */
     public static final String KEY_FUNCTION_DETAIL = "functionDetail";
 
@@ -213,9 +220,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /** The additional user info key for modified list. */
     private static final String ADDINFO_ADE_MODIFIED_LIST = "ADE_MODIFIED_LIST";
-
-    /** The galleries folder name. */
-    public static final String GALLERIES_FOLDER_NAME = ".galleries";
 
     /** The lock table to prevent multiple users from editing the alias table concurrently. */
     private static CmsAliasEditorLockTable aliasEditorLockTable = new CmsAliasEditorLockTable();
@@ -298,12 +302,73 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#changeCategory(java.lang.String, org.opencms.util.CmsUUID, java.lang.String, java.lang.String)
+     */
+    public void changeCategory(String entryPoint, CmsUUID id, String title, String name) throws CmsRpcException {
+
+        try {
+            name = OpenCms.getResourceManager().getFileTranslator().translateResource(name.trim().replace('/', '-'));
+            CmsObject cms = getCmsObject();
+            CmsResource categoryResource = cms.readResource(id);
+            ensureLock(categoryResource);
+            String sitePath = cms.getSitePath(categoryResource);
+            String newPath = CmsStringUtil.joinPaths(CmsResource.getParentFolder(sitePath), name);
+            cms.writePropertyObject(sitePath, new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, title, null));
+            if (!CmsStringUtil.joinPaths("/", newPath, "/").equals(CmsStringUtil.joinPaths("/", sitePath, "/"))) {
+                cms.moveResource(sitePath, newPath);
+            }
+        } catch (Exception e) {
+            error(e);
+        }
+    }
+
+    /**
      * @see org.opencms.gwt.CmsGwtService#checkPermissions(org.opencms.file.CmsObject)
      */
     @Override
     public void checkPermissions(CmsObject cms) throws CmsRoleViolationException {
 
         OpenCms.getRoleManager().checkRole(cms, CmsRole.EDITOR);
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#createCategory(java.lang.String, org.opencms.util.CmsUUID, java.lang.String, java.lang.String)
+     */
+    public void createCategory(String entryPoint, CmsUUID id, String title, String name) throws CmsRpcException {
+
+        try {
+            name = OpenCms.getResourceManager().getFileTranslator().translateResource(name.trim().replace('/', '-'));
+            CmsObject cms = getCmsObject();
+            CmsCategoryService catService = CmsCategoryService.getInstance();
+
+            CmsCategory createdCategory = null;
+            if (id.isNullUUID()) {
+                String localRepositoryPath = CmsStringUtil.joinPaths(
+                    entryPoint,
+                    OpenCms.getWorkplaceManager().getCategoryFolder());
+
+                // ensure category repository exists
+                if (!cms.existsResource(localRepositoryPath)) {
+                    cms.createResource(
+                        localRepositoryPath,
+                        OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.getStaticTypeName()).getTypeId());
+                }
+                createdCategory = catService.createCategory(cms, null, name, title, "", localRepositoryPath);
+            } else {
+                CmsResource parentResource = cms.readResource(id);
+                CmsCategory parent = catService.getCategory(cms, parentResource);
+                createdCategory = catService.createCategory(
+                    cms,
+                    parent,
+                    name,
+                    title,
+                    "",
+                    cms.getRequestContext().removeSiteRoot(parentResource.getRootPath()));
+            }
+            tryUnlock(cms.readResource(createdCategory.getId()));
+        } catch (Exception e) {
+            error(e);
+        }
     }
 
     /**
@@ -443,6 +508,31 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             result.setDownloadUrl(OpenCms.getLinkManager().substituteLinkForRootPath(cms, ALIAS_DOWNLOAD_PATH));
             return result;
         } catch (Throwable e) {
+            error(e);
+            return null;
+        }
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#getCategoryData(java.lang.String)
+     */
+    public CmsSitemapCategoryData getCategoryData(String entryPoint) throws CmsRpcException {
+
+        CmsObject cms = getCmsObject();
+        try {
+            List<CmsCategoryTreeEntry> entries = CmsCoreService.getCategoriesForSitePathStatic(cms, entryPoint);
+            CmsSitemapCategoryData categoryData = new CmsSitemapCategoryData();
+            for (CmsCategoryTreeEntry entry : entries) {
+                categoryData.add(entry);
+            }
+            CmsResource entryPointResource = cms.readResource(entryPoint);
+            String basePath = CmsStringUtil.joinPaths(
+                entryPointResource.getRootPath(),
+                OpenCms.getWorkplaceManager().getCategoryFolder());
+
+            categoryData.setBasePath(basePath);
+            return categoryData;
+        } catch (Exception e) {
             error(e);
             return null;
         }
@@ -2947,4 +3037,5 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             cms.writePropertyObjects(defaultFileRes, defaultFilePropertyChanges);
         }
     }
+
 }

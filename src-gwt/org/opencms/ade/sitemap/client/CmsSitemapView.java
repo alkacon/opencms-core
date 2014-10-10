@@ -33,8 +33,13 @@ import org.opencms.ade.sitemap.client.control.CmsSitemapDNDController;
 import org.opencms.ade.sitemap.client.control.CmsSitemapLoadEvent;
 import org.opencms.ade.sitemap.client.control.I_CmsSitemapChangeHandler;
 import org.opencms.ade.sitemap.client.control.I_CmsSitemapLoadHandler;
+import org.opencms.ade.sitemap.client.hoverbar.A_CmsSitemapMenuEntry;
+import org.opencms.ade.sitemap.client.hoverbar.CmsChangeCategoryMenuEntry;
+import org.opencms.ade.sitemap.client.hoverbar.CmsCreateCategoryMenuEntry;
+import org.opencms.ade.sitemap.client.hoverbar.CmsDeleteCategoryMenuEntry;
 import org.opencms.ade.sitemap.client.hoverbar.CmsHoverbarCreateGalleryButton;
 import org.opencms.ade.sitemap.client.hoverbar.CmsSitemapHoverbar;
+import org.opencms.ade.sitemap.client.hoverbar.I_CmsContextMenuItemProvider;
 import org.opencms.ade.sitemap.client.toolbar.CmsSitemapToolbar;
 import org.opencms.ade.sitemap.client.ui.CmsStatusIconUpdateHandler;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
@@ -44,6 +49,7 @@ import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
 import org.opencms.ade.sitemap.shared.CmsGalleryFolderEntry;
 import org.opencms.ade.sitemap.shared.CmsGalleryType;
 import org.opencms.ade.sitemap.shared.CmsModelPageEntry;
+import org.opencms.ade.sitemap.shared.CmsSitemapCategoryData;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.CmsSitemapData.EditorMode;
@@ -52,6 +58,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.CmsBroadcastTimer;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
+import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.CmsInfoHeader;
 import org.opencms.gwt.client.ui.CmsList;
@@ -70,7 +77,9 @@ import org.opencms.gwt.client.ui.tree.I_CmsLazyOpenHandler;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
+import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsIconUtil;
+import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.gwt.shared.property.CmsPropertyModification;
 import org.opencms.util.CmsPair;
@@ -78,6 +87,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -87,7 +97,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style.Display;
@@ -165,6 +178,9 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
     /** The displayed sitemap tree. */
     protected CmsLazyTree<CmsSitemapTreeItem> m_tree;
 
+    /** The tree shown in category mode. */
+    private CmsTree<CmsTreeItem> m_categoryTree;
+
     /** The controller. */
     private CmsSitemapController m_controller;
 
@@ -173,9 +189,6 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
     /** The gallery tree widget. */
     private CmsTree<CmsGalleryTreeItem> m_galleryTree;
-
-    /** Tree for the model page editor mode. */
-    private CmsTree<CmsModelPageTreeItem> m_modelPageTree;
 
     /** The gallery folder items by id. */
     private Map<CmsUUID, CmsGalleryTreeItem> m_galleryTreeItems;
@@ -186,6 +199,21 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
     /** Style variable which keeps track of whether we are in VFS mode or navigation mode. */
     private CmsStyleVariable m_inNavigationStyle;
 
+    /** Model page data beans for the model page mode. */
+    private Map<CmsUUID, CmsModelPageEntry> m_modelPageData = Maps.newHashMap();
+
+    /** Root tree item for the model page mode. */
+    private CmsModelPageTreeItem m_modelPageRoot;
+
+    /** Tree for the model page editor mode. */
+    private CmsTree<CmsModelPageTreeItem> m_modelPageTree;
+
+    /** The tree items for the model page mode, indexed by structure id. */
+    private Map<CmsUUID, CmsModelPageTreeItem> m_modelPageTreeItems = Maps.newHashMap();
+
+    /** Label to display to no galleries in this sub site message. */
+    private Label m_noGalleriesLabel;
+
     /** The tree open handler. */
     private TreeOpenHandler m_openHandler;
 
@@ -194,18 +222,6 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
     /** The registered tree items. */
     private Map<CmsUUID, CmsSitemapTreeItem> m_treeItems;
-
-    /** Label to display to no galleries in this sub site message. */
-    private Label m_noGalleriesLabel;
-
-    /** The tree items for the model page mode, indexed by structure id. */
-    private Map<CmsUUID, CmsModelPageTreeItem> m_modelPageTreeItems = Maps.newHashMap();
-
-    /** Root tree item for the model page mode. */
-    private CmsModelPageTreeItem m_modelPageRoot;
-
-    /** Model page data beans for the model page mode. */
-    private Map<CmsUUID, CmsModelPageEntry> m_modelPageData = Maps.newHashMap();
 
     /**
      * Returns the instance.<p>
@@ -255,6 +271,83 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
             result.onFinishLoading();
         }
         return result;
+    }
+
+    /**
+     * Displays the category data.<p>
+     * 
+     * @param categoryData the category data 
+     */
+    public void displayCategoryData(CmsSitemapCategoryData categoryData) {
+
+        m_categoryTree.clear();
+
+        Multimap<Boolean, CmsCategoryTreeEntry> entries = categoryData.getEntriesIndexedByLocality();
+        String localLabel = Messages.get().key(Messages.GUI_CATEGORIES_LOCAL_0);
+        String nonlocalLabel = Messages.get().key(Messages.GUI_CATEGORIES_NONLOCAL_0);
+
+        CmsListInfoBean localRootInfo = new CmsListInfoBean(localLabel, "", null);
+        localRootInfo.setResourceType("folder");
+        final CmsTreeItem localRoot = new CmsTreeItem(true, new CmsListItemWidget(localRootInfo));
+
+        CmsListInfoBean nonlocalRootInfo = new CmsListInfoBean(nonlocalLabel, "", null);
+        nonlocalRootInfo.setResourceType("folder");
+        CmsTreeItem nonlocalRoot = new CmsTreeItem(true, new CmsListItemWidget(nonlocalRootInfo));
+
+        m_categoryTree.add(localRoot);
+        m_categoryTree.add(nonlocalRoot);
+
+        for (Boolean isLocal : Arrays.asList(Boolean.FALSE, Boolean.TRUE)) {
+            for (CmsCategoryTreeEntry entry : entries.get(isLocal)) {
+                CmsTreeItem treeItem = createCategoryTreeItem(entry);
+                (isLocal.booleanValue() ? localRoot : nonlocalRoot).addChild(treeItem);
+            }
+        }
+
+        for (CmsTreeItem root : Arrays.asList(localRoot, nonlocalRoot)) {
+            final CmsTreeItem finalRoot = root;
+
+            root.visit(new Function<CmsTreeItem, Boolean>() {
+
+                @SuppressWarnings("synthetic-access")
+                public Boolean apply(CmsTreeItem input) {
+
+                    CmsUUID id = null;
+                    if (input == localRoot) {
+                        id = CmsUUID.getNullUUID();
+                    } else if ((input instanceof CmsCategoryTreeItem) && (localRoot == finalRoot)) {
+                        id = ((CmsCategoryTreeItem)input).getStructureId();
+
+                    }
+
+                    if (id != null) {
+
+                        CmsSitemapHoverbar.installOn(
+                            m_controller,
+                            input,
+                            id,
+                            false,
+                            true,
+                            new I_CmsContextMenuItemProvider() {
+
+                                public List<A_CmsSitemapMenuEntry> createContextMenu(CmsSitemapHoverbar hoverbar) {
+
+                                    List<A_CmsSitemapMenuEntry> result = Lists.newArrayList();
+                                    result.add(new CmsCreateCategoryMenuEntry(hoverbar));
+                                    result.add(new CmsChangeCategoryMenuEntry(hoverbar));
+                                    result.add(new CmsDeleteCategoryMenuEntry(hoverbar));
+                                    return result;
+                                }
+                            });
+                    }
+                    input.setOpen(true);
+                    return null;
+                }
+
+            });
+
+        }
+
     }
 
     /**
@@ -614,6 +707,38 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
     }
 
     /**
+     * Performs necessary async actions before actually setting the mode.<p>
+     *  
+     * @param mode the mode 
+     */
+    public void onBeforeSetEditorMode(final EditorMode mode) {
+
+        EditorMode oldMode = m_editorMode;
+        if ((oldMode == EditorMode.categories) && ((mode == EditorMode.vfs) || (mode == EditorMode.navigation))) {
+            final CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+                @Override
+                public void execute() {
+
+                    start(200, true);
+                    getController().refreshRoot(this);
+                }
+
+                @Override
+                protected void onResponse(Void result) {
+
+                    stop(false);
+                    setEditorMode(mode);
+                }
+            };
+            action.execute();
+        } else {
+            setEditorMode(mode);
+        }
+
+    }
+
+    /**
      * @see org.opencms.ade.sitemap.client.control.I_CmsSitemapChangeHandler#onChange(org.opencms.ade.sitemap.client.control.CmsSitemapChangeEvent)
      */
     public void onChange(CmsSitemapChangeEvent changeEvent) {
@@ -784,10 +909,13 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         m_galleryTree.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().galleriesMode());
         m_modelPageTree.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().modelPageMode());
 
+        m_categoryTree = new CmsTree<CmsTreeItem>();
+
         m_galleryTreeItems = new HashMap<CmsUUID, CmsGalleryTreeItem>();
         m_galleryTypeItems = new HashMap<String, CmsGalleryTreeItem>();
         page.add(m_galleryTree);
         page.add(m_modelPageTree);
+        page.add(m_categoryTree);
         m_noGalleriesLabel = new Label();
         m_noGalleriesLabel.setStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().textMedium());
         m_noGalleriesLabel.getElement().setInnerHTML(Messages.get().key(Messages.GUI_NO_GALLERIES_AVAILABLE_0));
@@ -830,6 +958,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
                 case galleries:
                     m_tree.getElement().getStyle().setDisplay(Display.NONE);
                     setGalleriesVisible(true);
+                    setCategoriesVisible(false);
                     setModelPagesVisible(false);
                     getController().loadGalleries();
                     break;
@@ -837,12 +966,14 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
                     m_tree.getElement().getStyle().clearDisplay();
                     setGalleriesVisible(false);
                     setModelPagesVisible(false);
+                    setCategoriesVisible(false);
                     m_toolbar.setNewEnabled(true, null);
                     m_inNavigationStyle.setValue(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().navMode());
                     break;
                 case vfs:
                     m_tree.getElement().getStyle().clearDisplay();
                     setGalleriesVisible(false);
+                    setCategoriesVisible(false);
                     m_toolbar.setNewEnabled(false, Messages.get().key(Messages.GUI_TOOLBAR_NEW_DISABLE_0));
                     m_inNavigationStyle.setValue(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().vfsMode());
                     setModelPagesVisible(false);
@@ -850,17 +981,26 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
                 case modelpages:
                     m_tree.getElement().getStyle().setDisplay(Display.NONE);
                     setGalleriesVisible(false);
+                    setCategoriesVisible(false);
                     setModelPagesVisible(true);
                     getController().loadModelPages();
 
                     break;
+                case categories:
+                    m_tree.getElement().getStyle().setDisplay(Display.NONE);
+                    setGalleriesVisible(false);
+                    setModelPagesVisible(false);
+                    setCategoriesVisible(true);
+                    getController().loadCategories();
+                    break;
                 default:
+
             }
             // check if the tree has been drawn yet
             if (m_tree.getWidgetCount() > 0) {
                 getRootItem().updateEditorMode();
             }
-            m_toolbar.setGalleriesMode(isGalleryMode());
+            m_toolbar.setMode(editorMode);
         }
     }
 
@@ -926,6 +1066,33 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
     }
 
     /**
+     * Shows/hides the category view.<p>
+     * 
+     * @param visible true if the categories should be made visible 
+     */
+    protected void setCategoriesVisible(boolean visible) {
+
+        setElementVisible(m_categoryTree, visible);
+
+    }
+
+    /**
+     * Shows or hides the element for a widget.<p>
+     * 
+     * @param widget the widget to show or hide 
+     * @param visible true if the widget should be shown 
+     */
+    protected void setElementVisible(Widget widget, boolean visible) {
+
+        if (visible) {
+            widget.getElement().getStyle().clearDisplay();
+        } else {
+            widget.getElement().getStyle().setDisplay(Display.NONE);
+        }
+
+    }
+
+    /**
      * Shows or hides the tree for the gallery mode.<p>
      * 
      * @param visible true if the tree should be shown 
@@ -949,12 +1116,23 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
      */
     protected void setModelPagesVisible(boolean visible) {
 
-        if (visible) {
-            m_modelPageTree.getElement().getStyle().clearDisplay();
-        } else {
-            m_modelPageTree.getElement().getStyle().setDisplay(Display.NONE);
-        }
+        setElementVisible(m_modelPageTree, visible);
+    }
 
+    /** 
+     * Recursively creates the widget tree for a given category bean.<p>
+     * 
+     * @param entry the category bean
+     *  
+     * @return the widget for that category bean, with widgets for its descendants attached 
+     */
+    CmsTreeItem createCategoryTreeItem(CmsCategoryTreeEntry entry) {
+
+        CmsCategoryTreeItem result = new CmsCategoryTreeItem(entry);
+        for (CmsCategoryTreeEntry child : entry.getChildren()) {
+            result.addChild(createCategoryTreeItem(child));
+        }
+        return result;
     }
 
     /**

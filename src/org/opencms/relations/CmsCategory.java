@@ -253,4 +253,13 @@ public class CmsCategory implements Comparable<CmsCategory>, Serializable {
 
         return getPath().hashCode();
     }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+
+        return "[" + CmsCategory.class.getSimpleName() + "/" + System.identityHashCode(this) + ": " + m_rootPath + " ]";
+    }
 }

@@ -142,6 +142,52 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     private CmsADESessionCache m_sessionCache;
 
     /**
+     * Builds the tree structure for the given categories.<p>
+     * 
+     * @param cms the current cms context
+     * @param categories the categories
+     * 
+     * @return the tree root element
+     */
+    public static List<CmsCategoryTreeEntry> buildCategoryTree(CmsObject cms, List<CmsCategory> categories) {
+
+        List<CmsCategoryTreeEntry> result = new ArrayList<CmsCategoryTreeEntry>();
+        for (CmsCategory category : categories) {
+            CmsCategoryTreeEntry current = new CmsCategoryTreeEntry(category);
+            current.setSitePath(cms.getRequestContext().removeSiteRoot(category.getRootPath()));
+            String parentPath = CmsResource.getParentFolder(current.getPath());
+            CmsCategoryTreeEntry parent = null;
+            parent = findCategory(result, parentPath);
+            if (parent != null) {
+                parent.addChild(current);
+            } else {
+                result.add(current);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Helper method for getting the category beans for the given site path.<p>
+     * 
+     * @param cms the CMS context to use 
+     * @param sitePath the site path 
+     * @return the list of category beans 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public static List<CmsCategoryTreeEntry> getCategoriesForSitePathStatic(CmsObject cms, String sitePath)
+    throws CmsException {
+
+        List<CmsCategoryTreeEntry> result;
+        CmsCategoryService catService = CmsCategoryService.getInstance();
+        // get the categories
+        List<CmsCategory> categories = catService.readCategories(cms, "", true, sitePath);
+        result = buildCategoryTree(cms, categories);
+        return result;
+    }
+
+    /**
      * Returns the context menu entries for the given URI.<p>
      * 
      * @param cms the cms context
@@ -337,6 +383,43 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             }
         }
         return result;
+    }
+
+    /**
+     * FInds a category in the given tree.<p>
+     * 
+     * @param tree the the tree to search in
+     * @param path the path to search for
+     * 
+     * @return the category with the given path or <code>null</code> if not found
+     */
+    private static CmsCategoryTreeEntry findCategory(List<CmsCategoryTreeEntry> tree, String path) {
+
+        if (path == null) {
+            return null;
+        }
+        // we assume that the category to find is descendant of tree
+        List<CmsCategoryTreeEntry> children = tree;
+        boolean found = true;
+        while (found) {
+            if (children == null) {
+                return null;
+            }
+            // since the categories are sorted it is faster to go backwards
+            found = false;
+            for (int i = children.size() - 1; i >= 0; i--) {
+                CmsCategoryTreeEntry child = children.get(i);
+                if (path.equals(child.getPath())) {
+                    return child;
+                }
+                if (path.startsWith(child.getPath())) {
+                    children = child.getChildren();
+                    found = true;
+                    break;
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -620,13 +703,10 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
      */
     public List<CmsCategoryTreeEntry> getCategoriesForSitePath(String sitePath) throws CmsRpcException {
 
-        CmsCategoryService catService = CmsCategoryService.getInstance();
         List<CmsCategoryTreeEntry> result = null;
         CmsObject cms = getCmsObject();
         try {
-            // get the categories
-            List<CmsCategory> categories = catService.readCategories(cms, "", true, sitePath);
-            result = buildCategoryTree(cms, categories);
+            result = getCategoriesForSitePathStatic(cms, sitePath);
         } catch (Throwable e) {
             error(e);
         }
@@ -959,7 +1039,12 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         CmsRoleManager roleManager = OpenCms.getRoleManager();
         boolean isAdmin = roleManager.hasRole(cms, CmsRole.ADMINISTRATOR);
         boolean isDeveloper = roleManager.hasRole(cms, CmsRole.DEVELOPER);
-        UserInfo userInfo = new UserInfo(cms.getRequestContext().getCurrentUser().getName(), isAdmin, isDeveloper);
+        boolean isCategoryManager = roleManager.hasRole(cms, CmsRole.CATEGORY_EDITOR);
+        UserInfo userInfo = new UserInfo(
+            cms.getRequestContext().getCurrentUser().getName(),
+            isAdmin,
+            isDeveloper,
+            isCategoryManager);
         String aboutLink = OpenCms.getLinkManager().substituteLink(
             getCmsObject(),
             "/system/modules/org.opencms.gwt/about.jsp");
@@ -1216,71 +1301,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         }
         CmsUser owner = cms.readUser(lock.getUserId());
         return CmsLockInfo.forLockedResource(owner.getName());
-    }
-
-    /**
-     * Builds the tree structure for the given categories.<p>
-     * 
-     * @param cms the current cms context
-     * @param categories the categories
-     * 
-     * @return the tree root element
-     * 
-     * @throws Exception if something goes wrong
-     */
-    private List<CmsCategoryTreeEntry> buildCategoryTree(CmsObject cms, List<CmsCategory> categories) throws Exception {
-
-        List<CmsCategoryTreeEntry> result = new ArrayList<CmsCategoryTreeEntry>();
-        for (CmsCategory category : categories) {
-            CmsCategoryTreeEntry current = new CmsCategoryTreeEntry(category);
-            current.setSitePath(cms.getRequestContext().removeSiteRoot(category.getRootPath()));
-            String parentPath = CmsResource.getParentFolder(current.getPath());
-            CmsCategoryTreeEntry parent = null;
-            parent = findCategory(result, parentPath);
-            if (parent != null) {
-                parent.addChild(current);
-            } else {
-                result.add(current);
-            }
-        }
-        return result;
-    }
-
-    /**
-     * FInds a category in the given tree.<p>
-     * 
-     * @param tree the the tree to search in
-     * @param path the path to search for
-     * 
-     * @return the category with the given path or <code>null</code> if not found
-     */
-    private CmsCategoryTreeEntry findCategory(List<CmsCategoryTreeEntry> tree, String path) {
-
-        if (path == null) {
-            return null;
-        }
-        // we assume that the category to find is descendant of tree
-        List<CmsCategoryTreeEntry> children = tree;
-        boolean found = true;
-        while (found) {
-            if (children == null) {
-                return null;
-            }
-            // since the categories are sorted it is faster to go backwards
-            found = false;
-            for (int i = children.size() - 1; i >= 0; i--) {
-                CmsCategoryTreeEntry child = children.get(i);
-                if (path.equals(child.getPath())) {
-                    return child;
-                }
-                if (path.startsWith(child.getPath())) {
-                    children = child.getChildren();
-                    found = true;
-                    break;
-                }
-            }
-        }
-        return null;
     }
 
     /**

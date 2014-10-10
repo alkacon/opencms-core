@@ -48,14 +48,17 @@ public class CmsSitemapData implements IsSerializable {
 
     /** The sitemap editor modes. */
     public enum EditorMode {
+        /** The categories mode. */
+        categories,
         /** The galleries mode. */
         galleries,
+        /** The model page mode. */
+        modelpages,
         /** The navigation mode. */
         navigation,
+
         /** The VFS mode. */
-        vfs,
-        /** The model page mode. */
-        modelpages
+        vfs
     }
 
     /** Name of the used js variable. */
@@ -75,6 +78,9 @@ public class CmsSitemapData implements IsSerializable {
 
     /** Flag to indicate whether detail pages can be edited. */
     private boolean m_canEditDetailPages;
+
+    /** Flag indicating whether user is category manager. */
+    private boolean m_categoryManager;
 
     /** The clipboard data. */
     private CmsSitemapClipboardData m_clipboardData;
@@ -102,6 +108,9 @@ public class CmsSitemapData implements IsSerializable {
 
     /** The export RFS prefix. */
     private String m_exportRfsPrefix;
+
+    /** Flag indicating whether user is gallery manager. */
+    private boolean m_galleryManager;
 
     /** A flag which indicates whether the site which contains the sitemap is a secure site. */
     private boolean m_isSecure;
@@ -148,17 +157,11 @@ public class CmsSitemapData implements IsSerializable {
     /** The sitemap info. */
     private CmsSitemapInfo m_sitemapInfo;
 
-    /** The available templates. */
-    private Map<String, CmsClientTemplateBean> m_templates;
-
-    /** Flag indicating whether user is gallery manager. */
-    private boolean m_galleryManager;
-
-    /** Flag indicating whether user is category manager. */
-    private boolean m_categoryManager;
-
     /** The structure id of the site root. */
     private CmsUUID m_siteRootId;
+
+    /** The available templates. */
+    private Map<String, CmsClientTemplateBean> m_templates;
 
     /**
      * Constructor.<p>

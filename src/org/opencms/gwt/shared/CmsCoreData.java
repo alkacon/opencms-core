@@ -61,6 +61,9 @@ public class CmsCoreData implements IsSerializable {
         /** True if the user is an administrator. */
         private boolean m_isAdmin;
 
+        /** True if the user is a category manager. */
+        private boolean m_isCategoryManager;
+
         /** True if the user is a template developer. */
         private boolean m_isDeveloper;
 
@@ -72,11 +75,13 @@ public class CmsCoreData implements IsSerializable {
          * 
          * @param name the user name 
          * @param isAdmin true if the user is an administrator 
-         * @param isDeveloper true if the user is a template developer 
+         * @param isDeveloper true if the user is a template developer
+         * @param isCategoryManager true if the user is a category manager  
          */
-        public UserInfo(String name, boolean isAdmin, boolean isDeveloper) {
+        public UserInfo(String name, boolean isAdmin, boolean isDeveloper, boolean isCategoryManager) {
 
             m_isDeveloper = isDeveloper;
+            m_isCategoryManager = isCategoryManager;
             m_isAdmin = isAdmin;
             m_name = name;
         }
@@ -107,6 +112,16 @@ public class CmsCoreData implements IsSerializable {
         public boolean isAdmin() {
 
             return m_isAdmin;
+        }
+
+        /**
+         * Returns true if the user is a category manager.<p>
+         * 
+         * @return true if the user is a category manager 
+         */
+        public boolean isCategoryManager() {
+
+            return m_isCategoryManager;
         }
 
         /**

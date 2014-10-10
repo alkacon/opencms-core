@@ -81,9 +81,15 @@ public final class CmsSitemapHoverbar extends FlowPanel {
      * @param controller the controller
      * @param entryId sitemap entry id
      * @param moveable <code>true</code> if in galleries view
-     * @param contextmenu flag to control whether the context menu should be shown s 
+     * @param contextmenu flag to control whether the context menu should be shown 
+     * @param contextMenuProvider provides items for the context menu 
      */
-    private CmsSitemapHoverbar(CmsSitemapController controller, CmsUUID entryId, boolean moveable, boolean contextmenu) {
+    private CmsSitemapHoverbar(
+        CmsSitemapController controller,
+        CmsUUID entryId,
+        boolean moveable,
+        boolean contextmenu,
+        I_CmsContextMenuItemProvider contextMenuProvider) {
 
         m_controller = controller;
         m_entryId = entryId;
@@ -92,7 +98,7 @@ public final class CmsSitemapHoverbar extends FlowPanel {
         setStyleName(I_CmsImageBundle.INSTANCE.buttonCss().hoverbar());
         if (controller.isEditable()) {
             if (contextmenu) {
-                add(new CmsHoverbarContextMenuButton(this));
+                add(new CmsHoverbarContextMenuButton(this, contextMenuProvider));
             }
             if (moveable) {
                 add(new CmsHoverbarMoveButton(this));
@@ -114,7 +120,7 @@ public final class CmsSitemapHoverbar extends FlowPanel {
      */
     private CmsSitemapHoverbar(CmsSitemapController controller, CmsUUID entryId, String sitePath, boolean contextmenu) {
 
-        this(controller, entryId, false, contextmenu);
+        this(controller, entryId, false, contextmenu, null);
         m_sitePath = sitePath;
     }
 
@@ -144,7 +150,52 @@ public final class CmsSitemapHoverbar extends FlowPanel {
      */
     public static void installOn(CmsSitemapController controller, CmsTreeItem treeItem, CmsUUID entryId) {
 
-        CmsSitemapHoverbar hoverbar = new CmsSitemapHoverbar(controller, entryId, true, true);
+        CmsSitemapHoverbar hoverbar = new CmsSitemapHoverbar(controller, entryId, true, true, null);
+        installHoverbar(hoverbar, treeItem.getListItemWidget());
+    }
+
+    /**
+     * Installs a hover bar for the given item widget.<p>
+     * 
+     * @param controller the controller 
+     * @param treeItem the item to hover
+     * @param entryId the entry id
+     * @param movable true if the item should be movable 
+     * @param contextmenu true if the item should have a context menu 
+     * @param menuItemProvider provides items for the context menu 
+     */
+    public static void installOn(
+        CmsSitemapController controller,
+        CmsTreeItem treeItem,
+        CmsUUID entryId,
+        boolean movable,
+        boolean contextmenu,
+        I_CmsContextMenuItemProvider menuItemProvider) {
+
+        CmsSitemapHoverbar hoverbar = new CmsSitemapHoverbar(
+            controller,
+            entryId,
+            movable,
+            contextmenu,
+            menuItemProvider);
+        installHoverbar(hoverbar, treeItem.getListItemWidget());
+    }
+
+    /**
+     * Installs a hover bar for the given item widget.<p>
+     * 
+     * @param controller the controller 
+     * @param treeItem the item to hover
+     * @param entryId the entry id
+     * @param menuItemProvider the context menu item provider 
+     */
+    public static void installOn(
+        CmsSitemapController controller,
+        CmsTreeItem treeItem,
+        CmsUUID entryId,
+        I_CmsContextMenuItemProvider menuItemProvider) {
+
+        CmsSitemapHoverbar hoverbar = new CmsSitemapHoverbar(controller, entryId, true, true, menuItemProvider);
         installHoverbar(hoverbar, treeItem.getListItemWidget());
     }
 
@@ -271,6 +322,16 @@ public final class CmsSitemapHoverbar extends FlowPanel {
     public CmsClientSitemapEntry getEntry() {
 
         return m_controller.getEntryById(m_entryId);
+    }
+
+    /**
+     * Gets the entry id.<p>
+     * 
+     * @return the entry id 
+     */
+    public CmsUUID getId() {
+
+        return m_entryId;
     }
 
     /**

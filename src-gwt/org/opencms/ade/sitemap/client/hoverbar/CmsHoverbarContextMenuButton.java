@@ -40,6 +40,7 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -53,7 +54,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @since 8.0.0
  */
-public class CmsHoverbarContextMenuButton extends CmsMenuButton {
+public class CmsHoverbarContextMenuButton extends CmsMenuButton implements I_CmsContextMenuItemProvider {
 
     /** The context menu entries. */
     private List<A_CmsSitemapMenuEntry> m_entries;
@@ -65,8 +66,9 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton {
      * Constructor.<p>
      * 
      * @param hoverbar the hoverbar 
+     * @param menuItemProvider the context menu item provider 
      */
-    public CmsHoverbarContextMenuButton(final CmsSitemapHoverbar hoverbar) {
+    public CmsHoverbarContextMenuButton(final CmsSitemapHoverbar hoverbar, I_CmsContextMenuItemProvider menuItemProvider) {
 
         super(null, I_CmsImageBundle.INSTANCE.buttonCss().hoverbarContext());
         // create the menu panel (it's a table because of ie6)
@@ -80,31 +82,12 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton {
         getPopup().addAutoHidePartner(getElement());
         getPopup().setWidth(0);
         //getPopupContent().setModal(true);
+
         m_entries = new ArrayList<A_CmsSitemapMenuEntry>();
-        m_entries.add(new CmsGotoMenuEntry(hoverbar));
-        m_entries.add(new CmsOpenGalleryMenuEntry(hoverbar));
-        m_entries.add(new CmsEditRedirectMenuEntry(hoverbar));
-        m_entries.add(new CmsEditModelPageMenuEntry(hoverbar));
-        m_entries.add(new CmsDeleteModelPageMenuEntry(hoverbar));
-        m_entries.add(new CmsCopyModelPageMenuEntry(hoverbar));
-        m_entries.add(new CmsEditMenuEntry(hoverbar));
-        m_entries.add(new CmsCreateGalleryMenuEntry(hoverbar));
-        m_entries.add(new CmsResourceInfoMenuEntry(hoverbar));
-        m_entries.add(new CmsAvailabilityMenuEntry(hoverbar));
-        m_entries.add(new CmsLockReportMenuEntry(hoverbar));
-        m_entries.add(new CmsSeoMenuEntry(hoverbar));
-        m_entries.add(new CmsParentSitemapMenuEntry(hoverbar));
-        m_entries.add(new CmsGotoSubSitemapMenuEntry(hoverbar));
-        m_entries.add(new CmsMergeMenuEntry(hoverbar));
-        m_entries.add(new CmsNewChoiceMenuEntry(hoverbar));
-        m_entries.add(new CmsSubSitemapMenuEntry(hoverbar));
-        m_entries.add(new CmsHideMenuEntry(hoverbar));
-        m_entries.add(new CmsShowMenuEntry(hoverbar));
-        m_entries.add(new CmsAddToNavMenuEntry(hoverbar));
-        m_entries.add(new CmsRemoveMenuEntry(hoverbar));
-        m_entries.add(new CmsBumpDetailPageMenuEntry(hoverbar));
-        m_entries.add(new CmsRefreshMenuEntry(hoverbar));
-        m_entries.add(new CmsDeleteMenuEntry(hoverbar));
+        if (menuItemProvider == null) {
+            menuItemProvider = this;
+        }
+        m_entries.addAll(menuItemProvider.createContextMenu(hoverbar));
 
         setTitle(Messages.get().key(Messages.GUI_HOVERBAR_TITLE_0));
         setVisible(true);
@@ -122,6 +105,40 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton {
                 }
             }
         });
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.client.hoverbar.I_CmsContextMenuItemProvider#createContextMenu(org.opencms.ade.sitemap.client.hoverbar.CmsSitemapHoverbar)
+     */
+    public List<A_CmsSitemapMenuEntry> createContextMenu(CmsSitemapHoverbar hoverbar) {
+
+        List<A_CmsSitemapMenuEntry> result = Lists.newArrayList();
+
+        result.add(new CmsGotoMenuEntry(hoverbar));
+        result.add(new CmsOpenGalleryMenuEntry(hoverbar));
+        result.add(new CmsEditRedirectMenuEntry(hoverbar));
+        result.add(new CmsEditModelPageMenuEntry(hoverbar));
+        result.add(new CmsDeleteModelPageMenuEntry(hoverbar));
+        result.add(new CmsCopyModelPageMenuEntry(hoverbar));
+        result.add(new CmsEditMenuEntry(hoverbar));
+        result.add(new CmsCreateGalleryMenuEntry(hoverbar));
+        result.add(new CmsResourceInfoMenuEntry(hoverbar));
+        result.add(new CmsAvailabilityMenuEntry(hoverbar));
+        result.add(new CmsLockReportMenuEntry(hoverbar));
+        result.add(new CmsSeoMenuEntry(hoverbar));
+        result.add(new CmsParentSitemapMenuEntry(hoverbar));
+        result.add(new CmsGotoSubSitemapMenuEntry(hoverbar));
+        result.add(new CmsMergeMenuEntry(hoverbar));
+        result.add(new CmsNewChoiceMenuEntry(hoverbar));
+        result.add(new CmsSubSitemapMenuEntry(hoverbar));
+        result.add(new CmsHideMenuEntry(hoverbar));
+        result.add(new CmsShowMenuEntry(hoverbar));
+        result.add(new CmsAddToNavMenuEntry(hoverbar));
+        result.add(new CmsRemoveMenuEntry(hoverbar));
+        result.add(new CmsBumpDetailPageMenuEntry(hoverbar));
+        result.add(new CmsRefreshMenuEntry(hoverbar));
+        result.add(new CmsDeleteMenuEntry(hoverbar));
+        return result;
     }
 
     /**

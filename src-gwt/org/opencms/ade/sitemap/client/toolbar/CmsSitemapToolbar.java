@@ -29,6 +29,7 @@ package org.opencms.ade.sitemap.client.toolbar;
 
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsGalleryType;
+import org.opencms.ade.sitemap.shared.CmsSitemapData.EditorMode;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsToggleButton;
@@ -102,7 +103,7 @@ public class CmsSitemapToolbar extends CmsToolbar {
         m_contextMenuButton.addClickHandler(clickHandler);
         addRight(m_contextMenuButton);
         addRight(new CmsToolbarGoBackButton(this, controller));
-        setGalleriesMode(false);
+        setMode(EditorMode.navigation);
     }
 
     /**
@@ -155,23 +156,6 @@ public class CmsSitemapToolbar extends CmsToolbar {
     }
 
     /**
-     * Sets the galleries mode.<p>
-     * 
-     * @param isGalleriesMode <code>true</code> if in galleries mode
-     */
-    public void setGalleriesMode(boolean isGalleriesMode) {
-
-        if (isGalleriesMode) {
-            m_newGalleryMenuButton.getElement().getStyle().clearDisplay();
-            m_newMenuButton.getElement().getStyle().setDisplay(Display.NONE);
-        } else {
-
-            m_newMenuButton.getElement().getStyle().clearDisplay();
-            m_newGalleryMenuButton.getElement().getStyle().setDisplay(Display.NONE);
-        }
-    }
-
-    /**
      * Sets the available gallery types.<p>
      * 
      * @param galleryTypes the gallery types
@@ -179,6 +163,30 @@ public class CmsSitemapToolbar extends CmsToolbar {
     public void setGalleryTypes(Collection<CmsGalleryType> galleryTypes) {
 
         m_newGalleryMenuButton.setGalleryTypes(galleryTypes);
+    }
+
+    /**
+     * Sets the galleries mode.<p>
+     * 
+     * @param mode the editor mode 
+     */
+    public void setMode(EditorMode mode) {
+
+        switch (mode) {
+            case galleries:
+                m_newGalleryMenuButton.getElement().getStyle().clearDisplay();
+                m_newMenuButton.getElement().getStyle().setDisplay(Display.NONE);
+                break;
+            case modelpages:
+            case categories:
+                m_newGalleryMenuButton.getElement().getStyle().setDisplay(Display.NONE);
+                m_newMenuButton.getElement().getStyle().setDisplay(Display.NONE);
+                break;
+            default:
+                m_newMenuButton.getElement().getStyle().clearDisplay();
+                m_newGalleryMenuButton.getElement().getStyle().setDisplay(Display.NONE);
+                break;
+        }
     }
 
     /**

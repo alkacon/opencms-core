@@ -32,6 +32,7 @@ import org.opencms.ade.sitemap.shared.CmsGalleryFolderEntry;
 import org.opencms.ade.sitemap.shared.CmsGalleryType;
 import org.opencms.ade.sitemap.shared.CmsModelPageEntry;
 import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
+import org.opencms.ade.sitemap.shared.CmsSitemapCategoryData;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.gwt.shared.alias.CmsAliasEditValidationReply;
@@ -49,7 +50,7 @@ import java.util.Map;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
 
-/**
+/** 
  * Handles all RPC services related to the sitemap.<p>
  * 
  * @since 8.0.0
@@ -59,6 +60,28 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapServiceAsync
  */
 public interface I_CmsSitemapServiceAsync {
+
+    /** 
+     * Sets the name and title of the given category.<p>
+     * 
+     * @param entryPoint the current entry point 
+     * @param id the category id 
+     * @param title the new title 
+     * @param name the new name
+     * @param callback the callback to call when done  
+     */
+    void changeCategory(String entryPoint, CmsUUID id, String title, String name, AsyncCallback<Void> callback);
+
+    /**
+     * Creates a new category.<p>
+     * 
+     * @param entryPoint the entry point 
+     * @param id the parent category id 
+     * @param title the title 
+     * @param name the category name
+     * @param callback the result callback 
+     */
+    void createCategory(String entryPoint, CmsUUID id, String title, String name, AsyncCallback<Void> callback);
 
     /**
      * Creates a new gallery folder.<p>
@@ -110,6 +133,14 @@ public interface I_CmsSitemapServiceAsync {
      * @param callback the asynchronous callback  
      */
     void getAliasTable(AsyncCallback<CmsAliasInitialFetchResult> callback);
+
+    /**
+     * Gets the category data for the given entry point.<p>
+     * 
+     * @param entryPoint the entry point
+     * @param resultCallback the callback for the result  
+     **/
+    void getCategoryData(String entryPoint, AsyncCallback<CmsSitemapCategoryData> resultCallback);
 
     /**
      * Returns the sitemap children for the given path.<p>
@@ -220,12 +251,12 @@ public interface I_CmsSitemapServiceAsync {
         AsyncCallback<CmsAliasEditValidationReply> callback);
 
     /**
-     * Validates rewrite aliases.<p>
-     * 
-     * @param validationRequest the rewrite alias data to validate
-     *  
-     * @param callback the callback for the result 
-     */
+    * Validates rewrite aliases.<p>
+    * 
+    * @param validationRequest the rewrite alias data to validate
+    *  
+    * @param callback the callback for the result 
+    */
     void validateRewriteAliases(
         CmsRewriteAliasValidationRequest validationRequest,
         AsyncCallback<CmsRewriteAliasValidationReply> callback);

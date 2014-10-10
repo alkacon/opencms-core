@@ -144,6 +144,18 @@ public final class Messages {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_BLOCKING_LOCKED_CHILDREN_0 = "GUI_BLOCKING_LOCKED_CHILDREN_0";
 
+    /**  Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_LOCAL_0 = "GUI_CATEGORIES_LOCAL_0";
+
+    /**  Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_NONLOCAL_0 = "GUI_CATEGORIES_NONLOCAL_0";
+
+    /**  Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORY_NAME_LABEL_0 = "GUI_CATEGORY_NAME_LABEL_0";
+
+    /**  Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORY_TITLE_LABEL_0 = "GUI_CATEGORY_TITLE_LABEL_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CLIPBOARD_CLEAR_LIST_0 = "GUI_CLIPBOARD_CLEAR_LIST_0";
 
@@ -164,6 +176,24 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CONFIRM_LEAVING_TITLE_0 = "GUI_CONFIRM_LEAVING_TITLE_0";
+
+    /**  Message constant for key in the resource bundle. */
+    public static final String GUI_CONTEXTMENU_CATEGORY_MODE_0 = "GUI_CONTEXTMENU_CATEGORY_MODE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CONTEXTMENU_EDIT_CATEGORY_0 = "GUI_CONTEXTMENU_EDIT_CATEGORY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPY_MODEL_PAGE_0 = "GUI_COPY_MODEL_PAGE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPY_MODEL_PAGE_DIALOG_TITLE_0 = "GUI_COPY_MODEL_PAGE_DIALOG_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CREATE_MODEL_PAGE_BUTTON_TITLE_0 = "GUI_CREATE_MODEL_PAGE_BUTTON_TITLE_0";
+
+    /**  Message constant for key in the resource bundle. */
+    public static final String GUI_CREATE_MODEL_PAGE_DIALOG_TITLE_0 = "GUI_CREATE_MODEL_PAGE_DIALOG_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DEFAULT_TEMPLATE_TITLE_0 = "GUI_DEFAULT_TEMPLATE_TITLE_0";
@@ -205,6 +235,9 @@ public final class Messages {
     public static final String GUI_DND_ENTRY_TITLE_0 = "GUI_DND_ENTRY_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDIT_CATEGORY_CAPTION_1 = "GUI_EDIT_CATEGORY_CAPTION_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EDIT_ENTRY_TITLE_0 = "GUI_EDIT_ENTRY_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -215,6 +248,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDIT_MODELPAGE_CONFIRM_TITLE_0 = "GUI_EDIT_MODELPAGE_CONFIRM_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDIT_MODELPAGE_CONTEXTMENU_0 = "GUI_EDIT_MODELPAGE_CONTEXTMENU_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDIT_MODELPAGE_OK_0 = "GUI_EDIT_MODELPAGE_OK_0";
@@ -346,6 +382,15 @@ public final class Messages {
     public static final String GUI_MERGE_SITEMAP_CONFIRM_TITLE_0 = "GUI_MERGE_SITEMAP_CONFIRM_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODEL_PAGE_TITLE_LABEL_0 = "GUI_MODEL_PAGE_TITLE_LABEL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODEL_PAGE_TREE_ROOT_TITLE_0 = "GUI_MODEL_PAGE_TREE_ROOT_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODEL_PAGES_0 = "GUI_MODEL_PAGES_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_NAME_0 = "GUI_NAME_0";
 
     /** Message constant for key in the resource bundle. */
@@ -426,6 +471,15 @@ public final class Messages {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITEMAP_0 = "GUI_SITEMAP_0";
 
+    /**  Message constant for key in the resource bundle. */
+    public static final String GUI_SITEMAP_CONTEXT_MENU_CREATE_CATEGORY_0 = "GUI_SITEMAP_CONTEXT_MENU_CREATE_CATEGORY_0";
+
+    /**  Message constant for key in the resource bundle. */
+    public static final String GUI_SITEMAP_CREATE_CATEGORY_TITLE_0 = "GUI_SITEMAP_CREATE_CATEGORY_TITLE_0";
+
+    /**  Message constant for key in the resource bundle. */
+    public static final String GUI_SITEMAP_CREATE_SUBCATEGORY_TITLE_1 = "GUI_SITEMAP_CREATE_SUBCATEGORY_TITLE_1";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITEMAP_TOO_DEEP_MESSAGE_0 = "GUI_SITEMAP_TOO_DEEP_MESSAGE_0";
 
@@ -472,10 +526,10 @@ public final class Messages {
     public static final String GUI_TOOLBAR_NEW_BUTTON_TITLE_0 = "GUI_TOOLBAR_NEW_BUTTON_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_TOOLBAR_NEW_GALLERY_TITLE_0 = "GUI_TOOLBAR_NEW_GALLERY_TITLE_0";
+    public static final String GUI_TOOLBAR_NEW_DISABLE_0 = "GUI_TOOLBAR_NEW_DISABLE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_TOOLBAR_NEW_DISABLE_0 = "GUI_TOOLBAR_NEW_DISABLE_0";
+    public static final String GUI_TOOLBAR_NEW_GALLERY_TITLE_0 = "GUI_TOOLBAR_NEW_GALLERY_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_REDO_0 = "GUI_TOOLBAR_REDO_0";
@@ -497,30 +551,6 @@ public final class Messages {
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.sitemap.clientmessages";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_MODEL_PAGES_0 = "GUI_MODEL_PAGES_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_COPY_MODEL_PAGE_0 = "GUI_COPY_MODEL_PAGE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_EDIT_MODELPAGE_CONTEXTMENU_0 = "GUI_EDIT_MODELPAGE_CONTEXTMENU_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_CREATE_MODEL_PAGE_BUTTON_TITLE_0 = "GUI_CREATE_MODEL_PAGE_BUTTON_TITLE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_MODEL_PAGE_TREE_ROOT_TITLE_0 = "GUI_MODEL_PAGE_TREE_ROOT_TITLE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_COPY_MODEL_PAGE_DIALOG_TITLE_0 = "GUI_COPY_MODEL_PAGE_DIALOG_TITLE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_MODEL_PAGE_TITLE_LABEL_0 = "GUI_MODEL_PAGE_TITLE_LABEL_0";
-
-    /**  Message constant for key in the resource bundle. */
-    public static final String GUI_CREATE_MODEL_PAGE_DIALOG_TITLE_0 = "GUI_CREATE_MODEL_PAGE_DIALOG_TITLE_0";
 
     /** Static instance member. */
     private static CmsMessages INSTANCE;

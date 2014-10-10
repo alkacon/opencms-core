@@ -36,6 +36,8 @@ import org.opencms.gwt.client.ui.contextmenu.I_CmsHasContextMenuCommand;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.util.CmsUUID;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
+
 /**
  * Context menu entry for the 'Refresh' action.<p>
  */
@@ -58,7 +60,20 @@ public class CmsRefreshAction implements I_CmsHasContextMenuCommand, I_CmsContex
     public void execute(CmsUUID structureId, I_CmsContextMenuHandler handler, CmsContextMenuEntryBean bean) {
 
         CmsSitemapController controller = CmsSitemapView.getInstance().getController();
-        controller.updateEntry(controller.getData().getRoot().getId());
+        controller.refreshRoot(new AsyncCallback<Void>() {
+
+            public void onFailure(Throwable caught) {
+
+                // TODO Auto-generated method stub
+
+            }
+
+            public void onSuccess(Void result) {
+
+                // TODO Auto-generated method stub
+
+            }
+        });
     }
 
     /**

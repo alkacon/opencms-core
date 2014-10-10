@@ -32,6 +32,7 @@ import org.opencms.ade.sitemap.shared.CmsGalleryFolderEntry;
 import org.opencms.ade.sitemap.shared.CmsGalleryType;
 import org.opencms.ade.sitemap.shared.CmsModelPageEntry;
 import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
+import org.opencms.ade.sitemap.shared.CmsSitemapCategoryData;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.gwt.CmsRpcException;
@@ -60,6 +61,29 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapServiceAsync
  */
 public interface I_CmsSitemapService extends RemoteService {
+
+    /** 
+     * Sets the name and title of the given category.<p>
+     * 
+     * @param entryPoint the current entry point 
+     * @param id the category id 
+     * @param title the new title 
+     * @param name the new name 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    void changeCategory(String entryPoint, CmsUUID id, String title, String name) throws CmsRpcException;
+
+    /**
+     * Creates a new category.<p>
+     * 
+     * @param entryPoint the entry point 
+     * @param id the parent category id 
+     * @param title the title 
+     * @param name the category name
+     *  
+     * @throws CmsRpcException if something goes wrong 
+     */
+    void createCategory(String entryPoint, CmsUUID id, String title, String name) throws CmsRpcException;
 
     /**
      * Creates a new gallery folder.<p>
@@ -116,6 +140,16 @@ public interface I_CmsSitemapService extends RemoteService {
      * @throws CmsRpcException if something goes wrong 
      */
     CmsAliasInitialFetchResult getAliasTable() throws CmsRpcException;
+
+    /**
+     * Gets the category data for the given entry point.<p>
+     * 
+     * @param entryPoint the entry point 
+     * @return the category data 
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     **/
+    CmsSitemapCategoryData getCategoryData(String entryPoint) throws CmsRpcException;
 
     /**
      * Returns the sitemap children for the given path.<p>
