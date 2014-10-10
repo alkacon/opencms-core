@@ -392,11 +392,6 @@
 						<entry key="GUI_EXPLORER_CONTEXT_PAGE_INFO_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsResourceInfo"
 							rule="containerpage" />
-						<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0"
-							name="org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog"
-							rule="containerpage-no-different-site" />
-						<entry key="GUI_EXPLORER_CONTEXT_LOCK_REPORT_0"
-							name="org.opencms.gwt.client.ui.contextmenu.CmsLockReport" rule="containerpage" />
 						<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsCategories" rule="containerpage-no-different-site" />
 						<entry key="TEMPLATECONTEXTS" name="templatecontexts" rule="containerpage" /><!-- 
@@ -404,18 +399,27 @@
 						<entry key="SELECTELEMENTVIEW" name="selectelementview"
 							rule="containerpage" /><!-- Entry is processed on the client side, 
 							the message key doesn't exist -->
-						<entry key="GUI_EXPLORER_CONTEXT_SEO_0"
-							name="org.opencms.gwt.client.ui.contextmenu.CmsOpenSeoDialog"
-							rule="containerpage-no-different-site" />
 						<entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsRestore" rule="ade-undochanges" />
 						<entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsUndelete" rule="containerpage-deleted" />
 						<entry key="EDITSMALLELEMENTS" name="editsmallelements"
 							rule="containerpage" />
-						<entry key="GUI_EXPLORER_CONTEXT_SHOW_WORKPLACE_0"
+						<entry key="GUI_EXPLORER_CONTEXT_ADE_ADVANCED_0" rule="containerpage">
+							<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0"
+							name="org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog"
+							rule="containerpage-no-different-site" />
+							<entry key="GUI_EXPLORER_CONTEXT_LOCK_REPORT_0"
+							name="org.opencms.gwt.client.ui.contextmenu.CmsLockReport" rule="containerpage" />
+							<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0"
+							name="org.opencms.gwt.client.ui.contextmenu.CmsCategories" rule="containerpage-no-different-site" />
+							<entry key="GUI_EXPLORER_CONTEXT_SEO_0"
+							name="org.opencms.gwt.client.ui.contextmenu.CmsOpenSeoDialog"
+							rule="containerpage-no-different-site" />
+							<entry key="GUI_EXPLORER_CONTEXT_SHOW_WORKPLACE_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsShowWorkplace"
 							rule="containerpage" />
+						</entry>
 						<entry key="GUI_EXPLORER_CONTEXT_USERSETTINGS_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsEditUserSettings"
 							rule="containerpage" />
@@ -424,6 +428,8 @@
 
 						<entry key="GUI_EXPLORER_CONTEXT_ABOUT_0" name="org.opencms.gwt.client.ui.contextmenu.CmsAbout"
 							rule="containerpage" />
+							
+							
 
 
 					</contextmenu>
@@ -579,15 +585,17 @@
 						<entry key="GUI_EXPLORER_CONTEXT_GO_TO_PARENT_0"
 							name="org.opencms.ade.sitemap.client.toolbar.CmsGoToParentAction"
 							rule="sitemap" />
-						<entry key="GUI_EXPLORER_CONTEXT_ALIAS_DIALOG_0"
-							name="org.opencms.ade.sitemap.client.toolbar.CmsAliasDialog"
-							rule="sitemap" />
 						<entry key="GUI_EXPLORER_CONTEXT_REFRESH_0"
 							name="org.opencms.ade.sitemap.client.toolbar.CmsRefreshAction"
 							rule="sitemap" />
-						<entry key="GUI_EXPLORER_CONTEXT_SHOW_WORKPLACE_0"
+						<entry key="GUI_EXPLORER_CONTEXT_ADE_ADVANCED_0" rule="sitemap">
+							<entry key="GUI_EXPLORER_CONTEXT_ALIAS_DIALOG_0"
+							name="org.opencms.ade.sitemap.client.toolbar.CmsAliasDialog"
+							rule="sitemap" />
+							<entry key="GUI_EXPLORER_CONTEXT_SHOW_WORKPLACE_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsShowWorkplace"
 							rule="sitemap" />
+						</entry>
 						<entry key="GUI_EXPLORER_CONTEXT_USERSETTINGS_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsEditUserSettings"
 							rule="sitemap" />

@@ -38,6 +38,7 @@ import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.google.common.collect.Lists;
@@ -123,21 +124,24 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton implements I_Cms
         result.add(new CmsEditMenuEntry(hoverbar));
         result.add(new CmsCreateGalleryMenuEntry(hoverbar));
         result.add(new CmsResourceInfoMenuEntry(hoverbar));
-        result.add(new CmsAvailabilityMenuEntry(hoverbar));
-        result.add(new CmsLockReportMenuEntry(hoverbar));
         result.add(new CmsSeoMenuEntry(hoverbar));
         result.add(new CmsParentSitemapMenuEntry(hoverbar));
         result.add(new CmsGotoSubSitemapMenuEntry(hoverbar));
-        result.add(new CmsMergeMenuEntry(hoverbar));
         result.add(new CmsNewChoiceMenuEntry(hoverbar));
-        result.add(new CmsSubSitemapMenuEntry(hoverbar));
         result.add(new CmsHideMenuEntry(hoverbar));
         result.add(new CmsShowMenuEntry(hoverbar));
         result.add(new CmsAddToNavMenuEntry(hoverbar));
-        result.add(new CmsRemoveMenuEntry(hoverbar));
         result.add(new CmsBumpDetailPageMenuEntry(hoverbar));
         result.add(new CmsRefreshMenuEntry(hoverbar));
+        result.add(new CmsAdvancedSubmenu(hoverbar, Arrays.asList(
+            new CmsAvailabilityMenuEntry(hoverbar),
+            new CmsLockReportMenuEntry(hoverbar),
+            new CmsSeoMenuEntry(hoverbar),
+            new CmsSubSitemapMenuEntry(hoverbar),
+            new CmsMergeMenuEntry(hoverbar),
+            new CmsRemoveMenuEntry(hoverbar))));
         result.add(new CmsDeleteMenuEntry(hoverbar));
+
         return result;
     }
 
@@ -209,7 +213,24 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton implements I_Cms
     private void updateVisibility() {
 
         for (A_CmsSitemapMenuEntry entry : m_entries) {
-            entry.onShow();
+            updateVisibility(entry);
         }
+    }
+
+    /**
+     * Updates the visibility for an entry and its sub-entries.<p>
+     * 
+     * @param entry the entry to update 
+     */
+    private void updateVisibility(A_CmsSitemapMenuEntry entry) {
+
+        entry.onShow();
+        if (entry.getSubMenu() != null) {
+            for (I_CmsContextMenuEntry subItem : entry.getSubMenu()) {
+                updateVisibility((A_CmsSitemapMenuEntry)subItem);
+
+            }
+        }
+
     }
 }
