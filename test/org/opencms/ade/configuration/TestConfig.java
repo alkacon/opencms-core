@@ -102,12 +102,16 @@ public class TestConfig extends OpenCmsTestCase {
      * 
      * @throws CmsException if something goes wrong 
      */
-    public void createFolder(String rootPath, boolean deep) throws CmsException {
+    public void createFolder(String rootPath, boolean deep, boolean unlock) throws CmsException {
 
         CmsObject cms = getCmsObject();
         cms.getRequestContext().setSiteRoot("");
         if (!deep) {
-            cms.createResource(rootPath, CmsResourceTypeFolder.getStaticTypeId());
+            CmsResource res = cms.createResource(rootPath, CmsResourceTypeFolder.getStaticTypeId());
+            if (unlock) {
+                cms.unlockResource(res);
+
+            }
         } else {
             List<String> parents = new ArrayList<String>();
             String currentPath = rootPath;
@@ -121,7 +125,11 @@ public class TestConfig extends OpenCmsTestCase {
             for (String parent : parents) {
                 System.out.println("Creating folder: " + parent);
                 try {
-                    cms.createResource(parent, CmsResourceTypeFolder.getStaticTypeId());
+                    CmsResource res = cms.createResource(parent, CmsResourceTypeFolder.getStaticTypeId());
+                    if (unlock) {
+                        cms.unlockResource(res);
+
+                    }
                 } catch (CmsVfsResourceAlreadyExistsException e) {
                     // nop 
                 }
@@ -144,8 +152,8 @@ public class TestConfig extends OpenCmsTestCase {
         String plainDir = contentDirectory + "/" + plain;
         String binaryDir = contentDirectory + "/" + binary;
 
-        createFolder(plainDir, true);
-        createFolder(binaryDir, true);
+        createFolder(plainDir, true, false);
+        createFolder(binaryDir, true, false);
 
         CmsObject cms = rootCms();
         String username = "User_testCreatable";
@@ -382,9 +390,8 @@ public class TestConfig extends OpenCmsTestCase {
         String baseDirectory = "/sites/default/testCreateElements";
         String contentDirectory = baseDirectory + "/.content";
         String articleDirectory = contentDirectory + "/" + typename;
-
         try {
-            createFolder(articleDirectory, true);
+            createFolder(articleDirectory, true, true);
         } catch (CmsVfsResourceAlreadyExistsException e) {
             System.out.println("***" + e);
         }
