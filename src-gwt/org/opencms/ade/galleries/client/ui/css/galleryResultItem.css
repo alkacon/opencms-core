@@ -83,6 +83,10 @@
 
 .changed{}
 
+.tilingList .topRightIcon {
+	left: 0px !important; 
+}
+
 .topRightIcon {} 
 
 .titleDeleted {}
