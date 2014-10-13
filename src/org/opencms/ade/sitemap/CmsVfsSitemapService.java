@@ -349,9 +349,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
                 // ensure category repository exists
                 if (!cms.existsResource(localRepositoryPath)) {
-                    cms.createResource(
+                    tryUnlock(cms.createResource(
                         localRepositoryPath,
-                        OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.getStaticTypeName()).getTypeId());
+                        OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.getStaticTypeName()).getTypeId()));
                 }
                 createdCategory = catService.createCategory(cms, null, name, title, "", localRepositoryPath);
             } else {
