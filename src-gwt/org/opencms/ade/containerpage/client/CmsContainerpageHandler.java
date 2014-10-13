@@ -55,6 +55,7 @@ import org.opencms.gwt.client.ui.I_CmsToolbarButton;
 import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.gwt.client.ui.contextmenu.A_CmsContextMenuItem;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuEntry;
+import org.opencms.gwt.client.ui.contextmenu.CmsPreview;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler;
@@ -972,6 +973,8 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
             return createToggleEditSmallElementsMenuEntry();
         } else if (menuEntryBean.getName().equals(CmsGwtConstants.ACTION_SELECTELEMENTVIEW)) {
             return createElementViewSelectionMenuEntry();
+        } else if (menuEntryBean.getName().equals(CmsPreview.class.getName())) {
+            return null;
         } else {
             return super.transformSingleEntry(structureId, menuEntryBean);
         }

@@ -386,14 +386,14 @@
 							rule="nondeleted" />
 						<entry key="GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsEditProperties"
-							rule="containerpage-no-different-site" />
+							rule="containerpage-no-different-site-and-has-editor-role" />
 						<entry key="GUI_EXPLORER_CONTEXT_PREVIEW_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsPreview" rule="containerpage" />
 						<entry key="GUI_EXPLORER_CONTEXT_PAGE_INFO_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsResourceInfo"
 							rule="containerpage" />
 						<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0"
-							name="org.opencms.gwt.client.ui.contextmenu.CmsCategories" rule="containerpage-no-different-site" />
+							name="org.opencms.gwt.client.ui.contextmenu.CmsCategories" rule="containerpage-no-different-site-and-has-editor-role" />
 						<entry key="TEMPLATECONTEXTS" name="templatecontexts" rule="containerpage" /><!-- 
 							Entry is processed on the client side, the message key doesn't exist -->
 						<entry key="SELECTELEMENTVIEW" name="selectelementview"
@@ -408,17 +408,17 @@
 						<entry key="GUI_EXPLORER_CONTEXT_ADE_ADVANCED_0" rule="containerpage">
 							<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog"
-							rule="containerpage-no-different-site" />
+							rule="containerpage-no-different-site-and-has-editor-role" />
 							<entry key="GUI_EXPLORER_CONTEXT_LOCK_REPORT_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsLockReport" rule="containerpage" />
 							<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0"
-							name="org.opencms.gwt.client.ui.contextmenu.CmsCategories" rule="containerpage-no-different-site" />
+							name="org.opencms.gwt.client.ui.contextmenu.CmsCategories" rule="containerpage-no-different-site-and-has-editor-role" />
 							<entry key="GUI_EXPLORER_CONTEXT_SEO_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsOpenSeoDialog"
-							rule="containerpage-no-different-site" />
+							rule="containerpage-no-different-site-and-has-editor-role" />
 							<entry key="GUI_EXPLORER_CONTEXT_SHOW_WORKPLACE_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsShowWorkplace"
-							rule="containerpage" />
+							rule="containerpage-wpuser" />
 						</entry>
 						<entry key="GUI_EXPLORER_CONTEXT_USERSETTINGS_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsEditUserSettings"
@@ -594,7 +594,7 @@
 							rule="sitemap" />
 							<entry key="GUI_EXPLORER_CONTEXT_SHOW_WORKPLACE_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsShowWorkplace"
-							rule="sitemap" />
+							rule="sitemap-wpuser" />
 						</entry>
 						<entry key="GUI_EXPLORER_CONTEXT_USERSETTINGS_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsEditUserSettings"

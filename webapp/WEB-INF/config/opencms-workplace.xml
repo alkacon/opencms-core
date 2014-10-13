@@ -145,18 +145,18 @@
 
 						<entry key="GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsEditProperties"
-							rule="containerpage-no-different-site" />
+							rule="containerpage-no-different-site-and-has-editor-role" />
 						<entry key="GUI_EXPLORER_CONTEXT_RESOURCE_INFO_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsResourceInfo"
 							rule="containerpage" />
 						<entry key="GUI_EXPLORER_CONTEXT_ADE_ADVANCED_0" rule="containerpage">
 							<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog"
-							rule="containerpage-no-different-site" />
+							rule="containerpage-no-different-site-and-has-editor-role" />
 							<entry key="GUI_EXPLORER_CONTEXT_LOCK_REPORT_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsLockReport" rule="containerpage" />
 							<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0"
-							name="org.opencms.gwt.client.ui.contextmenu.CmsCategories" rule="containerpage-no-different-site" />
+							name="org.opencms.gwt.client.ui.contextmenu.CmsCategories" rule="containerpage-no-different-site-and-has-editor-role" />
 						</entry>
 						<entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsUndelete" rule="containerpage-deleted" />
@@ -296,7 +296,7 @@
 							rule="nondeleted" />
 						<entry key="GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsEditProperties"
-							rule="containerpage" />
+							rule="containerpage-no-different-site-and-has-editor-role" />
 						<entry key="GUI_EXPLORER_CONTEXT_REPLACE_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsReplace" rule="containerpage" />
 						<entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0"
@@ -312,11 +312,11 @@
 						<entry key="GUI_EXPLORER_CONTEXT_ADE_ADVANCED_0" rule="containerpage">
 							<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog"
-							rule="containerpage-no-different-site" />
+							rule="containerpage-no-different-site-and-has-editor-role" />
 							<entry key="GUI_EXPLORER_CONTEXT_LOCK_REPORT_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsLockReport" rule="containerpage" />
 							<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0"
-							name="org.opencms.gwt.client.ui.contextmenu.CmsCategories" rule="containerpage-no-different-site" />
+							name="org.opencms.gwt.client.ui.contextmenu.CmsCategories" rule="containerpage-no-different-site-and-has-editor-role" />
 						</entry>
 						<entry key="GUI_EXPLORER_CONTEXT_DELETE_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsDeleteResource"
@@ -418,7 +418,7 @@
 							rule="nondeleted" />
 						<entry key="GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsEditProperties"
-							rule="containerpage-no-different-site" />
+							rule="containerpage-no-different-site-and-has-editor-role" />
 						<entry key="GUI_EXPLORER_CONTEXT_REPLACE_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsReplace" rule="containerpage-no-different-site" />
 						<entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0"
@@ -435,11 +435,11 @@
 						<entry key="GUI_EXPLORER_CONTEXT_ADE_ADVANCED_0" rule="containerpage">
 							<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog"
-							rule="containerpage-no-different-site" />
+							rule="containerpage-no-different-site-and-has-editor-role" />
 							<entry key="GUI_EXPLORER_CONTEXT_LOCK_REPORT_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsLockReport" rule="containerpage" />
 							<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0"
-							name="org.opencms.gwt.client.ui.contextmenu.CmsCategories" rule="containerpage-no-different-site" />
+							name="org.opencms.gwt.client.ui.contextmenu.CmsCategories" rule="containerpage-no-different-site-and-has-editor-role" />
 						</entry>
 						<entry key="GUI_EXPLORER_CONTEXT_DELETE_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsDeleteResource"
@@ -618,7 +618,7 @@
 							rule="nondeleted" />
 						<entry key="GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsEditProperties"
-							rule="containerpage-no-different-site" />
+							rule="containerpage-no-different-site-and-has-editor-role" />
 						<entry key="GUI_EXPLORER_CONTEXT_REPLACE_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsReplace" rule="containerpage-no-different-site" />
 						<entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0"
@@ -636,11 +636,11 @@
 						<entry key="GUI_EXPLORER_CONTEXT_ADE_ADVANCED_0" rule="containerpage">
 							<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog"
-							rule="containerpage-no-different-site" />
+							rule="containerpage-no-different-site-and-has-editor-role" />
 							<entry key="GUI_EXPLORER_CONTEXT_LOCK_REPORT_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsLockReport" rule="containerpage" />
 							<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0"
-							name="org.opencms.gwt.client.ui.contextmenu.CmsCategories" rule="containerpage-no-different-site" />
+							name="org.opencms.gwt.client.ui.contextmenu.CmsCategories" rule="containerpage-no-different-site-and-has-editor-role" />
 						</entry>
 							
 						<entry key="GUI_EXPLORER_CONTEXT_DELETE_0"
@@ -1099,7 +1099,7 @@
 							rule="nondeleted" />
 						<entry key="GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsEditProperties"
-							rule="containerpage-no-different-site" />
+							rule="containerpage-no-different-site-and-has-editor-role" />
 						<entry key="GUI_EXPLORER_CONTEXT_PREVIEW_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsPreview"
 							rule="containerpage" />
@@ -1114,11 +1114,11 @@
 						<entry key="GUI_EXPLORER_CONTEXT_ADE_ADVANCED_0" rule="containerpage">
 							<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog"
-							rule="containerpage-no-different-site" />
+							rule="containerpage-no-different-site-and-has-editor-role" />
 							<entry key="GUI_EXPLORER_CONTEXT_LOCK_REPORT_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsLockReport" rule="containerpage" />
 							<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0"
-							name="org.opencms.gwt.client.ui.contextmenu.CmsCategories" rule="containerpage-no-different-site" />
+							name="org.opencms.gwt.client.ui.contextmenu.CmsCategories" rule="containerpage-no-different-site-and-has-editor-role" />
 						</entry>
 							
 						<entry key="GUI_EXPLORER_CONTEXT_DELETE_0"
@@ -1546,6 +1546,13 @@
 					<menuitemrule
 						class="org.opencms.workplace.explorer.menu.CmsMirAlwaysInvisible" />
 				</menurule>
+				<menurule name="sitemap-wpuser">
+					<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirRequireWorkplaceUserRole" />
+					<menuitemrule
+						class="org.opencms.workplace.explorer.menu.CmsMirSitemapActive" />
+					<menuitemrule
+						class="org.opencms.workplace.explorer.menu.CmsMirAlwaysInvisible" />
+				</menurule>
 				<menurule name="adecheckfile">
 					<menuitemrule
 						class="org.opencms.workplace.explorer.menu.CmsMirContainerPageActiveAndFileAvailable" />
@@ -1581,6 +1588,37 @@
 						class="org.opencms.workplace.explorer.menu.CmsMirPrSameOtherlockInvisible" />
 					<menuitemrule
 						class="org.opencms.workplace.explorer.menu.CmsMirContainerPageActive" />
+				</menurule>
+				<menurule name="containerpage-no-different-site-and-has-editor-role">
+					<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirRequireEditorRole" />
+					<menuitemrule
+						class="org.opencms.workplace.explorer.menu.CmsMirNonContainerpageInvisible" />
+					<menuitemrule
+						class="org.opencms.workplace.explorer.menu.CmsMirOtherSiteInactive" />
+					<menuitemrule
+						class="org.opencms.workplace.explorer.menu.CmsMirPrSameUnlockedInactiveNoAl" />
+					<menuitemrule
+						class="org.opencms.workplace.explorer.menu.CmsMirPrSameLockedActiveNotDeletedAlPermW" />
+					<menuitemrule
+						class="org.opencms.workplace.explorer.menu.CmsMirPrSameOtherlockInvisible" />
+					<menuitemrule
+						class="org.opencms.workplace.explorer.menu.CmsMirContainerPageActive" />
+				</menurule>
+				<menurule name="containerpage-wpuser">
+					<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirRequireWorkplaceUserRole" />
+					<menuitemrule
+						class="org.opencms.workplace.explorer.menu.CmsMirNonContainerpageInvisible" />
+					<menuitemrule
+						class="org.opencms.workplace.explorer.menu.CmsMirOtherSiteInactive" />
+					<menuitemrule
+						class="org.opencms.workplace.explorer.menu.CmsMirPrSameUnlockedInactiveNoAl" />
+					<menuitemrule
+						class="org.opencms.workplace.explorer.menu.CmsMirPrSameLockedActiveNotDeletedAlPermW" />
+					<menuitemrule
+						class="org.opencms.workplace.explorer.menu.CmsMirPrSameOtherlockInvisible" />
+					<menuitemrule
+						class="org.opencms.workplace.explorer.menu.CmsMirContainerPageActive" />
+				
 				</menurule>
 			</menurules>
 		</explorertypes>
