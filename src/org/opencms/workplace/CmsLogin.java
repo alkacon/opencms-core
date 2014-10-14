@@ -419,7 +419,8 @@ public class CmsLogin extends CmsJspLoginBean {
                 // bad resource name, use workplace as default
                 resource = CmsFrameset.JSP_WORKPLACE_URI;
             }
-            if (!getCmsObject().existsResource(resource, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_directEditPath)
+                && !getCmsObject().existsResource(resource, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
                 // requested resource does either not exist or is not readable by user
                 if (CmsFrameset.JSP_WORKPLACE_URI.equals(resource)) {
                     // we know the Workplace exists, so the user does not have access to the Workplace
@@ -439,13 +440,14 @@ public class CmsLogin extends CmsJspLoginBean {
                 }
             }
             if (m_action == ACTION_DISPLAY) {
-                // the login was invalid
+                //the login was invalid
                 m_requestedResource = null;
                 // destroy the generated session
                 HttpSession session = getRequest().getSession(false);
                 if (session != null) {
                     session.invalidate();
                 }
+                setCookieData();
             } else {
                 // successfully logged in, so set the cookie
                 setCookieData();
