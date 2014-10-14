@@ -2287,6 +2287,15 @@ public class CmsPreferences extends CmsTabDialog {
     }
 
     /**
+     * @see org.opencms.workplace.CmsWorkplace#checkRole()
+     */
+    @Override
+    protected void checkRole() {
+
+        // this class is used internally for the new preferences dialog, which can also be used by non-workplace users. 
+    }
+
+    /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
     @Override
