@@ -224,13 +224,11 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton implements I_Cms
      */
     private void updateVisibility(A_CmsSitemapMenuEntry entry) {
 
-        entry.onShow();
         if (entry.getSubMenu() != null) {
             for (I_CmsContextMenuEntry subItem : entry.getSubMenu()) {
                 updateVisibility((A_CmsSitemapMenuEntry)subItem);
-
             }
         }
-
+        entry.onShow();
     }
 }

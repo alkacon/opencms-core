@@ -88,7 +88,13 @@ public class CmsAdvancedSubmenu extends A_CmsSitemapMenuEntry {
     @Override
     public void onShow() {
 
-        setVisible(true);
+        for (I_CmsContextMenuEntry entry : m_subEntries) {
+            if (entry.isVisible()) {
+                setVisible(true);
+                return;
+            }
+        }
+        setVisible(false);
     }
 
 }
