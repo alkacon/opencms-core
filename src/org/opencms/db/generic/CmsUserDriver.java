@@ -2224,7 +2224,7 @@ public class CmsUserDriver implements I_CmsUserDriver {
             if (CmsOrganizationalUnit.getParentFqn(ouFqn) == null) {
                 // check the flags of existing groups, for compatibility checks
                 internalUpdateRoleGroup(dbc, administratorsGroup, CmsRole.ROOT_ADMIN);
-                internalUpdateRoleGroup(dbc, usersGroup, CmsRole.WORKPLACE_USER.forOrgUnit(ouFqn));
+                internalUpdateRoleGroup(dbc, usersGroup, CmsRole.ELEMENT_AUTHOR.forOrgUnit(ouFqn));
             }
             return;
         }
