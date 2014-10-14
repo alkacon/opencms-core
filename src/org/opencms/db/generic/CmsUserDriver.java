@@ -2174,33 +2174,28 @@ public class CmsUserDriver implements I_CmsUserDriver {
 
         // create roles
         String rootAdminRole = CmsRole.ROOT_ADMIN.getGroupName();
+        boolean isRootOu = CmsOrganizationalUnit.getParentFqn(ouFqn) == null;
         try {
-            // only do something if really needed
-            if ((CmsOrganizationalUnit.getParentFqn(ouFqn) != null)
-                || ((CmsOrganizationalUnit.getParentFqn(ouFqn) == null) && !existsGroup(dbc, rootAdminRole))) {
-                // create the roles in the given ou
-                Iterator<CmsRole> itRoles = CmsRole.getSystemRoles().iterator();
-                while (itRoles.hasNext()) {
-                    CmsRole role = itRoles.next();
-                    if (webuser && (role != CmsRole.ACCOUNT_MANAGER)) {
-                        // if webuser ou and not account manager role
-                        continue;
-                    }
-                    if (role.isOrganizationalUnitIndependent() && (CmsOrganizationalUnit.getParentFqn(ouFqn) != null)) {
-                        // if role is ou independent and not in the root ou
-                        continue;
-                    }
-                    String groupName = ouFqn + role.getGroupName();
-                    int flags = I_CmsPrincipal.FLAG_ENABLED | I_CmsPrincipal.FLAG_GROUP_ROLE;
-                    createGroup(dbc, CmsUUID.getConstantUUID(groupName), groupName, "A system role group", flags, null);
-
+            for (CmsRole role : CmsRole.getSystemRoles()) {
+                if (webuser && (role != CmsRole.ACCOUNT_MANAGER)) {
+                    // if webuser ou and not account manager role
+                    continue;
                 }
-                if ((CmsOrganizationalUnit.getParentFqn(ouFqn) == null) && CmsLog.INIT.isInfoEnabled()) {
-                    CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SYSTEM_ROLES_CREATED_0));
+                if (role.isOrganizationalUnitIndependent() && !isRootOu) {
+                    // if role is ou independent and not in the root ou
+                    continue;
+                }
+                String groupName = ouFqn + role.getGroupName();
+                int flags = I_CmsPrincipal.FLAG_ENABLED | I_CmsPrincipal.FLAG_GROUP_ROLE;
+                if (!existsGroup(dbc, groupName)) {
+                    createGroup(dbc, CmsUUID.getConstantUUID(groupName), groupName, "A system role group", flags, null);
                 }
             }
+            if (isRootOu && CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SYSTEM_ROLES_CREATED_0));
+            }
         } catch (CmsException e) {
-            if ((CmsOrganizationalUnit.getParentFqn(ouFqn) == null) && CmsLog.INIT.isErrorEnabled()) {
+            if (isRootOu && CmsLog.INIT.isErrorEnabled()) {
                 CmsLog.INIT.error(Messages.get().getBundle().key(Messages.INIT_SYSTEM_ROLES_CREATION_FAILED_0), e);
             }
             throw new CmsInitException(Messages.get().container(Messages.ERR_INITIALIZING_USER_DRIVER_0), e);
@@ -2221,7 +2216,7 @@ public class CmsUserDriver implements I_CmsUserDriver {
         String deleteUser = ouFqn + OpenCms.getDefaultUsers().getUserDeletedResource();
 
         if (existsGroup(dbc, administratorsGroup)) {
-            if (CmsOrganizationalUnit.getParentFqn(ouFqn) == null) {
+            if (isRootOu) {
                 // check the flags of existing groups, for compatibility checks
                 internalUpdateRoleGroup(dbc, administratorsGroup, CmsRole.ROOT_ADMIN);
                 internalUpdateRoleGroup(dbc, usersGroup, CmsRole.ELEMENT_AUTHOR.forOrgUnit(ouFqn));
@@ -2747,6 +2742,11 @@ public class CmsUserDriver implements I_CmsUserDriver {
             }
             // set the right flags
             group.setFlags(role.getVirtualGroupFlags());
+            try {
+                writeGroup(dbc, group);
+            } catch (Exception e) {
+                LOG.error("Could not write group flags in internalUpdateRoleGroup: " + e.getLocalizedMessage(), e);
+            }
         }
     }
 
