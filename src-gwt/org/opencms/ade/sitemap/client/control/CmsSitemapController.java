@@ -1356,7 +1356,6 @@ public class CmsSitemapController implements I_CmsSitemapController {
         final boolean continueIfNotLoaded,
         final AsyncCallback<CmsClientSitemapEntry> callback) {
 
-        CmsDebugLog.consoleLog("loadPath -- " + sitePath);
         if (getEntry(sitePath) != null) {
             CmsClientSitemapEntry entry = getEntry(sitePath);
             getChildren(entry.getId(), CmsSitemapTreeItem.getItemById(entry.getId()).isOpen(), callback);

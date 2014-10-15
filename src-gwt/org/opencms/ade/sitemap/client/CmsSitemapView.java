@@ -74,7 +74,6 @@ import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
 import org.opencms.gwt.client.ui.tree.CmsTree;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.client.ui.tree.I_CmsLazyOpenHandler;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
@@ -1193,8 +1192,6 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
      * @param changeEvent the change event
      */
     private void applyChangeToGalleryTree(CmsSitemapChangeEvent changeEvent) {
-
-        CmsDebugLog.consoleLog("gallery change: " + changeEvent.getChange().getChangeType());
 
         CmsSitemapChange change = changeEvent.getChange();
         switch (change.getChangeType()) {

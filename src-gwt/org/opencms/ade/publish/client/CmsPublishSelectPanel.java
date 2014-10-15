@@ -46,7 +46,6 @@ import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.CmsTriStateCheckBox;
 import org.opencms.gwt.client.ui.input.CmsTriStateCheckBox.State;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsMessages;
 import org.opencms.gwt.client.util.CmsScrollToBottomHandler;
@@ -432,7 +431,6 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         m_projectSelector.setItems(projectSelectItems);
         m_projectSelector.addStyleName(CSS.selector());
         if (!(null == publishOptions.getProjectId()) && m_foundOldProject) {
-            CmsDebugLog.consoleLog("1 - " + publishOptions.getProjectId().toString());
             m_projectSelector.setFormValueAsString(publishOptions.getProjectId().toString());
         }
 
