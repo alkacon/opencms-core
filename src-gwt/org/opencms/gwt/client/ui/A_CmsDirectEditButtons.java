@@ -206,7 +206,8 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
                 buttonMap.put(Integer.valueOf(200), m_new);
                 m_new.addClickHandler(handler);
             }
-            if ((this.getWidgetCount() > 0) || m_editableData.hasEdit()) {
+            buttonMap.putAll(getAdditionalButtons());
+            if ((buttonMap.size() > 0) || m_editableData.hasEdit()) {
                 m_edit = new CmsPushButton();
                 m_edit.setImageClass(I_CmsButton.ButtonData.SELECTION.getIconClass());
                 m_edit.addStyleName(I_CmsButton.ButtonData.SELECTION.getIconClass());
@@ -222,7 +223,6 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
                 }
             }
 
-            buttonMap.putAll(getAdditionalButtons());
             for (CmsPushButton button : buttonMap.values()) {
                 add(button);
                 button.addClickHandler(new ClickHandler() {

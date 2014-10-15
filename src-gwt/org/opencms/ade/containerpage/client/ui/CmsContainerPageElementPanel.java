@@ -51,6 +51,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.google.common.collect.Lists;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -734,7 +735,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         m_checkingEditables = true;
         if (m_editables == null) {
             m_editables = new HashMap<Element, CmsListCollectorEditor>();
-            List<Element> editables = CmsDomUtil.getElementsByClass("cms-editable", Tag.div, getElement());
+            List<Element> editables = getEditableElements();
             if ((editables != null) && (editables.size() > 0)) {
                 for (Element editable : editables) {
                     CmsListCollectorEditor editor = new CmsListCollectorEditor(editable, m_clientId);
@@ -763,7 +764,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
                         getElement());
                 }
             }
-            List<Element> editables = CmsDomUtil.getElementsByClass("cms-editable", Tag.div, getElement());
+            List<Element> editables = getEditableElements();
             if (editables.size() > m_editables.size()) {
                 for (Element editable : editables) {
                     if (!m_editables.containsKey(editable)) {
@@ -843,6 +844,23 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     }
 
     /**
+     * Gets the editable list elements.<p>
+     * 
+     * @return the editable list elements 
+     */
+    protected List<Element> getEditableElements() {
+
+        List<Element> elems = CmsDomUtil.getElementsByClass("cms-editable", Tag.div, getElement());
+        List<Element> result = Lists.newArrayList();
+        for (Element currentElem : elems) {
+            if (m_parent.getContainerId().equals(getParentContainerId(currentElem))) {
+                result.add(currentElem);
+            }
+        }
+        return result;
+    }
+
+    /**
      * Returns if the list collector direct edit content has changed.<p>
      * 
      * @return <code>true</code> if the list collector direct edit content has changed
@@ -857,7 +875,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
                 return true;
             }
         }
-        return CmsDomUtil.getElementsByClass("cms-editable", Tag.div, getElement()).size() > m_editables.size();
+        return getEditableElements().size() > m_editables.size();
     }
 
     /**
@@ -938,6 +956,27 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
             m_provisionalParent.removeFromParent();
             m_provisionalParent = null;
         }
+    }
+
+    /**
+     * Gets the container id of the most deeply nested container containing the given element, or null if no such container can be found.<p>
+     * 
+     * @param elem the element 
+     * @return the container id of the deepest container containing the element 
+     */
+    private String getParentContainerId(Element elem) {
+
+        String attr = CmsContainerPageContainer.PROP_CONTAINER_MARKER;
+        Element lastElem;
+        do {
+            String propValue = elem.getPropertyString(attr);
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(propValue)) {
+                return propValue;
+            }
+            lastElem = elem;
+            elem = elem.getParentElement();
+        } while ((elem != null) && (elem != lastElem));
+        return null;
     }
 
     /**

@@ -101,7 +101,12 @@ public class CmsCreateModeSelectionDialog extends CmsPopup {
             protected void onResponse(CmsListInfoBean result) {
 
                 stop(false);
-                (new CmsCreateModeSelectionDialog(result, createModeCallback)).center();
+                if (!("folder".equals(result.getResourceType()))) {
+                    (new CmsCreateModeSelectionDialog(result, createModeCallback)).center();
+                } else {
+                    createModeCallback.onSuccess(null);
+                }
+
             }
         };
         action.execute();

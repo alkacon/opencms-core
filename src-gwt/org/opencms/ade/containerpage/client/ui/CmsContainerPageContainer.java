@@ -255,6 +255,9 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     /** Flag indicating the element positions need to be re-evaluated. */
     private boolean m_requiresPositionUpdate = true;
 
+    /** Name of a special property for the container id. */
+    public static final String PROP_CONTAINER_MARKER = "opencmsContainerId";
+
     /**
      * Constructor.<p>
      * 
@@ -264,10 +267,12 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     public CmsContainerPageContainer(CmsContainer containerData, Element element) {
 
         setElement(element);
+
         if (!containerData.isSubContainer()) {
             RootPanel.detachOnWindowClose(this);
         }
         m_containerId = containerData.getName();
+        element.setPropertyString(PROP_CONTAINER_MARKER, containerData.getName());
         m_containerType = containerData.getType();
         m_maxElements = containerData.getMaxElements();
         m_isDetailView = containerData.isDetailView();
@@ -683,9 +688,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
      */
     public void showEditableListButtons() {
 
-        Iterator<Widget> it = iterator();
-        while (it.hasNext()) {
-            Widget child = it.next();
+        for (Widget child : this) {
             if (child instanceof CmsContainerPageElementPanel) {
                 ((CmsContainerPageElementPanel)child).showEditableListButtons();
             }

@@ -1373,9 +1373,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             cms.getRequestContext().addSiteRoot(uriParam)), detailContentId, getRequest(), getResponse(), locale);
         Map<String, CmsContainerElementData> result = new HashMap<String, CmsContainerElementData>();
         Set<String> ids = new HashSet<String>();
-        Iterator<String> it = clientIds.iterator();
-        while (it.hasNext()) {
-            String elemId = it.next();
+        for (String elemId : clientIds) {
             if ((elemId == null) || ids.contains(elemId)) {
                 continue;
             }
@@ -1385,6 +1383,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 getSessionCache().setCacheContainerElement(element.editorHash(), element);
             }
             CmsContainerElementData elementData = elemUtil.getElementData(page, element, containers, allowNested);
+            if (elementData == null) {
+                continue;
+            }
             result.put(elemId, elementData);
             if (elementData.isGroupContainer() || elementData.isInheritContainer()) {
                 // this is a group-container 
