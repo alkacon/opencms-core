@@ -193,7 +193,7 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
         CmsListInfoBean infoBean = modelPage.getListInfoBean();
         infoBean.setTitle(title);
         CmsListItemWidget result = new CmsModelPageListItemWidget(infoBean);
-        result.setIcon(CmsIconUtil.getResourceIconClasses(modelPage.getResourceType(), modelPage.getRootPath(), false));
+        result.setIcon(CmsIconUtil.getResourceIconClasses("modelpage", modelPage.getRootPath(), false));
         if (CmsEditModelPageMenuEntry.checkVisible(modelPage.getStructureId())) {
             result.addIconClickHandler(new ClickHandler() {
 
